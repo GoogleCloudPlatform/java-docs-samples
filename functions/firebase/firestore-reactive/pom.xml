@@ -30,12 +30,11 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.17</version>
+    <version>1.0.18</version>
   </parent>
 
   <!-- [START functions_java_example_pom] -->
   <properties>
-    <powermock.version>2.0.7</powermock.version>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,7 +44,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      <version>1.33.0</version>
+      <version>2.0.0</version>
     </dependency>
 
     <!-- Required for Function primitives -->
@@ -53,27 +52,10 @@
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
       <version>1.0.1</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- The following dependencies are only required for testing -->
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-core</artifactId>
-      <version>${powermock.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-module-junit4</artifactId>
-      <version>${powermock.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito2</artifactId>
-      <version>${powermock.version}</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -87,33 +69,18 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>3.5.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
       <version>29.0-jre</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <!-- [END functions_java_example_pom] -->
-
-  <!-- Disable tests during GCF builds (from parent POM) -->
-  <!--   You can remove this profile to run tests -->
-  <!--   when deploying, but we recommend creating -->
-  <!--   a CI/CD pipeline via Cloud Build instead -->
-  <profiles>
-    <profile>
-      <id>skip_tests_on_gcf</id>
-      <activation>
-        <property>
-          <name>env.NEW_BUILD</name>
-        </property>
-      </activation>
-      <properties>
-        <skipTests>true</skipTests>
-      </properties>
-    </profile>
-  </profiles>
-
-  <!-- [START functions_java_example_pom] -->
   
   <build>
     <plugins>
@@ -129,7 +96,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.2</version>
+        <version>0.9.4</version>
         <configuration>
           <functionTarget>functions.FirebaseFirestoreReactive</functionTarget>
         </configuration>
@@ -139,7 +106,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version 3.0.0-M4 does not load JUnit5 correctly -->
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
-        <version>3.0.0-M4</version>  
+        <version>3.0.0-M5</version>  
         <!-- [END functions_java_example_pom] -->
         <configuration>
           <includes>

@@ -31,9 +31,9 @@ import java.util.Random;
 /**
  * The sample in this file introduce featured job, including:
  *
- * <p>- Construct a featured job
+ * - Construct a featured job
  *
- * <p>- Search featured job
+ * - Search featured job
  */
 public final class FeaturedJobsSearchSample {
 
@@ -99,8 +99,9 @@ public final class FeaturedJobsSearchSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Featured jobs results: %s\n", response);
   }
   // [END search_featured_job]
 

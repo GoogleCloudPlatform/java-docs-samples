@@ -27,8 +27,9 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 public class CassandraMigrationCodelabTest {
+
   private static final String INSTANCE_ENV = "BIGTABLE_TESTING_INSTANCE";
-  private final String COLUMN_FAMILY_NAME = "stats_summary";
+  private static final String COLUMN_FAMILY_NAME = "stats_summary";
   private static final String TABLE_PREFIX = "cass-";
 
   private static final String TABLE_ID =

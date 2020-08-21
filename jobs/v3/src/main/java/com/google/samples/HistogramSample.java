@@ -28,22 +28,18 @@ import com.google.api.services.jobs.v3.model.SearchJobsResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * The sample in this file introduce how to do a histogram search.
- */
+/** The sample in this file introduce how to do a histogram search. */
 public final class HistogramSample {
 
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
-      .getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient =
+      JobServiceQuickstart.getTalentSolutionClient();
 
   // [START histogram_search]
 
-  /**
-   * Histogram search
-   */
+  /** Histogram search */
   public static void histogramSearch(String companyName) throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
@@ -53,8 +49,7 @@ public final class HistogramSample {
             // Make sure to hash the sessionID
             .setSessionId("HashedSessionID")
             // Domain of the website where the search is conducted
-            .setDomain(
-                "www.google.com");
+            .setDomain("www.google.com");
 
     HistogramFacets histogramFacets =
         new HistogramFacets()
@@ -83,7 +78,7 @@ public final class HistogramSample {
             .execute();
     Thread.sleep(1000);
 
-    System.out.println(searchJobsResponse);
+    System.out.printf("Histogram search results: %s\n", searchJobsResponse);
   }
   // [END histogram_search]
 

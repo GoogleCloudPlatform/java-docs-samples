@@ -51,7 +51,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
   private static final String TRANSLATE_TOPIC_NAME = System.getenv("TRANSLATE_TOPIC");
   private static final String[] TO_LANGS = System.getenv("TO_LANG").split(",");
 
-  private static final Logger LOGGER = Logger.getLogger(OcrProcessImage.class.getName());
+  private static final Logger logger = Logger.getLogger(OcrProcessImage.class.getName());
   private static final String LOCATION_NAME = LocationName.of(PROJECT_ID, "global").toString();
   private Publisher publisher;
 
@@ -81,7 +81,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
 
   // [START functions_ocr_detect]
   private void detectText(String bucket, String filename) {
-    LOGGER.info("Looking for text in image " + filename);
+    logger.info("Looking for text in image " + filename);
 
     List<AnnotateImageRequest> visionRequests = new ArrayList<>();
     String gcsPath = String.format("gs://%s/%s", bucket, filename);
@@ -99,24 +99,24 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
       visionResponse = client.batchAnnotateImages(visionRequests).getResponses(0);
       if (visionResponse == null || !visionResponse.hasFullTextAnnotation()) {
-        LOGGER.info(String.format("Image %s contains no text", filename));
+        logger.info(String.format("Image %s contains no text", filename));
         return;
       }
 
       if (visionResponse.hasError()) {
         // Log error
-        LOGGER.log(
+        logger.log(
             Level.SEVERE, "Error in vision API call: " + visionResponse.getError().getMessage());
         return;
       }
     } catch (IOException e) {
       // Log error (since IOException cannot be thrown by a Cloud Function)
-      LOGGER.log(Level.SEVERE, "Error detecting text: " + e.getMessage(), e);
+      logger.log(Level.SEVERE, "Error detecting text: " + e.getMessage(), e);
       return;
     }
 
     String text = visionResponse.getFullTextAnnotation().getText();
-    LOGGER.info("Extracted text from image: " + text);
+    logger.info("Extracted text from image: " + text);
 
     // Detect language using the Cloud Translation API
     DetectLanguageRequest languageRequest =
@@ -130,21 +130,21 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
       languageResponse = client.detectLanguage(languageRequest);
     } catch (IOException e) {
       // Log error (since IOException cannot be thrown by a function)
-      LOGGER.log(Level.SEVERE, "Error detecting language: " + e.getMessage(), e);
+      logger.log(Level.SEVERE, "Error detecting language: " + e.getMessage(), e);
       return;
     }
 
     if (languageResponse.getLanguagesCount() == 0) {
-      LOGGER.info("No languages were detected for text: " + text);
+      logger.info("No languages were detected for text: " + text);
       return;
     }
 
     String languageCode = languageResponse.getLanguages(0).getLanguageCode();
-    LOGGER.info(String.format("Detected language %s for file %s", languageCode, filename));
+    logger.info(String.format("Detected language %s for file %s", languageCode, filename));
 
     // Send a Pub/Sub translation request for every language we're going to translate to
     for (String targetLanguage : TO_LANGS) {
-      LOGGER.info("Sending translation request for language " + targetLanguage);
+      logger.info("Sending translation request for language " + targetLanguage);
       OcrTranslateApiMessage message = new OcrTranslateApiMessage(text, filename, targetLanguage);
       ByteString byteStr = ByteString.copyFrom(message.toPubsubData());
       PubsubMessage pubsubApiMessage = PubsubMessage.newBuilder().setData(byteStr).build();
@@ -152,7 +152,7 @@ public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
         publisher.publish(pubsubApiMessage).get();
       } catch (InterruptedException | ExecutionException e) {
         // Log error
-        LOGGER.log(Level.SEVERE, "Error publishing translation request: " + e.getMessage(), e);
+        logger.log(Level.SEVERE, "Error publishing translation request: " + e.getMessage(), e);
         return;
       }
     }

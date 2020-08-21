@@ -21,9 +21,9 @@ package functions;
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class FileSystem implements HttpFunction {
 
@@ -33,10 +33,10 @@ public class FileSystem implements HttpFunction {
       throws IOException {
     File currentDirectory = new File(".");
     File[] files = currentDirectory.listFiles();
-    BufferedWriter writer = response.getWriter();
-    writer.write("Files: %n");
+    PrintWriter writer = new PrintWriter(response.getWriter());
+    writer.println("Files:");
     for (File f : files) {
-      writer.write(String.format("\t%s%n", f.getName()));
+      writer.printf("\t%s%n", f.getName());
     }
   }
 }

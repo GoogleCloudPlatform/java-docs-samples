@@ -23,17 +23,23 @@
   <artifactId>pubsub-streaming</artifactId>
   <version>1.0</version>
 
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.17</version>
+  </parent>
+
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <beam.version>2.20.0</beam.version>
+    <beam.version>2.22.0</beam.version>
 
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-    <maven-exec-plugin.version>1.6.0</maven-exec-plugin.version>
+    <maven-exec-plugin.version>3.0.0</maven-exec-plugin.version>
     <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-    <maven-shade-plugin.version>3.2.3</maven-shade-plugin.version>
+    <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
     <slf4j.version>1.7.30</slf4j.version>
   </properties>
 

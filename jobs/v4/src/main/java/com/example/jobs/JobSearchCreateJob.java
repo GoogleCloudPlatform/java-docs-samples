@@ -23,8 +23,13 @@ import com.google.cloud.talent.v4beta1.Job;
 import com.google.cloud.talent.v4beta1.JobServiceClient;
 import com.google.cloud.talent.v4beta1.TenantName;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class JobSearchCreateJob {
 
@@ -46,14 +51,21 @@ public class JobSearchCreateJob {
       String requisitionId,
       String jobApplicationUrl)
       throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
       TenantName parent = TenantName.of(projectId, tenantId);
       Job.ApplicationInfo applicationInfo =
           Job.ApplicationInfo.newBuilder().addUris(jobApplicationUrl).build();
 
-      List<String> addresses = Arrays.asList("1600 Amphitheatre Parkway, Mountain View, CA 94043",
+      List<String> addresses =
+          Arrays.asList(
+              "1600 Amphitheatre Parkway, Mountain View, CA 94043",
               "111 8th Avenue, New York, NY 10011");
 
+      // By default, job will expire in 30 days.
+      // https://cloud.google.com/talent-solution/job-search/docs/jobs
       Job job =
           Job.newBuilder()
               .setCompany(companyId)
@@ -69,7 +81,7 @@ public class JobSearchCreateJob {
           CreateJobRequest.newBuilder().setParent(parent.toString()).setJob(job).build();
 
       Job response = jobServiceClient.createJob(request);
-      System.out.printf("Created job: %s\n", response.getName());
+      System.out.format("Created job: %s%n", response.getName());
     }
   }
 }

@@ -19,6 +19,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.17</version>
+  </parent>
+
   <groupId>com.example</groupId>
   <artifactId>dataflow-templates</artifactId>
   <version>1.0</version>
@@ -28,12 +34,12 @@
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <beam.version>2.20.0</beam.version>
+    <beam.version>2.22.0</beam.version>
 
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-    <maven-exec-plugin.version>1.6.0</maven-exec-plugin.version>
+    <maven-exec-plugin.version>3.0.0</maven-exec-plugin.version>
     <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-    <maven-shade-plugin.version>3.2.3</maven-shade-plugin.version>
+    <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
     <slf4j.version>1.7.30</slf4j.version>
   </properties>
 

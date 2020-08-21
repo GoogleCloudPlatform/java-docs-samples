@@ -37,7 +37,7 @@ public class PublishMessage implements HttpFunction {
   // TODO<developer> set this environment variable
   private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
 
-  private static final Logger LOGGER = Logger.getLogger(PublishMessage.class.getName());
+  private static final Logger logger = Logger.getLogger(PublishMessage.class.getName());
 
   @Override
   public void service(HttpRequest request, HttpResponse response) throws IOException {
@@ -54,7 +54,7 @@ public class PublishMessage implements HttpFunction {
     }
 
     String topicName = maybeTopicName.get();
-    LOGGER.info("Publishing message to topic: " + topicName);
+    logger.info("Publishing message to topic: " + topicName);
 
     // Create the PubsubMessage object
     // (This is different than the PubSubMessage POJO used in Pub/Sub-triggered functions)
@@ -70,7 +70,7 @@ public class PublishMessage implements HttpFunction {
       publisher.publish(pubsubApiMessage).get();
       responseMessage = "Message published.";
     } catch (InterruptedException | ExecutionException e) {
-      LOGGER.log(Level.SEVERE, "Error publishing Pub/Sub message: " + e.getMessage(), e);
+      logger.log(Level.SEVERE, "Error publishing Pub/Sub message: " + e.getMessage(), e);
       responseMessage = "Error publishing Pub/Sub message; see logs for more info.";
     }
 

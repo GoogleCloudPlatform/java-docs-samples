@@ -26,14 +26,14 @@ import java.util.logging.Logger;
 
 public class HelloError implements HttpFunction {
 
-  private static final Logger LOGGER = Logger.getLogger(HelloError.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloError.class.getName());
 
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
     // These will NOT be reported to Stackdriver error reporting
     System.err.println("I failed you");
-    LOGGER.severe("I failed you");
+    logger.severe("I failed you");
 
     // This WILL be reported to Stackdriver error reporting
     throw new RuntimeException("I failed you");

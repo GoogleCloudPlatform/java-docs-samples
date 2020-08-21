@@ -35,8 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.MockitoAnnotations;
 
 @RunWith(JUnit4.class)
 public class PublishMessageTest {
@@ -45,7 +44,7 @@ public class PublishMessageTest {
 
   private static final String FUNCTIONS_TOPIC = System.getenv("FUNCTIONS_TOPIC");
 
-  private static final Logger LOGGER = Logger.getLogger(PublishMessage.class.getName());
+  private static final Logger logger = Logger.getLogger(PublishMessage.class.getName());
   private static final TestLogHandler logHandler = new TestLogHandler();
 
   private BufferedWriter writerOut;
@@ -53,22 +52,19 @@ public class PublishMessageTest {
 
   @BeforeClass
   public static void beforeClass() {
-    LOGGER.addHandler(logHandler);
+    logger.addHandler(logHandler);
   }
 
   @Before
   public void beforeTest() throws IOException {
-    Mockito.mockitoSession().initMocks(this);
-
-    request = PowerMockito.mock(HttpRequest.class);
-    response = PowerMockito.mock(HttpResponse.class);
+    MockitoAnnotations.initMocks(this);
 
     BufferedReader reader = new BufferedReader(new StringReader("{}"));
-    PowerMockito.when(request.getReader()).thenReturn(reader);
+    when(request.getReader()).thenReturn(reader);
 
     responseOut = new StringWriter();
     writerOut = new BufferedWriter(responseOut);
-    PowerMockito.when(response.getWriter()).thenReturn(writerOut);
+    when(response.getWriter()).thenReturn(writerOut);
 
     logHandler.clear();
   }

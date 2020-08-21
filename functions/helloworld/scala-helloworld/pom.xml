@@ -29,14 +29,11 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.17</version>
+    <version>1.0.18</version>
   </parent>
   
   <!-- [START functions_scala_pom] -->
   <properties>
-    <!-- [END functions_scala_pom] -->
-    <powermock.version>2.0.7</powermock.version>
-    <!-- [START functions_scala_pom] -->
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -47,14 +44,22 @@
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
-      <version>2.13.2</version>
+      <version>2.13.3</version>
+    </dependency>
+
+    <!-- Required for Function primitives -->
+    <dependency>
+      <groupId>com.google.cloud.functions</groupId>
+      <artifactId>functions-framework-api</artifactId>
+      <version>1.0.1</version>
+      <scope>provided</scope>
     </dependency>
     <!-- [END functions_scala_pom] -->
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.3.3</version>
+      <version>3.5.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -64,7 +69,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Required for mocking env vars -->
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
@@ -77,54 +81,9 @@
       <version>29.0-jre</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-core</artifactId>
-      <version>${powermock.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-module-junit4</artifactId>
-      <version>${powermock.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito2</artifactId>
-      <version>${powermock.version}</version>
-      <scope>test</scope>
-    </dependency>
     <!-- [START functions_scala_pom] -->
-    
-    <!-- Required for Function primitives -->
-    <dependency>
-      <groupId>com.google.cloud.functions</groupId>
-      <artifactId>functions-framework-api</artifactId>
-      <version>1.0.1</version>
-    </dependency>
   </dependencies>
 
-  <!-- [END functions_scala_pom] -->
-  <!-- Disable tests during GCF builds (from parent POM) -->
-  <!--   You can remove this profile to run tests -->
-  <!--   when deploying, but we recommend creating -->
-  <!--   a CI/CD pipeline via Cloud Build instead -->
-  <profiles>
-    <profile>
-      <id>skip_tests_on_gcf</id>
-      <activation>
-        <property>
-          <name>env.NEW_BUILD</name>
-        </property>
-      </activation>
-      <properties>
-        <skipTests>true</skipTests>
-      </properties>
-    </profile>
-  </profiles>
-  
-  <!-- [START functions_scala_pom] -->
   <build>
     <plugins>
       <plugin>
@@ -139,7 +98,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.2</version>
+        <version>0.9.4</version>
         <configuration>
           <functionTarget>functions.ScalaHelloWorld</functionTarget>
         </configuration>
@@ -147,7 +106,7 @@
       <plugin>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
-        <version>4.3.1</version>
+        <version>4.4.0</version>
         <executions>
           <execution>
             <id>scala-compile</id>
@@ -163,7 +122,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M4</version>
+        <version>3.0.0-M5</version>
         <configuration>
           <skipTests>${skipTests}</skipTests>
           <reportNameSuffix>sponge_log</reportNameSuffix>
@@ -171,31 +130,6 @@
         </configuration>
       </plugin>
       <!-- [START functions_scala_pom] -->
-      <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>testCompile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludes>
-            <exclude>.google/</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 </project>

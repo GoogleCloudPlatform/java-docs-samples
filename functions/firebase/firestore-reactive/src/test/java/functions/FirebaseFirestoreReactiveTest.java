@@ -16,15 +16,16 @@
 
 package functions;
 
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
+import com.google.gson.Gson;
 import functions.eventpojos.MockContext;
-import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -33,11 +34,8 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.reflect.Whitebox;
+import org.mockito.MockitoAnnotations;
 
 @RunWith(JUnit4.class)
 public class FirebaseFirestoreReactiveTest {
@@ -47,24 +45,24 @@ public class FirebaseFirestoreReactiveTest {
 
   // Loggers + handlers for various tested classes
   // (Must be declared at class-level, or LoggingHandler won't detect log records!)
-  private static final Logger LOGGER = Logger.getLogger(FirebaseFirestoreReactive.class.getName());
+  private static final Logger logger = Logger.getLogger(FirebaseFirestoreReactive.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
+  private static final Gson gson = new Gson();
+
   @BeforeClass
   public static void beforeClass() {
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @Before
-  public void beforeTest() throws IOException {
-    Mockito.mockitoSession().initMocks(this);
+  public void beforeTest() {
+    MockitoAnnotations.initMocks(this);
 
-    referenceMock = mock(DocumentReference.class, Mockito.RETURNS_DEEP_STUBS);
-    when(referenceMock.set(ArgumentMatchers.any())).thenReturn(null);
+    when(referenceMock.set(any())).thenReturn(null);
 
-    firestoreMock = PowerMockito.mock(Firestore.class);
-    when(firestoreMock.document(ArgumentMatchers.any())).thenReturn(referenceMock);
+    when(firestoreMock.document(any())).thenReturn(referenceMock);
 
     LOG_HANDLER.clear();
   }
@@ -77,13 +75,16 @@ public class FirebaseFirestoreReactiveTest {
 
   @Test
   public void functionsFirebaseReactive_shouldCapitalizeOriginalValue()  {
-    String jsonStr = "{\"value\":{\"fields\":{\"original\":{\"stringValue\":\"foo\"}}}}";
+
+    String jsonStr = gson.toJson(Map.of("value",
+        Map.of("fields",
+            Map.of("original",
+                Map.of("stringValue", "foo")))));
 
     MockContext context = new MockContext();
     context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";
 
-    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive();
-    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "FIRESTORE", firestoreMock);
+    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive(firestoreMock);
 
     functionInstance.accept(jsonStr, context);
 
@@ -93,13 +94,15 @@ public class FirebaseFirestoreReactiveTest {
 
   @Test
   public void functionsFirebaseReactive_shouldReportBadJson()  {
-    String jsonStr = "{\"value\":{\"fields\":{\"original\":{\"missingValue\":\"foo\"}}}}";
+    String jsonStr = gson.toJson(Map.of("value",
+        Map.of("fields",
+            Map.of("original",
+                Map.of("missingValue", "foo")))));
 
     MockContext context = new MockContext();
     context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";
 
-    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive();
-    Whitebox.setInternalState(FirebaseFirestoreReactive.class, "FIRESTORE", firestoreMock);
+    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive(firestoreMock);
 
     IllegalArgumentException e = Assertions.assertThrows(
         IllegalArgumentException.class, () -> functionInstance.accept(jsonStr, context));

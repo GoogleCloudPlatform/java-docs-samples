@@ -86,7 +86,7 @@ The following instructions will help you prepare your development environment.
 
 ### Google Cloud Pub/Sub to Google Cloud Storage
 
-* [PubSubToGCS.java](src/main/java/com/examples/pubsub/streaming/PubSubToGCS.java)
+* [PubSubToGCS.java](src/main/java/com/examples/pubsub/streaming/PubSubToGcs.java)
 
 The following example will run a streaming pipeline. It will read messages from a Pub/Sub topic, then window them into fixed-sized intervals, and write one file per window into a GCS location.
 

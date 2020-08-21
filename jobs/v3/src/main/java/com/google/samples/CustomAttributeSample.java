@@ -31,8 +31,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-;
-
 /**
  * This file contains the samples about CustomAttribute, including:
  *
@@ -45,18 +43,15 @@ public final class CustomAttributeSample {
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
-      .getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient =
+      JobServiceQuickstart.getTalentSolutionClient();
 
   // [START custom_attribute_job]
 
-  /**
-   * Generate a job with a custom attribute.
-   */
+  /** Generate a job with a custom attribute. */
   public static Job generateJobWithACustomAttribute(String companyName) {
     // requisition id should be a unique Id in your system.
-    String requisitionId =
-        "jobWithACustomAttribute:" + String.valueOf(new Random().nextLong());
+    String requisitionId = "jobWithACustomAttribute:" + String.valueOf(new Random().nextLong());
     ApplicationInfo applicationInfo =
         new ApplicationInfo().setUris(Arrays.asList("http://careers.google.com"));
 
@@ -64,12 +59,10 @@ public final class CustomAttributeSample {
     Map<String, CustomAttribute> customAttributes = new HashMap<>();
     customAttributes.put(
         "someFieldName1",
-        new CustomAttribute()
-            .setStringValues(Arrays.asList("value1"))
-            .setFilterable(Boolean.TRUE));
-    customAttributes
-        .put("someFieldName2",
-            new CustomAttribute().setLongValues(Arrays.asList(256L)).setFilterable(true));
+        new CustomAttribute().setStringValues(Arrays.asList("value1")).setFilterable(Boolean.TRUE));
+    customAttributes.put(
+        "someFieldName2",
+        new CustomAttribute().setLongValues(Arrays.asList(256L)).setFilterable(true));
 
     // Creates job with custom attributes
     Job job =
@@ -87,9 +80,7 @@ public final class CustomAttributeSample {
 
   // [START custom_attribute_filter_string_value]
 
-  /**
-   * CustomAttributeFilter on String value CustomAttribute
-   */
+  /** CustomAttributeFilter on String value CustomAttribute */
   public static void filtersOnStringValueCustomAttribute()
       throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
@@ -100,12 +91,10 @@ public final class CustomAttributeSample {
             // Make sure to hash the sessionID
             .setSessionId("HashedSessionID")
             // Domain of the website where the search is conducted
-            .setDomain(
-                "www.google.com");
+            .setDomain("www.google.com");
 
     String customAttributeFilter = "NOT EMPTY(someFieldName1)";
-    JobQuery jobQuery = new JobQuery()
-        .setCustomAttributeFilter(customAttributeFilter);
+    JobQuery jobQuery = new JobQuery().setCustomAttributeFilter(customAttributeFilter);
 
     SearchJobsRequest searchJobsRequest =
         new SearchJobsRequest()
@@ -119,15 +108,13 @@ public final class CustomAttributeSample {
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Custom search job results (String value): %s\n", response);
   }
   // [END custom_attribute_filter_string_value]
 
   // [START custom_attribute_filter_long_value]
 
-  /**
-   * CustomAttributeFilter on Long value CustomAttribute
-   */
+  /** CustomAttributeFilter on Long value CustomAttribute */
   public static void filtersOnLongValueCustomAttribute() throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
@@ -140,8 +127,7 @@ public final class CustomAttributeSample {
             .setDomain("www.google.com");
 
     String customAttributeFilter = "(255 <= someFieldName2) AND (someFieldName2 <= 257)";
-    JobQuery jobQuery = new JobQuery()
-        .setCustomAttributeFilter(customAttributeFilter);
+    JobQuery jobQuery = new JobQuery().setCustomAttributeFilter(customAttributeFilter);
 
     SearchJobsRequest searchJobsRequest =
         new SearchJobsRequest()
@@ -156,15 +142,13 @@ public final class CustomAttributeSample {
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Custom search job results (Long value): %s\n", response);
   }
   // [END custom_attribute_filter_long_value]
 
   // [START custom_attribute_filter_multi_attributes]
 
-  /**
-   * CustomAttributeFilter on multiple CustomAttributes
-   */
+  /** CustomAttributeFilter on multiple CustomAttributes */
   public static void filtersOnMultiCustomAttributes() throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
@@ -174,13 +158,12 @@ public final class CustomAttributeSample {
             // Make sure to hash the sessionID
             .setSessionId("HashedSessionID")
             // Domain of the website where the search is conducted
-            .setDomain(
-                "www.google.com");
+            .setDomain("www.google.com");
 
-    String customAttributeFilter = "(someFieldName1 = \"value1\") "
-        + "AND ((255 <= someFieldName2) OR (someFieldName2 <= 213))";
-    JobQuery jobQuery = new JobQuery()
-        .setCustomAttributeFilter(customAttributeFilter);
+    String customAttributeFilter =
+        "(someFieldName1 = \"value1\") "
+            + "AND ((255 <= someFieldName2) OR (someFieldName2 <= 213))";
+    JobQuery jobQuery = new JobQuery().setCustomAttributeFilter(customAttributeFilter);
 
     SearchJobsRequest searchJobsRequest =
         new SearchJobsRequest()
@@ -194,7 +177,7 @@ public final class CustomAttributeSample {
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Custom search job results (multiple value): %s\n", response);
   }
   // [END custom_attribute_filter_multi_attributes]
 

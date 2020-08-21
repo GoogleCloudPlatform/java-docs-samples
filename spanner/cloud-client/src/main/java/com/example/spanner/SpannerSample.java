@@ -37,6 +37,7 @@ import com.google.cloud.spanner.Instance;
 import com.google.cloud.spanner.InstanceAdminClient;
 import com.google.cloud.spanner.InstanceId;
 import com.google.cloud.spanner.Key;
+import com.google.cloud.spanner.KeyRange;
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Options;
@@ -353,15 +354,21 @@ public class SpannerSample {
   static void deleteExampleData(DatabaseClient dbClient) {
     List<Mutation> mutations = new ArrayList<>();
 
-    // KeySet.all() can be used to delete all the rows in a table.
-    mutations.add(Mutation.delete("Albums", KeySet.all()));
+    // KeySet.Builder can be used to delete a specific set of rows.
+    // Delete the Albums with the key values (2,1) and (2,3).
+    mutations.add(
+        Mutation.delete(
+            "Albums", KeySet.newBuilder().addKey(Key.of(2, 1)).addKey(Key.of(2, 3)).build()));
 
-    // KeySet.singleKey() can be used to delete one row at a time.
-    for (Singer singer : SINGERS) {
-      mutations.add(
-          Mutation.delete(
-              "Singers", KeySet.singleKey(Key.newBuilder().append(singer.singerId).build())));
-    }
+    // KeyRange can be used to delete rows with a key in a specific range.
+    // Delete a range of rows where the column key is >=3 and <5
+    mutations.add(
+        Mutation.delete("Singers", KeySet.range(KeyRange.closedOpen(Key.of(3), Key.of(5)))));
+
+    // KeySet.all() can be used to delete all the rows in a table.
+    // Delete remaining Singers rows, which will also delete the remaining Albums rows since it was
+    // defined with ON DELETE CASCADE.
+    mutations.add(Mutation.delete("Singers", KeySet.all()));
 
     dbClient.write(mutations);
     System.out.printf("Records deleted.\n");
@@ -2106,6 +2113,7 @@ public class SpannerSample {
       // Use client here...
       // [END init_client]
       run(dbClient, dbAdminClient, instanceAdminClient, command, db, backup);
+      // [START init_client]
     } finally {
       spanner.close();
     }

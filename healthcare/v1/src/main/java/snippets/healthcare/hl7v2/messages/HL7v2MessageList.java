@@ -17,21 +17,18 @@
 package snippets.healthcare.hl7v2.messages;
 
 // [START healthcare_list_hl7v2_messages]
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
-import com.google.api.services.healthcare.v1.CloudHealthcare.Projects.Locations.Datasets.Hl7V2Stores.Messages;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1.model.ListMessagesResponse;
 import com.google.api.services.healthcare.v1.model.Message;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 public class HL7v2MessageList {
   private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s";
@@ -48,11 +45,10 @@ public class HL7v2MessageList {
 
     // Results are paginated, so multiple queries may be required.
     String pageToken = null;
-    List<Message> messages = new ArrayList<>();
 
     do {
-      // Create request and configure any parameters.
-      Messages.List request =
+      // Create request and execute.
+      ListMessagesResponse messageResponse =
           client
               .projects()
               .locations()
@@ -60,38 +56,34 @@ public class HL7v2MessageList {
               .hl7V2Stores()
               .messages()
               .list(hl7v2StoreName)
-              .setPageSize(100) // Specify pageSize up to 1000
-              .setPageToken(pageToken);
+              .setPageSize(100)
+              .setPageToken(pageToken)
+              .execute();
 
-      // Execute response and collect results.
-      ListMessagesResponse response = request.execute();
-      Collection<Message> responseMessages = response.getHl7V2Messages();
-      if (responseMessages != null) {
-        messages.addAll(responseMessages);
+      if (messageResponse.getHl7V2Messages() != null) {
+        // Print results.
+        System.out.printf(
+            "Retrieved %s HL7v2 messages: \n", messageResponse.getHl7V2Messages().size());
+        for (Message message : messageResponse.getHl7V2Messages()) {
+          System.out.println(message);
+        }
       }
-
       // Update the page token for the next request.
-      pageToken = response.getNextPageToken();
+      pageToken = messageResponse.getNextPageToken();
     } while (pageToken != null);
-
-    // Print results.
-    System.out.printf("Retrieved %s HL7v2 messages: \n", messages.size());
-    for (Message data : messages) {
-      System.out.println("\t" + data.getData());
-    }
   }
 
   private static CloudHealthcare createClient() throws IOException {
     // Use Application Default Credentials (ADC) to authenticate the requests
     // For more information see https://cloud.google.com/docs/authentication/production
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
 
     // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
     HttpRequestInitializer requestInitializer =
         request -> {
-          credential.initialize(request);
+          new HttpCredentialsAdapter(credential).initialize(request);
           request.setConnectTimeout(60000); // 1 minute connect timeout
           request.setReadTimeout(60000); // 1 minute read timeout
         };

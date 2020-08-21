@@ -26,7 +26,7 @@ import java.util.Base64;
 import java.util.logging.Logger;
 
 public class StackdriverLogging implements BackgroundFunction<PubSubMessage> {
-  private static final Logger LOGGER = Logger.getLogger(StackdriverLogging.class.getName());
+  private static final Logger logger = Logger.getLogger(StackdriverLogging.class.getName());
 
   @Override
   public void accept(PubSubMessage message, Context context) {
@@ -37,7 +37,7 @@ public class StackdriverLogging implements BackgroundFunction<PubSubMessage> {
           message.getData().getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
     }
     String res = String.format("Hello, %s", name);
-    LOGGER.info(res);
+    logger.info(res);
   }
 }
 // [END functions_log_stackdriver]

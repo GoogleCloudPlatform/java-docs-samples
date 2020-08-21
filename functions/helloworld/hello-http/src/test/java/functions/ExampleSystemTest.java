@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -40,7 +38,7 @@ public class ExampleSystemTest {
 
   @Test
   public void helloHttp_shouldRunWithFunctionsFramework() throws IOException, InterruptedException {
-    String functionUrl = BASE_URL + "/helloHttp";
+    String functionUrl = BASE_URL + "/HelloHttp";
 
     java.net.http.HttpRequest getRequest =
         java.net.http.HttpRequest.newBuilder().uri(URI.create(functionUrl)).GET().build();

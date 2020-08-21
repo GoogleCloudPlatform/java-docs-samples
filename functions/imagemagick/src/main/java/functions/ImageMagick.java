@@ -48,7 +48,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
 
   private static Storage storage = StorageOptions.getDefaultInstance().getService();
   private static final String BLURRED_BUCKET_NAME = System.getenv("BLURRED_BUCKET_NAME");
-  private static final Logger LOGGER = Logger.getLogger(ImageMagick.class.getName());
+  private static final Logger logger = Logger.getLogger(ImageMagick.class.getName());
   // [END functions_imagemagick_setup]
 
   // [START functions_imagemagick_analyze]
@@ -57,7 +57,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
   public void accept(GcsEvent gcsEvent, Context context) {
     // Validate parameters
     if (gcsEvent.getBucket() == null || gcsEvent.getName() == null) {
-      LOGGER.severe("Error: Malformed GCS event.");
+      logger.severe("Error: Malformed GCS event.");
       return;
     }
 
@@ -65,16 +65,15 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
 
     // Construct URI to GCS bucket and file.
     String gcsPath = String.format("gs://%s/%s", gcsEvent.getBucket(), gcsEvent.getName());
-    LOGGER.info(String.format("Analyzing %s", gcsEvent.getName()));
+    logger.info(String.format("Analyzing %s", gcsEvent.getName()));
 
     // Construct request.
-    List<AnnotateImageRequest> requests = new ArrayList<>();
     ImageSource imgSource = ImageSource.newBuilder().setImageUri(gcsPath).build();
     Image img = Image.newBuilder().setSource(imgSource).build();
     Feature feature = Feature.newBuilder().setType(Type.SAFE_SEARCH_DETECTION).build();
     AnnotateImageRequest request =
         AnnotateImageRequest.newBuilder().addFeatures(feature).setImage(img).build();
-    requests.add(request);
+    List<AnnotateImageRequest> requests = List.of(request);
 
     // Send request to the Vision API.
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
@@ -82,20 +81,20 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
       List<AnnotateImageResponse> responses = response.getResponsesList();
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
-          LOGGER.info(String.format("Error: %s", res.getError().getMessage()));
+          logger.info(String.format("Error: %s", res.getError().getMessage()));
           return;
         }
         // Get Safe Search Annotations
         SafeSearchAnnotation annotation = res.getSafeSearchAnnotation();
         if (annotation.getAdultValue() == 5 || annotation.getViolenceValue() == 5) {
-          LOGGER.info(String.format("Detected %s as inappropriate.", gcsEvent.getName()));
+          logger.info(String.format("Detected %s as inappropriate.", gcsEvent.getName()));
           blur(blobInfo);
         } else {
-          LOGGER.info(String.format("Detected %s as OK.", gcsEvent.getName()));
+          logger.info(String.format("Detected %s as OK.", gcsEvent.getName()));
         }
       }
     } catch (IOException e) {
-      LOGGER.log(Level.SEVERE, "Error with Vision API: " + e.getMessage(), e);
+      logger.log(Level.SEVERE, "Error with Vision API: " + e.getMessage(), e);
     }
   }
   // [END functions_imagemagick_analyze]
@@ -113,19 +112,14 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
     blob.downloadTo(download);
 
     // Construct the command.
-    List<String> args = new ArrayList<String>();
-    args.add("convert");
-    args.add(download.toString());
-    args.add("-blur");
-    args.add("0x8");
     Path upload = Paths.get("/tmp/", "blurred-" + fileName);
-    args.add(upload.toString());
+    List<String> args = List.of("convert", download.toString(), "-blur", "0x8", upload.toString());
     try {
       ProcessBuilder pb = new ProcessBuilder(args);
       Process process = pb.start();
       process.waitFor();
     } catch (Exception e) {
-      LOGGER.info(String.format("Error: %s", e.getMessage()));
+      logger.info(String.format("Error: %s", e.getMessage()));
     }
 
     // Upload image to blurred bucket.
@@ -135,7 +129,7 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
 
     byte[] blurredFile = Files.readAllBytes(upload);
     storage.create(blurredBlobInfo, blurredFile);
-    LOGGER.info(
+    logger.info(
         String.format("Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, fileName));
 
     // Remove images from fileSystem

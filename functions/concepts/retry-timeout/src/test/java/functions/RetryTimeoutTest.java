@@ -19,11 +19,12 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
+import com.google.gson.Gson;
 import functions.eventpojos.PubSubMessage;
-import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -31,25 +32,27 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 @RunWith(JUnit4.class)
 public class RetryTimeoutTest {
   // Loggers + handlers for various tested classes
   // (Must be declared at class-level, or LoggingHandler won't detect log records!)
-  private static final Logger LOGGER = Logger.getLogger(
+  private static final Logger logger = Logger.getLogger(
       RetryTimeout.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
+  private static final Gson gson = new Gson();
+
   @BeforeClass
   public static void beforeClass() {
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @Before
-  public void beforeTest() throws IOException {
-    Mockito.mockitoSession().initMocks(this);
+  public void beforeTest() {
+    MockitoAnnotations.initMocks(this);
 
     LOG_HANDLER.clear();
   }
@@ -61,9 +64,9 @@ public class RetryTimeoutTest {
   }
 
   @Test
-  public void retryTimeout_handlesRetryMsg() throws IOException {
-    String timestampData = String.format(
-        "{\"timestamp\":\"%s\"}", ZonedDateTime.now(ZoneOffset.UTC).toString());
+  public void retryTimeout_handlesRetryMsg() {
+    String timestampData = gson.toJson(Map.of(
+        "timestamp", ZonedDateTime.now(ZoneOffset.UTC).toString()));
 
     PubSubMessage pubsubMessage = new PubSubMessage();
     pubsubMessage.setData(timestampData);
@@ -75,9 +78,9 @@ public class RetryTimeoutTest {
   }
 
   @Test
-  public void retryTimeout_handlesStopMsg() throws IOException {
+  public void retryTimeout_handlesStopMsg() {
     String timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneOffset.UTC).toString();
-    String timestampData = String.format("{\"timestamp\":\"%s\"}", timestamp);
+    String timestampData = gson.toJson(Map.of("timestamp", timestamp));
 
 
     PubSubMessage pubsubMessage = new PubSubMessage();
@@ -90,7 +93,7 @@ public class RetryTimeoutTest {
   }
 
   @Test
-  public void retryTimeout_handlesEmptyMsg() throws IOException {
+  public void retryTimeout_handlesEmptyMsg() {
     PubSubMessage pubsubMessage = new PubSubMessage();
     pubsubMessage.setData("");
 

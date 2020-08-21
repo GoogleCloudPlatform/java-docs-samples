@@ -24,7 +24,7 @@ import com.google.gson.JsonObject;
 import java.util.logging.Logger;
 
 public class FirebaseFirestore implements RawBackgroundFunction {
-  private static final Logger LOGGER = Logger.getLogger(FirebaseFirestore.class.getName());
+  private static final Logger logger = Logger.getLogger(FirebaseFirestore.class.getName());
 
   // Use GSON (https://github.com/google/gson) to parse JSON content.
   private static final Gson gson = new Gson();
@@ -32,17 +32,17 @@ public class FirebaseFirestore implements RawBackgroundFunction {
   @Override
   public void accept(String json, Context context) {
     JsonObject body = gson.fromJson(json, JsonObject.class);
-    LOGGER.info("Function triggered by event on: " + context.resource());
-    LOGGER.info("Event type: " + context.eventType());
+    logger.info("Function triggered by event on: " + context.resource());
+    logger.info("Event type: " + context.eventType());
 
     if (body != null && body.has("oldValue")) {
-      LOGGER.info("Old value:");
-      LOGGER.info(body.get("oldValue").getAsString());
+      logger.info("Old value:");
+      logger.info(body.get("oldValue").getAsString());
     }
 
     if (body != null && body.has("value")) {
-      LOGGER.info("New value:");
-      LOGGER.info(body.get("value").getAsString());
+      logger.info("New value:");
+      logger.info(body.get("value").getAsString());
     }
   }
 }

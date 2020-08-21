@@ -16,14 +16,12 @@
 
 package com.example.cloud.iot.examples;
 
-import java.util.Arrays;
 import javax.annotation.Nullable;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Option.Builder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
@@ -47,10 +45,10 @@ public class DeviceRegistryExampleOptions {
   long version = 0;
 
   /** Construct an DeviceRegistryExampleOptions class from command line flags. */
-  public static @Nullable DeviceRegistryExampleOptions fromFlags(String...args) {
+  public static @Nullable DeviceRegistryExampleOptions fromFlags(String... args) {
     // Required arguments
     options.addOption(
-            Option.builder()
+        Option.builder()
             .type(String.class)
             .longOpt("command")
             .hasArg()
@@ -255,8 +253,7 @@ public class DeviceRegistryExampleOptions {
       String footer = "\nhttps://cloud.google.com/iot-core";
 
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp(
-              "DeviceRegistryExample", header, options, footer, true);
+      formatter.printHelp("DeviceRegistryExample", header, options, footer, true);
 
       System.err.println(e.getMessage());
       return null;

@@ -32,7 +32,7 @@ import org.junit.Test;
 public class OcrProcessImageTest {
   private static String FUNCTIONS_BUCKET = "nodejs-docs-samples-tests";
 
-  private static final Logger LOGGER = Logger.getLogger(
+  private static final Logger logger = Logger.getLogger(
       OcrProcessImage.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
@@ -42,7 +42,7 @@ public class OcrProcessImageTest {
   @BeforeClass
   public static void setUpClass() throws IOException {
     sampleUnderTest = new OcrProcessImage();
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @After

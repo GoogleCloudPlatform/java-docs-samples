@@ -50,4 +50,4 @@ public class Oauth2AuthorizationCodeServlet extends AbstractAuthorizationCodeSer
     return Utils.getUserId(req);
   }
 }
-// [START gae_java11_oauth2_login]
+// [END gae_java11_oauth2_login]

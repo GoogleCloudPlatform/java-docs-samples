@@ -76,7 +76,7 @@ public class ReadData {
     // Initiates a new pipeline every second
     p.apply(GenerateSequence.from(0).withRate(1, new Duration(1000)))
         .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig, options)));
-    p.run().waitUntilFinish();
+    p.run();
   }
 
   public static class ReadFromTableFn extends AbstractCloudBigtableTableDoFn<Long, Void> {
@@ -239,8 +239,9 @@ public class ReadData {
 
     void setMegabytesPerRow(long megabytesPerRow);
 
+    // See README for more images to use
     @Description("The file containing the pixels to draw.")
-    @Default.String("gs://public-examples-testing-bucket/pearl_earring8h.txt")
+    @Default.String("gs://keyviz-art/mona_lisa_8h.txt")
     String getFilePath();
 
     void setFilePath(String filePath);

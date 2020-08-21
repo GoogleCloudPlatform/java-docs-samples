@@ -16,7 +16,6 @@
   limitations under the License.
 -->
 
-<!-- [START functions_example_pom] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -25,14 +24,12 @@
   <groupId>com.example.cloud.functions</groupId>
   <artifactId>functions-firebase-firestore</artifactId>
 
-  <!-- [END functions_example_pom] -->
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.17</version>
+    <version>1.0.18</version>
   </parent>
   
-  <!-- [START functions_example_pom] -->
   <properties>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
@@ -43,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      <version>1.33.0</version>
+      <version>2.0.0</version>
     </dependency>
 
     <!-- Required for Function primitives -->
@@ -51,9 +48,8 @@
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
       <version>1.0.1</version>
+      <scope>provided</scope>
     </dependency>
-    
-    <!-- [END functions_example_pom] -->
 
     <!-- The following dependencies are only required for testing -->
     <dependency>
@@ -76,26 +72,6 @@
     </dependency>
   </dependencies>
 
-  <!-- [START functions_example_pom] -->
-  
-  <!-- Disable tests during GCF builds (from parent POM) -->
-  <!--   You can remove this profile to run tests -->
-  <!--   when deploying, but we recommend creating -->
-  <!--   a CI/CD pipeline via Cloud Build instead -->
-  <profiles>
-    <profile>
-      <id>skip_tests_on_gcf</id>
-      <activation>
-        <property>
-          <name>env.NEW_BUILD</name>
-        </property>
-      </activation>
-      <properties>
-        <skipTests>true</skipTests>
-      </properties>
-    </profile>
-  </profiles>
-
   <build>
     <plugins>
       <plugin>
@@ -110,7 +86,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.2</version>
+        <version>0.9.4</version>
         <configuration>
           <functionTarget>functions.FirebaseFirestore</functionTarget>
         </configuration>
@@ -120,7 +96,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version 3.0.0-M4 does not load JUnit5 correctly -->
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
-        <version>3.0.0-M4</version>
+        <version>3.0.0-M5</version>
         <configuration>
           <includes>
             <include>**/*Test.java</include>
@@ -158,4 +134,3 @@
     </plugins>
   </build>
 </project>
-<!-- [END functions_example_pom] -->

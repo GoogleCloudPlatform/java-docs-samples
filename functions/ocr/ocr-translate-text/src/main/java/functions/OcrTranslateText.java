@@ -36,10 +36,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
+  private static final Logger logger = Logger.getLogger(OcrTranslateText.class.getName());
+
   // TODO<developer> set these environment variables
-  private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
-  private static final String RESULTS_TOPIC_NAME = System.getenv("RESULT_TOPIC");
-  private static final Logger LOGGER = Logger.getLogger(OcrTranslateText.class.getName());
+  private static final String PROJECT_ID = getenv("GCP_PROJECT");
+  private static final String RESULTS_TOPIC_NAME = getenv("RESULT_TOPIC");
   private static final String LOCATION_NAME = LocationName.of(PROJECT_ID, "global").toString();
 
   private Publisher publisher;
@@ -55,7 +56,7 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
         pubSubMessage.getData().getBytes(StandardCharsets.UTF_8));
 
     String targetLang = ocrMessage.getLang();
-    LOGGER.info("Translating text into " + targetLang);
+    logger.info("Translating text into " + targetLang);
 
     // Translate text to target language
     String text = ocrMessage.getText();
@@ -72,7 +73,7 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
       response = client.translateText(request);
     } catch (IOException e) {
       // Log error (since IOException cannot be thrown by a function)
-      LOGGER.log(Level.SEVERE, "Error translating text: " + e.getMessage(), e);
+      logger.log(Level.SEVERE, "Error translating text: " + e.getMessage(), e);
       return;
     }
     if (response.getTranslationsCount() == 0) {
@@ -80,7 +81,7 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
     }
 
     String translatedText = response.getTranslations(0).getTranslatedText();
-    LOGGER.info("Translated text: " + translatedText);
+    logger.info("Translated text: " + translatedText);
 
     // Send translated text to (subsequent) Pub/Sub topic
     String filename = ocrMessage.getFilename();
@@ -91,11 +92,22 @@ public class OcrTranslateText implements BackgroundFunction<PubSubMessage> {
       PubsubMessage pubsubApiMessage = PubsubMessage.newBuilder().setData(byteStr).build();
 
       publisher.publish(pubsubApiMessage).get();
-      LOGGER.info("Text translated to " + targetLang);
+      logger.info("Text translated to " + targetLang);
     } catch (InterruptedException | ExecutionException e) {
       // Log error (since these exception types cannot be thrown by a function)
-      LOGGER.log(Level.SEVERE, "Error publishing translation save request: " + e.getMessage(), e);
+      logger.log(Level.SEVERE, "Error publishing translation save request: " + e.getMessage(), e);
     }
+  }
+
+  // Avoid ungraceful deployment failures due to unset environment variables.
+  // If you get this warning you should redeploy with the variable set.
+  private static String getenv(String name) {
+    String value = System.getenv(name);
+    if (value == null) {
+      logger.warning("Environment variable " + name + " was not set");
+      value = "MISSING";
+    }
+    return value;
   }
 }
 // [END functions_ocr_translate]

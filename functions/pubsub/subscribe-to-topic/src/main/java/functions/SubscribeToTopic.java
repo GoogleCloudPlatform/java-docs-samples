@@ -26,19 +26,19 @@ import java.util.Base64;
 import java.util.logging.Logger;
 
 public class SubscribeToTopic implements BackgroundFunction<PubSubMessage> {
-  private static final Logger LOGGER = Logger.getLogger(SubscribeToTopic.class.getName());
+  private static final Logger logger = Logger.getLogger(SubscribeToTopic.class.getName());
 
   @Override
   public void accept(PubSubMessage message, Context context) {
     if (message.getData() == null) {
-      LOGGER.info("No message provided");
+      logger.info("No message provided");
       return;
     }
 
     String messageString = new String(
         Base64.getDecoder().decode(message.getData().getBytes(StandardCharsets.UTF_8)),
         StandardCharsets.UTF_8);
-    LOGGER.info(messageString);
+    logger.info(messageString);
   }
 }
 // [END functions_pubsub_subscribe]

@@ -18,6 +18,8 @@ package functions;
 
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
+import com.google.gson.Gson;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -29,13 +31,15 @@ import org.junit.runners.JUnit4;
 public class FirebaseRemoteConfigTest {
   // Loggers + handlers for various tested classes
   // (Must be declared at class-level, or LoggingHandler won't detect log records!)
-  private static final Logger LOGGER = Logger.getLogger(FirebaseRemoteConfig.class.getName());
+  private static final Logger logger = Logger.getLogger(FirebaseRemoteConfig.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
+  private static final Gson gson = new Gson();
+
   @BeforeClass
   public static void beforeClass() {
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @After
@@ -45,7 +49,8 @@ public class FirebaseRemoteConfigTest {
 
   @Test
   public void functionsFirebaseRemoteConfig_shouldShowUpdateType() {
-    new FirebaseRemoteConfig().accept("{\"updateType\": \"foo\"}", null);
+    String jsonStr = gson.toJson(Map.of("updateType", "foo"));
+    new FirebaseRemoteConfig().accept(jsonStr, null);
 
     Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Update type: foo");
@@ -53,7 +58,8 @@ public class FirebaseRemoteConfigTest {
 
   @Test
   public void functionsFirebaseRemoteConfig_shouldShowOrigin() {
-    new FirebaseRemoteConfig().accept("{\"updateOrigin\": \"foo\"}", null);
+    String jsonStr = gson.toJson(Map.of("updateOrigin", "foo"));
+    new FirebaseRemoteConfig().accept(jsonStr, null);
 
     Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
         "Origin: foo");
@@ -61,7 +67,8 @@ public class FirebaseRemoteConfigTest {
 
   @Test
   public void functionsFirebaseRemoteConfig_shouldShowVersion() {
-    new FirebaseRemoteConfig().accept("{\"versionNumber\": 2}", null);
+    String jsonStr = gson.toJson(Map.of("versionNumber", 2));
+    new FirebaseRemoteConfig().accept(jsonStr, null);
 
     Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo("Version: 2");
   }

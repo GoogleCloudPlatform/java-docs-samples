@@ -26,21 +26,17 @@ import com.google.api.services.jobs.v3.model.SearchJobsResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * The sample in this file introduce how to do a email alert search.
- */
+/** The sample in this file introduce how to do a email alert search. */
 public final class EmailAlertSearchSample {
 
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  private static CloudTalentSolution talentSolutionClient = JobServiceQuickstart
-      .getTalentSolutionClient();
+  private static CloudTalentSolution talentSolutionClient =
+      JobServiceQuickstart.getTalentSolutionClient();
   // [START search_for_alerts]
 
-  /**
-   * Search jobs for alert.
-   */
+  /** Search jobs for alert. */
   public static void searchForAlerts(String companyName) throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
     RequestMetadata requestMetadata =
@@ -67,7 +63,7 @@ public final class EmailAlertSearchSample {
             .searchForAlert(DEFAULT_PROJECT_ID, request)
             .execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Search jobs for alert results: %s\n", response);
   }
   // [END search_for_alerts]
 

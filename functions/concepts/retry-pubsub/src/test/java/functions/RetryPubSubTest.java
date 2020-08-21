@@ -19,13 +19,14 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
+import com.google.gson.Gson;
 import functions.eventpojos.PubSubMessage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,13 +36,15 @@ import org.junit.runners.JUnit4;
 public class RetryPubSubTest {
   // Loggers + handlers for various tested classes
   // (Must be declared at class-level, or LoggingHandler won't detect log records!)
-  private static final Logger LOGGER = Logger.getLogger(RetryPubSub.class.getName());
+  private static final Logger logger = Logger.getLogger(RetryPubSub.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
+  private static final Gson gson = new Gson();
+
   @BeforeClass
   public static void beforeClass() {
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @After
@@ -51,7 +54,7 @@ public class RetryPubSubTest {
 
   @Test(expected = RuntimeException.class)
   public void retryPubsub_handlesRetryMsg() throws IOException {
-    String data = "{\"retry\": true}";
+    String data = gson.toJson(Map.of("retry", true));
     String encodedData = new String(
         Base64.getEncoder().encode(data.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 
@@ -63,7 +66,7 @@ public class RetryPubSubTest {
 
   @Test
   public void retryPubsub_handlesStopMsg() throws IOException {
-    String data = "{\"retry\": false}";
+    String data = gson.toJson(Map.of("retry", false));
     String encodedData = new String(
         Base64.getEncoder().encode(data.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 

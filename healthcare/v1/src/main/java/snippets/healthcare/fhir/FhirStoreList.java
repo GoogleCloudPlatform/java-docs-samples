@@ -17,8 +17,6 @@
 package snippets.healthcare.fhir;
 
 // [START healthcare_list_fhir_stores]
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -28,20 +26,21 @@ import com.google.api.services.healthcare.v1.CloudHealthcare.Projects.Locations.
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1.model.FhirStore;
 import com.google.api.services.healthcare.v1.model.ListFhirStoresResponse;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class FhirStoreList {
-  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
+  private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirStoreList(String fhirStoreName) throws IOException {
-    // String fhirStoreName =
-    //    String.format(
-    //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
+  public static void fhirStoreList(String datasetName) throws IOException {
+    // String datasetName =
+    //    String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dataset-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
@@ -57,7 +56,7 @@ public class FhirStoreList {
               .locations()
               .datasets()
               .fhirStores()
-              .list(fhirStoreName)
+              .list(datasetName)
               .setPageSize(100) // Specify pageSize up to 1000
               .setPageToken(pageToken);
 
@@ -79,14 +78,14 @@ public class FhirStoreList {
   private static CloudHealthcare createClient() throws IOException {
     // Use Application Default Credentials (ADC) to authenticate the requests
     // For more information see https://cloud.google.com/docs/authentication/production
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault(HTTP_TRANSPORT, JSON_FACTORY)
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
 
     // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
     HttpRequestInitializer requestInitializer =
         request -> {
-          credential.initialize(request);
+          new HttpCredentialsAdapter(credential).initialize(request);
           request.setConnectTimeout(60000); // 1 minute connect timeout
           request.setReadTimeout(60000); // 1 minute read timeout
         };

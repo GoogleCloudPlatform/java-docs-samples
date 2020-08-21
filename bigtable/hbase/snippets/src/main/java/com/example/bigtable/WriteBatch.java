@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 
 public class WriteBatch {
+
   private static final byte[] COLUMN_FAMILY_NAME = Bytes.toBytes("stats_summary");
 
   public static void writeBatch(String projectId, String instanceId, String tableId) {
@@ -36,9 +37,9 @@ public class WriteBatch {
     // String tableId = "mobile-time-series";
 
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
-      Table table = connection.getTable(TableName.valueOf(Bytes.toBytes(tableId)));
+      final Table table = connection.getTable(TableName.valueOf(Bytes.toBytes(tableId)));
       long timestamp = System.currentTimeMillis();
-      byte[] one = new byte[] {0, 0, 0, 0, 0, 0, 0, 1};
+      byte[] one = new byte[]{0, 0, 0, 0, 0, 0, 0, 1};
 
       List<Put> puts = new ArrayList<Put>();
       puts.add(new Put(Bytes.toBytes("tablet#a0b81f74#20190501")));

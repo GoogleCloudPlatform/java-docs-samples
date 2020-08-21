@@ -30,12 +30,12 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class SubscribeToTopicTest {
-  private static final Logger LOGGER = Logger.getLogger(SubscribeToTopic.class.getName());
+  private static final Logger logger = Logger.getLogger(SubscribeToTopic.class.getName());
   private static final TestLogHandler logHandler = new TestLogHandler();
 
   @BeforeClass
   public static void beforeClass() {
-    LOGGER.addHandler(logHandler);
+    logger.addHandler(logHandler);
   }
 
   @Test

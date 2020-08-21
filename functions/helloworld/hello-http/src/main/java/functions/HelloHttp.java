@@ -25,12 +25,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Logger;
 
 public class HelloHttp implements HttpFunction {
-  private static final Logger LOGGER = Logger.getLogger(HelloHttp.class.getName());
+  private static final Logger logger = Logger.getLogger(HelloHttp.class.getName());
 
   private static final Gson gson = new Gson();
 
@@ -54,11 +54,11 @@ public class HelloHttp implements HttpFunction {
         name = requestJson.get("name").getAsString();
       }
     } catch (JsonParseException e) {
-      LOGGER.severe("Error parsing JSON: " + e.getMessage());
+      logger.severe("Error parsing JSON: " + e.getMessage());
     }
 
-    BufferedWriter writer = response.getWriter();
-    writer.write(String.format("Hello %s!", name));
+    var writer = new PrintWriter(response.getWriter());
+    writer.printf("Hello %s!", name);
   }
 }
 // [END functions_helloworld_http]

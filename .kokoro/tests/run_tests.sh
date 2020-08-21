@@ -73,8 +73,11 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     source "${KOKORO_GFILE_DIR}/automl_secrets.txt"
     # shellcheck source=src/functions_secrets.txt
     source "${KOKORO_GFILE_DIR}/functions_secrets.txt"
+    # spellcheck source=src/firestore_secrets.txt
+    source "${KOKORO_GFILE_DIR}/firestore_secrets.txt"
     # spellcheck source=src/cts_v4_secrets.txt
     source "${KOKORO_GFILE_DIR}/cts_v4_secrets.txt"
+
     # Activate service account
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
@@ -161,7 +164,7 @@ for file in **/pom.xml; do
     fi
 
     # Use maven to execute the tests for the project.
-    mvn -P lint -q --batch-mode --fail-at-end clean verify \
+    mvn --quiet --batch-mode --fail-at-end clean verify \
        -Dfile.encoding="UTF-8" \
        -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
        -Dmaven.test.redirectTestOutputToFile=true \

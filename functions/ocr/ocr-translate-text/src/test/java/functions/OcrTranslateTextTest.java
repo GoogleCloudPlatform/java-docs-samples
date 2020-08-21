@@ -29,9 +29,12 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
 public class OcrTranslateTextTest {
-  private static final Logger LOGGER = Logger.getLogger(
+  private static final Logger logger = Logger.getLogger(
       OcrTranslateText.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
@@ -43,7 +46,7 @@ public class OcrTranslateTextTest {
   @BeforeClass
   public static void setUpClass() throws IOException {
     sampleUnderTest = new OcrTranslateText();
-    LOGGER.addHandler(LOG_HANDLER);
+    logger.addHandler(LOG_HANDLER);
   }
 
   @After

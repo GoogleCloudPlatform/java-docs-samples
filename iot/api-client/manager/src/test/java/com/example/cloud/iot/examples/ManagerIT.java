@@ -16,7 +16,6 @@
 
 package com.example.cloud.iot.examples;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.JsonFactory;
@@ -24,14 +23,13 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudiot.v1.CloudIot;
 import com.google.api.services.cloudiot.v1.CloudIotScopes;
 import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.Topic;
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.io.Writer;
-import java.lang.StringBuilder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -42,7 +40,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
 
 /** Tests for iot "Management" sample. */
 @RunWith(JUnit4.class)
@@ -55,7 +52,7 @@ public class ManagerIT {
   private static final String CLOUD_REGION = "us-central1";
   private static final String ES_PATH = "resources/ec_public.pem";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String REGISTRY_ID = "java-reg" + (System.currentTimeMillis() / 100L);
+  private static final String REGISTRY_ID = "java-reg-" + (System.currentTimeMillis() / 100L);
   private static final String RSA_PATH = "resources/rsa_cert.pem";
   private static final String PKCS_PATH = "resources/rsa_private_pkcs8";
   private static final String TOPIC_ID = "java-pst-" + (System.currentTimeMillis() / 100L);
@@ -82,10 +79,10 @@ public class ManagerIT {
   }
 
   public void clearTestRegistries() throws Exception {
-    GoogleCredential credential =
-        GoogleCredential.getApplicationDefault().createScoped(CloudIotScopes.all());
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    HttpRequestInitializer init = new RetryHttpInitializerWrapper(credential);
+    HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
             .setApplicationName("TEST")
@@ -107,12 +104,22 @@ public class ManagerIT {
         String registryId = r.getId();
         if (registryId.startsWith("java-reg-")) {
           long currSecs = System.currentTimeMillis() / 1000L;
-          long regSecs = Long.parseLong(registryId.substring(
-              "java-reg-".length(), registryId.length()));
+          long regSecs =
+              Long.parseLong(registryId.substring("java-reg-".length(), registryId.length()));
           long diffSecs = currSecs - regSecs;
           if (diffSecs > (60 * 60 * 24 * 7 * 10)) { // tests from last week or older
             System.out.println("Remove Id: " + r.getId());
             DeviceRegistryExample.clearRegistry(CLOUD_REGION, PROJECT_ID, registryId);
+          }
+        }
+        // Also remove the current test registry
+        try {
+          DeviceRegistryExample.clearRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+        } catch (com.google.api.client.googleapis.json.GoogleJsonResponseException gjre) {
+          if (gjre.getStatusCode() == 404) {
+            // Expected, the registry resource is available for creation.
+          } else {
+            throw gjre;
           }
         }
       }

@@ -27,6 +27,6 @@ mvn clean compile assembly:single
 ### Analyze a string for sentiment (using the quickstart sample)
 
 ```
-java -cp target/language-google-cloud-samples-1.0.9-jar-with-dependencies.jar \
+java -jar target/language-google-cloud-samples-1.0.9-jar-with-dependencies.jar \
     com.example.language.QuickstartSample
 ```

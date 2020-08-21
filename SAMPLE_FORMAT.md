@@ -329,7 +329,7 @@ most 4 parameters). In most cases, this is project specific information or the p
 file. For example, project specific information (such as `projectId`) or a `filePath` for an
 external file is acceptable, while a parameter for the type of a file or a specific action is not.
  
-Any declared function parameters should include a no-arg, overloaded function with examples for how
+Any declared function parameters should include a no-arg, main function with examples for how
 the user can initialize the function parameters and call the entrypoint for the snippet. If the
 values for these variables need to be replaced by the user, attempt to make it explicitly clear that
 they are example values only.
@@ -338,7 +338,7 @@ Snippet functions should specify a return type of `void` and avoid returning any
 possible. Instead, show the user how to interact with a returned object programmatically by printing
 some example attributes to the console. 
 ```java
-public static void exampleSnippet() {
+public static void main(main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String filePath = "path/to/image.png";
@@ -372,6 +372,10 @@ try {
   // IllegalArgumentException's are thrown when an invalid argument has been passed to a function. Ok to ignore.
 }
 ```
+
+For example looking at the code in googleapis/java-dialogflow searching for `throws` and `catch`, I see lots of specific enhanced exceptions - our samples should reflect the richness of those. For example, [ApiException](http://googleapis.github.io/gax-java/1.7.1/apidocs/com/google/api/gax/rpc/ApiException.html) has 16 known subclasses that Gax throws. gRPC also throws [`io.grpc.StatusException`](https://grpc.github.io/grpc-java/javadoc/io/grpc/StatusException.html) which has additional info to help developers understand the cause of their errors. There is also [`io.grpc.StatusRuntimeException`](https://grpc.github.io/grpc-java/javadoc/io/grpc/StatusRuntimeException.html) and [`io.grpc.ManagedChannelProvider.ProviderNotFoundException`](https://grpc.github.io/grpc-java/javadoc/io/grpc/ManagedChannelProvider.ProviderNotFoundException.html).  By listing them explicitly, users are clued into looking them up to understand how the API works and what might happen in production. 
+
+
 ### Client Initialization
 The preferred style for initialization is to use a try-with-resources statement with a comment 
 clarifying how to handle multiple requests and clean up instructions. 

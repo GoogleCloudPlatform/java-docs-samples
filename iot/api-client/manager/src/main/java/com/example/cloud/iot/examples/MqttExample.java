@@ -39,20 +39,21 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.joda.time.DateTime;
+
 // [END iot_mqtt_includes]
 
 /**
  * Java sample of connecting to Google Cloud IoT Core vice via MQTT, using JWT.
  *
- * <p>This example connects to Google Cloud IoT Core via MQTT, using a JWT for device
+ * This example connects to Google Cloud IoT Core via MQTT, using a JWT for device
  * authentication. After connecting, by default the device publishes 100 messages to the device's
  * MQTT topic at a rate of one per second, and then exits. To set state instead of publishing
  * telemetry events, set the `-message_type` flag to `state.`
  *
- * <p>To run this example, first create your credentials and register your device as described in
+ * To run this example, first create your credentials and register your device as described in
  * the README located in the sample's parent folder.
  *
- * <p>After you have registered your device and generated your credentials, compile and run with the
+ * After you have registered your device and generated your credentials, compile and run with the
  * corresponding algorithm flag, for example:
  *
  * <pre>
@@ -178,7 +179,7 @@ public class MqttExample {
     long retryIntervalMs = initialConnectIntervalMillis;
     long totalRetryTimeMs = 0;
 
-    while ((totalRetryTimeMs < maxConnectRetryTimeElapsedMillis) && !client.isConnected())  {
+    while ((totalRetryTimeMs < maxConnectRetryTimeElapsedMillis) && !client.isConnected()) {
       try {
         client.connect(connectOptions);
       } catch (MqttException e) {
@@ -359,7 +360,6 @@ public class MqttExample {
       throw new IllegalArgumentException(
           "Invalid algorithm " + options.algorithm + ". Should be one of 'RS256' or 'ES256'.");
     }
-    // [END iot_mqtt_configuremqtt]
 
     // [START iot_mqtt_publish]
     // Create a client, and connect to the Google MQTT bridge.

@@ -33,14 +33,14 @@ public class OcrSaveResult implements BackgroundFunction<PubSubMessage> {
   private static final String RESULT_BUCKET = System.getenv("RESULT_BUCKET");
 
   private static final Storage STORAGE = StorageOptions.getDefaultInstance().getService();
-  private static final Logger LOGGER = Logger.getLogger(OcrSaveResult.class.getName());
+  private static final Logger logger = Logger.getLogger(OcrSaveResult.class.getName());
 
   @Override
   public void accept(PubSubMessage pubSubMessage, Context context) {
     OcrTranslateApiMessage ocrMessage = OcrTranslateApiMessage.fromPubsubData(
         pubSubMessage.getData().getBytes(StandardCharsets.UTF_8));
 
-    LOGGER.info("Received request to save file " +  ocrMessage.getFilename());
+    logger.info("Received request to save file " +  ocrMessage.getFilename());
 
     // [START functions_ocr_rename]
     String newFileName = String.format(
@@ -48,10 +48,10 @@ public class OcrSaveResult implements BackgroundFunction<PubSubMessage> {
     // [END functions_ocr_rename]
 
     // Save file to RESULT_BUCKET with name newFileNaem
-    LOGGER.info(String.format("Saving result to %s in bucket %s", newFileName, RESULT_BUCKET));
+    logger.info(String.format("Saving result to %s in bucket %s", newFileName, RESULT_BUCKET));
     BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(RESULT_BUCKET, newFileName)).build();
     STORAGE.create(blobInfo, ocrMessage.getText().getBytes(StandardCharsets.UTF_8));
-    LOGGER.info("File saved");
+    logger.info("File saved");
   }
 }
 // [END functions_ocr_save]
