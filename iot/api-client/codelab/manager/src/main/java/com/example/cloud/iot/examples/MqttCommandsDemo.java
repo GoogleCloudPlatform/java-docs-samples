@@ -76,7 +76,6 @@ public class MqttCommandsDemo {
 
     return jwtBuilder.signWith(SignatureAlgorithm.RS256, kf.generatePrivate(spec)).compact();
   }
-  // [END iot_mqtt_jwt]
 
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given ES key. */
   private static String createJwtEs(String projectId, String privateKeyFile)
