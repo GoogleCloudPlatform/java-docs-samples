@@ -115,4 +115,4 @@ public class ExampleSystemTest {
     assertThat(logEntry).contains(name);
   }
 }
-// [END functions_pubsub_integration_test]
+// [END functions_pubsub_system_test]
