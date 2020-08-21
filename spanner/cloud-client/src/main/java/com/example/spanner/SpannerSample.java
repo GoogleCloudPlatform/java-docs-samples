@@ -2113,6 +2113,7 @@ public class SpannerSample {
       // Use client here...
       // [END init_client]
       run(dbClient, dbAdminClient, instanceAdminClient, command, db, backup);
+      // [START init_client]
     } finally {
       spanner.close();
     }
