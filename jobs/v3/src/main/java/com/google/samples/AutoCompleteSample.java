@@ -59,7 +59,7 @@ public final class AutoCompleteSample {
 
     System.out.println(results);
   }
-  // [END auto_complete_default]
+  // [END auto_complete_job_title]
 
   /** Auto completes job titles within given companyName. */
   public static void defaultAutoComplete(String companyName, String query) throws IOException {
