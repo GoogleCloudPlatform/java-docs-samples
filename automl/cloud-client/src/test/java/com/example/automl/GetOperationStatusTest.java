@@ -92,6 +92,7 @@ public class GetOperationStatusTest {
   }
 
   @After
+  @Test(timeout = 180000)
   public void tearDown() throws IOException, InterruptedException {
     // delete the cancelled operation
     try (AutoMlClient client = AutoMlClient.create()) {
