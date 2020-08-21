@@ -61,6 +61,7 @@ public final class AutoCompleteSample {
   }
   // [END auto_complete_job_title]
 
+  // [START auto_complete_default]
   /** Auto completes job titles within given companyName. */
   public static void defaultAutoComplete(String companyName, String query) throws IOException {
     Complete complete =
