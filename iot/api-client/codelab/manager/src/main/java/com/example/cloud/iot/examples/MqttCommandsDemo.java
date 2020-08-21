@@ -243,7 +243,6 @@ public class MqttCommandsDemo {
       throw new IllegalArgumentException(
           "Invalid algorithm " + algorithm + ". Should be one of 'RS256' or 'ES256'.");
     }
-    // [END iot_mqtt_configuremqtt]
 
     // [START iot_mqtt_publish]
     // Create a client, and connect to the Google MQTT bridge.
