@@ -14,8 +14,8 @@
  */
 
 package iam.snippets;
-// [START iam_quickstart_v2]
 
+// [START iam_quickstart_v2]
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
