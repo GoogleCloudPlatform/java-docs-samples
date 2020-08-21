@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -100,6 +102,7 @@ public class GetOperationStatusTest {
     try (AutoMlClient client = AutoMlClient.create()) {
       // terminate export data LRO.
       client.getOperationsClient().cancelOperation(operationFullName);
+      client.getOperationsClient().awaitTermination(5, TimeUnit.SECONDS);
     }
 
     System.setOut(null);
