@@ -17,6 +17,7 @@
 package functions;
 
 // [START functions_pubsub_system_test]
+// [START functions_pubsub_integration_test]
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.gax.paging.Page;
@@ -116,3 +117,4 @@ public class ExampleSystemTest {
   }
 }
 // [END functions_pubsub_integration_test]
+// [END functions_pubsub_system_test]
