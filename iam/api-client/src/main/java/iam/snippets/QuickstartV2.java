@@ -14,8 +14,9 @@
  */
 
 package iam.snippets;
-
 // [START iam_quickstart_v2]
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.cloudresourcemanager.CloudResourceManager;
@@ -24,8 +25,6 @@ import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
 import com.google.api.services.cloudresourcemanager.model.Policy;
 import com.google.api.services.cloudresourcemanager.model.SetIamPolicyRequest;
 import com.google.api.services.iam.v1.IamScopes;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
@@ -77,8 +76,8 @@ public class QuickstartV2 {
       throws IOException, GeneralSecurityException {
     // Use the Application Default Credentials strategy for authentication. For more info, see:
     // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
-    GoogleCredentials credential =
-        GoogleCredentials.getApplicationDefault()
+    GoogleCredential credential =
+        GoogleCredential.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
     // Creates the Cloud Resource Manager service object.
@@ -86,7 +85,7 @@ public class QuickstartV2 {
         new CloudResourceManager.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
                 JacksonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
+                credential)
             .setApplicationName("service-accounts")
             .build();
     return service;
@@ -98,22 +97,27 @@ public class QuickstartV2 {
     // Gets the project's policy.
     Policy policy = getPolicy(crmService, projectId);
 
-    // If binding already exists, adds member to binding.
-    List<Binding> bindings = policy.getBindings();
-    for (Binding b : bindings) {
+    // Finds binding in policy, if it exists
+    Binding binding = null;
+    for (Binding b : policy.getBindings()) {
       if (b.getRole().equals(role)) {
-        b.getMembers().add(member);
+        binding = b; 
         break;
       }
     }
 
-    // If binding does not exist, adds binding to policy.
-    Binding binding = new Binding();
-    binding.setRole(role);
-    binding.setMembers(Collections.singletonList(member));
-    policy.getBindings().add(binding);
+    if (binding != null) {
+      // If binding already exists, adds member to binding.
+      binding.getMembers().add(member);
+    } else {
+      // If binding does not exist, adds binding to policy.
+      binding = new Binding();
+      binding.setRole(role);
+      binding.setMembers(Collections.singletonList(member));
+      policy.getBindings().add(binding);
+    }
 
-    // Set the updated policy
+    // Sets the updated policy
     setPolicy(crmService, projectId, policy);
   }
 
@@ -123,9 +127,8 @@ public class QuickstartV2 {
     Policy policy = getPolicy(crmService, projectId);
 
     // Removes the member from the role.
-    List<Binding> bindings = policy.getBindings();
     Binding binding = null;
-    for (Binding b : bindings) {
+    for (Binding b : policy.getBindings()) {
       if (b.getRole().equals(role)) {
         binding = b;
         break;
