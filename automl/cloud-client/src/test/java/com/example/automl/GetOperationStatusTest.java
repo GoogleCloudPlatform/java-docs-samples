@@ -22,14 +22,14 @@ import static junit.framework.TestCase.assertNotNull;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.DatasetName;
-import com.google.cloud.automl.v1.GcsDestination;
+import com.google.cloud.automl.v1.GcsSource;
+import com.google.cloud.automl.v1.InputConfig;
 import com.google.cloud.automl.v1.OperationMetadata;
-import com.google.cloud.automl.v1.OutputConfig;
 import com.google.protobuf.Empty;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.UUID;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
@@ -42,10 +42,7 @@ import org.junit.runners.JUnit4;
 public class GetOperationStatusTest {
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private static final String DATASET_ID = "TRL5394674636845744128";
-  private static final String GCS_OUTPUT_PREFIX =
-      String.format(
-          "gs://translate_data_exported/TEST_OUTPUT_%s/",
-          UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
+  private static final String BUCKET = "gs://translate_data_exported/translation.csv";
 
   private String operationFullName;
   private ByteArrayOutputStream bout;
@@ -74,14 +71,14 @@ public class GetOperationStatusTest {
       // Get the complete path of the dataset.
       DatasetName datasetFullId = DatasetName.of(PROJECT_ID, "us-central1", DATASET_ID);
 
-      GcsDestination gcsSource =
-          GcsDestination.newBuilder().setOutputUriPrefix(GCS_OUTPUT_PREFIX).build();
+      GcsSource gcsSource =
+          GcsSource.newBuilder().addAllInputUris(Arrays.asList(BUCKET.split(","))).build();
 
-      OutputConfig outputConfig = OutputConfig.newBuilder().setGcsDestination(gcsSource).build();
+      InputConfig inputConfig = InputConfig.newBuilder().setGcsSource(gcsSource).build();
 
-      // Start the export job
+      // Start the import LRO job
       OperationFuture<Empty, OperationMetadata> operation =
-          client.exportDataAsync(datasetFullId, outputConfig);
+          client.importDataAsync(datasetFullId, inputConfig);
 
       operationFullName = operation.getName();
     }
@@ -91,25 +88,20 @@ public class GetOperationStatusTest {
     System.setOut(out);
   }
 
-  @After
-  @Test(timeout = 180000)
-  public void tearDown() throws IOException, InterruptedException {
-    // delete the cancelled operation
-    try (AutoMlClient client = AutoMlClient.create()) {
-      // wait for the operation to be cancelled
-      while (!client.getOperationsClient().getOperation(operationFullName).getDone()) {
-        Thread.sleep(1000);
-      }
-      client.getOperationsClient().deleteOperation(operationFullName);
-    }
-
-    System.setOut(null);
-  }
-
   @Test
   public void testGetOperationStatus() throws IOException {
     GetOperationStatus.getOperationStatus(operationFullName);
     String got = bout.toString();
     assertThat(got).contains("Operation details:");
+  }
+
+  @After
+  public void tearDown() throws IOException, InterruptedException {
+    try (AutoMlClient client = AutoMlClient.create()) {
+      // terminate export data LRO.
+      client.getOperationsClient().cancelOperation(operationFullName);
+    }
+
+    System.setOut(null);
   }
 }
