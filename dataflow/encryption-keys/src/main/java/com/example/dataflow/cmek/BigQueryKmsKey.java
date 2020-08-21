@@ -66,7 +66,7 @@ public class BigQueryKmsKey {
     // String kmsKey =
     //    "projects/<project>/locations/<kms-location>/keyRings/<kms-keyring>/cryptoKeys/<kms-key>";
     String kmsKey = options.getKmsKey();
-    
+
     // Create and run an Apache Beam pipeline.
     Pipeline pipeline = Pipeline.create(options);
     pipeline
@@ -82,6 +82,6 @@ public class BigQueryKmsKey {
                 .withWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
                 .withKmsKey(kmsKey));
     pipeline.run().waitUntilFinish();
-    // [START dataflow_cmek]
+    // [END dataflow_cmek]
   }
 }

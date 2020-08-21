@@ -62,7 +62,6 @@ public class Echo {
   public Message echo(Message message, @Named("n") @Nullable Integer n) {
     return doEcho(message, n);
   }
-  // [END echo_method]
 
   /**
    * Echoes the received message back. If n is a non-negative integer, the message is copied that
