@@ -6,7 +6,7 @@
       "name": "inputTopic",
       "label": "Kafka input topic.",
       "helpText": "Apache Kafka topic to read from.",
-      "is_optional": true,
+      "isOptional": true,
       "regexes": [
         "[-_.a-zA-Z0-9]+"
       ]
@@ -23,7 +23,7 @@
       "name": "bootstrapServer",
       "label": "Kafka bootstrap server",
       "helpText": "Apache Kafka bootstrap server in the form 'hostname:port'.",
-      "is_optional": true,
+      "isOptional": true,
       "regexes": [
         "[-_.:a-zA-Z0-9]+"
       ]

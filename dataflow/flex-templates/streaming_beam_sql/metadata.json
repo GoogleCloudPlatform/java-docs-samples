@@ -14,7 +14,7 @@
       "name": "outputTable",
       "label": "BigQuery output table",
       "helpText": "BigQuery table spec to write to, in the form 'project:dataset.table'.",
-      "is_optional": true,
+      "isOptional": true,
       "regexes": [
         "[^:]+:[^.]+[.].+"
       ]
