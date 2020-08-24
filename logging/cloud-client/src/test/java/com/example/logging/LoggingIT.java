@@ -71,7 +71,7 @@ public class LoggingIT {
     assertThat(got).contains("Logged: Hello, world!");
   }
 
-  @Test(timeout = 60000)
+  @Test(timeout = 120000)
   public void testWriteAndListLogs() throws Exception {
     // write a log entry
     LogEntry entry =
