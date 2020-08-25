@@ -76,7 +76,8 @@ public final class LocationSearchSample {
     SearchJobsResponse response =
         talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, request).execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Basic location search results: %s", response);
+
   }
   // [END basic_location_search]
 
@@ -110,7 +111,7 @@ public final class LocationSearchSample {
     SearchJobsResponse response =
         talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, request).execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Keyword location search results: %s", response);
   }
   // [END keyword_location_search]
 
@@ -141,7 +142,7 @@ public final class LocationSearchSample {
     SearchJobsResponse response =
         talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, request).execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("City locations search results: %s", response);
   }
   // [END city_location_search]
 
@@ -177,7 +178,8 @@ public final class LocationSearchSample {
     SearchJobsResponse response =
         talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, request).execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Multiple locations search results: %s", response);
+
   }
   // [END multi_locations_search]
 
@@ -209,7 +211,7 @@ public final class LocationSearchSample {
     SearchJobsResponse response =
         talentSolutionClient.projects().jobs().search(DEFAULT_PROJECT_ID, request).execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Broadening locations search results: %s", response);
   }
   // [END broadening_location_search]
 

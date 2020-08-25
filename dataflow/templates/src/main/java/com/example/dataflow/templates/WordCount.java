@@ -14,9 +14,14 @@
 
 package com.example.dataflow.templates;
 
+import java.util.Arrays;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
-import org.apache.beam.sdk.options.*;
+import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.options.Description;
+import org.apache.beam.sdk.options.PipelineOptions;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.options.ValueProvider;
 import org.apache.beam.sdk.options.ValueProvider.NestedValueProvider;
 import org.apache.beam.sdk.options.ValueProvider.StaticValueProvider;
 import org.apache.beam.sdk.transforms.Count;
@@ -28,8 +33,6 @@ import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.TypeDescriptors;
 
-import java.util.Arrays;
-
 
 public class WordCount {
   // [START word_count_options]
@@ -38,23 +41,27 @@ public class WordCount {
     @Description("Google Cloud Storage file pattern glob of the file(s) to read from")
     @Default.String("gs://apache-beam-samples/shakespeare/kinglear.txt")
     ValueProvider<String> getInputFile();
+
     void setInputFile(ValueProvider<String> value);
 
     // Required argument (made required via the metadata file).
     @Description("Google Cloud Storage bucket to store the outputs")
     ValueProvider<String> getOutputBucket();
+
     void setOutputBucket(ValueProvider<String> value);
 
     // Optional argument.
     @Description("Filter only words containing the specified substring")
     @Default.String("")
     ValueProvider<String> getWithSubstring();
+
     void setWithSubstring(ValueProvider<String> value);
 
     // Template option available only at template creation.
     @Description("Whether to make it case sensitive or not")
     @Default.Boolean(true)
     Boolean getIsCaseSensitive();
+
     void setIsCaseSensitive(Boolean value);
   }
   // [END word_count_options]
@@ -112,7 +119,7 @@ public class WordCount {
             options.getOutputBucket(),
             (String bucket) -> String.format("gs://%s/samples/dataflow/wordcount/outputs", bucket)
         )));
-        // [END nested_value_provider]
+    // [END nested_value_provider]
     pipeline.run();
   }
 }

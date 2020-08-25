@@ -16,8 +16,6 @@
 
 package com.example.vision.snippets;
 
-// [START vision_web_detection]
-
 import com.google.cloud.vision.v1.AnnotateImageRequest;
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
 import com.google.cloud.vision.v1.Feature;

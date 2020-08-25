@@ -78,7 +78,7 @@ public final class HistogramSample {
             .execute();
     Thread.sleep(1000);
 
-    System.out.println(searchJobsResponse);
+    System.out.printf("Histogram search results: %s\n", searchJobsResponse);
   }
   // [END histogram_search]
 

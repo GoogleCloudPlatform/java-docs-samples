@@ -15,8 +15,9 @@
 
 package iam.snippets;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import com.google.api.services.cloudresourcemanager.model.Binding;
 import com.google.api.services.cloudresourcemanager.model.Policy;
@@ -76,7 +77,7 @@ public class AccessTests {
   public void testGetPolicy() {
     GetPolicy.getPolicy(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.contains("Policy retrieved: "));
+    assertThat(got, containsString("Policy retrieved: "));
   }
 
   @Test
@@ -84,37 +85,41 @@ public class AccessTests {
     Policy policy = GetPolicy.getPolicy(PROJECT_ID);
     SetPolicy.setPolicy(policy, PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.contains("Policy set: "));
+    assertThat(got, containsString("Policy retrieved: "));
   }
 
   @Test
   public void testAddBinding() {
     AddBinding.addBinding(policyMock);
     String got = bout.toString();
-    assertTrue(got.contains("Added binding: "));
+    assertThat(got, containsString("Added binding: "));
   }
 
   @Test
   public void testAddMember() {
     AddMember.addMember(policyMock);
     String got = bout.toString();
-    assertTrue(
-        got.contains("Member user:member-to-add@example.com added to role roles/existing-role"));
+    assertThat(
+        got,
+        containsString("Member user:member-to-add@example.com added to role roles/existing-role"));
   }
 
   @Test
   public void testRemoveMember() {
     RemoveMember.removeMember(policyMock);
     String got = bout.toString();
-    assertTrue(
-        got.contains("Member user:member-to-remove@example.com removed from roles/existing-role"));
+    assertThat(
+        got,
+        containsString(
+            "Member user:member-to-remove@example.com removed from roles/existing-role"));
   }
 
   @Test
   public void testTestPermissions() {
     TestPermissions.testPermissions(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(
-        got.contains("Of the permissions listed in the request, the caller has the following: "));
+    assertThat(
+        got,
+        containsString("Of the permissions listed in the request, the caller has the following: "));
   }
 }

@@ -16,7 +16,7 @@
 
 package functions.eventpojos
 
-// [END functions_helloworld_pubsub_message]
+// [START functions_helloworld_pubsub_message]
 class PubSubMessage {
     // Cloud Functions uses GSON to populate this object.
     // Field types/names are specified by Cloud Functions

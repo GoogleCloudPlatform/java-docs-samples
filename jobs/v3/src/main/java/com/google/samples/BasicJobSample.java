@@ -123,7 +123,7 @@ public final class BasicJobSample {
     }
   }
 
-  //
+  // [END update_job]
 
   // [START update_job_with_field_mask]
 

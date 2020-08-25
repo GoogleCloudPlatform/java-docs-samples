@@ -99,8 +99,9 @@ public final class FeaturedJobsSearchSample {
             .jobs()
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
+
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Featured jobs results: %s\n", response);
   }
   // [END search_featured_job]
 

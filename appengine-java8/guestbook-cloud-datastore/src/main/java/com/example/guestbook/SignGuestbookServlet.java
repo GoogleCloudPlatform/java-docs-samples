@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-//[START all]
-
 package com.example.guestbook;
 
 import com.google.appengine.api.users.User;
@@ -26,7 +24,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//[START all]
 public class SignGuestbookServlet extends HttpServlet {
 
   // Process the HTTP POST of the form
@@ -50,4 +47,3 @@ public class SignGuestbookServlet extends HttpServlet {
     resp.sendRedirect("/guestbook.jsp?guestbookName=" + guestbookName);
   }
 }
-//[END all]

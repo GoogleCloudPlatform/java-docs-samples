@@ -34,6 +34,6 @@ class PubSubMessage { // Cloud Functions uses GSON to populate this object.
   def setData(data: String): Unit = {
     this.data = data : String;
   }
-  // [END functions_helloworld_pubsub_message]
+  // [START functions_helloworld_pubsub_message]
 }
 // [END functions_helloworld_pubsub_message]

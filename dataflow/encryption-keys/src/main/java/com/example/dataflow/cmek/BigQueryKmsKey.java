@@ -18,8 +18,8 @@ import com.google.api.services.bigquery.model.TableFieldSchema;
 import com.google.api.services.bigquery.model.TableSchema;
 import java.util.Arrays;
 import org.apache.beam.sdk.Pipeline;
-import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
@@ -29,10 +29,12 @@ public class BigQueryKmsKey {
   public interface BigQueryKmsKeyOptions extends PipelineOptions {
     @Description("Cloud Key Management Service key name")
     String getKmsKey();
+
     void setKmsKey(String value);
 
     @Description("Output BigQuery table spec in the format 'PROJECT:DATASET.TABLE'")
     String getOutputBigQueryTable();
+
     void setOutputBigQueryTable(String value);
   }
 
@@ -41,9 +43,9 @@ public class BigQueryKmsKey {
     // Query from the NASA wildfires public dataset:
     // https://console.cloud.google.com/bigquery?p=bigquery-public-data&d=nasa_wildfire&t=past_week&page=table
     String query =
-        "SELECT latitude,longitude,acq_date,acq_time,bright_ti4,confidence " +
-        "FROM `bigquery-public-data.nasa_wildfire.past_week` " +
-        "LIMIT 10";
+        "SELECT latitude,longitude,acq_date,acq_time,bright_ti4,confidence "
+        + "FROM `bigquery-public-data.nasa_wildfire.past_week` "
+        + "LIMIT 10";
 
     // Schema for the output BigQuery table.
     final TableSchema outputSchema = new TableSchema().setFields(Arrays.asList(
@@ -61,9 +63,10 @@ public class BigQueryKmsKey {
     // String outputBigQueryTable = "<project>:<dataset>.<table>";
     String outputBigQueryTable = options.getOutputBigQueryTable();
 
-    // String kmsKey = "projects/<project>/locations/<kms-location>/keyRings/<kms-keyring>/cryptoKeys/<kms-key>";
+    // String kmsKey =
+    //    "projects/<project>/locations/<kms-location>/keyRings/<kms-keyring>/cryptoKeys/<kms-key>";
     String kmsKey = options.getKmsKey();
-    
+
     // Create and run an Apache Beam pipeline.
     Pipeline pipeline = Pipeline.create(options);
     pipeline
@@ -79,6 +82,6 @@ public class BigQueryKmsKey {
                 .withWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
                 .withKmsKey(kmsKey));
     pipeline.run().waitUntilFinish();
-    // [START dataflow_cmek]
+    // [END dataflow_cmek]
   }
 }
