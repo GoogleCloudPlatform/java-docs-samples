@@ -36,7 +36,7 @@ public class QuickstartV2 {
   public static void main(String[] args) {
     // TODO: Replace with your project ID.
     String projectId = "your-project";
-    // TODO: Replace with the ID of your member in the form "member:user@example.com"
+    // TODO: Replace with the ID of your member in the form "user:member@example.com"
     String member = "your-member";
     // The role to be granted.
     String role = "roles/logging.logWriter";
