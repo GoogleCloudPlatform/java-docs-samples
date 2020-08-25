@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-iam</artifactId>
-      <version>v1-rev20200709-1.30.10</version>
+      <version>v1-rev20200806-1.30.10</version>
     </dependency>
 <!-- [END iam_java_dependency] -->
     <dependency>
@@ -51,7 +51,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudresourcemanager</artifactId>
-      <version>v1-rev20200622-1.30.10</version><!-- v1 required here, v2 is different - DO NOT UPDATE to v2 -->
+      <version>v1-rev20200810-1.30.10</version><!-- v1 required here, v2 is different - DO NOT UPDATE to v2 -->
     </dependency>
     <dependency>
         <groupId>commons-cli</groupId>
@@ -72,6 +72,12 @@
       <version>1.0.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <version>2.2</version>
+      <scope>test</scope>
+      </dependency>
   </dependencies>
 
   <build>

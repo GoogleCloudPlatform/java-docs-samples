@@ -16,6 +16,9 @@
 
 package com.example.cloudrun;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.IdTokenCredentials;
+import com.google.auth.oauth2.IdTokenProvider;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import okhttp3.MediaType;
@@ -42,10 +45,11 @@ public class RenderController {
 
     String url = System.getenv("EDITOR_UPSTREAM_RENDER_URL");
     if (url == null) {
-      logger.error(
+      String msg =
           "No configuration for upstream render service: "
-          + "add EDITOR_UPSTREAM_RENDER_URL environment variable");
-      throw new IllegalStateException();
+              + "add EDITOR_UPSTREAM_RENDER_URL environment variable";
+      logger.error(msg);
+      throw new IllegalStateException(msg);
     }
 
     String html = makeAuthenticatedRequest(url, markdown);
@@ -61,42 +65,37 @@ public class RenderController {
           .build();
 
   // [START run_secure_request]
+  // makeAuthenticatedRequest creates a new HTTP request authenticated by a JSON Web Tokens (JWT)
+  // retrievd from Application Default Credentials.
   public String makeAuthenticatedRequest(String url, String markdown) {
-    Request.Builder serviceRequest = new Request.Builder().url(url);
-
-    // If env var, "EDITOR_UPSTREAM_UNAUTHENTICATED", is not set then use authentication
-    Boolean authenticated = !Boolean.valueOf(System.getenv("EDITOR_UPSTREAM_UNAUTHENTICATED"));
-    if (authenticated) {
-      // Set up metadata server request
-      // https://cloud.google.com/compute/docs/instances/verifying-instance-identity#request_signature
-      String tokenUrl =
-          String.format(
-              "http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=%s",
-              url);
-      Request tokenRequest =
-          new Request.Builder().url(tokenUrl).addHeader("Metadata-Flavor", "Google").get().build();
-      try {
-        // Fetch the token
-        Response tokenResponse = ok.newCall(tokenRequest).execute();
-        String token = tokenResponse.body().string();
-        // Provide the token in the request to the receiving service
-        serviceRequest.addHeader("Authorization", "Bearer " + token);
-      } catch (IOException e) {
-        logger.error("Unable to get authorization token", e);
-      }
-    }
-
-    MediaType contentType = MediaType.get("text/plain; charset=utf-8");
-    okhttp3.RequestBody body = okhttp3.RequestBody.create(markdown, contentType);
-    String response = "";
+    String html = "";
     try {
-      Response serviceResponse = ok.newCall(serviceRequest.post(body).build()).execute();
-      response = serviceResponse.body().string();
+      // Retrieve Application Default Credentials
+      GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
+      IdTokenCredentials tokenCredentials =
+          IdTokenCredentials.newBuilder()
+              .setIdTokenProvider((IdTokenProvider) credentials)
+              .setTargetAudience(url)
+              .build();
+
+      // Create an ID token
+      String token = tokenCredentials.refreshAccessToken().getTokenValue();
+      // Instantiate HTTP request
+      MediaType contentType = MediaType.get("text/plain; charset=utf-8");
+      okhttp3.RequestBody body = okhttp3.RequestBody.create(markdown, contentType);
+      Request request =
+          new Request.Builder()
+              .url(url)
+              .addHeader("Authorization", "Bearer " + token)
+              .post(body)
+              .build();
+
+      Response response = ok.newCall(request).execute();
+      html = response.body().string();
     } catch (IOException e) {
       logger.error("Unable to get rendered data", e);
     }
-
-    return response;
+    return html;
   }
   // [END run_secure_request]
 }

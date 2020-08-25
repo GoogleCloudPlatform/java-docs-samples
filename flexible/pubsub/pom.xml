@@ -37,7 +37,7 @@
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
     <appengine.maven.plugin>2.3.0</appengine.maven.plugin>
-    <jetty>9.4.30.v20200611</jetty>
+    <jetty>9.4.31.v20200723</jetty>
   </properties>
 
 <!-- FIXME(lesv) Temporary fix due to Datastore having the wrong version -->
@@ -64,7 +64,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.108.0</version>
+      <version>1.108.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -76,13 +76,13 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>1.9.81</version>
+      <version>1.9.82</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.9.81</version>
+      <version>1.9.82</version>
       <scope>test</scope>
     </dependency>
 

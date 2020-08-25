@@ -15,8 +15,9 @@
 
 package iam.snippets;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -64,62 +65,62 @@ public class ServiceAccountTests {
   public void stage1_testServiceAccountCreate() {
     CreateServiceAccount.createServiceAccount(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.contains("Created service account: your-service-account-name"));
+    assertThat(got, containsString("Created service account: your-service-account-name"));
   }
 
   @Test
   public void stage1_testServiceAccountsList() {
     ListServiceAccounts.listServiceAccounts(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.matches("(Name:.*\nDisplay Name:.*\nEmail.*\n\n)*"));
+    assertThat(got, containsString("Display Name:"));
   }
 
   @Test
   public void stage2_testServiceAccountRename() {
     RenameServiceAccount.renameServiceAccount(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.contains("Updated display name"));
+    assertThat(got, containsString("Updated display name"));
   }
 
   @Test
   public void stage2_testServiceAccountKeyCreate() {
     CreateServiceAccountKey.createKey(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.contains("Created key:"));
+    assertThat(got, containsString("Created key:"));
   }
 
   @Test
   public void stage2_testServiceAccountKeysList() {
     ListServiceAccountKeys.listKeys(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.contains("Key:"));
+    assertThat(got, containsString("Key:"));
   }
 
   @Test
   public void stage3_testServiceAccountKeyDelete() {
     DeleteServiceAccountKey.deleteKey(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.contains("Deleted key:"));
+    assertThat(got, containsString("Deleted key:"));
   }
 
   @Test
   public void stage4_testDisableServiceAccount() {
     DisableServiceAccount.disableServiceAccount(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.contains("Disabled service account:"));
+    assertThat(got, containsString("Disabled service account:"));
   }
 
   @Test
   public void stage5_testEnableServiceAccount() {
     EnableServiceAccount.enableServiceAccount(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.contains("Enabled service account:"));
+    assertThat(got, containsString("Enabled service account:"));
   }
 
   @Test
   public void stage6_testServiceAccountDelete() {
     DeleteServiceAccount.deleteServiceAccount(PROJECT_ID);
     String got = bout.toString();
-    assertTrue(got.contains("Deleted service account:"));
+    assertThat(got, containsString("Deleted service account:"));
   }
 }

@@ -17,6 +17,7 @@
 package com.example.cloudrun;
 
 // [START run_service_to_service_auth]
+// [START functions_bearer_token]
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
@@ -30,9 +31,9 @@ import java.io.IOException;
 
 public class Authentication {
 
-  // makeGetRequest makes a GET request to the specified Cloud Run endpoint,
-  // serviceUrl (must be a complete URL), by authenticating with an Id token
-  // retrieved from Application Default Credentials.
+  // makeGetRequest makes a GET request to the specified Cloud Run or
+  // Cloud Functions endpoint, serviceUrl (must be a complete URL), by
+  // authenticating with an Id token retrieved from Application Default Credentials.
   public static HttpResponse makeGetRequest(String serviceUrl) throws IOException {
     GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
     if (!(credentials instanceof IdTokenProvider)) {
@@ -51,4 +52,5 @@ public class Authentication {
     return request.execute();
   }
 }
+// [END functions_bearer_token]
 // [END run_service_to_service_auth]

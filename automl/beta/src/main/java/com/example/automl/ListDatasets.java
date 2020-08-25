@@ -20,10 +20,12 @@ package com.example.automl;
 // [START automl_video_object_tracking_list_datasets_beta]
 // [START automl_tables_list_datasets_beta]
 import com.google.cloud.automl.v1beta1.AutoMlClient;
+import com.google.cloud.automl.v1beta1.AutoMlSettings;
 import com.google.cloud.automl.v1beta1.Dataset;
 import com.google.cloud.automl.v1beta1.ListDatasetsRequest;
 import com.google.cloud.automl.v1beta1.LocationName;
 import java.io.IOException;
+import org.threeten.bp.Duration;
 
 class ListDatasets {
 
@@ -38,7 +40,20 @@ class ListDatasets {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (AutoMlClient client = AutoMlClient.create()) {
+    AutoMlSettings.Builder autoMlSettingsBuilder = AutoMlSettings.newBuilder();
+
+    autoMlSettingsBuilder
+        .listDatasetsSettings()
+        .setRetrySettings(
+            autoMlSettingsBuilder
+                .listDatasetsSettings()
+                .getRetrySettings()
+                .toBuilder()
+                .setTotalTimeout(Duration.ofSeconds(15))
+                .build());
+    AutoMlSettings autoMlSettings = autoMlSettingsBuilder.build();
+
+    try (AutoMlClient client = AutoMlClient.create(autoMlSettings)) {
       // A resource that represents Google Cloud Platform location.
       LocationName projectLocation = LocationName.of(projectId, "us-central1");
       ListDatasetsRequest request =

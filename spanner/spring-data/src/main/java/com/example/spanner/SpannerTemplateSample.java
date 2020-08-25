@@ -28,7 +28,6 @@ import org.springframework.stereotype.Component;
  * A quick start code for Spring Data Cloud Spanner. It demonstrates how to use SpannerTemplate to
  * execute DML and SQL queries, save POJOs, and read entities.
  */
-// [START spring_data_spanner_template_sample]
 @Component
 public class SpannerTemplateSample {
 

@@ -45,4 +45,3 @@ public class StatsServlet extends HttpServlet {
     w.printf("%d bytes\n%d entities\n", totalBytes, totalEntities);
   }
 }
-// [END cursors]

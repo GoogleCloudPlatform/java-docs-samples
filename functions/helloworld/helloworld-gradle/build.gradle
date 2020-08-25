@@ -1,0 +1,58 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// [START functions_example_pom_dependencies]
+// [START functions_build_gradle]
+apply plugin: 'java'
+
+repositories {
+  jcenter()
+  mavenCentral()
+}
+configurations {
+    invoker
+}
+
+dependencies {
+  // Every function needs this dependency to get the Functions Framework API.
+  compileOnly 'com.google.cloud.functions:functions-framework-api:1.0.1'
+
+  // To run function locally using Functions Framework's local invoker
+  invoker 'com.google.cloud.functions.invoker:java-function-invoker:1.0.0-alpha-2-rc5'
+  // [END functions_example_pom_dependencies]
+
+  // These dependencies are only used by the tests.
+  testImplementation 'com.google.cloud.functions:functions-framework-api:1.0.1'
+  testImplementation 'junit:junit:4.12'
+  testImplementation 'com.google.truth:truth:1.0.1'
+  testImplementation 'org.mockito:mockito-core:3.4.0'
+
+  // [START functions_example_pom_dependencies]
+}
+
+// Register a "runFunction" task to run the function locally
+tasks.register("runFunction", JavaExec) {
+  main = 'com.google.cloud.functions.invoker.runner.Invoker'
+  classpath(configurations.invoker)
+  inputs.files(configurations.runtimeClasspath, sourceSets.main.output)
+  args(
+    '--target', project.findProperty('runFunction.target') ?: '',
+    '--port', project.findProperty('runFunction.port') ?: 8080
+  )
+  doFirst {
+    args('--classpath', files(configurations.runtimeClasspath, sourceSets.main.output).asPath)
+  }
+}
+// [END functions_build_gradle]
+// [END functions_example_pom_dependencies]
