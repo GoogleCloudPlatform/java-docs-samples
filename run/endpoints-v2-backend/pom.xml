@@ -31,14 +31,9 @@ limitations under the License.
     </parent>
 
     <properties>
-        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
-
-        <endpoints.framework.version>2.2.1</endpoints.framework.version>
-        <endpoints.management.version>1.0.12</endpoints.management.version>
-
         <endpoints.project.id>PROJECT ID</endpoints.project.id>
     </properties>
 
@@ -83,13 +78,23 @@ limitations under the License.
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.4.3</version>
         </dependency>
-
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.3.3.RELEASE</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -125,8 +130,6 @@ limitations under the License.
                     </to>
                 </configuration>
             </plugin>
-            <!-- [END run_events_gcs_jib] -->
-            <!-- [START springdoc openapi generate] -->
             <plugin>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-maven-plugin</artifactId>
@@ -145,27 +148,6 @@ limitations under the License.
                     <outputDir>${project.basedir}</outputDir>
                 </configuration>
             </plugin>
-            <!-- [END springdoc openapi generate] -->
-            <!-- [START convertOpenApiDocs from openapi3 to swagger2] -->
-            <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>openapi-converter-maven-plugin</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <id>integration-test</id>
-                        <goals>
-                            <goal>convertOpenApiDocs</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <inputFileName>openapi-run.yaml</inputFileName>
-                    <inputSpecification>openapi: "3.0.1"</inputSpecification>
-                    <outputSpecification>swagger: "2.0"</outputSpecification>
-                </configuration>
-            </plugin>
-            <!-- [END convertOpenApiDocs from openapi3 to swagger2] -->
         </plugins>
     </build>
 
