@@ -37,7 +37,8 @@ public class ServiceAccountTests {
 
   private ByteArrayOutputStream bout;
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String SERVICE_ACCOUNT = "service-account-" + UUID.randomUUID();
+  private static final String SERVICE_ACCOUNT =
+      "service-account-" + UUID.randomUUID().toString().substring(0, 8);
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
