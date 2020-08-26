@@ -40,7 +40,7 @@ public class DetectLandmarksUrl {
   }
 
   // Detects landmarks in the specified URI.
-  public static void detectLandmarksUrl(String uri) throws IOException {
+  public static void detectLandmarksUrl(String uri) throws IOException, StatusRuntimeException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ImageSource imgSource = ImageSource.newBuilder().setImageUri(uri).build();
