@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.example.vision.snippets.DetectLandmarksGcs;
 import com.example.vision.snippets.DetectLandmarksUrl;
+import io.grpc.StatusRuntimeException;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
@@ -63,11 +64,21 @@ public class DetectLandmarksGcsTest {
 
   @Test
   public void testLandmarksGcs() throws Exception {
-    // Act
-    DetectLandmarksGcs.detectLandmarksGcs("gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg");
+    int tryCount = 0;
+    int maxTries = 3;
 
-    // Assert
-    String got = bout.toString().toLowerCase();
-    assertThat(got).contains("palace of fine arts");
+    while (tryCount < maxTries) {
+      try {
+        // Act
+        DetectLandmarksGcs.detectLandmarksGcs("gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg");
+        // Assert
+        String got = bout.toString().toLowerCase();
+        assertThat(got).contains("palace of fine arts");
+        break;
+      } catch (StatusRuntimeException ex) {
+        System.out.println("Retrying...");
+        tryCount++;
+      }
+    }
   }
 }

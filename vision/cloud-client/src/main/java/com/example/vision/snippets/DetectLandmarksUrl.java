@@ -25,11 +25,14 @@ import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageSource;
 import com.google.cloud.vision.v1.LocationInfo;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DetectLandmarksUrl {
+  private static final String ASSET_BUCKET = "cloud-samples-data";
 
   public static void detectLandmarksUrl() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -58,7 +61,7 @@ public class DetectLandmarksUrl {
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
           System.out.format("Error: %s%n", res.getError().getMessage());
-          return;
+          throw new StatusRuntimeException(Status.UNAVAILABLE);
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs
