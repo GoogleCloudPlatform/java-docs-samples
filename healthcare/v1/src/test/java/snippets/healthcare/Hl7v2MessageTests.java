@@ -138,9 +138,9 @@ public class Hl7v2MessageTests {
   public void test_Hl7v2MessageList() throws Exception {
     // There can be a delay between when a message is created
     // or ingested and when it's viewable when listing messages
-    // in a store, so sleep for 10 seconds while waiting for
+    // in a store, so sleep for 30 seconds while waiting for
     // the message to fully propagate.
-    Thread.sleep(10000);
+    Thread.sleep(30000);
     HL7v2MessageList.hl7v2MessageList(hl7v2StoreName);
 
     String output = bout.toString();
