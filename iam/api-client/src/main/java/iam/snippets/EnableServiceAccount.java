@@ -30,8 +30,9 @@ import java.util.Collections;
 public class EnableServiceAccount {
 
   // Enables a service account.
-  public static void enableServiceAccount(String projectId) {
+  public static void enableServiceAccount(String projectId, String serviceAccountName) {
     // String projectId = "my-project-id";
+    // String serviceAccountName = "my-service-account-name";
 
     Iam service = null;
     try {
@@ -41,24 +42,16 @@ public class EnableServiceAccount {
       return;
     }
 
+    String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
     try {
       EnableServiceAccountRequest request = new EnableServiceAccountRequest();
       service
           .projects()
           .serviceAccounts()
-          .enable(
-              "projects/-/serviceAccounts/"
-                  + "your-service-account-name@"
-                  + projectId
-                  + ".iam.gserviceaccount.com",
-              request)
+          .enable("projects/-/serviceAccounts/" + serviceAccountEmail, request)
           .execute();
 
-      System.out.println(
-          "Enabled service account: "
-              + "your-service-account-name@"
-              + projectId
-              + ".iam.gserviceaccount.com");
+      System.out.println("Enabled service account: " + serviceAccountEmail);
     } catch (IOException e) {
       System.out.println("Unable to enable service account: \n" + e.toString());
     }

@@ -29,8 +29,9 @@ import java.util.Collections;
 public class DeleteServiceAccount {
 
   // Deletes a service account.
-  public static void deleteServiceAccount(String projectId) {
+  public static void deleteServiceAccount(String projectId, String serviceAccountName) {
     // String projectId = "my-project-id";
+    // String serviceAccountName = "my-service-account-name";
 
     Iam service = null;
     try {
@@ -40,22 +41,15 @@ public class DeleteServiceAccount {
       return;
     }
 
+    String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
     try {
       service
           .projects()
           .serviceAccounts()
-          .delete(
-              "projects/-/serviceAccounts/"
-                  + "your-service-account-name@"
-                  + projectId
-                  + ".iam.gserviceaccount.com")
+          .delete("projects/-/serviceAccounts/" + serviceAccountEmail)
           .execute();
 
-      System.out.println(
-          "Deleted service account: "
-              + "your-service-account-name@"
-              + projectId
-              + ".iam.gserviceaccount.com");
+      System.out.println("Deleted service account: " + serviceAccountEmail);
     } catch (IOException e) {
       System.out.println("Unable to delete service account: \n" + e.toString());
     }

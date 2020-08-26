@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -36,6 +37,7 @@ public class ServiceAccountTests {
 
   private ByteArrayOutputStream bout;
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String SERVICE_ACCOUNT = "service-account-" + UUID.randomUUID();
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
@@ -63,9 +65,9 @@ public class ServiceAccountTests {
 
   @Test
   public void stage1_testServiceAccountCreate() {
-    CreateServiceAccount.createServiceAccount(PROJECT_ID);
+    CreateServiceAccount.createServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
-    assertThat(got, containsString("Created service account: your-service-account-name"));
+    assertThat(got, containsString("Created service account: " + SERVICE_ACCOUNT));
   }
 
   @Test
@@ -77,49 +79,49 @@ public class ServiceAccountTests {
 
   @Test
   public void stage2_testServiceAccountRename() {
-    RenameServiceAccount.renameServiceAccount(PROJECT_ID);
+    RenameServiceAccount.renameServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Updated display name"));
   }
 
   @Test
   public void stage2_testServiceAccountKeyCreate() {
-    CreateServiceAccountKey.createKey(PROJECT_ID);
+    CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Created key:"));
   }
 
   @Test
   public void stage2_testServiceAccountKeysList() {
-    ListServiceAccountKeys.listKeys(PROJECT_ID);
+    ListServiceAccountKeys.listKeys(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Key:"));
   }
 
   @Test
   public void stage3_testServiceAccountKeyDelete() {
-    DeleteServiceAccountKey.deleteKey(PROJECT_ID);
+    DeleteServiceAccountKey.deleteKey(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Deleted key:"));
   }
 
   @Test
   public void stage4_testDisableServiceAccount() {
-    DisableServiceAccount.disableServiceAccount(PROJECT_ID);
+    DisableServiceAccount.disableServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Disabled service account:"));
   }
 
   @Test
   public void stage5_testEnableServiceAccount() {
-    EnableServiceAccount.enableServiceAccount(PROJECT_ID);
+    EnableServiceAccount.enableServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Enabled service account:"));
   }
 
   @Test
   public void stage6_testServiceAccountDelete() {
-    DeleteServiceAccount.deleteServiceAccount(PROJECT_ID);
+    DeleteServiceAccount.deleteServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Deleted service account:"));
   }

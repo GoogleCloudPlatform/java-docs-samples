@@ -31,8 +31,9 @@ import java.util.List;
 public class DeleteServiceAccountKey {
 
   // Deletes a service account key.
-  public static void deleteKey(String projectId) {
+  public static void deleteKey(String projectId, String serviceAccountName) {
     // String projectId = "my-project-id";
+    // String serviceAccountName = "my-service-account-name";
 
     Iam service = null;
     try {
@@ -42,6 +43,7 @@ public class DeleteServiceAccountKey {
       return;
     }
 
+    String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
     try {
       // First, get the name of the key using List() or Get()
       List<ServiceAccountKey> keys =
@@ -49,11 +51,7 @@ public class DeleteServiceAccountKey {
               .projects()
               .serviceAccounts()
               .keys()
-              .list(
-                  "projects/-/serviceAccounts/"
-                      + "your-service-account-name@"
-                      + projectId
-                      + ".iam.gserviceaccount.com")
+              .list("projects/-/serviceAccounts/" + serviceAccountEmail)
               .execute()
               .getKeys();
       String keyToDelete = keys.get(0).getName();

@@ -31,8 +31,9 @@ import java.util.Collections;
 public class CreateServiceAccount {
 
   // Creates a service account.
-  public static void createServiceAccount(String projectId) {
+  public static void createServiceAccount(String projectId, String serviceAccountName) {
     // String projectId = "my-project-id";
+    // String serviceAccountName = "my-service-account-name";
 
     Iam service = null;
     try {
@@ -46,7 +47,7 @@ public class CreateServiceAccount {
       ServiceAccount serviceAccount = new ServiceAccount();
       serviceAccount.setDisplayName("your-display-name");
       CreateServiceAccountRequest request = new CreateServiceAccountRequest();
-      request.setAccountId("your-service-account-name");
+      request.setAccountId(serviceAccountName);
       request.setServiceAccount(serviceAccount);
 
       serviceAccount =
