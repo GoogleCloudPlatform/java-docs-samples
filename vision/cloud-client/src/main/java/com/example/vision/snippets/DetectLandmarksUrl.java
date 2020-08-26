@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DetectLandmarksUrl {
-  private static final String ASSET_BUCKET = "cloud-samples-data";
 
   public static void detectLandmarksUrl() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
