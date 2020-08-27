@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// [START run_hello_service]
+// [START run_helloworld_service]
 
 package com.example.helloworld;
 
@@ -42,4 +42,4 @@ public class HelloworldApplication {
     SpringApplication.run(HelloworldApplication.class, args);
   }
 }
-// [END run_hello_service]
+// [END run_helloworld_service]
