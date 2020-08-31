@@ -19,15 +19,20 @@ package com.example.automl;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.api.core.ApiFuture;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
+import com.google.cloud.automl.v1beta1.CreateDatasetRequest;
 import com.google.cloud.automl.v1beta1.Dataset;
 import com.google.cloud.automl.v1beta1.LocationName;
 import com.google.cloud.automl.v1beta1.TextExtractionDatasetMetadata;
+import com.google.longrunning.Operation;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
@@ -60,7 +65,8 @@ public class ImportDatasetTest {
   }
 
   @Before
-  public void setUp() throws IOException {
+  public void setUp()
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Create a fake dataset to be deleted
     // Create a random dataset name with a length of 32 characters (max allowed by AutoML)
     // To prevent name collisions when running tests in multiple java versions at once.
@@ -68,6 +74,7 @@ public class ImportDatasetTest {
     String datasetName =
         String.format("test_%s", UUID.randomUUID().toString().replace("-", "_").substring(0, 26));
     try (AutoMlClient client = AutoMlClient.create()) {
+
       LocationName projectLocation = LocationName.of(PROJECT_ID, "us-central1");
       TextExtractionDatasetMetadata metadata = TextExtractionDatasetMetadata.newBuilder().build();
       Dataset dataset =
@@ -75,7 +82,14 @@ public class ImportDatasetTest {
               .setDisplayName(datasetName)
               .setTextExtractionDatasetMetadata(metadata)
               .build();
-      Dataset createdDataset = client.createDataset(projectLocation, dataset);
+
+      CreateDatasetRequest request =
+          CreateDatasetRequest.newBuilder()
+              .setParent(projectLocation.toString())
+              .setDataset(dataset)
+              .build();
+      ApiFuture<Dataset> future = client.createDatasetCallable().futureCall(request);
+      Dataset createdDataset = future.get(5, TimeUnit.MINUTES);
       String[] names = createdDataset.getName().split("/");
       datasetId = names[names.length - 1];
     }
@@ -95,8 +109,22 @@ public class ImportDatasetTest {
   @Test
   public void testImportDataset()
       throws InterruptedException, ExecutionException, TimeoutException, IOException {
-    ImportDataset.importDataset(PROJECT_ID, datasetId, BUCKET + "/entity-extraction/dataset.csv");
+
+    try {
+      ImportDataset.importDataset(PROJECT_ID, datasetId, BUCKET + "/entity-extraction/dataset.csv");
+    } catch (CancellationException ex) {
+      // capture operation ID from output and wait for that operation to be finished.
+      String fullOperationId = ex.getMessage().split("Operation name: ")[1].trim();
+      AutoMlClient client = AutoMlClient.create();
+      Operation importDatasetLro = client.getOperationsClient().getOperation(fullOperationId);
+      while (!importDatasetLro.getDone()) {
+        Thread.sleep(3000);
+      }
+      // retry the import.
+      ImportDataset.importDataset(PROJECT_ID, datasetId, BUCKET + "/entity-extraction/dataset.csv");
+    }
     String got = bout.toString();
+
     assertThat(got).contains("Dataset imported.");
   }
 }
