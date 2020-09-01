@@ -18,13 +18,10 @@ Apache Spark provides DataSource API for external systems to plug into as data s
 
 FIXME Remove the section once all tasks done.
 
-- [ ] Use a library (scopt) to handle command line options
-- [ ] Use scalatest for testing (and remove `DataFrameDemoLuncher.scala`)
-- [ ] Use a command-line option to switch between command line params and xml for Bigtable configuration
+- [ ] Use command-line opts for Bigtable configuration (remove hbase-site.xml)
 - [ ] Avoid specifying dependencies at runtime (remove `--packages` option for `spark-submit`)
 - [ ] Make sure README.md is up-to-date before claiming the PR done
 - [ ] Use the `families=` parameter of `cbt createtable`
-- [ ] Review [hbase-site.xml](src/main/resources/hbase-site.xml) so it contains the required properties only
 - [ ] Migrate [DataFrameDemo](src/main/scala/example/DataFrameDemo.scala) to a `CopyTable` example which reads the wordcount table generated from the RDD example and writes it to a new table
 - [ ] Create another example that uses files in Google Cloud Storage and saves the content to a Bigtable table
 
