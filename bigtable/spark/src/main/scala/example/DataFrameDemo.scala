@@ -2,16 +2,35 @@ package example
 
 import org.apache.hadoop.hbase.spark.datasources.{HBaseSparkConf, HBaseTableCatalog}
 
-import scala.util.Try
-
 object DataFrameDemo extends App {
 
-  println("Starting up...")
+  val appName = this.getClass.getSimpleName.replace("$", "")
+  println(s"$appName Spark application is starting up...")
 
-  val projectId = args(0)
-  val instanceId = args(1)
-  val table = Try(args(2)).getOrElse("dataframe-demo")
-  val numRecords = Try(args(3).toInt).getOrElse(10)
+  import scopt.OParser
+  val builder = OParser.builder[CmdOpts]
+  val parser = {
+    import builder._
+    OParser.sequence(
+      programName(appName),
+      head(appName, "1.0"),
+      opt[String]('p', "project")
+        .required()
+        .valueName("<projectId>")
+        .action { case (x, c) => c.copy(projectId = x) }
+        .text("projectId is required")
+    )
+  }
+  val cmdOpts = OParser.parse(parser, args, CmdOpts()).getOrElse {
+    sys.exit(-1)
+  }
+
+  println(s"cmdOpts: $cmdOpts")
+
+  val projectId = cmdOpts.projectId
+  val instanceId = cmdOpts.instanceId
+  val table = cmdOpts.table
+  val numRecords = cmdOpts.numRecords
 
   import org.apache.spark.sql.SparkSession
   val spark = SparkSession.builder().master("local[*]").getOrCreate()
@@ -90,3 +109,9 @@ object BigtableRecord {
       i)
   }
 }
+
+case class CmdOpts(
+  projectId: String = "",
+  instanceId: String = "",
+  table: String = "dataframe-demo",
+  numRecords: Int = 10)

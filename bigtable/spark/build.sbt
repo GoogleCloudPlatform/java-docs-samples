@@ -18,6 +18,11 @@ libraryDependencies ++= Seq(
 // https://github.com/scopt/scopt
 libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2"
 
+val scalatestVersion = "3.2.0"
+libraryDependencies += "org.scalactic" %% "scalactic" % scalatestVersion
+libraryDependencies += "org.scalatest" %% "scalatest" % scalatestVersion % "test"
+resolvers += "Artima Maven Repository" at "https://repo.artima.com/releases"
+
 val fixes = Seq(
   // Fix for Exception: Incompatible Jackson 2.9.2
   // Version conflict between HBase and Spark
