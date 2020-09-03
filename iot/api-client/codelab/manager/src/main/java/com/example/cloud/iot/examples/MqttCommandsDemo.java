@@ -76,7 +76,6 @@ public class MqttCommandsDemo {
 
     return jwtBuilder.signWith(SignatureAlgorithm.RS256, kf.generatePrivate(spec)).compact();
   }
-  // [END iot_mqtt_jwt]
 
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given ES key. */
   private static String createJwtEs(String projectId, String privateKeyFile)
@@ -243,7 +242,6 @@ public class MqttCommandsDemo {
       throw new IllegalArgumentException(
           "Invalid algorithm " + algorithm + ". Should be one of 'RS256' or 'ES256'.");
     }
-    // [END iot_mqtt_configuremqtt]
 
     // [START iot_mqtt_publish]
     // Create a client, and connect to the Google MQTT bridge.

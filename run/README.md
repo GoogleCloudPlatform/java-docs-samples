@@ -18,6 +18,11 @@ This directory contains samples for [Google Cloud Run](https://cloud.run). [Clou
 |[Manual Logging](logging-manual/) | Structured logging for Stackdriver | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_log] |
 |[Local Troubleshooting](hello-broken/) | Broken services for local troubleshooting tutorial | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_broken] |
 |[Cloud SQL (MySQL)][mysql]        | Use MySQL with Cloud Run | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_sql] |
+|[Events - Pub/Sub](events-pubsub/) | Events for Cloud Run with Pub/Sub | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_pubsub] |
+|[Anthos Events - Pub/Sub](events-pubsub/anthos.md) | Events for Cloud Run on Anthos with Pub/Sub | - |
+|[Events - GCS](events-gcs/) | Events for Cloud Run with GCS | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_gcs] |
+|[Anthos Events - GCS](events-gcs/anthos.md) | Events for Cloud Run on Anthos with GCS | - |
+|[Authentication](authentication/) | Make an authenticated request by retrieving a JSON Web Tokens (JWT) | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_auth] |
 
 For more Cloud Run samples beyond Java, see the main list in the [Cloud Run Samples repository](https://github.com/GoogleCloudPlatform/cloud-run-samples).
 
@@ -134,6 +139,9 @@ Learn more about [testing your container image locally.][testing]
 [run_button_image]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/image-processing
 [run_button_log]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/logging-manual
 [run_button_pubsub]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/pubsub
+[run_button_events_gcs]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/events-gcs
+[run_button_events_pubsub]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/events-pubsub
+[run_button_auth]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/authentication
 [run_button_sys_package]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/system-package
 [push-pull]: https://cloud.google.com/container-registry/docs/pushing-and-pulling
 [jib]: https://github.com/GoogleContainerTools/jib

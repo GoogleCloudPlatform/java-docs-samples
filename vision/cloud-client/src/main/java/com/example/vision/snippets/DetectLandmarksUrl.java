@@ -25,6 +25,8 @@ import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageSource;
 import com.google.cloud.vision.v1.LocationInfo;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,7 @@ public class DetectLandmarksUrl {
   }
 
   // Detects landmarks in the specified URI.
-  public static void detectLandmarksUrl(String uri) throws IOException {
+  public static void detectLandmarksUrl(String uri) throws IOException, StatusRuntimeException {
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
     ImageSource imgSource = ImageSource.newBuilder().setImageUri(uri).build();
@@ -58,7 +60,7 @@ public class DetectLandmarksUrl {
       for (AnnotateImageResponse res : responses) {
         if (res.hasError()) {
           System.out.format("Error: %s%n", res.getError().getMessage());
-          return;
+          throw new StatusRuntimeException(Status.UNAVAILABLE);
         }
 
         // For full list of available annotations, see http://g.co/cloud/vision/docs

@@ -20,7 +20,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <spring.boot.version>2.3.1.RELEASE</spring.boot.version> <!-- DO NOT UPDATE w/o MANUAL TESTING -->
+    <spring.boot.version>2.3.3.RELEASE</spring.boot.version> <!-- DO NOT UPDATE w/o MANUAL TESTING -->
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
@@ -85,7 +85,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.2.0</version>
+        <version>2.3.0</version>
         <configuration>
           <!-- can be set w/ -DprojectId=myProjectId on command line -->
           <projectId>myProjectId</projectId>
@@ -94,30 +94,9 @@
         </configuration>
       </plugin>
 
-       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>versions-maven-plugin</artifactId>
-        <version>2.7</version>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>display-dependency-updates</goal>
-              <goal>display-plugin-updates</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludes>
-            <exclude>javax.servlet:javax.servlet-api</exclude>
-            <exclude>com.google.guava:guava</exclude> <!-- avoid android version -->
-          </excludes>
-        </configuration>
-      </plugin>
-
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1</version>
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>

@@ -108,7 +108,7 @@ public final class CustomAttributeSample {
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Custom search job results (String value): %s\n", response);
   }
   // [END custom_attribute_filter_string_value]
 
@@ -142,7 +142,7 @@ public final class CustomAttributeSample {
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Custom search job results (Long value): %s\n", response);
   }
   // [END custom_attribute_filter_long_value]
 
@@ -177,7 +177,7 @@ public final class CustomAttributeSample {
             .search(DEFAULT_PROJECT_ID, searchJobsRequest)
             .execute();
     Thread.sleep(1000);
-    System.out.println(response);
+    System.out.printf("Custom search job results (multiple value): %s\n", response);
   }
   // [END custom_attribute_filter_multi_attributes]
 

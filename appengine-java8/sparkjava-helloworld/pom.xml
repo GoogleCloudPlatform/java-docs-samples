@@ -39,7 +39,7 @@ limitations under the License.
     <dependency>
       <groupId>com.sparkjava</groupId>
       <artifactId>spark-core</artifactId>
-      <version>2.9.1</version>
+      <version>2.9.2</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.jetty</groupId>
@@ -91,7 +91,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.80</version>
+      <version>1.9.82</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -106,7 +106,7 @@ limitations under the License.
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1</version>
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
@@ -124,7 +124,7 @@ limitations under the License.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.2.0</version>
+        <version>2.3.0</version>
         <configuration>
           <!-- can be set w/ -DprojectId=myProjectId on command line -->
           <projectId>myProjectId</projectId>

@@ -32,7 +32,7 @@
             <dependency>
                 <groupId>com.google.cloud</groupId>
                 <artifactId>libraries-bom</artifactId>
-                <version>5.7.0</version>
+                <version>10.0.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-jobs</artifactId>
-            <version>v3-rev20200506-1.30.9</version>
+            <version>v3-rev20200604-1.30.10</version>
         </dependency>
         <!-- [END jobs_java_dependencies_beta] -->
 

@@ -101,7 +101,7 @@ to transform the message data, and writes the results to a
 [BigQuery](https://cloud.google.com/bigquery) table.
 
 * [Dockerfile](Dockerfile)
-* [StreamingBeamSQL.java](src/main/java/org/apache/beam/samples/StreamingBeamSQL.java)
+* [StreamingBeamSql.java](src/main/java/org/apache/beam/samples/StreamingBeamSql.java)
 * [pom.xml](pom.xml)
 * [metadata.json](metadata.json)
 
@@ -114,7 +114,7 @@ to transform the message data, and writes the results to a
 >
 > ```sh
 > mvn compile exec:java \
->   -Dexec.mainClass=org.apache.beam.samples.StreamingBeamSQL \
+>   -Dexec.mainClass=org.apache.beam.samples.StreamingBeamSql \
 >   -Dexec.args="\
 >     --project=$PROJECT \
 >     --inputSubscription=$SUBSCRIPTION \
@@ -188,6 +188,12 @@ necessary information to run the job, such as the SDK information and metadata.
 
 The [`metadata.json`](metadata.json) file contains additional information for
 the template such as the "name", "description", and input "parameters" field.
+
+We used
+[regular expressions](https://docs.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference)
+for validation on the input
+[Pub/Sub subscription](https://cloud.google.com/pubsub/docs/admin#resource_names)
+and [BigQuery table](https://cloud.google.com/bigquery/docs/tables#table_naming).
 
 The template file must be created in a Cloud Storage location,
 and is used to run a new Dataflow job.

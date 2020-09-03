@@ -50,6 +50,9 @@ public class FhirResourcePatch {
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "resource-type",
     // "resource-id");
+    // The following data works with a Patient resource and is not intended to work with
+    // other types of FHIR resources. If necessary, supply new values for data that
+    // correspond to the FHIR resource you are patching.
     // String data = "[{\"op\": \"replace\", \"path\": \"/active\", \"value\": false}]";
 
     // Initialize the client, which will be used to interact with the service.

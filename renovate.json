@@ -16,6 +16,10 @@
       "groupName": "AppEngine packages"
     },
     {
+      "packagePatterns": [ "^org.apache.beam:" ],
+      "groupName": "Apache Beam packages"
+    },
+    {
       "packagePatterns": [ "^io.grpc:grpc-" ],
       "groupName": "gRPC packages"
     },

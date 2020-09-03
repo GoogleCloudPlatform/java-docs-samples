@@ -31,8 +31,9 @@ import java.util.List;
 public class ListServiceAccountKeys {
 
   // Lists all keys for a service account.
-  public static void listKeys(String projectId) {
+  public static void listKeys(String projectId, String serviceAccountName) {
     // String projectId = "my-project-id";
+    // String serviceAccountName = "my-service-account-name";
 
     Iam service = null;
     try {
@@ -42,17 +43,14 @@ public class ListServiceAccountKeys {
       return;
     }
 
+    String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
     try {
       List<ServiceAccountKey> keys =
           service
               .projects()
               .serviceAccounts()
               .keys()
-              .list(
-                  "projects/-/serviceAccounts/"
-                      + "your-service-account-name@"
-                      + projectId
-                      + ".iam.gserviceaccount.com")
+              .list("projects/-/serviceAccounts/" + serviceAccountEmail)
               .execute()
               .getKeys();
 

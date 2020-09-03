@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// [START run_helloworld_service]
+
 package com.example.helloworld;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -37,8 +39,7 @@ public class HelloworldApplication {
   }
 
   public static void main(String[] args) {
-    String port = System.getenv().getOrDefault("PORT", "8080");
-    System.setProperty("server.port", port);
     SpringApplication.run(HelloworldApplication.class, args);
   }
 }
+// [END run_helloworld_service]

@@ -30,8 +30,9 @@ import java.util.Collections;
 public class DisableServiceAccount {
 
   // Disables a service account.
-  public static void disableServiceAccount(String projectId) {
+  public static void disableServiceAccount(String projectId, String serviceAccountName) {
     // String projectId = "my-project-id";
+    // String serviceAccountName = "my-service-account-name";
 
     Iam service = null;
     try {
@@ -41,24 +42,16 @@ public class DisableServiceAccount {
       return;
     }
 
+    String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
     try {
       DisableServiceAccountRequest request = new DisableServiceAccountRequest();
       service
           .projects()
           .serviceAccounts()
-          .disable(
-              "projects/-/serviceAccounts/"
-                  + "your-service-account-name@"
-                  + projectId
-                  + ".iam.gserviceaccount.com",
-              request)
+          .disable("projects/-/serviceAccounts/" + serviceAccountEmail, request)
           .execute();
 
-      System.out.println(
-          "Disabled service account: "
-              + "your-service-account-name@"
-              + projectId
-              + ".iam.gserviceaccount.com");
+      System.out.println("Disabled service account: " + serviceAccountEmail);
     } catch (IOException e) {
       System.out.println("Unable to disable service account: \n" + e.toString());
     }

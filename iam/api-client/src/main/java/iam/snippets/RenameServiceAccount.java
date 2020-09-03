@@ -30,8 +30,9 @@ import java.util.Collections;
 public class RenameServiceAccount {
 
   // Changes a service account's display name.
-  public static void renameServiceAccount(String projectId) {
+  public static void renameServiceAccount(String projectId, String serviceAccountName) {
     // String projectId = "my-project-id";
+    // String serviceAccountName = "my-service-account-name";
 
     Iam service = null;
     try {
@@ -41,17 +42,14 @@ public class RenameServiceAccount {
       return;
     }
 
+    String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
     try {
       // First, get a service account using List() or Get()
       ServiceAccount serviceAccount =
           service
               .projects()
               .serviceAccounts()
-              .get(
-                  "projects/-/serviceAccounts/"
-                      + "your-service-account-name@"
-                      + projectId
-                      + ".iam.gserviceaccount.com")
+              .get("projects/-/serviceAccounts/" + serviceAccountEmail)
               .execute();
 
       // Then you can update the display name

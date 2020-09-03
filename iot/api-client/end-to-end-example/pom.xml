@@ -38,7 +38,7 @@
     <dependency>
       <groupId>org.eclipse.paho</groupId>
       <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-      <version>1.2.4</version>
+      <version>1.2.5</version>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
@@ -58,17 +58,17 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudiot</artifactId>
-      <version>v1-rev20200519-1.30.9</version>
+      <version>v1-rev20200804-1.30.10</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.107.0</version>
+      <version>1.108.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>0.20.0</version>
+      <version>0.21.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.30.9</version>
+      <version>1.30.10</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>

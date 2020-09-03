@@ -58,12 +58,12 @@
     <dependency>
       <groupId>com.google.endpoints</groupId>
       <artifactId>endpoints-management-control-appengine-all</artifactId>
-      <version>1.0.12</version>
+      <version>1.0.13</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.80</version>
+      <version>1.9.82</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -85,7 +85,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1</version>
         <configuration>
           <webResources>
             <resources>
@@ -99,7 +99,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.2.0</version>
+        <version>2.3.0</version>
         <configuration>
           <!-- deploy configuration -->
           <projectId>GCLOUD_CONFIG</projectId>
@@ -117,20 +117,6 @@
             <serviceClass>com.example.echo.Echo</serviceClass>
           </serviceClasses>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>versions-maven-plugin</artifactId>
-        <version>2.7</version>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>display-dependency-updates</goal>
-              <goal>display-plugin-updates</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

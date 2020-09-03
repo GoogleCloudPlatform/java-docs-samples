@@ -28,16 +28,9 @@ public class RendererApplication {
   private static final Logger logger = LoggerFactory.getLogger(RendererApplication.class);
 
   public static void main(String[] args) {
-    String port = System.getenv("PORT");
-    if (port == null) {
-      port = "8080";
-      logger.warn("Defaulting to port " + port);
-    }
-    SpringApplication app = new SpringApplication(RendererApplication.class);
-    app.setDefaultProperties(Collections.singletonMap("server.port", port));
-
     // Start the Spring Boot application.
-    app.run(args);
+    SpringApplication.run(RendererApplication.class, args);
+    String port = System.getenv().getOrDefault("PORT", "8080");
     logger.info("Listening on port " + port);
   }
 }

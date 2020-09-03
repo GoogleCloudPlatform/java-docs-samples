@@ -31,8 +31,9 @@ import java.util.Collections;
 public class CreateServiceAccountKey {
 
   // Creates a key for a service account.
-  public static void createKey(String projectId) {
+  public static void createKey(String projectId, String serviceAccountName) {
     // String projectId = "my-project-id";
+    // String serviceAccountName = "my-service-account-name";
 
     Iam service = null;
     try {
@@ -42,6 +43,7 @@ public class CreateServiceAccountKey {
       return;
     }
 
+    String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
     try {
       ServiceAccountKey key =
           service
@@ -49,9 +51,7 @@ public class CreateServiceAccountKey {
               .serviceAccounts()
               .keys()
               .create(
-                  "projects/-/serviceAccounts/your-service-account-name@"
-                      + projectId
-                      + ".iam.gserviceaccount.com",
+                  "projects/-/serviceAccounts/" + serviceAccountEmail,
                   new CreateServiceAccountKeyRequest())
               .execute();
 

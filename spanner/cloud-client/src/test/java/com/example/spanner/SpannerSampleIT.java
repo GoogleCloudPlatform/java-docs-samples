@@ -296,6 +296,7 @@ public class SpannerSampleIT {
     // Try the restore operation in a retry loop, as there is a limit on the number of restore
     // operations that is allowed to execute simultaneously, and we should retry if we hit this
     // limit.
+    boolean restored = false;
     int restoreAttempts = 0;
     while (true) {
       try {
@@ -306,6 +307,7 @@ public class SpannerSampleIT {
                 + "] from ["
                 + backupId.getName()
                 + "]");
+        restored = true;
         break;
       } catch (SpannerException e) {
         if (e.getErrorCode() == ErrorCode.FAILED_PRECONDITION
@@ -325,14 +327,16 @@ public class SpannerSampleIT {
       }
     }
 
-    out = runSample("listdatabaseoperations");
-    assertThat(out).contains(
-        String.format(
-            "Database %s restored from backup",
-            DatabaseId.of(
-                dbId.getInstanceId(),
-                SpannerSample.createRestoredSampleDbId(dbId))
-            .getName()));
+    if (restored) {
+      out = runSample("listdatabaseoperations");
+      assertThat(out).contains(
+          String.format(
+              "Database %s restored from backup",
+              DatabaseId.of(
+                  dbId.getInstanceId(),
+                  SpannerSample.createRestoredSampleDbId(dbId))
+              .getName()));
+    }
 
     out = runSample("updatebackup");
     assertThat(out).contains(

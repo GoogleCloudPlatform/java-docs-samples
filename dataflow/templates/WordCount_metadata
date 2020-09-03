@@ -18,21 +18,21 @@
     {
       "name": "inputFile",
       "label": "Input GCS File Pattern",
-      "help_text: "Google Cloud Storage file pattern glob of the file(s) to read from.",
+      "helpText: "Google Cloud Storage file pattern glob of the file(s) to read from.",
       "regexes": ["^gs:\/\/[^\n\r]+$"],
-      "is_optional": true
+      "isOptional": true
     },
     {
       "name": "outputBucket",
       "label": "Output GCS Bucket",
-      "help_text: "Google Cloud Storage bucket to store the outputs.",
+      "helpText: "Google Cloud Storage bucket to store the outputs.",
       "regexes": ["^[a-z0-9][-_.a-z0-9]+[a-z0-9]$"]
     },
     {
       "name": "withSubstring",
       "label": "With Substring",
-      "help_text: "Filter only words containing the specified substring.",
-      "is_optional": true
+      "helpText: "Filter only words containing the specified substring.",
+      "isOptional": true
     },
   ]
 }

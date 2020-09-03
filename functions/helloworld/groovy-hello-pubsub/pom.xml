@@ -34,7 +34,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <groovy.version>3.0.3</groovy.version>
+    <groovy.version>3.0.5</groovy.version>
   </properties>
 
   <dependencies>
@@ -43,7 +43,7 @@
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
       <scope>provided</scope>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
     </dependency>
 
     <!-- Required for groovy samples -->
@@ -75,24 +75,6 @@
     </dependency>
   </dependencies>
 
-  <!-- Disable tests during GCF builds (from parent POM) -->
-  <!--   You can remove this profile to run tests -->
-  <!--   when deploying, but we recommend creating -->
-  <!--   a CI/CD pipeline via Cloud Build instead -->
-  <profiles>
-    <profile>
-      <id>skip_tests_on_gcf</id>
-      <activation>
-        <property>
-          <name>env.NEW_BUILD</name>
-        </property>
-      </activation>
-      <properties>
-        <skipTests>true</skipTests>
-      </properties>
-    </profile>
-  </profiles>
-
   <build>
     <plugins>
       <plugin>
@@ -107,7 +89,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.3</version>
+        <version>0.9.4</version>
         <configuration>
           <functionTarget>functions.GroovyHelloPubSub</functionTarget>
         </configuration>
@@ -115,7 +97,7 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.9.0</version>
+        <version>1.10.0</version>
         <executions>
           <execution>
             <id>groovy-compile</id>
@@ -140,7 +122,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M4</version>
+        <version>3.0.0-M5</version>
         <configuration>
           <skipTests>${skipTests}</skipTests>
           <reportNameSuffix>sponge_log</reportNameSuffix>

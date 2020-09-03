@@ -67,7 +67,7 @@
         <configuration>
           <classesDirectory>${project.build.outputDirectory}</classesDirectory>
           <forkCount>3</forkCount>
-          <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+          <argLine>-Xmx1024m</argLine>
         </configuration>
         <executions>
           <execution>

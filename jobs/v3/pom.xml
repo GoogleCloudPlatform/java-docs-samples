@@ -32,12 +32,12 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-jobs</artifactId>
-      <version>v3-rev20200506-1.30.9</version>
+      <version>v3-rev20200604-1.30.10</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>0.20.0</version>
+      <version>0.21.1</version>
     </dependency>
     <!-- [END dependencies] -->
 
