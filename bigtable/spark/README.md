@@ -58,8 +58,10 @@ gcloud beta emulators bigtable start
 Set the following environment variables for the sample applications to use:
 
 ```
+SPARK_HOME=your-spark-home
 BIGTABLE_SPARK_PROJECT_ID=your-project-id
 BIGTABLE_SPARK_INSTANCE_ID=your-bigtable-instance
+BIGTABLE_SPARK_TABLE=spark-demo
 ```
 
 Initialize the environment to point to the Bigtable Emulator.
@@ -91,20 +93,17 @@ $SPARK_HOME/bin/spark-submit \
 The following `spark-submit` uses [example.DataFrameDemo](src/main/scala/example/DataFrameDemo.scala).
 
 ```
-BIGTABLE_SPARK_TABLE=wordcount-dataframe
-BIGTABLE_SPARK_NUMBER_OF_ROWS=5
-
 $SPARK_HOME/bin/spark-submit \
   --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
   --class example.DataFrameDemo \
   target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar \
   $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID \
-  $BIGTABLE_SPARK_TABLE $BIGTABLE_SPARK_NUMBER_OF_ROWS
+  $BIGTABLE_SPARK_TABLE
 ```
 
 ### Verify
 
-Use the following `cbt ls` command to list the tables.
+Use `cbt ls` command to list the tables (that should include `$BIGTABLE_SPARK_TABLE`).
 
 ```
 cbt \
@@ -113,7 +112,7 @@ cbt \
   ls
 ```
 
-Use the following `cbt read` command to read the rows.
+Use `cbt read` command to read the rows from the table `$BIGTABLE_SPARK_TABLE`.
 
 ```
 cbt \

@@ -7,17 +7,25 @@ object DataFrameDemo extends App {
   val appName = this.getClass.getSimpleName.replace("$", "")
   println(s"$appName Spark application is starting up...")
 
-  val cmdOpts = CmdOpts.parse(appName)(args).getOrElse {
-    // command-line arguments are incorrect
-    // scopt prints out help
-    // so we simply...
-    sys.exit(-1)
+  import scala.util.Try
+  val projectId = Try(args(0)).getOrElse {
+    throw new IllegalStateException("Missing command-line argument: projectId")
   }
-
-  val projectId = cmdOpts.projectId
-  val instanceId = cmdOpts.instanceId
-  val table = cmdOpts.table
-  val numRecords = cmdOpts.numRecords
+  val instanceId = Try(args(1)).getOrElse {
+    throw new IllegalStateException("Missing command-line argument: instanceId")
+  }
+  val table = Try(args(2)).getOrElse {
+    throw new IllegalStateException("Missing command-line argument: table name")
+  }
+  val numRecords = 10
+  println(
+    s"""
+      |Parameters:
+      |projectId: $projectId
+      |instanceId: $instanceId
+      |table: $table
+      |numRecords: $numRecords
+      |""".stripMargin)
 
   import org.apache.spark.sql.SparkSession
   val spark = SparkSession.builder().master("local[*]").getOrCreate()
@@ -94,48 +102,5 @@ object BigtableRecord {
       i % 2 == 0,
       i.toDouble,
       i)
-  }
-}
-
-case class CmdOpts(
-  projectId: String = "",
-  instanceId: String = "",
-  table: String = CmdOpts.DEFAULT_TABLE_NAME,
-  numRecords: Int = CmdOpts.DEFAULT_NUMBER_OF_RECORDS)
-object CmdOpts {
-  val DEFAULT_TABLE_NAME = "dataframe-demo"
-  val DEFAULT_NUMBER_OF_RECORDS = 10
-
-  def parse(appName: String)(args: Array[String]): Option[CmdOpts] = {
-    import scopt.OParser
-    val builder = OParser.builder[CmdOpts]
-    val parser = {
-      import builder._
-      OParser.sequence(
-        programName(appName),
-        head(appName, "1.0"),
-        opt[String]('p', "project")
-          .required()
-          .valueName("<projectId>")
-          .action { case (x, c) => c.copy(projectId = x) }
-          .text("projectId is required"),
-        opt[String]('i', "instance")
-          .required()
-          .valueName("<instanceId>")
-          .action { case (x, c) => c.copy(instanceId = x) }
-          .text("instanceId is required"),
-        opt[String]('t', "table")
-          .optional()
-          .valueName("<tableName>")
-          .action { case (x, c) => c.copy(table = x) }
-          .text(s"Name of the table (default: ${CmdOpts.DEFAULT_TABLE_NAME})"),
-        opt[Int]('n', "numRecords")
-          .optional()
-          .valueName("<numRecords>")
-          .action { case (x, c) => c.copy(numRecords = x) }
-          .text(s"Number of records (default: ${CmdOpts.DEFAULT_NUMBER_OF_RECORDS})")
-      )
-    }
-    OParser.parse(parser, args, CmdOpts())
   }
 }
