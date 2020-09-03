@@ -220,12 +220,12 @@ should be made to minimize necessary dependencies without sacrificing the idioma
     <version>SPECIFY_LATEST_VERSION</version>
   </parent>
 ```
-Some frameworks (such as Spring) require the `parent` atom to be used, if this applies to you,
+Some frameworks such as Spring require the `parent` atom to be used. If this applies to you,
 contact the maintainers for guidance. 
 
 When adding a dependency to a GCP client library, the 
 [libraries-bom](https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM)
-should ideally be used instead of explicitly declaring the client version. See the below example:
+should be used instead of explicitly declaring the client version. See the below example:
 ```xml
   <dependencyManagement>
     <dependencies>
