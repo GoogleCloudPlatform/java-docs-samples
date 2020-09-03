@@ -7,29 +7,28 @@ object DataFrameDemo extends App {
   val appName = this.getClass.getSimpleName.replace("$", "")
   println(s"$appName Spark application is starting up...")
 
-  import scala.util.Try
-  val projectId = Try(args(0)).getOrElse {
-    throw new IllegalStateException("Missing command-line argument: projectId")
-  }
-  val instanceId = Try(args(1)).getOrElse {
-    throw new IllegalStateException("Missing command-line argument: instanceId")
-  }
-  val table = Try(args(2)).getOrElse {
-    throw new IllegalStateException("Missing command-line argument: table name")
-  }
-  val numRecords = 10
+  val (projectId, instanceId, table) = parse(args)
   println(
     s"""
       |Parameters:
       |projectId: $projectId
       |instanceId: $instanceId
       |table: $table
-      |numRecords: $numRecords
       |""".stripMargin)
 
   import org.apache.spark.sql.SparkSession
-  val spark = SparkSession.builder().master("local[*]").getOrCreate()
+  val spark = SparkSession.builder().getOrCreate()
   println(s"Spark version: ${spark.version}")
+
+  import com.google.cloud.bigtable.hbase.BigtableConfiguration
+  val conf = BigtableConfiguration.configure(projectId, instanceId)
+  import org.apache.hadoop.hbase.spark.HBaseContext
+  // Creating HBaseContext explicitly to use the conf above
+  // That's how to use command-line arguments for projectId and instanceId
+  // Otherwise, we'd have to use hbase-site.xml
+  // See HBaseSparkConf.USE_HBASECONTEXT option in hbase-connectors project
+  // https://github.com/apache/hbase-connectors/blob/rel/1.0.0/spark/hbase-spark/src/main/scala/org/apache/hadoop/hbase/spark/datasources/HBaseSparkConf.scala#L44
+  new HBaseContext(spark.sparkContext, conf)
 
   val catalog =
     s"""{
@@ -43,30 +42,16 @@ object DataFrameDemo extends App {
        |}
        |}""".stripMargin
 
-  // FIXME Explain the options
-  // FIXME Where to find more options supported? Any docs?
+  // The options are described in the sources themselves only
+  // https://github.com/apache/hbase-connectors/blob/rel/1.0.0/spark/hbase-spark/src/main/scala/org/apache/hadoop/hbase/spark/datasources/HBaseSparkConf.scala
   val opts = Map(
     HBaseTableCatalog.tableCatalog -> catalog,
-    // FIXME Why is this 5?
-    HBaseTableCatalog.newTable -> "5",
-    HBaseSparkConf.USE_HBASECONTEXT -> "false") // accepts xml configs only
+    // If defined and larger than 3, a new table will be created with the nubmer of region specified.
+    // https://github.com/apache/hbase-connectors/blob/rel/1.0.0/spark/hbase-spark/src/main/scala/org/apache/hadoop/hbase/spark/datasources/HBaseTableCatalog.scala#L208-L209
+    // 5 is simply larger than 3 and creates BIGTABLE_SPARK_TABLE unless available
+    HBaseTableCatalog.newTable -> "5")
 
-  // TODO Use a command-line option to switch between command line params and xml
-
-  // Hack to specify HBase properties on command line
-  // BEGIN
-  // import org.apache.hadoop.hbase.HBaseConfiguration
-  // val conf = HBaseConfiguration.create()
-  // conf.set("google.bigtable.project.id", projectId)
-  // conf.set("google.bigtable.instance.id", instanceId)
-  import com.google.cloud.bigtable.hbase.BigtableConfiguration
-  val conf = BigtableConfiguration.configure(projectId, instanceId)
-
-  import org.apache.hadoop.hbase.spark.HBaseContext
-  val hbaseContext = new HBaseContext(spark.sparkContext, conf)
-  val opts_nouse = opts.filterNot { case (k, _) => k == HBaseSparkConf.USE_HBASECONTEXT }
-  // END
-
+  val numRecords = 10
   println(s"Writing $numRecords records to $table")
   import spark.implicits._
   (0 until numRecords)
@@ -74,7 +59,7 @@ object DataFrameDemo extends App {
     .toDF
     .write
     .format("org.apache.hadoop.hbase.spark")
-    .options(opts_nouse)
+    .options(opts)
     .save
   println(s"Writing to $table...DONE")
 
@@ -82,11 +67,24 @@ object DataFrameDemo extends App {
   spark
     .read
     .format("org.apache.hadoop.hbase.spark")
-    .options(opts_nouse)
+    .options(opts)
     .load
     .show(truncate = false)
   println(s"Loading $table...DONE")
 
+  def parse(args: Array[String]): (String, String, String) = {
+    import scala.util.Try
+    val projectId = Try(args(0)).getOrElse {
+      throw new IllegalStateException("Missing command-line argument: BIGTABLE_SPARK_PROJECT_ID")
+    }
+    val instanceId = Try(args(1)).getOrElse {
+      throw new IllegalStateException("Missing command-line argument: BIGTABLE_SPARK_INSTANCE_ID")
+    }
+    val table = Try(args(2)).getOrElse {
+      throw new IllegalStateException("Missing command-line argument: BIGTABLE_SPARK_TABLE")
+    }
+    (projectId, instanceId, table)
+  }
 }
 
 case class BigtableRecord(
