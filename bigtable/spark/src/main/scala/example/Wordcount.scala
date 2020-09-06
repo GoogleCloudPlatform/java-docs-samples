@@ -1,7 +1,6 @@
 package example
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration
-import org.apache.hadoop.hbase.TableName
 import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.TableOutputFormat
@@ -28,33 +27,20 @@ object Wordcount extends App {
   job.setOutputFormatClass(classOf[TableOutputFormat[ImmutableBytesWritable]])
   hConf = job.getConfiguration
 
-  // FIXME Command-line option to create the table or not?
-  var admin: Admin = _
-  try {
-    admin = ConnectionFactory.createConnection(hConf).getAdmin
-    val td = TableDescriptorBuilder
-      .newBuilder(TableName.valueOf(table))
-      .setColumnFamily(ColumnFamilyDescriptorBuilder.of(ColumnFamily))
-      .build()
-    if (admin.tableExists(TableName.valueOf(table))) {
-      println(s">>> Table $table exists")
-    } else {
-      println(s">>> Table $table does not exist. Creating it.")
-      admin.createTable(td)
-    }
-  } finally {
-    admin.close()
-  }
-
   import org.apache.spark.SparkConf
-  val sparkConf = new SparkConf()
+  val config = new SparkConf()
 
-  // FIXME Is this workaround still required?
-  // Workaround for a bug in TableOutputFormat in HBase 1.6.0
+  // Workaround for a bug in TableOutputFormat
   // See https://stackoverflow.com/a/51959451/1305344
-  sparkConf.set("spark.hadoop.validateOutputSpecs", "false")
+  // Without the property:
+  // org.apache.hadoop.mapred.InvalidJobConfException: Output directory not set.
+  // at org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.checkOutputSpecs(FileOutputFormat.java:138)
+  // at org.apache.spark.internal.io.HadoopMapReduceWriteConfigUtil.assertConf(SparkHadoopWriter.scala:393)
+  // at org.apache.spark.internal.io.SparkHadoopWriter$.write(SparkHadoopWriter.scala:71)
+  // at org.apache.spark.rdd.PairRDDFunctions$$anonfun$saveAsNewAPIHadoopDataset$1.apply$mcV$sp(PairRDDFunctions.scala:1083)
+  config.set("spark.hadoop.validateOutputSpecs", "false")
 
-  val sc = new SparkContext(sparkConf)
+  val sc = SparkContext.getOrCreate(config)
   val wordCounts = sc
     .textFile(file)
     .flatMap(_.split("\\W+"))

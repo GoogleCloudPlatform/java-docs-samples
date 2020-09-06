@@ -18,10 +18,8 @@ Apache Spark provides DataSource API for external systems to plug into as data s
 
 FIXME Remove the section once all tasks done.
 
-- [ ] Use command-line opts for Bigtable configuration (remove hbase-site.xml)
 - [ ] Avoid specifying dependencies at runtime (remove `--packages` option for `spark-submit`)
 - [ ] Make sure README.md is up-to-date before claiming the PR done
-- [ ] Use the `families=` parameter of `cbt createtable`
 - [ ] Migrate [DataFrameDemo](src/main/scala/example/DataFrameDemo.scala) to a `CopyTable` example which reads the wordcount table generated from the RDD example and writes it to a new table
 - [ ] Create another example that uses files in Google Cloud Storage and saves the content to a Bigtable table
 
@@ -47,6 +45,12 @@ sbt clean assembly
 
 The above command should build `target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar` file.
 
+Set the following environment variable to reference the assembly file.
+
+```
+BIGTABLE_SPARK_ASSEMBLY_JAR=target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar
+```
+
 ## Run Examples with Bigtable Emulator
 
 Start the Bigtable Emulator.
@@ -61,7 +65,9 @@ Set the following environment variables for the sample applications to use:
 SPARK_HOME=your-spark-home
 BIGTABLE_SPARK_PROJECT_ID=your-project-id
 BIGTABLE_SPARK_INSTANCE_ID=your-bigtable-instance
-BIGTABLE_SPARK_TABLE=spark-demo
+
+BIGTABLE_SPARK_WORDCOUNT_TABLE=wordcount-rdd
+BIGTABLE_SPARK_WORDCOUNT_FILE=README.md
 ```
 
 Initialize the environment to point to the Bigtable Emulator.
@@ -72,20 +78,38 @@ $(gcloud beta emulators bigtable env-init)
 
 Use one of the Spark sample applications as the `--class` parameter.
 
+### Create Table
+
+Create a table using `cbt createtable` command.
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  createtable $BIGTABLE_SPARK_WORDCOUNT_TABLE \
+  "families=cf"
+```
+
+List tables using `cbt ls` command.
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  ls
+```
+
 ### Wordcount
 
 The following `spark-submit` uses [example.Wordcount](src/main/scala/example/Wordcount.scala).
 
 ```
-BIGTABLE_SPARK_TABLE=wordcount-rdd
-BIGTABLE_SPARK_FILE_NAME=README.md
-
 $SPARK_HOME/bin/spark-submit \
   --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
   --class example.Wordcount \
-  target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar \
+  $BIGTABLE_SPARK_ASSEMBLY_JAR \
   $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID \
-  $BIGTABLE_SPARK_TABLE $BIGTABLE_SPARK_FILE_NAME
+  $BIGTABLE_SPARK_WORDCOUNT_TABLE $BIGTABLE_SPARK_WORDCOUNT_FILE
 ```
 
 ### DataFrameDemo
@@ -96,63 +120,70 @@ The following `spark-submit` uses [example.DataFrameDemo](src/main/scala/example
 $SPARK_HOME/bin/spark-submit \
   --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
   --class example.DataFrameDemo \
-  target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar \
+  $BIGTABLE_SPARK_ASSEMBLY_JAR \
   $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID \
-  $BIGTABLE_SPARK_TABLE
+  $BIGTABLE_SPARK_TABLE_FIXME
 ```
 
 ### Verify
 
-Use `cbt ls` command to list the tables (that should include `$BIGTABLE_SPARK_TABLE`).
+Use `cbt count` to count the number of rows in the `BIGTABLE_SPARK_WORDCOUNT_TABLE` table. There should be 
+325 rows.
 
 ```
-cbt \
+$ cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-  ls
+  count $BIGTABLE_SPARK_WORDCOUNT_TABLE
+325
 ```
 
-Use `cbt read` command to read the rows from the table `$BIGTABLE_SPARK_TABLE`.
-
-```
-cbt \
-  -project=$BIGTABLE_SPARK_PROJECT_ID \
-  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-  read $BIGTABLE_SPARK_TABLE
-```
+**TIP** For details about using the `cbt` tool, including a list of available commands, see the [cbt Reference](https://cloud.google.com/bigtable/docs/cbt-reference).
 
 ## Run Wordcount with Cloud Bigtable
 
-### Configure Environment
+### Create Cloud Bigtable Instance
+
+Create a Cloud Bigtable instance using the Google Cloud Console (as described in the [Create a Cloud Bigtable instance](https://cloud.google.com/bigtable/docs/quickstart-cbt#create-instance)) or `gcloud beta bigtable instances`.
 
 ```
-BIGTABLE_SPARK_JAR=target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar
-BIGTABLE_SPARK_CLASS=example.Wordcount
-BIGTABLE_SPARK_WORDCOUNT_TABLE=wordcount-rdd
-BIGTABLE_SPARK_WORDCOUNT_FILE=README.md
+BIGTABLE_SPARK_CLUSTER_ID=your-cluster-id
+BIGTABLE_SPARK_CLUSTER_ZONE=your-zone-id
+BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME=your-display-name
+
+gcloud beta bigtable instances \
+  create $BIGTABLE_SPARK_INSTANCE_ID \
+  --cluster=$BIGTABLE_SPARK_CLUSTER_ID \
+  --cluster-zone=$BIGTABLE_SPARK_CLUSTER_ZONE \
+  --display-name=$BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME \
+  --instance-type=DEVELOPMENT
 ```
 
-### Configure Cloud Bigtable
+Check out the available Cloud Bigtable instances using `gcloud beta bigtable instances list` command.
+
+```
+gcloud beta bigtable instances list
+```
+
+### Create Table
+
+Create a table using `cbt createtable` command.
 
 ```
 cbt \
-  -project=$GOOGLE_CLOUD_PROJECT \
-  -instance=$BIGTABLE_INSTANCE \
-  createtable $BIGTABLE_SPARK_WORDCOUNT_TABLE
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  createtable $BIGTABLE_SPARK_WORDCOUNT_TABLE \
+  "families=cf"
 ```
+
+List tables using `cbt ls` command.
 
 ```
 cbt \
-  -project=$GOOGLE_CLOUD_PROJECT \
-  -instance=$BIGTABLE_INSTANCE \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   ls
-```
-
-```
-cbt \
-  -project=$GOOGLE_CLOUD_PROJECT \
-  -instance=$BIGTABLE_INSTANCE \
-  createfamily $BIGTABLE_SPARK_WORDCOUNT_TABLE cf
 ```
 
 ### Submit Wordcount
@@ -160,33 +191,41 @@ cbt \
 ```
 $SPARK_HOME/bin/spark-submit \
   --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
-  --class $BIGTABLE_SPARK_CLASS \
-  $BIGTABLE_SPARK_JAR \
-  $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE \
+  --class example.Wordcount \
+  $BIGTABLE_SPARK_ASSEMBLY_JAR \
+  $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID \
   $BIGTABLE_SPARK_WORDCOUNT_TABLE $BIGTABLE_SPARK_WORDCOUNT_FILE
 ```
 
 ### Verify
 
+Use `cbt count` to count the number of rows in the `BIGTABLE_SPARK_WORDCOUNT_TABLE` table. There should be 
+325 rows.
+
 ```
-cbt \
-  -project=$GOOGLE_CLOUD_PROJECT \
-  -instance=$BIGTABLE_INSTANCE \
-  read $BIGTABLE_SPARK_WORDCOUNT_TABLE
+$ cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  count $BIGTABLE_SPARK_WORDCOUNT_TABLE
+325
 ```
 
 ### Delete Cloud Bigtable Instance
 
-```
-cbt \
-  -project=$GOOGLE_CLOUD_PROJECT \
-  listinstances
-```
+Use `cbt listinstances` to list existing Bigtable instances.
 
 ```
 cbt \
-  -project=$GOOGLE_CLOUD_PROJECT \
-  deleteinstance $BIGTABLE_INSTANCE
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  listinstances
+```
+
+There should be at least `BIGTABLE_SPARK_INSTANCE_ID` instance. Delete it using `cbt deleteinstance`.
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  deleteinstance $BIGTABLE_SPARK_INSTANCE_ID
 ```
 
 ## Submit DataFrameDemo to Cloud Dataproc
