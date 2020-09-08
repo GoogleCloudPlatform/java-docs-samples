@@ -25,6 +25,7 @@ import com.google.cloud.automl.v1.DatasetName;
 import com.google.cloud.automl.v1.GcsSource;
 import com.google.cloud.automl.v1.InputConfig;
 import com.google.cloud.automl.v1.OperationMetadata;
+import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class GetOperationStatusTest {
     out = new PrintStream(bout);
     System.setOut(out);
 
-    // start a export data into dataset and cancel it before it finishes.
+    // start a import data into dataset and cancel it before it finishes.
     try (AutoMlClient client = AutoMlClient.create()) {
       // Get the complete path of the dataset.
       DatasetName datasetFullId = DatasetName.of(PROJECT_ID, "us-central1", DATASET_ID);
@@ -99,9 +100,11 @@ public class GetOperationStatusTest {
   @After
   public void tearDown() throws IOException, InterruptedException {
     try (AutoMlClient client = AutoMlClient.create()) {
-      // terminate export data LRO.
+      // terminate import data LRO.
       client.getOperationsClient().cancelOperation(operationFullName);
-      client.getOperationsClient().awaitTermination(5, TimeUnit.SECONDS);
+      while(! client.getOperationsClient().getOperation(operationFullName).getDone()) {
+        TimeUnit.SECONDS.sleep(5);
+      }
     }
 
     System.setOut(null);
