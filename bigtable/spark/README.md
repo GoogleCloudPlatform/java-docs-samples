@@ -20,8 +20,6 @@ FIXME Remove the section once all tasks done.
 
 - [ ] Avoid specifying dependencies at runtime (remove `--packages` option for `spark-submit`)
 - [ ] Make sure README.md is up-to-date before claiming the PR done
-- [ ] Migrate [DataFrameDemo](src/main/scala/example/DataFrameDemo.scala) to a `CopyTable` example which reads the wordcount table generated from the RDD example and writes it to a new table
-- [ ] Create another example that uses files in Google Cloud Storage and saves the content to a Bigtable table
 
 ## Prerequisites
 
@@ -66,8 +64,10 @@ SPARK_HOME=your-spark-home
 BIGTABLE_SPARK_PROJECT_ID=your-project-id
 BIGTABLE_SPARK_INSTANCE_ID=your-bigtable-instance
 
-BIGTABLE_SPARK_WORDCOUNT_TABLE=wordcount-rdd
+BIGTABLE_SPARK_WORDCOUNT_TABLE=wordcount
 BIGTABLE_SPARK_WORDCOUNT_FILE=README.md
+
+BIGTABLE_SPARK_COPYTABLE_TABLE=copytable
 ```
 
 Initialize the environment to point to the Bigtable Emulator.
@@ -76,11 +76,9 @@ Initialize the environment to point to the Bigtable Emulator.
 $(gcloud beta emulators bigtable env-init)
 ```
 
-Use one of the Spark sample applications as the `--class` parameter.
+### Create Tables
 
-### Create Table
-
-Create a table using `cbt createtable` command.
+Create the tables using `cbt createtable` command.
 
 ```
 cbt \
@@ -90,13 +88,23 @@ cbt \
   "families=cf"
 ```
 
-List tables using `cbt ls` command.
-
 ```
 cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  createtable $BIGTABLE_SPARK_COPYTABLE_TABLE \
+  "families=cf"
+```
+
+List tables using `cbt ls` command.
+
+```
+$ cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   ls
+copytable
+wordcount
 ```
 
 ### Wordcount
@@ -112,33 +120,44 @@ $SPARK_HOME/bin/spark-submit \
   $BIGTABLE_SPARK_WORDCOUNT_TABLE $BIGTABLE_SPARK_WORDCOUNT_FILE
 ```
 
-### DataFrameDemo
-
-The following `spark-submit` uses [example.DataFrameDemo](src/main/scala/example/DataFrameDemo.scala).
-
-```
-$SPARK_HOME/bin/spark-submit \
-  --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
-  --class example.DataFrameDemo \
-  $BIGTABLE_SPARK_ASSEMBLY_JAR \
-  $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID \
-  $BIGTABLE_SPARK_TABLE_FIXME
-```
-
 ### Verify
 
-Use `cbt count` to count the number of rows in the `BIGTABLE_SPARK_WORDCOUNT_TABLE` table. There should be 
-325 rows.
+Use `cbt count` to count the number of rows in the `BIGTABLE_SPARK_WORDCOUNT_TABLE` table.
 
 ```
 $ cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   count $BIGTABLE_SPARK_WORDCOUNT_TABLE
-325
+324
 ```
 
 **TIP** For details about using the `cbt` tool, including a list of available commands, see the [cbt Reference](https://cloud.google.com/bigtable/docs/cbt-reference).
+
+### CopyTable
+
+The following `spark-submit` uses [example.CopyTable](src/main/scala/example/CopyTable.scala).
+
+```
+$SPARK_HOME/bin/spark-submit \
+  --packages org.apache.hbase.connectors.spark:hbase-spark:1.0.0 \
+  --class example.CopyTable \
+  $BIGTABLE_SPARK_ASSEMBLY_JAR \
+  $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID \
+  $BIGTABLE_SPARK_WORDCOUNT_TABLE $BIGTABLE_SPARK_COPYTABLE_TABLE
+```
+
+### Verify
+
+Use `cbt count` to count the number of rows in the `BIGTABLE_SPARK_COPYTABLE_TABLE` table.
+
+```
+$ cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  count $BIGTABLE_SPARK_COPYTABLE_TABLE
+324
+```
 
 ## Run Wordcount with Cloud Bigtable
 
@@ -200,14 +219,14 @@ $SPARK_HOME/bin/spark-submit \
 ### Verify
 
 Use `cbt count` to count the number of rows in the `BIGTABLE_SPARK_WORDCOUNT_TABLE` table. There should be 
-325 rows.
+324 rows.
 
 ```
 $ cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   count $BIGTABLE_SPARK_WORDCOUNT_TABLE
-325
+324
 ```
 
 ### Delete Cloud Bigtable Instance
@@ -230,7 +249,7 @@ cbt \
 
 ## Submit DataFrameDemo to Cloud Dataproc
 
-This section describes the steps to submit [DataFrameDemo](src/main/scala/example/DataFrameDemo.scala) application to [Google Cloud Dataproc](https://cloud.google.com/dataproc/).
+This section describes the steps to submit [DataFrameDemo](src/main/scala/example/CopyTable.scala) application to [Google Cloud Dataproc](https://cloud.google.com/dataproc/).
 
 **TIP** Read [Quickstart using the gcloud command-line tool](https://cloud.google.com/dataproc/docs/quickstarts/quickstart-gcloud) that shows how to use the Google Cloud SDK `gcloud` command-line tool to create a Google Cloud Dataproc cluster and more.
 

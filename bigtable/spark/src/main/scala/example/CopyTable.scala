@@ -1,19 +1,20 @@
 package example
 
 import org.apache.hadoop.hbase.spark.datasources.{HBaseSparkConf, HBaseTableCatalog}
+import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
 
-object DataFrameDemo extends App {
+object CopyTable extends App {
 
   val appName = this.getClass.getSimpleName.replace("$", "")
   println(s"$appName Spark application is starting up...")
 
-  val (projectId, instanceId, table) = parse(args)
+  val (projectId, instanceId, fromTable, toTable) = parse(args)
   println(
     s"""
       |Parameters:
       |projectId: $projectId
       |instanceId: $instanceId
-      |table: $table
+      |copy from $fromTable to $toTable
       |""".stripMargin)
 
   import org.apache.spark.sql.SparkSession
@@ -30,49 +31,39 @@ object DataFrameDemo extends App {
   // https://github.com/apache/hbase-connectors/blob/rel/1.0.0/spark/hbase-spark/src/main/scala/org/apache/hadoop/hbase/spark/datasources/HBaseSparkConf.scala#L44
   new HBaseContext(spark.sparkContext, conf)
 
-  val catalog =
+  def createCatalogJSON(table: String): String = {
     s"""{
        |"table":{"namespace":"default", "name":"$table", "tableCoder":"PrimitiveType"},
-       |"rowkey":"key",
+       |"rowkey":"word",
        |"columns":{
-       |"col0":{"cf":"rowkey", "col":"key", "type":"string"},
-       |"col1":{"cf":"cf1", "col":"col1", "type":"boolean"},
-       |"col2":{"cf":"cf2", "col":"col2", "type":"double"},
-       |"col3":{"cf":"cf3", "col":"col3", "type":"int"}
+       |  "word":{"cf":"rowkey", "col":"word", "type":"string"},
+       |  "count":{"cf":"cf", "col":"Count", "type":"int"}
        |}
        |}""".stripMargin
+  }
 
-  // The options are described in the sources themselves only
+  // The HBaseTableCatalog options are described in the sources themselves only
   // https://github.com/apache/hbase-connectors/blob/rel/1.0.0/spark/hbase-spark/src/main/scala/org/apache/hadoop/hbase/spark/datasources/HBaseSparkConf.scala
-  val opts = Map(
-    HBaseTableCatalog.tableCatalog -> catalog,
-    // If defined and larger than 3, a new table will be created with the nubmer of region specified.
-    // https://github.com/apache/hbase-connectors/blob/rel/1.0.0/spark/hbase-spark/src/main/scala/org/apache/hadoop/hbase/spark/datasources/HBaseTableCatalog.scala#L208-L209
-    // 5 is simply larger than 3 and creates BIGTABLE_SPARK_TABLE unless available
-    HBaseTableCatalog.newTable -> "5")
 
-  val numRecords = 10
-  println(s"Writing $numRecords records to $table")
-  import spark.implicits._
-  (0 until numRecords)
-    .map(BigtableRecord.apply)
-    .toDF
-    .write
-    .format("org.apache.hadoop.hbase.spark")
-    .options(opts)
-    .save
-  println(s"Writing to $table...DONE")
-
-  println(s"Loading $table")
-  spark
+  println(s"Loading records from $fromTable")
+  val records = spark
     .read
     .format("org.apache.hadoop.hbase.spark")
-    .options(opts)
+    .option(HBaseTableCatalog.tableCatalog, createCatalogJSON(fromTable))
     .load
-    .show(truncate = false)
-  println(s"Loading $table...DONE")
+  println(s"Loading from $fromTable...DONE")
 
-  def parse(args: Array[String]): (String, String, String) = {
+  records.show(truncate = false)
+
+  println(s"Writing records to $toTable")
+  records
+    .write
+    .format("org.apache.hadoop.hbase.spark")
+    .option(HBaseTableCatalog.tableCatalog, createCatalogJSON(toTable))
+    .save
+  println(s"Writing to $toTable...DONE")
+
+  def parse(args: Array[String]): (String, String, String, String) = {
     import scala.util.Try
     val projectId = Try(args(0)).getOrElse {
       throw new IllegalStateException("Missing command-line argument: BIGTABLE_SPARK_PROJECT_ID")
@@ -80,10 +71,13 @@ object DataFrameDemo extends App {
     val instanceId = Try(args(1)).getOrElse {
       throw new IllegalStateException("Missing command-line argument: BIGTABLE_SPARK_INSTANCE_ID")
     }
-    val table = Try(args(2)).getOrElse {
-      throw new IllegalStateException("Missing command-line argument: BIGTABLE_SPARK_TABLE")
+    val fromTable = Try(args(2)).getOrElse {
+      throw new IllegalStateException("Missing command-line argument: BIGTABLE_SPARK_WORDCOUNT_TABLE")
     }
-    (projectId, instanceId, table)
+    val toTable = Try(args(3)).getOrElse {
+      throw new IllegalStateException("Missing command-line argument: BIGTABLE_SPARK_COPYTABLE_TABLE")
+    }
+    (projectId, instanceId, fromTable, toTable)
   }
 }
 
