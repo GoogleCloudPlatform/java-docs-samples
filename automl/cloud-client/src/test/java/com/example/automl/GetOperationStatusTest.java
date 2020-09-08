@@ -25,7 +25,6 @@ import com.google.cloud.automl.v1.DatasetName;
 import com.google.cloud.automl.v1.GcsSource;
 import com.google.cloud.automl.v1.InputConfig;
 import com.google.cloud.automl.v1.OperationMetadata;
-import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -102,7 +101,7 @@ public class GetOperationStatusTest {
     try (AutoMlClient client = AutoMlClient.create()) {
       // terminate import data LRO.
       client.getOperationsClient().cancelOperation(operationFullName);
-      while(! client.getOperationsClient().getOperation(operationFullName).getDone()) {
+      while (!client.getOperationsClient().getOperation(operationFullName).getDone()) {
         TimeUnit.SECONDS.sleep(5);
       }
     }
