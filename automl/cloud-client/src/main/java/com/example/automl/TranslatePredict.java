@@ -17,13 +17,16 @@
 package com.example.automl;
 
 // [START automl_translate_predict]
+
 import com.google.cloud.automl.v1.ExamplePayload;
 import com.google.cloud.automl.v1.ModelName;
 import com.google.cloud.automl.v1.PredictRequest;
 import com.google.cloud.automl.v1.PredictResponse;
 import com.google.cloud.automl.v1.PredictionServiceClient;
 import com.google.cloud.automl.v1.TextSnippet;
+
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -45,17 +48,18 @@ class TranslatePredict {
       // Get the full path of the model.
       ModelName name = ModelName.of(projectId, "us-central1", modelId);
 
-      String content = new String(Files.readAllBytes(Paths.get(filePath)));
+      byte[] fileData = Files.readAllBytes(Paths.get(filePath));
+      String content = new String(fileData, StandardCharsets.UTF_8);
 
       TextSnippet textSnippet = TextSnippet.newBuilder().setContent(content).build();
       ExamplePayload payload = ExamplePayload.newBuilder().setTextSnippet(textSnippet).build();
       PredictRequest predictRequest =
-          PredictRequest.newBuilder().setName(name.toString()).setPayload(payload).build();
+              PredictRequest.newBuilder().setName(name.toString()).setPayload(payload).build();
 
       PredictResponse response = client.predict(predictRequest);
       TextSnippet translatedContent =
-          response.getPayload(0).getTranslation().getTranslatedContent();
-      System.out.format("Translated Content: %s\n", translatedContent.getContent());
+              response.getPayload(0).getTranslation().getTranslatedContent();
+      System.out.format("Translated Content: %s%n", translatedContent.getContent());
     }
   }
 }

@@ -17,11 +17,13 @@
 package com.example.automl;
 
 // [START automl_export_dataset]
+
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.DatasetName;
 import com.google.cloud.automl.v1.GcsDestination;
 import com.google.cloud.automl.v1.OutputConfig;
 import com.google.protobuf.Empty;
+
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -53,7 +55,7 @@ class ExportDataset {
 
       System.out.println("Processing export...");
       Empty response = client.exportDataAsync(datasetFullId, outputConfig).get();
-      System.out.format("Dataset exported. %s\n", response);
+      System.out.format("Dataset exported. %s%n", response);
     }
   }
 }

@@ -17,16 +17,19 @@
 package com.example.automl;
 
 // [START automl_vision_object_detection_predict]
+
 import com.google.cloud.automl.v1.AnnotationPayload;
 import com.google.cloud.automl.v1.BoundingPoly;
 import com.google.cloud.automl.v1.ExamplePayload;
 import com.google.cloud.automl.v1.Image;
+import com.google.cloud.automl.v1.ImageObjectDetectionAnnotation;
 import com.google.cloud.automl.v1.ModelName;
 import com.google.cloud.automl.v1.NormalizedVertex;
 import com.google.cloud.automl.v1.PredictRequest;
 import com.google.cloud.automl.v1.PredictResponse;
 import com.google.cloud.automl.v1.PredictionServiceClient;
 import com.google.protobuf.ByteString;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -61,14 +64,15 @@ class VisionObjectDetectionPredict {
 
       PredictResponse response = client.predict(predictRequest);
       for (AnnotationPayload annotationPayload : response.getPayloadList()) {
-        System.out.format("Predicted class name: %s\n", annotationPayload.getDisplayName());
+        System.out.format("Predicted class name: %s%n", annotationPayload.getDisplayName());
+        ImageObjectDetectionAnnotation imageObjectDetectionAnnotation = annotationPayload.getImageObjectDetection();
         System.out.format(
-            "Predicted class score: %.2f\n",
-            annotationPayload.getImageObjectDetection().getScore());
-        BoundingPoly boundingPoly = annotationPayload.getImageObjectDetection().getBoundingBox();
+                "Predicted class score: %.2f%n",
+                imageObjectDetectionAnnotation.getScore());
+        BoundingPoly boundingPoly = imageObjectDetectionAnnotation.getBoundingBox();
         System.out.println("Normalized Vertices:");
         for (NormalizedVertex vertex : boundingPoly.getNormalizedVerticesList()) {
-          System.out.format("\tX: %.2f, Y: %.2f\n", vertex.getX(), vertex.getY());
+          System.out.format("\tX: %.2f, Y: %.2f%n", vertex.getX(), vertex.getY());
         }
       }
     }

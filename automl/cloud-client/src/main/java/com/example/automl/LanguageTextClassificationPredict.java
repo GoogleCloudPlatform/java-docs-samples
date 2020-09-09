@@ -17,6 +17,7 @@
 package com.example.automl;
 
 // [START automl_language_text_classification_predict]
+
 import com.google.cloud.automl.v1.AnnotationPayload;
 import com.google.cloud.automl.v1.ExamplePayload;
 import com.google.cloud.automl.v1.ModelName;
@@ -24,6 +25,7 @@ import com.google.cloud.automl.v1.PredictRequest;
 import com.google.cloud.automl.v1.PredictResponse;
 import com.google.cloud.automl.v1.PredictionServiceClient;
 import com.google.cloud.automl.v1.TextSnippet;
+
 import java.io.IOException;
 
 class LanguageTextClassificationPredict {
@@ -58,10 +60,10 @@ class LanguageTextClassificationPredict {
       PredictResponse response = client.predict(predictRequest);
 
       for (AnnotationPayload annotationPayload : response.getPayloadList()) {
-        System.out.format("Predicted class name: %s\n", annotationPayload.getDisplayName());
-        System.out.format(
-            "Predicted sentiment score: %.2f\n\n",
-            annotationPayload.getClassification().getScore());
+        System.out.format("Predicted class name: %s%n", annotationPayload.getDisplayName());
+          System.out.format(
+                  "Predicted sentiment score: %.2f%n%n",
+                  annotationPayload.getClassification().getScore());
       }
     }
   }
