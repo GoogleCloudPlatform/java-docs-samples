@@ -105,7 +105,7 @@ to transform the message data, and writes the results to a
 * [pom.xml](pom.xml)
 * [metadata.json](metadata.json)
 
-### Building a container image
+### Build the Flex Template
 
 > <details><summary>
 > <i>(Optional)</i> Run the Apache Beam pipeline locally for development.
@@ -139,55 +139,11 @@ This *Uber JAR* file has all the dependencies embedded so it.
 You can run this file as a standalone application with no external
 dependencies on other libraries.
 
-Now, we build the
-[Docker](https://docs.docker.com/engine/docker-overview/)
-image for the Apache Beam pipeline.
-We are using
-[Cloud Build](https://cloud.google.com/cloud-build)
-so we don't need a local installation of Docker.
-
-> ℹ️ You can speed up subsequent builds with
-> [Kaniko cache](https://cloud.google.com/cloud-build/docs/kaniko-cache)
-> in Cloud Build.
->
-> ```sh
-> # (Optional) Enable to use Kaniko cache by default.
-> gcloud config set builds/use_kaniko True
-> ```
-
-Cloud Build allows you to
-[build a Docker image using a `Dockerfile`](https://cloud.google.com/cloud-build/docs/quickstart-docker#build_using_dockerfile).
-and saves it into
-[Container Registry](https://cloud.google.com/container-registry/),
-where the image is accessible to other Google Cloud products.
-
-```sh
-export TEMPLATE_IMAGE="gcr.io/$PROJECT/samples/dataflow/streaming-beam-sql:latest"
-
-# Build the image into Container Registry, this is roughly equivalent to:
-#   gcloud auth configure-docker
-#   docker image build -t $TEMPLATE_IMAGE .
-#   docker push $TEMPLATE_IMAGE
-gcloud builds submit --tag "$TEMPLATE_IMAGE" .
-```
-
-> ℹ️ We use the [`.gcloudignore`](.gcloudignore) file to ignore large
-> files not used for the container image, such as build files.
-> This helps speed up the build by uploading less data.
->
-> To learn more about `.gcloudignore`, see
-> [`gcloud topic gcloudignore`](https://cloud.google.com/sdk/gcloud/reference/topic/gcloudignore)
-
-Images starting with `gcr.io/PROJECT/` are saved into your project's
-Container Registry, where the image is accessible to other Google Cloud products.
-
-### Creating a Flex Template
-
 To run a template, you need to create a *template spec* file containing all the
 necessary information to run the job, such as the SDK information and metadata.
 
 The [`metadata.json`](metadata.json) file contains additional information for
-the template such as the "name", "description", and input "parameters" field.
+the template such as the `name`, `description`, and input `parameters` field.
 
 We used
 [regular expressions](https://docs.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference)
@@ -198,20 +154,28 @@ and [BigQuery table](https://cloud.google.com/bigquery/docs/tables#table_naming)
 The template file must be created in a Cloud Storage location,
 and is used to run a new Dataflow job.
 
+A container image is created, which includes a self-contained application of your pipeline.
+Images starting with `gcr.io/PROJECT/` are saved into your project's
+Container Registry, where the image is accessible to other Google Cloud products.
+
 ```sh
 export TEMPLATE_PATH="gs://$BUCKET/samples/dataflow/templates/streaming-beam-sql.json"
+export TEMPLATE_IMAGE="gcr.io/$PROJECT/samples/dataflow/streaming-beam-sql:latest"
 
 # Build the Flex Template.
-gcloud beta dataflow flex-template build $TEMPLATE_PATH \
-  --image "$TEMPLATE_IMAGE" \
-  --sdk-language "JAVA" \
-  --metadata-file "metadata.json"
+gcloud dataflow flex-template build $TEMPLATE_PATH \
+    --image-gcr-path "$TEMPLATE_IMAGE" \
+    --sdk-language "JAVA" \
+    --flex-template-base-image JAVA11 \
+    --metadata-file "metadata.json" \
+    --jar "target/streaming-beam-sql-1.0.jar" \
+    --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="org.apache.beam.samples.StreamingBeamSQL"
 ```
 
 The template is now available through the template file in the Cloud Storage
 location that you specified.
 
-### Running a Dataflow Flex Template pipeline
+### Running a Flex Template pipeline
 
 You can now run the Apache Beam pipeline in Dataflow by referring to the
 template file and passing the template
@@ -219,10 +183,14 @@ template file and passing the template
 required by the pipeline.
 
 ```sh
-# Run the Flex Template.
-gcloud beta dataflow flex-template run "streaming-beam-sql-`date +%Y%m%d-%H%M%S`" \
-  --template-file-gcs-location "$TEMPLATE_PATH" \
-  --parameters "inputSubscription=$SUBSCRIPTION,outputTable=$PROJECT:$DATASET.$TABLE"
+export REGION="us-central1"
+
+# Run the template.
+gcloud dataflow flex-template run "streaming-beam-sql-`date +%Y%m%d-%H%M%S`" \
+    --template-file-gcs-location "$TEMPLATE_PATH" \
+    --parameters inputSubscription="$SUBSCRIPTION" \
+    --parameters outputTable="$PROJECT:$DATASET.$TABLE" \
+    --region "$REGION"
 ```
 
 Check the results in BigQuery by running the following query:

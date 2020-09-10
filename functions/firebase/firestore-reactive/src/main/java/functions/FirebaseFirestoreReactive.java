@@ -79,11 +79,19 @@ public class FirebaseFirestoreReactive implements RawBackgroundFunction {
 
     String affectedDoc = context.resource().split("/documents/")[1].replace("\"", "");
 
-    logger.info(String.format("Replacing value: %s --> %s", currentValue, newValue));
-    try {
-      FIRESTORE.document(affectedDoc).set(newFields, SetOptions.merge()).get();
-    } catch (ExecutionException | InterruptedException e) {
-      logger.log(Level.SEVERE, "Error updating Firestore document: " + e.getMessage(), e);
+    if (!currentValue.equals(newValue)) {
+      // The stored value needs to be updated
+      // Write the upper-cased value to Firestore
+      logger.info(String.format("Replacing value: %s --> %s", currentValue, newValue));
+      try {
+        FIRESTORE.document(affectedDoc).set(newFields, SetOptions.merge()).get();
+      } catch (ExecutionException | InterruptedException e) {
+        logger.log(Level.SEVERE, "Error updating Firestore document: " + e.getMessage(), e);
+      }
+    } else {
+      // The stored value is already upper-case, and doesn't need updating.
+      // (Don't perform a "second" write, since that could trigger an infinite loop.)
+      logger.info(String.format("Value is already upper-case."));
     }
   }
 }

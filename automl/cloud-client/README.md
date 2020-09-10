@@ -6,7 +6,7 @@
 
 This directory contains samples for the [Google Cloud AutoML APIs](https://cloud.google.com/automl/) - [docs](https://cloud.google.com/automl/docs/)
 
-We highly reccommend that you refer to the official documentation pages:
+We highly recommend that you refer to the official documentation pages:
 * AutoML Natural Language
   * [Classification](https://cloud.google.com/natural-language/automl/docs)
   * [Entity Extraction](https://cloud.google.com/natural-language/automl/entity-analysis/docs)

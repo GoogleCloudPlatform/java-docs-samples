@@ -93,6 +93,25 @@ public class FirebaseFirestoreReactiveTest {
   }
 
   @Test
+  public void functionsFirebaseReactive_shouldIgnoreCapitalizedValues()  {
+
+    String jsonStr = gson.toJson(Map.of("value",
+        Map.of("fields",
+            Map.of("original",
+                Map.of("stringValue", "FOO")))));
+
+    MockContext context = new MockContext();
+    context.resource = "projects/_/databases/(default)/documents/messages/ABCDE12345";
+
+    FirebaseFirestoreReactive functionInstance = new FirebaseFirestoreReactive(firestoreMock);
+
+    functionInstance.accept(jsonStr, context);
+
+    Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
+        "Value is already upper-case.");
+  }
+
+  @Test
   public void functionsFirebaseReactive_shouldReportBadJson()  {
     String jsonStr = gson.toJson(Map.of("value",
         Map.of("fields",
