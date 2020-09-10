@@ -1,8 +1,10 @@
 package example
 
+import com.google.bigtable.repackaged.com.google.cloud.bigtable.data.v2.models.Query
+import com.google.bigtable.repackaged.com.google.cloud.bigtable.data.v2.{BigtableDataClient, BigtableDataSettings}
 import org.scalatest._
-import flatspec._
-import matchers._
+import org.scalatest.flatspec._
+import org.scalatest.matchers._
 
 class IntegrationTest extends AnyFlatSpec
     with should.Matchers {
@@ -29,14 +31,12 @@ class IntegrationTest extends AnyFlatSpec
     val copytableArgs = Array(projectId, instanceId, table_wordcount, table_copytable)
     CopyTable.main(copytableArgs)
 
-    // Assert that the number of rows in the tables are the same
-    // cbt \
-    //  -project=$BIGTABLE_SPARK_PROJECT_ID \
-    //  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-    //  count $BIGTABLE_SPARK_WORDCOUNT_TABLE
-    // cbt \
-    //  -project=$BIGTABLE_SPARK_PROJECT_ID \
-    //  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-    //  count $BIGTABLE_SPARK_COPYTABLE_TABLE
+    val settings =
+      BigtableDataSettings.newBuilder().setProjectId(projectId).setInstanceId(instanceId).build()
+    val dataClient = BigtableDataClient.create(settings)
+    import collection.JavaConverters._
+    val wordcountRowCount = dataClient.readRows(Query.create(table_wordcount)).iterator().asScala.length
+    val copytableRowCount = dataClient.readRows(Query.create(table_copytable)).iterator().asScala.length
+    wordcountRowCount should be(copytableRowCount)
   }
 }
