@@ -24,7 +24,6 @@ import com.google.cloud.automl.v1.LocationName;
 import com.google.cloud.automl.v1.Model;
 import com.google.cloud.automl.v1.OperationMetadata;
 import com.google.cloud.automl.v1.TextSentimentModelMetadata;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -63,7 +62,7 @@ class LanguageSentimentAnalysisCreateModel {
       // You can use OperationFuture.getInitialFuture to get a future representing the initial
       // response to the request, which contains information while the operation is in progress.
       System.out.format("Training operation name: %s%n", future.getInitialFuture().get().getName());
-        System.out.println("Training started...");
+      System.out.println("Training started...");
     }
   }
 }

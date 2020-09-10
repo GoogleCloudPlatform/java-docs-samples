@@ -27,7 +27,6 @@ import com.google.cloud.automl.v1.PredictionServiceClient;
 import com.google.cloud.automl.v1.TextExtractionAnnotation;
 import com.google.cloud.automl.v1.TextSegment;
 import com.google.cloud.automl.v1.TextSnippet;
-
 import java.io.IOException;
 
 class LanguageEntityExtractionPredict {
@@ -52,9 +51,9 @@ class LanguageEntityExtractionPredict {
       // https://cloud.google.com/automl/docs/reference/rest/v1/projects.locations.models/predict#textsnippet
       TextSnippet textSnippet =
           TextSnippet.newBuilder()
-                  .setContent(content)
-                  .setMimeType("text/plain") // Types: text/plain, text/html
-                  .build();
+              .setContent(content)
+              .setMimeType("text/plain") // Types: text/plain, text/html
+              .build();
       ExamplePayload payload = ExamplePayload.newBuilder().setTextSnippet(textSnippet).build();
       PredictRequest predictRequest =
           PredictRequest.newBuilder().setName(name.toString()).setPayload(payload).build();
@@ -62,13 +61,13 @@ class LanguageEntityExtractionPredict {
       PredictResponse response = client.predict(predictRequest);
 
       for (AnnotationPayload annotationPayload : response.getPayloadList()) {
-          System.out.format("Text Extract Entity Type: %s%n", annotationPayload.getDisplayName());
-          TextExtractionAnnotation textExtraction = annotationPayload.getTextExtraction();
-          System.out.format("Text score: %.2f%n", textExtraction.getScore());
-          TextSegment textSegment = textExtraction.getTextSegment();
-          System.out.format("Text Extract Entity Content: %s%n", textSegment.getContent());
-          System.out.format("Text Start Offset: %s%n", textSegment.getStartOffset());
-          System.out.format("Text End Offset: %s%n%n", textSegment.getEndOffset());
+        System.out.format("Text Extract Entity Type: %s%n", annotationPayload.getDisplayName());
+        TextExtractionAnnotation textExtraction = annotationPayload.getTextExtraction();
+        System.out.format("Text score: %.2f%n", textExtraction.getScore());
+        TextSegment textSegment = textExtraction.getTextSegment();
+        System.out.format("Text Extract Entity Content: %s%n", textSegment.getContent());
+        System.out.format("Text Start Offset: %s%n", textSegment.getStartOffset());
+        System.out.format("Text End Offset: %s%n%n", textSegment.getEndOffset());
       }
     }
   }

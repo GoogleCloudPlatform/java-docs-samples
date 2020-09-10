@@ -24,7 +24,6 @@ import com.google.cloud.automl.v1.PredictRequest;
 import com.google.cloud.automl.v1.PredictResponse;
 import com.google.cloud.automl.v1.PredictionServiceClient;
 import com.google.cloud.automl.v1.TextSnippet;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -54,11 +53,11 @@ class TranslatePredict {
       TextSnippet textSnippet = TextSnippet.newBuilder().setContent(content).build();
       ExamplePayload payload = ExamplePayload.newBuilder().setTextSnippet(textSnippet).build();
       PredictRequest predictRequest =
-              PredictRequest.newBuilder().setName(name.toString()).setPayload(payload).build();
+          PredictRequest.newBuilder().setName(name.toString()).setPayload(payload).build();
 
       PredictResponse response = client.predict(predictRequest);
       TextSnippet translatedContent =
-              response.getPayload(0).getTranslation().getTranslatedContent();
+          response.getPayload(0).getTranslation().getTranslatedContent();
       System.out.format("Translated Content: %s%n", translatedContent.getContent());
     }
   }

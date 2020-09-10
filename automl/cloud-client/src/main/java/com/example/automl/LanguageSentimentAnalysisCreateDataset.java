@@ -24,7 +24,6 @@ import com.google.cloud.automl.v1.Dataset;
 import com.google.cloud.automl.v1.LocationName;
 import com.google.cloud.automl.v1.OperationMetadata;
 import com.google.cloud.automl.v1.TextSentimentDatasetMetadata;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -68,7 +67,7 @@ class LanguageSentimentAnalysisCreateDataset {
       // Name Form: `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}`
       String[] names = createdDataset.getName().split("/");
       String datasetId = names[names.length - 1];
-        System.out.format("Dataset id: %s%n", datasetId);
+      System.out.format("Dataset id: %s%n", datasetId);
     }
   }
 }

@@ -27,7 +27,6 @@ import com.google.cloud.automl.v1.Dataset;
 import com.google.cloud.automl.v1.DatasetName;
 import com.google.cloud.automl.v1.TranslationDatasetMetadata;
 import com.google.protobuf.Timestamp;
-
 import java.io.IOException;
 
 class GetDataset {
@@ -68,41 +67,40 @@ class GetDataset {
       // [END automl_vision_classification_get_dataset]
       // [END automl_vision_object_detection_get_dataset]
       System.out.format(
-              "Text extraction dataset metadata: %s%n", dataset.getTextExtractionDatasetMetadata());
+          "Text extraction dataset metadata: %s%n", dataset.getTextExtractionDatasetMetadata());
       // [END automl_language_entity_extraction_get_dataset]
 
       // [START automl_language_sentiment_analysis_get_dataset]
       System.out.format(
-              "Text sentiment dataset metadata: %s%n", dataset.getTextSentimentDatasetMetadata());
+          "Text sentiment dataset metadata: %s%n", dataset.getTextSentimentDatasetMetadata());
       // [END automl_language_sentiment_analysis_get_dataset]
 
       // [START automl_language_text_classification_get_dataset]
       System.out.format(
-              "Text classification dataset metadata: %s%n",
-              dataset.getTextClassificationDatasetMetadata());
+          "Text classification dataset metadata: %s%n",
+          dataset.getTextClassificationDatasetMetadata());
       // [END automl_language_text_classification_get_dataset]
 
       // [START automl_translate_get_dataset]
       System.out.println("Translation dataset metadata:");
-      TranslationDatasetMetadata translationDatasetMetadata = dataset.getTranslationDatasetMetadata();
+      TranslationDatasetMetadata translationDatasetMetadata =
+          dataset.getTranslationDatasetMetadata();
       System.out.format(
-              "\tSource language code: %s%n",
-              translationDatasetMetadata.getSourceLanguageCode());
+          "\tSource language code: %s%n", translationDatasetMetadata.getSourceLanguageCode());
       System.out.format(
-              "\tTarget language code: %s%n",
-              translationDatasetMetadata.getTargetLanguageCode());
+          "\tTarget language code: %s%n", translationDatasetMetadata.getTargetLanguageCode());
       // [END automl_translate_get_dataset]
 
       // [START automl_vision_classification_get_dataset]
       System.out.format(
-              "Image classification dataset metadata: %s%n",
-              dataset.getImageClassificationDatasetMetadata());
+          "Image classification dataset metadata: %s%n",
+          dataset.getImageClassificationDatasetMetadata());
       // [END automl_vision_classification_get_dataset]
 
       // [START automl_vision_object_detection_get_dataset]
       System.out.format(
-              "Image object detection dataset metadata: %s%n",
-              dataset.getImageObjectDetectionDatasetMetadata());
+          "Image object detection dataset metadata: %s%n",
+          dataset.getImageObjectDetectionDatasetMetadata());
       // [START automl_language_entity_extraction_get_dataset]
       // [START automl_language_sentiment_analysis_get_dataset]
       // [START automl_language_text_classification_get_dataset]

@@ -22,7 +22,6 @@ import com.google.cloud.automl.v1.ListModelsRequest;
 import com.google.cloud.automl.v1.LocationName;
 import com.google.cloud.automl.v1.Model;
 import com.google.protobuf.Timestamp;
-
 import java.io.IOException;
 
 class ListModels {
@@ -52,20 +51,20 @@ class ListModels {
       // List all the models available in the region by applying filter.
       System.out.println("List of models:");
       for (Model model : client.listModels(listModlesRequest).iterateAll()) {
-          // Display the model information.
-          System.out.format("Model name: %s%n", model.getName());
-          // To get the model id, you have to parse it out of the `name` field. As models Ids are
-          // required for other methods.
-          // Name Format: `projects/{project_id}/locations/{location_id}/models/{model_id}`
-          String[] names = model.getName().split("/");
-          String retrievedModelId = names[names.length - 1];
-          System.out.format("Model id: %s%n", retrievedModelId);
-          System.out.format("Model display name: %s%n", model.getDisplayName());
-          System.out.println("Model create time:");
-          Timestamp createdTime = model.getCreateTime();
-          System.out.format("\tseconds: %s%n", createdTime.getSeconds());
-          System.out.format("\tnanos: %s%n", createdTime.getNanos());
-          System.out.format("Model deployment state: %s%n", model.getDeploymentState());
+        // Display the model information.
+        System.out.format("Model name: %s%n", model.getName());
+        // To get the model id, you have to parse it out of the `name` field. As models Ids are
+        // required for other methods.
+        // Name Format: `projects/{project_id}/locations/{location_id}/models/{model_id}`
+        String[] names = model.getName().split("/");
+        String retrievedModelId = names[names.length - 1];
+        System.out.format("Model id: %s%n", retrievedModelId);
+        System.out.format("Model display name: %s%n", model.getDisplayName());
+        System.out.println("Model create time:");
+        Timestamp createdTime = model.getCreateTime();
+        System.out.format("\tseconds: %s%n", createdTime.getSeconds());
+        System.out.format("\tnanos: %s%n", createdTime.getNanos());
+        System.out.format("Model deployment state: %s%n", model.getDeploymentState());
       }
     }
   }
