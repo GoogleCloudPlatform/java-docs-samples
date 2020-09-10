@@ -17,6 +17,7 @@
 package com.example;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
@@ -43,7 +44,7 @@ public class AlertIT {
   private static String policyFileName = "target/policyBackup.json";
   private static Pattern policyNameRegex =
       Pattern.compile(
-          "alertPolicies/(?<alertid>.*)(?s).*(?!s)notificationChannels/(?<channel>[a-zA-Z0-9]*)$");
+          "alertPolicies/(?<alertid>.*)(?s).*notificationChannels/(?<channel>[a-zA-Z0-9]*)");
   private ByteArrayOutputStream bout;
   private final PrintStream originalOut = System.out;
 
@@ -62,7 +63,6 @@ public class AlertIT {
   @Test
   public void testListPolicies() throws IOException {
     AlertSample.main(new String[] {"list"});
-    System.out.println(bout);
     assertTrue(bout.toString().contains(testPolicyName));
   }
 
