@@ -51,9 +51,7 @@ object Wordcount extends App {
       val put = new Put(Bytes.toBytes(word))
         .addColumn(ColumnFamilyBytes, ColumnNameBytes, Bytes.toBytes(count))
       // The KEY is ignored while the output value must be either a Put or a Delete instance
-      // https://github.com/apache/hbase/blob/rel/2.2.3/hbase-mapreduce/src/main/java/org/apache/hadoop/hbase/mapreduce/TableOutputFormat.java#L46-L48
       // The underlying writer ignores keys, only the value matter here.
-      // https://github.com/apache/hbase/blob/rel/2.2.3/hbase-mapreduce/src/main/java/org/apache/hadoop/hbase/mapreduce/TableOutputFormat.java#L138-L145
       (null, put)
     }
   wordCounts.saveAsNewAPIHadoopDataset(hConf)
