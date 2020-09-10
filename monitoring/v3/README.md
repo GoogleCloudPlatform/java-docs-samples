@@ -23,6 +23,33 @@ To run:
 mvn clean install  
 ./manage_alerts_sample.sh "<command> <args>"
 ```
+
+```
+usage: list [-p <PROJECT_ID>]
+Lists alert policies.
+ -p,--projectid <PROJECT_ID>   Your Google project id.
+
+usage: [backup|restore] [-j <JSON_PATH>] [-p <PROJECT_ID>]
+Backs up or restores alert policies.
+ -j,--jsonPath <JSON_PATH>     Path to json file where alert polices are
+                               saved and restored.
+ -p,--projectid <PROJECT_ID>   Your Google project id.
+
+usage: replace-channels -a <ALERT_ID> [-c <CHANNEL_ID>] [-p <PROJECT_ID>]
+Replaces alert policy notification channels.
+ -a,--alert-id <ALERT_ID>       The id of the alert policy whose channels
+                                will be replaced.
+ -c,--channel-id <CHANNEL_ID>   A channel id.  Repeat this option to set
+                                multiple channel ids.
+ -p,--projectid <PROJECT_ID>    Your Google project id.
+
+usage: [enable|disable] [-d <FILTER>] [-p <PROJECT_ID>]
+Enables/disables alert policies.
+ -d,--filter <FILTER>          See
+                               https://cloud.google.com/monitoring/api/v3/
+                               filters.
+ -p,--projectid <PROJECT_ID>   Your Google project id.
+ ```
 # Running on GCE, GAE, or other environments
 
 On Google App Engine, the credentials should be found automatically.

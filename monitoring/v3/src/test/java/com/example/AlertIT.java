@@ -17,7 +17,6 @@
 package com.example;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
