@@ -41,7 +41,7 @@ public class GetDatasetTest {
   private static void requireEnvVar(String varName) {
     assertNotNull(
         System.getenv(varName),
-        "Environment variable '%s' is required to perform these tests.".format(varName));
+        "Environment variable '" + varName + "' is required to perform these tests.");
   }
 
   @BeforeClass
