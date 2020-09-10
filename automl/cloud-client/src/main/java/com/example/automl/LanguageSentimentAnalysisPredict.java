@@ -25,7 +25,6 @@ import com.google.cloud.automl.v1.PredictRequest;
 import com.google.cloud.automl.v1.PredictResponse;
 import com.google.cloud.automl.v1.PredictionServiceClient;
 import com.google.cloud.automl.v1.TextSnippet;
-
 import java.io.IOException;
 
 class LanguageSentimentAnalysisPredict {
@@ -61,8 +60,8 @@ class LanguageSentimentAnalysisPredict {
 
       for (AnnotationPayload annotationPayload : response.getPayloadList()) {
         System.out.format("Predicted class name: %s%n", annotationPayload.getDisplayName());
-          System.out.format(
-                  "Predicted sentiment score: %d%n", annotationPayload.getTextSentiment().getSentiment());
+        System.out.format(
+            "Predicted sentiment score: %d%n", annotationPayload.getTextSentiment().getSentiment());
       }
     }
   }

@@ -29,7 +29,6 @@ import com.google.cloud.automl.v1.PredictRequest;
 import com.google.cloud.automl.v1.PredictResponse;
 import com.google.cloud.automl.v1.PredictionServiceClient;
 import com.google.protobuf.ByteString;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -65,10 +64,10 @@ class VisionObjectDetectionPredict {
       PredictResponse response = client.predict(predictRequest);
       for (AnnotationPayload annotationPayload : response.getPayloadList()) {
         System.out.format("Predicted class name: %s%n", annotationPayload.getDisplayName());
-        ImageObjectDetectionAnnotation imageObjectDetectionAnnotation = annotationPayload.getImageObjectDetection();
+        ImageObjectDetectionAnnotation imageObjectDetectionAnnotation =
+            annotationPayload.getImageObjectDetection();
         System.out.format(
-                "Predicted class score: %.2f%n",
-                imageObjectDetectionAnnotation.getScore());
+            "Predicted class score: %.2f%n", imageObjectDetectionAnnotation.getScore());
         BoundingPoly boundingPoly = imageObjectDetectionAnnotation.getBoundingBox();
         System.out.println("Normalized Vertices:");
         for (NormalizedVertex vertex : boundingPoly.getNormalizedVerticesList()) {
