@@ -45,23 +45,24 @@ public class AlertIT {
       Pattern.compile(
           "alertPolicies/(?<alertid>.*)(?s).*(?!s)notificationChannels/(?<channel>[a-zA-Z0-9]*)$");
   private ByteArrayOutputStream bout;
-  private PrintStream out;
+  private final PrintStream originalOut = System.out;
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
+    System.setOut(new PrintStream(bout));
   }
 
   @After
   public void tearDown() {
-    System.setOut(null);
+    System.setOut(originalOut);
+    bout.reset();
   }
 
   @Test
   public void testListPolicies() throws IOException {
     AlertSample.main(new String[] {"list"});
+    System.out.println(bout);
     assertTrue(bout.toString().contains(testPolicyName));
   }
 
@@ -96,7 +97,7 @@ public class AlertIT {
   @Test
   public void testDisableEnablePolicies() throws IOException {
     AlertSample.main(new String[] {"enable", "-d", "display_name='test-policy'"});
-    
+
     // check the current state of policy to make sure
     // not to enable the policy that is already enabled.
     boolean isEnabled = bout.toString().contains("already");

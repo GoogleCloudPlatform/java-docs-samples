@@ -78,6 +78,7 @@ public class AlertSample {
           .build();
   private static final Option CHANNEL_ID_OPTION =
       Option.builder("c")
+          .required()
           .longOpt("channel-id")
           .desc("A channel id.  Repeat this option to set multiple channel ids.")
           .hasArg()
