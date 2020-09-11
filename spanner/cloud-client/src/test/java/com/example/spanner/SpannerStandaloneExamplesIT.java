@@ -19,16 +19,22 @@ package com.example.spanner;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.spanner.DatabaseAdminClient;
+import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Instance;
+import com.google.cloud.spanner.KeySet;
+import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.UUID;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,6 +85,11 @@ public class SpannerStandaloneExamplesIT {
                     + "  FirstName  STRING(1024),"
                     + "  LastName   STRING(1024),"
                     + "  SingerInfo BYTES(MAX)"
+                    + ") PRIMARY KEY (SingerId)",
+                "CREATE TABLE Venues (VenueId INT64 NOT NULL) PRIMARY KEY (VenueId)",
+                "CREATE TABLE SingerRevenues ("
+                    + "  SingerId INT64 NOT NULL,"
+                    + "  Revenue  NUMERIC NOT NULL"
                     + ") PRIMARY KEY (SingerId)"))
         .get();
   }
@@ -87,6 +98,14 @@ public class SpannerStandaloneExamplesIT {
   public static void dropTestDatabase() throws Exception {
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
     spanner.close();
+  }
+
+  @Before
+  public void deleteTestData() {
+    String projectId = spanner.getOptions().getProjectId();
+    DatabaseClient client =
+        spanner.getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
+    client.write(Collections.singleton(Mutation.delete("SingerRevenues", KeySet.all())));
   }
 
   @Test
@@ -98,6 +117,57 @@ public class SpannerStandaloneExamplesIT {
                 CustomTimeoutAndRetrySettingsExample.executeSqlWithCustomTimeoutAndRetrySettings(
                     projectId, instanceId, databaseId));
     assertThat(out).contains("1 record inserted.");
+  }
+
+  @Test
+  public void addNumericColumn_shouldSuccessfullyAddColumn() {
+    String out =
+        runExample(
+            () ->
+                AddNumericColumnSample.addNumericColumn(
+                    spanner.getDatabaseAdminClient(), instanceId, databaseId));
+    assertThat(out).contains("Successfully added column `Revenue`");
+  }
+
+  @Test
+  public void insertNumericData_shouldWriteData() {
+    String projectId = spanner.getOptions().getProjectId();
+    String out =
+        runExample(
+            () ->
+                InsertNumericDataSample.insertNumericData(
+                    spanner.getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId))));
+    assertThat(out).contains("Records successfully inserted");
+  }
+
+  @Test
+  public void queryWithNumericParameter_shouldReturnResults() {
+    String projectId = spanner.getOptions().getProjectId();
+    DatabaseClient client =
+        spanner.getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
+    client.write(
+        ImmutableList.of(
+            Mutation.newInsertOrUpdateBuilder("SingerRevenues")
+                .set("SingerId")
+                .to(1L)
+                .set("Revenue")
+                .to(new BigDecimal("35000"))
+                .build(),
+            Mutation.newInsertOrUpdateBuilder("SingerRevenues")
+                .set("SingerId")
+                .to(6L)
+                .set("Revenue")
+                .to(new BigDecimal("104500"))
+                .build(),
+            Mutation.newInsertOrUpdateBuilder("SingerRevenues")
+                .set("SingerId")
+                .to(14L)
+                .set("Revenue")
+                .to(new BigDecimal("99999999999999999999999999999.99"))
+                .build()));
+    String out =
+        runExample(() -> QueryWithNumericParameterSample.queryWithNumericParameter(client));
+    assertThat(out).contains("1 35000");
   }
 
   static String formatForTest(String name) {
