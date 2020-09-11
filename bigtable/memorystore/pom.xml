@@ -16,6 +16,13 @@
 
 
   <dependencies>
+    <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-bigtable -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-bigtable</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/net.spy/spymemcached -->
     <dependency>
       <groupId>net.spy</groupId>
