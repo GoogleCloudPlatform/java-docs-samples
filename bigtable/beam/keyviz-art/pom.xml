@@ -41,22 +41,68 @@
   </properties>
 
   <dependencies>
+
+
     <dependency>
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-runners-direct-java</artifactId>
       <version>${apache_beam.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
       <version>${apache_beam.version}</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-datastore -->
+
 
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-beam</artifactId>
       <version>1.15.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-datastore</artifactId>
+      <version>1.103.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+
+    </dependency>
+
+    <!--    <dependency>-->
+    <!--      <groupId>com.google.api.grpc</groupId>-->
+    <!--      <artifactId>proto-google-cloud-datastore-v1</artifactId>-->
+    <!--      <version>0.87.0</version>-->
+    <!--      <exclusions>-->
+    <!--        <exclusion>-->
+    <!--          <groupId>com.google.guava</groupId>-->
+    <!--          <artifactId>guava</artifactId>-->
+    <!--        </exclusion>-->
+    <!--      </exclusions>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>com.google.cloud.datastore</groupId>-->
+    <!--      <artifactId>datastore-v1-proto-client</artifactId>-->
+    <!--      <version>1.6.3</version>-->
+    <!--      <exclusions>-->
+    <!--        <exclusion>-->
+    <!--          <groupId>com.google.guava</groupId>-->
+    <!--          <artifactId>guava</artifactId>-->
+    <!--        </exclusion>-->
+    <!--      </exclusions>-->
+    <!--    </dependency>-->
 
     <dependency>
       <groupId>junit</groupId>
