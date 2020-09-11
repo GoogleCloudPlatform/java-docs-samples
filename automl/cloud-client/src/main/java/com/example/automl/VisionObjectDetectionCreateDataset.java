@@ -17,6 +17,7 @@
 package com.example.automl;
 
 // [START automl_vision_object_detection_create_dataset]
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.Dataset;
@@ -58,13 +59,13 @@ class VisionObjectDetectionCreateDataset {
       Dataset createdDataset = future.get();
 
       // Display the dataset information.
-      System.out.format("Dataset name: %s\n", createdDataset.getName());
+      System.out.format("Dataset name: %s%n", createdDataset.getName());
       // To get the dataset id, you have to parse it out of the `name` field. As dataset Ids are
       // required for other methods.
       // Name Form: `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}`
       String[] names = createdDataset.getName().split("/");
       String datasetId = names[names.length - 1];
-      System.out.format("Dataset id: %s\n", datasetId);
+      System.out.format("Dataset id: %s%n", datasetId);
     }
   }
 }

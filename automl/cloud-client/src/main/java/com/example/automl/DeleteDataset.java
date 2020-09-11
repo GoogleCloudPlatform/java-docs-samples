@@ -17,6 +17,7 @@
 package com.example.automl;
 
 // [START automl_delete_dataset]
+
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.DatasetName;
 import com.google.protobuf.Empty;
@@ -42,7 +43,7 @@ class DeleteDataset {
       // Get the full path of the dataset.
       DatasetName datasetFullId = DatasetName.of(projectId, "us-central1", datasetId);
       Empty response = client.deleteDatasetAsync(datasetFullId).get();
-      System.out.format("Dataset deleted. %s\n", response);
+      System.out.format("Dataset deleted. %s%n", response);
     }
   }
 }

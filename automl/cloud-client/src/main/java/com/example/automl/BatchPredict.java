@@ -17,6 +17,7 @@
 package com.example.automl;
 
 // [START automl_batch_predict]
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.automl.v1.BatchPredictInputConfig;
 import com.google.cloud.automl.v1.BatchPredictOutputConfig;
@@ -69,6 +70,7 @@ class BatchPredict {
       System.out.println("Waiting for operation to complete...");
       BatchPredictResult response = future.get();
       System.out.println("Batch Prediction results saved to specified Cloud Storage bucket.");
+      System.out.println(response);
     }
   }
 }

@@ -26,6 +26,8 @@ import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.Dataset;
 import com.google.cloud.automl.v1.ListDatasetsRequest;
 import com.google.cloud.automl.v1.LocationName;
+import com.google.cloud.automl.v1.TranslationDatasetMetadata;
+import com.google.protobuf.Timestamp;
 import java.io.IOException;
 
 class ListDatasets {
@@ -51,56 +53,57 @@ class ListDatasets {
       System.out.println("List of datasets:");
       for (Dataset dataset : client.listDatasets(request).iterateAll()) {
         // Display the dataset information
-        System.out.format("\nDataset name: %s\n", dataset.getName());
+        System.out.format("%nDataset name: %s%n", dataset.getName());
         // To get the dataset id, you have to parse it out of the `name` field. As dataset Ids are
         // required for other methods.
         // Name Form: `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}`
         String[] names = dataset.getName().split("/");
         String retrievedDatasetId = names[names.length - 1];
-        System.out.format("Dataset id: %s\n", retrievedDatasetId);
-        System.out.format("Dataset display name: %s\n", dataset.getDisplayName());
+        System.out.format("Dataset id: %s%n", retrievedDatasetId);
+        System.out.format("Dataset display name: %s%n", dataset.getDisplayName());
         System.out.println("Dataset create time:");
-        System.out.format("\tseconds: %s\n", dataset.getCreateTime().getSeconds());
-        System.out.format("\tnanos: %s\n", dataset.getCreateTime().getNanos());
+        Timestamp createdTime = dataset.getCreateTime();
+        System.out.format("\tseconds: %s%n", createdTime.getSeconds());
+        System.out.format("\tnanos: %s%n", createdTime.getNanos());
         // [END automl_language_sentiment_analysis_list_datasets]
         // [END automl_language_text_classification_list_datasets]
         // [END automl_translate_list_datasets]
         // [END automl_vision_classification_list_datasets]
         // [END automl_vision_object_detection_list_datasets]
         System.out.format(
-            "Text extraction dataset metadata: %s\n", dataset.getTextExtractionDatasetMetadata());
+            "Text extraction dataset metadata: %s%n", dataset.getTextExtractionDatasetMetadata());
         // [END automl_language_entity_extraction_list_datasets]
 
         // [START automl_language_sentiment_analysis_list_datasets]
         System.out.format(
-            "Text sentiment dataset metadata: %s\n", dataset.getTextSentimentDatasetMetadata());
+            "Text sentiment dataset metadata: %s%n", dataset.getTextSentimentDatasetMetadata());
         // [END automl_language_sentiment_analysis_list_datasets]
 
         // [START automl_language_text_classification_list_datasets]
         System.out.format(
-            "Text classification dataset metadata: %s\n",
+            "Text classification dataset metadata: %s%n",
             dataset.getTextClassificationDatasetMetadata());
         // [END automl_language_text_classification_list_datasets]
 
         // [START automl_translate_list_datasets]
         System.out.println("Translation dataset metadata:");
+        TranslationDatasetMetadata translationDatasetMetadata =
+            dataset.getTranslationDatasetMetadata();
         System.out.format(
-            "\tSource language code: %s\n",
-            dataset.getTranslationDatasetMetadata().getSourceLanguageCode());
+            "\tSource language code: %s%n", translationDatasetMetadata.getSourceLanguageCode());
         System.out.format(
-            "\tTarget language code: %s\n",
-            dataset.getTranslationDatasetMetadata().getTargetLanguageCode());
+            "\tTarget language code: %s%n", translationDatasetMetadata.getTargetLanguageCode());
         // [END automl_translate_list_datasets]
 
         // [START automl_vision_classification_list_datasets]
         System.out.format(
-            "Image classification dataset metadata: %s\n",
+            "Image classification dataset metadata: %s%n",
             dataset.getImageClassificationDatasetMetadata());
         // [END automl_vision_classification_list_datasets]
 
         // [START automl_vision_object_detection_list_datasets]
         System.out.format(
-            "Image object detection dataset metadata: %s\n",
+            "Image object detection dataset metadata: %s%n",
             dataset.getImageObjectDetectionDatasetMetadata());
         // [START automl_language_entity_extraction_list_datasets]
         // [START automl_language_sentiment_analysis_list_datasets]

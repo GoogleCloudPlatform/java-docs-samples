@@ -17,6 +17,7 @@
 package com.example.automl;
 
 // [START automl_vision_classification_predict]
+
 import com.google.cloud.automl.v1.AnnotationPayload;
 import com.google.cloud.automl.v1.ExamplePayload;
 import com.google.cloud.automl.v1.Image;
@@ -60,9 +61,9 @@ class VisionClassificationPredict {
       PredictResponse response = client.predict(predictRequest);
 
       for (AnnotationPayload annotationPayload : response.getPayloadList()) {
-        System.out.format("Predicted class name: %s\n", annotationPayload.getDisplayName());
+        System.out.format("Predicted class name: %s%n", annotationPayload.getDisplayName());
         System.out.format(
-            "Predicted class score: %.2f\n", annotationPayload.getClassification().getScore());
+            "Predicted class score: %.2f%n", annotationPayload.getClassification().getScore());
       }
     }
   }

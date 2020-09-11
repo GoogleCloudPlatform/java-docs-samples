@@ -17,6 +17,7 @@
 package com.example.automl;
 
 // [START automl_list_operation_status]
+
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.LocationName;
 import com.google.longrunning.ListOperationsRequest;
@@ -48,16 +49,16 @@ class ListOperationStatus {
       for (Operation operation :
           client.getOperationsClient().listOperations(listrequest).iterateAll()) {
         System.out.println("Operation details:");
-        System.out.format("\tName: %s\n", operation.getName());
-        System.out.format("\tMetadata Type Url: %s\n", operation.getMetadata().getTypeUrl());
-        System.out.format("\tDone: %s\n", operation.getDone());
+        System.out.format("\tName: %s%n", operation.getName());
+        System.out.format("\tMetadata Type Url: %s%n", operation.getMetadata().getTypeUrl());
+        System.out.format("\tDone: %s%n", operation.getDone());
         if (operation.hasResponse()) {
-          System.out.format("\tResponse Type Url: %s\n", operation.getResponse().getTypeUrl());
+          System.out.format("\tResponse Type Url: %s%n", operation.getResponse().getTypeUrl());
         }
         if (operation.hasError()) {
           System.out.println("\tResponse:");
-          System.out.format("\t\tError code: %s\n", operation.getError().getCode());
-          System.out.format("\t\tError message: %s\n\n", operation.getError().getMessage());
+          System.out.format("\t\tError code: %s%n", operation.getError().getCode());
+          System.out.format("\t\tError message: %s%n%n", operation.getError().getMessage());
         }
       }
     }
