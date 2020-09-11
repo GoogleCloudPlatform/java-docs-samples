@@ -2,7 +2,6 @@ package example
 
 import com.google.bigtable.repackaged.com.google.cloud.bigtable.data.v2.models.Query
 import com.google.bigtable.repackaged.com.google.cloud.bigtable.data.v2.{BigtableDataClient, BigtableDataSettings}
-import org.scalatest._
 import org.scalatest.flatspec._
 import org.scalatest.matchers._
 
@@ -19,6 +18,7 @@ class IntegrationTest extends AnyFlatSpec
   val table_wordcount = getOrThrowException("BIGTABLE_SPARK_WORDCOUNT_TABLE")
   val file = getOrThrowException("BIGTABLE_SPARK_WORDCOUNT_FILE")
   val table_copytable = getOrThrowException("BIGTABLE_SPARK_COPYTABLE_TABLE")
+  val rowCount = getOrThrowException("BIGTABLE_SPARK_ROW_COUNT").toInt
 
   "IntegrationTest" should "write records to Bigtable, copy them between tables" in {
     import org.apache.spark.{SparkConf, SparkContext}
@@ -37,6 +37,7 @@ class IntegrationTest extends AnyFlatSpec
     import collection.JavaConverters._
     val wordcountRowCount = dataClient.readRows(Query.create(table_wordcount)).iterator().asScala.length
     val copytableRowCount = dataClient.readRows(Query.create(table_copytable)).iterator().asScala.length
+    wordcountRowCount should be(rowCount)
     wordcountRowCount should be(copytableRowCount)
   }
 }
