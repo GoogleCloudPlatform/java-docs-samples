@@ -17,6 +17,7 @@
 package com.example.spanner.jdbc;
 
 import static com.google.common.truth.Truth.assertThat;
+
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
