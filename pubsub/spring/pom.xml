@@ -42,6 +42,7 @@
   <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
   <!-- [START pubsub_spring_dependency_manager] -->
   <dependencyManagement>
+  <!-- [END pubsub_spring_dependency_manager] -->
     <dependencies>
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -50,7 +51,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- [END pubsub_spring_dependency_manager] -->
       <!-- [START pubsub_spring_dependency_manager] -->
       <dependency>
         <groupId>org.springframework.cloud</groupId>
