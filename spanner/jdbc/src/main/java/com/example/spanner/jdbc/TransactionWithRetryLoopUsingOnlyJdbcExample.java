@@ -68,6 +68,8 @@ class TransactionWithRetryLoopUsingOnlyJdbcExample {
           }
           break;
         } catch (SQLException e) {
+          // Rollback the current transaction to initiate a new transaction on the next statement.
+          connection.rollback();
           if (e.getErrorCode() == Code.ABORTED.value()) {
             // Transaction aborted, retry.
             System.out.println("Transaction aborted, starting retry");
