@@ -76,6 +76,8 @@ class TransactionWithRetryLoopExample {
               "Transaction committed at [%s]%n", spannerConnection.getCommitTimestamp().toString());
           break;
         } catch (JdbcAbortedException e) {
+          // Rollback the current transaction to initiate a new transaction on the next statement.
+          connection.rollback();
           // Transaction aborted, retry.
           System.out.println("Transaction aborted, starting retry");
         }
