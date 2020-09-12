@@ -25,8 +25,8 @@ import com.google.cloud.spanner.Instance;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
+import com.google.cloud.spanner.connection.ConnectionOptions;
 import com.google.cloud.spanner.jdbc.CloudSpannerJdbcConnection;
-import com.google.cloud.spanner.jdbc.SpannerPool;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.sql.Connection;
@@ -90,7 +90,7 @@ public class JdbcExamplesIT {
 
   @AfterClass
   public static void dropTestDatabase() throws Exception {
-    SpannerPool.closeSpannerPool();
+    ConnectionOptions.closeSpanner();
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
   }
 
