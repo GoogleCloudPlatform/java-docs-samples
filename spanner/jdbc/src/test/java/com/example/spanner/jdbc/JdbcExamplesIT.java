@@ -17,7 +17,6 @@
 package com.example.spanner.jdbc;
 
 import static com.google.common.truth.Truth.assertThat;
-
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -29,6 +28,7 @@ import com.google.cloud.spanner.jdbc.CloudSpannerJdbcConnection;
 import com.google.cloud.spanner.jdbc.SpannerPool;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -98,21 +98,23 @@ public class JdbcExamplesIT {
     final long singerId;
     final String firstName;
     final String lastName;
+    final BigDecimal revenues;
 
-    Singer(long singerId, String firstName, String lastName) {
+    Singer(long singerId, String firstName, String lastName, BigDecimal revenues) {
       this.singerId = singerId;
       this.firstName = firstName;
       this.lastName = lastName;
+      this.revenues = revenues;
     }
   }
 
-  private static final List<Singer> TEST_SINGERS =
+  static final List<Singer> TEST_SINGERS =
       Arrays.asList(
-          new Singer(1, "Marc", "Richards"),
-          new Singer(2, "Catalina", "Smith"),
-          new Singer(3, "Alice", "Trentor"),
-          new Singer(4, "Lea", "Martin"),
-          new Singer(5, "David", "Lomond"));
+          new Singer(1, "Marc", "Richards", new BigDecimal("104100.00")),
+          new Singer(2, "Catalina", "Smith", new BigDecimal("9880.99")),
+          new Singer(3, "Alice", "Trentor", new BigDecimal("300183")),
+          new Singer(4, "Lea", "Martin", new BigDecimal("20118.12")),
+          new Singer(5, "David", "Lomond", new BigDecimal("311399.26")));
 
   @Before
   public void insertTestData() throws SQLException {
@@ -133,6 +135,8 @@ public class JdbcExamplesIT {
                 .to(singer.firstName)
                 .set("LastName")
                 .to(singer.lastName)
+                .set("Revenues")
+                .to(singer.revenues)
                 .build());
       }
       connection.commit();
@@ -345,8 +349,8 @@ public class JdbcExamplesIT {
             () ->
                 ReadOnlyTransactionExample.readOnlyTransaction(
                     ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
-    assertThat(out).contains("1 Marc Richards");
-    assertThat(out).contains("2 Catalina Smith");
+    assertThat(out).contains("1 Marc Richards 104100");
+    assertThat(out).contains("2 Catalina Smith 9880.99");
     assertThat(out).contains("Read-only transaction used read timestamp [");
   }
 
@@ -379,8 +383,8 @@ public class JdbcExamplesIT {
             () ->
                 SingleUseReadOnlyExample.singleUseReadOnly(
                     ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
-    assertThat(out).contains("1 Marc Richards");
-    assertThat(out).contains("2 Catalina Smith");
+    assertThat(out).contains("1 Marc Richards 104100");
+    assertThat(out).contains("2 Catalina Smith 9880.99");
   }
 
   @Test
@@ -390,8 +394,7 @@ public class JdbcExamplesIT {
             () ->
                 SingleUseReadOnlyTimestampBoundExample.singleUseReadOnlyTimestampBound(
                     ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
-    assertThat(out).doesNotContain("10 Marc Richards");
-    assertThat(out).doesNotContain("20 Catalina Smith");
+    assertThat(out).contains("Read timestamp used:");
   }
 
   @Test

@@ -55,6 +55,12 @@ public class SingleUseReadOnlyTimestampBoundExample {
               rs.getLong(1), rs.getString(2), rs.getString(3), rs.getBigDecimal(4));
         }
       }
+      // Get the read timestamp that was used by the query.
+      try (ResultSet rs = statement.executeQuery("SHOW VARIABLE READ_TIMESTAMP")) {
+        while (rs.next()) {
+          System.out.printf("Read timestamp used: %s%n", rs.getTimestamp(1));
+        }
+      }
     }
   }
 }
