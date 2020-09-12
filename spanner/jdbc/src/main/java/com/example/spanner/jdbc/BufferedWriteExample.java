@@ -18,6 +18,7 @@ package com.example.spanner.jdbc;
 
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.jdbc.CloudSpannerJdbcConnection;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -55,6 +56,8 @@ class BufferedWriteExample {
               .to("Marvin")
               .set("LastName")
               .to("Mooney")
+              .set("Revenues")
+              .to(new BigDecimal("15600.98"))
               .build();
       Mutation mutationAlbums =
           Mutation.newInsertBuilder("Albums")

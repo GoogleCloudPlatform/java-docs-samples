@@ -48,9 +48,11 @@ public class SingleUseReadOnlyTimestampBoundExample {
       statement.execute("SET READ_ONLY_STALENESS = 'MAX_STALENESS 10s'");
       try (ResultSet rs =
           statement.executeQuery(
-              "SELECT SingerId, FirstName, LastName FROM Singers ORDER BY LastName")) {
+              "SELECT SingerId, FirstName, LastName, Revenues FROM Singers ORDER BY LastName")) {
         while (rs.next()) {
-          System.out.printf("%d %s %s%n", rs.getLong(1), rs.getString(2), rs.getString(3));
+          System.out.printf(
+              "%d %s %s %s%n",
+              rs.getLong(1), rs.getString(2), rs.getString(3), rs.getBigDecimal(4));
         }
       }
     }
