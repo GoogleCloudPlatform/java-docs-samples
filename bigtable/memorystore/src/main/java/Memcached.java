@@ -48,11 +48,12 @@ public class Memcached {
       if (value != null) {
         System.out.println("Value fetched from cache: " + value);
       } else {
+        System.out.println("didn't get value from cache");
         // Get data from Bigtable source and add to cache for 10 seconds.
         try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
           Row row = dataClient.readRow(tableId, rowkey);
           String cellValue = row.getCells(columnFamily, column).get(0).getValue().toStringUtf8();
-
+          System.out.println("got data from bt "+cellValue);
           // Set data into memcached server.
           mcc.set(cacheKey, 10, cellValue);
           System.out.println("Value fetched from Bigtable: " + cellValue);
