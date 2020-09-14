@@ -1,11 +1,25 @@
+/*
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import com.google.cloud.bigtable.data.v2.BigtableDataClient;
 import com.google.cloud.bigtable.data.v2.models.Row;
 import net.spy.memcached.MemcachedClient;
 import java.net.InetSocketAddress;
 
 public class Memcached {
-
-  private static String rowString;
 
   public static void main(String[] args) {
     memcachedBigtable("billy-testing-project", "testing-instance", "mobile-time-series",
@@ -15,32 +29,33 @@ public class Memcached {
 
   public static void memcachedBigtable(String projectId, String instanceId, String tableId,
       String hostname) {
-
     // String projectId = "my-project-id";
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
-    // String hostname = "0.0.0.0";
+    // String hostname = "localhost";
 
-    // Connecting to Memcached server on localhost
     try {
-      // hostname = "10.99.208.3"
-      MemcachedClient mcc = new MemcachedClient(new
-          InetSocketAddress(hostname, 11211));
-      System.out.println("Connection to server sucessfully");
+      MemcachedClient mcc = new MemcachedClient(new InetSocketAddress(hostname, 11211));
+      System.out.println("Connected to Memcached successfully");
 
       // Get value from cache
       String rowkey = "phone#4c410523#20190501";
-      Object value = mcc.get(rowkey);
+      String columnFamily = "stats_summary";
+      String column = "os_build";
+      String cacheKey = String.format("%s:%s:%s", rowkey, columnFamily, column);
+      Object value = mcc.get(cacheKey);
 
       if (value != null) {
-        System.out.println("Value from cache: " + value);
+        System.out.println("Value fetched from cache: " + value);
       } else {
+        // Get data from Bigtable source and add to cache for 10 seconds.
         try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
           Row row = dataClient.readRow(tableId, rowkey);
+          String cellValue = row.getCells(columnFamily, column).get(0).getValue().toStringUtf8();
+
           // Set data into memcached server.
-          String rowString = row.toString();
-          System.out.println("set status:" + mcc.set(rowkey, 10, rowString));
-          System.out.println("Value from Bigtable is: " + rowString);
+          mcc.set(cacheKey, 10, cellValue);
+          System.out.println("Value fetched from Bigtable: " + cellValue);
         } catch (Exception e) {
           System.out.println("Could not set cache value.");
           e.printStackTrace();
@@ -48,8 +63,8 @@ public class Memcached {
       }
       mcc.shutdown();
     } catch (Exception e) {
+      System.out.println("Could not get cache value.");
       e.printStackTrace();
     }
   }
-
 }
