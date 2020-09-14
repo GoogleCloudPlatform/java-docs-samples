@@ -123,7 +123,8 @@ public class FSReadData2 {
       QueryResults<Entity> entityQueryResults = ds.run(query.build());
       int c = 0;
       while (entityQueryResults.hasNext()) {
-        entityQueryResults.next();
+        Entity entity = entityQueryResults.next();
+        System.out.println(entity);
         c++;
       }
       System.out.println(c + " rows queried");
