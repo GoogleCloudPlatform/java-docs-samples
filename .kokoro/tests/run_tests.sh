@@ -83,6 +83,9 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
         --project="$GOOGLE_CLOUD_PROJECT"
 
+    # Start Memcached server
+    memcached &
+
     cd github/java-docs-samples
 fi
 
