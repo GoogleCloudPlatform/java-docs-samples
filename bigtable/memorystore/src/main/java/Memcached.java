@@ -5,6 +5,14 @@ import java.net.InetSocketAddress;
 
 public class Memcached {
 
+  private static String rowString;
+
+  public static void main(String[] args) {
+    memcachedBigtable("billy-testing-project", "testing-instance", "mobile-time-series",
+        "localhost");
+  }
+
+
   public static void memcachedBigtable(String projectId, String instanceId, String tableId,
       String hostname) {
 
@@ -15,9 +23,9 @@ public class Memcached {
 
     // Connecting to Memcached server on localhost
     try {
-      String hostname1 = "10.99.208.3";
+      // hostname = "10.99.208.3"
       MemcachedClient mcc = new MemcachedClient(new
-          InetSocketAddress(hostname1, 11211));
+          InetSocketAddress(hostname, 11211));
       System.out.println("Connection to server sucessfully");
 
       // Get value from cache
@@ -25,12 +33,14 @@ public class Memcached {
       Object value = mcc.get(rowkey);
 
       if (value != null) {
-        System.out.println("Get from Cache:" + value);
+        System.out.println("Value from cache: " + value);
       } else {
         try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
           Row row = dataClient.readRow(tableId, rowkey);
           // Set data into memcached server.
-          System.out.println("set status:" + mcc.set(rowkey, 900, row));
+          String rowString = row.toString();
+          System.out.println("set status:" + mcc.set(rowkey, 10, rowString));
+          System.out.println("Value from Bigtable is: " + rowString);
         } catch (Exception e) {
           System.out.println("Could not set cache value.");
           e.printStackTrace();
@@ -40,7 +50,6 @@ public class Memcached {
     } catch (Exception e) {
       e.printStackTrace();
     }
-
   }
 
 }
