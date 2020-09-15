@@ -85,7 +85,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
 
     # Start Memcached server
     apt-get update && apt-get install -y memcached libmemcached-tools
-    memcached -U 0 &
+    memcached -u nobody &
     memcstat --servers="127.0.0.1"
 
     cd github/java-docs-samples
