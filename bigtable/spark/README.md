@@ -65,7 +65,7 @@ BIGTABLE_SPARK_PROJECT_ID=your-project-id
 BIGTABLE_SPARK_INSTANCE_ID=your-bigtable-instance
 
 BIGTABLE_SPARK_WORDCOUNT_TABLE=wordcount
-BIGTABLE_SPARK_WORDCOUNT_FILE=README.md
+BIGTABLE_SPARK_WORDCOUNT_FILE=src/test/resources/Romeo-and-Juliet-prologue.txt
 
 BIGTABLE_SPARK_COPYTABLE_TABLE=copytable
 ```
@@ -129,7 +129,7 @@ $ cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   count $BIGTABLE_SPARK_WORDCOUNT_TABLE
-324
+88
 ```
 
 **TIP** For details about using the `cbt` tool, including a list of available commands, see the [cbt Reference](https://cloud.google.com/bigtable/docs/cbt-reference).
@@ -156,7 +156,7 @@ $ cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   count $BIGTABLE_SPARK_COPYTABLE_TABLE
-324
+88
 ```
 
 ## Run Wordcount with Cloud Bigtable
@@ -178,7 +178,7 @@ gcloud beta bigtable instances \
   --instance-type=DEVELOPMENT
 ```
 
-Check out the available Cloud Bigtable instances using `gcloud beta bigtable instances list` command.
+Check out the available Cloud Bigtable instances and make sure yours is listed.
 
 ```
 gcloud beta bigtable instances list
@@ -219,14 +219,14 @@ $SPARK_HOME/bin/spark-submit \
 ### Verify
 
 Use `cbt count` to count the number of rows in the `BIGTABLE_SPARK_WORDCOUNT_TABLE` table. There should be 
-324 rows.
+88 rows.
 
 ```
 $ cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   count $BIGTABLE_SPARK_WORDCOUNT_TABLE
-324
+88
 ```
 
 ### Delete Cloud Bigtable Instance
@@ -287,8 +287,7 @@ BIGTABLE_SPARK_PROJECT_ID=your-project-id
 
 gcloud dataproc clusters create $BIGTABLE_SPARK_DATAPROC_CLUSTER \
   --region=$BIGTABLE_SPARK_REGION \
-  --project=$BIGTABLE_SPARK_PROJECT_ID \
-  --quiet
+  --project=$BIGTABLE_SPARK_PROJECT_ID
 ```
 
 ### Configure Cloud Bigtable
