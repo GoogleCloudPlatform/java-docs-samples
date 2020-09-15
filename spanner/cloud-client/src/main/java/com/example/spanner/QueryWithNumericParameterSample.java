@@ -44,14 +44,14 @@ class QueryWithNumericParameterSample {
   static void queryWithNumericParameter(DatabaseClient client) {
     Statement statement =
         Statement.newBuilder(
-                "SELECT SingerId, Revenue FROM SingerRevenues WHERE Revenue < @numeric")
+                "SELECT VenueId, Revenue FROM Venues WHERE Revenue < @numeric")
             .bind("numeric")
             .to(new BigDecimal("100000"))
             .build();
     try (ResultSet resultSet = client.singleUse().executeQuery(statement)) {
       while (resultSet.next()) {
         System.out.printf(
-            "%d %s%n", resultSet.getLong("SingerId"), resultSet.getBigDecimal("Revenue"));
+            "%d %s%n", resultSet.getLong("VenueId"), resultSet.getBigDecimal("Revenue"));
       }
     }
   }

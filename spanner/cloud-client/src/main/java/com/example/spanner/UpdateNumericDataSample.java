@@ -16,7 +16,7 @@
 
 package com.example.spanner;
 
-// [START spanner_update_data_with_numeric]
+// [START spanner_update_data_with_numeric_column]
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Mutation;
@@ -25,9 +25,9 @@ import com.google.cloud.spanner.SpannerOptions;
 import com.google.common.collect.ImmutableList;
 import java.math.BigDecimal;
 
-class InsertNumericDataSample {
+class UpdateNumericDataSample {
 
-  static void insertNumericData() {
+  static void updateNumericData() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project";
     String instanceId = "my-instance";
@@ -37,32 +37,32 @@ class InsertNumericDataSample {
         SpannerOptions.newBuilder().setProjectId(projectId).build().getService()) {
       DatabaseClient client =
           spanner.getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
-      insertNumericData(client);
+      updateNumericData(client);
     }
   }
 
-  static void insertNumericData(DatabaseClient client) {
+  static void updateNumericData(DatabaseClient client) {
     client.write(
         ImmutableList.of(
-            Mutation.newInsertOrUpdateBuilder("SingerRevenues")
-                .set("SingerId")
-                .to(1L)
+            Mutation.newInsertOrUpdateBuilder("Venues")
+                .set("VenueId")
+                .to(4L)
                 .set("Revenue")
                 .to(new BigDecimal("35000"))
                 .build(),
-            Mutation.newInsertOrUpdateBuilder("SingerRevenues")
-                .set("SingerId")
-                .to(6L)
+            Mutation.newInsertOrUpdateBuilder("Venues")
+                .set("VenueId")
+                .to(19L)
                 .set("Revenue")
                 .to(new BigDecimal("104500"))
                 .build(),
-            Mutation.newInsertOrUpdateBuilder("SingerRevenues")
-                .set("SingerId")
-                .to(14L)
+            Mutation.newInsertOrUpdateBuilder("Venues")
+                .set("VenueId")
+                .to(42L)
                 .set("Revenue")
                 .to(new BigDecimal("99999999999999999999999999999.99"))
                 .build()));
-    System.out.println("Records successfully inserted");
+    System.out.println("Records successfully updated");
   }
 }
-// [END spanner_update_data_with_numeric]
+// [END spanner_update_data_with_numeric_column]

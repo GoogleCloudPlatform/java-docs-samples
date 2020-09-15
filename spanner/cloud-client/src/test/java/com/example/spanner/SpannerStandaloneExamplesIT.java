@@ -17,7 +17,7 @@
 package com.example.spanner;
 
 import static com.google.common.truth.Truth.assertThat;
-
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -27,12 +27,14 @@ import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.common.collect.ImmutableList;
+import com.google.spanner.admin.database.v1.UpdateDatabaseDdlMetadata;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -86,11 +88,7 @@ public class SpannerStandaloneExamplesIT {
                     + "  LastName   STRING(1024),"
                     + "  SingerInfo BYTES(MAX)"
                     + ") PRIMARY KEY (SingerId)",
-                "CREATE TABLE Venues (VenueId INT64 NOT NULL) PRIMARY KEY (VenueId)",
-                "CREATE TABLE SingerRevenues ("
-                    + "  SingerId INT64 NOT NULL,"
-                    + "  Revenue  NUMERIC NOT NULL"
-                    + ") PRIMARY KEY (SingerId)"))
+                "CREATE TABLE Venues (VenueId INT64 NOT NULL, Revenue NUMERIC) PRIMARY KEY (VenueId)"))
         .get();
   }
 
@@ -105,7 +103,7 @@ public class SpannerStandaloneExamplesIT {
     String projectId = spanner.getOptions().getProjectId();
     DatabaseClient client =
         spanner.getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
-    client.write(Collections.singleton(Mutation.delete("SingerRevenues", KeySet.all())));
+    client.write(Collections.singleton(Mutation.delete("Venues", KeySet.all())));
   }
 
   @Test
@@ -120,24 +118,39 @@ public class SpannerStandaloneExamplesIT {
   }
 
   @Test
-  public void addNumericColumn_shouldSuccessfullyAddColumn() {
+  public void addNumericColumn_shouldSuccessfullyAddColumn() throws InterruptedException, ExecutionException {
+    OperationFuture<Void, UpdateDatabaseDdlMetadata> operation =
+        spanner.getDatabaseAdminClient().updateDatabaseDdl(
+            instanceId,
+            databaseId,
+            ImmutableList.of("ALTER TABLE Venues DROP COLUMN Revenue"),
+            null);
+    operation.get();
     String out =
         runExample(
             () ->
-                AddNumericColumnSample.addNumericColumn(
-                    spanner.getDatabaseAdminClient(), instanceId, databaseId));
+                {
+                  try {
+                    AddNumericColumnSample.addNumericColumn(
+                        spanner.getDatabaseAdminClient(), instanceId, databaseId);
+                  } catch (ExecutionException e) {
+                    System.out.printf("Adding column `Revenue` failed: %s%n", e.getCause().getMessage());
+                  } catch (InterruptedException e) {
+                    System.out.printf("Adding column `Revenue` was interrupted%n");
+                  }
+               });
     assertThat(out).contains("Successfully added column `Revenue`");
   }
 
   @Test
-  public void insertNumericData_shouldWriteData() {
+  public void updateNumericData_shouldWriteData() {
     String projectId = spanner.getOptions().getProjectId();
     String out =
         runExample(
             () ->
-                InsertNumericDataSample.insertNumericData(
+                UpdateNumericDataSample.updateNumericData(
                     spanner.getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId))));
-    assertThat(out).contains("Records successfully inserted");
+    assertThat(out).contains("Records successfully updated");
   }
 
   @Test
@@ -147,27 +160,27 @@ public class SpannerStandaloneExamplesIT {
         spanner.getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
     client.write(
         ImmutableList.of(
-            Mutation.newInsertOrUpdateBuilder("SingerRevenues")
-                .set("SingerId")
-                .to(1L)
+            Mutation.newInsertOrUpdateBuilder("Venues")
+                .set("VenueId")
+                .to(4L)
                 .set("Revenue")
                 .to(new BigDecimal("35000"))
                 .build(),
-            Mutation.newInsertOrUpdateBuilder("SingerRevenues")
-                .set("SingerId")
-                .to(6L)
+            Mutation.newInsertOrUpdateBuilder("Venues")
+                .set("VenueId")
+                .to(19L)
                 .set("Revenue")
                 .to(new BigDecimal("104500"))
                 .build(),
-            Mutation.newInsertOrUpdateBuilder("SingerRevenues")
-                .set("SingerId")
-                .to(14L)
+            Mutation.newInsertOrUpdateBuilder("Venues")
+                .set("VenueId")
+                .to(42L)
                 .set("Revenue")
                 .to(new BigDecimal("99999999999999999999999999999.99"))
                 .build()));
     String out =
         runExample(() -> QueryWithNumericParameterSample.queryWithNumericParameter(client));
-    assertThat(out).contains("1 35000");
+    assertThat(out).contains("4 35000");
   }
 
   static String formatForTest(String name) {

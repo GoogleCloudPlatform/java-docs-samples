@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 
 class AddNumericColumnSample {
 
-  static void addNumericColumn() {
+  static void addNumericColumn() throws InterruptedException, ExecutionException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project";
     String instanceId = "my-instance";
@@ -41,21 +41,17 @@ class AddNumericColumnSample {
   }
 
   static void addNumericColumn(
-      DatabaseAdminClient adminClient, String instanceId, String databaseId) {
+      DatabaseAdminClient adminClient, String instanceId, String databaseId) throws InterruptedException, ExecutionException {
     OperationFuture<Void, UpdateDatabaseDdlMetadata> operation =
         adminClient.updateDatabaseDdl(
             instanceId,
             databaseId,
             ImmutableList.of("ALTER TABLE Venues ADD COLUMN Revenue NUMERIC"),
             null);
-    try {
-      operation.get();
-      System.out.printf("Successfully added column `Revenue`%n");
-    } catch (ExecutionException e) {
-      System.out.printf("Adding column `Revenue` failed: %s%n", e.getCause().getMessage());
-    } catch (InterruptedException e) {
-      System.out.printf("Adding column `Revenue` was interrupted%n");
-    }
+    // Wait for the operation to finish.
+    // This will throw an ExecutionException if the operation fails. 
+    operation.get();
+    System.out.printf("Successfully added column `Revenue`%n");
   }
 }
 // [END spanner_add_numeric_column]
