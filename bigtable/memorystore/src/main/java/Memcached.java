@@ -16,8 +16,8 @@
 
 import com.google.cloud.bigtable.data.v2.BigtableDataClient;
 import com.google.cloud.bigtable.data.v2.models.Row;
-import net.spy.memcached.MemcachedClient;
 import java.net.InetSocketAddress;
+import net.spy.memcached.MemcachedClient;
 
 public class Memcached {
 
@@ -54,7 +54,7 @@ public class Memcached {
         try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
           Row row = dataClient.readRow(tableId, rowkey);
           String cellValue = row.getCells(columnFamily, column).get(0).getValue().toStringUtf8();
-          System.out.println("got data from bt "+cellValue);
+          System.out.println("got data from bt " + cellValue);
           // Set data into memcached server.
           mcc.set(cacheKey, 10, cellValue);
           System.out.println("Value fetched from Bigtable: " + cellValue);
