@@ -43,8 +43,9 @@ public class Memcached {
       String columnFamily = "stats_summary";
       String column = "os_build";
       String cacheKey = String.format("%s:%s:%s", rowkey, columnFamily, column);
+      System.out.println("getting from cache");
       Object value = mcc.get(cacheKey);
-
+      System.out.println("got from cache");
       if (value != null) {
         System.out.println("Value fetched from cache: " + value);
       } else {
