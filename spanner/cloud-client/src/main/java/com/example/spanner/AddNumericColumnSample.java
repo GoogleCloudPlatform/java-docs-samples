@@ -16,7 +16,7 @@
 
 package com.example.spanner;
 
-//[START spanner_add_numeric_column]
+// [START spanner_add_numeric_column]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.Spanner;
@@ -41,7 +41,8 @@ class AddNumericColumnSample {
   }
 
   static void addNumericColumn(
-      DatabaseAdminClient adminClient, String instanceId, String databaseId) throws InterruptedException, ExecutionException {
+      DatabaseAdminClient adminClient, String instanceId, String databaseId)
+      throws InterruptedException, ExecutionException {
     OperationFuture<Void, UpdateDatabaseDdlMetadata> operation =
         adminClient.updateDatabaseDdl(
             instanceId,
@@ -49,7 +50,7 @@ class AddNumericColumnSample {
             ImmutableList.of("ALTER TABLE Venues ADD COLUMN Revenue NUMERIC"),
             null);
     // Wait for the operation to finish.
-    // This will throw an ExecutionException if the operation fails. 
+    // This will throw an ExecutionException if the operation fails.
     operation.get();
     System.out.printf("Successfully added column `Revenue`%n");
   }

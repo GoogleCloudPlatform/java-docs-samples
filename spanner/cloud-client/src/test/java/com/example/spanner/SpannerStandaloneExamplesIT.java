@@ -17,6 +17,7 @@
 package com.example.spanner;
 
 import static com.google.common.truth.Truth.assertThat;
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
@@ -88,7 +89,10 @@ public class SpannerStandaloneExamplesIT {
                     + "  LastName   STRING(1024),"
                     + "  SingerInfo BYTES(MAX)"
                     + ") PRIMARY KEY (SingerId)",
-                "CREATE TABLE Venues (VenueId INT64 NOT NULL, Revenue NUMERIC) PRIMARY KEY (VenueId)"))
+                "CREATE TABLE Venues ("
+                    + "VenueId INT64 NOT NULL,"
+                    + "Revenue NUMERIC"
+                    + ") PRIMARY KEY (VenueId)"))
         .get();
   }
 
@@ -118,27 +122,30 @@ public class SpannerStandaloneExamplesIT {
   }
 
   @Test
-  public void addNumericColumn_shouldSuccessfullyAddColumn() throws InterruptedException, ExecutionException {
+  public void addNumericColumn_shouldSuccessfullyAddColumn()
+      throws InterruptedException, ExecutionException {
     OperationFuture<Void, UpdateDatabaseDdlMetadata> operation =
-        spanner.getDatabaseAdminClient().updateDatabaseDdl(
-            instanceId,
-            databaseId,
-            ImmutableList.of("ALTER TABLE Venues DROP COLUMN Revenue"),
-            null);
+        spanner
+            .getDatabaseAdminClient()
+            .updateDatabaseDdl(
+                instanceId,
+                databaseId,
+                ImmutableList.of("ALTER TABLE Venues DROP COLUMN Revenue"),
+                null);
     operation.get();
     String out =
         runExample(
-            () ->
-                {
-                  try {
-                    AddNumericColumnSample.addNumericColumn(
-                        spanner.getDatabaseAdminClient(), instanceId, databaseId);
-                  } catch (ExecutionException e) {
-                    System.out.printf("Adding column `Revenue` failed: %s%n", e.getCause().getMessage());
-                  } catch (InterruptedException e) {
-                    System.out.printf("Adding column `Revenue` was interrupted%n");
-                  }
-               });
+            () -> {
+              try {
+                AddNumericColumnSample.addNumericColumn(
+                    spanner.getDatabaseAdminClient(), instanceId, databaseId);
+              } catch (ExecutionException e) {
+                System.out.printf(
+                    "Adding column `Revenue` failed: %s%n", e.getCause().getMessage());
+              } catch (InterruptedException e) {
+                System.out.printf("Adding column `Revenue` was interrupted%n");
+              }
+            });
     assertThat(out).contains("Successfully added column `Revenue`");
   }
 
