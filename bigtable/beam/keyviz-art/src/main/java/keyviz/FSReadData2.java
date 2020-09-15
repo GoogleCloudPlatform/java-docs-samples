@@ -16,6 +16,7 @@ import com.google.cloud.datastore.StringValue;
 import com.google.cloud.datastore.StructuredQuery.CompositeFilter;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -35,6 +36,9 @@ import org.joda.time.Duration;
 
 public class FSReadData2 {
 
+  static final long START_TIME = new Date().getTime();
+  static final long KEY_VIZ_WINDOW_SECONDS = 10;
+
   public static void main(String[] args) {
     DataflowPipelineOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(DataflowPipelineOptions.class);
@@ -43,7 +47,7 @@ public class FSReadData2 {
 
     Pipeline p = Pipeline.create(options);
     // Initiates a new pipeline every second
-    p.apply(GenerateSequence.from(0).withRate(1, new Duration(1000)))
+    p.apply(GenerateSequence.from(0).withRate(1, new Duration(500)))
         .apply(ParDo.of(new ReadFromTableFn()));
 
     p.run();
@@ -130,44 +134,49 @@ public class FSReadData2 {
       //   c++;
       // }
 
-      // for (int i = 0; i < maxInput; i++) {
-      //   String paddedRowkey = String.format(numberFormat, i);
-      //   String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
-      //   datastore.get(keyFactory.newKey(reversedRowkey));
-      //   c++;
-      // }
-      // System.out.println(c + " entities fetched");
-
+      long timestampDiff = System.currentTimeMillis() - START_TIME;
+      long seconds = timestampDiff / 1000;
+      int timeOffsetIndex = Math.toIntExact(seconds / KEY_VIZ_WINDOW_SECONDS);
 
       for (int i = 0; i < maxInput; i++) {
-
-        String paddedRowkey = String.format(numberFormat, i);
-        String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
-        int rowNumber = i / rowHeight;
-
-        float p = (float) rowNumber / numRows;
-        System.out.printf("index: %d rowNumber %d prob %f count %d", i, rowNumber, p, count);
-
-        if (Math.random() <= p || count < 120) {
-          FullEntity<com.google.cloud.datastore.Key> fullEntity =
-              com.google.cloud.datastore.Entity.newBuilder(keyFactory.newKey(reversedRowkey))
-                  .set("description", getRandomStringValue())
-                  .build();
-          entities.add(fullEntity);
-          // logger.info("writing entity" + fullEntity.getKey());
+        if (Math.random() <= (timeOffsetIndex % 10) / 10f) {
+          String paddedRowkey = String.format(numberFormat, i);
+          String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
+          datastore.get(keyFactory.newKey(reversedRowkey));
           c++;
         }
-        // 500 per write limit
-        if (i % 500 == 0) {
-          System.out.printf("500 mod 0");
-          ds.put(entities.toArray(new FullEntity<?>[0]));
-          entities = new ArrayList<>();
-        }
       }
+      System.out.println(c + " entities fetched");
 
-      System.out.println(c + " entities updated");
-
-      ds.put(entities.toArray(new FullEntity<?>[0]));
+      // for (int i = 0; i < maxInput; i++) {
+      //
+      //   String paddedRowkey = String.format(numberFormat, i);
+      //   String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
+      //   int rowNumber = i / rowHeight;
+      //
+      //   float p = (float) rowNumber / numRows;
+      //   System.out.printf("index: %d rowNumber %d prob %f count %d", i, rowNumber, p, count);
+      //
+      //   if (Math.random() <= p || count < 120) {
+      //     FullEntity<com.google.cloud.datastore.Key> fullEntity =
+      //         com.google.cloud.datastore.Entity.newBuilder(keyFactory.newKey(reversedRowkey))
+      //             .set("description", getRandomStringValue())
+      //             .build();
+      //     entities.add(fullEntity);
+      //     // logger.info("writing entity" + fullEntity.getKey());
+      //     c++;
+      //   }
+      //   // 500 per write limit
+      //   if (i % 500 == 0) {
+      //     System.out.printf("500 mod 0");
+      //     ds.put(entities.toArray(new FullEntity<?>[0]));
+      //     entities = new ArrayList<>();
+      //   }
+      // }
+      //
+      // System.out.println(c + " entities updated");
+      //
+      // ds.put(entities.toArray(new FullEntity<?>[0]));
 
       // String kind = "Billy10ms1krs";
       // int maxInput = 1000;
