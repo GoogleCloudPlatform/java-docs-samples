@@ -18,6 +18,7 @@ package com.example.spanner.jdbc;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.grpc.Status.Code;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -51,10 +52,12 @@ class TransactionWithRetryLoopUsingOnlyJdbcExample {
           connection.setAutoCommit(false);
           try (PreparedStatement ps =
               connection.prepareStatement(
-                  "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (?, ?, ?)")) {
+                  "INSERT INTO Singers (SingerId, FirstName, LastName, Revenues)\n"
+                      + "VALUES (?, ?, ?, ?)")) {
             ps.setLong(1, singerId);
             ps.setString(2, "Marsha");
             ps.setString(3, "Roberts");
+            ps.setBigDecimal(4, new BigDecimal("39148.01"));
             ps.executeUpdate();
           }
           connection.commit();

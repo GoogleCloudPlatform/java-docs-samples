@@ -50,6 +50,7 @@ class CreateTableExample {
                 + "  FirstName  STRING(1024),\n"
                 + "  LastName   STRING(1024),\n"
                 + "  SingerInfo BYTES(MAX),\n"
+                + "  Revenues   NUMERIC,\n"
                 + ") PRIMARY KEY (SingerId)\n");
       }
     }
