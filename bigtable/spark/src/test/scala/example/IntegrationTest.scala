@@ -16,11 +16,9 @@ class IntegrationTest extends AnyFlatSpec
   val projectId = getOrThrowException("BIGTABLE_SPARK_PROJECT_ID")
   val instanceId = getOrThrowException("BIGTABLE_SPARK_INSTANCE_ID")
   val table_wordcount = getOrThrowException("BIGTABLE_SPARK_WORDCOUNT_TABLE")
-  val file = sys.env.getOrElse(
-    "BIGTABLE_SPARK_WORDCOUNT_FILE",
-    "src/test/resources/Romeo-and-Juliet-prologue.txt")
+  val file = "src/test/resources/Romeo-and-Juliet-prologue.txt"
   val table_copytable = getOrThrowException("BIGTABLE_SPARK_COPYTABLE_TABLE")
-  val rowCount = getOrThrowException("BIGTABLE_SPARK_ROW_COUNT").toInt
+  val rowCount = 88
 
   "IntegrationTest" should "write records to Bigtable, copy them between tables" in {
     import org.apache.spark.{SparkConf, SparkContext}

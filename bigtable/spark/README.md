@@ -389,3 +389,71 @@ gcloud dataproc clusters delete $BIGTABLE_SPARK_DATAPROC_CLUSTER \
   --project=$BIGTABLE_SPARK_PROJECT_ID \
   --quiet
 ```
+
+## Running Integration Test
+
+Start afresh and re-create all the resources (a Bigtable instance, the tables).
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  listinstances
+```
+
+There should be no Bigtable instances listed. Create one.
+
+```
+gcloud beta bigtable instances \
+  create $BIGTABLE_SPARK_INSTANCE_ID \
+  --cluster=$BIGTABLE_SPARK_CLUSTER_ID \
+  --cluster-zone=$BIGTABLE_SPARK_CLUSTER_ZONE \
+  --display-name=$BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME \
+  --instance-type=DEVELOPMENT
+```
+
+Create the tables.
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  createtable $BIGTABLE_SPARK_WORDCOUNT_TABLE \
+  "families=cf"
+```
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  createtable $BIGTABLE_SPARK_COPYTABLE_TABLE \
+  "families=cf"
+```
+
+List tables.
+
+```
+$ cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  ls
+copytable
+wordcount
+```
+
+Run [IntegrationTest](src/test/scala/example/IntegrationTest.scala) in IntelliJ IDEA. You should define all the following environment variables in a Run Configuration for the test:
+
+- GOOGLE_APPLICATION_CREDENTIALS
+- BIGTABLE_SPARK_INSTANCE_ID
+- BIGTABLE_SPARK_PROJECT_ID
+- BIGTABLE_SPARK_COPYTABLE_TABLE
+- BIGTABLE_SPARK_WORDCOUNT_TABLE
+
+### Clean Up
+
+Delete the Bigtable instance.
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  deleteinstance $BIGTABLE_SPARK_INSTANCE_ID
+```
