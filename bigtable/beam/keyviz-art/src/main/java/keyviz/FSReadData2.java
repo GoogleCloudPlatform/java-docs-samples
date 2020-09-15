@@ -47,7 +47,7 @@ public class FSReadData2 {
 
     Pipeline p = Pipeline.create(options);
     // Initiates a new pipeline every second
-    p.apply(GenerateSequence.from(0).withRate(1, new Duration(500)))
+    p.apply(GenerateSequence.from(0).withRate(1, new Duration(1000)))
         .apply(ParDo.of(new ReadFromTableFn()));
 
     p.run();
@@ -63,7 +63,7 @@ public class FSReadData2 {
     protected Datastore datastore;
     private KeyFactory keyFactory;
     // private final String kind = "BillyDF500reversed1mswithP";
-    private final String kind = "BillyDF500reversed1s";
+    private final String kind = "BillyDFrw1s500rows";
 
     private static final int RANDOM_ID_BOUND = 500;
     Random rand = new Random();
@@ -97,26 +97,38 @@ public class FSReadData2 {
       // Make each number the same length by padding with 0s
       String numberFormat = "%0" + maxLength + "d";
       Datastore ds = getDatastore();
+      int c = 0;
 
-      // CompositeFilter evenRangeFilter = CompositeFilter
-      //     .and(
-      //         PropertyFilter.lt("__key__", keyFactory.newKey("250"))
-      //         // PropertyFilter.le("__key__", "1"),
-      //         // PropertyFilter.ge("__key__", "2"), PropertyFilter.le("__key__", "3"),
-      //         // PropertyFilter.ge("__key__", "4"), PropertyFilter.le("__key__", "5"),
-      //         // PropertyFilter.ge("__key__", "6"), PropertyFilter.le("__key__", "7"),
-      //         // PropertyFilter.ge("__key__", "8"), PropertyFilter.le("__key__", "9")
-      //     );
-      //
-      // CompositeFilter oddRangeFilter = CompositeFilter
-      //     .and(
-      //         PropertyFilter.ge("__key__", keyFactory.newKey("250"))
-      //         // , PropertyFilter.le("__key__", ""),
-      //         // PropertyFilter.ge("__key__", "3"), PropertyFilter.le("__key__", "4"),
-      //         // PropertyFilter.ge("__key__", "5"), PropertyFilter.le("__key__", "6"),
-      //         // PropertyFilter.ge("__key__", "7"), PropertyFilter.le("__key__", "8"),
-      //         // PropertyFilter.ge("__key__", "9")
-      //     );
+      if (count == 1) {
+        for (int i = 0; i < maxInput; i++) {
+
+          String paddedRowkey = String.format(numberFormat, i);
+          String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
+          int rowNumber = i / rowHeight;
+
+          float p = (float) rowNumber / numRows;
+          System.out.printf("index: %d rowNumber %d prob %f count %d", i, rowNumber, p, count);
+
+          FullEntity<com.google.cloud.datastore.Key> fullEntity =
+              com.google.cloud.datastore.Entity.newBuilder(keyFactory.newKey(reversedRowkey))
+                  .set("description", getRandomStringValue())
+                  .build();
+          entities.add(fullEntity);
+          // logger.info("writing entity" + fullEntity.getKey());
+          c++;
+
+          // 500 per write limit
+          if (i % 500 == 0) {
+            System.out.printf("500 mod 0");
+            ds.put(entities.toArray(new FullEntity<?>[0]));
+            entities = new ArrayList<>();
+          }
+        }
+
+        System.out.println(c + " entities written");
+
+        ds.put(entities.toArray(new FullEntity<?>[0]));
+      }
 
       EntityQuery.Builder query = Query.newEntityQueryBuilder()
           .setKind(kind);
@@ -127,7 +139,7 @@ public class FSReadData2 {
       //   query.setFilter(evenRangeFilter);
       // }
       QueryResults<Entity> entityQueryResults = ds.run(query.build());
-      int c = 0;
+      c = 0;
       // while (entityQueryResults.hasNext()) {
       //   Entity entity = entityQueryResults.next();
       //   System.out.println(entity);
@@ -139,7 +151,7 @@ public class FSReadData2 {
       int timeOffsetIndex = Math.toIntExact(seconds / KEY_VIZ_WINDOW_SECONDS);
 
       for (int i = 0; i < maxInput; i++) {
-        if (Math.random() <= (timeOffsetIndex % 10) / 10f) {
+        if (timeOffsetIndex % 2 == 0) {
           String paddedRowkey = String.format(numberFormat, i);
           String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
           datastore.get(keyFactory.newKey(reversedRowkey));
@@ -147,36 +159,6 @@ public class FSReadData2 {
         }
       }
       System.out.println(c + " entities fetched");
-
-      // for (int i = 0; i < maxInput; i++) {
-      //
-      //   String paddedRowkey = String.format(numberFormat, i);
-      //   String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
-      //   int rowNumber = i / rowHeight;
-      //
-      //   float p = (float) rowNumber / numRows;
-      //   System.out.printf("index: %d rowNumber %d prob %f count %d", i, rowNumber, p, count);
-      //
-      //   if (Math.random() <= p || count < 120) {
-      //     FullEntity<com.google.cloud.datastore.Key> fullEntity =
-      //         com.google.cloud.datastore.Entity.newBuilder(keyFactory.newKey(reversedRowkey))
-      //             .set("description", getRandomStringValue())
-      //             .build();
-      //     entities.add(fullEntity);
-      //     // logger.info("writing entity" + fullEntity.getKey());
-      //     c++;
-      //   }
-      //   // 500 per write limit
-      //   if (i % 500 == 0) {
-      //     System.out.printf("500 mod 0");
-      //     ds.put(entities.toArray(new FullEntity<?>[0]));
-      //     entities = new ArrayList<>();
-      //   }
-      // }
-      //
-      // System.out.println(c + " entities updated");
-      //
-      // ds.put(entities.toArray(new FullEntity<?>[0]));
 
       // String kind = "Billy10ms1krs";
       // int maxInput = 1000;
