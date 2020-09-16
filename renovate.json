@@ -24,7 +24,7 @@
       "groupName": "gRPC packages"
     },
     {
-      "packagePatterns": [ "^io.vertx:vertex-" ],
+      "packagePatterns": [ "^io.vertx:" ],
       "groupName": "Vertx packages"
     },
     {
