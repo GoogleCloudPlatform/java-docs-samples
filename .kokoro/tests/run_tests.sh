@@ -84,12 +84,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
         --project="$GOOGLE_CLOUD_PROJECT"
 
     # Start Memcached server
-    set -x
-    apt-get update && apt-get install -y memcached libmemcached-tools
+    apt-get update && apt-get install -y memcached
     memcached -u nobody &
-#    memcstat --servers="127.0.0.1"
-    echo $?
-    set +x
 
     cd github/java-docs-samples
 fi
