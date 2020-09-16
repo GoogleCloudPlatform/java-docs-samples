@@ -37,6 +37,7 @@ public class MemcachedTest {
   private static final String TABLE_ID =
       "mobile-time-series-" + UUID.randomUUID().toString().substring(0, 20);
   private static final String COLUMN_FAMILY_NAME = "stats_summary";
+  private static final String MEMCACHED_CONTAINER_NAME = "BigtableMemcachedContainerTest";
 
   private static String projectId;
   private static String instanceId;
@@ -53,6 +54,7 @@ public class MemcachedTest {
 
   @BeforeClass
   public static void beforeClass() {
+
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
     instanceId = requireEnv(INSTANCE_ENV);
     try (BigtableTableAdminClient adminClient =
@@ -67,6 +69,14 @@ public class MemcachedTest {
             .setCell(COLUMN_FAMILY_NAME, "os_build", "PQ2A.190405.003");
         dataClient.mutateRow(rowMutation);
       }
+
+      String[] dockerCommand = (String.format(
+          "docker run --name %s -itd --rm --publish 11211:11211 sameersbn/memcached:latest",
+          MEMCACHED_CONTAINER_NAME))
+          .split(" ");
+      Process process = new ProcessBuilder(
+          dockerCommand).start();
+      process.waitFor();
 
     } catch (Exception e) {
       System.out.println("Error during beforeClass: \n" + e.toString());
@@ -84,6 +94,10 @@ public class MemcachedTest {
     try (BigtableTableAdminClient adminClient =
         BigtableTableAdminClient.create(projectId, instanceId)) {
       adminClient.deleteTable(TABLE_ID);
+      String[] dockerCommand = (String.format("docker stop %s", MEMCACHED_CONTAINER_NAME))
+          .split(" ");
+      Process process = new ProcessBuilder(dockerCommand).start();
+      process.waitFor();
     } catch (Exception e) {
       System.out.println("Error during afterClass: \n" + e.toString());
     }
