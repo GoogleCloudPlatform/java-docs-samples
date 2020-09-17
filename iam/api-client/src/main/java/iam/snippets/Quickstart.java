@@ -87,7 +87,7 @@ public class Quickstart {
                 GoogleNetHttpTransport.newTrustedTransport(),
                 JacksonFactory.getDefaultInstance(),
                 new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-accounts")
+            .setApplicationName("iam-quickstart")
             .build();
     return service;
   }
