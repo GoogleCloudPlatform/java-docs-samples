@@ -92,7 +92,7 @@ limitations under the License.
         <version>2.5.2</version>
         <configuration>
           <to>
-            <image>gcr.io/PROJECT_ID/events-storage</image>
+            <image>gcr.io/PROJECT_ID/gcs-container</image>
           </to>
         </configuration>
       </plugin>
