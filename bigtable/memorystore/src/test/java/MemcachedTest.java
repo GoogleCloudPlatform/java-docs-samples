@@ -104,7 +104,7 @@ public class MemcachedTest {
       System.out.println(process);
     } catch (Exception e) {
       System.out.println("failed");
-      System.out.println(e.getStackTrace());
+      e.printStackTrace(System.out);
     }
   }
 
