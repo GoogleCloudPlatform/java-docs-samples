@@ -1,6 +1,6 @@
 rebaseMergeAllowed: true
 squashMergeAllowed: true
-mergeCommitAllowed: false
+mergeCommitAllowed: true
 branchProtectionRules:
 - pattern: master
   isAdminEnforced: true
