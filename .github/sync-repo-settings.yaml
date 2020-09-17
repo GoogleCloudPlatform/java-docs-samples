@@ -1,6 +1,6 @@
 rebaseMergeAllowed: true
 squashMergeAllowed: true
-mergeCommitAllowed: true
+mergeCommitAllowed: false
 branchProtectionRules:
 - pattern: master
   isAdminEnforced: true
@@ -11,7 +11,7 @@ branchProtectionRules:
     - 'cla/google'
   requiredApprovingReviewCount: 1
   requiresCodeOwnerReviews: true
-  requiresStrictStatusChecks: true
+  requiresStrictStatusChecks: false
 permissionRules:
   - team: java-samples-reviewers
     permission: push
