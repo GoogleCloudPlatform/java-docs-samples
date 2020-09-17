@@ -35,7 +35,7 @@ limitations under the License.
         <!-- Import dependency management from Spring Boot -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.3.3.RELEASE</version>
+        <version>2.3.4.RELEASE</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -77,6 +77,13 @@ limitations under the License.
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <!-- [START run_events_gcs_jib] -->
       <plugin>
