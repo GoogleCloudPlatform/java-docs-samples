@@ -46,7 +46,7 @@ public class Quickstart {
     try {
       crmService = initializeService();
     } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
+      System.out.println("Unable to initialize service: \n" + e.getMessage() + e.getStackTrace());
     }
 
     // Grants your member the "Log writer" role for your project.
@@ -154,7 +154,7 @@ public class Quickstart {
       GetIamPolicyRequest request = new GetIamPolicyRequest();
       policy = crmService.projects().getIamPolicy(projectId, request).execute();
     } catch (IOException e) {
-      System.out.println("Unable to get policy: \n" + e.toString());
+      System.out.println("Unable to get policy: \n" + e.getMessage() + e.getStackTrace());
     }
     return policy;
   }
@@ -167,7 +167,7 @@ public class Quickstart {
       request.setPolicy(policy);
       crmService.projects().setIamPolicy(projectId, request).execute();
     } catch (IOException e) {
-      System.out.println("Unable to set policy: \n" + e.toString());
+      System.out.println("Unable to set policy: \n" + e.getMessage() + e.getStackTrace());
     }
   }
 }
