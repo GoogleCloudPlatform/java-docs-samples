@@ -103,7 +103,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.0.0</version>
         <configuration>
-          <mainClass>com.google.iam.snippets.GrantableRoles</mainClass>
+          <mainClass>iam.snippets.Quickstart</mainClass>
         </configuration>
       </plugin>
     </plugins>
