@@ -43,9 +43,11 @@ object CopyTable extends App {
   // That's how to use command-line arguments for projectId and instanceId
   // Otherwise, we'd have to use hbase-site.xml
   // See HBaseSparkConf.USE_HBASECONTEXT option in hbase-connectors project
-  // https://github.com/apache/hbase-connectors/blob/rel/1.0.0/spark/hbase-spark/src/main/scala/org/apache/hadoop/hbase/spark/datasources/HBaseSparkConf.scala#L44
   new HBaseContext(spark.sparkContext, conf)
 
+  // Creates a configuration JSON for a given table
+  // Used for HBaseTableCatalog.tableCatalog option
+  // to read from or write to a Bigtable table
   def createCatalogJSON(table: String): String = {
     s"""{
        |"table":{"namespace":"default", "name":"$table", "tableCoder":"PrimitiveType"},
@@ -58,7 +60,7 @@ object CopyTable extends App {
   }
 
   // The HBaseTableCatalog options are described in the sources themselves only
-  // https://github.com/apache/hbase-connectors/blob/rel/1.0.0/spark/hbase-spark/src/main/scala/org/apache/hadoop/hbase/spark/datasources/HBaseSparkConf.scala
+  // Search for HBaseSparkConf.scala in https://github.com/apache/hbase-connectors
 
   println(s"Loading records from $fromTable")
   val records = spark

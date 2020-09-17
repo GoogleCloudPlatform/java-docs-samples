@@ -386,8 +386,7 @@ Delete the Dataproc cluster.
 ```
 gcloud dataproc clusters delete $BIGTABLE_SPARK_DATAPROC_CLUSTER \
   --region=$BIGTABLE_SPARK_REGION \
-  --project=$BIGTABLE_SPARK_PROJECT_ID \
-  --quiet
+  --project=$BIGTABLE_SPARK_PROJECT_ID
 ```
 
 ## Running Integration Test

@@ -47,12 +47,6 @@ object Wordcount extends App {
 
   // Workaround for a bug in TableOutputFormat
   // See https://stackoverflow.com/a/51959451/1305344
-  // Without the property:
-  // org.apache.hadoop.mapred.InvalidJobConfException: Output directory not set.
-  // at org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.checkOutputSpecs(FileOutputFormat.java:138)
-  // at org.apache.spark.internal.io.HadoopMapReduceWriteConfigUtil.assertConf(SparkHadoopWriter.scala:393)
-  // at org.apache.spark.internal.io.SparkHadoopWriter$.write(SparkHadoopWriter.scala:71)
-  // at org.apache.spark.rdd.PairRDDFunctions$$anonfun$saveAsNewAPIHadoopDataset$1.apply$mcV$sp(PairRDDFunctions.scala:1083)
   config.set("spark.hadoop.validateOutputSpecs", "false")
 
   val sc = SparkContext.getOrCreate(config)
