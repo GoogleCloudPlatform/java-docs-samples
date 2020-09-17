@@ -26,6 +26,7 @@ package com.example.automl;
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.ModelEvaluation;
 import com.google.cloud.automl.v1.ModelEvaluationName;
+import com.google.protobuf.Timestamp;
 import java.io.IOException;
 
 class GetModelEvaluation {
@@ -52,46 +53,47 @@ class GetModelEvaluation {
       // Get complete detail of the model evaluation.
       ModelEvaluation modelEvaluation = client.getModelEvaluation(modelEvaluationFullId);
 
-      System.out.format("Model Evaluation Name: %s\n", modelEvaluation.getName());
+      System.out.format("Model Evaluation Name: %s%n", modelEvaluation.getName());
       System.out.format("Model Annotation Spec Id: %s", modelEvaluation.getAnnotationSpecId());
       System.out.println("Create Time:");
-      System.out.format("\tseconds: %s\n", modelEvaluation.getCreateTime().getSeconds());
-      System.out.format("\tnanos: %s", modelEvaluation.getCreateTime().getNanos() / 1e9);
+      Timestamp createdTime = modelEvaluation.getCreateTime();
+      System.out.format("\tseconds: %s%n", createdTime.getSeconds());
+      System.out.format("\tnanos: %s", createdTime.getNanos() / 1e9);
       System.out.format(
-          "Evalution Example Count: %d\n", modelEvaluation.getEvaluatedExampleCount());
+          "Evalution Example Count: %d%n", modelEvaluation.getEvaluatedExampleCount());
       // [END automl_language_sentiment_analysis_get_model_evaluation]
       // [END automl_language_text_classification_get_model_evaluation]
       // [END automl_translate_get_model_evaluation]
       // [END automl_vision_classification_get_model_evaluation]
       // [END automl_vision_object_detection_get_model_evaluation]
       System.out.format(
-          "Entity Extraction Model Evaluation Metrics: %s\n",
+          "Entity Extraction Model Evaluation Metrics: %s%n",
           modelEvaluation.getTextExtractionEvaluationMetrics());
       // [END automl_language_entity_extraction_get_model_evaluation]
 
       // [START automl_language_sentiment_analysis_get_model_evaluation]
       System.out.format(
-          "Sentiment Analysis Model Evaluation Metrics: %s\n",
+          "Sentiment Analysis Model Evaluation Metrics: %s%n",
           modelEvaluation.getTextSentimentEvaluationMetrics());
       // [END automl_language_sentiment_analysis_get_model_evaluation]
 
       // [START automl_language_text_classification_get_model_evaluation]
       // [START automl_vision_classification_get_model_evaluation]
       System.out.format(
-          "Classification Model Evaluation Metrics: %s\n",
+          "Classification Model Evaluation Metrics: %s%n",
           modelEvaluation.getClassificationEvaluationMetrics());
       // [END automl_language_text_classification_get_model_evaluation]
       // [END automl_vision_classification_get_model_evaluation]
 
       // [START automl_translate_get_model_evaluation]
       System.out.format(
-          "Translate Model Evaluation Metrics: %s\n",
+          "Translate Model Evaluation Metrics: %s%n",
           modelEvaluation.getTranslationEvaluationMetrics());
       // [END automl_translate_get_model_evaluation]
 
       // [START automl_vision_object_detection_get_model_evaluation]
       System.out.format(
-          "Object Detection Model Evaluation Metrics: %s\n",
+          "Object Detection Model Evaluation Metrics: %s%n",
           modelEvaluation.getImageObjectDetectionEvaluationMetrics());
       // [START automl_language_entity_extraction_get_model_evaluation]
       // [START automl_language_sentiment_analysis_get_model_evaluation]

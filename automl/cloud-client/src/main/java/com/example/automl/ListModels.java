@@ -18,10 +18,13 @@ package com.example.automl;
 
 // [START automl_list_models]
 import com.google.cloud.automl.v1.AutoMlClient;
+import com.google.cloud.automl.v1.AutoMlSettings;
 import com.google.cloud.automl.v1.ListModelsRequest;
 import com.google.cloud.automl.v1.LocationName;
 import com.google.cloud.automl.v1.Model;
+import com.google.protobuf.Timestamp;
 import java.io.IOException;
+import org.threeten.bp.Duration;
 
 class ListModels {
 
@@ -36,7 +39,20 @@ class ListModels {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (AutoMlClient client = AutoMlClient.create()) {
+    AutoMlSettings.Builder autoMlSettingsBuilder = AutoMlSettings.newBuilder();
+
+    autoMlSettingsBuilder
+        .listModelsSettings()
+        .setRetrySettings(
+            autoMlSettingsBuilder
+                .listModelsSettings()
+                .getRetrySettings()
+                .toBuilder()
+                .setTotalTimeout(Duration.ofSeconds(30))
+                .build());
+    AutoMlSettings autoMlSettings = autoMlSettingsBuilder.build();
+
+    try (AutoMlClient client = AutoMlClient.create(autoMlSettings)) {
       // A resource that represents Google Cloud Platform location.
       LocationName projectLocation = LocationName.of(projectId, "us-central1");
 
@@ -51,18 +67,19 @@ class ListModels {
       System.out.println("List of models:");
       for (Model model : client.listModels(listModlesRequest).iterateAll()) {
         // Display the model information.
-        System.out.format("Model name: %s\n", model.getName());
+        System.out.format("Model name: %s%n", model.getName());
         // To get the model id, you have to parse it out of the `name` field. As models Ids are
         // required for other methods.
         // Name Format: `projects/{project_id}/locations/{location_id}/models/{model_id}`
         String[] names = model.getName().split("/");
         String retrievedModelId = names[names.length - 1];
-        System.out.format("Model id: %s\n", retrievedModelId);
-        System.out.format("Model display name: %s\n", model.getDisplayName());
+        System.out.format("Model id: %s%n", retrievedModelId);
+        System.out.format("Model display name: %s%n", model.getDisplayName());
         System.out.println("Model create time:");
-        System.out.format("\tseconds: %s\n", model.getCreateTime().getSeconds());
-        System.out.format("\tnanos: %s\n", model.getCreateTime().getNanos());
-        System.out.format("Model deployment state: %s\n", model.getDeploymentState());
+        Timestamp createdTime = model.getCreateTime();
+        System.out.format("\tseconds: %s%n", createdTime.getSeconds());
+        System.out.format("\tnanos: %s%n", createdTime.getNanos());
+        System.out.format("Model deployment state: %s%n", model.getDeploymentState());
       }
     }
   }

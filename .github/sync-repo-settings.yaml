@@ -1,0 +1,23 @@
+rebaseMergeAllowed: true
+squashMergeAllowed: true
+mergeCommitAllowed: false
+branchProtectionRules:
+- pattern: master
+  isAdminEnforced: true
+  requiredStatusCheckContexts:
+    - 'Kokoro CI - Java 11'
+    - 'Kokoro CI - Java 8'
+    - 'Kokoro CI - Lint'
+    - 'cla/google'
+  requiredApprovingReviewCount: 1
+  requiresCodeOwnerReviews: true
+  requiresStrictStatusChecks: true
+permissionRules:
+  - team: java-samples-reviewers
+    permission: push
+  - team: yoshi-java
+    permission: push
+  - team: devrel-java-admin
+    permission: admin
+  - team: yoshi-admins
+    permission: admin

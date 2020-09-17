@@ -17,6 +17,7 @@
 package com.example.automl;
 
 // [START automl_language_sentiment_analysis_predict]
+
 import com.google.cloud.automl.v1.AnnotationPayload;
 import com.google.cloud.automl.v1.ExamplePayload;
 import com.google.cloud.automl.v1.ModelName;
@@ -58,9 +59,9 @@ class LanguageSentimentAnalysisPredict {
       PredictResponse response = client.predict(predictRequest);
 
       for (AnnotationPayload annotationPayload : response.getPayloadList()) {
-        System.out.format("Predicted class name: %s\n", annotationPayload.getDisplayName());
+        System.out.format("Predicted class name: %s%n", annotationPayload.getDisplayName());
         System.out.format(
-            "Predicted sentiment score: %d\n", annotationPayload.getTextSentiment().getSentiment());
+            "Predicted sentiment score: %d%n", annotationPayload.getTextSentiment().getSentiment());
       }
     }
   }

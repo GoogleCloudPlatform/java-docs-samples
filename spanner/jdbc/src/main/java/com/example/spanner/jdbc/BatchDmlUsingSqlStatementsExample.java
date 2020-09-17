@@ -48,13 +48,14 @@ class BatchDmlUsingSqlStatementsExample {
         Statement statement = connection.createStatement()) {
       statement.execute("START BATCH DML");
       statement.execute(
-          "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
-              + "VALUES (14, 'Aayat', 'Curran')");
+          "INSERT INTO Singers (SingerId, FirstName, LastName, Revenues)\n"
+              + "VALUES (14, 'Aayat', 'Curran', 12004.82)");
       statement.execute(
-          "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
-              + "VALUES (15, 'Tudor', 'Mccarthy')");
+          "INSERT INTO Singers (SingerId, FirstName, LastName, Revenues)\n"
+              + "VALUES (15, 'Tudor', 'Mccarthy', 38193.20)");
       statement.execute(
-          "INSERT INTO Singers (SingerId, FirstName, LastName)\n" + "VALUES (16, 'Cobie', 'Webb')");
+          "INSERT INTO Singers (SingerId, FirstName, LastName, Revenues)\n"
+              + "VALUES (16, 'Cobie', 'Webb', 52909.87)");
       statement.execute("RUN BATCH");
       // The 'RUN BATCH' statement returns the update counts as a result set.
       try (ResultSet rs = statement.getResultSet()) {
