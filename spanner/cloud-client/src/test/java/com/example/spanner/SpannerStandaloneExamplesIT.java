@@ -157,7 +157,7 @@ public class SpannerStandaloneExamplesIT {
             () ->
                 UpdateNumericDataSample.updateNumericData(
                     spanner.getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId))));
-    assertThat(out).contains("Records successfully updated");
+    assertThat(out).contains("Venues successfully updated");
   }
 
   @Test
