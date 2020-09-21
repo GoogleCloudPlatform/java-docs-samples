@@ -69,8 +69,8 @@ public class DatasetTests {
     System.setOut(new PrintStream(bout));
 
     String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    datasetName =
-        String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
+    String parentName = String.format("projects/%s/locations/%s", PROJECT_ID, REGION_ID);
+    datasetName = String.format("%s/datasets/%s", parentName, datasetId);
 
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
 
@@ -79,30 +79,41 @@ public class DatasetTests {
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws IOException {
     System.setOut(originalOut);
+    try {
+      DatasetDelete.datasetDelete(datasetName);
+    } catch (GoogleJsonResponseException ex) {
+      // Dataset already deleted, continue.
+    }
     bout.reset();
   }
 
   @Test
-  public void test_DatasetCreate() throws IOException {
-    String newDatasetName =
-        String.format("projects/%s/locations/%s/datasets/new-dataset", PROJECT_ID, REGION_ID);
+  public void test_DatasetCreateDelete() throws IOException {
+    String newName = "new-dataset";
+    String newFullName =
+        String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, newName);
     try {
-      DatasetDelete.datasetDelete(newDatasetName);
+      DatasetDelete.datasetDelete(newFullName);
     } catch (GoogleJsonResponseException gjre) {
       // Expected if new-dataset does not exist.
     }
-    DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, "new-dataset");
+    DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, newName);
 
     String output = bout.toString(StandardCharsets.UTF_8);
     assertThat(output, containsString("Dataset created."));
+    bout.reset();
+
+    DatasetDelete.datasetDelete(newFullName);
+
+    output = bout.toString();
+    assertThat(output, containsString("Dataset deleted."));
   }
 
   @Test
   public void test_DatasetGet() throws IOException {
     DatasetGet.datasetGet(datasetName);
-
     String output = bout.toString();
     assertThat(output, containsString("Dataset retrieved:"));
   }
@@ -145,13 +156,5 @@ public class DatasetTests {
 
     String output = bout.toString();
     assertThat(output, containsString("Dataset policy has been updated: "));
-  }
-
-  @Test
-  public void test_DatasetDelete() throws IOException {
-    DatasetDelete.datasetDelete(datasetName);
-
-    String output = bout.toString();
-    assertThat(output, containsString("Dataset deleted."));
   }
 }
