@@ -45,7 +45,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class QuickstartV2Tests {
+public class QuickstartTests {
 
   private ServiceAccount serviceAccount;
   private Iam iamService;
@@ -120,13 +120,13 @@ public class QuickstartV2Tests {
     String role = "roles/logging.logWriter";
 
     // Tests initializeService()
-    CloudResourceManager crmService = QuickstartV2.initializeService();
+    CloudResourceManager crmService = Quickstart.initializeService();
 
     // Tests addBinding()
-    QuickstartV2.addBinding(crmService, PROJECT_ID, member, role);
+    Quickstart.addBinding(crmService, PROJECT_ID, member, role);
 
     // Get the project's polcy and confirm that the member is in the policy
-    Policy policy = QuickstartV2.getPolicy(crmService, PROJECT_ID);
+    Policy policy = Quickstart.getPolicy(crmService, PROJECT_ID);
     Binding binding = null;
     List<Binding> bindings = policy.getBindings();
     for (Binding b : bindings) {
@@ -138,9 +138,9 @@ public class QuickstartV2Tests {
     assertThat(binding.getMembers(), hasItem(member));
 
     // Tests removeMember()
-    QuickstartV2.removeMember(crmService, PROJECT_ID, member, role);
+    Quickstart.removeMember(crmService, PROJECT_ID, member, role);
     // Confirm that the member has been removed
-    policy = QuickstartV2.getPolicy(crmService, PROJECT_ID);
+    policy = Quickstart.getPolicy(crmService, PROJECT_ID);
     binding = null;
     bindings = policy.getBindings();
     for (Binding b : bindings) {
