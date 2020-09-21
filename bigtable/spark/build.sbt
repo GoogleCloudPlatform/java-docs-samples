@@ -18,11 +18,11 @@ name := "bigtable-spark-samples"
 
 version := "0.1"
 
+// Versions to match Dataproc 1.4
+// https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-release-1.4
 scalaVersion := "2.11.12"
-
-// Versions to match Dataproc
-val sparkVersion = "2.4.5"
-val hbaseVersion = "2.2.3"
+val sparkVersion = "2.4.6"
+val hbaseVersion = "1.3.6"
 val bigtableVersion = "1.15.0"
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % sparkVersion % Provided,

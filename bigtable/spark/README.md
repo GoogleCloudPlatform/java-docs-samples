@@ -62,7 +62,7 @@ Set the following environment variables for the sample applications to use:
 ```
 SPARK_HOME=your-spark-home
 BIGTABLE_SPARK_PROJECT_ID=your-project-id
-BIGTABLE_SPARK_INSTANCE_ID=your-bigtable-instance
+BIGTABLE_SPARK_INSTANCE_ID=your-instance-id
 
 BIGTABLE_SPARK_WORDCOUNT_TABLE=wordcount
 BIGTABLE_SPARK_WORDCOUNT_FILE=src/test/resources/Romeo-and-Juliet-prologue.txt
@@ -78,7 +78,7 @@ $(gcloud beta emulators bigtable env-init)
 
 ### Create Tables
 
-Create the tables using `cbt createtable` command.
+Create the tables using `cbt` tool.
 
 ```
 cbt \
@@ -96,7 +96,7 @@ cbt \
   "families=cf"
 ```
 
-List tables using `cbt ls` command.
+List tables.
 
 ```
 $ cbt \
@@ -107,9 +107,11 @@ copytable
 wordcount
 ```
 
+**TIP** For details about using the `cbt` tool, including a list of available commands, see the [cbt Reference](https://cloud.google.com/bigtable/docs/cbt-reference).
+
 ### Wordcount
 
-The following `spark-submit` uses [example.Wordcount](src/main/scala/example/Wordcount.scala).
+Run [example.Wordcount](src/main/scala/example/Wordcount.scala).
 
 ```
 $SPARK_HOME/bin/spark-submit \
@@ -122,7 +124,7 @@ $SPARK_HOME/bin/spark-submit \
 
 ### Verify
 
-Use `cbt count` to count the number of rows in the `BIGTABLE_SPARK_WORDCOUNT_TABLE` table.
+Count the number of rows in the `BIGTABLE_SPARK_WORDCOUNT_TABLE` table.
 
 ```
 $ cbt \
@@ -132,11 +134,9 @@ $ cbt \
 88
 ```
 
-**TIP** For details about using the `cbt` tool, including a list of available commands, see the [cbt Reference](https://cloud.google.com/bigtable/docs/cbt-reference).
-
 ### CopyTable
 
-The following `spark-submit` uses [example.CopyTable](src/main/scala/example/CopyTable.scala).
+Run [example.CopyTable](src/main/scala/example/CopyTable.scala).
 
 ```
 $SPARK_HOME/bin/spark-submit \
@@ -149,7 +149,7 @@ $SPARK_HOME/bin/spark-submit \
 
 ### Verify
 
-Use `cbt count` to count the number of rows in the `BIGTABLE_SPARK_COPYTABLE_TABLE` table.
+Count the number of rows in the `BIGTABLE_SPARK_COPYTABLE_TABLE` table.
 
 ```
 $ cbt \
@@ -166,12 +166,11 @@ $ cbt \
 Create a Cloud Bigtable instance using the Google Cloud Console (as described in the [Create a Cloud Bigtable instance](https://cloud.google.com/bigtable/docs/quickstart-cbt#create-instance)) or `gcloud beta bigtable instances`.
 
 ```
-BIGTABLE_SPARK_CLUSTER_ID=your-cluster-id
-BIGTABLE_SPARK_CLUSTER_ZONE=your-zone-id
-BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME=your-display-name
+BIGTABLE_SPARK_CLUSTER_ID=your-bigtable-cluster-id
+BIGTABLE_SPARK_CLUSTER_ZONE=your-bigtable-zone-id
+BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME=your-bigtable-display-name
 
-gcloud beta bigtable instances \
-  create $BIGTABLE_SPARK_INSTANCE_ID \
+gcloud bigtable instances create $BIGTABLE_SPARK_INSTANCE_ID \
   --cluster=$BIGTABLE_SPARK_CLUSTER_ID \
   --cluster-zone=$BIGTABLE_SPARK_CLUSTER_ZONE \
   --display-name=$BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME \
@@ -186,7 +185,7 @@ gcloud beta bigtable instances list
 
 ### Create Table
 
-Create a table using `cbt createtable` command.
+Create the table.
 
 ```
 cbt \
@@ -196,7 +195,7 @@ cbt \
   "families=cf"
 ```
 
-List tables using `cbt ls` command.
+List tables.
 
 ```
 cbt \
@@ -218,8 +217,7 @@ $SPARK_HOME/bin/spark-submit \
 
 ### Verify
 
-Use `cbt count` to count the number of rows in the `BIGTABLE_SPARK_WORDCOUNT_TABLE` table. There should be 
-88 rows.
+Count the number of rows in the `BIGTABLE_SPARK_WORDCOUNT_TABLE` table. There should be 88 rows.
 
 ```
 $ cbt \
@@ -257,12 +255,15 @@ This section describes the steps to submit [DataFrameDemo](src/main/scala/exampl
 
 ```
 BIGTABLE_SPARK_PROJECT_ID=your-project-id
+BIGTABLE_SPARK_INSTANCE_ID=your-instance-id
+
+BIGTABLE_SPARK_DATAPROC_CLUSTER=your-dataproc-cluster
+BIGTABLE_SPARK_DATAPROC_REGION=your-dataproc-region
+
 BIGTABLE_SPARK_INSTANCE_ID=your-bigtable-instance-id
-BIGTABLE_SPARK_DATAPROC_CLUSTER=spark-cluster
-BIGTABLE_SPARK_REGION=europe-west4
-BIGTABLE_SPARK_JAR=target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar
-BIGTABLE_SPARK_CLASS=example.DataFrameDemo
-BIGTABLE_SPARK_TABLE=DataFrameDemo
+BIGTABLE_SPARK_CLUSTER_ID=your-bigtable-cluster-id
+BIGTABLE_SPARK_CLUSTER_ZONE=your-bigtable-cluster-zone
+BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME=your-bigtable-display-name
 ```
 
 **NOTE** `BIGTABLE_SPARK_REGION` should point to your region. Read [Available regions and zones](https://cloud.google.com/compute/docs/regions-zones#available) in the official documentation.
@@ -281,36 +282,50 @@ GOOGLE_APPLICATION_CREDENTIALS=/your/service/account.json
 ### Create Google Cloud Dataproc Cluster
 
 ```
-BIGTABLE_SPARK_DATAPROC_CLUSTER=spark-cluster
-BIGTABLE_SPARK_REGION=your-region
-BIGTABLE_SPARK_PROJECT_ID=your-project-id
-
 gcloud dataproc clusters create $BIGTABLE_SPARK_DATAPROC_CLUSTER \
-  --region=$BIGTABLE_SPARK_REGION \
-  --project=$BIGTABLE_SPARK_PROJECT_ID
+  --region=$BIGTABLE_SPARK_DATAPROC_REGION \
+  --project=$BIGTABLE_SPARK_PROJECT_ID \
+  --image-version=1.4
+```
+
+For the list of available Dataproc image versions visit [Dataproc Image version list](https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-versions).
+
+List the available clusters and make sure that `BIGTABLE_SPARK_DATAPROC_CLUSTER` is among them.
+
+```
+gcloud dataproc clusters list \
+  --region=$BIGTABLE_SPARK_DATAPROC_REGION
 ```
 
 ### Configure Cloud Bigtable
 
 ```
-BIGTABLE_SPARK_INSTANCE_ID=your-instance-id
-BIGTABLE_SPARK_CLUSTER_ID=your-cluster-id
-BIGTABLE_SPARK_CLUSTER_ZONE=your-cluster-zone
-
 gcloud bigtable instances create $BIGTABLE_SPARK_INSTANCE_ID \
-    --cluster=$BIGTABLE_SPARK_CLUSTER_ID \
-    --cluster-zone=$BIGTABLE_SPARK_CLUSTER_ZONE \
-    --display-name=$BIGTABLE_SPARK_INSTANCE_ID
+  --cluster=$BIGTABLE_SPARK_CLUSTER_ID \
+  --cluster-zone=$BIGTABLE_SPARK_CLUSTER_ZONE \
+  --display-name=$BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME \
+  --instance-type=DEVELOPMENT
 ```
 
+Create the tables.
+
 ```
-BIGTABLE_SPARK_PROJECT_ID=bigtable-spark-connector
-BIGTABLE_SPARK_DataFrameDemo_TABLE=DataFrameDemo
 cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-  createtable $BIGTABLE_SPARK_DataFrameDemo_TABLE
+  createtable $BIGTABLE_SPARK_WORDCOUNT_TABLE \
+  "families=cf"
 ```
+
+```
+cbt \
+  -project=$BIGTABLE_SPARK_PROJECT_ID \
+  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
+  createtable $BIGTABLE_SPARK_COPYTABLE_TABLE \
+  "families=cf"
+```
+
+List tables. There should at least be two `BIGTABLE_SPARK_WORDCOUNT_TABLE` and `BIGTABLE_SPARK_COPYTABLE_TABLE`.
 
 ```
 cbt \
@@ -318,6 +333,8 @@ cbt \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   ls
 ```
+
+FIXME: Are the following `cbt` commands required?
 
 ```
 cbt \
@@ -341,19 +358,20 @@ cbt \
   createfamily $BIGTABLE_SPARK_DataFrameDemo_TABLE cf3
 ```
 
-### Submit Wordcount Job
+### Submit CopyTable Job
 
-Submit the Wordcount job to a Cloud Dataproc instance.
+Submit the CopyTable job to a Cloud Dataproc instance.
 
 ```
 gcloud dataproc jobs submit spark \
-  --cluster=$BIGTABLE_SPARK_CLUSTER \
-  --region=$BIGTABLE_SPARK_REGION \
-  --class=$BIGTABLE_SPARK_CLASS \
-  --jars=$BIGTABLE_SPARK_JAR \
+  --cluster=$BIGTABLE_SPARK_DATAPROC_CLUSTER \
+  --region=$BIGTABLE_SPARK_DATAPROC_REGION \
+  --class example.CopyTable \
+  --jars=$BIGTABLE_SPARK_ASSEMBLY_JAR \
   --properties=spark.jars.packages='org.apache.hbase.connectors.spark:hbase-spark:1.0.0' \
   -- \
-  $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID $BIGTABLE_SPARK_DataFrameDemo_TABLE
+  $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID \
+  $BIGTABLE_SPARK_WORDCOUNT_TABLE $BIGTABLE_SPARK_COPYTABLE_TABLE
 ```
 
 ### Verify
@@ -385,7 +403,7 @@ Delete the Dataproc cluster.
 
 ```
 gcloud dataproc clusters delete $BIGTABLE_SPARK_DATAPROC_CLUSTER \
-  --region=$BIGTABLE_SPARK_REGION \
+  --region=$BIGTABLE_SPARK_DATAPROC_REGION \
   --project=$BIGTABLE_SPARK_PROJECT_ID
 ```
 
@@ -402,8 +420,7 @@ cbt \
 There should be no Bigtable instances listed. Create one.
 
 ```
-gcloud beta bigtable instances \
-  create $BIGTABLE_SPARK_INSTANCE_ID \
+gcloud bigtable instances create $BIGTABLE_SPARK_INSTANCE_ID \
   --cluster=$BIGTABLE_SPARK_CLUSTER_ID \
   --cluster-zone=$BIGTABLE_SPARK_CLUSTER_ZONE \
   --display-name=$BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME \
