@@ -17,14 +17,16 @@
 package functions;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import com.google.cloud.functions.Context;
 import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
 import functions.eventpojos.PubSubMessage;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -32,7 +34,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.MockitoAnnotations;
 
 @RunWith(JUnit4.class)
 public class RetryTimeoutTest {
@@ -52,8 +53,6 @@ public class RetryTimeoutTest {
 
   @Before
   public void beforeTest() {
-    MockitoAnnotations.initMocks(this);
-
     LOG_HANDLER.clear();
   }
 
@@ -65,41 +64,29 @@ public class RetryTimeoutTest {
 
   @Test
   public void retryTimeout_handlesRetryMsg() {
-    String timestampData = gson.toJson(Map.of(
-        "timestamp", ZonedDateTime.now(ZoneOffset.UTC).toString()));
+    ZonedDateTime timestamp = ZonedDateTime.now(ZoneOffset.UTC);
+    Context mockContext = mock(Context.class);
+    when(mockContext.timestamp()).thenReturn(timestamp.toString());
 
     PubSubMessage pubsubMessage = new PubSubMessage();
-    pubsubMessage.setData(timestampData);
 
-    new RetryTimeout().accept(pubsubMessage, null);
+    new RetryTimeout().accept(pubsubMessage, mockContext);
 
     String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
-    assertThat(String.format("Processing event %s.", timestampData)).isEqualTo(logMessage);
+    assertThat(logMessage).contains("Processing event with timestamp " + timestamp);
   }
 
   @Test
   public void retryTimeout_handlesStopMsg() {
-    String timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneOffset.UTC).toString();
-    String timestampData = gson.toJson(Map.of("timestamp", timestamp));
-
+    ZonedDateTime timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneOffset.UTC);
+    Context mockContext = mock(Context.class);
+    when(mockContext.timestamp()).thenReturn(timestamp.toString());
 
     PubSubMessage pubsubMessage = new PubSubMessage();
-    pubsubMessage.setData(timestampData);
 
-    new RetryTimeout().accept(pubsubMessage, null);
-
-    String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
-    assertThat(String.format("Dropping event %s.", timestampData)).isEqualTo(logMessage);
-  }
-
-  @Test
-  public void retryTimeout_handlesEmptyMsg() {
-    PubSubMessage pubsubMessage = new PubSubMessage();
-    pubsubMessage.setData("");
-
-    new RetryTimeout().accept(new PubSubMessage(), null);
+    new RetryTimeout().accept(pubsubMessage, mockContext);
 
     String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
-    assertThat("Processing event null.").isEqualTo(logMessage);
+    assertThat(logMessage).contains("Dropping event with timestamp " + timestamp);
   }
 }
