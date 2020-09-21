@@ -62,7 +62,7 @@ class UpdateNumericDataSample {
                 .set("Revenue")
                 .to(new BigDecimal("99999999999999999999999999999.99"))
                 .build()));
-    System.out.println("Records successfully updated");
+    System.out.println("Venues successfully updated");
   }
 }
 // [END spanner_update_data_with_numeric_column]
