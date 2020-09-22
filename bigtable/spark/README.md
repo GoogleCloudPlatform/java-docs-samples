@@ -51,13 +51,15 @@ BIGTABLE_SPARK_ASSEMBLY_JAR=target/scala-2.11/bigtable-spark-samples-assembly-0.
 
 ## Run Examples with Bigtable Emulator
 
-Start the Bigtable Emulator.
+### Start Bigtable Emulator
 
 ```
 gcloud beta emulators bigtable start
 ```
 
-Set the following environment variables for the sample applications to use:
+### Configure Environment
+
+Set the following environment variables.
 
 ```
 SPARK_HOME=your-spark-home
@@ -161,6 +163,19 @@ $ cbt \
 
 ## Run Wordcount with Cloud Bigtable
 
+### Environment Variables
+
+Set the following environment variables (some are borrowed from [Run Examples with Bigtable Emulator](#run-examples-with-bigtable-emulator)).
+
+```
+SPARK_HOME=your-spark-home
+BIGTABLE_SPARK_PROJECT_ID=your-project-id
+BIGTABLE_SPARK_INSTANCE_ID=your-instance-id
+
+BIGTABLE_SPARK_WORDCOUNT_TABLE=wordcount
+BIGTABLE_SPARK_WORDCOUNT_FILE=src/test/resources/Romeo-and-Juliet-prologue.txt
+```
+
 ### Create Cloud Bigtable Instance
 
 Create a Cloud Bigtable instance using the Google Cloud Console (as described in the [Create a Cloud Bigtable instance](https://cloud.google.com/bigtable/docs/quickstart-cbt#create-instance)) or `gcloud beta bigtable instances`.
@@ -195,13 +210,14 @@ cbt \
   "families=cf"
 ```
 
-List tables.
+List the available tables.
 
 ```
-cbt \
+$ cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   ls
+wordcount
 ```
 
 ### Submit Wordcount
@@ -245,9 +261,9 @@ cbt \
   deleteinstance $BIGTABLE_SPARK_INSTANCE_ID
 ```
 
-## Submit DataFrameDemo to Cloud Dataproc
+## Run Examples with Cloud Dataproc
 
-This section describes the steps to submit [DataFrameDemo](src/main/scala/example/CopyTable.scala) application to [Google Cloud Dataproc](https://cloud.google.com/dataproc/).
+This section describes how to run the examples with [Google Cloud Dataproc](https://cloud.google.com/dataproc/).
 
 **TIP** Read [Quickstart using the gcloud command-line tool](https://cloud.google.com/dataproc/docs/quickstarts/quickstart-gcloud) that shows how to use the Google Cloud SDK `gcloud` command-line tool to create a Google Cloud Dataproc cluster and more.
 
