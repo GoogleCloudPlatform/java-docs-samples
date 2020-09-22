@@ -24,6 +24,10 @@
       "groupName": "gRPC packages"
     },
     {
+      "packagePatterns": [ "^io.micronaut:" ],
+      "groupName": "Micronaut packages"
+    },
+    {
       "packagePatterns": [ "^io.vertx:" ],
       "groupName": "Vertx packages"
     },
