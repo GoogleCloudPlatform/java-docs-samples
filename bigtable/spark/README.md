@@ -342,6 +342,7 @@ One notable change (compared to the earlier executions) is that the example uses
 ```
 gcloud dataproc clusters create $BIGTABLE_SPARK_DATAPROC_CLUSTER \
   --region=$BIGTABLE_SPARK_DATAPROC_REGION \
+  --zone=$BIGTABLE_SPARK_CLUSTER_ZONE \
   --project=$BIGTABLE_SPARK_PROJECT_ID \
   --image-version=1.4
 ```
@@ -373,10 +374,11 @@ gcloud dataproc jobs submit spark \
   --region=$BIGTABLE_SPARK_DATAPROC_REGION \
   --class example.Wordcount \
   --jars=$BIGTABLE_SPARK_ASSEMBLY_JAR \
+  --driver-log-levels=com.google.cloud.bigtable=DEBUG,org.apache.hadoop.hbase.mapreduce=DEBUG \
   --properties=spark.jars.packages='org.apache.hbase.connectors.spark:hbase-spark:1.0.0' \
   -- \
   $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID \
-  $BIGTABLE_SPARK_WORDCOUNT_TABLE $BIGTABLE_SPARK_BUCKET_NAME
+  $BIGTABLE_SPARK_WORDCOUNT_TABLE gs://bigtable-spark-bucket/Romeo-and-Juliet-prologue.txt
 ```
 
 **NOTE**: The command uses `BIGTABLE_SPARK_BUCKET_NAME` to reference the bucket.
@@ -420,6 +422,7 @@ Delete the Dataproc cluster.
 ```
 gcloud dataproc clusters delete $BIGTABLE_SPARK_DATAPROC_CLUSTER \
   --region=$BIGTABLE_SPARK_DATAPROC_REGION \
+  --zone=$BIGTABLE_SPARK_CLUSTER_ZONE \
   --project=$BIGTABLE_SPARK_PROJECT_ID
 ```
 

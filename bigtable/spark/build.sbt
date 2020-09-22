@@ -22,8 +22,7 @@ version := "0.1"
 // https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-release-1.4
 scalaVersion := "2.11.12"
 val sparkVersion = "2.4.6"
-val hbaseVersion = "1.3.6"
-val bigtableVersion = "1.15.0"
+val bigtableVersion = "1.16.0"
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % sparkVersion % Provided,
   "org.apache.hbase.connectors.spark" % "hbase-spark" % "1.0.0" % Provided,
@@ -42,13 +41,8 @@ val fixes = Seq(
   // Forcing the version to match Spark
   // FIXME Would that work with dependencyOverrides?
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.10",
-  // Fix for NoClassDefFoundError: org/apache/spark/streaming/dstream/DStream
-  // when saving a DataFrame
+  // Required by 'value org.apache.hadoop.hbase.spark.HBaseContext.dstream'
   "org.apache.spark" %% "spark-streaming" % sparkVersion % Provided,
-  // Fix for NoClassDefFoundError: org/apache/hadoop/hbase/fs/HFileSystem
-  // Why?!?! The example does NOT use them directly!
-  "org.apache.hbase" % "hbase-server" % hbaseVersion,
-  "org.apache.hbase" % "hbase-client" % hbaseVersion
 )
 libraryDependencies ++= fixes
 
