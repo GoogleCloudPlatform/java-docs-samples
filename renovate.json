@@ -34,6 +34,10 @@
     {
       "packagePatterns": [ "^org.eclipse.jetty:" ],
       "groupName": "Jetty packages"
+    },
+    {
+      "packageNames": ["javax.servlet:javax.servlet-api"],
+      "rangeStrategy": "pin"
     }
   ],
   "labels": [
