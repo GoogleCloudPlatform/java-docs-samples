@@ -63,7 +63,7 @@ public class FSReadData2 {
     protected Datastore datastore;
     private KeyFactory keyFactory;
     // private final String kind = "BillyDF500reversed1mswithP";
-    private final String kind = "BillyDFrw1s500rows";
+    private final String kind = "BillyDFrw1s500rowsWithFetch";
 
     private static final int RANDOM_ID_BOUND = 500;
     Random rand = new Random();
@@ -150,14 +150,16 @@ public class FSReadData2 {
       long seconds = timestampDiff / 1000;
       int timeOffsetIndex = Math.toIntExact(seconds / KEY_VIZ_WINDOW_SECONDS);
 
+      List<com.google.cloud.datastore.Key> keysToFetch = new ArrayList<>();
       for (int i = 0; i < maxInput; i++) {
         if (timeOffsetIndex % 2 == 0) {
           String paddedRowkey = String.format(numberFormat, i);
           String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
-          datastore.get(keyFactory.newKey(reversedRowkey));
+          keysToFetch.add(keyFactory.newKey(reversedRowkey));
           c++;
         }
       }
+      datastore.fetch();
       System.out.println(c + " entities fetched");
 
       // String kind = "Billy10ms1krs";
