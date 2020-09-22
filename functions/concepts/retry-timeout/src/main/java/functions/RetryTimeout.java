@@ -21,7 +21,6 @@ package functions;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import functions.eventpojos.PubSubMessage;
 import java.time.Duration;
 import java.time.ZoneOffset;
@@ -42,25 +41,19 @@ public class RetryTimeout implements BackgroundFunction<PubSubMessage> {
   @Override
   public void accept(PubSubMessage message, Context context) {
     ZonedDateTime utcNow = ZonedDateTime.now(ZoneOffset.UTC);
-    ZonedDateTime timestamp = utcNow;
+    ZonedDateTime timestamp = ZonedDateTime.parse(context.timestamp());
 
-    String data = message.getData();
-    JsonObject body = gson.fromJson(data, JsonObject.class);
-    if (body != null && body.has("timestamp")) {
-      String tz = body.get("timestamp").getAsString();
-      timestamp = ZonedDateTime.parse(tz);
-    }
     long eventAge = Duration.between(timestamp, utcNow).toMillis();
 
     // Ignore events that are too old
     if (eventAge > MAX_EVENT_AGE) {
-      logger.info(String.format("Dropping event %s.", data));
+      logger.info(String.format("Dropping event with timestamp %s.", timestamp));
       return;
     }
 
     // Process events that are recent enough
     // To retry this invocation, throw an exception here
-    logger.info(String.format("Processing event %s.", data));
+    logger.info(String.format("Processing event with timestamp %s.", timestamp));
   }
 }
 // [END functions_tips_infinite_retries]
