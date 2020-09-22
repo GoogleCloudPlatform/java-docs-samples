@@ -261,11 +261,13 @@ cbt \
   deleteinstance $BIGTABLE_SPARK_INSTANCE_ID
 ```
 
-## Run Examples with Cloud Dataproc
+## Run Wordcount with Cloud Dataproc
 
-This section describes how to run the examples with [Google Cloud Dataproc](https://cloud.google.com/dataproc/).
+This section describes how to run [example.Wordcount](src/main/scala/example/Wordcount.scala) with [Google Cloud Dataproc](https://cloud.google.com/dataproc/).
 
-**TIP** Read [Quickstart using the gcloud command-line tool](https://cloud.google.com/dataproc/docs/quickstarts/quickstart-gcloud) that shows how to use the Google Cloud SDK `gcloud` command-line tool to create a Google Cloud Dataproc cluster and more.
+Start afresh and re-create all the resources (a Bigtable instance, tables).
+
+**TIP**: Read [Quickstart using the gcloud command-line tool](https://cloud.google.com/dataproc/docs/quickstarts/quickstart-gcloud) that shows how to use the Google Cloud SDK `gcloud` command-line tool to create a Google Cloud Dataproc cluster and more.
 
 ### Configure Environment
 
@@ -280,9 +282,12 @@ BIGTABLE_SPARK_INSTANCE_ID=your-bigtable-instance-id
 BIGTABLE_SPARK_CLUSTER_ID=your-bigtable-cluster-id
 BIGTABLE_SPARK_CLUSTER_ZONE=your-bigtable-cluster-zone
 BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME=your-bigtable-display-name
+
+BIGTABLE_SPARK_WORDCOUNT_TABLE=wordcount
+BIGTABLE_SPARK_BUCKET_NAME=gs://bigtable-spark-bucket/
 ```
 
-**NOTE** `BIGTABLE_SPARK_REGION` should point to your region. Read [Available regions and zones](https://cloud.google.com/compute/docs/regions-zones#available) in the official documentation.
+**NOTE**: `BIGTABLE_SPARK_DATAPROC_REGION` should point to your region. Read [Available regions and zones](https://cloud.google.com/compute/docs/regions-zones#available) in the official documentation.
 
 ### Authenticate
 
@@ -295,7 +300,44 @@ Learn about [authenticating to a GCP API](https://cloud.google.com/docs/authenti
 GOOGLE_APPLICATION_CREDENTIALS=/your/service/account.json
 ```
 
-### Create Google Cloud Dataproc Cluster
+### Upload File to Cloud Storage
+
+One notable change (compared to the earlier executions) is that the example uses [Cloud Storage](https://cloud.google.com/storage).
+
+**TIP**: Read [Quickstart: Using the gsutil tool](https://cloud.google.com/storage/docs/quickstart-gsutil) in the official documentation.
+
+1. Create a bucket.
+
+    ```text
+    gsutil mb \
+      -b on \
+      -l $BIGTABLE_SPARK_DATAPROC_REGION \
+      -p $BIGTABLE_SPARK_PROJECT_ID \
+      $BIGTABLE_SPARK_BUCKET_NAME
+    ```
+
+1. Upload an input file into the bucket.
+
+    ```text
+    gsutil cp src/test/resources/Romeo-and-Juliet-prologue.txt $BIGTABLE_SPARK_BUCKET_NAME
+    ```
+
+    If successful, the command returns:
+
+    ```text
+    Copying file://src/test/resources/Romeo-and-Juliet-prologue.txt [Content-Type=text/plain]...
+    / [1 files][  629.0 B/  629.0 B]
+    Operation completed over 1 objects/629.0 B.
+    ```
+
+1. List contents of the bucket.
+
+    ```text
+    $ gsutil ls $BIGTABLE_SPARK_BUCKET_NAME
+    gs://bigtable-spark-bucket/Romeo-and-Juliet-prologue.txt
+    ```
+
+### Create Dataproc Cluster
 
 ```
 gcloud dataproc clusters create $BIGTABLE_SPARK_DATAPROC_CLUSTER \
@@ -304,9 +346,11 @@ gcloud dataproc clusters create $BIGTABLE_SPARK_DATAPROC_CLUSTER \
   --image-version=1.4
 ```
 
+Please note that the examples use Dataproc 1.4.
+
 For the list of available Dataproc image versions visit [Dataproc Image version list](https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-versions).
 
-List the available clusters and make sure that `BIGTABLE_SPARK_DATAPROC_CLUSTER` is among them.
+List the clusters and make sure that `BIGTABLE_SPARK_DATAPROC_CLUSTER` is among them.
 
 ```
 gcloud dataproc clusters list \
@@ -315,79 +359,35 @@ gcloud dataproc clusters list \
 
 ### Configure Cloud Bigtable
 
-```
-gcloud bigtable instances create $BIGTABLE_SPARK_INSTANCE_ID \
-  --cluster=$BIGTABLE_SPARK_CLUSTER_ID \
-  --cluster-zone=$BIGTABLE_SPARK_CLUSTER_ZONE \
-  --display-name=$BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME \
-  --instance-type=DEVELOPMENT
-```
+1. Create Cloud Bigtable Instance as described in [Create Cloud Bigtable Instance](#create-cloud-bigtable-instance)
 
-Create the tables.
+1. Create the table as described in [Create Table](#create-table)
 
-```
-cbt \
-  -project=$BIGTABLE_SPARK_PROJECT_ID \
-  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-  createtable $BIGTABLE_SPARK_WORDCOUNT_TABLE \
-  "families=cf"
-```
+### Submit Wordcount
 
-```
-cbt \
-  -project=$BIGTABLE_SPARK_PROJECT_ID \
-  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-  createtable $BIGTABLE_SPARK_COPYTABLE_TABLE \
-  "families=cf"
-```
-
-List tables. There should at least be two `BIGTABLE_SPARK_WORDCOUNT_TABLE` and `BIGTABLE_SPARK_COPYTABLE_TABLE`.
-
-```
-cbt \
-  -project=$BIGTABLE_SPARK_PROJECT_ID \
-  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-  ls
-```
-
-FIXME: Are the following `cbt` commands required?
-
-```
-cbt \
-  -project=$BIGTABLE_SPARK_PROJECT_ID \
-  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-  createfamily $BIGTABLE_SPARK_DataFrameDemo_TABLE rowkey
-
-cbt \
-  -project=$BIGTABLE_SPARK_PROJECT_ID \
-  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-  createfamily $BIGTABLE_SPARK_DataFrameDemo_TABLE cf1
-
-cbt \
-  -project=$BIGTABLE_SPARK_PROJECT_ID \
-  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-  createfamily $BIGTABLE_SPARK_DataFrameDemo_TABLE cf2
-
-cbt \
-  -project=$BIGTABLE_SPARK_PROJECT_ID \
-  -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-  createfamily $BIGTABLE_SPARK_DataFrameDemo_TABLE cf3
-```
-
-### Submit CopyTable Job
-
-Submit the CopyTable job to a Cloud Dataproc instance.
+Submit Wordcount to the Dataproc instance.
 
 ```
 gcloud dataproc jobs submit spark \
   --cluster=$BIGTABLE_SPARK_DATAPROC_CLUSTER \
   --region=$BIGTABLE_SPARK_DATAPROC_REGION \
-  --class example.CopyTable \
+  --class example.Wordcount \
   --jars=$BIGTABLE_SPARK_ASSEMBLY_JAR \
   --properties=spark.jars.packages='org.apache.hbase.connectors.spark:hbase-spark:1.0.0' \
   -- \
   $BIGTABLE_SPARK_PROJECT_ID $BIGTABLE_SPARK_INSTANCE_ID \
-  $BIGTABLE_SPARK_WORDCOUNT_TABLE $BIGTABLE_SPARK_COPYTABLE_TABLE
+  $BIGTABLE_SPARK_WORDCOUNT_TABLE $BIGTABLE_SPARK_BUCKET_NAME
+```
+
+**NOTE**: The command uses `BIGTABLE_SPARK_BUCKET_NAME` to reference the bucket.
+
+It may take some time to see any progress and may seem to be idle. You may want to use `--verbosity` global option with `debug` to be told about progress earlier.
+
+Eventually, you should see the following messages:
+
+```text
+Job [joibId] submitted.
+Waiting for job output...
 ```
 
 ### Verify
@@ -396,7 +396,7 @@ gcloud dataproc jobs submit spark \
 cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-  read $BIGTABLE_SPARK_DataFrameDemo_TABLE
+  read $BIGTABLE_SPARK_WORDCOUNT_TABLE
 ```
 
 ### Clean Up
