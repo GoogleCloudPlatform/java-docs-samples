@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpStatus;
 
-// [START pubsub_appengine_flex_publish]
+// [START gae_flex_pubsub_publish]
 @WebServlet(name = "Publish with PubSub", value = "/pubsub/publish")
 public class PubSubPublish extends HttpServlet {
 
@@ -57,7 +57,7 @@ public class PubSubPublish extends HttpServlet {
       resp.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
-  // [END pubsub_appengine_flex_publish]
+  // [END gae_flex_pubsub_publish]
 
   private Publisher publisher;
 
