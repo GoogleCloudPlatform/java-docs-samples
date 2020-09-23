@@ -16,17 +16,29 @@
 
 package com.example.spanner;
 
+import com.google.api.gax.grpc.GrpcCallContext;
 //[START spanner_set_custom_timeout_and_retry]
 import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.StatusCode.Code;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
+import com.google.cloud.spanner.ErrorCode;
 import com.google.cloud.spanner.Spanner;
+import com.google.cloud.spanner.SpannerException;
+import com.google.cloud.spanner.SpannerExceptionFactory;
 import com.google.cloud.spanner.SpannerOptions;
+import com.google.cloud.spanner.SpannerOptions.CallContextConfigurator;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionRunner.TransactionCallable;
+import com.google.common.collect.ImmutableList;
+import com.google.spanner.v1.SpannerGrpc;
+import java.util.concurrent.TimeUnit;
 import org.threeten.bp.Duration;
+import io.grpc.CallOptions;
+import io.grpc.Context;
+import io.grpc.MethodDescriptor;
 
 class CustomTimeoutAndRetrySettingsExample {
 
@@ -37,6 +49,45 @@ class CustomTimeoutAndRetrySettingsExample {
     String databaseId = "my-database";
 
     executeSqlWithCustomTimeoutAndRetrySettings(projectId, instanceId, databaseId);
+  }
+  
+  static void executeSqlWithCustomTimeoutAndRetrySettings(DatabaseClient client) {
+     CallContextConfigurator configurator =
+             new CallContextConfigurator() {
+               public <ReqT, RespT> ApiCallContext configure(
+                   ApiCallContext context, ReqT request, MethodDescriptor<ReqT, RespT> method) {
+                 // DML uses the gRPC method ExecuteSql.
+                 if (method == SpannerGrpc.getExecuteSqlMethod()) {
+                   return GrpcCallContext.createDefault()
+                       .withCallOptions(CallOptions.DEFAULT.withDeadlineAfter(60L, TimeUnit.SECONDS).)
+                       ;
+                 }
+                 return null;
+               }
+             };
+         Context context =
+             Context.current().withValue(SpannerOptions.CALL_CONTEXT_CONFIGURATOR_KEY, configurator);
+         context.run(
+             new Runnable() {
+               public void run() {
+                 try {
+                   client
+                       .readWriteTransaction()
+                       .run(
+                           new TransactionCallable<long[]>() {
+                             public long[] run(TransactionContext transaction) throws Exception {
+                               return transaction.batchUpdate(
+                                   ImmutableList.of(statement1, statement2));
+                             }
+                           });
+                 } catch (SpannerException e) {
+                   if (e.getErrorCode() == ErrorCode.DEADLINE_EXCEEDED) {
+                     // handle timeout exception.
+                   }
+                 }
+               }
+             });
+    
   }
 
   // Create a Spanner client with custom ExecuteSql timeout and retry settings.
