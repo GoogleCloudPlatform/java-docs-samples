@@ -91,7 +91,7 @@ public class AsyncBatchAnnotateImagesGcs {
       System.out.println("Waiting for the operation to finish.");
 
       // we're not processing the response, since we'll be reading the output from GCS.
-      response.get(180, TimeUnit.SECONDS);
+      response.get(240, TimeUnit.SECONDS);
 
       // Once the request has completed and the output has been
       // written to GCS, we can list all the output files.
