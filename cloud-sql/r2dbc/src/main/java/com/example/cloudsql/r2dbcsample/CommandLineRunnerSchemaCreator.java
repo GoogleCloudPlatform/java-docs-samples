@@ -17,7 +17,6 @@
 package com.example.cloudsql.r2dbcsample;
 
 import io.r2dbc.spi.ConnectionFactory;
-import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +26,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CommandLineRunnerSchemaCreator implements CommandLineRunner {
-  private static final Logger logger = LoggerFactory.getLogger(CommanLineRunnerSchemaCreator.class);
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(CommandLineRunnerSchemaCreator.class);
 
   @Autowired
   ConnectionFactory connectionFactory;
 
   @Override
-  public void run(String...args) {
+  public void run(String... args) {
     runDdl("CREATE TABLE IF NOT EXISTS vote ( "
         + "vote_id SERIAL NOT NULL, "
         + "time_cast timestamp NOT NULL, "
@@ -45,9 +46,9 @@ public class CommandLineRunnerSchemaCreator implements CommandLineRunner {
     DatabaseClient client = DatabaseClient.create(connectionFactory);
 
     client.execute(schema)
-				.fetch()
-				.rowsUpdated()
-				.block();
+        .fetch()
+        .rowsUpdated()
+        .block();
 
     logger.info("Executed DDL: " + schema);
   }

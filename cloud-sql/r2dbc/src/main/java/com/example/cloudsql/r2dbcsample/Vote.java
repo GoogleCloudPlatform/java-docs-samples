@@ -16,11 +16,11 @@
 
 package com.example.cloudsql.r2dbcsample;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import org.springframework.data.annotation.Id;
 
 public class Vote {
+
   @Id
   Integer voteId;
 

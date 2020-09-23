@@ -25,6 +25,7 @@ import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 
 @Controller
 public class MainController {
+
   @Autowired
   private VoteRepository voteRepository;
 

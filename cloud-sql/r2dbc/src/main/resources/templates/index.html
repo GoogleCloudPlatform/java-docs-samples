@@ -20,7 +20,8 @@ limitations under the License.
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </head>
 <body>
 <nav class="red lighten-1">
@@ -62,18 +63,16 @@ limitations under the License.
   </div>
   <h4 class="header center">Recent Votes</h4>
   <ul class="container collection center" data-th-each="vote : ${votes}">
-      <li class="collection-item avatar">
-        <span th:if="${vote.candidate == 'TABS'}">
-            <i class="material-icons circle green">keyboard_tab</i>
-          </span>
-        <span th:if="${vote.candidate == 'SPACES'}">
-            <i class="material-icons circle blue">space_bar</i>
+    <li class="collection-item avatar">
+        <span th:switch="${vote.candidate}">
+          <i th:case="SPACES" class="material-icons circle blue">space_bar</i>
+          <i th:case="*" class="material-icons circle green">keyboard_tab</i>
         </span>
-        <span class="title">
-                    A vote for <b><span th:text="${vote.candidate}"></span></b>
-                </span>
-        <p>was cast at <span th:text="${vote.timeCast}"></span>.</p>
-      </li>
+      <span class="title">
+        A vote for <b><span th:text="${vote.candidate}"></span></b>
+      </span>
+      <p>was cast at <span th:text="${vote.timeCast}"></span>.</p>
+    </li>
   </ul>
 </div>
 <script>
@@ -97,6 +96,7 @@ limitations under the License.
   document.getElementById("voteSpaces").addEventListener("click", function () {
     vote("SPACES");
   });
+
 </script>
 </body>
 </html>

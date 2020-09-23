@@ -24,16 +24,16 @@ import reactor.core.publisher.Mono;
 
 @RestController
 public class VoteController {
+
   @Autowired
   VoteRepository voteRepository;
 
   @PostMapping("/vote")
   public Mono<String> vote(ServerWebExchange serverWebExchange) {
     return serverWebExchange.getFormData()
-        .flatMap(formData ->
-            voteRepository.save(new Vote(formData.getFirst("team")))
-                .map(vote ->
-                    String.format("Vote successfully cast for '%s' at time %s!%n",
-                        vote.candidate, vote.timeCast)));
+        .flatMap(formData -> voteRepository.save(new Vote(formData.getFirst("team"))))
+        .map(vote ->
+            String.format("Vote successfully cast for '%s' at time %s!%n",
+                vote.candidate, vote.timeCast));
   }
 }
