@@ -32,7 +32,7 @@ Note the database name.
     ``` 
 ## Schema
 
-The schema will be created automatically when application starts.
+The schema will be created automatically when the application starts.
 
 ## Deploying locally
 
@@ -66,7 +66,7 @@ for more details on connecting a Cloud Run service to Cloud SQL.
     ```sh
     gcloud run deploy r2dbc-sample \
         --image gcr.io/$PROJECT_ID/r2dbc-sample \
-        --platform managed \
+        --platform managed
     ```
     Take note of the URL output at the end of the deployment process.
 
