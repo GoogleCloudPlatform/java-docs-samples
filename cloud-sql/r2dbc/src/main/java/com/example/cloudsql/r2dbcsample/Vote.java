@@ -22,14 +22,38 @@ import org.springframework.data.annotation.Id;
 public class Vote {
 
   @Id
-  Integer voteId;
+  private Integer voteId;
 
-  public Instant timeCast;
+  private Instant timeCast;
 
-  public String candidate;
+  private String candidate;
 
   public Vote(String candidate) {
     this.timeCast = Instant.now();
+    this.candidate = candidate;
+  }
+
+  public Integer getVoteId() {
+    return voteId;
+  }
+
+  public void setVoteId(Integer voteId) {
+    this.voteId = voteId;
+  }
+
+  public Instant getTimeCast() {
+    return timeCast;
+  }
+
+  public void setTimeCast(Instant timeCast) {
+    this.timeCast = timeCast;
+  }
+
+  public String getCandidate() {
+    return candidate;
+  }
+
+  public void setCandidate(String candidate) {
     this.candidate = candidate;
   }
 }

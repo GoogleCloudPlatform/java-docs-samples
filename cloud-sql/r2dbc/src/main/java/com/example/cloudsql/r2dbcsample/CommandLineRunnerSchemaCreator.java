@@ -27,11 +27,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommandLineRunnerSchemaCreator implements CommandLineRunner {
 
-  private static final Logger logger = LoggerFactory
-      .getLogger(CommandLineRunnerSchemaCreator.class);
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(CommandLineRunnerSchemaCreator.class);
 
   @Autowired
-  ConnectionFactory connectionFactory;
+  private ConnectionFactory connectionFactory;
 
   @Override
   public void run(String... args) {
@@ -50,6 +50,6 @@ public class CommandLineRunnerSchemaCreator implements CommandLineRunner {
         .rowsUpdated()
         .block();
 
-    logger.info("Executed DDL: " + schema);
+    LOGGER.info("Executed DDL: " + schema);
   }
 }

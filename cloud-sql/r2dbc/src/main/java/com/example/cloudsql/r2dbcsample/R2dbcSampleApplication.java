@@ -30,17 +30,18 @@ import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 @Configuration
 @EnableR2dbcRepositories
 public class R2dbcSampleApplication extends AbstractR2dbcConfiguration {
-	@Value("${connectionString}")
-	String connectionString;
 
-	public static void main(String[] args) {
-		SpringApplication.run(R2dbcSampleApplication.class, args);
-	}
+  @Value("${connectionString}")
+  private String connectionString;
 
-	@Override
-	@Bean
-	public ConnectionFactory connectionFactory() {
-		return ConnectionFactories.get(connectionString);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(R2dbcSampleApplication.class, args);
+  }
+
+  @Override
+  @Bean
+  public ConnectionFactory connectionFactory() {
+    return ConnectionFactories.get(connectionString);
+  }
 }
 
