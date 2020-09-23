@@ -26,7 +26,7 @@ import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommanLineRunnerSchemaCreator implements CommandLineRunner {
+public class CommandLineRunnerSchemaCreator implements CommandLineRunner {
   private static final Logger logger = LoggerFactory.getLogger(CommanLineRunnerSchemaCreator.class);
 
   @Autowired
@@ -49,6 +49,6 @@ public class CommanLineRunnerSchemaCreator implements CommandLineRunner {
 				.rowsUpdated()
 				.block();
 
-    logger.info("Running DDL: " + schema);
+    logger.info("Executed DDL: " + schema);
   }
 }
