@@ -117,7 +117,7 @@ public class SpannerStandaloneExamplesIT {
         runExample(
             () ->
                 CustomTimeoutAndRetrySettingsExample.executeSqlWithCustomTimeoutAndRetrySettings(
-                    projectId, instanceId, databaseId));
+                    spanner.getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId))));
     assertThat(out).contains("1 record inserted.");
   }
 
