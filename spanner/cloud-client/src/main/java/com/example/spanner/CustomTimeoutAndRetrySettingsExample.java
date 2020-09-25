@@ -16,8 +16,8 @@
 
 package com.example.spanner;
 
+//[START spanner_set_custom_timeout_and_retry]
 import com.google.api.gax.grpc.GrpcCallContext;
-// [START spanner_set_custom_timeout_and_retry]
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -28,10 +28,10 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionRunner.TransactionCallable;
 import com.google.spanner.v1.SpannerGrpc;
-import java.util.concurrent.TimeUnit;
 import io.grpc.CallOptions;
 import io.grpc.Context;
 import io.grpc.MethodDescriptor;
+import java.util.concurrent.TimeUnit;
 
 class CustomTimeoutAndRetrySettingsExample {
 
