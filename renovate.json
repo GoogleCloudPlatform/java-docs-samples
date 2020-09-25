@@ -24,6 +24,10 @@
       "groupName": "gRPC packages"
     },
     {
+      "packagePatterns": [ "^io.micronaut:" ],
+      "groupName": "Micronaut packages"
+    },
+    {
       "packagePatterns": [ "^io.vertx:" ],
       "groupName": "Vertx packages"
     },
@@ -34,6 +38,10 @@
     {
       "packagePatterns": [ "^org.eclipse.jetty:" ],
       "groupName": "Jetty packages"
+    },
+    {
+      "packageNames": ["javax.servlet:javax.servlet-api"],
+      "rangeStrategy": "pin"
     }
   ],
   "labels": [

@@ -254,7 +254,7 @@ public class Detect {
       // Wait for the request to finish. (The result is not used, since the API saves the result to
       // the specified location on GCS.)
       List<AsyncAnnotateFileResponse> result =
-          response.get(180, TimeUnit.SECONDS).getResponsesList();
+          response.get(240, TimeUnit.SECONDS).getResponsesList();
 
       // Once the request has completed and the System.output has been
       // written to GCS, we can list all the System.output files.
