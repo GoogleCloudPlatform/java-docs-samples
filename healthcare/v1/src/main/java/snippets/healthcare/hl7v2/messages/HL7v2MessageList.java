@@ -30,6 +30,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.util.Collections;
 
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class HL7v2MessageList {
   private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();

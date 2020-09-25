@@ -42,7 +42,7 @@ class GoogleRSAKeyProvider implements RSAKeyProvider {
   private static final String GOOGLEAPIS_CERTS = "https://www.googleapis.com/oauth2/v1/certs";
 
   private final Supplier<Map<String, String>> cachedSignedCertificates
-      = Suppliers.memoizeWithExpiration(this::getNewCertificate,1, TimeUnit.HOURS);
+      = Suppliers.memoizeWithExpiration(this::getNewCertificate, 1, TimeUnit.HOURS);
 
   @SuppressWarnings("unchecked")
   private Map<String, String> getNewCertificate() {
@@ -51,7 +51,7 @@ class GoogleRSAKeyProvider implements RSAKeyProvider {
     try {
       result = new Downloader().download(GOOGLEAPIS_CERTS);
     } catch (IOException e) {
-      throw new JWTVerificationException("Could not download public Googleapis certs.",e);
+      throw new JWTVerificationException("Could not download public Googleapis certs.", e);
     }
     return (Map<String, String>) gson.fromJson(result, HashMap.class);
   }
@@ -84,7 +84,7 @@ class GoogleRSAKeyProvider implements RSAKeyProvider {
       is.close();
       return safelyCastToRsaPublicKey(certificate.getPublicKey());
     } catch (CertificateException e) {
-      throw new JWTVerificationException("Could not extract RSA key from certificate String.",e);
+      throw new JWTVerificationException("Could not extract RSA key from certificate String.", e);
     } catch (IOException e) {
       //Thrown when closing input stream. Built on in-memory array. From immutable String.
       throw new RuntimeException(e);

@@ -81,6 +81,7 @@ public class SlackSlashCommand implements HttpFunction {
   // [START functions_verify_webhook]
   /**
    * Verify that the webhook request came from Slack.
+   *
    * @param request Cloud Function request object in {@link HttpRequest} format.
    * @param requestBody Raw body of webhook request to check signature against.
    * @return true if the provided request came from Slack, false otherwise
@@ -112,6 +113,7 @@ public class SlackSlashCommand implements HttpFunction {
 
   /**
    * Format the Knowledge Graph API response into a richly formatted Slack message.
+   *
    * @param kgResponse The response from the Knowledge Graph API as a {@link JsonObject}.
    * @param query The user's search query.
    * @return The formatted Slack message as a JSON string.
@@ -127,7 +129,7 @@ public class SlackSlashCommand implements HttpFunction {
 
     // Extract the first entity from the result list, if any
     if (entityList.size() == 0) {
-      attachmentJson.addProperty("text","No results match your query...");
+      attachmentJson.addProperty("text", "No results match your query...");
       responseJson.add("attachments", attachmentJson);
 
       return gson.toJson(responseJson);
@@ -165,6 +167,7 @@ public class SlackSlashCommand implements HttpFunction {
   // [START functions_slack_request]
   /**
    * Send the user's search query to the Knowledge Graph API.
+   *
    * @param query The user's search query.
    * @return The Knowledge graph API results as a {@link JsonObject}.
    * @throws IOException if Knowledge Graph request fails
@@ -181,6 +184,7 @@ public class SlackSlashCommand implements HttpFunction {
   // [START functions_slack_search]
   /**
    * Receive a Slash Command request from Slack.
+   *
    * @param request Cloud Function request object.
    * @param response Cloud Function response object.
    * @throws IOException if Knowledge Graph request fails

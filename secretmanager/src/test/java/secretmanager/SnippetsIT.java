@@ -46,6 +46,7 @@ import org.junit.runners.JUnit4;
 
 /** Integration (system) tests for {@link Snippets}. */
 @RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class SnippetsIT {
   private static final String IAM_USER =
       "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";

@@ -28,6 +28,7 @@ public class RemoteApiExample {
 
   /**
    * A simple API client.
+   *
    * @param args .
    * @throws IOException .
    */

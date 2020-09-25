@@ -39,7 +39,7 @@ public class ExceptionUtil {
     ex.printStackTrace(new PrintWriter(exceptionWriter));
     Map<String, Object> data = new HashMap<>();
     data.put("message", exceptionWriter.toString());
-    Map<String,String> serviceContextData = new HashMap<>();
+    Map<String, String> serviceContextData = new HashMap<>();
     serviceContextData.put("service", "myapp");
     data.put("serviceContext", serviceContextData);
     // ... add more metadata

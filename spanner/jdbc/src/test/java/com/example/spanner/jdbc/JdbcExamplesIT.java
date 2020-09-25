@@ -49,6 +49,7 @@ import org.junit.runners.JUnit4;
 
 /** Integration tests for Cloud Spanner JDBC examples. */
 @RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class JdbcExamplesIT {
   // The instance needs to exist for tests to pass.
   private static String instanceId = System.getProperty("spanner.test.instance");
