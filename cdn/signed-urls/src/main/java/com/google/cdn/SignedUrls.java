@@ -37,6 +37,7 @@ public class SignedUrls {
    * Creates a signed URL for a Cloud CDN endpoint with the given key
    * URL must start with http:// or https://, and must contain a forward
    * slash (/) after the hostname.
+   *
    * @param url the Cloud CDN endpoint to sign
    * @param key url signing key uploaded to the backend service/bucket, as a 16-byte array
    * @param keyName the name of the signing key added to the back end bucket or service

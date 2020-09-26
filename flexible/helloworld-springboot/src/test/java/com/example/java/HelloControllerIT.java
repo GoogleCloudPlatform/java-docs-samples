@@ -27,6 +27,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class HelloControllerIT {
 
   @LocalServerPort private int port;

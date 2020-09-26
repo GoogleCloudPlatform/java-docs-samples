@@ -266,6 +266,7 @@ public class InfiniteStreamRecognize {
                 if (bridgingOffset > finalRequestEndTime) {
                   bridgingOffset = finalRequestEndTime;
                 }
+                @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
                 int chunksFromMS =
                     (int) Math.floor((finalRequestEndTime - bridgingOffset) / chunkTime);
                 // chunks from MS is number of chunks to resend

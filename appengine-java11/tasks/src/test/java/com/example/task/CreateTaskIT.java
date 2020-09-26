@@ -32,6 +32,7 @@ import org.junit.runners.JUnit4;
 
 /** Tests for creating Tasks with App Engine targets. */
 @RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class CreateTaskIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;

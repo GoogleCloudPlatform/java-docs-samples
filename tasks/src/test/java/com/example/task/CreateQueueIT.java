@@ -31,6 +31,7 @@ import org.junit.runners.JUnit4;
 
 /** Tests for creating queues. */
 @RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class CreateQueueIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION_ID = System.getenv("LOCATION_ID");

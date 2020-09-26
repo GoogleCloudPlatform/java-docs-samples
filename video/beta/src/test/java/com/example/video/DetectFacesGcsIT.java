@@ -24,6 +24,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class DetectFacesGcsIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;

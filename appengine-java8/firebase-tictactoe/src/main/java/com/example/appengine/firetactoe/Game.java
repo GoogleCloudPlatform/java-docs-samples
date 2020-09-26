@@ -121,6 +121,7 @@ public class Game {
 
   /**
    * deleteChannel.
+   *
    * @param userId .
    * @throws IOException .
    */
@@ -140,6 +141,7 @@ public class Game {
 
   /**
    * sendUpdateToClients.
+   *
    * @throws IOException if we had some kind of network issue.
    */
   public void sendUpdateToClients() throws IOException {
@@ -173,6 +175,7 @@ public class Game {
 
   /**
    * makeMove for user.
+   *
    * @param position .
    * @param userId .
    * @return true if successful.

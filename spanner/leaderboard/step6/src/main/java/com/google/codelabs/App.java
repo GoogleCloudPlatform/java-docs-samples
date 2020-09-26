@@ -231,7 +231,7 @@ public class App {
       System.out.printf(
           "PlayerId: %d  PlayerName: %s  Score: %s  Timestamp: %s\n",
           resultSet.getLong("PlayerId"), resultSet.getString("PlayerName"), score,
-          scoreDate.substring(0,10));
+          scoreDate.substring(0, 10));
     }
   }
 
@@ -256,7 +256,7 @@ public class App {
       System.out.printf(
           "PlayerId: %d  PlayerName: %s  Score: %s  Timestamp: %s\n",
           resultSet.getLong("PlayerId"), resultSet.getString("PlayerName"), score,
-          scoreDate.substring(0,10));
+          scoreDate.substring(0, 10));
     }
   }
 

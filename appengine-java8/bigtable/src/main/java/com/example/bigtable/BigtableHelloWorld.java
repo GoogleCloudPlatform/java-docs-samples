@@ -50,6 +50,7 @@ public class BigtableHelloWorld {
 
   /**
    * Create a table -- first time only.
+   *
    * @param connection to Bigtable
    * @return the status
    */
