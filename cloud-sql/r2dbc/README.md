@@ -34,7 +34,7 @@ Note the database name.
 
 The schema will be created automatically when the application starts.
 
-## Deploying locally
+## Running locally
 
 To run this application locally, run the following command inside the project folder:
 
@@ -61,7 +61,7 @@ for more details on connecting a Cloud Run service to Cloud SQL.
             -Dimage=gcr.io/$PROJECT_ID/r2dbc-sample
     ```
 
-2. Deploy the service to Cloud Run:
+1. Deploy the service to Cloud Run:
 
     ```sh
     gcloud run deploy r2dbc-sample \
@@ -70,7 +70,7 @@ for more details on connecting a Cloud Run service to Cloud SQL.
     ```
     Take note of the URL output at the end of the deployment process.
 
-3. Navigate to the URL noted in Step 2.
+1. Navigate to the URL noted in Step 2.
 
   For more details about using Cloud Run see http://cloud.run.
   Review other [Java on Cloud Run samples](../../../run/).
