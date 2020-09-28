@@ -11,10 +11,10 @@ This directory contains samples for Cloud Eventarc.
 
 |           Sample                |        Description       |     Deploy    |
 | ------------------------------- | ------------------------ | ------------- |
-|[Events - Pub/Sub](events-pubsub/) | Events for Cloud Run with Pub/Sub | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_pubsub] |
+|[Eventarc - Pub/Sub](events-pubsub/) | Events for Cloud Run with Pub/Sub | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_pubsub] |
 |[Anthos Events - Pub/Sub](events-pubsub/anthos.md) | Events for Cloud Run on Anthos with Pub/Sub | - |
-|[Events - GCS](events-gcs/) | Events for Cloud Run with GCS | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_gcs] |
-|[Anthos Events - GCS](events-gcs/anthos.md) | Events for Cloud Run on Anthos with GCS | - |
+|[Eventarc - Storage](events-audit-storage/) | Events for Cloud Run with GCS | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_gcs] |
+|[Anthos Events - Storage](events-audit-storage/anthos.md) | Events for Cloud Run on Anthos with GCS | - |
 
 ## Setup
 
