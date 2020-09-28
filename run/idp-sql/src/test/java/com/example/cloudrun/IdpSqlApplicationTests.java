@@ -1,10 +1,10 @@
-package com.example.cloudrun.catsvdogs;
+package com.example.cloudrun;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CatsVDogsApplicationTests {
+class IdpSqlApplicationTests {
 
 	@Test
 	void contextLoads() {

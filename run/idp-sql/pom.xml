@@ -3,9 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.example.cloudrun</groupId>
-	<artifactId>cats-v-dogs</artifactId>
+	<artifactId>idp-sql</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>cats-v-dogs</name>
 	<packaging>jar</packaging>
 
   <!--  The parent pom defines common style checks and testing strategies for our samples.
@@ -68,6 +67,11 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-gcp-starter-logging</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-admin</artifactId>
+			<version>7.0.0</version>
+		  </dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
