@@ -101,5 +101,5 @@ Learn more about [testing your container image locally.][testing]
     gcloud run deploy --image gcr.io/PROJECT_ID/SAMPLE_NAME
     ```
 
-[run_button_events_gcs]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/events-gcs
-[run_button_events_pubsub]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/events-pubsub
+[run_button_events_gcs]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=eventarc/audit-storage
+[run_button_events_pubsub]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=eventarc/pubsub
