@@ -16,6 +16,7 @@ import com.google.cloud.datastore.StringValue;
 import com.google.cloud.datastore.StructuredQuery.CompositeFilter;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -47,7 +48,7 @@ public class FSReadData2 {
 
     Pipeline p = Pipeline.create(options);
     // Initiates a new pipeline every second
-    p.apply(GenerateSequence.from(0).withRate(1, new Duration(1000)))
+    p.apply(GenerateSequence.from(0).withRate(1, new Duration(2000)))
         .apply(ParDo.of(new ReadFromTableFn()));
 
     p.run();
@@ -63,16 +64,16 @@ public class FSReadData2 {
     protected Datastore datastore;
     private KeyFactory keyFactory;
     // private final String kind = "BillyDF500reversed1mswithP";
-    private final String kind = "BillyDFrw1s500rowsWithFetch";
+    private final String kind = "BillyDF_WRFP_2s500krows";
 
-    private static final int RANDOM_ID_BOUND = 500;
+    private static final int RANDOM_ID_BOUND = 500000;
     Random rand = new Random();
 
     public ReadFromTableFn() {
       super();
+      keys = new String[RANDOM_ID_BOUND];
       // downloadImageData(readDataOptions.getFilePath());
-      // generateRowkeys(getNumRows(readDataOptions));
-      // generateRowkeys(1000);
+      generateRowkeys();
     }
 
     protected synchronized Datastore getDatastore() {
@@ -100,26 +101,27 @@ public class FSReadData2 {
       int c = 0;
 
       if (count == 1) {
-        for (int i = 0; i < maxInput; i++) {
+        for (int i = 0; i < keys.length; i++) {
 
-          String paddedRowkey = String.format(numberFormat, i);
-          String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
-          int rowNumber = i / rowHeight;
-
-          float p = (float) rowNumber / numRows;
-          System.out.printf("index: %d rowNumber %d prob %f count %d", i, rowNumber, p, count);
+          // String paddedRowkey = String.format(numberFormat, i);
+          // String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
+          // int rowNumber = i / rowHeight;
+          //
+          // float p = (float) rowNumber / numRows;
+          // System.out.printf("index: %d rowNumber %d prob %f count %d", i, rowNumber, p, count);
 
           FullEntity<com.google.cloud.datastore.Key> fullEntity =
-              com.google.cloud.datastore.Entity.newBuilder(keyFactory.newKey(reversedRowkey))
+              com.google.cloud.datastore.Entity.newBuilder(keyFactory.newKey(keys[i]))
                   .set("description", getRandomStringValue())
                   .build();
           entities.add(fullEntity);
           // logger.info("writing entity" + fullEntity.getKey());
           c++;
 
+          // ds.put(fullEntity);
+
           // 500 per write limit
           if (i % 500 == 0) {
-            System.out.printf("500 mod 0");
             ds.put(entities.toArray(new FullEntity<?>[0]));
             entities = new ArrayList<>();
           }
@@ -138,8 +140,8 @@ public class FSReadData2 {
       // } else {
       //   query.setFilter(evenRangeFilter);
       // }
-      QueryResults<Entity> entityQueryResults = ds.run(query.build());
-      c = 0;
+      // QueryResults<Entity> entityQueryResults = ds.run(query.build());
+      // c = 0;
       // while (entityQueryResults.hasNext()) {
       //   Entity entity = entityQueryResults.next();
       //   System.out.println(entity);
@@ -159,31 +161,13 @@ public class FSReadData2 {
           c++;
         }
       }
-      datastore.fetch();
-      System.out.println(c + " entities fetched");
+      List<Entity> fetchedEntities = datastore.fetch();
+      for (Entity e : fetchedEntities) {
+        // System.out.println(e);
+        c++;
+      }
 
-      // String kind = "Billy10ms1krs";
-      // int maxInput = 1000;
-      // int maxLength = ("" + maxInput).length();
-      // // Make each number the same length by padding with 0s
-      // String numberFormat = "%0" + maxLength + "d";
-      //
-      // for (int i = 0; i < maxInput; i++) {
-      //   byte[] b = new byte[(int) 1000];
-      //   new Random().nextBytes(b);
-      //
-      //   String paddedRowkey = String.format(numberFormat, i);
-      //   String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
-      //
-      //   Entity entity = Entity.newBuilder()
-      //       .setKey(makeKey(kind, "testing" + reversedRowkey))
-      //       .putProperties(
-      //           "long",
-      //           makeValue(b.toString()).setExcludeFromIndexes(true).build()
-      //       ).build();
-      //
-      //   out.output(entity);
-      // }
+      System.out.println(c + " entities fetched");
     }
 
     private StringValue getRandomStringValue() {
@@ -201,6 +185,20 @@ public class FSReadData2 {
     private int randomId(Random rand) {
       return rand.nextInt(RANDOM_ID_BOUND) + 1;
     }
+
+    private void generateRowkeys() {
+      int maxLength = ("" + RANDOM_ID_BOUND).length();
+      // Make each number the same length by padding with 0s
+      String numberFormat = "%0" + maxLength + "d";
+
+      for (int i = 0; i < RANDOM_ID_BOUND; i++) {
+        String paddedRowkey = String.format(numberFormat, i);
+        String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
+        keys[i] = "" + reversedRowkey;
+      }
+      Arrays.sort(keys);
+    }
+
   }
 
   public interface ReadDataOptions extends BigtableOptions {
