@@ -14,7 +14,7 @@ limitations under the License.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.cloudrun</groupId>
-  <artifactId>events-pubsub</artifactId>
+  <artifactId>audit-storage</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <!--  The parent pom defines common style checks and testing strategies for our samples.
 	Removing or replacing it should not affect the execution of the samples in anyway.  -->
@@ -77,19 +77,26 @@ limitations under the License.
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
-      <!-- [START run_events_pubsub_jib] -->
+      <!-- [START eventarc_gcs_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
         <version>2.5.2</version>
         <configuration>
           <to>
-            <image>gcr.io/PROJECT_ID/cloudrun-events-pubsub</image>
+            <image>gcr.io/PROJECT_ID/gcs-container</image>
           </to>
         </configuration>
       </plugin>
-      <!-- [END run_events_pubsub_jib] -->
+      <!-- [END eventarc_gcs_jib] -->
     </plugins>
   </build>
 </project>

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START run_events_gcs_dockerfile]
+# [START eventarc_gcs_dockerfile]
 
 # Use the official maven/Java 8 image to create a build artifact.
 # https://hub.docker.com/_/maven
@@ -33,9 +33,9 @@ RUN mvn package -DskipTests
 FROM adoptopenjdk/openjdk11:alpine-slim
 
 # Copy the jar to the production image from the builder stage.
-COPY --from=builder /app/target/events-storage-*.jar /events-storage.jar
+COPY --from=builder /app/target/audit-storage-*.jar /audit-storage.jar
 
 # Run the web service on container startup.
-CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/events-storage.jar"]
+CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/audit-storage.jar"]
 
-# [END run_events_gcs_dockerfile]
+# [END eventarc_gcs_dockerfile]

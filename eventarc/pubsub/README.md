@@ -1,4 +1,4 @@
-# Events for Cloud Run - Pub/Sub tutorial
+# Cloud Eventarc - Pub/Sub tutorial
 
 This sample shows how to create a service that processes Pub/Sub messages.
 

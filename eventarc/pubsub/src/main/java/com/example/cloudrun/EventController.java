@@ -16,7 +16,7 @@
 
 package com.example.cloudrun;
 
-// [START run_events_pubsub_handler]
+// [START eventarc_pubsub_handler]
 import com.example.cloudrun.eventpojos.PubSubBody;
 import java.util.Base64;
 import java.util.Map;
@@ -57,4 +57,4 @@ public class EventController {
     return new ResponseEntity<String>(msg, HttpStatus.OK);
   }
 }
-// [END run_events_pubsub_handler]
+// [END eventarc_pubsub_handler]

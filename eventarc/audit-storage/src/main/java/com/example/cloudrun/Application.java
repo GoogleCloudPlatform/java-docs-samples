@@ -16,7 +16,7 @@
 
 package com.example.cloudrun;
 
-// [START run_events_gcs_server]
+// [START eventarc_gcs_server]
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -26,4 +26,4 @@ public class Application {
     SpringApplication.run(Application.class, args);
   }
 }
-// [END run_events_gcs_server]
+// [END eventarc_gcs_server]

@@ -16,7 +16,7 @@
 
 package com.example.cloudrun;
 
-// [START run_events_gcs_handler]
+// [START eventarc_gcs_handler]
 import com.example.cloudrun.eventpojos.PubSubBody;
 import java.util.Arrays;
 import java.util.List;
@@ -58,4 +58,4 @@ public class EventController {
     return new ResponseEntity<String>(msg, HttpStatus.OK);
   }
 }
-// [END run_events_gcs_handler]
+// [END eventarc_gcs_handler]
