@@ -79,6 +79,7 @@ public class SpannerSampleIT {
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
     dbClient.dropDatabase(
         dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
+    spanner.close();
   }
 
   @Test
