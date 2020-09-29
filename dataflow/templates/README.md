@@ -1,6 +1,6 @@
 # Cloud Dataflow Templates
 
-[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/editor)
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=dataflow/templates/README.md)
 
 Samples showing how to create and run an
 [Apache Beam](https://beam.apache.org/) template on
