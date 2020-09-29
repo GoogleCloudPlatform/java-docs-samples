@@ -24,7 +24,7 @@ import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -62,7 +62,7 @@ class AsyncQueryToListAsyncExample {
   static void asyncQueryToList(DatabaseClient client)
       throws InterruptedException, ExecutionException, TimeoutException {
     ExecutorService executor = Executors.newSingleThreadExecutor();
-    ApiFuture<ImmutableList<Album>> albums;
+    ApiFuture<? extends List<Album>> albums;
     try (AsyncResultSet resultSet =
         client
             .singleUse()
