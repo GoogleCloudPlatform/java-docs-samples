@@ -278,13 +278,12 @@ BIGTABLE_SPARK_INSTANCE_ID=your-instance-id
 BIGTABLE_SPARK_DATAPROC_CLUSTER=your-dataproc-cluster
 BIGTABLE_SPARK_DATAPROC_REGION=your-dataproc-region
 
-BIGTABLE_SPARK_INSTANCE_ID=your-bigtable-instance-id
 BIGTABLE_SPARK_CLUSTER_ID=your-bigtable-cluster-id
 BIGTABLE_SPARK_CLUSTER_ZONE=your-bigtable-cluster-zone
 BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME=your-bigtable-display-name
 
 BIGTABLE_SPARK_WORDCOUNT_TABLE=wordcount
-BIGTABLE_SPARK_BUCKET_NAME=gs://bigtable-spark-bucket
+BIGTABLE_SPARK_BUCKET_NAME=gs://[your-bucket-name]
 ```
 
 **NOTE**: `BIGTABLE_SPARK_DATAPROC_REGION` should point to your region. Read [Available regions and zones](https://cloud.google.com/compute/docs/regions-zones#available) in the official documentation.
@@ -334,7 +333,8 @@ One notable change (compared to the earlier executions) is that the example uses
 
     ```text
     $ gsutil ls $BIGTABLE_SPARK_BUCKET_NAME
-    gs://bigtable-spark-bucket/Romeo-and-Juliet-prologue.txt
+   
+    gs://[your-bucket-name]/Romeo-and-Juliet-prologue.txt
     ```
 
 ### Create Dataproc Cluster
