@@ -253,6 +253,10 @@ public class SpannerSampleIT {
     assertThat(out).contains("19 Venue 19");
     assertThat(out).contains("42 Venue 42");
 
+    out = runSample("querywithnumeric");
+    assertThat(out).contains("19 Venue 19 1200100");
+    assertThat(out).contains("42 Venue 42 390650.99");
+
     out = runSample("clientwithqueryoptions");
     assertThat(out).contains("1 1 Total Junk");
     out = runSample("querywithqueryoptions");
