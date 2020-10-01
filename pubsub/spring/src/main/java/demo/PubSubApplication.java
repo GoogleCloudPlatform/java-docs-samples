@@ -124,20 +124,20 @@ public class PubSubApplication {
   public Supplier<Flux<Message<String>>> sendMessageToTopicOne() {
     return () ->
         Flux.<Message<String>>generate(
-                sink -> {
-                  try {
-                    Thread.sleep(10000);
-                  } catch (InterruptedException e) {
-                    // stop sleep earlier.
-                  }
+            sink -> {
+              try {
+                Thread.sleep(10000);
+              } catch (InterruptedException e) {
+                // stop sleep earlier.
+              }
 
-                  Message<String> message =
-                      MessageBuilder.withPayload("message-" + rand.nextInt(1000)).build();
-                  LOGGER.info(
-                      "Sending a message via the output binder to topic-one! Payload: "
-                          + message.getPayload());
-                  sink.next(message);
-                })
+              Message<String> message =
+                  MessageBuilder.withPayload("message-" + rand.nextInt(1000)).build();
+              LOGGER.info(
+                  "Sending a message via the output binder to topic-one! Payload: "
+                      + message.getPayload());
+              sink.next(message);
+            })
             .subscribeOn(Schedulers.elastic());
   }
   // [END pubsub_spring_cloud_stream_output_binder]
