@@ -19,7 +19,6 @@ package demo;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -56,7 +55,7 @@ public class PubSubApplication {
   // [START pubsub_spring_inbound_channel_adapter]
   // Create a message channel for messages arriving from the subscription `sub-one`.
   @Bean
-  public MessageChannel inputMessageChannelForSubOne() {
+  public MessageChannel inputMessageChannel() {
     return new PublishSubscribeChannel();
   }
 
@@ -64,7 +63,7 @@ public class PubSubApplication {
   // messages to the input message channel.
   @Bean
   public PubSubInboundChannelAdapter inboundChannelAdapter(
-      @Qualifier("inputMessageChannelForSubOne") MessageChannel messageChannel,
+      @Qualifier("inputMessageChannel") MessageChannel messageChannel,
       PubSubTemplate pubSubTemplate) {
     PubSubInboundChannelAdapter adapter =
         new PubSubInboundChannelAdapter(pubSubTemplate, "sub-one");
@@ -75,7 +74,7 @@ public class PubSubApplication {
   }
 
   // Define what happens to the messages arriving in the message channel.
-  @ServiceActivator(inputChannel = "inputMessageChannelForSubOne")
+  @ServiceActivator(inputChannel = "inputMessageChannel")
   public void messageReceiver(
       String payload,
       @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
@@ -88,7 +87,7 @@ public class PubSubApplication {
   // Create an outbound channel adapter to send messages from the input message channel to the
   // topic `topic-two`.
   @Bean
-  @ServiceActivator(inputChannel = "inputMessageChannelForSubOne")
+  @ServiceActivator(inputChannel = "inputMessageChannel")
   public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
     PubSubMessageHandler adapter = new PubSubMessageHandler(pubsubTemplate, "topic-two");
 
@@ -124,20 +123,22 @@ public class PubSubApplication {
   @Bean
   public Supplier<Flux<Message<String>>> sendMessageToTopicOne() {
     return () ->
-        Flux.<Message<String>>generate(sink -> {
-          try {
-            Thread.sleep(10000);
-          } catch (InterruptedException e) {
-            // stop sleep earlier.
-          }
+        Flux.<Message<String>>generate(
+            sink -> {
+              try {
+                Thread.sleep(10000);
+              } catch (InterruptedException e) {
+                // stop sleep earlier.
+              }
 
-          Message<String> message =
-                MessageBuilder.withPayload("message-" + rand.nextInt(1000)).build();
-          LOGGER.info(
-              "Sending a message via the output binder to topic-one! Payload: "
-                    + message.getPayload());
-          sink.next(message);
-        }).subscribeOn(Schedulers.elastic());
+              Message<String> message =
+                  MessageBuilder.withPayload("message-" + rand.nextInt(1000)).build();
+              LOGGER.info(
+                  "Sending a message via the output binder to topic-one! Payload: "
+                      + message.getPayload());
+              sink.next(message);
+            })
+            .subscribeOn(Schedulers.elastic());
   }
   // [END pubsub_spring_cloud_stream_output_binder]
 }
