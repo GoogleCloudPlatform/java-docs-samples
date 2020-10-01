@@ -124,26 +124,20 @@ public class PubSubApplication {
   @Bean
   public Supplier<Flux<Message<String>>> sendMessageToTopicOne() {
     return () ->
-        Flux.fromStream(
-                // Generate a stream that sends a numbered message every 10 seconds.
-                Stream.generate(
-                    new Supplier<Message<String>>() {
-                      @Override
-                      public Message<String> get() {
-                        try {
-                          Thread.sleep(10000);
-                        } finally {
-                          Message<String> message =
-                              MessageBuilder.withPayload("message-" + rand.nextInt(1000)).build();
-                          LOGGER.info(
-                              "Sending a message via the output binder to topic-one! Payload: "
-                                  + message.getPayload());
-                          return message;
-                        }
-                      }
-                    }))
-            .subscribeOn(Schedulers.elastic())
-            .share();
+        Flux.<Message<String>>generate(sink -> {
+          try {
+            Thread.sleep(10000);
+          } catch (InterruptedException e) {
+            // stop sleep earlier.
+          }
+
+          Message<String> message =
+                MessageBuilder.withPayload("message-" + rand.nextInt(1000)).build();
+          LOGGER.info(
+              "Sending a message via the output binder to topic-one! Payload: "
+                    + message.getPayload());
+          sink.next(message);
+        }).subscribeOn(Schedulers.elastic());
   }
   // [END pubsub_spring_cloud_stream_output_binder]
 }
