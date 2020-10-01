@@ -39,10 +39,13 @@ public class FSReadData2 {
 
   static final long START_TIME = new Date().getTime();
   static final long KEY_VIZ_WINDOW_SECONDS = 10;
+  private static final String kind = "BillyDF-W-sync-2s500krows";
+  private static final int RANDOM_ID_BOUND = 500_000;
 
   public static void main(String[] args) {
     DataflowPipelineOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(DataflowPipelineOptions.class);
+    options.setJobName(kind);
     System.out.println("options");
     System.out.println(options);
 
@@ -63,10 +66,7 @@ public class FSReadData2 {
     protected Connection connection;
     protected Datastore datastore;
     private KeyFactory keyFactory;
-    // private final String kind = "BillyDF500reversed1mswithP";
-    private final String kind = "BillyDF_WRFP_2s500krows";
 
-    private static final int RANDOM_ID_BOUND = 500000;
     Random rand = new Random();
 
     public ReadFromTableFn() {
@@ -76,8 +76,8 @@ public class FSReadData2 {
       generateRowkeys();
     }
 
-    protected synchronized Datastore getDatastore() {
-      if (this.connection == null) {
+    protected Datastore getDatastore() {
+      if (this.datastore == null) {
         DatastoreOptions.Builder builder = DatastoreOptions.newBuilder();
         datastore = builder.setProjectId("datastore-mode-kv-prod").build().getService();
         keyFactory = datastore.newKeyFactory().setKind(kind);
@@ -100,37 +100,37 @@ public class FSReadData2 {
       Datastore ds = getDatastore();
       int c = 0;
 
-      if (count == 1) {
-        for (int i = 0; i < keys.length; i++) {
+      // if (count == 1) {
+      for (int i = 0; i < keys.length; i++) {
 
-          // String paddedRowkey = String.format(numberFormat, i);
-          // String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
-          // int rowNumber = i / rowHeight;
-          //
-          // float p = (float) rowNumber / numRows;
-          // System.out.printf("index: %d rowNumber %d prob %f count %d", i, rowNumber, p, count);
+        // String paddedRowkey = String.format(numberFormat, i);
+        // String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
+        // int rowNumber = i / rowHeight;
+        //
+        // float p = (float) rowNumber / numRows;
+        // System.out.printf("index: %d rowNumber %d prob %f count %d", i, rowNumber, p, count);
 
-          FullEntity<com.google.cloud.datastore.Key> fullEntity =
-              com.google.cloud.datastore.Entity.newBuilder(keyFactory.newKey(keys[i]))
-                  .set("description", getRandomStringValue())
-                  .build();
-          entities.add(fullEntity);
-          // logger.info("writing entity" + fullEntity.getKey());
-          c++;
+        FullEntity<com.google.cloud.datastore.Key> fullEntity =
+            com.google.cloud.datastore.Entity.newBuilder(keyFactory.newKey(keys[i]))
+                .set("description", getRandomStringValue())
+                .build();
+        entities.add(fullEntity);
+        // logger.info("writing entity" + fullEntity.getKey());
+        c++;
 
-          // ds.put(fullEntity);
+        // ds.put(fullEntity);
 
-          // 500 per write limit
-          if (i % 500 == 0) {
-            ds.put(entities.toArray(new FullEntity<?>[0]));
-            entities = new ArrayList<>();
-          }
+        // 500 per write limit
+        if (i % 500 == 0) {
+          ds.put(entities.toArray(new FullEntity<?>[0]));
+          entities = new ArrayList<>();
         }
-
-        System.out.println(c + " entities written");
-
-        ds.put(entities.toArray(new FullEntity<?>[0]));
       }
+
+      System.out.println(c + " entities written");
+
+      ds.put(entities.toArray(new FullEntity<?>[0]));
+      // }
 
       EntityQuery.Builder query = Query.newEntityQueryBuilder()
           .setKind(kind);
@@ -148,26 +148,27 @@ public class FSReadData2 {
       //   c++;
       // }
 
-      long timestampDiff = System.currentTimeMillis() - START_TIME;
-      long seconds = timestampDiff / 1000;
-      int timeOffsetIndex = Math.toIntExact(seconds / KEY_VIZ_WINDOW_SECONDS);
-
-      List<com.google.cloud.datastore.Key> keysToFetch = new ArrayList<>();
-      for (int i = 0; i < maxInput; i++) {
-        if (timeOffsetIndex % 2 == 0) {
-          String paddedRowkey = String.format(numberFormat, i);
-          String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
-          keysToFetch.add(keyFactory.newKey(reversedRowkey));
-          c++;
-        }
-      }
-      List<Entity> fetchedEntities = datastore.fetch();
-      for (Entity e : fetchedEntities) {
-        // System.out.println(e);
-        c++;
-      }
-
-      System.out.println(c + " entities fetched");
+      // Fetch all rows
+      // long timestampDiff = System.currentTimeMillis() - START_TIME;
+      // long seconds = timestampDiff / 1000;
+      // int timeOffsetIndex = Math.toIntExact(seconds / KEY_VIZ_WINDOW_SECONDS);
+      //
+      // List<com.google.cloud.datastore.Key> keysToFetch = new ArrayList<>();
+      // for (int i = 0; i < maxInput; i++) {
+      //   if (timeOffsetIndex % 2 == 0) {
+      //     String paddedRowkey = String.format(numberFormat, i);
+      //     String reversedRowkey = new StringBuilder(paddedRowkey).reverse().toString();
+      //     keysToFetch.add(keyFactory.newKey(reversedRowkey));
+      //     c++;
+      //   }
+      // }
+      // List<Entity> fetchedEntities = datastore.fetch();
+      // for (Entity e : fetchedEntities) {
+      //   // System.out.println(e);
+      //   c++;
+      // }
+      //
+      // System.out.println(c + " entities fetched");
     }
 
     private StringValue getRandomStringValue() {
