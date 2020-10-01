@@ -17,18 +17,21 @@ Note the connection string, database user, and database password that you create
 [PostgreSQL](https://cloud.google.com/sql/docs/postgres/create-manage-databases).
 Note the database name.
 
-1. Edit `src/main/resources/application.properties` and enter your connection details in the following format
+1. Assign your connection details in the following format:
+
     ```
-    connectionString = r2dbc:gcp:<'mysql' or 'postgres'>://<user>:<password>@<connection_name>/<db_name>
+    r2dbc:pool:gcp:<'mysql' or 'postgres'>://<user>:<password>@<connection_name>/<db_name>
     ```
+    to an environment variable `CLOUD_SQL_CONNECTION_STRING`.
+
     Example for MySQL:
-    ```
-    connectionString = r2dbc:gcp:mysql://user:123456@my-project:us-central1:r2dbctest/testdb 
+    ```sh
+    export CLOUD_SQL_CONNECTION_STRING = r2dbc:pool:gcp:mysql://user:123456@my-project:us-central1:r2dbctest/testdb 
     ``` 
 
     Example for PostgreSQL:
-    ```
-    connectionString = r2dbc:gcp:postgres://user:123456@my-project:us-central1:r2dbctest/testdb 
+    ```sh
+    export CLOUD_SQL_CONNECTION_STRING = r2dbc:pool:gcp:postgres://user:123456@my-project:us-central1:r2dbctest/testdb 
     ``` 
 ## Schema
 
@@ -44,7 +47,22 @@ mvn spring-boot:run
 
 Navigate to `http://localhost:8080` to verify your application is running correctly.
 
-### Deploy to Cloud Run
+## Deploy to Google App Engine Standard
+
+To run on GAE-Standard, create an AppEngine project by following the setup for these
+[instructions](https://cloud.google.com/appengine/docs/standard/java/quickstart#before-you-begin)
+and verify that
+[appengine-maven-plugin](https://cloud.google.com/java/docs/setup#optional_install_maven_or_gradle_plugin_for_app_engine)
+ has been added in your build section as a plugin.
+
+Edit `src/main/appengine/app.yaml` to set `CLOUD_SQL_CONNECTION_STRING` to your connection string. 
+
+The following command will deploy the application to your Google Cloud project:
+```bash
+mvn clean package appengine:deploy
+```
+
+## Deploy to Cloud Run
 
 See the [Cloud Run documentation](https://cloud.google.com/run/docs/configuring/connect-cloudsql)
 for more details on connecting a Cloud Run service to Cloud SQL.
@@ -66,7 +84,9 @@ for more details on connecting a Cloud Run service to Cloud SQL.
     ```sh
     gcloud run deploy r2dbc-sample \
         --image gcr.io/$PROJECT_ID/r2dbc-sample \
-        --platform managed
+        --platform managed \
+        --memory 512Mi \
+        --set-env-vars CLOUD_SQL_CONNECTION_STRING=$CLOUD_SQL_CONNECTION_STRING
     ```
     Take note of the URL output at the end of the deployment process.
 
