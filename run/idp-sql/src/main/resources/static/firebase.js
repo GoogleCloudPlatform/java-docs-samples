@@ -26,16 +26,16 @@ function signIn() {
     // Returns the signed in user along with the provider's credential
     console.log(`${result.user.displayName} logged in.`);
     window.alert(`Welcome ${result.user.displayName}!`)
-  }).catch((error) => {
-    console.log(`error: during sign in: ${error.message}`)
+  }).catch((err) => {
+    console.log(`Error during sign in: ${err.message}`)
   });
 }
 // [END run_end_user_firebase_sign_in]
 
 function signOut() {
   firebase.auth().signOut().then(function(result) {
-  }).catch((error) => {
-    console.log(`error: during sign out: ${error.message}`)
+  }).catch((err) => {
+    console.log(`Error during sign out: ${err.message}`)
   })
 }
 
@@ -62,7 +62,7 @@ async function vote(team) {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': `Bearer ${token}`
         },
-        body: 'team=' + team,
+        body: 'team=' + team, // send application data (vote)
       });
       if (response.ok) {
         const text = await response.text();

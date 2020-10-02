@@ -18,6 +18,8 @@
 
 import java.sql.Timestamp;
 
+import com.google.gson.JsonObject;
+
 import edu.umd.cs.findbugs.annotations.NonNull;
 import lombok.Data;
 
@@ -33,4 +35,13 @@ public class Vote {
     private String candidate;
     @NonNull
     private Timestamp timeCast;
+
+    @Override
+    public String toString() {
+        JsonObject vote = new JsonObject();
+        vote.addProperty("uid", this.uid);
+        vote.addProperty("candidate", this.candidate);
+        vote.addProperty("timestamp", this.timeCast.toString());
+        return vote.toString();
+    }
 }
