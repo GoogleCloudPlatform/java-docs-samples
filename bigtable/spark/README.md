@@ -422,6 +422,18 @@ gcloud dataproc clusters delete $BIGTABLE_SPARK_DATAPROC_CLUSTER \
   --project=$BIGTABLE_SPARK_PROJECT_ID
 ```
 
+```
+gcloud dataproc clusters list \
+  --region=$BIGTABLE_SPARK_DATAPROC_REGION
+```
+
+Remove the input file in the bucket and the bucket itself.
+
+```
+gsutil rm $BIGTABLE_SPARK_BUCKET_NAME/Romeo-and-Juliet-prologue.txt
+gsutil rb $BIGTABLE_SPARK_BUCKET_NAME
+```
+
 ## Running Integration Test
 
 Start afresh and re-create all the resources (a Bigtable instance, the tables).
