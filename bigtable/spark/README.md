@@ -195,7 +195,7 @@ gcloud bigtable instances create $BIGTABLE_SPARK_INSTANCE_ID \
 Check out the available Cloud Bigtable instances and make sure yours is listed.
 
 ```
-gcloud beta bigtable instances list
+gcloud bigtable instances list
 ```
 
 ### Create Table

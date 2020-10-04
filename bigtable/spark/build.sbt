@@ -18,6 +18,8 @@ name := "bigtable-spark-samples"
 
 version := "0.1"
 
+resolvers += Resolver.mavenLocal
+
 // Versions to match Dataproc 1.4
 // https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-release-1.4
 scalaVersion := "2.11.12"

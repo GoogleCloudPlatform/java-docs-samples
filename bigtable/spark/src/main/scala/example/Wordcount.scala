@@ -22,17 +22,12 @@ import org.apache.hadoop.hbase.mapreduce.TableOutputFormat
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.SparkContext
 
-// FIXME Explain the purpose of the app
 object Wordcount extends App {
 
   val projectId = args(0)
   val instanceId = args(1)
   val table = args(2)
   val file = args(3)
-
-  val ColumnFamily = "cf"
-  val ColumnFamilyBytes = Bytes.toBytes(ColumnFamily)
-  val ColumnNameBytes = Bytes.toBytes("Count")
 
   var hConf = BigtableConfiguration.configure(projectId, instanceId)
   hConf.set(TableOutputFormat.OUTPUT_TABLE, table)
@@ -57,12 +52,13 @@ object Wordcount extends App {
     .map { word => (word, 1) }
     .reduceByKey(_ + _)
     .map { case (word, count) =>
+      val ColumnFamilyBytes = Bytes.toBytes("cf")
+      val ColumnNameBytes = Bytes.toBytes("Count")
       val put = new Put(Bytes.toBytes(word))
         .addColumn(ColumnFamilyBytes, ColumnNameBytes, Bytes.toBytes(count))
       // The KEY is ignored while the output value must be either a Put or a Delete instance
-      // The underlying writer ignores keys, only the value matter here.
+      // The underlying writer ignores keys, only the value matters here.
       (null, put)
     }
   wordCounts.saveAsNewAPIHadoopDataset(hConf)
-
 }
