@@ -25,14 +25,14 @@ README files for details.
     Create local credentials by running the following command and following the
     oauth2 flow (read more about the command [here][auth_command]):
 
-        gcloud auth application-default login
+        g cloud auth application-default login
 
     Or manually set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable
     to point to a service account key JSON file path.
 
     Learn more at [Setting Up Authentication for Server to Server Production Applications](ADC).
 
-    *Note:* Application Default Credentials is able to implicitly find the credentials as long as the application is running on Compute Engine, Kubernetes Engine, App Engine, or Cloud Functions.
+    *Note:* Application Default Credentials can implicitly find the credentials as long as the application is running on Compute Engine, Kubernetes Engine, App Engine, or Cloud Functions.
 
 ## Contributing
 
@@ -69,3 +69,4 @@ Apache header:
 [cred]: http://google.github.io/google-auth-library-java/releases/0.6.0/apidocs/com/google/auth/Credentials.html?is-external=true
 [options]: http://googlecloudplatform.github.io/google-cloud-java/0.12.0/apidocs/com/google/cloud/ServiceOptions.Builder.html#setCredentials-com.google.auth.Credentials-
 [auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
+
