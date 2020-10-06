@@ -26,12 +26,12 @@ Note the database name.
 
     Example for MySQL:
     ```sh
-    export CLOUD_SQL_CONNECTION_STRING = r2dbc:pool:gcp:mysql://user:123456@my-project:us-central1:r2dbctest/testdb?maxIdleTime=PT60S&initialSize=2&maxSize=12 
+    export CLOUD_SQL_CONNECTION_STRING="r2dbc:pool:gcp:mysql://user:123456@my-project:us-central1:r2dbctest/testdb?maxIdleTime=PT60S&initialSize=2&maxSize=12" 
     ``` 
 
     Example for PostgreSQL:
     ```sh
-    export CLOUD_SQL_CONNECTION_STRING = r2dbc:pool:gcp:postgres://user:123456@my-project:us-central1:r2dbctest/testdb?maxIdleTime=PT60S&initialSize=2&maxSize=12
+    export CLOUD_SQL_CONNECTION_STRING="r2dbc:pool:gcp:postgres://user:123456@my-project:us-central1:r2dbctest/testdb?maxIdleTime=PT60S&initialSize=2&maxSize=12"
     ``` 
    
    **NOTE**
