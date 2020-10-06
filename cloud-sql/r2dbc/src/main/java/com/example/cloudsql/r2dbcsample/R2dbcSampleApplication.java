@@ -41,6 +41,8 @@ public class R2dbcSampleApplication extends AbstractR2dbcConfiguration {
   @Override
   @Bean
   public ConnectionFactory connectionFactory() {
+    //connectionString is in the following format:
+    //r2dbc:pool:gcp:<'mysql' or 'postgres'>://<user>:<password>@<connection_name>/<db_name>[?connectionOption1=optionValue1[&connectionValue2=optionValue2]]
     return ConnectionFactories.get(connectionString);
   }
 }
