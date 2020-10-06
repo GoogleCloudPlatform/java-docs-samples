@@ -42,7 +42,7 @@ public class R2dbcSampleApplication extends AbstractR2dbcConfiguration {
   @Bean
   public ConnectionFactory connectionFactory() {
     //connectionString looks like this:
-    //r2dbc:pool:gcp:mysql://user:123456@my-project:us-central1:r2dbctest/testdb?maxIdleTime=PT60S&initialSize=2&maxSize=12
+    //r2dbc:pool:gcp:mysql://user:123456@my-project:us-central1:r2dbctest/testdb?maxSize=20
     return ConnectionFactories.get(connectionString);
   }
 }
