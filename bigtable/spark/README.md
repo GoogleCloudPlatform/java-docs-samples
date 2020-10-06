@@ -195,7 +195,7 @@ gcloud bigtable instances create $BIGTABLE_SPARK_INSTANCE_ID \
 Check out the available Cloud Bigtable instances and make sure yours is listed.
 
 ```
-gcloud beta bigtable instances list
+gcloud bigtable instances list
 ```
 
 ### Create Table
@@ -420,6 +420,18 @@ Delete the Dataproc cluster.
 gcloud dataproc clusters delete $BIGTABLE_SPARK_DATAPROC_CLUSTER \
   --region=$BIGTABLE_SPARK_DATAPROC_REGION \
   --project=$BIGTABLE_SPARK_PROJECT_ID
+```
+
+```
+gcloud dataproc clusters list \
+  --region=$BIGTABLE_SPARK_DATAPROC_REGION
+```
+
+Remove the input file in the bucket and the bucket itself.
+
+```
+gsutil rm $BIGTABLE_SPARK_BUCKET_NAME/Romeo-and-Juliet-prologue.txt
+gsutil rb $BIGTABLE_SPARK_BUCKET_NAME
 ```
 
 ## Running Integration Test
