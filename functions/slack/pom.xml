@@ -71,7 +71,7 @@
     <dependency>
       <groupId>com.slack.api</groupId>
       <artifactId>slack-app-backend</artifactId>
-      <version>1.2.0</version>
+      <version>1.2.1</version>
     </dependency>
 
     <!-- The following dependencies are only required for testing -->
