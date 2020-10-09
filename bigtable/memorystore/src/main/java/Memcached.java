@@ -17,13 +17,18 @@
 import com.google.cloud.bigtable.data.v2.BigtableDataClient;
 import com.google.cloud.bigtable.data.v2.models.Row;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 import net.spy.memcached.MemcachedClient;
 
 public class Memcached {
 
   public static void main(String[] args) {
-    memcachedBigtable("billy-testing-project", "testing-instance", "mobile-time-series",
-        "localhost");
+    System.out.println(System.getProperties());
+    // memcachedBigtable("billy-testing-project", "testing-instance", "mobile-time-series",
+    //     "localhost");
+    memcachedBigtable(System.getProperty("bigtableProjectId"),
+        System.getProperty("bigtableInstanceId"), System.getProperty("bigtableTableId"),
+        System.getProperty("memcachedHostIP"));
   }
 
 
@@ -43,9 +48,9 @@ public class Memcached {
       String columnFamily = "stats_summary";
       String column = "os_build";
       String cacheKey = String.format("%s:%s:%s", rowkey, columnFamily, column);
-      System.out.println("getting from cache");
+
       Object value = mcc.get(cacheKey);
-      System.out.println("got from cache");
+
       if (value != null) {
         System.out.println("Value fetched from cache: " + value);
       } else {
