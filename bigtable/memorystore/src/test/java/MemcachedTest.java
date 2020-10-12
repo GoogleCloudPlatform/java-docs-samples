@@ -70,16 +70,13 @@ public class MemcachedTest {
         dataClient.mutateRow(rowMutation);
       }
 
-      // System.out.println("starting");
-      // String[] dockerCommand = (String.format(
-      //     "docker run --name %s -itd --rm --publish 11211:11211 sameersbn/memcached:latest",
-      //     MEMCACHED_CONTAINER_NAME))
-      //     .split(" ");
-      // Process process = new ProcessBuilder(
-      //     dockerCommand).start();
-      // System.out.println(process);
-      // process.waitFor();
-      // System.out.println(process);
+      String[] dockerCommand = (String.format(
+          "docker run --name %s -itd --rm --publish 11211:11211 sameersbn/memcached:latest",
+          MEMCACHED_CONTAINER_NAME))
+          .split(" ");
+      Process process = new ProcessBuilder(
+          dockerCommand).start();
+      process.waitFor();
 
     } catch (Exception e) {
       System.out.println("Error during beforeClass: \n" + e.toString());
