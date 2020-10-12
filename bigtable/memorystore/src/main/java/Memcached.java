@@ -23,11 +23,9 @@ import net.spy.memcached.MemcachedClient;
 public class Memcached {
 
   public static void main(String[] args) {
-    System.out.println(System.getProperties());
-    // memcachedBigtable("billy-testing-project", "testing-instance", "mobile-time-series",
-    //     "localhost");
     memcachedBigtable(System.getProperty("bigtableProjectId"),
-        System.getProperty("bigtableInstanceId"), System.getProperty("bigtableTableId"),
+        System.getProperty("bigtableInstanceId"),
+        System.getProperty("bigtableTableId"),
         System.getProperty("memcachedHostIP"));
   }
 

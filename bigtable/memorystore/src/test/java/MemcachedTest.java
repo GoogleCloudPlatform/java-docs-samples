@@ -90,7 +90,6 @@ public class MemcachedTest {
   public void setupStream() {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
-    System.out.println("starting");
     try {
 
       String[] dockerCommand = (String.format(
@@ -99,11 +98,8 @@ public class MemcachedTest {
           .split(" ");
       Process process = new ProcessBuilder(
           dockerCommand).start();
-      System.out.println(process);
       process.waitFor();
-      System.out.println(process);
     } catch (Exception e) {
-      System.out.println("failed");
       e.printStackTrace(System.out);
     }
   }
@@ -125,8 +121,13 @@ public class MemcachedTest {
   @Test
   public void testMemcached() {
     // Run twice to fetch value from Bigtable and then from cache
-    Memcached.memcachedBigtable(projectId, instanceId, TABLE_ID, hostname);
-    Memcached.memcachedBigtable(projectId, instanceId, TABLE_ID, hostname);
+    System.setProperty("bigtableProjectId", projectId);
+    System.setProperty("bigtableInstanceId", instanceId);
+    System.setProperty("bigtableTableId", TABLE_ID);
+    System.setProperty("memcachedHostIP", hostname);
+
+    Memcached.main(null);
+    Memcached.main(null);
 
     String output = bout.toString();
     assertThat(output, CoreMatchers.containsString("Value fetched from Bigtable: PQ2A.190405.003"));
