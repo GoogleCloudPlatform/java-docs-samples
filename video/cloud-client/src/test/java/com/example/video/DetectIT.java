@@ -43,9 +43,7 @@ public class DetectIT {
   static final String EXPLICIT_CONTENT_LOCATION = "gs://cloud-samples-data/video/cat.mp4";
   static final String SPEECH_GCS_LOCATION =
           "gs://java-docs-samples-testing/video/googlework_short.mp4";
-  private static final List<String> POSSIBLE_TEXTS = Arrays.asList(
-          "Google", "SUR", "SUR", "ROTO", "Vice President", "58oo9", "LONDRES", "OMAR", "PARIS",
-          "METRO", "RUE", "CARLO");
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -118,39 +116,5 @@ public class DetectIT {
 
     String got = bout.toString();
     assertThat(got).contains("Entity id");
-  }
-
-  @Test
-  public void testTextDetection() throws Exception {
-    VideoAnnotationResults result = TextDetection.detectText("resources/googlework_short.mp4");
-
-    boolean textExists = false;
-    for (TextAnnotation textAnnotation : result.getTextAnnotationsList()) {
-      for (String possibleText : POSSIBLE_TEXTS) {
-        if (textAnnotation.getText().toUpperCase().contains(possibleText.toUpperCase())) {
-          textExists = true;
-          break;
-        }
-      }
-    }
-
-    assertThat(textExists).isTrue();
-  }
-
-  @Test
-  public void testTextDetectionGcs() throws Exception {
-    VideoAnnotationResults result = TextDetection.detectTextGcs(SPEECH_GCS_LOCATION);
-
-    boolean textExists = false;
-    for (TextAnnotation textAnnotation : result.getTextAnnotationsList()) {
-      for (String possibleText : POSSIBLE_TEXTS) {
-        if (textAnnotation.getText().toUpperCase().contains(possibleText.toUpperCase())) {
-          textExists = true;
-          break;
-        }
-      }
-    }
-
-    assertThat(textExists).isTrue();
   }
 }
