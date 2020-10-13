@@ -16,10 +16,14 @@
 
 package com.example.cloud.iot.endtoend;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -63,8 +67,19 @@ public class CloudiotPubsubExampleServerTest {
     int maxTemp = 11;
     JSONObject data = new JSONObject();
 
+    try {
+      CloudiotPubsubExampleServer.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+    } catch (GoogleJsonResponseException ex) {
+      if (!ex.isSuccessStatusCode()) {
+        System.out.println("Cleaning up registry: " + REGISTRY_ID);
+        // Clean up the 80% of old registries
+        deleteUnusedOldRegistries(PROJECT_ID, CLOUD_REGION);
+        // retry since the creation failed.
+        CloudiotPubsubExampleServer.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
+      }
+    }
+
     // Set up
-    CloudiotPubsubExampleServer.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
     CloudiotPubsubExampleServer.createDevice(PROJECT_ID, CLOUD_REGION, REGISTRY_ID, DEVICE_ID);
 
     data.put("temperature", maxTemp);
@@ -78,6 +93,34 @@ public class CloudiotPubsubExampleServerTest {
     // Clean up
     CloudiotPubsubExampleServer.deleteDevice(DEVICE_ID, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     CloudiotPubsubExampleServer.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
+  }
+
+  private void deleteUnusedOldRegistries(String projectId, String region)
+      throws IOException, GeneralSecurityException {
+    // Clean 50 oldest registries with testing prefix in the project.
+    System.out.println("The maximum number of registries is about to exceed.");
+    System.out.println("Deleting the oldest 50 registries with IoT Test prefix");
+
+    // Gather all the registries into temp list
+    List<DeviceRegistry> registries = CleanUpHelper.getRegisteries(PROJECT_ID, CLOUD_REGION);
+
+    // Filter all registries with prefix.
+    // since the list is already sorted by currentMillis suffix,
+    // first 50 will be the oldest.
+    List<DeviceRegistry> filteredRegistries = new ArrayList<>();
+
+    for (int i = 0; i < registries.size(); i++) {
+      DeviceRegistry registry = registries.get(i);
+      if (registry.getName().contains("test-registry-")
+          || registry.getName().contains("java-reg-")) {
+        filteredRegistries.add(registry);
+      }
+    }
+
+    // Delete the 50 oldest registries
+    for (DeviceRegistry registry : filteredRegistries) {
+      CleanUpHelper.clearRegistry(CLOUD_REGION, PROJECT_ID, registry.getId());
+    }
   }
 
   @Test
