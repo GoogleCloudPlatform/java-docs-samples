@@ -33,14 +33,6 @@ import java.security.GeneralSecurityException;
 import java.util.List;
 
 public class CleanUpHelper {
-
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    for (DeviceRegistry deviceRegistry :
-        getRegisteries("java-docs-samples-testing", "us-central1")) {
-      System.out.println(deviceRegistry.getId());
-    }
-  }
-
   protected static List<DeviceRegistry> getRegisteries(String project, String cloudRegion)
       throws IOException, GeneralSecurityException {
     GoogleCredentials credential =
