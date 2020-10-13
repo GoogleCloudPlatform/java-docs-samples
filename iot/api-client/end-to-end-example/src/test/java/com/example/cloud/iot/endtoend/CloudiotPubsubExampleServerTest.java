@@ -121,9 +121,6 @@ public class CloudiotPubsubExampleServerTest {
     for (DeviceRegistry registry : filteredRegistries) {
       CleanUpHelper.clearRegistry(CLOUD_REGION, PROJECT_ID, registry.getId());
     }
-    //      if()
-    //      CleanUpHelper.clearRegistry();
-    //    }
   }
 
   @Test
