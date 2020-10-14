@@ -60,7 +60,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-appengine</artifactId>
-      <version>0.21.1</version>
+      <version>0.22.0</version>
     </dependency>
     <!-- END dependencies -->
     <dependency>
