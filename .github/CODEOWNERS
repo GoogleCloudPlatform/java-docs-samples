@@ -7,3 +7,4 @@
 
 /datastore/                     @GoogleCloudPlatform/firestore-dpe @GoogleCloudPlatform/java-samples-reviewers
 /firestore/                     @GoogleCloudPlatform/firestore-dpe @GoogleCloudPlatform/java-samples-reviewers
+/logging/                       @GoogleCloudPlatform/observability-devx
