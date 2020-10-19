@@ -16,8 +16,11 @@
 
 package com.example.cloudsql.r2dbcsample;
 
+import io.r2dbc.pool.ConnectionPool;
+import io.r2dbc.pool.ConnectionPoolConfiguration;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
+import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -42,8 +45,15 @@ public class R2dbcSampleApplication extends AbstractR2dbcConfiguration {
   @Bean
   public ConnectionFactory connectionFactory() {
     //connectionString looks like this:
-    //r2dbc:pool:gcp:mysql://user:123456@my-project:us-central1:r2dbctest/testdb?maxSize=20
-    return ConnectionFactories.get(connectionString);
+    //r2dbc:gcp:mysql://user:123456@my-project:us-central1:r2dbctest/
+    ConnectionFactory connectionFactory = ConnectionFactories.get(connectionString);
+    ConnectionPoolConfiguration configuration = ConnectionPoolConfiguration
+        .builder(connectionFactory)
+        .maxIdleTime(Duration.ofMillis(1000))
+        .maxSize(20)
+        .build();
+
+    return new ConnectionPool(configuration);
   }
 }
 

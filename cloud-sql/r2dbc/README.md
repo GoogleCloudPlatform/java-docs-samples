@@ -20,26 +20,19 @@ Note the database name.
 1. Assign your connection details in the following format:
 
     ```
-    r2dbc:pool:gcp:<'mysql' or 'postgres'>://<user>:<password>@<connection_name>/<db_name>[?connectionOption1=optionValue1[&connectionValue2=optionValue2]]
+    r2dbc:gcp:<'mysql' or 'postgres'>://<user>:<password>@<connection_name>/<db_name>
     ```
     to an environment variable `CLOUD_SQL_CONNECTION_STRING`.
 
     Example for MySQL:
     ```sh
-    export CLOUD_SQL_CONNECTION_STRING="r2dbc:pool:gcp:mysql://user:123456@my-project:us-central1:r2dbctest/testdb?maxIdleTime=PT60S&initialSize=2&maxSize=12" 
+    export CLOUD_SQL_CONNECTION_STRING=r2dbc:gcp:mysql://user:123456@my-project:us-central1:r2dbctest/testdb
     ``` 
 
     Example for PostgreSQL:
     ```sh
-    export CLOUD_SQL_CONNECTION_STRING="r2dbc:pool:gcp:postgres://user:123456@my-project:us-central1:r2dbctest/testdb?maxIdleTime=PT60S&initialSize=2&maxSize=12"
+    export CLOUD_SQL_CONNECTION_STRING=r2dbc:gcp:postgres://user:123456@my-project:us-central1:r2dbctest/testdb
     ``` 
-   
-   **NOTE**
-   
-    The pool configuration options are passed using the connection options in the connection string:
-    `?maxIdleTime=PT60S&initialSize=2&maxSize=12`
-       
-     See [r2dbc-pool](https://github.com/r2dbc/r2dbc-pool) for details.
 
 ## Schema
 
