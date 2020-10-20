@@ -41,7 +41,7 @@ public class MemcachedTest {
 
   private static String projectId;
   private static String instanceId;
-  private static String hostname = "localhost";
+  private static String discoveryEndpoint = "localhost";
   private ByteArrayOutputStream bout;
 
   private static String requireEnv(String varName) {
@@ -121,7 +121,7 @@ public class MemcachedTest {
     System.setProperty("bigtableProjectId", projectId);
     System.setProperty("bigtableInstanceId", instanceId);
     System.setProperty("bigtableTableId", TABLE_ID);
-    System.setProperty("memcachedHostIP", hostname);
+    System.setProperty("memcachedDiscoveryEndpoint", discoveryEndpoint);
 
     Memcached.main(null);
     Memcached.main(null);

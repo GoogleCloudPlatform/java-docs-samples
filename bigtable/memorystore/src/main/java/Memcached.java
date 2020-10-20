@@ -26,19 +26,19 @@ public class Memcached {
     memcachedBigtable(System.getProperty("bigtableProjectId"),
         System.getProperty("bigtableInstanceId"),
         System.getProperty("bigtableTableId"),
-        System.getProperty("memcachedHostIP"));
+        System.getProperty("memcachedDiscoveryEndpoint"));
   }
 
 
   public static void memcachedBigtable(String projectId, String instanceId, String tableId,
-      String hostname) {
+      String discoveryEndpoint) {
     // String projectId = "my-project-id";
     // String instanceId = "my-instance-id";
     // String tableId = "mobile-time-series";
-    // String hostname = "localhost";
+    // String discoveryEndpoint = "0.0.0.0";
 
     try {
-      MemcachedClient mcc = new MemcachedClient(new InetSocketAddress(hostname, 11211));
+      MemcachedClient mcc = new MemcachedClient(new InetSocketAddress(discoveryEndpoint, 11211));
       System.out.println("Connected to Memcached successfully");
 
       // Get value from cache
@@ -53,13 +53,13 @@ public class Memcached {
         System.out.println("Value fetched from cache: " + value);
       } else {
         System.out.println("didn't get value from cache");
-        // Get data from Bigtable source and add to cache for 10 seconds.
+        // Get data from Bigtable source and add to cache for 30 minutes.
         try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
           Row row = dataClient.readRow(tableId, rowkey);
           String cellValue = row.getCells(columnFamily, column).get(0).getValue().toStringUtf8();
           System.out.println("got data from bt " + cellValue);
           // Set data into memcached server.
-          mcc.set(cacheKey, 10, cellValue);
+          mcc.set(cacheKey, 30 * 60, cellValue);
           System.out.println("Value fetched from Bigtable: " + cellValue);
         } catch (Exception e) {
           System.out.println("Could not set cache value.");
