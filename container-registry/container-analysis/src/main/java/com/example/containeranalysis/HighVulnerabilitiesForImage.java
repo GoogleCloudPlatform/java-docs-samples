@@ -30,7 +30,10 @@ public class HighVulnerabilitiesForImage {
   // Retrieve a list of vulnerability occurrences with a severity level of 'HIGH' or greater
   public static List<Occurrence> findHighSeverityVulnerabilitiesForImage(String resourceUrl,
       String projectId) throws IOException {
-    // String resourceUrl = "https://gcr.io/project/image@sha256:123";
+    // Use this style of URL when you use Google Container Registry
+	// String resourceUrl = "https://gcr.io/my-project/my-repo/my-image@sha256:123";
+	// Use this style of URL when you use Google Artifact Registry
+	// String resourceUrl = "https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image@sha256:123";
     // String projectId = "my-project-id";
     final String projectName = ProjectName.format(projectId);
     String filterStr = String.format("kind=\"VULNERABILITY\" AND resourceUrl=\"%s\"", resourceUrl);

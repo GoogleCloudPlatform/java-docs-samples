@@ -33,7 +33,10 @@ public class PollDiscoveryOccurrenceFinished {
   // either in a terminal state, or the timeout value has been exceeded
   public static Occurrence pollDiscoveryOccurrenceFinished(String resourceUrl, String projectId,
       long timeoutSeconds) throws IOException, TimeoutException, InterruptedException {
-    // String resourceUrl = "https://gcr.io/project/image@sha256:123";
+    // Use this style of URL when you use Google Container Registry
+	// String resourceUrl = "https://gcr.io/my-project/my-repo/my-image@sha256:123";
+	// Use this style of URL when you use Google Artifact Registry
+	// String resourceUrl = "https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image@sha256:123";
     // String projectId = "my-project-id";
     // long timeoutSeconds = 30;
     final String projectName = ProjectName.format(projectId);

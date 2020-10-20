@@ -29,7 +29,10 @@ public class OccurrencesForImage {
   // Here, all Occurrences are simply printed and counted
   public static int getOccurrencesForImage(String resourceUrl, String projectId)
       throws IOException, InterruptedException {
-    // String resourceUrl = "https://gcr.io/project/image@sha256:123";
+    // Use this style of URL when you use Google Container Registry
+	// String resourceUrl = "https://gcr.io/my-project/my-repo/my-image@sha256:123";
+	// Use this style of URL when you use Google Artifact Registry
+	// String resourceUrl = "https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image@sha256:123";
     // String projectId = "my-project-id";
     final String projectName = ProjectName.format(projectId);
     final String filterStr = String.format("resourceUrl=\"%s\"", resourceUrl);

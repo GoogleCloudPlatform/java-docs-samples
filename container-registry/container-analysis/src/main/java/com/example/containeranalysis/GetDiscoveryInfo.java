@@ -29,7 +29,10 @@ public class GetDiscoveryInfo {
   // The Discovery Occurrence contains information about the initial scan on the image
   public static void getDiscoveryInfo(String resourceUrl, String projectId) 
       throws IOException, InterruptedException {
-    // String resourceUrl = "https://gcr.io/project/image@sha256:123";
+    // Use this style of URL when you use Google Container Registry
+	// String resourceUrl = "https://gcr.io/my-project/my-repo/my-image@sha256:123";
+	// Use this style of URL when you use Google Artifact Registry
+	// String resourceUrl = "https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image@sha256:123";
     // String projectId = "my-project-id";
     String filterStr = "kind=\"DISCOVERY\" AND resourceUrl=\"" + resourceUrl + "\"";
     final String projectName = ProjectName.format(projectId);

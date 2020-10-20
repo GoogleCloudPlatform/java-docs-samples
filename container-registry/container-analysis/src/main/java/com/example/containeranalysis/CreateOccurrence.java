@@ -32,7 +32,10 @@ public class CreateOccurrence {
   // Creates and returns a new vulnerability Occurrence associated with an existing Note
   public static Occurrence createOccurrence(String resourceUrl, String noteId, 
       String occProjectId, String noteProjectId) throws IOException, InterruptedException {
-    // String resourceUrl = "https://gcr.io/project/image@sha256:123";
+    // Use this style of URL when you use Google Container Registry
+	// String resourceUrl = "https://gcr.io/my-project/my-repo/my-image@sha256:123";
+	// Use this style of URL when you use Google Artifact Registry
+	// String resourceUrl = "https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image@sha256:123";
     // String noteId = "my-note";
     // String occProjectId = "my-project-id";
     // String noteProjectId = "my-project-id";
