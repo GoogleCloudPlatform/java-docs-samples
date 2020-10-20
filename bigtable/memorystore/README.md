@@ -31,7 +31,7 @@ This code shows how to use Cloud Bigtable with a caching solution hosted on Memo
 1. Get the Memcached host IP and set that as a variable.
 
     ```
-    $MEMCACHED_HOST_IP="0.0.0.0"
+    MEMCACHED_DISCOVERY_ENDPOINT="0.0.0.0"
     ```
 
 1. Run the code. If you are trying to connect to Memcached on Memorystore, you will
@@ -44,7 +44,7 @@ SSHing to that and running the code from there.
     -DbigtableProjectId=$PROJECT_ID \
     -DbigtableInstanceId=$INSTANCE_ID \
     -DbigtableTableId=$TABLE_ID \
-    -DmemcachedHostIP=$MEMCACHED_HOST_IP
+    -DmemcachedDiscoveryEndpoint=$MEMCACHED_DISCOVERY_ENDPOINT
     ```
 
     The first time you run the program, it will fetch the data from Bigtable.
