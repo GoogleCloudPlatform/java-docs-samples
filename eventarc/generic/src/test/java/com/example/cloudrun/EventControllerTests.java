@@ -72,7 +72,8 @@ public class EventControllerTests {
         .andExpect(status().isOk());
 
     mockMvc
-      .perform(post("/").contentType(MediaType.APPLICATION_JSON).content(mockBody).header("Authorization", "super secret"))
+      .perform(post("/").contentType(MediaType.APPLICATION_JSON).content(mockBody)
+      .header("Authorization", "super secret"))
       .andExpect(status().isOk())
       .andExpect(content().string(containsString("91010751788941")))
       .andExpect(content().string(not(containsString("Authorization"))))
