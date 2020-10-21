@@ -42,10 +42,8 @@ public class OcrSaveResult implements BackgroundFunction<PubSubMessage> {
 
     logger.info("Received request to save file " +  ocrMessage.getFilename());
 
-    // [START functions_ocr_rename]
     String newFileName = String.format(
         "%s_to_%s.txt", ocrMessage.getFilename(), ocrMessage.getLang());
-    // [END functions_ocr_rename]
 
     // Save file to RESULT_BUCKET with name newFileNaem
     logger.info(String.format("Saving result to %s in bucket %s", newFileName, RESULT_BUCKET));
