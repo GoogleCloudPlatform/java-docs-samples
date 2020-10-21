@@ -1,6 +1,6 @@
 # Cloud Eventarc - Generic tutorial
 
-This sample shows how to create a service that processes generic CloudEvents.
+This sample shows how to create a service that processes generic [CloudEvents](https://cloudevents.io/).
 
 For more details on how to work with this sample read the [Google Cloud Run Java Samples README](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/run).
 
@@ -37,6 +37,7 @@ gcloud run deploy eventarc-generic \
 Test your Cloud Run service by sending CloudEvents: 
 
 ```sh
+CLOUD_RUN_URL=$(gcloud run services describe eventarc-generic --platform managed --format 'value(status.url)')
 curl -XPOST $CLOUD_RUN_URL \
 -H "Content-Type: application/json" \
 -H "ce-id: 1413058901901494" \
@@ -46,4 +47,4 @@ curl -XPOST $CLOUD_RUN_URL \
 -d '{"key": "value"}'
 ```
 
-You may observe the Run service receiving an event in Cloud Logging.
+You may observe the Cloud Run service receiving an event in Cloud Logging.
