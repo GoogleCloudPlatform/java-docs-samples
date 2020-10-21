@@ -77,6 +77,6 @@ public class EventControllerTests {
       .andExpect(status().isOk())
       .andExpect(content().string(containsString("91010751788941")))
       .andExpect(content().string(not(containsString("Authorization"))))
-      .andExpect(content().string(not(containsString("super secret"))));
+        .andExpect(content().string(not(containsString("super secret"))));
   }
 }
