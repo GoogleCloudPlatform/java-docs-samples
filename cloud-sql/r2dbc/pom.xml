@@ -43,7 +43,7 @@
     <dependency>
       <groupId>io.r2dbc</groupId>
       <artifactId>r2dbc-pool</artifactId>
-      <version>0.8.4.RELEASE</version>
+      <version>0.8.5.RELEASE</version>
     </dependency>
 
     <!-- MySQL dependencies start -->
