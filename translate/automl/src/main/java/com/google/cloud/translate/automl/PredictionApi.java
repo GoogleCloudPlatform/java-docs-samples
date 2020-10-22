@@ -52,7 +52,7 @@ public class PredictionApi {
 
   // [START automl_translate_predict]
   /**
-   * Demonstrates using the AutoML client to predict an image.
+   * Demonstrates using the AutoML client to predict a translation.
    *
    * @param projectId the Id of the project.
    * @param computeRegion the Region name.
