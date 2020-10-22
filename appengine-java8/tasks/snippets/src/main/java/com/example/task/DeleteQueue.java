@@ -16,7 +16,7 @@
 
 package com.example.task;
 
-// [START taskqueues_delete_queue]
+// [START cloud_tasks_taskqueues_delete_queue]
 import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.QueueName;
 
@@ -37,4 +37,4 @@ public class DeleteQueue {
     }
   }
 }
-// [END taskqueues_delete_queue]
+// [END cloud_tasks_taskqueues_delete_queue]

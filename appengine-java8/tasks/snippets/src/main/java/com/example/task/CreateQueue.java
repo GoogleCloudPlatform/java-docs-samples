@@ -16,7 +16,7 @@
 
 package com.example.task;
 
-//  [START taskqueues_using_yaml]
+//  [START cloud_tasks_taskqueues_using_yaml]
 import com.google.cloud.tasks.v2.AppEngineRouting;
 import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.LocationName;
@@ -59,4 +59,4 @@ public class CreateQueue {
     }
   }
 }
-//  [END taskqueues_using_yaml]
+//  [END cloud_tasks_taskqueues_using_yaml]
