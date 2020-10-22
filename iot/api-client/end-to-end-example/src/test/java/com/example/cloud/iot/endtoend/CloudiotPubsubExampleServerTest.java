@@ -70,7 +70,7 @@ public class CloudiotPubsubExampleServerTest {
     try {
       CloudiotPubsubExampleServer.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
     } catch (GoogleJsonResponseException ex) {
-      if (!ex.isSuccessStatusCode()) {
+      if (!ex.isSuccessStatusCode() || ex.getDetails().getCode() == 429) {
         System.out.println("Cleaning up registry: " + REGISTRY_ID);
         // Clean up the 80% of old registries
         deleteUnusedOldRegistries(PROJECT_ID, CLOUD_REGION);
