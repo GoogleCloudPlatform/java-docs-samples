@@ -1,5 +1,5 @@
 <!--
-  Copyright 2017 Google Inc.
+  Copyright 2018 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 -->
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.vision</groupId>
-  <artifactId>vision-google-cloud-samples</artifactId>
+  <groupId>com.google.cloud.translate.automl</groupId>
+  <artifactId>translate-automl</artifactId>
   <packaging>jar</packaging>
 
   <!--
@@ -35,7 +35,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <!-- [START vision_java_dependencies] -->
+  <!-- [START automl_translate_java_dependencies] -->
   <!--  Using libraries-bom to manage versions.
   See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
   <dependencyManagement>
@@ -49,17 +49,22 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-vision</artifactId>
+      <artifactId>google-cloud-automl</artifactId>
     </dependency>
+    <!-- [END automl_translate_java_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
+      <version>1.113.1</version>
     </dependency>
-    <!-- [END vision_java_dependencies] -->
+    <dependency>
+      <groupId>net.sourceforge.argparse4j</groupId>
+      <artifactId>argparse4j</artifactId>
+      <version>0.8.1</version>
+    </dependency>
 
     <!-- Test dependencies -->
     <dependency>
@@ -68,22 +73,21 @@
       <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <version>1.0.1</version>
       <scope>test</scope>
     </dependency>
-    <!-- [START vision_java_dependencies] -->
+    <!-- [START automl_translate_java_dependencies] -->
   </dependencies>
-  <!-- [END vision_java_dependencies] -->
+  <!-- [END automl_translate_java_dependencies] -->
   <profiles>
     <profile>
-      <id>Detect</id>
+      <id>DatasetApi</id>
       <activation>
         <property>
-          <name>Detect</name>
+          <name>DatasetApi</name>
         </property>
       </activation>
       <build>
@@ -100,19 +104,18 @@
               </execution>
             </executions>
             <configuration>
-              <mainClass>com.example.vision.Detect</mainClass>
+              <mainClass>com.google.cloud.translate.automl.DatasetApi</mainClass>
               <cleanupDaemonThreads>false</cleanupDaemonThreads>
             </configuration>
           </plugin>
         </plugins>
       </build>
     </profile>
-
     <profile>
-      <id>QuickstartSample</id>
+      <id>ModelApi</id>
       <activation>
         <property>
-          <name>QuickstartSample</name>
+          <name>ModelApi</name>
         </property>
       </activation>
       <build>
@@ -129,7 +132,35 @@
               </execution>
             </executions>
             <configuration>
-              <mainClass>com.example.vision.quickstart.QuickstartSample</mainClass>
+              <mainClass>com.google.cloud.translate.automl.ModelApi</mainClass>
+              <cleanupDaemonThreads>false</cleanupDaemonThreads>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>PredictionApi</id>
+      <activation>
+        <property>
+          <name>PredictionApi</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <mainClass>com.google.cloud.translate.automl.PredictionApi</mainClass>
               <cleanupDaemonThreads>false</cleanupDaemonThreads>
             </configuration>
           </plugin>
