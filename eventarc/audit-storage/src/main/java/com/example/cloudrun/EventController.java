@@ -36,7 +36,7 @@ public class EventController {
 
   @RequestMapping(value = "/", method = RequestMethod.POST)
   public ResponseEntity<String> receiveMessage(
-      @RequestBody Map<String, String> body, @RequestHeader Map<String, String> headers) {
+      @RequestBody Map<String, Object> body, @RequestHeader Map<String, String> headers) {
     for (String field : requiredFields) {
       if (headers.get(field) == null) {
         String msg = String.format("Missing expected header: %s.", field);
