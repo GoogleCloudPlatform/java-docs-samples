@@ -17,15 +17,20 @@
 package com.google.cloud.vision.samples.automl;
 
 // [START automl_vision_object_detection_deploy_model_node_count]
+import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.automl.v1beta1.AutoMlSettings;
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.DeployModelRequest;
 import com.google.cloud.automl.v1beta1.ImageObjectDetectionModelDeploymentMetadata;
 import com.google.cloud.automl.v1beta1.ModelName;
 import com.google.cloud.automl.v1beta1.OperationMetadata;
+import com.google.cloud.automl.v1beta1.stub.AutoMlStub;
+import com.google.cloud.automl.v1beta1.stub.AutoMlStubSettings;
 import com.google.protobuf.Empty;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import org.threeten.bp.Duration;
 
 class ObjectDetectionDeployModelNodeCount {
 
@@ -34,10 +39,17 @@ class ObjectDetectionDeployModelNodeCount {
     // String projectId = "YOUR_PROJECT_ID";
     // String modelId = "YOUR_MODEL_ID";
 
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    try (AutoMlClient client = AutoMlClient.create()) {
+    AutoMlSettings.Builder autoMlSettingsBuilder =
+        AutoMlSettings.newBuilder();
+    autoMlSettingsBuilder
+        .deployModelSettings()
+        .setRetrySettings(
+            autoMlSettingsBuilder.deployModelSettings().getRetrySettings().toBuilder()
+                .setTotalTimeout(Duration.ofMinutes(90))
+                .build());
+    AutoMlSettings autoMlSettings = autoMlSettingsBuilder.build();
+
+    try (AutoMlClient client = AutoMlClient.create(autoMlSettings)) {
       // Get the full path of the model.
       ModelName modelFullId = ModelName.of(projectId, "us-central1", modelId);
 
