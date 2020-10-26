@@ -44,7 +44,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigtable</artifactId>
-      <version>1.16.2</version>
+      <version>1.17.0</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/net.spy/spymemcached -->
