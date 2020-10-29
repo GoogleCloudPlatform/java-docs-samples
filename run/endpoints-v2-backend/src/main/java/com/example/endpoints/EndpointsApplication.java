@@ -40,11 +40,11 @@ public class EndpointsApplication {
             .version("1.0.0"))
         .servers(null)
         .extensions(Map.of(
-            "host", "<YOUR_HOST_HERE>-ue.a.run.app",
+            "host", "<CLOUD_RUN_HOSTNAME>",
             "schemes", Collections.singletonList("https"),
             "produces", Collections.singletonList("application/json"),
             "x-google-backend", Map.of(
-                "address", "https://<YOUR_APP_URI_HERE>-ue.a.run.app/",
+                "address", "<CLOUD_RUN_SERVICE_URL>",
                 "protocol", "h2"
             )));
   }

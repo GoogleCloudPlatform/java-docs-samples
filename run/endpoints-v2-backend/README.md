@@ -28,7 +28,9 @@ For more details on how to work with this sample read the [Google Cloud Run Java
     </properties>
     ```
 
-1. Update `<YOUR_HOST_HERE>` and `<YOUR_APP_URI_HERE>` in EndpointsApplication.java.
+1. Update `<CLOUD_RUN_HOSTNAME>` and `<CLOUD_RUN_SERVICE_URL>` in EndpointsApplication.java according to variable
+definitions at [Getting Started with Endpoints for Cloud Run with ESPv2](https://cloud.google.com/endpoints/docs/openapi/get-started-cloud-run#reserve_hostname)
+ (Reserving a Cloud Run hostname).
 
 1. Run `mvn clean install` (or alternatively just `mvn verify`) to use the SpringDoc Maven Plugin to generate a base
     openapi file in the root directory.
@@ -42,8 +44,8 @@ For more details on how to work with this sample read the [Google Cloud Run Java
     file openapi-run.yaml in this demo project. If you are using an IDE like IntelliJ IDEA Ultimate, after switching the
     version number to 2.0, it should tell you what's wrong with the file.
     
-1. Follow the [Getting Started with Endpoints for Cloud Run with ESPv2](https://cloud.google.com/endpoints/docs/openapi/get-started-cloud-run)
-    guide.
+1. Follow the [Getting Started with Endpoints for Cloud Run with ESPv2](https://cloud.google.com/endpoints/docs/openapi/get-started-cloud-run#deploy_configuration)
+    guide (Deploying the Endpoints configuration).
 
 [run_img]: https://storage.googleapis.com/cloudrun/button.svg
 [run_link]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/markdown-preview
