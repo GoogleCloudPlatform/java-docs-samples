@@ -14,7 +14,8 @@ For more details on how to work with this sample read the [Google Cloud Run Java
 * **SpringDoc OpenApi**: API documentation generation tool.
 * **Jib**: Container build tool.
 
-## Build the Container Image
+## Generating the Endpoints spec
+
 
 1. Update `PROJECT_ID` in `pom.xml` with your GCP Project Id:
 
