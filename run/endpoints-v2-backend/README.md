@@ -28,7 +28,8 @@ For more details on how to work with this sample read the [Google Cloud Run Java
     </properties>
     ```
 
-1. Update `<CLOUD_RUN_HOSTNAME>` and `<CLOUD_RUN_SERVICE_URL>` in EndpointsApplication.java according to variable
+1. Update `<CLOUD_RUN_HOSTNAME>` and `<CLOUD_RUN_SERVICE_URL>` in `EndpointsApplication.java` according to variable
+
 definitions at [Getting Started with Endpoints for Cloud Run with ESPv2](https://cloud.google.com/endpoints/docs/openapi/get-started-cloud-run#reserve_hostname)
  (Reserving a Cloud Run hostname).
 
