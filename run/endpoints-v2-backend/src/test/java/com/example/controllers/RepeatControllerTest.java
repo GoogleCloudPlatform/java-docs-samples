@@ -16,12 +16,12 @@
 
 package com.example.controllers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.example.endpoints.controllers.RepeatController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RepeatControllerTest {
 
