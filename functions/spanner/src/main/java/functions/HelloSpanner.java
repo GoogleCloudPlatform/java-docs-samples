@@ -23,8 +23,8 @@ import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
+import com.google.cloud.spanner.LazySpannerInitializer;
 import com.google.cloud.spanner.ResultSet;
-import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
@@ -38,62 +38,27 @@ import java.util.logging.Logger;
 public class HelloSpanner implements HttpFunction {
   private static final Logger logger = Logger.getLogger(HelloSpanner.class.getName());
 
-  @VisibleForTesting
-  static Spanner createSpanner() {
-    return SpannerOptions.newBuilder().build().getService();
-  }
-
-  // SpannerHolder is a holder class for a Spanner instance that is initialized lazily.
-  private static final class SpannerHolder {
-    private final Object lock = new Object();
-    private volatile boolean initialized;
-    private volatile DatabaseClient client;
-    private volatile Throwable error;
-
-    private SpannerHolder() {}
-
-    // Initialize the {@link Spanner} instance in a method and not as a static variable, as it
-    // might throw an error, and we want to catch and log that specific error. An administrator must
-    // take action to mitigate the reason for the initialization failure, for example ensuring that
-    // the service account being used to access Cloud Spanner has permission to do so.
-    DatabaseClient get() throws Throwable {
-      if (!initialized) {
-        synchronized (lock) {
-          if (!initialized) {
-            try {
-              DatabaseId db =
-                  DatabaseId.of(
-                      SpannerOptions.getDefaultProjectId(),
-                      SPANNER_INSTANCE_ID,
-                      SPANNER_DATABASE_ID);
-              client = createSpanner().getDatabaseClient(db);
-            } catch (Throwable t) {
-              error = t;
-            }
-            initialized = true;
-          }
-        }
-      }
-      if (error != null) {
-        throw error;
-      }
-      return client;
-    }
-  }
-
-  // The SpannerHolder instance is shared across all instances of the HelloSpanner class.
-  private static final SpannerHolder SPANNER_HOLDER = new SpannerHolder();
-
-  @VisibleForTesting
-  DatabaseClient getClient() throws Throwable {
-    return SPANNER_HOLDER.get();
-  }
-
   // TODO<developer>: Set these environment variables.
   private static final String SPANNER_INSTANCE_ID =
       MoreObjects.firstNonNull(System.getenv("SPANNER_INSTANCE"), "my-instance");
   private static final String SPANNER_DATABASE_ID =
       MoreObjects.firstNonNull(System.getenv("SPANNER_DATABASE"), "example-db");
+
+  private static final DatabaseId databaseId =
+      DatabaseId.of(
+          SpannerOptions.getDefaultProjectId(),
+          SPANNER_INSTANCE_ID,
+          SPANNER_DATABASE_ID);
+
+  // The LazySpannerInitializer instance is shared across all instances of the HelloSpanner class.
+  // It will create a Spanner instance the first time one is requested, and continue to return that
+  // instance for all subsequent requests.
+  private static final LazySpannerInitializer SPANNER_INITIALIZER = new LazySpannerInitializer();
+
+  @VisibleForTesting
+  DatabaseClient getClient() throws Throwable {
+    return SPANNER_INITIALIZER.get().getDatabaseClient(databaseId);
+  }
 
   @Override
   public void service(HttpRequest request, HttpResponse response) throws Exception {
