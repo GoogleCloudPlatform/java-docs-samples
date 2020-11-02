@@ -28,13 +28,11 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.Topic;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
-
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.junit.After;
 import org.junit.Assert;
