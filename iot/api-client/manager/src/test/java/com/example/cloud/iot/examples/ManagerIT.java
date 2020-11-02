@@ -60,9 +60,7 @@ public class ManagerIT {
   private static final String PKCS_PATH = "resources/rsa_private_pkcs8";
   private static final String TOPIC_ID =
       "java-pst-"
-          + (System.currentTimeMillis() / 100L)
-          + "-"
-          + UUID.randomUUID().toString().substring(0, 10);
+          + UUID.randomUUID().toString().substring(0, 20);
   private static final String MEMBER = "group:dpebot@google.com";
   private static final String ROLE = "roles/viewer";
 
