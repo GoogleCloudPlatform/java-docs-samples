@@ -55,6 +55,7 @@ public class ManagerIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGISTRY_ID =
       "java-reg-"
+              + UUID.randomUUID().toString().substring(0, 10) + "-"
           + (System.currentTimeMillis() / 100L);
   private static final String RSA_PATH = "resources/rsa_cert.pem";
   private static final String PKCS_PATH = "resources/rsa_private_pkcs8";
@@ -110,7 +111,7 @@ public class ManagerIT {
         if (registryId.startsWith("java-reg-")) {
           long currSecs = System.currentTimeMillis() / 1000L;
           long regSecs =
-              Long.parseLong(registryId.substring("java-reg-".length(), registryId.length()));
+              Long.parseLong(registryId.substring("java-reg-".length() + 11, registryId.length()));
           long diffSecs = currSecs - regSecs;
           if (diffSecs > (60 * 60 * 24 * 7 * 10)) { // tests from last week or older
             System.out.println("Remove Id: " + r.getId());
