@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.google</groupId>
+  <artifactId>bigquery-import</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.21</version>
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <apache_beam.version>2.24.0</apache_beam.version>
+  </properties>
+
+  <dependencies>
+  <dependency>
+    <groupId>org.apache.beam</groupId>
+    <artifactId>beam-runners-direct-java</artifactId>
+    <version>${apache_beam.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.beam</groupId>
+    <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
+    <version>${apache_beam.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.beam</groupId>
+    <artifactId>beam-sdks-java-extensions-google-cloud-platform-core</artifactId>
+    <version>${apache_beam.version}</version>
+  </dependency>
+
+    <dependency>
+    <groupId>org.apache.beam</groupId>
+    <artifactId>beam-sdks-java-io-google-cloud-platform</artifactId>
+    <version>${apache_beam.version}</version>
+  </dependency>
+
+
+    <!-- [START bigtable_beam_connector_dependency] -->
+  <dependency>
+    <groupId>com.google.cloud.bigtable</groupId>
+    <artifactId>bigtable-hbase-beam</artifactId>
+    <version>1.16.0</version>
+  </dependency>
+  <!-- [END bigtable_beam_connector_dependency] -->
+  </dependencies>
+
+
+</project>
