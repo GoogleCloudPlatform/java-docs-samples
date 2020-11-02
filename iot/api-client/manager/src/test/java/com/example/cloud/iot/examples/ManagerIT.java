@@ -46,10 +46,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ManagerIT {
-  private ByteArrayOutputStream bout;
-  private PrintStream out;
-  private DeviceRegistryExample app;
-
   private static final String CLOUD_REGION = "us-central1";
   private static final String ES_PATH = "resources/ec_public.pem";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -64,9 +60,11 @@ public class ManagerIT {
           + UUID.randomUUID().toString().substring(0, 20);
   private static final String MEMBER = "group:dpebot@google.com";
   private static final String ROLE = "roles/viewer";
-
   private static Topic topic;
   private static boolean hasCleared = false;
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
+  private DeviceRegistryExample app;
 
   @Before
   public void setUp() throws Exception {
