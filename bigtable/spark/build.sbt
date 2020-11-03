@@ -32,7 +32,6 @@ libraryDependencies ++= Seq(
 val scalatestVersion = "3.2.0"
 libraryDependencies += "org.scalactic" %% "scalactic" % scalatestVersion
 libraryDependencies += "org.scalatest" %% "scalatest" % scalatestVersion % "test"
-resolvers += "Artima Maven Repository" at "https://repo.artima.com/releases"
 test in assembly := {}
 
 val fixes = Seq(
