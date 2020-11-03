@@ -101,15 +101,19 @@ cbt \
 List tables.
 
 ```
-$ cbt \
+cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   ls
+```
+
+Output should be:
+```
 copytable
 wordcount
 ```
 
-**TIP** For details about using the `cbt` tool, including a list of available commands, see the [cbt Reference](https://cloud.google.com/bigtable/docs/cbt-reference).
+For more information about using the `cbt` tool, including a list of available commands, see the [cbt Reference](https://cloud.google.com/bigtable/docs/cbt-reference).
 
 ### Wordcount
 
@@ -129,10 +133,13 @@ $SPARK_HOME/bin/spark-submit \
 Count the number of rows in the `BIGTABLE_SPARK_WORDCOUNT_TABLE` table.
 
 ```
-$ cbt \
+cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   count $BIGTABLE_SPARK_WORDCOUNT_TABLE
+```
+Output should be:
+```
 88
 ```
 
@@ -174,6 +181,7 @@ BIGTABLE_SPARK_INSTANCE_ID=your-instance-id
 
 BIGTABLE_SPARK_WORDCOUNT_TABLE=wordcount
 BIGTABLE_SPARK_WORDCOUNT_FILE=src/test/resources/Romeo-and-Juliet-prologue.txt
+BIGTABLE_SPARK_ASSEMBLY_JAR=target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar
 ```
 
 ### Create Cloud Bigtable Instance
@@ -284,6 +292,7 @@ BIGTABLE_SPARK_INSTANCE_DISPLAY_NAME=your-bigtable-display-name
 
 BIGTABLE_SPARK_WORDCOUNT_TABLE=wordcount
 BIGTABLE_SPARK_BUCKET_NAME=gs://[your-bucket-name]
+BIGTABLE_SPARK_ASSEMBLY_JAR=target/scala-2.11/bigtable-spark-samples-assembly-0.1.jar
 ```
 
 **NOTE**: `BIGTABLE_SPARK_DATAPROC_REGION` should point to your region. Read [Available regions and zones](https://cloud.google.com/compute/docs/regions-zones#available) in the official documentation.
