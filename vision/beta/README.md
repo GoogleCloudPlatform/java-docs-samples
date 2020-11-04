@@ -1,3 +1,3 @@
-# Vision beta samples has been moved to java-vision repo
+# Google Vision Beta Samples
 
-[Java Vision repo](https://github.com/googleapis/java-vision/tree/master/samples) Java samples.
+These samples have moved to [googleapis/java-vision](https://github.com/googleapis/java-vision/tree/master/samples).

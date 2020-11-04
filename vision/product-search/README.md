@@ -1,3 +1,3 @@
-# Vision product search has been moved to java-vision repo
+# Google Vision Product Search Samples
 
-[Java Vision repo](https://github.com/googleapis/java-vision/tree/master/samples) Java samples.
+These samples have moved to [googleapis/java-vision](https://github.com/googleapis/java-vision/tree/master/samples).
