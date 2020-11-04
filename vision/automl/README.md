@@ -1,3 +1,3 @@
-# Vision automl samples has been moved to java-automl repo
+# Google AutoML Vision Samples
 
 These samples have moved to [googleapis/java-automl](https://github.com/googleapis/java-automl/tree/master/samples).
