@@ -77,9 +77,6 @@ public class SpannerStandaloneExamplesIT {
       }
     }
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
-    // Delete stale test databases that have been created earlier by this test, but not deleted.
-    SpannerSampleIT.deleteStaleTestDatabases(instanceId, baseDatabaseId);
-    
     dbClient
         .createDatabase(
             instanceId,
