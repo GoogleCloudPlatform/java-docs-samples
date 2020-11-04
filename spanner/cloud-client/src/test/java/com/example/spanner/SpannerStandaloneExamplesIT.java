@@ -48,8 +48,8 @@ import org.junit.runners.JUnit4;
 public class SpannerStandaloneExamplesIT {
   // The instance needs to exist for tests to pass.
   private static String instanceId = System.getProperty("spanner.test.instance");
-  private static String databaseId =
-      SpannerSampleIT.formatForTest(System.getProperty("spanner.sample.database", "mysample"));
+  private static String baseDatabaseId = System.getProperty("spanner.sample.database", "mysample");
+  private static String databaseId = SpannerSampleIT.formatForTest(baseDatabaseId);
   private static DatabaseId dbId;
   private static DatabaseAdminClient dbClient;
   private static Spanner spanner;
@@ -78,8 +78,7 @@ public class SpannerStandaloneExamplesIT {
     }
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     // Delete stale test databases that have been created earlier by this test, but not deleted.
-    SpannerSampleIT.deleteStaleTestDatabases(instanceId,
-        System.getProperty("spanner.sample.database", "mysample"));
+    SpannerSampleIT.deleteStaleTestDatabases(instanceId, baseDatabaseId);
     
     dbClient
         .createDatabase(

@@ -33,7 +33,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -49,8 +48,8 @@ import org.threeten.bp.temporal.ChronoField;
 public class SpannerSampleIT {
   // The instance needs to exist for tests to pass.
   private static final String instanceId = System.getProperty("spanner.test.instance");
-  private static final String databaseId =
-      formatForTest(System.getProperty("spanner.sample.database"));
+  private static final String baseDbId = System.getProperty("spanner.sample.database");
+  private static final String databaseId = formatForTest(baseDbId);
   static Spanner spanner;
   static DatabaseId dbId;
   static DatabaseAdminClient dbClient;
@@ -78,7 +77,7 @@ public class SpannerSampleIT {
   
   static void deleteStaleTestDatabases(String instanceId, String baseDbId) {
     Timestamp now = Timestamp.now();
-    Pattern pattern = getTestDbIdPattern();
+    Pattern pattern = getTestDbIdPattern(baseDbId);
     for (Database db : dbClient.listDatabases(instanceId).iterateAll()) {
       if (db.getCreateTime().getSeconds() > 0 && TimeUnit.HOURS
           .convert(now.getSeconds() - db.getCreateTime().getSeconds(), TimeUnit.SECONDS) > 24) {
@@ -422,10 +421,9 @@ public class SpannerSampleIT {
     return existingId + zeroUuid.substring(zeroUuid.length() - missingLength);
   }
 
-  private static Pattern getTestDbIdPattern() {
+  private static Pattern getTestDbIdPattern(String baseDbId) {
     return Pattern.compile(
-        System.getProperty("spanner.sample.database")
-            + "-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{8}",
+        baseDbId + "-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{8}",
         Pattern.CASE_INSENSITIVE);
   }
   
