@@ -72,7 +72,7 @@ public class SpannerSampleIT {
     dbClient = spanner.getDatabaseAdminClient();
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     // Delete stale test databases that have been created earlier by this test, but not deleted.
-    deleteStaleTestDatabases(instanceId, System.getProperty("spanner.sample.database"));
+    deleteStaleTestDatabases(instanceId, baseDbId);
   }
   
   static void deleteStaleTestDatabases(String instanceId, String baseDbId) {
