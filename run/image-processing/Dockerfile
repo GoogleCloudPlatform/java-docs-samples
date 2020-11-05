@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START cloudrun_imageproc_dockerfile]
 # [START run_imageproc_dockerfile]
 # Use AdoptOpenJDK for base image.
 # It's important to use OpenJDK 8u191 or above that has container support enabled.
@@ -23,3 +24,4 @@ FROM adoptopenjdk/openjdk11:alpine-slim
 # https://cloud.google.com/run/docs/tutorials/system-packages#dockerfile
 RUN apk add --no-cache imagemagick
 # [END run_imageproc_dockerfile]
+# [END cloudrun_imageproc_dockerfile]

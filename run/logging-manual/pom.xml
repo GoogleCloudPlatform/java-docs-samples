@@ -34,6 +34,7 @@ limitations under the License.
       <artifactId>spark-core</artifactId>
       <version>2.9.3</version>
     </dependency>
+    <!-- [START cloudrun_manual_logging_dep] -->
     <!-- [START run_manual_logging_dep] -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -51,6 +52,7 @@ limitations under the License.
       <version>1.2.3</version>
     </dependency>
     <!-- [END run_manual_logging_dep] -->
+    <!-- [END cloudrun_manual_logging_dep] -->
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
@@ -66,6 +68,7 @@ limitations under the License.
 
   <build>
     <plugins>
+      <!-- [START cloudrun_manual_logging_jib] -->
       <!-- [START run_manual_logging_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
@@ -78,6 +81,7 @@ limitations under the License.
         </configuration>
       </plugin>
       <!-- [END run_manual_logging_jib] -->
+      <!-- [END cloudrun_manual_logging_jib] -->
     </plugins>
   </build>
 </project>

@@ -16,6 +16,7 @@
 
 package com.example.cloudrun;
 
+// [START cloudrun_pubsub_handler]
 // [START run_pubsub_handler]
 import java.util.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -49,3 +50,4 @@ public class PubSubController {
   }
 }
 // [END run_pubsub_handler]
+// [END cloudrun_pubsub_handler]
