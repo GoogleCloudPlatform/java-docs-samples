@@ -72,6 +72,7 @@ limitations under the License.
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- [START cloudrun_imageproc_dep] -->
     <!-- [START run_imageproc_dep] -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -98,6 +99,7 @@ limitations under the License.
       <version>2.8.0</version>
     </dependency>
     <!-- [END run_imageproc_dep] -->
+    <!-- [END cloudrun_imageproc_dep] -->
   </dependencies>
   <build>
     <plugins>
@@ -105,6 +107,7 @@ limitations under the License.
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+      <!-- [START cloudrun_imageproc_jib] -->
       <!-- [START run_imageproc_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
@@ -120,6 +123,7 @@ limitations under the License.
         </configuration>
       </plugin>
       <!-- [END run_imageproc_jib] -->
+      <!-- [END cloudrun_imageproc_jib] -->
     </plugins>
   </build>
 </project>

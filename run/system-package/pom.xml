@@ -55,6 +55,7 @@ limitations under the License.
 
   <build>
     <plugins>
+      <!-- [START cloudrun_system_package_jib] -->
       <!-- [START run_system_package_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
@@ -70,6 +71,7 @@ limitations under the License.
         </configuration>
       </plugin>
       <!-- [END run_system_package_jib] -->
+      <!-- [END cloudrun_system_package_jib] -->
     </plugins>
   </build>
 </project>

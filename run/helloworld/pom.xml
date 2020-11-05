@@ -68,6 +68,7 @@ limitations under the License.
           </execution>
         </executions>
       </plugin>
+      <!-- [START cloudrun_helloworld_jib] -->
       <!-- [START run_helloworld_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
@@ -80,6 +81,7 @@ limitations under the License.
         </configuration>
       </plugin>
       <!-- [END run_helloworld_jib] -->
+      <!-- [END cloudrun_helloworld_jib] -->
     </plugins>
   </build>
 </project>
