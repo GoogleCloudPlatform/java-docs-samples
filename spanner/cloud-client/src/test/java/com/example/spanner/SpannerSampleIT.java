@@ -27,6 +27,7 @@ import com.google.cloud.spanner.ErrorCode;
 import com.google.cloud.spanner.InstanceId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerException;
+import com.google.cloud.spanner.SpannerExceptionFactory;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.io.ByteArrayOutputStream;
@@ -94,6 +95,10 @@ public class SpannerSampleIT {
             && pattern.matcher(toComparableId("restored", db.getId().getDatabase())).matches()) {
           db.drop();
         }
+      }
+      if (db.getId().getName().startsWith("mysample")) {
+        throw SpannerExceptionFactory.newSpannerException(ErrorCode.ABORTED, String
+            .format("Database %s was not deleted. Create time: ", db.getId(), db.getCreateTime()));
       }
     }
   }
