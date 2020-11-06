@@ -89,14 +89,10 @@ public class SpannerSampleIT {
             db.drop();
             deleted = true;
           }
-        }
-        if (db.getRestoreInfo() != null
-            && pattern.matcher(
-                toComparableId(baseDbId, db.getRestoreInfo().getSourceDatabase().getDatabase()))
-            .matches()
-            && pattern.matcher(toComparableId("restored", db.getId().getDatabase())).matches()) {
-          db.drop();
-          deleted = true;
+          if (pattern.matcher(toComparableId("restored", db.getId().getDatabase())).matches()) {
+            db.drop();
+            deleted = true;
+          }
         }
       }
       if (!deleted
