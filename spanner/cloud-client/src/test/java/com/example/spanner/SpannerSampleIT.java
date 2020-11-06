@@ -99,8 +99,11 @@ public class SpannerSampleIT {
           deleted = true;
         }
       }
-      if (!deleted && (db.getId().getDatabase().startsWith("mysample")
-          || db.getId().getDatabase().startsWith("restored"))) {
+      if (!deleted
+          && (db.getId().getDatabase().startsWith("mysample")
+              || db.getId().getDatabase().startsWith("restored"))
+          && TimeUnit.HOURS.convert(now.getSeconds() - db.getCreateTime().getSeconds(),
+              TimeUnit.SECONDS) > 24) {
         throw SpannerExceptionFactory.newSpannerException(ErrorCode.ABORTED,
             String.format("Database %s was not deleted. Create time: %s. Age in hours: %s",
                 db.getId(), db.getCreateTime(), TimeUnit.HOURS.convert(
