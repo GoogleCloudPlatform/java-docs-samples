@@ -46,6 +46,7 @@ import org.threeten.bp.temporal.ChronoField;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerSampleIT {
+  private static final int DBID_LENGTH = 20;
   // The instance needs to exist for tests to pass.
   private static final String instanceId = System.getProperty("spanner.test.instance");
   private static final String baseDbId = System.getProperty("spanner.sample.database");
@@ -79,9 +80,18 @@ public class SpannerSampleIT {
     Timestamp now = Timestamp.now();
     Pattern pattern = getTestDbIdPattern(baseDbId);
     for (Database db : dbClient.listDatabases(instanceId).iterateAll()) {
-      if (db.getCreateTime().getSeconds() > 0 && TimeUnit.HOURS
-          .convert(now.getSeconds() - db.getCreateTime().getSeconds(), TimeUnit.SECONDS) > 24) {
-        if (pattern.matcher(toComparableId(baseDbId, db.getId().getDatabase())).matches()) {
+      if (TimeUnit.HOURS.convert(now.getSeconds() - db.getCreateTime().getSeconds(),
+          TimeUnit.SECONDS) > 24) {
+        if (db.getId().getDatabase().length() == DBID_LENGTH) {
+          if (pattern.matcher(toComparableId(baseDbId, db.getId().getDatabase())).matches()) {
+            db.drop();
+          }
+        }
+        if (db.getRestoreInfo() != null
+            && pattern.matcher(
+                toComparableId(baseDbId, db.getRestoreInfo().getSourceDatabase().getDatabase()))
+            .matches()
+            && pattern.matcher(toComparableId("restored", db.getId().getDatabase())).matches()) {
           db.drop();
         }
       }
@@ -428,6 +438,6 @@ public class SpannerSampleIT {
   }
   
   static String formatForTest(String name) {
-    return name + "-" + UUID.randomUUID().toString().substring(0, 20);
+    return name + "-" + UUID.randomUUID().toString().substring(0, DBID_LENGTH);
   }
 }
