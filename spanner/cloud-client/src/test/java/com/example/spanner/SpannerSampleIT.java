@@ -79,17 +79,19 @@ public class SpannerSampleIT {
   
   static void deleteStaleTestDatabases(String instanceId, String baseDbId) {
     Timestamp now = Timestamp.now();
-    Pattern pattern = getTestDbIdPattern(baseDbId);
+    Pattern samplePattern = getTestDbIdPattern(baseDbId);
+    Pattern restoredPattern = getTestDbIdPattern("restored");
     for (Database db : dbClient.listDatabases(instanceId).iterateAll()) {
       boolean deleted = false;
       if (TimeUnit.HOURS.convert(now.getSeconds() - db.getCreateTime().getSeconds(),
           TimeUnit.SECONDS) > 24) {
         if (db.getId().getDatabase().length() >= DBID_LENGTH) {
-          if (pattern.matcher(toComparableId(baseDbId, db.getId().getDatabase())).matches()) {
+          if (samplePattern.matcher(toComparableId(baseDbId, db.getId().getDatabase())).matches()) {
             db.drop();
             deleted = true;
           }
-          if (pattern.matcher(toComparableId("restored", db.getId().getDatabase())).matches()) {
+          if (restoredPattern.matcher(toComparableId("restored", db.getId().getDatabase()))
+              .matches()) {
             db.drop();
             deleted = true;
           }
