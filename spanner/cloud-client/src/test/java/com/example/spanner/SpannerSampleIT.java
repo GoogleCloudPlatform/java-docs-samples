@@ -81,11 +81,13 @@ public class SpannerSampleIT {
     Timestamp now = Timestamp.now();
     Pattern pattern = getTestDbIdPattern(baseDbId);
     for (Database db : dbClient.listDatabases(instanceId).iterateAll()) {
+      boolean deleted = false;
       if (TimeUnit.HOURS.convert(now.getSeconds() - db.getCreateTime().getSeconds(),
           TimeUnit.SECONDS) > 24) {
         if (db.getId().getDatabase().length() == DBID_LENGTH) {
           if (pattern.matcher(toComparableId(baseDbId, db.getId().getDatabase())).matches()) {
             db.drop();
+            deleted = true;
           }
         }
         if (db.getRestoreInfo() != null
@@ -94,9 +96,11 @@ public class SpannerSampleIT {
             .matches()
             && pattern.matcher(toComparableId("restored", db.getId().getDatabase())).matches()) {
           db.drop();
+          deleted = true;
         }
       }
-      if (db.getId().getName().startsWith("mysample")) {
+      if (!deleted && (db.getId().getDatabase().startsWith("mysample")
+          || db.getId().getDatabase().startsWith("restored"))) {
         throw SpannerExceptionFactory.newSpannerException(ErrorCode.ABORTED, String
             .format("Database %s was not deleted. Create time: ", db.getId(), db.getCreateTime()));
       }
