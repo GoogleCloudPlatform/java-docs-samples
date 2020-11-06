@@ -84,7 +84,7 @@ public class SpannerSampleIT {
       boolean deleted = false;
       if (TimeUnit.HOURS.convert(now.getSeconds() - db.getCreateTime().getSeconds(),
           TimeUnit.SECONDS) > 24) {
-        if (db.getId().getDatabase().length() == DBID_LENGTH) {
+        if (db.getId().getDatabase().length() >= DBID_LENGTH) {
           if (pattern.matcher(toComparableId(baseDbId, db.getId().getDatabase())).matches()) {
             db.drop();
             deleted = true;
