@@ -45,7 +45,7 @@ dependencies {
 }
 // [END functions_gradle_add_dependencies]
 
-// [START functions_example_pom_specify_function]
+// [START functions_gradle_specify_function]
 // Register a "runFunction" task to run the function locally
 tasks.register("runFunction", JavaExec) {
   main = 'com.google.cloud.functions.invoker.runner.Invoker'
