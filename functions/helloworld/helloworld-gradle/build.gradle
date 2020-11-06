@@ -41,6 +41,7 @@ dependencies {
   // [START functions_example_pom_dependencies]
 }
 
+// [START functions_example_pom_specify_function]
 // Register a "runFunction" task to run the function locally
 tasks.register("runFunction", JavaExec) {
   main = 'com.google.cloud.functions.invoker.runner.Invoker'
@@ -54,5 +55,6 @@ tasks.register("runFunction", JavaExec) {
     args('--classpath', files(configurations.runtimeClasspath, sourceSets.main.output).asPath)
   }
 }
+// [END functions_example_pom_specify_function]
 // [END functions_build_gradle]
 // [END functions_example_pom_dependencies]
