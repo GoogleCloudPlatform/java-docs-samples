@@ -27,7 +27,6 @@ import com.google.cloud.spanner.ErrorCode;
 import com.google.cloud.spanner.InstanceId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerException;
-import com.google.cloud.spanner.SpannerExceptionFactory;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.io.ByteArrayOutputStream;
@@ -82,30 +81,17 @@ public class SpannerSampleIT {
     Pattern samplePattern = getTestDbIdPattern(baseDbId);
     Pattern restoredPattern = getTestDbIdPattern("restored");
     for (Database db : dbClient.listDatabases(instanceId).iterateAll()) {
-      boolean deleted = false;
       if (TimeUnit.HOURS.convert(now.getSeconds() - db.getCreateTime().getSeconds(),
           TimeUnit.SECONDS) > 24) {
         if (db.getId().getDatabase().length() >= DBID_LENGTH) {
           if (samplePattern.matcher(toComparableId(baseDbId, db.getId().getDatabase())).matches()) {
             db.drop();
-            deleted = true;
           }
           if (restoredPattern.matcher(toComparableId("restored", db.getId().getDatabase()))
               .matches()) {
             db.drop();
-            deleted = true;
           }
         }
-      }
-      if (!deleted
-          && (db.getId().getDatabase().startsWith("mysample")
-              || db.getId().getDatabase().startsWith("restored"))
-          && TimeUnit.HOURS.convert(now.getSeconds() - db.getCreateTime().getSeconds(),
-              TimeUnit.SECONDS) > 24) {
-        throw SpannerExceptionFactory.newSpannerException(ErrorCode.ABORTED,
-            String.format("Database %s was not deleted. Create time: %s. Age in hours: %s",
-                db.getId(), db.getCreateTime(), TimeUnit.HOURS.convert(
-                    now.getSeconds() - db.getCreateTime().getSeconds(), TimeUnit.SECONDS)));
       }
     }
   }
