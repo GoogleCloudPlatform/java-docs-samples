@@ -46,6 +46,7 @@ limitations under the License.
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- [START cloudrun_imageproc_dep_management] -->
       <!-- [START run_imageproc_dep_management] -->
       <dependency>
         <groupId>org.springframework.cloud</groupId>
@@ -55,6 +56,7 @@ limitations under the License.
         <scope>import</scope>
       </dependency>
       <!-- [END run_imageproc_dep_management] -->
+      <!-- [END cloudrun_imageproc_dep_management] -->
     </dependencies>
   </dependencyManagement>
   <dependencies>
