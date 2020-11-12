@@ -102,6 +102,12 @@ limitations under the License.
     </dependency>
     <!-- [END run_imageproc_dep] -->
     <!-- [END cloudrun_imageproc_dep] -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

@@ -19,15 +19,15 @@ package com.example.controllers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.example.endpoints.controllers.RepeatController;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 
 public class RepeatControllerTest {
 
   private RepeatController repeatController;
 
-  @BeforeEach
+  @Before
   public void setUp() {
     this.repeatController = new RepeatController();
   }
