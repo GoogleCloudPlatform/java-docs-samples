@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.transcoder;
 
 import static junit.framework.TestCase.assertNotNull;
@@ -65,10 +66,12 @@ public class DeleteJobTemplateTest {
     try {
       DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     } catch (GoogleJsonResponseException gjre) {
+      // Handle error
     }
     try {
       CreateJobTemplate.createJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     } catch (GoogleJsonResponseException gjre) {
+      // Handle error
     }
     bout.reset();
   }
@@ -78,6 +81,7 @@ public class DeleteJobTemplateTest {
     try {
       DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     } catch (GoogleJsonResponseException gjre) {
+      // Handle error
     }
     String output = bout.toString();
     assertThat(output, containsString("Deleted job template"));

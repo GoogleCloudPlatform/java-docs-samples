@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.transcoder;
 
 import static junit.framework.TestCase.assertNotNull;
@@ -112,10 +113,12 @@ public class CreateJobFromTemplateTest {
     try {
       DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     } catch (GoogleJsonResponseException gjre) {
+      // Handle error
     }
     try {
       CreateJobTemplate.createJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     } catch (GoogleJsonResponseException gjre) {
+      // Handle error
     }
     bout.reset();
   }
@@ -127,6 +130,7 @@ public class CreateJobFromTemplateTest {
       CreateJobFromTemplate.createJobFromTemplate(
           PROJECT_ID, LOCATION, INPUT_URI, OUTPUT_URI_FOR_TEMPLATE, TEMPLATE_ID);
     } catch (GoogleJsonResponseException gjre) {
+      // Handle error
     }
     String output = bout.toString();
     assertThat(output, containsString(jobName));
@@ -139,6 +143,7 @@ public class CreateJobFromTemplateTest {
     try {
       GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
     } catch (GoogleJsonResponseException gjre) {
+      // Handle error
     }
     output = bout.toString();
     assertThat(output, containsString("SUCCEEDED"));
@@ -150,10 +155,12 @@ public class CreateJobFromTemplateTest {
     try {
       DeleteJob.deleteJob(PROJECT_ID, LOCATION, JOB_ID);
     } catch (GoogleJsonResponseException gjre) {
+      // Handle error
     }
     try {
       DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     } catch (GoogleJsonResponseException gjre) {
+      // Handle error
     }
     deleteBucket(BUCKET_NAME);
     System.setOut(originalOut);

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.example.transcoder;
 
 import static junit.framework.TestCase.assertNotNull;
@@ -111,6 +112,7 @@ public class ListJobsTest {
     try {
       CreateJobFromAdHoc.createJobFromAdHoc(PROJECT_ID, LOCATION, INPUT_URI, OUTPUT_URI_FOR_AD_HOC);
     } catch (GoogleJsonResponseException gjre) {
+      // Handle error
     }
     String output = bout.toString();
     assertThat(output, containsString(jobName));
@@ -124,6 +126,7 @@ public class ListJobsTest {
     try {
       ListJobs.listJobs(PROJECT_ID, LOCATION);
     } catch (GoogleJsonResponseException gjre) {
+      // Handle error
     }
     String output = bout.toString();
     String jobName =
@@ -137,6 +140,7 @@ public class ListJobsTest {
     try {
       DeleteJob.deleteJob(PROJECT_ID, LOCATION, JOB_ID);
     } catch (GoogleJsonResponseException gjre) {
+      // Handle error
     }
     deleteBucket(BUCKET_NAME);
     System.setOut(originalOut);
