@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.example.transcoder;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import com.example.transcoder.CreateJobFromAdHoc;
-import com.example.transcoder.DeleteJob;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
@@ -66,6 +65,20 @@ public class DeleteJobTest {
     return varValue;
   }
 
+  private static void deleteBucket(String bucketName) {
+    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
+    Bucket bucket = storage.get(bucketName);
+    if (bucket != null) {
+      Page<Blob> blobs = bucket.list();
+
+      for (Blob blob : blobs.iterateAll()) {
+        System.out.println(blob.getName());
+        storage.delete(bucketName, blob.getName());
+      }
+      bucket.delete();
+    }
+  }
+
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
@@ -81,24 +94,13 @@ public class DeleteJobTest {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
+    deleteBucket(BUCKET_NAME);
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
-    Bucket bucket = storage.get(BUCKET_NAME);
-    if (bucket != null) {
-      Page<Blob> blobs = bucket.list();
-
-      for (Blob blob : blobs.iterateAll()) {
-        System.out.println(blob.getName());
-        storage.delete(BUCKET_NAME, blob.getName());
-      }
-      bucket.delete();
-    }
-
-    bucket =
-        storage.create(
-            BucketInfo.newBuilder(BUCKET_NAME)
-                .setStorageClass(StorageClass.STANDARD)
-                .setLocation(LOCATION)
-                .build());
+    storage.create(
+        BucketInfo.newBuilder(BUCKET_NAME)
+            .setStorageClass(StorageClass.STANDARD)
+            .setLocation(LOCATION)
+            .build());
 
     BlobId blobId = BlobId.of(BUCKET_NAME, TEST_FILE_NAME);
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
@@ -130,6 +132,7 @@ public class DeleteJobTest {
 
   @After
   public void tearDown() throws IOException {
+    deleteBucket(BUCKET_NAME);
     System.setOut(originalOut);
     bout.reset();
   }

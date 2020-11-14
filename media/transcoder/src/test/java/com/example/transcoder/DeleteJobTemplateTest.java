@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.example.transcoder;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import com.example.transcoder.CreateJobTemplate;
-import com.example.transcoder.DeleteJobTemplate;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
