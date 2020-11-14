@@ -61,6 +61,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     export LOCATION_ID=us-east1
     # For Datalabeling samples to hit the testing endpoint
     export DATALABELING_ENDPOINT="test-datalabeling.sandbox.googleapis.com:443"
+    # For Transcoder samples
+    export GOOGLE_CLOUD_PROJECT_NUMBER="779844219229"
     # shellcheck source=src/aws-secrets.sh
     source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
     # shellcheck source=src/storage-hmac-credentials.sh
