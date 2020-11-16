@@ -67,7 +67,7 @@ limitations under the License.
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20200518</version>
+      <version>20201115</version>
       <scope>test</scope>
     </dependency>
     <dependency>
