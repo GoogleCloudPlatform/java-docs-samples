@@ -51,7 +51,7 @@
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-1.x</artifactId>
-      <version>1.17.0</version>
+      <version>1.17.1</version>
     </dependency>
 
     <!-- test dependencies-->
