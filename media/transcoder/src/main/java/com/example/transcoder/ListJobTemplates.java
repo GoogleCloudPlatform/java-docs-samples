@@ -50,8 +50,8 @@ public class ListJobTemplates {
           transcoderServiceClient.listJobTemplates(listJobTemplatesRequest);
       System.out.println("Job templates:");
 
-      for (JobTemplate jt : response.iterateAll()) {
-        System.out.println(jt);
+      for (JobTemplate jobTemplate : response.iterateAll()) {
+        System.out.println(jobTemplate.getName());
       }
     }
   }

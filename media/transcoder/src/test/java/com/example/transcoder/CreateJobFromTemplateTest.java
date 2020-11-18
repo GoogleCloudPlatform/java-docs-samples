@@ -20,7 +20,6 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
@@ -58,7 +57,7 @@ public class CreateJobFromTemplateTest {
   private static String PROJECT_ID;
   private static String PROJECT_NUMBER;
   private static String JOB_ID;
-  private final PrintStream originalOut = System.out;
+  private static PrintStream originalOut;
   private ByteArrayOutputStream bout;
 
   private static String requireEnvVar(String varName) {
@@ -91,6 +90,7 @@ public class CreateJobFromTemplateTest {
 
   @Before
   public void beforeTest() throws IOException {
+    originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
@@ -110,28 +110,16 @@ public class CreateJobFromTemplateTest {
     Path path = Paths.get(TEST_FILE_PATH);
     storage.create(blobInfo, Files.readAllBytes(path));
 
-    try {
-      DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
-    try {
-      CreateJobTemplate.createJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+    CreateJobTemplate.createJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     bout.reset();
   }
 
   @Test
   public void test_CreateJobFromTemplate() throws Exception {
     String jobName = String.format("projects/%s/locations/%s/jobs/", PROJECT_NUMBER, LOCATION);
-    try {
-      CreateJobFromTemplate.createJobFromTemplate(
-          PROJECT_ID, LOCATION, INPUT_URI, OUTPUT_URI_FOR_TEMPLATE, TEMPLATE_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    CreateJobFromTemplate.createJobFromTemplate(
+        PROJECT_ID, LOCATION, INPUT_URI, OUTPUT_URI_FOR_TEMPLATE, TEMPLATE_ID);
     String output = bout.toString();
     assertThat(output, containsString(jobName));
     String[] arr = output.split("/");
@@ -140,11 +128,7 @@ public class CreateJobFromTemplateTest {
 
     Thread.sleep(60000);
 
-    try {
-      GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
     output = bout.toString();
     assertThat(output, containsString("SUCCEEDED"));
     bout.reset();
@@ -152,16 +136,8 @@ public class CreateJobFromTemplateTest {
 
   @After
   public void tearDown() throws IOException {
-    try {
-      DeleteJob.deleteJob(PROJECT_ID, LOCATION, JOB_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
-    try {
-      DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    DeleteJob.deleteJob(PROJECT_ID, LOCATION, JOB_ID);
+    DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     deleteBucket(BUCKET_NAME);
     System.setOut(originalOut);
     bout.reset();

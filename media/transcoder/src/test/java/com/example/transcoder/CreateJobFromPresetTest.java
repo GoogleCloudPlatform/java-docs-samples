@@ -20,7 +20,6 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
@@ -58,7 +57,7 @@ public class CreateJobFromPresetTest {
   private static String PROJECT_ID;
   private static String PROJECT_NUMBER;
   private static String JOB_ID;
-  private final PrintStream originalOut = System.out;
+  private static PrintStream originalOut;
   private ByteArrayOutputStream bout;
 
   private static String requireEnvVar(String varName) {
@@ -91,6 +90,7 @@ public class CreateJobFromPresetTest {
 
   @Before
   public void beforeTest() throws IOException {
+    originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
@@ -115,12 +115,8 @@ public class CreateJobFromPresetTest {
   @Test
   public void test_CreateJobFromPreset() throws Exception {
     String jobName = String.format("projects/%s/locations/%s/jobs/", PROJECT_NUMBER, LOCATION);
-    try {
-      CreateJobFromPreset.createJobFromPreset(
-          PROJECT_ID, LOCATION, INPUT_URI, OUTPUT_URI_FOR_PRESET, PRESET);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    CreateJobFromPreset.createJobFromPreset(
+        PROJECT_ID, LOCATION, INPUT_URI, OUTPUT_URI_FOR_PRESET, PRESET);
     String output = bout.toString();
     assertThat(output, containsString(jobName));
     String[] arr = output.split("/");
@@ -129,11 +125,7 @@ public class CreateJobFromPresetTest {
 
     Thread.sleep(60000);
 
-    try {
-      GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
     output = bout.toString();
     assertThat(output, containsString("SUCCEEDED"));
     bout.reset();
@@ -141,11 +133,7 @@ public class CreateJobFromPresetTest {
 
   @After
   public void tearDown() throws IOException {
-    try {
-      DeleteJob.deleteJob(PROJECT_ID, LOCATION, JOB_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    DeleteJob.deleteJob(PROJECT_ID, LOCATION, JOB_ID);
     deleteBucket(BUCKET_NAME);
     System.setOut(originalOut);
     bout.reset();

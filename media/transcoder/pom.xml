@@ -39,6 +39,10 @@
     <artifactId>shared-configuration</artifactId>
     <version>1.0.21</version>
   </parent>
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
   <!-- [START dependencies] -->
   <!--  Using libraries-bom to manage versions.
   See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->

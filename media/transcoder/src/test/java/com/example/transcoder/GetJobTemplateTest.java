@@ -20,7 +20,6 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -39,7 +38,7 @@ public class GetJobTemplateTest {
   private static String PROJECT_ID;
   private static String PROJECT_NUMBER;
   private static String TEMPLATE_NAME;
-  private final PrintStream originalOut = System.out;
+  private static PrintStream originalOut;
   private ByteArrayOutputStream bout;
 
   private static String requireEnvVar(String varName) {
@@ -58,6 +57,7 @@ public class GetJobTemplateTest {
 
   @Before
   public void beforeTest() throws IOException {
+    originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
@@ -67,26 +67,14 @@ public class GetJobTemplateTest {
     TEMPLATE_NAME =
         String.format(
             "projects/%s/locations/%s/jobTemplates/%s", PROJECT_NUMBER, LOCATION, TEMPLATE_ID);
-    try {
-      DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
-    try {
-      CreateJobTemplate.createJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+    CreateJobTemplate.createJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     bout.reset();
   }
 
   @Test
   public void test_GetJobTemplate() throws IOException {
-    try {
-      GetJobTemplate.getJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    GetJobTemplate.getJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     String output = bout.toString();
     assertThat(output, containsString(TEMPLATE_NAME));
     bout.reset();
@@ -94,11 +82,7 @@ public class GetJobTemplateTest {
 
   @After
   public void tearDown() throws IOException {
-    try {
-      DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     System.setOut(originalOut);
     bout.reset();
   }

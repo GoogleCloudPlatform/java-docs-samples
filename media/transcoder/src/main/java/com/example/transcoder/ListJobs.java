@@ -50,8 +50,8 @@ public class ListJobs {
           transcoderServiceClient.listJobs(listJobsRequest);
       System.out.println("Jobs:");
 
-      for (Job jt : response.iterateAll()) {
-        System.out.println(jt);
+      for (Job job : response.iterateAll()) {
+        System.out.println(job.getName());
       }
     }
   }

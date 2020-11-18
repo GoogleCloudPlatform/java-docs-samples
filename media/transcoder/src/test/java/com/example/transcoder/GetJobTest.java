@@ -20,7 +20,6 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
@@ -56,7 +55,7 @@ public class GetJobTest {
   private static String PROJECT_ID;
   private static String PROJECT_NUMBER;
   private static String JOB_ID;
-  private final PrintStream originalOut = System.out;
+  private static PrintStream originalOut;
   private ByteArrayOutputStream bout;
 
   private static String requireEnvVar(String varName) {
@@ -89,6 +88,7 @@ public class GetJobTest {
 
   @Before
   public void beforeTest() throws IOException {
+    originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
@@ -109,11 +109,7 @@ public class GetJobTest {
     storage.create(blobInfo, Files.readAllBytes(path));
 
     String jobName = String.format("projects/%s/locations/%s/jobs/", PROJECT_NUMBER, LOCATION);
-    try {
-      CreateJobFromAdHoc.createJobFromAdHoc(PROJECT_ID, LOCATION, INPUT_URI, OUTPUT_URI_FOR_AD_HOC);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    CreateJobFromAdHoc.createJobFromAdHoc(PROJECT_ID, LOCATION, INPUT_URI, OUTPUT_URI_FOR_AD_HOC);
     String output = bout.toString();
     assertThat(output, containsString(jobName));
     String[] arr = output.split("/");
@@ -123,11 +119,7 @@ public class GetJobTest {
 
   @Test
   public void test_GetJob() throws Exception {
-    try {
-      GetJob.getJob(PROJECT_ID, LOCATION, JOB_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    GetJob.getJob(PROJECT_ID, LOCATION, JOB_ID);
     String output = bout.toString();
     String jobName =
         String.format("projects/%s/locations/%s/jobs/%s", PROJECT_NUMBER, LOCATION, JOB_ID);
@@ -137,11 +129,7 @@ public class GetJobTest {
 
   @After
   public void tearDown() throws IOException {
-    try {
-      DeleteJob.deleteJob(PROJECT_ID, LOCATION, JOB_ID);
-    } catch (GoogleJsonResponseException gjre) {
-      // Handle error
-    }
+    DeleteJob.deleteJob(PROJECT_ID, LOCATION, JOB_ID);
     deleteBucket(BUCKET_NAME);
     System.setOut(originalOut);
     bout.reset();
