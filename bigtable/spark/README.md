@@ -161,10 +161,13 @@ $SPARK_HOME/bin/spark-submit \
 Count the number of rows in the `BIGTABLE_SPARK_COPYTABLE_TABLE` table.
 
 ```
-$ cbt \
+cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   count $BIGTABLE_SPARK_COPYTABLE_TABLE
+```
+Output should be:
+```
 88
 ```
 
@@ -221,10 +224,13 @@ cbt \
 List the available tables.
 
 ```
-$ cbt \
+cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   ls
+```
+Output should be:
+```
 wordcount
 ```
 
@@ -244,10 +250,13 @@ $SPARK_HOME/bin/spark-submit \
 Count the number of rows in the `BIGTABLE_SPARK_WORDCOUNT_TABLE` table. There should be 88 rows.
 
 ```
-$ cbt \
+cbt \
   -project=$BIGTABLE_SPARK_PROJECT_ID \
   -instance=$BIGTABLE_SPARK_INSTANCE_ID \
   count $BIGTABLE_SPARK_WORDCOUNT_TABLE
+```
+Output should be:
+```
 88
 ```
 
@@ -491,14 +500,6 @@ $ cbt \
 copytable
 wordcount
 ```
-
-Run [IntegrationTest](src/test/scala/example/IntegrationTest.scala) in IntelliJ IDEA. You should define all the following environment variables in a Run Configuration for the test:
-
-- GOOGLE_APPLICATION_CREDENTIALS
-- BIGTABLE_SPARK_INSTANCE_ID
-- BIGTABLE_SPARK_PROJECT_ID
-- BIGTABLE_SPARK_COPYTABLE_TABLE
-- BIGTABLE_SPARK_WORDCOUNT_TABLE
 
 ### Clean Up
 
