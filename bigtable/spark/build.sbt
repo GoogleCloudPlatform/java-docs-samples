@@ -23,6 +23,8 @@ version := "0.1"
 scalaVersion := "2.11.12"
 val sparkVersion = "2.4.6"
 val bigtableVersion = "1.16.0"
+val hbaseVersion = "1.3.6"
+
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % sparkVersion % Provided,
   "org.apache.hbase.connectors.spark" % "hbase-spark" % "1.0.0" % Provided,
@@ -35,15 +37,19 @@ libraryDependencies += "org.scalatest" %% "scalatest" % scalatestVersion % "test
 test in assembly := {}
 
 val fixes = Seq(
-  // Fix for Exception: Incompatible Jackson 2.9.2
-  // Version conflict between HBase and Spark
-  // Forcing the version to match Spark
-  // FIXME Would that work with dependencyOverrides?
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.10",
   // Required by 'value org.apache.hadoop.hbase.spark.HBaseContext.dstream'
   "org.apache.spark" %% "spark-streaming" % sparkVersion % Provided,
+  // hbase-server is needed because HBaseContext references org/apache/hadoop/hbase/fs/HFileSystem
+  // hbase-client is declared to override the version of hbase-client declared by bigtable-hbase-2.x-hadoop
+  "org.apache.hbase" % "hbase-server" % hbaseVersion,
+  "org.apache.hbase" % "hbase-client" % hbaseVersion
 )
 libraryDependencies ++= fixes
+
+// Fix for Exception: Incompatible Jackson 2.9.2
+// Version conflict between HBase and Spark
+// Forcing the version to match Spark
+dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.10"
 
 // Excluding duplicates for the uber-jar
 // There are other deps to provide necessary packages
