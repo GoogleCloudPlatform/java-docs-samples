@@ -35,6 +35,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -46,7 +47,8 @@ import org.junit.runners.JUnit4;
 public class DeleteJobTest {
 
   private static final String LOCATION = "us-central1";
-  private static final String BUCKET_NAME = "java-samples-transcoder-test";
+  private static final String BUCKET_NAME =
+      "java-samples-transcoder-test-" + UUID.randomUUID().toString().substring(0, 25);
   private static final String TEST_FILE_NAME = "ChromeCast.mp4";
   private static final String TEST_FILE_PATH =
       "src/test/java/com/example/transcoder/testdata/" + TEST_FILE_NAME;

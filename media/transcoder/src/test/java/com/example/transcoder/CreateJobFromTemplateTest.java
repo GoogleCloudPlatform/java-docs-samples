@@ -35,6 +35,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -46,14 +47,16 @@ import org.junit.runners.JUnit4;
 public class CreateJobFromTemplateTest {
 
   private static final String LOCATION = "us-central1";
-  private static final String BUCKET_NAME = "java-samples-transcoder-test";
+  private static final String BUCKET_NAME =
+      "java-samples-transcoder-test-" + UUID.randomUUID().toString().substring(0, 25);
   private static final String TEST_FILE_NAME = "ChromeCast.mp4";
   private static final String TEST_FILE_PATH =
       "src/test/java/com/example/transcoder/testdata/" + TEST_FILE_NAME;
   private static final String INPUT_URI = "gs://" + BUCKET_NAME + "/" + TEST_FILE_NAME;
   private static final String OUTPUT_URI_FOR_TEMPLATE =
       "gs://" + BUCKET_NAME + "/test-output-template/";
-  private static final String TEMPLATE_ID = "my-job-template";
+  private static final String TEMPLATE_ID =
+      "my-job-template-" + UUID.randomUUID().toString().substring(0, 25);
   private static String PROJECT_ID;
   private static String PROJECT_NUMBER;
   private static String JOB_ID;

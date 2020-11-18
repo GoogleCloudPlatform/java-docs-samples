@@ -23,6 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -34,7 +35,8 @@ import org.junit.runners.JUnit4;
 public class GetJobTemplateTest {
 
   private static final String LOCATION = "us-central1";
-  private static final String TEMPLATE_ID = "my-job-template";
+  private static final String TEMPLATE_ID =
+      "my-job-template-" + UUID.randomUUID().toString().substring(0, 25);
   private static String PROJECT_ID;
   private static String PROJECT_NUMBER;
   private static String TEMPLATE_NAME;
