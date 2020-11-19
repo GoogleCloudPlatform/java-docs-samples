@@ -48,6 +48,8 @@ public class EncryptSymmetric {
       // and key version.
       CryptoKeyName keyVersionName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
 
+      // Optional, but recommended: compute plaintext's CRC32C.
+
       // Encrypt the plaintext.
       EncryptResponse response = client.encrypt(keyVersionName, ByteString.copyFromUtf8(plaintext));
       System.out.printf("Ciphertext: %s%n", response.getCiphertext().toStringUtf8());
