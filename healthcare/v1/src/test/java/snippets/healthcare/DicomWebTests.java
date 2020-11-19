@@ -180,7 +180,7 @@ public class DicomWebTests {
   // Test order is NAME_ASCENDING, so ensure that we delete the DICOM study
   // last, otherwise it might run before DicomWebRetrieve methods
   // (see https://github.com/GoogleCloudPlatform/java-docs-samples/issues/3845).
-  @SupressWarnings("checkstyle:MethodName")
+  @SuppressWarnings("checkstyle:MethodName")
   public void z_test_DicomWebDeleteStudy() throws IOException {
     DicomWebDeleteStudy.dicomWebDeleteStudy(dicomStoreName, studyId);
 
