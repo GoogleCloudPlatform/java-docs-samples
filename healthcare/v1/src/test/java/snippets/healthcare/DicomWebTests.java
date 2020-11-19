@@ -31,9 +31,11 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.runners.MethodSorters;
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.dicom.DicomStoreCreate;
@@ -46,6 +48,7 @@ import snippets.healthcare.dicom.DicomWebSearchStudies;
 import snippets.healthcare.dicom.DicomWebStoreInstance;
 
 @RunWith(JUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DicomWebTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
@@ -105,7 +108,7 @@ public class DicomWebTests {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    // Store before each test so it is always available.
+    // Store DICOM instance before each test so it is always available.
     DicomWebStoreInstance.dicomWebStoreInstance(dicomStoreName, "src/test/resources/jpeg_text.dcm");
 
     bout = new ByteArrayOutputStream();
@@ -174,7 +177,10 @@ public class DicomWebTests {
   }
 
   @Test
-  public void test_DicomWebDeleteStudy() throws IOException {
+  // Test order is NAME_ASCENDING, so ensure that we delete the DICOM study
+  // last, otherwise it might run before DicomWebRetrieve methods
+  // (see https://github.com/GoogleCloudPlatform/java-docs-samples/issues/3845).
+  public void z_test_DicomWebDeleteStudy() throws IOException {
     DicomWebDeleteStudy.dicomWebDeleteStudy(dicomStoreName, studyId);
 
     String output = bout.toString();
