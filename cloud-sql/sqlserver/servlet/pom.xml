@@ -56,7 +56,7 @@
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
-      <artifactId>sqlserver-socket-factory</artifactId>
+      <artifactId>cloud-sql-connector-jdbc-sqlserver</artifactId>
       <version>1.2.0</version>
     </dependency>
     <dependency>
