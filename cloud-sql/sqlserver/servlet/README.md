@@ -1,4 +1,4 @@
-# Connecting to Cloud SQL - Postgres
+# Connecting to Cloud SQL - SQL Server
 
 ## Before you begin
 
@@ -7,15 +7,15 @@ maven utilities) by following the [java setup guide](https://cloud.google.com/ja
 [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project).
 
 1. Create a 2nd Gen Cloud SQL Instance by following these 
-[instructions](https://cloud.google.com/sql/docs/postgres/create-instance). Note the connection string,
+[instructions](https://cloud.google.com/sql/docs/sqlserver/create-instance). Note the connection string,
 database user, and database password that you create.
 
 1. Create a database for your application by following these 
-[instructions](https://cloud.google.com/sql/docs/postgres/create-manage-databases). Note the database
+[instructions](https://cloud.google.com/sql/docs/sqlserver/create-manage-databases). Note the database
 name. 
 
 1. Create a service account with the 'Cloud SQL Client' permissions by following these 
-[instructions](https://cloud.google.com/sql/docs/postgres/connect-external-app#4_if_required_by_your_authentication_method_create_a_service_account).
+[instructions](https://cloud.google.com/sql/docs/sqlserver/connect-external-app#4_if_required_by_your_authentication_method_create_a_service_account).
 Download a JSON key to use to authenticate your connection. 
 
 1. Use the information noted in the previous steps:
