@@ -1,5 +1,5 @@
 /*
- * copyright 2020 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,51 +56,41 @@ public class EncryptSymmetric {
       CryptoKeyName cryptoKeyName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
 
       // Convert plaintext to bytes
-      // byte[] plaintextBytes = ByteString.copyFromUtf8(plaintext);
       ByteString plaintextByteString = ByteString.copyFromUtf8(plaintext);
 
       // Optional, but recommended: compute plaintext's CRC32C.
-      // Is this the problem
-      long plaintextCrc32c = (long) getCrc32c(plaintextByteString.toByteArray());
+      long plaintextCrc32c = (long)getCrc32c(plaintextByteString.toByteArray());
 
       // Encrypt the plaintext.
       EncryptRequest request = EncryptRequest.newBuilder()
-                               // TODO: remove this check?
-                               // .setName(name == null ? null : name.toString())
-                               .setName(cryptoKeyName == null ? null : cryptoKeyName.toString())
+                               .setName(cryptoKeyName.toString())
                                .setPlaintext(plaintextByteString)
                                .setPlaintextCrc32C(
                                    Int64Value.newBuilder().setValue(plaintextCrc32c).build())
                                .build();
-      // EncryptResponse response =
-      // client.encrypt(cryptoKeyName, ByteString.copyFromUtf8(plaintext));
       EncryptResponse response = client.encrypt(request);
 
       // Optional, but recommended: perform integrity verification on response.
       // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
       // https://cloud.google.com/kms/docs/data-integrity-guidelines
       if (!response.getVerifiedPlaintextCrc32C()) {
-        System.err.printf("Encrypt: request to server corrupted");
+        throw new IOException("Encrypt: request to server corrupted");
       }
       if (!crcMatches(response.getCiphertextCrc32C().getValue(),
           response.getCiphertext().toByteArray())) {
-        System.err.printf("Encrypt: response from server corrupted");
+        throw new IOException("Encrypt: response from server corrupted");
       }
 
       System.out.printf("Ciphertext: %s%n", response.getCiphertext().toStringUtf8());
     }
   }
 
-  // TODO(iamtamjam) remove this:
-  // https://www.codota.com/code/java/methods/com.google.common.hash.Hashing/crc32c
-  private int getCrc32c(byte[] data) {
-    // TODO: remove
-    return Hashing.crc32c().hashBytes(data).asInt();
-    // return Hashing.crc32c().hashBytes(data).asLong();
+  private long getCrc32cAsLong(byte[] data) {
+    return (long) Hashing.crc32c().hashBytes(data).asInt();
   }
 
   private boolean crcMatches(long expectedCrc, byte[] data) {
-    return expectedCrc == (long) getCrc32c(data);
+    return expectedCrc == getCrc32cAsLong(data);
   }
 }
 // [END kms_encrypt_symmetric]
