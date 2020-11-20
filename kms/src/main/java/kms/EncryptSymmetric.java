@@ -19,8 +19,11 @@ package kms;
 // [START kms_encrypt_symmetric]
 import com.google.cloud.kms.v1.CryptoKeyName;
 import com.google.cloud.kms.v1.EncryptResponse;
+import com.google.cloud.kms.v1.EncryptReques;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
 import com.google.common.hash.Hashing;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 
@@ -58,16 +61,18 @@ public class EncryptSymmetric {
       CryptoKeyName cryptoKeyName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
 
       // Convert plaintext to bytes
-      byte[] plaintextBytes = ByteString.copyFromUtf8(plaintext);
+      // byte[] plaintextBytes = ByteString.copyFromUtf8(plaintext);
+      ByteString plaintextByteString = ByteString.copyFromUtf8(plaintext);
 
       // Optional, but recommended: compute plaintext's CRC32C.
-      int plaintextCrc32c = getCrc32c(plaintextBytes);
+      int plaintextCrc32c = getCrc32c(plaintextByteString.toByteArray());
 
       // Encrypt the plaintext.
       EncryptRequest request = EncryptRequest.newBuilder()
                                // TODO: remove this check?
-                               .setName(name == null ? null : name.toString())
-                               .setPlaintext(plaintext)
+                               // .setName(name == null ? null : name.toString())
+                               .setName(cryptoKeyName == null ? null : cryptoKeyName.toString())
+                               .setPlaintext(plaintextByteString)
                                .setPlaintextCrc32c(plaintextCrc32c)
                                .build();
       // EncryptResponse response =
