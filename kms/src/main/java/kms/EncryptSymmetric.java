@@ -25,6 +25,7 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Int64Value;
 import java.io.IOException;
 
 
@@ -67,7 +68,8 @@ public class EncryptSymmetric {
                                // .setName(name == null ? null : name.toString())
                                .setName(cryptoKeyName == null ? null : cryptoKeyName.toString())
                                .setPlaintext(plaintextByteString)
-                               .setPlaintextCrc32c(plaintextCrc32c)
+                               .setPlaintextCrc32c(
+                                   Int64Value.newBuilder().setValue(plaintextCrc32c).build())
                                .build();
       // EncryptResponse response =
       // client.encrypt(cryptoKeyName, ByteString.copyFromUtf8(plaintext));
