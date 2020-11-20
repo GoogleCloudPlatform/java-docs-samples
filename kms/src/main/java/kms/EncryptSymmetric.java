@@ -92,11 +92,13 @@ public class EncryptSymmetric {
 
   // TODO(iamtamjam) remove this:
   // https://www.codota.com/code/java/methods/com.google.common.hash.Hashing/crc32c
-  private int getCrc32c(byte[] data) {
-    return Hashing.crc32c().hashBytes(data).asInt();
+  private long getCrc32c(byte[] data) {
+    // TODO: remove
+    // return Hashing.crc32c().hashBytes(data).asInt();
+    return Hashing.crc32c().hashBytes(data).asLong();
   }
 
-  private boolean crcMatches(int expectedCrc, byte[] data) {
+  private boolean crcMatches(long expectedCrc, byte[] data) {
     return expectedCrc == getCrc32c(data);
   }
 }
