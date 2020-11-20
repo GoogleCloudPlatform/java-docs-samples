@@ -65,11 +65,13 @@ public class EncryptSymmetric {
 
       // Encrypt the plaintext.
       EncryptRequest request = EncryptRequest.newBuilder()
-                               .setName(name == null ? null : name.toString()) // TODO: remove this check?
+                               // TODO: remove this check?
+                               .setName(name == null ? null : name.toString())
                                .setPlaintext(plaintext)
                                .setPlaintextCrc32c(plaintextCrc32c)
                                .build();
-      // EncryptResponse response = client.encrypt(cryptoKeyName, ByteString.copyFromUtf8(plaintext));
+      // EncryptResponse response =
+      // client.encrypt(cryptoKeyName, ByteString.copyFromUtf8(plaintext));
       EncryptResponse response = client.encrypt(request);
       System.out.printf("Ciphertext: %s%n", response.getCiphertext().toStringUtf8());
     }
