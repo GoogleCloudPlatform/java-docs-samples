@@ -60,6 +60,7 @@ public class EncryptSymmetric {
       ByteString plaintextByteString = ByteString.copyFromUtf8(plaintext);
 
       // Optional, but recommended: compute plaintext's CRC32C.
+      // Is this the problem
       long plaintextCrc32c = getCrc32c(plaintextByteString.toByteArray());
 
       // Encrypt the plaintext.
