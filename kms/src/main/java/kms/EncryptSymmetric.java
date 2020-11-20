@@ -68,15 +68,23 @@ public class EncryptSymmetric {
                                // .setName(name == null ? null : name.toString())
                                .setName(cryptoKeyName == null ? null : cryptoKeyName.toString())
                                .setPlaintext(plaintextByteString)
-                               .setPlaintextCrc32C(plaintextCrc32c)
-                               // .setPlaintextCrc32C(
-                               //    Int64Value.newBuilder().setValue(plaintextCrc32c).build())
+                               .setPlaintextCrc32C(
+                                   Int64Value.newBuilder().setValue(plaintextCrc32c).build())
                                .build();
       // EncryptResponse response =
       // client.encrypt(cryptoKeyName, ByteString.copyFromUtf8(plaintext));
       EncryptResponse response = client.encrypt(request);
 
       // Optional, but recommended: perform integrity verification on response.
+      // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
+      // https://cloud.google.com/kms/docs/data-integrity-guidelines
+      if (!response.getVerifiedPlaintextCrc32C()) {
+        System.err.printf("Encrypt: request to server corrupted");
+      }
+      if (!crcMatches(response.getCiphertextCrc32C().getValue(),
+          response.getCiphertext().toByteArray())) {
+        System.err.printf("Encrypt: response from server corrupted");
+      }
 
       System.out.printf("Ciphertext: %s%n", response.getCiphertext().toStringUtf8());
     }
