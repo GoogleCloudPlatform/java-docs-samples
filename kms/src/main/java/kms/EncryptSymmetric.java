@@ -59,7 +59,7 @@ public class EncryptSymmetric {
       ByteString plaintextByteString = ByteString.copyFromUtf8(plaintext);
 
       // Optional, but recommended: compute plaintext's CRC32C.
-      long plaintextCrc32c = (long)getCrc32c(plaintextByteString.toByteArray());
+      long plaintextCrc32c = getCrc32cAsLong(plaintextByteString.toByteArray());
 
       // Encrypt the plaintext.
       EncryptRequest request = EncryptRequest.newBuilder()
@@ -86,7 +86,7 @@ public class EncryptSymmetric {
   }
 
   private long getCrc32cAsLong(byte[] data) {
-    return (long) Hashing.crc32c().hashBytes(data).asInt();
+    return (long)Hashing.crc32c().hashBytes(data).asInt();
   }
 
   private boolean crcMatches(long expectedCrc, byte[] data) {
