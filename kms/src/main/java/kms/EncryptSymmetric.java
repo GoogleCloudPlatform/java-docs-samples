@@ -68,7 +68,7 @@ public class EncryptSymmetric {
                                // .setName(name == null ? null : name.toString())
                                .setName(cryptoKeyName == null ? null : cryptoKeyName.toString())
                                .setPlaintext(plaintextByteString)
-                               .setPlaintextCrc32c(
+                               .setPlaintextCrc32C(
                                    Int64Value.newBuilder().setValue(plaintextCrc32c).build())
                                .build();
       // EncryptResponse response =
