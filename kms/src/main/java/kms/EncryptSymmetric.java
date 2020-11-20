@@ -68,12 +68,16 @@ public class EncryptSymmetric {
                                // .setName(name == null ? null : name.toString())
                                .setName(cryptoKeyName == null ? null : cryptoKeyName.toString())
                                .setPlaintext(plaintextByteString)
-                               .setPlaintextCrc32C(
-                                   Int64Value.newBuilder().setValue(plaintextCrc32c).build())
+                               .setPlaintextCrc32C(plaintextCrc32c)
+                               // .setPlaintextCrc32C(
+                               //    Int64Value.newBuilder().setValue(plaintextCrc32c).build())
                                .build();
       // EncryptResponse response =
       // client.encrypt(cryptoKeyName, ByteString.copyFromUtf8(plaintext));
       EncryptResponse response = client.encrypt(request);
+
+      // Optional, but recommended: perform integrity verification on response.
+
       System.out.printf("Ciphertext: %s%n", response.getCiphertext().toStringUtf8());
     }
   }
