@@ -20,10 +20,19 @@ package kms;
 import com.google.cloud.kms.v1.CryptoKeyName;
 import com.google.cloud.kms.v1.EncryptResponse;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
+import com.google.common.hash.Hashing;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 
+
+
 public class EncryptSymmetric {
+
+  public void main(String[] args) {
+    HashFunction crc32c = Hashing.crc32c();
+    HashCode hashCode = crc32c.hashBytes(ByteString.copyFromUtf8("test"));
+    System.out.printf("checksum = %d\n", hashCode.asInt());
+  }
 
   public void encryptSymmetric() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -46,14 +55,34 @@ public class EncryptSymmetric {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       // Build the key version name from the project, location, key ring, key,
       // and key version.
-      CryptoKeyName keyVersionName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
+      CryptoKeyName cryptoKeyName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
+
+      // Convert plaintext to bytes
+      byte[] plaintextBytes = ByteString.copyFromUtf8(plaintext);
 
       // Optional, but recommended: compute plaintext's CRC32C.
+      int plaintextCrc32c = getCrc32c(plaintextBytes);
 
       // Encrypt the plaintext.
-      EncryptResponse response = client.encrypt(keyVersionName, ByteString.copyFromUtf8(plaintext));
+      EncryptRequest request = EncryptRequest.newBuilder()
+                               .setName(name == null ? null : name.toString()) // TODO: remove this check?
+                               .setPlaintext(plaintext)
+                               .setPlaintextCrc32c(plaintextCrc32c)
+                               .build();
+      // EncryptResponse response = client.encrypt(cryptoKeyName, ByteString.copyFromUtf8(plaintext));
+      EncryptResponse response = client.encrypt(request);
       System.out.printf("Ciphertext: %s%n", response.getCiphertext().toStringUtf8());
     }
+  }
+
+  // TODO(iamtamjam) remove this:
+  // https://www.codota.com/code/java/methods/com.google.common.hash.Hashing/crc32c
+  private int getCrc32c(byte[] data) {
+    return Hashing.crc32c().hashBytes(data).asInt();
+  }
+
+  private boolean crcMatches(int expectedCrc, byte[] data) {
+    return expectedCrc == getCrc32c(data);
   }
 }
 // [END kms_encrypt_symmetric]
