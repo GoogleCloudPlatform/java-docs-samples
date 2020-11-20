@@ -18,24 +18,18 @@ package kms;
 
 // [START kms_encrypt_symmetric]
 import com.google.cloud.kms.v1.CryptoKeyName;
+import com.google.cloud.kms.v1.EncryptRequest;
 import com.google.cloud.kms.v1.EncryptResponse;
-import com.google.cloud.kms.v1.EncryptReques;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
-import com.google.common.hash.Hashing;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 
 
 
 public class EncryptSymmetric {
-
-  public void main(String[] args) {
-    HashFunction crc32c = Hashing.crc32c();
-    HashCode hashCode = crc32c.hashBytes(ByteString.copyFromUtf8("test"));
-    System.out.printf("checksum = %d\n", hashCode.asInt());
-  }
 
   public void encryptSymmetric() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
