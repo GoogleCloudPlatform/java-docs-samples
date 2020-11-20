@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ public class EncryptSymmetric {
 
       // Optional, but recommended: compute plaintext's CRC32C.
       // Is this the problem
-      long plaintextCrc32c = getCrc32c(plaintextByteString.toByteArray());
+      long plaintextCrc32c = (long) getCrc32c(plaintextByteString.toByteArray());
 
       // Encrypt the plaintext.
       EncryptRequest request = EncryptRequest.newBuilder()
@@ -93,14 +93,14 @@ public class EncryptSymmetric {
 
   // TODO(iamtamjam) remove this:
   // https://www.codota.com/code/java/methods/com.google.common.hash.Hashing/crc32c
-  private long getCrc32c(byte[] data) {
+  private int getCrc32c(byte[] data) {
     // TODO: remove
-    // return Hashing.crc32c().hashBytes(data).asInt();
-    return Hashing.crc32c().hashBytes(data).asLong();
+    return Hashing.crc32c().hashBytes(data).asInt();
+    // return Hashing.crc32c().hashBytes(data).asLong();
   }
 
   private boolean crcMatches(long expectedCrc, byte[] data) {
-    return expectedCrc == getCrc32c(data);
+    return expectedCrc == (long) getCrc32c(data);
   }
 }
 // [END kms_encrypt_symmetric]
