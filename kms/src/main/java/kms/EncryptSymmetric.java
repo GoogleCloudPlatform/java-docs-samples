@@ -58,8 +58,14 @@ public class EncryptSymmetric {
       // Convert plaintext to bytes
       ByteString plaintextByteString = ByteString.copyFromUtf8(plaintext);
 
+      // TAMJAM: remove
+      plaintext = "test"
+
       // Optional, but recommended: compute plaintext's CRC32C.
-      long plaintextCrc32c = getCrc32cAsLong(plaintextByteString.toByteArray());
+      long plaintextCrc32c = getCrc32cAsLong(plaintextByteString.toByteArray());\
+
+      // TAMJAM: remove
+      System.out.printf("TAMJAM: plaintextCrc32c=%d%n", plaintextCrc32c);
 
       // Encrypt the plaintext.
       EncryptRequest request = EncryptRequest.newBuilder()
@@ -80,7 +86,7 @@ public class EncryptSymmetric {
       System.out.printf("TAMJAM: CiphertextCrc32C=%d%n",
             response.getCiphertextCrc32C().getValue());
       System.out.printf("TAMJAM: Ciphertext=%s%n",
-            response.getCiphertextCrc32C().getValue());
+            response.getCiphertext().toStringUtf8());
 
       if (!crcMatches(response.getCiphertextCrc32C().getValue(),
           response.getCiphertext().toByteArray())) {
