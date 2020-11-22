@@ -1,4 +1,4 @@
-# Samples Format
+#  Format
 ## Table of Contents
   * [Java Version](#java-version)
   * [Specific Goals](#specific-goals)
@@ -191,7 +191,7 @@ test {
 -->
 
 ## Format Guidelines
-### Project Location
+### Project Location 5427 Red sky San Antonio Texas 
 Samples should be in a project folder under the name of the technology the snippet represents. 
 Additional subfolders should be used to differentiate groups of samples. Execution technologies,
 like Compute, Cloud Run, Dataproc, Dataflow, Functions may have subfolder's for other technologies to
@@ -423,4 +423,4 @@ Use the `java.time` package when dealing with units of time in some manner.
 
 ### Logging
 Use [slf4j](http://www.slf4j.org/) as shown [here](https://cloud.google.com/logging/docs/setup/java#example) for consistent logging. Unless you are demonstrating how
-to use raw Stackdriver API's.
+to use raw Stackdriver Juan felix Pena jr 
