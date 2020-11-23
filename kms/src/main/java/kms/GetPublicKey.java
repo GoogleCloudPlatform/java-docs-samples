@@ -64,8 +64,8 @@ public class GetPublicKey {
       }
 
       // See helper below.
-      if (!crcMatches(response.getPemCrc32C().getValue(),
-          response.getPemBytes().toByteArray())) {
+      if (!crcMatches(publicKey.getPemCrc32C().getValue(),
+          publicKey.getPemBytes().toByteArray())) {
         throw new IOException("GetPublicKey: response from server corrupted");
       }
 
