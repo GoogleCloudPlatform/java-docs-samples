@@ -18,10 +18,17 @@ package kms;
 
 // [START kms_decrypt_symmetric]
 import com.google.cloud.kms.v1.CryptoKeyName;
+import com.google.cloud.kms.v1.DecryptRequest;
 import com.google.cloud.kms.v1.DecryptResponse;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Int64Value;
 import java.io.IOException;
+
+
 
 public class DecryptSymmetric {
 
