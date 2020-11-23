@@ -172,7 +172,7 @@ for file in **/pom.xml; do
        -Dmaven.test.redirectTestOutputToFile=true \
        -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
        -Dbigtable.instanceID=instance
-       -Dsurefire.useFile=false  # TAMJAM: REMOVE!
+       -D.failsafe.useFile=false  # TAMJAM: REMOVE!
     EXIT=$?
 
     if [[ $EXIT -ne 0 ]]; then
