@@ -50,6 +50,7 @@ public class EncryptSymmetric {
     // needs to be created once, and can be reused for multiple requests. After
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
+    EncryptResponse response;
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       // Build the key name from the project, location, key ring, and key.
       CryptoKeyName cryptoKeyName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
@@ -67,7 +68,7 @@ public class EncryptSymmetric {
                                .setPlaintextCrc32C(
                                    Int64Value.newBuilder().setValue(plaintextCrc32c).build())
                                .build();
-      EncryptResponse response = client.encrypt(request);
+      response = client.encrypt(request);
     } catch (Exception e) {
       throw e;
     }
