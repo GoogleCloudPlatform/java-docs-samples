@@ -165,7 +165,8 @@ for file in **/pom.xml; do
     fi
 
     # Use maven to execute the tests for the project.
-    mvn --quiet --batch-mode --fail-at-end clean verify \
+    # TODO(IAMTAMJAM): REMOVE -e FLAG
+    mvn --quiet --batch-mode --fail-at-end -e clean verify \
        -Dfile.encoding="UTF-8" \
        -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
        -Dmaven.test.redirectTestOutputToFile=true \

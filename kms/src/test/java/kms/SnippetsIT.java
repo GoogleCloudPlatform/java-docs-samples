@@ -426,8 +426,9 @@ public class SnippetsIT {
     assertThat(stdOut.toString()).contains("Ciphertext");
   }
 
+  // TODO(IAMTAMJAM) Remove Exception from throws
   @Test
-  public void testEncryptSymmetric() throws IOException {
+  public void testEncryptSymmetric() throws IOException, Exception {
     new EncryptSymmetric()
         .encryptSymmetric(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID, "my message");
     assertThat(stdOut.toString()).contains("Ciphertext");

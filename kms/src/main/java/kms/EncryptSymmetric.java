@@ -46,6 +46,9 @@ public class EncryptSymmetric {
   public void encryptSymmetric(
       String projectId, String locationId, String keyRingId, String keyId, String plaintext)
       throws IOException, Exception {
+
+    System.err.println("TAMJAM1: " + projectId);
+
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
     // completing all of your requests, call the "close" method on the client to
@@ -75,6 +78,7 @@ public class EncryptSymmetric {
     // Optional, but recommended: perform integrity verification on response.
     // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
     // https://cloud.google.com/kms/docs/data-integrity-guidelines
+    System.err.println("TAMJAM2");
     if (!response.getVerifiedPlaintextCrc32C()) {
       throw new IOException("Encrypt: request to server corrupted");
     }
