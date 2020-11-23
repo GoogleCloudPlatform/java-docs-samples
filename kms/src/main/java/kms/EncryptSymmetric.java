@@ -89,7 +89,7 @@ public class EncryptSymmetric {
       String details = String.format(
           "Excpected=%d, Actual=%d, getCrc32cAsLong(test)=%d%n",
           response.getCiphertextCrc32C().getValue(), getCrc32cAsLong(response.getCiphertext().toByteArray()),
-          getCrc32cAsLong("test"));
+          getCrc32cAsLong("test".getBytes(StandardCharsets.UTF_8)));
       throw new IOException("Encrypt: response from server corrupted. " + details);
     }
 
