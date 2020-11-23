@@ -69,7 +69,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class SnippetsIT {
-  private static final String PROJECT_ID = "tamjam-proj";  // System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION_ID = "us-east1";
 
   private static String KEY_RING_ID;
