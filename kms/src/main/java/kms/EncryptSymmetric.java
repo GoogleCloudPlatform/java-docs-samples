@@ -65,7 +65,7 @@ public class EncryptSymmetric {
       long plaintextCrc32c = getCrc32cAsLong(plaintextByteString.toByteArray());
 
       // TAMJAM: remove
-      System.out.printf("TAMJAM: plaintextCrc32c=%d%n", plaintextCrc32c);
+      // System.out.printf("TAMJAM: plaintextCrc32c=%d%n", plaintextCrc32c);
 
       // Encrypt the plaintext.
       EncryptRequest request = EncryptRequest.newBuilder()
@@ -83,19 +83,19 @@ public class EncryptSymmetric {
         throw new IOException("Encrypt: request to server corrupted");
       }
 
-      System.out.printf("TAMJAM: CiphertextCrc32C=%d%n",
-            response.getCiphertextCrc32C().getValue());
-      System.out.printf("TAMJAM: Ciphertext=%s%n",
-            response.getCiphertext().toStringUtf8());
+      // System.out.printf("TAMJAM: CiphertextCrc32C=%d%n",
+      //      response.getCiphertextCrc32C().getValue());
+      // System.out.printf("TAMJAM: Ciphertext=%s%n",
+      //      response.getCiphertext().toStringUtf8());
 
       if (!crcMatches(response.getCiphertextCrc32C().getValue(),
           response.getCiphertext().toByteArray())) {
 
-        System.out.printf("TAMJAM: getCrc32cAsLong(ciphertext)=%d%n",
-            getCrc32cAsLong(response.getCiphertext().toByteArray()));
+        // System.out.printf("TAMJAM: getCrc32cAsLong(ciphertext)=%d%n",
+        //    getCrc32cAsLong(response.getCiphertext().toByteArray()));
 
-        System.out.printf("TAMJAM: CiphertextCrc32C=%d%n",
-            response.getCiphertext().toStringUtf8());
+        // System.out.printf("TAMJAM: CiphertextCrc32C=%d%n",
+        //    response.getCiphertext().toStringUtf8());
 
 
         throw new IOException("Encrypt: response from server corrupted");
