@@ -67,7 +67,7 @@ public class DecryptAsymmetric {
       // Decrypt the ciphertext.
       AsymmetricDecryptRequest request =
           AsymmetricDecryptRequest.newBuilder()
-              .setName(keyVersionName)
+              .setName(keyVersionName.toString())
               .setCiphertext(ByteString.copyFrom(ciphertext))
               .setCiphertextCrc32C(
                   Int64Value.newBuilder().setValue(ceiphertextCrc32c).build())
