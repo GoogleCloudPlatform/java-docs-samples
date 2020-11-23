@@ -51,14 +51,13 @@ public class EncryptSymmetric {
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      // Build the key version name from the project, location, key ring, key,
-      // and key version.
+      // Build the key name from the project, location, key ring, and key.
       CryptoKeyName cryptoKeyName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
 
       // Convert plaintext to ByteString.
       ByteString plaintextByteString = ByteString.copyFromUtf8(plaintext);
 
-      // Optional, but recommended: compute plaintext's CRC32C.
+      // Optional, but recommended: compute plaintext's CRC32C. See helper below.
       long plaintextCrc32c = getCrc32cAsLong(plaintextByteString.toByteArray());
 
       // Encrypt the plaintext.
@@ -77,6 +76,7 @@ public class EncryptSymmetric {
         throw new IOException("Encrypt: request to server corrupted");
       }
 
+      // See helper below.
       if (!crcMatches(response.getCiphertextCrc32C().getValue(),
           response.getCiphertext().toByteArray())) {
         throw new IOException("Encrypt: response from server corrupted");

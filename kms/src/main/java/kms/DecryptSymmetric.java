@@ -44,14 +44,40 @@ public class DecryptSymmetric {
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      // Build the key version name from the project, location, key ring, and
-      // key.
+      // Build the key version from the project, location, key ring, and key.
       CryptoKeyName keyName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
 
-      // Decrypt the response.
-      DecryptResponse response = client.decrypt(keyName, ByteString.copyFrom(ciphertext));
+      // Optional, but recommended: compute ciphertext's CRC32C.
+      long ceiphertextCrc32c = getCrc32cAsLong(ciphertext);
+
+      // Decrypt the ciphertext.
+      DecryptRequest request =
+          DecryptRequest.newBuilder()
+              .setName(keyName.toString())
+              .setCiphertext(ByteString.copyFrom(ciphertext))
+              .setCiphertextCrc32C(
+                  Int64Value.newBuilder().setValue(ceiphertextCrc32c).build())
+              .build();
+      DecryptResponse response = decrypt(request);
+
+      // Optional, but recommended: perform integrity verification on response.
+      // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
+      // https://cloud.google.com/kms/docs/data-integrity-guidelines
+      if (!crcMatches(response.getPlaintextCrc32C().getValue(),
+          response.getPlaintext().toByteArray())) {
+        throw new IOException("Decrypt: response from server corrupted");
+      }
+
       System.out.printf("Plaintext: %s%n", response.getPlaintext().toStringUtf8());
     }
+  }
+
+  private long getCrc32cAsLong(byte[] data) {
+    return (long) Hashing.crc32c().hashBytes(data).asInt();
+  }
+
+  private boolean crcMatches(long expectedCrc, byte[] data) {
+    return expectedCrc == getCrc32cAsLong(data);
   }
 }
 // [END kms_decrypt_symmetric]
