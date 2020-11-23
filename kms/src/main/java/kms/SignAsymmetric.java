@@ -17,11 +17,16 @@
 package kms;
 
 // [START kms_sign_asymmetric]
+import com.google.cloud.kms.v1.AsymmetricSignRequest;
 import com.google.cloud.kms.v1.AsymmetricSignResponse;
 import com.google.cloud.kms.v1.CryptoKeyVersionName;
 import com.google.cloud.kms.v1.Digest;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Int64Value;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
@@ -70,14 +75,44 @@ public class SignAsymmetric {
       // Build the digest object.
       Digest digest = Digest.newBuilder().setSha256(ByteString.copyFrom(hash)).build();
 
+      // Optional, but recommended: compute digest's CRC32C. See helper below.
+      long digestCrc32c = getCrc32cAsLong(hash);
+
       // Sign the digest.
-      AsymmetricSignResponse result = client.asymmetricSign(keyVersionName, digest);
+      AsymmetricSignRequest request =
+          AsymmetricSignRequest.newBuilder()
+              .setName(keyVersionName.toString())
+              .setDigest(digest)
+              .setDigestCrc32C(Int64Value.newBuilder().setValue(digestCrc32c).build())
+              .build();
+      AsymmetricSignResponse response = client.asymmetricSign(request);
+
+      // Optional, but recommended: perform integrity verification on response.
+      // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
+      // https://cloud.google.com/kms/docs/data-integrity-guidelines
+      if (!response.getVerifiedDigestCrc32C()) {
+        throw new IOException("Encrypt: request to server corrupted");
+      }
+
+      // See helper below.
+      if (!crcMatches(response.getSignatureCrc32C().getValue(),
+          response.getSignature().toByteArray())) {
+        throw new IOException("Encrypt: response from server corrupted");
+      }
 
       // Get the signature.
-      byte[] signature = result.getSignature().toByteArray();
+      byte[] signature = response.getSignature().toByteArray();
 
       System.out.printf("Signature %s%n", signature);
     }
+  }
+
+  private long getCrc32cAsLong(byte[] data) {
+    return (long) Hashing.crc32c().hashBytes(data).asInt();
+  }
+
+  private boolean crcMatches(long expectedCrc, byte[] data) {
+    return expectedCrc == getCrc32cAsLong(data);
   }
 }
 // [END kms_sign_asymmetric]
