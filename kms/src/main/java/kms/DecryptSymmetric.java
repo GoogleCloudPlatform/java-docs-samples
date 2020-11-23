@@ -54,7 +54,7 @@ public class DecryptSymmetric {
       // Build the key version from the project, location, key ring, and key.
       CryptoKeyName keyName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
 
-      // Optional, but recommended: compute ciphertext's CRC32C.
+      // Optional, but recommended: compute ciphertext's CRC32C. See helpers below.
       long ceiphertextCrc32c = getCrc32cAsLong(ciphertext);
 
       // Decrypt the ciphertext.
@@ -65,7 +65,7 @@ public class DecryptSymmetric {
               .setCiphertextCrc32C(
                   Int64Value.newBuilder().setValue(ceiphertextCrc32c).build())
               .build();
-      DecryptResponse response = decrypt(request);
+      DecryptResponse response = client.decrypt(request);
 
       // Optional, but recommended: perform integrity verification on response.
       // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
