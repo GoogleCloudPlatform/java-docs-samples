@@ -41,7 +41,7 @@ public class RequestCheckerTest {
   @Test
   public void testCheckTransfer() throws Exception {
     when(mockClient.transferOperations()).thenReturn(mockOps);
-    when(mockOps.list(Matchers.anyString())).thenReturn(mockList);
+    when(mockOps.list(Matchers.anyString(), Matchers.anyString())).thenReturn(mockList);
     when(mockList.setFilter(Matchers.anyString())).thenReturn(mockList);
 
     RequestChecker.checkTransfer(mockClient, "DUMMY_PROJECT_ID", "DUMMY_JOB_NAME");
