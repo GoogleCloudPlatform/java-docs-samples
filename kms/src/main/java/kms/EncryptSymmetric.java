@@ -86,18 +86,18 @@ public class EncryptSymmetric {
     // See helper below.
     if (!crcMatches(response.getCiphertextCrc32C().getValue(),
         response.getCiphertext().toByteArray())) {
-      String details = String.format(
-          "Excpected=%d, Actual=%d, getCrc32cAsLong(test)=%d%n",
-          response.getCiphertextCrc32C().getValue(), getCrc32cAsLong(response.getCiphertext().toByteArray()),
-          getCrc32cAsLong("test".getBytes(StandardCharsets.UTF_8)));
-      throw new IOException("Encrypt: response from server corrupted. " + details);
+      //      String details = String.format(
+      //          "Excpected=%d, Actual=%d, getCrc32cAsLong(test)=%d%n",
+      //          response.getCiphertextCrc32C().getValue(), getCrc32cAsLong(response.getCiphertext().toByteArray()),
+      //          getCrc32cAsLong("test".getBytes(StandardCharsets.UTF_8)));
+      throw new IOException("Encrypt: response from server corrupted");
     }
 
     System.out.printf("Ciphertext: %s%n", response.getCiphertext().toStringUtf8());
   }
 
   private long getCrc32cAsLong(byte[] data) {
-    return (long) Hashing.crc32c().hashBytes(data).asInt();
+    return Hashing.crc32c().hashBytes(data).padToLong();
   }
 
   private boolean crcMatches(long expectedCrc, byte[] data) {

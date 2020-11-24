@@ -72,7 +72,7 @@ public class DecryptSymmetric {
       // https://cloud.google.com/kms/docs/data-integrity-guidelines
       if (!crcMatches(response.getPlaintextCrc32C().getValue(),
           response.getPlaintext().toByteArray())) {
-        throw new IOException("Decrypt: response from server corrupted, getCrc32cAsLong(test)=" + getCrc32cAsLong("test".getBytes(StandardCharsets.UTF_8)));
+        throw new IOException("Decrypt: response from server corrupted");
       }
 
       System.out.printf("Plaintext: %s%n", response.getPlaintext().toStringUtf8());
@@ -80,7 +80,7 @@ public class DecryptSymmetric {
   }
 
   private long getCrc32cAsLong(byte[] data) {
-    return (long) Hashing.crc32c().hashBytes(data).asInt();
+    return Hashing.crc32c().hashBytes(data).padToLong();
   }
 
   private boolean crcMatches(long expectedCrc, byte[] data) {
