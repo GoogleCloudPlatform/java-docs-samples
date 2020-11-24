@@ -1,5 +1,7 @@
 # Connecting to Cloud SQL - SQL Server
 
+This is a sample application that inserts and reads votes for two options (tabs and spaces) in a Cloud SQL Database. The application demonstrates the reommended method of connecting to Cloud SQL from an Java application using the [Cloud SQL Java Connector](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory)
+
 ## Before you begin
 
 1. If you haven't already, set up a Java Development Environment (including google-cloud-sdk and 
@@ -64,3 +66,6 @@ Next, the following command will deploy the application to your Google Cloud pro
 ```bash
 mvn clean package appengine:deploy
 ```
+
+### Cleanup
+To avoid incurring any charges, navigate to your project's [App Engine settings](https://console.cloud.google.com/appengine/settings) and click `Disable Application`. Also [delete your Cloud SQL Instance](https://cloud.google.com/sql/docs/mysql/delete-instance) if you no longer need it.
