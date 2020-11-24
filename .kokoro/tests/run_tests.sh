@@ -165,14 +165,12 @@ for file in **/pom.xml; do
     fi
 
     # Use maven to execute the tests for the project.
-    # TODO(IAMTAMJAM): REMOVE -e FLAG
-    mvn --quiet --batch-mode --fail-at-end -e clean verify \
+    mvn --quiet --batch-mode --fail-at-end clean verify \
        -Dfile.encoding="UTF-8" \
        -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
        -Dmaven.test.redirectTestOutputToFile=true \
        -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
        -Dbigtable.instanceID=instance
-       -D.failsafe.useFile=false  # TAMJAM: REMOVE!
     EXIT=$?
 
     if [[ $EXIT -ne 0 ]]; then

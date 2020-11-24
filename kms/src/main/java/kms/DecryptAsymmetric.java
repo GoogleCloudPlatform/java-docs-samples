@@ -91,7 +91,7 @@ public class DecryptAsymmetric {
   }
 
   private long getCrc32cAsLong(byte[] data) {
-    return (long) Hashing.crc32c().hashBytes(data).asInt();
+    return Hashing.crc32c().hashBytes(data).padAsLong();
   }
 
   private boolean crcMatches(long expectedCrc, byte[] data) {

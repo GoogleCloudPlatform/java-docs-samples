@@ -74,7 +74,7 @@ public class GetPublicKey {
   }
 
   private long getCrc32cAsLong(byte[] data) {
-    return (long) Hashing.crc32c().hashBytes(data).asInt();
+    return Hashing.crc32c().hashBytes(data).padToLong();
   }
 
   private boolean crcMatches(long expectedCrc, byte[] data) {

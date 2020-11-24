@@ -32,7 +32,7 @@ import java.io.IOException;
 
 public class EncryptSymmetric {
 
-  public void encryptSymmetric() throws IOException, Exception {
+  public void encryptSymmetric() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "us-east1";
@@ -45,9 +45,7 @@ public class EncryptSymmetric {
   // Encrypt data with a given key.
   public void encryptSymmetric(
       String projectId, String locationId, String keyRingId, String keyId, String plaintext)
-      throws IOException, Exception {
-
-    System.err.println("TAMJAM1: " + projectId);
+      throws IOException {
 
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
@@ -72,28 +70,22 @@ public class EncryptSymmetric {
                                    Int64Value.newBuilder().setValue(plaintextCrc32c).build())
                                .build();
       response = client.encrypt(request);
-    } catch (Exception e) {
-      throw e;
-    }
-    // Optional, but recommended: perform integrity verification on response.
-    // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
-    // https://cloud.google.com/kms/docs/data-integrity-guidelines
-    System.err.println("TAMJAM2");
-    if (!response.getVerifiedPlaintextCrc32C()) {
-      throw new IOException("Encrypt: request to server corrupted");
-    }
 
-    // See helper below.
-    if (!crcMatches(response.getCiphertextCrc32C().getValue(),
-        response.getCiphertext().toByteArray())) {
-      //      String details = String.format(
-      //          "Excpected=%d, Actual=%d, getCrc32cAsLong(test)=%d%n",
-      //          response.getCiphertextCrc32C().getValue(), getCrc32cAsLong(response.getCiphertext().toByteArray()),
-      //          getCrc32cAsLong("test".getBytes(StandardCharsets.UTF_8)));
-      throw new IOException("Encrypt: response from server corrupted");
-    }
+      // Optional, but recommended: perform integrity verification on response.
+      // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
+      // https://cloud.google.com/kms/docs/data-integrity-guidelines
+      if (!response.getVerifiedPlaintextCrc32C()) {
+        throw new IOException("Encrypt: request to server corrupted");
+      }
 
-    System.out.printf("Ciphertext: %s%n", response.getCiphertext().toStringUtf8());
+      // See helper below.
+      if (!crcMatches(response.getCiphertextCrc32C().getValue(),
+          response.getCiphertext().toByteArray())) {
+        throw new IOException("Encrypt: response from server corrupted");
+      }
+
+      System.out.printf("Ciphertext: %s%n", response.getCiphertext().toStringUtf8());
+    }
   }
 
   private long getCrc32cAsLong(byte[] data) {

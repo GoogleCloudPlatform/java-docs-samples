@@ -91,13 +91,13 @@ public class SignAsymmetric {
       // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
       // https://cloud.google.com/kms/docs/data-integrity-guidelines
       if (!response.getVerifiedDigestCrc32C()) {
-        throw new IOException("Encrypt: request to server corrupted");
+        throw new IOException("AsymmetricSign: request to server corrupted");
       }
 
       // See helper below.
       if (!crcMatches(response.getSignatureCrc32C().getValue(),
           response.getSignature().toByteArray())) {
-        throw new IOException("Encrypt: response from server corrupted");
+        throw new IOException("AsymmetricSign: response from server corrupted");
       }
 
       // Get the signature.
@@ -108,7 +108,7 @@ public class SignAsymmetric {
   }
 
   private long getCrc32cAsLong(byte[] data) {
-    return (long) Hashing.crc32c().hashBytes(data).asInt();
+    return Hashing.crc32c().hashBytes(data).padToLong();
   }
 
   private boolean crcMatches(long expectedCrc, byte[] data) {
