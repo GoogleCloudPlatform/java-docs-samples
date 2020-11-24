@@ -60,7 +60,7 @@ public class IndexServlet extends HttpServlet {
       while (voteResults.next()) {
         String candidate = voteResults.getString(1);
         Timestamp timeCast = voteResults.getTimestamp(2);
-        Vote vote = new Vote(candidate.trim(), timeCast)
+        Vote vote = new Vote(candidate.trim(), timeCast);
         recentVotes.add(vote);
       }
 
