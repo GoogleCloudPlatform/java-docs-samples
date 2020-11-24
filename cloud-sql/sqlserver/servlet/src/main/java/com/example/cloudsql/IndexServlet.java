@@ -129,7 +129,7 @@ public class IndexServlet extends HttpServlet {
       // If something goes wrong, handle the error in this section. This might involve retrying or
       // adjusting parameters depending on the situation.
       // [START_EXCLUDE]
-      LOGGER.log(Level.ERROR, "Error while attempting to submit vote.", ex);
+      LOGGER.log(Level.WARNING, "Error while attempting to submit vote.", ex);
       resp.setStatus(500);
       resp.getWriter().write("Unable to successfully cast vote! Please check the application "
           + "logs for more details.");
