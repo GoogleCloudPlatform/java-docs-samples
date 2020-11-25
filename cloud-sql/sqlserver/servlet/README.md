@@ -54,9 +54,10 @@ and verify that
 
 The following command will run the application locally in the the GAE-development server:
 ```bash
-mvn appengine:run
+mvn clean package appengine:run
 ```
 
+Note: if the GAE development server fails to start, check that you are using a supported version of Java. Supported versions are Java 8 and Java 11.
 ### Deploy to Google Cloud
 
 First, update `src/main/webapp/WEB-INF/appengine-web.xml` with the correct values to pass the 
