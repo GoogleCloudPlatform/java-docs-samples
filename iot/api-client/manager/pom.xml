@@ -47,7 +47,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20200518</version>
+      <version>20201115</version>
     </dependency>
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
@@ -62,17 +62,17 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudiot</artifactId>
-      <version>v1-rev20200901-1.30.10</version>
+      <version>v1-rev20201110-1.30.10</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.108.1</version>
+      <version>1.109.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-core</artifactId>
-      <version>1.93.8</version>
+      <version>1.94.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
@@ -87,7 +87,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.30.10</version>
+      <version>1.31.1</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
@@ -127,7 +127,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.0.1</version>
+      <version>1.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

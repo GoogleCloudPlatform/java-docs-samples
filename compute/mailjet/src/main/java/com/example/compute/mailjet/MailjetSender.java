@@ -23,7 +23,6 @@ import com.mailjet.client.MailjetClient;
 import com.mailjet.client.MailjetRequest;
 import com.mailjet.client.MailjetResponse;
 import com.mailjet.client.errors.MailjetException;
-import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import com.mailjet.client.resource.Emailv31;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,7 +32,7 @@ import org.json.JSONObject;
 // [START app]
 public class MailjetSender {
 
-  public static void main(String[] args) throws MailjetException, MailjetSocketTimeoutException {
+  public static void main(String[] args) throws MailjetException {
     final String mailjetApiKey = "YOUR-MAILJET-API-KEY";
     final String mailjetSecretKey = "YOUR-MAILJET-SECRET-KEY";
     MailjetClient client = new MailjetClient(
@@ -44,7 +43,7 @@ public class MailjetSender {
   }
 
   public MailjetResponse sendMailjet(String recipient, String sender, MailjetClient client)
-        throws MailjetException, MailjetSocketTimeoutException {
+        throws MailjetException {
     MailjetRequest email = new MailjetRequest(Emailv31.resource)
         .property(Emailv31.MESSAGES, new JSONArray()
         .put(new JSONObject()

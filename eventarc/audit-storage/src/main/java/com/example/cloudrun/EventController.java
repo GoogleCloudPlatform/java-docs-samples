@@ -17,7 +17,6 @@
 package com.example.cloudrun;
 
 // [START eventarc_gcs_handler]
-import com.example.cloudrun.eventpojos.PubSubBody;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,7 @@ public class EventController {
 
   @RequestMapping(value = "/", method = RequestMethod.POST)
   public ResponseEntity<String> receiveMessage(
-      @RequestBody PubSubBody body, @RequestHeader Map<String, String> headers) {
+      @RequestBody Map<String, Object> body, @RequestHeader Map<String, String> headers) {
     for (String field : requiredFields) {
       if (headers.get(field) == null) {
         String msg = String.format("Missing expected header: %s.", field);
@@ -53,7 +52,7 @@ public class EventController {
     }
 
     String ceSubject = headers.get("ce-subject");
-    String msg = String.format("GCS CloudEvent type: %s.", ceSubject);
+    String msg = "Detected change in GCS bucket: " + ceSubject;
     System.out.println(msg);
     return new ResponseEntity<String>(msg, HttpStatus.OK);
   }

@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package com.example.cloudrun;
 
+// [START cloudrun_imageproc_handler_setup]
 // [START run_imageproc_handler_setup]
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
@@ -44,7 +45,9 @@ public class ImageMagick {
   private static final String BLURRED_BUCKET_NAME = System.getenv("BLURRED_BUCKET_NAME");
   private static Storage storage = StorageOptions.getDefaultInstance().getService();
   // [END run_imageproc_handler_setup]
+  // [END cloudrun_imageproc_handler_setup]
 
+  // [START cloudrun_imageproc_handler_analyze]
   // [START run_imageproc_handler_analyze]
   // Blurs uploaded images that are flagged as Adult or Violence.
   public static void blurOffensiveImages(JsonObject data) {
@@ -87,7 +90,9 @@ public class ImageMagick {
     }
   }
   // [END run_imageproc_handler_analyze]
+  // [END cloudrun_imageproc_handler_analyze]
 
+  // [START cloudrun_imageproc_handler_blur]
   // [START run_imageproc_handler_blur]
   // Blurs the file described by blobInfo using ImageMagick,
   // and uploads it to the blurred bucket.
@@ -134,3 +139,4 @@ public class ImageMagick {
   }
 }
 // [END run_imageproc_handler_blur]
+// [END cloudrun_imageproc_handler_blur]
