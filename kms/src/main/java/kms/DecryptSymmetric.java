@@ -55,7 +55,7 @@ public class DecryptSymmetric {
       CryptoKeyName keyName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
 
       // Optional, but recommended: compute ciphertext's CRC32C. See helpers below.
-      long ceiphertextCrc32c = getCrc32cAsLong(ciphertext);
+      long ciphertextCrc32c = getCrc32cAsLong(ciphertext);
 
       // Decrypt the ciphertext.
       DecryptRequest request =
@@ -63,7 +63,7 @@ public class DecryptSymmetric {
               .setName(keyName.toString())
               .setCiphertext(ByteString.copyFrom(ciphertext))
               .setCiphertextCrc32C(
-                  Int64Value.newBuilder().setValue(ceiphertextCrc32c).build())
+                  Int64Value.newBuilder().setValue(ciphertextCrc32c).build())
               .build();
       DecryptResponse response = client.decrypt(request);
 

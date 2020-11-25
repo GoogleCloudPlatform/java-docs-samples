@@ -62,7 +62,7 @@ public class DecryptAsymmetric {
           CryptoKeyVersionName.of(projectId, locationId, keyRingId, keyId, keyVersionId);
 
       // Optional, but recommended: compute ciphertext's CRC32C. See helpers below.
-      long ceiphertextCrc32c = getCrc32cAsLong(ciphertext);
+      long ciphertextCrc32c = getCrc32cAsLong(ciphertext);
 
       // Decrypt the ciphertext.
       AsymmetricDecryptRequest request =
@@ -70,7 +70,7 @@ public class DecryptAsymmetric {
               .setName(keyVersionName.toString())
               .setCiphertext(ByteString.copyFrom(ciphertext))
               .setCiphertextCrc32C(
-                  Int64Value.newBuilder().setValue(ceiphertextCrc32c).build())
+                  Int64Value.newBuilder().setValue(ciphertextCrc32c).build())
               .build();
       AsymmetricDecryptResponse response = client.asymmetricDecrypt(request);
 
