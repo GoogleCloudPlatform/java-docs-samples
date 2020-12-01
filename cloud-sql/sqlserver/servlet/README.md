@@ -1,6 +1,6 @@
 # Connecting to Cloud SQL - SQL Server
 
-This is a sample application that inserts and reads votes for two options (tabs and spaces) in a Cloud SQL Database. The application demonstrates the reommended method of connecting to Cloud SQL from an Java application using the [Cloud SQL Java Connector](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory)
+This is a sample application that inserts and reads votes for two options (tabs and spaces) in a Cloud SQL database. The application demonstrates the reommended method of connecting to Cloud SQL from a Java application using the [Cloud SQL Java Connector](https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory)
 
 ## Before you begin
 
