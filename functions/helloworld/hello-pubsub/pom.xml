@@ -116,7 +116,7 @@
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>function-maven-plugin</artifactId>
-      <version>0.9.5</version>
+      <version>0.9.6</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -135,7 +135,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.5</version>
+        <version>0.9.6</version>
         <configuration>
           <functionTarget>functions.HelloPubSub</functionTarget>
         </configuration>
