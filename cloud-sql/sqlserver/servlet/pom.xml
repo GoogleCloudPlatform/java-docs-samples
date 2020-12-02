@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
-      <version>9.1.0.jre8-preview</version>
+      <version>9.1.0.jre15-preview</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
