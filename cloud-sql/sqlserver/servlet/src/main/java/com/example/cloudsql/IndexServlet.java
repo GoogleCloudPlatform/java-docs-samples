@@ -111,7 +111,7 @@ public class IndexServlet extends HttpServlet {
 
     // Reuse the pool that was created in the ContextListener when the Servlet started.
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
-    // [START cloud_sql_postgres_servlet_connection]
+    // [START cloud_sql_sqlserver_servlet_connection]
     // Using a try-with-resources statement ensures that the connection is always released back
     // into the pool at the end of the statement (even if an error occurs)
     try (Connection conn = pool.getConnection()) {
@@ -135,7 +135,7 @@ public class IndexServlet extends HttpServlet {
           + "logs for more details.");
       // [END_EXCLUDE]
     }
-    // [END cloud_sql_postgres_servlet_connection]
+    // [END cloud_sql_sqlserver_servlet_connection]
 
     resp.setStatus(200);
     resp.getWriter().printf("Vote successfully cast for '%s' at time %s!\n", team, now);
