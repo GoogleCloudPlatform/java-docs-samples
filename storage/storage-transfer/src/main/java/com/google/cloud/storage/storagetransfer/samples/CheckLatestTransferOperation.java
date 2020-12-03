@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.cloud.storage.storagetransfer.samples;
 
 // [START storagetransfer_get_latest_transfer_operation]
@@ -24,13 +25,12 @@ import com.google.api.services.storagetransfer.v1.model.Operation;
 import com.google.api.services.storagetransfer.v1.model.TransferJob;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-
 import java.io.IOException;
 
 public class CheckLatestTransferOperation {
 
   // Gets the requested transfer job and checks its latest operation
-  public static void CheckLatestTransferOperation(String projectId, String jobName)
+  public static void checkLatestTransferOperation(String projectId, String jobName)
       throws IOException {
     // Your Google Cloud Project ID
     // String projectId = "your-project-id";

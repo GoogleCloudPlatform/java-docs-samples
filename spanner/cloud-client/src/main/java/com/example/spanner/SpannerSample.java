@@ -2142,6 +2142,9 @@ public class SpannerSample {
     }
     // [START init_client]
     SpannerOptions options = SpannerOptions.newBuilder().build();
+    // [END init_client]
+    options = options.toBuilder().setAutoThrottleAdministrativeRequests().build();
+    // [START init_client]
     Spanner spanner = options.getService();
     try {
       String command = args[0];

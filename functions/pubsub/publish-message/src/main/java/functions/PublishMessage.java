@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 
 public class PublishMessage implements HttpFunction {
   // TODO<developer> set this environment variable
-  private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static final Logger logger = Logger.getLogger(PublishMessage.class.getName());
 
@@ -49,7 +49,7 @@ public class PublishMessage implements HttpFunction {
     if (maybeTopicName.isEmpty() || maybeMessage.isEmpty()) {
       response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
 
-      responseWriter.write("Missing 'topic' and/or 'subscription' parameter(s).");
+      responseWriter.write("Missing 'topic' and/or 'message' parameter(s).");
       return;
     }
 

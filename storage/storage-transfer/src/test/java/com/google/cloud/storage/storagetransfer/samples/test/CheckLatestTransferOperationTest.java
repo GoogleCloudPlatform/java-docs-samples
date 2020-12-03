@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.cloud.storage.storagetransfer.samples.test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -19,6 +35,7 @@ import java.io.PrintStream;
 import org.junit.Test;
 
 public class CheckLatestTransferOperationTest {
+
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   @Test
@@ -31,8 +48,10 @@ public class CheckLatestTransferOperationTest {
             .setProjectId(PROJECT_ID)
             .setTransferSpec(
                 new TransferSpec()
-                    .setGcsDataSource(new GcsData().setBucketName(PROJECT_ID + "-storagetransfer-source"))
-                    .setGcsDataSink(new GcsData().setBucketName(PROJECT_ID + "-storagetransfer-sink"))
+                    .setGcsDataSource(
+                        new GcsData().setBucketName(PROJECT_ID + "-storagetransfer-source"))
+                    .setGcsDataSink(
+                        new GcsData().setBucketName(PROJECT_ID + "-storagetransfer-sink"))
                     .setObjectConditions(
                         new ObjectConditions()
                             .setMinTimeElapsedSinceLastModification("2592000s" /* 30 days */))
@@ -42,13 +61,13 @@ public class CheckLatestTransferOperationTest {
             .setStatus("ENABLED");
 
     Storagetransfer client = TransferClientCreator.createStorageTransferClient();
-    TransferJob response  = client.transferJobs().create(transferJob).execute();
+    TransferJob response = client.transferJobs().create(transferJob).execute();
 
     PrintStream standardOut = System.out;
     final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
     System.setOut(new PrintStream(sampleOutputCapture));
 
-    CheckLatestTransferOperation.CheckLatestTransferOperation(PROJECT_ID, response.getName());
+    CheckLatestTransferOperation.checkLatestTransferOperation(PROJECT_ID, response.getName());
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
