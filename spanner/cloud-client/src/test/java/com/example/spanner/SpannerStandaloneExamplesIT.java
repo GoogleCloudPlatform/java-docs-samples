@@ -34,7 +34,6 @@ import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -49,8 +48,8 @@ import org.junit.runners.JUnit4;
 public class SpannerStandaloneExamplesIT {
   // The instance needs to exist for tests to pass.
   private static String instanceId = System.getProperty("spanner.test.instance");
-  private static String databaseId =
-      formatForTest(System.getProperty("spanner.sample.database", "mysample"));
+  private static String baseDatabaseId = System.getProperty("spanner.sample.database", "mysample");
+  private static String databaseId = SpannerSampleIT.formatForTest(baseDatabaseId);
   private static DatabaseId dbId;
   private static DatabaseAdminClient dbClient;
   private static Spanner spanner;
@@ -67,7 +66,8 @@ public class SpannerStandaloneExamplesIT {
 
   @BeforeClass
   public static void createTestDatabase() throws Exception {
-    SpannerOptions options = SpannerOptions.newBuilder().build();
+    SpannerOptions options =
+        SpannerOptions.newBuilder().setAutoThrottleAdministrativeRequests().build();
     spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
     if (instanceId == null) {
@@ -78,7 +78,6 @@ public class SpannerStandaloneExamplesIT {
       }
     }
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
-    dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
     dbClient
         .createDatabase(
             instanceId,
@@ -189,9 +188,5 @@ public class SpannerStandaloneExamplesIT {
     String out =
         runExample(() -> QueryWithNumericParameterSample.queryWithNumericParameter(client));
     assertThat(out).contains("4 35000");
-  }
-
-  static String formatForTest(String name) {
-    return name + "-" + UUID.randomUUID().toString().substring(0, 20);
   }
 }

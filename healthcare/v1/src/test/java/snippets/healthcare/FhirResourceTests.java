@@ -52,6 +52,7 @@ import snippets.healthcare.fhir.resources.FhirResourceListHistory;
 import snippets.healthcare.fhir.resources.FhirResourcePatch;
 import snippets.healthcare.fhir.resources.FhirResourceSearchGet;
 import snippets.healthcare.fhir.resources.FhirResourceSearchPost;
+import snippets.healthcare.fhir.resources.FhirResourceUpdate;
 
 @RunWith(JUnit4.class)
 public class FhirResourceTests {
@@ -176,6 +177,18 @@ public class FhirResourceTests {
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource patched:"));
+  }
+
+  @Test
+  public void test_FhirResourceUpdate() throws Exception {
+    JsonObject json = new JsonObject();
+    json.add("id", new JsonPrimitive(fhirResourceId));
+    json.add("resourceType", new JsonPrimitive(resourceType));
+    json.add("active", new JsonPrimitive(false));
+    FhirResourceUpdate.fhirResourceUpdate(fhirResourceName, json.toString());
+
+    String output = bout.toString();
+    assertThat(output, containsString("FHIR resource updated:"));
   }
 
   @Test

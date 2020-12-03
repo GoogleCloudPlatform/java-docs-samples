@@ -38,7 +38,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <endpoints.framework.version>2.2.1</endpoints.framework.version>
-    <endpoints.management.version>1.0.12</endpoints.management.version>
+    <endpoints.management.version>1.0.14</endpoints.management.version>
 
     <endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>
   </properties>
@@ -54,13 +54,13 @@
     <dependency>
       <groupId>com.google.endpoints</groupId>
       <artifactId>endpoints-management-control-appengine-all</artifactId>
-      <version>1.0.13</version>
+      <version>1.0.14</version>
     </dependency>
     <!-- [END api_management] -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.82</version>
+      <version>1.9.83</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

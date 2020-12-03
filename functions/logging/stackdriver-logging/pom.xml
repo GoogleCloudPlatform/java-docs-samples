@@ -61,13 +61,13 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.0.1</version>
+      <version>1.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
-      <version>29.0-jre</version>
+      <version>30.0-jre</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -86,7 +86,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.4</version>
+        <version>0.9.5</version>
         <configuration>
           <functionTarget>functions.StackdriverLogging</functionTarget>
         </configuration>

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START cloudrun_helloworld_dockerfile]
 # [START run_helloworld_dockerfile]
 
 # Use the official maven/Java 8 image to create a build artifact.
@@ -39,3 +40,4 @@ COPY --from=builder /app/target/helloworld-*.jar /helloworld.jar
 CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/helloworld.jar"]
 
 # [END run_helloworld_dockerfile]
+# [END cloudrun_helloworld_dockerfile]

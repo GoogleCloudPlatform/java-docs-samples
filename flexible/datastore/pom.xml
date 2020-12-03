@@ -37,7 +37,7 @@
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
     <appengine.maven.plugin>2.4.0</appengine.maven.plugin>
-    <jetty>9.4.32.v20200930</jetty>
+    <jetty>9.4.35.v20201120</jetty>
   </properties>
 
   <!-- [START gae_flex_datastore_config] -->
@@ -48,7 +48,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>12.0.0</version>
+        <version>16.0.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

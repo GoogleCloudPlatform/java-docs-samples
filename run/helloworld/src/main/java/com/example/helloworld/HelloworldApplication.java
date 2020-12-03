@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// [START cloudrun_helloworld_service]
 // [START run_helloworld_service]
 
 package com.example.helloworld;
@@ -43,3 +44,4 @@ public class HelloworldApplication {
   }
 }
 // [END run_helloworld_service]
+// [END cloudrun_helloworld_service]

@@ -45,8 +45,9 @@ limitations under the License.
   <dependencies>
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
-      <artifactId>bigtable-hbase-1.x</artifactId>
-      <version>1.16.0</version>
+      <!-- Use the hadoop client instead of 1.x due to file size. -->
+      <artifactId>bigtable-hbase-1.x-hadoop</artifactId>
+      <version>1.17.1</version>
     </dependency>
 
     <!-- Compile/runtime dependencies -->
@@ -68,14 +69,14 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.0.1</version>
+      <version>1.1</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
