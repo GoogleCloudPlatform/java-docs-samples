@@ -1,13 +1,16 @@
 assign_issues:
-  - averikitsch
-  - dzlier-gcp
-  - gguuss
-  # - kurtisvg (OOO until 7/24)
-  - stephaniewang526
+  - GoogleCloudPlatform/java-samples-reviewers
+assign_issues_by:
+- labels:
+  - 'api: logging'
+  - 'api: clouderrorreporting'
+  to:
+  - simonz130
 assign_prs:
-  - averikitsch
-  - dzlier-gcp
-  - gguuss
-  # - kurtisvg (OOO until 7/24)
-  - lesv
-  - stephaniewang526
+  - GoogleCloudPlatform/java-samples-reviewers
+assign_prs_by:
+- labels:
+  - 'api: logging'
+  - 'api: clouderrorreporting'
+  to:
+  - simonz130

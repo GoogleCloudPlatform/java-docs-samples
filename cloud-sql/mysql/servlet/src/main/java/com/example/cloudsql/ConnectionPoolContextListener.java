@@ -51,14 +51,14 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     HikariConfig config = new HikariConfig();
 
     // The following URL is equivalent to setting the config options below:
-    // jdbc:postgresql:///<DB_NAME>?cloudSqlInstance=<CLOUD_SQL_CONNECTION_NAME>&
-    // socketFactory=com.google.cloud.sql.postgres.SocketFactory&user=<DB_USER>&password=<DB_PASS>
+    // jdbc:mysql:///<DB_NAME>?cloudSqlInstance=<CLOUD_SQL_CONNECTION_NAME>&
+    // socketFactory=com.google.cloud.sql.mysql.SocketFactory&user=<DB_USER>&password=<DB_PASS>
     // See the link below for more info on building a JDBC URL for the Cloud SQL JDBC Socket Factory
     // https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#creating-the-jdbc-url
 
     // Configure which instance and what database user to connect with.
     config.setJdbcUrl(String.format("jdbc:mysql:///%s", DB_NAME));
-    config.setUsername(DB_USER); // e.g. "root", "postgres"
+    config.setUsername(DB_USER); // e.g. "root", "mysql"
     config.setPassword(DB_PASS); // e.g. "my-password"
 
     // For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections.

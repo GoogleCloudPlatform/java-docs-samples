@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START cloudrun_system_package_dockerfile]
 # [START run_system_package_dockerfile]
 # Use the Official OpenJDK image for a lean production stage of our multi-stage build.
 # https://hub.docker.com/r/adoptopenjdk/openjdk11/
@@ -19,3 +20,4 @@ FROM adoptopenjdk/openjdk11:alpine
 
 RUN apk --no-cache add graphviz ttf-ubuntu-font-family
 # [END run_system_package_dockerfile]
+# [END cloudrun_system_package_dockerfile]

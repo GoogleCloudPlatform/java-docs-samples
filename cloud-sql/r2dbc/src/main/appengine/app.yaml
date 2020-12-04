@@ -1,0 +1,4 @@
+runtime: java11
+instance_class: F2
+env_variables:
+  CLOUD_SQL_CONNECTION_STRING: "r2dbc:pool:gcp:<'mysql' or 'postgres'>://<user>:<password>@<connection_name>/<db_name>"

@@ -35,26 +35,28 @@ limitations under the License.
         <!-- Import dependency management from Spring Boot -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.3.4.RELEASE</version>
+        <version>2.4.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>
-        <version>Hoxton.SR8</version>
+        <version>Hoxton.SR9</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- [START cloudrun_imageproc_dep_management] -->
       <!-- [START run_imageproc_dep_management] -->
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>1.2.5.RELEASE</version>
+        <version>1.2.6.RELEASE</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <!-- [END run_imageproc_dep_management] -->
+      <!-- [END cloudrun_imageproc_dep_management] -->
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -72,6 +74,7 @@ limitations under the License.
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- [START cloudrun_imageproc_dep] -->
     <!-- [START run_imageproc_dep] -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -82,7 +85,7 @@ limitations under the License.
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20200518</version>
+      <version>20201115</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
@@ -98,6 +101,13 @@ limitations under the License.
       <version>2.8.0</version>
     </dependency>
     <!-- [END run_imageproc_dep] -->
+    <!-- [END cloudrun_imageproc_dep] -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -105,6 +115,7 @@ limitations under the License.
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+      <!-- [START cloudrun_imageproc_jib] -->
       <!-- [START run_imageproc_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
@@ -120,6 +131,7 @@ limitations under the License.
         </configuration>
       </plugin>
       <!-- [END run_imageproc_jib] -->
+      <!-- [END cloudrun_imageproc_jib] -->
     </plugins>
   </build>
 </project>

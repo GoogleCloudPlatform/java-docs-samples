@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.junit.After;
 import org.junit.Assert;
@@ -45,22 +46,25 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ManagerIT {
-  private ByteArrayOutputStream bout;
-  private PrintStream out;
-  private DeviceRegistryExample app;
-
   private static final String CLOUD_REGION = "us-central1";
   private static final String ES_PATH = "resources/ec_public.pem";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String REGISTRY_ID = "java-reg-" + (System.currentTimeMillis() / 100L);
+  private static final String REGISTRY_ID =
+      "java-reg-"
+              + UUID.randomUUID().toString().substring(0, 10) + "-"
+          + (System.currentTimeMillis() / 100L);
   private static final String RSA_PATH = "resources/rsa_cert.pem";
   private static final String PKCS_PATH = "resources/rsa_private_pkcs8";
-  private static final String TOPIC_ID = "java-pst-" + (System.currentTimeMillis() / 100L);
+  private static final String TOPIC_ID =
+      "java-pst-"
+          + UUID.randomUUID().toString().substring(0, 20);
   private static final String MEMBER = "group:dpebot@google.com";
   private static final String ROLE = "roles/viewer";
-
   private static Topic topic;
   private static boolean hasCleared = false;
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
+  private DeviceRegistryExample app;
 
   @Before
   public void setUp() throws Exception {
@@ -105,7 +109,7 @@ public class ManagerIT {
         if (registryId.startsWith("java-reg-")) {
           long currSecs = System.currentTimeMillis() / 1000L;
           long regSecs =
-              Long.parseLong(registryId.substring("java-reg-".length(), registryId.length()));
+              Long.parseLong(registryId.substring("java-reg-".length() + 11, registryId.length()));
           long diffSecs = currSecs - regSecs;
           if (diffSecs > (60 * 60 * 24 * 7 * 10)) { // tests from last week or older
             System.out.println("Remove Id: " + r.getId());

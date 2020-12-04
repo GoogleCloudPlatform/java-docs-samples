@@ -16,6 +16,7 @@
 
 package com.example.cloudrun;
 
+// [START cloudrun_imageproc_controller]
 // [START run_imageproc_controller]
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -70,3 +71,4 @@ public class PubSubController {
   }
 }
 // [END run_imageproc_controller]
+// [END cloudrun_imageproc_controller]

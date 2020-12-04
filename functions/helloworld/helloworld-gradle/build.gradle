@@ -24,12 +24,14 @@ configurations {
     invoker
 }
 
+// [START functions_gradle_add_dependencies]
 dependencies {
   // Every function needs this dependency to get the Functions Framework API.
   compileOnly 'com.google.cloud.functions:functions-framework-api:1.0.1'
 
   // To run function locally using Functions Framework's local invoker
   invoker 'com.google.cloud.functions.invoker:java-function-invoker:1.0.0-alpha-2-rc5'
+  // [END functions_gradle_add_dependencies]
   // [END functions_example_pom_dependencies]
 
   // These dependencies are only used by the tests.
@@ -39,8 +41,11 @@ dependencies {
   testImplementation 'org.mockito:mockito-core:3.4.0'
 
   // [START functions_example_pom_dependencies]
+  // [START functions_gradle_add_dependencies]
 }
+// [END functions_gradle_add_dependencies]
 
+// [START functions_gradle_specify_function]
 // Register a "runFunction" task to run the function locally
 tasks.register("runFunction", JavaExec) {
   main = 'com.google.cloud.functions.invoker.runner.Invoker'
@@ -54,5 +59,6 @@ tasks.register("runFunction", JavaExec) {
     args('--classpath', files(configurations.runtimeClasspath, sourceSets.main.output).asPath)
   }
 }
+// [END functions_gradle_specify_function]
 // [END functions_build_gradle]
 // [END functions_example_pom_dependencies]
