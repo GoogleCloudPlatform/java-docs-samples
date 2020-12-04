@@ -2,9 +2,7 @@ package com.google.cloud.storage.storagetransfer.samples.test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.api.client.googleapis.util.Utils;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
-import com.google.api.services.storagetransfer.v1.StoragetransferScopes;
 import com.google.api.services.storagetransfer.v1.model.Date;
 import com.google.api.services.storagetransfer.v1.model.GcsData;
 import com.google.api.services.storagetransfer.v1.model.ObjectConditions;
@@ -13,16 +11,11 @@ import com.google.api.services.storagetransfer.v1.model.TimeOfDay;
 import com.google.api.services.storagetransfer.v1.model.TransferJob;
 import com.google.api.services.storagetransfer.v1.model.TransferOptions;
 import com.google.api.services.storagetransfer.v1.model.TransferSpec;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.storagetransfer.samples.CheckTransferJob;
-import com.google.cloud.storage.storagetransfer.samples.TransferClientCreator;
-import com.google.cloud.storage.storagetransfer.samples.TransferJobUtils;
-import com.google.cloud.storage.storagetransfer.samples.TransferToNearline;
+import com.google.cloud.storage.storagetransfer.samples.test.util.TransferClientCreator;
+import com.google.cloud.storage.storagetransfer.samples.test.util.TransferJobUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import org.junit.Test;
 
 public class CheckTransferJobTest {

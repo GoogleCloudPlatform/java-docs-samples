@@ -16,7 +16,7 @@
 
 // [START all]
 
-package com.google.cloud.storage.storagetransfer.samples;
+package com.google.cloud.storage.storagetransfer.samples.test.util;
 
 import com.google.api.client.googleapis.util.Utils;
 import com.google.api.client.http.HttpRequestInitializer;

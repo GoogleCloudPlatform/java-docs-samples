@@ -16,7 +16,7 @@
 
 // [START all]
 
-package com.google.cloud.storage.storagetransfer.samples;
+package com.google.cloud.storage.storagetransfer.samples.test.util;
 
 import com.google.api.services.storagetransfer.v1.model.Date;
 import com.google.api.services.storagetransfer.v1.model.TimeOfDay;

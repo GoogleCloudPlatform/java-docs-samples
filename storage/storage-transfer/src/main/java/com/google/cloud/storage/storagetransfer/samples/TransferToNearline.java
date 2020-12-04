@@ -104,4 +104,4 @@ public class TransferToNearline {
     System.out.println(response.toPrettyString());
   }
 }
-// [START storagetransfer_transfer_to_nearline]
+// [END storagetransfer_transfer_to_nearline]
