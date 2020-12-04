@@ -47,7 +47,7 @@ public final class RequestChecker {
       Storagetransfer client, String projectId, String jobName) throws IOException {
     return client
         .transferOperations()
-        .list("transferOperations")
+        .list("transferOperations", projectId)
         .setFilter("{\"project_id\": \"" + projectId + "\", \"job_names\": [\"" + jobName + "\"] }")
         .execute();
   }
