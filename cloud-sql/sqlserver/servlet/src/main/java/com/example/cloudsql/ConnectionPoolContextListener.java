@@ -47,7 +47,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
 
     // Configure which instance and what database user to connect with.
     config
-        .setDataSourceClassName(String.format("com.microsoft.sqlserver.jdbc.SQLServerDataSource"));
+        .setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
     config.setUsername(DB_USER); // e.g. "root", "sqlserver"
     config.setPassword(DB_PASS); // e.g. "my-password"
     config.addDataSourceProperty("databaseName", DB_NAME);
