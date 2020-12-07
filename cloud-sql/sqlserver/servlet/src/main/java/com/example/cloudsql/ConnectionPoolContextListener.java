@@ -45,9 +45,17 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     // The configuration object specifies behaviors for the connection pool.
     HikariConfig config = new HikariConfig();
 
+    // The following is equivalent to setting the config options below:
+    // jdbc:sqlserver://;user=<DB_USER>;password=<DB_PASS>;databaseName=<DB_NAME>;
+    // socketFactoryClass=com.google.cloud.sql.sqlserver.SocketFactory;
+    // socketFactoryConstructorArg=<CLOUD_SQL_CONNECTION_NAME>
+    
+    // See the link below for more info on building a JDBC URL for the Cloud SQL JDBC Socket Factory
+    // https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#creating-the-jdbc-url
+
     // Configure which instance and what database user to connect with.
     config
-        .setDataSourceClassName(String.format("com.microsoft.sqlserver.jdbc.SQLServerDataSource"));
+        .setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
     config.setUsername(DB_USER); // e.g. "root", "sqlserver"
     config.setPassword(DB_PASS); // e.g. "my-password"
     config.addDataSourceProperty("databaseName", DB_NAME);
