@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudresourcemanager</artifactId>
-      <version>v1-rev20201111-1.30.10</version><!-- v1 required here, v2 is different - DO NOT UPDATE to v2 -->
+      <version>v1-rev20201111-1.31.0</version><!-- v1 required here, v2 is different - DO NOT UPDATE to v2 -->
     </dependency>
 <!-- [END iam_java_quickstart_dependency] -->
 <!-- [START iamcredentials_java_dependency]-->
