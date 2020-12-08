@@ -41,30 +41,37 @@ import org.json.JSONObject;
 public class MailjetServlet extends HttpServlet {
   private static final String MAILJET_API_KEY = System.getenv("MAILJET_API_KEY");
   private static final String MAILJET_SECRET_KEY = System.getenv("MAILJET_SECRET_KEY");
-  private MailjetClient client =
-      new MailjetClient(MAILJET_API_KEY, MAILJET_SECRET_KEY, new ClientOptions("v3.1"));
+  ClientOptions options =
+      ClientOptions.builder().apiKey(MAILJET_API_KEY).apiSecretKey(MAILJET_SECRET_KEY).build();
+  MailjetClient client = new MailjetClient(options);
 
   @Override
-  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException,
-      ServletException {
+  public void doPost(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
     String recipient = req.getParameter("to");
     String sender = req.getParameter("from");
 
-    MailjetRequest email = new MailjetRequest(Emailv31.resource)
-        .property(Emailv31.MESSAGES, new JSONArray()
-        .put(new JSONObject()
-          .put(Emailv31.Message.FROM, new JSONObject()
-            .put("Email", sender)
-            .put("Name", "Mailjet Pilot"))
-          .put(Emailv31.Message.TO, new JSONArray()
-            .put(new JSONObject()
-              .put("Email", recipient)))
-          .put(Emailv31.Message.SUBJECT, "Your email flight plan!")
-          .put(Emailv31.Message.TEXTPART,
-              "Dear passenger, welcome to Mailjet! May the delivery force be with you!")
-          .put(Emailv31.Message.HTMLPART,
-              "<h3>Dear passenger, welcome to Mailjet!</h3><br />"
-                  + "May the delivery force be with you!")));
+    MailjetRequest email =
+        new MailjetRequest(Emailv31.resource)
+            .property(
+                Emailv31.MESSAGES,
+                new JSONArray()
+                    .put(
+                        new JSONObject()
+                            .put(
+                                Emailv31.Message.FROM,
+                                new JSONObject().put("Email", sender).put("Name", "Mailjet Pilot"))
+                            .put(
+                                Emailv31.Message.TO,
+                                new JSONArray().put(new JSONObject().put("Email", recipient)))
+                            .put(Emailv31.Message.SUBJECT, "Your email flight plan!")
+                            .put(
+                                Emailv31.Message.TEXTPART,
+                                "Dear passenger, welcome to Mailjet! May the delivery force be with you!")
+                            .put(
+                                Emailv31.Message.HTMLPART,
+                                "<h3>Dear passenger, welcome to Mailjet!</h3><br />"
+                                    + "May the delivery force be with you!")));
 
     try {
       // trigger the API call
