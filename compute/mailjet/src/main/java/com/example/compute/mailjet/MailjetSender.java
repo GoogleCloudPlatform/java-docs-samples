@@ -61,11 +61,12 @@ public class MailjetSender {
                             .put(Emailv31.Message.SUBJECT, "Your email flight plan!")
                             .put(
                                 Emailv31.Message.TEXTPART,
-                                "Dear passenger, welcome to Mailjet! May the delivery force be with you!")
+                                "Dear passenger, welcome to Mailjet!" 
+                                + "May the delivery force be with you!")
                             .put(
                                 Emailv31.Message.HTMLPART,
                                 "<h3>Dear passenger, welcome to Mailjet!</h3>"
-                                    + "<br />May the delivery force be with you!")));
+                                + "<br />May the delivery force be with you!")));
 
     try {
       // trigger the API call
