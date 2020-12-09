@@ -45,26 +45,26 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigtable</artifactId>
-      <version>1.16.0</version>
+      <version>1.18.1</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-1.x</artifactId>
-      <version>1.16.0</version>
+      <version>1.18.0</version>
     </dependency>
 
     <!-- test dependencies-->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.0.1</version>
+      <version>1.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

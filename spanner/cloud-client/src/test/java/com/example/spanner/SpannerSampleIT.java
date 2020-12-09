@@ -18,7 +18,9 @@ package com.example.spanner;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.BackupId;
+import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.ErrorCode;
@@ -44,10 +46,11 @@ import org.threeten.bp.temporal.ChronoField;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SpannerSampleIT {
+  private static final int DBID_LENGTH = 20;
   // The instance needs to exist for tests to pass.
   private static final String instanceId = System.getProperty("spanner.test.instance");
-  private static final String databaseId =
-      formatForTest(System.getProperty("spanner.sample.database"));
+  private static final String baseDbId = System.getProperty("spanner.sample.database");
+  private static final String databaseId = formatForTest(baseDbId);
   static Spanner spanner;
   static DatabaseId dbId;
   static DatabaseAdminClient dbClient;
@@ -65,13 +68,33 @@ public class SpannerSampleIT {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    SpannerOptions options = SpannerOptions.newBuilder().build();
+    SpannerOptions options =
+        SpannerOptions.newBuilder().setAutoThrottleAdministrativeRequests().build();
     spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
-    dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
-    dbClient.dropDatabase(
-        dbId.getInstanceId().getInstance(), SpannerSample.createRestoredSampleDbId(dbId));
+    // Delete stale test databases that have been created earlier by this test, but not deleted.
+    deleteStaleTestDatabases(instanceId, baseDbId);
+  }
+  
+  static void deleteStaleTestDatabases(String instanceId, String baseDbId) {
+    Timestamp now = Timestamp.now();
+    Pattern samplePattern = getTestDbIdPattern(baseDbId);
+    Pattern restoredPattern = getTestDbIdPattern("restored");
+    for (Database db : dbClient.listDatabases(instanceId).iterateAll()) {
+      if (TimeUnit.HOURS.convert(now.getSeconds() - db.getCreateTime().getSeconds(),
+          TimeUnit.SECONDS) > 24) {
+        if (db.getId().getDatabase().length() >= DBID_LENGTH) {
+          if (samplePattern.matcher(toComparableId(baseDbId, db.getId().getDatabase())).matches()) {
+            db.drop();
+          }
+          if (restoredPattern.matcher(toComparableId("restored", db.getId().getDatabase()))
+              .matches()) {
+            db.drop();
+          }
+        }
+      }
+    }
   }
 
   @AfterClass
@@ -399,8 +422,21 @@ public class SpannerSampleIT {
   private static int countOccurrences(String input, String search) {
     return input.split(search).length - 1;
   }
+  
+  private static String toComparableId(String baseId, String existingId) {
+    String zeroUuid = "00000000-0000-0000-0000-0000-00000000";
+    int shouldBeLength = (baseId + "-" + zeroUuid).length();
+    int missingLength = shouldBeLength - existingId.length();
+    return existingId + zeroUuid.substring(zeroUuid.length() - missingLength);
+  }
 
-  private static String formatForTest(String name) {
-    return name + "-" + UUID.randomUUID().toString().substring(0, 20);
+  private static Pattern getTestDbIdPattern(String baseDbId) {
+    return Pattern.compile(
+        baseDbId + "-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{8}",
+        Pattern.CASE_INSENSITIVE);
+  }
+  
+  static String formatForTest(String name) {
+    return name + "-" + UUID.randomUUID().toString().substring(0, DBID_LENGTH);
   }
 }

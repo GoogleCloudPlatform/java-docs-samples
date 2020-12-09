@@ -32,8 +32,9 @@ limitations under the License.
     <dependency>
       <groupId>com.sparkjava</groupId>
       <artifactId>spark-core</artifactId>
-      <version>2.9.2</version>
+      <version>2.9.3</version>
     </dependency>
+    <!-- [START cloudrun_manual_logging_dep] -->
     <!-- [START run_manual_logging_dep] -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -43,7 +44,7 @@ limitations under the License.
     <dependency>
       <groupId>net.logstash.logback</groupId>
       <artifactId>logstash-logback-encoder</artifactId>
-      <version>6.4</version>
+      <version>6.5</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -51,6 +52,7 @@ limitations under the License.
       <version>1.2.3</version>
     </dependency>
     <!-- [END run_manual_logging_dep] -->
+    <!-- [END cloudrun_manual_logging_dep] -->
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
@@ -59,13 +61,14 @@ limitations under the License.
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <!-- [START cloudrun_manual_logging_jib] -->
       <!-- [START run_manual_logging_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
@@ -78,6 +81,7 @@ limitations under the License.
         </configuration>
       </plugin>
       <!-- [END run_manual_logging_jib] -->
+      <!-- [END cloudrun_manual_logging_jib] -->
     </plugins>
   </build>
 </project>

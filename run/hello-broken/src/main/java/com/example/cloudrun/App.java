@@ -16,6 +16,7 @@
 
 package com.example.cloudrun;
 
+// [START cloudrun_broken_service]
 // [START run_broken_service]
 import static spark.Spark.get;
 import static spark.Spark.port;
@@ -35,6 +36,7 @@ public class App {
         "/",
         (req, res) -> {
           logger.info("Hello: received request.");
+          // [START cloudrun_broken_service_problem]
           // [START run_broken_service_problem]
           String name = System.getenv("NAME");
           if (name == null) {
@@ -46,25 +48,30 @@ public class App {
             return "Internal Server Error";
           }
           // [END run_broken_service_problem]
+          // [END cloudrun_broken_service_problem]
           res.status(200);
           return String.format("Hello %s!", name);
         });
     // [END run_broken_service]
+    // [END cloudrun_broken_service]
     get(
         "/improved",
         (req, res) -> {
           logger.info("Hello: received request.");
+          // [START cloudrun_broken_service_upgrade]
           // [START run_broken_service_upgrade]
           String name = System.getenv().getOrDefault("NAME", "World");
           if (System.getenv("NAME") == null) {
             logger.warn(String.format("NAME not set, default to %s", name));
           }
           // [END run_broken_service_upgrade]
+          // [END cloudrun_broken_service_upgrade]
           res.status(200);
           return String.format("Hello %s!", name);
         });
-
+    // [START cloudrun_broken_service]
     // [START run_broken_service]
   }
 }
 // [END run_broken_service]
+// [END cloudrun_broken_service]

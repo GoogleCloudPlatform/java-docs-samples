@@ -37,7 +37,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <apache_beam.version>2.24.0</apache_beam.version>
+    <apache_beam.version>2.25.0</apache_beam.version>
   </properties>
 
   <dependencies>
@@ -61,20 +61,20 @@
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-beam</artifactId>
-      <version>1.16.0</version>
+      <version>1.17.1</version>
     </dependency>
     <!-- [END bigtable_beam_connector_dependency] -->
 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.0.1</version>
+      <version>1.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

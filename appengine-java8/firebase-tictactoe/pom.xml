@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.82</version>
+      <version>1.9.83</version>
     </dependency>
 
     <dependency>
@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>0.21.1</version>
+      <version>0.22.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -67,12 +67,12 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>29.0-jre</version>
+      <version>30.0-jre</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.30.10</version>
+      <version>1.31.1</version>
     </dependency>
 
 
@@ -80,7 +80,7 @@
     <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.13</version>
+        <version>4.13.1</version>
         <scope>test</scope>
     </dependency>
     <dependency>
@@ -92,25 +92,25 @@
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-testing</artifactId>
-        <version>1.9.82</version>
+        <version>1.9.83</version>
         <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-api-stubs</artifactId>
-        <version>1.9.82</version>
+        <version>1.9.83</version>
         <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-tools-sdk</artifactId>
-        <version>1.9.82</version>
+        <version>1.9.83</version>
         <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>com.google.truth</groupId>
         <artifactId>truth</artifactId>
-        <version>1.0.1</version>
+        <version>1.1</version>
         <scope>test</scope>
     </dependency>
   </dependencies>

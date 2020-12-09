@@ -30,7 +30,7 @@ README files for details.
     Or manually set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable
     to point to a service account key JSON file path.
 
-    Learn more at [Setting Up Authentication for Server to Server Production Applications](ADC).
+    Learn more at [Setting Up Authentication for Server to Server Production Applications][ADC].
 
     *Note:* Application Default Credentials is able to implicitly find the credentials as long as the application is running on Compute Engine, Kubernetes Engine, App Engine, or Cloud Functions.
 

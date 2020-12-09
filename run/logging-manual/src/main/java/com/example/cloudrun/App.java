@@ -40,6 +40,7 @@ public class App {
     get(
         "/",
         (req, res) -> {
+          // [START cloudrun_manual_logging]
           // [START run_manual_logging]
           // Build structured log messages as an object.
           Object globalLogFields = null;
@@ -59,6 +60,7 @@ public class App {
               kv("severity", "NOTICE"),
               globalLogFields);
           // [END run_manual_logging]
+          // [END cloudrun_manual_logging]
           res.status(200);
           return "Hello Logger!";
         });
