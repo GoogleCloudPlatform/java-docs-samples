@@ -16,9 +16,10 @@
 
 package com.example.transcoder;
 
-import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNotNull;
+
 
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
