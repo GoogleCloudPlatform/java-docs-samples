@@ -37,7 +37,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <groovy.version>3.0.6</groovy.version>
+    <groovy.version>3.0.7</groovy.version>
   </properties>
 
   <dependencies>
@@ -100,7 +100,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.5</version>
+        <version>0.9.6</version>
         <configuration>
           <functionTarget>functions.GroovyHelloWorld</functionTarget>
         </configuration>
@@ -108,7 +108,7 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.11.0</version>
+        <version>1.11.1</version>
         <executions>
           <execution>
             <id>groovy-compile</id>
