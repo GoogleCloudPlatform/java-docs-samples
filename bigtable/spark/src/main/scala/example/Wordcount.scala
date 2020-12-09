@@ -22,22 +22,33 @@ import org.apache.hadoop.hbase.mapreduce.TableOutputFormat
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.SparkContext
 
+
 object Wordcount extends App {
 
-  val projectId = args(0)
-  val instanceId = args(1)
-  val table = args(2)
-  val file = args(3)
+  def parse(args: Array[String]): (String, String, String, String) = {
+    if (args.length < 4) {
+      throw new IllegalStateException("Missing command-line argument(s). Required are: BIGTABLE_SPARK_PROJECT_ID, BIGTABLE_SPARK_INSTANCE_ID, BIGTABLE_SPARK_WORDCOUNT_TABLE, BIGTABLE_SPARK_WORDCOUNT_FILE")
+    }
+    val projectId = args(0)
+    val instanceId = args(1)
+    val table = args(2)
+    val file = args(3)
+    (projectId, instanceId, table, file)
+  }
+
+  val (projectId, instanceId, table, file) = parse(args)
 
   var hConf = BigtableConfiguration.configure(projectId, instanceId)
   hConf.set(TableOutputFormat.OUTPUT_TABLE, table)
 
   import org.apache.hadoop.mapreduce.Job
+
   val job = Job.getInstance(hConf)
   job.setOutputFormatClass(classOf[TableOutputFormat[ImmutableBytesWritable]])
   hConf = job.getConfiguration
 
   import org.apache.spark.SparkConf
+
   val config = new SparkConf()
 
   // Workaround for a bug in TableOutputFormat
