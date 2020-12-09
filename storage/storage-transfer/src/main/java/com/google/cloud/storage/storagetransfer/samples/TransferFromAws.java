@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.cloud.storage.storagetransfer.samples;
 
 // [START storagetransfer_transfer_from_aws]
@@ -36,7 +37,7 @@ import java.util.Calendar;
 public class TransferFromAws {
 
   // Creates a one-off transfer job from Amazon S3 to Google Cloud Storage.
-  public static void TransferFromAws(String projectId,
+  public static void transferFromAws(String projectId,
       String jobDescription,
       String awsSourceBucket,
       String gcsSinkBucket,

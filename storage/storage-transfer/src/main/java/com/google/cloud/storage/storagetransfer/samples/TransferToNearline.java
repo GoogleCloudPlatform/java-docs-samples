@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.cloud.storage.storagetransfer.samples;
 
 // [START storagetransfer_transfer_to_nearline]
@@ -36,7 +37,7 @@ public class TransferToNearline {
   /** Creates a one-off transfer job that transfers objects in a standard GCS bucket that are more
    *  than 30 days old to a Nearline GCS bucket.
    */
-  public static void TransferToNearline(String projectId,
+  public static void transferToNearline(String projectId,
       String jobDescription,
       String gcsSourceBucket,
       String gcsNearlineSinkBucket,

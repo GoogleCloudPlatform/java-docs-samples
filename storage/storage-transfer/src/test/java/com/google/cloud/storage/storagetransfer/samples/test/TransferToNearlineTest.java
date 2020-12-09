@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.cloud.storage.storagetransfer.samples.test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -34,7 +35,7 @@ public class TransferToNearlineTest {
     System.setOut(new PrintStream(sampleOutputCapture));
 
     TransferToNearline
-        .TransferToNearline(PROJECT_ID, "Sample transfer job from GCS to GCS Nearline.",
+        .transferToNearline(PROJECT_ID, "Sample transfer job from GCS to GCS Nearline.",
             PROJECT_ID + "-storagetransfer-source", PROJECT_ID + "-storagetransfer-sink",
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime());
 

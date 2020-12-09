@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.cloud.storage.storagetransfer.samples;
 
 // [START storagetransfer_get_transfer_job]
@@ -26,7 +27,7 @@ import java.io.IOException;
 
 public class CheckTransferJob {
   // Performs a list operation to check the status of a job
-  public static void CheckTransferJob(String projectId, String jobName) throws IOException {
+  public static void checkTransferJob(String projectId, String jobName) throws IOException {
     // Your Google Cloud Project ID
     // String projectId = "your-project-id";
 

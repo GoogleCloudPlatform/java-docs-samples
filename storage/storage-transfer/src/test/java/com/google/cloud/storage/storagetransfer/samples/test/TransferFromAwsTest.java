@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.cloud.storage.storagetransfer.samples.test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -36,7 +37,7 @@ public class TransferFromAwsTest {
     final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
     System.setOut(new PrintStream(sampleOutputCapture));
 
-    TransferFromAws.TransferFromAws(PROJECT_ID, "Sample transfer job from S3 to GCS.",
+    TransferFromAws.transferFromAws(PROJECT_ID, "Sample transfer job from S3 to GCS.",
         "cloud-samples-tests", PROJECT_ID + "-storagetransfer",
         new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime(),
         System.getenv("AWS_ACCESS_KEY_ID"), System.getenv("AWS_SECRET_ACCESS_KEY"));
