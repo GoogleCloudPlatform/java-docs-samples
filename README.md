@@ -69,3 +69,5 @@ Apache header:
 [cred]: http://google.github.io/google-auth-library-java/releases/0.6.0/apidocs/com/google/auth/Credentials.html?is-external=true
 [options]: http://googlecloudplatform.github.io/google-cloud-java/0.12.0/apidocs/com/google/cloud/ServiceOptions.Builder.html#setCredentials-com.google.auth.Credentials-
 [auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
+
+Java is a registered trademark of Oracle and/or its affiliates.
