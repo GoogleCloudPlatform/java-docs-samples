@@ -16,14 +16,13 @@
 
 // [START all]
 
-package com.google.cloud.storage.storagetransfer.samples;
+package com.google.cloud.storage.storagetransfer.samples.test.util;
 
 import com.google.api.services.storagetransfer.v1.model.Date;
 import com.google.api.services.storagetransfer.v1.model.TimeOfDay;
 
 /** Utility methods for creating TransferJobs. */
 public final class TransferJobUtils {
-  private static final int BASE_10 = 10;
 
   /** A private constructor. */
   private TransferJobUtils() {}
@@ -42,9 +41,9 @@ public final class TransferJobUtils {
     Date date =
         Date.class
             .newInstance()
-            .setYear(Integer.parseInt(dateString.split("-")[0], BASE_10))
-            .setMonth(Integer.parseInt(dateString.split("-")[1], BASE_10))
-            .setDay(Integer.parseInt(dateString.split("-")[2], BASE_10));
+            .setYear(Integer.parseInt(dateString.split("-")[0]))
+            .setMonth(Integer.parseInt(dateString.split("-")[1]))
+            .setDay(Integer.parseInt(dateString.split("-")[2]));
     return date;
   }
 
@@ -62,28 +61,10 @@ public final class TransferJobUtils {
     TimeOfDay time =
         TimeOfDay.class
             .newInstance()
-            .setHours(Integer.parseInt(timeString.split(":")[0], BASE_10))
-            .setMinutes(Integer.parseInt(timeString.split(":")[1], BASE_10))
-            .setSeconds(Integer.parseInt(timeString.split(":")[2], BASE_10));
+            .setHours(Integer.parseInt(timeString.split(":")[0]))
+            .setMinutes(Integer.parseInt(timeString.split(":")[1]))
+            .setSeconds(Integer.parseInt(timeString.split(":")[2]));
     return time;
-  }
-
-  public static String getEnvOrFail(String envName) {
-    String envValue = System.getenv(envName);
-    if (envValue == null || envValue.isEmpty()) {
-      System.err.printf("The %s environment variable must be set.", envName);
-      System.exit(1);
-    }
-    return envValue;
-  }
-
-  public static String getPropertyOrFail(String propertyName) {
-    String propertyValue = System.getProperty(propertyName);
-    if (propertyValue == null || propertyValue.isEmpty()) {
-      System.err.printf("The %s property must be set.", propertyName);
-      System.exit(1);
-    }
-    return propertyValue;
   }
 }
 // [END all]

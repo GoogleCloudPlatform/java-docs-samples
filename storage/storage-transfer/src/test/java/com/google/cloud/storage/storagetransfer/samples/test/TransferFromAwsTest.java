@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2020 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,35 +18,32 @@ package com.google.cloud.storage.storagetransfer.samples.test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.storage.storagetransfer.samples.AwsRequester;
+import com.google.cloud.storage.storagetransfer.samples.TransferFromAws;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class AwsRequesterTest {
+public class TransferFromAwsTest {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
-  /**
-   * Tests whether AwsRequester executes a request to create a TransferJob.
-   */
   @Test
-  public void testRun() throws Exception {
-    System.setProperty("projectId", PROJECT_ID);
-    System.setProperty("jobDescription", "Sample transfer job from S3 to GCS.");
-    System.setProperty("awsSourceBucket", "cloud-samples-tests");
-    System.setProperty("gcsSinkBucket", PROJECT_ID + "-storagetransfer");
-    System.setProperty("startDate", "2000-01-01");
-    System.setProperty("startTime", "00:00:00");
+  public void testTransferFromAws() throws Exception {
+    PrintStream standardOut = System.out;
+    final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(sampleOutputCapture));
 
-    ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
-    PrintStream outStream = new PrintStream(outBytes);
-    AwsRequester.run(outStream);
-    String out = outBytes.toString();
+    TransferFromAws.transferFromAws(PROJECT_ID, "Sample transfer job from S3 to GCS.",
+        "cloud-samples-tests", PROJECT_ID + "-storagetransfer",
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime(),
+        System.getenv("AWS_ACCESS_KEY_ID"), System.getenv("AWS_SECRET_ACCESS_KEY"));
 
-    assertThat(out).contains("\"description\" : \"Sample transfer job from S3 to GCS.\"");
+    String sampleOutput = sampleOutputCapture.toString();
+    System.setOut(standardOut);
+    assertThat(sampleOutput).contains("\"description\" : \"Sample transfer job from S3 to GCS.\"");
   }
 }

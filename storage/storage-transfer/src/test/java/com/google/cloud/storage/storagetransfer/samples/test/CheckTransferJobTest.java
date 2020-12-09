@@ -27,19 +27,19 @@ import com.google.api.services.storagetransfer.v1.model.TimeOfDay;
 import com.google.api.services.storagetransfer.v1.model.TransferJob;
 import com.google.api.services.storagetransfer.v1.model.TransferOptions;
 import com.google.api.services.storagetransfer.v1.model.TransferSpec;
-import com.google.cloud.storage.storagetransfer.samples.CheckLatestTransferOperation;
+import com.google.cloud.storage.storagetransfer.samples.CheckTransferJob;
 import com.google.cloud.storage.storagetransfer.samples.test.util.TransferClientCreator;
 import com.google.cloud.storage.storagetransfer.samples.test.util.TransferJobUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.Test;
 
-public class CheckLatestTransferOperationTest {
+public class CheckTransferJobTest {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   @Test
-  public void testCheckLatestTransferOperation() throws Exception {
+  public void testCheckTransferJob() throws Exception {
     Date date = TransferJobUtils.createDate("2000-01-01");
     TimeOfDay time = TransferJobUtils.createTimeOfDay("00:00:00");
     TransferJob transferJob =
@@ -67,10 +67,11 @@ public class CheckLatestTransferOperationTest {
     final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
     System.setOut(new PrintStream(sampleOutputCapture));
 
-    CheckLatestTransferOperation.checkLatestTransferOperation(PROJECT_ID, response.getName());
+    CheckTransferJob.checkTransferJob(PROJECT_ID, response.getName());
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
-    assertThat(sampleOutput.contains(response.getName()));
+    // An exception would be thrown if the call failed, so if it reaches this line it went through
+    assertThat(sampleOutput).contains("List operation returned response:");
   }
 }
