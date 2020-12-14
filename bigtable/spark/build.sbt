@@ -31,7 +31,7 @@ libraryDependencies ++= Seq(
   "com.google.cloud.bigtable" % "bigtable-hbase-2.x-hadoop" % bigtableVersion
 )
 
-val scalatestVersion = "3.2.0"
+val scalatestVersion = "3.2.3"
 libraryDependencies += "org.scalactic" %% "scalactic" % scalatestVersion
 libraryDependencies += "org.scalatest" %% "scalatest" % scalatestVersion % "test"
 test in assembly := {}
