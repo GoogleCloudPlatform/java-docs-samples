@@ -49,7 +49,7 @@ libraryDependencies ++= fixes
 // Fix for Exception: Incompatible Jackson 2.9.2
 // Version conflict between HBase and Spark
 // Forcing the version to match Spark
-dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.10"
+dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.0"
 
 // Excluding duplicates for the uber-jar
 // There are other deps to provide necessary packages
