@@ -63,7 +63,6 @@ excludeDependencies ++= Seq(
 assemblyMergeStrategy in assembly := {
   case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.first
   case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
-  case PathList("mozilla", "public-suffix-list.txt") => MergeStrategy.first
   case PathList("google", xs @ _*) => xs match {
     case ps @ (x :: xs) if ps.last.endsWith(".proto") => MergeStrategy.first
     case _ => MergeStrategy.deduplicate
@@ -71,6 +70,5 @@ assemblyMergeStrategy in assembly := {
   case x =>
     val oldStrategy = (assemblyMergeStrategy in assembly).value
     oldStrategy(x)
-    // FIXME Make sure first is OK (it's worked well so far)
     MergeStrategy.first
 }
