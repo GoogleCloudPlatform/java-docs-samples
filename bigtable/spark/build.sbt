@@ -21,7 +21,7 @@ version := "0.1"
 // Versions to match Dataproc 1.4
 // https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-release-1.4
 scalaVersion := "2.13.4"
-val sparkVersion = "2.4.7"
+val sparkVersion = "3.0.1"
 val bigtableVersion = "1.16.0"
 val hbaseVersion = "1.3.6"
 
