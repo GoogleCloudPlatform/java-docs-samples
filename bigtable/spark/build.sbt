@@ -21,7 +21,7 @@ version := "0.1"
 // Versions to match Dataproc 1.4
 // https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-release-1.4
 scalaVersion := "2.13.4"
-val sparkVersion = "2.4.6"
+val sparkVersion = "3.0.1"
 val bigtableVersion = "1.18.1"
 val hbaseVersion = "1.3.6"
 
@@ -49,7 +49,7 @@ libraryDependencies ++= fixes
 // Fix for Exception: Incompatible Jackson 2.9.2
 // Version conflict between HBase and Spark
 // Forcing the version to match Spark
-dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.10"
+dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.0"
 
 // Excluding duplicates for the uber-jar
 // There are other deps to provide necessary packages
@@ -63,7 +63,6 @@ excludeDependencies ++= Seq(
 assemblyMergeStrategy in assembly := {
   case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.first
   case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
-  case PathList("mozilla", "public-suffix-list.txt") => MergeStrategy.first
   case PathList("google", xs @ _*) => xs match {
     case ps @ (x :: xs) if ps.last.endsWith(".proto") => MergeStrategy.first
     case _ => MergeStrategy.deduplicate
@@ -71,6 +70,5 @@ assemblyMergeStrategy in assembly := {
   case x =>
     val oldStrategy = (assemblyMergeStrategy in assembly).value
     oldStrategy(x)
-    // FIXME Make sure first is OK (it's worked well so far)
     MergeStrategy.first
 }
