@@ -61,6 +61,12 @@ Sample(s) showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow]
     gcloud scheduler jobs run publisher-job
     ```
 
+1. Set `REGION` to a Dataflow [regional endpoint].
+
+   ```
+   export $REGION=your-cloud-region
+   ```
+
 ## Setup
 
 The following instructions will help you prepare your development environment.
@@ -91,7 +97,7 @@ The following instructions will help you prepare your development environment.
 The following example will run a streaming pipeline. It will read messages from a Pub/Sub topic, then window them into fixed-sized intervals, and write one file per window into a GCS location.
 
 + `--project`: sets the Google Cloud project ID to run the pipeline on
-+ `--region`: sets the Dataflow [regional endpoint]
++ `--region`: sets the Dataflow regional endpoint
 + `--inputTopic`: sets the input Pub/Sub topic to read messages from
 + `--output`: sets the output GCS path prefix to write files to
 + `--runner [optional]`: specifies the runner to run the pipeline, defaults to `DirectRunner`
@@ -103,7 +109,7 @@ mvn compile exec:java \
   -Dexec.cleanupDaemonThreads=false \
   -Dexec.args="\
     --project=$PROJECT_NAME \
-    --region=us-central1 \
+    --region=$REGION \
     --inputTopic=projects/$PROJECT_NAME/topics/cron-topic \
     --output=gs://$BUCKET_NAME/samples/output \
     --runner=DataflowRunner \
