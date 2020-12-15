@@ -50,6 +50,10 @@
     {
       "packagePatterns": ["^scalaVersion"],
       "enabled": false
+    },
+    {
+      "packagePatterns": ["^spark-sql"],
+      "enabled": false
     }
   ],
   "labels": [
