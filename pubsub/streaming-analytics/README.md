@@ -64,7 +64,7 @@ Sample(s) showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow]
 1. Set `REGION` to a Dataflow [regional endpoint].
 
    ```
-   export $REGION=your-cloud-region
+   export REGION=your-cloud-region
    ```
 
 ## Setup
