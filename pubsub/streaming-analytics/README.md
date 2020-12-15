@@ -91,6 +91,7 @@ The following instructions will help you prepare your development environment.
 The following example will run a streaming pipeline. It will read messages from a Pub/Sub topic, then window them into fixed-sized intervals, and write one file per window into a GCS location.
 
 + `--project`: sets the Google Cloud project ID to run the pipeline on
++ `--region`: sets the Dataflow [regional endpoint]
 + `--inputTopic`: sets the input Pub/Sub topic to read messages from
 + `--output`: sets the output GCS path prefix to write files to
 + `--runner [optional]`: specifies the runner to run the pipeline, defaults to `DirectRunner`
@@ -102,6 +103,7 @@ mvn compile exec:java \
   -Dexec.cleanupDaemonThreads=false \
   -Dexec.args="\
     --project=$PROJECT_NAME \
+    --region=us-central1 \
     --inputTopic=projects/$PROJECT_NAME/topics/cron-topic \
     --output=gs://$BUCKET_NAME/samples/output \
     --runner=DataflowRunner \
@@ -164,3 +166,5 @@ gsutil ls gs://$BUCKET_NAME/samples/
 [GCP Console create Dataflow job page]: https://console.cloud.google.com/dataflow/createjob
 [GCP Console Dataflow page]: https://console.cloud.google.com/dataflow
 [GCP Console Storage page]: https://console.cloud.google.com/storage
+
+[regional endpoint]: https://cloud.google.com/dataflow/docs/concepts/regional-endpoints
