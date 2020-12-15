@@ -46,6 +46,10 @@
     {
       "packageNames": ["com.microsoft.sqlserver:mssql-jdbc"],
       "allowedVersions": "/.+jre8.?/"
+    },
+    {
+      "packagePatterns": ["^scalaVersion"],
+      "enabled": false
     }
   ],
   "labels": [
