@@ -55,7 +55,7 @@ The following command will run the application locally in the the GAE-developmen
 mvn appengine:run
 ```
 
-### Deploy to Google Cloud
+### Deploy to Google App Engine
 
 First, update `src/main/webapp/WEB-INF/appengine-web.xml` with the correct values to pass the
 environment variables into the runtime.
@@ -70,10 +70,10 @@ mvn clean package appengine:deploy
 See the [Cloud Run documentation](https://cloud.google.com/run/docs/configuring/connect-cloudsql)
 for more details on connecting a Cloud Run service to Cloud SQL.
 
-1. Build the container image:
+1. Build the container image using [Jib](https://cloud.google.com/java/getting-started/jib):
 
   ```sh
-  gcloud builds submit --tag gcr.io/[YOUR_PROJECT_ID]/run-mysql
+    mvn compile com.google.cloud.tools:jib-maven-pluginbuild \ -Dimage=gcr.io/[YOUR_PROJECT_ID]/run-mysql
   ```
 
 2. Deploy the service to Cloud Run:

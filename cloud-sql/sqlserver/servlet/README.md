@@ -58,6 +58,7 @@ mvn clean package appengine:run
 ```
 
 Note: if the GAE development server fails to start, check that you are using a supported version of Java. Supported versions are Java 8 and Java 11.
+
 ### Deploy to Google Cloud
 
 First, update `src/main/webapp/WEB-INF/appengine-web.xml` with the correct values to pass the 
@@ -67,6 +68,44 @@ Next, the following command will deploy the application to your Google Cloud pro
 ```bash
 mvn clean package appengine:deploy
 ```
+
+### Deploy to Cloud Run
+
+See the [Cloud Run documentation](https://cloud.google.com/run/docs/configuring/connect-cloudsql)
+for more details on connecting a Cloud Run service to Cloud SQL.
+
+1. Build the container image using [Jib](https://cloud.google.com/java/getting-started/jib):
+
+  ```sh
+    mvn compile com.google.cloud.tools:jib-maven-pluginbuild \ -Dimage=gcr.io/[YOUR_PROJECT_ID]/run-sqlserver
+  ```
+
+2. Deploy the service to Cloud Run:
+
+  ```sh
+  gcloud run deploy run-sqlserver --image gcr.io/[YOUR_PROJECT_ID]/run-sqlserver
+  ```
+
+  Take note of the URL output at the end of the deployment process.
+
+3. Configure the service for use with Cloud Run
+
+  ```sh
+  gcloud run services update run-sqlserver \
+      --add-cloudsql-instances [INSTANCE_CONNECTION_NAME] \
+      --set-env-vars CLOUD_SQL_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME],\
+        DB_USER=[MY_DB_USER],DB_PASS=[MY_DB_PASS],DB_NAME=[MY_DB]
+  ```
+  Replace environment variables with the correct values for your Cloud SQL
+  instance configuration.
+
+  This step can be done as part of deployment but is separated for clarity.
+
+4. Navigate your browser to the URL noted in step 2.
+
+  For more details about using Cloud Run see http://cloud.run.
+  Review other [Java on Cloud Run samples](../../../run/).
+
 
 ### Cleanup
 To avoid incurring any charges, navigate to your project's [App Engine settings](https://console.cloud.google.com/appengine/settings) and click `Disable Application`. Also [delete your Cloud SQL Instance](https://cloud.google.com/sql/docs/mysql/delete-instance) if you no longer need it.
