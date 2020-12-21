@@ -77,35 +77,33 @@ for more details on connecting a Cloud Run service to Cloud SQL.
 1. Build the container image using [Jib](https://cloud.google.com/java/getting-started/jib):
 
   ```sh
-    mvn compile com.google.cloud.tools:jib-maven-plugin:2.7.0:build \ -Dimage=gcr.io/[YOUR_PROJECT_ID]/run-sqlserver
+    mvn compile com.google.cloud.tools:jib-maven-plugin:2.7.0:build \
+      -Dimage=gcr.io/[YOUR_PROJECT_ID]/run-sqlserver
   ```
 
 2. Deploy the service to Cloud Run:
 
   ```sh
-  gcloud run deploy run-sqlserver --image gcr.io/[YOUR_PROJECT_ID]/run-sqlserver
+  gcloud run deploy run-sqlserver \
+    --image gcr.io/[YOUR_PROJECT_ID]/run-sqlserver \
+    --platform managed \
+    --allow-unauthenticated \
+    --region [REGION] \
+    --update-env-vars CLOUD_SQL_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME] \
+    --update-env-vars DB_USER=[MY_DB_USER] \
+    --update-env-vars DB_PASS=[MY_DB_PASS] \
+    --update-env-vars DB_NAME=[MY_DB]
   ```
 
-  Take note of the URL output at the end of the deployment process.
-
-3. Configure the service for use with Cloud Run
-
-  ```sh
-  gcloud run services update run-sqlserver \
-      --add-cloudsql-instances [INSTANCE_CONNECTION_NAME] \
-      --set-env-vars CLOUD_SQL_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME],\
-        DB_USER=[MY_DB_USER],DB_PASS=[MY_DB_PASS],DB_NAME=[MY_DB]
-  ```
   Replace environment variables with the correct values for your Cloud SQL
   instance configuration.
 
-  This step can be done as part of deployment but is separated for clarity.
+  Take note of the URL output at the end of the deployment process.
 
-4. Navigate your browser to the URL noted in step 2.
+3. Navigate your browser to the URL noted in step 2.
 
   For more details about using Cloud Run see http://cloud.run.
   Review other [Java on Cloud Run samples](../../../run/).
-
 
 ### Cleanup
 To avoid incurring any charges, navigate to your project's [App Engine settings](https://console.cloud.google.com/appengine/settings) and click `Disable Application`. Also [delete your Cloud SQL Instance](https://cloud.google.com/sql/docs/mysql/delete-instance) if you no longer need it.
