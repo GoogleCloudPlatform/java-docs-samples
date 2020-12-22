@@ -55,7 +55,7 @@ The following command will run the application locally in the the GAE-developmen
 mvn appengine:run
 ```
 
-### Deploy to Google Cloud
+### Deploy to Google App Engine
 
 First, update `src/main/webapp/WEB-INF/appengine-web.xml` with the correct values to pass the 
 environment variables into the runtime.
@@ -64,3 +64,39 @@ Next, the following command will deploy the application to your Google Cloud pro
 ```bash
 mvn clean package appengine:deploy
 ```
+
+### Deploy to Cloud Run
+
+See the [Cloud Run documentation](https://cloud.google.com/run/docs/configuring/connect-cloudsql)
+for more details on connecting a Cloud Run service to Cloud SQL.
+
+1. Build the container image using [Jib](https://cloud.google.com/java/getting-started/jib):
+
+  ```sh
+    mvn compile com.google.cloud.tools:jib-maven-plugin:2.7.0:build \ 
+      -Dimage=gcr.io/[YOUR_PROJECT_ID]/run-postgres
+  ```
+
+2. Deploy the service to Cloud Run:
+
+  ```sh
+  gcloud run deploy run-postgres \
+    --image gcr.io/[YOUR_PROJECT_ID]/run-postgres \
+    --platform managed \
+    --allow-unauthenticated \
+    --region [REGION] \
+    --update-env-vars CLOUD_SQL_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME] \
+    --update-env-vars DB_USER=[MY_DB_USER] \
+    --update-env-vars DB_PASS=[MY_DB_PASS] \
+    --update-env-vars DB_NAME=[MY_DB]
+  ```
+
+  Replace environment variables with the correct values for your Cloud SQL
+  instance configuration.
+
+  Take note of the URL output at the end of the deployment process.
+
+3. Navigate your browser to the URL noted in step 2.
+
+  For more details about using Cloud Run see http://cloud.run.
+  Review other [Java on Cloud Run samples](../../../run/).
