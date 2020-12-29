@@ -25,10 +25,12 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Map;
 import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,12 +47,9 @@ public class IndexServlet extends HttpServlet {
 
   private static final Logger LOGGER = Logger.getLogger(IndexServlet.class.getName());
 
-  @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws IOException, ServletException {
-    // Extract the pool from the Servlet Context, reusing the one that was created
-    // in the ContextListener when the application was started
-    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
+  public Map<String, Object> getTemplateData(DataSource pool) throws ServletException {
+
+    Map<String, Object> templateData = new HashMap<String, Object>();
 
     int tabCount = 0;
     int spaceCount = 0;
@@ -59,7 +58,7 @@ public class IndexServlet extends HttpServlet {
       // PreparedStatements are compiled by the database immediately and executed at a later date.
       // Most databases cache previously compiled queries, which improves efficiency.
       String stmt1 = "SELECT candidate, time_cast FROM votes ORDER BY time_cast DESC LIMIT 5";
-      try (PreparedStatement voteStmt = conn.prepareStatement(stmt1); ) {
+      try (PreparedStatement voteStmt = conn.prepareStatement(stmt1);) {
         // Execute the statement
         ResultSet voteResults = voteStmt.executeQuery();
         // Convert a ResultSet into Vote objects
@@ -73,7 +72,7 @@ public class IndexServlet extends HttpServlet {
       // PreparedStatements can also be executed multiple times with different arguments. This can
       // improve efficiency, and project a query from being vulnerable to an SQL injection.
       String stmt2 = "SELECT COUNT(vote_id) FROM votes WHERE candidate=?";
-      try (PreparedStatement voteCountStmt = conn.prepareStatement(stmt2); ) {
+      try (PreparedStatement voteCountStmt = conn.prepareStatement(stmt2);) {
         voteCountStmt.setString(1, "TABS");
         ResultSet tabResult = voteCountStmt.executeQuery();
         if (tabResult.next()) { // Move to the first result
@@ -95,11 +94,26 @@ public class IndexServlet extends HttpServlet {
               + "steps in the README and try again.",
           ex);
     }
+    templateData.put("tabCount", tabCount);
+    templateData.put("spaceCount", spaceCount);
+    templateData.put("recentVotes", recentVotes);
+
+    return templateData;
+  }
+
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
+    // Extract the pool from the Servlet Context, reusing the one that was created
+    // in the ContextListener when the application was started
+    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
+
+    Map<String, Object> templateData = getTemplateData(pool);
 
     // Add variables and render the page
-    req.setAttribute("tabCount", tabCount);
-    req.setAttribute("spaceCount", spaceCount);
-    req.setAttribute("recentVotes", recentVotes);
+    req.setAttribute("tabCount", templateData.get("tabCount"));
+    req.setAttribute("spaceCount", templateData.get("spaceCount"));
+    req.setAttribute("recentVotes", templateData.get("recentVotes"));
     req.getRequestDispatcher("/index.jsp").forward(req, resp);
   }
 
@@ -140,7 +154,7 @@ public class IndexServlet extends HttpServlet {
 
       // PreparedStatements can be more efficient and project against injections.
       String stmt = "INSERT INTO votes (time_cast, candidate) VALUES (?, ?);";
-      try (PreparedStatement voteStmt = conn.prepareStatement(stmt); ) {
+      try (PreparedStatement voteStmt = conn.prepareStatement(stmt);) {
         voteStmt.setTimestamp(1, now);
         voteStmt.setString(2, team);
 
