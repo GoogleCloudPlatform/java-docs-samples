@@ -137,7 +137,7 @@ limitations under the License.
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<!-- [START run_user_auth_jib] -->
+			<!-- [START cloudrun_user_auth_jib] -->
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
@@ -148,7 +148,7 @@ limitations under the License.
 					</to>
 				</configuration>
 			</plugin>
-			<!-- [END run_user_auth_jib] -->
+			<!-- [END cloudrun_user_auth_jib] -->
 		</plugins>
 	</build>
 
