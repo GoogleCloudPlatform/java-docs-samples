@@ -28,9 +28,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Map;
 import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -58,7 +58,7 @@ public class IndexServlet extends HttpServlet {
       // PreparedStatements are compiled by the database immediately and executed at a later date.
       // Most databases cache previously compiled queries, which improves efficiency.
       String stmt1 = "SELECT candidate, time_cast FROM votes ORDER BY time_cast DESC LIMIT 5";
-      try (PreparedStatement voteStmt = conn.prepareStatement(stmt1); ) {
+      try (PreparedStatement voteStmt = conn.prepareStatement(stmt1);) {
         // Execute the statement
         ResultSet voteResults = voteStmt.executeQuery();
         // Convert a ResultSet into Vote objects
@@ -72,7 +72,7 @@ public class IndexServlet extends HttpServlet {
       // PreparedStatements can also be executed multiple times with different arguments. This can
       // improve efficiency, and project a query from being vulnerable to an SQL injection.
       String stmt2 = "SELECT COUNT(vote_id) FROM votes WHERE candidate=?";
-      try (PreparedStatement voteCountStmt = conn.prepareStatement(stmt2); ) {
+      try (PreparedStatement voteCountStmt = conn.prepareStatement(stmt2);) {
         voteCountStmt.setString(1, "TABS");
         ResultSet tabResult = voteCountStmt.executeQuery();
         if (tabResult.next()) { // Move to the first result
@@ -154,7 +154,7 @@ public class IndexServlet extends HttpServlet {
 
       // PreparedStatements can be more efficient and project against injections.
       String stmt = "INSERT INTO votes (time_cast, candidate) VALUES (?, ?);";
-      try (PreparedStatement voteStmt = conn.prepareStatement(stmt); ) {
+      try (PreparedStatement voteStmt = conn.prepareStatement(stmt);) {
         voteStmt.setTimestamp(1, now);
         voteStmt.setString(2, team);
 
