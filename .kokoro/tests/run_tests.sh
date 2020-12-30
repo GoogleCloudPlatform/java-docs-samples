@@ -78,6 +78,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     source "${KOKORO_GFILE_DIR}/firestore_secrets.txt"
     # spellcheck source=src/cts_v4_secrets.txt
     source "${KOKORO_GFILE_DIR}/cts_v4_secrets.txt"
+    # shellcheck source=src/cloud_sql_secrets.txt
+    source "${KOKORO_GFILE_DIR}/cloud_sql_secrets.txt
 
     # Activate service account
     gcloud auth activate-service-account \
