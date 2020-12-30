@@ -25,10 +25,12 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Map;
 import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,12 +47,9 @@ public class IndexServlet extends HttpServlet {
 
   private static final Logger LOGGER = Logger.getLogger(IndexServlet.class.getName());
 
-  @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws IOException, ServletException {
-    // Extract the pool from the Servlet Context, reusing the one that was created
-    // in the ContextListener when the application was started
-    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
+  public Map<String, Object> getTemplateData(DataSource pool) throws ServletException {
+
+    Map<String, Object> templateData = new HashMap<String, Object>();
 
     int tabCount = 0;
     int spaceCount = 0;
@@ -95,11 +94,26 @@ public class IndexServlet extends HttpServlet {
               + "steps in the README and try again.",
           ex);
     }
+    templateData.put("tabCount", tabCount);
+    templateData.put("spaceCount", spaceCount);
+    templateData.put("recentVotes", recentVotes);
+
+    return templateData;
+  }
+
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
+    // Extract the pool from the Servlet Context, reusing the one that was created
+    // in the ContextListener when the application was started
+    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
+
+    Map<String, Object> templateData = getTemplateData(pool);
 
     // Add variables and render the page
-    req.setAttribute("tabCount", tabCount);
-    req.setAttribute("spaceCount", spaceCount);
-    req.setAttribute("recentVotes", recentVotes);
+    req.setAttribute("tabCount", templateData.get("tabCount"));
+    req.setAttribute("spaceCount", templateData.get("spaceCount"));
+    req.setAttribute("recentVotes", templateData.get("recentVotes"));
     req.getRequestDispatcher("/index.jsp").forward(req, resp);
   }
 
