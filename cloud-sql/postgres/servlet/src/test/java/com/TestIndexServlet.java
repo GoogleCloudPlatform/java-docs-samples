@@ -18,12 +18,16 @@ package com.example.cloudsql;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -51,9 +55,22 @@ public class TestIndexServlet {
     });
   }
 
+  private static void createTable(DataSource pool) throws SQLException {
+    // Safely attempt to create the table schema.
+    try (Connection conn = pool.getConnection()) {
+      String stmt =
+          "CREATE TABLE IF NOT EXISTS votes ( "
+              + "vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, candidate CHAR(6) NOT NULL,"
+              + " PRIMARY KEY (vote_id) );";
+      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
+        createTableStatement.execute();
+      }
+    }
+  }
+
 
   @BeforeClass
-  public static void createPool() {
+  public static void createPool() throws SQLException {
     checkEnvVars();
     HikariConfig config = new HikariConfig();
 
@@ -64,6 +81,7 @@ public class TestIndexServlet {
     config.addDataSourceProperty("cloudSqlInstance", System.getenv("PG_CONNECTION_NAME"));
 
     pool = new HikariDataSource(config);
+    createTable(pool);
 
   }
 
