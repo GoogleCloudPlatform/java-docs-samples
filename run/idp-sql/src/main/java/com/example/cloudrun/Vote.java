@@ -14,34 +14,26 @@
  * limitations under the License.
  */
 
- package com.example.cloudrun;
-
-import java.sql.Timestamp;
+package com.example.cloudrun;
 
 import com.google.gson.JsonObject;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
+import java.sql.Timestamp;
 import lombok.Data;
 
-/**
- * Lombok notation to generate methods: 
- * toString, equals, hashCode, getters, and setters
- */
+/** Lombok notation to generate methods: toString, equals, hashCode, getters, and setters */
 @Data
 public class Vote {
-    @NonNull
-    private String uid;
-    @NonNull
-    private String candidate;
-    @NonNull
-    private Timestamp timeCast;
+  @NonNull private String uid;
+  @NonNull private String candidate;
+  @NonNull private Timestamp timeCast;
 
-    @Override
-    public String toString() {
-        JsonObject vote = new JsonObject();
-        vote.addProperty("uid", this.uid);
-        vote.addProperty("candidate", this.candidate);
-        vote.addProperty("timestamp", this.timeCast.toString());
-        return vote.toString();
-    }
+  @Override
+  public String toString() {
+    JsonObject vote = new JsonObject();
+    vote.addProperty("uid", this.uid);
+    vote.addProperty("candidate", this.candidate);
+    vote.addProperty("timestamp", this.timeCast.toString());
+    return vote.toString();
+  }
 }

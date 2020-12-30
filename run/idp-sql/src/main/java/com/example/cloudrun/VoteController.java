@@ -55,8 +55,6 @@ public final class VoteController {
       int catVotes = getVoteCount("CATS");
       // Query the total count of "DOGS" from the database.
       int dogVotes = getVoteCount("DOGS");
-      // Query the last 5 votes from the database.
-      List<Vote> votes = getVotes();
 
       // Calculate and set leader values.
       String leadTeam;
@@ -76,6 +74,10 @@ public final class VoteController {
         leaderMessage = "CATS and DOGS are evenly matched!";
         leadTeam = null;
       }
+      
+      // Query the last 5 votes from the database.
+      List<Vote> votes = getVotes();
+
       // Add values to template
       model.addAttribute("leaderMessage", leaderMessage);
       model.addAttribute("leadTeam", leadTeam);
