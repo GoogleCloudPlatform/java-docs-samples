@@ -47,7 +47,7 @@ limitations under the License.
       <groupId>com.google.cloud.bigtable</groupId>
       <!-- Use the hadoop client instead of 1.x due to file size. -->
       <artifactId>bigtable-hbase-1.x-hadoop</artifactId>
-      <version>1.18.1</version>
+      <version>1.18.2</version>
     </dependency>
 
     <!-- Compile/runtime dependencies -->
