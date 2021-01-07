@@ -43,6 +43,7 @@ public final class VoteController {
 
   private static final Logger logger = LoggerFactory.getLogger(VoteController.class);
   private final JdbcTemplate jdbcTemplate;
+  private final String TABLE = System.getenv().getOrDefault("TABLE", "pet_votes");
 
   public VoteController(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
@@ -87,9 +88,8 @@ public final class VoteController {
     } catch (DataAccessException e) {
       String message =
           "Error while connecting to the Cloud SQL database. "
-              + "Check that your username and password are correct, that the Cloud SQL "
-              + "proxy is running (locally), and that the database/table exists and is "
-              + "ready for use: "
+              + "Check that your username and password are correct and that the "
+              + "PostgreSQL instance, database, and table exists and are ready for use: "
               + e.toString();
       logger.error(message);
       throw new ResponseStatusException(
@@ -132,7 +132,7 @@ public final class VoteController {
 
   /** Extract and verify Id Token from header */
   private String authenticateJwt(Map<String, String> headers) {
-    String authHeader = headers.get("Authorization");
+    String authHeader = headers.get("authorization");
     if (authHeader != null) {
       String idToken = authHeader.split(" ")[1];
       // If the provided ID token has the correct format, is not expired, and is
@@ -154,7 +154,7 @@ public final class VoteController {
   /** Insert a vote record into the database. */
   public void insertVote(Vote vote) throws DataAccessException {
     this.jdbcTemplate.update(
-        "INSERT INTO votes(candidate, time_cast, uid) VALUES(?,?,?)",
+        "INSERT INTO " + TABLE + "(candidate, time_cast, uid) VALUES(?,?,?)",
         vote.getCandidate(),
         vote.getTimeCast(),
         vote.getUid());
@@ -163,7 +163,7 @@ public final class VoteController {
   /** Retrieve the latest 5 vote records from the database. */
   public List<Vote> getVotes() throws DataAccessException {
     return this.jdbcTemplate.query(
-        "SELECT candidate, time_cast, uid FROM votes ORDER BY time_cast DESC LIMIT 5",
+        "SELECT candidate, time_cast, uid FROM " + TABLE + " ORDER BY time_cast DESC LIMIT 5",
         (rs, rowNum) -> {
           String candidate = rs.getString("candidate");
           String uid = rs.getString("uid");
@@ -175,7 +175,7 @@ public final class VoteController {
   /** Retrieve the total count of records for a given candidate from the database. */
   public int getVoteCount(String candidate) throws DataAccessException {
     return this.jdbcTemplate.queryForObject(
-        "SELECT COUNT(vote_id) FROM votes WHERE candidate = ?",
+        "SELECT COUNT(vote_id) FROM " + TABLE + " WHERE candidate = ?",
         Integer.class,
         new Object[] {candidate});
   }

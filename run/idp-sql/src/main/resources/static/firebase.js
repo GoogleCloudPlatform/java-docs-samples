@@ -25,9 +25,10 @@ function signIn() {
   firebase.auth().signInWithPopup(provider).then(function(result) {
     // Returns the signed in user along with the provider's credential
     console.log(`${result.user.displayName} logged in.`);
-    window.alert(`Welcome ${result.user.displayName}!`)
+    window.alert(`Welcome ${result.user.displayName}!`);
   }).catch((err) => {
     console.log(`Error during sign in: ${err.message}`)
+    window.alert(`Sign in failed. Retry or check your browser logs.`);
   });
 }
 // [END cloudrun_end_user_firebase_sign_in]
@@ -35,7 +36,8 @@ function signIn() {
 function signOut() {
   firebase.auth().signOut().then(function(result) {
   }).catch((err) => {
-    console.log(`Error during sign out: ${err.message}`)
+    console.log(`Error during sign out: ${err.message}`);
+    window.alert(`Sign out failed. Retry or check your browser logs.`);
   })
 }
 
@@ -68,10 +70,12 @@ async function vote(team) {
         const text = await response.text();
         window.alert(text);
         window.location.reload();
+      } else {
+        window.alert('Something went wrong... Please try again!');
       }
     } catch (err) {
-      console.log('Error when voting: ' + err);
-      window.alert('Somthing went wrong... Please try again!');
+      console.log(`Error when voting: ${err}`);
+      window.alert('Something went wrong... Please try again!');
     }
   } else {
     window.alert('User not signed in.');
