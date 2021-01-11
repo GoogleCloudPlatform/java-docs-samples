@@ -37,19 +37,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-class TemplateData {
-
-  public int tabCount;
-  public int spaceCount;
-  public List<Vote> recentVotes;
-
-  public TemplateData(int tabCount, int spaceCount, List<Vote> recentVotes) {
-    this.tabCount = tabCount;
-    this.spaceCount = spaceCount;
-    this.recentVotes = recentVotes;
-  }
-}
-
 @SuppressFBWarnings(
     value = {"SE_NO_SERIALVERSIONID", "WEM_WEAK_EXCEPTION_MESSAGING"},
     justification = "Not needed for IndexServlet, Exception adds context")
