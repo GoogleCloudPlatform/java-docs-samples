@@ -39,7 +39,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-public class TestIndexServlet {
+public class TestIndexServletPostgres {
 
   private static List<String> requiredEnvVars =
       Arrays.asList("PG_USER", "PG_PASS", "PG_DB", "PG_CONNECTION_NAME");

@@ -39,7 +39,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-public class TestIndexServlet {
+public class TestIndexServletMysql {
 
   private static List<String> requiredEnvVars =
       Arrays.asList("MYSQL_USER", "MYSQL_PASS", "MYSQL_DB", "MYSQL_CONNECTION_NAME");

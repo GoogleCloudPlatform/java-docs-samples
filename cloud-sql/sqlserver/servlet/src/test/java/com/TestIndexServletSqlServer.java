@@ -39,7 +39,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-public class TestIndexServlet {
+public class TestIndexServletSqlServer {
 
   private static List<String> requiredEnvVars =
       Arrays
