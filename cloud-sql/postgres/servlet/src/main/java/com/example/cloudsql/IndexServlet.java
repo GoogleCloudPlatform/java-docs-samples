@@ -25,10 +25,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
@@ -39,6 +37,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+class TemplateData {
+
+  public int tabCount;
+  public int spaceCount;
+  public List<Vote> recentVotes;
+
+  public TemplateData(int tabCount, int spaceCount, List<Vote> recentVotes) {
+    this.tabCount = tabCount;
+    this.spaceCount = spaceCount;
+    this.recentVotes = recentVotes;
+  }
+}
+
 @SuppressFBWarnings(
     value = {"SE_NO_SERIALVERSIONID", "WEM_WEAK_EXCEPTION_MESSAGING"},
     justification = "Not needed for IndexServlet, Exception adds context")
@@ -47,9 +58,7 @@ public class IndexServlet extends HttpServlet {
 
   private static final Logger LOGGER = Logger.getLogger(IndexServlet.class.getName());
 
-  public Map<String, Object> getTemplateData(DataSource pool) throws ServletException {
-
-    Map<String, Object> templateData = new HashMap<String, Object>();
+  public TemplateData getTemplateData(DataSource pool) throws ServletException {
 
     int tabCount = 0;
     int spaceCount = 0;
@@ -94,9 +103,7 @@ public class IndexServlet extends HttpServlet {
               + "steps in the README and try again.",
           ex);
     }
-    templateData.put("tabCount", tabCount);
-    templateData.put("spaceCount", spaceCount);
-    templateData.put("recentVotes", recentVotes);
+    TemplateData templateData = new TemplateData(tabCount, spaceCount, recentVotes);
 
     return templateData;
   }
@@ -108,12 +115,12 @@ public class IndexServlet extends HttpServlet {
     // in the ContextListener when the application was started
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
 
-    Map<String, Object> templateData = getTemplateData(pool);
+    TemplateData templateData = getTemplateData(pool);
 
     // Add variables and render the page
-    req.setAttribute("tabCount", templateData.get("tabCount"));
-    req.setAttribute("spaceCount", templateData.get("spaceCount"));
-    req.setAttribute("recentVotes", templateData.get("recentVotes"));
+    req.setAttribute("tabCount", templateData.tabCount);
+    req.setAttribute("spaceCount", templateData.spaceCount);
+    req.setAttribute("recentVotes", templateData.recentVotes);
     req.getRequestDispatcher("/index.jsp").forward(req, resp);
   }
 

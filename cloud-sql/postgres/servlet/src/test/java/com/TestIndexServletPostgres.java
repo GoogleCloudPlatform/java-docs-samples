@@ -17,6 +17,7 @@
 package com.example.cloudsql;
 
 import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,7 +31,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,11 +88,11 @@ public class TestIndexServletPostgres {
 
   @Test
   public void testGetTemplateData() throws Exception {
-    Map<String, Object> templateData = new IndexServlet().getTemplateData(pool);
+    TemplateData templateData = new IndexServlet().getTemplateData(pool);
 
-    assertTrue(templateData.containsKey("tabCount"));
-    assertTrue(templateData.containsKey("spaceCount"));
-    assertTrue(templateData.containsKey("recentVotes"));
+    assertNotNull(templateData.tabCount);
+    assertNotNull(templateData.spaceCount);
+    assertNotNull(templateData.recentVotes);
   }
 
   @Test
