@@ -34,23 +34,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-class TemplateData {
 
-  public int tabCount;
-  public int spaceCount;
-  public List<Vote> recentVotes;
-
-  public TemplateData(int tabCount, int spaceCount, List<Vote> recentVotes) {
-    this.tabCount = tabCount;
-    this.spaceCount = spaceCount;
-    this.recentVotes = recentVotes;
-  }
-}
 
 @WebServlet(name = "Index", value = "")
 public class IndexServlet extends HttpServlet {
 
   private static final Logger LOGGER = Logger.getLogger(IndexServlet.class.getName());
+
+  class TemplateData {
+
+    public int tabCount;
+    public int spaceCount;
+    public List<Vote> recentVotes;
+
+    public TemplateData(int tabCount, int spaceCount, List<Vote> recentVotes) {
+      this.tabCount = tabCount;
+      this.spaceCount = spaceCount;
+      this.recentVotes = recentVotes;
+    }
+  }
 
   public TemplateData getTemplateData(DataSource pool) throws ServletException {
 
