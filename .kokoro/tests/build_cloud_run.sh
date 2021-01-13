@@ -63,7 +63,7 @@ if [ -n "$JIB" ]; then
     --region="${REGION:-us-central1}" \
     --platform=managed \
     --quiet --no-user-output-enabled  \
-    `if [[ "${MEMORY_NEEDED[@]}" =~ "${SAMPLE_NAME}" ]]; then echo "--memory 512M"; fi`
+    `if [[ "${MEMORY_NEEDED[@]}" =~ "${SAMPLE_NAME}" ]]; then echo "--memory 512M"; fi` \
     `if [ $SAMPLE_NAME = "idp-sql" ]; then echo "--update-env-vars SECRET=idp-sql-secret"; fi`
 
 
