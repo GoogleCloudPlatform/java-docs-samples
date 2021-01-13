@@ -41,8 +41,6 @@ public class IdpSqlApplication {
   private static final Logger logger = LoggerFactory.getLogger(IdpSqlApplication.class);
 
   public static void main(String[] args) throws IOException {
-    SpringApplication app = new SpringApplication(IdpSqlApplication.class);
-
     String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
     if (projectId == null) {
       projectId = getProjectId();
@@ -54,13 +52,16 @@ public class IdpSqlApplication {
         FirebaseOptions.builder().setProjectId(projectId).setCredentials(credentials).build();
     FirebaseApp.initializeApp(options);
 
-    // Set config for Cloud SQL
+    // Retrieve config for Cloud SQL
     String secretId = System.getenv("SECRET_NAME");
     if (secretId == null) {
       throw new IllegalStateException("\"SECRET_NAME\" env var is required.");
     }
     String versionId = System.getenv().getOrDefault("VERSION", "latest");
     HashMap<String, Object> config = getConfig(projectId, secretId, versionId);
+
+    // Set the Cloud SQL config and start app
+    SpringApplication app = new SpringApplication(IdpSqlApplication.class);
     app.setDefaultProperties(config);
     app.run(args);
   }
