@@ -56,7 +56,7 @@ public class IdpSqlApplication {
 
     // Set config for Cloud SQL
     String secretId = System.getenv("SECRET_NAME");
-    String versionId = System.getenv("VERSION");
+    String versionId = System.getenv().getOrDefault("VERSION", "latest");
     HashMap<String, Object> config = getConfig(projectId, secretId, versionId);
     app.setDefaultProperties(config);
     app.run(args);
@@ -101,9 +101,6 @@ public class IdpSqlApplication {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-      if (versionId == null) {
-        versionId = "latest";
-      }
       // Build the name from the version
       SecretVersionName secretVersionName = SecretVersionName.of(projectId, secretId, versionId);
 
