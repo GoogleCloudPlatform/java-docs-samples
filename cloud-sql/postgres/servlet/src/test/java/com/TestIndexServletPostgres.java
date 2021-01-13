@@ -32,6 +32,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,6 +48,7 @@ public class TestIndexServletPostgres {
       Arrays.asList("PG_USER", "PG_PASS", "PG_DB", "PG_CONNECTION_NAME");
 
   private static DataSource pool;
+  private static String tableName;
 
   public static void checkEnvVars() {
     // Check that required env vars are set
@@ -59,10 +61,12 @@ public class TestIndexServletPostgres {
 
   private static void createTable(DataSource pool) throws SQLException {
     // Safely attempt to create the table schema.
+    tableName = String.format("votes_%s", UUID.randomUUID().toString().replace("-", ""));
     try (Connection conn = pool.getConnection()) {
       String stmt =
-          "CREATE TABLE IF NOT EXISTS votes ( "
-              + "vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, candidate CHAR(6) NOT NULL,"
+      "CREATE TABLE IF NOT EXISTS "
+              + tableName
+              + " ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, candidate CHAR(6) NOT NULL,"
               + " PRIMARY KEY (vote_id) );";
       try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
         createTableStatement.execute();
@@ -90,8 +94,7 @@ public class TestIndexServletPostgres {
   @AfterClass
   public static void dropTable() throws SQLException {
     try (Connection conn = pool.getConnection()) {
-      String stmt =
-          "DROP TABLE votes;";
+      String stmt = String.format("DROP TABLE %s;", tableName);
       try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
         createTableStatement.execute();
       }

@@ -32,6 +32,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,6 +49,7 @@ public class TestIndexServletSqlServer {
           .asList("SQLSERVER_USER", "SQLSERVER_PASS", "SQLSERVER_DB", "SQLSERVER_CONNECTION_NAME");
 
   private static DataSource pool;
+  private static String tableName;
 
   public static void checkEnvVars() {
     // Check that required env vars are set
@@ -60,12 +62,16 @@ public class TestIndexServletSqlServer {
 
   private static void createTable(DataSource pool) throws SQLException {
     // Safely attempt to create the table schema.
+    tableName = String.format("votes_%s", UUID.randomUUID().toString().replace("-", ""));
     try (Connection conn = pool.getConnection()) {
       PreparedStatement createTableStatement = conn.prepareStatement(
           "IF NOT EXISTS ("
-              + "SELECT * FROM sysobjects WHERE name='votes' and xtype='U')"
-              + "CREATE TABLE votes ("
-              + "vote_id INT NOT NULL IDENTITY,"
+              + "SELECT * FROM sysobjects WHERE name='"
+              + tableName
+              + "' and xtype='U')"
+              + "CREATE TABLE "
+              + tableName
+              + " ( vote_id INT NOT NULL IDENTITY,"
               + "time_cast DATETIME NOT NULL,"
               + "candidate VARCHAR(6) NOT NULL,"
               + "PRIMARY KEY (vote_id));"
@@ -96,8 +102,7 @@ public class TestIndexServletSqlServer {
   @AfterClass
   public static void dropTable() throws SQLException {
     try (Connection conn = pool.getConnection()) {
-      String stmt =
-          "DROP TABLE votes;";
+      String stmt = String.format("DROP TABLE %s;", tableName);
       try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
         createTableStatement.execute();
       }
