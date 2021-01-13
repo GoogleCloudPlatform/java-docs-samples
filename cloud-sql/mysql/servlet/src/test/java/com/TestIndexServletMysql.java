@@ -36,6 +36,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -83,6 +84,17 @@ public class TestIndexServletMysql {
 
     pool = new HikariDataSource(config);
     createTable(pool);
+  }
+
+  @AfterClass
+  public static void dropTable() throws SQLException {
+    try (Connection conn = pool.getConnection()) {
+      String stmt =
+          "DROP TABLE votes;";
+      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
+        createTableStatement.execute();
+      }
+    }
   }
 
   @Test
