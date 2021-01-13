@@ -66,6 +66,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.postgres.SocketFactory");
     config.addDataSourceProperty("cloudSqlInstance", CLOUD_SQL_CONNECTION_NAME);
 
+
     // The ipTypes argument can be used to specify a comma delimited list of preferred IP types 
     // for connecting to a Cloud SQL instance. The argument ipTypes=PRIVATE will force the 
     // SocketFactory to connect with an instance's associated private IP. 
