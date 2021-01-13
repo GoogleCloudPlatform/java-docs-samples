@@ -43,7 +43,7 @@ public final class VoteController {
 
   private static final Logger logger = LoggerFactory.getLogger(VoteController.class);
   private final JdbcTemplate jdbcTemplate;
-  private final String TABLE = System.getenv().getOrDefault("TABLE", "pet_votes");
+  private final String table = System.getenv().getOrDefault("TABLE", "pet_votes");
 
   public VoteController(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
@@ -75,7 +75,7 @@ public final class VoteController {
         leaderMessage = "CATS and DOGS are evenly matched!";
         leadTeam = null;
       }
-      
+
       // Query the last 5 votes from the database.
       List<Vote> votes = getVotes();
 
@@ -132,7 +132,10 @@ public final class VoteController {
 
   /** Extract and verify Id Token from header */
   private String authenticateJwt(Map<String, String> headers) {
-    String authHeader = headers.get("authorization");
+    String authHeader =
+        (headers.get("authorization") != null)
+            ? headers.get("authorization")
+            : headers.get("Authorization");
     if (authHeader != null) {
       String idToken = authHeader.split(" ")[1];
       // If the provided ID token has the correct format, is not expired, and is
@@ -154,7 +157,7 @@ public final class VoteController {
   /** Insert a vote record into the database. */
   public void insertVote(Vote vote) throws DataAccessException {
     this.jdbcTemplate.update(
-        "INSERT INTO " + TABLE + "(candidate, time_cast, uid) VALUES(?,?,?)",
+        "INSERT INTO " + table + "(candidate, time_cast, uid) VALUES(?,?,?)",
         vote.getCandidate(),
         vote.getTimeCast(),
         vote.getUid());
@@ -163,7 +166,7 @@ public final class VoteController {
   /** Retrieve the latest 5 vote records from the database. */
   public List<Vote> getVotes() throws DataAccessException {
     return this.jdbcTemplate.query(
-        "SELECT candidate, time_cast, uid FROM " + TABLE + " ORDER BY time_cast DESC LIMIT 5",
+        "SELECT candidate, time_cast, uid FROM " + table + " ORDER BY time_cast DESC LIMIT 5",
         (rs, rowNum) -> {
           String candidate = rs.getString("candidate");
           String uid = rs.getString("uid");
@@ -175,7 +178,7 @@ public final class VoteController {
   /** Retrieve the total count of records for a given candidate from the database. */
   public int getVoteCount(String candidate) throws DataAccessException {
     return this.jdbcTemplate.queryForObject(
-        "SELECT COUNT(vote_id) FROM " + TABLE + " WHERE candidate = ?",
+        "SELECT COUNT(vote_id) FROM " + table + " WHERE candidate = ?",
         Integer.class,
         new Object[] {candidate});
   }
