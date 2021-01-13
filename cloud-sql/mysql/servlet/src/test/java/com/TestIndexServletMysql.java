@@ -66,7 +66,8 @@ public class TestIndexServletMysql {
       String stmt =
           "CREATE TABLE IF NOT EXISTS "
               + tableName
-              + " ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, candidate CHAR(6) NOT NULL,"
+              + " ( vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL,"
+              + " candidate CHAR(6) NOT NULL,"
               + " PRIMARY KEY (vote_id) );";
       try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
         createTableStatement.execute();
