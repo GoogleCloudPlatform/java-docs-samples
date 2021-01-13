@@ -64,7 +64,7 @@ if [ -n "$JIB" ]; then
     --platform=managed \
     --quiet --no-user-output-enabled  \
     `if [[ "${MEMORY_NEEDED[@]}" =~ "${SAMPLE_NAME}" ]]; then echo "--memory 512M"; fi` \
-    `if [ $SAMPLE_NAME = "idp-sql" ]; then echo "--update-env-vars SECRET=idp-sql-secret"; fi`
+    `if [ $SAMPLE_NAME = "idp-sql" ]; then echo "--update-env-vars SECRET_NAME=idp-sql-secret"; fi`
 
 
   set +x
