@@ -56,6 +56,9 @@ public class IdpSqlApplication {
 
     // Set config for Cloud SQL
     String secretId = System.getenv("SECRET_NAME");
+    if (secretId == null) {
+      throw new IllegalStateException("\"SECRET_NAME\" env var is required.");
+    }
     String versionId = System.getenv().getOrDefault("VERSION", "latest");
     HashMap<String, Object> config = getConfig(projectId, secretId, versionId);
     app.setDefaultProperties(config);
