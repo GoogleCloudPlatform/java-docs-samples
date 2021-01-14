@@ -579,6 +579,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testMqttDeviceState() throws Exception {
     final String deviceName = "rsa-device-mqtt-state";
