@@ -22,6 +22,7 @@ export SERVICE_ACCOUNT="idp-sql-identity"
 # and service account
 gcloud run services update ${K_SERVICE} \
     --platform managed \
+    --memory 512Mi \
     --region ${GOOGLE_CLOUD_REGION} \
     --service-account ${SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
     --add-cloudsql-instances ${GOOGLE_CLOUD_PROJECT}:${GOOGLE_CLOUD_REGION}:${CLOUD_SQL_INSTANCE_NAME} \
