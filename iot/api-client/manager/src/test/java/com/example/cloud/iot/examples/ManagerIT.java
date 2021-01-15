@@ -414,6 +414,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testHttpDeviceConfig() throws Exception {
     final String deviceName = "rsa-device-http-state";
