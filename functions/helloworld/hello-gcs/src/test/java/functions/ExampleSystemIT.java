@@ -41,7 +41,7 @@ import java.util.stream.StreamSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ExampleSystemTest {
+public class ExampleSystemIT {
 
   // TODO<developer>: set these values (as environment variables)
   private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
@@ -104,7 +104,7 @@ public class ExampleSystemTest {
         .build());
     Retry retry = registry.retry(filename);
     String logEntry = Retry
-        .decorateFunction(retry, ExampleSystemTest::getLogEntriesAsString)
+        .decorateFunction(retry, ExampleSystemIT::getLogEntriesAsString)
         .apply(startTimestamp);
 
     // Perform final assertion (to make sure we fail on timeout)
