@@ -104,7 +104,7 @@ public class ExampleSystemIT {
         .build());
     Retry retry = registry.retry(filename);
     String logEntry = Retry
-        .decorateFunction(retry, ExampleSystemTest::getLogEntriesAsString)
+        .decorateFunction(retry, ExampleSystemIT::getLogEntriesAsString)
         .apply(startTimestamp);
 
     // Perform final assertion (to make sure we fail on timeout)
