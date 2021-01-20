@@ -7,5 +7,5 @@
 
 /datastore/                     @GoogleCloudPlatform/firestore-dpe @GoogleCloudPlatform/java-samples-reviewers
 /firestore/                     @GoogleCloudPlatform/firestore-dpe @GoogleCloudPlatform/java-samples-reviewers
-/iot/                     		@gcseh @GoogleCloudPlatform/api-iot @GoogleCloudPlatform/java-samples-reviewers
+/iot/                           @gcseh @GoogleCloudPlatform/api-iot @GoogleCloudPlatform/java-samples-reviewers
 /logging/                       @GoogleCloudPlatform/observability-devx @GoogleCloudPlatform/java-samples-reviewers
