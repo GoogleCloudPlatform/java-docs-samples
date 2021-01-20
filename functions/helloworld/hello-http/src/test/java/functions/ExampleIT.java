@@ -16,41 +16,35 @@
 
 package functions;
 
-// [START functions_storage_integration_test]
+// [START functions_http_integration_test]
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.gson.Gson;
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
-import io.vavr.CheckedRunnable;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.UUID;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.HttpHostConnectException;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class ExampleIntegrationTest {
+@RunWith(JUnit4.class)
+public class ExampleIT {
   // Root URL pointing to the locally hosted function
   // The Functions Framework Maven plugin lets us run a function locally
   private static final String BASE_URL = "http://localhost:8080";
 
   private static Process emulatorProcess = null;
-  private static final HttpClient client = HttpClientBuilder.create().build();
-  private static final Gson gson = new Gson();
+  private static HttpClient client = HttpClient.newHttpClient();
 
   @BeforeClass
   public static void setUp() throws IOException {
@@ -65,51 +59,34 @@ public class ExampleIntegrationTest {
   }
 
   @AfterClass
-  public static void tearDown() {
-    // Terminate the running Functions Framework Maven plugin process (if it's still running)
-    if (emulatorProcess.isAlive()) {
-      emulatorProcess.destroy();
-    }
+  public static void tearDown() throws IOException {
+    // Terminate the running Functions Framework Maven plugin process
+    emulatorProcess.destroy();
   }
 
   @Test
-  public void helloGcs_shouldRunWithFunctionsFramework() throws Throwable {
-    String functionUrl = BASE_URL + "/helloGcs"; // URL to your locally-running function
+  public void helloHttp_shouldRunWithFunctionsFramework() throws Throwable {
+    String functionUrl = BASE_URL + "/helloHttp";
 
-    // Initialize constants
-    String name = UUID.randomUUID().toString();
-    String jsonStr = gson.toJson(Map.of(
-        "data", Map.of(
-            "name", name, "resourceState", "exists", "metageneration", 1),
-        "context", Map.of(
-            "eventType", "google.storage.object.finalize")
-    ));
-
-    HttpPost postRequest =  new HttpPost(URI.create(functionUrl));
-    postRequest.setEntity(new StringEntity(jsonStr));
+    HttpRequest getRequest = HttpRequest.newBuilder().uri(URI.create(functionUrl)).GET().build();
 
     // The Functions Framework Maven plugin process takes time to start up
     // Use resilience4j to retry the test HTTP request until the plugin responds
     RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
         .maxAttempts(8)
-        .retryExceptions(HttpHostConnectException.class)
         .intervalFunction(IntervalFunction.ofExponentialBackoff(200, 2))
+        .retryExceptions(IOException.class)
         .build());
     Retry retry = registry.retry("my");
 
     // Perform the request-retry process
-    CheckedRunnable retriableFunc = Retry.decorateCheckedRunnable(
-        retry, () -> client.execute(postRequest));
-    retriableFunc.run();
+    String body = Retry.decorateCheckedSupplier(retry, () -> client.send(
+        getRequest,
+        HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)).body()
+    ).apply();
 
-    // Get Functions Framework plugin process' stdout
-    InputStream stdoutStream = emulatorProcess.getErrorStream();
-    ByteArrayOutputStream stdoutBytes = new ByteArrayOutputStream();
-    stdoutBytes.write(stdoutStream.readNBytes(stdoutStream.available()));
-
-    // Verify desired name value is present
-    assertThat(stdoutBytes.toString(StandardCharsets.UTF_8)).contains(
-        String.format("File: %s", name));
+    // Verify the function returned the right results
+    assertThat(body).isEqualTo("Hello world!");
   }
 }
-// [END functions_storage_integration_test]
+// [END functions_http_integration_test]

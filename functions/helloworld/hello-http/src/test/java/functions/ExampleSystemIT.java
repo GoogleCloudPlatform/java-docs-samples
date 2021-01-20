@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class ExampleSystemTest {
+public class ExampleSystemIT {
   // Root URL pointing to your Cloud Functions deployment
   // TODO<developer>: set this value, as an environment variable or within your test code
   private static final String BASE_URL = System.getenv("FUNCTIONS_BASE_URL");

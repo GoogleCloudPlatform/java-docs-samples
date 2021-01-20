@@ -34,17 +34,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+
+
 @WebServlet(name = "Index", value = "")
 public class IndexServlet extends HttpServlet {
 
   private static final Logger LOGGER = Logger.getLogger(IndexServlet.class.getName());
 
-  @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws IOException, ServletException {
-    // Extract the pool from the Servlet Context, reusing the one that was created
-    // in the ContextListener when the application was started
-    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
+  class TemplateData {
+
+    public int tabCount;
+    public int spaceCount;
+    public List<Vote> recentVotes;
+
+    public TemplateData(int tabCount, int spaceCount, List<Vote> recentVotes) {
+      this.tabCount = tabCount;
+      this.spaceCount = spaceCount;
+      this.recentVotes = recentVotes;
+    }
+  }
+
+  public TemplateData getTemplateData(DataSource pool) throws ServletException {
 
     int tabCount;
     int spaceCount;
@@ -52,7 +62,7 @@ public class IndexServlet extends HttpServlet {
     try (Connection conn = pool.getConnection()) {
       // PreparedStatements are compiled by the database immediately and executed at a later date.
       // Most databases cache previously compiled queries, which improves efficiency.
-      PreparedStatement voteStmt =  conn.prepareStatement(
+      PreparedStatement voteStmt = conn.prepareStatement(
           "SELECT TOP(5) candidate, time_cast FROM votes ORDER BY time_cast DESC");
       // Execute the statement
       ResultSet voteResults = voteStmt.executeQuery();
@@ -87,10 +97,24 @@ public class IndexServlet extends HttpServlet {
           + "steps in the README and try again.", ex);
     }
 
+    TemplateData templateData = new TemplateData(tabCount, spaceCount, recentVotes);
+
+    return templateData;
+  }
+
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
+    // Extract the pool from the Servlet Context, reusing the one that was created
+    // in the ContextListener when the application was started
+    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
+
+    TemplateData templateData = getTemplateData(pool);
+
     // Add variables and render the page
-    req.setAttribute("tabCount", tabCount);
-    req.setAttribute("spaceCount", spaceCount);
-    req.setAttribute("recentVotes", recentVotes);
+    req.setAttribute("tabCount", templateData.tabCount);
+    req.setAttribute("spaceCount", templateData.spaceCount);
+    req.setAttribute("recentVotes", templateData.recentVotes);
     req.getRequestDispatcher("/index.jsp").forward(req, resp);
   }
 

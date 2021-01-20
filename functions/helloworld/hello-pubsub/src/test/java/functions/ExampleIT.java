@@ -44,7 +44,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ExampleIntegrationTest {
+public class ExampleIT {
   // Root URL pointing to the locally hosted function
   // The Functions Framework Maven plugin lets us run a function locally
   private static final String BASE_URL = "http://localhost:8080";

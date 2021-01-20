@@ -46,7 +46,7 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
-    <jetty>9.4.35.v20201120</jetty>
+    <jetty>9.4.36.v20210114</jetty>
 <!-- [END_EXCLUDE] -->
     <sqlURL>jdbc:mysql://google/${database}?cloudSqlInstance=${INSTANCE_CONNECTION_NAME}&amp;socketFactory=com.google.cloud.sql.mysql.SocketFactory&amp;user=${user}&amp;password=${password}&amp;useSSL=false</sqlURL>
   </properties>
@@ -61,12 +61,12 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.31.1</version>
+      <version>1.31.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-servlet</artifactId>
-      <version>1.31.1</version>
+      <version>1.31.2</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -79,7 +79,7 @@
     <dependency>                        <!-- http://dev.mysql.com/doc/connector-j/en/ -->
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.22</version>
+      <version>8.0.23</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
