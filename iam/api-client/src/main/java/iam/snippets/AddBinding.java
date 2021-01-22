@@ -15,6 +15,7 @@
 
 package iam.snippets;
 
+// [START iam_modify_policy_add_role]
 // [START iam_modify_policy_add_binding]
 import com.google.api.services.cloudresourcemanager.model.Binding;
 import com.google.api.services.cloudresourcemanager.model.Policy;
@@ -40,3 +41,4 @@ public class AddBinding {
   }
 }
 // [END iam_modify_policy_add_binding]
+// [END iam_modify_policy_add_role]
