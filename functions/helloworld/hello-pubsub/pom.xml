@@ -42,7 +42,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>16.2.1</version>
+        <version>16.3.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -102,13 +102,13 @@
     <dependency>
       <groupId>io.github.resilience4j</groupId>
       <artifactId>resilience4j-core</artifactId>
-      <version>1.6.1</version>
+      <version>1.7.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.github.resilience4j</groupId>
       <artifactId>resilience4j-retry</artifactId>
-      <version>1.6.1</version>
+      <version>1.7.0</version>
       <scope>test</scope>
     </dependency>
 
