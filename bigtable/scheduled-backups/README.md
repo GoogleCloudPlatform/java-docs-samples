@@ -27,22 +27,16 @@ The diagram below focuses on the actions flow between human roles and APIs.
 The administrator should be granted specific roles to deploy the services needed
 for the solution.
 
-| Role                                    | Purpose                          |
-| --------------------------------------- | -------------------------------- |
-| <em>roles/bigtable.admin</em>           | Cloud Bigtable Administrator     |
-| <em>roles/cloudfunctions.admin</em>     | to deploy and manage Cloud       |
-:                                         : Functions                        :
-| <em>roles/deploymentmanager.editor</em> | to deploy monitoring metrics     |
-| <em>roles/pubsub.editor</em>            | to create and manage Pub/Sub     |
-:                                         : topics                           :
-| <em>roles/cloudscheduler.admin</em>     | to setup a schedule in Cloud     |
-:                                         : Scheduler                        :
-| <em>roles/appengine.appAdmin</em>       | for Cloud Scheduler to deploy a  |
-:                                         : cron service                     :
-| <em>roles/monitoring.admin</em>         | to setup alerting policies for   |
-:                                         : failure notifications            :
-| <em>roles/logging.admin</em>            | to add log based user metrics to |
-:                                         : track failures                   :
+| Role                                    | Purpose                                              |
+| --------------------------------------- | ---------------------------------------------------- |
+| <em>roles/bigtable.admin</em>           | Cloud Bigtable Administrator                         |
+| <em>roles/cloudfunctions.admin</em>     | to deploy and manage Cloud Functions                 |
+| <em>roles/deploymentmanager.editor</em> | to deploy monitoring metrics                         |
+| <em>roles/pubsub.editor</em>            | to create and manage Pub/Sub topics                  |
+| <em>roles/cloudscheduler.admin</em>     | to setup a schedule in Cloud Scheduler               |
+| <em>roles/appengine.appAdmin</em>       | for Cloud Scheduler to deploy a cron service         |
+| <em>roles/monitoring.admin</em>         | to setup alerting policies for failure notifications |
+| <em>roles/logging.admin</em>            | to add log based user metrics to track failures      |
 
 You also need a custom role (ie. backups-admin) with below permissions *
 <em>appengine.applications.create</em> - for Cloud Scheduler to create an App
