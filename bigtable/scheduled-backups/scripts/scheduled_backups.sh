@@ -1,5 +1,5 @@
 #!/bin/bash
-#    Copyright 2020 Google, Inc.
+#    Copyright 2020 Google LLC.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -12,15 +12,6 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
-#
-# PRE-REQUISITES
-#    1. Google Cloud SDK must be installed
-#    2. The service account must have the following rolas assigned  
-#       - Cloud Functions Invoker 
-#       - Cloud Scheduler Admin
-#    3. The service account must have the following permiissions assigned
-#       - appengine.applications.create
-#       - serviceusage.services.enable
 ######
 
 set -xuo pipefail

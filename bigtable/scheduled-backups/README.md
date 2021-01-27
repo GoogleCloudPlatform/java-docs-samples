@@ -1,12 +1,81 @@
 # Scheduled Backups
 
-This example shows how to use Cloud Scheduler and Cloud Functions to configure a
-schedule that creates Cloud Bigtable backups periodically.
+This example shows how to use Cloud Scheduler, Pub/Sub and Cloud Functions to
+configure a schedule that creates Cloud Bigtable backups periodically.
 
 The idea is to have a Cloud Scheduler job that invokes a Cloud function by
 sending a message to the Pub/Sub topic which contains information about the
 Cloud Bigtable backup creation request. Then the Cloud function initiates a
 backup using Cloud Bigtable Java API.
+
+### Before you begin
+
+Before proceeding with the tutorial, ensure the following:
+
+*   A Cloud Bigtable table exists in the same Google Cloud project. Please check
+    [Cloud Bigtable documentation](https://cloud.google.com/bigtable/docs/how-to)
+    if needed.
+*   Google Cloud SDK is installed
+
+### APIs and IAM roles setup
+
+The diagram below focuses on the actions flow between human roles and APIs.
+<img src="images/scheduled_backup_architecture.png" width="600" height="auto" />
+
+#### IAM Roles for Administrators
+
+The administrator should be granted specific roles to deploy the services needed
+for the solution.
+
+| Role                                    | Purpose                          |
+| --------------------------------------- | -------------------------------- |
+| <em>roles/bigtable.admin</em>           | Cloud Bigtable Administrator     |
+| <em>roles/cloudfunctions.admin</em>     | to deploy and manage Cloud       |
+:                                         : Functions                        :
+| <em>roles/deploymentmanager.editor</em> | to deploy monitoring metrics     |
+| <em>roles/pubsub.editor</em>            | to create and manage Pub/Sub     |
+:                                         : topics                           :
+| <em>roles/cloudscheduler.admin</em>     | to setup a schedule in Cloud     |
+:                                         : Scheduler                        :
+| <em>roles/appengine.appAdmin</em>       | for Cloud Scheduler to deploy a  |
+:                                         : cron service                     :
+| <em>roles/monitoring.admin</em>         | to setup alerting policies for   |
+:                                         : failure notifications            :
+| <em>roles/logging.admin</em>            | to add log based user metrics to |
+:                                         : track failures                   :
+
+You also need a custom role (ie. backups-admin) with below permissions *
+<em>appengine.applications.create</em> - for Cloud Scheduler to create an App
+Engine app * <em>serviceusage.services.use</em> - for Cloud Scheduler to use the
+App Engine app
+
+#### Service Account for Cloud Functions
+
+Cloud Functions calls Cloud Bigtable API to create a backup, it gets triggered
+when a message arrives on the Pub/Sub topic. For successful execution of the
+cloud function, it should be able to consume from the Pub/Sub topic and should
+have permissions to create Cloud Bigtable backups. To accomplish this, perform
+the following steps:
+
+1.  Create a Service Account (e.g.
+    cbt-scheduled-backups@<PROJECT>iam.gserviceaccount.com).
+2.  Create a custom role (e.g. backups-admin) with the permissions:
+    *   bigtable.backups.create
+    *   bigtable.backups.delete
+    *   bigtable.backups.get
+    *   bigtable.backups.list
+    *   bigtable.backups.restore
+    *   bigtable.backups.update
+    *   bigtable.instances.get
+    *   bigtable.tables.create
+    *   bigtable.tables.readRows
+3.  Assign the custom role and <em>roles/pubsub.subscriber</em> to the service
+    account. This allows Cloud Functions to read messages from the Pub/Sub topic
+    and initiate a create backup request.
+4.  Add the administrator as a service account user by adding the user as a
+    member of the service account with role
+    <em>roles/iam.serviceAccountUser</em>. This allows the administrator to
+    deploy Cloud Functions.
 
 ## Create scheduled backups
 
@@ -22,7 +91,7 @@ backup using Cloud Bigtable Java API.
 gcloud pubsub topics create cloud-bigtable-scheduled-backups --project <project-id>
 ```
 
-3.  Create and deploy a Cloud Function `cbt-create-backup-function` which is
+1.  Create and deploy a Cloud Function `cbt-create-backup-function` which is
     called whenever a Pub/Sub message arrives in
     `cloud-bigtable-scheduled-backups` topic:
 
@@ -30,7 +99,7 @@ gcloud pubsub topics create cloud-bigtable-scheduled-backups --project <project-
 ./scripts/scheduled_backups.sh deploy-backup-function
 ```
 
-4.  Deploy the scheduled backup configuration to Cloud Scheduler:
+1.  Deploy the scheduled backup configuration to Cloud Scheduler:
 
 ```
 ./scripts/scheduled_backups.sh create-schedule
@@ -65,59 +134,17 @@ in Cloud Logging.
 
 2.  Add notification channels you just created to alerting policies.
 
-### APIs and IAM roles setup
+### Cleanup
 
-The diagram below focuses on the actions flow between human roles and APIs.
-<img src="https://drive.google.com/uc?export=view&id=1YHUh5FKSuNMTSj6_E7Ehsq31RHNPu2Wu" width="600" height="auto" />
+After you've finished this tutorial, you can clean up the resources created
+during this tutorial and you won't be billed for them in the future. Including:
 
-#### IAM Roles for Administrators
+*   [Delete the Pub/Sub topic](https://cloud.google.com/pubsub/docs/admin#deleting_a_topic).
+*   [Delete the Cloud Scheduler job](https://cloud.google.com/scheduler/docs/creating#deleting_a_job).
+*   Delete the Cloud function.
 
-The administrator should be granted specific roles to deploy the services needed
-for the solution.
-
-|Role                                   |Purpose                                             |
-|---------------------------------------|----------------------------------------------------|
-|<em>roles/bigtable.admin</em>          |Cloud Bigtable Administrator                        |
-|<em>roles/cloudfunctions.admin</em>    |to deploy and manage Cloud Functions                |
-|<em>roles/deploymentmanager.editor</em>|to deploy monitoring metrics                        |
-|<em>roles/pubsub.editor</em>           |to create and manage Pub/Sub topics                 |
-|<em>roles/cloudscheduler.admin</em>    |to setup a schedule in Cloud Scheduler              |
-|<em>roles/appengine.appAdmin</em>      |for Cloud Scheduler to deploy a cron service        |
-|<em>roles/monitoring.admin</em>        |to setup alerting policies for failure notifications|
-|<em>roles/logging.admin</em>           |to add log based user metrics to track failures     |
-
-
-You also need a custom role (ie. backups-admin) with below permissions
-* <em>appengine.applications.create</em> - for Cloud Scheduler to create an App Engine app
-* <em>serviceusage.services.use</em> - for Cloud Scheduler to use the App Engine app
-
-#### Service Account for Cloud Functions
-
-Cloud Functions calls Cloud Bigtable API to create a backup, it gets triggered
-when a message arrives on the Pub/Sub topic. For successful execution of the
-cloud function, it should be able to consume from the Pub/Sub topic and should
-have permissions to create Cloud Bigtable backups. To accomplish this, perform
-the following steps:
-
-1.  Create a Service Account (e.g.
-    cbt-scheduled-backups@<PROJECT>iam.gserviceaccount.com).
-2.  Create a custom role (e.g. backups-admin) with the permissions:
-    *   bigtable.backups.create
-    *   bigtable.backups.delete
-    *   bigtable.backups.get
-    *   bigtable.backups.list
-    *   bigtable.backups.restore
-    *   bigtable.backups.update
-    *   bigtable.instances.get
-    *   bigtable.tables.create
-    *   bigtable.tables.readRows
-3.  Assign the custom role and <em>roles/pubsub.subscriber</em> to the service
-    account. This allows Cloud Functions to read messages from the Pub/Sub topic
-    and initiate a create backup request.
-4.  Add the administrator as a service account user by adding the user as a
-    member of the service account with role
-    <em>roles/iam.serviceAccountUser</em>. This allows the administrator to
-    deploy Cloud Functions.
+Or you can simply delete the project. Please be cautions because you will also
+delete any other work you've done in the project.
 
 ### Limitations
 
