@@ -197,7 +197,7 @@ for file in **/pom.xml; do
       fi
     fi
 
-    # If this is a periodic build, send the test log to the Build Cop Bot.
+    # If this is a periodic build, send the test log to the FlakyBot.
     # See https://github.com/googleapis/repo-automation-bots/tree/master/packages/flakybot.
     if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"periodic"* ]]; then
       chmod +x $KOKORO_GFILE_DIR/linux_amd64/flakybot
