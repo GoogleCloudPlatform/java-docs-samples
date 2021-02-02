@@ -58,19 +58,23 @@ public class CreateBackup implements BackgroundFunction<PubSubMessage> {
             .setProjectId(cbMessage.getProjectId())
             .setInstanceId(cbMessage.getInstanceId()).build();
 
-        BigtableTableAdminClient adminClient = BigtableTableAdminClient.create(adminSettings);
-
-        CreateBackupRequest request =
+        try (
+          BigtableTableAdminClient adminClient = BigtableTableAdminClient.create(adminSettings)) {
+          CreateBackupRequest request =
             CreateBackupRequest.of(cbMessage.getClusterId(), buildBackupId(cbMessage.getTableId()))
             .setSourceTableId(cbMessage.getTableId())
             .setExpireTime(buildExpireTime(cbMessage.getExpireHours()));
 
-        Backup backupDetails = adminClient.createBackup(request);
+          Backup backupDetails = adminClient.createBackup(request);
 
-        logger.info("Submitted backup request :" + backupDetails.getId() + ": that will expire at:"
-                        + backupDetails.getExpireTime());
+          logger.info("Submitted backup request :" + backupDetails.getId()
+                          + ": that will expire at:" + backupDetails.getExpireTime());
+        } catch (Exception e) {
+          logger.log(Level.SEVERE, "Caught Exception creating backup:"
+            + e.toString(), e);
+        }
       } catch (Exception e) {
-        logger.log(Level.SEVERE, "Caught Exception running a BT backup function:"
+        logger.log(Level.SEVERE, "Caught Exception running the create backup function:"
             + e.toString(), e);
       }
       return;
