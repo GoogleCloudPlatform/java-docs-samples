@@ -88,7 +88,7 @@ public class CreateJobFromTemplateTest {
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     PROJECT_ID = requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    PROJECT_NUMBER = requireEnvVar("GOOGLE_CLOUD_PROJECT_NUMBER");
+    PROJECT_NUMBER = requireEnvVar("TRANSCODER_PROJECT_NUMBER");
   }
 
   @Before
