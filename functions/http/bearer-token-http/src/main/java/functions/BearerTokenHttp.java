@@ -31,7 +31,7 @@ public class BearerTokenHttp implements HttpFunction {
 
   // TODO<developer> specify values for these environment variables
   private static String REGION = System.getenv("TARGET_REGION");
-  private static String PROJECT_ID = System.getenv("GCP_PROJECT");
+  private static String PROJECT_ID = System.getenv("GCP_PROJECT_ID");
   private static String RECEIVING_FUNCTION_NAME = "myFunction";
 
   private static String receivingFunctionUrl = String.format(

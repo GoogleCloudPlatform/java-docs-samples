@@ -44,7 +44,7 @@ import org.junit.Test;
 public class ExampleSystemIT {
 
   // TODO<developer>: set these values (as environment variables)
-  private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
+  private static final String PROJECT_ID = System.getenv("GCP_PROJECT_ID");
   private static final String FUNCTIONS_BUCKET = System.getenv("FUNCTIONS_BUCKET");
   private static final String FUNCTION_DEPLOYED_NAME = "HelloGcs";
   private static final Storage STORAGE = StorageOptions.getDefaultInstance().getService();

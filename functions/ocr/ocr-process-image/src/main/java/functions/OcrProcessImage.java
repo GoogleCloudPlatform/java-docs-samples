@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 // [START functions_ocr_setup]
 public class OcrProcessImage implements BackgroundFunction<GcsEvent> {
   // TODO<developer> set these environment variables
-  private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
+  private static final String PROJECT_ID = System.getenv("GCP_PROJECT_ID");
   private static final String TRANSLATE_TOPIC_NAME = System.getenv("TRANSLATE_TOPIC");
   private static final String[] TO_LANGS = System.getenv("TO_LANG").split(",");
 

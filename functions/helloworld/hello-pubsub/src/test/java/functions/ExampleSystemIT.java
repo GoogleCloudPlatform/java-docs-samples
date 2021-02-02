@@ -45,7 +45,7 @@ import org.junit.Test;
 public class ExampleSystemIT {
 
   // TODO<developer>: set these values (as environment variables)
-  private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
+  private static final String PROJECT_ID = System.getenv("GCP_PROJECT_ID");
   private static final String TOPIC_NAME = System.getenv("FUNCTIONS_SYSTEM_TEST_TOPIC");
   private static final String FUNCTION_DEPLOYED_NAME = "HelloPubSub";
 
