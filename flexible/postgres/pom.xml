@@ -46,7 +46,7 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
-    <jetty>9.4.34.v20201102</jetty>
+    <jetty>9.4.36.v20210114</jetty>
 <!-- [END_EXCLUDE] -->
     <sqlURL>jdbc:postgresql://google/${database}?useSSL=false&amp;socketFactoryArg=${INSTANCE_CONNECTION_NAME}&amp;socketFactory=com.google.cloud.sql.postgres.SocketFactory&amp;user=${user}&amp;password=${password}</sqlURL>
   </properties>
@@ -56,17 +56,17 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.30.11</version>
+      <version>1.31.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.30.11</version>
+      <version>1.31.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-servlet</artifactId>
-      <version>1.30.11</version>
+      <version>1.31.2</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -85,7 +85,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>postgres-socket-factory</artifactId>
-      <version>1.1.0</version>
+      <version>1.2.0</version>
     </dependency>
     <!-- [END gae_flex_postgres_dependencies] -->
   </dependencies>

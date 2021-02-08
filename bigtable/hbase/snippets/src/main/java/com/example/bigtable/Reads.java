@@ -16,7 +16,7 @@
 
 package com.example.bigtable;
 
-// [START bigtable_reads_print]
+// [START bigtable_reads_print_hbase]
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class Reads {
 
   // Write your code here.
   // [START_EXCLUDE]
-  // [START bigtable_reads_row]
+  // [START bigtable_reads_row_hbase]
   public static void readRow() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -69,9 +69,9 @@ public class Reads {
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
     }
   }
-  // [END bigtable_reads_row]
+  // [END bigtable_reads_row_hbase]
 
-  // [START bigtable_reads_row_partial]
+  // [START bigtable_reads_row_partial_hbase]
   public static void readRowPartial() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -98,9 +98,9 @@ public class Reads {
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
     }
   }
-  // [END bigtable_reads_row_partial]
+  // [END bigtable_reads_row_partial_hbase]
 
-  // [START bigtable_reads_rows]
+  // [START bigtable_reads_rows_hbase]
   public static void readRows() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -129,9 +129,9 @@ public class Reads {
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
     }
   }
-  // [END bigtable_reads_rows]
+  // [END bigtable_reads_rows_hbase]
 
-  // [START bigtable_reads_row_range]
+  // [START bigtable_reads_row_range_hbase]
   public static void readRowRange() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -163,9 +163,9 @@ public class Reads {
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
     }
   }
-  // [END bigtable_reads_row_range]
+  // [END bigtable_reads_row_range_hbase]
 
-  // [START bigtable_reads_row_ranges]
+  // [START bigtable_reads_row_ranges_hbase]
   public static void readRowRanges() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -207,9 +207,9 @@ public class Reads {
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
     }
   }
-  // [END bigtable_reads_row_ranges]
+  // [END bigtable_reads_row_ranges_hbase]
 
-  // [START bigtable_reads_prefix]
+  // [START bigtable_reads_prefix_hbase]
   public static void readPrefix() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -235,9 +235,9 @@ public class Reads {
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
     }
   }
-  // [END bigtable_reads_prefix]
+  // [END bigtable_reads_prefix_hbase]
 
-  // [START bigtable_reads_filter]
+  // [START bigtable_reads_filter_hbase]
   public static void readFilter() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -267,7 +267,7 @@ public class Reads {
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
     }
   }
-  // [END bigtable_reads_filter]
+  // [END bigtable_reads_filter_hbase]
   // [END_EXCLUDE]
 
   private static void printRow(Result row) {
@@ -288,4 +288,4 @@ public class Reads {
     System.out.println();
   }
 }
-// [END bigtable_reads_print]
+// [END bigtable_reads_print_hbase]

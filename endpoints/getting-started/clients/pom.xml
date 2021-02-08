@@ -28,12 +28,12 @@
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>0.22.0</version>
+      <version>0.23.0</version>
     </dependency>
     <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
-      <version>3.11.0</version>
+      <version>3.12.1</version>
     </dependency>
   </dependencies>
   <build>

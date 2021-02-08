@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import com.amazonaws.services.s3.model.Bucket;

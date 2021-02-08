@@ -16,7 +16,7 @@
 
 package com.example.bigtable;
 
-// [START bigtable_filters_print]
+// [START bigtable_filters_print_hbase]
 
 import static com.google.cloud.bigtable.data.v2.models.Filters.FILTERS;
 
@@ -58,7 +58,7 @@ public class Filters {
 
   // Write your code here.
   // [START_EXCLUDE]
-  // [START bigtable_filters_limit_row_sample]
+  // [START bigtable_filters_limit_row_sample_hbase]
   public static void filterLimitRowSample() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -73,9 +73,9 @@ public class Filters {
     Scan scan = new Scan().setFilter(filter);
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_limit_row_sample]
+  // [END bigtable_filters_limit_row_sample_hbase]
 
-  // [START bigtable_filters_limit_row_regex]
+  // [START bigtable_filters_limit_row_regex_hbase]
   public static void filterLimitRowRegex() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -90,9 +90,9 @@ public class Filters {
     Scan scan = new Scan().setFilter(filter).setMaxVersions();
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_limit_row_regex]
+  // [END bigtable_filters_limit_row_regex_hbase]
 
-  // [START bigtable_filters_limit_cells_per_col]
+  // [START bigtable_filters_limit_cells_per_col_hbase]
   public static void filterLimitCellsPerCol() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -106,9 +106,9 @@ public class Filters {
     Scan scan = new Scan().setMaxVersions(2);
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_limit_cells_per_col]
+  // [END bigtable_filters_limit_cells_per_col_hbase]
 
-  // [START bigtable_filters_limit_cells_per_row]
+  // [START bigtable_filters_limit_cells_per_row_hbase]
   public static void filterLimitCellsPerRow() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -125,9 +125,9 @@ public class Filters {
     Scan scan = new Scan().setFilter(filter);
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_limit_cells_per_row]
+  // [END bigtable_filters_limit_cells_per_row_hbase]
 
-  // [START bigtable_filters_limit_cells_per_row_offset]
+  // [START bigtable_filters_limit_cells_per_row_offset_hbase]
   public static void filterLimitCellsPerRowOffset() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -143,9 +143,9 @@ public class Filters {
     Scan scan = new Scan().setFilter(filter);
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_limit_cells_per_row_offset]
+  // [END bigtable_filters_limit_cells_per_row_offset_hbase]
 
-  // [START bigtable_filters_limit_col_family_regex]
+  // [START bigtable_filters_limit_col_family_regex_hbase]
   public static void filterLimitColFamilyRegex() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -161,9 +161,9 @@ public class Filters {
     Scan scan = new Scan().setFilter(filter);
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_limit_col_family_regex]
+  // [END bigtable_filters_limit_col_family_regex_hbase]
 
-  // [START bigtable_filters_limit_col_qualifier_regex]
+  // [START bigtable_filters_limit_col_qualifier_regex_hbase]
   public static void filterLimitColQualifierRegex() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -180,9 +180,9 @@ public class Filters {
     Scan scan = new Scan().setFilter(filter);
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_limit_col_qualifier_regex]
+  // [END bigtable_filters_limit_col_qualifier_regex_hbase]
 
-  // [START bigtable_filters_limit_col_range]
+  // [START bigtable_filters_limit_col_range_hbase]
   public static void filterLimitColRange() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -200,9 +200,9 @@ public class Filters {
     Scan scan = new Scan().addFamily(Bytes.toBytes("cell_plan")).setFilter(filter).setMaxVersions();
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_limit_col_range]
+  // [END bigtable_filters_limit_col_range_hbase]
 
-  // [START bigtable_filters_limit_value_range]
+  // [START bigtable_filters_limit_value_range_hbase]
   public static void filterLimitValueRange() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -229,9 +229,9 @@ public class Filters {
     Scan scan = new Scan().setFilter(filter);
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_limit_value_range]
+  // [END bigtable_filters_limit_value_range_hbase]
 
-  // [START bigtable_filters_limit_value_regex]
+  // [START bigtable_filters_limit_value_regex_hbase]
   public static void filterLimitValueRegex() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -247,9 +247,9 @@ public class Filters {
     Scan scan = new Scan().setFilter(filter);
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_limit_value_regex]
+  // [END bigtable_filters_limit_value_regex_hbase]
 
-  // [START bigtable_filters_limit_timestamp_range]
+  // [START bigtable_filters_limit_timestamp_range_hbase]
   public static void filterLimitTimestampRange() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -270,9 +270,9 @@ public class Filters {
       System.out.println("There was an issue with your timestamp \n" + e.toString());
     }
   }
-  // [END bigtable_filters_limit_timestamp_range]
+  // [END bigtable_filters_limit_timestamp_range_hbase]
 
-  // [START bigtable_filters_limit_block_all]
+  // [START bigtable_filters_limit_block_all_hbase]
   public static void filterLimitBlockAll() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -287,9 +287,9 @@ public class Filters {
     Scan scan = new Scan().setFilter(filter);
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_limit_block_all]
+  // [END bigtable_filters_limit_block_all_hbase]
 
-  // [START bigtable_filters_composing_chain]
+  // [START bigtable_filters_composing_chain_hbase]
   public static void filterComposingChain() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -310,9 +310,9 @@ public class Filters {
     Scan scan = new Scan().setFilter(filter);
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_composing_chain]
+  // [END bigtable_filters_composing_chain_hbase]
 
-  // [START bigtable_filters_composing_interleave]
+  // [START bigtable_filters_composing_interleave_hbase]
   public static void filterComposingInterleave() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -336,7 +336,7 @@ public class Filters {
     Scan scan = new Scan().setFilter(filter).setMaxVersions();
     readWithFilter(projectId, instanceId, tableId, scan);
   }
-  // [END bigtable_filters_composing_interleave]
+  // [END bigtable_filters_composing_interleave_hbase]
   // [END_EXCLUDE]
 
   public static void readWithFilter(
@@ -376,4 +376,4 @@ public class Filters {
     System.out.println();
   }
 }
-// [END bigtable_filters_print]
+// [END bigtable_filters_print_hbase]

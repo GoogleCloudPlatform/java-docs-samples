@@ -39,12 +39,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-language</artifactId>
-      <version>1.101.5</version>
+      <version>1.101.10</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>30.0-jre</version>
+      <version>30.1-jre</version>
     </dependency>
 
     <!-- Test dependencies -->

@@ -38,7 +38,7 @@
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
     <appengine.maven.plugin>2.4.0</appengine.maven.plugin>
-    <jetty>9.4.34.v20201102</jetty>
+    <jetty>9.4.36.v20210114</jetty>
   </properties>
 
   <dependencies>
@@ -53,7 +53,7 @@
     <dependency>
       <groupId>com.googlecode.xmemcached</groupId>
       <artifactId>xmemcached</artifactId>
-      <version>2.4.6</version>
+      <version>2.4.7</version>
     </dependency>
     <!-- [END dependencies] -->
   </dependencies>

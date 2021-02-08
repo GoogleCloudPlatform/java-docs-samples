@@ -45,7 +45,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.83</version>
+      <version>1.9.86</version>
     </dependency>
 
     <dependency>
@@ -71,7 +71,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>30.0-jre</version>
+      <version>30.1-jre</version>
     </dependency>
 
     <!-- Test Dependencies -->
@@ -90,19 +90,19 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>1.9.83</version>
+      <version>1.9.86</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>1.9.83</version>
+      <version>1.9.86</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.9.83</version>
+      <version>1.9.86</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

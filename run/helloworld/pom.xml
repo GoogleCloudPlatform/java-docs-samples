@@ -32,7 +32,7 @@ limitations under the License.
         <!-- Import dependency management from Spring Boot -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.3.5.RELEASE</version>
+        <version>2.4.2</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -54,6 +54,12 @@ limitations under the License.
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -73,7 +79,7 @@ limitations under the License.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>2.6.0</version>
+        <version>2.7.1</version>
         <configuration>
           <to>
             <image>gcr.io/PROJECT_ID/helloworld</image>
