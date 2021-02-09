@@ -16,7 +16,6 @@
 
 package com.example.transcoder;
 
-
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -86,7 +85,7 @@ public class GetJobTest {
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     PROJECT_ID = requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    PROJECT_NUMBER = requireEnvVar("GOOGLE_CLOUD_PROJECT_NUMBER");
+    PROJECT_NUMBER = requireEnvVar("TRANSCODER_PROJECT_NUMBER");
   }
 
   @Before
