@@ -62,7 +62,7 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>2.10.8</version>
+      <version>2.10.10</version>
     </dependency>
     <dependency>
       <groupId>com.google.apis</groupId>
@@ -72,12 +72,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.110.1</version>
+      <version>1.111.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-core</artifactId>
-      <version>1.94.0</version>
+      <version>1.94.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>

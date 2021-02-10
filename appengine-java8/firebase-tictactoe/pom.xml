@@ -39,7 +39,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.84</version>
+      <version>1.9.86</version>
     </dependency>
 
     <dependency>
@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>0.22.1</version>
+      <version>0.23.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -92,19 +92,19 @@
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-testing</artifactId>
-        <version>1.9.84</version>
+        <version>1.9.86</version>
         <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-api-stubs</artifactId>
-        <version>1.9.84</version>
+        <version>1.9.86</version>
         <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-tools-sdk</artifactId>
-        <version>1.9.84</version>
+        <version>1.9.86</version>
         <scope>test</scope>
     </dependency>
     <dependency>

@@ -16,7 +16,6 @@
 package iam.snippets;
 
 // [START iam_modify_policy_add_role]
-// [START iam_modify_policy_add_binding]
 import com.google.api.services.cloudresourcemanager.model.Binding;
 import com.google.api.services.cloudresourcemanager.model.Policy;
 import java.util.ArrayList;
@@ -40,5 +39,4 @@ public class AddBinding {
     System.out.println("Added binding: " + binding.toString());
   }
 }
-// [END iam_modify_policy_add_binding]
 // [END iam_modify_policy_add_role]

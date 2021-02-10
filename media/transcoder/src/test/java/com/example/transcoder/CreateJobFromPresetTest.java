@@ -87,7 +87,7 @@ public class CreateJobFromPresetTest {
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     PROJECT_ID = requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    PROJECT_NUMBER = requireEnvVar("GOOGLE_CLOUD_PROJECT_NUMBER");
+    PROJECT_NUMBER = requireEnvVar("TRANSCODER_PROJECT_NUMBER");
   }
 
   @Before
@@ -125,7 +125,7 @@ public class CreateJobFromPresetTest {
     JOB_ID = arr[arr.length - 1].replace("\n", "");
     bout.reset();
 
-    Thread.sleep(60000);
+    Thread.sleep(90000);
 
     GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
     output = bout.toString();

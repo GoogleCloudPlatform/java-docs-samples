@@ -43,7 +43,7 @@
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
       <scope>provided</scope>
-      <version>1.0.3</version>
+      <version>1.0.4</version>
     </dependency>
 
     <!-- Required for groovy samples -->
