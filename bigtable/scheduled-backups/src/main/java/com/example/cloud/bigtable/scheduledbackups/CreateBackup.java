@@ -24,6 +24,7 @@ import com.google.cloud.bigtable.admin.v2.models.Backup;
 import com.google.cloud.bigtable.admin.v2.models.CreateBackupRequest;
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
@@ -57,21 +58,20 @@ public class CreateBackup implements BackgroundFunction<PubSubMessage> {
             BigtableTableAdminSettings.newBuilder()
             .setProjectId(cbMessage.getProjectId())
             .setInstanceId(cbMessage.getInstanceId()).build();
-
-        try (
-          BigtableTableAdminClient adminClient = BigtableTableAdminClient.create(adminSettings)) {
+        try (BigtableTableAdminClient adminClient =
+            BigtableTableAdminClient.create(adminSettings)) {
           CreateBackupRequest request =
-            CreateBackupRequest.of(cbMessage.getClusterId(), buildBackupId(cbMessage.getTableId()))
-            .setSourceTableId(cbMessage.getTableId())
-            .setExpireTime(buildExpireTime(cbMessage.getExpireHours()));
-
+              CreateBackupRequest.of(cbMessage.getClusterId(),
+                  buildBackupId(cbMessage.getTableId()))
+              .setSourceTableId(cbMessage.getTableId())
+              .setExpireTime(buildExpireTime(cbMessage.getExpireHours()));
           Backup backupDetails = adminClient.createBackup(request);
 
           logger.info("Submitted backup request :" + backupDetails.getId()
                           + ": that will expire at:" + backupDetails.getExpireTime());
-        } catch (Exception e) {
+        } catch (IOException e) {
           logger.log(Level.SEVERE, "Caught Exception creating backup:"
-            + e.toString(), e);
+              + e.toString(), e);
         }
       } catch (Exception e) {
         logger.log(Level.SEVERE, "Caught Exception running the create backup function:"
