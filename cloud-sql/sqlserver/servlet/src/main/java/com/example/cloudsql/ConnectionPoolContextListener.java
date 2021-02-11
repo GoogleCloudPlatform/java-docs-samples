@@ -42,7 +42,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
 
   private DataSource createConnectionPool() {
     // [START cloud_sql_sqlserver_servlet_create]
-    // Note: For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections,
+    // Note: For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections
     // which is preferred to using the Cloud SQL Proxy with Unix sockets.
     // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
 
