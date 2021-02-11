@@ -85,7 +85,7 @@ for more details on connecting a Cloud Run service to Cloud SQL.
     --platform managed \
     --allow-unauthenticated \
     --region [REGION] \
-    --update-env-vars CLOUD_SQL_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME] \
+    --update-env-vars CLOUD_SQL_CONNECTION_NAME=[CLOUD_SQL_CONNECTION_NAME] \
     --update-env-vars DB_USER=[MY_DB_USER] \
     --update-env-vars DB_PASS=[MY_DB_PASS] \
     --update-env-vars DB_NAME=[MY_DB]
@@ -95,6 +95,7 @@ for more details on connecting a Cloud Run service to Cloud SQL.
   instance configuration.
 
   Take note of the URL output at the end of the deployment process.
+
 
 3. Navigate your browser to the URL noted in step 2.
 

@@ -42,6 +42,10 @@ public class ConnectionPoolContextListener implements ServletContextListener {
 
   private DataSource createConnectionPool() {
     // [START cloud_sql_sqlserver_servlet_create]
+    // Note: For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections,
+    // which is preferred to using the Cloud SQL Proxy with Unix sockets.
+    // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
+
     // The configuration object specifies behaviors for the connection pool.
     HikariConfig config = new HikariConfig();
 
@@ -60,8 +64,6 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     config.setPassword(DB_PASS); // e.g. "my-password"
     config.addDataSourceProperty("databaseName", DB_NAME);
 
-    // For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections.
-    // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
     config.addDataSourceProperty("socketFactoryClass",
         "com.google.cloud.sql.sqlserver.SocketFactory");
     config.addDataSourceProperty("socketFactoryConstructorArg", CLOUD_SQL_CONNECTION_NAME);
