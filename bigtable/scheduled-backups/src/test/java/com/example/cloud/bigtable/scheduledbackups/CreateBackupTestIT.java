@@ -51,7 +51,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-public class CreateBackupTest {
+public class CreateBackupTestIT {
   private static final String PROJECT_ENV = "GOOGLE_CLOUD_PROJECT";
   private static final String INSTANCE_ENV = "BIGTABLE_TESTING_INSTANCE";
   private static final String CLUSTER_ID = "cl-" + UUID.randomUUID().toString().substring(0, 10);
