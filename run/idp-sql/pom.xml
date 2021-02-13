@@ -45,7 +45,14 @@ limitations under the License.
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>
-        <version>Hoxton.SR8</version>
+        <version>2020.0.1</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-gcp-dependencies</artifactId>
+        <version>1.2.7.RELEASE</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -135,6 +142,7 @@ limitations under the License.
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <!-- <version>2.4.2</version> -->
       </plugin>
       <!-- [START cloudrun_user_auth_jib] -->
       <plugin>

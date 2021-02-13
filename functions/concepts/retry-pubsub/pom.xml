@@ -92,7 +92,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.6</version>
+        <version>0.9.7</version>
         <configuration>
           <functionTarget>functions.RetryPubSub</functionTarget>
         </configuration>
