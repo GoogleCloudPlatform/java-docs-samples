@@ -137,10 +137,6 @@ limitations under the License.
           <skipTests>${skipTests}</skipTests>
           <reportNameSuffix>sponge_log</reportNameSuffix>
           <trimStackTrace>false</trimStackTrace>
-          <environmentVariables>
-            <GOOGLE_CLOUD_PROJECT>cbt-scheduled-backups-test</GOOGLE_CLOUD_PROJECT>
-            <BIGTABLE_TESTING_INSTANCE>test-instance</BIGTABLE_TESTING_INSTANCE>
-          </environmentVariables>
         </configuration>
       </plugin>
     </plugins>
