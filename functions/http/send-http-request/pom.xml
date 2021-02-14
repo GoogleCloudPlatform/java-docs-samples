@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.4</version>
       <scope>provided</scope>
     </dependency>
 
@@ -61,7 +61,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.6.0</version>
+      <version>3.7.7</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -80,7 +80,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.5</version>
+        <version>0.9.7</version>
         <configuration>
           <functionTarget>functions.SendHttpRequest</functionTarget>
         </configuration>

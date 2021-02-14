@@ -47,7 +47,7 @@
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.4</version>
       <scope>provided</scope>
     </dependency>
 
@@ -61,7 +61,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
-      <version>30.0-jre</version>
+      <version>30.1-jre</version>
       <scope>test</scope>
     </dependency>
 
@@ -69,13 +69,13 @@
     <dependency>
       <groupId>io.github.resilience4j</groupId>
       <artifactId>resilience4j-core</artifactId>
-      <version>1.6.1</version>
+      <version>1.7.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.github.resilience4j</groupId>
       <artifactId>resilience4j-retry</artifactId>
-      <version>1.6.1</version>
+      <version>1.7.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -83,13 +83,13 @@
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>function-maven-plugin</artifactId>
-      <version>0.9.5</version>
+      <version>0.9.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.6.0</version>
+      <version>3.7.7</version>
       <scope>test</scope>
     </dependency>
 
@@ -109,7 +109,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.5</version>
+        <version>0.9.7</version>
         <configuration>
           <functionTarget>functions.HelloHttp</functionTarget>
         </configuration>

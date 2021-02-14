@@ -48,7 +48,7 @@ Copyright 2018 Google LLC
     <dependency>
       <groupId>com.sendgrid</groupId>
       <artifactId>sendgrid-java</artifactId>
-      <version>4.6.8</version>
+      <version>4.7.1</version>
     </dependency>
     <!-- [END gae_sendgrid_dependencies] -->
   </dependencies>
@@ -70,7 +70,7 @@ Copyright 2018 Google LLC
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.34.v20201102</version>
+        <version>9.4.36.v20210114</version>
       </plugin>
     </plugins>
   </build>

@@ -55,6 +55,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
 
     # Setup required env variables
     export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
+    export TRANSCODER_PROJECT_NUMBER="779844219229" # For Transcoder samples
     export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
     # For Tasks samples
     export QUEUE_ID=my-appengine-queue
@@ -77,6 +78,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     source "${KOKORO_GFILE_DIR}/firestore_secrets.txt"
     # spellcheck source=src/cts_v4_secrets.txt
     source "${KOKORO_GFILE_DIR}/cts_v4_secrets.txt"
+    # shellcheck source=src/cloud_sql_secrets.txt
+    source "${KOKORO_GFILE_DIR}/cloud_sql_secrets.txt"
 
     # Activate service account
     gcloud auth activate-service-account \
@@ -194,11 +197,11 @@ for file in **/pom.xml; do
       fi
     fi
 
-    # If this is a periodic build, send the test log to the Build Cop Bot.
-    # See https://github.com/googleapis/repo-automation-bots/tree/master/packages/buildcop.
+    # If this is a periodic build, send the test log to the FlakyBot.
+    # See https://github.com/googleapis/repo-automation-bots/tree/master/packages/flakybot.
     if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"periodic"* ]]; then
-      chmod +x $KOKORO_GFILE_DIR/linux_amd64/buildcop
-      $KOKORO_GFILE_DIR/linux_amd64/buildcop
+      chmod +x $KOKORO_GFILE_DIR/linux_amd64/flakybot
+      $KOKORO_GFILE_DIR/linux_amd64/flakybot
     fi
 
 done

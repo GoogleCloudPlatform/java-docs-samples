@@ -47,6 +47,10 @@ public class ConnectionPoolContextListener implements ServletContextListener {
       justification = "Necessary for sample region tag.")
   private DataSource createConnectionPool() {
     // [START cloud_sql_postgres_servlet_create]
+    // Note: For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections
+    // which is preferred to using the Cloud SQL Proxy with Unix sockets.
+    // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
+
     // The configuration object specifies behaviors for the connection pool.
     HikariConfig config = new HikariConfig();
 
@@ -61,12 +65,14 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     config.setUsername(DB_USER); // e.g. "root", "postgres"
     config.setPassword(DB_PASS); // e.g. "my-password"
 
-    // For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections.
-    // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
     config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.postgres.SocketFactory");
     config.addDataSourceProperty("cloudSqlInstance", CLOUD_SQL_CONNECTION_NAME);
 
 
+    // The ipTypes argument can be used to specify a comma delimited list of preferred IP types 
+    // for connecting to a Cloud SQL instance. The argument ipTypes=PRIVATE will force the 
+    // SocketFactory to connect with an instance's associated private IP. 
+    config.addDataSourceProperty("ipTypes", "PUBLIC,PRIVATE");
 
     // ... Specify additional connection properties here.
     // [START_EXCLUDE]

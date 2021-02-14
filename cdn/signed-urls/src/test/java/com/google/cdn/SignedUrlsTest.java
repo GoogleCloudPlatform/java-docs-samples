@@ -18,7 +18,7 @@
 package com.google.cdn;
 
 import static com.google.cdn.SignedUrls.signUrl;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Base64;
 import java.util.Date;

@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.4</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -59,7 +59,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.5</version>
+        <version>0.9.7</version>
         <configuration>
           <functionTarget>functions.BearerTokenHttp</functionTarget>
         </configuration>

@@ -12,7 +12,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.18</version>
+    <version>1.0.21</version>
   </parent>
   <groupId>com.example.cloudsql</groupId>
   <artifactId>r2dbc-sample</artifactId>
@@ -36,26 +36,19 @@
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.data</groupId>
-      <artifactId>spring-data-r2dbc</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>io.r2dbc</groupId>
-      <artifactId>r2dbc-pool</artifactId>
-      <version>0.8.5.RELEASE</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-r2dbc</artifactId>
     </dependency>
 
     <!-- MySQL dependencies start -->
     <dependency>
       <groupId>dev.miku</groupId>
       <artifactId>r2dbc-mysql</artifactId>
-      <version>0.8.2.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
-      <version>1.1.0</version>
+      <version>1.2.0</version>
     </dependency>
     <!-- MySQL dependencies end -->
 
@@ -63,12 +56,11 @@
     <dependency>
       <groupId>io.r2dbc</groupId>
       <artifactId>r2dbc-postgresql</artifactId>
-      <version>0.8.6.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
-      <version>1.1.0</version>
+      <version>1.2.0</version>
     </dependency>
     <!-- Postgres dependencies end -->
   </dependencies>
@@ -93,7 +85,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.2.0</version>
+        <version>2.4.0</version>
         <configuration>
           <version>GCLOUD_CONFIG</version>
           <projectId>GCLOUD_CONFIG</projectId>
@@ -107,7 +99,7 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.5.RELEASE</version>
+        <version>2.4.2</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>

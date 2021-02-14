@@ -39,7 +39,7 @@ public class MarkdownController {
     // https://github.com/atlassian/commonmark-java#extensions
     List<Extension> extensions =
         Arrays.asList(TablesExtension.create(), StrikethroughExtension.create());
-    Parser parser = Parser.builder().extensions(extensions).build();
+    Parser parser = Parser.builder().build();
     Node document = parser.parse(payload);
     HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions).build();
     // Convert Markdown to HTML

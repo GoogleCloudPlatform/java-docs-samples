@@ -42,6 +42,18 @@
     {
       "packageNames": ["javax.servlet:javax.servlet-api"],
       "rangeStrategy": "pin"
+    },
+    {
+      "packageNames": ["com.microsoft.sqlserver:mssql-jdbc"],
+      "allowedVersions": "/.+jre8.?/"
+    },
+    {
+      "packagePatterns": ["^scalaVersion"],
+      "enabled": false
+    },
+    {
+      "packagePatterns": ["^spark-sql"],
+      "enabled": false
     }
   ],
   "labels": [

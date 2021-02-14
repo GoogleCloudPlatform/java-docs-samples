@@ -22,6 +22,7 @@
     * [Exception Handling]()
     * [Client Initialization](#client-initialization)
     * [Command-Line Arguments](#command-line-arguments)
+    * [Preferred Dependencies](#preferred-dependencies)
   * [Modern Java](#modern-java)
     * [Lambdas](#lambdas)
     * [Streams](#streams)
@@ -77,8 +78,10 @@ correctly - it is an explicit non goal for tests to verify that API is performin
 Because of this, mocks for external services are strongly discouraged.
 
 * Test Library: [JUnit4](https://junit.org/junit4/)
-* Test Runner: [Maven Failsafe plugin](https://maven.apache.org/surefire/maven-failsafe-plugin/)
-and [Maven Surefire plugin](https://maven.apache.org/surefire/maven-surefire-plugin/).
+* Test Runner: [Maven Failsafe plugin](https://maven.apache.org/surefire/maven-failsafe-plugin/) 
+(Integration Tests) and [Maven Surefire plugin](https://maven.apache.org/surefire/maven-surefire-plugin/) (Unit Tests).
+
+Most of our sample tests are Integration Tests and should be marked as such using either the Prefix or suffix `IT`.
 
 As an example, the following test code shows how we test a region tag (region tags are tools Google
 uses to identify sections of the snippets to be highlighted in documentation) called `region_tag`:
@@ -95,7 +98,7 @@ import org.junit.runners.JUnit4;
  * Store region_tag in test method name, camel-cased
  */ 
 @RunWith(JUnit4.class)
-public class SomeClassTest {
+public class SomeClassIT {
   @Test public void regionTag_shouldPass() throws Exception { }
 
   @Test public void regionTag_shouldFail() throws Exception {
@@ -159,9 +162,7 @@ To run the `functions` tests (or other tests without a parent `pom.xml`), use th
 ```
 cd functions
 find */pom.xml | xargs -I {} echo $(pwd)/{} | xargs -I {} dirname {} | xargs -I {} sh -c "cd {} && mvn clean verify"
-
 ```
-
 
 ### Gradle Specifics
 #### NEEDS WORK
@@ -395,6 +396,12 @@ try (DlpServiceClient dlp = DlpServiceClient.create()) {
 considered an anti-pattern, and new samples should not implement them. 
 
 **Dataflow** samples are an exception to this guideline.
+
+### Preferred Dependencies
+Google written dependencies are always preferred over alternatives.  For example:
+  * [Guava](https://github.com/Google/Guava) is preferred over [Apache commons lang](https://commons.apache.org/)
+  * [GSON](https://github.com/Google/GSON) is preferred for JSON parsing.
+  * [Google HTTP Client](https://github.com/googleapis/google-http-java-client) is preferred.
 
 ## Modern Java
 Prefer using modern idioms / language features over older styles.

@@ -42,12 +42,12 @@
   <!-- The Spring Cloud GCP BOM will manage spring-cloud-gcp version numbers for you. -->
   <!-- [START pubsub_spring_dependency_manager] -->
   <dependencyManagement>
-  <!-- [END pubsub_spring_dependency_manager] -->
     <dependencies>
+    <!-- [END pubsub_spring_dependency_manager] -->
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.3.5.RELEASE</version>
+        <version>2.3.8.RELEASE</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -55,7 +55,7 @@
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>1.2.5.RELEASE</version>
+        <version>1.2.7.RELEASE</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -93,7 +93,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>2.3.5.RELEASE</version>
+        <version>2.4.2</version>
         <configuration>
           <mainClass>demo.PubSubApplication</mainClass>
         </configuration>

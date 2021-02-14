@@ -169,7 +169,7 @@ gcloud dataflow flex-template build $TEMPLATE_PATH \
     --flex-template-base-image JAVA11 \
     --metadata-file "metadata.json" \
     --jar "target/streaming-beam-sql-1.0.jar" \
-    --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="org.apache.beam.samples.StreamingBeamSQL"
+    --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="org.apache.beam.samples.StreamingBeamSql"
 ```
 
 The template is now available through the template file in the Cloud Storage

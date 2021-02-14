@@ -16,7 +16,6 @@
 
 package functions;
 
-// [START functions_background_helloworld]
 // [START functions_helloworld_pubsub]
 
 import com.google.cloud.functions.BackgroundFunction;
@@ -42,5 +41,4 @@ public class HelloPubSub implements BackgroundFunction<PubSubMessage> {
     return;
   }
 }
-// [END functions_background_helloworld]
 // [END functions_helloworld_pubsub]

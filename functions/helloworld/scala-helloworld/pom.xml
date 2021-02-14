@@ -44,14 +44,14 @@
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
-      <version>2.13.3</version>
+      <version>2.13.4</version>
     </dependency>
 
     <!-- Required for Function primitives -->
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.4</version>
       <scope>provided</scope>
     </dependency>
     <!-- [END functions_scala_pom] -->
@@ -59,7 +59,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.6.0</version>
+      <version>3.7.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
-      <version>30.0-jre</version>
+      <version>30.1-jre</version>
       <scope>test</scope>
     </dependency>
     <!-- [START functions_scala_pom] -->
@@ -98,7 +98,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.5</version>
+        <version>0.9.7</version>
         <configuration>
           <functionTarget>functions.ScalaHelloWorld</functionTarget>
         </configuration>

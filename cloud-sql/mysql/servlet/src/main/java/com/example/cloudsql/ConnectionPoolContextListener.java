@@ -47,24 +47,31 @@ public class ConnectionPoolContextListener implements ServletContextListener {
       justification = "Necessary for sample region tag.")
   private DataSource createConnectionPool() {
     // [START cloud_sql_mysql_servlet_create]
+    // Note: For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections
+    // which is preferred to using the Cloud SQL Proxy with Unix sockets.
+    // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
+
     // The configuration object specifies behaviors for the connection pool.
     HikariConfig config = new HikariConfig();
 
     // The following URL is equivalent to setting the config options below:
-    // jdbc:postgresql:///<DB_NAME>?cloudSqlInstance=<CLOUD_SQL_CONNECTION_NAME>&
-    // socketFactory=com.google.cloud.sql.postgres.SocketFactory&user=<DB_USER>&password=<DB_PASS>
+    // jdbc:mysql:///<DB_NAME>?cloudSqlInstance=<CLOUD_SQL_CONNECTION_NAME>&
+    // socketFactory=com.google.cloud.sql.mysql.SocketFactory&user=<DB_USER>&password=<DB_PASS>
     // See the link below for more info on building a JDBC URL for the Cloud SQL JDBC Socket Factory
     // https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#creating-the-jdbc-url
 
     // Configure which instance and what database user to connect with.
     config.setJdbcUrl(String.format("jdbc:mysql:///%s", DB_NAME));
-    config.setUsername(DB_USER); // e.g. "root", "postgres"
+    config.setUsername(DB_USER); // e.g. "root", "mysql"
     config.setPassword(DB_PASS); // e.g. "my-password"
 
-    // For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections.
-    // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
     config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.mysql.SocketFactory");
     config.addDataSourceProperty("cloudSqlInstance", CLOUD_SQL_CONNECTION_NAME);
+
+    // The ipTypes argument can be used to specify a comma delimited list of preferred IP types 
+    // for connecting to a Cloud SQL instance. The argument ipTypes=PRIVATE will force the 
+    // SocketFactory to connect with an instance's associated private IP. 
+    config.addDataSourceProperty("ipTypes", "PUBLIC,PRIVATE");
 
     // ... Specify additional connection properties here.
     // [START_EXCLUDE]
