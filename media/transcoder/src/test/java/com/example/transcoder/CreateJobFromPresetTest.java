@@ -125,7 +125,7 @@ public class CreateJobFromPresetTest {
     JOB_ID = arr[arr.length - 1].replace("\n", "");
     bout.reset();
 
-    Thread.sleep(90000);
+    Thread.sleep(180000);
 
     GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
     output = bout.toString();
