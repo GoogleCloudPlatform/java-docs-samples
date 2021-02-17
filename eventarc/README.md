@@ -11,10 +11,10 @@ This directory contains samples for Cloud Eventarc.
 
 |           Sample                |        Description       |     Deploy    |
 | ------------------------------- | ------------------------ | ------------- |
-|[Eventarc - Pub/Sub](events-pubsub/) | Events for Cloud Run with Pub/Sub | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_pubsub] |
-|[Anthos Events - Pub/Sub](events-pubsub/anthos.md) | Events for Cloud Run on Anthos with Pub/Sub | - |
-|[Eventarc - Storage](events-audit-storage/) | Events for Cloud Run with GCS | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_gcs] |
-|[Anthos Events - Storage](events-audit-storage/anthos.md) | Events for Cloud Run on Anthos with GCS | - |
+|[Eventarc - Pub/Sub](pubsub/) | Events for Cloud Run with Pub/Sub | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_pubsub] |
+|[Anthos Events - Pub/Sub](pubsub/anthos.md) | Events for Cloud Run on Anthos with Pub/Sub | - |
+|[Eventarc - Storage](audit-storage/) | Events for Cloud Run with Cloud Storage | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_audit_storage] |
+|[Anthos Events - Storage](audit-storage/anthos.md) | Events for Cloud Run on Anthos with Cloud Storage | - |
 
 ## Setup
 
@@ -101,5 +101,5 @@ Learn more about [testing your container image locally.][testing]
     gcloud run deploy --image gcr.io/PROJECT_ID/SAMPLE_NAME
     ```
 
-[run_button_events_gcs]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=eventarc/audit-storage
+[run_button_events_audit_storage]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=eventarc/audit-storage
 [run_button_events_pubsub]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=eventarc/pubsub
