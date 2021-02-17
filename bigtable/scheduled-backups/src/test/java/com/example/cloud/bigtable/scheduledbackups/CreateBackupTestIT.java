@@ -149,7 +149,11 @@ public class CreateBackupTestIT {
             + "\"expireHours\":%d}",
         projectId, instanceId, TABLE_ID, CLUSTER_ID, 8);
     String msgBase64 = Base64.getEncoder().encodeToString(msg.getBytes(StandardCharsets.UTF_8));
-    String jsonStr = gson.toJson(Map.of("data", Map.of("data", msgBase64)));
+    Map<String, String> msgMap = new HashMap<>();
+    value.put("data", msgBase64);
+    Map<String, Map<String, String>> dataMap = new HashMap<>();
+    map.put("data", msgMap);
+    String jsonStr = gson.toJson(dataMap);
 
     HttpPost postRequest =  new HttpPost(URI.create(functionUrl));
     postRequest.setEntity(new StringEntity(jsonStr));
