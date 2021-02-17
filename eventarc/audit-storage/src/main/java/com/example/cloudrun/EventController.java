@@ -52,7 +52,7 @@ public class EventController {
     }
 
     String ceSubject = headers.get("ce-subject");
-    String msg = "Detected change in GCS bucket: " + ceSubject;
+    String msg = "Detected change in Cloud Storage bucket: " + ceSubject;
     System.out.println(msg);
     return new ResponseEntity<String>(msg, HttpStatus.OK);
   }
