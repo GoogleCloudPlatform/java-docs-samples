@@ -84,7 +84,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>mysql-socket-factory-connector-j-6</artifactId>
-      <version>1.2.0</version>
+      <version>1.2.1</version>
     </dependency>
     <!-- [END gae_flex_mysql_dependencies] -->
   </dependencies>
