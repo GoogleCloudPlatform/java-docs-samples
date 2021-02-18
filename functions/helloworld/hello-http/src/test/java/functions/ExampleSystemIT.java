@@ -40,6 +40,14 @@ public class ExampleSystemIT {
   public void helloHttp_shouldRunWithFunctionsFramework() throws IOException, InterruptedException {
     String functionUrl = BASE_URL + "/HelloHttp";
 
+    // [END functions_http_system_test]
+    // Skip this test if FUNCTIONS_BASE_URL is not set
+    if (BASE_URL == null) {
+      System.out.println("FUNCTIONS_BASE_URL is not set; skipping ExampleSystemIT.");
+      return;
+    }
+
+    // [START functions_http_system_test]
     java.net.http.HttpRequest getRequest =
         java.net.http.HttpRequest.newBuilder().uri(URI.create(functionUrl)).GET().build();
 
