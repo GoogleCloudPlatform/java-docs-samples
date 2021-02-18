@@ -122,7 +122,7 @@ public class CreateJobFromAdHocTest {
     JOB_ID = arr[arr.length - 1].replace("\n", "");
     bout.reset();
 
-    Thread.sleep(180000);
+    Thread.sleep(300000);
 
     GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
     output = bout.toString();
