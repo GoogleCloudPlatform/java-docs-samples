@@ -22,7 +22,7 @@ Apache Spark provides DataSource API for external systems to plug into as data s
 
 1. [sbt](https://www.scala-sbt.org/) installed.
 
-1. [Apache Spark](https://spark.apache.org/) installed. Download Spark built for Scala 2.11.
+1. [Apache Spark](https://spark.apache.org/) installed. Download Spark built for Scala 2.11. This sample uses Spark 2.4.7 and Scala 2.11.2.
 
 1. A basic familiarity with [Apache Spark](https://spark.apache.org/) and [Scala](https://www.scala-lang.org/).
 
