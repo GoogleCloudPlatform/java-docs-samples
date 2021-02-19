@@ -37,6 +37,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -150,9 +151,9 @@ public class CreateBackupTestIT {
         projectId, instanceId, TABLE_ID, CLUSTER_ID, 8);
     String msgBase64 = Base64.getEncoder().encodeToString(msg.getBytes(StandardCharsets.UTF_8));
     Map<String, String> msgMap = new HashMap<>();
-    value.put("data", msgBase64);
+    msgMap.put("data", msgBase64);
     Map<String, Map<String, String>> dataMap = new HashMap<>();
-    map.put("data", msgMap);
+    dataMap.put("data", msgMap);
     String jsonStr = gson.toJson(dataMap);
 
     HttpPost postRequest =  new HttpPost(URI.create(functionUrl));
