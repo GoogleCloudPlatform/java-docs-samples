@@ -52,7 +52,7 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.2.18</version>
+      <version>42.2.19</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
@@ -62,7 +62,7 @@
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-      <version>4.0.1</version>
+      <version>4.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
