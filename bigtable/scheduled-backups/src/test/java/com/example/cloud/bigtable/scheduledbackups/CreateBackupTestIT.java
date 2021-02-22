@@ -21,9 +21,9 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.bigtable.admin.v2.BigtableInstanceAdminClient;
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminClient;
-import com.google.cloud.bigtable.admin.v2.models.Cluster;
-import com.google.cloud.bigtable.admin.v2.models.CreateClusterRequest;
+import com.google.cloud.bigtable.admin.v2.models.CreateInstanceRequest;
 import com.google.cloud.bigtable.admin.v2.models.CreateTableRequest;
+import com.google.cloud.bigtable.admin.v2.models.Instance;
 import com.google.cloud.bigtable.admin.v2.models.StorageType;
 import com.google.gson.Gson;
 import io.github.resilience4j.core.IntervalFunction;
@@ -54,14 +54,13 @@ import org.junit.Test;
 
 public class CreateBackupTestIT {
   private static final String PROJECT_ENV = "GOOGLE_CLOUD_PROJECT";
-  private static final String INSTANCE_ENV = "BIGTABLE_TESTING_INSTANCE";
+  private static final String INSTANCE_ID = "ins-" + UUID.randomUUID().toString().substring(0, 10);
   private static final String CLUSTER_ID = "cl-" + UUID.randomUUID().toString().substring(0, 10);
   private static final String TABLE_ID = "tbl-" + UUID.randomUUID().toString().substring(0, 10);
   private static final String ZONE_ID = "us-east1-b";
   private static final String COLUMN_FAMILY_NAME = "cf1";
 
   private static String projectId;
-  private static String instanceId;
 
   // Root URL pointing to the locally hosted function
   // The Functions Framework Maven plugin lets us run a function locally
@@ -81,23 +80,19 @@ public class CreateBackupTestIT {
   @BeforeClass
   public static void setUp() throws IOException {
     projectId = requireEnv(PROJECT_ENV);
-    instanceId = requireEnv(INSTANCE_ENV);
 
     try (BigtableInstanceAdminClient instanceAdmin =
         BigtableInstanceAdminClient.create(projectId)) {
-      // Create a cluster.
-      Cluster cluster = instanceAdmin.createCluster(
-          CreateClusterRequest.of(instanceId, CLUSTER_ID)
-              .setZone(ZONE_ID)
-              .setServeNodes(1)
-              .setStorageType(StorageType.SSD));
+      CreateInstanceRequest request = CreateInstanceRequest.of(INSTANCE_ID)
+              .addCluster(CLUSTER_ID, ZONE_ID, 1, StorageType.SSD);
+      Instance instance = instanceAdmin.createInstance(request);
     } catch (IOException e) {
-      System.out.println("Error during BeforeClass while creating cluster: \n" + e.toString());
+      System.out.println("Error during BeforeClass while creating instance: \n" + e.toString());
       throw(e);
     }
 
     try (BigtableTableAdminClient tableAdmin =
-        BigtableTableAdminClient.create(projectId, instanceId)) {
+        BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
       // Create a table.
       tableAdmin.createTable(CreateTableRequest.of(TABLE_ID).addFamily(COLUMN_FAMILY_NAME));
     } catch (IOException e) {
@@ -118,7 +113,7 @@ public class CreateBackupTestIT {
   @AfterClass
   public static void cleanUp() throws IOException {
     try (BigtableTableAdminClient tableAdmin =
-        BigtableTableAdminClient.create(projectId, instanceId)) {
+        BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
       for (String backup : tableAdmin.listBackups(CLUSTER_ID)) {
         tableAdmin.deleteBackup(CLUSTER_ID, backup);
       }
@@ -131,9 +126,9 @@ public class CreateBackupTestIT {
 
     try (BigtableInstanceAdminClient instanceAdmin =
         BigtableInstanceAdminClient.create(projectId)) {
-      instanceAdmin.deleteCluster(instanceId, CLUSTER_ID);
+      instanceAdmin.deleteInstance(INSTANCE_ID);
     } catch (IOException e) {
-      System.out.println("Error during AfterClass while deleting cluster: \n" + e.toString());
+      System.out.println("Error during AfterClass while deleting instance: \n" + e.toString());
       throw (e);
     }
     // Terminate the running Functions Framework Maven plugin process (if it's still running)
@@ -148,7 +143,7 @@ public class CreateBackupTestIT {
     String msg = String.format(
         "{\"projectId\":\"%s\", \"instanceId\":\"%s\", \"tableId\":\"%s\", \"clusterId\":\"%s\","
             + "\"expireHours\":%d}",
-        projectId, instanceId, TABLE_ID, CLUSTER_ID, 8);
+        projectId, INSTANCE_ID, TABLE_ID, CLUSTER_ID, 8);
     String msgBase64 = Base64.getEncoder().encodeToString(msg.getBytes(StandardCharsets.UTF_8));
     Map<String, String> msgMap = new HashMap<>();
     msgMap.put("data", msgBase64);
@@ -177,7 +172,7 @@ public class CreateBackupTestIT {
     // Check if backup exists
     List<String> backups = new ArrayList<String>();
     try (BigtableTableAdminClient tableAdmin =
-        BigtableTableAdminClient.create(projectId, instanceId)) {
+        BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
       backups = tableAdmin.listBackups(CLUSTER_ID);
     } catch (IOException e) {
       System.out.println("Unable to list backups: \n" + e.toString());
