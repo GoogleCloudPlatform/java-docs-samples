@@ -26,9 +26,7 @@ import java.security.GeneralSecurityException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
@@ -41,7 +39,8 @@ import org.junit.Test;
 public class QueryDecryptDataIT {
 
   private static List<String> requiredEnvVars =
-      Arrays.asList("MYSQL_USER", "MYSQL_PASS", "MYSQL_DB", "MYSQL_CONNECTION_NAME", "CLOUD_KMS_URI");
+      Arrays
+          .asList("MYSQL_USER", "MYSQL_PASS", "MYSQL_DB", "MYSQL_CONNECTION_NAME", "CLOUD_KMS_URI");
 
   private static DataSource pool;
   private static String tableName;
@@ -73,7 +72,8 @@ public class QueryDecryptDataIT {
     QueryAndDecryptData.createTable(pool, tableName);
 
     envAead = new CloudKmsEnvelopeAead(CLOUD_KMS_URI).envAead;
-    EncryptAndInsertData.encryptAndInsertData(pool, envAead, tableName, "TABS", "hello@example.com");
+    EncryptAndInsertData
+        .encryptAndInsertData(pool, envAead, tableName, "TABS", "hello@example.com");
   }
 
   @AfterClass
