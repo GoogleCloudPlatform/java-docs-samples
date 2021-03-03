@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package cloudsql.tink;
 
 // [START cloud_sql_mysql_query_decrypt]

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package cloudsql.tink;
 
 // [START cloud_sql_mysql_encrypt_insert]
@@ -66,8 +67,8 @@ public class EncryptAndInsertData {
 
         // Use the envelope AEAD primitive to encrypt the email, using the team name as
         // associated data
-        byte[] encrypted_email = envAead.encrypt(email.getBytes(), team.getBytes());
-        voteStmt.setBytes(3, encrypted_email);
+        byte[] encryptedEmail = envAead.encrypt(email.getBytes(), team.getBytes());
+        voteStmt.setBytes(3, encryptedEmail);
 
         // Finally, execute the statement. If it fails, an error will be thrown.
         voteStmt.execute();

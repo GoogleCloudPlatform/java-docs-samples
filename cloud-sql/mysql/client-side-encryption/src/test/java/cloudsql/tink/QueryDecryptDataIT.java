@@ -80,8 +80,8 @@ public class QueryDecryptDataIT {
       try (PreparedStatement voteStmt = conn.prepareStatement(stmt);) {
         voteStmt.setString(1, "TABS");
         voteStmt.setTimestamp(2, new Timestamp(new Date().getTime()));
-        byte[] encrypted_email = envAead.encrypt("hello@example.com".getBytes(), "TABS".getBytes());
-        voteStmt.setBytes(3, encrypted_email);
+        byte[] encryptedEmail = envAead.encrypt("hello@example.com".getBytes(), "TABS".getBytes());
+        voteStmt.setBytes(3, encryptedEmail);
         voteStmt.execute();
       }
     }
@@ -113,7 +113,7 @@ public class QueryDecryptDataIT {
   }
 
   @Test
-  public void TestQueryAndDecryptData() throws GeneralSecurityException, SQLException {
+  public void testQueryAndDecryptData() throws GeneralSecurityException, SQLException {
     QueryAndDecryptData.queryAndDecryptData(pool, envAead, tableName);
     String output = bout.toString();
     assertThat(output).contains("Team\tTime Cast\tEmail");

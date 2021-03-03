@@ -101,7 +101,7 @@ public class EncryptInsertDataIT {
   }
 
   @Test
-  public void TestEncryptAndInsertData() throws GeneralSecurityException, SQLException {
+  public void testEncryptAndInsertData() throws GeneralSecurityException, SQLException {
     EncryptAndInsertData
         .encryptAndInsertData(pool, envAead, tableName, "TABS", "hello@example.com");
     String output = bout.toString();
