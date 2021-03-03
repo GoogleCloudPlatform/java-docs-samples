@@ -70,22 +70,10 @@ public class QueryDecryptDataIT {
     tableName = String.format("votes_%s", UUID.randomUUID().toString().replace("-", ""));
     pool = QueryAndDecryptData
         .createConnectionPool(MYSQL_USER, MYSQL_PASS, MYSQL_DB, MYSQL_CONNECTION_NAME);
-    EncryptAndInsertData.createTable(pool, tableName);
+    QueryAndDecryptData.createTable(pool, tableName);
 
     envAead = new CloudKmsEnvelopeAead(CLOUD_KMS_URI).envAead;
-
-    try (Connection conn = pool.getConnection()) {
-      String stmt = String.format(
-          "INSERT INTO %s (team, time_cast, voter_email) VALUES (?, ?, ?);", tableName);
-      try (PreparedStatement voteStmt = conn.prepareStatement(stmt);) {
-        voteStmt.setString(1, "TABS");
-        voteStmt.setTimestamp(2, new Timestamp(new Date().getTime()));
-        byte[] encryptedEmail = envAead.encrypt("hello@example.com".getBytes(), "TABS".getBytes());
-        voteStmt.setBytes(3, encryptedEmail);
-        voteStmt.execute();
-      }
-    }
-
+    EncryptAndInsertData.encryptAndInsertData(pool, envAead, tableName, "TABS", "hello@example.com");
   }
 
   @AfterClass
