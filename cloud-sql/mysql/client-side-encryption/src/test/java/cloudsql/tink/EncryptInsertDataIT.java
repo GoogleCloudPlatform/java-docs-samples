@@ -41,7 +41,7 @@ import org.junit.Test;
 public class EncryptInsertDataIT {
 
   private static List<String> requiredEnvVars =
-      Arrays.asList("MYSQL_USER", "MYSQL_PASS", "MYSQL_DB", "MYSQL_CONNECTION_NAME", "KMS_URI");
+      Arrays.asList("MYSQL_USER", "MYSQL_PASS", "MYSQL_DB", "MYSQL_CONNECTION_NAME", "CLOUD_KMS_URI");
 
   private static DataSource pool;
   private static String tableName;
