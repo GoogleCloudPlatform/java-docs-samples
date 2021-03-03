@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.cloudsql;
+package cloudsql.tink;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -46,7 +46,7 @@ public class QueryDecryptDataIT {
   private static DataSource pool;
   private static String tableName;
   private static Aead envAead;
-  private static final String KMS_URI = System.getenv("KMS_URI");
+  private static final String CLOUD_KMS_URI = System.getenv("CLOUD_KMS_URI");
   private static final String MYSQL_USER = System.getenv("MYSQL_USER");
   private static final String MYSQL_PASS = System.getenv("MYSQL_PASS");
   private static final String MYSQL_DB = System.getenv("MYSQL_DB");
@@ -72,7 +72,7 @@ public class QueryDecryptDataIT {
         .createConnectionPool(MYSQL_USER, MYSQL_PASS, MYSQL_DB, MYSQL_CONNECTION_NAME);
     EncryptAndInsertData.createTable(pool, tableName);
 
-    envAead = QueryAndDecryptData.getEnvelopeAead(KMS_URI);
+    envAead = new CloudKmsEnvelopeAead(CLOUD_KMS_URI).envAead;
 
     try (Connection conn = pool.getConnection()) {
       String stmt = String.format(

@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.cloudsql;
+package cloudsql.tink;
 
 // [START cloud_sql_mysql_encrypt_insert]
-import com.google.crypto.tink.aead.AeadConfig;
+
 import com.google.crypto.tink.Aead;
-import com.google.crypto.tink.KeysetHandle;
-import com.google.crypto.tink.KmsClients;
-import com.google.crypto.tink.aead.AeadKeyTemplates;
-import com.google.crypto.tink.integration.gcpkms.GcpKmsClient;
-import com.google.crypto.tink.proto.KeyTemplate;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.security.GeneralSecurityException;
@@ -33,15 +28,17 @@ import java.sql.Timestamp;
 import java.util.Date;
 import javax.sql.DataSource;
 
-class EncryptAndInsertData {
+public class EncryptAndInsertData {
 
   public static void main(String[] args) throws GeneralSecurityException, SQLException {
-    // TODO(developer): Replace these variables before running the sample.
-    String dbUser = "your-username"; // e.g. "root", "mysql"
-    String dbPass = "your-password";
-    String dbName = "your-database-name";
-    String cloudSqlConnectionName = "project:region:instance";
-    String kmsUri = "gcp-kms://" + "your-kms-uri";
+    // Saving credentials in environment variables is convenient, but not secure - consider a more
+    // secure solution such as Cloud Secret Manager to help keep secrets safe.
+    String dbUser = System.getenv("DB_USER"); // e.g. "root", "mysql"
+    String dbPass = System.getenv("DB_PASS");
+    String dbName = System.getenv("DB_NAME");
+    String cloudSqlConnectionName = System.getenv("CLOUD_SQL_CONNECTION_NAME");
+    String kmsUri = System.getenv("CLOUD_KMS_URI");
+
     String team = "TABS";
     String tableName = "votes";
     String email = "hello@example.com";
@@ -51,7 +48,7 @@ class EncryptAndInsertData {
     createTable(pool, tableName);
 
     // Initialize envelope AEAD
-    Aead envAead = getEnvelopeAead(kmsUri);
+    Aead envAead = new CloudKmsEnvelopeAead(kmsUri).envAead;
 
     encryptAndInsertData(pool, envAead, tableName, team, email);
   }
@@ -79,22 +76,6 @@ class EncryptAndInsertData {
     }
   }
 
-  public static Aead getEnvelopeAead(String kmsUri) throws GeneralSecurityException {
-    AeadConfig.register();
-
-    // Generate a new envelope key template, then generate key material.
-    KeyTemplate kmsEnvKeyTemplate = AeadKeyTemplates
-        .createKmsEnvelopeAeadKeyTemplate(kmsUri, AeadKeyTemplates.AES128_GCM);
-    KeysetHandle keysetHandle = KeysetHandle.generateNew(kmsEnvKeyTemplate);
-
-    // Register the KMS client.
-    KmsClients.add(new GcpKmsClient()
-        .withDefaultCredentials());
-
-    // Create envelope AEAD primitive from keysetHandle
-    return keysetHandle.getPrimitive(Aead.class);
-  }
-
   public static DataSource createConnectionPool(String dbUser, String dbPass, String dbName,
       String cloudSqlConnectionName) throws GeneralSecurityException {
     HikariConfig config = new HikariConfig();
@@ -111,8 +92,8 @@ class EncryptAndInsertData {
     // Safely attempt to create the table schema.
     try (Connection conn = pool.getConnection()) {
       String stmt = String.format("CREATE TABLE IF NOT EXISTS %s ( "
-              + "vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, team CHAR(6) NOT NULL,"
-              + "voter_email VARBINARY(255), PRIMARY KEY (vote_id) );", tableName);
+          + "vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, team CHAR(6) NOT NULL,"
+          + "voter_email VARBINARY(255), PRIMARY KEY (vote_id) );", tableName);
       try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
         createTableStatement.execute();
       }
