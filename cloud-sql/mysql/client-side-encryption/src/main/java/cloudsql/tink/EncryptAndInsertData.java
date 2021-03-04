@@ -45,13 +45,13 @@ public class EncryptAndInsertData {
     String tableName = "votes";
     String email = "hello@example.com";
 
-    // Initialize database connection pool
+    // Initialize database connection pool and create table if it does not exist
+    // See CloudSqlConnectionPool.java for setup details
     DataSource pool = CloudSqlConnectionPool.createConnectionPool(dbUser, dbPass, dbName, cloudSqlConnectionName);
-
-    // Create table if it does not exist
     CloudSqlConnectionPool.createTable(pool, tableName);
 
     // Initialize envelope AEAD
+    // See CloudKmsEnvelopeAead.java for setup details
     Aead envAead = CloudKmsEnvelopeAead.getEnvelopeAead(kmsUri);
 
     encryptAndInsertData(pool, envAead, tableName, team, email);

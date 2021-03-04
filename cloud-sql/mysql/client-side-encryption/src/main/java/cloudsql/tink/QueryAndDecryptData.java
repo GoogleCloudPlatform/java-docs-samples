@@ -43,16 +43,17 @@ public class QueryAndDecryptData {
 
     String tableName = "votes123";
 
-    // Initialize database connection pool
+    // Initialize database connection pool and create table if it does not exist
+    // See CloudSqlConnectionPool.java for setup details
     DataSource pool = CloudSqlConnectionPool.createConnectionPool(dbUser, dbPass, dbName, cloudSqlConnectionName);
-
-    // Create table if it does not exist
     CloudSqlConnectionPool.createTable(pool, tableName);
 
-    // Get envelope AEAD
+    // Initialize envelope AEAD
+    // See CloudKmsEnvelopeAead.java for setup details
     Aead envAead = CloudKmsEnvelopeAead.getEnvelopeAead(kmsUri);
 
     // Insert row into table to test
+    // See EncryptAndInsert.java for setup details
     EncryptAndInsertData
         .encryptAndInsertData(pool, envAead, tableName, "SPACES", "hello@example.com");
 
