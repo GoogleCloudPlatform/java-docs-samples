@@ -78,7 +78,6 @@ public class CreateJobWithStaticOverlayTest {
       Page<Blob> blobs = bucket.list();
 
       for (Blob blob : blobs.iterateAll()) {
-        System.out.println(blob.getName());
         storage.delete(bucketName, blob.getName());
       }
       bucket.delete();

@@ -39,7 +39,7 @@ import java.io.IOException;
 
 public class CreateJobWithAnimatedOverlay {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
@@ -68,12 +68,20 @@ public class CreateJobWithAnimatedOverlay {
               .build();
       AudioStream audioStream0 =
           AudioStream.newBuilder().setCodec("aac").setBitrateBps(64000).build();
+
+      // Create the overlay image. Only JPEG is supported. Image resolution is based on output
+      // video resolution. This example uses the values x: 0 and y: 0 to maintain the original
+      // resolution of the overlay image.
       Overlay.Image overlayImage =
           Overlay.Image.newBuilder()
               .setUri(overlayImageUri)
               .setResolution(NormalizedCoordinate.newBuilder().setX(0).setY(0).build())
               .setAlpha(1)
               .build();
+
+      // Create the starting animation (when the overlay starts to fade in). Use the values x: 0.5
+      // and y: 0.5 to position the top-left corner of the overlay in the top-left corner of the
+      // output video.
       Overlay.Animation animationFadeIn =
           Animation.newBuilder()
               .setAnimationFade(
@@ -84,6 +92,9 @@ public class CreateJobWithAnimatedOverlay {
                       .setEndTimeOffset(Duration.newBuilder().setSeconds(10).build())
                       .build())
               .build();
+
+      // Create the ending animation (when the overlay starts to fade out). The overlay will start
+      // to fade out at the 12-second mark in the output video.
       Overlay.Animation animationFadeOut =
           Animation.newBuilder()
               .setAnimationFade(
@@ -95,6 +106,7 @@ public class CreateJobWithAnimatedOverlay {
                       .build())
               .build();
 
+      // Create the overlay and add the image and animations to it.
       Overlay overlay =
           Overlay.newBuilder()
               .setImage(overlayImage)
@@ -121,7 +133,7 @@ public class CreateJobWithAnimatedOverlay {
                       .addElementaryStreams("video_stream0")
                       .addElementaryStreams("audio_stream0")
                       .build())
-              .addOverlays(overlay)
+              .addOverlays(overlay) // Add the overlay to the job config
               .build();
 
       var createJobRequest =

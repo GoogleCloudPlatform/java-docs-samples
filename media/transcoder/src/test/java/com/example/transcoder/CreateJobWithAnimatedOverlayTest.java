@@ -78,7 +78,6 @@ public class CreateJobWithAnimatedOverlayTest {
       Page<Blob> blobs = bucket.list();
 
       for (Blob blob : blobs.iterateAll()) {
-        System.out.println(blob.getName());
         storage.delete(bucketName, blob.getName());
       }
       bucket.delete();
@@ -95,9 +94,6 @@ public class CreateJobWithAnimatedOverlayTest {
   @Before
   public void beforeTest() throws IOException {
     originalOut = System.out;
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
-
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 

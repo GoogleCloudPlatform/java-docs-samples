@@ -38,7 +38,7 @@ import java.io.IOException;
 
 public class CreateJobWithStaticOverlay {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
@@ -65,15 +65,24 @@ public class CreateJobWithStaticOverlay {
               .setHeightPixels(360)
               .setWidthPixels(640)
               .build();
+
       AudioStream audioStream0 =
           AudioStream.newBuilder().setCodec("aac").setBitrateBps(64000).build();
+
+      // Create the overlay image. Only JPEG is supported. Image resolution is based on output
+      // video resolution. To respect the original image aspect ratio, set either x or y to 0.0.
+      // This example stretches the overlay image the full width and half of the height of the
+      // output video.
       Overlay.Image overlayImage =
           Overlay.Image.newBuilder()
               .setUri(overlayImageUri)
               .setResolution(NormalizedCoordinate.newBuilder().setX(1).setY(0.5).build())
               .setAlpha(1)
               .build();
-      Overlay.Animation animationStatic =
+
+      // Create the starting animation (when the overlay appears). Use the values x: 0 and y: 0 to
+      // position the top-left corner of the overlay in the top-left corner of the output video.
+      Overlay.Animation animationStart =
           Overlay.Animation.newBuilder()
               .setAnimationStatic(
                   AnimationStatic.newBuilder()
@@ -81,6 +90,9 @@ public class CreateJobWithStaticOverlay {
                       .setStartTimeOffset(Duration.newBuilder().setSeconds(0).build())
                       .build())
               .build();
+
+      // Create the ending animation (when the overlay disappears). In this example, the overlay
+      // disappears at the 10-second mark in the output video.
       Overlay.Animation animationEnd =
           Overlay.Animation.newBuilder()
               .setAnimationEnd(
@@ -88,10 +100,12 @@ public class CreateJobWithStaticOverlay {
                       .setStartTimeOffset(Duration.newBuilder().setSeconds(10).build())
                       .build())
               .build();
+
+      // Create the overlay and add the image and animations to it.
       Overlay overlay =
           Overlay.newBuilder()
               .setImage(overlayImage)
-              .addAnimations(animationStatic)
+              .addAnimations(animationStart)
               .addAnimations(animationEnd)
               .build();
 
@@ -114,7 +128,7 @@ public class CreateJobWithStaticOverlay {
                       .addElementaryStreams("video_stream0")
                       .addElementaryStreams("audio_stream0")
                       .build())
-              .addOverlays(overlay)
+              .addOverlays(overlay) // Add the overlay to the job config
               .build();
 
       var createJobRequest =
