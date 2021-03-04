@@ -16,15 +16,12 @@
 
 package cloudsql.tink;
 
-import com.google.crypto.tink.Aead;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.security.GeneralSecurityException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
 import javax.sql.DataSource;
 
 public class CloudSqlConnectionPool {

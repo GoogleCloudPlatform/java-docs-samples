@@ -19,8 +19,6 @@ package cloudsql.tink;
 // [START cloud_sql_mysql_query_decrypt]
 
 import com.google.crypto.tink.Aead;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import java.security.GeneralSecurityException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -45,7 +43,8 @@ public class QueryAndDecryptData {
 
     // Initialize database connection pool and create table if it does not exist
     // See CloudSqlConnectionPool.java for setup details
-    DataSource pool = CloudSqlConnectionPool.createConnectionPool(dbUser, dbPass, dbName, cloudSqlConnectionName);
+    DataSource pool = CloudSqlConnectionPool
+        .createConnectionPool(dbUser, dbPass, dbName, cloudSqlConnectionName);
     CloudSqlConnectionPool.createTable(pool, tableName);
 
     // Initialize envelope AEAD

@@ -38,19 +38,17 @@ import org.junit.Test;
 
 public class QueryDecryptDataIT {
 
-  private static List<String> requiredEnvVars =
-      Arrays
-          .asList("MYSQL_USER", "MYSQL_PASS", "MYSQL_DB", "MYSQL_CONNECTION_NAME", "CLOUD_KMS_URI");
-
-  private static DataSource pool;
-  private static String tableName;
-  private static Aead envAead;
   private static final String CLOUD_KMS_URI = System.getenv("CLOUD_KMS_URI");
   private static final String MYSQL_USER = System.getenv("MYSQL_USER");
   private static final String MYSQL_PASS = System.getenv("MYSQL_PASS");
   private static final String MYSQL_DB = System.getenv("MYSQL_DB");
   private static final String MYSQL_CONNECTION_NAME = System.getenv("MYSQL_CONNECTION_NAME");
-
+  private static List<String> requiredEnvVars =
+      Arrays
+          .asList("MYSQL_USER", "MYSQL_PASS", "MYSQL_DB", "MYSQL_CONNECTION_NAME", "CLOUD_KMS_URI");
+  private static DataSource pool;
+  private static String tableName;
+  private static Aead envAead;
   private ByteArrayOutputStream bout;
   private PrintStream originalOut = System.out;
 
