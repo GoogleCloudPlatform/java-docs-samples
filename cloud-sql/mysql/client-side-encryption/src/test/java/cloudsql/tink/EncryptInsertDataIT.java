@@ -68,10 +68,10 @@ public class EncryptInsertDataIT {
   public static void setUp() throws GeneralSecurityException, SQLException {
     checkEnvVars();
     tableName = String.format("votes_%s", UUID.randomUUID().toString().replace("-", ""));
-    pool = EncryptAndInsertData
+    pool = CloudSqlConnectionPool
         .createConnectionPool(MYSQL_USER, MYSQL_PASS, MYSQL_DB, MYSQL_CONNECTION_NAME);
-    EncryptAndInsertData.createTable(pool, tableName);
-    envAead = new CloudKmsEnvelopeAead(CLOUD_KMS_URI).envAead;
+    CloudSqlConnectionPool.createTable(pool, tableName);
+    envAead = CloudKmsEnvelopeAead.getEnvelopeAead(CLOUD_KMS_URI);
   }
 
   @AfterClass

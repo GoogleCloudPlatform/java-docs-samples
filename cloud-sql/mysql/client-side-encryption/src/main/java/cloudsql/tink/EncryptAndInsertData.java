@@ -35,21 +35,24 @@ public class EncryptAndInsertData {
     // Saving credentials in environment variables is convenient, but not secure - consider a more
     // secure solution such as Cloud Secret Manager to help keep secrets safe.
     String dbUser = System.getenv("DB_USER"); // e.g. "root", "mysql"
-    String dbPass = System.getenv("DB_PASS");
-    String dbName = System.getenv("DB_NAME");
-    String cloudSqlConnectionName = System.getenv("CLOUD_SQL_CONNECTION_NAME");
-    String kmsUri = System.getenv("CLOUD_KMS_URI");
+    String dbPass = System.getenv("DB_PASS"); // e.g. "mysupersecretpassword"
+    String dbName = System.getenv("DB_NAME"); // e.g. "votes_db"
+    String cloudSqlConnectionName =
+        System.getenv("CLOUD_SQL_CONNECTION_NAME"); // e.g. "project-name:region:instance-name"
+    String kmsUri = System.getenv("CLOUD_KMS_URI"); // e.g. "gcp-kms://projects/...path/to/key
 
     String team = "TABS";
     String tableName = "votes";
     String email = "hello@example.com";
 
-    // Initialize database connection pool and create table
-    DataSource pool = createConnectionPool(dbUser, dbPass, dbName, cloudSqlConnectionName);
-    createTable(pool, tableName);
+    // Initialize database connection pool
+    DataSource pool = CloudSqlConnectionPool.createConnectionPool(dbUser, dbPass, dbName, cloudSqlConnectionName);
+
+    // Create table if it does not exist
+    CloudSqlConnectionPool.createTable(pool, tableName);
 
     // Initialize envelope AEAD
-    Aead envAead = new CloudKmsEnvelopeAead(kmsUri).envAead;
+    Aead envAead = CloudKmsEnvelopeAead.getEnvelopeAead(kmsUri);
 
     encryptAndInsertData(pool, envAead, tableName, team, email);
   }
@@ -73,30 +76,6 @@ public class EncryptAndInsertData {
         // Finally, execute the statement. If it fails, an error will be thrown.
         voteStmt.execute();
         System.out.println(String.format("Successfully inserted row into table %s", tableName));
-      }
-    }
-  }
-
-  public static DataSource createConnectionPool(String dbUser, String dbPass, String dbName,
-      String cloudSqlConnectionName) throws GeneralSecurityException {
-    HikariConfig config = new HikariConfig();
-    config.setJdbcUrl(String.format("jdbc:mysql:///%s", dbName));
-    config.setUsername(dbUser);
-    config.setPassword(dbPass);
-    config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.mysql.SocketFactory");
-    config.addDataSourceProperty("cloudSqlInstance", cloudSqlConnectionName);
-    DataSource pool = new HikariDataSource(config);
-    return pool;
-  }
-
-  public static void createTable(DataSource pool, String tableName) throws SQLException {
-    // Safely attempt to create the table schema.
-    try (Connection conn = pool.getConnection()) {
-      String stmt = String.format("CREATE TABLE IF NOT EXISTS %s ( "
-          + "vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, team CHAR(6) NOT NULL,"
-          + "voter_email VARBINARY(255), PRIMARY KEY (vote_id) );", tableName);
-      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
-        createTableStatement.execute();
       }
     }
   }

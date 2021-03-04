@@ -29,14 +29,8 @@ import java.security.GeneralSecurityException;
 
 public class CloudKmsEnvelopeAead {
 
-  public Aead envAead;
-
-  public CloudKmsEnvelopeAead(String kmsUri) throws GeneralSecurityException {
+  public static Aead getEnvelopeAead(String kmsUri) throws GeneralSecurityException {
     AeadConfig.register();
-    envAead = getEnvelopeAead(kmsUri);
-  }
-
-  private static Aead getEnvelopeAead(String kmsUri) throws GeneralSecurityException {
     // Generate a new envelope key template, then generate key material.
     KeyTemplate kmsEnvKeyTemplate = AeadKeyTemplates
         .createKmsEnvelopeAeadKeyTemplate(kmsUri, AeadKeyTemplates.AES128_GCM);

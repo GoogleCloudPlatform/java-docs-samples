@@ -6,9 +6,6 @@
 maven utilities) by following the [java setup guide](https://cloud.google.com/java/docs/setup) and
 [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project).
 
-1. If you haven't already, set up a Python Development Environment by following the [python setup guide](https://cloud.google.com/python/setup) and 
-[create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project).
-
 1. Create a 2nd Gen Cloud SQL Instance by following these 
 [instructions](https://cloud.google.com/sql/docs/mysql/create-instance). Note the connection string,
 database user, and database password that you create.
