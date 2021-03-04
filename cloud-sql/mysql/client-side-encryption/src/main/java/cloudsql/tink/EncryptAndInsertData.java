@@ -16,7 +16,7 @@
 
 package cloudsql.tink;
 
-// [START cloud_sql_mysql_encrypt_insert]
+// [START cloud_sql_mysql_cse_insert]
 
 import com.google.crypto.tink.Aead;
 import java.security.GeneralSecurityException;
@@ -51,7 +51,7 @@ public class EncryptAndInsertData {
 
     // Initialize envelope AEAD
     // See CloudKmsEnvelopeAead.java for setup details
-    Aead envAead = CloudKmsEnvelopeAead.getEnvelopeAead(kmsUri);
+    Aead envAead = CloudKmsEnvelopeAead.get(kmsUri);
 
     encryptAndInsertData(pool, envAead, tableName, team, email);
   }
@@ -79,4 +79,4 @@ public class EncryptAndInsertData {
     }
   }
 }
-// [END cloud_sql_mysql_encrypt_insert]
+// [END cloud_sql_mysql_cse_insert]

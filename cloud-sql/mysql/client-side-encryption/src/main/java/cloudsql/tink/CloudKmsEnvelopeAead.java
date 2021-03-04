@@ -16,7 +16,7 @@
 
 package cloudsql.tink;
 
-// [START cloud_sql_mysql_initialize_aead]
+// [START cloud_sql_mysql_cse_key]
 
 import com.google.crypto.tink.Aead;
 import com.google.crypto.tink.KeysetHandle;
@@ -29,7 +29,7 @@ import java.security.GeneralSecurityException;
 
 public class CloudKmsEnvelopeAead {
 
-  public static Aead getEnvelopeAead(String kmsUri) throws GeneralSecurityException {
+  public static Aead get(String kmsUri) throws GeneralSecurityException {
     AeadConfig.register();
     // Generate a new envelope key template, then generate key material.
     KeyTemplate kmsEnvKeyTemplate = AeadKeyTemplates
@@ -44,4 +44,4 @@ public class CloudKmsEnvelopeAead {
     return keysetHandle.getPrimitive(Aead.class);
   }
 }
-// [END cloud_sql_mysql_initialize_aead]
+// [END cloud_sql_mysql_cse_key]

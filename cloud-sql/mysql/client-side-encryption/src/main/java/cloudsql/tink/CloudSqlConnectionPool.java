@@ -16,6 +16,8 @@
 
 package cloudsql.tink;
 
+// [START cloud_sql_mysql_cse_db]
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.security.GeneralSecurityException;
@@ -49,5 +51,5 @@ public class CloudSqlConnectionPool {
       }
     }
   }
-
 }
+// [END cloud_sql_mysql_cse_db]

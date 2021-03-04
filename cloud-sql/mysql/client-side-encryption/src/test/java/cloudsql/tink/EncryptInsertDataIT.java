@@ -71,7 +71,7 @@ public class EncryptInsertDataIT {
     pool = CloudSqlConnectionPool
         .createConnectionPool(MYSQL_USER, MYSQL_PASS, MYSQL_DB, MYSQL_CONNECTION_NAME);
     CloudSqlConnectionPool.createTable(pool, tableName);
-    envAead = CloudKmsEnvelopeAead.getEnvelopeAead(CLOUD_KMS_URI);
+    envAead = CloudKmsEnvelopeAead.get(CLOUD_KMS_URI);
   }
 
   @AfterClass
