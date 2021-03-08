@@ -19,29 +19,26 @@ package cloudsql.tink;
 // [START cloud_sql_mysql_cse_key]
 
 import com.google.crypto.tink.Aead;
-import com.google.crypto.tink.KeysetHandle;
-import com.google.crypto.tink.KmsClients;
+import com.google.crypto.tink.KmsClient;
 import com.google.crypto.tink.aead.AeadConfig;
 import com.google.crypto.tink.aead.AeadKeyTemplates;
+import com.google.crypto.tink.aead.KmsEnvelopeAead;
 import com.google.crypto.tink.integration.gcpkms.GcpKmsClient;
-import com.google.crypto.tink.proto.KeyTemplate;
 import java.security.GeneralSecurityException;
 
 public class CloudKmsEnvelopeAead {
 
   public static Aead get(String kmsUri) throws GeneralSecurityException {
     AeadConfig.register();
-    // Generate a new envelope key template, then generate key material.
-    KeyTemplate kmsEnvKeyTemplate = AeadKeyTemplates
-        .createKmsEnvelopeAeadKeyTemplate(kmsUri, AeadKeyTemplates.AES128_GCM);
-    KeysetHandle keysetHandle = KeysetHandle.generateNew(kmsEnvKeyTemplate);
 
-    // Register the KMS client.
-    KmsClients.add(new GcpKmsClient()
-        .withDefaultCredentials());
+    // Create a new KMS Client
+    KmsClient client = new GcpKmsClient().withDefaultCredentials();
 
-    // Create envelope AEAD primitive from keysetHandle
-    return keysetHandle.getPrimitive(Aead.class);
+    // Create an AEAD primitive using the Cloud KMS key
+    Aead gcpAead = client.getAead(kmsUri);
+
+    // Create an envelope AEAD primitive
+    return new KmsEnvelopeAead(AeadKeyTemplates.AES128_GCM, gcpAead);
   }
 }
 // [END cloud_sql_mysql_cse_key]
