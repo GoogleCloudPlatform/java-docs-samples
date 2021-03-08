@@ -19,8 +19,10 @@ package cloudsql.tink;
 // [START cloud_sql_mysql_cse_key]
 
 import com.google.crypto.tink.Aead;
+import com.google.crypto.tink.KmsClient;
 import com.google.crypto.tink.aead.AeadConfig;
 import com.google.crypto.tink.aead.AeadKeyTemplates;
+import com.google.crypto.tink.aead.KmsEnvelopeAead;
 import com.google.crypto.tink.integration.gcpkms.GcpKmsClient;
 import java.security.GeneralSecurityException;
 
