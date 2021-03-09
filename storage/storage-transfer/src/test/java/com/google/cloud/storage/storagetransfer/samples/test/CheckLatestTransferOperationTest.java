@@ -28,7 +28,7 @@ import com.google.api.services.storagetransfer.v1.model.TransferJob;
 import com.google.api.services.storagetransfer.v1.model.TransferOptions;
 import com.google.api.services.storagetransfer.v1.model.TransferSpec;
 import com.google.cloud.storage.storagetransfer.samples.CheckLatestTransferOperation;
-import com.google.cloud.storage.storagetransfer.samples.test.util.TransferClientCreator;
+import com.google.cloud.storage.storagetransfer.samples.CreateTransferClient;
 import com.google.cloud.storage.storagetransfer.samples.test.util.TransferJobUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -60,7 +60,7 @@ public class CheckLatestTransferOperationTest {
             .setSchedule(new Schedule().setScheduleStartDate(date).setStartTimeOfDay(time))
             .setStatus("ENABLED");
 
-    Storagetransfer client = TransferClientCreator.createStorageTransferClient();
+    Storagetransfer client = CreateTransferClient.createStorageTransferClient();
     TransferJob response = client.transferJobs().create(transferJob).execute();
 
     PrintStream standardOut = System.out;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2021 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-// [START all]
+package com.google.cloud.storage.storagetransfer.samples;
 
-package com.google.cloud.storage.storagetransfer.samples.test.util;
-
+// [START storagetransfer_create_client]
 import com.google.api.client.googleapis.util.Utils;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
@@ -30,7 +29,7 @@ import com.google.common.base.Preconditions;
 import java.io.IOException;
 
 /** Create a client to make calls to Storage Transfer API. */
-public final class TransferClientCreator {
+public final class CreateTransferClient {
 
   /**
    * Create a Storage Transfer client using application default credentials and other default
@@ -73,4 +72,4 @@ public final class TransferClientCreator {
         .build();
   }
 }
-// [END all]
+// [END storagetransfer_create_client]
