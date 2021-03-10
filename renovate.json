@@ -48,11 +48,15 @@
       "allowedVersions": "/.+jre8.?/"
     },
     {
-      "packagePatterns": ["^scalaVersion"],
+      "packagePatterns": ["scala"],
       "enabled": false
     },
     {
       "packagePatterns": ["^spark-sql"],
+      "enabled": false
+    },
+    {
+      "packagePatterns": ["^jackson-module-scala"],
       "enabled": false
     }
   ],
