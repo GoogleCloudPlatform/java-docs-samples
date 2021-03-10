@@ -54,6 +54,10 @@
     {
       "packagePatterns": ["^spark-sql"],
       "enabled": false
+    },
+    {
+      "packagePatterns": ["^jackson-module-scala"],
+      "enabled": false
     }
   ],
   "labels": [
