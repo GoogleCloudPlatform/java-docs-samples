@@ -48,7 +48,7 @@
       "allowedVersions": "/.+jre8.?/"
     },
     {
-      "packagePatterns": ["^scalaVersion"],
+      "packagePatterns": ["scala"],
       "enabled": false
     },
     {
