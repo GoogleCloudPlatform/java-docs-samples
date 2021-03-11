@@ -20,7 +20,7 @@ version := "0.1"
 
 // Versions to match Dataproc 1.4
 // https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-release-1.4
-scalaVersion := "2.13.5"
+scalaVersion := "2.11.12"
 val sparkVersion = "2.4.7"
 val bigtableVersion = "1.19.0"
 val hbaseVersion = "1.3.6"
@@ -49,7 +49,7 @@ libraryDependencies ++= fixes
 // Fix for Exception: Incompatible Jackson 2.9.2
 // Version conflict between HBase and Spark
 // Forcing the version to match Spark
-dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.2"
+dependencyOverrides += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.1"
 
 // Excluding duplicates for the uber-jar
 // There are other deps to provide necessary packages
