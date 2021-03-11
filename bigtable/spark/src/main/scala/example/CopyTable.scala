@@ -26,9 +26,6 @@ object CopyTable extends App {
   val (projectId, instanceId, fromTable, toTable) = parse(args)
   println(
     s"""
-      |Parameters:
-      |projectId: $projectId
-      |instanceId: $instanceId
       |copy from $fromTable to $toTable
       |""".stripMargin)
 
