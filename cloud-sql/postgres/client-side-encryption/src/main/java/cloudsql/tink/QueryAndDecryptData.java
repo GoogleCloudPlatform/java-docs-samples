@@ -73,9 +73,13 @@ public class QueryAndDecryptData {
           String team = voteResults.getString(1);
           Timestamp timeCast = voteResults.getTimestamp(2);
 
+          // Postgres pads char VARCHAR fields with spaces. These will need to be removed before
+          // decrypting.
+          String aad = voteResults.getString(1).trim();
+
           // Use the envelope AEAD primitive to decrypt the email, using the team name as
           // associated data
-          String email = new String(envAead.decrypt(voteResults.getBytes(3), team.getBytes()));
+          String email = new String(envAead.decrypt(voteResults.getBytes(3), aad.getBytes()));
 
           System.out.println(String.format("%s\t%s\t%s", team, timeCast, email));
         }

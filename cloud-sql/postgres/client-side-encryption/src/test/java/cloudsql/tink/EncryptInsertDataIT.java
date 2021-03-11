@@ -113,8 +113,11 @@ public class EncryptInsertDataIT {
       try (PreparedStatement voteStmt = conn.prepareStatement(stmt);) {
         ResultSet voteResults = voteStmt.executeQuery();
         while (voteResults.next()) {
+          // Postgres pads char VARCHAR fields with spaces. These will need to be removed before
+          // decrypting.
+          String aad = voteResults.getString(1).trim();
           byte[] decryptedEmail = envAead
-              .decrypt(voteResults.getBytes(3), voteResults.getString(1).getBytes());
+              .decrypt(voteResults.getBytes(3), aad.getBytes());
           decryptedEmails.add(new String(decryptedEmail));
         }
       }
