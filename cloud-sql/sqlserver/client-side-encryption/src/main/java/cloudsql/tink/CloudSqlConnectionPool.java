@@ -16,7 +16,7 @@
 
 package cloudsql.tink;
 
-// [START cloud_sql_mysql_cse_db]
+// [START cloud_sql_sqlserver_cse_db]
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -30,11 +30,14 @@ public class CloudSqlConnectionPool {
   public static DataSource createConnectionPool(String dbUser, String dbPass, String dbName,
       String cloudSqlConnectionName) {
     HikariConfig config = new HikariConfig();
-    config.setJdbcUrl(String.format("jdbc:mysql:///%s", dbName));
-    config.setUsername(dbUser);
-    config.setPassword(dbPass);
-    config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.mysql.SocketFactory");
-    config.addDataSourceProperty("cloudSqlInstance", cloudSqlConnectionName);
+    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
+    config.setUsername(dbUser); // e.g. "root", "sqlserver"
+    config.setPassword(dbPass); // e.g. "my-password"
+    config.addDataSourceProperty("databaseName", dbName);
+
+    config.addDataSourceProperty("socketFactoryClass",
+        "com.google.cloud.sql.sqlserver.SocketFactory");
+    config.addDataSourceProperty("socketFactoryConstructorArg", cloudSqlConnectionName);
     DataSource pool = new HikariDataSource(config);
     return pool;
   }
@@ -42,13 +45,19 @@ public class CloudSqlConnectionPool {
   public static void createTable(DataSource pool, String tableName) throws SQLException {
     // Safely attempt to create the table schema.
     try (Connection conn = pool.getConnection()) {
-      String stmt = String.format("CREATE TABLE IF NOT EXISTS %s ( "
-          + "vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, team CHAR(6) NOT NULL,"
-          + "voter_email VARBINARY(255), PRIMARY KEY (vote_id) );", tableName);
+
+      String stmt = String.format("IF NOT EXISTS("
+          + "SELECT * FROM sysobjects WHERE name='%s' and xtype='U')"
+          + "CREATE TABLE %s ("
+          + "vote_id INT NOT NULL IDENTITY,"
+          + "time_cast DATETIME NOT NULL,"
+          + "team VARCHAR(6) NOT NULL,"
+          + "voter_email VARBINARY(255)"
+          + "PRIMARY KEY (vote_id));", tableName, tableName);
       try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
         createTableStatement.execute();
       }
     }
   }
 }
-// [END cloud_sql_mysql_cse_db]
+// [END cloud_sql_sqlserver_cse_db]
