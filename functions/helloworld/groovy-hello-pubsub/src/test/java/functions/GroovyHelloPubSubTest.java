@@ -19,8 +19,7 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
-import functions.eventpojos.MockContext;
-import functions.eventpojos.PubSubMessage;
+import com.google.events.cloud.pubsub.v1.Message;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -31,6 +30,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import functions.eventpojos.MockContext;
 
 @RunWith(JUnit4.class)
 public class GroovyHelloPubSubTest {
@@ -56,7 +57,7 @@ public class GroovyHelloPubSubTest {
 
   @Test
   public void functionsHelloworldPubsubGroovy_shouldPrintName() throws Exception {
-    PubSubMessage message = new PubSubMessage();
+    Message message = new Message();
     message.setData(Base64.getEncoder().encodeToString(
         "John".getBytes(StandardCharsets.UTF_8)));
 
@@ -68,7 +69,7 @@ public class GroovyHelloPubSubTest {
 
   @Test
   public void functionsHelloworldPubsubGroovy_shouldPrintHelloWorld() throws Exception {
-    new GroovyHelloPubSub().accept(new PubSubMessage(), new MockContext());
+    new GroovyHelloPubSub().accept(new Message(), new MockContext());
 
     assertThat("Hello world!").isEqualTo(
         LOG_HANDLER.getStoredLogRecords().get(0).getMessage());

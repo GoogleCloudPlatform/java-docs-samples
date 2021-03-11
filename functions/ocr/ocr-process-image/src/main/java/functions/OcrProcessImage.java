@@ -34,13 +34,14 @@ import com.google.cloud.vision.v1.ImageSource;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
-import functions.eventpojos.GcsEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import functions.eventpojos.GcsEvent;
 
 // [END functions_ocr_process]
 

@@ -51,6 +51,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Required for Google Cloud-specific POJOs -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloudevent-types</artifactId>
+      <version>0.1.5</version>
+    </dependency>
+
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>

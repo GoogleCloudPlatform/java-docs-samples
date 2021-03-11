@@ -18,6 +18,7 @@ package functions;
 
 // [START functions_imagemagick_setup]
 
+
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
 import com.google.cloud.storage.Blob;
@@ -34,15 +35,17 @@ import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageSource;
 import com.google.cloud.vision.v1.SafeSearchAnnotation;
-import functions.eventpojos.GcsEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import functions.eventpojos.GcsEvent;
+
+;
 
 public class ImageMagick implements BackgroundFunction<GcsEvent> {
 
@@ -54,18 +57,18 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
   // [START functions_imagemagick_analyze]
   @Override
   // Blurs uploaded images that are flagged as Adult or Violence.
-  public void accept(GcsEvent gcsEvent, Context context) {
+  public void accept(GcsEvent event, Context context) {
     // Validate parameters
-    if (gcsEvent.getBucket() == null || gcsEvent.getName() == null) {
+    if (event.getBucket() == null || event.getName() == null) {
       logger.severe("Error: Malformed GCS event.");
       return;
     }
 
-    BlobInfo blobInfo = BlobInfo.newBuilder(gcsEvent.getBucket(), gcsEvent.getName()).build();
+    BlobInfo blobInfo = BlobInfo.newBuilder(event.getBucket(), event.getName()).build();
 
     // Construct URI to GCS bucket and file.
-    String gcsPath = String.format("gs://%s/%s", gcsEvent.getBucket(), gcsEvent.getName());
-    logger.info(String.format("Analyzing %s", gcsEvent.getName()));
+    String gcsPath = String.format("gs://%s/%s", event.getBucket(), event.getName());
+    logger.info(String.format("Analyzing %s", event.getName()));
 
     // Construct request.
     ImageSource imgSource = ImageSource.newBuilder().setImageUri(gcsPath).build();
@@ -87,10 +90,10 @@ public class ImageMagick implements BackgroundFunction<GcsEvent> {
         // Get Safe Search Annotations
         SafeSearchAnnotation annotation = res.getSafeSearchAnnotation();
         if (annotation.getAdultValue() == 5 || annotation.getViolenceValue() == 5) {
-          logger.info(String.format("Detected %s as inappropriate.", gcsEvent.getName()));
+          logger.info(String.format("Detected %s as inappropriate.", event.getName()));
           blur(blobInfo);
         } else {
-          logger.info(String.format("Detected %s as OK.", gcsEvent.getName()));
+          logger.info(String.format("Detected %s as OK.", event.getName()));
         }
       }
     } catch (IOException e) {

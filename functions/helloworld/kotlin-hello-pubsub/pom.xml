@@ -46,6 +46,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Required for Google Cloud-specific POJOs -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloudevent-types</artifactId>
+      <version>0.1.5</version>
+    </dependency>
+
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib-jdk8</artifactId>

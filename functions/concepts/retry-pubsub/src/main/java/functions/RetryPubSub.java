@@ -20,22 +20,22 @@ package functions;
 
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
+import com.google.events.cloud.pubsub.v1.Message;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import functions.eventpojos.PubSubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 
-public class RetryPubSub implements BackgroundFunction<PubSubMessage> {
+public class RetryPubSub implements BackgroundFunction<Message> {
   private static final Logger logger = Logger.getLogger(RetryPubSub.class.getName());
 
   // Use Gson (https://github.com/google/gson) to parse JSON content.
   private static final Gson gson = new Gson();
 
   @Override
-  public void accept(PubSubMessage message, Context context) {
+  public void accept(Message message, Context context) {
     String bodyJson = new String(
         Base64.getDecoder().decode(message.getData()), StandardCharsets.UTF_8);
     JsonElement bodyElement = gson.fromJson(bodyJson, JsonElement.class);
