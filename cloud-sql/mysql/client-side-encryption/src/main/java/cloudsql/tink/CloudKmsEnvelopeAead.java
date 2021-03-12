@@ -37,7 +37,9 @@ public class CloudKmsEnvelopeAead {
     // Create an AEAD primitive using the Cloud KMS key
     Aead gcpAead = client.getAead(kmsUri);
 
-    // Create an envelope AEAD primitive
+    // Create an envelope AEAD primitive.
+    // This key should only be used for client-side encryption to ensure authenticity and integrity
+    // of data.
     return new KmsEnvelopeAead(AeadKeyTemplates.AES128_GCM, gcpAead);
   }
 }
