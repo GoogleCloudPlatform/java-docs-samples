@@ -38,6 +38,9 @@ public class EncryptAndInsertData {
     String cloudSqlConnectionName =
         System.getenv("CLOUD_SQL_CONNECTION_NAME"); // e.g. "project-name:region:instance-name"
     String kmsUri = System.getenv("CLOUD_KMS_URI"); // e.g. "gcp-kms://projects/...path/to/key
+    // Tink uses the "gcp-kms://" prefix for paths to keys stored in Google Cloud KMS. For more
+    // info on creating a KMS key and getting its path, see
+    // https://cloud.google.com/kms/docs/quickstart
 
     String team = "TABS";
     String tableName = "votes";
@@ -68,7 +71,9 @@ public class EncryptAndInsertData {
         voteStmt.setTimestamp(2, new Timestamp(new Date().getTime()));
 
         // Use the envelope AEAD primitive to encrypt the email, using the team name as
-        // associated data
+        // associated data. Encryption with associated data ensures authenticity
+        // (who the sender is) and integrity (the data has not been tampered with) of that
+        // data, but not its secrecy. (see RFC 5116 for more info)
         byte[] encryptedEmail = envAead.encrypt(email.getBytes(), team.getBytes());
         voteStmt.setBytes(3, encryptedEmail);
 

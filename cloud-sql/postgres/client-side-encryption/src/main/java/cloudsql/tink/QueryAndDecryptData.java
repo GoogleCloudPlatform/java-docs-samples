@@ -38,6 +38,9 @@ public class QueryAndDecryptData {
     String cloudSqlConnectionName =
         System.getenv("CLOUD_SQL_CONNECTION_NAME"); // e.g. "project-name:region:instance-name"
     String kmsUri = System.getenv("CLOUD_KMS_URI"); // e.g. "gcp-kms://projects/...path/to/key
+    // Tink uses the "gcp-kms://" prefix for paths to keys stored in Google Cloud KMS. For more
+    // info on creating a KMS key and getting its path, see
+    // https://cloud.google.com/kms/docs/quickstart
 
     String tableName = "votes123";
 
@@ -78,7 +81,9 @@ public class QueryAndDecryptData {
           String aad = voteResults.getString(1).trim();
 
           // Use the envelope AEAD primitive to decrypt the email, using the team name as
-          // associated data
+          // associated data. Encryption with associated data ensures authenticity
+          // (who the sender is) and integrity (the data has not been tampered with) of that
+          // data, but not its secrecy. (see RFC 5116 for more info)
           String email = new String(envAead.decrypt(voteResults.getBytes(3), aad.getBytes()));
 
           System.out.println(String.format("%s\t%s\t%s", team, timeCast, email));
