@@ -16,7 +16,7 @@
 
 package cloudsql.tink;
 
-// [START cloud_sql_mysql_cse_query]
+// [START cloud_sql_sqlserver_cse_query]
 
 import com.google.crypto.tink.Aead;
 import java.security.GeneralSecurityException;
@@ -67,7 +67,8 @@ public class QueryAndDecryptData {
 
     try (Connection conn = pool.getConnection()) {
       String stmt = String.format(
-          "SELECT team, time_cast, voter_email FROM %s ORDER BY time_cast DESC LIMIT 5", tableName);
+          "SELECT TOP(5) team, time_cast, voter_email FROM %s ORDER BY time_cast DESC;",
+          tableName);
       try (PreparedStatement voteStmt = conn.prepareStatement(stmt);) {
         ResultSet voteResults = voteStmt.executeQuery();
 
@@ -88,4 +89,4 @@ public class QueryAndDecryptData {
     }
   }
 }
-// [END cloud_sql_mysql_cse_query]
+// [END cloud_sql_sqlserver_cse_query]

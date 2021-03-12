@@ -16,7 +16,7 @@
 
 package cloudsql.tink;
 
-// [START cloud_sql_mysql_cse_key]
+// [START cloud_sql_sqlserver_cse_key]
 
 import com.google.crypto.tink.Aead;
 import com.google.crypto.tink.KmsClient;
@@ -43,4 +43,4 @@ public class CloudKmsEnvelopeAead {
     return new KmsEnvelopeAead(AeadKeyTemplates.AES128_GCM, gcpAead);
   }
 }
-// [END cloud_sql_mysql_cse_key]
+// [END cloud_sql_sqlserver_cse_key]

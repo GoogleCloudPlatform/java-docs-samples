@@ -16,7 +16,7 @@
 
 package cloudsql.tink;
 
-// [START cloud_sql_mysql_cse_query]
+// [START cloud_sql_postgres_cse_query]
 
 import com.google.crypto.tink.Aead;
 import java.security.GeneralSecurityException;
@@ -32,7 +32,7 @@ public class QueryAndDecryptData {
   public static void main(String[] args) throws GeneralSecurityException, SQLException {
     // Saving credentials in environment variables is convenient, but not secure - consider a more
     // secure solution such as Cloud Secret Manager to help keep secrets safe.
-    String dbUser = System.getenv("DB_USER"); // e.g. "root", "mysql"
+    String dbUser = System.getenv("DB_USER"); // e.g. "root", "postgres"
     String dbPass = System.getenv("DB_PASS"); // e.g. "mysupersecretpassword"
     String dbName = System.getenv("DB_NAME"); // e.g. "votes_db"
     String cloudSqlConnectionName =
@@ -76,11 +76,15 @@ public class QueryAndDecryptData {
           String team = voteResults.getString(1);
           Timestamp timeCast = voteResults.getTimestamp(2);
 
+          // Postgres pads char VARCHAR fields with spaces. These will need to be removed before
+          // decrypting.
+          String aad = voteResults.getString(1).trim();
+
           // Use the envelope AEAD primitive to decrypt the email, using the team name as
           // associated data. Encryption with associated data ensures authenticity
           // (who the sender is) and integrity (the data has not been tampered with) of that
           // data, but not its secrecy. (see RFC 5116 for more info)
-          String email = new String(envAead.decrypt(voteResults.getBytes(3), team.getBytes()));
+          String email = new String(envAead.decrypt(voteResults.getBytes(3), aad.getBytes()));
 
           System.out.println(String.format("%s\t%s\t%s", team, timeCast, email));
         }
@@ -88,4 +92,4 @@ public class QueryAndDecryptData {
     }
   }
 }
-// [END cloud_sql_mysql_cse_query]
+// [END cloud_sql_postgres_cse_query]

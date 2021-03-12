@@ -16,23 +16,23 @@
 
 package cloudsql.tink;
 
-// [START cloud_sql_mysql_cse_query]
+// [START cloud_sql_postgres_cse_insert]
 
 import com.google.crypto.tink.Aead;
 import java.security.GeneralSecurityException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Date;
 import javax.sql.DataSource;
 
-public class QueryAndDecryptData {
+public class EncryptAndInsertData {
 
   public static void main(String[] args) throws GeneralSecurityException, SQLException {
     // Saving credentials in environment variables is convenient, but not secure - consider a more
     // secure solution such as Cloud Secret Manager to help keep secrets safe.
-    String dbUser = System.getenv("DB_USER"); // e.g. "root", "mysql"
+    String dbUser = System.getenv("DB_USER"); // e.g. "root", "postgres"
     String dbPass = System.getenv("DB_PASS"); // e.g. "mysupersecretpassword"
     String dbName = System.getenv("DB_NAME"); // e.g. "votes_db"
     String cloudSqlConnectionName =
@@ -42,7 +42,9 @@ public class QueryAndDecryptData {
     // info on creating a KMS key and getting its path, see
     // https://cloud.google.com/kms/docs/quickstart
 
-    String tableName = "votes123";
+    String team = "TABS";
+    String tableName = "votes";
+    String email = "hello@example.com";
 
     // Initialize database connection pool and create table if it does not exist
     // See CloudSqlConnectionPool.java for setup details
@@ -54,38 +56,32 @@ public class QueryAndDecryptData {
     // See CloudKmsEnvelopeAead.java for setup details
     Aead envAead = CloudKmsEnvelopeAead.get(kmsUri);
 
-    // Insert row into table to test
-    // See EncryptAndInsert.java for setup details
-    EncryptAndInsertData
-        .encryptAndInsertData(pool, envAead, tableName, "SPACES", "hello@example.com");
-
-    queryAndDecryptData(pool, envAead, tableName);
+    encryptAndInsertData(pool, envAead, tableName, team, email);
   }
 
-  public static void queryAndDecryptData(DataSource pool, Aead envAead, String tableName)
+  public static void encryptAndInsertData(DataSource pool, Aead envAead, String tableName,
+      String team, String email)
       throws GeneralSecurityException, SQLException {
 
     try (Connection conn = pool.getConnection()) {
       String stmt = String.format(
-          "SELECT team, time_cast, voter_email FROM %s ORDER BY time_cast DESC LIMIT 5", tableName);
+          "INSERT INTO %s (team, time_cast, voter_email) VALUES (?, ?, ?);", tableName);
       try (PreparedStatement voteStmt = conn.prepareStatement(stmt);) {
-        ResultSet voteResults = voteStmt.executeQuery();
+        voteStmt.setString(1, team);
+        voteStmt.setTimestamp(2, new Timestamp(new Date().getTime()));
 
-        System.out.println("Team\tTime Cast\tEmail");
-        while (voteResults.next()) {
-          String team = voteResults.getString(1);
-          Timestamp timeCast = voteResults.getTimestamp(2);
+        // Use the envelope AEAD primitive to encrypt the email, using the team name as
+        // associated data. Encryption with associated data ensures authenticity
+        // (who the sender is) and integrity (the data has not been tampered with) of that
+        // data, but not its secrecy. (see RFC 5116 for more info)
+        byte[] encryptedEmail = envAead.encrypt(email.getBytes(), team.getBytes());
+        voteStmt.setBytes(3, encryptedEmail);
 
-          // Use the envelope AEAD primitive to decrypt the email, using the team name as
-          // associated data. Encryption with associated data ensures authenticity
-          // (who the sender is) and integrity (the data has not been tampered with) of that
-          // data, but not its secrecy. (see RFC 5116 for more info)
-          String email = new String(envAead.decrypt(voteResults.getBytes(3), team.getBytes()));
-
-          System.out.println(String.format("%s\t%s\t%s", team, timeCast, email));
-        }
+        // Finally, execute the statement. If it fails, an error will be thrown.
+        voteStmt.execute();
+        System.out.println(String.format("Successfully inserted row into table %s", tableName));
       }
     }
   }
 }
-// [END cloud_sql_mysql_cse_query]
+// [END cloud_sql_postgres_cse_insert]
