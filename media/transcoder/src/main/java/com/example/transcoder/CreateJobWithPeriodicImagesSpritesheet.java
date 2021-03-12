@@ -75,7 +75,7 @@ public class CreateJobWithPeriodicImagesSpritesheet {
       // spriteHeightPixels field, but not both.
       SpriteSheet smallSpriteSheet =
           SpriteSheet.newBuilder()
-              .setFilePrefix("small-sprite-sheet")
+              .setFilePrefix(smallSpritesheetFilePrefix)
               .setSpriteHeightPixels(32)
               .setSpriteWidthPixels(64)
               .setInterval(Duration.newBuilder().setSeconds(7).build())
@@ -84,7 +84,7 @@ public class CreateJobWithPeriodicImagesSpritesheet {
       // Generates a spritesheet of larger images taken periodically from the input video. To
       SpriteSheet largeSpriteSheet =
           SpriteSheet.newBuilder()
-              .setFilePrefix("large-sprite-sheet")
+              .setFilePrefix(largeSpritesheetFilePrefix)
               .setSpriteHeightPixels(72)
               .setSpriteWidthPixels(128)
               .setInterval(Duration.newBuilder().setSeconds(7).build())
