@@ -53,12 +53,11 @@ public class IdpSqlApplication {
     FirebaseApp.initializeApp(options);
 
     // Retrieve config for Cloud SQL
-    String secretId = System.getenv("SECRET_NAME");
-    if (secretId == null) {
-      throw new IllegalStateException("\"SECRET_NAME\" env var is required.");
+    String secretVersionName = System.getenv("CLOUD_SQL_CREDENTIALS_SECRET");
+    if (secretVersionName == null) {
+      throw new IllegalStateException("\"CLOUD_SQL_CREDENTIALS_SECRET\" env var is required.");
     }
-    String versionId = System.getenv().getOrDefault("VERSION", "latest");
-    HashMap<String, Object> config = getConfig(projectId, secretId, versionId);
+    HashMap<String, Object> config = getConfig(secretVersionName);
 
     // Set the Cloud SQL config and start app
     SpringApplication app = new SpringApplication(IdpSqlApplication.class);
@@ -103,14 +102,11 @@ public class IdpSqlApplication {
   // [START cloudrun_user_auth_secrets]
   /** Retrieve config from Secret Manager */
   public static HashMap<String, Object> getConfig(
-      String projectId, String secretId, String versionId) throws IOException {
+      String secretVersionName) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-      // Build the name from the version
-      SecretVersionName secretVersionName = SecretVersionName.of(projectId, secretId, versionId);
-
       // Retrieve secret version
       AccessSecretVersionResponse response = client.accessSecretVersion(secretVersionName);
       String json = response.getPayload().getData().toStringUtf8();

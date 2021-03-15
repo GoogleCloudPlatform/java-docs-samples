@@ -26,4 +26,4 @@ gcloud run services update ${K_SERVICE} \
     --region ${GOOGLE_CLOUD_REGION} \
     --service-account ${SERVICE_ACCOUNT}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com \
     --add-cloudsql-instances ${GOOGLE_CLOUD_PROJECT}:${GOOGLE_CLOUD_REGION}:${CLOUD_SQL_INSTANCE_NAME} \
-    --update-env-vars SECRET_NAME=${SECRET_NAME},VERSION=latest
+    --update-env-vars CLOUD_SQL_CREDENTIALS_SECRET=projects/${GOOGLE_CLOUD_PROJECT}/secrets/${SECRET_NAME}/versions/latest
