@@ -66,6 +66,7 @@ public class IdpSqlApplication {
     app.run(args);
   }
 
+  // [START cloudrun_sigterm_handler]
   /** Register shutdown hook */
   @PreDestroy
   public void tearDown() {
@@ -76,6 +77,7 @@ public class IdpSqlApplication {
     // Flush async logs if needed
     // Current Logback config defaults to immediate flushing of all logs
   }
+  // [END cloudrun_sigterm_handler]
 
   /** Retrieve project Id from metadata server Set $GOOGLE_CLOUD_PROJECT env var to run locally */
   public static String getProjectId() {
@@ -98,6 +100,7 @@ public class IdpSqlApplication {
     }
   }
 
+  // [START cloudrun_user_auth_secrets]
   /** Retrieve config from Secret Manager */
   public static HashMap<String, Object> getConfig(
       String projectId, String secretId, String versionId) throws IOException {
@@ -123,4 +126,5 @@ public class IdpSqlApplication {
       throw new RuntimeException("Unable to retrieve config secrets.");
     }
   }
+  // [END cloudrun_user_auth_secrets]
 }
