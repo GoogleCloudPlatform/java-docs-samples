@@ -46,8 +46,8 @@ public class QueryAndDecryptData {
 
     // Initialize database connection pool and create table if it does not exist
     // See CloudSqlConnectionPool.java for setup details
-    DataSource pool = CloudSqlConnectionPool
-        .createConnectionPool(dbUser, dbPass, dbName, cloudSqlConnectionName);
+    DataSource pool =
+        CloudSqlConnectionPool.createConnectionPool(dbUser, dbPass, dbName, cloudSqlConnectionName);
     CloudSqlConnectionPool.createTable(pool, tableName);
 
     // Initialize envelope AEAD
@@ -56,8 +56,8 @@ public class QueryAndDecryptData {
 
     // Insert row into table to test
     // See EncryptAndInsert.java for setup details
-    EncryptAndInsertData
-        .encryptAndInsertData(pool, envAead, tableName, "SPACES", "hello@example.com");
+    EncryptAndInsertData.encryptAndInsertData(
+        pool, envAead, tableName, "SPACES", "hello@example.com");
 
     queryAndDecryptData(pool, envAead, tableName);
   }
@@ -66,9 +66,11 @@ public class QueryAndDecryptData {
       throws GeneralSecurityException, SQLException {
 
     try (Connection conn = pool.getConnection()) {
-      String stmt = String.format(
-          "SELECT team, time_cast, voter_email FROM %s ORDER BY time_cast DESC LIMIT 5", tableName);
-      try (PreparedStatement voteStmt = conn.prepareStatement(stmt);) {
+      String stmt =
+          String.format(
+              "SELECT team, time_cast, voter_email FROM %s ORDER BY time_cast DESC LIMIT 5",
+              tableName);
+      try (PreparedStatement voteStmt = conn.prepareStatement(stmt); ) {
         ResultSet voteResults = voteStmt.executeQuery();
 
         System.out.println("Team\tTime Cast\tEmail");
@@ -80,10 +82,9 @@ public class QueryAndDecryptData {
           // decrypting.
           String aad = voteResults.getString(1).trim();
 
-          // Use the envelope AEAD primitive to decrypt the email, using the team name as
-          // associated data. Encryption with associated data ensures authenticity
-          // (who the sender is) and integrity (the data has not been tampered with) of that
-          // data, but not its secrecy. (see RFC 5116 for more info)
+          // Use the envelope AEAD primitive to encrypt the email, using the team name as
+          // associated data. This binds the encryption of the email to the team name, preventing
+          // associating an encrypted email in one row with a team name in another row.
           String email = new String(envAead.decrypt(voteResults.getBytes(3), aad.getBytes()));
 
           System.out.println(String.format("%s\t%s\t%s", team, timeCast, email));

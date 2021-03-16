@@ -48,8 +48,8 @@ public class EncryptAndInsertData {
 
     // Initialize database connection pool and create table if it does not exist
     // See CloudSqlConnectionPool.java for setup details
-    DataSource pool = CloudSqlConnectionPool
-        .createConnectionPool(dbUser, dbPass, dbName, cloudSqlConnectionName);
+    DataSource pool =
+        CloudSqlConnectionPool.createConnectionPool(dbUser, dbPass, dbName, cloudSqlConnectionName);
     CloudSqlConnectionPool.createTable(pool, tableName);
 
     // Initialize envelope AEAD
@@ -59,21 +59,21 @@ public class EncryptAndInsertData {
     encryptAndInsertData(pool, envAead, tableName, team, email);
   }
 
-  public static void encryptAndInsertData(DataSource pool, Aead envAead, String tableName,
-      String team, String email)
+  public static void encryptAndInsertData(
+      DataSource pool, Aead envAead, String tableName, String team, String email)
       throws GeneralSecurityException, SQLException {
 
     try (Connection conn = pool.getConnection()) {
-      String stmt = String.format(
-          "INSERT INTO %s (team, time_cast, voter_email) VALUES (?, ?, ?);", tableName);
-      try (PreparedStatement voteStmt = conn.prepareStatement(stmt);) {
+      String stmt =
+          String.format(
+              "INSERT INTO %s (team, time_cast, voter_email) VALUES (?, ?, ?);", tableName);
+      try (PreparedStatement voteStmt = conn.prepareStatement(stmt); ) {
         voteStmt.setString(1, team);
         voteStmt.setTimestamp(2, new Timestamp(new Date().getTime()));
 
         // Use the envelope AEAD primitive to encrypt the email, using the team name as
-        // associated data. Encryption with associated data ensures authenticity
-        // (who the sender is) and integrity (the data has not been tampered with) of that
-        // data, but not its secrecy. (see RFC 5116 for more info)
+        // associated data. This binds the encryption of the email to the team name, preventing
+        // associating an encrypted email in one row with a team name in another row.
         byte[] encryptedEmail = envAead.encrypt(email.getBytes(), team.getBytes());
         voteStmt.setBytes(3, encryptedEmail);
 
