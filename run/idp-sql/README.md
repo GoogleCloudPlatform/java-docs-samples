@@ -27,8 +27,7 @@ For more details on how to work with this sample read the [Google Cloud Run Java
 Cloud Run services can be [configured with Environment Variables](https://cloud.google.com/run/docs/configuring/environment-variables).
 Required variables for this sample include:
 
-* `SECRET_NAME`: the resource ID of the secret. See [postgres-secrets.json](postgres-secrets.json) for secret content.
-* `VERSION` (optional): the version ID of the secret.
+* `CLOUD_SQL_CREDENTIALS_SECRET`: the resource ID of the secret. See [postgres-secrets.json](postgres-secrets.json) for secret content.
 
 OR
 

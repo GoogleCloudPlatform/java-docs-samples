@@ -42,12 +42,14 @@ import org.springframework.web.server.ResponseStatusException;
 public final class VoteController {
 
   private static final Logger logger = LoggerFactory.getLogger(VoteController.class);
-  private final JdbcTemplate jdbcTemplate;
   private final String table = System.getenv().getOrDefault("TABLE", "pet_votes");
+  // [START cloudrun_user_auth_sql_connect]
+  private final JdbcTemplate jdbcTemplate;
 
   public VoteController(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
   }
+  // [END cloudrun_user_auth_sql_connect]
 
   @GetMapping("/")
   public String index(Model model) {
@@ -130,6 +132,7 @@ public final class VoteController {
     return "Successfully voted for " + team + " at " + timestamp.toLocalDateTime();
   }
 
+  // [START cloudrun_user_auth_jwt]
   /** Extract and verify Id Token from header */
   private String authenticateJwt(Map<String, String> headers) {
     String authHeader =
@@ -153,6 +156,7 @@ public final class VoteController {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
   }
+  // [END cloudrun_user_auth_jwt]
 
   /** Insert a vote record into the database. */
   public void insertVote(Vote vote) throws DataAccessException {
@@ -183,3 +187,4 @@ public final class VoteController {
         new Object[] {candidate});
   }
 }
+

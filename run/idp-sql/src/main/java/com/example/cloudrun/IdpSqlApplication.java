@@ -53,12 +53,11 @@ public class IdpSqlApplication {
     FirebaseApp.initializeApp(options);
 
     // Retrieve config for Cloud SQL
-    String secretId = System.getenv("SECRET_NAME");
-    if (secretId == null) {
-      throw new IllegalStateException("\"SECRET_NAME\" env var is required.");
+    String secretVersionName = System.getenv("CLOUD_SQL_CREDENTIALS_SECRET");
+    if (secretVersionName == null) {
+      throw new IllegalStateException("\"CLOUD_SQL_CREDENTIALS_SECRET\" env var is required.");
     }
-    String versionId = System.getenv().getOrDefault("VERSION", "latest");
-    HashMap<String, Object> config = getConfig(projectId, secretId, versionId);
+    HashMap<String, Object> config = getConfig(secretVersionName);
 
     // Set the Cloud SQL config and start app
     SpringApplication app = new SpringApplication(IdpSqlApplication.class);
@@ -66,6 +65,7 @@ public class IdpSqlApplication {
     app.run(args);
   }
 
+  // [START cloudrun_sigterm_handler]
   /** Register shutdown hook */
   @PreDestroy
   public void tearDown() {
@@ -76,6 +76,7 @@ public class IdpSqlApplication {
     // Flush async logs if needed
     // Current Logback config defaults to immediate flushing of all logs
   }
+  // [END cloudrun_sigterm_handler]
 
   /** Retrieve project Id from metadata server Set $GOOGLE_CLOUD_PROJECT env var to run locally */
   public static String getProjectId() {
@@ -98,16 +99,14 @@ public class IdpSqlApplication {
     }
   }
 
+  // [START cloudrun_user_auth_secrets]
   /** Retrieve config from Secret Manager */
   public static HashMap<String, Object> getConfig(
-      String projectId, String secretId, String versionId) throws IOException {
+      String secretVersionName) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-      // Build the name from the version
-      SecretVersionName secretVersionName = SecretVersionName.of(projectId, secretId, versionId);
-
       // Retrieve secret version
       AccessSecretVersionResponse response = client.accessSecretVersion(secretVersionName);
       String json = response.getPayload().getData().toStringUtf8();
@@ -123,4 +122,5 @@ public class IdpSqlApplication {
       throw new RuntimeException("Unable to retrieve config secrets.");
     }
   }
+  // [END cloudrun_user_auth_secrets]
 }

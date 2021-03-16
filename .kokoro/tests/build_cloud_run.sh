@@ -64,7 +64,7 @@ if [ -n "$JIB" ]; then
     --platform=managed \
     --quiet --no-user-output-enabled  \
     `if [[ "${MEMORY_NEEDED[@]}" =~ "${SAMPLE_NAME}" ]]; then echo "--memory 512M"; fi` \
-    `if [ $SAMPLE_NAME = "idp-sql" ]; then echo "--update-env-vars SECRET_NAME=idp-sql-secret"; fi`
+    `if [ $SAMPLE_NAME = "idp-sql" ]; then echo "--update-env-vars CLOUD_SQL_CREDENTIALS_SECRET=projects/${GOOGLE_CLOUD_PROJECT}/secrets/idp-sql-secret/versions/latest"; fi`
 
 
   set +x
