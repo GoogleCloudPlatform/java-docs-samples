@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// [START bigtable_quickstart]
+// [START bigtable_quickstart_hbase]
 
 package com.example.cloud.bigtable.quickstart;
 
@@ -74,4 +74,4 @@ public class Quickstart {
     }
   }
 }
-// [END bigtable_quickstart]
+// [END bigtable_quickstart_hbase]
