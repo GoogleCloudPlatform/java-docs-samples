@@ -19,7 +19,7 @@
  */
 package com.example.cloud.bigtable.helloworld;
 
-// [START bigtable_hw_imports]
+// [START bigtable_hw_imports_hbase]
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -36,7 +36,7 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
-// [END bigtable_hw_imports]
+// [END bigtable_hw_imports_hbase]
 
 /**
  * A minimal application that connects to Cloud Bigtable using the native HBase API and performs
@@ -57,25 +57,25 @@ public class HelloWorld {
   /** Connects to Cloud Bigtable, runs some basic operations and prints the results. */
   private static void doHelloWorld(String projectId, String instanceId) {
 
-    // [START bigtable_hw_connect]
+    // [START bigtable_hw_connect_hbase]
     // Create the Bigtable connection, use try-with-resources to make sure it gets closed
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
 
       // The admin API lets us create, manage and delete tables
       Admin admin = connection.getAdmin();
-      // [END bigtable_hw_connect]
+      // [END bigtable_hw_connect_hbase]
 
       try {
-        // [START bigtable_hw_create_table]
+        // [START bigtable_hw_create_table_hbase]
         // Create a table with a single column family
         HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(TABLE_NAME));
         descriptor.addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME));
 
         print("Create table " + descriptor.getNameAsString());
         admin.createTable(descriptor);
-        // [END bigtable_hw_create_table]
+        // [END bigtable_hw_create_table_hbase]
 
-        // [START bigtable_hw_write_rows]
+        // [START bigtable_hw_write_rows_hbase]
         // Retrieve the table we just created so we can do some reads and writes
         Table table = connection.getTable(TableName.valueOf(TABLE_NAME));
 
@@ -100,18 +100,18 @@ public class HelloWorld {
           put.addColumn(COLUMN_FAMILY_NAME, COLUMN_NAME, Bytes.toBytes(GREETINGS[i]));
           table.put(put);
         }
-        // [END bigtable_hw_write_rows]
+        // [END bigtable_hw_write_rows_hbase]
 
-        // [START bigtable_hw_get_by_key]
+        // [START bigtable_hw_get_by_key_hbase]
         // Get the first greeting by row key
         String rowKey = "greeting0";
         Result getResult = table.get(new Get(Bytes.toBytes(rowKey)));
         String greeting = Bytes.toString(getResult.getValue(COLUMN_FAMILY_NAME, COLUMN_NAME));
         System.out.println("Get a single greeting by row key");
         System.out.printf("\t%s = %s\n", rowKey, greeting);
-        // [END bigtable_hw_get_by_key]
+        // [END bigtable_hw_get_by_key_hbase]
 
-        // [START bigtable_hw_scan_all]
+        // [START bigtable_hw_scan_all_hbase]
         // Now scan across all rows.
         Scan scan = new Scan();
 
@@ -121,14 +121,14 @@ public class HelloWorld {
           byte[] valueBytes = row.getValue(COLUMN_FAMILY_NAME, COLUMN_NAME);
           System.out.println('\t' + Bytes.toString(valueBytes));
         }
-        // [END bigtable_hw_scan_all]
+        // [END bigtable_hw_scan_all_hbase]
 
-        // [START bigtable_hw_delete_table]
+        // [START bigtable_hw_delete_table_hbase]
         // Clean up by disabling and then deleting the table
         print("Delete the table");
         admin.disableTable(table.getName());
         admin.deleteTable(table.getName());
-        // [END bigtable_hw_delete_table]
+        // [END bigtable_hw_delete_table_hbase]
       } catch (IOException e) {
         if (admin.tableExists(TableName.valueOf(TABLE_NAME))) {
           print("Cleaning up table");
