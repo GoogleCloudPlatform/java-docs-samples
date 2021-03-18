@@ -164,7 +164,7 @@ Turn off the emulator as described [here](https://cloud.google.com/bigtable/docs
 Set the following environment variables:
 
 ```
-SPARK_HOME=your-spark-home
+SPARK_HOME=/PATH/TO/spark-2.4.7-bin-hadoop2.7
 BIGTABLE_SPARK_PROJECT_ID=your-project-id
 BIGTABLE_SPARK_INSTANCE_ID=your-instance-id
 
