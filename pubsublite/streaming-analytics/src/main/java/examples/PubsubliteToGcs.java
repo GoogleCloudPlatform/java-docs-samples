@@ -12,35 +12,52 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.examples.pubsub.streaming;
+package examples;
 
-// [START pubsublite_to_gcs]
-
+import com.google.cloud.ServiceOptions;
+import com.google.cloud.pubsublite.CloudZone;
+import com.google.cloud.pubsublite.ProjectId;
+import com.google.cloud.pubsublite.SequencedMessage;
+import com.google.cloud.pubsublite.SubscriptionName;
+import com.google.cloud.pubsublite.SubscriptionPath;
+import com.google.cloud.pubsublite.beam.PubsubLiteIO;
+import com.google.cloud.pubsublite.beam.SubscriberOptions;
+import com.google.protobuf.ByteString;
 import java.io.IOException;
 import org.apache.beam.examples.common.WriteOneFilePerWindow;
 import org.apache.beam.sdk.Pipeline;
-import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.StreamingOptions;
 import org.apache.beam.sdk.options.Validation.Required;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.transforms.DoFn.ProcessElement;
+import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.joda.time.Duration;
 
-public class PubSubToGcs {
+// [START pubsublite_to_gcs]
+
+public class PubsubliteToGcs {
   /*
    * Define your own configuration options. Add your own arguments to be processed
    * by the command-line parser, and specify default values for them.
    */
-  public interface PubSubToGcsOptions extends PipelineOptions, StreamingOptions {
-    @Description("The Cloud Pub/Sub topic to read from.")
+  public interface PubsubliteToGcsOptions extends PipelineOptions, StreamingOptions {
+    @Description("The Cloud Pub/Sub Lite subscription to read from.")
     @Required
-    String getInputTopic();
+    String getInputSubscription();
 
-    void setInputTopic(String value);
+    void setInputSubscription(String value);
+
+    @Description("The Cloud Pub/Sub Lite subscription's location.")
+    @Required
+    String getLocation();
+
+    void setLocation(String value);
 
     @Description("Output file's window size in number of minutes.")
     @Default.Integer(1)
@@ -59,16 +76,34 @@ public class PubSubToGcs {
     // The maximum number of shards when writing output.
     int numShards = 1;
 
-    PubSubToGcsOptions options =
-        PipelineOptionsFactory.fromArgs(args).withValidation().as(PubSubToGcsOptions.class);
+    PubsubliteToGcsOptions options =
+        PipelineOptionsFactory.fromArgs(args).withValidation().as(PubsubliteToGcsOptions.class);
 
     options.setStreaming(true);
+
+    SubscriberOptions subscriberOpitons= SubscriberOptions.newBuilder()
+        .setSubscriptionPath(
+            SubscriptionPath.newBuilder()
+                .setLocation(CloudZone.parse(options.getLocation()))
+                .setProject(ProjectId.of(ServiceOptions.getDefaultProjectId()))
+                .setName(SubscriptionName.of(options.getInputSubscription()))
+                .build()
+        )
+        .build();
 
     Pipeline pipeline = Pipeline.create(options);
 
     pipeline
         // 1) Read string messages from a Pub/Sub topic.
-        .apply("Read PubSub Messages", PubsubIO.readStrings().fromTopic(options.getInputTopic()))
+        .apply("Read From a Pub/Sub Lite Subscription", PubsubLiteIO.read(subscriberOpitons))
+        // .apply("Convert messages", ParDo.of(new DoFn<SequencedMessage, ByteString>() {
+        //   @ProcessElement
+        //   public void processMessage(ProcessContext context) {
+        //     SequencedMessage m = context.element();
+        //     ByteString k = m.message().data();
+        //     context.output(k);
+        //   }
+        // }))
         // 2) Group the messages into fixed-sized minute intervals.
         .apply(Window.into(FixedWindows.of(Duration.standardMinutes(options.getWindowSize()))))
         // 3) Write one file to GCS for every window of messages.

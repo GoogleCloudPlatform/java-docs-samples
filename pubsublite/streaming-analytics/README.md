@@ -85,7 +85,7 @@ The following instructions will help you prepare your development environment.
 1. Navigate to the sample code directory.
 
    ```bash
-   cd java-docs-samples/pubsub/streaming-analytics
+   cd java-docs-samples/pubsub/examples-analytics
    ```
 
 ## Streaming Analytics
@@ -94,7 +94,7 @@ The following instructions will help you prepare your development environment.
 
 * [PubSubToGCS.java](src/main/java/PubsubliteToGcs.java)
 
-The following example will run a streaming pipeline. It will read messages from a Pub/Sub topic, then window them into fixed-sized intervals, and write one file per window into a GCS location.
+The following example will run a examples pipeline. It will read messages from a Pub/Sub topic, then window them into fixed-sized intervals, and write one file per window into a GCS location.
 
 + `--project`: sets the Google Cloud project ID to run the pipeline on
 + `--region`: sets the Dataflow regional endpoint
@@ -105,7 +105,7 @@ The following example will run a streaming pipeline. It will read messages from 
 
 ```bash
 mvn compile exec:java \
-  -Dexec.mainClass=com.examples.pubsub.streaming.PubSubToGCS \
+  -Dexec.mainClass=com.examples.pubsub.examples.PubSubToGCS \
   -Dexec.cleanupDaemonThreads=false \
   -Dexec.args="\
     --project=$PROJECT_NAME \
@@ -135,7 +135,7 @@ gsutil ls gs://$BUCKET_NAME/samples/
 
 1. Stop the Dataflow job in [GCP Console Dataflow page]. Cancel the job instead of draining it. This may take some minutes.
 
-1. Delete the topic. [Google Cloud Dataflow] will automatically delete the subscription associated with the streaming pipeline when the job is canceled.
+1. Delete the topic. [Google Cloud Dataflow] will automatically delete the subscription associated with the examples pipeline when the job is canceled.
    ```bash
    gcloud pubsub topics delete cron-topic
    ```
