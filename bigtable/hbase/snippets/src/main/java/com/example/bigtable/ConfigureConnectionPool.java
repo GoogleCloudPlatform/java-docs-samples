@@ -16,7 +16,7 @@
 
 package com.example.bigtable;
 
-// [START bigtable_configure_connection_pool]
+// [START bigtable_configure_connection_pool_hbase]
 
 
 import static com.google.cloud.bigtable.hbase.BigtableOptionsFactory.BIGTABLE_DATA_CHANNEL_COUNT_KEY;
@@ -42,4 +42,4 @@ public class ConfigureConnectionPool {
   }
 }
 
-// [END bigtable_configure_connection_pool]
+// [END bigtable_configure_connection_pool_hbase]
