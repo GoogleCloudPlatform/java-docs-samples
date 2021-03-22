@@ -43,13 +43,13 @@ public class ConfigureConnectionPoolTest {
   public static void beforeClass() {
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
     instanceId = requireEnv("BIGTABLE_TESTING_INSTANCE");
-
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
   }
 
   @Test
   public void testConfigureConnectionPool() {
+    bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
+
     ConfigureConnectionPool.configureConnectionPool(projectId, instanceId);
 
     String output = bout.toString();
