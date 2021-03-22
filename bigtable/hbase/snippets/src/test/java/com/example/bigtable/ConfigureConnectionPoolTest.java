@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.hamcrest.CoreMatchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,7 +31,8 @@ public class ConfigureConnectionPoolTest {
 
   private static String projectId;
   private static String instanceId;
-  private ByteArrayOutputStream bout;
+  private static PrintStream originalOut;
+  private static ByteArrayOutputStream bout;
 
   private static String requireEnv(String varName) {
     assertNotNull(
@@ -45,11 +47,21 @@ public class ConfigureConnectionPoolTest {
     instanceId = requireEnv("BIGTABLE_TESTING_INSTANCE");
   }
 
-  @Test
-  public void testConfigureConnectionPool() {
+  @Before
+  public void setupStream() {
+    originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
+  }
 
+  @After
+  public void tearDown() {
+    System.setOut(originalOut);
+    bout.reset();
+  }
+
+  @Test
+  public void testConfigureConnectionPool() {
     ConfigureConnectionPool.configureConnectionPool(projectId, instanceId);
 
     String output = bout.toString();
