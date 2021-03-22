@@ -6,6 +6,7 @@
     * [Testing Setup](#testing-setup)
     * [Running Locally](#running-locally)
     * [Gradle Specifics](#gradle-specifics)
+    * [Restore System Resources](#restore-system-resources)
   * [Format Guidelines](#format-guidelines)
     * [Location](#project-location)
     * [Dependencies](#project-dependencies)
@@ -190,6 +191,12 @@ test {
   }
 }
 -->
+
+### Restore System resources
+Ideally, saving and restoring `System.out` and `System.err` should be done by Junit Rules - we don't yet have that facility in place.  In the mean time,
+it's important that if you capture `System.out` in a `@Before` method that you save it, and then restore it later in an `@After` method. (If you don't do 
+this, or `setOut` to `null` it may cause problems for other tests. (they won't see output when debugging)
+
 
 ## Format Guidelines
 ### Project Location
