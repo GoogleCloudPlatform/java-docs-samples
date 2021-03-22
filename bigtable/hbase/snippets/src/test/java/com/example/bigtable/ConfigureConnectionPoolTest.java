@@ -27,6 +27,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ConfigureConnectionPoolTest {
+
   private static String projectId;
   private static String instanceId;
   private ByteArrayOutputStream bout;
@@ -42,10 +43,7 @@ public class ConfigureConnectionPoolTest {
   public static void beforeClass() {
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
     instanceId = requireEnv("BIGTABLE_TESTING_INSTANCE");
-  }
 
-  @Before
-  public void setupStream() {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
   }
