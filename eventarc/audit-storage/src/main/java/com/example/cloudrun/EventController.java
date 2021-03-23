@@ -16,7 +16,7 @@
 
 package com.example.cloudrun;
 
-// [START eventarc_gcs_handler]
+// [START eventarc_audit_storage_handler]
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -57,4 +57,4 @@ public class EventController {
     return new ResponseEntity<String>(msg, HttpStatus.OK);
   }
 }
-// [END eventarc_gcs_handler]
+// [END eventarc_audit_storage_handler]
