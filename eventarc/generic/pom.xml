@@ -90,7 +90,7 @@ limitations under the License.
         <version>2.8.0</version>
         <configuration>
           <to>
-            <image>gcr.io/serverless-com-demo/eventarc-generic</image>
+            <image>gcr.io/PROJECT_ID/eventarc-generic</image>
           </to>
         </configuration>
       </plugin>
