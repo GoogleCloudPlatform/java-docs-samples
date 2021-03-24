@@ -1,14 +1,10 @@
-# Cloud Eventarc - Pub/Sub tutorial
+# Eventarc - Pub/Sub
 
 This sample shows how to create a service that processes Pub/Sub messages.
 
 For more details on how to work with this sample read the [Google Cloud Run Java Samples README](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/run).
 
 [![Run in Google Cloud][run_img]][run_link]
-
-[run_img]: https://storage.googleapis.com/cloudrun/button.svg
-[run_link]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/events-pubsub
-
 
 ## Dependencies
 
@@ -41,10 +37,10 @@ gcloud run deploy cloudrun-events-pubsub \
 Create a Cloud Pub/Sub trigger:
 
 ```sh
-gcloud alpha events triggers create pubsub-trigger \
---target-service cloudrun-events-pubsub \
---type com.google.cloud.pubsub.topic.publish \
---parameters topic=my-topic
+gcloud eventarc triggers create events-pubsub-trigger \
+  --destination-run-service=cloudrun-events-pubsub \
+  --destination-run-region=us-central1 \
+  --event-filters="type=google.cloud.pubsub.topic.v1.messagePublished"
 ```
 
 ## Test
@@ -52,7 +48,12 @@ gcloud alpha events triggers create pubsub-trigger \
 Test your Cloud Run service by publishing a message to the topic: 
 
 ```sh
-gcloud pubsub topics publish my-topic --message="Hello there"
+export RUN_TOPIC=$(gcloud eventarc triggers describe events-pubsub-trigger \
+  --format='value(transport.pubsub.topic)')
+gcloud pubsub topics publish $RUN_TOPIC --message "Runner"
 ```
 
 You may observe the Run service receiving an event in Cloud Logging.
+
+[run_img]: https://storage.googleapis.com/cloudrun/button.svg
+[run_link]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/events-pubsub

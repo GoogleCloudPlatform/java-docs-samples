@@ -1,14 +1,10 @@
-# Cloud Eventarc - Generic tutorial
+# Eventarc - Generic
 
 This sample shows how to create a service that processes generic [CloudEvents](https://cloudevents.io/).
 
 For more details on how to work with this sample read the [Google Cloud Run Java Samples README](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/run).
 
 [![Run in Google Cloud][run_img]][run_link]
-
-[run_img]: https://storage.googleapis.com/cloudrun/button.svg
-[run_link]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/events-generic
-
 
 ## Dependencies
 
@@ -48,3 +44,6 @@ curl -XPOST $CLOUD_RUN_URL \
 ```
 
 You may observe the Cloud Run service receiving an event in Cloud Logging.
+
+[run_img]: https://storage.googleapis.com/cloudrun/button.svg
+[run_link]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/events-generic

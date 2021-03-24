@@ -1,20 +1,19 @@
-# Cloud Eventarc Java Samples
+# Eventarc Samples
 
 [![Open in Cloud Shell][shell_img]][shell_link]
 
 [shell_img]: http://gstatic.com/cloudssh/images/open-btn.png
 [shell_link]: https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=blog/README.md
 
-This directory contains samples for Cloud Eventarc.
+This directory contains samples for creating Cloud Run services that listens to events from [Eventarc](https://cloud.google.com/eventarc/docs/).
 
 ## Samples
 
 |           Sample                |        Description       |     Deploy    |
 | ------------------------------- | ------------------------ | ------------- |
-|[Eventarc - Pub/Sub](pubsub/) | Events for Cloud Run with Pub/Sub | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_pubsub] |
-|[Anthos Events - Pub/Sub](pubsub/anthos.md) | Events for Cloud Run on Anthos with Pub/Sub | - |
-|[Eventarc - Storage](audit-storage/) | Events for Cloud Run with Cloud Storage | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_audit_storage] |
-|[Anthos Events - Storage](audit-storage/anthos.md) | Events for Cloud Run on Anthos with Cloud Storage | - |
+|[Eventarc - Pub/Sub](pubsub/) | Listen to Pub/Sub events | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_pubsub] |
+|[Eventarc - Audit – Storage](audit-storage/) | Listen to Audit Log events from Cloud Storage | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_audit_storage] |
+|[Eventarc - Generic](generic/) | Listen to a generic event from Eventarc | [<img src="https://storage.googleapis.com/cloudrun/button.svg" alt="Run on Google Cloud" height="30">][run_button_events_generic] |
 
 ## Setup
 
@@ -103,3 +102,5 @@ Learn more about [testing your container image locally.][testing]
 
 [run_button_events_audit_storage]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=eventarc/audit-storage
 [run_button_events_pubsub]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=eventarc/pubsub
+[run_button_events_generic]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=eventarc/generic
+[testing]: https://cloud.google.com/run/docs/testing/local#running_locally_using_docker_with_access_to_services
