@@ -1,14 +1,10 @@
-# Cloud Eventarc - Cloud Storage via Audit Logs tutorial
+# Eventarc - Cloud Storage Events via Audit Logs
 
 This sample shows how to create a service that processes GCS events.
 
 For more details on how to work with this sample read the [Google Cloud Run Java Samples README](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/run).
 
 [![Run in Google Cloud][run_img]][run_link]
-
-[run_img]: https://storage.googleapis.com/cloudrun/button.svg
-[run_link]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/events-storage
-
 
 ## Dependencies
 
@@ -76,3 +72,6 @@ gcloud logging read "resource.type=cloud_run_revision AND \
 resource.labels.service_name=$MY_RUN_SERVICE" --project \
 $(gcloud config get-value project) --limit 30 --format 'value(textPayload)'
 ```
+
+[run_img]: https://storage.googleapis.com/cloudrun/button.svg
+[run_link]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/events-storage
