@@ -21,13 +21,12 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
+import functions.eventpojos.GcsEvent;
+import functions.eventpojos.MockContext;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import functions.eventpojos.GcsEvent;
-import functions.eventpojos.MockContext;
 
 /**
  * Unit tests for main.java.com.example.functions.helloworld.HelloGcs.
