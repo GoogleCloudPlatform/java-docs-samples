@@ -19,8 +19,8 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
-import com.google.gson.Gson;
 import com.google.events.cloud.pubsub.v1.Message;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

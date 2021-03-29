@@ -20,7 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
 import com.google.events.cloud.pubsub.v1.Message;
-
 import functions.eventpojos.MockContext;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
