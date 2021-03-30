@@ -1,4 +1,4 @@
 # Getting Started with BigQueryDataTransfer and the Google Java API Client library
 
 The samples have been moved to live alongside the Java client library for Cloud BigQueryDataTransfer:
-https://github.com/googleapis/java-bigquerydatatransfer/tree/master/samples/snippets/src/main/java/com/example/bigquerydatatransfer
+[BigQueryDataTransfer samples](https://github.com/googleapis/java-bigquerydatatransfer/tree/master/samples/snippets/src/main/java/com/example/bigquerydatatransfer)
