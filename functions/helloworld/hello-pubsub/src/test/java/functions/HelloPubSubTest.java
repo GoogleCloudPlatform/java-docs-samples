@@ -21,7 +21,7 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
-import functions.eventpojos.PubSubMessage;
+import com.google.events.cloud.pubsub.v1.Message;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
@@ -50,10 +50,10 @@ public class HelloPubSubTest {
 
   @Test
   public void helloPubSub_shouldPrintName() {
-    PubSubMessage pubSubMessage = new PubSubMessage();
-    pubSubMessage.setData(Base64.getEncoder().encodeToString(
+    Message message = new Message();
+    message.setData(Base64.getEncoder().encodeToString(
         "John".getBytes(StandardCharsets.UTF_8)));
-    sampleUnderTest.accept(pubSubMessage, null);
+    sampleUnderTest.accept(message, null);
 
     String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello John!").isEqualTo(logMessage);
@@ -61,8 +61,8 @@ public class HelloPubSubTest {
 
   @Test
   public void helloPubSub_shouldPrintHelloWorld() {
-    PubSubMessage pubSubMessage = new PubSubMessage();
-    sampleUnderTest.accept(pubSubMessage, null);
+    Message message = new Message();
+    sampleUnderTest.accept(message, null);
 
     String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello world!").isEqualTo(logMessage);

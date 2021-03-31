@@ -20,14 +20,14 @@ package functions;
 
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
+import com.google.events.cloud.pubsub.v1.Message;
 import com.google.gson.Gson;
-import functions.eventpojos.PubSubMessage;
 import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.logging.Logger;
 
-public class RetryTimeout implements BackgroundFunction<PubSubMessage> {
+public class RetryTimeout implements BackgroundFunction<Message> {
   private static final Logger logger = Logger.getLogger(RetryTimeout.class.getName());
   private static final long MAX_EVENT_AGE = 10_000;
 
@@ -39,7 +39,7 @@ public class RetryTimeout implements BackgroundFunction<PubSubMessage> {
    * a certain time period after the triggering event
    */
   @Override
-  public void accept(PubSubMessage message, Context context) {
+  public void accept(Message message, Context context) {
     ZonedDateTime utcNow = ZonedDateTime.now(ZoneOffset.UTC);
     ZonedDateTime timestamp = ZonedDateTime.parse(context.timestamp());
 

@@ -22,8 +22,8 @@ import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.Context;
 import com.google.common.testing.TestLogHandler;
+import com.google.events.cloud.pubsub.v1.Message;
 import com.google.gson.Gson;
-import functions.eventpojos.PubSubMessage;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -68,9 +68,9 @@ public class RetryTimeoutTest {
     Context mockContext = mock(Context.class);
     when(mockContext.timestamp()).thenReturn(timestamp.toString());
 
-    PubSubMessage pubsubMessage = new PubSubMessage();
+    Message message = new Message();
 
-    new RetryTimeout().accept(pubsubMessage, mockContext);
+    new RetryTimeout().accept(message, mockContext);
 
     String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat(logMessage).contains("Processing event with timestamp " + timestamp);
@@ -82,9 +82,9 @@ public class RetryTimeoutTest {
     Context mockContext = mock(Context.class);
     when(mockContext.timestamp()).thenReturn(timestamp.toString());
 
-    PubSubMessage pubsubMessage = new PubSubMessage();
+    Message message = new Message();
 
-    new RetryTimeout().accept(pubsubMessage, mockContext);
+    new RetryTimeout().accept(message, mockContext);
 
     String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat(logMessage).contains("Dropping event with timestamp " + timestamp);

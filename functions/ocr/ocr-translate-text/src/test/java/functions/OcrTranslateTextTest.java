@@ -18,9 +18,9 @@ package functions;
 
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
+import com.google.events.cloud.pubsub.v1.Message;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import functions.eventpojos.PubSubMessage;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
@@ -56,7 +56,7 @@ public class OcrTranslateTextTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void functionsOcrTranslate_shouldValidateParams() throws IOException {
-    PubSubMessage message = new PubSubMessage();
+    Message message = new Message();
     message.setData(new String(Base64.getEncoder().encode("{}".getBytes())));
 
     sampleUnderTest.accept(message, null); // must be in a variable to avoid GC issues
@@ -73,7 +73,7 @@ public class OcrTranslateTextTest {
     dataJson.addProperty("filename", filename);
     dataJson.addProperty("lang", lang);
 
-    PubSubMessage message = new PubSubMessage();
+    Message message = new Message();
     message.setData(new String(Base64.getEncoder().encode(gson.toJson(dataJson).getBytes())));
 
     sampleUnderTest.accept(message, null); // must be in a variable to avoid GC issues

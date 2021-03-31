@@ -18,11 +18,9 @@ package functions;
 
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
-import com.google.gson.Gson;
 import functions.eventpojos.GcsEvent;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.junit.After;
