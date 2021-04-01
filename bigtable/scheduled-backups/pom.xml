@@ -51,7 +51,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigtable</artifactId>
-      <version>1.21.2</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
