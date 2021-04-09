@@ -55,7 +55,7 @@
     <dependency>
       <groupId>net.sourceforge.argparse4j</groupId>
       <artifactId>argparse4j</artifactId>
-      <version>0.8.1</version>
+      <version>0.9.0</version>
     </dependency>
     <!-- [END tts_java_dependencies_beta] -->
 
