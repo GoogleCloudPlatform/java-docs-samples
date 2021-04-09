@@ -78,7 +78,7 @@ public class QueryAndDecryptData {
           String team = voteResults.getString(1);
           Timestamp timeCast = voteResults.getTimestamp(2);
 
-          // Postgres pads char VARCHAR fields with spaces. These will need to be removed before
+          // Postgres pads CHAR fields with spaces. These will need to be removed before
           // decrypting.
           String aad = voteResults.getString(1).trim();
 
