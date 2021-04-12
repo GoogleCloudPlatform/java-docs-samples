@@ -6,6 +6,12 @@ assign_issues_by:
   - 'api: clouderrorreporting'
   to:
   - simonz130
+- labels:
+  - 'api: cloudiot'
+  to:
+  - attilagargyan
+  - simoncsaba-g
+
 assign_prs:
   - GoogleCloudPlatform/java-samples-reviewers
 assign_prs_by:
@@ -14,3 +20,8 @@ assign_prs_by:
   - 'api: clouderrorreporting'
   to:
   - simonz130
+- labels:
+  - 'api: cloudiot'
+  to:
+  - attilagargyan
+  - simoncsaba-g
