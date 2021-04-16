@@ -44,7 +44,7 @@ Uncomment variables in `application.properties` and set:
 
 * Saving credentials directly as environment variables is convenient for local testing,
   but not secure for production; therefore using `SECRET_NAME` and `VERSION`
-  in combination with the Cloud Secrets Manager is recommended.  
+  in combination with the Google Secret Manager is recommended.  
 
 ## Running Locally
 
