@@ -104,7 +104,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.39.v20210325</version>
+        <version>9.4.40.v20210413</version>
       </plugin>
 
       <plugin>
