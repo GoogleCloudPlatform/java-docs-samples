@@ -77,8 +77,16 @@ public class PubSubAuthenticatedPush extends HttpServlet {
       // messsages have prompted a singple push server to handle them, in which
       // case they would all share the same token for a limited time window.
       GoogleIdToken idToken = verifier.verify(authorization);
+
+      GoogleIdToken.Payload payload = idToken.getPayload();
+      // IMPORTANT: you should validate claim details not covered by signature
+      // and audience verification above, including:
+      //   - Ensure that `payload.getEmail()` is equal to the expected service
+      //     account set up in the push subscription settings.
+      //   - Ensure that `payload.getEmailVerified()` is set to true.
+
       messageRepository.saveToken(authorization);
-      messageRepository.saveClaim(idToken.getPayload().toPrettyString());
+      messageRepository.saveClaim(payload.toPrettyString());
       // parse message object from "message" field in the request body json
       // decode message data from base64
       Message message = getMessage(req);
