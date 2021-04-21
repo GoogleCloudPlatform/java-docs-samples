@@ -1,179 +1,107 @@
-# Stream Pub/Sub Lite with Dataflow
+# Pub/Sub Lite with Cloud Dataflow
 
-Sample(s) showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow].
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=pubsublite/streaming-analytics/README.md)
 
-## Before you begin
+Samples showing how to use [Pub/Sub Lite] with [Cloud Dataflow].
 
-1. Install the [Cloud SDK].
+## Pub/Sub Lite to Cloud Storage sample
 
-1. [Create a new project].
+[PubsubliteToGcs.java](examples/PubsubliteToGcs.java)
 
-1. [Enable billing].
+This sample shows how to create an [Apache Beam] streaming pipeline that reads
+messages from [Pub/Sub Lite], group the messages using a fixed-sized windowing
+function, and writes them to [Cloud Storage].
 
-1. [Enable the APIs](https://console.cloud.google.com/flows/enableapi?apiid=dataflow,compute_component,logging,storage_component,storage_api,pubsub,cloudresourcemanager.googleapis.com,cloudscheduler.googleapis.com,appengine.googleapis.com): Dataflow, Compute Engine, Stackdriver Logging, Cloud Storage, Cloud Storage JSON, Pub/Sub, Cloud Scheduler, Cloud Resource Manager, and App Engine.
+Resources needed for this example:
 
-1. Setup the Cloud SDK to your GCP project.
+1. A pair of Pub/Sub Lite topic and subscription. 
+2. A Cloud Storage bucket.
 
-   ```bash
-   gcloud init
-   ```
+### Setting up
 
-1. [Create a service account key] as a JSON file.
-   For more information, see [Creating and managing service accounts].
-
-   * From the **Service account** list, select **New service account**.
-   * In the **Service account name** field, enter a name.
-   * From the **Role** list, select **Project > Owner**.
-
-     > **Note**: The **Role** field authorizes your service account to access resources.
-     > You can view and change this field later by using the [GCP Console IAM page].
-     > If you are developing a production app, specify more granular permissions than **Project > Owner**.
-     > For more information, see [Granting roles to service accounts].
-
-   * Click **Create**. A JSON file that contains your key downloads to your computer.
-
-1. Set your `GOOGLE_APPLICATION_CREDENTIALS` environment variable to point to your service account key file.
-
-   ```bash
-   export GOOGLE_APPLICATION_CREDENTIALS=path/to/your/credentials.json
-   ```
+1. [Enable the APIs](https://console.cloud.google.com/flows/enableapi?apiid=dataflow,compute_component,logging,storage_api,pubsublite.googleapis.com): Cloud Dataflow, Compute Engine, Cloud Logging, Cloud Storage, Pub/Sub Lite.
 
 1. Create a Cloud Storage bucket.
 
    ```bash
-   BUCKET_NAME=your-gcs-bucket
-   PROJECT_NAME=$(gcloud config get-value project)
+   PROJECT=$(gcloud config get-value project)
+   BUCKET=your-gcs-bucket
    
-   gsutil mb gs://$BUCKET_NAME
+   gsutil mb gs://$BUCKET
    ```
    
- 1. Start a [Google Cloud Scheduler] job that publishes one message to a [Google Cloud Pub/Sub] topic every minute. This will create an [App Engine] app if one has never been created on the project. 
+ 1. Create a Pub/Sub Lite topic and subscription. Set `LITE_LOCATION` to a [Pub/Sub Lite location].
  
     ```bash
-    # Create a Pub/Sub topic.
-    gcloud pubsub topics create cron-topic
+    TOPIC=your-lite-topic
+    SUBSCRIPTION=your-lite-subscription
+    LITE_LOCATION=your-lite-location
     
-    # Create a Cloud Scheduler job
-    gcloud scheduler jobs create pubsub publisher-job --schedule="* * * * *" \
-      --topic=cron-topic --message-body="Hello!"
-    
-    # Run the job. 
-    gcloud scheduler jobs run publisher-job
+    gcloud pubsub lite-topics create $TOPIC --zone=$LITE_LOCATION --partitions=1 \
+        --per-partition-bytes=30GiB
+    gcloud pubsub lite-subscriptions create $SUBSCRIPTION --zone=$LITE_LOCATION --topic=$TOPIC
     ```
 
-1. Set `REGION` to a Dataflow [regional endpoint].
+1. Set `DATAFLOW_REGION` to a [Dataflow region] close to your Pub/Sub Lite location.
 
    ```
-   export REGION=your-cloud-region
+   DATAFLOW_REGION=your-dateflow-region
    ```
+   
+### Running the example
 
-## Setup
+[PubsubliteToGcs.java](examples/PubsubliteToGcs.java)
 
-The following instructions will help you prepare your development environment.
+The following example runs a streaming pipeline. Choose `DirectRunner` to test it locally or `DataflowRunner` to run it on Dataflow.
 
-1. Download and install the [Java Development Kit (JDK)].
-   Verify that the [JAVA_HOME] environment variable is set and points to your JDK installation.
-
-1. Download and install [Apache Maven] by following the [Maven installation guide] for your specific operating system.
-
-1. Clone the `java-docs-samples` repository.
-
-    ```bash
-    git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
-    ```
-
-1. Navigate to the sample code directory.
-
-   ```bash
-   cd java-docs-samples/pubsub/examples-analytics
-   ```
-
-## Streaming Analytics
-
-### Google Cloud Pub/Sub to Google Cloud Storage
-
-* [PubSubToGCS.java](src/main/java/PubsubliteToGcs.java)
-
-The following example will run a examples pipeline. It will read messages from a Pub/Sub topic, then window them into fixed-sized intervals, and write one file per window into a GCS location.
-
-+ `--project`: sets the Google Cloud project ID to run the pipeline on
-+ `--region`: sets the Dataflow regional endpoint
-+ `--inputTopic`: sets the input Pub/Sub topic to read messages from
-+ `--output`: sets the output GCS path prefix to write files to
-+ `--runner [optional]`: specifies the runner to run the pipeline, defaults to `DirectRunner`
-+ `--windowSize [optional]`: specifies the window size in minutes, defaults to 1
++ `--subscription`: the Pub/Sub Lite subscription to read messages from
++ `--output`: the full filepath of the output files
++ `--windowSize [optional]`: the window size in minutes, defaults to 1
++ `--runner [optional]`: `DataflowRunner` or `DirectRunner`
++ `--project [optional]`: your project ID, optional if using `DirectRunner`
++ `--region [optional]`: the Dataflow region, optional if using `DirectRunner`
++ `--tempLocation`: the temporary location of Dataflow files, optional if using `DirectRunner`
 
 ```bash
 mvn compile exec:java \
-  -Dexec.mainClass=com.examples.pubsub.examples.PubSubToGCS \
-  -Dexec.cleanupDaemonThreads=false \
+  -Dexec.mainClass=examples.PubsubliteToGcs \
   -Dexec.args="\
-    --liteSubscriptionId=projects/$PROJECT_ID/topics/cron-topic \
-    --liteLocation=us-east1-b \
-    --outputFilename=gs://$BUCKET_NAME/samples/output \
-    --windowSizeInMinutes=1 \
-    --project=$PROJECT_ID \
-    --region=$REGION \
+    --subscription=projects/$PROJECT/locations/$LITE_LOCATION/subscriptions/$SUBSCRIPTION \
+    --output=gs://$BUCKET/samples/output \
+    --windowSize=1 \
     --runner=DataflowRunner \
-    --tempLocation= \
-    --windowSize=2"
+    --project=$PROJECT \
+    --region=$DATAFLOW_REGION \
+    --tempLocation=gs://$BUCKET/temp"
 ```
 
-After the job has been submitted, you can check its status in the [GCP Console Dataflow page]. 
-
-You can also check the output to your GCS bucket using the command line below or in the [GCP Console Storage page]. You may need to wait a few minutes for the files to appear.
+[Publish] some messages to your Lite topic. Then check for files in your Cloud Storage bucket.
 
 ```bash
-gsutil ls gs://$BUCKET_NAME/samples/
+gsutil ls gs://$BUCKET/samples/output*
 ```
 
-## Cleanup
+## Cleaning up
 
-1. Delete the [Google Cloud Scheduler] job. 
-    ```bash
-    gcloud scheduler jobs delete publisher-job
-    ```
+1. Stop the pipeline. If you use `DirectRunner`, `Ctrl+C` to cancel. If you use `DataflowRunner`, cancel the job.
 
-1. `Ctrl+C` to stop the program in your terminal. Note that this does not actually stop the job if you use `DataflowRunner`. Skip 3 if you use the `DirectRunner`.
-
-1. Stop the Dataflow job in [GCP Console Dataflow page]. Cancel the job instead of draining it. This may take some minutes.
-
-1. Delete the topic. [Google Cloud Dataflow] will automatically delete the subscription associated with the examples pipeline when the job is canceled.
+1. Delete the Lite topic and subscription. 
    ```bash
-   gcloud pubsub topics delete cron-topic
+   gcloud pubsub lite-topics delete $TOPIC
+   gcloud pubsub lite-subscription delete $SUBSCRIPTION
    ```
-
-1. Lastly, to avoid incurring charges to your GCP account for the resources created in this tutorial:
+   
+1. Delete the Cloud Storage objects:
 
     ```bash
-    # Delete only the files created by this sample.
-    gsutil -m rm -rf "gs://$BUCKET_NAME/samples/output*"
-    
-    # [optional] Remove the Cloud Storage bucket.
-    gsutil rb gs://$BUCKET_NAME
+    gsutil -m rm -rf "gs://$BUCKET/samples/output*"
+    gsutil rb gs://$BUCKET
     ```
 
 [Apache Beam]: https://beam.apache.org/
-[Google Cloud Pub/Sub]: https://cloud.google.com/pubsub/docs/
-[Google Cloud Dataflow]: https://cloud.google.com/dataflow/docs/
-[Google Cloud Scheduler]: https://cloud.google.com/scheduler/docs/
-[App Engine]: https://cloud.google.com/appengine/docs/
-
-[Cloud SDK]: https://cloud.google.com/sdk/docs/
-[Create a new project]: https://console.cloud.google.com/projectcreate
-[Enable billing]: https://cloud.google.com/billing/docs/how-to/modify-project
-[Create a service account key]: https://console.cloud.google.com/apis/credentials/serviceaccountkey
-[Creating and managing service accounts]: https://cloud.google.com/iam/docs/creating-managing-service-accounts
-[GCP Console IAM page]: https://console.cloud.google.com/iam-admin/iam
-[Granting roles to service accounts]: https://cloud.google.com/iam/docs/granting-roles-to-service-accounts
-
-[Java Development Kit (JDK)]: https://www.oracle.com/technetwork/java/javase/downloads/index.html
-[JAVA_HOME]: https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars001.html
-[Apache Maven]: http://maven.apache.org/download.cgi
-[Maven installation guide]: http://maven.apache.org/install.html
-
-[GCP Console create Dataflow job page]: https://console.cloud.google.com/dataflow/createjob
-[GCP Console Dataflow page]: https://console.cloud.google.com/dataflow
-[GCP Console Storage page]: https://console.cloud.google.com/storage
-
-[regional endpoint]: https://cloud.google.com/dataflow/docs/concepts/regional-endpoints
+[Pub/Sub Lite]: https://cloud.google.com/pubsub/lite/docs/
+[Cloud Dataflow]: https://cloud.google.com/dataflow/docs/
+[Cloud Storage]: https://cloud.google.com/storage/docs/
+[Publish]: https://cloud.google.com/pubsub/lite/docs/publishing/
+[Pub/Sub Lite location]: https://cloud.google.com/pubsub/lite/docs/locations/
+[Dataflow region]: https://cloud.google.com/dataflow/docs/concepts/regional-endpoints/

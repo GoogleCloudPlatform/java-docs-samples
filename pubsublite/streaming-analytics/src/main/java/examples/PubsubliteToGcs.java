@@ -14,10 +14,6 @@
 
 package examples;
 
-import com.google.cloud.ServiceOptions;
-import com.google.cloud.pubsublite.CloudZone;
-import com.google.cloud.pubsublite.ProjectId;
-import com.google.cloud.pubsublite.SubscriptionName;
 import com.google.cloud.pubsublite.SubscriptionPath;
 import com.google.cloud.pubsublite.beam.PubsubLiteIO;
 import com.google.cloud.pubsublite.beam.SubscriberOptions;
@@ -48,29 +44,23 @@ public class PubsubliteToGcs {
    * by the command-line parser.
    */
   public interface PubsubliteToGcsOptions extends PipelineOptions, StreamingOptions {
-    @Description("Your Pub/Sub Lite subscription ID.")
+    @Description("Your Pub/Sub Lite subscription.")
     @Required
-    String getLiteSubscriptionId();
+    String getSubscription();
 
-    void setLiteSubscriptionId(String value);
-
-    @Description("The location of your Pub/Sub Lite subscription.")
-    @Required
-    String getLiteLocation();
-
-    void setLiteLocation(String value);
+    void setSubscription(String value);
 
     @Description("Window size of output files in minutes.")
     @Default.Integer(1)
-    Integer getWindowSizeInMinutes();
+    Integer getWindowSize();
 
-    void setWindowSizeInMinutes(Integer value);
+    void setWindowSize(Integer value);
 
     @Description("Filename prefix of output files.")
     @Required
-    String getOutputFilename();
+    String getOutput();
 
-    void setOutputFilename(String value);
+    void setOutput(String value);
   }
 
   private static final Logger LOG = LoggerFactory.getLogger(PubsubliteToGcs.class);
@@ -84,18 +74,14 @@ public class PubsubliteToGcs {
 
     options.setStreaming(true);
 
-    SubscriptionPath liteSubscriptionPath =
-        SubscriptionPath.newBuilder()
-            .setLocation(CloudZone.parse(options.getLiteLocation()))
-            .setProject(ProjectId.of(ServiceOptions.getDefaultProjectId()))
-            .setName(SubscriptionName.of(options.getLiteSubscriptionId()))
-            .build();
-
     SubscriberOptions subscriberOpitons =
-        SubscriberOptions.newBuilder().setSubscriptionPath(liteSubscriptionPath).build();
+        SubscriberOptions.newBuilder()
+            .setSubscriptionPath(SubscriptionPath.parse(options.getSubscription()))
+            .build();
 
     Pipeline pipeline = Pipeline.create(options);
     pipeline
+        // TODO: Replace the I/O connector with the one released with Apache Beam when it's stable.
         .apply("Read From Pub/Sub Lite", PubsubLiteIO.read(subscriberOpitons))
         .apply(
             "Convert messages",
@@ -112,21 +98,20 @@ public class PubsubliteToGcs {
             Window
                 // Group elements using fixed-sized time intervals based on the element timestamp.
                 // The element timestamp is the publish time associated with a message here.
-                .<String>into(
-                    FixedWindows.of(Duration.standardMinutes(options.getWindowSizeInMinutes())))
+                .<String>into(FixedWindows.of(Duration.standardMinutes(options.getWindowSize())))
                 // Fire a trigger every 30 seconds after receiving the first element.
                 .triggering(
                     Repeatedly.forever(
                         AfterProcessingTime.pastFirstElementInPane()
-                            .plusDelayOf(Duration.standardSeconds(30)))
-                )
+                            .plusDelayOf(Duration.standardSeconds(30))))
                 // Ignore late elements.
                 .withAllowedLateness(Duration.ZERO)
-                .discardingFiredPanes()
-        )
-        .apply(
-            "Write elements to GCS",
-            new WriteOneFilePerWindow(options.getOutputFilename(), numShards));
+                // Accumulate elements in fired panes. This makes sure that when writing elements to
+                // files later, elements collected in an earlier pane by an earlier trigger will not
+                // be overwritten by those arriving later due to a later trigger fired within the
+                // boundaries of the same window.
+                .accumulatingFiredPanes())
+        .apply("Write elements to GCS", new WriteOneFilePerWindow(options.getOutput(), numShards));
 
     // Execute the pipeline.
     pipeline.run().waitUntilFinish();

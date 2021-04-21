@@ -78,7 +78,7 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
-              <mainClass>com.examples.pubsub.examples.PubSubToGCS</mainClass>
+              <mainClass>examples.PubsubliteToGcs</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -187,12 +187,14 @@
       <scope>runtime</scope>
     </dependency>
 
+    <!-- TODO: Remove when the next release of the I/O includes it as a dependency -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>30.1-jre</version>
     </dependency>
 
+    <!-- TODO: Replace when this I/O Connector published with Apache Beam is stable -->
     <!-- Pub/Sub Lite I/O Connector for Beam -->
     <dependency>
       <groupId>com.google.cloud</groupId>
