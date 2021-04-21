@@ -1,4 +1,4 @@
-# Stream Cloud Pub/Sub with Cloud Dataflow
+# Stream Pub/Sub Lite with Dataflow
 
 Sample(s) showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow].
 
@@ -108,11 +108,14 @@ mvn compile exec:java \
   -Dexec.mainClass=com.examples.pubsub.examples.PubSubToGCS \
   -Dexec.cleanupDaemonThreads=false \
   -Dexec.args="\
-    --project=$PROJECT_NAME \
+    --liteSubscriptionId=projects/$PROJECT_ID/topics/cron-topic \
+    --liteLocation=us-east1-b \
+    --outputFilename=gs://$BUCKET_NAME/samples/output \
+    --windowSizeInMinutes=1 \
+    --project=$PROJECT_ID \
     --region=$REGION \
-    --inputTopic=projects/$PROJECT_NAME/topics/cron-topic \
-    --output=gs://$BUCKET_NAME/samples/output \
     --runner=DataflowRunner \
+    --tempLocation= \
     --windowSize=2"
 ```
 

@@ -17,13 +17,11 @@ package examples;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.pubsublite.CloudZone;
 import com.google.cloud.pubsublite.ProjectId;
-import com.google.cloud.pubsublite.SequencedMessage;
 import com.google.cloud.pubsublite.SubscriptionName;
 import com.google.cloud.pubsublite.SubscriptionPath;
 import com.google.cloud.pubsublite.beam.PubsubLiteIO;
 import com.google.cloud.pubsublite.beam.SubscriberOptions;
-import com.google.protobuf.ByteString;
-import java.io.IOException;
+import com.google.cloud.pubsublite.proto.SequencedMessage;
 import org.apache.beam.examples.common.WriteOneFilePerWindow;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.options.Default;
@@ -32,48 +30,53 @@ import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.StreamingOptions;
 import org.apache.beam.sdk.options.Validation.Required;
-import org.apache.beam.sdk.transforms.DoFn;
-import org.apache.beam.sdk.transforms.DoFn.ProcessElement;
-import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.MapElements;
+import org.apache.beam.sdk.transforms.windowing.AfterProcessingTime;
 import org.apache.beam.sdk.transforms.windowing.FixedWindows;
+import org.apache.beam.sdk.transforms.windowing.Repeatedly;
 import org.apache.beam.sdk.transforms.windowing.Window;
+import org.apache.beam.sdk.values.TypeDescriptors;
 import org.joda.time.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // [START pubsublite_to_gcs]
 
 public class PubsubliteToGcs {
   /*
-   * Define your own configuration options. Add your own arguments to be processed
-   * by the command-line parser, and specify default values for them.
+   * Define your own configuration options. Add your arguments to be processed
+   * by the command-line parser.
    */
   public interface PubsubliteToGcsOptions extends PipelineOptions, StreamingOptions {
-    @Description("The Cloud Pub/Sub Lite subscription to read from.")
+    @Description("Your Pub/Sub Lite subscription ID.")
     @Required
-    String getInputSubscription();
+    String getLiteSubscriptionId();
 
-    void setInputSubscription(String value);
+    void setLiteSubscriptionId(String value);
 
-    @Description("The Cloud Pub/Sub Lite subscription's location.")
+    @Description("The location of your Pub/Sub Lite subscription.")
     @Required
-    String getLocation();
+    String getLiteLocation();
 
-    void setLocation(String value);
+    void setLiteLocation(String value);
 
-    @Description("Output file's window size in number of minutes.")
+    @Description("Window size of output files in minutes.")
     @Default.Integer(1)
-    Integer getWindowSize();
+    Integer getWindowSizeInMinutes();
 
-    void setWindowSize(Integer value);
+    void setWindowSizeInMinutes(Integer value);
 
-    @Description("Path of the output file including its filename prefix.")
+    @Description("Filename prefix of output files.")
     @Required
-    String getOutput();
+    String getOutputFilename();
 
-    void setOutput(String value);
+    void setOutputFilename(String value);
   }
 
-  public static void main(String[] args) throws IOException {
-    // The maximum number of shards when writing output.
+  private static final Logger LOG = LoggerFactory.getLogger(PubsubliteToGcs.class);
+
+  public static void main(String[] args) {
+    // The maximum number of shards when writing output files.
     int numShards = 1;
 
     PubsubliteToGcsOptions options =
@@ -81,35 +84,51 @@ public class PubsubliteToGcs {
 
     options.setStreaming(true);
 
-    SubscriberOptions subscriberOpitons= SubscriberOptions.newBuilder()
-        .setSubscriptionPath(
-            SubscriptionPath.newBuilder()
-                .setLocation(CloudZone.parse(options.getLocation()))
-                .setProject(ProjectId.of(ServiceOptions.getDefaultProjectId()))
-                .setName(SubscriptionName.of(options.getInputSubscription()))
-                .build()
-        )
-        .build();
+    SubscriptionPath liteSubscriptionPath =
+        SubscriptionPath.newBuilder()
+            .setLocation(CloudZone.parse(options.getLiteLocation()))
+            .setProject(ProjectId.of(ServiceOptions.getDefaultProjectId()))
+            .setName(SubscriptionName.of(options.getLiteSubscriptionId()))
+            .build();
+
+    SubscriberOptions subscriberOpitons =
+        SubscriberOptions.newBuilder().setSubscriptionPath(liteSubscriptionPath).build();
 
     Pipeline pipeline = Pipeline.create(options);
-
     pipeline
-        // 1) Read string messages from a Pub/Sub topic.
-        .apply("Read From a Pub/Sub Lite Subscription", PubsubLiteIO.read(subscriberOpitons))
-        // .apply("Convert messages", ParDo.of(new DoFn<SequencedMessage, ByteString>() {
-        //   @ProcessElement
-        //   public void processMessage(ProcessContext context) {
-        //     SequencedMessage m = context.element();
-        //     ByteString k = m.message().data();
-        //     context.output(k);
-        //   }
-        // }))
-        // 2) Group the messages into fixed-sized minute intervals.
-        .apply(Window.into(FixedWindows.of(Duration.standardMinutes(options.getWindowSize()))))
-        // 3) Write one file to GCS for every window of messages.
-        .apply("Write Files to GCS", new WriteOneFilePerWindow(options.getOutput(), numShards));
+        .apply("Read From Pub/Sub Lite", PubsubLiteIO.read(subscriberOpitons))
+        .apply(
+            "Convert messages",
+            MapElements.into(TypeDescriptors.strings())
+                .via(
+                    (SequencedMessage sequencedMessage) -> {
+                      String data = sequencedMessage.getMessage().getData().toStringUtf8();
+                      LOG.info("Received: " + data);
+                      long publishTime = sequencedMessage.getPublishTime().getSeconds();
+                      return data + "\t" + publishTime;
+                    }))
+        .apply(
+            "Apply windowing function",
+            Window
+                // Group elements using fixed-sized time intervals based on the element timestamp.
+                // The element timestamp is the publish time associated with a message here.
+                .<String>into(
+                    FixedWindows.of(Duration.standardMinutes(options.getWindowSizeInMinutes())))
+                // Fire a trigger every 30 seconds after receiving the first element.
+                .triggering(
+                    Repeatedly.forever(
+                        AfterProcessingTime.pastFirstElementInPane()
+                            .plusDelayOf(Duration.standardSeconds(30)))
+                )
+                // Ignore late elements.
+                .withAllowedLateness(Duration.ZERO)
+                .discardingFiredPanes()
+        )
+        .apply(
+            "Write elements to GCS",
+            new WriteOneFilePerWindow(options.getOutputFilename(), numShards));
 
-    // Execute the pipeline and wait until it finishes running.
+    // Execute the pipeline.
     pipeline.run().waitUntilFinish();
   }
 }

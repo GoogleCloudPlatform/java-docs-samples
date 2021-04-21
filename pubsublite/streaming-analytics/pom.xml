@@ -20,13 +20,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example</groupId>
-  <artifactId>pubsub-streaming</artifactId>
+  <artifactId>pubsublite-streaming</artifactId>
   <version>1.0</version>
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.21</version>
+    <version>1.0.22</version>
   </parent>
 
   <properties>
@@ -34,7 +34,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <beam.version>2.27.0</beam.version>
+    <beam.version>2.28.0</beam.version>
 
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <maven-exec-plugin.version>3.0.0</maven-exec-plugin.version>
@@ -54,6 +54,10 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
+    </repository>
+    <repository>
+      <id>confluent</id>
+      <url>https://packages.confluent.io/maven/</url>
     </repository>
   </repositories>
 
@@ -130,58 +134,19 @@
     </pluginManagement>
   </build>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>20.1.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-core</artifactId>
-      <version>${beam.version}</version>
-    </dependency>
-
-    <!--
-      By default, the starter project has a dependency on the Beam DirectRunner
-      to enable development and testing of pipelines. To run on another of the
-      Beam runners, add its module to this pom.xml according to the
-      runner-specific setup instructions on the Beam website:
-        http://beam.apache.org/documentation/#runners
-    -->
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-runners-direct-java</artifactId>
-      <version>${beam.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
-      <version>${beam.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-io-google-cloud-platform</artifactId>
-      <version>${beam.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-maven-archetypes-examples</artifactId>
-      <version>${beam.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>pubsublite-beam-io</artifactId>
-      <version>0.12.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-pubsublite</artifactId>
-      <version>0.12.0</version>
-    </dependency>
-
     <!-- slf4j API frontend binding with JUL backend -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -193,6 +158,53 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
       <version>${slf4j.version}</version>
+    </dependency>
+
+    <!-- Apache Beam
+      To run on another of the Beam runners, add its module to this pom.xml
+      according to the runner-specific setup instructions on the Beam website:
+        http://beam.apache.org/documentation/#runners
+    -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-core</artifactId>
+      <version>${beam.version}</version>
+    </dependency>
+
+    <!-- Direct Runner -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-runners-direct-java</artifactId>
+      <version>${beam.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- Dataflow Runner -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
+      <version>${beam.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>30.1-jre</version>
+    </dependency>
+
+    <!-- Pub/Sub Lite I/O Connector for Beam -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>pubsublite-beam-io</artifactId>
+      <version>0.13.2</version>
+    </dependency>
+
+    <!-- Beam examples -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-maven-archetypes-examples</artifactId>
+      <version>${beam.version}</version>
     </dependency>
   </dependencies>
 </project>
