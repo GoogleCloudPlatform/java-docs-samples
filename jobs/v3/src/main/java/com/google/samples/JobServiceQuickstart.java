@@ -16,12 +16,12 @@
 
 package com.google.samples;
 
-import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.jobs.v3.CloudTalentSolution;
+import com.google.api.services.jobs.v3.CloudTalentSolutionScopes;
 import com.google.api.services.jobs.v3.model.Company;
 import com.google.api.services.jobs.v3.model.ListCompaniesResponse;
 import com.google.auth.http.HttpCredentialsAdapter;
@@ -36,7 +36,6 @@ public class JobServiceQuickstart {
 
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport NET_HTTP_TRANSPORT = new NetHttpTransport();
-  private static final String SCOPES = "https://www.googleapis.com/auth/jobs";
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");
 
@@ -45,9 +44,15 @@ public class JobServiceQuickstart {
 
   private static CloudTalentSolution createTalentSolutionClient(GoogleCredentials credential) {
     String url = "https://jobs.googleapis.com";
-    HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credential);
-    return new CloudTalentSolution.Builder(
-            NET_HTTP_TRANSPORT, JSON_FACTORY, setHttpTimeout(requestInitializer))
+
+    HttpRequestInitializer requestInitializer =
+        request -> {
+          new HttpCredentialsAdapter(credential).initialize(request);
+          request.setConnectTimeout(60000); // 1 minute connect timeout
+          request.setReadTimeout(60000); // 1 minute read timeout
+        };
+
+    return new CloudTalentSolution.Builder(NET_HTTP_TRANSPORT, JSON_FACTORY, requestInitializer)
         .setApplicationName("JobServiceClientSamples")
         .setRootUrl(url)
         .build();
@@ -58,21 +63,12 @@ public class JobServiceQuickstart {
       // Credentials could be downloaded after creating service account
       // set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, for example:
       // export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/key.json
-      return GoogleCredentials.getApplicationDefault().createScoped(Collections.singleton(SCOPES));
+      return GoogleCredentials.getApplicationDefault()
+          .createScoped(Collections.singleton(CloudTalentSolutionScopes.JOBS));
     } catch (Exception e) {
-      System.out.print("Error in generating credential");
+      System.out.println("Error in generating credential");
       throw new RuntimeException(e);
     }
-  }
-
-  private static HttpRequestInitializer setHttpTimeout(
-      final HttpRequestInitializer requestInitializer) {
-    return request -> {
-      requestInitializer.initialize(request);
-      request.setHeaders(new HttpHeaders().set("X-GFE-SSL", "yes"));
-      request.setConnectTimeout(1 * 60000); // 1 minute connect timeout
-      request.setReadTimeout(1 * 60000); // 1 minute read timeout
-    };
   }
 
   public static CloudTalentSolution getTalentSolutionClient() {

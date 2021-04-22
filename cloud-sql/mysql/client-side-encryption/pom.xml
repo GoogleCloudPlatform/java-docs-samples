@@ -41,7 +41,7 @@
         <dependency>
           <groupId>com.google.cloud</groupId>
           <artifactId>libraries-bom</artifactId>
-          <version>20.0.0</version>
+          <version>20.1.0</version>
           <type>pom</type>
           <scope>import</scope>
         </dependency>
@@ -67,7 +67,7 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.23</version>
+      <version>8.0.24</version>
     </dependency>
     <dependency>
       <groupId>com.google.crypto.tink</groupId>

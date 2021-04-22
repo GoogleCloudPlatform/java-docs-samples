@@ -49,6 +49,12 @@
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-exporter-trace-stackdriver</artifactId>
       <version>0.28.3</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.opencensus</groupId>
@@ -60,6 +66,11 @@
        <groupId>joda-time</groupId>
        <artifactId>joda-time</artifactId>
        <version>2.10.10</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>gax-grpc</artifactId>
+      <version>1.63.0</version>
     </dependency>
     <!-- [END trace_setup_java_maven] -->
 
@@ -74,6 +85,12 @@
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <version>1.1.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.http-client</groupId>
+      <artifactId>google-http-client-jackson2</artifactId>
+      <version>1.39.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
