@@ -21,11 +21,11 @@ Resources needed for this example:
 
 1. [Enable the APIs](https://console.cloud.google.com/flows/enableapi?apiid=dataflow,compute_component,logging,storage_api,pubsublite.googleapis.com): Cloud Dataflow, Compute Engine, Cloud Logging, Cloud Storage, Pub/Sub Lite.
 
-1. Create a Cloud Storage bucket.
+1. Create a Cloud Storage bucket. Your bucket name needs to be globally unique.
 
    ```bash
-   PROJECT=$(gcloud config get-value project)
-   BUCKET=your-gcs-bucket
+   export PROJECT_ID=$(gcloud config get-value project)
+   export BUCKET=your-gcs-bucket
    
    gsutil mb gs://$BUCKET
    ```
@@ -33,9 +33,9 @@ Resources needed for this example:
  1. Create a Pub/Sub Lite topic and subscription. Set `LITE_LOCATION` to a [Pub/Sub Lite location].
  
     ```bash
-    TOPIC=your-lite-topic
-    SUBSCRIPTION=your-lite-subscription
-    LITE_LOCATION=your-lite-location
+    export TOPIC=your-lite-topic
+    export SUBSCRIPTION=your-lite-subscription
+    export LITE_LOCATION=your-lite-location
     
     gcloud pubsub lite-topics create $TOPIC --zone=$LITE_LOCATION --partitions=1 \
         --per-partition-bytes=30GiB
@@ -45,7 +45,7 @@ Resources needed for this example:
 1. Set `DATAFLOW_REGION` to a [Dataflow region] close to your Pub/Sub Lite location.
 
    ```
-   DATAFLOW_REGION=your-dateflow-region
+   export DATAFLOW_REGION=your-dateflow-region
    ```
    
 ### Running the example
@@ -66,11 +66,11 @@ The following example runs a streaming pipeline. Choose `DirectRunner` to test i
 mvn compile exec:java \
   -Dexec.mainClass=examples.PubsubliteToGcs \
   -Dexec.args="\
-    --subscription=projects/$PROJECT/locations/$LITE_LOCATION/subscriptions/$SUBSCRIPTION \
+    --subscription=projects/$PROJECT_ID/locations/$LITE_LOCATION/subscriptions/$SUBSCRIPTION \
     --output=gs://$BUCKET/samples/output \
     --windowSize=1 \
     --runner=DataflowRunner \
-    --project=$PROJECT \
+    --project=$PROJECT_ID \
     --region=$DATAFLOW_REGION \
     --tempLocation=gs://$BUCKET/temp"
 ```
@@ -83,20 +83,19 @@ gsutil ls gs://$BUCKET/samples/output*
 
 ## Cleaning up
 
-1. Stop the pipeline. If you use `DirectRunner`, `Ctrl+C` to cancel. If you use `DataflowRunner`, cancel the job.
+1. Stop the pipeline. If you use `DirectRunner`, `Ctrl+C` to cancel. If you use `DataflowRunner`, [click](https://console.cloud.google.com/dataflow/jobs) on the job you want to stop, then choose "Cancel".
 
-1. Delete the Lite topic and subscription. 
-   ```bash
-   gcloud pubsub lite-topics delete $TOPIC
-   gcloud pubsub lite-subscription delete $SUBSCRIPTION
-   ```
+1. Delete the Lite topic and subscription.
+```bash
+gcloud pubsub lite-topics delete $TOPIC
+gcloud pubsub lite-subscription delete $SUBSCRIPTION
+```
    
 1. Delete the Cloud Storage objects:
-
-    ```bash
-    gsutil -m rm -rf "gs://$BUCKET/samples/output*"
-    gsutil rb gs://$BUCKET
-    ```
+```bash
+gsutil -m rm -rf "gs://$BUCKET/samples/output*"
+gsutil rb gs://$BUCKET
+```
 
 [Apache Beam]: https://beam.apache.org/
 [Pub/Sub Lite]: https://cloud.google.com/pubsub/lite/docs/

@@ -82,6 +82,7 @@ public class PubsubliteToGcs {
     Pipeline pipeline = Pipeline.create(options);
     pipeline
         // TODO: Replace the I/O connector with the one released with Apache Beam when it's stable.
+        // https://issues.apache.org/jira/browse/BEAM-10114
         .apply("Read From Pub/Sub Lite", PubsubLiteIO.read(subscriberOpitons))
         .apply(
             "Convert messages",
@@ -96,8 +97,8 @@ public class PubsubliteToGcs {
         .apply(
             "Apply windowing function",
             Window
-                // Group elements using fixed-sized time intervals based on the element timestamp.
-                // The element timestamp is the publish time associated with a message here.
+                // Group the elements using fixed-sized time intervals based on the element
+                // timestamp. The element timestamp is the publish time associated with a message.
                 .<String>into(FixedWindows.of(Duration.standardMinutes(options.getWindowSize())))
                 // Fire a trigger every 30 seconds after receiving the first element.
                 .triggering(
@@ -106,10 +107,10 @@ public class PubsubliteToGcs {
                             .plusDelayOf(Duration.standardSeconds(30))))
                 // Ignore late elements.
                 .withAllowedLateness(Duration.ZERO)
-                // Accumulate elements in fired panes. This makes sure that when writing elements to
-                // files later, elements collected in an earlier pane by an earlier trigger will not
-                // be overwritten by those arriving later due to a later trigger fired within the
-                // boundaries of the same window.
+                // Accumulate elements in fired panes. This will make sure that when writing the
+                // elements to files later, the elements collected in an earlier pane by an earlier
+                // trigger will not be overwritten by those arriving later due to a later trigger
+                // fired within the boundaries of the same window.
                 .accumulatingFiredPanes())
         .apply("Write elements to GCS", new WriteOneFilePerWindow(options.getOutput(), numShards));
 
