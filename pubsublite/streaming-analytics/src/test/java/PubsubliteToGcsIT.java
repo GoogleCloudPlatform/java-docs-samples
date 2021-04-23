@@ -13,79 +13,209 @@
 // limitations under the License.
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import org.apache.beam.examples.common.WriteOneFilePerWindow;
-import org.apache.beam.sdk.coders.StringUtf8Coder;
-import org.apache.beam.sdk.testing.PAssert;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.gax.paging.Page;
+import com.google.api.services.dataflow.Dataflow;
+import com.google.api.services.dataflow.model.Job;
+import com.google.api.services.dataflow.model.ListJobsResponse;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.pubsublite.AdminClient;
+import com.google.cloud.pubsublite.AdminClient.BacklogLocation;
+import com.google.cloud.pubsublite.AdminClientSettings;
+import com.google.cloud.pubsublite.CloudRegion;
+import com.google.cloud.pubsublite.CloudZone;
+import com.google.cloud.pubsublite.ProjectId;
+import com.google.cloud.pubsublite.SubscriptionName;
+import com.google.cloud.pubsublite.SubscriptionPath;
+import com.google.cloud.pubsublite.TopicName;
+import com.google.cloud.pubsublite.TopicPath;
+import com.google.cloud.pubsublite.proto.Subscription;
+import com.google.cloud.pubsublite.proto.Subscription.DeliveryConfig;
+import com.google.cloud.pubsublite.proto.Subscription.DeliveryConfig.DeliveryRequirement;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import examples.PubsubliteToGcs;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import org.apache.beam.sdk.testing.TestPipeline;
-import org.apache.beam.sdk.testing.TestStream;
-import org.apache.beam.sdk.transforms.windowing.AfterProcessingTime;
-import org.apache.beam.sdk.transforms.windowing.FixedWindows;
-import org.apache.beam.sdk.transforms.windowing.IntervalWindow;
-import org.apache.beam.sdk.transforms.windowing.Repeatedly;
-import org.apache.beam.sdk.transforms.windowing.Window;
-import org.apache.beam.sdk.values.PCollection;
-import org.apache.beam.sdk.values.TimestampedValue;
-import org.joda.time.Duration;
-import org.joda.time.Instant;
+import org.apache.beam.sdk.values.KV;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
 public class PubsubliteToGcsIT {
   @Rule public final TestPipeline testPipeline = TestPipeline.create();
 
-  private Instant baseTime = new Instant(0);
+  private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private String cloudRegion = "us-east1";
+  private final char zoneId = 'b';
+  private static final String suffix = UUID.randomUUID().toString();
+  private static final String topicId = "pubsublite-streaming-analytics";
+  private static final String subscriptionId = "pubsublite-streaming-analytics-" + suffix;
+  private static final String bucketName = "pubsublite-it";
+  private static final String directoryPrefix = "samples/" + suffix;
+  private static final String jobName = "pubsublite-dataflow-job-" + suffix;
+
+  private final Storage storage =
+      StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+
+  private final TopicPath topicPath =
+      TopicPath.newBuilder()
+          .setProject(ProjectId.of(projectId))
+          .setLocation(CloudZone.of(CloudRegion.of(cloudRegion), zoneId))
+          .setName(TopicName.of(topicId))
+          .build();
+
+  private final SubscriptionPath subscriptionPath =
+      SubscriptionPath.newBuilder()
+          .setLocation(CloudZone.of(CloudRegion.of(cloudRegion), zoneId))
+          .setProject(ProjectId.of(projectId))
+          .setName(SubscriptionName.of(subscriptionId))
+          .build();
+
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
+        "Environment variable " + varName + " is required to perform these tests.",
+        System.getenv(varName));
+  }
+
+  @BeforeClass
+  public static void checkRequirements() {
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+  }
+
+  @Before
+  public void setUp() throws Exception {
+    //  Create a test subscription.
+    Subscription subscription =
+        Subscription.newBuilder()
+            .setDeliveryConfig(
+                DeliveryConfig.newBuilder()
+                    .setDeliveryRequirement(DeliveryRequirement.DELIVER_IMMEDIATELY))
+            .setName(subscriptionPath.toString())
+            .setTopic(topicPath.toString())
+            .build();
+
+    AdminClientSettings adminClientSettings =
+        AdminClientSettings.newBuilder().setRegion(CloudRegion.of(cloudRegion)).build();
+
+    try (AdminClient adminClient = AdminClient.create(adminClientSettings)) {
+      // Create a subscription that reads from the entire message backlog in the topic.
+      Subscription response =
+          adminClient.createSubscription(subscription, BacklogLocation.BEGINNING).get();
+      System.out.println(response.getAllFields() + " created successfully.");
+    }
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    // Delete the test subscription.
+    AdminClientSettings adminClientSettings =
+        AdminClientSettings.newBuilder().setRegion(CloudRegion.of(cloudRegion)).build();
+
+    try (AdminClient adminClient = AdminClient.create(adminClientSettings)) {
+      adminClient.deleteSubscription(subscriptionPath).get();
+      System.out.println("Deleted subscription: " + subscriptionPath);
+    }
+
+    // Delete the output files.
+    Page<Blob> blobs = storage.list(bucketName, Storage.BlobListOption.prefix(directoryPrefix));
+
+    for (Blob blob : blobs.iterateAll()) {
+      storage.delete(bucketName, blob.getName());
+      System.out.println("Deleted a file: " + blob.getName());
+    }
+
+    // Stop the Dataflow job. Sometimes the call to list jobs would fail.
+    NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+
+    GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
+    HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+
+    Dataflow dataflow =
+        new Dataflow.Builder(httpTransport, GsonFactory.getDefaultInstance(), requestInitializer)
+            .build();
+
+    // Match Dataflow job of the same job name and cancel it.
+    ListJobsResponse jobs =
+        dataflow.projects().locations().jobs().list(projectId, cloudRegion).execute();
+
+    try {
+      jobs.getJobs()
+          .forEach(
+              job -> {
+                if (job.getName().equals(jobName)) {
+                  String jobId = job.getId();
+                  try {
+                    dataflow
+                        .projects()
+                        .locations()
+                        .jobs()
+                        .update(
+                            projectId,
+                            cloudRegion,
+                            jobId,
+                            new Job().setRequestedState("JOB_STATE_CANCELLED"))
+                        .execute();
+                    System.out.println("Cancelling Dataflow job: " + jobId);
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                }
+              });
+    } catch (NullPointerException e) {
+      e.printStackTrace();
+    }
+  }
 
   @Test
-  public void testPubsubliteToGcs() {
-    // Create a test stream.
-    TestStream<String> teststream =
-        TestStream.create(StringUtf8Coder.of())
-            .advanceWatermarkTo(baseTime)
-            .addElements(
-                TimestampedValue.of("Hello", baseTime.plus(Duration.standardSeconds(10L))),
-                TimestampedValue.of("Hello again", baseTime.plus(Duration.standardSeconds(50L))))
-            .advanceProcessingTime(Duration.standardSeconds(60))
-            .addElements(
-                TimestampedValue.of(
-                    "Hello last time", baseTime.plus(Duration.standardSeconds(90L))))
-            .advanceWatermarkToInfinity();
+  public void testPubsubliteToGcs() throws InterruptedException {
+    // Run the pipeline on Dataflow as instructed in the README.
+    PubsubliteToGcs.main(
+        new String[] {
+          "--subscription=" + subscriptionPath.toString(),
+          "--output=gs://" + bucketName + "/" + directoryPrefix + "/output",
+          "--windowSize=1",
+          "--runner=DataflowRunner",
+          "--project=" + projectId,
+          "--region=" + cloudRegion,
+          "--tempLocation=gs://" + bucketName + "/temp",
+          "--jobName=" + jobName
+        });
 
-    // Create an input PCollection.
-    PCollection<String> input = testPipeline.apply("Create elements", teststream);
+    // Check for output files.
+    Page<Blob> blobs = storage.list(bucketName, Storage.BlobListOption.prefix(directoryPrefix));
 
-    // Apply the same windowing function as in the sample with a fixed time interval of 1 minute.
-    PCollection<String> output =
-        input.apply(
-            "Apply windowing function",
-            Window.<String>into(FixedWindows.of(Duration.standardMinutes(1L)))
-                .triggering(
-                    Repeatedly.forever(
-                        AfterProcessingTime.pastFirstElementInPane()
-                            .plusDelayOf(Duration.standardSeconds(30))))
-                .withAllowedLateness(Duration.ZERO)
-                .accumulatingFiredPanes());
+    List<KV<String, String>> desiredOutput = new ArrayList<KV<String, String>>();
+    for (Blob blob : blobs.iterateAll()) {
+      String fileName = blob.getName();
+      String content = new String(blob.getContent(), StandardCharsets.UTF_8);
+      System.out.println("Found a file: " + fileName);
+      System.out.println("Has content: " + content);
 
-    IntervalWindow firstWindow = new IntervalWindow(baseTime, Duration.standardMinutes(1));
-    IntervalWindow secondWindow =
-        new IntervalWindow(baseTime.plus(Duration.standardMinutes(1)), Duration.standardMinutes(1));
+      desiredOutput.add(KV.of(fileName, content));
+    }
 
-    // Assert that the first window has produced two elements.
-    PAssert.that(output).inWindow(firstWindow).containsInAnyOrder("Hello", "Hello again");
-
-    // Assert that the second window has produced one element.
-    PAssert.that(output).inWindow(secondWindow).containsInAnyOrder("Hello last time");
-
-    // Test writing the windowed elements to files locally instead of on Cloud Storage.
-    output.apply("Write elements to files", new WriteOneFilePerWindow("output", 1));
-
-    // Assert that the pipeline has created two files.
-    assertThat(Files.exists(Paths.get("output-00:00-00:01-0-of-1")));
-    assertThat(Files.exists(Paths.get("output-00:01-00:02-0-of-1")));
-
-    // Run the pipeline.
-    testPipeline.run().waitUntilFinish();
+    assertThat(
+        desiredOutput.contains(
+            KV.of(directoryPrefix + "/output-17:08-17:09-0-of-1", "Hello world!\t1619197725")));
+    assertThat(
+        desiredOutput.contains(
+            KV.of(directoryPrefix + "/output-17:09-17:10-0-of-1", "Hello world!\t1619197759")));
+    assertThat(
+        desiredOutput.contains(
+            KV.of(directoryPrefix + "/output-17:10-17:11-0-of-1", "Hello world!\t1619197817")));
   }
 }
