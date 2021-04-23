@@ -34,7 +34,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class PubsubliteToGcsIT {
-  @Rule public final TestPipeline p = TestPipeline.create();
+  @Rule public final TestPipeline testPipeline = TestPipeline.create();
 
   private Instant baseTime = new Instant(0);
 
@@ -54,7 +54,7 @@ public class PubsubliteToGcsIT {
             .advanceWatermarkToInfinity();
 
     // Create an input PCollection.
-    PCollection<String> input = p.apply("Create elements", teststream);
+    PCollection<String> input = testPipeline.apply("Create elements", teststream);
 
     // Apply the same windowing function as in the sample with a fixed time interval of 1 minute.
     PCollection<String> output =
@@ -86,6 +86,6 @@ public class PubsubliteToGcsIT {
     assertThat(Files.exists(Paths.get("output-00:01-00:02-0-of-1")));
 
     // Run the pipeline.
-    p.run().waitUntilFinish();
+    testPipeline.run().waitUntilFinish();
   }
 }
