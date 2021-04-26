@@ -59,8 +59,8 @@ public class PubsubliteToGcsIT {
   @Rule public final TestPipeline testPipeline = TestPipeline.create();
 
   private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private String cloudRegion = "us-east1";
-  private final char zoneId = 'b';
+  private static final String cloudRegion = "us-east1";
+  private static final char zoneId = 'b';
   private static final String suffix = UUID.randomUUID().toString();
   private static final String topicId = "pubsublite-streaming-analytics";
   private static final String subscriptionId = "pubsublite-streaming-analytics-" + suffix;
@@ -68,22 +68,34 @@ public class PubsubliteToGcsIT {
   private static final String directoryPrefix = "samples/" + suffix;
   private static final String jobName = "pubsublite-dataflow-job-" + suffix;
 
-  private final Storage storage =
+  private static final Storage storage =
       StorageOptions.newBuilder().setProjectId(projectId).build().getService();
 
-  private final TopicPath topicPath =
+  private static final TopicPath topicPath =
       TopicPath.newBuilder()
           .setProject(ProjectId.of(projectId))
           .setLocation(CloudZone.of(CloudRegion.of(cloudRegion), zoneId))
           .setName(TopicName.of(topicId))
           .build();
 
-  private final SubscriptionPath subscriptionPath =
+  private static final SubscriptionPath subscriptionPath =
       SubscriptionPath.newBuilder()
           .setLocation(CloudZone.of(CloudRegion.of(cloudRegion), zoneId))
           .setProject(ProjectId.of(projectId))
           .setName(SubscriptionName.of(subscriptionId))
           .build();
+
+  private static final Subscription subscription =
+      Subscription.newBuilder()
+          .setDeliveryConfig(
+              DeliveryConfig.newBuilder()
+                  .setDeliveryRequirement(DeliveryRequirement.DELIVER_IMMEDIATELY))
+          .setName(subscriptionPath.toString())
+          .setTopic(topicPath.toString())
+          .build();
+
+  private static final AdminClientSettings adminClientSettings =
+      AdminClientSettings.newBuilder().setRegion(CloudRegion.of(cloudRegion)).build();
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
@@ -98,21 +110,8 @@ public class PubsubliteToGcsIT {
 
   @Before
   public void setUp() throws Exception {
-    //  Create a test subscription.
-    Subscription subscription =
-        Subscription.newBuilder()
-            .setDeliveryConfig(
-                DeliveryConfig.newBuilder()
-                    .setDeliveryRequirement(DeliveryRequirement.DELIVER_IMMEDIATELY))
-            .setName(subscriptionPath.toString())
-            .setTopic(topicPath.toString())
-            .build();
-
-    AdminClientSettings adminClientSettings =
-        AdminClientSettings.newBuilder().setRegion(CloudRegion.of(cloudRegion)).build();
-
+    // Create a subscription that reads from the entire message backlog in the topic.
     try (AdminClient adminClient = AdminClient.create(adminClientSettings)) {
-      // Create a subscription that reads from the entire message backlog in the topic.
       Subscription response =
           adminClient.createSubscription(subscription, BacklogLocation.BEGINNING).get();
       System.out.println(response.getAllFields() + " created successfully.");
@@ -122,9 +121,6 @@ public class PubsubliteToGcsIT {
   @After
   public void tearDown() throws Exception {
     // Delete the test subscription.
-    AdminClientSettings adminClientSettings =
-        AdminClientSettings.newBuilder().setRegion(CloudRegion.of(cloudRegion)).build();
-
     try (AdminClient adminClient = AdminClient.create(adminClientSettings)) {
       adminClient.deleteSubscription(subscriptionPath).get();
       System.out.println("Deleted subscription: " + subscriptionPath);
@@ -138,7 +134,7 @@ public class PubsubliteToGcsIT {
       System.out.println("Deleted a file: " + blob.getName());
     }
 
-    // Stop the Dataflow job. Sometimes the call to list jobs would fail.
+    // Stop the Dataflow job.
     NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
     GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
