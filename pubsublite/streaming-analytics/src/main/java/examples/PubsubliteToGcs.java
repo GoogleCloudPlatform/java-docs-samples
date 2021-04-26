@@ -65,7 +65,7 @@ public class PubsubliteToGcs {
 
   private static final Logger LOG = LoggerFactory.getLogger(PubsubliteToGcs.class);
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws InterruptedException {
     // The maximum number of shards when writing output files.
     int numShards = 1;
 
@@ -114,8 +114,9 @@ public class PubsubliteToGcs {
                 .accumulatingFiredPanes())
         .apply("Write elements to GCS", new WriteOneFilePerWindow(options.getOutput(), numShards));
 
-    // Execute the pipeline.
-    pipeline.run().waitUntilFinish();
+    // Execute the pipeline with an optional timeout for your local program.
+    // This will not cancel the remote job.
+    pipeline.run().waitUntilFinish(Duration.standardMinutes(10));
   }
 }
 // [END pubsublite_to_gcs]

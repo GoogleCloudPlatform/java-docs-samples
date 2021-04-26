@@ -156,6 +156,18 @@
       <version>1.1.2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client</artifactId>
+      <version>1.31.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-dataflow</artifactId>
+      <version>v1b3-rev20210408-1.31.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
