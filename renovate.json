@@ -9,55 +9,85 @@
     ":automergeDisabled",
     ":autodetectPinVersions"
   ],
-
   "packageRules": [
     {
-      "packagePatterns": [ "^com.google.appengine:" ],
+      "packagePatterns": [
+        "^com.google.appengine:"
+      ],
       "groupName": "AppEngine packages"
     },
     {
-      "packagePatterns": [ "^org.apache.beam:" ],
+      "packagePatterns": [
+        "^org.apache.beam:"
+      ],
       "groupName": "Apache Beam packages"
     },
     {
-      "packagePatterns": [ "^io.grpc:grpc-" ],
+      "packagePatterns": [
+        "^io.grpc:grpc-"
+      ],
       "groupName": "gRPC packages"
     },
     {
-      "packagePatterns": [ "^io.micronaut:" ],
+      "packagePatterns": [
+        "^io.micronaut:"
+      ],
       "groupName": "Micronaut packages"
     },
     {
-      "packagePatterns": [ "^io.vertx:" ],
+      "packagePatterns": [
+        "^io.vertx:"
+      ],
       "groupName": "Vertx packages"
     },
     {
-      "packagePatterns": [ "^io.opencensus:" ],
+      "packagePatterns": [
+        "^io.opencensus:"
+      ],
       "groupName": "OpenCensus packages"
     },
     {
-      "packagePatterns": [ "^org.eclipse.jetty:" ],
+      "packagePatterns": [
+        "^org.eclipse.jetty:"
+      ],
       "groupName": "Jetty packages"
     },
     {
-      "packageNames": ["javax.servlet:javax.servlet-api"],
+      "packageNames": [
+        "javax.servlet:javax.servlet-api"
+      ],
       "rangeStrategy": "pin"
     },
     {
-      "packageNames": ["com.microsoft.sqlserver:mssql-jdbc"],
+      "packageNames": [
+        "com.microsoft.sqlserver:mssql-jdbc"
+      ],
       "allowedVersions": "/.+jre8.?/"
     },
     {
-      "packagePatterns": ["scala"],
+      "packagePatterns": [
+        "scala"
+      ],
       "enabled": false
     },
     {
-      "packagePatterns": ["^spark-sql"],
+      "packagePatterns": [
+        "^spark-sql"
+      ],
       "enabled": false
     },
     {
-      "packagePatterns": ["^jackson-module-scala"],
+      "packagePatterns": [
+        "^jackson-module-scala"
+      ],
       "enabled": false
+    },
+    {
+      "matchPackageNames": [
+        "com.google.apis:google-api-services-dataflow"
+      ],
+      "enabled": false,
+      "description": "@anguillanneuf: This package is no longer actively maintained. Best to use the version specified in https://github.com/googleapis/google-api-java-client-services/tree/master/clients/google-api-services-dataflow/v1b3"
     }
   ],
   "labels": [
