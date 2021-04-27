@@ -170,7 +170,7 @@
 
     <dependency>
       <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-maven-archetypes-examples</artifactId>
+      <artifactId>beam-examples-java</artifactId>
       <version>${beam.version}</version>
     </dependency>
 
