@@ -9,7 +9,11 @@
     ":automergeDisabled",
     ":autodetectPinVersions"
   ],
+  
+  // This should be pinned to the version mentioned in 
+  // https://github.com/googleapis/google-api-java-client-services/tree/master/clients/google-api-services-dataflow/v1b3
   "ignoreDeps": ["com.google.apis:google-api-services-dataflow"],
+  
   "packageRules": [
     {
       "packagePatterns": [ "^com.google.appengine:" ],
