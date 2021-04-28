@@ -133,24 +133,24 @@ gcloud dataflow flex-template run "pubsublite-to-gcs-`date +%Y%m%d`" \
 
 1. Stop the pipeline. If you use `DirectRunner`, `Ctrl+C` to cancel. If you use `DataflowRunner`, [click](https://console.cloud.google.com/dataflow/jobs) on the job you want to stop, then choose "Cancel".
 
-1. Delete the Lite topic and subscription.
+2. Delete the Lite topic and subscription.
 ```sh
 gcloud pubsub lite-topics delete $TOPIC
 gcloud pubsub lite-subscription delete $SUBSCRIPTION
 ```
    
-1. Delete the Cloud Storage objects:
+3. Delete the Cloud Storage objects:
 ```sh
 gsutil -m rm -rf "gs://$BUCKET/samples/output*"
 ```
 
-1. Delete the template image in Cloud Registry and delete the Flex template if you have created them.
+4. Delete the template image in Cloud Registry and delete the Flex template if you have created them.
 ```sh
 gcloud container images delete $TEMPLATE_IMAGE
 gsutil rm $TEMPLATE_PATH
 ```
 
-1. Delete the Cloud Storage bucket:
+5. Delete the Cloud Storage bucket:
 ```sh
 gsutil rb "gs://$BUCKET"
 ```
