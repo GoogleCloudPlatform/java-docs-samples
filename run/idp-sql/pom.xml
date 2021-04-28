@@ -52,7 +52,7 @@ limitations under the License.
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>1.2.7.RELEASE</version>
+        <version>1.2.8.RELEASE</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -103,6 +103,12 @@ limitations under the License.
       <groupId>com.google.firebase</groupId>
       <artifactId>firebase-admin</artifactId>
       <version>7.1.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.api-client</groupId>
+          <artifactId>google-api-client</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
