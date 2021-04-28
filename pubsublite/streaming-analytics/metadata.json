@@ -19,7 +19,6 @@
       "name": "output",
       "label": "Filename prefix of output files including the file path",
       "helpText": "Filename prefix of output files including the file path, e.g. gs://my-bucket/my-filename-prefix.",
-      "isOptional": true,
       "regexes": [
         "^gs:\\/\\/.*$"
       ]
