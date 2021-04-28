@@ -30,18 +30,18 @@ Resources needed for this example:
    - `roles/logging.viewer`
 
    Then [create](https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-gcloud) a service account key and point  `GOOGLE_APPLICATION_CREDNETIALS` to your downloaded key file.
-```bash
+```sh
 export GOOGLE_APPLICATION_CREDENTIALS=path/to/your/key/file
 ```
 3. Create a Cloud Storage bucket. Your bucket name needs to be globally unique.
-```bash
+```sh
 export PROJECT_ID=$(gcloud config get-value project)
 export BUCKET=your-gcs-bucket
 
 gsutil mb gs://$BUCKET
 ``` 
 4. Create a Pub/Sub Lite topic and subscription. Set `LITE_LOCATION` to a [Pub/Sub Lite location].
-```bash
+```sh
 export TOPIC=your-lite-topic
 export SUBSCRIPTION=your-lite-subscription
 export LITE_LOCATION=your-lite-location
@@ -55,7 +55,7 @@ gcloud pubsub lite-subscriptions create $SUBSCRIPTION \
     --topic=$TOPIC
 ```
 5. Set `DATAFLOW_REGION` to a [Dataflow region] close to your Pub/Sub Lite location.
-```
+```sh
 export DATAFLOW_REGION=your-dateflow-region
 ```
    
@@ -73,7 +73,7 @@ The following example runs a streaming pipeline. Choose `DirectRunner` to test i
 + `--region [optional]`: the Dataflow region, optional if using `DirectRunner`
 + `--tempLocation`: a Cloud Storage location for temporary files, optional if using `DirectRunner`
 
-```bash
+```sh
 mvn compile exec:java \
   -Dexec.mainClass=examples.PubsubliteToGcs \
   -Dexec.args="\
@@ -88,8 +88,45 @@ mvn compile exec:java \
 
 [Publish] some messages to your Lite topic. Then check for files in your Cloud Storage bucket.
 
-```bash
+```sh
 gsutil ls "gs://$BUCKET/samples/output*"
+```
+
+## (Optional) Creating a custom Dataflow template
+With a [`metadata.md`](metadata.md), you can create a [Dataflow Flex template]. Custom Dataflow Flex templates can be shared. You can run them with different input parameters.
+
+1. Create a fat JAR. You should see `target/pubsublite-streaming-bundled-1.0.jar` as an output.
+```sh
+mvn clean package -DskipTests=true
+ls -lh
+``` 
+
+2. Provide names and locations for your template file and template container image.
+```sh
+export TEMPLATE_PATH="gs://$BUCKET/samples/pubsublite-to-gcs.json"
+export TEMPLATE_IMAGE="gcr.io/$PROJECT_ID/pubsublite-to-gcs:latest"
+```
+
+3. Build a custom Flex template.
+```sh
+gcloud dataflow flex-template build $TEMPLATE_PATH \
+  --image-gcr-path "$TEMPLATE_IMAGE" \
+  --sdk-language "JAVA" \
+  --flex-template-base-image JAVA11 \
+  --metadata-file "metadata.json" \
+  --jar "target/pubsublite-streaming-bundled-1.0.jar" \
+  --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="examples.PubsubliteToGcs"
+```
+
+4. Run a job with the custom Flex template using `gcloud` or in Cloud Console. 
+> Note: Pub/Sub Lite allows only one subscriber to pull messages from one partition. If your Pub/Sub Lite topic has only one partition and you use a subscription attached to that topic in more than one Dataflow jobs, only one of them will get messages.
+```sh
+gcloud dataflow flex-template run "pubsublite-to-gcs-`date +%Y%m%d`" \
+  --template-file-gcs-location "$TEMPLATE_PATH" \
+  --parameters subscription="projects/$PROJECT_ID/locations/$LITE_LOCATION/subscriptions/$SUBSCRIPTION" \
+  --parameters output="gs://$BUCKET/samples/template-output" \
+  --parameters windowSize=1 \
+  --region "$DATAFLOW_REGION" 
 ```
 
 ## Cleaning up
@@ -97,15 +134,25 @@ gsutil ls "gs://$BUCKET/samples/output*"
 1. Stop the pipeline. If you use `DirectRunner`, `Ctrl+C` to cancel. If you use `DataflowRunner`, [click](https://console.cloud.google.com/dataflow/jobs) on the job you want to stop, then choose "Cancel".
 
 1. Delete the Lite topic and subscription.
-```bash
+```sh
 gcloud pubsub lite-topics delete $TOPIC
 gcloud pubsub lite-subscription delete $SUBSCRIPTION
 ```
    
 1. Delete the Cloud Storage objects:
-```bash
+```sh
 gsutil -m rm -rf "gs://$BUCKET/samples/output*"
-gsutil rb gs://$BUCKET
+```
+
+1. Delete the template image in Cloud Registry and delete the Flex template if you have created them.
+```sh
+gcloud container images delete $TEMPLATE_IMAGE
+gsutil rm $TEMPLATE_PATH
+```
+
+1. Delete the Cloud Storage bucket:
+```sh
+gsutil rb "gs://$BUCKET"
 ```
 
 [Apache Beam]: https://beam.apache.org/
@@ -115,3 +162,4 @@ gsutil rb gs://$BUCKET
 [Publish]: https://cloud.google.com/pubsub/lite/docs/publishing/
 [Pub/Sub Lite location]: https://cloud.google.com/pubsub/lite/docs/locations/
 [Dataflow region]: https://cloud.google.com/dataflow/docs/concepts/regional-endpoints/
+[Dataflow Flex template]: https://cloud.google.com/dataflow/docs/guides/templates/using-flex-templates

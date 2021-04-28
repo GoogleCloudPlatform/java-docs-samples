@@ -107,16 +107,15 @@ public class PubsubliteToGcs {
                             .plusDelayOf(Duration.standardSeconds(30))))
                 // Ignore late elements.
                 .withAllowedLateness(Duration.ZERO)
-                // Accumulate elements in fired panes. This will make sure that when writing the
-                // elements to files later, the elements collected in an earlier pane by an earlier
-                // trigger will not be overwritten by those arriving later due to a later trigger
-                // fired within the boundaries of the same window.
+                // Accumulate elements in fired panes. This will make sure that elements collected
+                // in an earlier pane by an earlier trigger will not be overwritten by those
+                // arriving later due to a later trigger fired in the same window.
                 .accumulatingFiredPanes())
         .apply("Write elements to GCS", new WriteOneFilePerWindow(options.getOutput(), numShards));
 
-    // Execute the pipeline with an optional timeout for your local program.
-    // This will not cancel the remote job.
-    pipeline.run().waitUntilFinish(Duration.standardMinutes(10));
+    // Execute the pipeline. You may add `.waitUntilFinish()` to observe logs in your console, but
+    // `waitUntilFinish()` will not work in Dataflow Flex Templates.
+    pipeline.run();
   }
 }
 // [END pubsublite_to_gcs]
