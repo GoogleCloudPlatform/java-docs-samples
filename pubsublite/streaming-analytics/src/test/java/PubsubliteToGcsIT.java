@@ -47,6 +47,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.apache.beam.sdk.testing.TestPipeline;
 import org.apache.beam.sdk.values.KV;
 import org.junit.After;
@@ -190,6 +191,9 @@ public class PubsubliteToGcsIT {
           "--tempLocation=gs://" + bucketName + "/temp",
           "--jobName=" + jobName
         });
+
+    // Wait 10 minute for the Dataflow job.
+    TimeUnit.MINUTES.sleep(10);
 
     // Check for output files.
     Page<Blob> blobs = storage.list(bucketName, Storage.BlobListOption.prefix(directoryPrefix));

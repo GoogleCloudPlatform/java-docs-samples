@@ -114,9 +114,8 @@ public class PubsubliteToGcs {
                 .accumulatingFiredPanes())
         .apply("Write elements to GCS", new WriteOneFilePerWindow(options.getOutput(), numShards));
 
-    // Execute the pipeline with an optional timeout for your local program.
-    // This will not cancel the remote job.
-    pipeline.run().waitUntilFinish(Duration.standardMinutes(10));
+    // Execute the pipeline.
+    pipeline.run();
   }
 }
 // [END pubsublite_to_gcs]

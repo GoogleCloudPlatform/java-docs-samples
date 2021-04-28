@@ -1,0 +1,28 @@
+{
+  "name": "Pub/Sub Lite to Clous Storage",
+  "description": "An Apache Beam streaming pipeline that reads messages from Pub/Sub Lite, applies fixed windowing on the messages, and writes the results to files on Cloud Storage",
+  "parameters": [
+    {
+      "name": "subscription",
+      "label": "Pub/Sub Lite subscription.",
+      "helpText": "Pub/Sub subscription to read from."
+    },
+    {
+      "name": "windowSize",
+      "label": "Window size in minutes",
+      "helpText": "Window size of output files in minutes, default to 1.",
+      "regexes": [
+        "^[1-9][0-9]*"
+      ]
+    },
+    {
+      "name": "output",
+      "label": "Filename prefix of output files, e.g. gs://my-bucket/my-filename",
+      "helpText": "Filename prefix of output files including the filepath.",
+      "isOptional": true,
+      "regexes": [
+        "^gs:\/(\/[a-zA-Z0-9-]+){2,}"
+      ]
+    }
+  ]
+}
