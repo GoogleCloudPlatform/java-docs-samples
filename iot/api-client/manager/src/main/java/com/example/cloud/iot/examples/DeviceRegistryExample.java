@@ -84,7 +84,7 @@ import org.apache.commons.cli.HelpFormatter;
  * $ mvn clean compile assembly:single
  * mvn exec:exec -Dmanager \
  *               -Dcr=--cloud_region=us-central1 \
- *               -Dproj=--project_id=blue-jet-123 \
+ *               -Dproject_id=blue-jet-123 \
  *               -Drname=--registry_name=my-registry \
  *               -Dcmd=list-devices
  * </code>
