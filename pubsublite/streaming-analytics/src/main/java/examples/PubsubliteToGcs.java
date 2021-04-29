@@ -14,6 +14,8 @@
 
 package examples;
 
+// [START pubsublite_to_gcs]
+
 import com.google.cloud.pubsublite.SubscriptionPath;
 import com.google.cloud.pubsublite.beam.PubsubLiteIO;
 import com.google.cloud.pubsublite.beam.SubscriberOptions;
@@ -35,8 +37,6 @@ import org.apache.beam.sdk.values.TypeDescriptors;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-// [START pubsublite_to_gcs]
 
 public class PubsubliteToGcs {
   /*
