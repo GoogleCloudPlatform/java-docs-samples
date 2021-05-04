@@ -48,9 +48,7 @@ case $COMMAND in
 create-schedule) 
 
   JSON_FMT='{"projectId":"%s", "instanceId":"%s", "tableId":"%s", "clusterId":"%s", "expireHours":%d}'
-  SCHEDULE_MESSAGE_BODY="$(printf "$JSON_FMT" "$PROJECT_ID"
-  "$BIGTABLE_INSTANCE_ID" "$BIGTABLE_BACKUP_TABLE_NAME"
-  "$BIGTABLE_BACKUP_CLUSTER_ID" "$BIGTABLE_BACKUP_EXPIRE_HOURS")"
+  SCHEDULE_MESSAGE_BODY="$(printf "$JSON_FMT" "$PROJECT_ID" "$BIGTABLE_INSTANCE_ID" "$BIGTABLE_BACKUP_TABLE_NAME" "$BIGTABLE_BACKUP_CLUSTER_ID" "$BIGTABLE_BACKUP_EXPIRE_HOURS")"
 
   gcloud scheduler jobs create pubsub "$SCHEDULE_JOB_NAME" \
     --schedule="$SCHEDULE_JOB_TIMESPEC" \
