@@ -27,6 +27,7 @@ import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.cli.CommandLine;
@@ -40,6 +41,10 @@ import org.apache.commons.csv.CSVRecord;
 /** Sample showing how to load CSV file data into Spanner */
 public class LoadCsvExample {
 
+  public static final String EXCEL = "EXCEL";
+  public static final String POSTGRESQL_CSV = "POSTGRESQL_CSV";
+  public static final String POSTGRESQL_TEXT = "POSTGRESQL_TEXT}";
+
   enum SpannerDataTypes {
     INT64,
     FLOAT64,
@@ -50,6 +55,8 @@ public class LoadCsvExample {
   }
 
   public static ArrayList<SpannerDataTypes> spannerSchema = new ArrayList<>();
+  public static ArrayList<String> headers = new ArrayList<>();
+  public static Connection connection;
 
   public static SpannerDataTypes parseSpannerDataType(String columnType) {
     if (columnType.matches("STRING(?:\\((?:MAX|[0-9]+)\\))?")) {
@@ -70,17 +77,48 @@ public class LoadCsvExample {
     }
   }
 
+  public static void parseTableTypes(String tableId) throws SQLException {
+    ResultSet spannerType = connection.createStatement()
+        .executeQuery("SELECT spanner_type FROM information_schema.columns "
+            + "WHERE table_name = \"" + tableId + "\"");
+    while (spannerType.next()) {
+      spannerSchema.add(parseSpannerDataType(spannerType.getString("spanner_type")));
+    }
+  }
+
+  public static void parseTableHeaders(String tableId) throws SQLException {
+    ResultSet tableHeader = connection.createStatement()
+        .executeQuery("SELECT column_name FROM information_schema.columns "
+            + "WHERE table_name = \"" + tableId + "\"");
+    while (tableHeader.next()) {
+      headers.add(tableHeader.getString("column_name"));
+    }
+  }
+
+  public static boolean isValidHeaders(CSVParser parser) {
+    List<String> allHeaders = parser.getHeaderNames();
+      for (int i = 0; i < allHeaders.size(); i++) {
+        if (!allHeaders.get(i).equals(headers.get(i))) {
+          System.err.println(
+              "Header " + allHeaders.get(i) + " does not match database table header " + headers
+                  .get(i));
+          return false;
+        }
+      }
+    return true;
+  }
+
   public static CSVFormat setFormat(CommandLine cmd) {
     CSVFormat parseFormat;
     if (cmd.hasOption("f")) {
       switch (cmd.getOptionValue("f").toUpperCase()) {
-        case ("EXCEL"):
+        case (EXCEL):
           parseFormat = CSVFormat.EXCEL;
           break;
-        case ("POSTGRESQL_CSV"):
+        case (POSTGRESQL_CSV):
           parseFormat = CSVFormat.POSTGRESQL_CSV;
           break;
-        case("POSTGRESQL_TEXT"):
+        case(POSTGRESQL_TEXT):
           parseFormat = CSVFormat.POSTGRESQL_TEXT;
           break;
         default:
@@ -111,13 +149,53 @@ public class LoadCsvExample {
     if (cmd.hasOption("h") &&  cmd.getOptionValue("h").equalsIgnoreCase("True")) {
       parseFormat = parseFormat.withFirstRecordAsHeader();
     }
-
     return parseFormat;
+  }
+
+  public static void loadData(Iterable<CSVRecord> records, String tableId)
+      throws SQLException {
+    System.out.println("Writing data into table...");
+    List<Mutation> mutations = new ArrayList<>();
+    for (CSVRecord record : records) {
+      WriteBuilder builder = Mutation.newInsertOrUpdateBuilder(tableId);
+      for (int i = 0; i < headers.size(); i++) {
+        if (record.get(i) != null) {
+          switch (spannerSchema.get(i)) {
+            case BOOL:
+              builder.set(headers.get(i)).to(Boolean.parseBoolean(record.get(i)));
+              break;
+            case INT64:
+              builder.set(headers.get(i)).to(Integer.parseInt(record.get(i).trim()));
+              break;
+            case FLOAT64:
+              builder.set(headers.get(i)).to(Float.parseFloat(record.get(i).trim()));
+              break;
+            case STRING:
+              builder.set(headers.get(i)).to(record.get(i).trim());
+              break;
+            case DATE:
+              builder.set(headers.get(i))
+                  .to(com.google.cloud.Date.parseDate(record.get(i).trim()));
+              break;
+            case TIMESTAMP:
+              builder.set(headers.get(i))
+                  .to(com.google.cloud.Timestamp.parseTimestamp(record.get(i)));
+              break;
+            default:
+              System.err.print("Invalid Type. This type is not supported.");
+          }
+        }
+      }
+      mutations.add(builder.build());
+    }
+    CloudSpannerJdbcConnection cs = connection.unwrap(CloudSpannerJdbcConnection.class);
+    cs.write(mutations);
+    cs.close();
+    System.out.println("Data successfully written into table.");
   }
 
   public static void main(String... args) throws Exception {
 
-    // Set command line option flags
     Options opt = new Options();
     opt.addOption("h", true, "File Contains Header");
     opt.addOption("f", true, "Format Type of Input File");
@@ -130,7 +208,6 @@ public class LoadCsvExample {
       return;
     }
 
-    // Instantiates a client
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
     String projectId = options.getProjectId();
@@ -142,87 +219,27 @@ public class LoadCsvExample {
     CommandLine cmd = clParser.parse(opt, args);
 
     try {
-      // Set up JDBC connection with Cloud Spanner
-      Connection connection = DriverManager.getConnection(
+      connection = DriverManager.getConnection(
           String.format(
               "jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
               projectId, instanceId, databaseId));
-      CloudSpannerJdbcConnection cs = connection.unwrap(CloudSpannerJdbcConnection.class);
 
-      // Parse the datatype schema of the file
-      ResultSet spannerType = connection.createStatement().executeQuery("SELECT spanner_type FROM information_schema.columns WHERE table_name = \"" + tableId
-          + "\"");
-      while (spannerType.next()) {
-        spannerSchema.add(parseSpannerDataType(spannerType.getString("spanner_type")));
-      }
-
-      // Get headers from table in database
-      List<String> headers = new ArrayList<>();
-      ResultSet tableHeader = connection.createStatement().executeQuery("SELECT column_name FROM information_schema.columns WHERE table_name = \"" + tableId
-              + "\"");
-      while (tableHeader.next()) {
-        headers.add(tableHeader.getString("column_name"));
-      }
+      parseTableTypes(tableId);
+      parseTableHeaders(tableId);
 
       Reader in = new FileReader(filepath);
       CSVFormat parseFormat = setFormat(cmd);
       CSVParser parser = CSVParser.parse(in, parseFormat);
-      List<Mutation> mutations = new ArrayList<>();
-      Iterable<CSVRecord> records = parser;
 
-      // Verify header names with column names
-      if (cmd.hasOption("h")) {
-        List<String> allHeaders = parser.getHeaderNames();
-        for (int i = 0; i < allHeaders.size(); i++) {
-          if (!allHeaders.get(i).equals(headers.get(i))) {
-            System.err.println(
-                "Header " + allHeaders.get(i) + " does not match database table header " + headers
-                    .get(i));
-            return;
-          }
-        }
+      if (cmd.hasOption("h") && !isValidHeaders(parser)) return;
+
+      try {
+        loadData(parser, tableId);
+      } catch (SQLException e) {
+        System.err.println("Data could not be written to the database table.");
       }
 
-      // Upload records into database table
-      System.out.println("Writing data into table...");
-      for (CSVRecord record : records) {
-        WriteBuilder builder = Mutation.newInsertOrUpdateBuilder(tableId);
-        for (int i = 0; i < headers.size(); i++) {
-          if (record.get(i) != null) {
-            switch (spannerSchema.get(i)) {
-              case BOOL:
-                builder.set(headers.get(i)).to(Boolean.parseBoolean(record.get(i)));
-                break;
-              case INT64:
-                builder.set(headers.get(i)).to(Integer.parseInt(record.get(i).trim()));
-                break;
-              case FLOAT64:
-                builder.set(headers.get(i)).to(Float.parseFloat(record.get(i).trim()));
-                break;
-              case STRING:
-                builder.set(headers.get(i)).to(record.get(i).trim());
-                break;
-              case DATE:
-                builder.set(headers.get(i))
-                    .to(com.google.cloud.Date.parseDate(record.get(i).trim()));
-                break;
-              case TIMESTAMP:
-                builder.set(headers.get(i))
-                    .to(com.google.cloud.Timestamp.parseTimestamp(record.get(i)));
-                break;
-              default:
-                System.err.print("Invalid Type. This type is not supported.");
-            }
-          }
-        }
-        mutations.add(builder.build());
-      }
-
-      cs.write(mutations);
-      cs.close();
-      System.out.println("Data successfully written into table.");
     } finally {
-      // Closes the client which will free up the resources used
       spanner.close();
     }
   }
