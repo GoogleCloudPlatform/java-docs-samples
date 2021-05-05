@@ -17,17 +17,16 @@
 package com.example.spanner;
 
 // Imports the Google Cloud client library
-import com.google.cloud.spanner.DatabaseClient;
-import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Mutation.WriteBuilder;
-import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
-import com.google.cloud.spanner.Statement;
-import com.google.common.collect.Iterables;
+import com.google.cloud.spanner.jdbc.CloudSpannerJdbcConnection;
 import java.io.FileReader;
 import java.io.Reader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.cli.CommandLine;
@@ -37,8 +36,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-
-
 
 /** Sample showing how to load CSV file data into Spanner */
 public class LoadCsvExample {
@@ -74,11 +71,9 @@ public class LoadCsvExample {
   }
 
   public static CSVFormat setFormat(CommandLine cmd) {
-    // Set up CSV parser formatting
     CSVFormat parseFormat;
     if (cmd.hasOption("f")) {
-      String formatType = cmd.getOptionValue("f").toUpperCase();
-      switch (formatType) {
+      switch (cmd.getOptionValue("f").toUpperCase()) {
         case ("EXCEL"):
           parseFormat = CSVFormat.EXCEL;
           break;
@@ -96,29 +91,23 @@ public class LoadCsvExample {
     }
 
     if (cmd.hasOption("n")) {
-      String nullString = cmd.getOptionValue("n");
-      parseFormat = parseFormat.withNullString(nullString);
+      parseFormat = parseFormat.withNullString(cmd.getOptionValue("n"));
     }
+
     if (cmd.hasOption("d")) {
       if (cmd.getOptionValue("d").length() != 1) {
-        throw new IllegalArgumentException(
-            "Invalid delimiter character entered.");
+        throw new IllegalArgumentException("Invalid delimiter character entered.");
       }
-      char delimiter = cmd.getOptionValue("d").charAt(0);
-      parseFormat = parseFormat.withDelimiter(delimiter);
-
+      parseFormat = parseFormat.withDelimiter(cmd.getOptionValue("d").charAt(0));
     }
+
     if (cmd.hasOption("e")) {
       if (cmd.getOptionValue("e").length() != 1) {
-        throw new IllegalArgumentException(
-            "Invalid escape character entered.");
+        throw new IllegalArgumentException("Invalid escape character entered.");
       }
-      char escape = cmd.getOptionValue("e").charAt(0);
-      parseFormat = parseFormat.withEscape(escape);
+      parseFormat = parseFormat.withEscape(cmd.getOptionValue("e").charAt(0));
     }
 
-    /* Verify CSV headers match the table column names and table column and dataset columns
-    are the same size */
     if (cmd.hasOption("h") &&  cmd.getOptionValue("h").equalsIgnoreCase("True")) {
       parseFormat = parseFormat.withFirstRecordAsHeader();
     }
@@ -128,7 +117,7 @@ public class LoadCsvExample {
 
   public static void main(String... args) throws Exception {
 
-    // Set options
+    // Set command line option flags
     Options opt = new Options();
     opt.addOption("h", true, "File Contains Header");
     opt.addOption("f", true, "Format Type of Input File");
@@ -136,8 +125,8 @@ public class LoadCsvExample {
     opt.addOption("d", true, "Character Separating Columns");
     opt.addOption("e", true, "Character To Escape");
 
-    if (args.length < 3) {
-      System.err.println("Usage: LoadCSVExample <instance_id> <database_id> <table_id>");
+    if (args.length < 4) {
+      System.err.println("LoadCSVExample <instance_id> <database_id> <table_id> <path_to_csv>");
       return;
     }
 
@@ -148,28 +137,36 @@ public class LoadCsvExample {
     String instanceId = args[0];
     String databaseId = args[1];
     String tableId = args[2];
+    String filepath = args[3];
     CommandLineParser clParser = new DefaultParser();
     CommandLine cmd = clParser.parse(opt, args);
 
     try {
-      // Creates a database client
-      DatabaseClient dbClient =
-          spanner.getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
+      // Set up JDBC connection with Cloud Spanner
+      Connection connection = DriverManager.getConnection(
+          String.format(
+              "jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
+              projectId, instanceId, databaseId));
+      CloudSpannerJdbcConnection cs = connection.unwrap(CloudSpannerJdbcConnection.class);
 
-      // Get headers from table in database
-      ArrayList<String> headers = new ArrayList<>();
-      ResultSet tableHeader = dbClient.singleUse().executeQuery(Statement
-          .of("SELECT column_name FROM information_schema.columns WHERE table_name = \"" + tableId
-              + "\""));
-      while (tableHeader.next()) {
-        headers.add(tableHeader.getString(0));
+      // Parse the datatype schema of the file
+      ResultSet spannerType = connection.createStatement().executeQuery("SELECT spanner_type FROM information_schema.columns WHERE table_name = \"" + tableId
+          + "\"");
+      while (spannerType.next()) {
+        spannerSchema.add(parseSpannerDataType(spannerType.getString("spanner_type")));
       }
 
-      String filepath = "default.csv";
+      // Get headers from table in database
+      List<String> headers = new ArrayList<>();
+      ResultSet tableHeader = connection.createStatement().executeQuery("SELECT column_name FROM information_schema.columns WHERE table_name = \"" + tableId
+              + "\"");
+      while (tableHeader.next()) {
+        headers.add(tableHeader.getString("column_name"));
+      }
+
       Reader in = new FileReader(filepath);
       CSVFormat parseFormat = setFormat(cmd);
       CSVParser parser = CSVParser.parse(in, parseFormat);
-
       List<Mutation> mutations = new ArrayList<>();
       Iterable<CSVRecord> records = parser;
 
@@ -184,12 +181,6 @@ public class LoadCsvExample {
             return;
           }
         }
-      }
-
-      // Parse the datatype schema of the file
-      CSVRecord dataTypes = Iterables.get(records, 0);
-      for (int i = 0; i < dataTypes.size(); i++) {
-        spannerSchema.add(parseSpannerDataType(dataTypes.get(i)));
       }
 
       // Upload records into database table
@@ -227,8 +218,9 @@ public class LoadCsvExample {
         mutations.add(builder.build());
       }
 
-      dbClient.write(mutations);
-      System.out.println("Data successfully written into table...");
+      cs.write(mutations);
+      cs.close();
+      System.out.println("Data successfully written into table.");
     } finally {
       // Closes the client which will free up the resources used
       spanner.close();
