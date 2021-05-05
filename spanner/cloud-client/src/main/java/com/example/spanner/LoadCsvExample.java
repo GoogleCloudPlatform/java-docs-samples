@@ -97,14 +97,14 @@ public class LoadCsvExample {
 
   public static boolean isValidHeaders(CSVParser parser) {
     List<String> allHeaders = parser.getHeaderNames();
-      for (int i = 0; i < allHeaders.size(); i++) {
-        if (!allHeaders.get(i).equals(headers.get(i))) {
-          System.err.println(
-              "Header " + allHeaders.get(i) + " does not match database table header " + headers
-                  .get(i));
-          return false;
-        }
+    for (int i = 0; i < allHeaders.size(); i++) {
+      if (!allHeaders.get(i).equals(headers.get(i))) {
+        System.err.println(
+            "Header " + allHeaders.get(i) + " does not match database table header " + headers
+                .get(i));
+        return false;
       }
+    }
     return true;
   }
 
@@ -231,7 +231,9 @@ public class LoadCsvExample {
       CSVFormat parseFormat = setFormat(cmd);
       CSVParser parser = CSVParser.parse(in, parseFormat);
 
-      if (cmd.hasOption("h") && !isValidHeaders(parser)) return;
+      if (cmd.hasOption("h") && !isValidHeaders(parser)) {
+        return;
+      }
 
       try {
         loadData(parser, tableId);
