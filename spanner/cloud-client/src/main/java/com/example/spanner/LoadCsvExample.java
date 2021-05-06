@@ -96,15 +96,15 @@ public class LoadCsvExample {
     List<String> csvHeaders = parser.getHeaderNames();
     for (String csvHeader : csvHeaders) {
       if (!tableColumns.containsKey(csvHeader)) {
-        System.err.println(
-            "File header " + csvHeader + " does not match any database table column name ");
+        System.out.println(
+            "File header " + csvHeader + " does not match any database table column name.");
         return false;
       }
     }
     return true;
   }
 
-  /** Initialize CSV Praser format based on user specified option flags **/
+  /** Initialize CSV Parser format based on user specified option flags **/
   public static CSVFormat setFormat(CommandLine cmd) {
     CSVFormat parseFormat;
     // Set file format type
@@ -200,7 +200,7 @@ public class LoadCsvExample {
               builder.set(columnName).to(com.google.cloud.Timestamp.parseTimestamp(recordValue));
               break;
             default:
-              System.err.print("Invalid Type. This type is not supported.");
+              System.out.print("Invalid Type. This type is not supported.");
           }
         }
       }
@@ -226,7 +226,7 @@ public class LoadCsvExample {
     CommandLine cmd = clParser.parse(opt, args);
 
     if (args.length < 4) {
-      System.err.println("LoadCsvExample <instance_id> <database_id> <table_id> <path_to_csv>");
+      System.out.println("LoadCsvExample <instance_id> <database_id> <table_id> <path_to_csv>");
       return;
     }
 
@@ -259,7 +259,7 @@ public class LoadCsvExample {
       try {
         writeToSpanner(parser, tableName, cmd);
       } catch (SQLException e) {
-        System.err.println(e.getMessage());
+        System.out.println(e.getMessage());
       }
 
     } finally {
@@ -267,5 +267,3 @@ public class LoadCsvExample {
     }
   }
 }
-
-
