@@ -1,0 +1,3 @@
+int,float,array,string,date
+1,1.5,true,Alice,2020-01-01
+2,2.5,false,Bob,2018-01-01

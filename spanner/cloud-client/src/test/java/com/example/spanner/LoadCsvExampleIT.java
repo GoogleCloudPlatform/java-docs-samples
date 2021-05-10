@@ -69,66 +69,58 @@ public class LoadCsvExampleIT {
 
     String out;
 
-    String headerPath = "header.csv";
-    String headerFailPath = "headerFail.csv";
     String noHeaderPath = "noHeader.csv";
-    String subsetHeaderPath = "subsetHeader.csv";
-    String delimiterPath = "delimiter.csv";
-    String escapePath = "escape.csv";
-    String nullPath = "null.csv";
-
     String[] testNoHeadersArgs = new String[] {
         instanceId, databaseId, tableName, noHeaderPath,
     };
-
-    String[] testHeadersFailArgs = new String[] {
-        instanceId, databaseId, tableName, headerFailPath, "-h", "true",
-    };
-
-    String[] testHeadersArgs = new String[] {
-        instanceId, databaseId, tableName, headerPath, "-h", "true",
-    };
-
-    String[] testSubsetHeaderArgs = new String[] {
-        instanceId, databaseId, tableName, subsetHeaderPath, "-h", "true",
-    };
-
-    String[] testDelimiterArgs = new String[] {
-        instanceId, databaseId, tableName, delimiterPath, "-d", ";",
-    };
-
-    String[] testEscapeArgs = new String[] {
-        instanceId, databaseId, tableName, escapePath, "-d", ";", "-e", ",",
-    };
-
-    String[] testNullStringArgs = new String[] {
-        instanceId, databaseId, tableName, nullPath, "-n", "nil",
-    };
-
     LoadCsvExample.main(testNoHeadersArgs);
     out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
 
+    String headerFailPath = "headerFail.csv";
+    String[] testHeadersFailArgs = new String[] {
+        instanceId, databaseId, tableName, headerFailPath, "-h", "true",
+    };
     LoadCsvExample.main(testHeadersFailArgs);
     out = bout.toString();
     assertThat(out).contains("does not match any database table column name");
 
+    String headerPath = "header.csv";
+    String[] testHeadersArgs = new String[] {
+        instanceId, databaseId, tableName, headerPath, "-h", "true",
+    };
     LoadCsvExample.main(testHeadersArgs);
     out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
 
+    String subsetHeaderPath = "subsetHeader.csv";
+    String[] testSubsetHeaderArgs = new String[] {
+        instanceId, databaseId, tableName, subsetHeaderPath, "-h", "true",
+    };
     LoadCsvExample.main(testSubsetHeaderArgs);
     out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
 
+    String delimiterPath = "delimiter.csv";
+    String[] testDelimiterArgs = new String[] {
+        instanceId, databaseId, tableName, delimiterPath, "-d", ";",
+    };
     LoadCsvExample.main(testDelimiterArgs);
     out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
 
+    String escapePath = "escape.csv";
+    String[] testEscapeArgs = new String[] {
+        instanceId, databaseId, tableName, escapePath, "-d", ";", "-e", ",",
+    };
     LoadCsvExample.main(testEscapeArgs);
     out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
 
+    String nullPath = "null.csv";
+    String[] testNullStringArgs = new String[] {
+        instanceId, databaseId, tableName, nullPath, "-n", "nil",
+    };
     LoadCsvExample.main(testNullStringArgs);
     out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
