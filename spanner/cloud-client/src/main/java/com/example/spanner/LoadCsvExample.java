@@ -255,7 +255,7 @@ public class LoadCsvExample {
         return;
       }
 
-      // Write CVS record data to Cloud Spanner
+      // Write CSV record data to Cloud Spanner
       try {
         writeToSpanner(parser, tableName, cmd);
       } catch (SQLException e) {
