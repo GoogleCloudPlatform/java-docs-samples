@@ -69,7 +69,7 @@ public class LoadCsvExampleIT {
 
     String out;
 
-    String noHeaderPath = "noHeader.csv";
+    String noHeaderPath = "src/test/resources/noHeader.csv";
     String[] testNoHeadersArgs = new String[] {
         instanceId, databaseId, tableName, noHeaderPath,
     };
@@ -77,7 +77,7 @@ public class LoadCsvExampleIT {
     out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
 
-    String headerFailPath = "headerFail.csv";
+    String headerFailPath = "src/test/resources/headerFail.csv";
     String[] testHeadersFailArgs = new String[] {
         instanceId, databaseId, tableName, headerFailPath, "-h", "true",
     };
@@ -85,7 +85,7 @@ public class LoadCsvExampleIT {
     out = bout.toString();
     assertThat(out).contains("does not match any database table column name");
 
-    String headerPath = "header.csv";
+    String headerPath = "src/test/resources/header.csv";
     String[] testHeadersArgs = new String[] {
         instanceId, databaseId, tableName, headerPath, "-h", "true",
     };
@@ -93,7 +93,7 @@ public class LoadCsvExampleIT {
     out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
 
-    String subsetHeaderPath = "subsetHeader.csv";
+    String subsetHeaderPath = "src/test/resources/subsetHeader.csv";
     String[] testSubsetHeaderArgs = new String[] {
         instanceId, databaseId, tableName, subsetHeaderPath, "-h", "true",
     };
@@ -101,7 +101,7 @@ public class LoadCsvExampleIT {
     out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
 
-    String delimiterPath = "delimiter.csv";
+    String delimiterPath = "src/test/resources/delimiter.csv";
     String[] testDelimiterArgs = new String[] {
         instanceId, databaseId, tableName, delimiterPath, "-d", ";",
     };
@@ -109,7 +109,7 @@ public class LoadCsvExampleIT {
     out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
 
-    String escapePath = "escape.csv";
+    String escapePath = "src/test/resources/escape.csv";
     String[] testEscapeArgs = new String[] {
         instanceId, databaseId, tableName, escapePath, "-d", ";", "-e", ",",
     };
@@ -117,7 +117,7 @@ public class LoadCsvExampleIT {
     out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
 
-    String nullPath = "null.csv";
+    String nullPath = "src/test/resources/null.csv";
     String[] testNullStringArgs = new String[] {
         instanceId, databaseId, tableName, nullPath, "-n", "nil",
     };
