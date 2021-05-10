@@ -144,6 +144,8 @@ for file in **/pom.xml; do
     echo "- testing $file"
     echo "------------------------------------------------------------"
 
+    date
+    
     # Fail the tests if no Java version was found.
     POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
     ALLOWED_VERSIONS=("1.8" "11")
