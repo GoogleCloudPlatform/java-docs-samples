@@ -50,6 +50,9 @@ public class LoadCsvExample {
     STRING,
     INT64,
     FLOAT64,
+    BYTE,
+    DOUBLE,
+    LONG,
     BOOL,
     DATE,
     TIMESTAMP
@@ -67,6 +70,12 @@ public class LoadCsvExample {
       return SpannerDataTypes.INT64;
     } else if (columnType.equalsIgnoreCase("FLOAT64")) {
       return SpannerDataTypes.FLOAT64;
+    } else if (columnType.equalsIgnoreCase("BYTE")) {
+      return SpannerDataTypes.BYTE;
+    } else if (columnType.equalsIgnoreCase("DOUBLE")) {
+      return SpannerDataTypes.DOUBLE;
+    } else if (columnType.equalsIgnoreCase("LONG")) {
+      return SpannerDataTypes.LONG;
     } else if (columnType.equalsIgnoreCase("BOOL")) {
       return SpannerDataTypes.BOOL;
     } else if (columnType.equalsIgnoreCase("DATE")) {
@@ -193,6 +202,12 @@ public class LoadCsvExample {
             case BOOL:
               builder.set(columnName).to(Boolean.parseBoolean(recordValue));
               break;
+            case BYTE:
+              builder.set(columnName).to(Byte.parseByte(recordValue));
+            case DOUBLE:
+              builder.set(columnName).to(Double.parseDouble(recordValue));
+            case LONG:
+              builder.set(columnName).to(Long.parseLong(recordValue));
             case DATE:
               builder.set(columnName).to(com.google.cloud.Date.parseDate(recordValue));
               break;
