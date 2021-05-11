@@ -204,10 +204,13 @@ public class LoadCsvExample {
               break;
             case BYTE:
               builder.set(columnName).to(Byte.parseByte(recordValue));
+              break;
             case DOUBLE:
               builder.set(columnName).to(Double.parseDouble(recordValue));
+              break;
             case LONG:
               builder.set(columnName).to(Long.parseLong(recordValue));
+              break;
             case DATE:
               builder.set(columnName).to(com.google.cloud.Date.parseDate(recordValue));
               break;
