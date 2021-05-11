@@ -42,13 +42,11 @@ public class LoadCsvExampleIT {
   static Spanner spanner;
   static DatabaseAdminClient dbClient;
   private ByteArrayOutputStream bout;
-  private PrintStream stdOut = System.out;
-  private PrintStream out;
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     System.setOut(out);
     SpannerOptions options =
         SpannerOptions.newBuilder().setAutoThrottleAdministrativeRequests().build();
@@ -58,71 +56,90 @@ public class LoadCsvExampleIT {
 
   @After
   public void tearDown() {
-    System.setOut(stdOut);
+    System.setOut(System.out);
   }
 
   @Test
-  public void testLoadCSV() throws Exception {
+  public void testLoadCSV() {
     assertThat(instanceId).isNotNull();
     assertThat(databaseId).isNotNull();
     assertThat(tableName).isNotNull();
+  }
 
-    String out;
-
+  @Test
+  public void testNoHeader() throws Exception {
     String noHeaderPath = "src/test/resources/noHeader.csv";
     String[] testNoHeadersArgs = new String[] {
         instanceId, databaseId, tableName, noHeaderPath,
     };
     LoadCsvExample.main(testNoHeadersArgs);
-    out = bout.toString();
+    String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
+  }
 
+  @Test
+  public void testHeaderFail() throws Exception {
     String headerFailPath = "src/test/resources/headerFail.csv";
     String[] testHeadersFailArgs = new String[] {
         instanceId, databaseId, tableName, headerFailPath, "-h", "true",
     };
     LoadCsvExample.main(testHeadersFailArgs);
-    out = bout.toString();
+    String out = bout.toString();
     assertThat(out).contains("does not match any database table column name");
+  }
 
+  @Test
+  public void testHeader() throws Exception {
     String headerPath = "src/test/resources/header.csv";
-    String[] testHeadersArgs = new String[] {
+    String[] testHeadersArgs = new String[]{
         instanceId, databaseId, tableName, headerPath, "-h", "true",
     };
     LoadCsvExample.main(testHeadersArgs);
-    out = bout.toString();
+    String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
+  }
 
+  @Test
+  public void testSubsetHeader() throws Exception {
     String subsetHeaderPath = "src/test/resources/subsetHeader.csv";
-    String[] testSubsetHeaderArgs = new String[] {
+    String[] testSubsetHeaderArgs = new String[]{
         instanceId, databaseId, tableName, subsetHeaderPath, "-h", "true",
     };
     LoadCsvExample.main(testSubsetHeaderArgs);
-    out = bout.toString();
+    String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
+  }
 
+  @Test
+  public void testDelimiterCharacter() throws Exception {
     String delimiterPath = "src/test/resources/delimiter.csv";
-    String[] testDelimiterArgs = new String[] {
+    String[] testDelimiterArgs = new String[]{
         instanceId, databaseId, tableName, delimiterPath, "-d", ";",
     };
     LoadCsvExample.main(testDelimiterArgs);
-    out = bout.toString();
+    String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
+  }
 
+  @Test
+  public void testEscapeCharacter() throws Exception {
     String escapePath = "src/test/resources/escape.csv";
-    String[] testEscapeArgs = new String[] {
+    String[] testEscapeArgs = new String[]{
         instanceId, databaseId, tableName, escapePath, "-d", ";", "-e", ",",
     };
     LoadCsvExample.main(testEscapeArgs);
-    out = bout.toString();
+    String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
+  }
 
+  @Test
+  public void testNullString() throws Exception {
     String nullPath = "src/test/resources/null.csv";
     String[] testNullStringArgs = new String[] {
         instanceId, databaseId, tableName, nullPath, "-n", "nil",
     };
     LoadCsvExample.main(testNullStringArgs);
-    out = bout.toString();
+    String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
   }
 }
