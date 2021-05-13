@@ -34,7 +34,7 @@
 
 This doc maintains an outline for 'snippet' samples specific to Java. Currently, the Java canonical
 samples in this format are located 
-[here](../../tree/master/dlp/src/main/java/dlp/snippets).
+[here](https://github.com/googleapis/java-dlp/tree/master/samples/snippets).
 
 Larger sample applications should attempt to follow these guidelines as well, but some may
 be ignored or waived as there can be many structural differences between applications and snippets.
