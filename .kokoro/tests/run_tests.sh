@@ -22,7 +22,7 @@ shopt -s globstar
 # `--script-debug` can be added make local testing of this script easier
 if [[ $* == *--script-debug* ]]; then
     SCRIPT_DEBUG="true"
-    JAVA_VERSION="1.8"
+    export JAVA_VERSION="1.8"
 else
     SCRIPT_DEBUG="false"
 fi
@@ -96,7 +96,7 @@ fi
 btlr_args=(
     "run"
     "--max-cmd-duration=30m"
-    "**/requirements.txt"
+    "**/pom.xml"
 )
 
 if [ -n "$GIT_DIFF" ]; then
@@ -107,8 +107,8 @@ if [ -n "$GIT_DIFF" ]; then
 fi
 
 echo -e "\n******************** TESTING PROJECTS ********************"
-test_prog="${PROJECT_ROOT}/.kokoro/tests/run_single_test.sh"
+test_prog="$PWD/.kokoro/tests/run_test_java.sh"
 # Find all POMs in the repository (may break on whitespace).
-btlr "${btlr_args[@]}" run "**/pom.xml" -- "${test_prog}"
+btlr "${btlr_args[@]}" -- "${test_prog}"
 
-exit "$RTN"
+exit $RTN
