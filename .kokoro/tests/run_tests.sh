@@ -19,8 +19,6 @@ set -eo pipefail
 # Enables `**` to include files nested inside sub-folders
 shopt -s globstar
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
 # `--script-debug` can be added make local testing of this script easier
 if [[ $* == *--script-debug* ]]; then
     SCRIPT_DEBUG="true"
@@ -29,17 +27,18 @@ else
     SCRIPT_DEBUG="false"
 fi
 
-# `--only-diff` will only run tests on projects container changes from the master branch.
-if [[ $* == *--only-diff* ]]; then
-    ONLY_DIFF="true"
-else
-    ONLY_DIFF="false"
-fi
-
 # Verify Java versions have been specified
 if [[ -z ${JAVA_VERSION+x} ]]; then
     echo -e "'JAVA_VERSION' env var should be a comma delimited list of valid java versions."
     exit 1
+fi
+
+# If on kokoro, add btlr to the path and cd into repo root
+if [ -n "$KOKORO_GFILE_DIR" ]; then
+  bltr_dir="$KOKORO_GFILE_DIR/v0.0.1/"
+  chmod +x "${bltr_dir}"btlr
+  export PATH="$PATH:$bltr_dir"
+  cd github/java-docs-samples || exit
 fi
 
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
@@ -85,15 +84,6 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
         --project="$GOOGLE_CLOUD_PROJECT"
-
-    cd github/java-docs-samples
-fi
-
-# Don't check Appengine-java8 | flexible if using Java 11
-if [[ "$KOKORO_JOB_NAME" == */java11/* ]]; then
-  SKIP_LEGACY_GAE="true"
-else
-  SKIP_LEGACY_GAE="false"
 fi
 
 # Package local jetty dependency for Java11 samples
@@ -103,109 +93,22 @@ if [[ ",$JAVA_VERSION," =~ "11" ]]; then
   cd ../../
 fi
 
+btlr_args=(
+    "run"
+    "--max-cmd-duration=30m"
+    "**/requirements.txt"
+)
+
+if [ -n "$GIT_DIFF" ]; then
+  btlr_args+=(
+    "--git-diff"
+    "$GIT_DIFF"
+  )
+fi
+
 echo -e "\n******************** TESTING PROJECTS ********************"
-# Switch to 'fail at end' to allow all tests to complete before exiting.
-set +e
-# Use RTN to return a non-zero value if the test fails.
-RTN=0
-ROOT=$(pwd)
+test_prog="${PROJECT_ROOT}/.kokoro/tests/run_single_test.sh"
 # Find all POMs in the repository (may break on whitespace).
-for file in **/pom.xml; do
-    cd "$ROOT"
-    # Navigate to the project folder.
-    file=$(dirname "$file")
-    cd "$file"
-
-    # Skip Legacy GAE
-    if [[ "$SKIP_LEGACY_GAE" = "true" ]]; then
-      if [[ ",$JAVA_VERSION," =~ "11" ]]; then
-        case "$file" in
-          *appengine-java8*)
-            continue
-            ;;
-          *flexible*)
-            continue
-            ;;
-        esac
-      fi
-    fi
-
-    # If $DIFF_ONLY is true, skip projects without changes.
-    if [[ "$ONLY_DIFF" = "true" ]]; then
-        git diff --quiet origin/master.. .
-        CHANGED=$?
-        if [[ "$CHANGED" -eq 0 ]]; then
-          # echo -e "\n Skipping $file: no changes in folder.\n"
-          continue
-        fi
-    fi
-
-    echo "------------------------------------------------------------"
-    echo "- testing $file"
-    echo "------------------------------------------------------------"
-
-    date
-    
-    # Fail the tests if no Java version was found.
-    POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
-    ALLOWED_VERSIONS=("1.8" "11")
-    # shellcheck disable=SC2199
-    # shellcheck disable=SC2076
-    if [[ "$POM_JAVA" = "" ]] || [[ !  "${ALLOWED_VERSIONS[@]}" =~ "${POM_JAVA}" ]]; then
-        RTN=1
-        echo -e "\n Testing failed: Unable to determine Java version. Please set in pom:"
-        echo -e "\n<properties>"
-        echo -e "  <maven.compiler.target>1.8</maven.compiler.target>"
-        echo -e "  <maven.compiler.source>1.8</maven.compiler.source>"
-        echo -e "</properties>\n"
-        continue
-    fi
-
-    # Skip tests that don't have the correct Java version.
-    # shellcheck disable=SC2076
-    if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
-        echo -e "\n Skipping tests: Java version ($POM_JAVA) not required ($JAVA_VERSION)\n"
-        continue
-    fi
-
-    # Use maven to execute the tests for the project.
-    mvn --quiet --batch-mode --fail-at-end clean verify \
-       -Dfile.encoding="UTF-8" \
-       -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-       -Dmaven.test.redirectTestOutputToFile=true \
-       -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
-       -Dbigtable.instanceID=instance
-    EXIT=$?
-
-    if [[ $EXIT -ne 0 ]]; then
-      RTN=1
-      echo -e "\n Testing failed: Maven returned a non-zero exit code. \n"
-    else
-      echo -e "\n Testing completed.\n"
-    fi
-
-    # Build and deploy Cloud Run samples
-    if [[ "$file" == "run/"* ]]; then
-      export SAMPLE_NAME=${file#"run/"}
-      # chmod 755 "$SCRIPT_DIR"/build_cloud_run.sh
-      "$SCRIPT_DIR"/build_cloud_run.sh
-      EXIT=$?
-
-      if [[ $EXIT -ne 0 ]]; then
-        RTN=1
-        echo -e "\n Cloud Run build/deploy failed: gcloud returned a non-zero exit code. \n"
-      else
-        echo -e "\n Cloud Run build/deploy completed.\n"
-      fi
-    fi
-
-    # If this is a periodic build, send the test log to the FlakyBot.
-    # See https://github.com/googleapis/repo-automation-bots/tree/master/packages/flakybot.
-    if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"periodic"* ]]; then
-      chmod +x $KOKORO_GFILE_DIR/linux_amd64/flakybot
-      $KOKORO_GFILE_DIR/linux_amd64/flakybot
-    fi
-
-done
+btlr "${btlr_args[@]}" run "**/pom.xml" -- "${test_prog}"
 
 exit "$RTN"
