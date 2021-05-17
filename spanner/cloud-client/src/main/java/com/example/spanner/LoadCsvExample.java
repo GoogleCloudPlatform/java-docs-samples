@@ -51,8 +51,6 @@ public class LoadCsvExample {
     INT64,
     FLOAT64,
     BYTE,
-    DOUBLE,
-    LONG,
     BOOL,
     DATE,
     TIMESTAMP
@@ -72,10 +70,6 @@ public class LoadCsvExample {
       return SpannerDataTypes.FLOAT64;
     } else if (columnType.equalsIgnoreCase("BYTE")) {
       return SpannerDataTypes.BYTE;
-    } else if (columnType.equalsIgnoreCase("DOUBLE")) {
-      return SpannerDataTypes.DOUBLE;
-    } else if (columnType.equalsIgnoreCase("LONG")) {
-      return SpannerDataTypes.LONG;
     } else if (columnType.equalsIgnoreCase("BOOL")) {
       return SpannerDataTypes.BOOL;
     } else if (columnType.equalsIgnoreCase("DATE")) {
@@ -105,9 +99,8 @@ public class LoadCsvExample {
     List<String> csvHeaders = parser.getHeaderNames();
     for (String csvHeader : csvHeaders) {
       if (!tableColumns.containsKey(csvHeader)) {
-        System.out.println(
+        throw new IllegalArgumentException(
             "File header " + csvHeader + " does not match any database table column name.");
-        return false;
       }
     }
     return true;
@@ -194,22 +187,16 @@ public class LoadCsvExample {
               builder.set(columnName).to(recordValue);
               break;
             case INT64:
-              builder.set(columnName).to(Integer.parseInt(recordValue));
+              builder.set(columnName).to(Long.parseLong(recordValue));
               break;
             case FLOAT64:
-              builder.set(columnName).to(Float.parseFloat(recordValue));
+              builder.set(columnName).to(Double.parseDouble(recordValue));
               break;
             case BOOL:
               builder.set(columnName).to(Boolean.parseBoolean(recordValue));
               break;
             case BYTE:
               builder.set(columnName).to(Byte.parseByte(recordValue));
-              break;
-            case DOUBLE:
-              builder.set(columnName).to(Double.parseDouble(recordValue));
-              break;
-            case LONG:
-              builder.set(columnName).to(Long.parseLong(recordValue));
               break;
             case DATE:
               builder.set(columnName).to(com.google.cloud.Date.parseDate(recordValue));
