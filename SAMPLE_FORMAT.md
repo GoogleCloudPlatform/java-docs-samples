@@ -41,9 +41,17 @@ be ignored or waived as there can be many structural differences between applica
 
 ## Java Version
 
-All samples should be written to run on both Java 8 and Java 11. Samples that don't run on Java 8 
-should clearly say so in their README and specifically set Java 11 in their `pom`. There should be
-a clear reason why Java 8 isn't supported.
+New samples should consider using Java 11, but may also support Java 8.
+
+Samples that don't run on either Java 8 or Java 11 should clearly say so in their README and
+specifically set the correct Java version in their `pom`. Very rarely will we accept using a
+non-LTS JVM version.
+
+### Java 11 features
+
+In general, we do not recommend using the `var` keyword (_technically it's not a keyword, but a
+reserved type name_) in API / Client Library samples, unless it's use improves
+understanding and readability.  The reviewers call is final on this.
 
 ## Specific Goals
 This sample format is intended to help enforce some specific goals in our samples. Even if not 
