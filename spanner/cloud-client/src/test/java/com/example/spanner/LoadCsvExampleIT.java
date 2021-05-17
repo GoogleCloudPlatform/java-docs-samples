@@ -142,4 +142,26 @@ public class LoadCsvExampleIT {
     String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
   }
+
+  @Test
+  public void testNewsComments() throws Exception {
+    String newsCommentsPath = "src/test/resources/hnewscomments.csv";
+    String[] testNewsCommentsArgs = new String[] {
+        instanceId, databaseId, tableName, newsCommentsPath, "-h", "false",
+    };
+    LoadCsvExample.main(testNewsCommentsArgs);
+    String out = bout.toString();
+    assertThat(out).contains("Data successfully written into table.");
+  }
+
+  @Test
+  public void testNewsStories() throws Exception {
+    String newsStoriesPath = "src/test/resources/hnewsstories.csv";
+    String[] testNewsStoriesArgs = new String[] {
+        instanceId, databaseId, tableName, newsStoriesPath, "-h", "false",
+    };
+    LoadCsvExample.main(testNewsStoriesArgs);
+    String out = bout.toString();
+    assertThat(out).contains("Data successfully written into table.");
+  }
 }
