@@ -95,7 +95,7 @@ fi
 
 btlr_args=(
     "run"
-    "--max-cmd-duration=1m"
+    "--max-cmd-duration=20m"
     "**/pom.xml"
 )
 
@@ -108,7 +108,8 @@ fi
 
 echo -e "\n******************** TESTING PROJECTS ********************"
 test_prog="$PWD/.kokoro/tests/run_test_java.sh"
-# Find all POMs in the repository (may break on whitespace).
+
+# Use btlr to run all the tests in each folder 
 echo "btlr" "${btlr_args[@]}" -- "${test_prog}"
 btlr "${btlr_args[@]}" -- "${test_prog}"
 
