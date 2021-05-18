@@ -173,7 +173,7 @@ public class Quickstart {
     this.listAllInstances(projectId);
 
     // Action 4: Delete Instance
-    String instanceName = "sample_instance_name_to_delete";
+    String instanceName = "instance_name_to_delete";
     this.deleteInstance(projectId, zone, instanceName);
 
   }
