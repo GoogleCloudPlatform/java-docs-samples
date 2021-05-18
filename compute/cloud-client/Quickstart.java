@@ -182,17 +182,14 @@ public class Quickstart {
 
 
   public static void main(String[] args) {
-//    String projectId = args[0],  // Google Cloud project id
-//        zone = args[1],          // Google Cloud zone name  eg: "us-central1-a"
-//        machineName = args[2],   // Name to identify the machine eg: "instance-name"
-//        machineType = args[3],   // Type of the machine eg: "n1-standard-1"
-//        sourceImage = args[4],  // image to be mounted on the machine eg: "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-7-wheezy-v20150710"
-//        diskSizeGB = args[5];   // default size of the disk eg: "10"
-//
-//    new Quickstart().initialize(projectId, zone, machineName, machineType, sourceImage, diskSizeGB);
-    new Quickstart().createInstance(ServiceOptions.getDefaultProjectId(), "us-central1-a", "test-new",
-        "n1-standard-1",
-        "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-7-wheezy-v20150710", "10");
+    String projectId = args[0],  // Google Cloud project id
+        zone = args[1],          // Google Cloud zone name  eg: "us-central1-a"
+        machineName = args[2],   // Name to identify the machine eg: "instance-name"
+        machineType = args[3],   // Type of the machine eg: "n1-standard-1"
+        sourceImage = args[4],  // image to be mounted on the machine eg: "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-7-wheezy-v20150710"
+        diskSizeGB = args[5];   // default size of the disk eg: "10"
+
+    new Quickstart().initialize(projectId, zone, machineName, machineType, sourceImage, diskSizeGB);
   }
 
 }
