@@ -57,7 +57,7 @@ public class Quickstart {
               .build();
 
       ProjectZoneName projectZoneName = ProjectZoneName.of(project, zone);
-      Operation response = instanceClient.insertInstance(projectZoneName.toString(), instanceResource);
+      Operation response = instanceClient.insertInstance(projectZoneName, instanceResource);
 
       if (response.getError() == null) {
         System.out.println("Instance creation successful ! ! ");
@@ -112,13 +112,13 @@ public class Quickstart {
     try(InstanceClient instanceClient = InstanceClient.create()) {
       // Listing all instances for the project
       InstanceClient.AggregatedListInstancesPagedResponse response = instanceClient.aggregatedListInstances(false, project);
-      for(InstancesScopedList element : response.iterateAll()) {
+      for(InstancesScopedList zoneInstances : response.iterateAll()) {
         // Scoped by each zone; Check if instances in a zone is null, else iterate and list them
-        if(element.getInstancesList() != null) {
-          for(Instance zoneInstances : element.getInstancesList()) {
+        if(zoneInstances.getInstancesList() != null) {
+          for(Instance instance : zoneInstances.getInstancesList()) {
             // getZone() returns the fully qualified address. Hence, strip it to get the zone name only
-            String zone = zoneInstances.getZone();
-            System.out.println(zoneInstances.getName() + " at " + zone.substring(zone.lastIndexOf('/')+1));
+            String zone = instance.getZone();
+            System.out.println(instance.getName() + " at " + zone.substring(zone.lastIndexOf('/')+1));
           }
         }
       }
