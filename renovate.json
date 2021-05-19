@@ -17,6 +17,7 @@
       "groupName": "AppEngine packages"
     },
     {
+      "matchPackagePrefixes": [ "com.google" ],
       "allowedVersions": "!/.+-sp\\.[0-9]+$/"
     },
     {
