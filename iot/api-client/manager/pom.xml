@@ -67,7 +67,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.112.3</version>
+      <version>1.112.5</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -87,7 +87,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.31.4</version>
+      <version>1.31.5</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
@@ -97,12 +97,12 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-jackson2</artifactId>
-      <version>1.31.4</version>
+      <version>1.31.5</version>
     </dependency>
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.39.2</version>
+      <version>1.39.2-sp.1</version>
     </dependency>
 
     <!-- LTS for Java EE -->

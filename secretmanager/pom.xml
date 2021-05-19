@@ -41,13 +41,13 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-secretmanager</artifactId>
-      <version>1.5.1</version>
+      <version>1.5.2</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java-util</artifactId>
-      <version>3.15.8</version>
+      <version>3.17.0</version>
     </dependency>
 
     <!-- test dependencies -->

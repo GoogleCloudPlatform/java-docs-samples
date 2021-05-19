@@ -17,6 +17,9 @@
       "groupName": "AppEngine packages"
     },
     {
+      "allowedVersions": "!/.+-sp\.[0-9]+$/"
+    },
+    {
       "packagePatterns": [
         "^org.apache.beam:"
       ],

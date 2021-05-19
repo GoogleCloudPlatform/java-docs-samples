@@ -41,14 +41,14 @@
         <dependency>
           <groupId>com.google.cloud</groupId>
           <artifactId>libraries-bom</artifactId>
-          <version>20.2.0</version>
+          <version>20.4.0</version>
           <type>pom</type>
           <scope>import</scope>
         </dependency>
       <dependency>
         <groupId>com.google.api-client</groupId>
         <artifactId>google-api-client</artifactId>
-        <version>1.31.4</version>
+        <version>1.31.5</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -57,12 +57,12 @@
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.39.2</version>
+      <version>1.39.2-sp.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>postgres-socket-factory</artifactId>
-      <version>1.2.2</version>
+      <version>1.2.3</version>
     </dependency>
         <dependency>
       <groupId>org.postgresql</groupId>
@@ -72,12 +72,12 @@
     <dependency>
       <groupId>com.google.crypto.tink</groupId>
       <artifactId>tink</artifactId>
-      <version>1.5.0</version>
+      <version>1.6.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.crypto.tink</groupId>
       <artifactId>tink-gcpkms</artifactId>
-      <version>1.5.0</version>
+      <version>1.6.0</version>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
