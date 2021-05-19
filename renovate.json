@@ -17,7 +17,7 @@
       "groupName": "AppEngine packages"
     },
     {
-      "allowedVersions": "!/.+-sp\.[0-9]+$/"
+      "allowedVersions": "!/.+-sp\\.[0-9]+$/"
     },
     {
       "packagePatterns": [
