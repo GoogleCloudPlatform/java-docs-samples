@@ -52,5 +52,25 @@ public class DestroySecretVersion {
       System.out.printf("Destroyed secret version %s\n", version.getName());
     }
   }
+
+  // Destroy an existing secret version using etag.
+  public void destroySecretVersion(String projectId, String secretId, String versionId, String etag)
+      throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      // Build the name from the version.
+      SecretVersionName name = SecretVersionName.of(projectId, secretId, versionId);
+
+      // Create the request.
+      DestroySecretVersionRequest request =
+          DestroySecretVersionRequest.newBuilder().setName(name.toString()).setEtag(etag).build();
+
+      // Create the secret.
+      SecretVersion version = client.destroySecretVersion(request);
+      System.out.printf("Destroyed secret version %s\n", version.getName());
+    }
+  }
 }
 // [END secretmanager_destroy_secret_version]

@@ -52,5 +52,25 @@ public class DisableSecretVersion {
       System.out.printf("Disabled secret version %s\n", version.getName());
     }
   }
+
+  // Disable an existing secret version using etag.
+  public void disableSecretVersion(String projectId, String secretId, String versionId, String etag)
+      throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      // Build the name from the version.
+      SecretVersionName name = SecretVersionName.of(projectId, secretId, versionId);
+
+      // Create the request.
+      DisableSecretVersionRequest request =
+          DisableSecretVersionRequest.newBuilder().setName(name.toString()).setEtag(etag).build();
+
+      // Create the secret.
+      SecretVersion version = client.disableSecretVersion(request);
+      System.out.printf("Disabled secret version %s\n", version.getName());
+    }
+  }
 }
 // [END secretmanager_disable_secret_version]

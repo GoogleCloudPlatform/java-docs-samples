@@ -49,5 +49,24 @@ public class DeleteSecret {
       System.out.printf("Deleted secret %s\n", secretId);
     }
   }
+
+  // Delete an existing secret with the given name, using etag.
+  public void deleteSecret(String projectId, String secretId, String etag) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      // Build the secret name.
+      SecretName name = SecretName.of(projectId, secretId);
+
+      // Create the request.
+      DeleteSecretRequest request =
+          DeleteSecretRequest.newBuilder().setName(name.toString()).setEtag(etag).build();
+
+      // Create the secret.
+      client.deleteSecret(request);
+      System.out.printf("Deleted secret %s\n", secretId);
+    }
+  }
 }
 // [END secretmanager_delete_secret]

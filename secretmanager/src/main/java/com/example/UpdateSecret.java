@@ -58,5 +58,35 @@ public class UpdateSecret {
       System.out.printf("Updated secret %s\n", updatedSecret.getName());
     }
   }
+
+  // Update an existing secret using etag.
+  public void updateSecret(String projectId, String secretId, String etag) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      // Build the name.
+      SecretName name = SecretName.of(projectId, secretId);
+
+      // Build the updated secret.
+      Secret secret =
+          Secret.newBuilder()
+              .setName(name.toString())
+              .setEtag(etag)
+              .putLabels("secretmanager", "rocks")
+              .build();
+
+      // Create the request.
+      UpdateSecretRequest request =
+          UpdateSecretRequest.newBuilder()
+              .setSecret(secret)
+              .setUpdateMask(FieldMaskUtil.fromString("labels"))
+              .build();
+
+      // Create the secret.
+      Secret updatedSecret = client.updateSecret(request);
+      System.out.printf("Updated secret %s\n", updatedSecret.getName());
+    }
+  }
 }
 // [END secretmanager_update_secret]

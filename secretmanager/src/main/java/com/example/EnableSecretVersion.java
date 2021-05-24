@@ -34,7 +34,7 @@ public class EnableSecretVersion {
   }
 
   // Enable an existing secret version.
-  public void enableSecretVersion(String projectId, String secretId, String versionId)
+  public void enableSecretVersion(String projectId, String secretId, String version)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -46,6 +46,26 @@ public class EnableSecretVersion {
       // Create the request.
       EnableSecretVersionRequest request =
           EnableSecretVersionRequest.newBuilder().setName(name.toString()).build();
+
+      // Create the secret.
+      SecretVersion version = client.enableSecretVersion(request);
+      System.out.printf("Enabled secret version %s\n", version.getName());
+    }
+  }
+
+  // Enable an existing secret version using etag.
+  public void enableSecretVersion(String projectId, String secretId, String versionId, String etag)
+      throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      // Build the name from the version.
+      SecretVersionName name = SecretVersionName.of(projectId, secretId, versionId);
+
+      // Create the request.
+      EnableSecretVersionRequest request =
+          EnableSecretVersionRequest.newBuilder().setName(name.toString()).setEtag(etag).build();
 
       // Create the secret.
       SecretVersion version = client.enableSecretVersion(request);
