@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Google Inc.
+ * Copyright 2021 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,16 +41,16 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 /** Sample showing how to load CSV file data into Spanner */
-public class LoadCsvExample {
+public class LoadCsvSample {
   public static final String EXCEL = "EXCEL";
   public static final String POSTGRESQL_CSV = "POSTGRESQL_CSV";
   public static final String POSTGRESQL_TEXT = "POSTGRESQL_TEXT}";
 
-  enum SpannerDataTypes {
+  enum SpannerDataType {
     STRING,
     INT64,
     FLOAT64,
-    BYTE,
+    BYTES,
     BOOL,
     DATE,
     TIMESTAMP
@@ -58,24 +58,24 @@ public class LoadCsvExample {
 
   public static Boolean hasHeader = false;
   public static Connection connection;
-  public static Map<String, SpannerDataTypes> tableColumns = new LinkedHashMap<>();
+  public static Map<String, SpannerDataType> tableColumns = new LinkedHashMap<>();
 
   /** Return the data type of the column type **/
-  public static SpannerDataTypes parseSpannerDataType(String columnType) {
+  public static SpannerDataType parseSpannerDataType(String columnType) {
     if (columnType.matches("STRING(?:\\((?:MAX|[0-9]+)\\))?")) {
-      return SpannerDataTypes.STRING;
+      return SpannerDataType.STRING;
     } else if (columnType.equalsIgnoreCase("INT64")) {
-      return SpannerDataTypes.INT64;
+      return SpannerDataType.INT64;
     } else if (columnType.equalsIgnoreCase("FLOAT64")) {
-      return SpannerDataTypes.FLOAT64;
-    } else if (columnType.equalsIgnoreCase("BYTE")) {
-      return SpannerDataTypes.BYTE;
+      return SpannerDataType.FLOAT64;
+    } else if (columnType.equalsIgnoreCase("BYTES")) {
+      return SpannerDataType.BYTES;
     } else if (columnType.equalsIgnoreCase("BOOL")) {
-      return SpannerDataTypes.BOOL;
+      return SpannerDataType.BOOL;
     } else if (columnType.equalsIgnoreCase("DATE")) {
-      return SpannerDataTypes.DATE;
+      return SpannerDataType.DATE;
     } else if (columnType.equalsIgnoreCase("TIMESTAMP")) {
-      return SpannerDataTypes.TIMESTAMP;
+      return SpannerDataType.TIMESTAMP;
     } else {
       throw new IllegalArgumentException(
           "Unrecognized or unsupported column data type: " + columnType);
@@ -89,7 +89,7 @@ public class LoadCsvExample {
             + "WHERE table_name = \"" + tableName + "\" ORDER BY ordinal_position");
     while (spannerType.next()) {
       String columnName = spannerType.getString("column_name");
-      SpannerDataTypes type = parseSpannerDataType(spannerType.getString("spanner_type"));
+      SpannerDataType type = parseSpannerDataType(spannerType.getString("spanner_type"));
       tableColumns.put(columnName, type);
     }
   }
@@ -172,8 +172,9 @@ public class LoadCsvExample {
     for (CSVRecord record : records) {
       int index = 0;
       WriteBuilder builder = Mutation.newInsertOrUpdateBuilder(tableName);
+      // Iterate through all the table columns in order. Ordering required when no headers provided.
       for (String columnName : tableColumns.keySet()) {
-        SpannerDataTypes columnType = tableColumns.get(columnName);
+        SpannerDataType columnType = tableColumns.get(columnName);
         String recordValue = null;
         if (validHeaderField(record, columnName)) {
           recordValue = record.get(columnName).trim();
@@ -195,7 +196,7 @@ public class LoadCsvExample {
             case BOOL:
               builder.set(columnName).to(Boolean.parseBoolean(recordValue));
               break;
-            case BYTE:
+            case BYTES:
               builder.set(columnName).to(Byte.parseByte(recordValue));
               break;
             case DATE:
@@ -223,7 +224,8 @@ public class LoadCsvExample {
     // Initialize option flags
     Options opt = new Options();
     opt.addOption("h", true, "File Contains Header");
-    opt.addOption("f", true, "Format Type of Input File");
+    opt.addOption("f", true, "Format Type of Input File (EXCEL, DEFAULT, "
+        + "POSTGRESQL_CSV, or POSTGRESQL_TEXT");
     opt.addOption("n", true, "String Representing Null Value");
     opt.addOption("d", true, "Character Separating Columns");
     opt.addOption("e", true, "Character To Escape");

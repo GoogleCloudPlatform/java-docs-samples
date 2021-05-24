@@ -34,10 +34,10 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class LoadCsvExampleIT {
+public class LoadCsvSampleIT {
   private String instanceId = System.getProperty("spanner.test.instance");
-  private String databaseId = System.getProperty("spanner.test.database");
-  private String tableName = System.getProperty("spanner.test.table");
+  private String databaseId = System.getProperty("spanner.sample.database");
+  private String tableName = "example-table";
 
   static Spanner spanner;
   static DatabaseAdminClient dbClient;
@@ -72,7 +72,7 @@ public class LoadCsvExampleIT {
     String[] testNoHeadersArgs = new String[] {
         instanceId, databaseId, tableName, noHeaderPath,
     };
-    LoadCsvExample.main(testNoHeadersArgs);
+    LoadCsvSample.main(testNoHeadersArgs);
     String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
   }
@@ -83,7 +83,7 @@ public class LoadCsvExampleIT {
     String[] testHeadersFailArgs = new String[] {
         instanceId, databaseId, tableName, headerFailPath, "-h", "true",
     };
-    LoadCsvExample.main(testHeadersFailArgs);
+    LoadCsvSample.main(testHeadersFailArgs);
     String out = bout.toString();
     assertThat(out).contains("does not match any database table column name");
   }
@@ -94,7 +94,7 @@ public class LoadCsvExampleIT {
     String[] testHeadersArgs = new String[]{
         instanceId, databaseId, tableName, headerPath, "-h", "true",
     };
-    LoadCsvExample.main(testHeadersArgs);
+    LoadCsvSample.main(testHeadersArgs);
     String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
   }
@@ -105,7 +105,7 @@ public class LoadCsvExampleIT {
     String[] testSubsetHeaderArgs = new String[]{
         instanceId, databaseId, tableName, subsetHeaderPath, "-h", "true",
     };
-    LoadCsvExample.main(testSubsetHeaderArgs);
+    LoadCsvSample.main(testSubsetHeaderArgs);
     String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
   }
@@ -116,7 +116,7 @@ public class LoadCsvExampleIT {
     String[] testDelimiterArgs = new String[]{
         instanceId, databaseId, tableName, delimiterPath, "-d", ";",
     };
-    LoadCsvExample.main(testDelimiterArgs);
+    LoadCsvSample.main(testDelimiterArgs);
     String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
   }
@@ -127,7 +127,7 @@ public class LoadCsvExampleIT {
     String[] testEscapeArgs = new String[]{
         instanceId, databaseId, tableName, escapePath, "-d", ";", "-e", ",",
     };
-    LoadCsvExample.main(testEscapeArgs);
+    LoadCsvSample.main(testEscapeArgs);
     String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
   }
@@ -138,7 +138,7 @@ public class LoadCsvExampleIT {
     String[] testNullStringArgs = new String[] {
         instanceId, databaseId, tableName, nullPath, "-n", "nil",
     };
-    LoadCsvExample.main(testNullStringArgs);
+    LoadCsvSample.main(testNullStringArgs);
     String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
   }
@@ -149,7 +149,7 @@ public class LoadCsvExampleIT {
     String[] testNewsCommentsArgs = new String[] {
         instanceId, databaseId, tableName, newsCommentsPath, "-h", "false",
     };
-    LoadCsvExample.main(testNewsCommentsArgs);
+    LoadCsvSample.main(testNewsCommentsArgs);
     String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
   }
@@ -160,7 +160,7 @@ public class LoadCsvExampleIT {
     String[] testNewsStoriesArgs = new String[] {
         instanceId, databaseId, tableName, newsStoriesPath, "-h", "false",
     };
-    LoadCsvExample.main(testNewsStoriesArgs);
+    LoadCsvSample.main(testNewsStoriesArgs);
     String out = bout.toString();
     assertThat(out).contains("Data successfully written into table.");
   }
