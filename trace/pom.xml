@@ -70,7 +70,7 @@
     <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>gax-grpc</artifactId>
-      <version>1.63.3</version>
+      <version>1.64.0</version>
     </dependency>
     <!-- [END trace_setup_java_maven] -->
 
@@ -90,7 +90,7 @@
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.39.2</version>
+      <version>1.39.2-sp.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

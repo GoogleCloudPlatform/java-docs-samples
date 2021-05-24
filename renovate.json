@@ -17,6 +17,10 @@
       "groupName": "AppEngine packages"
     },
     {
+      "matchPackagePrefixes": [ "com.google" ],
+      "allowedVersions": "!/.+-sp\\.[0-9]+$/"
+    },
+    {
       "packagePatterns": [
         "^org.apache.beam:"
       ],
