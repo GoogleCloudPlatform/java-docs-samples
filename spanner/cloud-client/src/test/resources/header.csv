@@ -1,3 +1,0 @@
-int,float,bool,string,date,timestamp
-1,1.5,true,Alice,2020-01-01,2020-01-01T03:14:00
-2,2.5,false,Bob,2018-01-01,2018-01-01T03:14:00
