@@ -30,6 +30,10 @@ public class Name {
   @Column("NAME")
   private String name;
 
+  public Name() {
+    // needed for deserialization
+  }
+
   public Name(String uuid, String name) {
     this.uuid = uuid;
     this.name = name;
