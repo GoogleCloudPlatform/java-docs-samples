@@ -55,7 +55,7 @@ public class ExampleIT {
   @BeforeClass
   public static void setUp() throws IOException {
     // Get the sample's base directory (the one containing a pom.xml file)
-    String baseDir = System.getProperty("basedir");
+    String baseDir = System.getProperty("user.dir");
 
     // Emulate the function locally by running the Functions Framework Maven plugin
     emulatorProcess = new ProcessBuilder()
@@ -93,6 +93,14 @@ public class ExampleIT {
     RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
         .maxAttempts(8)
         .retryExceptions(HttpHostConnectException.class)
+        .retryOnResult(__ -> {
+          // Retry if the Functions Framework process has no stdout content
+          try {
+            return emulatorProcess.getErrorStream().available() == 0;
+          } catch (IOException e) {
+            return true;
+          }
+        })
         .intervalFunction(IntervalFunction.ofExponentialBackoff(200, 2))
         .build());
     Retry retry = registry.retry("my");
