@@ -152,15 +152,15 @@ public class ExampleApplication {
     @GetMapping("/download")
     public ResponseEntity<StreamingResponseBody> downloadChunkedHttp() {
       StreamingResponseBody body = output -> {
-          ByteBuffer bytes = ByteBuffer.allocate(BYTE_BUFFER_SIZE);
-          ReadChannel reader =
-              STORAGE.reader("cloud-devrel-public", "data.txt");
+        ByteBuffer bytes = ByteBuffer.allocate(BYTE_BUFFER_SIZE);
+        ReadChannel reader =
+          STORAGE.reader("cloud-devrel-public", "data.txt");
 
-          while (reader.read(bytes) > 0) {
-            bytes.flip();
-            output.write(bytes.array());
-            bytes.clear();
-          }
+        while (reader.read(bytes) > 0) {
+          bytes.flip();
+          output.write(bytes.array());
+          bytes.clear();
+        }
       };
 
       return ResponseEntity.ok().body(body);
