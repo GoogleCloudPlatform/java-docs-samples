@@ -179,7 +179,7 @@ public class LoadCsvExample {
   /** Write CSV file data to Spanner using JDBC Mutation API **/
   public static void writeToSpanner(Iterable<CSVRecord> records, String tableName, CommandLine cmd)
       throws SQLException {
-    // System.out.println("Writing data into table...");
+    System.out.println("Writing data into table...");
     List<Mutation> mutations = new ArrayList<>();
     for (CSVRecord record : records) {
       int index = 0;
@@ -194,7 +194,6 @@ public class LoadCsvExample {
           recordValue = record.get(index).trim();
           index++;
         }
-        // System.out.println("column: " + columnName + " value: " + recordValue);
         if (recordValue != null) {
           switch (columnType) {
             case STRING:
