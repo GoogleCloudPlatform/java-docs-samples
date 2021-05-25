@@ -95,6 +95,7 @@ public class ExampleIT {
         .retryExceptions(HttpHostConnectException.class)
         .retryOnResult(__ -> {
           // Retry if the Functions Framework process has no stdout content
+          // See `retryOnResultPredicate` here: https://resilience4j.readme.io/docs/retry
           try {
             return emulatorProcess.getErrorStream().available() == 0;
           } catch (IOException e) {
