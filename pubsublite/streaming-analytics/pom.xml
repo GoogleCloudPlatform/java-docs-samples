@@ -114,6 +114,7 @@
       <scope>runtime</scope>
     </dependency>
 
+    <!-- TODO: Remove when a new release of the I/O includes it -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
@@ -163,12 +164,6 @@
       <artifactId>google-api-services-dataflow</artifactId>
       <version>v1b3-rev20210408-1.31.0</version>
       <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api-client</groupId>
-      <artifactId>google-api-client</artifactId>
-      <version>1.31.5</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
