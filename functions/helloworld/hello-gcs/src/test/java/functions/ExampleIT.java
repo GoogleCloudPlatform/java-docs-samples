@@ -93,7 +93,7 @@ public class ExampleIT {
     RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
         .maxAttempts(8)
         .retryExceptions(HttpHostConnectException.class)
-        .retryOnResult(__ -> {
+        .retryOnResult(u -> {
           // Retry if the Functions Framework process has no stdout content
           // See `retryOnResultPredicate` here: https://resilience4j.readme.io/docs/retry
           try {
