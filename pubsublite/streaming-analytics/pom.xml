@@ -114,6 +114,12 @@
       <scope>runtime</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>30.1-jre</version>
+    </dependency>
+
     <!-- Beam examples -->
     <dependency>
       <groupId>org.apache.beam</groupId>
