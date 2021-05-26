@@ -81,8 +81,6 @@ public class PubsubliteToGcs {
 
     Pipeline pipeline = Pipeline.create(options);
     pipeline
-        // TODO: Replace the I/O connector with the one released with Apache Beam when it's stable.
-        // https://issues.apache.org/jira/browse/BEAM-10114
         .apply("Read From Pub/Sub Lite", PubsubLiteIO.read(subscriberOpitons))
         .apply(
             "Convert messages",
