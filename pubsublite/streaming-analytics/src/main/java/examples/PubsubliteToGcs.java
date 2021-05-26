@@ -17,11 +17,11 @@ package examples;
 // [START pubsublite_to_gcs]
 
 import com.google.cloud.pubsublite.SubscriptionPath;
-import com.google.cloud.pubsublite.beam.PubsubLiteIO;
-import com.google.cloud.pubsublite.beam.SubscriberOptions;
 import com.google.cloud.pubsublite.proto.SequencedMessage;
 import org.apache.beam.examples.common.WriteOneFilePerWindow;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.pubsublite.PubsubLiteIO;
+import org.apache.beam.sdk.io.gcp.pubsublite.SubscriberOptions;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
