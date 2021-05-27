@@ -25,7 +25,7 @@ import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.After;
 import org.junit.Before;
@@ -48,9 +48,10 @@ public class R2dbcSampleApplicationIT {
 
   @DynamicPropertySource
   static void registerProperties(DynamicPropertyRegistry registry) {
-    int rand = Math.abs((new Random()).nextInt());
     registry.add("project", () -> ServiceOptions.getDefaultProjectId());
-    registry.add("database", () -> "r2dbc-docs-testdb-" + rand);
+    // Spanner DB name limit is 30 characters; cannot end with "-".
+    String suffix = UUID.randomUUID().toString().substring(0, 23);
+    registry.add("database", () -> "r2dbc-" + suffix);
 
     assertNotNull("Please provide spanner.test.instance environment variable",
         System.getProperty("spanner.test.instance"));
@@ -86,7 +87,7 @@ public class R2dbcSampleApplicationIT {
   }
 
   @Test
-  public void createTable() {
+  public void testAllWebEndpoints() {
 
     // DDL takes time; extend timeout to avoid "Timeout on blocking read" exceptions.
     webTestClient = webTestClient.mutate().responseTimeout(Duration.ofSeconds(10)).build();
