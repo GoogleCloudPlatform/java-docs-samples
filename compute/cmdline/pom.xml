@@ -47,6 +47,11 @@ limitations under the License.
       <artifactId>google-api-services-compute</artifactId>
       <version>${project.compute.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client-gson</artifactId>
+      <version>1.31.5</version>
+    </dependency>
   </dependencies>
 
   <build>
