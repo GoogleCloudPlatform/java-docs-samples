@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,28 @@
 
 package secretmanager;
 
-// [START secretmanager_destroy_secret_version]
+// [START secretmanager_enable_secret_version_with_etag]
+import com.google.cloud.secretmanager.v1.EnableSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretVersion;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import java.io.IOException;
 
-public class DestroySecretVersion {
+public class EnableSecretVersionWithEtag {
 
-  public static void destroySecretVersion() throws IOException {
+  public static void enableSecretVersion() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String secretId = "your-secret-id";
     String versionId = "your-version-id";
-    destroySecretVersion(projectId, secretId, versionId);
+    // Including the quotes is important.
+    String etag = "\"1234\"";
+    enableSecretVersion(projectId, secretId, versionId, etag);
   }
 
-  // Destroy an existing secret version.
-  public static void destroySecretVersion(String projectId, String secretId, String versionId)
+  // Enable an existing secret version.
+  public static void enableSecretVersion(
+      String projectId, String secretId, String versionId, String etag)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -42,10 +46,17 @@ public class DestroySecretVersion {
       // Build the name from the version.
       SecretVersionName secretVersionName = SecretVersionName.of(projectId, secretId, versionId);
 
-      // Destroy the secret version.
-      SecretVersion version = client.destroySecretVersion(secretVersionName);
-      System.out.printf("Destroyed secret version %s\n", version.getName());
+      // Build the request.
+      EnableSecretVersionRequest request =
+          EnableSecretVersionRequest.newBuilder()
+              .setName(secretVersionName.toString())
+              .setEtag(etag)
+              .build();
+
+      // Enable the secret version.
+      SecretVersion version = client.enableSecretVersion(request);
+      System.out.printf("Enabled secret version %s\n", version.getName());
     }
   }
 }
-// [END secretmanager_destroy_secret_version]
+// [END secretmanager_enable_secret_version_with_etag]
