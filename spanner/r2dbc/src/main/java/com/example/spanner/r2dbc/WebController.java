@@ -35,7 +35,6 @@ public class WebController {
   @Autowired
   R2dbcEntityTemplate r2dbcEntityTemplate;
 
-
   @PostMapping("createTable")
   public Mono<String> createTable() {
     return r2dbcEntityTemplate.getDatabaseClient()
