@@ -9,9 +9,9 @@
   <version>1.0-SNAPSHOT</version>
 
   <!--
-    The parent pom defines common style checks and testing strategies for our samples.
-    Removing or replacing it should not affect the execution of the samples in anyway.
-  -->
+   The parent pom defines common style checks and testing strategies for our samples.
+   Removing or replacing it should not affect the execution of the samples in anyway.
+ -->
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -24,12 +24,15 @@
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
-
   <dependencies>
+
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-compute</artifactId>
+      <version>1.2.0-alpha</version>
     </dependency>
+
+
 
     <!--    Test dependencies-->
     <dependency>
@@ -45,20 +48,7 @@
       <version>4.13</version>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
-
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.google.cloud</groupId>
-        <artifactId>libraries-bom</artifactId>
-        <version>20.5.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
 
 </project>
