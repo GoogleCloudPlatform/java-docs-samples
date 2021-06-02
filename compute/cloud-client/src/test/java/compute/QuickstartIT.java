@@ -1,5 +1,8 @@
 package src.test.java.compute;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -9,10 +12,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import static com.google.common.truth.Truth.assertThat;
-
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(JUnit4.class)
 public class QuickstartIT {
@@ -57,8 +56,10 @@ public class QuickstartIT {
   }
 
 
-  @Test public void testQuickstart() throws IOException, InterruptedException {
-    new Quickstart().quickstart(PROJECT_ID, ZONE, MACHINE_NAME, MACHINE_TYPE, SOURCE_IMAGE, DISK_GB);
+  @Test
+  public void testQuickstart() throws IOException, InterruptedException {
+    new Quickstart()
+        .quickstart(PROJECT_ID, ZONE, MACHINE_NAME, MACHINE_TYPE, SOURCE_IMAGE, DISK_GB);
     assertThat(stdOut.toString()).contains("Successfully completed quickstart ! ! ");
   }
 

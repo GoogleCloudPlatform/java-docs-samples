@@ -1,5 +1,6 @@
 package src.main.java.compute;
 
+
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
 import com.google.cloud.compute.v1.Instance;
@@ -16,20 +17,21 @@ import java.io.IOException;
 
 public class Quickstart {
 
-
   // [START compute_instances_create]
 
   /**
    * Creates a GCP Compute Instance
-   * @param project Google Cloud Project id
-   * @param zone    Google Cloud Project zone eg: "us-central1-a"
+   *
+   * @param project     Google Cloud Project id
+   * @param zone        Google Cloud Project zone eg: "us-central1-a"
    * @param machineType Type of the instance that you want to create, eg: "n1-standard-1"
    * @param machineName Name to identify the machine/ instance
    * @param sourceImage Image to be mounted in the machine. eg: "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-7-wheezy-v20150710"
-   * @param diskSizeGB Size of the disk to be allocated for the machine. eg: "10" in GBs
+   * @param diskSizeGB  Size of the disk to be allocated for the machine. eg: "10" in GBs
    */
 
-  public void createInstance(String project, String zone, String machineName, String machineType, String sourceImage, String diskSizeGB)
+  public void createInstance(String project, String zone, String machineName, String machineType,
+      String sourceImage, String diskSizeGB)
       throws IOException {
 
     try (InstanceClient instanceClient = InstanceClient.create()) {
@@ -40,12 +42,12 @@ public class Quickstart {
               .setAutoDelete(true)
               .setType("PERSISTENT")  // Can be set to either 'SCRATCH' or 'PERSISTENT'
               .setInitializeParams(
-                  AttachedDiskInitializeParams.newBuilder().setSourceImage(sourceImage).setDiskSizeGb(diskSizeGB).build())
+                  AttachedDiskInitializeParams.newBuilder().setSourceImage(sourceImage)
+                      .setDiskSizeGb(diskSizeGB).build())
               .build();
 
       // "default" network interface is created automatically for every project
       NetworkInterface networkInterface = NetworkInterface.newBuilder().setName("default").build();
-
 
       // Bind machine_name, machine_type, disk and network interface to an instance
       Instance instanceResource =
@@ -61,9 +63,11 @@ public class Quickstart {
       Operation response = instanceClient.insertInstance(projectZoneName, instanceResource);
 
       // Waits until the insertion operation is completed
-      while(!response.getStatus().equalsIgnoreCase("DONE")) {
+      while (!response.getStatus().equalsIgnoreCase("DONE")) {
         ZoneOperationClient zoneOperationClient = ZoneOperationClient.create();
-        response = zoneOperationClient.waitZoneOperation(ProjectZoneOperationName.newBuilder().setOperation(response.getName()).setProject(project).setZone(zone).build());
+        response = zoneOperationClient.waitZoneOperation(
+            ProjectZoneOperationName.newBuilder().setOperation(response.getName())
+                .setProject(project).setZone(zone).build());
       }
 
       if (response.getError() == null) {
@@ -76,24 +80,22 @@ public class Quickstart {
 
 //  [END compute_instances_create]
 
-
-
-
-
 //  [START compute_instances_list]
 
   /**
    * List the compute instances present in the given project and zone
+   *
    * @param project Google Cloud Project id
-   * @param zone Google Cloud Project zone
+   * @param zone    Google Cloud Project zone
    */
 
   public void listInstances(String project, String zone) throws IOException {
-    try(InstanceClient instanceClient = InstanceClient.create()) {
+    try (InstanceClient instanceClient = InstanceClient.create()) {
       // Set the project and zone to retrieve instances present in the zone
-      ProjectZoneName projectZoneName = ProjectZoneName.newBuilder().setProject(project).setZone(zone).build();
+      ProjectZoneName projectZoneName = ProjectZoneName.newBuilder().setProject(project)
+          .setZone(zone).build();
       System.out.println("Listing instances ! ! ");
-      for(Instance zoneInstance : instanceClient.listInstances(projectZoneName).iterateAll()) {
+      for (Instance zoneInstance : instanceClient.listInstances(projectZoneName).iterateAll()) {
         System.out.println(zoneInstance.getName());
       }
     }
@@ -101,29 +103,28 @@ public class Quickstart {
 
 //  [END compute_instances_list]
 
-
-
-
-
 // [START compute_instances_list_all]
 
   /**
    * List the compute instances in the given project
+   *
    * @param project Google Cloud Project id
    */
 
   public void listAllInstances(String project) throws IOException {
-    try(InstanceClient instanceClient = InstanceClient.create()) {
+    try (InstanceClient instanceClient = InstanceClient.create()) {
       // Listing all instances for the project
-      InstanceClient.AggregatedListInstancesPagedResponse response = instanceClient.aggregatedListInstances(true, project);
+      InstanceClient.AggregatedListInstancesPagedResponse response = instanceClient
+          .aggregatedListInstances(true, project);
       System.out.println("Listing instances ! ! ");
-      for(InstancesScopedList zoneInstances : response.iterateAll()) {
+      for (InstancesScopedList zoneInstances : response.iterateAll()) {
         // Scoped by each zone; Check if instances in a zone is null, else iterate and list them
-        if(zoneInstances.getInstancesList() != null) {
-          for(Instance instance : zoneInstances.getInstancesList()) {
+        if (zoneInstances.getInstancesList() != null) {
+          for (Instance instance : zoneInstances.getInstancesList()) {
             // getZone() returns the fully qualified address. Hence, strip it to get the zone name only
             String zone = instance.getZone();
-            System.out.println(instance.getName() + " at " + zone.substring(zone.lastIndexOf('/')+1));
+            System.out
+                .println(instance.getName() + " at " + zone.substring(zone.lastIndexOf('/') + 1));
           }
         }
       }
@@ -132,52 +133,47 @@ public class Quickstart {
 
 // [END compute_instances_list_all]
 
-
-
-
-
 // [START compute_instances_delete]
 
   /**
    * Deletes the GCP compute instance specified by the instanceName param
-   * @param project Google Cloud Project id
-   * @param zone Google Cloud Project zone
+   *
+   * @param project      Google Cloud Project id
+   * @param zone         Google Cloud Project zone
    * @param instanceName Name of the instance to be deleted
    */
 
   public void deleteInstance(String project, String zone, String instanceName)
       throws IOException, InterruptedException {
-    try(InstanceClient instanceClient = InstanceClient.create()) {
+    try (InstanceClient instanceClient = InstanceClient.create()) {
 
       // Set the properties of the instance which is to be deleted
-      ProjectZoneInstanceName instance = ProjectZoneInstanceName.newBuilder().setProject(project).setZone(zone).setInstance(instanceName).build();
+      ProjectZoneInstanceName instance = ProjectZoneInstanceName.newBuilder().setProject(project)
+          .setZone(zone).setInstance(instanceName).build();
       Operation response = instanceClient.deleteInstance(instance);
-
 
 //      [START compute_instances_operation_check]
       ZoneOperationClient zoneOperationClient = ZoneOperationClient.create();
       // Waits until the delete operation is completed
-      while(!response.getStatus().equalsIgnoreCase("DONE")) {
-        response = zoneOperationClient.getZoneOperation(ProjectZoneOperationName.newBuilder().setOperation(response.getId()).setProject(project).setZone(zone).build());
-        if(!response.getStatus().equalsIgnoreCase("DONE")) {
+      while (!response.getStatus().equalsIgnoreCase("DONE")) {
+        response = zoneOperationClient.getZoneOperation(
+            ProjectZoneOperationName.newBuilder().setOperation(response.getId()).setProject(project)
+                .setZone(zone).build());
+        if (!response.getStatus().equalsIgnoreCase("DONE")) {
           System.out.println("Deletion in process...");
         }
       }
 //      [END compute_instances_operation_check]
 
-
-      if(response.getError() == null) {
+      if (response.getError() == null) {
         System.out.println("Instance deleted successfully ! ! ");
-      }else {
+      } else {
         System.out.println("Failed to delete instance ! ! " + response.getError());
       }
     }
   }
 
 // [END compute_instances_delete]
-
-
-
 
 
   public void quickstart() throws IOException, InterruptedException {
@@ -193,10 +189,8 @@ public class Quickstart {
   }
 
 
-
-
-
-  public void quickstart(String projectId, String zone, String machineName, String machineType, String sourceImage, String diskSizeGB)
+  public void quickstart(String projectId, String zone, String machineName, String machineType,
+      String sourceImage, String diskSizeGB)
       throws IOException, InterruptedException {
     Quickstart quickstart = new Quickstart();
 
