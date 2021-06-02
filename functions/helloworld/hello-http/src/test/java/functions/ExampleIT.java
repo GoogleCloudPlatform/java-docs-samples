@@ -74,7 +74,7 @@ public class ExampleIT {
     // Use resilience4j to retry the test HTTP request until the plugin responds
     // See `retryOnResultPredicate` here: https://resilience4j.readme.io/docs/retry
     RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
-        .maxAttempts(8)
+        .maxAttempts(12)
         .intervalFunction(IntervalFunction.ofExponentialBackoff(200, 2))
         .retryExceptions(IOException.class)
         .retryOnResult(body -> body.toString().length() == 0)
