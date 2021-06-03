@@ -1,3 +1,5 @@
+# Set default issue priority to p2
+issuePriority: p2
 # Number of days of inactivity before an issue becomes stale
 daysUntilStale: 30
 # Number of days of inactivity before a stale issue is closed
