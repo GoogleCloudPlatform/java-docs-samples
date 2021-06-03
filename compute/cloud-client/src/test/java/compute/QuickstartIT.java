@@ -32,7 +32,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class QuickstartIT {
 
-  private static final String PROJECT_ID = System.getenv("GOOGLE_PROJECT_ID");
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String ZONE;
   private static String MACHINE_NAME;
   private static String MACHINE_TYPE;
@@ -49,7 +49,7 @@ public class QuickstartIT {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_PROJECT_ID");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     ZONE = "us-central1-a";
     MACHINE_NAME = "my-new-test-instance";

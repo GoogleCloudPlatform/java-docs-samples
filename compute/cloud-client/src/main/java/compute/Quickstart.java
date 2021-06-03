@@ -132,7 +132,8 @@ public class Quickstart {
         String zone = zoneInstances.getKey();
         if (zoneInstances.getValue().getInstancesList() != null) {
           for (Instance instance : zoneInstances.getValue().getInstancesList()) {
-            // getZone() returns the fully qualified address. Hence, strip it to get the zone name only
+            // getZone() returns the fully qualified address.
+            // Hence, strip it to get the zone name only
             System.out
                 .println(instance.getName() + " at " + zone.substring(zone.lastIndexOf('/') + 1));
           }
@@ -182,12 +183,12 @@ public class Quickstart {
 
   public void quickstart() throws IOException, InterruptedException {
     // TODO(developer): Replace the values for below variables before running the template
-    String projectId = "your_project_id",  // Google Cloud project id
-        zone = "zone_name",                // Google Cloud zone name  eg: "us-central1-a"
-        machineName = "machine_name",      // Name to identify the machine/ instance
-        machineType = "machine_type",      // Type of the machine - "n1-standard-1"
-        sourceImage = "source_image",      // Image to be mounted on the machine - "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-7-wheezy-v20150710"
-        diskSizeGb = "disk_size";          // Default size of the disk - 10
+    String projectId = "your_project_id";     // Google Cloud project id
+    String zone = "zone_name";                // Google Cloud zone name  eg: "us-central1-a"
+    String machineName = "machine_name";      // Name to identify the machine/ instance
+    String machineType = "machine_type";      // Type of the machine - "n1-standard-1"
+    String sourceImage = "source_image";      // Image to be mounted on the machine - "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-7-wheezy-v20150710"
+    String diskSizeGb = "disk_size";          // Default size of the disk - 10
 
     quickstart(projectId, zone, machineName, machineType, sourceImage, diskSizeGb);
   }
