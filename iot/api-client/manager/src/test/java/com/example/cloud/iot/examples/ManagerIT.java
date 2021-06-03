@@ -111,7 +111,8 @@ public class ManagerIT {
           long regMilliSecs =
               Long.parseLong(registryId.substring("java-reg-".length() + 11, registryId.length()));
           long diffMilliSecs = currMilliSecs - regMilliSecs;
-          if (diffMilliSecs > (1000 * 60 * 60 * 24 * 7)) { // remove registries which are older than one week
+          // remove registries which are older than one week.
+          if (diffMilliSecs > (1000 * 60 * 60 * 24 * 7)) {
             System.out.println("Remove Id: " + r.getId());
             DeviceRegistryExample.clearRegistry(CLOUD_REGION, PROJECT_ID, registryId);
           }
