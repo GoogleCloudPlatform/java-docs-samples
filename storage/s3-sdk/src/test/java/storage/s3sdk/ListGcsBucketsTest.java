@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package storage.s3_sdk;
+package storage.s3sdk;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;

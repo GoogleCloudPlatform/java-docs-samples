@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- package storage.s3_sdk;
+package storage.s3sdk;
 
 // [START storage_s3_sdk_list_buckets]
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
