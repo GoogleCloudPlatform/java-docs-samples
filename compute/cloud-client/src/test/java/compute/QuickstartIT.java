@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -52,7 +53,7 @@ public class QuickstartIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     ZONE = "us-central1-a";
-    MACHINE_NAME = "my-new-test-instance";
+    MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID().toString();
     MACHINE_TYPE = "zones/us-central1-a/machineTypes/n1-standard-1";
     SOURCE_IMAGE = "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-7-wheezy-v20150710";
     DISK_GB = "10";
