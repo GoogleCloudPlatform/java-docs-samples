@@ -130,12 +130,23 @@ public class CreateJobWithStaticOverlayTest {
     assertThat(output, containsString(jobName));
     String[] arr = output.split("/");
     JOB_ID = arr[arr.length - 1].replace("\n", "");
-    bout.reset();
 
-    Thread.sleep(300000);
+    int attempts = 5;
+    boolean succeeded = false;
 
-    GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
-    output = bout.toString();
+    while (attempts > 0 && !succeeded) {
+      Thread.sleep(60000);
+      bout.reset();
+      try {
+        GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
+      } catch (com.google.api.gax.rpc.NotFoundException e) {
+        // Ignore not found error - job may not have completed yet
+      }
+      output = bout.toString();
+      succeeded = output.contains("SUCCEEDED");
+      attempts--;
+    }
+
     assertThat(output, containsString("SUCCEEDED"));
     bout.reset();
   }
