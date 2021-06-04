@@ -18,7 +18,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.compute.Compute;
 import com.google.api.services.compute.ComputeScopes;
 import com.google.api.services.compute.model.AccessConfig;
@@ -79,7 +79,7 @@ public class ComputeEngineSample {
   private static HttpTransport httpTransport;
 
   /** Global instance of the JSON factory. */
-  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+  private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
   public static void main(String[] args) {
     try {

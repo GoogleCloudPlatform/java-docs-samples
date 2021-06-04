@@ -1,5 +1,6 @@
 assign_issues:
   - GoogleCloudPlatform/java-samples-reviewers
+
 assign_issues_by:
 - labels:
   - 'api: logging'
@@ -11,9 +12,20 @@ assign_issues_by:
   to:
   - attilagargyan
   - simoncsaba-g
-
+- labels:
+  - 'api: bigtable'
+  - 'api: datastore'
+  - 'api: firestore'
+  to:
+  - GoogleCloudPlatform/cloud-native-db-dpes
+- labels:
+  - 'api: cloudsql'
+  to:
+  - GoogleCloudPlatform/infra-db-dpes
+  
 assign_prs:
   - GoogleCloudPlatform/java-samples-reviewers
+
 assign_prs_by:
 - labels:
   - 'api: logging'
@@ -25,3 +37,15 @@ assign_prs_by:
   to:
   - attilagargyan
   - simoncsaba-g
+- labels:
+  - 'api: bigtable'
+  - 'api: datastore'
+  - 'api: firestore'
+  to:
+  - GoogleCloudPlatform/cloud-native-db-dpes
+- labels:
+  - 'api: cloudsql'
+  to:
+  - GoogleCloudPlatform/infra-db-dpes
+
+
