@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -121,11 +122,8 @@ public class CreateJobFromAdHocTest {
     String[] arr = output.split("/");
     JOB_ID = arr[arr.length - 1].replace("\n", "");
 
-    int attempts = 5;
-    boolean succeeded = false;
-
-    while (attempts > 0 && !succeeded) {
-      Thread.sleep(60000);
+    for (int attempt = 0; attempt < 5; attempt++) {
+      TimeUnit.MINUTES.sleep(1);
       bout.reset();
       try {
         GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
@@ -133,8 +131,9 @@ public class CreateJobFromAdHocTest {
         // Ignore not found error - job may not have completed yet
       }
       output = bout.toString();
-      succeeded = output.contains("SUCCEEDED");
-      attempts--;
+      if (output.contains("SUCCEEDED")) {
+        break;
+      }
     }
 
     assertThat(output, containsString("SUCCEEDED"));
