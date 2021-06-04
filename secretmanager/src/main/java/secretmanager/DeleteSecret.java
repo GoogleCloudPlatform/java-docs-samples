@@ -23,7 +23,7 @@ import java.io.IOException;
 
 public class DeleteSecret {
 
-  public void deleteSecret() throws IOException {
+  public static void deleteSecret() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String secretId = "your-secret-id";
@@ -31,7 +31,7 @@ public class DeleteSecret {
   }
 
   // Delete an existing secret with the given name.
-  public void deleteSecret(String projectId, String secretId) throws IOException {
+  public static void deleteSecret(String projectId, String secretId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -39,7 +39,7 @@ public class DeleteSecret {
       // Build the secret name.
       SecretName secretName = SecretName.of(projectId, secretId);
 
-      // Create the secret.
+      // Delete the secret.
       client.deleteSecret(secretName);
       System.out.printf("Deleted secret %s\n", secretId);
     }
