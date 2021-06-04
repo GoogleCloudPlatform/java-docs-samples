@@ -45,7 +45,7 @@ limitations under the License.
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>
-        <version>2020.0.2</version>
+        <version>2020.0.3</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -113,7 +113,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-secretmanager</artifactId>
-      <version>1.5.2</version>
+      <version>1.6.1</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>

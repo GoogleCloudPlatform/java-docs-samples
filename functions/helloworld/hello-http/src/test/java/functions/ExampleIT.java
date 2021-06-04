@@ -49,7 +49,7 @@ public class ExampleIT {
   @BeforeClass
   public static void setUp() throws IOException {
     // Get the sample's base directory (the one containing a pom.xml file)
-    String baseDir = System.getProperty("basedir");
+    String baseDir = System.getProperty("user.dir");
 
     // Emulate the function locally by running the Functions Framework Maven plugin
     emulatorProcess = new ProcessBuilder()
@@ -72,10 +72,12 @@ public class ExampleIT {
 
     // The Functions Framework Maven plugin process takes time to start up
     // Use resilience4j to retry the test HTTP request until the plugin responds
+    // See `retryOnResultPredicate` here: https://resilience4j.readme.io/docs/retry
     RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
         .maxAttempts(8)
         .intervalFunction(IntervalFunction.ofExponentialBackoff(200, 2))
         .retryExceptions(IOException.class)
+        .retryOnResult(body -> body.toString().length() == 0)
         .build());
     Retry retry = registry.retry("my");
 

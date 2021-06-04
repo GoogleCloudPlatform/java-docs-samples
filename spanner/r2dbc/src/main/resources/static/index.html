@@ -1,0 +1,104 @@
+<html>
+  <head>
+    <title>R2DBC Sample Application</title>
+
+    <script>
+      function createTable() {
+        setStatus("WAIT...");
+        fetch('/createTable', {method: 'POST'})
+          .then(response => response.text())
+          .then(status => setStatus(status));
+        return false;
+      }
+
+      function dropTable() {
+        setStatus("WAIT...");
+        fetch('/dropTable', {method: 'POST'})
+          .then(response => response.text())
+          .then(status => setStatus(status));
+        return false;
+      }
+
+      function listRows() {
+        setStatus("WAIT...");
+        fetch('/listRows')
+          .then(response => response.json())
+          .then(listOfRows => {
+            setStatus(listOfRows.map(row => row.name + " (" + row.uuid + ")").join("<br/>"))
+          });
+        return false;
+      }
+
+      function addRow() {
+        setStatus("WAIT...");
+        const name = document.getElementById('newName').value;
+        if (!name) {
+          setStatus("Please provide a non-empty name");
+          return false;
+        }
+        fetch('/addRow', {
+            method: 'POST',
+            body: name
+          })
+          .then(response => response.text())
+          .then(status => setStatus(status));
+        return false;
+      }
+
+      function deleteRow() {
+        setStatus("WAIT...");
+        const uuid = document.getElementById('uuid').value;
+        if (!uuid) {
+          setStatus("Please provide a non-empty uuid");
+          return false;
+        }
+        fetch('/deleteRow', {
+            method: 'POST',
+            body: uuid
+          })
+          .then(response => response.text())
+          .then(status => setStatus(status));
+        return false;
+      }
+
+      function setStatus(status) {
+        document.getElementById("status").innerHTML = status;
+      }
+    </script>
+
+    <style>
+      #status {
+        margin: 2em 0;
+        border: 1px solid green;
+      }
+
+      div { margin-top: 1em; }
+    </style>
+  </head>
+
+  <body>
+
+    <h2>Table actions</h2>
+    <div>
+      <button onClick="return createTable();">Create Table</button>
+    </div>
+    <div>
+      <button onClick="return dropTable();">Drop Table</button>
+    </div>
+
+    <h2>Row actions</h2>
+    <div>
+      <button onClick="return listRows();">List Rows</button>
+    </div>
+    <div>
+      Name: <input id="newName"/> <button onClick="return addRow();">Insert Row</button>
+    </div>
+    <div>
+      UUID: <input id="uuid"/> <button onClick="return deleteRow();">Delete Row</button>
+    </div>
+
+
+    <h2>Operation status</h2>
+    <div id="status"></div>
+  </body>
+</html>
