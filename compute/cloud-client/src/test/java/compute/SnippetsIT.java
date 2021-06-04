@@ -56,9 +56,9 @@ public class SnippetsIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     ZONE = "us-central1-a";
-    MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID().toString();
-    MACHINE_NAME_DELETE = "my-new-test-instance" + UUID.randomUUID().toString();
-    MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance" + UUID.randomUUID().toString();
+    MACHINE_NAME = "create-instance" + UUID.randomUUID().toString();
+    MACHINE_NAME_DELETE = "delete-instance" + UUID.randomUUID().toString();
+    MACHINE_NAME_LIST_INSTANCE = "list-all-instance" + UUID.randomUUID().toString();
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);

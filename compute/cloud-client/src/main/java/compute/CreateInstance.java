@@ -25,6 +25,7 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -87,13 +88,13 @@ public class CreateInstance {
       // timeout is set at 180000 or 3 minutes
       // the operation status will be fetched once in every 3 seconds to avoid spamming the api
       long startTime = System.currentTimeMillis();
-      while (response.getStatus() != Operation.Status.DONE
-          && System.currentTimeMillis() - startTime < 300000) {
+      while (response.getStatus() == Status.RUNNING
+          && System.currentTimeMillis() - startTime < 180000) {
         response = zoneOperationsClient.get(project, zone, response.getId());
         TimeUnit.SECONDS.sleep(3);
       }
 
-      if (response.getError().toString() != "") {
+      if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response.getError());
         return;
       }
