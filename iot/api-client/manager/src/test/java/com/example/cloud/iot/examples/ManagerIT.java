@@ -596,6 +596,7 @@ public class ManagerIT {
       "-device_id=" + deviceName,
       "-private_key_file=" + PKCS_PATH,
       "-message_type=state",
+      "-num_messages=10",
       "-algorithm=RS256"
     };
     com.example.cloud.iot.examples.MqttExample.main(testArgs);
