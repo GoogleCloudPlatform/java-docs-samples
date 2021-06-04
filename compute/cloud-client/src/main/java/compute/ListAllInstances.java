@@ -21,41 +21,42 @@ package compute;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.InstancesScopedList;
-
 import java.io.IOException;
 import java.util.Map;
 
 public class ListAllInstances {
 
-    public static void main(String[] args) throws IOException {
-        // TODO(developer): Replace these variables before running the sample
-        String project = "your-project-id";
-        listAllInstances(project);
-    }
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample
+    String project = "your-project-id";
+    listAllInstances(project);
+  }
 
-    // lists all instances available in the specified project id
-    public static void listAllInstances(String project) throws IOException {
-        // Initialize client that will be used to send requests. This client only needs to be created
-        // once, and can be reused for multiple requests. After completing all of your requests, call
-        // the "close" method on the client to safely clean up any remaining background resources.
-        try (InstancesClient instancesClient = InstancesClient.create()) {
-            // Listing all instances for the project
-            InstancesClient.AggregatedListPagedResponse response = instancesClient.aggregatedList(project);
-            for (Map.Entry<String, InstancesScopedList> zoneInstances : response.iterateAll()) {
-                // instances scoped by each zone
-                String zone = zoneInstances.getKey();
-                if (!zoneInstances.getValue().getInstancesList().isEmpty()) {
-                    // zoneInstances.getKey() returns the fully qualified address.
-                    // Hence, strip it to get the zone name only
-                    System.out.println(String.format("Instances at %s: ", zone.substring(zone.lastIndexOf('/') + 1)));
-                    for (Instance instance : zoneInstances.getValue().getInstancesList()) {
-                        System.out.println(instance.getName());
-                    }
-                }
-            }
-            System.out.println("####### Listing all instances complete #######");
+  // lists all instances available in the specified project id
+  public static void listAllInstances(String project) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+      // Listing all instances for the project
+      InstancesClient.AggregatedListPagedResponse response = instancesClient
+          .aggregatedList(project);
+      for (Map.Entry<String, InstancesScopedList> zoneInstances : response.iterateAll()) {
+        // instances scoped by each zone
+        String zone = zoneInstances.getKey();
+        if (!zoneInstances.getValue().getInstancesList().isEmpty()) {
+          // zoneInstances.getKey() returns the fully qualified address.
+          // Hence, strip it to get the zone name only
+          System.out.println(
+              String.format("Instances at %s: ", zone.substring(zone.lastIndexOf('/') + 1)));
+          for (Instance instance : zoneInstances.getValue().getInstancesList()) {
+            System.out.println(instance.getName());
+          }
         }
+      }
+      System.out.println("####### Listing all instances complete #######");
     }
+  }
 
 }
 // [END compute_instances_list_all]
