@@ -144,6 +144,7 @@
         <version>0.9.7</version>
         <configuration>
           <functionTarget>functions.HelloGcs</functionTarget>
+          <port>8082</port>
         </configuration>
       </plugin>
       <plugin>

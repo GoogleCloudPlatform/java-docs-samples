@@ -39,9 +39,14 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class ExampleIT {
+  // Each function must be assigned a unique port to run on.
+  // Otherwise, tests can flake when 2+ functions run simultaneously.
+  // This is also specified in the `function-maven-plugin` config in `pom.xml`.
+  private static final int PORT = 8081;
+
   // Root URL pointing to the locally hosted function
   // The Functions Framework Maven plugin lets us run a function locally
-  private static final String BASE_URL = "http://localhost:8080";
+  private static final String BASE_URL = "http://localhost:" + PORT;
 
   private static Process emulatorProcess = null;
   private static HttpClient client = HttpClient.newHttpClient();
