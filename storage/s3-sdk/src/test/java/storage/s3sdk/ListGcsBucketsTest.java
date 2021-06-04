@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
+package storage.s3sdk;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.ObjectListing;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
@@ -28,8 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
-public class ListGcsObjectsTest {
+public class ListGcsBucketsTest {
   private static final String BUCKET = System.getenv("GOOGLE_CLOUD_PROJECT_S3_SDK");
   private static final String KEY_ID = System.getenv("STORAGE_HMAC_ACCESS_KEY_ID");
   private static final String SECRET_KEY = System.getenv("STORAGE_HMAC_ACCESS_SECRET_KEY");
@@ -62,9 +62,9 @@ public class ListGcsObjectsTest {
   }
 
   @Test
-  public void testListObjects() throws Exception {
-    ListGcsObjects.listGcsObjects(KEY_ID, SECRET_KEY, BUCKET);
+  public void testListBucket() throws Exception {
+    ListGcsBuckets.listGcsBuckets(KEY_ID, SECRET_KEY);
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Objects:"));
+    assertThat(output, CoreMatchers.containsString("Buckets:"));
   }
 }
