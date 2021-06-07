@@ -16,19 +16,19 @@
 
 package storage.s3sdk;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.cloud.testing.junit4.StdOutCaptureRule;
+import java.util.Optional;
 import org.hamcrest.CoreMatchers;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
 public class ListGcsObjectsTest {
-  private static final String BUCKET = System.getenv("GOOGLE_CLOUD_PROJECT_S3_SDK");
+  private static final String BUCKET_ENV_VAR = "GOOGLE_CLOUD_PROJECT_S3_SDK_BUCKET_NAME";
+  private static final String BUCKET = System.getenv(BUCKET_ENV_VAR);
 
   @ClassRule public static final TestHmacKeyRule hmacKey = new TestHmacKeyRule();
 
@@ -36,22 +36,16 @@ public class ListGcsObjectsTest {
    * Hmac Keys can take a little bit of time to propagate. Run our test multiple times with some
    * backoff to try and allow for the propagation.
    */
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3, 5_000);
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3, 2_000);
 
   @Rule public final StdOutCaptureRule stdOut = new StdOutCaptureRule();
 
-  @BeforeClass
-  public static void checkRequirements() {
-    assertNotNull(
-        System.getenv("GOOGLE_CLOUD_PROJECT_S3_SDK"),
-        String.format(
-            "Environment variable '%s' is required to perform these tests.",
-            "GOOGLE_CLOUD_PROJECT_S3_SDK"));
-  }
-
   @Test
   public void testListObjects() {
-    ListGcsObjects.listGcsObjects(hmacKey.getAccessKeyId(), hmacKey.getAccessSecretKey(), BUCKET);
+    ListGcsObjects.listGcsObjects(
+        hmacKey.getAccessKeyId(),
+        hmacKey.getAccessSecretKey(),
+        Optional.ofNullable(BUCKET).orElse(hmacKey.getProjectId()));
     String output = stdOut.getCapturedOutputAsUtf8String();
     assertThat(output, CoreMatchers.containsString("Objects:"));
   }

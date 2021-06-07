@@ -38,6 +38,7 @@ public final class TestHmacKeyRule implements TestRule {
 
   private String accessKeyId;
   private String accessSecretKey;
+  private String projectId;
 
   @Override
   public Statement apply(Statement base, Description description) {
@@ -59,9 +60,8 @@ public final class TestHmacKeyRule implements TestRule {
           HmacKey hmacKey = storage.createHmacKey(serviceAccount);
           HmacKeyMetadata metadata = hmacKey.getMetadata();
           accessKeyId = metadata.getAccessId();
-          assertNotNull("metadata.getAccessId() was null", accessKeyId);
           accessSecretKey = hmacKey.getSecretKey();
-          assertNotNull("hmacKey.getSecretKey() was null", accessSecretKey);
+          projectId = metadata.getProjectId();
           try {
             base.evaluate();
           } finally {
@@ -79,5 +79,9 @@ public final class TestHmacKeyRule implements TestRule {
 
   public String getAccessSecretKey() {
     return accessSecretKey;
+  }
+
+  public String getProjectId() {
+    return projectId;
   }
 }

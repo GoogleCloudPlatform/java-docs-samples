@@ -38,7 +38,7 @@ Install [Maven](http://maven.apache.org/).
 
 1. Set the following environment variable with the default project for Interoperable Storage Access Keys.
 
-   * GOOGLE_CLOUD_PROJECT_S3_SDK=[GOOGLE_PROJECT_ID]
+   * GOOGLE_CLOUD_PROJECT_S3_SDK_BUCKET_NAME=[GOOGLE_PROJECT_ID]
 
 1. Run test using the following Maven command:
 
