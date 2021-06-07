@@ -145,6 +145,7 @@
         <version>0.9.7</version>
         <configuration>
           <functionTarget>functions.HelloPubSub</functionTarget>
+          <port>8083</port>
         </configuration>
       </plugin>
       <plugin>

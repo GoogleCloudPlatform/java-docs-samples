@@ -112,6 +112,7 @@
         <version>0.9.7</version>
         <configuration>
           <functionTarget>functions.HelloHttp</functionTarget>
+          <port>8081</port>
         </configuration>
       </plugin>
       <plugin>

@@ -45,9 +45,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ExampleIT {
+  // Each function must be assigned a unique port to run on.
+  // Otherwise, tests can flake when 2+ functions run simultaneously.
+  // This is also specified in the `function-maven-plugin` config in `pom.xml`.
+  private static final int PORT = 8083;
+
   // Root URL pointing to the locally hosted function
   // The Functions Framework Maven plugin lets us run a function locally
-  private static final String BASE_URL = "http://localhost:8080";
+  private static final String BASE_URL = "http://localhost:" + PORT;
 
   private static Process emulatorProcess = null;
   private static HttpClient client = HttpClientBuilder.create().build();
@@ -66,7 +71,15 @@ public class ExampleIT {
   }
 
   @AfterClass
-  public static void tearDown() {
+  public static void tearDown() throws IOException {
+
+    InputStream stdoutStream = emulatorProcess.getErrorStream();
+    ByteArrayOutputStream stdoutBytes = new ByteArrayOutputStream();
+    stdoutBytes.write(stdoutStream.readNBytes(stdoutStream.available()));
+
+    String result = stdoutBytes.toString(StandardCharsets.UTF_8);
+
+
     // Terminate the running Functions Framework Maven plugin process (if it's still running)
     if (emulatorProcess.isAlive()) {
       emulatorProcess.destroy();
@@ -89,7 +102,7 @@ public class ExampleIT {
     // The Functions Framework Maven plugin process takes time to start up
     // Use resilience4j to retry the test HTTP request until the plugin responds
     RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
-        .maxAttempts(8)
+        .maxAttempts(6)
         .retryExceptions(HttpHostConnectException.class)
         .retryOnResult(u -> {
           // Retry if the Functions Framework process has no stdout content
@@ -120,4 +133,3 @@ public class ExampleIT {
   }
 }
 // [END functions_pubsub_integration_test]
-
