@@ -59,7 +59,9 @@ public final class TestHmacKeyRule implements TestRule {
           HmacKey hmacKey = storage.createHmacKey(serviceAccount);
           HmacKeyMetadata metadata = hmacKey.getMetadata();
           accessKeyId = metadata.getAccessId();
+          assertNotNull("metadata.getAccessId() was null", accessKeyId);
           accessSecretKey = hmacKey.getSecretKey();
+          assertNotNull("hmacKey.getSecretKey() was null", accessSecretKey);
           try {
             base.evaluate();
           } finally {
