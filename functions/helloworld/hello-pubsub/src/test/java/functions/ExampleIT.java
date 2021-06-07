@@ -65,7 +65,7 @@ public class ExampleIT {
 
     // Emulate the function locally by running the Functions Framework Maven plugin
     emulatorProcess = new ProcessBuilder()
-        .command("/usr/local/bin/mvn", "function:run")
+        .command("mvn", "function:run")
         .directory(new File(baseDir))
         .start();
   }
@@ -133,4 +133,3 @@ public class ExampleIT {
   }
 }
 // [END functions_pubsub_integration_test]
-
