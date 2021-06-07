@@ -219,18 +219,19 @@ class LoadCsvExample {
     System.out.println("Data successfully written into table.");
   }
 
-  public static void loadCsv() throws Exception {
-    String projectId = "your-project-id";;
-    String instanceId = "your-instance-id";
-    String databaseId = "your-database-id";
-    String tableName = "your-table-name";
-    String filePath = "your-file-path";
-    String[] optFlags = {"your-opt-flag", "your-opt-arg"};
+  static void loadCsv() throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";;
+    String instanceId = "my-instance-id";
+    String databaseId = "my-database-id";
+    String tableName = "my-table-name";
+    String filePath = "my-file-path";
+    String[] optFlags = {"my-opt-flag", "my-opt-arg"};
     loadCsv(projectId, instanceId, databaseId, tableName,
         filePath, optFlags);
   }
 
-  public static void loadCsv(String projectId, String instanceId, String databaseId,
+  static void loadCsv(String projectId, String instanceId, String databaseId,
       String tableName, String filePath, String[] optFlags) throws Exception {
 
     // Initialize option flags
