@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google Inc.
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Value;
 import com.google.cloud.spanner.jdbc.CloudSpannerJdbcConnection;
+import com.google.spanner.v1.TypeCode;
 import java.io.FileReader;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -43,50 +44,33 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 /** Sample showing how to load CSV file data into Spanner */
-public class LoadCsvExample {
-  public static final String EXCEL = "EXCEL";
-  public static final String POSTGRESQL_CSV = "POSTGRESQL_CSV";
-  public static final String POSTGRESQL_TEXT = "POSTGRESQL_TEXT}";
+class LoadCsvExample {
+  static final String EXCEL = "EXCEL";
+  static final String POSTGRESQL_CSV = "POSTGRESQL_CSV";
+  static final String POSTGRESQL_TEXT = "POSTGRESQL_TEXT";
 
-  enum SpannerDataType {
-    STRING,
-    BYTES,
-    INT64,
-    FLOAT64,
-    DOUBLE,
-    LONG,
-    NUMERIC,
-    BOOL,
-    DATE,
-    TIMESTAMP
-  }
-
-  public static Boolean hasHeader = false;
-  public static Connection connection;
-  public static Map<String, SpannerDataType> tableColumns = new LinkedHashMap<>();
+  static Boolean hasHeader = false;
+  static Connection connection;
+  static Map<String, TypeCode> tableColumns = new LinkedHashMap<>();
 
   /** Return the data type of the column type **/
-  public static SpannerDataType parseSpannerDataType(String columnType) {
+  static TypeCode parseSpannerDataType(String columnType) {
     if (columnType.matches("(?i)STRING(?:\\((?:MAX|[0-9]+)\\))?")) {
-      return SpannerDataType.STRING;
+      return TypeCode.STRING;
     } else if (columnType.matches("(?i)BYTES(?:\\((?:MAX|[0-9]+)\\))?")) {
-      return SpannerDataType.BYTES;
+      return TypeCode.BYTES;
     } else if (columnType.equalsIgnoreCase("INT64")) {
-      return SpannerDataType.INT64;
+      return TypeCode.INT64;
     } else if (columnType.equalsIgnoreCase("FLOAT64")) {
-      return SpannerDataType.FLOAT64;
-    } else if (columnType.equalsIgnoreCase("DOUBLE")) {
-      return SpannerDataType.DOUBLE;
+      return TypeCode.FLOAT64;
     } else if (columnType.equalsIgnoreCase("NUMERIC")) {
-      return SpannerDataType.NUMERIC;
-    } else if (columnType.equalsIgnoreCase("LONG")) {
-      return SpannerDataType.LONG;
+      return TypeCode.NUMERIC;
     } else if (columnType.equalsIgnoreCase("BOOL")) {
-      return SpannerDataType.BOOL;
+      return TypeCode.BOOL;
     } else if (columnType.equalsIgnoreCase("DATE")) {
-      return SpannerDataType.DATE;
+      return TypeCode.DATE;
     } else if (columnType.equalsIgnoreCase("TIMESTAMP")) {
-      return SpannerDataType.TIMESTAMP;
+      return TypeCode.TIMESTAMP;
     } else {
       throw new IllegalArgumentException(
           "Unrecognized or unsupported column data type: " + columnType);
@@ -94,19 +78,19 @@ public class LoadCsvExample {
   }
 
   /** Query database for column names and types in the table **/
-  public static void parseTableColumns(String tableName) throws SQLException {
+  static void parseTableColumns(String tableName) throws SQLException {
     ResultSet spannerType = connection.createStatement()
         .executeQuery("SELECT column_name, spanner_type FROM information_schema.columns "
             + "WHERE table_name = \"" + tableName + "\" ORDER BY ordinal_position");
     while (spannerType.next()) {
       String columnName = spannerType.getString("column_name");
-      SpannerDataType type = parseSpannerDataType(spannerType.getString("spanner_type"));
+      TypeCode type = parseSpannerDataType(spannerType.getString("spanner_type"));
       tableColumns.put(columnName, type);
     }
   }
 
   /** Check that CSV file headers exist as a table column name **/
-  public static boolean isValidHeader(CSVParser parser) {
+  static boolean isValidHeader(CSVParser parser) {
     List<String> csvHeaders = parser.getHeaderNames();
     for (String csvHeader : csvHeaders) {
       if (!tableColumns.containsKey(csvHeader)) {
@@ -167,17 +151,17 @@ public class LoadCsvExample {
 
   /** Verifies that if file has a header, that the record is mapped to a column header name
    * and that the record itself is not null **/
-  public static boolean validHeaderField(CSVRecord record, String columnName) {
+  static boolean validHeaderField(CSVRecord record, String columnName) {
     return hasHeader && record.isMapped(columnName) && record.get(columnName) != null;
   }
 
   /** Verifies that if the file has no header, that the record at the given index is not null **/
-  public static boolean validNonHeaderField(CSVRecord record, int index) {
+  static boolean validNonHeaderField(CSVRecord record, int index) {
     return !hasHeader && record.get(index) != null;
   }
 
   /** Write CSV file data to Spanner using JDBC Mutation API **/
-  public static void writeToSpanner(Iterable<CSVRecord> records, String tableName, CommandLine cmd)
+  static void writeToSpanner(Iterable<CSVRecord> records, String tableName)
       throws SQLException {
     System.out.println("Writing data into table...");
     List<Mutation> mutations = new ArrayList<>();
@@ -186,7 +170,7 @@ public class LoadCsvExample {
       WriteBuilder builder = Mutation.newInsertOrUpdateBuilder(tableName);
       for (String columnName : tableColumns.keySet()) {
         // Iterates through columns in order. Assumes in order columns when no headers provided.
-        SpannerDataType columnType = tableColumns.get(columnName);
+        TypeCode columnType = tableColumns.get(columnName);
         String recordValue = null;
         if (validHeaderField(record, columnName)) {
           recordValue = record.get(columnName).trim();
@@ -211,15 +195,9 @@ public class LoadCsvExample {
             case BOOL:
               builder.set(columnName).to(Boolean.parseBoolean(recordValue));
               break;
-            case DOUBLE:
-              builder.set(columnName).to(Double.parseDouble(recordValue));
-              break;
             case NUMERIC:
               builder.set(columnName).to(Value.numeric(BigDecimal.valueOf(
                   Double.parseDouble(recordValue))));
-              break;
-            case LONG:
-              builder.set(columnName).to(Long.parseLong(recordValue));
               break;
             case DATE:
               builder.set(columnName).to(com.google.cloud.Date.parseDate(recordValue));
@@ -241,7 +219,18 @@ public class LoadCsvExample {
     System.out.println("Data successfully written into table.");
   }
 
-  static void loadCsv(String projectId, String instanceId, String databaseId, String tableName,
+  public static void loadCsv() throws Exception {
+    String projectId = "your-project-id";;
+    String instanceId = "your-instance-id";
+    String databaseId = "your-database-id";
+    String tableName = "your-table-name";
+    String filePath = "your-file-path";
+    String[] optFlags = {"your-opt-flag", "your-opt-arg"};
+    loadCsv(projectId, instanceId, databaseId, tableName,
+        filePath, optFlags);
+  }
+
+  public static void loadCsv(String projectId, String instanceId, String databaseId, String tableName,
       String filePath, String[] optFlags) throws Exception {
 
     // Initialize option flags
@@ -258,28 +247,31 @@ public class LoadCsvExample {
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
 
-    try {
-      // Initialize connection to Cloud Spanner
-      connection = DriverManager.getConnection(
-          String.format(
-              "jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
-              projectId, instanceId, databaseId));
+    // Initialize connection to Cloud Spanner
+    try (
+        Connection conn = DriverManager.getConnection(
+            String.format("jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
+            projectId, instanceId, databaseId));
+        Reader in = new FileReader(filePath)
+    ) {
 
+      connection = conn;
       parseTableColumns(tableName);
-      Reader in = new FileReader(filePath);
       CSVFormat parseFormat = setFormat(cmd);
-      CSVParser parser = CSVParser.parse(in, parseFormat);
 
-      // If file has header, verify that header fields are valid
-      if (hasHeader && !isValidHeader(parser)) {
-        return;
-      }
-
-      // Write CSV record data to Cloud Spanner
-      try {
-        writeToSpanner(parser, tableName, cmd);
-      } catch (SQLException e) {
-        System.out.println(e.getMessage());
+      try (CSVParser parser = CSVParser.parse(in, parseFormat)) {
+        // If file has header, verify that header fields are valid
+        if (hasHeader && !isValidHeader(parser)) {
+          return;
+        }
+        // Write CSV record data to Cloud Spanner
+        try {
+          writeToSpanner(parser, tableName);
+        } catch (SQLException e) {
+          /* SQLExceptions are thrown when the table name cannot be queried for in the database
+          or the connection established does not have permissions to write data into the table */
+          System.out.println(e.getMessage());
+        }
       }
     } finally {
       spanner.close();
