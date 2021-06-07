@@ -19,54 +19,40 @@ package storage.s3sdk;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.ObjectListing;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.List;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+import com.google.cloud.testing.junit4.StdOutCaptureRule;
 import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-
 
 public class ListGcsObjectsTest {
   private static final String BUCKET = System.getenv("GOOGLE_CLOUD_PROJECT_S3_SDK");
-  private static final String KEY_ID = System.getenv("STORAGE_HMAC_ACCESS_KEY_ID");
-  private static final String SECRET_KEY = System.getenv("STORAGE_HMAC_ACCESS_SECRET_KEY");
-  private ByteArrayOutputStream bout;
 
-  private static void requireEnvVar(String varName) {
-    assertNotNull(
-        System.getenv(varName),
-        "Environment variable '%s' is required to perform these tests.".format(varName)
-    );
-  }
+  @ClassRule public static final TestHmacKeyRule hmacKey = new TestHmacKeyRule();
+
+  /**
+   * Hmac Keys can take a little bit of time to propagate. Run our test multiple times with some
+   * backoff to try and allow for the propagation.
+   */
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3, 5_000);
+
+  @Rule public final StdOutCaptureRule stdOut = new StdOutCaptureRule();
 
   @BeforeClass
   public static void checkRequirements() {
-    requireEnvVar("GOOGLE_CLOUD_PROJECT_S3_SDK");
-    requireEnvVar("STORAGE_HMAC_ACCESS_KEY_ID");
-    requireEnvVar("STORAGE_HMAC_ACCESS_SECRET_KEY");
-  }
-
-  @Before
-  public void beforeTest() {
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
-  }
-
-  @After
-  public void tearDown() {
-    System.setOut(null);
-    bout.reset();
+    assertNotNull(
+        System.getenv("GOOGLE_CLOUD_PROJECT_S3_SDK"),
+        String.format(
+            "Environment variable '%s' is required to perform these tests.",
+            "GOOGLE_CLOUD_PROJECT_S3_SDK"));
   }
 
   @Test
-  public void testListObjects() throws Exception {
-    ListGcsObjects.listGcsObjects(KEY_ID, SECRET_KEY, BUCKET);
-    String output = bout.toString();
+  public void testListObjects() {
+    ListGcsObjects.listGcsObjects(hmacKey.getAccessKeyId(), hmacKey.getAccessSecretKey(), BUCKET);
+    String output = stdOut.getCapturedOutputAsUtf8String();
     assertThat(output, CoreMatchers.containsString("Objects:"));
   }
 }
