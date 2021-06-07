@@ -230,8 +230,8 @@ class LoadCsvExample {
         filePath, optFlags);
   }
 
-  public static void loadCsv(String projectId, String instanceId, String databaseId, String tableName,
-      String filePath, String[] optFlags) throws Exception {
+  public static void loadCsv(String projectId, String instanceId, String databaseId,
+      String tableName, String filePath, String[] optFlags) throws Exception {
 
     // Initialize option flags
     Options opt = new Options();
