@@ -53,6 +53,17 @@ class LoadCsvExample {
   static Connection connection;
   static Map<String, TypeCode> tableColumns = new LinkedHashMap<>();
 
+  static void loadCsv() throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";;
+    String instanceId = "my-instance-id";
+    String databaseId = "my-database-id";
+    String tableName = "my-table-name";
+    String filePath = "my-file-path";
+    String[] optFlags = {"my-opt-flag", "my-opt-arg"};
+    loadCsv(projectId, instanceId, databaseId, tableName, filePath, optFlags);
+  }
+
   /** Return the data type of the column type **/
   static TypeCode parseSpannerDataType(String columnType) {
     if (columnType.matches("(?i)STRING(?:\\((?:MAX|[0-9]+)\\))?")) {
@@ -219,20 +230,11 @@ class LoadCsvExample {
     System.out.println("Data successfully written into table.");
   }
 
-  static void loadCsv() throws Exception {
-    // TODO(developer): Replace these variables before running the sample.
-    String projectId = "my-project-id";;
-    String instanceId = "my-instance-id";
-    String databaseId = "my-database-id";
-    String tableName = "my-table-name";
-    String filePath = "my-file-path";
-    String[] optFlags = {"my-opt-flag", "my-opt-arg"};
-    loadCsv(projectId, instanceId, databaseId, tableName,
-        filePath, optFlags);
-  }
-
   static void loadCsv(String projectId, String instanceId, String databaseId,
       String tableName, String filePath, String[] optFlags) throws Exception {
+
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
 
     // Initialize option flags
     Options opt = new Options();
@@ -245,35 +247,31 @@ class LoadCsvExample {
     CommandLineParser clParser = new DefaultParser();
     CommandLine cmd = clParser.parse(opt, optFlags);
 
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    Spanner spanner = options.getService();
-
+    try {
     // Initialize connection to Cloud Spanner
-    try (
-        Connection conn = DriverManager.getConnection(
-            String.format("jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
+    Connection connection = DriverManager.getConnection(
+        String.format("jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
             projectId, instanceId, databaseId));
-        Reader in = new FileReader(filePath)
-    ) {
+    parseTableColumns(tableName);
 
-      connection = conn;
-      parseTableColumns(tableName);
-      CSVFormat parseFormat = setFormat(cmd);
-
-      try (CSVParser parser = CSVParser.parse(in, parseFormat)) {
+      try (
+          Reader in = new FileReader(filePath);
+          CSVParser parser = CSVParser.parse(in, setFormat(cmd));
+      ) {
         // If file has header, verify that header fields are valid
         if (hasHeader && !isValidHeader(parser)) {
           return;
         }
+
         // Write CSV record data to Cloud Spanner
-        try {
-          writeToSpanner(parser, tableName);
-        } catch (SQLException e) {
+        writeToSpanner(parser, tableName);
+
+      } catch (SQLException e) {
           /* SQLExceptions are thrown when the table name cannot be queried for in the database
-          or the connection established does not have permissions to write data into the table */
-          System.out.println(e.getMessage());
-        }
+           or the connection established does not have permissions to write data into the table */
+        System.out.println(e.getMessage());
       }
+
     } finally {
       spanner.close();
       connection.close();
