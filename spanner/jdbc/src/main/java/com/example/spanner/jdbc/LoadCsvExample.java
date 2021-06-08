@@ -83,7 +83,7 @@ class LoadCsvExample {
 
     try {
       // Initialize connection to Cloud Spanner
-      Connection connection = DriverManager.getConnection(
+      connection = DriverManager.getConnection(
           String.format("jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
               projectId, instanceId, databaseId));
       parseTableColumns(tableName);
