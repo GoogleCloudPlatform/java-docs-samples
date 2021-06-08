@@ -8,6 +8,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.cloud.workflows.v1.WorkflowName;
+
+import java.io.IOException;
+
 import static com.example.workflows.WorkflowsQuickstart.workflowsQuickstart;
 import static org.junit.Assert.*;
 
@@ -31,55 +34,49 @@ public class WorkflowsQuickstartTest {
     }
 
     @Test
-    public void testQuickstart() {
+    public void testQuickstart() throws IOException, InterruptedException {
         System.out.println("testing!!");
-        System.out.println("testing!!");
-        System.out.println("testing!!");
-        System.out.println("testing!!");
-        System.out.println("testing!!");
+
         // Deploy the workflow
         deployWorkflow(projectId, LOCATION_ID, WORKFLOW_ID);
 
         // Run the workflow we deployed
-//        String res = workflowsQuickstart(projectId, LOCATION_ID, WORKFLOW_ID);
-//
-//        // A very basic assertion that we have some result.
-//        assertNotNull("Result should not be null", res);
-//        assertNotEquals("Result should not be empty", res, "");
+        String res = workflowsQuickstart(projectId, LOCATION_ID, WORKFLOW_ID);
+
+        // A very basic assertion that we have some result.
+        assertNotNull("Result should not be null", res);
+        assertNotEquals("Result should not be empty", res, "");
     }
 
-    private boolean deployWorkflow(String projectId, String location, String workflowId) {
+    private boolean deployWorkflow(String projectId, String location, String workflowId) throws IOException, InterruptedException {
         // Create a new workflow if it doesn't exist
         if (!workflowExists(projectId, location, workflowId)) {
             System.out.println("START DEPLOY");
-            try (WorkflowsClient workflowsClient = WorkflowsClient.create()) {
-                // Deploy workflow
-                Workflow workflow = Workflow.newBuilder()
-                        .setName(workflowId)
-                        .setSourceContents(WORKFLOW_SOURCE)
-                        .build();
-                workflowsClient.createWorkflowAsync(location, workflow, workflowId);
+            WorkflowsClient workflowsClient = WorkflowsClient.create();
+            // Deploy workflow
+            Workflow workflow = Workflow.newBuilder()
+                    .setName(workflowId)
+                    .setSourceContents(WORKFLOW_SOURCE)
+                    .build();
+            workflowsClient.createWorkflowAsync(location, workflow, workflowId);
 
-                // Wait until workflow is active
-                Workflow deployedWorkflow = null;
+            // Wait until workflow is active
+            Workflow deployedWorkflow = null;
 
-                System.out.println("DEPLOY START");
-                // Wait for the deployment to finish
-                do {
-                    System.out.println("SLEEP");
-                    deployedWorkflow = workflowsClient.getWorkflow(WorkflowName.newBuilder()
-                            .setProject(projectId)
-                            .setLocation(location)
-                            .setWorkflow(workflowId)
-                            .build());
-                    Thread.sleep(2_000);
-                } while (deployedWorkflow == null || deployedWorkflow.getState().equals(Workflow.State.ACTIVE));
+            System.out.println("DEPLOY START");
+            // Wait for the deployment to finish
+            do {
+                System.out.println("SLEEP");
+                deployedWorkflow = workflowsClient.getWorkflow(WorkflowName.newBuilder()
+                        .setProject(projectId)
+                        .setLocation(location)
+                        .setWorkflow(workflowId)
+                        .build());
+                Thread.sleep(2_000);
+            } while (deployedWorkflow == null || deployedWorkflow.getState().equals(Workflow.State.ACTIVE));
 
-                // Return true if the workflow is now active
-                return deployedWorkflow.getState() != Workflow.State.ACTIVE;
-            } catch (Exception e) {
-                System.out.printf("Error deploying workflow: %s\n", e);
-            }
+            // Return true if the workflow is now active
+            return deployedWorkflow.getState() != Workflow.State.ACTIVE;
         }
         return false;
     }
