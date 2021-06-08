@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google Inc.
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,12 @@ package com.example.workflows;
 
 // Imports the Google Cloud client library
 
+import com.google.cloud.workflows.executions.v1.CreateExecutionRequest;
 import com.google.cloud.workflows.executions.v1.Execution;
 import com.google.cloud.workflows.executions.v1.ExecutionsClient;
 import com.google.cloud.workflows.executions.v1.WorkflowName;
+
+import java.io.IOException;
 
 /**
  * Cloud Workflows API sample. Executes a workflow and waits for results.
@@ -35,11 +38,13 @@ public class WorkflowsQuickstart {
   private static String LOCATION = System.getenv("LOCATION");
   private static String WORKFLOW = System.getenv("WORKFLOW");
 
-  public static String workflowsQuickstart(String projectId, String location, String workflow) {
+  public static String workflowsQuickstart(String projectId, String location, String workflow) throws InterruptedException, IOException {
     // Execute workflow
     try (ExecutionsClient workflowExecutionsClient = ExecutionsClient.create()) {
       WorkflowName parent = WorkflowName.of(projectId, location, workflow);
       Execution initialExecution = Execution.newBuilder().build();
+
+      // Creates the execution object.
       Execution createExecutionRes = workflowExecutionsClient
           .createExecution(parent, initialExecution);
 
@@ -49,10 +54,16 @@ public class WorkflowsQuickstart {
       // Wait for execution to finish, then print results.
       boolean executionFinished = false;
       long backoffDelay = 1_000; // Start wait with delay of 1,000 ms
+      final long BACKOFF_TIMEOUT = 10 * 60_000; // Time out at 10 minutes
       System.out.println("Poll for results...");
       while (!executionFinished) {
         Execution execution = workflowExecutionsClient.getExecution(executionName);
         executionFinished = execution.getState() != Execution.State.ACTIVE;
+
+        // We've passed the max
+        if (backoffDelay > BACKOFF_TIMEOUT) {
+          return "";
+        }
 
         // If we haven't seen the results yet, wait.
         if (!executionFinished) {
@@ -65,18 +76,14 @@ public class WorkflowsQuickstart {
           return execution.getResult();
         }
       }
-      // This return is never reached.
-      return "";
-    } catch (Exception e) {
-      System.out.printf("Error executing workflow: %s%n", e);
-      return "";
     }
+    return "";
   }
 
   /**
    * Demonstrates using the Workflows API.
    */
-  public static void main(String... args) {
+  public static void main(String... args) throws IOException, InterruptedException {
     if (GOOGLE_CLOUD_PROJECT.isEmpty()) {
       System.out.println("GOOGLE_CLOUD_PROJECT is empty");
     }

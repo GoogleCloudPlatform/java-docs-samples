@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google Inc.
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,14 @@ import static com.example.workflows.WorkflowsQuickstart.workflowsQuickstart;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.workflows.v1.OperationMetadata;
 import com.google.cloud.workflows.v1.Workflow;
 import com.google.cloud.workflows.v1.WorkflowName;
 import com.google.cloud.workflows.v1.WorkflowsClient;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -48,9 +52,7 @@ public class WorkflowsQuickstartTest {
   }
 
   @Test
-  public void testQuickstart() throws IOException, InterruptedException {
-    System.out.println("testing!!");
-
+  public void testQuickstart() throws IOException, InterruptedException, ExecutionException {
     // Deploy the workflow
     deployWorkflow(projectId, LOCATION_ID, WORKFLOW_ID);
 
@@ -63,9 +65,9 @@ public class WorkflowsQuickstartTest {
   }
 
   private boolean deployWorkflow(String projectId, String location, String workflowId)
-          throws IOException, InterruptedException {
+          throws IOException, InterruptedException, ExecutionException {
     // Create a new workflow if it doesn't exist
-    if (!workflowExists(projectId, location, workflowId)) {
+//    if (!workflowExists(projectId, location, workflowId)) {
       System.out.println("START DEPLOY");
       WorkflowsClient workflowsClient = WorkflowsClient.create();
       // Deploy workflow
@@ -73,7 +75,6 @@ public class WorkflowsQuickstartTest {
           .setName(workflowId)
           .setSourceContents(WORKFLOW_SOURCE)
           .build();
-      workflowsClient.createWorkflowAsync(location, workflow, workflowId);
 
       // Wait until workflow is active
       Workflow deployedWorkflow = null;
@@ -93,8 +94,6 @@ public class WorkflowsQuickstartTest {
 
       // Return true if the workflow is now active
       return deployedWorkflow.getState() != Workflow.State.ACTIVE;
-    }
-    return false;
   }
 
   /**
