@@ -1,18 +1,31 @@
+/*
+ * Copyright 2021 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.workflows;
 
-import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.workflows.v1.OperationMetadata;
+import static com.example.workflows.WorkflowsQuickstart.workflowsQuickstart;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+
 import com.google.cloud.workflows.v1.Workflow;
+import com.google.cloud.workflows.v1.WorkflowName;
 import com.google.cloud.workflows.v1.WorkflowsClient;
+import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.google.cloud.workflows.v1.WorkflowName;
-
-import java.io.IOException;
-
-import static com.example.workflows.WorkflowsQuickstart.workflowsQuickstart;
-import static org.junit.Assert.*;
 
 public class WorkflowsQuickstartTest {
 
@@ -29,7 +42,8 @@ public class WorkflowsQuickstartTest {
     final String ENV_GOOGLE_CLOUD_PROJECT = "GOOGLE_CLOUD_PROJECT";
     projectId = System.getenv(ENV_GOOGLE_CLOUD_PROJECT);
     assertNotNull(
-        String.format("Environment variable '%s' is required to perform these tests.", ENV_GOOGLE_CLOUD_PROJECT),
+        String.format("Environment variable '%s' is required to perform these tests.",
+                ENV_GOOGLE_CLOUD_PROJECT),
         projectId);
   }
 
@@ -48,7 +62,8 @@ public class WorkflowsQuickstartTest {
     assertNotEquals("Result should not be empty", res, "");
   }
 
-  private boolean deployWorkflow(String projectId, String location, String workflowId) throws IOException, InterruptedException {
+  private boolean deployWorkflow(String projectId, String location, String workflowId)
+          throws IOException, InterruptedException {
     // Create a new workflow if it doesn't exist
     if (!workflowExists(projectId, location, workflowId)) {
       System.out.println("START DEPLOY");
@@ -73,7 +88,8 @@ public class WorkflowsQuickstartTest {
             .setWorkflow(workflowId)
             .build());
         Thread.sleep(2_000);
-      } while (deployedWorkflow == null || deployedWorkflow.getState().equals(Workflow.State.ACTIVE));
+      } while (deployedWorkflow == null
+              || deployedWorkflow.getState().equals(Workflow.State.ACTIVE));
 
       // Return true if the workflow is now active
       return deployedWorkflow.getState() != Workflow.State.ACTIVE;
@@ -83,6 +99,7 @@ public class WorkflowsQuickstartTest {
 
   /**
    * Returns true if the workflow exists.
+   *
    * @return {boolean} True if the workflow exists already.
    */
   private boolean workflowExists(String projectId, String location, String workflow) {

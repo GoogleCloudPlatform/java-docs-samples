@@ -77,7 +77,9 @@ public class WorkflowsQuickstart {
    * Demonstrates using the Workflows API.
    */
   public static void main(String... args) {
-    if (GOOGLE_CLOUD_PROJECT.isEmpty()) System.out.println("GOOGLE_CLOUD_PROJECT is empty");
+    if (GOOGLE_CLOUD_PROJECT.isEmpty()) {
+      System.out.println("GOOGLE_CLOUD_PROJECT is empty");
+    }
     if (LOCATION == null || LOCATION.isEmpty()) {
       LOCATION = "us-central1";
     }
