@@ -21,11 +21,6 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.gson.Gson;
-import io.github.resilience4j.core.IntervalFunction;
-import io.github.resilience4j.retry.Retry;
-import io.github.resilience4j.retry.RetryConfig;
-import io.github.resilience4j.retry.RetryRegistry;
-import io.vavr.CheckedRunnable;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +38,12 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import io.github.resilience4j.core.IntervalFunction;
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryConfig;
+import io.github.resilience4j.retry.RetryRegistry;
+import io.vavr.CheckedRunnable;
 
 public class ExampleIT {
   // Each function must be assigned a unique port to run on.
@@ -73,17 +74,16 @@ public class ExampleIT {
   @AfterClass
   public static void tearDown() throws IOException {
 
-    InputStream stdoutStream = emulatorProcess.getErrorStream();
-    ByteArrayOutputStream stdoutBytes = new ByteArrayOutputStream();
-    stdoutBytes.write(stdoutStream.readNBytes(stdoutStream.available()));
-
-    String result = stdoutBytes.toString(StandardCharsets.UTF_8);
-
-
     // Terminate the running Functions Framework Maven plugin process (if it's still running)
     if (emulatorProcess.isAlive()) {
       emulatorProcess.destroy();
     }
+
+    // Display the output of the plugin process
+    InputStream stdoutStream = emulatorProcess.getInputStream();
+    ByteArrayOutputStream stdoutBytes = new ByteArrayOutputStream();
+    stdoutBytes.write(stdoutStream.readNBytes(stdoutStream.available()));
+    System.out.println(stdoutBytes.toString(StandardCharsets.UTF_8));
   }
 
   @Test
