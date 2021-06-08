@@ -64,6 +64,54 @@ class LoadCsvExample {
     loadCsv(projectId, instanceId, databaseId, tableName, filePath, optFlags);
   }
 
+  static void loadCsv(String projectId, String instanceId, String databaseId,
+      String tableName, String filePath, String[] optFlags) throws Exception {
+
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
+
+    // Initialize option flags
+    Options opt = new Options();
+    opt.addOption("h", true, "File Contains Header");
+    opt.addOption("f", true, "Format Type of Input File "
+        + "(EXCEL, POSTGRESQL_CSV, POSTGRESQL_TEXT, DEFAULT)");
+    opt.addOption("n", true, "String Representing Null Value");
+    opt.addOption("d", true, "Character Separating Columns");
+    opt.addOption("e", true, "Character To Escape");
+    CommandLineParser clParser = new DefaultParser();
+    CommandLine cmd = clParser.parse(opt, optFlags);
+
+    try {
+      // Initialize connection to Cloud Spanner
+      Connection connection = DriverManager.getConnection(
+          String.format("jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
+              projectId, instanceId, databaseId));
+      parseTableColumns(tableName);
+
+      try (
+          Reader in = new FileReader(filePath);
+          CSVParser parser = CSVParser.parse(in, setFormat(cmd));
+      ) {
+        // If file has header, verify that header fields are valid
+        if (hasHeader && !isValidHeader(parser)) {
+          return;
+        }
+
+        // Write CSV record data to Cloud Spanner
+        writeToSpanner(parser, tableName);
+
+      } catch (SQLException e) {
+        /* SQLExceptions are thrown when the table name cannot be queried for in the database
+           or the connection established does not have permissions to write data into the table */
+        System.out.println(e.getMessage());
+      }
+
+    } finally {
+      spanner.close();
+      connection.close();
+    }
+  }
+
   /** Return the data type of the column type **/
   static TypeCode parseSpannerDataType(String columnType) {
     if (columnType.matches("(?i)STRING(?:\\((?:MAX|[0-9]+)\\))?")) {
@@ -228,54 +276,6 @@ class LoadCsvExample {
     spannerConnection.write(mutations);
     spannerConnection.close();
     System.out.println("Data successfully written into table.");
-  }
-
-  static void loadCsv(String projectId, String instanceId, String databaseId,
-      String tableName, String filePath, String[] optFlags) throws Exception {
-
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    Spanner spanner = options.getService();
-
-    // Initialize option flags
-    Options opt = new Options();
-    opt.addOption("h", true, "File Contains Header");
-    opt.addOption("f", true, "Format Type of Input File "
-        + "(EXCEL, POSTGRESQL_CSV, POSTGRESQL_TEXT, DEFAULT)");
-    opt.addOption("n", true, "String Representing Null Value");
-    opt.addOption("d", true, "Character Separating Columns");
-    opt.addOption("e", true, "Character To Escape");
-    CommandLineParser clParser = new DefaultParser();
-    CommandLine cmd = clParser.parse(opt, optFlags);
-
-    try {
-    // Initialize connection to Cloud Spanner
-    Connection connection = DriverManager.getConnection(
-        String.format("jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
-            projectId, instanceId, databaseId));
-    parseTableColumns(tableName);
-
-      try (
-          Reader in = new FileReader(filePath);
-          CSVParser parser = CSVParser.parse(in, setFormat(cmd));
-      ) {
-        // If file has header, verify that header fields are valid
-        if (hasHeader && !isValidHeader(parser)) {
-          return;
-        }
-
-        // Write CSV record data to Cloud Spanner
-        writeToSpanner(parser, tableName);
-
-      } catch (SQLException e) {
-          /* SQLExceptions are thrown when the table name cannot be queried for in the database
-           or the connection established does not have permissions to write data into the table */
-        System.out.println(e.getMessage());
-      }
-
-    } finally {
-      spanner.close();
-      connection.close();
-    }
   }
 }
 //[END spanner_jdbc_load_csv]
