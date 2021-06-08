@@ -31,59 +31,60 @@ import com.google.cloud.workflows.executions.v1.WorkflowName;
  * mvn package exec:java -Dexec.mainClass='com.example.workflows.WorkflowsQuickstart'
  */
 public class WorkflowsQuickstart {
-    private static final String GOOGLE_CLOUD_PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
-    private static String LOCATION = System.getenv("LOCATION");
-    private static String WORKFLOW = System.getenv("WORKFLOW");
+  private static final String GOOGLE_CLOUD_PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static String LOCATION = System.getenv("LOCATION");
+  private static String WORKFLOW = System.getenv("WORKFLOW");
 
-    public static String workflowsQuickstart(String projectId, String location, String workflow) {
-        // Execute workflow
-        try (ExecutionsClient workflowExecutionsClient = ExecutionsClient.create()) {
-            WorkflowName parent = WorkflowName.of(projectId, location, workflow);
-            Execution initialExecution = Execution.newBuilder().build();
-            Execution createExecutionRes = workflowExecutionsClient.createExecution(parent, initialExecution);
+  public static String workflowsQuickstart(String projectId, String location, String workflow) {
+    // Execute workflow
+    try (ExecutionsClient workflowExecutionsClient = ExecutionsClient.create()) {
+      WorkflowName parent = WorkflowName.of(projectId, location, workflow);
+      Execution initialExecution = Execution.newBuilder().build();
+      Execution createExecutionRes = workflowExecutionsClient
+          .createExecution(parent, initialExecution);
 
-            String executionName = createExecutionRes.getName();
-            System.out.printf("Created execution: %s\n", executionName);
+      String executionName = createExecutionRes.getName();
+      System.out.printf("Created execution: %s%n", executionName);
 
-            // Wait for execution to finish, then print results.
-            boolean executionFinished = false;
-            long backoffDelay = 1_000; // Start wait with delay of 1,000 ms
-            System.out.println("Poll for results...");
-            while (!executionFinished) {
-                Execution execution = workflowExecutionsClient.getExecution(executionName);
-                executionFinished = execution.getState() != Execution.State.ACTIVE;
+      // Wait for execution to finish, then print results.
+      boolean executionFinished = false;
+      long backoffDelay = 1_000; // Start wait with delay of 1,000 ms
+      System.out.println("Poll for results...");
+      while (!executionFinished) {
+        Execution execution = workflowExecutionsClient.getExecution(executionName);
+        executionFinished = execution.getState() != Execution.State.ACTIVE;
 
-                // If we haven't seen the results yet, wait.
-                if (!executionFinished) {
-                    System.out.println("- Waiting for results");
-                    Thread.sleep(backoffDelay);
-                    backoffDelay *= 2; // Double the delay to provide exponential backoff.
-                } else {
-                    System.out.printf("Execution finished with state: %s\n", execution.getState().name());
-                    System.out.println(execution.getResult());
-                    return execution.getResult();
-                }
-            }
-            // This return is never reached.
-            return "";
-        } catch (Exception e) {
-            System.out.printf("Error executing workflow: %s\n", e);
-            return "";
+        // If we haven't seen the results yet, wait.
+        if (!executionFinished) {
+          System.out.println("- Waiting for results");
+          Thread.sleep(backoffDelay);
+          backoffDelay *= 2; // Double the delay to provide exponential backoff.
+        } else {
+          System.out.printf("Execution finished with state: %s%n", execution.getState().name());
+          System.out.println(execution.getResult());
+          return execution.getResult();
         }
+      }
+      // This return is never reached.
+      return "";
+    } catch (Exception e) {
+      System.out.printf("Error executing workflow: %s%n", e);
+      return "";
     }
+  }
 
-    /**
-     * Demonstrates using the Workflows API.
-     */
-    public static void main(String... args) {
-        if (GOOGLE_CLOUD_PROJECT.isEmpty()) System.out.println("GOOGLE_CLOUD_PROJECT is empty");
-        if (LOCATION == null || LOCATION.isEmpty()) {
-            LOCATION = "us-central1";
-        }
-        if (WORKFLOW == null || WORKFLOW.isEmpty()) {
-            WORKFLOW = "myFirstWorkflow";
-        }
-        workflowsQuickstart(GOOGLE_CLOUD_PROJECT, LOCATION, WORKFLOW);
+  /**
+   * Demonstrates using the Workflows API.
+   */
+  public static void main(String... args) {
+    if (GOOGLE_CLOUD_PROJECT.isEmpty()) System.out.println("GOOGLE_CLOUD_PROJECT is empty");
+    if (LOCATION == null || LOCATION.isEmpty()) {
+      LOCATION = "us-central1";
     }
+    if (WORKFLOW == null || WORKFLOW.isEmpty()) {
+      WORKFLOW = "myFirstWorkflow";
+    }
+    workflowsQuickstart(GOOGLE_CLOUD_PROJECT, LOCATION, WORKFLOW);
+  }
 }
 // [END workflows_api_quickstart]
