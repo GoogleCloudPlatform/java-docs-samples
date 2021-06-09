@@ -24,8 +24,10 @@ import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -65,8 +67,16 @@ public class ExampleIT {
 
   @AfterClass
   public static void tearDown() throws IOException {
+    // Display the output of the plugin process
+    InputStream stdoutStream = emulatorProcess.getInputStream();
+    ByteArrayOutputStream stdoutBytes = new ByteArrayOutputStream();
+    stdoutBytes.write(stdoutStream.readNBytes(stdoutStream.available()));
+    System.out.println(stdoutBytes.toString(StandardCharsets.UTF_8));
+
     // Terminate the running Functions Framework Maven plugin process
-    emulatorProcess.destroy();
+    if (emulatorProcess.isAlive()) {
+      emulatorProcess.destroy();
+    }
   }
 
   @Test

@@ -70,7 +70,13 @@ public class ExampleIT {
   }
 
   @AfterClass
-  public static void tearDown() {
+  public static void tearDown() throws IOException {
+    // Display the output of the plugin process
+    InputStream stdoutStream = emulatorProcess.getInputStream();
+    ByteArrayOutputStream stdoutBytes = new ByteArrayOutputStream();
+    stdoutBytes.write(stdoutStream.readNBytes(stdoutStream.available()));
+    System.out.println(stdoutBytes.toString(StandardCharsets.UTF_8));
+
     // Terminate the running Functions Framework Maven plugin process (if it's still running)
     if (emulatorProcess.isAlive()) {
       emulatorProcess.destroy();
