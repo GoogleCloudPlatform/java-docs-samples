@@ -44,6 +44,6 @@ public class TransferFromAwsTest {
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
-    assertThat(sampleOutput).contains("\"description\" : \"Sample transfer job from S3 to GCS.\"");
+    assertThat(sampleOutput).contains("\"Sample transfer job from S3 to GCS.\"");
   }
 }
