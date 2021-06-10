@@ -65,7 +65,7 @@ public class ExampleIT {
 
     // Emulate the function locally by running the Functions Framework Maven plugin
     emulatorProcess = new ProcessBuilder()
-        .command("mvn", "function:run")
+        .command("bash", "-c", "mvn function:run")
         .directory(new File(baseDir))
         .start();
   }
@@ -76,7 +76,7 @@ public class ExampleIT {
     InputStream stdoutStream = emulatorProcess.getInputStream();
     ByteArrayOutputStream stdoutBytes = new ByteArrayOutputStream();
     stdoutBytes.write(stdoutStream.readNBytes(stdoutStream.available()));
-    System.out.println(stdoutBytes.toString(StandardCharsets.UTF_8));
+    System.err.println(stdoutBytes.toString(StandardCharsets.UTF_8));
 
     // Terminate the running Functions Framework Maven plugin process (if it's still running)
     if (emulatorProcess.isAlive()) {
@@ -100,7 +100,7 @@ public class ExampleIT {
     // The Functions Framework Maven plugin process takes time to start up
     // Use resilience4j to retry the test HTTP request until the plugin responds
     RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
-        .maxAttempts(6)
+        .maxAttempts(12)
         .retryExceptions(HttpHostConnectException.class)
         .retryOnResult(u -> {
           // Retry if the Functions Framework process has no stdout content
