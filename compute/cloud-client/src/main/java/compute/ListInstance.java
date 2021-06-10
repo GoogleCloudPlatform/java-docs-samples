@@ -26,18 +26,19 @@ public class ListInstance {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample
+    // For a list of zones, see https://cloud.google.com/compute/docs/regions-zones/viewing-regions-zones
     String project = "your-project-id";
     String zone = "zone-name";
     listInstances(project, zone);
   }
 
-  // lists all instances that are available in the given zone in the specified project id
+  // List all instances in the given zone in the specified project ID.
   public static void listInstances(String project, String zone) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // the `instancesClient.close()` method on the client to safely clean up any remaining background resources.
     try (InstancesClient instancesClient = InstancesClient.create()) {
-      // Set the project and zone to retrieve instances present in the zone
+      // Set the project and zone to retrieve instances present in the zone.
       System.out.println(String.format("Listing instances from %s in %s:", project, zone));
       for (Instance zoneInstance : instancesClient.list(project, zone).iterateAll()) {
         System.out.println(zoneInstance.getName());
