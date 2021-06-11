@@ -26,7 +26,6 @@ public class ListInstance {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample
-    // For a list of zones, see https://cloud.google.com/compute/docs/regions-zones/viewing-regions-zones
     String project = "your-project-id";
     String zone = "zone-name";
     listInstances(project, zone);

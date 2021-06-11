@@ -34,7 +34,6 @@ public class CreateInstance {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
-    // For a list of zones, see https://cloud.google.com/compute/docs/regions-zones/viewing-regions-zones
     String project = "your-project-id";
     String zone = "zone-name";
     String instanceName = "instance-name";
@@ -49,9 +48,11 @@ public class CreateInstance {
     // machineType: machine type of the VM being created. This value uses the format zones/{zone}/machineTypes/{type_name}. For a list of machine types, see https://cloud.google.com/compute/docs/machine-types
     // sourceImage: path to the operating system image to mount. For details about images you can mount, see https://cloud.google.com/compute/docs/images
     // diskSizeGb: storage size of the boot disk to attach to the instance.
+    // networkName: network interface to associate with the instance.
     String machineType = "zones/us-central1-a/machineTypes/n1-standard-1";
     String sourceImage = "projects/debian-cloud/global/images/family/debian-10";
     String diskSizeGb = "10";
+    String networkName = "default";
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -68,8 +69,9 @@ public class CreateInstance {
                       .setDiskSizeGb(diskSizeGb).build())
               .build();
 
-      // Use the `default` network interface, which is created automatically for each project.
-      NetworkInterface networkInterface = NetworkInterface.newBuilder().setName("default").build();
+      // Use the network interface provided in the networkName argument.
+      NetworkInterface networkInterface = NetworkInterface.newBuilder().setName(networkName)
+          .build();
 
       // Bind `instanceName`, `machineType`, `disk`, and `networkInterface` to an instance.
       Instance instanceResource =
