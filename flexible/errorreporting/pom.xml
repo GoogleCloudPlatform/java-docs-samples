@@ -27,7 +27,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.22</version>
+    <version>1.0.23</version>
   </parent>
 
   <properties>
@@ -35,7 +35,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml>
-    <jetty.maven.plugin>9.4.40.v20210413</jetty.maven.plugin>
+    <jetty.maven.plugin>9.4.42.v20210604</jetty.maven.plugin>
   </properties>
 
   <dependencies>

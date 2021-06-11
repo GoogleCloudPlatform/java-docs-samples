@@ -52,12 +52,12 @@ public class ManagerIT {
   private static final String REGISTRY_ID =
       "java-reg-"
               + UUID.randomUUID().toString().substring(0, 10) + "-"
-          + (System.currentTimeMillis() / 100L);
+          + System.currentTimeMillis();
   private static final String RSA_PATH = "resources/rsa_cert.pem";
   private static final String PKCS_PATH = "resources/rsa_private_pkcs8";
   private static final String TOPIC_ID =
       "java-pst-"
-          + UUID.randomUUID().toString().substring(0, 20);
+          + UUID.randomUUID().toString().substring(0, 10) + "-" + System.currentTimeMillis();
   private static final String MEMBER = "group:dpebot@google.com";
   private static final String ROLE = "roles/viewer";
   private static Topic topic;
@@ -107,11 +107,12 @@ public class ManagerIT {
       for (DeviceRegistry r : registries) {
         String registryId = r.getId();
         if (registryId.startsWith("java-reg-")) {
-          long currSecs = System.currentTimeMillis() / 1000L;
-          long regSecs =
+          long currMilliSecs = System.currentTimeMillis();
+          long regMilliSecs =
               Long.parseLong(registryId.substring("java-reg-".length() + 11, registryId.length()));
-          long diffSecs = currSecs - regSecs;
-          if (diffSecs > (60 * 60 * 24 * 7 * 10)) { // tests from last week or older
+          long diffMilliSecs = currMilliSecs - regMilliSecs;
+          // remove registries which are older than one week.
+          if (diffMilliSecs > (1000 * 60 * 60 * 24 * 7)) {
             System.out.println("Remove Id: " + r.getId());
             DeviceRegistryExample.clearRegistry(CLOUD_REGION, PROJECT_ID, registryId);
           }
@@ -595,6 +596,7 @@ public class ManagerIT {
       "-device_id=" + deviceName,
       "-private_key_file=" + PKCS_PATH,
       "-message_type=state",
+      "-num_messages=10",
       "-algorithm=RS256"
     };
     com.example.cloud.iot.examples.MqttExample.main(testArgs);

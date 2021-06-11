@@ -23,7 +23,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.22</version>
+    <version>1.0.23</version>
   </parent>
 
   <groupId>com.google.apis-samples</groupId>
@@ -97,7 +97,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.88</version>
+      <version>1.9.89</version>
     </dependency>
 
     <dependency>

@@ -15,7 +15,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.22</version>
+    <version>1.0.23</version>
   </parent>
 
   <properties>
@@ -32,12 +32,12 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-jobs</artifactId>
-      <version>v3-rev20210413-1.31.0</version>
+      <version>v3-rev20210506-1.31.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>0.25.5</version>
+      <version>0.26.0</version>
     </dependency>
     <!-- [END dependencies] -->
 
@@ -45,7 +45,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.1.2</version>
+      <version>1.1.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>

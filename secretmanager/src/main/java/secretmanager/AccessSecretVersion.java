@@ -24,7 +24,7 @@ import java.io.IOException;
 
 public class AccessSecretVersion {
 
-  public void accessSecretVersion() throws IOException {
+  public static void accessSecretVersion() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String secretId = "your-secret-id";
@@ -34,7 +34,7 @@ public class AccessSecretVersion {
 
   // Access the payload for the given secret version if one exists. The version
   // can be a version number as a string (e.g. "5") or an alias (e.g. "latest").
-  public void accessSecretVersion(String projectId, String secretId, String versionId)
+  public static void accessSecretVersion(String projectId, String secretId, String versionId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call

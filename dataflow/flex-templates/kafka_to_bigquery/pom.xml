@@ -22,7 +22,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.22</version>
+    <version>1.0.23</version>
   </parent>
 
   <groupId>org.apache.beam.samples</groupId>
@@ -34,8 +34,8 @@
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <beam.version>2.29.0</beam.version>
-    <kafka.version>6.1.1-ce</kafka.version>
+    <beam.version>2.30.0</beam.version>
+    <kafka.version>6.2.0-ce</kafka.version>
 
     <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>

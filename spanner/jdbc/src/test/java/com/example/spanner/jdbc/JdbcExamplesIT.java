@@ -28,6 +28,7 @@ import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.connection.ConnectionOptions;
 import com.google.cloud.spanner.jdbc.CloudSpannerJdbcConnection;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -59,7 +60,7 @@ public class JdbcExamplesIT {
   private static DatabaseAdminClient dbClient;
 
   private interface JdbcRunnable {
-    public void run() throws SQLException;
+    public void run() throws Exception;
   }
 
   private String runExample(JdbcRunnable example) throws SQLException {
@@ -67,7 +68,11 @@ public class JdbcExamplesIT {
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     System.setOut(out);
-    example.run();
+    try {
+      example.run();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     System.setOut(stdOut);
     return bout.toString();
   }
@@ -325,13 +330,15 @@ public class JdbcExamplesIT {
   }
 
   @Test
-  public void insertData_shouldInsertData() throws SQLException {
+  public void loadCsv_shouldLoadData() throws SQLException {
+    String[] optFlags = {"-h", "true", "-n", "\'nil\'"};
     String out =
         runExample(
             () ->
-                InsertDataExample.insertData(
-                    ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
-    assertThat(out).contains("Insert counts: [1, 1, 1, 1, 1]");
+                LoadCsvExample.loadCsv(
+                    ServiceOptions.getDefaultProjectId(), instanceId, databaseId, "Singers",
+                    "src/test/resources/singers.csv", optFlags));
+    assertThat(out).contains("Data successfully written into table.");
   }
 
   @Test

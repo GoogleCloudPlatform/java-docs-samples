@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -127,12 +128,21 @@ public class CreateJobFromTemplateTest {
     assertThat(output, containsString(jobName));
     String[] arr = output.split("/");
     JOB_ID = arr[arr.length - 1].replace("\n", "");
-    bout.reset();
 
-    Thread.sleep(300000);
+    for (int attempt = 0; attempt < 5; attempt++) {
+      TimeUnit.MINUTES.sleep(1);
+      bout.reset();
+      try {
+        GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
+      } catch (com.google.api.gax.rpc.NotFoundException e) {
+        // Ignore not found error - job may not have completed yet
+      }
+      output = bout.toString();
+      if (output.contains("SUCCEEDED")) {
+        break;
+      }
+    }
 
-    GetJobState.getJobState(PROJECT_ID, LOCATION, JOB_ID);
-    output = bout.toString();
     assertThat(output, containsString("SUCCEEDED"));
     bout.reset();
   }

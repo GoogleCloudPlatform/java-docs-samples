@@ -116,7 +116,7 @@ public class SnippetsIT {
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
     Bucket bucket = storage.get(BUCKET_NAME);
     bucket.delete();
-
+    
     stdOut.close();
     System.setOut(null);
   }
@@ -167,5 +167,4 @@ public class SnippetsIT {
     assertThat(stdOut.toString()).contains("Report Name Prefix available: true");
     assertThat(stdOut.toString()).contains("Report Name Prefix: ");
   }
-
 }

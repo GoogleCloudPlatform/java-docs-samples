@@ -31,7 +31,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.22</version>
+    <version>1.0.23</version>
   </parent>
 
   <properties>
@@ -45,13 +45,13 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigtable</artifactId>
-      <version>1.24.1</version>
+      <version>1.26.1</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-1.x</artifactId>
-      <version>1.20.0</version>
+      <version>1.20.1</version>
     </dependency>
 
     <!-- test dependencies-->
@@ -64,7 +64,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.1.2</version>
+      <version>1.1.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

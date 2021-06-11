@@ -24,14 +24,14 @@ import java.io.IOException;
 
 public class ListSecrets {
 
-  public void listSecrets() throws IOException {
+  public static void listSecrets() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     listSecrets(projectId);
   }
 
   // List all secrets for a project
-  public void listSecrets(String projectId) throws IOException {
+  public static void listSecrets(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
