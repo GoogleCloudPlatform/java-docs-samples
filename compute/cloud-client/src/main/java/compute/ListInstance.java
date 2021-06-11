@@ -35,7 +35,8 @@ public class ListInstance {
   public static void listInstances(String project, String zone) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `instancesClient.close()` method on the client to safely clean up any remaining background resources.
+    // the `instancesClient.close()` method on the client to 
+    // safely clean up any remaining background resources.
     try (InstancesClient instancesClient = InstancesClient.create()) {
       // Set the project and zone to retrieve instances present in the zone.
       System.out.println(String.format("Listing instances from %s in %s:", project, zone));
