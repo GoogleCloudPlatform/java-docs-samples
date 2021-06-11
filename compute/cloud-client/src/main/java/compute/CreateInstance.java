@@ -56,7 +56,8 @@ public class CreateInstance {
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `instancesClient.close()` method on the client to safely clean up any remaining background resources.
+    // the `instancesClient.close()` method on the client to 
+    // safely clean up any remaining background resources.
     try (InstancesClient instancesClient = InstancesClient.create()) {
       // Instance creation requires at least one persistent disk and one network interface.
       AttachedDisk disk =
@@ -89,7 +90,8 @@ public class CreateInstance {
       ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create();
       // Wait for the create operation to complete, using a timeout of
       // 180000 (3 minutes).
-      // Fetch the operation status once every 3 seconds to decrease counts towards your API rate limit
+      // Fetch the operation status once every 3 seconds to decrease 
+      // counts towards your API rate limit
       long startTime = System.currentTimeMillis();
       while (response.getStatus() == Status.RUNNING
           && System.currentTimeMillis() - startTime < 180000) {
