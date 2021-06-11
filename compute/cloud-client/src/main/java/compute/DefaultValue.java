@@ -38,14 +38,17 @@ public class DefaultValue {
     defaultValues(project, bucketName);
   }
 
-  // Check whether an optional param was set to the default value when not provided an explicit value.
+  // Check whether an optional param was set to the default value 
+  // when not provided an explicit value.
   public static void defaultValues(String project, String bucketName)
       throws IOException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "projectsClient.close()" method on the client to safely clean up any remaining background resources.
+    // the "projectsClient.close()" method on the client to safely 
+    // clean up any remaining background resources.
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
-      // Enable usage statistics for the project and set the Cloud Storage bucket name where logs should be stored.
+      // Enable usage statistics for the project and set the Cloud Storage bucket name 
+      // where logs should be stored.
       // Here we explicitly DO NOT set ReportName.
       Operation response = projectsClient
           .setUsageExportBucket(SetUsageExportBucketProjectRequest.newBuilder().setProject(project)
@@ -57,7 +60,8 @@ public class DefaultValue {
         TimeUnit.SECONDS.sleep(5);
       }
 
-      // Even though only bucketName was set, the ReportName was set to the default value "usage" by the server.
+      // Even though only bucketName was set, the ReportName was set to the 
+      // default value "usage" by the server.
       // This is confirmed by hasReportNamePrefix() which evaluates to true.
       // When the user doesn't set the value, getReportNamePrefix() returns an empty value.
       Project projectResponse = projectsClient.get(project);
