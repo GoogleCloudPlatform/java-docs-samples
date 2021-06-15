@@ -28,7 +28,6 @@ import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class CreateInstance {
 
@@ -56,9 +55,10 @@ public class CreateInstance {
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `instancesClient.close()` method on the client to 
-    // safely clean up any remaining background resources.
-    try (InstancesClient instancesClient = InstancesClient.create()) {
+    // the `instancesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
+    try (InstancesClient instancesClient = InstancesClient.create();
+        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
       // Instance creation requires at least one persistent disk and one network interface.
       AttachedDisk disk =
           AttachedDisk.newBuilder()
@@ -87,23 +87,18 @@ public class CreateInstance {
       // Insert the instance in the specified project and zone.
       Operation response = instancesClient.insert(project, zone, instanceResource);
 
-      ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create();
-      // Wait for the create operation to complete, using a timeout of
-      // 180000 (3 minutes).
-      // Fetch the operation status once every 3 seconds to decrease 
-      // counts towards your API rate limit
-      long startTime = System.currentTimeMillis();
-      while (response.getStatus() == Status.RUNNING
-          && System.currentTimeMillis() - startTime < 180000) {
-        response = zoneOperationsClient.get(project, zone, response.getId());
-        TimeUnit.SECONDS.sleep(3);
+      if (response.getStatus() == Status.RUNNING) {
+        // Wait for the create operation to complete; default timeout is 2 mins
+        response = zoneOperationsClient.wait(project, zone, response.getId());
       }
-      zoneOperationsClient.close();
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response.getError());
         return;
       }
+      System.out.println("####### Instance creation complete #######");
+
+    } catch (com.google.api.gax.rpc.UnknownException e) {
       System.out.println("####### Instance creation complete #######");
     }
   }
