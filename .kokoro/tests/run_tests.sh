@@ -63,8 +63,6 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     export DATALABELING_ENDPOINT="test-datalabeling.sandbox.googleapis.com:443"
     # shellcheck source=src/aws-secrets.sh
     source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
-    # shellcheck source=src/storage-hmac-credentials.sh
-    source "${KOKORO_GFILE_DIR}/storage-hmac-credentials.sh"
     # shellcheck source=src/dlp_secrets.txt
     source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"
     # shellcheck source=src/bigtable_secrets.txt

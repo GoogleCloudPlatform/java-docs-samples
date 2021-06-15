@@ -42,6 +42,6 @@ public class TransferToNearlineTest {
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
     assertThat(sampleOutput)
-        .contains("\"description\" : \"Sample transfer job from GCS to GCS Nearline.\"");
+        .contains("\"Sample transfer job from GCS to GCS Nearline.\"");
   }
 }

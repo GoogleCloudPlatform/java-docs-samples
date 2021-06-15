@@ -27,7 +27,7 @@ limitations under the License.
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.22</version>
+    <version>1.0.23</version>
   </parent>
 
   <properties>
@@ -59,7 +59,7 @@ limitations under the License.
       <dependency>
         <groupId>io.ktor</groupId>
         <artifactId>ktor-bom</artifactId>
-        <version>1.5.4</version>
+        <version>1.6.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -116,7 +116,7 @@ limitations under the License.
       <plugin>
         <artifactId>kotlin-maven-plugin</artifactId>
         <groupId>org.jetbrains.kotlin</groupId>
-        <version>1.4.32</version>
+        <version>1.5.10</version>
         <executions>
           <execution>
             <id>compile</id>

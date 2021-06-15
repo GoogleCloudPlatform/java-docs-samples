@@ -45,9 +45,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ExampleIT {
+  // Each function must be assigned a unique port to run on.
+  // Otherwise, tests can flake when 2+ functions run simultaneously.
+  // This is also specified in the `function-maven-plugin` config in `pom.xml`.
+  private static final int PORT = 8083;
+
   // Root URL pointing to the locally hosted function
   // The Functions Framework Maven plugin lets us run a function locally
-  private static final String BASE_URL = "http://localhost:8080";
+  private static final String BASE_URL = "http://localhost:" + PORT;
 
   private static Process emulatorProcess = null;
   private static HttpClient client = HttpClientBuilder.create().build();
@@ -56,17 +61,23 @@ public class ExampleIT {
   @BeforeClass
   public static void setUp() throws IOException {
     // Get the sample's base directory (the one containing a pom.xml file)
-    String baseDir = System.getProperty("basedir");
+    String baseDir = System.getProperty("user.dir");
 
     // Emulate the function locally by running the Functions Framework Maven plugin
     emulatorProcess = new ProcessBuilder()
-        .command("mvn", "function:run")
+        .command("bash", "-c", "mvn function:run")
         .directory(new File(baseDir))
         .start();
   }
 
   @AfterClass
-  public static void tearDown() {
+  public static void tearDown() throws IOException {
+    // Display the output of the plugin process
+    InputStream stdoutStream = emulatorProcess.getInputStream();
+    ByteArrayOutputStream stdoutBytes = new ByteArrayOutputStream();
+    stdoutBytes.write(stdoutStream.readNBytes(stdoutStream.available()));
+    System.err.println(stdoutBytes.toString(StandardCharsets.UTF_8));
+
     // Terminate the running Functions Framework Maven plugin process (if it's still running)
     if (emulatorProcess.isAlive()) {
       emulatorProcess.destroy();
@@ -89,8 +100,17 @@ public class ExampleIT {
     // The Functions Framework Maven plugin process takes time to start up
     // Use resilience4j to retry the test HTTP request until the plugin responds
     RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
-        .maxAttempts(8)
+        .maxAttempts(12)
         .retryExceptions(HttpHostConnectException.class)
+        .retryOnResult(u -> {
+          // Retry if the Functions Framework process has no stdout content
+          // See `retryOnResultPredicate` here: https://resilience4j.readme.io/docs/retry
+          try {
+            return emulatorProcess.getErrorStream().available() == 0;
+          } catch (IOException e) {
+            return true;
+          }
+        })
         .intervalFunction(IntervalFunction.ofExponentialBackoff(200, 2))
         .build());
     Retry retry = registry.retry("my");
@@ -111,4 +131,3 @@ public class ExampleIT {
   }
 }
 // [END functions_pubsub_integration_test]
-
