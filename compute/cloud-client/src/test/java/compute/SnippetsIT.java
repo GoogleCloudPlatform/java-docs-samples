@@ -163,8 +163,10 @@ public class SnippetsIT {
   @Test
   public void testSetUsageBucketExport() throws IOException, InterruptedException {
     compute.SetUsageExportBucket.setUsageExportBucket(PROJECT_ID, BUCKET_NAME);
-    assertThat(stdOut.toString()).contains("Usage export bucket for project " + PROJECT_ID + " set.");
-    assertThat(stdOut.toString()).contains("Bucket: " + BUCKET_NAME + ", " + "Report name prefix: usage");
+    assertThat(stdOut.toString())
+        .contains("Usage export bucket for project " + PROJECT_ID + " set.");
+    assertThat(stdOut.toString())
+        .contains("Bucket: " + BUCKET_NAME + ", " + "Report name prefix: usage");
   }
 
 }
