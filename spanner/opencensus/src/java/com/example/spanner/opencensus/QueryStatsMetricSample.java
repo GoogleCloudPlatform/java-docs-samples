@@ -116,5 +116,4 @@ public class QueryStatsMetricSample {
     }
   }
 }
-
 // [END spanner_opencensus_query_stats_metric]

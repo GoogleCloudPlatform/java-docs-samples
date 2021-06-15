@@ -12,6 +12,10 @@
     <spanner.version>2.0.2</spanner.version>
   </properties>
 
+  <!--
+    The parent pom defines common style checks and testing strategies for our samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
@@ -21,49 +25,47 @@
   <groupId>com.example.spanner</groupId>
   <artifactId>cloud-spanner-opencensus</artifactId>
   <name>Cloud Spanner with OpenCensus Code Sample</name>
-  <dependencies>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-spanner</artifactId>
-      <version>${spanner.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava-jdk5</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>20.6.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
+  <dependencies>
+    <!-- [START opencensus_dependencies] -->
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-census</artifactId>
       <version>1.32.1</version>
     </dependency>
-
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-impl</artifactId>
       <version>${opencensus.version}</version>
       <scope>runtime</scope>
     </dependency>
-
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
       <version>3.10.0</version>
     </dependency>
-
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-exporter-stats-stackdriver</artifactId>
       <version>${opencensus.version}</version>
     </dependency>
-
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-contrib-grpc-metrics</artifactId>
       <version>${opencensus.version}</version>
     </dependency>
-  </dependencies>
+    <!-- [END opencensus_dependencies] -->
 
+  </dependencies>
 </project>

@@ -71,5 +71,4 @@ public class GrpcMetricSample {
     }
   }
 }
-
 // [END spanner_opencensus_grpc_metric]
