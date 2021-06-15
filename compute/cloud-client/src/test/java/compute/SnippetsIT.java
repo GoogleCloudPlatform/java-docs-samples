@@ -21,11 +21,6 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
-import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.Operation.Status;
-import com.google.cloud.compute.v1.Project;
-import com.google.cloud.compute.v1.ProjectsClient;
-import com.google.cloud.compute.v1.SetUsageExportBucketProjectRequest;
 import com.google.cloud.compute.v1.UsageExportLocation;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
@@ -38,6 +33,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -77,7 +73,7 @@ public class SnippetsIT {
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
 
-    // Create a Google Cloud Storage bucket.
+    // Create a Google Cloud Storage bucket for UsageReports
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
     storage.create(BucketInfo.of(BUCKET_NAME));
   }
@@ -95,24 +91,7 @@ public class SnippetsIT {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
 
-    // Cleanup usage export settings and dis-associate bucket by setting empty value.
-    try (ProjectsClient projectsClient = ProjectsClient.create()) {
-      Operation response = projectsClient
-          .setUsageExportBucket(
-              SetUsageExportBucketProjectRequest.newBuilder().setProject(PROJECT_ID)
-                  .setUsageExportLocationResource(UsageExportLocation.newBuilder().build())
-                  .build());
-
-      // Wait for 5 seconds to activate the export settings.
-      if (response.getStatus() != Status.DONE) {
-        TimeUnit.SECONDS.sleep(5);
-      }
-
-      Project projectResponse = projectsClient.get(PROJECT_ID);
-      assertThat(projectResponse.hasUsageExportLocation()).isFalse();
-    }
-
-    // Delete the bucket.
+    // Delete the Google Cloud Storage bucket created for usage reports.
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
     Bucket bucket = storage.get(BUCKET_NAME);
     bucket.delete();
@@ -161,12 +140,23 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testSetUsageBucketExport() throws IOException, InterruptedException {
-    compute.SetUsageExportBucket.setUsageExportBucket(PROJECT_ID, BUCKET_NAME);
-    assertThat(stdOut.toString())
-        .contains("Usage export bucket for project " + PROJECT_ID + " set.");
-    assertThat(stdOut.toString())
-        .contains("Bucket: " + BUCKET_NAME + ", " + "Report name prefix: usage");
+  public void testSetUsageBucketExportCustomPrefix() throws IOException, InterruptedException {
+    // Set custom Report Name Prefix.
+    String customPrefix = "my-custom-prefix";
+    compute.SetUsageExportBucket.setUsageExportBucket(PROJECT_ID, BUCKET_NAME, customPrefix);
+    assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
+
+    // Wait for the settings to take place.
+    TimeUnit.SECONDS.sleep(10);
+
+    UsageExportLocation usageExportLocation = compute.SetUsageExportBucket
+        .getUsageExportBucket(PROJECT_ID);
+    assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
+    Assert.assertEquals(usageExportLocation.getBucketName(), BUCKET_NAME);
+    Assert.assertEquals(usageExportLocation.getReportNamePrefix(), customPrefix);
+
+    // Disable usage exports.
+    compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
   }
 
 }
