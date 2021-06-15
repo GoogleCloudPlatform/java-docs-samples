@@ -38,7 +38,7 @@
   </dependencyManagement>
 
   <dependencies>
-    <!-- [START opencensus_dependencies] -->
+    <!-- [START spanner_opencensus_dependencies] -->
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-census</artifactId>
@@ -65,7 +65,7 @@
       <artifactId>opencensus-contrib-grpc-metrics</artifactId>
       <version>${opencensus.version}</version>
     </dependency>
-    <!-- [END opencensus_dependencies] -->
+    <!-- [END spanner_opencensus_dependencies] -->
 
   </dependencies>
 </project>
