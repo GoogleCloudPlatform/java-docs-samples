@@ -39,7 +39,8 @@ public class SetUsageExportBucket {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     // TODO(developer): Create a Google Cloud Storage bucket.
-    // bucketName: to run this snippet, an existing Google Cloud Storage bucket is required.
+    // bucketName: Cloud Storage Bucket used to store Compute Engine usage reports.
+    // An existing Google Cloud Storage bucket is required.
     String project = "your-project-id";
     String bucketName = "your-bucket-name";
     String reportNamePrefix = "custom-report-name";
@@ -48,7 +49,7 @@ public class SetUsageExportBucket {
     disableUsageExportBucket(project);
   }
 
-// [START compute_usage_report_set]
+  // [START compute_usage_report_set]
 
   // Set Compute Engine usage export bucket for the Cloud Project.
   // This sample presents how to interpret default value for the report name prefix parameter.
@@ -56,7 +57,8 @@ public class SetUsageExportBucket {
       String reportNamePrefix)
       throws IOException {
 
-    // bucketName: Google Cloud Storage Bucket used to store Compute Engine usage reports.
+    // bucketName: Cloud Storage Bucket used to store Compute Engine usage reports.
+    // An existing Google Cloud Storage bucket is required.
     // reportNamePrefix: Name of the usage report that would store Google Compute Engine data.
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
 
@@ -82,9 +84,9 @@ public class SetUsageExportBucket {
               .build());
     }
   }
-// [END compute_usage_report_set]
+  // [END compute_usage_report_set]
 
-// [START compute_usage_report_get]
+  // [START compute_usage_report_get]
 
   // Retrieve Compute Engine usage export bucket for the Cloud Project.
   // Replaces the empty value returned by the API with the default value used
@@ -120,10 +122,10 @@ public class SetUsageExportBucket {
       }
     }
   }
-// [END compute_usage_report_get]
-// [END compute_instances_verify_default_value]
+  // [END compute_usage_report_get]
+  // [END compute_instances_verify_default_value]
 
-// [START compute_usage_report_disable]
+  // [START compute_usage_report_disable]
 
   // Disable Compute Engine usage export bucket for the Cloud Project.
   public static void disableUsageExportBucket(String project)
@@ -143,6 +145,6 @@ public class SetUsageExportBucket {
           .build());
     }
   }
-// [END compute_usage_report_disable]
+  // [END compute_usage_report_disable]
 
 }
