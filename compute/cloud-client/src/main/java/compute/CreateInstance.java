@@ -98,10 +98,9 @@ public class CreateInstance {
       }
       System.out.println("####### Instance creation complete #######");
 
-    }
-    // Handle SocketTimeoutException which is being thrown as UnknownException.
-    // (Instance creation process will run to completion in the background)
-    catch (com.google.api.gax.rpc.UnknownException e) {
+    } catch (com.google.api.gax.rpc.UnknownException e) {
+      // Handle SocketTimeoutException which is being thrown as UnknownException.
+      // (Instance creation process will run to completion in the background)
       System.out.println("####### Instance creation complete #######");
     }
   }
