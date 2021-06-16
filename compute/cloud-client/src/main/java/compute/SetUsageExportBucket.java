@@ -51,7 +51,7 @@ public class SetUsageExportBucket {
 
   // [START compute_usage_report_set]
 
-  // Set Compute Engine usage export bucket for the Cloud Project.
+  // Set Compute Engine usage export bucket for the Cloud project.
   // This sample presents how to interpret default value for the report name prefix parameter.
   public static void setUsageExportBucket(String project, String bucketName,
       String reportNamePrefix)
@@ -68,11 +68,11 @@ public class SetUsageExportBucket {
           .setReportNamePrefix(reportNamePrefix).build();
 
       if (reportNamePrefix.length() == 0) {
-        // Sending empty value for report_name_prefix, will result with the
-        // next usage report generated having the default prefix value "usage_gce".
+        // Sending an empty value for report_name_prefix results in the
+        // next usage report being generated with the default prefix value "usage_gce".
         // (ref:
         // https://cloud.google.com/compute/docs/reference/rest/v1/projects/setUsageExportBucket)
-        System.out.println("Setting report_name_prefix to empty value will cause the "
+        System.out.println("Setting report_name_prefix to empty value causes the "
             + "report to have the default value of `usage_gce`.");
       }
 
@@ -88,20 +88,20 @@ public class SetUsageExportBucket {
 
   // [START compute_usage_report_get]
 
-  // Retrieve Compute Engine usage export bucket for the Cloud Project.
+  // Retrieve Compute Engine usage export bucket for the Cloud project.
   // Replaces the empty value returned by the API with the default value used
   // to generate report file names.
   public static UsageExportLocation getUsageExportBucket(String project) throws IOException {
 
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
-      // Get the setting from server.
+      // Get the project from server.
       Project projectResponse = projectsClient.get(project);
 
-      // Construct proper values to be displayed taking into account default values behaviour.
+      // Construct proper values to be displayed, taking into account default value behavior.
       if (projectResponse.hasUsageExportLocation()) {
         UsageExportLocation usageExportLocation = projectResponse.getUsageExportLocation();
 
-        // We verify that the server explicitly sent the optional field.
+        // Verify that the server explicitly sent the optional field.
         if (usageExportLocation.hasReportNamePrefix()) {
           String reportNamePrefix = usageExportLocation.getReportNamePrefix();
 
@@ -117,7 +117,7 @@ public class SetUsageExportBucket {
         }
         return usageExportLocation;
       } else {
-        // The Usage Reports are disabled.
+        // The usage reports are disabled.
         return null;
       }
     }
@@ -127,7 +127,7 @@ public class SetUsageExportBucket {
 
   // [START compute_usage_report_disable]
 
-  // Disable Compute Engine usage export bucket for the Cloud Project.
+  // Disable Compute Engine usage export bucket for the Cloud project.
   public static void disableUsageExportBucket(String project)
       throws IOException {
 
