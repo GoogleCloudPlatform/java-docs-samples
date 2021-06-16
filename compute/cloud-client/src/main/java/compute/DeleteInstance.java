@@ -62,7 +62,10 @@ public class DeleteInstance {
       }
       System.out.println("####### Instance deletion complete #######");
 
-    } catch (com.google.api.gax.rpc.UnknownException e) {
+    }
+    // Handle SocketTimeoutException which is being thrown as UnknownException.
+    // (Instance deletion process will run to completion in the background)
+    catch (com.google.api.gax.rpc.UnknownException e) {
       System.out.println("####### Instance deletion complete #######");
     }
   }
