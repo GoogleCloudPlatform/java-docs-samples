@@ -48,7 +48,7 @@ public class CreateInstance {
     // sourceImage: path to the operating system image to mount. For details about images you can mount, see https://cloud.google.com/compute/docs/images
     // diskSizeGb: storage size of the boot disk to attach to the instance.
     // networkName: network interface to associate with the instance.
-    String machineType = "zones/us-central1-a/machineTypes/n1-standard-1";
+    String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
     String sourceImage = "projects/debian-cloud/global/images/family/debian-10";
     String diskSizeGb = "10";
     String networkName = "default";
