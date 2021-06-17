@@ -52,14 +52,15 @@ public class SetUsageExportBucket {
   // [START compute_usage_report_set]
 
   // Set Compute Engine usage export bucket for the Cloud project.
-  // This sample presents how to interpret default value for the report name prefix parameter.
+  // This sample presents how to interpret the default value for the report name prefix parameter.
   public static void setUsageExportBucket(String project, String bucketName,
       String reportNamePrefix)
       throws IOException {
 
     // bucketName: Cloud Storage Bucket used to store Compute Engine usage reports.
     // An existing Google Cloud Storage bucket is required.
-    // reportNamePrefix: Name of the usage report that would store Google Compute Engine data.
+    // reportNamePrefix: Prefix of the name of the usage report that would
+    // store Google Compute Engine data.
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
 
       // Initialize UsageExportLocation object with provided bucket name and no report name prefix.
@@ -68,11 +69,11 @@ public class SetUsageExportBucket {
           .setReportNamePrefix(reportNamePrefix).build();
 
       if (reportNamePrefix.length() == 0) {
-        // Sending an empty value for report_name_prefix results in the
+        // Sending an empty value for reportNamePrefix results in the
         // next usage report being generated with the default prefix value "usage_gce".
-        // (ref:
+        // (see,
         // https://cloud.google.com/compute/docs/reference/rest/v1/projects/setUsageExportBucket)
-        System.out.println("Setting report_name_prefix to empty value causes the "
+        System.out.println("Setting reportNamePrefix to empty value causes the "
             + "report to have the default value of `usage_gce`.");
       }
 
@@ -94,7 +95,7 @@ public class SetUsageExportBucket {
   public static UsageExportLocation getUsageExportBucket(String project) throws IOException {
 
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
-      // Get the project from server.
+      // Get the usage setting for the project from the server.
       Project projectResponse = projectsClient.get(project);
 
       // Construct proper values to be displayed, taking into account default value behavior.
@@ -109,7 +110,7 @@ public class SetUsageExportBucket {
             // Although the server explicitly sent the empty string value,
             // the next usage report generated with these settings still has the default
             // prefix value "usage_gce".
-            // (ref: https://cloud.google.com/compute/docs/reference/rest/v1/projects/get)
+            // (see, https://cloud.google.com/compute/docs/reference/rest/v1/projects/get)
             reportNamePrefix = "usage_gce";
             System.out.println(
                 "Report name prefix not set, replacing with default value of `usage_gce`.");
