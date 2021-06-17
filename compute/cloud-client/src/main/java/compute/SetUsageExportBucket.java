@@ -64,7 +64,7 @@ public class SetUsageExportBucket {
     // store Google Compute Engine data.
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
 
-      // Initialize UsageExportLocation object with provided bucket name and no report name prefix.
+      // Initialize UsageExportLocation object with provided bucket name and report name prefix.
       UsageExportLocation usageExportLocation = UsageExportLocation.newBuilder()
           .setBucketName(bucketName)
           .setReportNamePrefix(reportNamePrefix).build();
@@ -144,6 +144,7 @@ public class SetUsageExportBucket {
           .setUsageExportLocationResource(usageExportLocation)
           .build());
 
+      // Wait for the settings to be effected.
       TimeUnit.SECONDS.sleep(5);
       // Return false if the usage reports is disabled.
       return projectsClient.get(project).getUsageExportLocation().hasBucketName();
