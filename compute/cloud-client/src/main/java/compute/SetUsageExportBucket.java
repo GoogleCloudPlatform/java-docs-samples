@@ -129,7 +129,7 @@ public class SetUsageExportBucket {
   // [START compute_usage_report_disable]
 
   // Disable Compute Engine usage export bucket for the Cloud project.
-  public static void disableUsageExportBucket(String project)
+  public static boolean disableUsageExportBucket(String project)
       throws IOException, InterruptedException {
 
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
