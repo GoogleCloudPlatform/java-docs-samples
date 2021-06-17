@@ -23,48 +23,48 @@ import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class DeleteInstance {
 
-  public static void main(String[] args) throws IOException, InterruptedException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String project = "your-project-id";
     String zone = "zone-name";
-    String machineName = "machine-name";
-    deleteInstance(project, zone, machineName);
+    String instanceName = "instance-name";
+    deleteInstance(project, zone, instanceName);
   }
 
-  // deletes the instance as specified by the machineName
-  // if it is present in the given project and zone
-  public static void deleteInstance(String project, String zone, String machineName)
-      throws IOException, InterruptedException {
+  // Delete the instance specified by `instanceName`
+  // if it's present in the given project and zone.
+  public static void deleteInstance(String project, String zone, String instanceName)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    try (InstancesClient instancesClient = InstancesClient.create()) {
+    // the `instancesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
+    try (InstancesClient instancesClient = InstancesClient.create();
+        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
 
-      System.out.println(String.format("Deleting instance: %s ", machineName));
-      // set the properties of the instance which is to be deleted
-      Operation response = instancesClient.delete(project, zone, machineName);
+      System.out.println(String.format("Deleting instance: %s ", instanceName));
+      // Describe which instance is to be deleted.
+      Operation response = instancesClient.delete(project, zone, instanceName);
 
       // [START compute_instances_operation_check]
-      ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create();
-      // waits for the delete operation to complete
-      // timeout is set at 180000 or 3 minutes
-      // the operation status will be fetched once in every 3 seconds to avoid spamming the api
-      long startTime = System.currentTimeMillis();
-      while (response.getStatus() == Status.RUNNING
-          && System.currentTimeMillis() - startTime < 180000) {
-        response = zoneOperationsClient.get(project, zone, response.getId());
-        TimeUnit.SECONDS.sleep(3);
+      if (response.getStatus() == Status.RUNNING) {
+        // Wait for the delete operation to complete; default timeout is 2 mins
+        response = zoneOperationsClient.wait(project, zone, response.getId());
       }
-      // [END compute_instances_operation_check]s
+      // [END compute_instances_operation_check]
 
       if (response.hasError()) {
         System.out.println("Instance deletion failed ! ! " + response.getError());
         return;
       }
+      System.out.println("####### Instance deletion complete #######");
+
+    } catch (com.google.api.gax.rpc.UnknownException e) {
+      // Handle SocketTimeoutException which is being thrown as UnknownException.
+      // (Instance deletion process will run to completion in the background)
       System.out.println("####### Instance deletion complete #######");
     }
   }

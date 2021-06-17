@@ -32,17 +32,18 @@ public class ListAllInstances {
     listAllInstances(project);
   }
 
-  // lists all instances available in the specified project id
+  // List all instances in the specified project ID.
   public static void listAllInstances(String project) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // the `instancesClient.close()` method on the client to 
+    // safely clean up any remaining background resources.
     try (InstancesClient instancesClient = InstancesClient.create()) {
       // Listing all instances for the project
       InstancesClient.AggregatedListPagedResponse response = instancesClient
           .aggregatedList(project);
       for (Map.Entry<String, InstancesScopedList> zoneInstances : response.iterateAll()) {
-        // instances scoped by each zone
+        // Instances scoped by each zone
         String zone = zoneInstances.getKey();
         if (!zoneInstances.getValue().getInstancesList().isEmpty()) {
           // zoneInstances.getKey() returns the fully qualified address.

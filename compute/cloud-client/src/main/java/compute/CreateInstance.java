@@ -28,76 +28,79 @@ import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class CreateInstance {
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    // TODO(developer): Replace these variables before running the sample
+    // TODO(developer): Replace these variables before running the sample.
     String project = "your-project-id";
     String zone = "zone-name";
-    String machineName = "machine-name";
-    createInstance(project, zone, machineName);
+    String instanceName = "instance-name";
+    createInstance(project, zone, instanceName);
   }
 
 
-  // creates a new instance with the provided machineName in the specified project and zone
-  public static void createInstance(String project, String zone, String machineName)
+  // Create a new instance with the provided "instanceName" value in the specified project and zone.
+  public static void createInstance(String project, String zone, String instanceName)
       throws IOException, InterruptedException {
     // Below are sample values that can be replaced.
-    // machineType: should be of the format zones/zone-name/machineTypes/machine-type. Refer: https://cloud.google.com/compute/docs/machine-types
-    // sourceImage: path to the image that is to be mounted should be specified. Refer: https://cloud.google.com/compute/docs/images
-    // diskSizeGb: the storage size of the disk that will be attached to the instance
-    String machineType = "zones/us-central1-a/machineTypes/n1-standard-1";
-    String sourceImage = "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-7-wheezy-v20150710";
+    // machineType: machine type of the VM being created. This value uses the format zones/{zone}/machineTypes/{type_name}. For a list of machine types, see https://cloud.google.com/compute/docs/machine-types
+    // sourceImage: path to the operating system image to mount. For details about images you can mount, see https://cloud.google.com/compute/docs/images
+    // diskSizeGb: storage size of the boot disk to attach to the instance.
+    // networkName: network interface to associate with the instance.
+    String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
+    String sourceImage = "projects/debian-cloud/global/images/family/debian-10";
     String diskSizeGb = "10";
+    String networkName = "default";
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    try (InstancesClient instancesClient = InstancesClient.create()) {
-      // Instance creation requires at least one persistent disk and one network interface
+    // the `instancesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
+    try (InstancesClient instancesClient = InstancesClient.create();
+        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
+      // Instance creation requires at least one persistent disk and one network interface.
       AttachedDisk disk =
           AttachedDisk.newBuilder()
               .setBoot(true)
               .setAutoDelete(true)
-              .setType(Type.PERSISTENT)  // Can be set to either 'SCRATCH' or 'PERSISTENT'
+              .setType(Type.PERSISTENT)
               .setInitializeParams(
                   AttachedDiskInitializeParams.newBuilder().setSourceImage(sourceImage)
                       .setDiskSizeGb(diskSizeGb).build())
               .build();
 
-      // "default" network interface is created automatically for every project
-      NetworkInterface networkInterface = NetworkInterface.newBuilder().setName("default").build();
+      // Use the network interface provided in the networkName argument.
+      NetworkInterface networkInterface = NetworkInterface.newBuilder().setName(networkName)
+          .build();
 
-      // Bind machine_name, machine_type, disk and network interface to an instance
+      // Bind `instanceName`, `machineType`, `disk`, and `networkInterface` to an instance.
       Instance instanceResource =
           Instance.newBuilder()
-              .setName(machineName)
+              .setName(instanceName)
               .setMachineType(machineType)
               .addDisks(disk)
               .addNetworkInterfaces(networkInterface)
               .build();
 
-      System.out.println(String.format("Creating instance: %s at %s ", machineName, zone));
-      // Inserting the instance in the specified project and zone
+      System.out.println(String.format("Creating instance: %s at %s ", instanceName, zone));
+      // Insert the instance in the specified project and zone.
       Operation response = instancesClient.insert(project, zone, instanceResource);
 
-      ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create();
-      // waits for the delete operation to complete
-      // timeout is set at 180000 or 3 minutes
-      // the operation status will be fetched once in every 3 seconds to avoid spamming the api
-      long startTime = System.currentTimeMillis();
-      while (response.getStatus() == Status.RUNNING
-          && System.currentTimeMillis() - startTime < 180000) {
-        response = zoneOperationsClient.get(project, zone, response.getId());
-        TimeUnit.SECONDS.sleep(3);
+      if (response.getStatus() == Status.RUNNING) {
+        // Wait for the create operation to complete; default timeout is 2 mins
+        response = zoneOperationsClient.wait(project, zone, response.getId());
       }
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response.getError());
         return;
       }
+      System.out.println("####### Instance creation complete #######");
+
+    } catch (com.google.api.gax.rpc.UnknownException e) {
+      // Handle SocketTimeoutException which is being thrown as UnknownException.
+      // (Instance creation process will run to completion in the background)
       System.out.println("####### Instance creation complete #######");
     }
   }

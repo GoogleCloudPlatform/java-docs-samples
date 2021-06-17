@@ -21,12 +21,19 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
+import com.google.cloud.compute.v1.UsageExportLocation;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.BucketInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,10 +48,11 @@ public class SnippetsIT {
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_DELETE;
   private static String MACHINE_NAME_LIST_INSTANCE;
+  private static String BUCKET_NAME;
 
   private ByteArrayOutputStream stdOut;
 
-  // check if the required environment variables are set
+  // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
         .that(System.getenv(envVarName)).isNotEmpty();
@@ -56,19 +64,24 @@ public class SnippetsIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     ZONE = "us-central1-a";
-    MACHINE_NAME = "create-instance" + UUID.randomUUID().toString();
-    MACHINE_NAME_DELETE = "delete-instance" + UUID.randomUUID().toString();
-    MACHINE_NAME_LIST_INSTANCE = "list-all-instance" + UUID.randomUUID().toString();
+    MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID().toString();
+    MACHINE_NAME_DELETE = "my-new-test-instance" + UUID.randomUUID().toString();
+    MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance" + UUID.randomUUID().toString();
+    BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID().toString();
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
+
+    // Create a Google Cloud Storage bucket for UsageReports
+    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
+    storage.create(BucketInfo.of(BUCKET_NAME));
   }
 
 
   @AfterClass
   public static void cleanup() throws IOException, InterruptedException {
-    // delete all instances created for testing
+    // Delete all instances created for testing.
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
@@ -77,6 +90,11 @@ public class SnippetsIT {
 
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
+
+    // Delete the Google Cloud Storage bucket created for usage reports.
+    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
+    Bucket bucket = storage.get(BUCKET_NAME);
+    bucket.delete();
 
     stdOut.close();
     System.setOut(null);
@@ -96,7 +114,7 @@ public class SnippetsIT {
 
   @Test
   public void testCreateInstance() throws IOException {
-    // check if the instance was successfully created during the setup
+    // Check if the instance was successfully created during the setup.
     try (InstancesClient instancesClient = InstancesClient.create()) {
       Instance response = instancesClient.get(PROJECT_ID, ZONE, MACHINE_NAME);
       assertThat(response.getName()).contains(MACHINE_NAME);
@@ -119,6 +137,27 @@ public class SnippetsIT {
   public void testDeleteInstance() throws IOException, InterruptedException {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     assertThat(stdOut.toString()).contains("####### Instance deletion complete #######");
+  }
+
+  @Test
+  public void testSetUsageBucketExportCustomPrefix() throws IOException, InterruptedException {
+    // Set custom Report Name Prefix.
+    String customPrefix = "my-custom-prefix";
+    compute.SetUsageExportBucket.setUsageExportBucket(PROJECT_ID, BUCKET_NAME, customPrefix);
+    assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
+
+    // Wait for the settings to take place.
+    TimeUnit.SECONDS.sleep(10);
+
+    UsageExportLocation usageExportLocation = compute.SetUsageExportBucket
+        .getUsageExportBucket(PROJECT_ID);
+    assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
+    Assert.assertEquals(usageExportLocation.getBucketName(), BUCKET_NAME);
+    Assert.assertEquals(usageExportLocation.getReportNamePrefix(), customPrefix);
+
+    // Disable usage exports.
+    boolean isDisabled = compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
+    Assert.assertFalse(isDisabled);
   }
 
 }
