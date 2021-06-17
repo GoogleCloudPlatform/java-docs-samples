@@ -156,7 +156,8 @@ public class SnippetsIT {
     Assert.assertEquals(usageExportLocation.getReportNamePrefix(), customPrefix);
 
     // Disable usage exports.
-    compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
+    boolean isDisabled = compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
+    Assert.assertFalse(isDisabled);
   }
 
 }

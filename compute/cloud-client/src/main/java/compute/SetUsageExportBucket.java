@@ -36,7 +36,7 @@ import java.io.IOException;
 
 public class SetUsageExportBucket {
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // TODO(developer): Create a Google Cloud Storage bucket.
     // bucketName: Cloud Storage Bucket used to store Compute Engine usage reports.
@@ -130,20 +130,22 @@ public class SetUsageExportBucket {
 
   // Disable Compute Engine usage export bucket for the Cloud project.
   public static void disableUsageExportBucket(String project)
-      throws IOException {
+      throws IOException, InterruptedException {
 
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
 
-      // Initialize UsageExportLocation object with empty bucket name to disable usage reports.
-      UsageExportLocation usageExportLocation = UsageExportLocation.newBuilder()
-          .setBucketName("")
-          .setReportNamePrefix("").build();
+      // Initialize UsageExportLocation object with empty builder to disable usage reports.
+      UsageExportLocation usageExportLocation = UsageExportLocation.newBuilder().build();
 
       // Disable the usage export location.
       projectsClient.setUsageExportBucket(SetUsageExportBucketProjectRequest.newBuilder()
           .setProject(project)
           .setUsageExportLocationResource(usageExportLocation)
           .build());
+
+      TimeUnit.SECONDS.sleep(5);
+      // Return false if the usage reports is disabled.
+      return projectsClient.get(project).getUsageExportLocation().hasBucketName();
     }
   }
   // [END compute_usage_report_disable]
