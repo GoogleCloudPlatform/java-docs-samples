@@ -57,7 +57,7 @@ limitations under the License.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.30</version>
+      <version>1.7.31</version>
       <type>jar</type>
     </dependency>
     <dependency>
