@@ -16,7 +16,7 @@
 # [START run_system_package_dockerfile]
 # Use the Official OpenJDK image for a lean production stage of our multi-stage build.
 # https://hub.docker.com/r/adoptopenjdk/openjdk11/
-FROM adoptopenjdk/openjdk11:alpine
+FROM adoptopenjdk/openjdk11:alpine-jre
 
 RUN apk --no-cache add graphviz ttf-ubuntu-font-family
 # [END run_system_package_dockerfile]
