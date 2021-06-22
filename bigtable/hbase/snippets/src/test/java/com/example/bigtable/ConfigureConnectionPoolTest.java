@@ -65,6 +65,6 @@ public class ConfigureConnectionPoolTest {
     ConfigureConnectionPool.configureConnectionPool(projectId, instanceId);
 
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Connected with pool size of 250"));
+    assertThat(output, CoreMatchers.containsString("Connected with pool size of 10"));
   }
 }
