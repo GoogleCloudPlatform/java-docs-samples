@@ -31,7 +31,7 @@ public class ConfigureConnectionPool {
     // String projectId = "my-project-id";
     // String instanceId = "my-instance-id";
     Configuration config = BigtableConfiguration.configure(projectId, instanceId);
-    config.setInt(BIGTABLE_DATA_CHANNEL_COUNT_KEY, 250);
+    config.setInt(BIGTABLE_DATA_CHANNEL_COUNT_KEY, 10);
     try (Connection connection = BigtableConfiguration.connect(config)) {
       int poolSize = connection.getConfiguration().getInt(BIGTABLE_DATA_CHANNEL_COUNT_KEY, 0);
 
