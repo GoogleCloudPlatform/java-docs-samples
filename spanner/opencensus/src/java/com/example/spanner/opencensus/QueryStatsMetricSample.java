@@ -17,7 +17,7 @@
 package com.example.spanner.opencensus;
 
 // [START spanner_opencensus_query_stats_metric]
-// Imports the Google Cloud client library
+
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.ReadContext.QueryAnalyzeMode;
@@ -36,6 +36,7 @@ import io.opencensus.stats.StatsRecorder;
 import io.opencensus.stats.View;
 import io.opencensus.stats.View.Name;
 import io.opencensus.stats.ViewManager;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -74,28 +75,18 @@ public class QueryStatsMetricSample {
   static ViewManager manager = Stats.getViewManager();
   private static final StatsRecorder STATS_RECORDER = Stats.getStatsRecorder();
 
-  public static void main(String[] args) throws Exception {
-    if (args.length != 2) {
-      System.err.println("Usage: QueryStatsMetricSample <instance_id> <database_id>");
-      return;
-    }
-
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    Spanner spanner = options.getService();
-    String instanceId = args[0];
-    String databaseId = args[1];
-
-    // Creates a database client.
-    DatabaseClient dbClient = spanner.getDatabaseClient(DatabaseId.of(
-        options.getProjectId(), instanceId, databaseId));
-
+  public static void captureQueryStatsMetric(DatabaseClient dbClient) {
     manager.registerView(QUERY_STATS_LATENCY_VIEW);
 
     // Enable OpenCensus exporters to export metrics to Cloud Monitoring.
     // Exporters use Application Default Credentials to authenticate.
     // See https://developers.google.com/identity/protocols/application-default-credentials
     // for more details.
-    StackdriverStatsExporter.createAndRegister();
+    try {
+      StackdriverStatsExporter.createAndRegister();
+    } catch (IOException ex) {
+      // ignore
+    }
 
     try (ResultSet resultSet = dbClient.singleUse()
         .analyzeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"),
@@ -110,9 +101,6 @@ public class QueryStatsMetricSample {
       STATS_RECORDER.newMeasureMap()
           .put(QUERY_STATS_ELAPSED, elapasedTime)
           .record();
-    } finally {
-      // Closes the client which will free up the resources used
-      spanner.close();
     }
   }
 }
