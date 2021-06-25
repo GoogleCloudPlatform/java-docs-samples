@@ -235,7 +235,7 @@ public class ComputeEngineSample {
     return delete.execute();
   }
 
-  public static String getLastWordFromURL(String url) {
+  public static String getLastWordFromUrl(String url) {
     if (url != null) {
       String[] bits = url.split("/");
       url = bits[bits.length - 1];
@@ -258,8 +258,8 @@ public class ComputeEngineSample {
       Compute compute, Operation operation, long timeout) throws Exception {
     long start = System.currentTimeMillis();
     final long pollInterval = 5 * 1000;
-    String zone = getLastWordFromURL(operation.getZone()); // null for global/regional operations
-    String region = getLastWordFromURL(operation.getRegion());
+    String zone = getLastWordFromUrl(operation.getZone()); // null for global/regional operations
+    String region = getLastWordFromUrl(operation.getRegion());
     String status = operation.getStatus();
     String opId = operation.getName();
     while (operation != null && !status.equals("DONE")) {
