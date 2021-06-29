@@ -100,18 +100,20 @@ The following example will run a streaming pipeline. It will read messages from 
 + `--region`: sets the Dataflow regional endpoint
 + `--inputTopic`: sets the input Pub/Sub topic to read messages from
 + `--output`: sets the output GCS path prefix to write files to
++ `--gcpTempLocation`: sets a GCP location for Dataflow to download temporary files
 + `--runner [optional]`: specifies the runner to run the pipeline, defaults to `DirectRunner`
 + `--windowSize [optional]`: specifies the window size in minutes, defaults to 1
 
 ```bash
 mvn compile exec:java \
-  -Dexec.mainClass=com.examples.pubsub.streaming.PubSubToGCS \
+  -Dexec.mainClass=com.examples.pubsub.streaming.PubSubToGcs \
   -Dexec.cleanupDaemonThreads=false \
   -Dexec.args="\
     --project=$PROJECT_NAME \
     --region=$REGION \
     --inputTopic=projects/$PROJECT_NAME/topics/cron-topic \
     --output=gs://$BUCKET_NAME/samples/output \
+    --gcpTempLocation=gs://$BUCKET_NAME/temp \
     --runner=DataflowRunner \
     --windowSize=2"
 ```
