@@ -16,7 +16,6 @@
 
 package com.example.cloudrun;
 
-import com.google.api.gax.rpc.ApiException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -103,9 +102,12 @@ public class IdpSqlApplication {
     try {
       HashMap<String, Object> config = new Gson().fromJson(secret, HashMap.class);
       return config;
-    } catch(JsonSyntaxException e) {
-      logger.error("Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: " + e);
-      throw new RuntimeException("Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted.");
+    } catch (JsonSyntaxException e) {
+      logger.error(
+          "Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: "
+              + e);
+      throw new RuntimeException(
+          "Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted.");
     }
   }
   // [END cloudrun_user_auth_secrets]
