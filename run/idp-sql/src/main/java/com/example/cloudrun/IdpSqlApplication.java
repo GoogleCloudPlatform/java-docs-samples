@@ -104,10 +104,10 @@ public class IdpSqlApplication {
       return config;
     } catch (JsonSyntaxException e) {
       logger.error(
-          "Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: "
+          "Unable to parse secret from Secret Manager. Make sure that it is JSON formatted: "
               + e);
       throw new RuntimeException(
-          "Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted.");
+          "Unable to parse secret from Secret Manager. Make sure that it is JSON formatted.");
     }
   }
   // [END cloudrun_user_auth_secrets]
