@@ -19,7 +19,6 @@ package compute;
 /* A sample script showing how to handle default values when communicating
    with the Compute Engine API. */
 
-// [START compute_instances_verify_default_value]
 // [START compute_usage_report_set]
 // [START compute_usage_report_get]
 // [START compute_usage_report_disable]
@@ -96,10 +95,11 @@ public class SetUsageExportBucket {
   public static UsageExportLocation getUsageExportBucket(String project) throws IOException {
 
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
-      // Get the usage setting for the project from the server.
+      // Get the usage export location for the project from the server.
       Project projectResponse = projectsClient.get(project);
 
-      // Construct proper values to be displayed, taking into account default value behavior.
+      // Replace the empty value returned by the API with the default value
+      // used to generate report file names.
       if (projectResponse.hasUsageExportLocation()) {
         UsageExportLocation usageExportLocation = projectResponse.getUsageExportLocation();
 
@@ -125,7 +125,6 @@ public class SetUsageExportBucket {
     }
   }
   // [END compute_usage_report_get]
-  // [END compute_instances_verify_default_value]
 
   // [START compute_usage_report_disable]
 
