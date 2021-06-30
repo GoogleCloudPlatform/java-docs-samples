@@ -19,7 +19,6 @@ package compute;
 /* A sample script showing how to handle default values when communicating
    with the Compute Engine API. */
 
-// [START compute_instances_verify_default_value]
 // [START compute_usage_report_set]
 // [START compute_usage_report_get]
 // [START compute_usage_report_disable]
@@ -126,7 +125,6 @@ public class SetUsageExportBucket {
     }
   }
   // [END compute_usage_report_get]
-  // [END compute_instances_verify_default_value]
 
   // [START compute_usage_report_disable]
 
