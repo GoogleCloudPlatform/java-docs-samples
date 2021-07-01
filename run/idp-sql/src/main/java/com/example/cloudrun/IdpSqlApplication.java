@@ -16,14 +16,11 @@
 
 package com.example.cloudrun;
 
-import com.google.api.gax.rpc.ApiException;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -53,11 +50,7 @@ public class IdpSqlApplication {
     FirebaseApp.initializeApp(options);
 
     // Retrieve config for Cloud SQL
-    String secretVersionName = System.getenv("CLOUD_SQL_CREDENTIALS_SECRET");
-    if (secretVersionName == null) {
-      throw new IllegalStateException("\"CLOUD_SQL_CREDENTIALS_SECRET\" env var is required.");
-    }
-    HashMap<String, Object> config = getConfig(secretVersionName);
+    HashMap<String, Object> config = getConfig();
 
     // Set the Cloud SQL config and start app
     SpringApplication app = new SpringApplication(IdpSqlApplication.class);
@@ -101,25 +94,20 @@ public class IdpSqlApplication {
 
   // [START cloudrun_user_auth_secrets]
   /** Retrieve config from Secret Manager */
-  public static HashMap<String, Object> getConfig(
-      String secretVersionName) throws IOException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-      // Retrieve secret version
-      AccessSecretVersionResponse response = client.accessSecretVersion(secretVersionName);
-      String json = response.getPayload().getData().toStringUtf8();
-
-      // Convert JSON secret to a Map
-      HashMap<String, Object> config = new Gson().fromJson(json, HashMap.class);
+  public static HashMap<String, Object> getConfig() {
+    String secret = System.getenv("CLOUD_SQL_CREDENTIALS_SECRET");
+    if (secret == null) {
+      throw new IllegalStateException("\"CLOUD_SQL_CREDENTIALS_SECRET\" is required.");
+    }
+    try {
+      HashMap<String, Object> config = new Gson().fromJson(secret, HashMap.class);
       return config;
-    } catch (IOException e) {
-      logger.error("Unable to create Secret Manager client: " + e.toString());
-      throw new RuntimeException("Unable to retrieve config secrets.");
-    } catch (ApiException e) {
-      logger.error("Unable to retrieve config secrets: " + e.toString());
-      throw new RuntimeException("Unable to retrieve config secrets.");
+    } catch (JsonSyntaxException e) {
+      logger.error(
+          "Unable to parse secret from Secret Manager. Make sure that it is JSON formatted: "
+              + e);
+      throw new RuntimeException(
+          "Unable to parse secret from Secret Manager. Make sure that it is JSON formatted.");
     }
   }
   // [END cloudrun_user_auth_secrets]
