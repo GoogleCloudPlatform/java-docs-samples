@@ -40,12 +40,17 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudresourcemanager</artifactId>
-      <version>v1-rev20210331-1.31.0</version><!-- v1 required here, v2 is different - DO NOT UPDATE to v2 -->
+      <version>v1-rev20210613-1.31.5</version><!-- v1 required here, v2 is different - DO NOT UPDATE to v2 -->
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
       <version>0.26.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.http-client</groupId>
+      <artifactId>google-http-client-jackson2</artifactId>
+      <version>1.39.2</version>
     </dependency>
 <!-- [START iam_java_dependency] -->
     <dependency>
