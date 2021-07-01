@@ -68,7 +68,7 @@
   <parent>
     <artifactId>shared-configuration</artifactId>
     <groupId>com.google.cloud.samples</groupId>
-    <version>1.0.22</version>
+    <version>1.0.23</version>
   </parent>
 
   <properties>
