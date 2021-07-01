@@ -71,8 +71,13 @@
       <dependency>
         <groupId>com.google.apis</groupId>
         <artifactId>google-api-services-oauth2</artifactId>
-        <version>v2-rev20200213-1.31.0</version>
+        <version>v2-rev20200213-1.31.5</version>
         <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.http-client</groupId>
+        <artifactId>google-http-client-jackson2</artifactId>
+        <version>1.39.2</version>
       </dependency>
       <!-- [END gae_java11_oauth2_dependencies] -->
 
