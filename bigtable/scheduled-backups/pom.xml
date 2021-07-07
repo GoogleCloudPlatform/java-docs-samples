@@ -40,7 +40,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
-      <version>1.0.3</version>
+      <version>1.0.4</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -51,7 +51,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigtable</artifactId>
-      <version>1.27.1</version>
+      <version>1.27.2</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
@@ -101,7 +101,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>function-maven-plugin</artifactId>
-      <version>0.9.5</version>
+      <version>0.9.7</version>
       <scope>test</scope>
     </dependency>
 
@@ -119,7 +119,7 @@ limitations under the License.
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.5</version>
+        <version>0.9.7</version>
         <configuration>
           <functionTarget>com.example.cloud.bigtable.scheduledbackups.CreateBackup</functionTarget>
         </configuration>
