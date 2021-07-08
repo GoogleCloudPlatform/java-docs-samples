@@ -18,9 +18,9 @@ package iam.snippets;
 // [START iam_get_policy]
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.model.GetIamPolicyRequest;
-import com.google.api.services.cloudresourcemanager.model.Policy;
+import com.google.api.services.cloudresourcemanager.v3.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.v3.model.GetIamPolicyRequest;
+import com.google.api.services.cloudresourcemanager.v3.model.Policy;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;

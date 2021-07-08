@@ -22,9 +22,9 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudresourcemanager.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.model.Binding;
-import com.google.api.services.cloudresourcemanager.model.Policy;
+import com.google.api.services.cloudresourcemanager.v3.CloudResourceManager;
+import com.google.api.services.cloudresourcemanager.v3.model.Binding;
+import com.google.api.services.cloudresourcemanager.v3.model.Policy;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.CreateServiceAccountRequest;
@@ -123,10 +123,10 @@ public class QuickstartTests {
     CloudResourceManager crmService = Quickstart.initializeService();
 
     // Tests addBinding()
-    Quickstart.addBinding(crmService, PROJECT_ID, member, role);
+    Quickstart.addBinding(crmService, "projects/" + PROJECT_ID, member, role);
 
     // Get the project's polcy and confirm that the member is in the policy
-    Policy policy = Quickstart.getPolicy(crmService, PROJECT_ID);
+    Policy policy = Quickstart.getPolicy(crmService, "projects/" + PROJECT_ID);
     Binding binding = null;
     List<Binding> bindings = policy.getBindings();
     for (Binding b : bindings) {
@@ -138,9 +138,9 @@ public class QuickstartTests {
     assertThat(binding.getMembers(), hasItem(member));
 
     // Tests removeMember()
-    Quickstart.removeMember(crmService, PROJECT_ID, member, role);
+    Quickstart.removeMember(crmService, "projects/" + PROJECT_ID, member, role);
     // Confirm that the member has been removed
-    policy = Quickstart.getPolicy(crmService, PROJECT_ID);
+    policy = Quickstart.getPolicy(crmService, "projects/" + PROJECT_ID);
     binding = null;
     bindings = policy.getBindings();
     for (Binding b : bindings) {
