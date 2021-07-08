@@ -34,7 +34,7 @@ limitations under the License.
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
-    <jetty.version>9.4.42.v20210604</jetty.version>
+    <jetty.version>9.4.43.v20210629</jetty.version>
   </properties>
 
   <dependencies>
