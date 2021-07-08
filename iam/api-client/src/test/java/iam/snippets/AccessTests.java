@@ -75,15 +75,15 @@ public class AccessTests {
 
   @Test
   public void testGetPolicy() {
-    GetPolicy.getPolicy(PROJECT_ID);
+    GetPolicy.getPolicy("projects/" + PROJECT_ID);
     String got = bout.toString();
     assertThat(got, containsString("Policy retrieved: "));
   }
 
   @Test
   public void testSetPolicy() {
-    Policy policy = GetPolicy.getPolicy(PROJECT_ID);
-    SetPolicy.setPolicy(policy, PROJECT_ID);
+    Policy policy = GetPolicy.getPolicy("projects/" + PROJECT_ID);
+    SetPolicy.setPolicy(policy, "projects/" + PROJECT_ID);
     String got = bout.toString();
     assertThat(got, containsString("Policy retrieved: "));
   }
@@ -116,7 +116,7 @@ public class AccessTests {
 
   @Test
   public void testTestPermissions() {
-    TestPermissions.testPermissions(PROJECT_ID);
+    TestPermissions.testPermissions("projects/" + PROJECT_ID);
     String got = bout.toString();
     assertThat(
         got,
