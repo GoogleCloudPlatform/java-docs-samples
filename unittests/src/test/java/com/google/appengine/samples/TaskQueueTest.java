@@ -30,7 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TaskQueueTest {
+public class TaskQueueTest extends BaseTestConfiguration {
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalTaskQueueTestConfig());

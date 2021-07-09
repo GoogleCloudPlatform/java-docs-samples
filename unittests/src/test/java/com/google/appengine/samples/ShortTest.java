@@ -32,7 +32,7 @@ import com.google.apphosting.api.ApiProxy;
 import org.junit.After;
 import org.junit.Test;
 
-public class ShortTest {
+public class ShortTest extends BaseTestConfiguration {
   private LocalServiceTestHelper helper;
 
   @After

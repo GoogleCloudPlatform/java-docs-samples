@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,10 @@
 
 package com.google.appengine.samples;
 
-// [START MyFirstTest]
+import java.util.concurrent.TimeUnit;
+import org.junit.Rule;
+import org.junit.rules.Timeout;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
-public class MyFirstTest extends BaseTestConfiguration {
-  @Test
-  public void testAddition() {
-    assertEquals(4, 2 + 2);
-  }
+public abstract class BaseTestConfiguration {
+  @Rule public Timeout testTimeout = new Timeout(5, TimeUnit.MINUTES);
 }
-// [END MyFirstTest]
