@@ -28,6 +28,7 @@ import com.google.cloud.spanner.SpannerOptions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -105,14 +106,14 @@ public class GrpcMetricSampleIT {
   }
 
   @Test
-  public void testGrpcMetricSample() {
+  public void testGrpcMetricSample() throws IOException {
     final DatabaseClient client = spanner.getDatabaseClient(dbId);
     final String out = runExample(client);
 
     assertThat(out).contains("1 1 Title 1");
   }
 
-  private String runExample(DatabaseClient client) {
+  private String runExample(DatabaseClient client) throws IOException {
     PrintStream stdOut = System.out;
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);

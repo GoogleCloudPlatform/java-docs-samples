@@ -19,11 +19,8 @@ package com.example.spanner.opencensus;
 // [START spanner_opencensus_query_stats_metric]
 
 import com.google.cloud.spanner.DatabaseClient;
-import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.ReadContext.QueryAnalyzeMode;
 import com.google.cloud.spanner.ResultSet;
-import com.google.cloud.spanner.Spanner;
-import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import com.google.protobuf.Value;
 import io.opencensus.exporter.stats.stackdriver.StackdriverStatsExporter;
@@ -75,25 +72,22 @@ public class QueryStatsMetricSample {
   static ViewManager manager = Stats.getViewManager();
   private static final StatsRecorder STATS_RECORDER = Stats.getStatsRecorder();
 
-  public static void captureQueryStatsMetric(DatabaseClient dbClient) {
+  public static void captureQueryStatsMetric(DatabaseClient dbClient) throws IOException {
     manager.registerView(QUERY_STATS_LATENCY_VIEW);
 
     // Enable OpenCensus exporters to export metrics to Cloud Monitoring.
     // Exporters use Application Default Credentials to authenticate.
     // See https://developers.google.com/identity/protocols/application-default-credentials
     // for more details.
-    try {
-      StackdriverStatsExporter.createAndRegister();
-    } catch (IOException ex) {
-      // ignore
-    }
+    StackdriverStatsExporter.createAndRegister();
 
     try (ResultSet resultSet = dbClient.singleUse()
         .analyzeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"),
             QueryAnalyzeMode.PROFILE)) {
 
       while (resultSet.next()) {
-        // ignore
+        System.out.printf(
+            "%d %d %s", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
       }
       Value value = resultSet.getStats().getQueryStats()
           .getFieldsOrDefault("elapsed_time", Value.newBuilder().setStringValue("0 msecs").build());

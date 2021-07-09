@@ -19,10 +19,7 @@ package com.example.spanner.opencensus;
 // [START spanner_opencensus_grpc_metric]
 
 import com.google.cloud.spanner.DatabaseClient;
-import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.ResultSet;
-import com.google.cloud.spanner.Spanner;
-import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import io.opencensus.contrib.grpc.metrics.RpcViews;
 import io.opencensus.exporter.stats.stackdriver.StackdriverStatsExporter;
@@ -33,7 +30,7 @@ import java.io.IOException;
  */
 public class GrpcMetricSample {
 
-  public static void captureGrpcMetric(DatabaseClient dbClient) {
+  public static void captureGrpcMetric(DatabaseClient dbClient) throws IOException {
     // Register basic gRPC views.
     RpcViews.registerClientGrpcBasicViews();
 
@@ -41,11 +38,7 @@ public class GrpcMetricSample {
     // Exporters use Application Default Credentials to authenticate.
     // See https://developers.google.com/identity/protocols/application-default-credentials
     // for more details.
-    try {
-      StackdriverStatsExporter.createAndRegister();
-    } catch (IOException ex) {
-      // ignore
-    }
+    StackdriverStatsExporter.createAndRegister();
 
     try (ResultSet resultSet =
         dbClient
@@ -53,7 +46,7 @@ public class GrpcMetricSample {
             .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"))) {
       while (resultSet.next()) {
         System.out.printf(
-            "%d %d %s\n", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
+            "%d %d %s", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
       }
     }
   }
