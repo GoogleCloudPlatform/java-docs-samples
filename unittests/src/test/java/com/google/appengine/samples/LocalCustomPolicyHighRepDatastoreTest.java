@@ -33,7 +33,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LocalCustomPolicyHighRepDatastoreTest {
+public class LocalCustomPolicyHighRepDatastoreTest extends BaseTestConfiguration {
   private static final class CustomHighRepJobPolicy implements HighRepJobPolicy {
     static int newJobCounter = 0;
     static int existingJobCounter = 0;

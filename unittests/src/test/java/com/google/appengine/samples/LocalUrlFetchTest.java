@@ -33,7 +33,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LocalUrlFetchTest {
+public class LocalUrlFetchTest extends BaseTestConfiguration {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalURLFetchServiceTestConfig());
 

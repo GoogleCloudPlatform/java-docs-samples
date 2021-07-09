@@ -30,7 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DeferredTaskTest {
+public class DeferredTaskTest extends BaseTestConfiguration {
 
   // Unlike CountDownLatch, TaskCountDownlatch lets us reset.
   private final LocalTaskQueueTestConfig.TaskCountDownLatch latch =
