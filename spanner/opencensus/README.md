@@ -21,11 +21,3 @@ This sample includes 2 classes that demonstrate how to record Cloud Spanner's la
     [Cloud Spanner section](http://console.cloud.google.com/spanner).
 
 4.  Enable application default credentials by running the command `gcloud auth application-default login`.
-
-## Run the Example
-
-Run the following command on the command line in the project directory:
-
-```
-mvn clean compile exec:java -Dexec.args="<command> my-instance my-database"
-```
