@@ -30,7 +30,7 @@ import java.io.IOException;
  */
 public class GrpcMetricSample {
 
-  public static void captureGrpcMetric(DatabaseClient dbClient) throws IOException {
+  public static void captureGrpcMetric(DatabaseClient dbClient) {
     // Register basic gRPC views.
     RpcViews.registerClientGrpcBasicViews();
 
@@ -38,7 +38,11 @@ public class GrpcMetricSample {
     // Exporters use Application Default Credentials to authenticate.
     // See https://developers.google.com/identity/protocols/application-default-credentials
     // for more details.
-    StackdriverStatsExporter.createAndRegister();
+    try {
+      StackdriverStatsExporter.createAndRegister();
+    } catch (IOException e) {
+      System.out.println("Error during StackdriverStatsExporter");
+    }
 
     try (ResultSet resultSet =
         dbClient

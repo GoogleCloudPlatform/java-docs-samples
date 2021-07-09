@@ -79,7 +79,11 @@ public class QueryStatsMetricSample {
     // Exporters use Application Default Credentials to authenticate.
     // See https://developers.google.com/identity/protocols/application-default-credentials
     // for more details.
-    StackdriverStatsExporter.createAndRegister();
+    try {
+      StackdriverStatsExporter.createAndRegister();
+    } catch (IOException e) {
+      System.out.println("Error during StackdriverStatsExporter");
+    }
 
     try (ResultSet resultSet = dbClient.singleUse()
         .analyzeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"),

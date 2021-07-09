@@ -106,14 +106,14 @@ public class GrpcMetricSampleIT {
   }
 
   @Test
-  public void testGrpcMetricSample() throws IOException {
+  public void testGrpcMetricSample() {
     final DatabaseClient client = spanner.getDatabaseClient(dbId);
     final String out = runExample(client);
 
     assertThat(out).contains("1 1 Title 1");
   }
 
-  private String runExample(DatabaseClient client) throws IOException {
+  private String runExample(DatabaseClient client) {
     PrintStream stdOut = System.out;
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);

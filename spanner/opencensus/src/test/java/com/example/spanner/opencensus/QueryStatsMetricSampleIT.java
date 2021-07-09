@@ -28,7 +28,6 @@ import com.google.cloud.spanner.SpannerOptions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -106,14 +105,14 @@ public class QueryStatsMetricSampleIT {
   }
 
   @Test
-  public void testQueryStatsMetricSample() throws IOException {
+  public void testQueryStatsMetricSample() {
     final DatabaseClient client = spanner.getDatabaseClient(dbId);
     final String out = runExample(client);
 
     assertThat(out).contains("1 1 Title 1");
   }
 
-  private String runExample(DatabaseClient client) throws IOException {
+  private String runExample(DatabaseClient client) {
     PrintStream stdOut = System.out;
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
