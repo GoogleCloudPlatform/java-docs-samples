@@ -72,7 +72,7 @@ public class QueryStatsMetricSample {
   static ViewManager manager = Stats.getViewManager();
   private static final StatsRecorder STATS_RECORDER = Stats.getStatsRecorder();
 
-  public static void captureQueryStatsMetric(DatabaseClient dbClient) throws IOException {
+  public static void captureQueryStatsMetric(DatabaseClient dbClient) {
     manager.registerView(QUERY_STATS_LATENCY_VIEW);
 
     // Enable OpenCensus exporters to export metrics to Cloud Monitoring.
