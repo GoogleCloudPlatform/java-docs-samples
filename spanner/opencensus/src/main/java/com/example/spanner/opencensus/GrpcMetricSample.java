@@ -23,7 +23,6 @@ import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
 import io.opencensus.contrib.grpc.metrics.RpcViews;
 import io.opencensus.exporter.stats.stackdriver.StackdriverStatsExporter;
-import java.io.IOException;
 
 /**
  * This sample demonstrates how to record and export client round-trip latency using OpenCensus.
@@ -40,7 +39,7 @@ public class GrpcMetricSample {
     // for more details.
     try {
       StackdriverStatsExporter.createAndRegister();
-    } catch (IOException e) {
+    } catch (Exception e) {
       System.out.println("Error during StackdriverStatsExporter");
     }
 

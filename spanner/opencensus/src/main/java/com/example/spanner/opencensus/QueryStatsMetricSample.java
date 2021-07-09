@@ -33,7 +33,6 @@ import io.opencensus.stats.StatsRecorder;
 import io.opencensus.stats.View;
 import io.opencensus.stats.View.Name;
 import io.opencensus.stats.ViewManager;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -81,7 +80,7 @@ public class QueryStatsMetricSample {
     // for more details.
     try {
       StackdriverStatsExporter.createAndRegister();
-    } catch (IOException e) {
+    } catch (Exception e) {
       System.out.println("Error during StackdriverStatsExporter");
     }
 
