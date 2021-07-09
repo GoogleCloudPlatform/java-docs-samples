@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.appengine.samples;
 
 import java.util.concurrent.TimeUnit;
-
 import org.junit.Rule;
 import org.junit.rules.Timeout;
 
 public abstract class BaseTestConfiguration {
-    @Rule public Timeout testTimeout = new Timeout(5, TimeUnit.MINUTES);
+  @Rule public Timeout testTimeout = new Timeout(5, TimeUnit.MINUTES);
 }
