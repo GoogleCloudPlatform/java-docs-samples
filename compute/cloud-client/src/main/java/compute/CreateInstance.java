@@ -89,7 +89,7 @@ public class CreateInstance {
 
       if (response.getStatus() == Status.RUNNING) {
         // Wait for the create operation to complete; default timeout is 2 mins
-        response = zoneOperationsClient.wait(project, zone, String.valueOf(response.getId()));
+        response = zoneOperationsClient.wait(project, zone, response.getId());
       }
 
       if (response.hasError()) {
