@@ -59,7 +59,7 @@ limitations under the License.
       <dependency>
         <groupId>io.ktor</groupId>
         <artifactId>ktor-bom</artifactId>
-        <version>1.6.0</version>
+        <version>1.6.1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -94,6 +94,13 @@ limitations under the License.
       <artifactId>ktor-server-tests</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test-junit</artifactId>
+      <version>1.5.20</version>
+      <scope>test</scope>
+    </dependency>
+  
   </dependencies>
 
   <build>
