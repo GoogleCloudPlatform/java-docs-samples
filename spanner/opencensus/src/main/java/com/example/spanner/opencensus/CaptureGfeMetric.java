@@ -46,10 +46,9 @@ import io.opencensus.tags.TagKey;
 import io.opencensus.tags.TagValue;
 import io.opencensus.tags.Tagger;
 import io.opencensus.tags.Tags;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.io.IOException;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,9 +75,8 @@ public class CaptureGfeMetric {
   // [START spanner_opencensus_capture_gfe_metric]
   private static final String MILLISECOND = "ms";
   private static final TagKey key = TagKey.create("grpc_client_method");
-  /**
-   * GFE t4t7 latency extracted from server-timing header.
-   */
+
+  // GFE t4t7 latency extracted from server-timing header.
   public static final MeasureLong SPANNER_GFE_LATENCY =
       MeasureLong.create(
           "cloud.google.com/java/spanner/gfe_latency",
@@ -86,15 +84,12 @@ public class CaptureGfeMetric {
               + " response",
           MILLISECOND);
 
-  static final List<Double> GFE_MILLIS_BUCKET_BOUNDARIES =
-      Collections.unmodifiableList(
-          Arrays.asList(
-              0.0, 0.01, 0.05, 0.1, 0.3, 0.6, 0.8, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 13.0,
-              16.0, 20.0, 25.0, 30.0, 40.0, 50.0, 65.0, 80.0, 100.0, 130.0, 160.0, 200.0, 250.0,
-              300.0, 400.0, 500.0, 650.0, 800.0, 1000.0, 2000.0, 5000.0, 10000.0, 20000.0, 50000.0,
-              100000.0));
   static final Aggregation AGGREGATION_WITH_MILLIS_HISTOGRAM =
-      Distribution.create(BucketBoundaries.create(GFE_MILLIS_BUCKET_BOUNDARIES));
+      Distribution.create(BucketBoundaries.create(Arrays.asList(
+          0.0, 0.01, 0.05, 0.1, 0.3, 0.6, 0.8, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 13.0,
+          16.0, 20.0, 25.0, 30.0, 40.0, 50.0, 65.0, 80.0, 100.0, 130.0, 160.0, 200.0, 250.0,
+          300.0, 400.0, 500.0, 650.0, 800.0, 1000.0, 2000.0, 5000.0, 10000.0, 20000.0, 50000.0,
+          100000.0)));
   static final View GFE_LATENCY_VIEW = View
       .create(Name.create("cloud.google.com/java/spanner/gfe_latency"),
           "Latency between Google's network receives an RPC and reads back the first byte of the"
