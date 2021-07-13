@@ -50,7 +50,7 @@ public class CreateInstance {
     // networkName: network interface to associate with the instance.
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
     String sourceImage = "projects/debian-cloud/global/images/family/debian-10";
-    Long diskSizeGb = 10L;
+    String diskSizeGb = "10";
     String networkName = "default";
 
     // Initialize client that will be used to send requests. This client only needs to be created
