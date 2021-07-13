@@ -7,6 +7,7 @@ This sample requires [Java](https://www.java.com/en/download/) and [Maven](http:
 This sample includes 2 classes that demonstrate how to record Cloud Spanner's latencies.
 
 * `CaptureGrpcMetric` - capture client round-trip latency.
+* `CaptureGfeMetric` - capture Google Front End (GFE) latency.
 * `CaptureQueryStatsMetric` - capture query stats latency.
 
 ## Build and Run
