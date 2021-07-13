@@ -52,7 +52,7 @@ public class DeleteInstance {
       // [START compute_instances_operation_check]
       if (response.getStatus() == Status.RUNNING) {
         // Wait for the delete operation to complete; default timeout is 2 mins
-        response = zoneOperationsClient.wait(project, zone, String.valueOf(response.getId()));
+        response = zoneOperationsClient.wait(project, zone, response.getId());
       }
       // [END compute_instances_operation_check]
 
