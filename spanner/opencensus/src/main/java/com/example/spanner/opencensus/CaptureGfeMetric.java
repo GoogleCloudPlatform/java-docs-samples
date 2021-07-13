@@ -131,9 +131,11 @@ public class CaptureGfeMetric {
   private static final HeaderClientInterceptor interceptor = new HeaderClientInterceptor();
   private static final Metadata.Key<String> SERVER_TIMING_HEADER_KEY =
       Metadata.Key.of("server-timing", Metadata.ASCII_STRING_MARSHALLER);
+  // Every response from Cloud Spanner, there will be an additional header that contains the total
+  // elapsed time on GFE. The format is "server-timing: gfet4t7; dur=[GFE latency in ms]".
   private static final Pattern SERVER_TIMING_HEADER_PATTERN = Pattern.compile(".*dur=(?<dur>\\d+)");
 
-  // ClientInterceptor to capture GFE header latency.
+  // ClientInterceptor to intercept the outgoing RPCs in order to retrieve the GFE header.
   private static class HeaderClientInterceptor implements ClientInterceptor {
 
     @Override
@@ -154,6 +156,7 @@ public class CaptureGfeMetric {
       };
     }
 
+    // Process header, extract duration value and record it using OpenCensus.
     private static void processHeader(Metadata metadata, String method) {
       if (metadata.get(SERVER_TIMING_HEADER_KEY) != null) {
         String serverTiming = metadata.get(SERVER_TIMING_HEADER_KEY);
