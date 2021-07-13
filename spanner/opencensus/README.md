@@ -6,8 +6,8 @@ This sample requires [Java](https://www.java.com/en/download/) and [Maven](http:
 
 This sample includes 2 classes that demonstrate how to record Cloud Spanner's latencies.
 
-* `GrpcMetricSample` - record and export client round-trip latency.
-* `QueryStatsMetricSample` - record and export query stats latency.
+* `CaptureGrpcMetric` - capture client round-trip latency.
+* `CaptureQueryStatsMetric` - capture query stats latency.
 
 ## Build and Run
 

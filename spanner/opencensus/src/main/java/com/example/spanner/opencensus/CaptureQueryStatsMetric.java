@@ -16,11 +16,12 @@
 
 package com.example.spanner.opencensus;
 
-// [START spanner_opencensus_query_stats_metric]
-
 import com.google.cloud.spanner.DatabaseClient;
+import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.ReadContext.QueryAnalyzeMode;
 import com.google.cloud.spanner.ResultSet;
+import com.google.cloud.spanner.Spanner;
+import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import com.google.protobuf.Value;
 import io.opencensus.exporter.stats.stackdriver.StackdriverStatsExporter;
@@ -33,15 +34,30 @@ import io.opencensus.stats.StatsRecorder;
 import io.opencensus.stats.View;
 import io.opencensus.stats.View.Name;
 import io.opencensus.stats.ViewManager;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * This sample demonstrates how to record and export Cloud Spanner's Query Stats latency using
- * OpenCensus.
+ * This sample demonstrates how to capture Cloud Spanner's Query Stats latency using OpenCensus.
  */
-public class QueryStatsMetricSample {
+public class CaptureQueryStatsMetric {
+
+  public static void main(String[] args) {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project";
+    String instanceId = "my-instance";
+    String databaseId = "my-database";
+
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
+    DatabaseClient dbClient = spanner
+        .getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
+    captureQueryStatsMetric(dbClient);
+  }
+
+  // [START spanner_opencensus_capture_query_stats_metric]
   private static final String MILLISECOND = "ms";
   static final List<Double> RPC_MILLIS_BUCKET_BOUNDARIES =
       Collections.unmodifiableList(
@@ -71,7 +87,7 @@ public class QueryStatsMetricSample {
   static ViewManager manager = Stats.getViewManager();
   private static final StatsRecorder STATS_RECORDER = Stats.getStatsRecorder();
 
-  public static void captureQueryStatsMetric(DatabaseClient dbClient) {
+  static void captureQueryStatsMetric(DatabaseClient dbClient) {
     manager.registerView(QUERY_STATS_LATENCY_VIEW);
 
     // Enable OpenCensus exporters to export metrics to Cloud Monitoring.
@@ -80,7 +96,7 @@ public class QueryStatsMetricSample {
     // for more details.
     try {
       StackdriverStatsExporter.createAndRegister();
-    } catch (Exception e) {
+    } catch (IOException | IllegalStateException e) {
       System.out.println("Error during StackdriverStatsExporter");
     }
 
@@ -100,5 +116,5 @@ public class QueryStatsMetricSample {
           .record();
     }
   }
+  // [END spanner_opencensus_capture_query_stats_metric]
 }
-// [END spanner_opencensus_query_stats_metric]

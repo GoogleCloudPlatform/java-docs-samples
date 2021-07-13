@@ -28,7 +28,6 @@ import com.google.cloud.spanner.SpannerOptions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,7 +44,7 @@ import org.junit.runners.JUnit4;
  * Integration tests for Cloud Spanner OpenCensus GRPC metric examples.
  */
 @RunWith(JUnit4.class)
-public class GrpcMetricSampleIT {
+public class CaptureGrpcMetricIT {
 
   // The instance needs to exist for tests to pass.
   private static String instanceId = "default-instance";
@@ -54,6 +53,8 @@ public class GrpcMetricSampleIT {
   private static DatabaseId dbId;
   private static DatabaseAdminClient dbClient;
   private static Spanner spanner;
+  private static PrintStream originalOut;
+  private static ByteArrayOutputStream bout;
 
   @BeforeClass
   public static void createTestDatabase() throws Exception {
@@ -85,6 +86,19 @@ public class GrpcMetricSampleIT {
   }
 
   @Before
+  public void captureOutput() {
+    originalOut = System.out;
+    bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
+  }
+
+  @After
+  public void resetOutput() {
+    System.setOut(originalOut);
+    bout.reset();
+  }
+
+  @Before
   public void insertTestData() {
     final DatabaseClient client = spanner.getDatabaseClient(dbId);
     client.write(Arrays.asList(
@@ -106,21 +120,12 @@ public class GrpcMetricSampleIT {
   }
 
   @Test
-  public void testGrpcMetricSample() {
+  public void testCaptureGrpcMetric() {
     final DatabaseClient client = spanner.getDatabaseClient(dbId);
-    final String out = runExample(client);
+    CaptureGrpcMetric.captureGrpcMetric(client);
+    final String out = bout.toString();
 
     assertThat(out).contains("1 1 Title 1");
-  }
-
-  private String runExample(DatabaseClient client) {
-    PrintStream stdOut = System.out;
-    ByteArrayOutputStream bout = new ByteArrayOutputStream();
-    PrintStream out = new PrintStream(bout);
-    System.setOut(out);
-    GrpcMetricSample.captureGrpcMetric(client);
-    System.setOut(stdOut);
-    return bout.toString();
   }
 
   static String formatForTest(String name) {

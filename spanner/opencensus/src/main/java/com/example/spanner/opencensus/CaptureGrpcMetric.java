@@ -16,20 +16,36 @@
 
 package com.example.spanner.opencensus;
 
-// [START spanner_opencensus_grpc_metric]
-
 import com.google.cloud.spanner.DatabaseClient;
+import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.ResultSet;
+import com.google.cloud.spanner.Spanner;
+import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import io.opencensus.contrib.grpc.metrics.RpcViews;
 import io.opencensus.exporter.stats.stackdriver.StackdriverStatsExporter;
+import java.io.IOException;
 
 /**
- * This sample demonstrates how to record and export client round-trip latency using OpenCensus.
+ * This sample demonstrates how to capture client round-trip latency using OpenCensus.
  */
-public class GrpcMetricSample {
+public class CaptureGrpcMetric {
 
-  public static void captureGrpcMetric(DatabaseClient dbClient) {
+  public static void main(String[] args) {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project";
+    String instanceId = "my-instance";
+    String databaseId = "my-database";
+
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
+    DatabaseClient dbClient = spanner
+        .getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
+    captureGrpcMetric(dbClient);
+  }
+
+  // [START spanner_opencensus_capture_grpc_metric]
+  static void captureGrpcMetric(DatabaseClient dbClient) {
     // Register basic gRPC views.
     RpcViews.registerClientGrpcBasicViews();
 
@@ -39,7 +55,7 @@ public class GrpcMetricSample {
     // for more details.
     try {
       StackdriverStatsExporter.createAndRegister();
-    } catch (Exception e) {
+    } catch (IOException | IllegalStateException e) {
       System.out.println("Error during StackdriverStatsExporter");
     }
 
@@ -53,5 +69,5 @@ public class GrpcMetricSample {
       }
     }
   }
+  // [END spanner_opencensus_capture_grpc_metric]
 }
-// [END spanner_opencensus_grpc_metric]
