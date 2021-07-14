@@ -50,7 +50,7 @@ public class CreateInstance {
     // networkName: network interface to associate with the instance.
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
     String sourceImage = "projects/debian-cloud/global/images/family/debian-10";
-    String diskSizeGb = "10";
+    long diskSizeGb = 10L;
     String networkName = "default";
 
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -89,7 +89,7 @@ public class CreateInstance {
 
       if (response.getStatus() == Status.RUNNING) {
         // Wait for the create operation to complete; default timeout is 2 mins
-        response = zoneOperationsClient.wait(project, zone, response.getId());
+        response = zoneOperationsClient.wait(project, zone, String.valueOf(response.getId()));
       }
 
       if (response.hasError()) {
