@@ -102,6 +102,9 @@
     "automerge"
   ],
   "rebaseWhen": "never",
-  "masterIssue": true,
+    "dependencyDashboard": true,
+  "dependencyDashboardLabels": [
+    "type: process"
+  ],
   "semanticCommits": true
 }
