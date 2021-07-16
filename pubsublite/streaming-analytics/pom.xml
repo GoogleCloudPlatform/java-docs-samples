@@ -114,7 +114,7 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- TODO: Remove when the next release of the I/O includes it -->
+    <!-- TODO: Remove when a new release of the I/O includes it -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
@@ -130,12 +130,19 @@
       <artifactId>pubsublite-beam-io</artifactId>
       <version>0.16.1</version>
     </dependency>
-
+    
     <!-- Beam examples -->
     <dependency>
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-examples-java</artifactId>
       <version>${beam.version}</version>
+    </dependency>
+
+    <!-- Pub/Sub Lite official client library -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-pubsublite</artifactId>
+      <version>0.14.2</version>
     </dependency>
 
     <!-- Test dependencies -->
