@@ -18,6 +18,7 @@ package compute;
 
 // [START compute_instances_list_all]
 
+import com.google.cloud.compute.v1.AggregatedListInstancesRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.InstancesScopedList;
@@ -40,8 +41,21 @@ public class ListAllInstances {
     // safely clean up any remaining background resources.
     try (InstancesClient instancesClient = InstancesClient.create()) {
       // Listing all instances for the project
+
+      // Requesting a list of Instances, aggregated by the zone they are located in.
+      // The max_results parameter tells the API to return no more than 5 results per response page.
+      AggregatedListInstancesRequest aggregatedListInstancesRequest = AggregatedListInstancesRequest
+          .newBuilder()
+          .setProject(project)
+          .setMaxResults(5)
+          .build();
+
       InstancesClient.AggregatedListPagedResponse response = instancesClient
-          .aggregatedList(project);
+          .aggregatedList(aggregatedListInstancesRequest);
+
+      // Despite telling the API to return only 5 instances per page, you don't need to handle the
+      // pagination system yourself. The returned AggregatedListPager object handles it
+      // automatically for you, requesting next pages as you iterate over the results.
       for (Map.Entry<String, InstancesScopedList> zoneInstances : response.iterateAll()) {
         // Instances scoped by each zone
         String zone = zoneInstances.getKey();
