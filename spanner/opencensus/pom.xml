@@ -82,7 +82,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
-      <version>6.9.1</version>
+      <version>6.10.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
