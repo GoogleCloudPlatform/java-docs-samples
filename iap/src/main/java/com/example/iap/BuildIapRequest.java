@@ -15,6 +15,7 @@
  */
 
 package com.example.iap;
+
 // [START iap_make_request]
 
 import com.google.api.client.http.HttpRequest;
@@ -26,6 +27,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.IdTokenCredentials;
 import com.google.auth.oauth2.IdTokenProvider;
 import com.google.common.base.Preconditions;
+
 import java.io.IOException;
 import java.util.Collections;
 
