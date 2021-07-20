@@ -8,7 +8,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <opencensus.version>0.26.0</opencensus.version>
+    <opencensus.version>0.28.3</opencensus.version>
     <spanner.version>2.0.2</spanner.version>
   </properties>
 
