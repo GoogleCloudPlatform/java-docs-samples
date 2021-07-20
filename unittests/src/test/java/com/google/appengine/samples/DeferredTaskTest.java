@@ -60,7 +60,7 @@ public class DeferredTaskTest extends BaseTestConfiguration {
   public void tearDown() {
     MyTask.taskRan = false;
     latch.reset();
-    helper.tearDown();
+    // helper.tearDown();
   }
 
   @Test
