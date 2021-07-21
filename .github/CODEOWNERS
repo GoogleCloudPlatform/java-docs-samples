@@ -12,4 +12,4 @@
 /iot/                           @gcseh @GoogleCloudPlatform/api-iot @GoogleCloudPlatform/java-samples-reviewers
 /logging/                       @GoogleCloudPlatform/observability-devx @GoogleCloudPlatform/java-samples-reviewers
 /storage/**/*.java              @GoogleCloudPlatform/cloud-storage-dpes @GoogleCloudPlatform/java-samples-reviewers
-.github/auto-approve.yml        @googleapis/github-automation
+.github/auto-approve.yml        @sofisl
