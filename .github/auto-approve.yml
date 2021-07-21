@@ -20,7 +20,7 @@ rules:
 # checking the file paths. 
   changedFiles:
   - "/pom\\.xml$"
-  - "/gradle\\.build$"
+#  - "/gradle\\.build$"
   
 # (Optional) The max amount of files changed in a PR. 
 # maxFiles: 
