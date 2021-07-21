@@ -23,4 +23,4 @@ rules:
   - "/gradle\\.build$"
   
 # (Optional) The max amount of files changed in a PR. 
-maxFiles: 
+# maxFiles: 
