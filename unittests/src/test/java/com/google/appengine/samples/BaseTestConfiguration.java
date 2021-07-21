@@ -21,5 +21,5 @@ import org.junit.Rule;
 import org.junit.rules.Timeout;
 
 public abstract class BaseTestConfiguration {
-  @Rule public Timeout testTimeout = new Timeout(5, TimeUnit.MINUTES);
+  @Rule public Timeout testTimeout = new Timeout(10, TimeUnit.MINUTES);
 }
