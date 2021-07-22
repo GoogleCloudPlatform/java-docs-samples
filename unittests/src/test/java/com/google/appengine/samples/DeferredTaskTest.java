@@ -33,17 +33,25 @@ import org.junit.Test;
 public class DeferredTaskTest extends BaseTestConfiguration {
 
   // Unlike CountDownLatch, TaskCountDownlatch lets us reset.
-  private final LocalTaskQueueTestConfig.TaskCountDownLatch latch =
+  private static final LocalTaskQueueTestConfig.TaskCountDownLatch latch =
       new LocalTaskQueueTestConfig.TaskCountDownLatch(1);
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalTaskQueueTestConfig()
-          .setDisableAutoTaskExecution(false)
+          .setDisableAutoTaskExecution(false) // Enable auto task execution
           .setCallbackClass(LocalTaskQueueTestConfig.DeferredTaskCallback.class)
           .setTaskExecutionLatch(latch));
 
+  private static synchronized boolean requestAwait() throws InterruptedException {
+    return latch.await(5, TimeUnit.SECONDS);
+  }
+
+  private static synchronized void requestReset() {
+    latch.reset();
+  }
+
   private static class MyTask implements DeferredTask {
-    private static boolean taskRan = false;
+    private static volatile boolean taskRan = false;
 
     @Override
     public void run() {
@@ -59,15 +67,15 @@ public class DeferredTaskTest extends BaseTestConfiguration {
   @After
   public void tearDown() {
     MyTask.taskRan = false;
+    requestReset();
     helper.tearDown();
-    latch.reset();
   }
 
   @Test
   public void testTaskGetsRun() throws InterruptedException {
     QueueFactory.getDefaultQueue().add(
         TaskOptions.Builder.withPayload(new MyTask()));
-    assertTrue(latch.await(5, TimeUnit.SECONDS));
+    assertTrue(requestAwait());
     assertTrue(MyTask.taskRan);
   }
 }
