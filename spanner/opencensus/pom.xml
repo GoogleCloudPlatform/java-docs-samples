@@ -8,7 +8,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <opencensus.version>0.26.0</opencensus.version>
+    <opencensus.version>0.28.3</opencensus.version>
     <spanner.version>2.0.2</spanner.version>
   </properties>
 
@@ -82,7 +82,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
-      <version>6.10.0</version>
+      <version>6.10.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
