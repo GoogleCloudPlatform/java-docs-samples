@@ -56,9 +56,9 @@ public class ListImages {
           .setFilter("deprecated.state != DEPRECATED")
           .build();
 
-      // Although the setMaxResults parameter is specified as 3 in the request, the iterable
-      // returned by the `list()` method hides the pagination mechanic and allows you to simply
-      // iterate over all the images, while the library makes multiple requests to the API for you.
+      // Although the `setMaxResults` parameter is specified in the request, the iterable returned
+      // by the `list()` method hides the pagination mechanic. The library makes multiple
+      // requests to the API for you, so you can simply iterate over all the images.
       int imageCount = 0;
       for (Image image : imagesClient.list(imagesRequest).iterateAll()) {
         imageCount++;
@@ -70,8 +70,8 @@ public class ListImages {
   // [END compute_images_list]
 
   // [START compute_images_list_page]
-  // Prints a list of all non-deprecated image names available in given project,
-  // divided into pages, as returned by the GCE API.
+  //  Prints a list of all non-deprecated image names available in a given project,
+  //  divided into pages as returned by the Compute Engine API.
   public static void listImagesByPage(String project, int pageSize) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -86,9 +86,9 @@ public class ListImages {
           .setFilter("deprecated.state != DEPRECATED")
           .build();
 
-      // By using the `iteratePages` attribute of returned iterable, you can have more granular
-      // control over the way you iterate over paginated results retrieved from the API. Each time
-      // you want to access next page, the library retrieves it from the API.
+      // Use the `iteratePages` attribute of returned iterable to have more granular control of
+      // iteration over paginated results from the API. Each time you want to access the
+      // next page, the library retrieves that page from the API.
       int pageNumber = 1;
       for (ListPage page : imagesClient.list(imagesRequest).iteratePages()) {
         System.out.println("Page Number: " + pageNumber++);

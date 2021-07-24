@@ -40,10 +40,8 @@ public class ListAllInstances {
     // the `instancesClient.close()` method on the client to 
     // safely clean up any remaining background resources.
     try (InstancesClient instancesClient = InstancesClient.create()) {
-      // Listing all instances for the project
 
-      // Requesting a list of Instances, aggregated by the zone they are located in.
-      // The max_results parameter tells the API to return no more than 5 results per response page.
+      // Use the `setMaxResults` parameter to limit the number of results that the API returns per response page.
       AggregatedListInstancesRequest aggregatedListInstancesRequest = AggregatedListInstancesRequest
           .newBuilder()
           .setProject(project)
@@ -53,9 +51,9 @@ public class ListAllInstances {
       InstancesClient.AggregatedListPagedResponse response = instancesClient
           .aggregatedList(aggregatedListInstancesRequest);
 
-      // Despite telling the API to return only 5 instances per page, you don't need to handle the
-      // pagination system yourself. The returned AggregatedListPager object handles it
-      // automatically for you, requesting next pages as you iterate over the results.
+      // Despite using the `setMaxResults` parameter, you don't need to handle the pagination
+      // yourself. The returned `AggregatedListPager` object handles pagination
+      // automatically, requesting next pages as you iterate over the results.
       for (Map.Entry<String, InstancesScopedList> zoneInstances : response.iterateAll()) {
         // Instances scoped by each zone
         String zone = zoneInstances.getKey();
