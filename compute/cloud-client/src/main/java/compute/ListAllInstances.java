@@ -41,7 +41,8 @@ public class ListAllInstances {
     // safely clean up any remaining background resources.
     try (InstancesClient instancesClient = InstancesClient.create()) {
 
-      // Use the `setMaxResults` parameter to limit the number of results that the API returns per response page.
+      // Use the `setMaxResults` parameter to limit the number of results
+      // that the API returns per response page.
       AggregatedListInstancesRequest aggregatedListInstancesRequest = AggregatedListInstancesRequest
           .newBuilder()
           .setProject(project)
