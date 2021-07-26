@@ -28,19 +28,15 @@ import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.Timeout;
 
-public class DeferredTaskTest {
-
-  @Rule public Timeout testTimeout = new Timeout(10, TimeUnit.MINUTES);
+public class DeferredTaskTest extends BaseTestConfiguration {
 
   // Unlike CountDownLatch, TaskCountDownlatch lets us reset.
   private static final LocalTaskQueueTestConfig.TaskCountDownLatch latch =
       new LocalTaskQueueTestConfig.TaskCountDownLatch(1);
 
-  private final LocalServiceTestHelper helper =
+  private static final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalTaskQueueTestConfig()
           .setDisableAutoTaskExecution(false) // Enable auto task execution
           .setCallbackClass(LocalTaskQueueTestConfig.DeferredTaskCallback.class)
@@ -52,6 +48,12 @@ public class DeferredTaskTest {
 
   private static synchronized void requestReset() {
     latch.reset();
+  }
+  private static synchronized void helperSetUp() {
+    helper.setUp();
+  }
+  private static synchronized void helperTearDown() {
+    helper.tearDown();
   }
 
   private static class MyTask implements DeferredTask {
@@ -65,14 +67,14 @@ public class DeferredTaskTest {
 
   @Before
   public void setUp() {
-    helper.setUp();
+    helperSetUp();
   }
 
   @After
   public void tearDown() {
     MyTask.taskRan = false;
     requestReset();
-    helper.tearDown();
+    helperTearDown();
   }
 
   @Test
