@@ -36,11 +36,12 @@ public class DeferredTaskTest extends BaseTestConfiguration {
   private static final LocalTaskQueueTestConfig.TaskCountDownLatch latch =
       new LocalTaskQueueTestConfig.TaskCountDownLatch(1);
 
-  private final LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(new LocalTaskQueueTestConfig()
-          .setDisableAutoTaskExecution(false) // Enable auto task execution
-          .setCallbackClass(LocalTaskQueueTestConfig.DeferredTaskCallback.class)
-          .setTaskExecutionLatch(latch));
+  private static final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(
+          new LocalTaskQueueTestConfig()
+              .setDisableAutoTaskExecution(false) // Enable auto task execution
+              .setCallbackClass(LocalTaskQueueTestConfig.DeferredTaskCallback.class)
+              .setTaskExecutionLatch(latch));
 
   private static synchronized boolean requestAwait() throws InterruptedException {
     return latch.await(5, TimeUnit.SECONDS);
@@ -48,6 +49,14 @@ public class DeferredTaskTest extends BaseTestConfiguration {
 
   private static synchronized void requestReset() {
     latch.reset();
+  }
+
+  private static synchronized void helperSetUp() {
+    helper.setUp();
+  }
+
+  private static synchronized void helperTearDown() {
+    helper.tearDown();
   }
 
   private static class MyTask implements DeferredTask {
@@ -61,20 +70,19 @@ public class DeferredTaskTest extends BaseTestConfiguration {
 
   @Before
   public void setUp() {
-    helper.setUp();
+    helperSetUp();
   }
 
   @After
   public void tearDown() {
     MyTask.taskRan = false;
     requestReset();
-    helper.tearDown();
+    helperTearDown();
   }
 
   @Test
   public void testTaskGetsRun() throws InterruptedException {
-    QueueFactory.getDefaultQueue().add(
-        TaskOptions.Builder.withPayload(new MyTask()));
+    QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withPayload(new MyTask()));
     assertTrue(requestAwait());
     assertTrue(MyTask.taskRan);
   }
