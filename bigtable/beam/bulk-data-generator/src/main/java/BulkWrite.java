@@ -51,12 +51,12 @@ public class BulkWrite {
   static final long MB_PER_SEC = 120;
 
   static final String COLUMN_FAMILY = "cf";
+  public static final String TABLE_PREFIX = "data-";
 
   public static void main(String[] args) {
     BigtableOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableOptions.class);
     Pipeline p = Pipeline.create(options);
-    System.out.println(options.getBigtableInstanceId());
 
     BigtableTableAdminClient adminClient = null;
     try {
@@ -84,11 +84,19 @@ public class BulkWrite {
     long numRows = (long) ((TB_PER_TABLE * ONE_TB) / (MB_PER_ROW * ONE_MB));
     long rate = clusterNodeCount * MB_PER_SEC / newTableIds.size();
 
+    String generateLabel = String
+        .format("Generate %d rows at %dMB per second for %d tables", numRows, rate,
+            newTableIds.size());
+    String mutationLabel = String
+        .format("Create mutations that write %d MB to each row", MB_PER_ROW);
+
+    System.out.println(generateLabel);
+    System.out.println(mutationLabel);
+
     PCollection<Mutation> mutations = p
-        .apply(String.format("Generate %d rows at %dMB per second for %d tables", numRows, rate,
-            newTableIds.size()), GenerateSequence.from(0).to(numRows)
+        .apply(generateLabel, GenerateSequence.from(0).to(numRows)
             .withRate(rate, Duration.standardSeconds(1)))
-        .apply(String.format("Create mutations that write %d MB to each row", MB_PER_ROW),
+        .apply(mutationLabel,
             ParDo.of(new CreateMutationFn()));
 
     for (String tableId : newTableIds) {
@@ -125,7 +133,7 @@ public class BulkWrite {
       List<CloudBigtableTableConfiguration> bigtableTableConfigs = new ArrayList<>();
 
       for (int i = 0; i < numTablesToCreate; i++) {
-        String tableId = "data-" + UUID.randomUUID().toString().substring(0, 20);
+        String tableId = TABLE_PREFIX + UUID.randomUUID().toString().substring(0, 20);
         CreateTableRequest createTableRequest = CreateTableRequest.of(tableId)
             .addFamily(COLUMN_FAMILY);
         adminClient.createTable(createTableRequest);
@@ -146,7 +154,7 @@ public class BulkWrite {
       String clusterId = new BigtableClusterName(cluster.getName()).getClusterId();
       String zoneId = BigtableClusterUtilities.getZoneId(cluster);
       int clusterNodeCount = clusterUtility.getClusterNodeCount(clusterId, zoneId);
-      System.out.println("cluster size " + clusterNodeCount);
+      System.out.println("Cluster size " + clusterNodeCount);
       return clusterNodeCount;
     } catch (Exception e) {
       e.printStackTrace();
