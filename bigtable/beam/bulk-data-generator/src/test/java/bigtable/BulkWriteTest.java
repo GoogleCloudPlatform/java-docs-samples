@@ -1,5 +1,5 @@
-package bigtable;/*
- * Copyright 2020 Google LLC
+/*
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,15 @@ package bigtable;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package bigtable;
 
 import static org.junit.Assert.assertNotNull;
-
 
 import com.google.cloud.bigtable.admin.v2.BigtableInstanceAdminClient;
 import com.google.cloud.bigtable.admin.v2.models.CreateInstanceRequest;
 import com.google.cloud.bigtable.admin.v2.models.Instance;
 import com.google.cloud.bigtable.admin.v2.models.StorageType;
+
 import com.google.common.truth.Truth;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
