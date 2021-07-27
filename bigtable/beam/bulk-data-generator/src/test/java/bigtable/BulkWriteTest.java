@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package bigtable;
 
 import static org.junit.Assert.assertNotNull;
@@ -21,7 +22,6 @@ import com.google.cloud.bigtable.admin.v2.BigtableInstanceAdminClient;
 import com.google.cloud.bigtable.admin.v2.models.CreateInstanceRequest;
 import com.google.cloud.bigtable.admin.v2.models.Instance;
 import com.google.cloud.bigtable.admin.v2.models.StorageType;
-
 import com.google.common.truth.Truth;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
