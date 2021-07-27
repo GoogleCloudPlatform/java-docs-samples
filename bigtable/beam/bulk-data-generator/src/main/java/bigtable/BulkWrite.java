@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+package bigtable;
+
 import com.google.bigtable.admin.v2.Cluster;
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminClient;
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminSettings;
@@ -23,6 +25,8 @@ import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import com.google.cloud.bigtable.grpc.BigtableClusterName;
 import com.google.cloud.bigtable.grpc.BigtableClusterUtilities;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -52,6 +56,7 @@ public class BulkWrite {
 
   static final String COLUMN_FAMILY = "cf";
   public static final String TABLE_PREFIX = "data-";
+  static final SecureRandom random = new SecureRandom();
 
   public static void main(String[] args) {
     BigtableOptions options =
@@ -69,7 +74,6 @@ public class BulkWrite {
       adminClient = BigtableTableAdminClient.create(adminSettings);
     } catch (IOException e) {
       System.out.println("Unable to connect to Bigtable instance.");
-      e.printStackTrace();
       return;
     }
 
@@ -77,7 +81,7 @@ public class BulkWrite {
         options.getBigtableInstanceId());
     List<String> newTableIds = getNewTableIds(adminClient, options.getBigtableSize());
 
-    if (newTableIds.size() == 0) {
+    if (newTableIds.isEmpty()) {
       return;
     }
 
@@ -100,14 +104,12 @@ public class BulkWrite {
             ParDo.of(new CreateMutationFn()));
 
     for (String tableId : newTableIds) {
-      CloudBigtableTableConfiguration config = new CloudBigtableTableConfiguration.Builder()
-          .withProjectId(options.getProject())
-          .withInstanceId(options.getBigtableInstanceId())
-          .withTableId(tableId)
-          .build();
-
-      mutations.apply(String.format("Write data to table %s", config.getTableId()),
-          CloudBigtableIO.writeToTable(config));
+      mutations.apply(String.format("Write data to table %s", tableId),
+          CloudBigtableIO.writeToTable(new CloudBigtableTableConfiguration.Builder()
+              .withProjectId(options.getProject())
+              .withInstanceId(options.getBigtableInstanceId())
+              .withTableId(tableId)
+              .build()));
     }
 
     p.run();
@@ -129,8 +131,6 @@ public class BulkWrite {
 
       int numTablesToCreate = (int) ((expectedSize - currentSize) / .5);
       System.out.printf("Creating %d tables%n", numTablesToCreate);
-
-      List<CloudBigtableTableConfiguration> bigtableTableConfigs = new ArrayList<>();
 
       for (int i = 0; i < numTablesToCreate; i++) {
         String tableId = TABLE_PREFIX + UUID.randomUUID().toString().substring(0, 20);
@@ -156,8 +156,7 @@ public class BulkWrite {
       int clusterNodeCount = clusterUtility.getClusterNodeCount(clusterId, zoneId);
       System.out.println("Cluster size " + clusterNodeCount);
       return clusterNodeCount;
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (IOException | GeneralSecurityException e) {
       System.out.println("Unable to get cluster size. Treating as single-node cluster.");
       return 1;
     }
@@ -178,7 +177,8 @@ public class BulkWrite {
       // Generate random bytes
       long rowSize = MB_PER_ROW * ONE_MB;
       byte[] randomData = new byte[(int) rowSize];
-      new Random().nextBytes(randomData);
+
+      random.nextBytes(randomData);
       row.addColumn(
           Bytes.toBytes(COLUMN_FAMILY),
           Bytes.toBytes("C"),
