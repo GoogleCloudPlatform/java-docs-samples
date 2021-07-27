@@ -63,56 +63,53 @@ public class BulkWrite {
         PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableOptions.class);
     Pipeline p = Pipeline.create(options);
 
-    BigtableTableAdminClient adminClient = null;
     try {
       BigtableTableAdminSettings adminSettings = BigtableTableAdminSettings.newBuilder()
           .setProjectId(options.getProject())
           .setInstanceId(options.getBigtableInstanceId())
           .build();
 
-      // Creates a Bigtable table admin client.
-      adminClient = BigtableTableAdminClient.create(adminSettings);
+      BigtableTableAdminClient adminClient = BigtableTableAdminClient.create(adminSettings);
+
+      int clusterNodeCount = getClusterNodeCount(options.getProject(),
+          options.getBigtableInstanceId());
+      List<String> newTableIds = getNewTableIds(adminClient, options.getBigtableSize());
+
+      if (newTableIds.isEmpty()) {
+        return;
+      }
+
+      long numRows = (long) ((TB_PER_TABLE * ONE_TB) / (MB_PER_ROW * ONE_MB));
+      long rate = clusterNodeCount * MB_PER_SEC / newTableIds.size();
+
+      String generateLabel = String
+          .format("Generate %d rows at %dMB per second for %d tables", numRows, rate,
+              newTableIds.size());
+      String mutationLabel = String
+          .format("Create mutations that write %d MB to each row", MB_PER_ROW);
+
+      System.out.println(generateLabel);
+      System.out.println(mutationLabel);
+
+      PCollection<Mutation> mutations = p
+          .apply(generateLabel, GenerateSequence.from(0).to(numRows)
+              .withRate(rate, Duration.standardSeconds(1)))
+          .apply(mutationLabel,
+              ParDo.of(new CreateMutationFn()));
+
+      for (String tableId : newTableIds) {
+        mutations.apply(String.format("Write data to table %s", tableId),
+            CloudBigtableIO.writeToTable(new CloudBigtableTableConfiguration.Builder()
+                .withProjectId(options.getProject())
+                .withInstanceId(options.getBigtableInstanceId())
+                .withTableId(tableId)
+                .build()));
+      }
+
+      p.run();
     } catch (IOException e) {
       System.out.println("Unable to connect to Bigtable instance.");
-      return;
     }
-
-    int clusterNodeCount = getClusterNodeCount(options.getProject(),
-        options.getBigtableInstanceId());
-    List<String> newTableIds = getNewTableIds(adminClient, options.getBigtableSize());
-
-    if (newTableIds.isEmpty()) {
-      return;
-    }
-
-    long numRows = (long) ((TB_PER_TABLE * ONE_TB) / (MB_PER_ROW * ONE_MB));
-    long rate = clusterNodeCount * MB_PER_SEC / newTableIds.size();
-
-    String generateLabel = String
-        .format("Generate %d rows at %dMB per second for %d tables", numRows, rate,
-            newTableIds.size());
-    String mutationLabel = String
-        .format("Create mutations that write %d MB to each row", MB_PER_ROW);
-
-    System.out.println(generateLabel);
-    System.out.println(mutationLabel);
-
-    PCollection<Mutation> mutations = p
-        .apply(generateLabel, GenerateSequence.from(0).to(numRows)
-            .withRate(rate, Duration.standardSeconds(1)))
-        .apply(mutationLabel,
-            ParDo.of(new CreateMutationFn()));
-
-    for (String tableId : newTableIds) {
-      mutations.apply(String.format("Write data to table %s", tableId),
-          CloudBigtableIO.writeToTable(new CloudBigtableTableConfiguration.Builder()
-              .withProjectId(options.getProject())
-              .withInstanceId(options.getBigtableInstanceId())
-              .withTableId(tableId)
-              .build()));
-    }
-
-    p.run();
   }
 
   private static List<String> getNewTableIds(BigtableTableAdminClient adminClient,
