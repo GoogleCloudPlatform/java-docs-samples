@@ -19,10 +19,13 @@ package compute;
 // [START compute_instances_delete]
 
 import com.google.cloud.compute.v1.InstancesClient;
+// [START compute_instances_operation_check]
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
+import com.google.cloud.compute.v1.WaitZoneOperationRequest;
 import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
+// [END compute_instances_operation_check]
 
 public class DeleteInstance {
 
@@ -42,22 +45,32 @@ public class DeleteInstance {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `instancesClient.close()` method on the client to safely
     // clean up any remaining background resources.
-    try (InstancesClient instancesClient = InstancesClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
 
       System.out.println(String.format("Deleting instance: %s ", instanceName));
       // Describe which instance is to be deleted.
-      Operation response = instancesClient.delete(project, zone, instanceName);
+      Operation operation = instancesClient.delete(project, zone, instanceName);
 
       // [START compute_instances_operation_check]
-      if (response.getStatus() == Status.RUNNING) {
+      // 'operation' refers to an instance of 'Operation'.
+      if (operation.getStatus() == Status.RUNNING) {
+        // Create a zone operations client.
+        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create();
+
+        // Create the wait request.
+        WaitZoneOperationRequest waitZoneOperationRequest = WaitZoneOperationRequest.newBuilder()
+            .setProject(project)
+            .setZone(zone)
+            .setOperation(String.valueOf(operation.getId())).build();
+
         // Wait for the delete operation to complete; default timeout is 2 mins
-        response = zoneOperationsClient.wait(project, zone, String.valueOf(response.getId()));
+        operation = zoneOperationsClient.wait(waitZoneOperationRequest);
+        zoneOperationsClient.close();
       }
       // [END compute_instances_operation_check]
 
-      if (response.hasError()) {
-        System.out.println("Instance deletion failed ! ! " + response.getError());
+      if (operation.hasError()) {
+        System.out.println("Instance deletion failed ! ! " + operation.getError());
         return;
       }
       System.out.println("####### Instance deletion complete #######");
