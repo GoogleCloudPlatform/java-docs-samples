@@ -49,6 +49,7 @@ public class SnippetsIT {
   private static String MACHINE_NAME_DELETE;
   private static String MACHINE_NAME_LIST_INSTANCE;
   private static String BUCKET_NAME;
+  private static String IMAGE_NAME;
 
   private ByteArrayOutputStream stdOut;
 
@@ -68,6 +69,7 @@ public class SnippetsIT {
     MACHINE_NAME_DELETE = "my-new-test-instance" + UUID.randomUUID().toString();
     MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance" + UUID.randomUUID().toString();
     BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID().toString();
+    IMAGE_NAME = "windows-sql-cloud";
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
@@ -158,6 +160,21 @@ public class SnippetsIT {
     // Disable usage exports.
     boolean isDisabled = compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
     Assert.assertFalse(isDisabled);
+  }
+
+  @Test
+  public void testListImages() throws IOException {
+    // =================== Flat list of images ===================
+    ListImages.listImages(IMAGE_NAME);
+    int imageCount = Integer.parseInt(stdOut.toString().split(":")[1].trim());
+    Assert.assertTrue(imageCount > 2);
+  }
+
+  @Test
+  public void testListImagesByPage() throws IOException {
+    // ================= Paginated list of images ================
+    ListImages.listImagesByPage(IMAGE_NAME, 2);
+    Assert.assertTrue(stdOut.toString().contains("Page Number: 2"));
   }
 
 }

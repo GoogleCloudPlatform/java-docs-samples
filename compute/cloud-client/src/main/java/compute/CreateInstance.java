@@ -49,7 +49,8 @@ public class CreateInstance {
     // diskSizeGb: storage size of the boot disk to attach to the instance.
     // networkName: network interface to associate with the instance.
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
-    String sourceImage = "projects/debian-cloud/global/images/family/debian-10";
+    String sourceImage = String
+        .format("projects/debian-cloud/global/images/family/%s", "debian-10");
     long diskSizeGb = 10L;
     String networkName = "default";
 
