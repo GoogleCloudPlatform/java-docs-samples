@@ -28,9 +28,12 @@ import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 
-public class DeferredTaskTest extends BaseTestConfiguration {
+public class DeferredTaskTest {
+  @Rule public Timeout testTimeout = new Timeout(10, TimeUnit.MINUTES);
 
   // Unlike CountDownLatch, TaskCountDownlatch lets us reset.
   private static final LocalTaskQueueTestConfig.TaskCountDownLatch latch =
