@@ -17,7 +17,6 @@
 package com.example.contactcenterinsights;
 
 // [START contactcenterinsights_create_analyze_conversation]
-
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.contactcenterinsights.v1.Analysis;
 import com.google.cloud.contactcenterinsights.v1.ContactCenterInsightsClient;
@@ -88,5 +87,4 @@ public class CreateAnalyzeConversation {
     }
   }
 }
-
 // [END contactcenterinsights_create_analyze_conversation]
