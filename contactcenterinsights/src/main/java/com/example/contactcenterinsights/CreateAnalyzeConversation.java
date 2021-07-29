@@ -20,14 +20,12 @@ package com.example.contactcenterinsights;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.contactcenterinsights.v1.Analysis;
-import com.google.cloud.contactcenterinsights.v1.AnalysisResult;
-import com.google.cloud.contactcenterinsights.v1.CallAnnotation;
+import com.google.cloud.contactcenterinsights.v1.ContactCenterInsightsClient;
 import com.google.cloud.contactcenterinsights.v1.Conversation;
 import com.google.cloud.contactcenterinsights.v1.ConversationDataSource;
 import com.google.cloud.contactcenterinsights.v1.CreateAnalysisOperationMetadata;
 import com.google.cloud.contactcenterinsights.v1.CreateAnalysisRequest;
 import com.google.cloud.contactcenterinsights.v1.CreateConversationRequest;
-import com.google.cloud.contactcenterinsights.v1.ContactCenterInsightsClient;
 import com.google.cloud.contactcenterinsights.v1.DeleteConversationRequest;
 import com.google.cloud.contactcenterinsights.v1.GcsSource;
 import com.google.cloud.contactcenterinsights.v1.LocationName;

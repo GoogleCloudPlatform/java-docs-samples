@@ -22,10 +22,8 @@ import static junit.framework.TestCase.assertNotNull;
 import com.google.cloud.contactcenterinsights.v1.Conversation;
 import com.google.cloud.contactcenterinsights.v1.ConversationDataSource;
 import com.google.cloud.contactcenterinsights.v1.GcsSource;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
