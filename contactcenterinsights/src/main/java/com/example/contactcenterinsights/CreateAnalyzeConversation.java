@@ -32,9 +32,6 @@ import com.google.cloud.contactcenterinsights.v1.DeleteConversationRequest;
 import com.google.cloud.contactcenterinsights.v1.GcsSource;
 import com.google.cloud.contactcenterinsights.v1.LocationName;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
 public class CreateAnalyzeConversation {
 
   public static void main(String[] args) {

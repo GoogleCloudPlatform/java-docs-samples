@@ -18,22 +18,19 @@ package com.example.contactcenterinsights;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
-import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.contactcenterinsights.v1.Conversation;
 import com.google.cloud.contactcenterinsights.v1.ConversationDataSource;
 import com.google.cloud.contactcenterinsights.v1.GcsSource;
-import com.google.common.collect.ImmutableList;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class CreateAnalyzeConversationTests {
+public class CreateAnalyzeConversationIT {
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final String VOICE_TRANSCRIPT_URI = System.getenv("VOICE_TRANSCRIPT_URI");
   private static final String CHAT_TRANSCRIPT_URI = System.getenv("CHAT_TRANSCRIPT_URI");
