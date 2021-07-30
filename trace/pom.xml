@@ -70,7 +70,7 @@
     <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>gax-grpc</artifactId>
-      <version>1.67.0</version>
+      <version>2.0.0</version>
     </dependency>
     <!-- [END trace_setup_java_maven] -->
 
