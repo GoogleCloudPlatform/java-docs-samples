@@ -40,7 +40,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudresourcemanager</artifactId>
-      <version>v3-rev20210601-1.31.5</version><!-- v1 required here, v2 is different - DO NOT UPDATE to v2 -->
+      <version>v3-rev20210601-1.31.5</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
