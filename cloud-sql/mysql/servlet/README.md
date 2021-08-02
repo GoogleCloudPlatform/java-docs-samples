@@ -73,8 +73,8 @@ for more details on connecting a Cloud Run service to Cloud SQL.
 1. Build the container image using [Jib](https://cloud.google.com/java/getting-started/jib):
 
   ```sh
-    mvn compile com.google.cloud.tools:jib-maven-plugin:2.7.0:build \ 
-      -Dimage=gcr.io/[YOUR_PROJECT_ID]/run-mysql
+mvn clean package com.google.cloud.tools:jib-maven-plugin:2.8.0:build \
+ -Dimage=gcr.io/[YOUR_PROJECT_ID]/run-mysql -DskipTests
   ```
 
 2. Deploy the service to Cloud Run:
