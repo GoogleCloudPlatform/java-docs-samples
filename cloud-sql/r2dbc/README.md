@@ -76,8 +76,8 @@ for more details on connecting a Cloud Run service to Cloud SQL.
 1. Build the container image and push it to Google Container Registry (GCR):
 
     ```sh
-    mvn compile com.google.cloud.tools:jib-maven-plugin:2.5.2:build \
-            -Dimage=gcr.io/$PROJECT_ID/r2dbc-sample
+mvn clean package com.google.cloud.tools:jib-maven-plugin:2.8.0:build \
+ -Dimage=gcr.io/[YOUR_PROJECT_ID]/r2dbc-sample -DskipTests
     ```
 
 1. Deploy the service to Cloud Run:
