@@ -66,8 +66,6 @@ public class BulkWrite {
 
   static void bulkWrite(BigtableOptions options)
       throws IOException, GeneralSecurityException {
-    Pipeline p = Pipeline.create(options);
-
     BigtableTableAdminSettings adminSettings = BigtableTableAdminSettings.newBuilder()
         .setProjectId(options.getProject())
         .setInstanceId(options.getBigtableInstanceId())
@@ -95,6 +93,7 @@ public class BulkWrite {
     System.out.println(generateLabel);
     System.out.println(mutationLabel);
 
+    Pipeline p = Pipeline.create(options);
     PCollection<Mutation> mutations = p
         .apply(generateLabel, GenerateSequence.from(0).to(numRows)
             .withRate(rate, Duration.standardSeconds(1)))
