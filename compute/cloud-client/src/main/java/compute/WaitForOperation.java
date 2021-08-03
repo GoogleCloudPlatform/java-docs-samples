@@ -32,17 +32,17 @@ public class WaitForOperation {
     // client-operation-id: Specify the operation id corresponding to a particular operation.
     String project = "your-project-id";
     String zone = "zone-name";
-    String operationID = "client-operation-id";
+    String operationId = "client-operation-id";
 
-    waitForOperation(project, zone, operationID);
+    waitForOperation(project, zone, operationId);
   }
 
   // Waits for the specified operation to complete and returns the operation result in boolean.
-  public static void waitForOperation(String project, String zone, String operationID)
+  public static void waitForOperation(String project, String zone, String operationId)
       throws IOException, InterruptedException {
     try {
       // Construct the Operation instance.
-      Operation operation = Operation.newBuilder().setClientOperationId(operationID).build();
+      Operation operation = Operation.newBuilder().setClientOperationId(operationId).build();
 
       // Check if the operation hasn't been completed already.
       if (operation.getStatus() == Status.RUNNING || operation.getStatus() == Status.PENDING) {
