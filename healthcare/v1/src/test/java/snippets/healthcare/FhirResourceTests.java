@@ -200,14 +200,6 @@ public class FhirResourceTests {
   }
 
   @Test
-  public void test_FhirResourceDelete() throws Exception {
-    FhirResourceDelete.fhirResourceDelete(fhirResourceName);
-
-    String output = bout.toString();
-    assertThat(output, containsString("FHIR resource deleted."));
-  }
-
-  @Test
   public void test_FhirResourceGetHistory() throws Exception {
     JsonObject json = new JsonObject();
     json.add("op", new JsonPrimitive("add"));
@@ -251,10 +243,17 @@ public class FhirResourceTests {
     JsonArray jarray = new JsonArray();
     jarray.add(json);
     FhirResourcePatch.fhirResourcePatch(fhirResourceName, jarray.toString());
-    FhirResourceDelete.fhirResourceDelete(fhirResourceName);
     FhirResourceDeletePurge.fhirResourceDeletePurge(fhirResourceName);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR resource history purged."));
+    assertThat(output, containsString("FHIR resource history purged (excluding current version)."));
+  }
+
+  @Test
+  public void test_FhirResourceDelete() throws Exception {
+    FhirResourceDelete.fhirResourceDelete(fhirResourceName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("FHIR resource deleted."));
   }
 }
