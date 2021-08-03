@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
+import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.UsageExportLocation;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
@@ -48,6 +49,7 @@ public class SnippetsIT {
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_DELETE;
   private static String MACHINE_NAME_LIST_INSTANCE;
+  private static String MACHINE_NAME_WAIT_FOR_OP;
   private static String BUCKET_NAME;
   private static String IMAGE_NAME;
 
@@ -68,12 +70,15 @@ public class SnippetsIT {
     MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID().toString();
     MACHINE_NAME_DELETE = "my-new-test-instance" + UUID.randomUUID().toString();
     MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance" + UUID.randomUUID().toString();
+    MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance" + UUID.randomUUID().toString();
     BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID().toString();
     IMAGE_NAME = "windows-sql-cloud";
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
+    compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
+    TimeUnit.SECONDS.sleep(10);
 
     // Create a Google Cloud Storage bucket for UsageReports
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
@@ -136,9 +141,20 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testDeleteInstance() throws IOException, InterruptedException {
+  public void testDeleteInstance() throws IOException {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     assertThat(stdOut.toString()).contains("####### Instance deletion complete #######");
+  }
+
+  @Test
+  public void testWaitForOperation() throws IOException, InterruptedException {
+    // Construct a delete request and get the operation instance.
+    InstancesClient instancesClient = InstancesClient.create();
+    Operation operation = instancesClient.delete(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
+
+    // Pass the operation ID and wait for it to complete.
+    compute.WaitForOperation.waitForOperation(PROJECT_ID, ZONE, operation.getClientOperationId());
+    assertThat(stdOut.toString().contains("Operation executed successfully !"));
   }
 
   @Test
