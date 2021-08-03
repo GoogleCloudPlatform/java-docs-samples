@@ -47,7 +47,8 @@ public class FhirResourceDeletePurge {
       throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
-    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "resource-type", "resource-id");
+    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "resource-type",
+    // "resource-id");
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
@@ -104,7 +105,7 @@ public class FhirResourceDeletePurge {
     GoogleCredentials credential =
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    
+
     return credential.refreshAccessToken().getTokenValue();
   }
 }
