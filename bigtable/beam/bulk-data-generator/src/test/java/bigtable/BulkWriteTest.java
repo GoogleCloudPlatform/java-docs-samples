@@ -18,6 +18,7 @@ package bigtable;
 
 import static org.junit.Assert.assertNotNull;
 
+import bigtable.BulkWrite.BigtableOptions;
 import com.google.cloud.bigtable.admin.v2.BigtableInstanceAdminClient;
 import com.google.cloud.bigtable.admin.v2.models.CreateInstanceRequest;
 import com.google.cloud.bigtable.admin.v2.models.Instance;
@@ -26,7 +27,10 @@ import com.google.common.truth.Truth;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.security.GeneralSecurityException;
 import java.util.UUID;
+import org.apache.beam.runners.dataflow.DataflowRunner;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -87,14 +91,14 @@ public class BulkWriteTest {
   }
 
   @Test
-  public void testBulkWrite() {
-    BulkWrite.main(
-        new String[]{
-            "--bigtableInstanceId=" + INSTANCE_ID,
-            "--bigtableSize=" + BIGTABLE_SIZE,
-            "--runner=dataflow",
-            "--region=" + REGION_ID
-        });
+  public void testBulkWrite() throws IOException, GeneralSecurityException {
+    BigtableOptions options = PipelineOptionsFactory.create().as(BigtableOptions.class);
+    options.setBigtableInstanceId(INSTANCE_ID);
+    options.setBigtableSize(BIGTABLE_SIZE);
+    options.setRunner(DataflowRunner.class);
+    options.setRegion(REGION_ID);
+
+    BulkWrite.bulkWrite(options);
 
     String output = bout.toString();
 
@@ -103,11 +107,8 @@ public class BulkWriteTest {
     Truth.assertThat(output).contains("Generate 500000 rows at 40MB per second for 3 tables");
     Truth.assertThat(output).contains("Create mutations that write 1 MB to each row");
 
-    BulkWrite.main(
-        new String[]{
-            "--bigtableInstanceId=" + INSTANCE_ID,
-            "--bigtableSize=0"
-        });
+    options.setBigtableSize(0d);
+    BulkWrite.bulkWrite(options);
 
     output = bout.toString();
     Truth.assertThat(output).contains("Deleted 3 tables");
