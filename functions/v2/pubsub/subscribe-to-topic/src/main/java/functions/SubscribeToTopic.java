@@ -16,7 +16,7 @@
 
 package functions;
 
-// [START functions_pubsub_subscribe]
+// [START functions_cloudevent_pubsub]
 
 import com.google.events.cloud.functions.CloudEventsFunction;
 import com.google.gson.Gson;
@@ -46,4 +46,4 @@ public class SubscribeToTopic implements CloudEventsFunction {
     logger.info(messageString);
   }
 }
-// [END functions_pubsub_subscribe]
+// [END functions_cloudevent_pubsub]
