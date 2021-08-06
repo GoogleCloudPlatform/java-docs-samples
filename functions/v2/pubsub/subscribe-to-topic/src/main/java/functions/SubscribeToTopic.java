@@ -18,6 +18,7 @@ package functions.v2;
 
 // [START functions_cloudevent_pubsub]
 
+import com.example.cloud.functions.v2.eventpojos.PubSubBody;
 import com.google.cloud.functions.CloudEventsFunction;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -37,11 +38,9 @@ public class SubscribeToTopic implements CloudEventsFunction {
     }
 
     Gson gson = new Gson();
-    JsonObject eventDataJson = gson.fromJson(new String(event.getData().toBytes()),
-      JsonObject.class);
-    JsonObject messageJson = gson.fromJson(eventDataJson.get("message").toString(), JsonObject.class);
-    String messageString = new String(Base64.getDecoder().decode(messageJson.get("data").getAsString()),
-      StandardCharsets.UTF_8);
+    PubSubBody pubSubBody = gson.fromJson(new String(event.getData().toBytes()),
+      PubSubBody.class);
+    String messageString = pubSubBody.getMessage().getData();
 
     logger.info(messageString);
   }
