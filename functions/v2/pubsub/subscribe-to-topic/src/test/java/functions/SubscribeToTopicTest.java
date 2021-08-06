@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package functions;
+package functions.v2;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
+import java.net.URI;
 import java.util.Base64;
 import java.util.logging.Logger;
 import org.junit.BeforeClass;

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package functions;
+package functions.v2;
 
 // [START functions_cloudevent_pubsub]
 
-import com.google.events.cloud.functions.CloudEventsFunction;
+import com.google.cloud.functions.CloudEventsFunction;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.cloudevents.CloudEvent;
