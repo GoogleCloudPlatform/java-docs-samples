@@ -19,7 +19,11 @@ package functions;
 // [START functions_pubsub_subscribe]
 
 import com.google.events.cloud.functions.CloudEventsFunction;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import io.cloudevents.CloudEvent;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.logging.Logger;
 
 public class SubscribeToTopic implements CloudEventsFunction {
@@ -32,7 +36,13 @@ public class SubscribeToTopic implements CloudEventsFunction {
       return;
     }
 
-    String messageString = new String(event.getData().toBytes());
+    Gson gson = new Gson();
+    JsonObject eventDataJson = gson.fromJson(new String(event.getData().toBytes()),
+      JsonObject.class);
+    JsonObject messageJson = gson.fromJson(eventDataJson.get("message").toString(), JsonObject.class);
+    String messageString = new String(Base64.getDecoder().decode(messageJson.get("data").getAsString()),
+      StandardCharsets.UTF_8);
+
     logger.info(messageString);
   }
 }

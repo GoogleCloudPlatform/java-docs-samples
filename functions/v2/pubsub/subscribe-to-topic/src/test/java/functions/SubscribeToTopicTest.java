@@ -19,9 +19,10 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 import org.junit.BeforeClass;
@@ -42,15 +43,18 @@ public class SubscribeToTopicTest {
   @Test
   public void functionsPubsubSubscribe_shouldPrintPubsubMessage() throws Exception {
 
+    String encodedMessage = Base64.getEncoder().encodeToString("Hello World".getBytes());
+    String encodedData = new String("{\"message\": { \"data\": \"" + encodedMessage + "\"} }");
+
     CloudEvent event = CloudEventBuilder.v1()
     .withId("0")
-    .withType("google.cloud.pubdub.topic.v1.messagePublished")
+    .withType("pubsub.message")
     .withSource(URI.create("https://example.com"))
-    .withData("hello".getBytes())
+    .withData(encodedData.getBytes())
     .build();
 
     new SubscribeToTopic().accept(event);
 
-    assertThat("hello").isEqualTo(logHandler.getStoredLogRecords().get(0).getMessage());
+    assertThat("Hello World").isEqualTo(logHandler.getStoredLogRecords().get(0).getMessage());
   }
 }
