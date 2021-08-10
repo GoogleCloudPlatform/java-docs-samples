@@ -28,6 +28,7 @@ import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class CreateInstance {
 
@@ -95,6 +96,7 @@ public class CreateInstance {
           && System.currentTimeMillis() - startTime < 180000) {
         // The default wait timeout is 2 mins.
         response = zoneOperationsClient.get(project, zone, String.valueOf(response.getId()));
+        TimeUnit.SECONDS.sleep(3);
       }
 
       if (response.getStatus() != Status.DONE || response.hasError()) {

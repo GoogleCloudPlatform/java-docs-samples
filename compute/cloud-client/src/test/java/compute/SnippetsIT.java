@@ -141,7 +141,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testDeleteInstance() throws IOException {
+  public void testDeleteInstance() throws IOException, InterruptedException {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     assertThat(stdOut.toString()).contains("####### Instance deletion complete #######");
   }

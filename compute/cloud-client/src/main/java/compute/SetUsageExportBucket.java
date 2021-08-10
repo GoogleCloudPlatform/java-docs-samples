@@ -58,7 +58,7 @@ public class SetUsageExportBucket {
   // This sample presents how to interpret the default value for the report name prefix parameter.
   public static void setUsageExportBucket(String project, String bucketName,
       String reportNamePrefix)
-      throws IOException {
+      throws IOException, InterruptedException {
 
     // bucketName: Cloud Storage Bucket used to store Compute Engine usage reports.
     // An existing Google Cloud Storage bucket is required.
@@ -95,6 +95,7 @@ public class SetUsageExportBucket {
           && System.currentTimeMillis() - startTime < 180000) {
         // The default wait timeout is 2 mins.
         response = globalOperationsClient.get(project, String.valueOf(response.getId()));
+        TimeUnit.SECONDS.sleep(3);
       }
 
       if (response.getStatus() != Status.DONE || response.hasError()) {
@@ -170,6 +171,7 @@ public class SetUsageExportBucket {
           && System.currentTimeMillis() - startTime < 180000) {
         // The default wait timeout is 2 mins.
         response = globalOperationsClient.get(project, String.valueOf(response.getId()));
+        TimeUnit.SECONDS.sleep(3);
       }
 
       if (response.getStatus() != Status.DONE || response.hasError()) {
