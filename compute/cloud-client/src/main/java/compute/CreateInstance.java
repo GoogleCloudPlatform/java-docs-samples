@@ -88,20 +88,19 @@ public class CreateInstance {
       // Insert the instance in the specified project and zone.
       Operation response = instancesClient.insert(project, zone, instanceResource);
 
-      if (response.getStatus() == Status.RUNNING) {
-        // Wait for the create operation to complete; default timeout is 2 mins
-        response = zoneOperationsClient.wait(project, zone, String.valueOf(response.getId()));
+      // Wait for the create operation to complete.
+      // Timeout is set at 180000ms or 3 minutes.
+      long startTime = System.currentTimeMillis();
+      while (response.getStatus() != Status.DONE
+          && System.currentTimeMillis() - startTime < 180000) {
+        // The default wait timeout is 2 mins.
+        response = zoneOperationsClient.get(project, zone, String.valueOf(response.getId()));
       }
 
-      if (response.hasError()) {
-        System.out.println("Instance creation failed ! ! " + response.getError());
+      if (response.getStatus() != Status.DONE || response.hasError()) {
+        System.out.println("Instance creation failed ! ! " + response);
         return;
       }
-      System.out.println("####### Instance creation complete #######");
-
-    } catch (com.google.api.gax.rpc.UnknownException e) {
-      // Handle SocketTimeoutException which is being thrown as UnknownException.
-      // (Instance creation process will run to completion in the background)
       System.out.println("####### Instance creation complete #######");
     }
   }

@@ -23,6 +23,9 @@ package compute;
 // [START compute_usage_report_get]
 // [START compute_usage_report_disable]
 
+import com.google.cloud.compute.v1.GlobalOperationsClient;
+import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.Project;
 import com.google.cloud.compute.v1.ProjectsClient;
 import com.google.cloud.compute.v1.SetUsageExportBucketProjectRequest;
@@ -61,7 +64,8 @@ public class SetUsageExportBucket {
     // An existing Google Cloud Storage bucket is required.
     // reportNamePrefix: Prefix of the name of the usage report that would
     // store Google Compute Engine data.
-    try (ProjectsClient projectsClient = ProjectsClient.create()) {
+    try (ProjectsClient projectsClient = ProjectsClient.create();
+        GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
 
       // Initialize UsageExportLocation object with provided bucket name and report name prefix.
       UsageExportLocation usageExportLocation = UsageExportLocation.newBuilder()
@@ -78,11 +82,25 @@ public class SetUsageExportBucket {
       }
 
       // Set the usage export location.
-      projectsClient
+      Operation response = projectsClient
           .setUsageExportBucket(SetUsageExportBucketProjectRequest.newBuilder()
               .setProject(project)
               .setUsageExportLocationResource(usageExportLocation)
               .build());
+
+      // Wait for the operation to complete.
+      // Timeout is set at 180000ms or 3 minutes.
+      long startTime = System.currentTimeMillis();
+      while (response.getStatus() != Status.DONE
+          && System.currentTimeMillis() - startTime < 180000) {
+        // The default wait timeout is 2 mins.
+        response = globalOperationsClient.get(project, String.valueOf(response.getId()));
+      }
+
+      if (response.getStatus() != Status.DONE || response.hasError()) {
+        System.out.println("Setting usage export bucket failed ! ! " + response);
+        return;
+      }
     }
   }
   // [END compute_usage_report_set]
@@ -132,16 +150,32 @@ public class SetUsageExportBucket {
   public static boolean disableUsageExportBucket(String project)
       throws IOException, InterruptedException {
 
-    try (ProjectsClient projectsClient = ProjectsClient.create()) {
+    try (ProjectsClient projectsClient = ProjectsClient.create();
+        GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
 
       // Initialize UsageExportLocation object with empty builder to disable usage reports.
       UsageExportLocation usageExportLocation = UsageExportLocation.newBuilder().build();
 
       // Disable the usage export location.
-      projectsClient.setUsageExportBucket(SetUsageExportBucketProjectRequest.newBuilder()
-          .setProject(project)
-          .setUsageExportLocationResource(usageExportLocation)
-          .build());
+      Operation response = projectsClient
+          .setUsageExportBucket(SetUsageExportBucketProjectRequest.newBuilder()
+              .setProject(project)
+              .setUsageExportLocationResource(usageExportLocation)
+              .build());
+
+      // Wait for the operation to complete.
+      // Timeout is set at 180000ms or 3 minutes.
+      long startTime = System.currentTimeMillis();
+      while (response.getStatus() != Status.DONE
+          && System.currentTimeMillis() - startTime < 180000) {
+        // The default wait timeout is 2 mins.
+        response = globalOperationsClient.get(project, String.valueOf(response.getId()));
+      }
+
+      if (response.getStatus() != Status.DONE || response.hasError()) {
+        System.out.println("Disable usage export bucket failed ! ! " + response);
+        return true;
+      }
 
       // Wait for the settings to be effected.
       TimeUnit.SECONDS.sleep(5);
