@@ -28,6 +28,8 @@ import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
+import java.time.LocalTime;
+import java.util.concurrent.TimeUnit;
 
 public class CreateInstance {
 
@@ -88,21 +90,20 @@ public class CreateInstance {
       // Insert the instance in the specified project and zone.
       Operation response = instancesClient.insert(project, zone, instanceResource);
 
-      if (response.getStatus() == Status.RUNNING) {
-        // Wait for the create operation to complete; default timeout is 2 mins
-        response = zoneOperationsClient.wait(project, zone, String.valueOf(response.getId()));
+      // Wait for the create operation to complete.
+      // Timeout is set at 3 minutes.
+      LocalTime endTime = LocalTime.now().plusMinutes(3);
+      while (response.getStatus() != Status.DONE
+          && LocalTime.now().isBefore(endTime)) {
+        response = zoneOperationsClient.get(project, zone, String.valueOf(response.getId()));
+        TimeUnit.SECONDS.sleep(3);
       }
 
       if (response.hasError()) {
-        System.out.println("Instance creation failed ! ! " + response.getError());
+        System.out.println("Instance creation failed ! ! " + response);
         return;
       }
-      System.out.println("####### Instance creation complete #######");
-
-    } catch (com.google.api.gax.rpc.UnknownException e) {
-      // Handle SocketTimeoutException which is being thrown as UnknownException.
-      // (Instance creation process will run to completion in the background)
-      System.out.println("####### Instance creation complete #######");
+      System.out.println("Operation Status: " + response.getStatus());
     }
   }
 }
