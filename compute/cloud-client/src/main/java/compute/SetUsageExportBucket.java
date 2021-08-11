@@ -31,6 +31,7 @@ import com.google.cloud.compute.v1.ProjectsClient;
 import com.google.cloud.compute.v1.SetUsageExportBucketProjectRequest;
 import com.google.cloud.compute.v1.UsageExportLocation;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
 // [END compute_usage_report_disable]
@@ -89,11 +90,10 @@ public class SetUsageExportBucket {
               .build());
 
       // Wait for the operation to complete.
-      // Timeout is set at 180000ms or 3 minutes.
-      long startTime = System.currentTimeMillis();
+      // Timeout is set at 3 minutes.
+      LocalTime endTime = LocalTime.now().plusMinutes(3);
       while (response.getStatus() != Status.DONE
-          && System.currentTimeMillis() - startTime < 180000) {
-        // The default wait timeout is 2 mins.
+          && LocalTime.now().isBefore(endTime)) {
         response = globalOperationsClient.get(project, String.valueOf(response.getId()));
         TimeUnit.SECONDS.sleep(3);
       }
@@ -166,11 +166,10 @@ public class SetUsageExportBucket {
               .build());
 
       // Wait for the operation to complete.
-      // Timeout is set at 180000ms or 3 minutes.
-      long startTime = System.currentTimeMillis();
+      // Timeout is set at 3 minutes.
+      LocalTime endTime = LocalTime.now().plusMinutes(3);
       while (response.getStatus() != Status.DONE
-          && System.currentTimeMillis() - startTime < 180000) {
-        // The default wait timeout is 2 mins.
+          && LocalTime.now().isBefore(endTime)) {
         response = globalOperationsClient.get(project, String.valueOf(response.getId()));
         TimeUnit.SECONDS.sleep(3);
       }

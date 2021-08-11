@@ -23,6 +23,7 @@ import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
 public class DeleteInstance {
@@ -51,11 +52,10 @@ public class DeleteInstance {
       Operation response = instancesClient.delete(project, zone, instanceName);
 
       // Wait for the operation to complete.
-      // Timeout is set at 180000ms or 3 minutes.
-      long startTime = System.currentTimeMillis();
+      // Timeout is set at 3 minutes.
+      LocalTime endTime = LocalTime.now().plusMinutes(3);
       while (response.getStatus() != Status.DONE
-          && System.currentTimeMillis() - startTime < 180000) {
-        // default timeout is 2 mins.
+          && LocalTime.now().isBefore(endTime)) {
         response = zoneOperationsClient.get(project, zone, String.valueOf(response.getId()));
         TimeUnit.SECONDS.sleep(3);
       }
