@@ -124,7 +124,7 @@ public class SnippetsIT {
     // Check if the instance was successfully created during the setup.
     try (InstancesClient instancesClient = InstancesClient.create()) {
       Instance response = instancesClient.get(PROJECT_ID, ZONE, MACHINE_NAME);
-      assertThat(response.getName()).contains(MACHINE_NAME);
+      Assert.assertNotNull(response);
     }
   }
 
@@ -143,7 +143,7 @@ public class SnippetsIT {
   @Test
   public void testDeleteInstance() throws IOException, InterruptedException {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
-    assertThat(stdOut.toString()).contains("####### Instance deletion complete #######");
+    assertThat(stdOut.toString()).contains("Operation Status: DONE");
   }
 
   @Test
@@ -153,8 +153,8 @@ public class SnippetsIT {
     Operation operation = instancesClient.delete(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
 
     // Pass the operation ID and wait for it to complete.
-    compute.WaitForOperation.waitForOperation(PROJECT_ID, ZONE, operation.getClientOperationId());
-    assertThat(stdOut.toString().contains("Operation executed successfully !"));
+    compute.WaitForOperation.waitForOperation(PROJECT_ID, operation);
+    assertThat(stdOut.toString().contains("Operation Status: DONE"));
   }
 
   @Test
@@ -163,6 +163,7 @@ public class SnippetsIT {
     String customPrefix = "my-custom-prefix";
     compute.SetUsageExportBucket.setUsageExportBucket(PROJECT_ID, BUCKET_NAME, customPrefix);
     assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
+    assertThat(stdOut.toString().contains("Operation Status: DONE"));
 
     // Wait for the settings to take place.
     TimeUnit.SECONDS.sleep(10);

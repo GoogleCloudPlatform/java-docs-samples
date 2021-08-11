@@ -20,41 +20,40 @@ package compute;
 
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
-import com.google.cloud.compute.v1.WaitZoneOperationRequest;
 import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class WaitForOperation {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
-    // client-operation-id: Specify the operation id corresponding to a particular operation.
+    // operation: Specify the operation to wait.
     String project = "your-project-id";
-    String zone = "zone-name";
-    String operationId = "client-operation-id";
+    Operation operation = Operation.newBuilder().build();
 
-    waitForOperation(project, zone, operationId);
+    waitForOperation(project, operation);
   }
 
-  // Waits for the specified operation to complete and returns the operation result in boolean.
-  public static void waitForOperation(String project, String zone, String operationId)
-      throws IOException {
+  // Waits for the specified operation to complete.
+  public static void waitForOperation(String project, Operation operation)
+      throws IOException, InterruptedException {
     try (ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
-      // Construct the Operation instance.
-      Operation operation = Operation.newBuilder().setClientOperationId(operationId).build();
 
       // Check if the operation hasn't been completed already.
-      if (operation.getStatus() == Status.RUNNING || operation.getStatus() == Status.PENDING) {
+      if (operation.getStatus() != Status.DONE) {
+        String zone = operation.getZone();
+        zone = zone.substring(zone.lastIndexOf("/") + 1);
 
-        // Create the wait request.
-        WaitZoneOperationRequest waitZoneOperationRequest = WaitZoneOperationRequest.newBuilder()
-            .setProject(project)
-            .setZone(zone)
-            .setOperation(String.valueOf(operation.getId())).build();
-
-        // Wait for the operation to complete; default timeout is 2 mins.
-        operation = zoneOperationsClient.wait(waitZoneOperationRequest);
-        zoneOperationsClient.close();
+        // Wait for the operation to complete.
+        // Timeout is set at 180000ms or 3 minutes.
+        long startTime = System.currentTimeMillis();
+        while (operation.getStatus() != Status.DONE
+            && System.currentTimeMillis() - startTime < 180000) {
+          // The default wait timeout is 2 mins.
+          operation = zoneOperationsClient.get(project, zone, String.valueOf(operation.getId()));
+          TimeUnit.SECONDS.sleep(3);
+        }
 
         // Check if the operation has errors.
         if (operation.hasError()) {
@@ -62,7 +61,7 @@ public class WaitForOperation {
           return;
         }
       }
-      System.out.println("Operation executed successfully !");
+      System.out.println("Operation Status: " + operation.getStatus());
     }
   }
 }

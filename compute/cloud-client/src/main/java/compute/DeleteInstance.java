@@ -60,11 +60,11 @@ public class DeleteInstance {
         TimeUnit.SECONDS.sleep(3);
       }
 
-      if (response.getStatus() != Status.DONE || response.hasError()) {
+      if (response.hasError()) {
         System.out.println("Instance deletion failed ! ! " + response);
         return;
       }
-      System.out.println("####### Instance deletion complete #######");
+      System.out.println("Operation Status: " + response.getStatus());
     }
   }
 }

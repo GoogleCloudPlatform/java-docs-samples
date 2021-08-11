@@ -98,10 +98,11 @@ public class SetUsageExportBucket {
         TimeUnit.SECONDS.sleep(3);
       }
 
-      if (response.getStatus() != Status.DONE || response.hasError()) {
+      if (response.hasError()) {
         System.out.println("Setting usage export bucket failed ! ! " + response);
         return;
       }
+      System.out.println("Operation Status: " + response.getStatus());
     }
   }
   // [END compute_usage_report_set]
@@ -174,7 +175,7 @@ public class SetUsageExportBucket {
         TimeUnit.SECONDS.sleep(3);
       }
 
-      if (response.getStatus() != Status.DONE || response.hasError()) {
+      if (response.hasError()) {
         System.out.println("Disable usage export bucket failed ! ! " + response);
         return true;
       }

@@ -99,11 +99,11 @@ public class CreateInstance {
         TimeUnit.SECONDS.sleep(3);
       }
 
-      if (response.getStatus() != Status.DONE || response.hasError()) {
+      if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);
         return;
       }
-      System.out.println("####### Instance creation complete #######");
+      System.out.println("Operation Status: " + response.getStatus());
     }
   }
 }
