@@ -48,11 +48,11 @@ public class SubscribeToTopicTest {
     String encodedData = new String("{\"message\": { \"data\": \"" + encodedMessage + "\"} }");
 
     CloudEvent event = CloudEventBuilder.v1()
-    .withId("0")
-    .withType("pubsub.message")
-    .withSource(URI.create("https://example.com"))
-    .withData(encodedData.getBytes())
-    .build();
+      .withId("0")
+      .withType("pubsub.message")
+      .withSource(URI.create("https://example.com"))
+      .withData(encodedData.getBytes())
+      .build();
 
     new SubscribeToTopic().accept(event);
 

@@ -21,9 +21,7 @@ package functions.v2;
 import com.example.cloud.functions.v2.eventpojos.PubSubBody;
 import com.google.cloud.functions.CloudEventsFunction;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import io.cloudevents.CloudEvent;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 
@@ -32,15 +30,11 @@ public class SubscribeToTopic implements CloudEventsFunction {
 
   @Override
   public void accept(CloudEvent event) {
-    if (event.getData() == null) {
-      logger.info("No message provided");
-      return;
-    }
 
     Gson gson = new Gson();
     PubSubBody pubSubBody = gson.fromJson(new String(event.getData().toBytes()),
       PubSubBody.class);
-    String messageString = pubSubBody.getMessage().getData();
+    String messageString = new String(Base64.getDecoder().decode(pubSubBody.getMessage().getData()));
 
     logger.info(messageString);
   }
