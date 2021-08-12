@@ -70,7 +70,11 @@ public class CreateJobTemplateTest {
     TEMPLATE_NAME =
         String.format(
             "projects/%s/locations/%s/jobTemplates/%s", PROJECT_NUMBER, LOCATION, TEMPLATE_ID);
-    DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+    try {
+      DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+    } catch (Exception e) {
+      // Don't worry if the template doesn't already exist.
+    }
     bout.reset();
   }
 

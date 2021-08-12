@@ -18,9 +18,9 @@ package com.example.transcoder;
 
 // [START transcoder_delete_job]
 
-import com.google.cloud.video.transcoder.v1beta1.DeleteJobRequest;
-import com.google.cloud.video.transcoder.v1beta1.JobName;
-import com.google.cloud.video.transcoder.v1beta1.TranscoderServiceClient;
+import com.google.cloud.video.transcoder.v1.DeleteJobRequest;
+import com.google.cloud.video.transcoder.v1.JobName;
+import com.google.cloud.video.transcoder.v1.TranscoderServiceClient;
 import java.io.IOException;
 
 public class DeleteJob {
