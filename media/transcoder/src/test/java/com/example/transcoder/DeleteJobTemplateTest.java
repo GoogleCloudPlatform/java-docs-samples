@@ -67,7 +67,7 @@ public class DeleteJobTemplateTest {
 
     try {
       DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    } catch (Exception e) {
+    } catch (com.google.api.gax.rpc.NotFoundException e) {
       // Don't worry if the template doesn't already exist.
     }
     CreateJobTemplate.createJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);

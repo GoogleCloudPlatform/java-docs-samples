@@ -40,19 +40,11 @@ public class CreateJobWithStaticOverlay {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "transcoder-test-288317";
+    String projectId = "my-project-id";
     String location = "us-central1";
-    String templateId = "my-job-template";
-    String inputUri = "gs://nickcook-bucket/ChromeCast.mp4";
-    String outputUri = "gs://nickcook-bucket/my-output-folder-static-overlay/";
-    String preset = "preset/web-hd";
-    String overlayImageUri = "gs://nickcook-bucket/overlay.jpg"; // Must be a JPEG
-
-    //    String projectId = "my-project-id";
-    //    String location = "us-central1";
-    //    String inputUri = "gs://my-bucket/my-video-file";
-    //    String overlayImageUri = "gs://my-bucket/my-overlay-image.jpg"; // Must be a JPEG
-    //    String outputUri = "gs://my-bucket/my-output-folder/";
+    String inputUri = "gs://my-bucket/my-video-file";
+    String overlayImageUri = "gs://my-bucket/my-overlay-image.jpg"; // Must be a JPEG
+    String outputUri = "gs://my-bucket/my-output-folder/";
 
     createJobWithStaticOverlay(projectId, location, inputUri, overlayImageUri, outputUri);
   }
