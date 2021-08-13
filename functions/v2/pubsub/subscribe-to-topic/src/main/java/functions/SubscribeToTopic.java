@@ -18,7 +18,7 @@ package functions;
 
 // [START functions_cloudevent_pubsub]
 
-import com.example.cloud.functions.eventpojos.PubSubBody;
+import functions.eventpojos.PubSubBody;
 import com.google.cloud.functions.CloudEventsFunction;
 import com.google.gson.Gson;
 import io.cloudevents.CloudEvent;
