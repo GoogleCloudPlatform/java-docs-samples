@@ -19,8 +19,6 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import java.net.URI;
@@ -47,12 +45,13 @@ public class SubscribeToTopicTest {
     String encodedMessage = Base64.getEncoder().encodeToString("Hello World".getBytes());
     String encodedData = new String("{\"message\": { \"data\": \"" + encodedMessage + "\"} }");
 
-    CloudEvent event = CloudEventBuilder.v1()
-      .withId("0")
-      .withType("pubsub.message")
-      .withSource(URI.create("https://example.com"))
-      .withData(encodedData.getBytes())
-      .build();
+    CloudEvent event =
+        CloudEventBuilder.v1()
+            .withId("0")
+            .withType("pubsub.message")
+            .withSource(URI.create("https://example.com"))
+            .withData(encodedData.getBytes())
+            .build();
 
     new SubscribeToTopic().accept(event);
 
