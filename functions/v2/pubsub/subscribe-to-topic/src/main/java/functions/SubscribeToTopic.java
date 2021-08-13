@@ -30,7 +30,6 @@ public class SubscribeToTopic implements CloudEventsFunction {
 
   @Override
   public void accept(CloudEvent event) {
-
     Gson gson = new Gson();
     PubSubBody pubSubBody = gson.fromJson(new String(event.getData().toBytes()),
       PubSubBody.class);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.cloud.functions.eventpojos;
+package functions.eventpojos;
 
 import java.util.Map;
 
