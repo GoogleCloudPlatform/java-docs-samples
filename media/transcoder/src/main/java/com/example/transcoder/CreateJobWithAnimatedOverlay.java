@@ -18,22 +18,22 @@ package com.example.transcoder;
 
 // [START transcoder_create_job_with_animated_overlay]
 
-import com.google.cloud.video.transcoder.v1beta1.AudioStream;
-import com.google.cloud.video.transcoder.v1beta1.CreateJobRequest;
-import com.google.cloud.video.transcoder.v1beta1.ElementaryStream;
-import com.google.cloud.video.transcoder.v1beta1.Input;
-import com.google.cloud.video.transcoder.v1beta1.Job;
-import com.google.cloud.video.transcoder.v1beta1.JobConfig;
-import com.google.cloud.video.transcoder.v1beta1.LocationName;
-import com.google.cloud.video.transcoder.v1beta1.MuxStream;
-import com.google.cloud.video.transcoder.v1beta1.Output;
-import com.google.cloud.video.transcoder.v1beta1.Overlay;
-import com.google.cloud.video.transcoder.v1beta1.Overlay.Animation;
-import com.google.cloud.video.transcoder.v1beta1.Overlay.AnimationFade;
-import com.google.cloud.video.transcoder.v1beta1.Overlay.FadeType;
-import com.google.cloud.video.transcoder.v1beta1.Overlay.NormalizedCoordinate;
-import com.google.cloud.video.transcoder.v1beta1.TranscoderServiceClient;
-import com.google.cloud.video.transcoder.v1beta1.VideoStream;
+import com.google.cloud.video.transcoder.v1.AudioStream;
+import com.google.cloud.video.transcoder.v1.CreateJobRequest;
+import com.google.cloud.video.transcoder.v1.ElementaryStream;
+import com.google.cloud.video.transcoder.v1.Input;
+import com.google.cloud.video.transcoder.v1.Job;
+import com.google.cloud.video.transcoder.v1.JobConfig;
+import com.google.cloud.video.transcoder.v1.LocationName;
+import com.google.cloud.video.transcoder.v1.MuxStream;
+import com.google.cloud.video.transcoder.v1.Output;
+import com.google.cloud.video.transcoder.v1.Overlay;
+import com.google.cloud.video.transcoder.v1.Overlay.Animation;
+import com.google.cloud.video.transcoder.v1.Overlay.AnimationFade;
+import com.google.cloud.video.transcoder.v1.Overlay.FadeType;
+import com.google.cloud.video.transcoder.v1.Overlay.NormalizedCoordinate;
+import com.google.cloud.video.transcoder.v1.TranscoderServiceClient;
+import com.google.cloud.video.transcoder.v1.VideoStream;
 import com.google.protobuf.Duration;
 import java.io.IOException;
 
@@ -60,12 +60,14 @@ public class CreateJobWithAnimatedOverlay {
 
       VideoStream videoStream0 =
           VideoStream.newBuilder()
-              .setCodec("h264")
-              .setBitrateBps(550000)
-              .setFrameRate(60)
-              .setHeightPixels(360)
-              .setWidthPixels(640)
+              .setH264(
+                  VideoStream.H264CodecSettings.newBuilder()
+                      .setBitrateBps(550000)
+                      .setFrameRate(60)
+                      .setHeightPixels(360)
+                      .setWidthPixels(640))
               .build();
+
       AudioStream audioStream0 =
           AudioStream.newBuilder().setCodec("aac").setBitrateBps(64000).build();
 

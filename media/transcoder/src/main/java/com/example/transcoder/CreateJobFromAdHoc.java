@@ -18,17 +18,18 @@ package com.example.transcoder;
 
 // [START transcoder_create_job_from_ad_hoc]
 
-import com.google.cloud.video.transcoder.v1beta1.AudioStream;
-import com.google.cloud.video.transcoder.v1beta1.CreateJobRequest;
-import com.google.cloud.video.transcoder.v1beta1.ElementaryStream;
-import com.google.cloud.video.transcoder.v1beta1.Input;
-import com.google.cloud.video.transcoder.v1beta1.Job;
-import com.google.cloud.video.transcoder.v1beta1.JobConfig;
-import com.google.cloud.video.transcoder.v1beta1.LocationName;
-import com.google.cloud.video.transcoder.v1beta1.MuxStream;
-import com.google.cloud.video.transcoder.v1beta1.Output;
-import com.google.cloud.video.transcoder.v1beta1.TranscoderServiceClient;
-import com.google.cloud.video.transcoder.v1beta1.VideoStream;
+import com.google.cloud.video.transcoder.v1.AudioStream;
+import com.google.cloud.video.transcoder.v1.CreateJobRequest;
+import com.google.cloud.video.transcoder.v1.ElementaryStream;
+import com.google.cloud.video.transcoder.v1.Input;
+import com.google.cloud.video.transcoder.v1.Job;
+import com.google.cloud.video.transcoder.v1.JobConfig;
+import com.google.cloud.video.transcoder.v1.LocationName;
+import com.google.cloud.video.transcoder.v1.MuxStream;
+import com.google.cloud.video.transcoder.v1.Output;
+import com.google.cloud.video.transcoder.v1.TranscoderServiceClient;
+import com.google.cloud.video.transcoder.v1.VideoStream;
+import com.google.cloud.video.transcoder.v1.VideoStream.H264CodecSettings;
 import java.io.IOException;
 
 public class CreateJobFromAdHoc {
@@ -52,22 +53,27 @@ public class CreateJobFromAdHoc {
 
       VideoStream videoStream0 =
           VideoStream.newBuilder()
-              .setCodec("h264")
-              .setBitrateBps(550000)
-              .setFrameRate(60)
-              .setHeightPixels(360)
-              .setWidthPixels(640)
+              .setH264(
+                  H264CodecSettings.newBuilder()
+                      .setBitrateBps(550000)
+                      .setFrameRate(60)
+                      .setHeightPixels(360)
+                      .setWidthPixels(640))
               .build();
+
       VideoStream videoStream1 =
           VideoStream.newBuilder()
-              .setCodec("h264")
-              .setBitrateBps(2500000)
-              .setFrameRate(60)
-              .setHeightPixels(720)
-              .setWidthPixels(1280)
+              .setH264(
+                  H264CodecSettings.newBuilder()
+                      .setBitrateBps(2500000)
+                      .setFrameRate(60)
+                      .setHeightPixels(720)
+                      .setWidthPixels(1280))
               .build();
+
       AudioStream audioStream0 =
           AudioStream.newBuilder().setCodec("aac").setBitrateBps(64000).build();
+
       JobConfig config =
           JobConfig.newBuilder()
               .addInputs(Input.newBuilder().setKey("input0").setUri(inputUri))

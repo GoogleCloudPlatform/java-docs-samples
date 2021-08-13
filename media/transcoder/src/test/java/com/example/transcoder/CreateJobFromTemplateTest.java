@@ -114,7 +114,11 @@ public class CreateJobFromTemplateTest {
     Path path = Paths.get(TEST_FILE_PATH);
     storage.create(blobInfo, Files.readAllBytes(path));
 
-    DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+    try {
+      DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+    } catch (com.google.api.gax.rpc.NotFoundException e) {
+      // Don't worry if the template doesn't already exist.
+    }
     CreateJobTemplate.createJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     bout.reset();
   }
