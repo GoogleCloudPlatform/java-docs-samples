@@ -80,7 +80,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-healthcare</artifactId>
-      <version>v1-rev20210702-1.32.1</version>
+      <version>v1-rev20210712-1.32.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
@@ -90,7 +90,7 @@
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>0.26.0</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>

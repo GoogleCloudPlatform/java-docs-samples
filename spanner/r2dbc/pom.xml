@@ -11,7 +11,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <spring-boot.version>2.5.2</spring-boot.version>
+    <spring-boot.version>2.5.3</spring-boot.version>
   </properties>
 
   <!--
@@ -30,7 +30,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>cloud-spanner-spring-data-r2dbc</artifactId>
-      <version>0.5.0</version>
+      <version>0.6.0</version>
     </dependency>
     <!-- [END spanner_spring_data_r2dbc_dependency] -->
 
@@ -41,7 +41,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>cloud-spanner-r2dbc</artifactId>
-      <version>0.5.0</version>
+      <version>0.6.0</version>
     </dependency>
     <!-- [END spanner_r2dbc_dependency] -->
 

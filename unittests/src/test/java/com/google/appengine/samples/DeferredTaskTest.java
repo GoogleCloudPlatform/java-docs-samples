@@ -28,22 +28,42 @@ import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 
-public class DeferredTaskTest extends BaseTestConfiguration {
+public class DeferredTaskTest {
+  @Rule public Timeout testTimeout = new Timeout(10, TimeUnit.MINUTES);
 
   // Unlike CountDownLatch, TaskCountDownlatch lets us reset.
-  private final LocalTaskQueueTestConfig.TaskCountDownLatch latch =
+  private static final LocalTaskQueueTestConfig.TaskCountDownLatch latch =
       new LocalTaskQueueTestConfig.TaskCountDownLatch(1);
 
-  private final LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(new LocalTaskQueueTestConfig()
-          .setDisableAutoTaskExecution(false)
-          .setCallbackClass(LocalTaskQueueTestConfig.DeferredTaskCallback.class)
-          .setTaskExecutionLatch(latch));
+  private static final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(
+          new LocalTaskQueueTestConfig()
+              .setDisableAutoTaskExecution(false) // Enable auto task execution
+              .setCallbackClass(LocalTaskQueueTestConfig.DeferredTaskCallback.class)
+              .setTaskExecutionLatch(latch));
+
+  private static synchronized boolean requestAwait() throws InterruptedException {
+    return latch.await(5, TimeUnit.SECONDS);
+  }
+
+  private static synchronized void requestReset() {
+    latch.reset();
+  }
+
+  private static synchronized void helperSetUp() {
+    helper.setUp();
+  }
+
+  private static synchronized void helperTearDown() {
+    helper.tearDown();
+  }
 
   private static class MyTask implements DeferredTask {
-    private static boolean taskRan = false;
+    private static volatile boolean taskRan = false;
 
     @Override
     public void run() {
@@ -53,21 +73,20 @@ public class DeferredTaskTest extends BaseTestConfiguration {
 
   @Before
   public void setUp() {
-    helper.setUp();
+    helperSetUp();
   }
 
   @After
   public void tearDown() {
     MyTask.taskRan = false;
-    latch.reset();
-    helper.tearDown();
+    requestReset();
+    helperTearDown();
   }
 
   @Test
   public void testTaskGetsRun() throws InterruptedException {
-    QueueFactory.getDefaultQueue().add(
-        TaskOptions.Builder.withPayload(new MyTask()));
-    assertTrue(latch.await(5, TimeUnit.SECONDS));
+    QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withPayload(new MyTask()));
+    assertTrue(requestAwait());
     assertTrue(MyTask.taskRan);
   }
 }

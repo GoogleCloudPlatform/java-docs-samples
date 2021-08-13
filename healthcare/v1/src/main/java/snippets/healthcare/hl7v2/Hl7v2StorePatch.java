@@ -42,7 +42,7 @@ public class Hl7v2StorePatch {
     // String hl7v2StoreName =
     //    String.format(
     //        HL7v2_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-hl7v2-id");
-    // String pubsubTopic = "your-pubsub-topic";
+    // String pubsubTopic = "projects/your-project-id/topics/your-pubsub-topic";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();

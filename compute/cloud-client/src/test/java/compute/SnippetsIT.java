@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
+import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.UsageExportLocation;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
@@ -48,7 +49,9 @@ public class SnippetsIT {
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_DELETE;
   private static String MACHINE_NAME_LIST_INSTANCE;
+  private static String MACHINE_NAME_WAIT_FOR_OP;
   private static String BUCKET_NAME;
+  private static String IMAGE_NAME;
 
   private ByteArrayOutputStream stdOut;
 
@@ -67,11 +70,15 @@ public class SnippetsIT {
     MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID().toString();
     MACHINE_NAME_DELETE = "my-new-test-instance" + UUID.randomUUID().toString();
     MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance" + UUID.randomUUID().toString();
+    MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance" + UUID.randomUUID().toString();
     BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID().toString();
+    IMAGE_NAME = "windows-sql-cloud";
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
+    compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
+    TimeUnit.SECONDS.sleep(10);
 
     // Create a Google Cloud Storage bucket for UsageReports
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
@@ -117,7 +124,7 @@ public class SnippetsIT {
     // Check if the instance was successfully created during the setup.
     try (InstancesClient instancesClient = InstancesClient.create()) {
       Instance response = instancesClient.get(PROJECT_ID, ZONE, MACHINE_NAME);
-      assertThat(response.getName()).contains(MACHINE_NAME);
+      Assert.assertNotNull(response);
     }
   }
 
@@ -136,7 +143,18 @@ public class SnippetsIT {
   @Test
   public void testDeleteInstance() throws IOException, InterruptedException {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
-    assertThat(stdOut.toString()).contains("####### Instance deletion complete #######");
+    assertThat(stdOut.toString()).contains("Operation Status: DONE");
+  }
+
+  @Test
+  public void testWaitForOperation() throws IOException, InterruptedException {
+    // Construct a delete request and get the operation instance.
+    InstancesClient instancesClient = InstancesClient.create();
+    Operation operation = instancesClient.delete(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
+
+    // Pass the operation ID and wait for it to complete.
+    compute.WaitForOperation.waitForOperation(PROJECT_ID, operation);
+    assertThat(stdOut.toString().contains("Operation Status: DONE"));
   }
 
   @Test
@@ -145,6 +163,7 @@ public class SnippetsIT {
     String customPrefix = "my-custom-prefix";
     compute.SetUsageExportBucket.setUsageExportBucket(PROJECT_ID, BUCKET_NAME, customPrefix);
     assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
+    assertThat(stdOut.toString().contains("Operation Status: DONE"));
 
     // Wait for the settings to take place.
     TimeUnit.SECONDS.sleep(10);
@@ -158,6 +177,21 @@ public class SnippetsIT {
     // Disable usage exports.
     boolean isDisabled = compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
     Assert.assertFalse(isDisabled);
+  }
+
+  @Test
+  public void testListImages() throws IOException {
+    // =================== Flat list of images ===================
+    ListImages.listImages(IMAGE_NAME);
+    int imageCount = Integer.parseInt(stdOut.toString().split(":")[1].trim());
+    Assert.assertTrue(imageCount > 2);
+  }
+
+  @Test
+  public void testListImagesByPage() throws IOException {
+    // ================= Paginated list of images ================
+    ListImages.listImagesByPage(IMAGE_NAME, 2);
+    Assert.assertTrue(stdOut.toString().contains("Page Number: 2"));
   }
 
 }

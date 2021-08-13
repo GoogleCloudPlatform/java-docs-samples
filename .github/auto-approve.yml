@@ -1,0 +1,26 @@
+rules:
+# Currently we allow a small subset of valid types of PRs to get merged.  The following three
+# rules can be used altogether or any subset. The bot confirms that incoming pull requests'
+# author match the authors below, and subsequently, the allowed title of the pull requests.
+# `changedFiles` are allowed patterns for the file paths that are changed in a PR, and 
+# `maxFiles` are the maximum amount of files that are allowed to be changed in that PR. Neither
+# changedFiles nor maxFiles are required, but they will be enforced on a PR if they are set.
+# Each rule only has the allowed values listed below; there is no mixing of values between rules,
+# nor can any values be replaced. To understand the full set of rules for the JSON file, check out
+# src/valid-pr-schema.json
+
+# Option 5: incoming PRs from renovate-bot
+- author: "renovate-bot"
+
+# Title for PRs from renovate-bot MUST start with `fix(deps):` or `chore(deps)"`.
+  title: "^(fix|chore)\\(deps\\):"
+
+# (Optional) The only changed file paths in an incoming PR MUST end with `pom.xml`. These are listed in regex. If this property 
+# is omitted, auto-approve bot will allow PRs that match the author and title to merge, without
+# checking the file paths. 
+  changedFiles:
+  - "pom\\.xml$"
+#  - "/gradle\\.build$"
+  
+# (Optional) The max amount of files changed in a PR. 
+# maxFiles: 
