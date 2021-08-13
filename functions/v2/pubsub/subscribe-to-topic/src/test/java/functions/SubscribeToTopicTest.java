@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package functions.v2;
+package functions;
 
 import static com.google.common.truth.Truth.assertThat;
 
