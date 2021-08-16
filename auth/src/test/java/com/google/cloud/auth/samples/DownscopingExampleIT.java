@@ -16,6 +16,7 @@
 
 package com.google.cloud.auth.samples;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.storage.Blob;
@@ -40,6 +41,7 @@ import org.junit.runners.JUnit4;
 // CHECKSTYLE OFF: AbbreviationAsWordInName
 public class DownscopingExampleIT {
   // CHECKSTYLE ON: AbbreviationAsWordInName
+  private static final String CONTENT = "CONTENT";
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private String credentials;
@@ -65,7 +67,7 @@ public class DownscopingExampleIT {
     String objectName = String.format("blob-downscoping-test-%s", UUID.randomUUID());
     BlobId blobId = BlobId.of(bucketName, objectName);
     BlobInfo blobInfo = Blob.newBuilder(blobId).build();
-    Blob blob = storage.create(blobInfo, "test".getBytes(StandardCharsets.UTF_8));
+    Blob blob = storage.create(blobInfo, CONTENT.getBytes(StandardCharsets.UTF_8));
 
     this.bucket = bucket;
     this.blob = blob;
@@ -80,6 +82,7 @@ public class DownscopingExampleIT {
 
   @Test
   public void testDownscoping() throws IOException {
-    DownscopingExample.main(args);
+    String content = DownscopingExample.tokenConsumer(bucket.getName(), blob.getName());
+    assertEquals(CONTENT, content);
   }
 }

@@ -29,6 +29,25 @@ import java.io.IOException;
 /** Demonstrates how to use Downscoping with Credential Access Boundaries.". */
 public class DownscopingExample {
 
+  /**
+   * Tests the downscoping functionality.
+   *
+   * <p>This will generate a downscoped token with readonly access to the specified GCS bucket,
+   * inject them into a storage instance and then test print the contents of the specified object.
+   */
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    // The Cloud Storage bucket name.
+    String bucketName = "your-gcs-bucket-name";
+    // The Cloud Storage object name that resides in the specified bucket.
+    String objectName = "your-gcs-object-name";
+
+    System.out.println("Testing token consumer read access...");
+    String content = tokenConsumer(bucketName, objectName);
+    System.out.println(content);
+    System.out.println("done");
+  }
+
   /** Simulates token broker generating downscoped tokens for specified bucket. */
   // [START auth_downscoping_token_broker]
   public static AccessToken getTokenFromBroker(String bucketName, String objectPrefix)
@@ -87,7 +106,7 @@ public class DownscopingExample {
 
   /** Simulates token consumer readonly access to the specified object. */
   // [START auth_downscoping_token_consumer]
-  public static void tokenConsumer(final String bucketName, final String objectName)
+  public static String tokenConsumer(final String bucketName, final String objectName)
       throws IOException {
     // You can pass an `OAuth2RefreshHandler` to `OAuth2CredentialsWithRefresh` which will allow the
     // library to seamlessly handle downscoped token refreshes on expiration.
@@ -123,25 +142,9 @@ public class DownscopingExample {
     StorageOptions options = StorageOptions.newBuilder().setCredentials(credentials).build();
     Storage storage = options.getService();
 
-    // Call GCS APIs.
+    // Call Cloud Storage APIs.
     Blob blob = storage.get(bucketName, objectName);
-    System.out.println(new String(blob.getContent()));
+    return new String(blob.getContent());
   }
   // [END auth_downscoping_token_consumer]
-
-  /**
-   * Tests the downscoping functionality.
-   *
-   * <p>This will generate a downscoped token with readonly access to the specified GCS bucket,
-   * inject them into a storage instance and then test print the contents of the specified object.
-   */
-  public static void main(String[] args) throws IOException {
-    if (args.length != 2) {
-      throw new IllegalArgumentException("A GCS bucket name and object name must be provided.");
-    }
-
-    System.out.println("Testing token consumer read access...");
-    tokenConsumer(args[0], args[1]);
-    System.out.println("done");
-  }
 }
