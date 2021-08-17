@@ -14,32 +14,64 @@
  * limitations under the License.
  */
 
-package com.example.helloworld;
+package com.example;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
+import org.junit.runners.JUnit4;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
+import static com.google.common.truth.Truth.assertThat;
+
+@RunWith(JUnit4.class)
 public class JobsExampleTests {
 
-  @Autowired private MockMvc mockMvc;
+  private String runSample(int failRate) throws IOException, InterruptedException {
+    // Initialize the JAR-running process
+    String baseDir = System.getProperty("user.dir");
+
+    ProcessBuilder builder = new ProcessBuilder()
+        .command("java", "-jar", "target/app-0.0.1.jar")
+        .directory(new File(baseDir));
+
+    Map<String, String> env = builder.environment();
+    env.put("FAIL_RATE", Integer.toString(failRate));
+
+    // Run the JAR + get its output
+    Process process = builder.start();
+    ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
+
+    InputStream stdoutStream = process.getInputStream();
+    InputStream stderrStream = process.getErrorStream();
+
+    Thread.sleep(500);
+
+    outBytes.write(stdoutStream.readNBytes(stdoutStream.available()));
+    outBytes.write(stderrStream.readNBytes(stderrStream.available()));
+
+    String output = outBytes.toString(StandardCharsets.UTF_8);
+
+    // Terminate the JAR
+    if (process.isAlive()) {
+      process.destroy();
+    }
+
+    // Done!
+    return output;
+  }
 
   @Test
-  public void returnsHelloWorld() throws Exception {
-    mockMvc
-        .perform(get("/"))
-        .andExpect(status().isOk())
-        .andExpect(content().string("Hello World!"));
+  public void handlesSuccess() throws Exception {
+    assertThat(runSample(0)).contains("Completed Task 0");
+  }
+
+  @Test
+  public void handlesFailure() throws Exception {
+    assertThat(runSample(1)).contains("Task 0, Attempt 0 failed.");
   }
 }
