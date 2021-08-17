@@ -26,7 +26,7 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import java.io.IOException;
 
-/** Demonstrates how to use Downscoping with Credential Access Boundaries.". */
+/** Demonstrates how to use Downscoping with Credential Access Boundaries. */
 public class DownscopingExample {
 
   /**
