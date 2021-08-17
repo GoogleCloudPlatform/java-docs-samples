@@ -32,7 +32,7 @@ public class DownscopingExample {
   /**
    * Tests the downscoping functionality.
    *
-   * This will generate a downscoped token with readonly access to the specified GCS bucket,
+   * <p>This will generate a downscoped token with readonly access to the specified GCS bucket,
    * inject them into a storage instance and then test print the contents of the specified object.
    */
   public static void main(String[] args) throws IOException {
@@ -42,10 +42,7 @@ public class DownscopingExample {
     // The Cloud Storage object name that resides in the specified bucket.
     String objectName = "your-gcs-object-name";
 
-    System.out.println("Testing token consumer read access...");
-    String content = tokenConsumer(bucketName, objectName);
-    System.out.println(content);
-    System.out.println("done");
+    tokenConsumer(bucketName, objectName);
   }
 
   /** Simulates token broker generating downscoped tokens for specified bucket. */
@@ -59,8 +56,7 @@ public class DownscopingExample {
 
     // [START auth_downscoping_rules]
     // Initialize the Credential Access Boundary rules.
-    String availableResource =
-        String.format("//storage.googleapis.com/projects/_/buckets/%s", bucketName);
+    String availableResource = "//storage.googleapis.com/projects/_/buckets/" + bucketName;
 
     // Downscoped credentials will have readonly access to the resource.
     String availablePermission = "inRole:roles/storage.objectViewer";
@@ -68,19 +64,24 @@ public class DownscopingExample {
     // Only objects starting with the specified prefix string in the object name will be allowed
     // read access.
     String expression =
-        String.format(
-            "resource.name.startsWith('projects/_/buckets/%s/objects/%s')",
-            bucketName, objectPrefix);
+        "resource.name.startsWith('projects/_/buckets/"
+            + bucketName
+            + "/objects/"
+            + objectPrefix
+            + "')";
+
+    // Build the AvailabilityCondition.
+    CredentialAccessBoundary.AccessBoundaryRule.AvailabilityCondition availabilityCondition =
+        CredentialAccessBoundary.AccessBoundaryRule.AvailabilityCondition.newBuilder()
+            .setExpression(expression)
+            .build();
 
     // Define the single access boundary rule using the above properties.
     CredentialAccessBoundary.AccessBoundaryRule rule =
         CredentialAccessBoundary.AccessBoundaryRule.newBuilder()
             .setAvailableResource(availableResource)
             .addAvailablePermission(availablePermission)
-            .setAvailabilityCondition(
-                CredentialAccessBoundary.AccessBoundaryRule.AvailabilityCondition.newBuilder()
-                    .setExpression(expression)
-                    .build())
+            .setAvailabilityCondition(availabilityCondition)
             .build();
 
     // Define the Credential Access Boundary with all the relevant rules.
@@ -106,7 +107,7 @@ public class DownscopingExample {
 
   /** Simulates token consumer readonly access to the specified object. */
   // [START auth_downscoping_token_consumer]
-  public static String tokenConsumer(final String bucketName, final String objectName)
+  public static void tokenConsumer(final String bucketName, final String objectName)
       throws IOException {
     // You can pass an `OAuth2RefreshHandler` to `OAuth2CredentialsWithRefresh` which will allow the
     // library to seamlessly handle downscoped token refreshes on expiration.
@@ -144,7 +145,14 @@ public class DownscopingExample {
 
     // Call Cloud Storage APIs.
     Blob blob = storage.get(bucketName, objectName);
-    return new String(blob.getContent());
+    String content = new String(blob.getContent());
+    System.out.println(
+        "Retrieved object, "
+            + objectName
+            + ", from bucket,"
+            + bucketName
+            + ", with content: "
+            + content);
   }
   // [END auth_downscoping_token_consumer]
 }

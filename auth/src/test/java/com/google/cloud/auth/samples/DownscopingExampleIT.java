@@ -16,8 +16,8 @@
 
 package com.google.cloud.auth.samples;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
@@ -82,7 +82,15 @@ public class DownscopingExampleIT {
 
   @Test
   public void testDownscoping() throws IOException {
-    String content = DownscopingExample.tokenConsumer(bucket.getName(), blob.getName());
-    assertEquals(CONTENT, content);
+    DownscopingExample.tokenConsumer(bucket.getName(), blob.getName());
+    String expectedOutput =
+        "Retrieved object, "
+            + blob.getName()
+            + ", from bucket,"
+            + bucket.getName()
+            + ", with content: "
+            + CONTENT;
+    String output = bout.toString();
+    assertTrue(output.contains(expectedOutput));
   }
 }
