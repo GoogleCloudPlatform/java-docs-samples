@@ -32,7 +32,7 @@ public class DownscopingExample {
   /**
    * Tests the downscoping functionality.
    *
-   * <p>This will generate a downscoped token with readonly access to the specified GCS bucket,
+   * This will generate a downscoped token with readonly access to the specified GCS bucket,
    * inject them into a storage instance and then test print the contents of the specified object.
    */
   public static void main(String[] args) throws IOException {
