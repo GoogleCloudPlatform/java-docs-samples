@@ -62,6 +62,11 @@ limitations under the License.
       <artifactId>google-auth-library-appengine</artifactId>
       <version>1.1.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-oauth2-http</artifactId>
+      <version>1.1.0</version>
+    </dependency>
     <!-- END dependencies -->
     <dependency>
       <groupId>commons-io</groupId>
@@ -77,4 +82,29 @@ limitations under the License.
     <!-- START dependencies -->
   </dependencies>
   <!-- END dependencies -->
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <executable>java</executable>
+          <arguments>
+            <argument>-classpath</argument>
+            <classpath/>
+            <argument>com.google.cloud.auth.samples.DownscopingExample</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
