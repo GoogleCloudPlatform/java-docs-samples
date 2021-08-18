@@ -18,10 +18,10 @@ package com.example.transcoder;
 
 // [START transcoder_get_job]
 
-import com.google.cloud.video.transcoder.v1beta1.GetJobRequest;
-import com.google.cloud.video.transcoder.v1beta1.Job;
-import com.google.cloud.video.transcoder.v1beta1.JobName;
-import com.google.cloud.video.transcoder.v1beta1.TranscoderServiceClient;
+import com.google.cloud.video.transcoder.v1.GetJobRequest;
+import com.google.cloud.video.transcoder.v1.Job;
+import com.google.cloud.video.transcoder.v1.JobName;
+import com.google.cloud.video.transcoder.v1.TranscoderServiceClient;
 import java.io.IOException;
 
 public class GetJob {

@@ -62,13 +62,11 @@
       <version>30.1.1-jre</version>
     </dependency>
 
-    <!-- [START bigtable_beam_connector_dependency] -->
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-beam</artifactId>
       <version>1.23.1</version>
     </dependency>
-    <!-- [END bigtable_beam_connector_dependency] -->
 
     <dependency>
       <groupId>com.google.cloud</groupId>
