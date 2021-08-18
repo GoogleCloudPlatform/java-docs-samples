@@ -5,11 +5,11 @@
 # explicitly taken by someone else.
 *                         @GoogleCloudPlatform/java-samples-reviewers
 
-/bigtable/**/*.java             @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/java-samples-reviewers
-/cloud-sql/**/*.java            @GoogleCloudPlatform/infra-db-dpes @GoogleCloudPlatform/java-samples-reviewers
-/datastore/**/*.java            @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/java-samples-reviewers
-/firestore/**/*.java            @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/java-samples-reviewers
-/iot/                           @gcseh @GoogleCloudPlatform/api-iot @GoogleCloudPlatform/java-samples-reviewers
-/logging/                       @GoogleCloudPlatform/observability-devx @GoogleCloudPlatform/java-samples-reviewers
-/storage/**/*.java              @GoogleCloudPlatform/cloud-storage-dpes @GoogleCloudPlatform/java-samples-reviewers
-.github/auto-approve.yml        @googleapis/github-automation/ @sofisl
+/bigtable/**/*.java             @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/cloud-sql/**/*.java            @GoogleCloudPlatform/infra-db-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/datastore/**/*.java            @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/firestore/**/*.java            @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/iot/                           @gcseh @GoogleCloudPlatform/api-iot @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/logging/                       @GoogleCloudPlatform/observability-devx @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/storage/**/*.java              @GoogleCloudPlatform/cloud-storage-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+.github/auto-approve.yml        @googleapis/github-automation/ @sofisl @GoogleCloudPlatform/java-samples-reviewers
