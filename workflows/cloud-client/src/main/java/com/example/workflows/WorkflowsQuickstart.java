@@ -33,13 +33,12 @@ public class WorkflowsQuickstart {
       throws IOException, InterruptedException, ExecutionException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String location = "us- central1";
+    String location = "us-central1";
     String workflow = "myFirstWorkflow";
     workflowsQuickstart(projectId, location, workflow);
   }
 
   private static volatile boolean finished;
-  private static final long BACKOFF_TIMEOUT = 10 * 60 * 1_000; // Time out at 10 minutes
 
   public static void workflowsQuickstart(String projectId, String location, String workflow)
       throws IOException, InterruptedException, ExecutionException {
@@ -64,10 +63,11 @@ public class WorkflowsQuickstart {
 
       long backoffTime = 0;
       long backoffDelay = 1_000; // Start wait with delay of 1,000 ms
+      final long backoffTimeout = 10 * 60 * 1_000; // Time out at 10 minutes
       System.out.println("Poll for results...");
       
       // Wait for execution to finish, then print results.
-      while (!finished && backoffTime < BACKOFF_TIMEOUT) {
+      while (!finished && backoffTime < backoffTimeout) {
         Execution execution = executionsClient.getExecution(executionName);
         finished = execution.getState() != Execution.State.ACTIVE;
 
