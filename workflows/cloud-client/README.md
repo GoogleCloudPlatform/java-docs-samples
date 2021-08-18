@@ -1,40 +1,17 @@
 # Cloud Workflows Quickstart
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-dlp&page=editor&open_in_editor=samples/snippets/README.md">
+<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
-The Workflows quickstart allows you to run a Cloud Workflow from a java program.
+The [Workflows API](https://cloud.google.com/workflows/docs/) provides programmatic access to execute serverless workflows that link series of serverless tasks together in an order you define.
 
-## Prerequisites
-
-### Download Maven
-
-To get started, [download][maven-download] and [install][maven-install] it.
-
-[maven]: https://maven.apache.org
-[maven-download]: https://maven.apache.org/download.cgi
-[maven-install]: https://maven.apache.org/install.html
-
-### Setup
-
-* Create a project with the [Google Cloud Console][cloud-console], and enable
-  the [Workflows API][workflows-api].
-* [Set up][auth] authentication. For
-    example, from the Cloud Console, create a service account,
-    download its json credentials file, then set the appropriate environment
-    variable:
-
-    ```bash
-    export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your-project-credentials.json
-    ```
-* Build the samples
-    ```
-    mvn clean package
-    ```
-
-[cloud-console]: https://console.cloud.google.com
-[workflows-api]: https://console.cloud.google.com/apis/api/workflows.googleapis.com/overview?project=_
-[auth]: https://cloud.google.com/docs/authentication/getting-started
+## Setup
+- A Google Cloud project with billing enabled
+- [Enable](https://console.cloud.google.com/launcher/details/google/workflows.googleapis.com) the DLP API.
+- [Create a service account](https://cloud.google.com/docs/authentication/getting-started)
+and set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable pointing to the downloaded credentials file.
 
 ## Snippets
-To verify the snippets are running correctly, you can run the tests via:
+Run the tests via:
 ```
 mvn clean verify
 ```

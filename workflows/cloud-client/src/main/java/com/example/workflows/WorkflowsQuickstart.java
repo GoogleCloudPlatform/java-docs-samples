@@ -16,7 +16,6 @@
 
 package com.example.workflows;
 
-
 // [START workflows_api_quickstart]
 
 // Imports the Google Cloud client library
@@ -28,18 +27,8 @@ import com.google.cloud.workflows.executions.v1.WorkflowName;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-/**
- * Cloud Workflows API sample. Executes a workflow and waits for results. Example usage:
- * GOOGLE_CLOUD_PROJECT=myProject \ mvn package exec:java
- * -Dexec.mainClass='com.example.workflows.WorkflowsQuickstart'
- */
 public class WorkflowsQuickstart {
-  /**
-   * Demonstrates using the Workflows API.
-   *
-   * @throws ExecutionException
-   * @throws InterruptedException
-   */
+
   public static void main(String... args)
       throws IOException, InterruptedException, ExecutionException {
     // TODO(developer): Replace these variables before running the sample.
@@ -50,14 +39,13 @@ public class WorkflowsQuickstart {
   }
 
   private static volatile boolean finished;
+  private static final long BACKOFF_TIMEOUT = 10 * 60 * 1_000; // Time out at 10 minutes
 
   public static void workflowsQuickstart(String projectId, String location, String workflow)
       throws IOException, InterruptedException, ExecutionException {
     // Initialize client that will be used to send requests. This client only needs
-    // to be created
-    // once, and can be reused for multiple requests. After completing all of your
-    // requests, call
-    // the "close" method on the client to safely clean up any remaining background
+    // to be created once, and can be reused for multiple requests. After completing all of your
+    // requests, call the "close" method on the client to safely clean up any remaining background
     // resources.
     try (ExecutionsClient executionsClient = ExecutionsClient.create()) {
       // Construct the fully qualified location path.
@@ -74,12 +62,11 @@ public class WorkflowsQuickstart {
       String executionName = response.getName();
       System.out.printf("Created execution: %s%n", executionName);
 
-      // Wait for execution to finish, then print results.
       long backoffTime = 0;
       long backoffDelay = 1_000; // Start wait with delay of 1,000 ms
-      final long BACKOFF_TIMEOUT = 10 * 60 * 1_000; // Time out at 10 minutes
       System.out.println("Poll for results...");
-
+      
+      // Wait for execution to finish, then print results.
       while (!finished && backoffTime < BACKOFF_TIMEOUT) {
         Execution execution = executionsClient.getExecution(executionName);
         finished = execution.getState() != Execution.State.ACTIVE;
