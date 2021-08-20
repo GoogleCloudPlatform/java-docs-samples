@@ -1,0 +1,15 @@
+steps:
+
+  - id: 'Delete image and service'
+    name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: '/bin/bash'
+    args:
+      - '-c'
+      - |
+        # ./test/retry.sh "gcloud artifacts docker images delete ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_JOB} --quiet"
+
+        ./test/retry.sh ""
+
+substitutions:
+  _JOB: jobs
+  _REGION: us-central1

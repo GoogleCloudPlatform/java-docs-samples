@@ -29,7 +29,7 @@ import org.junit.runners.JUnit4;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
-public class JobsExampleTests {
+public class JobsExampleTest {
 
   private String runSample(int failRate) throws IOException, InterruptedException {
     // Initialize the JAR-running process
