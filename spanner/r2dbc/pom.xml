@@ -26,12 +26,12 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- workaround for the gax-grpc:1.66.0 and gax:1.65.0 clash due to google-cloud-core being
-      a test dependency brought from parent -->
-      <dependency>
-        <groupId>com.google.api</groupId>
-        <artifactId>gax</artifactId>
-        <version>1.66.0</version>
+     <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>21.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
