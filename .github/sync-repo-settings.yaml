@@ -17,8 +17,6 @@ permissionRules:
     permission: push
   - team: yoshi-java
     permission: push
-  - user: yoshi-approver
-    permission: push
   - team: devrel-java-admin
     permission: admin
   - team: yoshi-admins
