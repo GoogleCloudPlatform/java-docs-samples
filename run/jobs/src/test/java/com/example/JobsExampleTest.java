@@ -16,62 +16,44 @@
 
 package com.example;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(JUnit4.class)
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+
 public class JobsExampleTest {
 
-  private String runSample(int failRate) throws IOException, InterruptedException {
-    // Initialize the JAR-running process
-    String baseDir = System.getProperty("user.dir");
+  private ByteArrayOutputStream output;
 
-    ProcessBuilder builder = new ProcessBuilder()
-        .command("java", "-jar", "target/app-0.0.1.jar")
-        .directory(new File(baseDir));
+  @Before
+  public void beforeEach() {
+    output = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(output));
+    System.setErr(new PrintStream(output));
+  }
 
-    Map<String, String> env = builder.environment();
-    env.put("FAIL_RATE", Integer.toString(failRate));
-
-    // Run the JAR + get its output
-    Process process = builder.start();
-    ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
-
-    InputStream stdoutStream = process.getInputStream();
-    InputStream stderrStream = process.getErrorStream();
-
-    Thread.sleep(500);
-
-    outBytes.write(stdoutStream.readNBytes(stdoutStream.available()));
-    outBytes.write(stderrStream.readNBytes(stderrStream.available()));
-
-    String output = outBytes.toString(StandardCharsets.UTF_8);
-
-    // Terminate the JAR
-    if (process.isAlive()) {
-      process.destroy();
-    }
-
-    // Done!
-    return output;
+  @After
+  public void afterEach() {
+    output = null;
+    System.setOut(null);
+    System.setErr(null);
   }
 
   @Test
   public void handlesSuccess() throws Exception {
-    assertThat(runSample(0)).contains("Completed Task 0");
+    JobsExample.runJob(0);
+    assertThat(output.toString()).contains("Completed Task 0");
   }
 
   @Test
   public void handlesFailure() throws Exception {
-    assertThat(runSample(1)).contains("Task 0, Attempt 0 failed.");
+    RuntimeException err = Assertions.assertThrows(
+        RuntimeException.class,
+        () -> JobsExample.runJob(1));
+    assertThat(err.getMessage()).contains("Task 0, Attempt 0 failed.");
   }
 }

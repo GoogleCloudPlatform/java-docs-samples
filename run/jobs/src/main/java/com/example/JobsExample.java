@@ -43,7 +43,7 @@ abstract class JobsExample {
     }
   }
 
-  static void runJob() throws InterruptedException {
+  static void runJob(double failRate) throws InterruptedException {
 
     System.out.println(String.format(
         "Starting Task %s, Attempt %s...", TASK_NUM, ATTEMPT_NUM));
@@ -54,8 +54,8 @@ abstract class JobsExample {
     }
 
     // Simulate errors
-    if (FAIL_RATE > 0) {
-      randomFailure(FAIL_RATE);
+    if (failRate > 0) {
+      randomFailure(failRate);
     }
 
     System.out.println(String.format("Completed Task %s", TASK_NUM));
@@ -80,7 +80,7 @@ abstract class JobsExample {
   // Start script
   public static void main(String[] args) {
     try {
-      runJob();
+      runJob(FAIL_RATE);
     } catch (RuntimeException | InterruptedException e) {
       // Catch error and denote process-level failure to retry Task
       System.exit(1);

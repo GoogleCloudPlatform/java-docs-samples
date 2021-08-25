@@ -40,21 +40,14 @@ import org.junit.runners.JUnit4;
 public class JobsExampleSystemTest {
   // Environment variables
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String SERVICE_NAME = getenvOrDefault("SERVICE_NAME", "cr-jobs-test");
-  private static final String SAMPLE_VERSION = getenvOrDefault("SAMPLE_VERSION", "manual");
+  private static final String SERVICE_NAME = System.getenv().getOrDefault(
+      "SERVICE_NAME", "cr-jobs-test");
+  private static final String SAMPLE_VERSION = System.getenv().getOrDefault("SAMPLE_VERSION", "manual");
 
   // Settings
   private static final String JOB_NAME = SERVICE_NAME + "-" + SAMPLE_VERSION;
   private static final String REGION = "us-central1";
   private static final String JOB_NUM = "10";
-
-  public static String getenvOrDefault(String name, String defaultValue) {
-    if (System.getenv().containsKey(name)) {
-      return System.getenv(name);
-    }
-
-    return defaultValue;
-  }
 
   public static String runGCloudCommand(String cmd) throws IOException, InterruptedException {
     String baseDir = System.getProperty("user.dir");
