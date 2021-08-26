@@ -90,7 +90,7 @@ public class R2dbcSampleApplicationIT {
   public void testAllWebEndpoints() {
 
     // DDL takes time; extend timeout to avoid "Timeout on blocking read" exceptions.
-    webTestClient = webTestClient.mutate().responseTimeout(Duration.ofSeconds(10)).build();
+    webTestClient = webTestClient.mutate().responseTimeout(Duration.ofSeconds(30)).build();
 
     this.webTestClient.post().uri("/createTable").exchange()
         .expectBody(String.class).isEqualTo("table NAMES created successfully");

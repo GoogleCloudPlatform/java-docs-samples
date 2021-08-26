@@ -24,6 +24,18 @@
     <version>1.0.23</version>
   </parent>
 
+  <dependencyManagement>
+    <dependencies>
+     <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>21.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
 
     <!-- [START spanner_spring_data_r2dbc_dependency] -->
