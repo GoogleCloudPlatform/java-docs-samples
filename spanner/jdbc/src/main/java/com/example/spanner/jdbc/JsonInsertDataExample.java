@@ -40,7 +40,9 @@ class JsonInsertDataExample {
   static final List<Venue> VENUES =
       Arrays.asList(
           new Venue(
-              4, "[{\"name\":\"room 1\",\"open\":\"true\"},{\"name\":\"room 2\",\"open\":\"false\"}]"),
+              4,
+              "[{\"name\":\"room 1\",\"open\":\"true\"},"
+                  + "{\"name\":\"room 2\",\"open\":\"false\"}]"),
           new Venue(19, "{\"rating\":\"9\",\"open\":\"true\"}"),
           new Venue(
               42,
