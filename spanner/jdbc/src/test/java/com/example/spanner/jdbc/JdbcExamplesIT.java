@@ -426,6 +426,28 @@ public class JdbcExamplesIT {
     assertThat(out).contains("Transaction committed at [");
   }
 
+  @Test
+  public void insertAndQueryJsonData_shouldReturnData() throws SQLException {
+    String out =
+            runExample(
+                    () ->
+                            JsonCreateTableExample.createTableWithJsonDataType(
+                                    ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    assertThat(out).contains("Created table with JSON data type");
+    out =
+            runExample(
+                    () ->
+                            JsonInsertDataExample.insertJsonData(
+                                    ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    assertThat(out).contains("Insert counts: 3");
+    out =
+            runExample(
+                    () ->
+                            JsonQueryDataExample.queryJsonData(
+                                    ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    assertThat(out).contains("VenueId: 19");
+  }
+
   static String formatForTest(String name) {
     return name + "-" + UUID.randomUUID().toString().substring(0, 20);
   }
