@@ -17,10 +17,12 @@
 package com.example.spanner.jdbc;
 
 // [START spanner_jdbc_json_query_data]
-
-import com.google.cloud.spanner.Value;
-
-import java.sql.*;
+import com.google.cloud.spanner.jdbc.JsonType;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 class JsonQueryDataExample {
   static void queryJsonData() throws SQLException {
@@ -37,15 +39,16 @@ class JsonQueryDataExample {
         String.format(
             "jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
             projectId, instanceId, databaseId);
-    String exampleJson = "{rating: 9}";
+    String exampleJson = "{\"rating\": \"9\"}";
     try (Connection connection = DriverManager.getConnection(connectionUrl)) {
       try (PreparedStatement ps =
           connection.prepareStatement(
               "SELECT VenueId, VenueDetails\n"
                   + "FROM Venues\n"
                   + "WHERE JSON_VALUE(VenueDetails, '$.rating') = "
-                  + "JSON_VALUE(@details, '$.rating')")) {
-        ps.setObject(1, Value.json(exampleJson));
+                  + "JSON_VALUE(?, '$.rating')")) {
+        // Instruct the JDBC driver to treat the parameter as JSON and not as a string.
+        ps.setObject(1, exampleJson, JsonType.INSTANCE);
         try (ResultSet resultSet = ps.executeQuery()) {
           while (resultSet.next()) {
             System.out.printf(

@@ -17,7 +17,6 @@
 package com.example.spanner.jdbc;
 
 // [START spanner_jdbc_json_create_table]
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

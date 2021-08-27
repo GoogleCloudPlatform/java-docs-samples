@@ -17,9 +17,7 @@
 package com.example.spanner.jdbc;
 
 // [START spanner_jdbc_json_insert_data]
-
-import com.google.cloud.spanner.Value;
-
+import com.google.cloud.spanner.jdbc.JsonType;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -42,12 +40,12 @@ class JsonInsertDataExample {
   static final List<Venue> VENUES =
       Arrays.asList(
           new Venue(
-              4, "[{\"name\":\"room 1\",\"open\":true},{\"name\":\"room 2\",\"open\":false}]"),
-          new Venue(19, "{\"rating\":9,\"open\":true}"),
+              4, "[{\"name\":\"room 1\",\"open\":\"true\"},{\"name\":\"room 2\",\"open\":\"false\"}]"),
+          new Venue(19, "{\"rating\":\"9\",\"open\":\"true\"}"),
           new Venue(
               42,
-              "\"{\"name\":null,"
-                  + "\"open\":{\"Monday\":true,\"Tuesday\":false},"
+              "{\"name\":null,"
+                  + "\"open\":{\"Monday\":\"true\",\"Tuesday\":\"false\"},"
                   + "\"tags\":[\"large\",\"airy\"]}"));
 
   static void insertJsonData() throws SQLException {
@@ -72,7 +70,9 @@ class JsonInsertDataExample {
                       + "(?, ?)")) {
         for (Venue venue : VENUES) {
           ps.setLong(1, venue.venueId);
-          ps.setObject(2, Value.json(venue.venueDetails));
+          // Tell the JDBC driver that we want to set a JSON value and not a STRING value
+          // by specifying the JsonType SQL type.
+          ps.setObject(2, venue.venueDetails, JsonType.INSTANCE);
           ps.addBatch();
         }
         int[] updateCounts = ps.executeBatch();

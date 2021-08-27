@@ -28,7 +28,6 @@ import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.connection.ConnectionOptions;
 import com.google.cloud.spanner.jdbc.CloudSpannerJdbcConnection;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -439,7 +438,7 @@ public class JdbcExamplesIT {
                     () ->
                             JsonInsertDataExample.insertJsonData(
                                     ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
-    assertThat(out).contains("Insert counts: 3");
+    assertThat(out).contains("Insert counts: [1, 1, 1]");
     out =
             runExample(
                     () ->
