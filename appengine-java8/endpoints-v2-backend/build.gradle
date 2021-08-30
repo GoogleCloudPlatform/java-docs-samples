@@ -46,7 +46,7 @@ dependencies {
     compile 'com.google.endpoints:endpoints-framework:2.2.1'
     // [START api_management]
     compile 'com.google.endpoints:endpoints-management-control-appengine:1.0.12'
-    compile 'com.google.endpoints:endpoints-framework-auth:1.0.12'
+    compile 'com.google.endpoints:endpoints-framework-auth:1.0.14'
     // [END api_management]
 }
 // [START endpoints_plugin_config]

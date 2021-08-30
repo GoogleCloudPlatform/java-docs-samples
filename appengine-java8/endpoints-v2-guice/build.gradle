@@ -49,7 +49,7 @@ dependencies {
     // [END guice_dependency]
 
     compile 'com.google.endpoints:endpoints-management-control-appengine:1.0.5'
-    compile 'com.google.endpoints:endpoints-framework-auth:1.0.5'
+    compile 'com.google.endpoints:endpoints-framework-auth:1.0.14'
 }
 
 // [START endpoints_plugin_configuration]
