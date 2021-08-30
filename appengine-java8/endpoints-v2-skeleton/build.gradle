@@ -38,7 +38,7 @@ apply plugin: 'com.google.cloud.tools.appengine'
 
 // [START dependencies]
 dependencies {
-    compile 'com.google.endpoints:endpoints-framework:2.0.9'
+    compile 'com.google.endpoints:endpoints-framework:2.2.2'
     compile 'com.google.appengine:appengine-api-1.0-sdk:1.9.59'
 
     compile 'javax.inject:javax.inject:1'
