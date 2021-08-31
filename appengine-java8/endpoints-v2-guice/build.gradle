@@ -48,7 +48,7 @@ dependencies {
     compile 'com.google.endpoints:endpoints-framework-guice:2.0.9'
     // [END guice_dependency]
 
-    compile 'com.google.endpoints:endpoints-management-control-appengine:1.0.5'
+    compile 'com.google.endpoints:endpoints-management-control-appengine:1.0.14'
     compile 'com.google.endpoints:endpoints-framework-auth:1.0.14'
 }
 
