@@ -47,7 +47,7 @@ dependencies {
   compile group: 'javax.inject', name: 'javax.inject', version: '1'
 
   // [START endpoints-tools]
-  compile group: 'com.google.endpoints', name: 'endpoints-framework-tools', version: '2.0.8'
+  compile group: 'com.google.endpoints', name: 'endpoints-framework-tools', version: '2.2.2'
   // [END endpoints-tools]
 }
 
