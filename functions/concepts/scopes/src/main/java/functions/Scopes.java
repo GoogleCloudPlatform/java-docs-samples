@@ -16,7 +16,7 @@
 
 package functions;
 
-// [START functions_tips_scopes]
+// [START functions_tips_scopes] 
 // [START cloudrun_tips_global_scope]
 // [START run_tips_global_scope]
 
