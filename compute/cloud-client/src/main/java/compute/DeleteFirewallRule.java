@@ -27,19 +27,22 @@ import java.util.UUID;
 public class DeleteFirewallRule {
 
   public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample
+    // project: project ID or project number of the Cloud project you want to use.
+    // firewallRuleName: name of the firewall rule you want to delete.
     String project = "your-project-id";
     String firewallRuleName = "firewall-rule-name-" + UUID.randomUUID();
     deleteFirewallRule(project, firewallRuleName);
   }
 
 
-  /* Deleted a firewall rule from the project.
-     Args:
-     project: project ID or project number of the Cloud project you want to use.
-     firewallRuleName: name of the firewall rule you want to delete.
-   */
+  // Deleted a firewall rule from the project.
   public static void deleteFirewallRule(String project, String firewallRuleName)
       throws IOException {
+    /* Initialize client that will be used to send requests. This client only needs to be created
+       once, and can be reused for multiple requests. After completing all of your requests, call
+       the `instancesClient.close()` method on the client to safely
+       clean up any remaining background resources. */
     try (FirewallsClient firewallsClient = FirewallsClient.create();
         GlobalOperationsClient operationsClient = GlobalOperationsClient.create()) {
 

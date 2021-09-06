@@ -26,15 +26,19 @@ import java.io.IOException;
 public class ListFirewallRules {
 
   public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample
+    // project: project ID or project number of the Cloud project you want to use.
     String project = "your-project-id";
     listFirewallRules(project);
   }
 
-  /* Return a list of all the firewall rules in specified project.
-     Args:
-     project: project ID or project number of the Cloud project you want to use. */
+  // Return a list of all the firewall rules in specified project.
   public static ListPagedResponse listFirewallRules(String project)
       throws IOException {
+    /* Initialize client that will be used to send requests. This client only needs to be created
+       once, and can be reused for multiple requests. After completing all of your requests, call
+       the `instancesClient.close()` method on the client to safely
+       clean up any remaining background resources. */
     try (FirewallsClient firewallsClient = FirewallsClient.create()) {
       ListPagedResponse firewallResponse = firewallsClient.list(project);
       for (Firewall firewall : firewallResponse.iterateAll()) {

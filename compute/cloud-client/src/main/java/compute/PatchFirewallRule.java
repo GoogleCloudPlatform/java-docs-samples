@@ -29,6 +29,10 @@ import java.util.UUID;
 public class PatchFirewallRule {
 
   public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample
+    // project: project ID or project number of the Cloud project you want to use.
+    // firewallRuleName: name of the rule you want to modify.
+    // priority: the new priority to be set for the rule.
     String project = "your-project-id";
     String firewallRuleName = "firewall-rule-name-" + UUID.randomUUID();
     int priority = 10;
@@ -36,14 +40,13 @@ public class PatchFirewallRule {
     patchFirewall(project, firewallRuleName, priority);
   }
 
-  /* Modifies the priority of a given firewall rule.
-     Args:
-     project: project ID or project number of the Cloud project you want to use.
-     firewallRuleName: name of the rule you want to modify.
-     priority: the new priority to be set for the rule.
-   */
+  // Modifies the priority of a given firewall rule.
   public static void patchFirewall(String project, String firewallRuleName, int priority)
       throws IOException {
+    /* Initialize client that will be used to send requests. This client only needs to be created
+       once, and can be reused for multiple requests. After completing all of your requests, call
+       the `instancesClient.close()` method on the client to safely
+       clean up any remaining background resources. */
     try (FirewallsClient firewallsClient = FirewallsClient.create();
         GlobalOperationsClient operationsClient = GlobalOperationsClient.create()) {
 
