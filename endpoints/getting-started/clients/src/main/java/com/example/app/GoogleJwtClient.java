@@ -54,7 +54,7 @@ public class GoogleJwtClient {
     // Build the JWT payload
     JWTCreator.Builder token = JWT.create()
         .withIssuedAt(now)
-        // Expires after 'expiraryLength' seconds
+        // Expires after 'expiryLength' seconds
         .withExpiresAt(expTime)
         // Must match 'issuer' in the security configuration in your
         // swagger spec (e.g. service account email)
