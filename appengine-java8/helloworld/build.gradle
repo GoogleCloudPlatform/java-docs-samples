@@ -44,7 +44,7 @@ dependencies {
 //  implementation 'com.google.cloud:google-cloud:+'   // Latest Cloud API's http://googlecloudplatform.github.io/google-cloud-java
 
   testImplementation 'junit:junit:4.13.2'
-  testImplementation 'com.google.truth:truth:0.46'
+  testImplementation 'com.google.truth:truth:1.1.3'
   testImplementation 'org.mockito:mockito-all:1.10.19'
 
   testImplementation 'com.google.appengine:appengine-testing:+'
