@@ -22,14 +22,14 @@ repositories {
 
 dependencies {
   // Every function needs this dependency to get the Functions Framework API.
-  compileOnly 'com.google.cloud.functions:functions-framework-api:1.0.1'
+  compileOnly 'com.google.cloud.functions:functions-framework-api:1.0.4'
 
   // Function implementations can have additional dependencies like this.
   implementation 'com.google.code.gson:gson:2.8.6'
   implementation 'io.github.resilience4j:resilience4j-retry:1.5.0'
 
   // These dependencies are only used by the tests.
-  testImplementation 'com.google.cloud.functions:functions-framework-api:1.0.1'
+  testImplementation 'com.google.cloud.functions:functions-framework-api:1.0.4'
   testImplementation 'junit:junit:4.12'
   testImplementation 'com.google.truth:truth:1.0.1'
   testImplementation 'org.mockito:mockito-core:3.4.0'
