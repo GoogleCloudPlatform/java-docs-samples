@@ -30,7 +30,7 @@ dependencies {
 
   // These dependencies are only used by the tests.
   testImplementation 'com.google.cloud.functions:functions-framework-api:1.0.1'
-  testImplementation 'junit:junit:4.12'
+  testImplementation 'junit:junit:4.13.2'
   testImplementation 'com.google.truth:truth:1.0.1'
   testImplementation 'org.mockito:mockito-core:3.4.0'
 }
