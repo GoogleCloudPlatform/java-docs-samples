@@ -26,7 +26,7 @@ dependencies {
 
   // Function implementations can have additional dependencies like this.
   implementation 'com.google.code.gson:gson:2.8.6'
-  implementation 'io.github.resilience4j:resilience4j-retry:1.5.0'
+  implementation 'io.github.resilience4j:resilience4j-retry:1.7.1'
 
   // These dependencies are only used by the tests.
   testImplementation 'com.google.cloud.functions:functions-framework-api:1.0.1'
