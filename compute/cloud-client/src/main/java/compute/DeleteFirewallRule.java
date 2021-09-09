@@ -36,12 +36,12 @@ public class DeleteFirewallRule {
   }
 
 
-  // Deleted a firewall rule from the project.
+  // Deletes a firewall rule from the project.
   public static void deleteFirewallRule(String project, String firewallRuleName)
       throws IOException {
     /* Initialize client that will be used to send requests. This client only needs to be created
        once, and can be reused for multiple requests. After completing all of your requests, call
-       the `instancesClient.close()` method on the client to safely
+       the `firewallsClient.close()` method on the client to safely
        clean up any remaining background resources. */
     try (FirewallsClient firewallsClient = FirewallsClient.create();
         GlobalOperationsClient operationsClient = GlobalOperationsClient.create()) {

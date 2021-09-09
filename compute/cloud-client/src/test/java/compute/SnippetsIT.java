@@ -221,7 +221,7 @@ public class SnippetsIT {
   public void testPatchFirewallRule() throws IOException, InterruptedException {
     try(FirewallsClient client = FirewallsClient.create()) {
       Assert.assertTrue(client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority() == 1000);
-      compute.PatchFirewallRule.patchFirewall(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
+      compute.PatchFirewallRule.patchFirewallPriority(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
       TimeUnit.SECONDS.sleep(5);
       Assert.assertTrue(client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority() == 500);
     }

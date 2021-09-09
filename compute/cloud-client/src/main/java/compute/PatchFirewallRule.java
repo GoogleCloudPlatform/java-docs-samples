@@ -37,15 +37,15 @@ public class PatchFirewallRule {
     String firewallRuleName = "firewall-rule-name-" + UUID.randomUUID();
     int priority = 10;
 
-    patchFirewall(project, firewallRuleName, priority);
+    patchFirewallPriority(project, firewallRuleName, priority);
   }
 
   // Modifies the priority of a given firewall rule.
-  public static void patchFirewall(String project, String firewallRuleName, int priority)
+  public static void patchFirewallPriority(String project, String firewallRuleName, int priority)
       throws IOException {
     /* Initialize client that will be used to send requests. This client only needs to be created
        once, and can be reused for multiple requests. After completing all of your requests, call
-       the `instancesClient.close()` method on the client to safely
+       the `firewallsClient.close()` method on the client to safely
        clean up any remaining background resources. */
     try (FirewallsClient firewallsClient = FirewallsClient.create();
         GlobalOperationsClient operationsClient = GlobalOperationsClient.create()) {
@@ -61,7 +61,6 @@ public class PatchFirewallRule {
           .setFirewallResource(firewall).build();
 
       Operation operation = firewallsClient.patch(patchFirewallRequest);
-
       operationsClient.wait(project, operation.getName());
       System.out.println("Firewall Patch applied successfully ! ");
     }

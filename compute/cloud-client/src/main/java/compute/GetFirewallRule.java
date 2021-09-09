@@ -26,7 +26,7 @@ public class GetFirewallRule {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample
-    // project: project Id or project number of the Cloud project you want to use.
+    // project: project ID or project number of the Cloud project you want to use.
     // firewallRuleName: name of the rule that is created.
     String project = "your-project-id";
     String firewallRuleName = "firewall-rule-name-" + UUID.randomUUID();
@@ -39,7 +39,7 @@ public class GetFirewallRule {
       throws IOException {
     /* Initialize client that will be used to send requests. This client only needs to be created
        once, and can be reused for multiple requests. After completing all of your requests, call
-       the `instancesClient.close()` method on the client to safely
+       the `firewallsClient.close()` method on the client to safely
        clean up any remaining background resources. */
     try (FirewallsClient firewallsClient = FirewallsClient.create()) {
       Firewall response = firewallsClient.get(project, firewallRuleName);
