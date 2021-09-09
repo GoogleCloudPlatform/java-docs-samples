@@ -16,26 +16,15 @@
 
 package functions.eventpojos;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Map;
 
 public class PubSubBody {
   private PubSubMessage message;
-  private String subscription;
 
   public PubSubMessage getMessage() {
     return message;
   }
 
-  public String getSubscription() {
-    return subscription;
-  }
-
-  public void setSubscription(String subscription) {
-    this.subscription = subscription;
-  }
-
-  @JsonIgnoreProperties({"message_id", "publish_time"})
   public class PubSubMessage {
     private String data;
     private Map<String, String> attributes;
