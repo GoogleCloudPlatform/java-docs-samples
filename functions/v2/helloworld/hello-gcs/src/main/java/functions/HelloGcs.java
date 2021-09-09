@@ -19,6 +19,7 @@ package functions;
 // [START functions_cloudevent_storage]
 import static io.cloudevents.core.CloudEventUtils.mapData;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.functions.CloudEventsFunction;
 import functions.eventpojos.GcsEvent;
@@ -35,17 +36,22 @@ public class HelloGcs implements CloudEventsFunction {
     logger.info("Event: " + event.getId());
     logger.info("Event Type: " + event.getType());
 
-    // Map data to GcsEvent POJO
-    PojoCloudEventData<GcsEvent> cloudEventData =
-        mapData(event, PojoCloudEventDataMapper.from(new ObjectMapper(), GcsEvent.class));
-    GcsEvent gcsEvent = cloudEventData.getValue();
+    ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    PojoCloudEventData<GcsEvent> cloudEventData = mapData(
+      event,
+      PojoCloudEventDataMapper.from(objectMapper,GcsEvent.class)
+    );
 
-    logger.info("Bucket: " + gcsEvent.getBucket());
-    logger.info("File: " + gcsEvent.getName());
-    logger.info("Metageneration: " + gcsEvent.getMetageneration());
-    logger.info("Created: " + gcsEvent.getTimeCreated());
-    logger.info("Updated: " + gcsEvent.getUpdated());
+    if (cloudEventData != null) {
+      GcsEvent gcsEvent = cloudEventData.getValue();
+      logger.info("Bucket: " + gcsEvent.getBucket());
+      logger.info("File: " + gcsEvent.getName());
+      logger.info("Metageneration: " + gcsEvent.getMetageneration());
+      logger.info("Created: " + gcsEvent.getTimeCreated());
+      logger.info("Updated: " + gcsEvent.getUpdated());
+    }
   }
+
 }
 
 // [END functions_cloudevent_storage]
