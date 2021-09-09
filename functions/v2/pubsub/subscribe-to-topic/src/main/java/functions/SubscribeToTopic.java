@@ -17,11 +17,15 @@
 package functions;
 
 // [START functions_cloudevent_pubsub]
+import static io.cloudevents.core.CloudEventUtils.mapData;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.functions.CloudEventsFunction;
-import com.google.gson.Gson;
 import functions.eventpojos.PubSubBody;
 import io.cloudevents.CloudEvent;
+import io.cloudevents.core.data.PojoCloudEventData;
+import io.cloudevents.jackson.PojoCloudEventDataMapper;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
@@ -31,13 +35,23 @@ public class SubscribeToTopic implements CloudEventsFunction {
 
   @Override
   public void accept(CloudEvent event) {
-    Gson gson = new Gson();
-    PubSubBody pubSubBody = gson.fromJson(new String(event.getData().toBytes()), PubSubBody.class);
-    String messageString =
-        new String(
-            Base64.getDecoder().decode(pubSubBody.getMessage().getData()), StandardCharsets.UTF_8);
+    logger.info("Event: " + event.getId());
+    logger.info("Event Type: " + event.getType());
 
-    logger.info(messageString);
+    // Unmarshal Cloud Event data
+    ObjectMapper objectMapper =
+        new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    PojoCloudEventData<PubSubBody> cloudEventData =
+        mapData(event, PojoCloudEventDataMapper.from(objectMapper, PubSubBody.class));
+
+    if (cloudEventData != null) {
+      PubSubBody body = cloudEventData.getValue();
+      // Retrieve PubSub message data
+      String encodedData = body.getMessage().getData();
+      String decodedData =
+          new String(Base64.getDecoder().decode(encodedData), StandardCharsets.UTF_8);
+      logger.info("Event data: " + decodedData);
+    }
   }
 }
 // [END functions_cloudevent_pubsub]

@@ -41,8 +41,8 @@ public class SubscribeToTopicTest {
 
   @Test
   public void functionsPubsubSubscribe_shouldPrintPubsubMessage() throws Exception {
-
-    String encodedMessage = Base64.getEncoder().encodeToString("Hello World".getBytes());
+    String msg = "Hello World";
+    String encodedMessage = Base64.getEncoder().encodeToString(msg.getBytes());
     String encodedData = new String("{\"message\": { \"data\": \"" + encodedMessage + "\"} }");
 
     CloudEvent event =
@@ -55,6 +55,6 @@ public class SubscribeToTopicTest {
 
     new SubscribeToTopic().accept(event);
 
-    assertThat("Hello World").isEqualTo(logHandler.getStoredLogRecords().get(0).getMessage());
+    assertThat("Event data: " + msg).isEqualTo(logHandler.getStoredLogRecords().get(2).getMessage());
   }
 }
