@@ -31,7 +31,8 @@ public class WorkflowsQuickstart {
 
   private static final String PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = System.getenv().getOrDefault("LOCATION", "us-central1");
-  private static final String WORKFLOW = System.getenv().getOrDefault("WORKFLOW", "myFirstWorkflow");
+  private static final String WORKFLOW = System.getenv().getOrDefault("WORKFLOW",
+      "myFirstWorkflow");
 
   public static void main(String... args)
       throws IOException, InterruptedException, ExecutionException {
