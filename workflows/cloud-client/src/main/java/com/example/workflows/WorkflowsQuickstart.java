@@ -29,13 +29,17 @@ import java.util.concurrent.ExecutionException;
 
 public class WorkflowsQuickstart {
 
+  private static final String PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String LOCATION = System.getenv().getOrDefault("LOCATION", "us-central1");
+  private static final String WORKFLOW = System.getenv().getOrDefault("WORKFLOW", "myFirstWorkflow");
+
   public static void main(String... args)
       throws IOException, InterruptedException, ExecutionException {
-    // TODO(developer): Replace these variables before running the sample.
-    String projectId = "your-project-id";
-    String location = "us-central1";
-    String workflow = "myFirstWorkflow";
-    workflowsQuickstart(projectId, location, workflow);
+    if (PROJECT == null) {
+      throw new IllegalArgumentException(
+        "Environment variable 'GOOGLE_CLOUD_PROJECT' is required to run this quickstart.");
+    }
+    workflowsQuickstart(PROJECT, LOCATION, WORKFLOW);
   }
 
   private static volatile boolean finished;
