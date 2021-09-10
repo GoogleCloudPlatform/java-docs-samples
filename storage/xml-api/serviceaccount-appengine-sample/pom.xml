@@ -39,7 +39,7 @@
     <webappDirectory>${project.build.directory}/${project.build.finalName}
     </webappDirectory>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven-war-plugin-version>3.3.1</maven-war-plugin-version>
+    <maven-war-plugin-version>3.3.2</maven-war-plugin-version>
   </properties>
 
   <build>
