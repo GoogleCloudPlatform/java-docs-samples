@@ -19,8 +19,8 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.testing.TestLogHandler;
+import com.google.gson.Gson;
 import functions.eventpojos.GcsEvent;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
@@ -55,9 +55,11 @@ public class HelloGcsTest {
     gcsEvent.setMetageneration("metageneration-data");
     gcsEvent.setTimeCreated(new Date());
     gcsEvent.setUpdated(new Date());
+
     // Convert event data to a JSON string
-    ObjectMapper Obj = new ObjectMapper();
-    String jsonData = Obj.writeValueAsString(gcsEvent);
+    Gson gson = new Gson();
+    String jsonData = gson.toJson(gcsEvent);
+
     // Construct a CloudEvent
     CloudEvent event =
         CloudEventBuilder.v1()
