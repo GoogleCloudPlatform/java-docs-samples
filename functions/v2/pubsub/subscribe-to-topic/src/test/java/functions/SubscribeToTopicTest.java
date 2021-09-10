@@ -56,6 +56,6 @@ public class SubscribeToTopicTest {
     new SubscribeToTopic().accept(event);
 
     assertThat("Event data: " + msg).isEqualTo(
-      logHandler.getStoredLogRecords().get(2).getMessage());
+        logHandler.getStoredLogRecords().get(2).getMessage());
   }
 }
