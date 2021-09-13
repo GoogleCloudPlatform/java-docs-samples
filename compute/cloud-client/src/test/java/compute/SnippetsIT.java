@@ -31,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -62,16 +63,16 @@ public class SnippetsIT {
   }
 
   @BeforeClass
-  public static void setUp() throws IOException, InterruptedException {
+  public static void setUp() throws IOException, InterruptedException, ExecutionException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     ZONE = "us-central1-a";
-    MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID().toString();
-    MACHINE_NAME_DELETE = "my-new-test-instance" + UUID.randomUUID().toString();
-    MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance" + UUID.randomUUID().toString();
-    MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance" + UUID.randomUUID().toString();
-    BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID().toString();
+    MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
+    MACHINE_NAME_DELETE = "my-new-test-instance" + UUID.randomUUID();
+    MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance" + UUID.randomUUID();
+    MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance" + UUID.randomUUID();
+    BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID();
     IMAGE_NAME = "windows-sql-cloud";
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
@@ -87,7 +88,7 @@ public class SnippetsIT {
 
 
   @AfterClass
-  public static void cleanup() throws IOException, InterruptedException {
+  public static void cleanup() throws IOException, InterruptedException, ExecutionException {
     // Delete all instances created for testing.
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
@@ -141,7 +142,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testDeleteInstance() throws IOException, InterruptedException {
+  public void testDeleteInstance() throws IOException, InterruptedException, ExecutionException {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     assertThat(stdOut.toString()).contains("Operation Status: DONE");
   }

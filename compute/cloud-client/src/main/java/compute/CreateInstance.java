@@ -21,19 +21,19 @@ package compute;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDisk.Type;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
+import com.google.cloud.compute.v1.InsertInstanceRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
-import java.time.LocalTime;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
 
 public class CreateInstance {
 
-  public static void main(String[] args) throws IOException, InterruptedException {
+  public static void main(String[] args)
+      throws IOException, InterruptedException, ExecutionException {
     // TODO(developer): Replace these variables before running the sample.
     String project = "your-project-id";
     String zone = "zone-name";
@@ -44,7 +44,7 @@ public class CreateInstance {
 
   // Create a new instance with the provided "instanceName" value in the specified project and zone.
   public static void createInstance(String project, String zone, String instanceName)
-      throws IOException, InterruptedException {
+      throws IOException, InterruptedException, ExecutionException {
     // Below are sample values that can be replaced.
     // machineType: machine type of the VM being created. This value uses the format zones/{zone}/machineTypes/{type_name}. For a list of machine types, see https://cloud.google.com/compute/docs/machine-types
     // sourceImage: path to the operating system image to mount. For details about images you can mount, see https://cloud.google.com/compute/docs/images
@@ -87,17 +87,18 @@ public class CreateInstance {
               .build();
 
       System.out.println(String.format("Creating instance: %s at %s ", instanceName, zone));
-      // Insert the instance in the specified project and zone.
-      Operation response = instancesClient.insert(project, zone, instanceResource);
 
-      // Wait for the create operation to complete.
-      // Timeout is set at 3 minutes.
-      LocalTime endTime = LocalTime.now().plusMinutes(3);
-      while (response.getStatus() != Status.DONE
-          && LocalTime.now().isBefore(endTime)) {
-        response = zoneOperationsClient.get(project, zone, String.valueOf(response.getId()));
-        TimeUnit.SECONDS.sleep(3);
-      }
+      // Insert the instance in the specified project and zone.
+      InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
+          .setProject(project)
+          .setZone(zone)
+          .setInstanceResource(instanceResource).build();
+
+      Operation operation = instancesClient.insertCallable().futureCall(insertInstanceRequest)
+          .get();
+
+      // Wait for the operation to complete.
+      Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);
