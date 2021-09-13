@@ -33,6 +33,7 @@ public class ListFirewallRules {
   }
 
   // Return a list of all the firewall rules in specified project.
+  // Also prints the list of firewall names and their descriptions.
   public static ListPagedResponse listFirewallRules(String project)
       throws IOException {
     /* Initialize client that will be used to send requests. This client only needs to be created

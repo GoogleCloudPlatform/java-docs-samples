@@ -55,6 +55,7 @@ public class SnippetsIT {
   private static String IMAGE_NAME;
   private static String FIREWALL_RULE_CREATE;
   private static String FIREWALL_RULE_DELETE;
+  private static String NETWORK_NAME;
 
   private ByteArrayOutputStream stdOut;
 
@@ -78,14 +79,15 @@ public class SnippetsIT {
     IMAGE_NAME = "windows-sql-cloud";
     FIREWALL_RULE_CREATE = "firewall-rule-" + UUID.randomUUID().toString();
     FIREWALL_RULE_DELETE = "firewall-rule-" + UUID.randomUUID().toString();
+    NETWORK_NAME = "global/networks/default";
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
     TimeUnit.SECONDS.sleep(10);
-    compute.CreateFirewallRule.createFirewall(PROJECT_ID, FIREWALL_RULE_CREATE);
-    compute.CreateFirewallRule.createFirewall(PROJECT_ID, FIREWALL_RULE_DELETE);
+    compute.CreateFirewallRule.createFirewall(PROJECT_ID, FIREWALL_RULE_CREATE, NETWORK_NAME);
+    compute.CreateFirewallRule.createFirewall(PROJECT_ID, FIREWALL_RULE_DELETE, NETWORK_NAME);
 
     // Create a Google Cloud Storage bucket for UsageReports
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
