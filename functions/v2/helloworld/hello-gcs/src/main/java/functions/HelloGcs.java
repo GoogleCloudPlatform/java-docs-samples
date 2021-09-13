@@ -36,6 +36,7 @@ public class HelloGcs implements CloudEventsFunction {
       String cloudEventData = new String(event.getData().toBytes(), StandardCharsets.UTF_8);
       Gson gson = new Gson();
       GcsEvent gcsEvent = gson.fromJson(cloudEventData, GcsEvent.class);
+
       logger.info("Bucket: " + gcsEvent.getBucket());
       logger.info("File: " + gcsEvent.getName());
       logger.info("Metageneration: " + gcsEvent.getMetageneration());

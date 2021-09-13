@@ -49,9 +49,12 @@ public class HelloGcsTest {
   @Test
   public void helloGcs_shouldPrintFileName() throws JsonProcessingException {
     // Create event data
+    String file = "foo.txt";
+    String bucket = "gs://test-bucket";
+
     GcsEvent gcsEvent = new GcsEvent();
-    gcsEvent.setName("foo.txt");
-    gcsEvent.setBucket("gs://test-bucket");
+    gcsEvent.setName(file);
+    gcsEvent.setBucket(bucket);
     gcsEvent.setMetageneration("metageneration-data");
     gcsEvent.setTimeCreated(new Date());
     gcsEvent.setUpdated(new Date());
@@ -71,7 +74,9 @@ public class HelloGcsTest {
 
     new HelloGcs().accept(event);
 
-    String message = LOG_HANDLER.getStoredLogRecords().get(3).getMessage();
-    assertThat(message).contains("File: foo.txt");
+    String actualBucket = LOG_HANDLER.getStoredLogRecords().get(2).getMessage();
+    String actualFile = LOG_HANDLER.getStoredLogRecords().get(3).getMessage();
+    assertThat(actualFile).contains("File: " + file);
+    assertThat(actualBucket).contains("Bucket: " + bucket);
   }
 }
