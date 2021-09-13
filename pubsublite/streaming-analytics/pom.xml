@@ -128,7 +128,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>pubsublite-beam-io</artifactId>
-      <version>0.19.5</version>
+      <version>0.19.6</version>
     </dependency>
 
     <!-- Beam examples -->
