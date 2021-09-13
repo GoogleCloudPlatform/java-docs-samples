@@ -22,8 +22,6 @@ import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
-import java.time.LocalTime;
-import java.util.concurrent.TimeUnit;
 
 public class WaitForOperation {
 
@@ -47,19 +45,15 @@ public class WaitForOperation {
         zone = zone.substring(zone.lastIndexOf("/") + 1);
 
         // Wait for the operation to complete.
-        // Timeout is set at 3 minutes.
-        LocalTime endTime = LocalTime.now().plusMinutes(3);
-        while (operation.getStatus() != Status.DONE
-            && LocalTime.now().isBefore(endTime)) {
-          operation = zoneOperationsClient.get(project, zone, String.valueOf(operation.getId()));
-          TimeUnit.SECONDS.sleep(3);
-        }
+        Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
 
         // Check if the operation has errors.
-        if (operation.hasError()) {
-          System.out.println("Error in executing the operation ! ! " + operation.getError());
+        if (response.hasError()) {
+          System.out.println("Error in executing the operation ! ! " + response.getError());
           return;
         }
+        System.out.println("Operation Status: " + response.getStatus());
+        return;
       }
       System.out.println("Operation Status: " + operation.getStatus());
     }
