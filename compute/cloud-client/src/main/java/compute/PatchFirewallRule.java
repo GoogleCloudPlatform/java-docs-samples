@@ -50,8 +50,8 @@ public class PatchFirewallRule {
     try (FirewallsClient firewallsClient = FirewallsClient.create();
         GlobalOperationsClient operationsClient = GlobalOperationsClient.create()) {
 
-    /* The patch operation doesn't require the full definition of a Firewall object. It will only update
-       the values that were set in it, in this case it will only change the priority. */
+      /* The patch operation doesn't require the full definition of a Firewall object. It will only 
+         update the values that were set in it, in this case it will only change the priority. */
       Firewall firewall = Firewall.newBuilder()
           .setPriority(priority).build();
 

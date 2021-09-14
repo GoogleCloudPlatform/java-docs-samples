@@ -46,7 +46,8 @@ public class CreateFirewallRule {
     createFirewall(project, firewallRuleName, network);
   }
 
-  // Creates a simple firewall rule allowing for incoming HTTP and HTTPS access from the entire Internet.
+  // Creates a simple firewall rule allowing for incoming HTTP and 
+  // HTTPS access from the entire Internet.
   public static void createFirewall(String project, String firewallRuleName, String network)
       throws IOException {
     /* Initialize client that will be used to send requests. This client only needs to be created
@@ -67,11 +68,11 @@ public class CreateFirewallRule {
           .setDescription("Allowing TCP traffic on port 80 and 443 from Internet.")
           .build();
 
-    /* Note that the default value of priority for the firewall API is 1000.
-       If you check the value of `firewallRule.getPriority()` at this point it
-       will be equal to 0, however it is not treated as "set" by the library and thus
-       the default will be applied to the new rule. If you want to create a rule that
-       has priority == 0, you'll need to explicitly set it so: setPriority(0) */
+      /* Note that the default value of priority for the firewall API is 1000.
+         If you check the value of `firewallRule.getPriority()` at this point it
+         will be equal to 0, however it is not treated as "set" by the library and thus
+         the default will be applied to the new rule. If you want to create a rule that
+         has priority == 0, you'll need to explicitly set it so: setPriority(0) */
 
       InsertFirewallRequest insertFirewallRequest = InsertFirewallRequest.newBuilder()
           .setFirewallResource(firewallRule)
