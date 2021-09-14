@@ -27,7 +27,6 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.pubsublite.AdminClient;
 import com.google.cloud.pubsublite.AdminClientSettings;
-import com.google.cloud.pubsublite.BacklogLocation;
 import com.google.cloud.pubsublite.CloudRegion;
 import com.google.cloud.pubsublite.CloudZone;
 import com.google.cloud.pubsublite.ProjectId;
@@ -113,8 +112,7 @@ public class PubsubliteToGcsIT {
   public void setUp() throws Exception {
     // Create a subscription that reads from the entire message backlog in the topic.
     try (AdminClient adminClient = AdminClient.create(adminClientSettings)) {
-      Subscription response =
-          adminClient.createSubscription(subscription, BacklogLocation.BEGINNING).get();
+      Subscription response = adminClient.createSubscription(subscription).get();
       System.out.println(response.getAllFields() + " created successfully.");
     }
   }
