@@ -36,7 +36,7 @@ public class ListImages {
     listImages(project);
 
     // page_size: size of the pages you want the API to return on each call.
-    int pageSize = 2;
+    int pageSize = 100;
     listImagesByPage(project, pageSize);
   }
 
@@ -52,7 +52,7 @@ public class ListImages {
       // Listing only non-deprecated images to reduce the size of the reply.
       ListImagesRequest imagesRequest = ListImagesRequest.newBuilder()
           .setProject(project)
-          .setMaxResults(2)
+          .setMaxResults(100)
           .setFilter("deprecated.state != DEPRECATED")
           .build();
 

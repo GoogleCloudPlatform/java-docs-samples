@@ -19,6 +19,7 @@ package compute;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.compute.v1.FirewallsClient;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
@@ -53,6 +54,9 @@ public class SnippetsIT {
   private static String MACHINE_NAME_WAIT_FOR_OP;
   private static String BUCKET_NAME;
   private static String IMAGE_NAME;
+  private static String FIREWALL_RULE_CREATE;
+  private static String FIREWALL_RULE_DELETE;
+  private static String NETWORK_NAME;
 
   private ByteArrayOutputStream stdOut;
 
@@ -74,12 +78,17 @@ public class SnippetsIT {
     MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance" + UUID.randomUUID();
     BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID();
     IMAGE_NAME = "windows-sql-cloud";
+    FIREWALL_RULE_CREATE = "firewall-rule-" + UUID.randomUUID().toString();
+    FIREWALL_RULE_DELETE = "firewall-rule-" + UUID.randomUUID().toString();
+    NETWORK_NAME = "global/networks/default";
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
     TimeUnit.SECONDS.sleep(10);
+    compute.CreateFirewallRule.createFirewall(PROJECT_ID, FIREWALL_RULE_CREATE, NETWORK_NAME);
+    compute.CreateFirewallRule.createFirewall(PROJECT_ID, FIREWALL_RULE_DELETE, NETWORK_NAME);
 
     // Create a Google Cloud Storage bucket for UsageReports
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
@@ -96,6 +105,7 @@ public class SnippetsIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
+    compute.DeleteFirewallRule.deleteFirewallRule(PROJECT_ID, FIREWALL_RULE_CREATE);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
 
@@ -192,7 +202,32 @@ public class SnippetsIT {
   public void testListImagesByPage() throws IOException {
     // ================= Paginated list of images ================
     ListImages.listImagesByPage(IMAGE_NAME, 2);
-    Assert.assertTrue(stdOut.toString().contains("Page Number: 2"));
+    Assert.assertTrue(stdOut.toString().contains("Page Number: 1"));
+  }
+
+  @Test
+  public void testCreateFirewallRule() throws IOException {
+    // Assert that firewall rule has been created as part of the setup.
+    compute.GetFirewallRule.getFirewallRule(PROJECT_ID, FIREWALL_RULE_CREATE);
+    compute.GetFirewallRule.getFirewallRule(PROJECT_ID, FIREWALL_RULE_DELETE);
+    assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
+    assertThat(stdOut.toString()).contains(FIREWALL_RULE_DELETE);
+  }
+
+  @Test
+  public void testListFirewallRules() throws IOException {
+    compute.ListFirewallRules.listFirewallRules(PROJECT_ID);
+    assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
+  }
+
+  @Test
+  public void testPatchFirewallRule() throws IOException, InterruptedException {
+    try (FirewallsClient client = FirewallsClient.create()) {
+      Assert.assertTrue(client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority() == 1000);
+      compute.PatchFirewallRule.patchFirewallPriority(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
+      TimeUnit.SECONDS.sleep(5);
+      Assert.assertTrue(client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority() == 500);
+    }
   }
 
 }
