@@ -36,7 +36,7 @@ apply plugin: 'com.google.cloud.tools.appengine'  // App Engine tasks
 
 dependencies {
   implementation 'com.google.appengine:appengine-api-1.0-sdk:+'  // Latest App Engine Api's
-  providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+  providedCompile 'javax.servlet:javax.servlet-api:4.0.1'
 
   implementation 'jstl:jstl:1.2'
 
