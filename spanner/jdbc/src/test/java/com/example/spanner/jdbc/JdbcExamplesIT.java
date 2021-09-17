@@ -28,7 +28,6 @@ import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.connection.ConnectionOptions;
 import com.google.cloud.spanner.jdbc.CloudSpannerJdbcConnection;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -424,6 +423,28 @@ public class JdbcExamplesIT {
                 TransactionWithRetryLoopUsingOnlyJdbcExample.genericJdbcTransactionWithRetryLoop(
                     ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
     assertThat(out).contains("Transaction committed at [");
+  }
+
+  @Test
+  public void insertAndQueryJsonData_shouldReturnData() throws SQLException {
+    String out =
+            runExample(
+                    () ->
+                            JsonCreateTableExample.createTableWithJsonDataType(
+                                    ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    assertThat(out).contains("Created table with JSON data type");
+    out =
+            runExample(
+                    () ->
+                            JsonInsertDataExample.insertJsonData(
+                                    ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    assertThat(out).contains("Insert counts: [1, 1, 1]");
+    out =
+            runExample(
+                    () ->
+                            JsonQueryDataExample.queryJsonData(
+                                    ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    assertThat(out).contains("VenueId: 19");
   }
 
   static String formatForTest(String name) {
