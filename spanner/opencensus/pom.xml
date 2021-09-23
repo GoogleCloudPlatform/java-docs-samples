@@ -42,7 +42,7 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-census</artifactId>
-      <version>1.40.1</version>
+      <version>1.41.0</version>
     </dependency>
     <dependency>
       <groupId>io.opencensus</groupId>
