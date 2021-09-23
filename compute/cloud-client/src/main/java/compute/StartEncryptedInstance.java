@@ -73,7 +73,8 @@ public class StartEncryptedInstance {
       CustomerEncryptionKeyProtectedDisk protectedDisk = CustomerEncryptionKeyProtectedDisk
           .newBuilder()
           /* Use raw_key to send over the key to unlock the disk
-             To use a key stored in KMS, you need to provide `kms_key_name` and `kms_key_service_account`
+             To use a key stored in KMS, you need to provide:
+             `kms_key_name` and `kms_key_service_account`
            */
           .setDiskEncryptionKey(CustomerEncryptionKey.newBuilder()
               .setRawKey(key).build())
