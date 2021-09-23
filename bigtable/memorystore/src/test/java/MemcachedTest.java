@@ -17,6 +17,7 @@
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static java.lang.Thread.sleep;
 
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminClient;
 import com.google.cloud.bigtable.admin.v2.models.CreateTableRequest;
@@ -116,7 +117,7 @@ public class MemcachedTest {
   }
 
   @Test
-  public void testMemcached() {
+  public void testMemcached() throws InterruptedException {
     // Run twice to fetch value from Bigtable and then from cache
     System.setProperty("bigtableProjectId", projectId);
     System.setProperty("bigtableInstanceId", instanceId);
@@ -124,6 +125,7 @@ public class MemcachedTest {
     System.setProperty("memcachedDiscoveryEndpoint", discoveryEndpoint);
 
     Memcached.main(null);
+    sleep(1000);
     Memcached.main(null);
 
     String output = bout.toString();
