@@ -64,7 +64,7 @@ public class StartInstance {
       // Wait for the operation to complete.
       Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
 
-      if(response.getStatus() == Status.DONE) {
+      if (response.getStatus() == Status.DONE) {
         System.out.println("Instance started successfully ! ");
       }
     }

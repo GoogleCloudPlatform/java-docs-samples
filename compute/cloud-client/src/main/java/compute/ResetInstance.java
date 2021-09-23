@@ -17,6 +17,7 @@
 package compute;
 
 // [START compute_reset_instance]
+
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
@@ -63,7 +64,7 @@ public class ResetInstance {
 
       Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
 
-      if(response.getStatus() == Status.DONE) {
+      if (response.getStatus() == Status.DONE) {
         System.out.println("Instance reset successfully ! ");
       }
     }

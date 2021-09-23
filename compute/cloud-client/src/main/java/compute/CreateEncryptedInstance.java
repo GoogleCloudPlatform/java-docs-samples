@@ -44,9 +44,10 @@ public class CreateEncryptedInstance {
   }
 
 
-  // Create a new encrypted instance with the provided "instanceName" value
+  // Create a new encrypted instance with the provided "instanceName" value and encryption key
   // in the specified project and zone.
-  public static void createEncryptedInstance(String project, String zone, String instanceName, String diskEncryptionKey)
+  public static void createEncryptedInstance(String project, String zone, String instanceName,
+      String diskEncryptionKey)
       throws IOException, InterruptedException, ExecutionException {
     // Below are sample values that can be replaced.
     // machineType: machine type of the VM being created. This value uses the format zones/{zone}/machineTypes/{type_name}. For a list of machine types, see https://cloud.google.com/compute/docs/machine-types

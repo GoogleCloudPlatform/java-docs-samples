@@ -17,6 +17,7 @@
 package compute;
 
 // [START compute_start_enc_instance]
+
 import com.google.cloud.compute.v1.CustomerEncryptionKey;
 import com.google.cloud.compute.v1.CustomerEncryptionKeyProtectedDisk;
 import com.google.cloud.compute.v1.GetInstanceRequest;
@@ -51,7 +52,8 @@ public class StartEncryptedInstance {
   }
 
   // Starts a stopped Google Compute Engine instance (with encrypted disks).
-  public static void startEncryptedInstance(String project, String zone, String instanceName, String key)
+  public static void startEncryptedInstance(String project, String zone, String instanceName,
+      String key)
       throws IOException, ExecutionException, InterruptedException {
     /* Initialize client that will be used to send requests. This client only needs to be created
        once, and can be reused for multiple requests. After completing all of your requests, call
@@ -68,7 +70,8 @@ public class StartEncryptedInstance {
       Instance instance = instancesClient.get(getInstanceRequest);
 
       // Prepare the information about disk encryption.
-      CustomerEncryptionKeyProtectedDisk protectedDisk = CustomerEncryptionKeyProtectedDisk.newBuilder()
+      CustomerEncryptionKeyProtectedDisk protectedDisk = CustomerEncryptionKeyProtectedDisk
+          .newBuilder()
           /* Use raw_key to send over the key to unlock the disk
              To use a key stored in KMS, you need to provide `kms_key_name` and `kms_key_service_account`
            */
@@ -79,14 +82,15 @@ public class StartEncryptedInstance {
 
       InstancesStartWithEncryptionKeyRequest startWithEncryptionKeyRequest =
           InstancesStartWithEncryptionKeyRequest.newBuilder()
-          .addDisks(protectedDisk).build();
+              .addDisks(protectedDisk).build();
 
       StartWithEncryptionKeyInstanceRequest encryptionKeyInstanceRequest =
           StartWithEncryptionKeyInstanceRequest.newBuilder()
-          .setProject(project)
-          .setZone(zone)
-          .setInstance(instanceName)
-          .setInstancesStartWithEncryptionKeyRequestResource(startWithEncryptionKeyRequest).build();
+              .setProject(project)
+              .setZone(zone)
+              .setInstance(instanceName)
+              .setInstancesStartWithEncryptionKeyRequestResource(startWithEncryptionKeyRequest)
+              .build();
 
       Operation operation = instancesClient.startWithEncryptionKeyCallable()
           .futureCall(encryptionKeyInstanceRequest)
@@ -94,7 +98,7 @@ public class StartEncryptedInstance {
 
       Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
 
-      if(response.getStatus() == Status.DONE) {
+      if (response.getStatus() == Status.DONE) {
         System.out.println("Encrypted instance started successfully ! ");
       }
     }
