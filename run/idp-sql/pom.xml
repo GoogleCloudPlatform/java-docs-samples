@@ -102,7 +102,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.firebase</groupId>
       <artifactId>firebase-admin</artifactId>
-      <version>8.0.1</version>
+      <version>8.1.0</version>
       <exclusions>
         <exclusion>
           <groupId>com.google.api-client</groupId>
