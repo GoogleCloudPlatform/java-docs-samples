@@ -17,37 +17,97 @@
 
 package com.example.filesystem;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.annotation.PreDestroy;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.sound.midi.SysexMessage;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.HandlerMapping;
 import org.apache.commons.io.IOUtils;
 
 @SpringBootApplication
 public class FilesystemApplication {
 
   String mntDir = System.getenv().getOrDefault("MNT_DIR", "/mnt/nfs/filestore");
-  String filename = System.getenv().getOrDefault("FILENAME", "testfile");
+  String filename = System.getenv().getOrDefault("FILENAME", "test");
 
   @RestController
   class FilesystemController {
-    @GetMapping("/")
-    String index() {
-      try {
-        Path fullPath = Paths.get(mntDir, filename);
-        FileInputStream inputStream = new FileInputStream(fullPath.toString());
-        String data = IOUtils.toString(inputStream, "UTF-8");
-        return data;
-      } catch (Exception err) {
-        return "Error retrieving file: " + err.toString();
+
+    @GetMapping("/**")
+    String index(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      // Redirect to mount path
+      String path = (String) request.getAttribute(
+        HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+      
+      if (!path.startsWith(mntDir)) {
+        response.sendRedirect(mntDir);
       }
+
+      // Add parent mount path link
+      String html = "<html><body>\n";
+      if (!path.equals(mntDir)) {
+        html += String.format("<a href=\"%s\">%s</a><br/><br/>\n", mntDir, mntDir);
+      } else {
+        // Write a new test file
+        writeFile(mntDir, filename);
+      }
+
+      File filePath = new File(path);
+      if (filePath.isDirectory()) {
+        File[] files = filePath.listFiles();
+        for (File file : files) {
+          if (file.isFile()) {
+            html += String.format("<a href=\"%s\">%s</a><br/>\n", file.getAbsolutePath(), file.getName());
+          }
+        }
+      } else {
+        try {
+          html += readFile(path);
+        } catch(IOException e) {
+          return "Error retrieving file: " + e.getMessage();
+        }
+      }
+
+      html += "</body></html>\n";
+      return html;
     }
+  }
+
+  public static void writeFile(String mntDir, String filename) throws IOException {
+    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    DateFormat fileFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+    Date date = new Date();
+
+    String fileDate = fileFormat.format(date);
+    String convertedFilename = String.format("%s-%s.txt", filename, fileDate);
+    Path file = Paths.get(mntDir, convertedFilename);
+    FileOutputStream outputStream = new FileOutputStream(file.toString());
+
+    String message = "This test file was created on " + dateFormat.format(date);
+    outputStream.write(message.getBytes());
+    outputStream.close();
+  }
+
+  public static String readFile(String fullPath) throws FileNotFoundException, IOException {
+    FileInputStream inputStream = new FileInputStream(fullPath);
+    String data = IOUtils.toString(inputStream, "UTF-8");
+    return data;
   }
 
   public static void main(String[] args) {

@@ -29,11 +29,11 @@ RUN mvn package -DskipTests
 FROM adoptopenjdk/openjdk11:debian
 
 # Install filesystem dependencies
-RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y \
-        apt-utils \
-        nfs-kernel-server \
-        nfs-common \
+RUN apt-get update -y && apt-get install -y \
+    tini \
+    # apt-utils \
+    nfs-kernel-server \
+    nfs-common \
     && apt-get clean
 
 # Create mount directory
@@ -42,8 +42,12 @@ RUN mkdir -p $MNT_DIR
 
 # Copy the jar to the production image from the builder stage.
 COPY --from=builder /app/target/filesystem-*.jar /filesystem.jar
+
 # Copy the statup script
 COPY run.sh ./run.sh
+
+# Set the init-process (PID1) as the default executable
+ENTRYPOINT ["/usr/bin/tini", "--"]
 
 # Run the web service on container startup.
 CMD ["/run.sh"]
