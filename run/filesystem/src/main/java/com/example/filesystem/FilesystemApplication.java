@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 package com.example.filesystem;
 
@@ -31,10 +30,11 @@ import java.util.Date;
 import javax.annotation.PreDestroy;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sound.midi.SysexMessage;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
@@ -50,45 +50,58 @@ public class FilesystemApplication {
   class FilesystemController {
 
     @GetMapping("/**")
-    String index(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    ResponseEntity<String> index(HttpServletRequest request, HttpServletResponse response) throws IOException {
       // Redirect to mount path
-      String path = (String) request.getAttribute(
-        HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-      
+      String path = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+
       if (!path.startsWith(mntDir)) {
         response.sendRedirect(mntDir);
       }
 
-      // Add parent mount path link
       String html = "<html><body>\n";
       if (!path.equals(mntDir)) {
+        // Add parent mount path link
         html += String.format("<a href=\"%s\">%s</a><br/><br/>\n", mntDir, mntDir);
       } else {
         // Write a new test file
-        writeFile(mntDir, filename);
+        try {
+          writeFile(mntDir, filename);
+        } catch (IOException e) {
+          System.out.println("Error writing file: " + e.getMessage());
+        }
       }
 
+      // Return all files if path is a directory, else return the file
       File filePath = new File(path);
       if (filePath.isDirectory()) {
         File[] files = filePath.listFiles();
         for (File file : files) {
-          if (file.isFile()) {
-            html += String.format("<a href=\"%s\">%s</a><br/>\n", file.getAbsolutePath(), file.getName());
-          }
+          html += String.format("<a href=\"%s\">%s</a><br/>\n", file.getAbsolutePath(), file.getName());
         }
       } else {
         try {
           html += readFile(path);
-        } catch(IOException e) {
-          return "Error retrieving file: " + e.getMessage();
+        } catch (IOException e) {
+          return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error retrieving file: " + e.getMessage());
         }
       }
 
       html += "</body></html>\n";
-      return html;
+      return ResponseEntity.status(HttpStatus.OK).body(html);
     }
   }
 
+  public static void main(String[] args) {
+    SpringApplication.run(FilesystemApplication.class, args);
+  }
+
+  /**
+   * Write files to a directory with date created
+   * 
+   * @param mntDir The path to the parent directory
+   * @param filename The prefix filename
+   * @throws IOException
+   */
   public static void writeFile(String mntDir, String filename) throws IOException {
     DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     DateFormat fileFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
@@ -104,14 +117,17 @@ public class FilesystemApplication {
     outputStream.close();
   }
 
-  public static String readFile(String fullPath) throws FileNotFoundException, IOException {
+  /**
+   * Read files and return contents
+   * 
+   * @param fullPath The path to the file
+   * @return The file data
+   * @throws IOException
+   */
+  public static String readFile(String fullPath) throws IOException {
     FileInputStream inputStream = new FileInputStream(fullPath);
     String data = IOUtils.toString(inputStream, "UTF-8");
     return data;
-  }
-
-  public static void main(String[] args) {
-    SpringApplication.run(FilesystemApplication.class, args);
   }
 
   /** Register shutdown hook */

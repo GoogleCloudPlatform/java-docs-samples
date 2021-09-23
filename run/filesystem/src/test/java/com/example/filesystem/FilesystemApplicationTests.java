@@ -16,6 +16,7 @@
 
 package com.example.filesystem;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,11 +36,44 @@ public class FilesystemApplicationTests {
 
   @Autowired private MockMvc mockMvc;
 
+  String mntDir = System.getenv().getOrDefault("MNT_DIR", "/mnt/nfs/filestore");
+  String filename = System.getenv().getOrDefault("FILENAME", "Dockerfile");
+
   @Test
-  public void returnsHelloWorld() throws Exception {
+  public void indexReturnsRedirect() throws Exception {
     mockMvc
         .perform(get("/"))
+        .andExpect(status().is3xxRedirection());
+  }
+
+  @Test
+  public void pathReturnsRedirect() throws Exception {
+    mockMvc
+        .perform(get("/not/a/path"))
+        .andExpect(status().is3xxRedirection());
+  }
+
+  @Test
+  public void pathReturnsMnt() throws Exception {
+    mockMvc
+        .perform(get(mntDir))
         .andExpect(status().isOk())
-        .andExpect(content().string("Hello World!"));
+        .andExpect(content().string(containsString(filename)));
+  }
+
+  @Test
+  public void pathReturnsFile() throws Exception {
+    mockMvc
+        .perform(get(mntDir + "/" + filename))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("ENTRYPOINT")));
+  }
+
+  @Test
+  public void pathReturnsFileError() throws Exception {
+    mockMvc
+        .perform(get(mntDir + "/" + "notafile"))
+        .andExpect(status().isNotFound())
+        .andExpect(content().string(containsString("Error retrieving file")));
   }
 }
