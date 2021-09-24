@@ -16,7 +16,7 @@
 
 # Use the official maven/Java 11 image to create a build artifact.
 # https://hub.docker.com/_/maven
-FROM maven:3.8-jdk-11 as builder
+FROM maven:3.8.1-jdk-11 as builder
 
 # Copy local code to the container image.
 WORKDIR /app
@@ -28,12 +28,12 @@ RUN mvn package -DskipTests
 
 # Use AdoptOpenJDK for base image.
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM adoptopenjdk/openjdk11:debian
+FROM eclipse-temurin:11-jdk
 
 # Install filesystem dependencies
 RUN apt-get update -y && apt-get install -y \
     tini \
-    nfs-kernel-server \
+    # nfs-kernel-server \
     nfs-common \
     && apt-get clean
 

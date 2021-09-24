@@ -48,12 +48,14 @@ public class FilesystemApplicationTests {
 
   @BeforeClass
   public static void setup() throws Exception {
+    // Set MNT_DIR env var for local testing purposes
     mntDir = System.getProperty("user.dir");
     getModifiableEnvironment().put("MNT_DIR", mntDir);
   }
 
   @AfterClass
   public static void cleanup() throws Exception {
+    // Reset MNT_DIR env var for e2e tests
     getModifiableEnvironment().put("MNT_DIR", systemMntDir);
   }
 
@@ -92,7 +94,7 @@ public class FilesystemApplicationTests {
         .andExpect(content().string(containsString("Error retrieving file")));
   }
 
-  // @SuppressWarnings("unchecked")
+  /** Set Env Vars for testing purposes */
   private static Map<String, String> getModifiableEnvironment() throws Exception {
     Class pe = Class.forName("java.lang.ProcessEnvironment");
     Method getenv = pe.getDeclaredMethod("getenv");

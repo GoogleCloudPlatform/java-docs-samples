@@ -55,6 +55,7 @@ public class FilesystemApplicationIT {
     }
     service = "filesystem" + suffix;
 
+    // Deploy the Cloud Run service
     ProcessBuilder deploy = new ProcessBuilder();
     deploy.command(
         "gcloud",
@@ -65,6 +66,7 @@ public class FilesystemApplicationIT {
         "--source=.",
         "--region=us-central1",
         "--no-allow-unauthenticated",
+        "--project=" + project,
         String.format("--vpc-connector=%s", connector),
         "--execution-environment=gen2",
         String.format("--update-env-vars=IP_ADDRESS=%s,FILE_SHARE_NAME=vol1", ipAddress));
@@ -83,6 +85,7 @@ public class FilesystemApplicationIT {
         "describe",
         service,
         "--region=us-central1",
+        "--project=" + project,
         "--format=value(status.url)");
     baseUrl = IOUtils.toString(getUrl.start().getInputStream(), StandardCharsets.UTF_8).trim();
     if (baseUrl == null || baseUrl.equals("")) {

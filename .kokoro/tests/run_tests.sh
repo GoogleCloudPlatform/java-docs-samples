@@ -43,7 +43,7 @@ fi
 
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Update `gcloud` and log versioning for debugging.
-    gcloud components install beta --quiet
+    gcloud components install beta alpha --quiet
     gcloud components update --quiet
     echo "********** GCLOUD INFO ***********"
     gcloud -v
