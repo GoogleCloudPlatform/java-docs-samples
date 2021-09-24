@@ -55,7 +55,8 @@ public class DisableServiceAccountKey {
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
 
     try {
-      DisableServiceAccountKeyRequest disableServiceAccountKeyRequest = new DisableServiceAccountKeyRequest();
+      DisableServiceAccountKeyRequest
+          disableServiceAccountKeyRequest = new DisableServiceAccountKeyRequest();
       // Use the IAM service to disable the service account key.
       service
           .projects()

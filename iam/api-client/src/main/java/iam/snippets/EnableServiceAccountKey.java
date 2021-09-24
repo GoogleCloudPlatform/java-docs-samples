@@ -55,7 +55,8 @@ public class EnableServiceAccountKey {
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
 
     try {
-      EnableServiceAccountKeyRequest enableServiceAccountKeyRequest = new EnableServiceAccountKeyRequest();
+      EnableServiceAccountKeyRequest
+          enableServiceAccountKeyRequest = new EnableServiceAccountKeyRequest();
       // Use the IAM service to enable the service account key.
       service
           .projects()

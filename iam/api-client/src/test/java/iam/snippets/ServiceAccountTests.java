@@ -104,7 +104,7 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage2_testServiceAccountKeyDisable() throws InterruptedException {
+  public void stage2_testServiceAccountKeyDisable() {
     DisableServiceAccountKey
         .disableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
     String got = bout.toString();
@@ -112,7 +112,7 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage2_testServiceAccountKeyEnable() throws InterruptedException {
+  public void stage2_testServiceAccountKeyEnable() {
     EnableServiceAccountKey
         .enableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
     String got = bout.toString();
