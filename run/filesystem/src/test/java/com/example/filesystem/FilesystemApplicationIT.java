@@ -63,7 +63,6 @@ public class FilesystemApplicationIT {
         "run",
         "deploy",
         service,
-        "--source=.",
         "--region=us-central1",
         "--no-allow-unauthenticated",
         "--project=" + project,
