@@ -33,7 +33,7 @@ FROM eclipse-temurin:11-jdk
 # Install filesystem dependencies
 RUN apt-get update -y && apt-get install -y \
     tini \
-    # nfs-kernel-server \
+    nfs-kernel-server \
     nfs-common \
     && apt-get clean
 

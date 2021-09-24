@@ -27,6 +27,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.commons.io.IOUtils;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,6 +64,8 @@ public class FilesystemApplicationIT {
         "run",
         "deploy",
         service,
+        "--source",
+        ".",
         "--region=us-central1",
         "--no-allow-unauthenticated",
         "--project=" + project,
@@ -70,10 +73,10 @@ public class FilesystemApplicationIT {
         "--execution-environment=gen2",
         String.format("--update-env-vars=IP_ADDRESS=%s,FILE_SHARE_NAME=vol1", ipAddress));
 
-    System.out.println("Start Cloud Build...");
+    System.out.println("Start Cloud Run deployment of service: " + service);
     Process p = deploy.start();
     p.waitFor();
-    System.out.println("Cloud Build Completed.");
+    System.out.println(String.format("Cloud Run service, %s, deployed.", service));
 
     // Get service URL
     ProcessBuilder getUrl = new ProcessBuilder();
@@ -95,6 +98,22 @@ public class FilesystemApplicationIT {
     ProcessBuilder getToken = new ProcessBuilder();
     getToken.command("gcloud", "auth", "print-identity-token");
     idToken = IOUtils.toString(getToken.start().getInputStream(), StandardCharsets.UTF_8).trim();
+  }
+
+  @AfterClass
+  public static void cleanup() throws IOException {
+    ProcessBuilder delete = new ProcessBuilder();
+    delete.command(
+        "gcloud",
+        "run",
+        "services",
+        "delete",
+        service,
+        "--region=us-central1",
+        "--project=" + project);
+
+    System.out.println("Deleting Cloud Run service: " + service);
+    delete.start();
   }
 
   public Response authenticatedRequest(String url) throws IOException {
