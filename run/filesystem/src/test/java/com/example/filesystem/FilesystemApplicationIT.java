@@ -50,6 +50,9 @@ public class FilesystemApplicationIT {
 
   @BeforeClass
   public static void setup() throws Exception {
+    if (ipAddress == null || ipAddress.equals("")) {
+      throw new RuntimeException("IP address not found in environment.");
+    }
     service = "filesystem" + suffix;
 
     ProcessBuilder deploy = new ProcessBuilder();
@@ -64,10 +67,11 @@ public class FilesystemApplicationIT {
         "--no-allow-unauthenticated",
         String.format("--vpc-connector=%s", connector),
         "--execution-environment=gen2",
-        String.format("--update-env-vars=IP_ADDRESS=%s,FILESHARE_NAME=vol1", ipAddress));
+        String.format("--update-env-vars=IP_ADDRESS=%s,FILE_SHARE_NAME=vol1", ipAddress));
 
     System.out.println("Start Cloud Build...");
-    String output = IOUtils.toString(deploy.start().getInputStream(), StandardCharsets.UTF_8);
+    Process p = deploy.start();
+    p.waitFor();
     System.out.println("Cloud Build Completed.");
 
     // Get service URL
@@ -116,6 +120,7 @@ public class FilesystemApplicationIT {
     assertEquals(indexResponse.code(), 403); // Redirect causes 403
 
     String mntPath = baseUrl + mntDir;
+    System.out.println(mntPath);
     Response mntResponse = authenticatedRequest(mntPath);
     assertEquals(mntResponse.code(), 200);
     assertTrue(mntResponse.body().string().contains("test-"));

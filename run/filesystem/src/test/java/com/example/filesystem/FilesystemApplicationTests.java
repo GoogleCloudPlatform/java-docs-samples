@@ -24,6 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
+
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +42,7 @@ public class FilesystemApplicationTests {
 
   @Autowired private MockMvc mockMvc;
 
+  private static final String systemMntDir = System.getenv().getOrDefault("MNT_DIR", "/mnt/nfs/filestore");
   private static String mntDir;
   String filename = System.getenv().getOrDefault("FILENAME", "Dockerfile");
 
@@ -47,6 +50,11 @@ public class FilesystemApplicationTests {
   public static void setup() throws Exception {
     mntDir = System.getProperty("user.dir");
     getModifiableEnvironment().put("MNT_DIR", mntDir);
+  }
+
+  @AfterClass
+  public static void cleanup() throws Exception {
+    getModifiableEnvironment().put("MNT_DIR", systemMntDir);
   }
 
   @Test

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [Start cloudrun_fs_dockerfile]
+# [START cloudrun_fs_dockerfile]
 
 # Use the official maven/Java 11 image to create a build artifact.
 # https://hub.docker.com/_/maven
