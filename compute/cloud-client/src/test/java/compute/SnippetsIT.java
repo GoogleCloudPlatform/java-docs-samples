@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -270,9 +271,25 @@ public class SnippetsIT {
   public void testInstanceOperations()
       throws IOException, ExecutionException, InterruptedException {
     Assert.assertSame(getInstanceStatus(MACHINE_NAME), Status.RUNNING);
+
+    // Stopping the instance.
     StopInstance.stopInstance(PROJECT_ID, ZONE, MACHINE_NAME);
+    // Wait for the operation to complete. Setting timeout to 3 mins.
+    LocalDateTime endTime = LocalDateTime.now().plusMinutes(3);
+    while (getInstanceStatus(MACHINE_NAME) == Status.STOPPING &&
+        LocalDateTime.now().isBefore(endTime)) {
+      TimeUnit.SECONDS.sleep(5);
+    }
     Assert.assertSame(getInstanceStatus(MACHINE_NAME), Status.TERMINATED);
+
+    // Starting the instance.
     StartInstance.startInstance(PROJECT_ID, ZONE, MACHINE_NAME);
+    // Wait for the operation to complete. Setting timeout to 3 mins.
+    endTime = LocalDateTime.now().plusMinutes(3);
+    while (getInstanceStatus(MACHINE_NAME) != Status.RUNNING &&
+        LocalDateTime.now().isBefore(endTime)) {
+      TimeUnit.SECONDS.sleep(5);
+    }
     Assert.assertSame(getInstanceStatus(MACHINE_NAME), Status.RUNNING);
   }
 
@@ -280,10 +297,26 @@ public class SnippetsIT {
   public void testEncryptedInstanceOperations()
       throws IOException, ExecutionException, InterruptedException {
     Assert.assertSame(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.RUNNING);
+
+    // Stopping the encrypted instance.
     StopInstance.stopInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED);
+    // Wait for the operation to complete. Setting timeout to 3 mins.
+    LocalDateTime endTime = LocalDateTime.now().plusMinutes(3);
+    while (getInstanceStatus(MACHINE_NAME_ENCRYPTED) == Status.STOPPING &&
+        LocalDateTime.now().isBefore(endTime)) {
+      TimeUnit.SECONDS.sleep(5);
+    }
     Assert.assertSame(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.TERMINATED);
+
+    // Starting the encrypted instance.
     StartEncryptedInstance
         .startEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
+    // Wait for the operation to complete. Setting timeout to 3 mins.
+    endTime = LocalDateTime.now().plusMinutes(3);
+    while (getInstanceStatus(MACHINE_NAME_ENCRYPTED) != Status.RUNNING &&
+        LocalDateTime.now().isBefore(endTime)) {
+      TimeUnit.SECONDS.sleep(5);
+    }
     Assert.assertSame(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.RUNNING);
   }
 

@@ -49,21 +49,24 @@ public class CreateEncryptedInstance {
   public static void createEncryptedInstance(String project, String zone, String instanceName,
       String diskEncryptionKey)
       throws IOException, InterruptedException, ExecutionException {
-    // Below are sample values that can be replaced.
-    // machineType: machine type of the VM being created. This value uses the format zones/{zone}/machineTypes/{type_name}. For a list of machine types, see https://cloud.google.com/compute/docs/machine-types
-    // sourceImage: path to the operating system image to mount. For details about images you can mount, see https://cloud.google.com/compute/docs/images
-    // diskSizeGb: storage size of the boot disk to attach to the instance.
-    // networkName: network interface to associate with the instance.
+    /* Below are sample values that can be replaced.
+       machineType: machine type of the VM being created.
+       (This value uses the format zones/{zone}/machineTypes/{type_name}.
+       For a list of machine types, see https://cloud.google.com/compute/docs/machine-types)
+       sourceImage: path to the operating system image to mount.
+       (For details about images you can mount, see https://cloud.google.com/compute/docs/images)
+       diskSizeGb: storage size of the boot disk to attach to the instance.
+       networkName: network interface to associate with the instance. */
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
     String sourceImage = String
         .format("projects/debian-cloud/global/images/family/%s", "debian-10");
     long diskSizeGb = 10L;
     String networkName = "default";
 
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `instancesClient.close()` method on the client to safely
-    // clean up any remaining background resources.
+    /* Initialize client that will be used to send requests. This client only needs to be created
+       once, and can be reused for multiple requests. After completing all of your requests, call
+       the `instancesClient.close()` method on the client to safely
+       clean up any remaining background resources. */
     try (InstancesClient instancesClient = InstancesClient.create();
         ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
       // Instance creation requires at least one persistent disk and one network interface.
@@ -82,8 +85,10 @@ public class CreateEncryptedInstance {
               .build();
 
       // Use the network interface provided in the networkName argument.
-      NetworkInterface networkInterface = NetworkInterface.newBuilder().setName(networkName)
-          .build();
+      NetworkInterface networkInterface =
+          NetworkInterface.newBuilder()
+              .setName(networkName)
+              .build();
 
       // Bind `instanceName`, `machineType`, `disk`, and `networkInterface` to an instance.
       Instance instanceResource =
@@ -100,10 +105,13 @@ public class CreateEncryptedInstance {
       InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
           .setProject(project)
           .setZone(zone)
-          .setInstanceResource(instanceResource).build();
+          .setInstanceResource(instanceResource)
+          .build();
 
-      Operation operation = instancesClient.insertCallable().futureCall(insertInstanceRequest)
-          .get();
+      Operation operation =
+          instancesClient.insertCallable()
+              .futureCall(insertInstanceRequest)
+              .get();
 
       // Wait for the operation to complete.
       Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
