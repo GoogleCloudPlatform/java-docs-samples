@@ -21,6 +21,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Map;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,25 +40,28 @@ public class FilesystemApplicationTests {
 
   @Autowired private MockMvc mockMvc;
 
-  String mntDir = System.getenv().getOrDefault("MNT_DIR", "/mnt/nfs/filestore");
+  private static String mntDir;
   String filename = System.getenv().getOrDefault("FILENAME", "Dockerfile");
+
+  @BeforeClass
+  public static void setup() throws Exception {
+    mntDir = System.getProperty("user.dir");
+    getModifiableEnvironment().put("MNT_DIR", mntDir);
+  }
 
   @Test
   public void indexReturnsRedirect() throws Exception {
-    mockMvc
-        .perform(get("/"))
-        .andExpect(status().is3xxRedirection());
+    mockMvc.perform(get("/")).andExpect(status().is3xxRedirection());
   }
 
   @Test
   public void pathReturnsRedirect() throws Exception {
-    mockMvc
-        .perform(get("/not/a/path"))
-        .andExpect(status().is3xxRedirection());
+    mockMvc.perform(get("/not/a/path")).andExpect(status().is3xxRedirection());
   }
 
   @Test
   public void pathReturnsMnt() throws Exception {
+    System.out.println(mntDir);
     mockMvc
         .perform(get(mntDir))
         .andExpect(status().isOk())
@@ -75,5 +82,17 @@ public class FilesystemApplicationTests {
         .perform(get(mntDir + "/" + "notafile"))
         .andExpect(status().isNotFound())
         .andExpect(content().string(containsString("Error retrieving file")));
+  }
+
+  // @SuppressWarnings("unchecked")
+  private static Map<String, String> getModifiableEnvironment() throws Exception {
+    Class pe = Class.forName("java.lang.ProcessEnvironment");
+    Method getenv = pe.getDeclaredMethod("getenv");
+    getenv.setAccessible(true);
+    Object unmodifiableEnvironment = getenv.invoke(null);
+    Class map = Class.forName("java.util.Collections$UnmodifiableMap");
+    Field m = map.getDeclaredField("m");
+    m.setAccessible(true);
+    return (Map) m.get(unmodifiableEnvironment);
   }
 }

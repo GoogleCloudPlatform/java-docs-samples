@@ -12,10 +12,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# [START cloudrun_fs_script]
 set -eo pipefail
 
+# Create mount directory for service
+mkdir -p $MNT_DIR
+
 echo "Mounting Cloud Filestore."
-mount -o nolock $IP_ADDRESS:/$FILESHARE_NAME $MNT_DIR
+mount -o nolock $IP_ADDRESS:/$FILE_SHARE_NAME $MNT_DIR
 echo "Mounting completed."
 
 java -jar filesystem.jar
+# [END cloudrun_fs_script]

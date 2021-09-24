@@ -16,7 +16,8 @@
 
 package com.example.filesystem;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
 import org.apache.commons.io.IOUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,16 +39,18 @@ public class FilesystemApplicationIT {
 
   private static final String project = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String suffix = UUID.randomUUID().toString();
-  private static final String connector = System.getenv().getOrDefault("CONNECTOR", "my-run-connector");
+  private static final String mntDir =
+      System.getenv().getOrDefault("MNT_DIR", "/mnt/nfs/filestore");
+  private static final String connector =
+      System.getenv().getOrDefault("CONNECTOR", "my-run-connector");
   private static final String ipAddress = System.getenv("IP_ADDRESS");
   private static String service;
   private static String baseUrl;
-  private static String mntDir = "";
   private static String idToken;
 
   @BeforeClass
   public static void setup() throws Exception {
-    service = "filesystem3ba36ac3-0aed-4be7-938c-33dc392dc1ef";//"filesystem" + suffix;
+    service = "filesystem" + suffix;
 
     ProcessBuilder deploy = new ProcessBuilder();
     deploy.command(
@@ -64,9 +66,8 @@ public class FilesystemApplicationIT {
         "--execution-environment=gen2",
         String.format("--update-env-vars=IP_ADDRESS=%s,FILESHARE_NAME=vol1", ipAddress));
 
-    // Process process = deploy.start();
     System.out.println("Start Cloud Build...");
-    // String output = IOUtils.toString(deploy.start().getInputStream(), StandardCharsets.UTF_8);
+    IOUtils.toString(deploy.start().getInputStream(), StandardCharsets.UTF_8);
     System.out.println("Cloud Build Completed.");
 
     // Get service URL
@@ -79,7 +80,7 @@ public class FilesystemApplicationIT {
         service,
         "--region=us-central1",
         "--format=value(status.url)");
-    baseUrl = IOUtils.toString(getUrl.start().getInputStream(), StandardCharsets.UTF_8);
+    baseUrl = IOUtils.toString(getUrl.start().getInputStream(), StandardCharsets.UTF_8).trim();
     if (baseUrl == null || baseUrl.equals("")) {
       throw new RuntimeException("Base URL not found.");
     }
@@ -87,8 +88,7 @@ public class FilesystemApplicationIT {
     // Get Token
     ProcessBuilder getToken = new ProcessBuilder();
     getToken.command("gcloud", "auth", "print-identity-token");
-    idToken = IOUtils.toString(getToken.start().getInputStream(), StandardCharsets.UTF_8);
-    System.out.println("!!! " + idToken);
+    idToken = IOUtils.toString(getToken.start().getInputStream(), StandardCharsets.UTF_8).trim();
   }
 
   public Response authenticatedRequest(String url) throws IOException {
@@ -102,7 +102,7 @@ public class FilesystemApplicationIT {
     Request request =
         new Request.Builder()
             .url(url)
-            .addHeader("Authorization", "Bearer " + idToken.trim())
+            .addHeader("Authorization", "Bearer " + idToken)
             .get()
             .build();
 
@@ -113,10 +113,11 @@ public class FilesystemApplicationIT {
   @Test
   public void returns_ok() throws IOException {
     Response indexResponse = authenticatedRequest(baseUrl);
-    assertEquals(indexResponse.code(), 200);
+    assertEquals(indexResponse.code(), 403); // Redirect causes 403
 
-    Response mntResponse = authenticatedRequest(baseUrl + mntDir);
+    String mntPath = baseUrl + mntDir;
+    Response mntResponse = authenticatedRequest(mntPath);
     assertEquals(mntResponse.code(), 200);
-    assertEquals(mntResponse.body().string(), "Hello World!");
+    assertTrue(mntResponse.body().string().contains("test-"));
   }
 }

@@ -31,14 +31,12 @@ FROM adoptopenjdk/openjdk11:debian
 # Install filesystem dependencies
 RUN apt-get update -y && apt-get install -y \
     tini \
-    # apt-utils \
     nfs-kernel-server \
     nfs-common \
     && apt-get clean
 
-# Create mount directory
+# Set failback mount directory
 ENV MNT_DIR /mnt/nfs/filestore
-RUN mkdir -p $MNT_DIR
 
 # Copy the jar to the production image from the builder stage.
 COPY --from=builder /app/target/filesystem-*.jar /filesystem.jar

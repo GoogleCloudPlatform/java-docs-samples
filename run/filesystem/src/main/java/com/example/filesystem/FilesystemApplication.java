@@ -18,7 +18,6 @@ package com.example.filesystem;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -26,11 +25,10 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.annotation.PreDestroy;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.apache.commons.io.IOUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
@@ -38,7 +36,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
-import org.apache.commons.io.IOUtils;
 
 @SpringBootApplication
 public class FilesystemApplication {
@@ -50,9 +47,11 @@ public class FilesystemApplication {
   class FilesystemController {
 
     @GetMapping("/**")
-    ResponseEntity<String> index(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    ResponseEntity<String> index(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
       // Redirect to mount path
-      String path = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+      String path =
+          (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 
       if (!path.startsWith(mntDir)) {
         response.sendRedirect(mntDir);
@@ -76,13 +75,15 @@ public class FilesystemApplication {
       if (filePath.isDirectory()) {
         File[] files = filePath.listFiles();
         for (File file : files) {
-          html += String.format("<a href=\"%s\">%s</a><br/>\n", file.getAbsolutePath(), file.getName());
+          html +=
+              String.format("<a href=\"%s\">%s</a><br/>\n", file.getAbsolutePath(), file.getName());
         }
       } else {
         try {
           html += readFile(path);
         } catch (IOException e) {
-          return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error retrieving file: " + e.getMessage());
+          return ResponseEntity.status(HttpStatus.NOT_FOUND)
+              .body("Error retrieving file: " + e.getMessage());
         }
       }
 
@@ -97,7 +98,7 @@ public class FilesystemApplication {
 
   /**
    * Write files to a directory with date created
-   * 
+   *
    * @param mntDir The path to the parent directory
    * @param filename The prefix filename
    * @throws IOException
@@ -119,7 +120,7 @@ public class FilesystemApplication {
 
   /**
    * Read files and return contents
-   * 
+   *
    * @param fullPath The path to the file
    * @return The file data
    * @throws IOException

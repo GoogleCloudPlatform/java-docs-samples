@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright 2019 Google LLC
+Copyright 2021 Google LLC
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -98,11 +98,6 @@ limitations under the License.
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.17</version>
-        <configuration>
-          <!-- <excludes>
-            <exclude>**/*Tests.java</exclude>
-          </excludes> -->
-        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
@@ -117,18 +112,9 @@ limitations under the License.
         </executions>
         <configuration>
           <includes>
+            <include>**/*Tests.java</include>
             <include>**/*IT.java</include>
           </includes>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>jib-maven-plugin</artifactId>
-        <version>2.7.1</version>
-        <configuration>
-          <to>
-            <image>gcr.io/$PROJECT_ID/microservice-template:manual</image>
-          </to>
         </configuration>
       </plugin>
     </plugins>
