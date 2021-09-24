@@ -67,7 +67,7 @@ public class FilesystemApplicationIT {
         String.format("--update-env-vars=IP_ADDRESS=%s,FILESHARE_NAME=vol1", ipAddress));
 
     System.out.println("Start Cloud Build...");
-    IOUtils.toString(deploy.start().getInputStream(), StandardCharsets.UTF_8);
+    String output = IOUtils.toString(deploy.start().getInputStream(), StandardCharsets.UTF_8);
     System.out.println("Cloud Build Completed.");
 
     // Get service URL

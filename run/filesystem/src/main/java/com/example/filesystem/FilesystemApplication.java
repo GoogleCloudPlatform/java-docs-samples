@@ -18,6 +18,7 @@ package com.example.filesystem;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -40,19 +41,25 @@ import org.springframework.web.servlet.HandlerMapping;
 @SpringBootApplication
 public class FilesystemApplication {
 
+  // Set config for file system path and filename prefix
   String mntDir = System.getenv().getOrDefault("MNT_DIR", "/mnt/nfs/filestore");
   String filename = System.getenv().getOrDefault("FILENAME", "test");
 
   @RestController
+  /** 
+   * Redirects to the file system path to interact with file system
+   * Writes a new file on each request 
+   * */
   class FilesystemController {
 
     @GetMapping("/**")
     ResponseEntity<String> index(HttpServletRequest request, HttpServletResponse response)
         throws IOException {
-      // Redirect to mount path
+      // Retrieve URL path
       String path =
           (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-
+          
+      // Redirect to mount path
       if (!path.startsWith(mntDir)) {
         response.sendRedirect(mntDir);
       }
@@ -101,7 +108,7 @@ public class FilesystemApplication {
    *
    * @param mntDir The path to the parent directory
    * @param filename The prefix filename
-   * @throws IOException
+   * @throws IOException if the file can not be written
    */
   public static void writeFile(String mntDir, String filename) throws IOException {
     DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -123,7 +130,7 @@ public class FilesystemApplication {
    *
    * @param fullPath The path to the file
    * @return The file data
-   * @throws IOException
+   * @throws IOException if the file does not exist
    */
   public static String readFile(String fullPath) throws IOException {
     FileInputStream inputStream = new FileInputStream(fullPath);

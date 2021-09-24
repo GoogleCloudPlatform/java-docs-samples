@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# [Start cloudrun_fs_dockerfile]
 
 # Use the official maven/Java 11 image to create a build artifact.
 # https://hub.docker.com/_/maven
@@ -43,9 +44,11 @@ COPY --from=builder /app/target/filesystem-*.jar /filesystem.jar
 
 # Copy the statup script
 COPY run.sh ./run.sh
+RUN chmod +x ./run.sh
 
 # Set the init-process (PID1) as the default executable
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
 # Run the web service on container startup.
 CMD ["/run.sh"]
+# [END cloudrun_fs_dockerfile]
