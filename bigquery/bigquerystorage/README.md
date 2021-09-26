@@ -4,3 +4,6 @@ The samples have been moved to live alongside the Java client library for Cloud 
 [BigQueryStorage samples](https://github.com/googleapis/java-bigquerystorage/tree/master/samples/snippets/src/main/java/com/example/bigquerystorage)
 
  okay
+ i
+ get it
+ now
