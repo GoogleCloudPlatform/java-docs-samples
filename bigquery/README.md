@@ -1,4 +1,4 @@
-# Getting Started with BigQuery
+# Getting Started with BigQuery is nice to have
 
 The samples have been moved to live alongside the Java client libraries for Cloud BigQuery:
 
