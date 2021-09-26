@@ -71,3 +71,5 @@ Apache header:
 [auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
 
 Java is a registered trademark of Oracle and/or its affiliates.
+
+in the face
