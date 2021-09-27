@@ -71,7 +71,6 @@ public class FilesystemApplicationTests {
 
   @Test
   public void pathReturnsMnt() throws Exception {
-    System.out.println(mntDir);
     mockMvc
         .perform(get(mntDir))
         .andExpect(status().isOk())

@@ -52,7 +52,10 @@ public class FilesystemApplicationIT {
   @BeforeClass
   public static void setup() throws Exception {
     if (ipAddress == null || ipAddress.equals("")) {
-      throw new RuntimeException("IP address not found in environment.");
+      throw new RuntimeException("\"IP_ADDRESS\" not found in environment.");
+    }
+    if (project == null || project.equals("")) {
+      throw new RuntimeException("\"GOOGLE_CLOUD_PROJECT\" not found in environment.");
     }
     service = "filesystem" + suffix;
 
@@ -73,6 +76,7 @@ public class FilesystemApplicationIT {
         "--execution-environment=gen2",
         String.format("--update-env-vars=IP_ADDRESS=%s,FILE_SHARE_NAME=vol1", ipAddress));
 
+    deploy.redirectErrorStream(true);
     System.out.println("Start Cloud Run deployment of service: " + service);
     Process p = deploy.start();
     p.waitFor(5L, TimeUnit.MINUTES);
@@ -142,7 +146,6 @@ public class FilesystemApplicationIT {
     assertEquals(indexResponse.code(), 403); // Redirect causes 403
 
     String mntPath = baseUrl + mntDir;
-    System.out.println(mntPath);
     Response mntResponse = authenticatedRequest(mntPath);
     assertEquals(mntResponse.code(), 200);
     assertTrue(mntResponse.body().string().contains("test-"));
