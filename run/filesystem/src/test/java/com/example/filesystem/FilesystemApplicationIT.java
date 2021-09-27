@@ -75,7 +75,7 @@ public class FilesystemApplicationIT {
 
     System.out.println("Start Cloud Run deployment of service: " + service);
     Process p = deploy.start();
-    p.waitFor();
+    p.waitFor(5L, TimeUnit.MINUTES);
     System.out.println(String.format("Cloud Run service, %s, deployed.", service));
 
     // Get service URL
@@ -101,7 +101,7 @@ public class FilesystemApplicationIT {
   }
 
   @AfterClass
-  public static void cleanup() throws IOException {
+  public static void cleanup() throws IOException, InterruptedException {
     ProcessBuilder delete = new ProcessBuilder();
     delete.command(
         "gcloud",
@@ -113,7 +113,8 @@ public class FilesystemApplicationIT {
         "--project=" + project);
 
     System.out.println("Deleting Cloud Run service: " + service);
-    delete.start();
+    Process p = delete.start();
+    p.waitFor(1L, TimeUnit.MINUTES);
   }
 
   public Response authenticatedRequest(String url) throws IOException {
