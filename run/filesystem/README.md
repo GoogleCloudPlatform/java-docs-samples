@@ -21,17 +21,21 @@ export PROJECT_ID=<YOUR_PROJECT_ID>
 
 Build the Docker container specifying the Fuse Dockerfile:
 ```
-docker build -t gcr.io/$PROJECT_ID/gcsfuse-java -f gcsfuse.Dockerfile .
+docker build -t gcr.io/$PROJECT_ID/gcsfuse -f gcsfuse.Dockerfile .
 ```
 
 Push to Container Registry (See [Setting up authentication for Docker][auth]):
 ```
-docker push gcr.io/$PROJECT_ID/gcsfuse-java
+docker push gcr.io/$PROJECT_ID/gcsfuse
 ```
 
 Deploy to Cloud Run
 ```
-gcloud alpha run deploy gcsfuse-java --image gcr.io/$PROJECT_ID/gcsfuse-java  --execution-environment gen2 --update-env-vars BUCKET=$BUCKET
+gcloud alpha run deploy gcsfuse \
+    --image gcr.io/$PROJECT_ID/gcsfuse  \
+    --execution-environment gen2 \
+    --update-env-vars BUCKET=$BUCKET \
+    --allow-unauthenticated
 ```
 
 [create]: https://cloud.google.com/storage/docs/creating-buckets
