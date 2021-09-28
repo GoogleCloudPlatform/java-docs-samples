@@ -79,7 +79,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # shellcheck source=src/cloud_sql_secrets.txt
     source "${KOKORO_GFILE_DIR}/cloud_sql_secrets.txt"
     # For Cloud Run filesystem sample
-    export IP_ADDRESS=$(gcloud secrets versions access latest --secret fs-app)
+    export FILESTORE_IP_ADDRESS=$(gcloud secrets versions access latest --secret fs-app)
     # Activate service account
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \

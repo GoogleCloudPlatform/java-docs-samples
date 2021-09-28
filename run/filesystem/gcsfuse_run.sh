@@ -23,3 +23,6 @@ echo "Mounting completed."
 
 # Start the application
 java -jar filesystem.jar
+
+# Exit immediately when one of the background processes terminate.
+wait -n

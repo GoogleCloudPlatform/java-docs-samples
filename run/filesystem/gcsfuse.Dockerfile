@@ -29,7 +29,8 @@ RUN mvn package -DskipTests
 FROM eclipse-temurin:11-jdk
 
 # Install system dependencies
-RUN apt-get update -y && apt-get install -y \
+RUN set -e; \
+    apt-get update -y && apt-get install -y \
     gnupg2 \
     tini \
     lsb-release; \

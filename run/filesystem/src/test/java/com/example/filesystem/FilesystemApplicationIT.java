@@ -47,7 +47,7 @@ public class FilesystemApplicationIT {
       System.getenv().getOrDefault("MNT_DIR", "/mnt/nfs/filestore");
   private static final String connector =
       System.getenv().getOrDefault("CONNECTOR", "my-run-connector");
-  private static final String ipAddress = System.getenv("IP_ADDRESS");
+  private static final String ipAddress = System.getenv("FILESTORE_IP_ADDRESS");
   private static String service;
   private static String baseUrl;
   private static String idToken;
@@ -55,7 +55,7 @@ public class FilesystemApplicationIT {
   @BeforeClass
   public static void setup() throws Exception {
     if (ipAddress == null || ipAddress.equals("")) {
-      throw new RuntimeException("\"IP_ADDRESS\" not found in environment.");
+      throw new RuntimeException("\"FILESTORE_IP_ADDRESS\" not found in environment.");
     }
     if (project == null || project.equals("")) {
       throw new RuntimeException("\"GOOGLE_CLOUD_PROJECT\" not found in environment.");
@@ -77,7 +77,7 @@ public class FilesystemApplicationIT {
         "--project=" + project,
         String.format("--vpc-connector=%s", connector),
         "--execution-environment=gen2",
-        String.format("--update-env-vars=IP_ADDRESS=%s,FILE_SHARE_NAME=vol1", ipAddress));
+        String.format("--update-env-vars=FILESTORE_IP_ADDRESS=%s,FILE_SHARE_NAME=vol1", ipAddress));
 
     deploy.redirectErrorStream(true);
     System.out.println("Start Cloud Run deployment of service: " + service);
