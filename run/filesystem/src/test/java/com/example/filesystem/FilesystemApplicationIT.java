@@ -19,7 +19,10 @@ package com.example.filesystem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.channels.InterruptedByTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -79,7 +82,19 @@ public class FilesystemApplicationIT {
     deploy.redirectErrorStream(true);
     System.out.println("Start Cloud Run deployment of service: " + service);
     Process p = deploy.start();
-    p.waitFor(5L, TimeUnit.MINUTES);
+    // Set timeout
+    if (!p.waitFor(10, TimeUnit.MINUTES)) {
+      p.destroy();
+      System.out.println("Process timed out.");
+      throw new InterruptedByTimeoutException();
+    }
+    // Read process output
+    BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = in.readLine()) != null) {
+      System.out.println(line);
+    }
+    in.close();
     System.out.println(String.format("Cloud Run service, %s, deployed.", service));
 
     // Get service URL
@@ -117,8 +132,7 @@ public class FilesystemApplicationIT {
         "--project=" + project);
 
     System.out.println("Deleting Cloud Run service: " + service);
-    Process p = delete.start();
-    p.waitFor(1L, TimeUnit.MINUTES);
+    delete.start();
   }
 
   public Response authenticatedRequest(String url) throws IOException {
