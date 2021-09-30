@@ -113,7 +113,7 @@ limitations under the License.
         <configuration>
           <includes>
             <include>**/*Tests.java</include>
-            <!-- <include>**/*IT.java</include> -->
+            <include>**/*IT.java</include>
           </includes>
           <excludes>
             <exclude></exclude>
