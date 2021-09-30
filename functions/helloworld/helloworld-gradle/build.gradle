@@ -30,7 +30,7 @@ dependencies {
   compileOnly 'com.google.cloud.functions:functions-framework-api:1.0.4'
 
   // To run function locally using Functions Framework's local invoker
-  invoker 'com.google.cloud.functions.invoker:java-function-invoker:1.0.2'
+  invoker 'com.google.cloud.functions.invoker:java-function-invoker:1.0.3'
   // [END functions_gradle_add_dependencies]
   // [END functions_example_pom_dependencies]
 
