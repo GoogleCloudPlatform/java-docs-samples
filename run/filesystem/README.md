@@ -3,33 +3,42 @@
 This sample shows how to create a service that mounts a Filestore
 instance as a network file system.
 
-## Tutorial
 See our [Using Filestore with Cloud Run tutorial](https://cloud.google.com/run/docs/tutorials/network-filesystems) for instructions for setting up and deploying this sample application.
 
 ## Run with [GCS Fuse][fuse]
 This sample can also be deployed to use GCS Fuse using the follow instructions. [`gcsfuse`][git] is a user-space file system for interacting with Google Cloud Storage.
 
-[Create a GCS bucket][create] or reuse an existing. Set as environment variable:
+### Pre-reqs
+
+0. Install tools:
+* [Docker](https://docs.docker.com/engine/install/ubuntu/)
+* [Cloud SDK](https://cloud.google.com/sdk/docs/install)
+
+Or use [Cloud Shell](https://cloud.google.com/shell) with tools installed.
+
+0. [Create a GCS bucket][create] or reuse an existing:
 ```
 export BUCKET=<YOUR_BUCKET>
+gsutil mb $BUCKET
 ```
 
-Set project Id as an environment variable:
+0. Set project Id as an environment variable:
 ```
 export PROJECT_ID=<YOUR_PROJECT_ID>
 ```
 
-Build the Docker container specifying the Fuse Dockerfile:
+### Ship the code
+0. Build the Docker container specifying the Fuse Dockerfile:
 ```
 docker build -t gcr.io/$PROJECT_ID/gcsfuse -f gcsfuse.Dockerfile .
 ```
 
-Push to Container Registry (See [Setting up authentication for Docker][auth]):
+0. Push to Container Registry (See [Setting up authentication for Docker][auth]):
 ```
 docker push gcr.io/$PROJECT_ID/gcsfuse
 ```
 
-Deploy to Cloud Run
+0. Deploy to Cloud Run:
 ```
 gcloud alpha run deploy gcsfuse \
     --image gcr.io/$PROJECT_ID/gcsfuse  \
