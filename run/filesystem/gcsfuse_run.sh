@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# [START cloudrun_fuse_script]
 set -eo pipefail
 
 # Create mount directory for service
@@ -26,3 +27,4 @@ java -jar filesystem.jar
 
 # Exit immediately when one of the background processes terminate.
 wait -n
+# [END cloudrun_fuse_script]
