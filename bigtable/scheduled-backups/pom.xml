@@ -101,7 +101,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>function-maven-plugin</artifactId>
-      <version>0.9.7</version>
+      <version>0.9.8</version>
       <scope>test</scope>
     </dependency>
 
@@ -119,7 +119,7 @@ limitations under the License.
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.7</version>
+        <version>0.9.8</version>
         <configuration>
           <functionTarget>com.example.cloud.bigtable.scheduledbackups.CreateBackup</functionTarget>
         </configuration>
