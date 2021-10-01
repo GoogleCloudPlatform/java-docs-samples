@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.storage.storagetransfer.samples;
+package com.google.cloud.storage.storagetransfer.samples.apiary;
 
 // [START storagetransfer_create_retry_handler]
 import com.google.api.client.auth.oauth2.Credential;

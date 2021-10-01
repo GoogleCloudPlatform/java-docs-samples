@@ -18,13 +18,12 @@ package com.google.cloud.storage.storagetransfer.samples;
 
 // [START storagetransfer_get_latest_transfer_operation]
 
-import com.google.api.client.googleapis.util.Utils;
-import com.google.api.services.storagetransfer.v1.Storagetransfer;
-import com.google.api.services.storagetransfer.v1.StoragetransferScopes;
-import com.google.api.services.storagetransfer.v1.model.Operation;
-import com.google.api.services.storagetransfer.v1.model.TransferJob;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
+
+import com.google.longrunning.Operation;
+import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
+import com.google.storagetransfer.v1.proto.TransferProto.GetTransferJobRequest;
+import com.google.storagetransfer.v1.proto.TransferTypes.TransferJob;
+import com.google.storagetransfer.v1.proto.TransferTypes.TransferOperation;
 import java.io.IOException;
 
 public class CheckLatestTransferOperation {
@@ -38,27 +37,21 @@ public class CheckLatestTransferOperation {
     // The name of the job to check
     // String jobName = "myJob/1234567890";
 
-    // Create Storage Transfer client
-    GoogleCredentials credential = GoogleCredentials.getApplicationDefault();
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(StoragetransferScopes.all());
-    }
-    Storagetransfer storageTransfer = new Storagetransfer.Builder(Utils.getDefaultTransport(),
-        Utils.getDefaultJsonFactory(), new HttpCredentialsAdapter(credential))
-        .build();
+    StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
 
     // Get transfer job and check latest operation
-    TransferJob transferJob = storageTransfer.transferJobs().get(jobName, projectId).execute();
+    TransferJob transferJob = storageTransfer.getTransferJob(GetTransferJobRequest.newBuilder().setJobName(jobName).setProjectId(projectId).build());
     String latestOperationName = transferJob.getLatestOperationName();
 
-    if (latestOperationName != null) {
-      Operation latestOperation = storageTransfer.transferOperations().get(latestOperationName)
-          .execute();
+    if (!latestOperationName.isEmpty()) {
+      Operation operation = storageTransfer.getOperationsClient().getOperation(latestOperationName);
+      TransferOperation latestOperation = TransferOperation.parseFrom(operation.getMetadata().getValue());
+
       System.out.println("The latest operation for transfer job " + jobName + " is:");
-      System.out.println(latestOperation.toPrettyString());
+      System.out.println(latestOperation.toString());
 
     } else {
-      System.out.println("Transfer job " + jobName + " does not have an operation scheduled yet,"
+      System.out.println("Transfer job " + jobName + " hasn't run yet,"
           + " try again once the job starts running.");
     }
   }

@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package com.google.cloud.storage.storagetransfer.samples;
+package com.google.cloud.storage.storagetransfer.samples.apiary;
 
-// [START storagetransfer_transfer_to_nearline]
-import com.google.protobuf.Duration;
-import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
-import com.google.storagetransfer.v1.proto.TransferProto.CreateTransferJobRequest;
-import com.google.storagetransfer.v1.proto.TransferTypes.GcsData;
-import com.google.storagetransfer.v1.proto.TransferTypes.ObjectConditions;
-import com.google.storagetransfer.v1.proto.TransferTypes.Schedule;
-import com.google.storagetransfer.v1.proto.TransferTypes.TransferJob;
-import com.google.storagetransfer.v1.proto.TransferTypes.TransferJob.Status;
-import com.google.storagetransfer.v1.proto.TransferTypes.TransferOptions;
-import com.google.storagetransfer.v1.proto.TransferTypes.TransferSpec;
-import com.google.type.Date;
-import com.google.type.TimeOfDay;
+// [START storagetransfer_transfer_to_nearline_apiary]
+import com.google.api.client.googleapis.util.Utils;
+import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.StoragetransferScopes;
+import com.google.api.services.storagetransfer.v1.model.Date;
+import com.google.api.services.storagetransfer.v1.model.GcsData;
+import com.google.api.services.storagetransfer.v1.model.ObjectConditions;
+import com.google.api.services.storagetransfer.v1.model.Schedule;
+import com.google.api.services.storagetransfer.v1.model.TimeOfDay;
+import com.google.api.services.storagetransfer.v1.model.TransferJob;
+import com.google.api.services.storagetransfer.v1.model.TransferOptions;
+import com.google.api.services.storagetransfer.v1.model.TransferSpec;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.util.Calendar;
 
-public class TransferToNearline {
+public class TransferToNearlineApiary {
   /** Creates a one-off transfer job that transfers objects in a standard GCS bucket that are more
    *  than 30 days old to a Nearline GCS bucket.
    */
-  public static void transferToNearline(String projectId,
+  public static void transferToNearlineApiary(String projectId,
       String jobDescription,
       String gcsSourceBucket,
       String gcsNearlineSinkBucket,
@@ -63,43 +64,45 @@ public class TransferToNearline {
     Calendar startCalendar = Calendar.getInstance();
     startCalendar.setTimeInMillis(startDateTime);
     // Note that this is a Date from the model class package, not a java.util.Date
-    Date date = Date.newBuilder()
+    Date date = new Date()
         .setYear(startCalendar.get(Calendar.YEAR))
         .setMonth(startCalendar.get(Calendar.MONTH) + 1)
-        .setDay(startCalendar.get(Calendar.DAY_OF_MONTH))
-        .build();
-    TimeOfDay time = TimeOfDay.newBuilder()
+        .setDay(startCalendar.get(Calendar.DAY_OF_MONTH));
+    TimeOfDay time = new TimeOfDay()
         .setHours(startCalendar.get(Calendar.HOUR_OF_DAY))
         .setMinutes(startCalendar.get(Calendar.MINUTE))
-        .setSeconds(startCalendar.get(Calendar.SECOND))
-        .build();
+        .setSeconds(startCalendar.get(Calendar.SECOND));
 
     TransferJob transferJob =
-        TransferJob.newBuilder()
+        new TransferJob()
             .setDescription(jobDescription)
             .setProjectId(projectId)
             .setTransferSpec(
-                TransferSpec.newBuilder()
-                    .setGcsDataSource(GcsData.newBuilder().setBucketName(gcsSourceBucket))
-                    .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsNearlineSinkBucket))
+                new TransferSpec()
+                    .setGcsDataSource(new GcsData().setBucketName(gcsSourceBucket))
+                    .setGcsDataSink(new GcsData().setBucketName(gcsNearlineSinkBucket))
                     .setObjectConditions(
-                        ObjectConditions.newBuilder()
-                            .setMinTimeElapsedSinceLastModification(Duration.newBuilder().setSeconds(2592000 /* 30 days */)))
+                        new ObjectConditions()
+                            .setMinTimeElapsedSinceLastModification("2592000s" /* 30 days */))
                     .setTransferOptions(
-                        TransferOptions.newBuilder().setDeleteObjectsFromSourceAfterTransfer(true)))
-            .setSchedule(Schedule.newBuilder().setScheduleStartDate(date).setStartTimeOfDay(time))
-            .setStatus(Status.ENABLED)
-        .build();
+                        new TransferOptions().setDeleteObjectsFromSourceAfterTransfer(true)))
+            .setSchedule(new Schedule().setScheduleStartDate(date).setStartTimeOfDay(time))
+            .setStatus("ENABLED");
 
     // Create a Transfer Service client
-    StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
+    GoogleCredentials credential = GoogleCredentials.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(StoragetransferScopes.all());
+    }
+    Storagetransfer storageTransfer = new Storagetransfer.Builder(Utils.getDefaultTransport(),
+        Utils.getDefaultJsonFactory(), new HttpCredentialsAdapter(credential))
+        .build();
 
     // Create the transfer job
-    TransferJob response = storageTransfer.createTransferJob(CreateTransferJobRequest.newBuilder()
-        .setTransferJob(transferJob).build());
+    TransferJob response = storageTransfer.transferJobs().create(transferJob).execute();
 
     System.out.println("Created transfer job from standard bucket to Nearline bucket:");
-    System.out.println(response.toString());
+    System.out.println(response.toPrettyString());
   }
 }
-// [END storagetransfer_transfer_to_nearline]
+// [END storagetransfer_transfer_to_nearline_apiary]

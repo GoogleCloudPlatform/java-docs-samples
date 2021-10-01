@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.storage.storagetransfer.samples;
+package com.google.cloud.storage.storagetransfer.samples.apiary;
 
 // [START storagetransfer_get_transfer_job]
 import com.google.api.client.googleapis.util.Utils;
@@ -25,7 +25,7 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 
-public class CheckTransferJob {
+public class CheckTransferJobApiary {
   // Performs a list operation to check the status of a job
   public static void checkTransferJob(String projectId, String jobName) throws IOException {
     // Your Google Cloud Project ID

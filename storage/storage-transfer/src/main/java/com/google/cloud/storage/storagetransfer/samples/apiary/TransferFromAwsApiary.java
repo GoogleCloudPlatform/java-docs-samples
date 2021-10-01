@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-package com.google.cloud.storage.storagetransfer.samples;
+package com.google.cloud.storage.storagetransfer.samples.apiary;
 
-// [START storagetransfer_transfer_from_aws]
+// [START storagetransfer_transfer_from_aws_apiary]
 
-import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
-import com.google.storagetransfer.v1.proto.TransferProto.CreateTransferJobRequest;
-import com.google.storagetransfer.v1.proto.TransferTypes.AwsAccessKey;
-import com.google.storagetransfer.v1.proto.TransferTypes.AwsS3Data;
-import com.google.storagetransfer.v1.proto.TransferTypes.GcsData;
-import com.google.storagetransfer.v1.proto.TransferTypes.Schedule;
-import com.google.storagetransfer.v1.proto.TransferTypes.TransferJob;
-import com.google.storagetransfer.v1.proto.TransferTypes.TransferJob.Status;
-import com.google.storagetransfer.v1.proto.TransferTypes.TransferSpec;
-import com.google.type.Date;
-import com.google.type.TimeOfDay;
+import com.google.api.client.googleapis.util.Utils;
+import com.google.api.services.storagetransfer.v1.Storagetransfer;
+import com.google.api.services.storagetransfer.v1.StoragetransferScopes;
+import com.google.api.services.storagetransfer.v1.model.AwsAccessKey;
+import com.google.api.services.storagetransfer.v1.model.AwsS3Data;
+import com.google.api.services.storagetransfer.v1.model.Date;
+import com.google.api.services.storagetransfer.v1.model.GcsData;
+import com.google.api.services.storagetransfer.v1.model.Schedule;
+import com.google.api.services.storagetransfer.v1.model.TimeOfDay;
+import com.google.api.services.storagetransfer.v1.model.TransferJob;
+import com.google.api.services.storagetransfer.v1.model.TransferSpec;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.util.Calendar;
 
-public class TransferFromAws {
+public class TransferFromAwsApiary {
 
   // Creates a one-off transfer job from Amazon S3 to Google Cloud Storage.
   public static void transferFromAws(String projectId,
@@ -67,55 +69,56 @@ public class TransferFromAws {
     // String awsSecretAccessKey = System.getenv("AWS_SECRET_ACCESS_KEY");
 
     // Set up source and sink
-    TransferSpec transferSpec = TransferSpec.newBuilder()
+    TransferSpec transferSpec = new TransferSpec()
         .setAwsS3DataSource(
-            AwsS3Data.newBuilder()
+            new AwsS3Data()
                 .setBucketName(awsSourceBucket)
                 .setAwsAccessKey(
-                    AwsAccessKey.newBuilder()
+                    new AwsAccessKey()
                         .setAccessKeyId(awsAccessKeyId)
                         .setSecretAccessKey(awsSecretAccessKey)))
-        .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket)).build();
+        .setGcsDataSink(new GcsData().setBucketName(gcsSinkBucket));
 
     // Parse epoch timestamp into the model classes
     Calendar startCalendar = Calendar.getInstance();
     startCalendar.setTimeInMillis(startDateTime);
     // Note that this is a Date from the model class package, not a java.util.Date
-    Date startDate = Date.newBuilder()
+    Date startDate = new Date()
         .setYear(startCalendar.get(Calendar.YEAR))
         .setMonth(startCalendar.get(Calendar.MONTH) + 1)
-        .setDay(startCalendar.get(Calendar.DAY_OF_MONTH))
-        .build();
-    TimeOfDay startTime = TimeOfDay.newBuilder()
+        .setDay(startCalendar.get(Calendar.DAY_OF_MONTH));
+    TimeOfDay startTime = new TimeOfDay()
         .setHours(startCalendar.get(Calendar.HOUR_OF_DAY))
         .setMinutes(startCalendar.get(Calendar.MINUTE))
-        .setSeconds(startCalendar.get(Calendar.SECOND))
-        .build();
-    Schedule schedule = Schedule.newBuilder()
+        .setSeconds(startCalendar.get(Calendar.SECOND));
+    Schedule schedule = new Schedule()
         .setScheduleStartDate(startDate)
         .setScheduleEndDate(startDate)
-        .setStartTimeOfDay(startTime)
-        .build();
+        .setStartTimeOfDay(startTime);
 
     // Set up the transfer job
     TransferJob transferJob =
-        TransferJob.newBuilder()
+        new TransferJob()
             .setDescription(jobDescription)
             .setProjectId(projectId)
             .setTransferSpec(transferSpec)
             .setSchedule(schedule)
-            .setStatus(Status.ENABLED)
-        .build();
+            .setStatus("ENABLED");
 
     // Create a Transfer Service client
-    StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
+    GoogleCredentials credential = GoogleCredentials.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(StoragetransferScopes.all());
+    }
+    Storagetransfer storageTransfer = new Storagetransfer.Builder(Utils.getDefaultTransport(),
+        Utils.getDefaultJsonFactory(), new HttpCredentialsAdapter(credential))
+        .build();
 
     // Create the transfer job
-    TransferJob response = storageTransfer.createTransferJob(CreateTransferJobRequest.newBuilder()
-        .setTransferJob(transferJob).build());
+    TransferJob response = storageTransfer.transferJobs().create(transferJob).execute();
 
     System.out.println("Created transfer job from AWS to GCS:");
-    System.out.println(response.toString());
+    System.out.println(response.toPrettyString());
   }
 }
-// [END storagetransfer_transfer_from_aws]
+// [END storagetransfer_transfer_from_aws_apiary]

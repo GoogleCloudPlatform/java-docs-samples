@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.storage.storagetransfer.samples;
+package com.google.cloud.storage.storagetransfer.samples.apiary;
 
 // [START storagetransfer_create_client]
 import com.google.api.client.googleapis.util.Utils;
