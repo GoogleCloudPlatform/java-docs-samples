@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START cloudrun_fuse_dockerfile]
 # Use the official maven/Java 11 image to create a build artifact.
 # https://hub.docker.com/_/maven
 FROM maven:3.8.1-jdk-11 as builder
@@ -57,3 +58,4 @@ ENTRYPOINT ["/usr/bin/tini", "--"]
 
 # Run the web service on container startup.
 CMD ["/gcsfuse_run.sh"]
+# [END cloudrun_fuse_dockerfile]
