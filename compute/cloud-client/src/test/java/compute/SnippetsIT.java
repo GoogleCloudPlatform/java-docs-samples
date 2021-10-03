@@ -96,6 +96,7 @@ public class SnippetsIT {
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
+    compute.CreateBulkInstances.createBulkInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateEncryptedInstance
         .createEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
     TimeUnit.SECONDS.sleep(10);
@@ -164,6 +165,13 @@ public class SnippetsIT {
 
   @Test
   public void testCreateInstance() throws IOException {
+    // Check if the instance was successfully created during the setup.
+    Status response = getInstanceStatus(MACHINE_NAME);
+    Assert.assertSame(response, Status.RUNNING);
+  }
+
+  @Test
+  public void testCreateBulkInstance() throws IOException {
     // Check if the instance was successfully created during the setup.
     Status response = getInstanceStatus(MACHINE_NAME);
     Assert.assertSame(response, Status.RUNNING);
