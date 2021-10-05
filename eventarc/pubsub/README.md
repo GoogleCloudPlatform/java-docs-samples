@@ -21,7 +21,7 @@ Create a Cloud Pub/Sub topic:
 gcloud pubsub topics create my-topic
 ```
 
-Use the [Jib Maven Plugin](https://github.com/GoogleContainerTools/jib/tree/main/jib-maven-plugin) to build and push your container image:
+Use the [Jib Maven Plugin](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) to build and push your container image:
 
 ```sh
 mvn jib:build -Dimage gcr.io/$(gcloud config get-value project)/cloudrun-events-pubsub

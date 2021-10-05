@@ -15,7 +15,7 @@ For more details on how to work with this sample read the [Google Cloud Run Java
 
 ## Quickstart
 
-Use the [Jib Maven Plugin](https://github.com/GoogleContainerTools/jib/tree/main/jib-maven-plugin) to build and push your container image:
+Use the [Jib Maven Plugin](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) to build and push your container image:
 
 ```sh
 mvn jib:build -Dimage gcr.io/$(gcloud config get-value project)/eventarc-generic
