@@ -117,7 +117,7 @@ For more information see setting your [Project ID][6].
 [2]: http://java.com/en/download/faq/develop.xml
 [3]: https://cloud.google.com/compute/
 [4]: https://console.cloud.google.com/project
-[5]: https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/compute/cmdline/src/main/java/ComputeEngineSample.java#L54
+[5]: https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/compute/cmdline/src/main/java/ComputeEngineSample.java#L54
 [6]: https://support.google.com/cloud/answer/6158840
 [7]: http://git-scm.com/downloads
 [8]: http://maven.apache.org/download.html

@@ -145,7 +145,7 @@ Learn more about [testing your container image locally.][testing]
 [run_button_sys_package]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/system-package
 [push-pull]: https://cloud.google.com/container-registry/docs/pushing-and-pulling
 [jib]: https://github.com/GoogleContainerTools/jib
-[jib-tutorial]: https://github.com/GoogleContainerTools/jib/tree/master/examples/spring-boot
+[jib-tutorial]: https://github.com/GoogleContainerTools/jib/tree/main/examples/spring-boot
 [startup]: https://cwiki.apache.org/confluence/display/TOMCAT/HowTo+FasterStartUp
 [testing]: https://cloud.google.com/run/docs/testing/local#running_locally_using_docker_with_access_to_services
 [mysql]: ../cloud-sql/mysql/servlet

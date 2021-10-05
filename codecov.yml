@@ -1,6 +1,6 @@
 codecov:
-  branch: master
+  branch: main
 
 comment:
   branches:
-  - master
+  - main

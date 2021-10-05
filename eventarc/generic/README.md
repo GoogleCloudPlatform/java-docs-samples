@@ -2,7 +2,7 @@
 
 This sample shows how to create a service that processes generic [CloudEvents](https://cloudevents.io/).
 
-For more details on how to work with this sample read the [Google Cloud Run Java Samples README](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/run).
+For more details on how to work with this sample read the [Google Cloud Run Java Samples README](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/run).
 
 [![Run in Google Cloud][run_img]][run_link]
 
@@ -15,7 +15,7 @@ For more details on how to work with this sample read the [Google Cloud Run Java
 
 ## Quickstart
 
-Use the [Jib Maven Plugin](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) to build and push your container image:
+Use the [Jib Maven Plugin](https://github.com/GoogleContainerTools/jib/tree/main/jib-maven-plugin) to build and push your container image:
 
 ```sh
 mvn jib:build -Dimage gcr.io/$(gcloud config get-value project)/eventarc-generic

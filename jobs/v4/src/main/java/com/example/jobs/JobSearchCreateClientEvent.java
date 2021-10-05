@@ -51,7 +51,7 @@ public class JobSearchCreateClientEvent {
       // The timestamp of the event as seconds of UTC time since Unix epoch
       // For more information on how to create google.protobuf.Timestamps
       // See:
-      // https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/timestamp.proto
+      // https://github.com/protocolbuffers/protobuf/blob/main/src/google/protobuf/timestamp.proto
       long seconds = 3L;
       Timestamp createTime = Timestamp.newBuilder().setSeconds(seconds).build();
 
