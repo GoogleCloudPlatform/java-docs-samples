@@ -71,7 +71,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-policytroubleshooter</artifactId>
-      <version>v1-rev20210813-1.32.1</version>
+      <version>v1-rev20211002-1.32.1</version>
     </dependency>
 <!-- [END troubleshooter_java_dependency]-->
     <dependency>
