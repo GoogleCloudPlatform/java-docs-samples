@@ -43,7 +43,7 @@ fi
 
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Update `gcloud` and log versioning for debugging
-    sudo apt update google-cloud-sdk
+    apt update && apt upgrade google-cloud-sdk
     
     echo "********** GCLOUD INFO ***********"
     gcloud -v
