@@ -43,9 +43,13 @@ fi
 
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Update `gcloud` and log versioning for debugging.
-    gcloud components install beta --quiet
-    gcloud components install alpha --quiet
-    gcloud components update --quiet
+
+###  These can no longer be done since GKE switched to containerd, the docker image is now READ ONLY
+#    gcloud components install beta --quiet
+#    gcloud components install alpha --quiet
+#    gcloud components update --quiet
+###
+
     echo "********** GCLOUD INFO ***********"
     gcloud -v
     echo "********** MAVEN INFO  ***********"
