@@ -42,14 +42,9 @@ if [ -n "$KOKORO_GFILE_DIR" ]; then
 fi
 
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
-    # Update `gcloud` and log versioning for debugging.
-
-###  These can no longer be done since GKE switched to containerd, the docker image is now READ ONLY
-#    gcloud components install beta --quiet
-#    gcloud components install alpha --quiet
-#    gcloud components update --quiet
-###
-
+    # Update `gcloud` and log versioning for debugging
+    sudo apt update google-cloud-sdk
+    
     echo "********** GCLOUD INFO ***********"
     gcloud -v
     echo "********** MAVEN INFO  ***********"
