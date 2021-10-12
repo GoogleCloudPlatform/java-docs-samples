@@ -16,8 +16,9 @@
 package iam.snippets;
 
 // [START iam_list_service_accounts]
+
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.ListServiceAccountsResponse;
@@ -32,30 +33,21 @@ import java.util.List;
 public class ListServiceAccounts {
 
   // Lists all service accounts for the current project.
-  public static void listServiceAccounts(String projectId) {
+  public static void listServiceAccounts(String projectId)
+      throws GeneralSecurityException, IOException {
     // String projectId = "my-project-id"
 
-    Iam service = null;
-    try {
-      service = initService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    }
+    Iam service = initService();
 
-    try {
-      ListServiceAccountsResponse response =
-          service.projects().serviceAccounts().list("projects/" + projectId).execute();
-      List<ServiceAccount> serviceAccounts = response.getAccounts();
+    ListServiceAccountsResponse response =
+        service.projects().serviceAccounts().list("projects/" + projectId).execute();
+    List<ServiceAccount> serviceAccounts = response.getAccounts();
 
-      for (ServiceAccount account : serviceAccounts) {
-        System.out.println("Name: " + account.getName());
-        System.out.println("Display Name: " + account.getDisplayName());
-        System.out.println("Email: " + account.getEmail());
-        System.out.println();
-      }
-    } catch (IOException e) {
-      System.out.println("Unable to list service accounts: \n" + e.toString());
+    for (ServiceAccount account : serviceAccounts) {
+      System.out.println("Name: " + account.getName());
+      System.out.println("Display Name: " + account.getDisplayName());
+      System.out.println("Email: " + account.getEmail());
+      System.out.println();
     }
   }
 
@@ -66,14 +58,13 @@ public class ListServiceAccounts {
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
     // Initialize the IAM service, which can be used to send requests to the IAM API.
-    Iam service =
-        new Iam.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-accounts")
-            .build();
-    return service;
+    Iam.Builder serviceBuilder = new Iam.Builder(GoogleNetHttpTransport.newTrustedTransport(),
+        GsonFactory.getDefaultInstance(),
+        new HttpCredentialsAdapter(credential));
+
+    return serviceBuilder
+        .setApplicationName("service-accounts")
+        .build();
   }
 }
 // [END iam_list_service_accounts]

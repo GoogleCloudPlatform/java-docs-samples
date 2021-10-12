@@ -16,8 +16,9 @@
 package iam.snippets;
 
 // [START iam_delete_service_account]
+
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.auth.http.HttpCredentialsAdapter;
@@ -29,30 +30,21 @@ import java.util.Collections;
 public class DeleteServiceAccount {
 
   // Deletes a service account.
-  public static void deleteServiceAccount(String projectId, String serviceAccountName) {
+  public static void deleteServiceAccount(String projectId, String serviceAccountName)
+      throws GeneralSecurityException, IOException {
     // String projectId = "my-project-id";
     // String serviceAccountName = "my-service-account-name";
 
-    Iam service = null;
-    try {
-      service = initService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    }
+    Iam service = initService();
 
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
-    try {
-      service
-          .projects()
-          .serviceAccounts()
-          .delete("projects/-/serviceAccounts/" + serviceAccountEmail)
-          .execute();
+    service
+        .projects()
+        .serviceAccounts()
+        .delete("projects/-/serviceAccounts/" + serviceAccountEmail)
+        .execute();
 
-      System.out.println("Deleted service account: " + serviceAccountEmail);
-    } catch (IOException e) {
-      System.out.println("Unable to delete service account: \n" + e.toString());
-    }
+    System.out.println("Deleted service account: " + serviceAccountEmail);
   }
 
   private static Iam initService() throws GeneralSecurityException, IOException {
@@ -62,14 +54,13 @@ public class DeleteServiceAccount {
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
     // Initialize the IAM service, which can be used to send requests to the IAM API.
-    Iam service =
-        new Iam.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-accounts")
-            .build();
-    return service;
+    Iam.Builder serviceBuilder = new Iam.Builder(GoogleNetHttpTransport.newTrustedTransport(),
+        GsonFactory.getDefaultInstance(),
+        new HttpCredentialsAdapter(credential));
+
+    return serviceBuilder
+        .setApplicationName("service-accounts")
+        .build();
   }
 }
 // [END iam_delete_service_account]

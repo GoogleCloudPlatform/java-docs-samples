@@ -16,8 +16,9 @@
 package iam.snippets;
 
 // [START iam_create_key]
+
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.CreateServiceAccountKeyRequest;
@@ -31,34 +32,26 @@ import java.util.Collections;
 public class CreateServiceAccountKey {
 
   // Creates a key for a service account.
-  public static void createKey(String projectId, String serviceAccountName) {
+  public static void createKey(String projectId, String serviceAccountName)
+      throws IOException, GeneralSecurityException {
     // String projectId = "my-project-id";
     // String serviceAccountName = "my-service-account-name";
 
     Iam service = null;
-    try {
-      service = initService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    }
+    service = initService();
 
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
-    try {
-      ServiceAccountKey key =
-          service
-              .projects()
-              .serviceAccounts()
-              .keys()
-              .create(
-                  "projects/-/serviceAccounts/" + serviceAccountEmail,
-                  new CreateServiceAccountKeyRequest())
-              .execute();
+    ServiceAccountKey key =
+        service
+            .projects()
+            .serviceAccounts()
+            .keys()
+            .create(
+                "projects/-/serviceAccounts/" + serviceAccountEmail,
+                new CreateServiceAccountKeyRequest())
+            .execute();
 
-      System.out.println("Created key: " + key.getName());
-    } catch (IOException e) {
-      System.out.println("Unable to create service account key: \n" + e.toString());
-    }
+    System.out.println("Created key: " + key.getName());
   }
 
   private static Iam initService() throws GeneralSecurityException, IOException {
@@ -68,14 +61,13 @@ public class CreateServiceAccountKey {
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
     // Initialize the IAM service, which can be used to send requests to the IAM API.
-    Iam service =
-        new Iam.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-account-keys")
-            .build();
-    return service;
+    Iam.Builder serviceBuilder = new Iam.Builder(GoogleNetHttpTransport.newTrustedTransport(),
+        GsonFactory.getDefaultInstance(),
+        new HttpCredentialsAdapter(credential));
+
+    return serviceBuilder
+        .setApplicationName("service-account-keys")
+        .build();
   }
 }
 // [END iam_create_key]

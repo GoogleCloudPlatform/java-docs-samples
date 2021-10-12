@@ -22,7 +22,9 @@ import static org.junit.Assert.assertNotNull;
 import com.google.api.services.cloudresourcemanager.v3.model.Binding;
 import com.google.api.services.cloudresourcemanager.v3.model.Policy;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
@@ -35,9 +37,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class AccessTests {
 
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private ByteArrayOutputStream bout;
   private Policy policyMock;
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
@@ -74,14 +76,14 @@ public class AccessTests {
   }
 
   @Test
-  public void testGetPolicy() {
+  public void testGetPolicy() throws GeneralSecurityException, IOException {
     GetPolicy.getPolicy("projects/" + PROJECT_ID);
     String got = bout.toString();
     assertThat(got, containsString("Policy retrieved: "));
   }
 
   @Test
-  public void testSetPolicy() {
+  public void testSetPolicy() throws GeneralSecurityException, IOException {
     Policy policy = GetPolicy.getPolicy("projects/" + PROJECT_ID);
     SetPolicy.setPolicy(policy, "projects/" + PROJECT_ID);
     String got = bout.toString();
@@ -115,7 +117,7 @@ public class AccessTests {
   }
 
   @Test
-  public void testTestPermissions() {
+  public void testTestPermissions() throws GeneralSecurityException, IOException {
     TestPermissions.testPermissions("projects/" + PROJECT_ID);
     String got = bout.toString();
     assertThat(

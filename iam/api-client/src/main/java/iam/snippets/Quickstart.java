@@ -16,8 +16,9 @@
 package iam.snippets;
 
 // [START iam_quickstart]
+
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.cloudresourcemanager.v3.CloudResourceManager;
 import com.google.api.services.cloudresourcemanager.v3.model.Binding;
 import com.google.api.services.cloudresourcemanager.v3.model.GetIamPolicyRequest;
@@ -33,7 +34,7 @@ import java.util.List;
 
 public class Quickstart {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws GeneralSecurityException, IOException {
     // TODO: Replace with your project ID.
     String projectId = "your-project";
     // TODO: Replace with the ID of your member in the form "user:member@example.com"
@@ -42,12 +43,7 @@ public class Quickstart {
     String role = "roles/logging.logWriter";
 
     // Initializes the Cloud Resource Manager service.
-    CloudResourceManager crmService = null;
-    try {
-      crmService = initializeService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.getMessage() + e.getStackTrace());
-    }
+    CloudResourceManager crmService = initializeService();
 
     // Grants your member the "Log writer" role for your project.
     addBinding(crmService, projectId, member, role);
@@ -82,18 +78,19 @@ public class Quickstart {
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
     // Creates the Cloud Resource Manager service object.
-    CloudResourceManager service =
-        new CloudResourceManager.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("iam-quickstart")
-            .build();
-    return service;
+    CloudResourceManager.Builder resourceManagerBuilder = new CloudResourceManager.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),
+        GsonFactory.getDefaultInstance(),
+        new HttpCredentialsAdapter(credential));
+
+    return resourceManagerBuilder
+        .setApplicationName("service-accounts")
+        .build();
   }
 
   public static void addBinding(
-      CloudResourceManager crmService, String projectId, String member, String role) {
+      CloudResourceManager crmService, String projectId, String member, String role)
+      throws IOException {
 
     // Gets the project's policy.
     Policy policy = getPolicy(crmService, projectId);
@@ -102,7 +99,7 @@ public class Quickstart {
     Binding binding = null;
     for (Binding b : policy.getBindings()) {
       if (b.getRole().equals(role)) {
-        binding = b; 
+        binding = b;
         break;
       }
     }
@@ -123,7 +120,8 @@ public class Quickstart {
   }
 
   public static void removeMember(
-      CloudResourceManager crmService, String projectId, String member, String role) {
+      CloudResourceManager crmService, String projectId, String member, String role)
+      throws IOException {
     // Gets the project's policy.
     Policy policy = getPolicy(crmService, projectId);
 
@@ -146,29 +144,21 @@ public class Quickstart {
     setPolicy(crmService, projectId, policy);
   }
 
-  public static Policy getPolicy(CloudResourceManager crmService, String projectId) {
+  public static Policy getPolicy(CloudResourceManager crmService, String projectId)
+      throws IOException {
     // Gets the project's policy by calling the
     // Cloud Resource Manager Projects API.
-    Policy policy = null;
-    try {
-      GetIamPolicyRequest request = new GetIamPolicyRequest();
-      policy = crmService.projects().getIamPolicy(projectId, request).execute();
-    } catch (IOException e) {
-      System.out.println("Unable to get policy: \n" + e.getMessage() + e.getStackTrace());
-    }
-    return policy;
+    GetIamPolicyRequest request = new GetIamPolicyRequest();
+    return crmService.projects().getIamPolicy(projectId, request).execute();
   }
 
-  private static void setPolicy(CloudResourceManager crmService, String projectId, Policy policy) {
+  private static void setPolicy(CloudResourceManager crmService, String projectId, Policy policy)
+      throws IOException {
     // Sets the project's policy by calling the
     // Cloud Resource Manager Projects API.
-    try {
-      SetIamPolicyRequest request = new SetIamPolicyRequest();
-      request.setPolicy(policy);
-      crmService.projects().setIamPolicy(projectId, request).execute();
-    } catch (IOException e) {
-      System.out.println("Unable to set policy: \n" + e.getMessage() + e.getStackTrace());
-    }
+    SetIamPolicyRequest request = new SetIamPolicyRequest();
+    request.setPolicy(policy);
+    crmService.projects().setIamPolicy(projectId, request).execute();
   }
 }
 // [END iam_quickstart]

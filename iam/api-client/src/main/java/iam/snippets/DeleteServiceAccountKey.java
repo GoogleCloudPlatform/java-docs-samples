@@ -16,8 +16,9 @@
 package iam.snippets;
 
 // [START iam_delete_key]
+
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.ServiceAccountKey;
@@ -31,38 +32,29 @@ import java.util.List;
 public class DeleteServiceAccountKey {
 
   // Deletes a service account key.
-  public static void deleteKey(String projectId, String serviceAccountName) {
+  public static void deleteKey(String projectId, String serviceAccountName)
+      throws IOException, GeneralSecurityException {
     // String projectId = "my-project-id";
     // String serviceAccountName = "my-service-account-name";
 
-    Iam service = null;
-    try {
-      service = initService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    }
+    Iam service = initService();
 
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
-    try {
-      // First, get the name of the key using List() or Get()
-      List<ServiceAccountKey> keys =
-          service
-              .projects()
-              .serviceAccounts()
-              .keys()
-              .list("projects/-/serviceAccounts/" + serviceAccountEmail)
-              .execute()
-              .getKeys();
-      String keyToDelete = keys.get(0).getName();
+    // First, get the name of the key using List() or Get()
+    List<ServiceAccountKey> keys =
+        service
+            .projects()
+            .serviceAccounts()
+            .keys()
+            .list("projects/-/serviceAccounts/" + serviceAccountEmail)
+            .execute()
+            .getKeys();
+    String keyToDelete = keys.get(0).getName();
 
-      // Then you can delete the key
-      service.projects().serviceAccounts().keys().delete(keyToDelete).execute();
+    // Then you can delete the key
+    service.projects().serviceAccounts().keys().delete(keyToDelete).execute();
 
-      System.out.println("Deleted key: " + keyToDelete);
-    } catch (IOException e) {
-      System.out.println("Unable to delete service account key: \n" + e.toString());
-    }
+    System.out.println("Deleted key: " + keyToDelete);
   }
 
   private static Iam initService() throws GeneralSecurityException, IOException {
@@ -72,14 +64,13 @@ public class DeleteServiceAccountKey {
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
     // Initialize the IAM service, which can be used to send requests to the IAM API.
-    Iam service =
-        new Iam.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-account-keys")
-            .build();
-    return service;
+    Iam.Builder serviceBuilder = new Iam.Builder(GoogleNetHttpTransport.newTrustedTransport(),
+        GsonFactory.getDefaultInstance(),
+        new HttpCredentialsAdapter(credential));
+
+    return serviceBuilder
+        .setApplicationName("service-account-keys")
+        .build();
   }
 }
 // [END iam_delete_key]

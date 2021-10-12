@@ -20,6 +20,7 @@ import static org.hamcrest.core.StringContains.containsString;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,12 +40,18 @@ public class GrantableRolesIT {
     System.setOut(out);
   }
 
+  @After
+  public void tearDown() {
+    System.setOut(null);
+    bout.reset();
+  }
+
   @Test
   public void testQuickstart() throws Exception {
     String project = System.getenv("GOOGLE_CLOUD_PROJECT");
     String resource = "//cloudresourcemanager.googleapis.com/projects/" + project;
 
-    GrantableRoles.main(new String[] {resource});
+    GrantableRoles.main(new String[]{resource});
 
     String got = bout.toString();
     assertThat(got, containsString("Title"));

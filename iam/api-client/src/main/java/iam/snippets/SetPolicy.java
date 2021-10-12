@@ -16,8 +16,9 @@
 package iam.snippets;
 
 // [START iam_set_policy]
+
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.cloudresourcemanager.v3.CloudResourceManager;
 import com.google.api.services.cloudresourcemanager.v3.model.Policy;
 import com.google.api.services.cloudresourcemanager.v3.model.SetIamPolicyRequest;
@@ -31,26 +32,17 @@ import java.util.Collections;
 public class SetPolicy {
 
   // Sets a project's policy.
-  public static void setPolicy(Policy policy, String projectId) {
+  public static void setPolicy(Policy policy, String projectId)
+      throws GeneralSecurityException, IOException {
     // policy = service.Projects.GetIAmPolicy(new GetIamPolicyRequest(), your-project-id).Execute();
     // projectId = "my-project-id"
 
-    CloudResourceManager service = null;
-    try {
-      service = createCloudResourceManagerService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    }
+    CloudResourceManager service = createCloudResourceManagerService();
 
-    try {
-      SetIamPolicyRequest request = new SetIamPolicyRequest();
-      request.setPolicy(policy);
-      Policy response = service.projects().setIamPolicy(projectId, request).execute();
-      System.out.println("Policy set: " + response.toString());
-    } catch (IOException e) {
-      System.out.println("Unable to set policy: \n" + e.toString());
-    }
+    SetIamPolicyRequest request = new SetIamPolicyRequest();
+    request.setPolicy(policy);
+    Policy response = service.projects().setIamPolicy(projectId, request).execute();
+    System.out.println("Policy set: " + response.toString());
   }
 
   public static CloudResourceManager createCloudResourceManagerService()
@@ -61,14 +53,14 @@ public class SetPolicy {
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
-    CloudResourceManager service =
-        new CloudResourceManager.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-accounts")
-            .build();
-    return service;
+    CloudResourceManager.Builder resourceManagerBuilder = new CloudResourceManager.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),
+        GsonFactory.getDefaultInstance(),
+        new HttpCredentialsAdapter(credential));
+
+    return resourceManagerBuilder
+        .setApplicationName("service-accounts")
+        .build();
   }
 }
 // [END iam_set_policy]

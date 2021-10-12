@@ -31,7 +31,7 @@ import java.util.Collections;
 
 public class DisableServiceAccountKey {
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
     // TODO(Developer): Replace the below variables before running.
     String projectId = "gcloud-project-id";
     String serviceAccountName = "service-account-name";
@@ -42,35 +42,25 @@ public class DisableServiceAccountKey {
 
   // Disables a service account key.
   public static void disableServiceAccountKey(String projectId, String serviceAccountName,
-      String serviceAccountKeyName) {
+      String serviceAccountKeyName) throws GeneralSecurityException, IOException {
     // Initialize the IAM service.
-    Iam service = null;
-    try {
-      service = initService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e);
-      return;
-    }
+    Iam service = initService();
 
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
 
-    try {
-      DisableServiceAccountKeyRequest
-          disableServiceAccountKeyRequest = new DisableServiceAccountKeyRequest();
-      // Use the IAM service to disable the service account key.
-      service
-          .projects()
-          .serviceAccounts()
-          .keys()
-          .disable(String
-              .format("projects/%s/serviceAccounts/%s/keys/%s", projectId, serviceAccountEmail,
-                  serviceAccountKeyName), disableServiceAccountKeyRequest)
-          .execute();
+    DisableServiceAccountKeyRequest
+        disableServiceAccountKeyRequest = new DisableServiceAccountKeyRequest();
+    // Use the IAM service to disable the service account key.
+    service
+        .projects()
+        .serviceAccounts()
+        .keys()
+        .disable(String
+            .format("projects/%s/serviceAccounts/%s/keys/%s", projectId, serviceAccountEmail,
+                serviceAccountKeyName), disableServiceAccountKeyRequest)
+        .execute();
 
-      System.out.println("Disabled service account key: " + serviceAccountKeyName);
-    } catch (IOException e) {
-      System.out.println("Failed to disable service account key: \n" + e);
-    }
+    System.out.println("Disabled service account key: " + serviceAccountKeyName);
   }
 
   private static Iam initService() throws GeneralSecurityException, IOException {
@@ -81,10 +71,11 @@ public class DisableServiceAccountKey {
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
     // Initialize the IAM service, which can be used to send requests to the IAM API.
-    return new Iam.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),
+    Iam.Builder serviceBuilder = new Iam.Builder(GoogleNetHttpTransport.newTrustedTransport(),
         GsonFactory.getDefaultInstance(),
-        new HttpCredentialsAdapter(credential))
+        new HttpCredentialsAdapter(credential));
+
+    return serviceBuilder
         .setApplicationName("service-accounts")
         .build();
   }

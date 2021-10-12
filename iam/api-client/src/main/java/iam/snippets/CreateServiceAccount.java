@@ -16,8 +16,9 @@
 package iam.snippets;
 
 // [START iam_create_service_account]
+
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.CreateServiceAccountRequest;
@@ -31,32 +32,23 @@ import java.util.Collections;
 public class CreateServiceAccount {
 
   // Creates a service account.
-  public static void createServiceAccount(String projectId, String serviceAccountName) {
+  public static void createServiceAccount(String projectId, String serviceAccountName)
+      throws GeneralSecurityException, IOException {
     // String projectId = "my-project-id";
     // String serviceAccountName = "my-service-account-name";
 
-    Iam service = null;
-    try {
-      service = initService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    }
+    Iam service = initService();
 
-    try {
-      ServiceAccount serviceAccount = new ServiceAccount();
-      serviceAccount.setDisplayName("your-display-name");
-      CreateServiceAccountRequest request = new CreateServiceAccountRequest();
-      request.setAccountId(serviceAccountName);
-      request.setServiceAccount(serviceAccount);
+    ServiceAccount serviceAccount = new ServiceAccount();
+    serviceAccount.setDisplayName("your-display-name");
+    CreateServiceAccountRequest request = new CreateServiceAccountRequest();
+    request.setAccountId(serviceAccountName);
+    request.setServiceAccount(serviceAccount);
 
-      serviceAccount =
-          service.projects().serviceAccounts().create("projects/" + projectId, request).execute();
+    serviceAccount =
+        service.projects().serviceAccounts().create("projects/" + projectId, request).execute();
 
-      System.out.println("Created service account: " + serviceAccount.getEmail());
-    } catch (IOException e) {
-      System.out.println("Unable to create service account: \n" + e.toString());
-    }
+    System.out.println("Created service account: " + serviceAccount.getEmail());
   }
 
   private static Iam initService() throws GeneralSecurityException, IOException {
@@ -66,14 +58,13 @@ public class CreateServiceAccount {
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
     // Initialize the IAM service, which can be used to send requests to the IAM API.
-    Iam service =
-        new Iam.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-accounts")
-            .build();
-    return service;
+    Iam.Builder serviceBuilder = new Iam.Builder(GoogleNetHttpTransport.newTrustedTransport(),
+        GsonFactory.getDefaultInstance(),
+        new HttpCredentialsAdapter(credential));
+
+    return serviceBuilder
+        .setApplicationName("service-accounts")
+        .build();
   }
 }
 // [END iam_create_service_account]

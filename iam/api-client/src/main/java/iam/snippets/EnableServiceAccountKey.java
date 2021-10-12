@@ -31,7 +31,7 @@ import java.util.Collections;
 
 public class EnableServiceAccountKey {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws GeneralSecurityException, IOException {
     // TODO(Developer): Replace the below variables before running.
     String projectId = "gcloud-project-id";
     String serviceAccountName = "service-account-name";
@@ -42,35 +42,25 @@ public class EnableServiceAccountKey {
 
   // Enables a service account key.
   public static void enableServiceAccountKey(String projectId, String serviceAccountName,
-      String serviceAccountKeyName) {
+      String serviceAccountKeyName) throws IOException, GeneralSecurityException {
     // Initialize the IAM service.
-    Iam service = null;
-    try {
-      service = initService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e);
-      return;
-    }
+    Iam service = initService();
 
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
 
-    try {
-      EnableServiceAccountKeyRequest
-          enableServiceAccountKeyRequest = new EnableServiceAccountKeyRequest();
-      // Use the IAM service to enable the service account key.
-      service
-          .projects()
-          .serviceAccounts()
-          .keys()
-          .enable(String
-              .format("projects/%s/serviceAccounts/%s/keys/%s", projectId, serviceAccountEmail,
-                  serviceAccountKeyName), enableServiceAccountKeyRequest)
-          .execute();
+    EnableServiceAccountKeyRequest
+        enableServiceAccountKeyRequest = new EnableServiceAccountKeyRequest();
+    // Use the IAM service to enable the service account key.
+    service
+        .projects()
+        .serviceAccounts()
+        .keys()
+        .enable(String
+            .format("projects/%s/serviceAccounts/%s/keys/%s", projectId, serviceAccountEmail,
+                serviceAccountKeyName), enableServiceAccountKeyRequest)
+        .execute();
 
-      System.out.println("Enabled service account key: " + serviceAccountKeyName);
-    } catch (IOException e) {
-      System.out.println("Failed to enable service account key: \n" + e);
-    }
+    System.out.println("Enabled service account key: " + serviceAccountKeyName);
   }
 
   private static Iam initService() throws GeneralSecurityException, IOException {
@@ -81,10 +71,11 @@ public class EnableServiceAccountKey {
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
     // Initialize the IAM service, which can be used to send requests to the IAM API.
-    return new Iam.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(),
+    Iam.Builder serviceBuilder = new Iam.Builder(GoogleNetHttpTransport.newTrustedTransport(),
         GsonFactory.getDefaultInstance(),
-        new HttpCredentialsAdapter(credential))
+        new HttpCredentialsAdapter(credential));
+
+    return serviceBuilder
         .setApplicationName("service-accounts")
         .build();
   }

@@ -16,8 +16,9 @@
 package iam.snippets;
 
 // [START iam_rename_service_account]
+
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.ServiceAccount;
@@ -30,45 +31,36 @@ import java.util.Collections;
 public class RenameServiceAccount {
 
   // Changes a service account's display name.
-  public static void renameServiceAccount(String projectId, String serviceAccountName) {
+  public static void renameServiceAccount(String projectId, String serviceAccountName)
+      throws GeneralSecurityException, IOException {
     // String projectId = "my-project-id";
     // String serviceAccountName = "my-service-account-name";
 
-    Iam service = null;
-    try {
-      service = initService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    }
+    Iam service = initService();
 
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
-    try {
-      // First, get a service account using List() or Get()
-      ServiceAccount serviceAccount =
-          service
-              .projects()
-              .serviceAccounts()
-              .get("projects/-/serviceAccounts/" + serviceAccountEmail)
-              .execute();
+    // First, get a service account using List() or Get()
+    ServiceAccount serviceAccount =
+        service
+            .projects()
+            .serviceAccounts()
+            .get("projects/-/serviceAccounts/" + serviceAccountEmail)
+            .execute();
 
-      // Then you can update the display name
-      serviceAccount.setDisplayName("your-new-display-name");
-      serviceAccount =
-          service
-              .projects()
-              .serviceAccounts()
-              .update(serviceAccount.getName(), serviceAccount)
-              .execute();
+    // Then you can update the display name
+    serviceAccount.setDisplayName("your-new-display-name");
+    serviceAccount =
+        service
+            .projects()
+            .serviceAccounts()
+            .update(serviceAccount.getName(), serviceAccount)
+            .execute();
 
-      System.out.println(
-          "Updated display name for "
-              + serviceAccount.getName()
-              + " to: "
-              + serviceAccount.getDisplayName());
-    } catch (IOException e) {
-      System.out.println("Unable to rename service account: \n" + e.toString());
-    }
+    System.out.println(
+        "Updated display name for "
+            + serviceAccount.getName()
+            + " to: "
+            + serviceAccount.getDisplayName());
   }
 
   private static Iam initService() throws GeneralSecurityException, IOException {
@@ -78,14 +70,13 @@ public class RenameServiceAccount {
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
     // Initialize the IAM service, which can be used to send requests to the IAM API.
-    Iam service =
-        new Iam.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-accounts")
-            .build();
-    return service;
+    Iam.Builder serviceBuilder = new Iam.Builder(GoogleNetHttpTransport.newTrustedTransport(),
+        GsonFactory.getDefaultInstance(),
+        new HttpCredentialsAdapter(credential));
+
+    return serviceBuilder
+        .setApplicationName("service-accounts")
+        .build();
   }
 }
 // [END iam_rename_service_account]

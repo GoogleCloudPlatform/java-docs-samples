@@ -21,7 +21,7 @@ import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.cloudresourcemanager.v3.CloudResourceManager;
 import com.google.api.services.cloudresourcemanager.v3.model.Binding;
 import com.google.api.services.cloudresourcemanager.v3.model.Policy;
@@ -47,9 +47,9 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickstartTests {
 
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private ServiceAccount serviceAccount;
   private Iam iamService;
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
@@ -65,53 +65,39 @@ public class QuickstartTests {
 
   // Creates a service account to use during the test
   @Before
-  public void setUp() {
-    try {
-      GoogleCredentials credential =
-          GoogleCredentials.getApplicationDefault()
-              .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
+  public void setUp() throws IOException, GeneralSecurityException {
+    GoogleCredentials credential =
+        GoogleCredentials.getApplicationDefault()
+            .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
-      iamService =
-          new Iam.Builder(
-                  GoogleNetHttpTransport.newTrustedTransport(),
-                  JacksonFactory.getDefaultInstance(),
-                  new HttpCredentialsAdapter(credential))
-              .setApplicationName("service-accounts")
-              .build();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    }
+    Iam.Builder serviceBuilder = new Iam.Builder(GoogleNetHttpTransport.newTrustedTransport(),
+        GsonFactory.getDefaultInstance(),
+        new HttpCredentialsAdapter(credential));
 
-    try {
-      serviceAccount = new ServiceAccount();
-      String serviceAccountUuid = UUID.randomUUID().toString().split("-")[0];
-      serviceAccount.setDisplayName("iam-test-account" + serviceAccountUuid);
-      CreateServiceAccountRequest request = new CreateServiceAccountRequest();
-      request.setAccountId("iam-test-account" + serviceAccountUuid);
-      request.setServiceAccount(serviceAccount);
+    iamService = serviceBuilder
+        .setApplicationName("service-accounts")
+        .build();
 
-      serviceAccount =
-          iamService
-              .projects()
-              .serviceAccounts()
-              .create("projects/" + PROJECT_ID, request)
-              .execute();
-    } catch (IOException e) {
-      System.out.println("Unable to create service account: \n" + e.toString());
-    }
+    serviceAccount = new ServiceAccount();
+    String serviceAccountUuid = UUID.randomUUID().toString().split("-")[0];
+    serviceAccount.setDisplayName("iam-test-account" + serviceAccountUuid);
+    CreateServiceAccountRequest request = new CreateServiceAccountRequest();
+    request.setAccountId("iam-test-account" + serviceAccountUuid);
+    request.setServiceAccount(serviceAccount);
+
+    serviceAccount =
+        iamService
+            .projects()
+            .serviceAccounts()
+            .create("projects/" + PROJECT_ID, request)
+            .execute();
   }
 
   // Deletes the service account used in the test.
   @After
-  public void tearDown() {
-
+  public void tearDown() throws IOException {
     String resource = "projects/-/serviceAccounts/" + serviceAccount.getEmail();
-    try {
-      iamService.projects().serviceAccounts().delete(resource).execute();
-    } catch (IOException e) {
-      System.out.println("Unable to delete service account: \n" + e.toString());
-    }
+    iamService.projects().serviceAccounts().delete(resource).execute();
   }
 
   @Test

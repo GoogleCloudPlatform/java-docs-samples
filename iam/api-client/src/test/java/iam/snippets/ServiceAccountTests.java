@@ -20,19 +20,19 @@ import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.security.GeneralSecurityException;
 import java.util.UUID;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ServiceAccountTests {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -48,9 +48,39 @@ public class ServiceAccountTests {
   }
 
   @BeforeClass
-  public static void checkRequirements() {
+  public static void beforeClass() throws GeneralSecurityException, IOException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
+
+    // Create Service Account.
+    CreateServiceAccount.createServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+    String got = bout.toString();
+    assertThat(got, containsString("Created service account: " + SERVICE_ACCOUNT));
+
+    // Create Service Account Key.
+    CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
+    got = bout.toString();
+    assertThat(got, containsString("Created key:"));
+    String serviceAccountKeyPath = got.substring(got.lastIndexOf(":") + 1);
+    SERVICE_ACCOUNT_KEY = serviceAccountKeyPath
+        .substring(serviceAccountKeyPath.lastIndexOf("/") + 1).trim();
+  }
+
+  @AfterClass
+  public static void afterClass() throws GeneralSecurityException, IOException {
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
+    // Delete Service Account key.
+    DeleteServiceAccountKey.deleteKey(PROJECT_ID, SERVICE_ACCOUNT);
+    String got = bout.toString();
+    assertThat(got, containsString("Deleted key:"));
+    // Delete Service Account.
+    DeleteServiceAccount.deleteServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+    got = bout.toString();
+    assertThat(got, containsString("Deleted service account:"));
   }
 
   @Before
@@ -66,84 +96,49 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage1_testServiceAccountCreate() {
-    CreateServiceAccount.createServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
-    String got = bout.toString();
-    assertThat(got, containsString("Created service account: " + SERVICE_ACCOUNT));
-  }
-
-  @Test
-  public void stage1_testServiceAccountsList() {
+  public void testServiceAccountsList() throws GeneralSecurityException, IOException {
     ListServiceAccounts.listServiceAccounts(PROJECT_ID);
     String got = bout.toString();
     assertThat(got, containsString("Display Name:"));
   }
 
   @Test
-  public void stage2_testServiceAccountRename() {
+  public void testServiceAccountRename() throws GeneralSecurityException, IOException {
     RenameServiceAccount.renameServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Updated display name"));
   }
 
   @Test
-  public void stage2_testServiceAccountKeyCreate() {
-    CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
-    String got = bout.toString();
-    assertThat(got, containsString("Created key:"));
-    String serviceAccountKeyPath = got.substring(got.lastIndexOf(":") + 1);
-    SERVICE_ACCOUNT_KEY = serviceAccountKeyPath
-        .substring(serviceAccountKeyPath.lastIndexOf("/") + 1).trim();
-  }
-
-  @Test
-  public void stage2_testServiceAccountKeysList() {
+  public void testServiceAccountKeysList() throws GeneralSecurityException, IOException {
     ListServiceAccountKeys.listKeys(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Key:"));
   }
 
   @Test
-  public void stage2_testServiceAccountKeyDisable() {
+  public void testServiceAccountKeyDisableEnable() throws GeneralSecurityException, IOException {
+    // Disable Service Account key.
     DisableServiceAccountKey
         .disableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
     String got = bout.toString();
     assertThat(got, containsString("Disabled service account key"));
-  }
-
-  @Test
-  public void stage2_testServiceAccountKeyEnable() {
+    // Enable Service Account key.
     EnableServiceAccountKey
         .enableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
-    String got = bout.toString();
+    got = bout.toString();
     assertThat(got, containsString("Enabled service account key"));
   }
 
   @Test
-  public void stage3_testServiceAccountKeyDelete() {
-    DeleteServiceAccountKey.deleteKey(PROJECT_ID, SERVICE_ACCOUNT);
-    String got = bout.toString();
-    assertThat(got, containsString("Deleted key:"));
-  }
-
-  @Test
-  public void stage4_testDisableServiceAccount() {
+  public void testDisableEnableServiceAccount() throws GeneralSecurityException, IOException {
+    // Disable Service Account.
     DisableServiceAccount.disableServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Disabled service account:"));
-  }
-
-  @Test
-  public void stage5_testEnableServiceAccount() {
+    // Enable Service Account.
     EnableServiceAccount.enableServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
-    String got = bout.toString();
+    got = bout.toString();
     assertThat(got, containsString("Enabled service account:"));
-  }
-
-  @Test
-  public void stage6_testServiceAccountDelete() {
-    DeleteServiceAccount.deleteServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
-    String got = bout.toString();
-    assertThat(got, containsString("Deleted service account:"));
   }
 }

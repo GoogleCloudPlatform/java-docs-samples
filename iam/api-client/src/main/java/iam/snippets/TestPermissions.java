@@ -16,8 +16,9 @@
 package iam.snippets;
 
 // [START iam_test_permissions]
+
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.cloudresourcemanager.v3.CloudResourceManager;
 import com.google.api.services.cloudresourcemanager.v3.model.TestIamPermissionsRequest;
 import com.google.api.services.cloudresourcemanager.v3.model.TestIamPermissionsResponse;
@@ -33,32 +34,23 @@ import java.util.List;
 public class TestPermissions {
 
   // Tests if the caller has the listed permissions.
-  public static void testPermissions(String projectId) {
+  public static void testPermissions(String projectId)
+      throws GeneralSecurityException, IOException {
     // projectId = "my-project-id"
 
-    CloudResourceManager service = null;
-    try {
-      service = createCloudResourceManagerService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    }
+    CloudResourceManager service = createCloudResourceManagerService();
 
     List<String> permissionsList =
         Arrays.asList("resourcemanager.projects.get", "resourcemanager.projects.delete");
 
     TestIamPermissionsRequest requestBody =
         new TestIamPermissionsRequest().setPermissions(permissionsList);
-    try {
-      TestIamPermissionsResponse testIamPermissionsResponse =
-          service.projects().testIamPermissions(projectId, requestBody).execute();
+    TestIamPermissionsResponse testIamPermissionsResponse =
+        service.projects().testIamPermissions(projectId, requestBody).execute();
 
-      System.out.println(
-          "Of the permissions listed in the request, the caller has the following: "
-              + testIamPermissionsResponse.getPermissions().toString());
-    } catch (IOException e) {
-      System.out.println("Unable to test permissions: \n" + e.toString());
-    }
+    System.out.println(
+        "Of the permissions listed in the request, the caller has the following: "
+            + testIamPermissionsResponse.getPermissions().toString());
   }
 
   public static CloudResourceManager createCloudResourceManagerService()
@@ -69,14 +61,14 @@ public class TestPermissions {
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
-    CloudResourceManager service =
-        new CloudResourceManager.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-accounts")
-            .build();
-    return service;
+    CloudResourceManager.Builder resourceManagerBuilder = new CloudResourceManager.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),
+        GsonFactory.getDefaultInstance(),
+        new HttpCredentialsAdapter(credential));
+
+    return resourceManagerBuilder
+        .setApplicationName("service-accounts")
+        .build();
   }
 }
 // [END iam_test_permissions]

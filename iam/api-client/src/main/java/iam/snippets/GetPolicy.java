@@ -16,8 +16,9 @@
 package iam.snippets;
 
 // [START iam_get_policy]
+
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.cloudresourcemanager.v3.CloudResourceManager;
 import com.google.api.services.cloudresourcemanager.v3.model.GetIamPolicyRequest;
 import com.google.api.services.cloudresourcemanager.v3.model.Policy;
@@ -31,28 +32,17 @@ import java.util.Collections;
 public class GetPolicy {
 
   // Gets a project's policy.
-  public static Policy getPolicy(String projectId) {
+  public static Policy getPolicy(String projectId) throws GeneralSecurityException, IOException {
     // projectId = "my-project-id"
 
     Policy policy = null;
 
-    CloudResourceManager service = null;
-    try {
-      service = createCloudResourceManagerService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return policy;
-    }
+    CloudResourceManager service = createCloudResourceManagerService();
 
-    try {
-      GetIamPolicyRequest request = new GetIamPolicyRequest();
-      policy = service.projects().getIamPolicy(projectId, request).execute();
-      System.out.println("Policy retrieved: " + policy.toString());
-      return policy;
-    } catch (IOException e) {
-      System.out.println("Unable to get policy: \n" + e.toString());
-      return policy;
-    }
+    GetIamPolicyRequest request = new GetIamPolicyRequest();
+    policy = service.projects().getIamPolicy(projectId, request).execute();
+    System.out.println("Policy retrieved: " + policy.toString());
+    return policy;
   }
 
   public static CloudResourceManager createCloudResourceManagerService()
@@ -63,14 +53,14 @@ public class GetPolicy {
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
 
-    CloudResourceManager service =
-        new CloudResourceManager.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-accounts")
-            .build();
-    return service;
+    CloudResourceManager.Builder resourceManagerBuilder = new CloudResourceManager.Builder(
+        GoogleNetHttpTransport.newTrustedTransport(),
+        GsonFactory.getDefaultInstance(),
+        new HttpCredentialsAdapter(credential));
+
+    return resourceManagerBuilder
+        .setApplicationName("service-accounts")
+        .build();
   }
 }
 // [END iam_get_policy]
