@@ -35,8 +35,8 @@ public class QueryAndDecryptData {
     String dbUser = System.getenv("DB_USER"); // e.g. "root", "mysql"
     String dbPass = System.getenv("DB_PASS"); // e.g. "mysupersecretpassword"
     String dbName = System.getenv("DB_NAME"); // e.g. "votes_db"
-    String cloudSqlConnectionName =
-        System.getenv("CLOUD_SQL_CONNECTION_NAME"); // e.g. "project-name:region:instance-name"
+    String instanceConnectionName =
+        System.getenv("INSTANCE_CONNECTION_NAME"); // e.g. "project-name:region:instance-name"
     String kmsUri = System.getenv("CLOUD_KMS_URI"); // e.g. "gcp-kms://projects/...path/to/key
     // Tink uses the "gcp-kms://" prefix for paths to keys stored in Google Cloud KMS. For more
     // info on creating a KMS key and getting its path, see
@@ -47,7 +47,7 @@ public class QueryAndDecryptData {
     // Initialize database connection pool and create table if it does not exist
     // See CloudSqlConnectionPool.java for setup details
     DataSource pool =
-        CloudSqlConnectionPool.createConnectionPool(dbUser, dbPass, dbName, cloudSqlConnectionName);
+        CloudSqlConnectionPool.createConnectionPool(dbUser, dbPass, dbName, instanceConnectionName);
     CloudSqlConnectionPool.createTable(pool, tableName);
 
     // Initialize envelope AEAD
