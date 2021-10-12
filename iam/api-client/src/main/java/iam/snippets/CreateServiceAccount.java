@@ -37,14 +37,13 @@ public class CreateServiceAccount {
     // String projectId = "my-project-id";
     // String serviceAccountName = "my-service-account-name";
 
-    Iam service = initService();
-
     ServiceAccount serviceAccount = new ServiceAccount();
     serviceAccount.setDisplayName("your-display-name");
     CreateServiceAccountRequest request = new CreateServiceAccountRequest();
     request.setAccountId(serviceAccountName);
     request.setServiceAccount(serviceAccount);
 
+    Iam service = initService();
     serviceAccount =
         service.projects().serviceAccounts().create("projects/" + projectId, request).execute();
 
