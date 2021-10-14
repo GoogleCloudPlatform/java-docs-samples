@@ -18,10 +18,10 @@ package com.example.spanner;
 
 //[START spring_data_spanner_singer_repository]
 import com.google.cloud.spanner.Key;
-import java.util.List;
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.data.spanner.repository.query.Query;
 import org.springframework.data.repository.query.Param;
+import java.util.List;
 
 /**
  * An interface of various Query Methods. The behavior of the queries is defined only by
