@@ -45,6 +45,7 @@ public class CaptureGfeMetric {
     captureGfeMetric(dbClient);
   }
 
+  // [START spanner_opencensus_capture_gfe_metric]
   static void captureGfeMetric(DatabaseClient dbClient) {
     // Capture GFE Latency and GFE Header missing count.
     SpannerRpcViews.registerGfeLatencyAndHeaderMissingCountViews();
