@@ -17,15 +17,13 @@
 package com.example.spanner;
 
 // [START spring_data_spanner_template_sample]
-
 import com.google.cloud.spanner.KeySet;
-import com.google.cloud.spanner.Statement;
 import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
 import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import com.google.cloud.spanner.Statement;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
 /**
  * A quick start code for Spring Data Cloud Spanner. It demonstrates how to use SpannerTemplate to
@@ -34,20 +32,20 @@ import java.util.List;
 @Component
 public class SpannerTemplateSample {
 
-	@Autowired
-	SpannerTemplate spannerTemplate;
+  @Autowired
+  SpannerTemplate spannerTemplate;
 
-	public void runTemplateExample(Singer singer) {
-		// Delete all of the rows in the Singer table.
-		this.spannerTemplate.delete(Singer.class, KeySet.all());
+  public void runTemplateExample(Singer singer) {
+    // Delete all of the rows in the Singer table.
+    this.spannerTemplate.delete(Singer.class, KeySet.all());
 
-		// Insert a singer into the Singers table.
-		this.spannerTemplate.insert(singer);
+    // Insert a singer into the Singers table.
+    this.spannerTemplate.insert(singer);
 
-		// Read all of the singers in the Singers table.
-		List<Singer> allSingers = this.spannerTemplate
-				.query(Singer.class, Statement.of("SELECT * FROM Singers"), new SpannerQueryOptions().setAllowPartialRead(true));
-	}
+    // Read all of the singers in the Singers table.
+    List<Singer> allSingers = this.spannerTemplate
+        .query(Singer.class, Statement.of("SELECT * FROM Singers"), new SpannerQueryOptions().setAllowPartialRead(true));
+  }
 
 }
 // [END spring_data_spanner_template_sample]

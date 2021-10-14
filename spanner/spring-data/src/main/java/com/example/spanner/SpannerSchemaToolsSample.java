@@ -18,7 +18,6 @@ package com.example.spanner;
 
 
 //[START spring_data_spanner_schema_sample]
-
 import com.google.cloud.spring.data.spanner.core.admin.SpannerDatabaseAdminTemplate;
 import com.google.cloud.spring.data.spanner.core.admin.SpannerSchemaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,35 +30,35 @@ import org.springframework.stereotype.Component;
 @Component
 public class SpannerSchemaToolsSample {
 
-	@Autowired
-	SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
+  @Autowired
+  SpannerDatabaseAdminTemplate spannerDatabaseAdminTemplate;
 
-	@Autowired
-	SpannerSchemaUtils spannerSchemaUtils;
+  @Autowired
+  SpannerSchemaUtils spannerSchemaUtils;
 
-	/**
-	 * Creates the Singers table. Also creates the Albums table, because Albums is interleaved with
-	 * Singers.
-	 */
-	public void createTableIfNotExists() {
-		if (!this.spannerDatabaseAdminTemplate.tableExists("Singers")) {
-			this.spannerDatabaseAdminTemplate.executeDdlStrings(
-					this.spannerSchemaUtils
-							.getCreateTableDdlStringsForInterleavedHierarchy(Singer.class),
-					true);
-		}
-	}
+  /**
+   * Creates the Singers table. Also creates the Albums table, because Albums is interleaved with
+   * Singers.
+   */
+  public void createTableIfNotExists() {
+    if (!this.spannerDatabaseAdminTemplate.tableExists("Singers")) {
+      this.spannerDatabaseAdminTemplate.executeDdlStrings(
+          this.spannerSchemaUtils
+              .getCreateTableDdlStringsForInterleavedHierarchy(Singer.class),
+          true);
+    }
+  }
 
-	/**
-	 * Drops both the Singers and Albums tables using just a reference to the Singer entity type ,
-	 * because they are interleaved.
-	 */
-	public void dropTables() {
-		if (this.spannerDatabaseAdminTemplate.tableExists("Singers")) {
-			this.spannerDatabaseAdminTemplate.executeDdlStrings(
-					this.spannerSchemaUtils.getDropTableDdlStringsForInterleavedHierarchy(Singer.class),
-					false);
-		}
-	}
+  /**
+   * Drops both the Singers and Albums tables using just a reference to the Singer entity type ,
+   * because they are interleaved.
+   */
+  public void dropTables() {
+    if (this.spannerDatabaseAdminTemplate.tableExists("Singers")) {
+      this.spannerDatabaseAdminTemplate.executeDdlStrings(
+          this.spannerSchemaUtils.getDropTableDdlStringsForInterleavedHierarchy(Singer.class),
+          false);
+    }
+  }
 }
 //[END spring_data_spanner_schema_sample]

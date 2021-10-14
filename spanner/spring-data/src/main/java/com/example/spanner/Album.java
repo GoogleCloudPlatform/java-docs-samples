@@ -17,12 +17,11 @@
 package com.example.spanner;
 
 //[START spring_data_spanner_album]
+import java.util.List;
 
 import com.google.cloud.spring.data.spanner.core.mapping.NotMapped;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
-
-import java.util.List;
 
 
 /**
@@ -31,24 +30,24 @@ import java.util.List;
 @Table(name = "Albums")
 public class Album {
 
-	@PrimaryKey
-	long singerId;
+  @PrimaryKey
+  long singerId;
 
-	@PrimaryKey(keyOrder = 2)
-	long albumId;
+  @PrimaryKey(keyOrder = 2)
+  long albumId;
 
-	String albumTitle;
+  String albumTitle;
 
-	long marketingBudget;
+  long marketingBudget;
 
-	@NotMapped
-	List<Album> relatedAlbums;
+  @NotMapped
+  List<Album> relatedAlbums;
 
-	public Album(long singerId, long albumId, String albumTitle, long marketingBudget) {
-		this.singerId = singerId;
-		this.albumId = albumId;
-		this.albumTitle = albumTitle;
-		this.marketingBudget = marketingBudget;
-	}
+  public Album(long singerId, long albumId, String albumTitle, long marketingBudget) {
+    this.singerId = singerId;
+    this.albumId = albumId;
+    this.albumTitle = albumTitle;
+    this.marketingBudget = marketingBudget;
+  }
 }
 //[END spring_data_spanner_album]

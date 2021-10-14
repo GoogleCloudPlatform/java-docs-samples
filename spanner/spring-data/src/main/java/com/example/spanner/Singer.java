@@ -17,29 +17,27 @@
 package com.example.spanner;
 
 //[START spring_data_spanner_singer]
-
-import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
-import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
-import com.google.cloud.spring.data.spanner.core.mapping.Table;
-
 import java.util.Date;
 import java.util.List;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
+import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
 
 /**
  * An entity and table holding singers.
  */
 @Table(name = "Singers")
 public class Singer {
-	@PrimaryKey
-	long singerId;
+  @PrimaryKey
+  long singerId;
 
-	String firstName;
+  String firstName;
 
-	String lastName;
+  String lastName;
 
-	Date birthDate;
+  Date birthDate;
 
-	@Interleaved
-	List<Album> albums;
+  @Interleaved
+  List<Album> albums;
 }
 //[END spring_data_spanner_singer]
