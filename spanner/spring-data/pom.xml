@@ -31,7 +31,7 @@ limitations under the License.
     <version>1.0.23</version>
   </parent>
 
-  <groupId>com.google.cloud</groupId>
+  <groupId>com.example.spanner</groupId>
   <artifactId>spring-data</artifactId>
   <name>Spring Data Spanner Code Sample</name>
 
@@ -39,16 +39,9 @@ limitations under the License.
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>2020.0.1</version> <!--(1)-->
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>com.google.cloud</groupId> <!--(2)-->
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>2.0.3</version>
+        <version>2.0.4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
