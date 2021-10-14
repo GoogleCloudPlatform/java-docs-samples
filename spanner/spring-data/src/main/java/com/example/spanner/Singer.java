@@ -18,10 +18,11 @@ package com.example.spanner;
 
 //[START spring_data_spanner_singer]
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
-import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
-import java.util.List;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import java.util.Date;
+import java.util.List;
+
 
 /**
  * An entity and table holding singers.
