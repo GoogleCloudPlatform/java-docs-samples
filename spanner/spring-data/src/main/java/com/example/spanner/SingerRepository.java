@@ -20,8 +20,9 @@ package com.example.spanner;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
 import com.google.cloud.spring.data.spanner.repository.query.Query;
-import org.springframework.data.repository.query.Param;
 import java.util.List;
+import org.springframework.data.repository.query.Param;
+
 
 /**
  * An interface of various Query Methods. The behavior of the queries is defined only by

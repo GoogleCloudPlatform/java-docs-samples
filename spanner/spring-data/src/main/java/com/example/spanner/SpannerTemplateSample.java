@@ -19,12 +19,10 @@ package com.example.spanner;
 // [START spring_data_spanner_template_sample]
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
-import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import com.google.cloud.spanner.Statement;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-
-
 import org.springframework.stereotype.Component;
 
 /**

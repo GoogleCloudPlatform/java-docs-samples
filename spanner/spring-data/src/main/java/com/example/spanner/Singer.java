@@ -17,11 +17,11 @@
 package com.example.spanner;
 
 //[START spring_data_spanner_singer]
-import java.util.Date;
 import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
 import com.google.cloud.spring.data.spanner.core.mapping.Table;
 import com.google.cloud.spring.data.spanner.core.mapping.Interleaved;
 import java.util.List;
+import java.util.Date;
 
 /**
  * An entity and table holding singers.
