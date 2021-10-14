@@ -19,8 +19,8 @@ package com.example.spanner;
 //[START spring_data_spanner_singer_repository]
 import com.google.cloud.spanner.Key;
 import java.util.List;
-import org.springframework.cloud.gcp.data.spanner.repository.SpannerRepository;
-import org.springframework.cloud.gcp.data.spanner.repository.query.Query;
+import com.google.cloud.spring.data.spanner.repository.SpannerRepository;
+import com.google.cloud.spring.data.spanner.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 
 /**

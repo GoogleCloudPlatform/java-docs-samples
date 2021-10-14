@@ -18,10 +18,11 @@ package com.example.spanner;
 
 // [START spring_data_spanner_template_sample]
 import com.google.cloud.spanner.KeySet;
+import com.google.cloud.spring.data.spanner.core.SpannerQueryOptions;
+import com.google.cloud.spring.data.spanner.core.SpannerTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.google.cloud.spanner.Statement;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -43,7 +44,7 @@ public class SpannerTemplateSample {
 
     // Read all of the singers in the Singers table.
     List<Singer> allSingers = this.spannerTemplate
-        .query(Singer.class, Statement.of("SELECT * FROM Singers"), null);
+        .query(Singer.class, Statement.of("SELECT * FROM Singers"), new SpannerQueryOptions().setAllowPartialRead(true));
   }
 
 }

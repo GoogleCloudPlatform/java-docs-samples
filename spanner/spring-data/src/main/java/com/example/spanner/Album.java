@@ -18,9 +18,12 @@ package com.example.spanner;
 
 //[START spring_data_spanner_album]
 import java.util.List;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.NotMapped;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
-import org.springframework.cloud.gcp.data.spanner.core.mapping.Table;
+
+import com.google.cloud.spring.data.spanner.core.mapping.Column;
+import com.google.cloud.spring.data.spanner.core.mapping.NotMapped;
+import com.google.cloud.spring.data.spanner.core.mapping.PrimaryKey;
+import com.google.cloud.spring.data.spanner.core.mapping.Table;
+
 
 /**
  * An entity class representing an Album.
