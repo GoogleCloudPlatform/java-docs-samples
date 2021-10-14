@@ -17,29 +17,29 @@
 package com.example.spanner;
 
 // [START spring_data_spanner_repository_sample]
-import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import java.util.List;
 
 /**
  * A quick start code for Spring Data Cloud Spanner.
  * It demonstrates how to use a SpannerRepository to execute read-write queries
  * generated from interface definitions.
- *
  */
 @Component
 public class SpannerRepositorySample {
 
-  @Autowired
-  SingerRepository singerRepository;
+	@Autowired
+	SingerRepository singerRepository;
 
-  public void runRepositoryExample() {
-    List<Singer> lastNameSingers = this.singerRepository.findByLastName("a last name");
+	public void runRepositoryExample() {
+		List<Singer> lastNameSingers = this.singerRepository.findByLastName("a last name");
 
-    int fistNameCount = this.singerRepository.countByFirstName("a first name");
+		int fistNameCount = this.singerRepository.countByFirstName("a first name");
 
-    int deletedLastNameCount = this.singerRepository.deleteByLastName("a last name");
-  }
+		int deletedLastNameCount = this.singerRepository.deleteByLastName("a last name");
+	}
 
 }
 // [END spring_data_spanner_repository_sample]
