@@ -37,7 +37,7 @@ RUN apt-get update -y && apt-get install -y \
     nfs-common \
     && apt-get clean
 
-# Set failback mount directory
+# Set fallback mount directory
 ENV MNT_DIR /mnt/nfs/filestore
 
 # Copy the jar to the production image from the builder stage.
@@ -47,7 +47,8 @@ COPY --from=builder /app/target/filesystem-*.jar /filesystem.jar
 COPY run.sh ./run.sh
 RUN chmod +x ./run.sh
 
-# Set the init-process (PID1) as the default executable
+# Use tini to manage zombie processes and signal forwarding
+# https://github.com/krallin/tini
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
 # Run the web service on container startup.
