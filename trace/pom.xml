@@ -72,7 +72,12 @@
       <artifactId>gax-grpc</artifactId>
       <version>2.6.0</version>
     </dependency>
-    <!-- [END trace_setup_java_maven] -->
+    <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-oauth2-http</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+   <!-- [END trace_setup_java_maven] -->
 
     <!-- Test dependencies -->
     <dependency>
