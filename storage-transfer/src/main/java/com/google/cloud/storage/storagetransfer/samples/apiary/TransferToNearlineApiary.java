@@ -34,14 +34,17 @@ import java.io.IOException;
 import java.util.Calendar;
 
 public class TransferToNearlineApiary {
-  /** Creates a one-off transfer job that transfers objects in a standard GCS bucket that are more
-   *  than 30 days old to a Nearline GCS bucket.
+  /**
+   * Creates a one-off transfer job that transfers objects in a standard GCS bucket that are more
+   * than 30 days old to a Nearline GCS bucket.
    */
-  public static void transferToNearlineApiary(String projectId,
+  public static void transferToNearlineApiary(
+      String projectId,
       String jobDescription,
       String gcsSourceBucket,
       String gcsNearlineSinkBucket,
-      long startDateTime) throws IOException {
+      long startDateTime)
+      throws IOException {
 
     // Your Google Cloud Project ID
     // String projectId = "your-project-id";
@@ -64,14 +67,16 @@ public class TransferToNearlineApiary {
     Calendar startCalendar = Calendar.getInstance();
     startCalendar.setTimeInMillis(startDateTime);
     // Note that this is a Date from the model class package, not a java.util.Date
-    Date date = new Date()
-        .setYear(startCalendar.get(Calendar.YEAR))
-        .setMonth(startCalendar.get(Calendar.MONTH) + 1)
-        .setDay(startCalendar.get(Calendar.DAY_OF_MONTH));
-    TimeOfDay time = new TimeOfDay()
-        .setHours(startCalendar.get(Calendar.HOUR_OF_DAY))
-        .setMinutes(startCalendar.get(Calendar.MINUTE))
-        .setSeconds(startCalendar.get(Calendar.SECOND));
+    Date date =
+        new Date()
+            .setYear(startCalendar.get(Calendar.YEAR))
+            .setMonth(startCalendar.get(Calendar.MONTH) + 1)
+            .setDay(startCalendar.get(Calendar.DAY_OF_MONTH));
+    TimeOfDay time =
+        new TimeOfDay()
+            .setHours(startCalendar.get(Calendar.HOUR_OF_DAY))
+            .setMinutes(startCalendar.get(Calendar.MINUTE))
+            .setSeconds(startCalendar.get(Calendar.SECOND));
 
     TransferJob transferJob =
         new TransferJob()
@@ -94,9 +99,12 @@ public class TransferToNearlineApiary {
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(StoragetransferScopes.all());
     }
-    Storagetransfer storageTransfer = new Storagetransfer.Builder(Utils.getDefaultTransport(),
-        Utils.getDefaultJsonFactory(), new HttpCredentialsAdapter(credential))
-        .build();
+    Storagetransfer storageTransfer =
+        new Storagetransfer.Builder(
+                Utils.getDefaultTransport(),
+                Utils.getDefaultJsonFactory(),
+                new HttpCredentialsAdapter(credential))
+            .build();
 
     // Create the transfer job
     TransferJob response = storageTransfer.transferJobs().create(transferJob).execute();

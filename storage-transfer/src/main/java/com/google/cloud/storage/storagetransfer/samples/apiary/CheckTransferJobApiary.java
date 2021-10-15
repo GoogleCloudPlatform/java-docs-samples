@@ -39,16 +39,21 @@ public class CheckTransferJobApiary {
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(StoragetransferScopes.all());
     }
-    Storagetransfer storageTransfer = new Storagetransfer.Builder(Utils.getDefaultTransport(),
-        Utils.getDefaultJsonFactory(), new HttpCredentialsAdapter(credential))
-        .build();
+    Storagetransfer storageTransfer =
+        new Storagetransfer.Builder(
+                Utils.getDefaultTransport(),
+                Utils.getDefaultJsonFactory(),
+                new HttpCredentialsAdapter(credential))
+            .build();
 
     // Filter for operations with jobName
-    ListOperationsResponse response = storageTransfer
-        .transferOperations()
-        .list("transferOperations", projectId)
-        .setFilter("{\"project_id\": \"" + projectId + "\", \"job_names\": [\"" + jobName + "\"] }")
-        .execute();
+    ListOperationsResponse response =
+        storageTransfer
+            .transferOperations()
+            .list("transferOperations", projectId)
+            .setFilter(
+                "{\"project_id\": \"" + projectId + "\", \"job_names\": [\"" + jobName + "\"] }")
+            .execute();
 
     System.out.println("List operation returned response:");
     System.out.println(response.toPrettyString());

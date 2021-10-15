@@ -26,6 +26,7 @@ import com.google.cloud.storage.BucketInfo.LifecycleRule.LifecycleCondition;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageClass;
 import com.google.cloud.storage.storagetransfer.samples.CheckLatestTransferOperation;
+import com.google.cloud.storage.storagetransfer.samples.QuickstartSample;
 import com.google.cloud.storage.storagetransfer.samples.TransferFromAws;
 import com.google.cloud.storage.storagetransfer.samples.TransferToNearline;
 import com.google.cloud.storage.storagetransfer.samples.apiary.CheckLatestTransferOperationApiary;
@@ -65,21 +66,25 @@ public class ITStoragetransferSamplesTest {
     RemoteStorageHelper helper = RemoteStorageHelper.create();
     storage = helper.getOptions().getService();
 
-    storage.create(BucketInfo.newBuilder(SOURCE_GCS_BUCKET).setLocation("us")
-        .setLifecycleRules(
-            ImmutableList.of(
-                new LifecycleRule(
-                    LifecycleAction.newDeleteAction(),
-                    LifecycleCondition.newBuilder().setAge(1).build())))
-        .build());
-    storage.create(BucketInfo.newBuilder(SINK_GCS_BUCKET).setLocation("us")
-        .setLifecycleRules(
-            ImmutableList.of(
-                new LifecycleRule(
-                    LifecycleAction.newDeleteAction(),
-                    LifecycleCondition.newBuilder().setAge(1).build())))
-        .setStorageClass(StorageClass.NEARLINE)
-        .build());
+    storage.create(
+        BucketInfo.newBuilder(SOURCE_GCS_BUCKET)
+            .setLocation("us")
+            .setLifecycleRules(
+                ImmutableList.of(
+                    new LifecycleRule(
+                        LifecycleAction.newDeleteAction(),
+                        LifecycleCondition.newBuilder().setAge(1).build())))
+            .build());
+    storage.create(
+        BucketInfo.newBuilder(SINK_GCS_BUCKET)
+            .setLocation("us")
+            .setLifecycleRules(
+                ImmutableList.of(
+                    new LifecycleRule(
+                        LifecycleAction.newDeleteAction(),
+                        LifecycleCondition.newBuilder().setAge(1).build())))
+            .setStorageClass(StorageClass.NEARLINE)
+            .build());
 
     grantBucketsStsPermissions();
 
@@ -91,14 +96,16 @@ public class ITStoragetransferSamplesTest {
   private static void grantBucketsStsPermissions() throws Exception {
     StorageTransferServiceClient sts = StorageTransferServiceClient.create();
 
-    String serviceAccount = sts.getGoogleServiceAccount(
-        GetGoogleServiceAccountRequest.newBuilder().setProjectId(PROJECT_ID).build()).getAccountEmail();
-
+    String serviceAccount =
+        sts.getGoogleServiceAccount(
+                GetGoogleServiceAccountRequest.newBuilder().setProjectId(PROJECT_ID).build())
+            .getAccountEmail();
 
     sts.shutdownNow();
 
     Policy sourceBucketPolicy =
-        storage.getIamPolicy(SOURCE_GCS_BUCKET, Storage.BucketSourceOption.requestedPolicyVersion(3));
+        storage.getIamPolicy(
+            SOURCE_GCS_BUCKET, Storage.BucketSourceOption.requestedPolicyVersion(3));
 
     Policy sinkBucketPolicy =
         storage.getIamPolicy(SINK_GCS_BUCKET, Storage.BucketSourceOption.requestedPolicyVersion(3));
@@ -111,32 +118,35 @@ public class ITStoragetransferSamplesTest {
     List<Binding> sourceBindings = new ArrayList<>(sourceBucketPolicy.getBindingsList());
     List<Binding> sinkBindings = new ArrayList<>(sinkBucketPolicy.getBindingsList());
 
-    Binding objectViewerBinding = Binding.newBuilder().setRole(objectViewer).setMembers(Arrays.asList(member)).build();
+    Binding objectViewerBinding =
+        Binding.newBuilder().setRole(objectViewer).setMembers(Arrays.asList(member)).build();
     sourceBindings.add(objectViewerBinding);
     sinkBindings.add(objectViewerBinding);
 
-    Binding bucketReaderBinding = Binding.newBuilder().setRole(bucketReader).setMembers(Arrays.asList(member)).build();
+    Binding bucketReaderBinding =
+        Binding.newBuilder().setRole(bucketReader).setMembers(Arrays.asList(member)).build();
     sourceBindings.add(bucketReaderBinding);
     sinkBindings.add(bucketReaderBinding);
 
-    Binding bucketWriterBinding = Binding.newBuilder().setRole(bucketWriter).setMembers(Arrays.asList(member)).build();
+    Binding bucketWriterBinding =
+        Binding.newBuilder().setRole(bucketWriter).setMembers(Arrays.asList(member)).build();
     sourceBindings.add(bucketWriterBinding);
     sinkBindings.add(bucketWriterBinding);
 
-    Policy.Builder newSourcePolicy = sourceBucketPolicy.toBuilder().setBindings(sourceBindings).setVersion(3);
+    Policy.Builder newSourcePolicy =
+        sourceBucketPolicy.toBuilder().setBindings(sourceBindings).setVersion(3);
     storage.setIamPolicy(SOURCE_GCS_BUCKET, newSourcePolicy.build());
 
-    Policy.Builder newSinkPolicy = sinkBucketPolicy.toBuilder().setBindings(sinkBindings).setVersion(3);
+    Policy.Builder newSinkPolicy =
+        sinkBucketPolicy.toBuilder().setBindings(sinkBindings).setVersion(3);
     storage.setIamPolicy(SINK_GCS_BUCKET, newSinkPolicy.build());
-
   }
 
   private static void cleanAmazonBucket() {
     try {
       ObjectListing object_listing = s3.listObjects(AMAZON_BUCKET);
       while (true) {
-        for (Iterator<?> iterator =
-            object_listing.getObjectSummaries().iterator();
+        for (Iterator<?> iterator = object_listing.getObjectSummaries().iterator();
             iterator.hasNext(); ) {
           S3ObjectSummary summary = (S3ObjectSummary) iterator.next();
           s3.deleteObject(AMAZON_BUCKET, summary.getKey());
@@ -178,10 +188,8 @@ public class ITStoragetransferSamplesTest {
             .setProjectId(PROJECT_ID)
             .setTransferSpec(
                 new TransferSpec()
-                    .setGcsDataSource(
-                        new GcsData().setBucketName(SOURCE_GCS_BUCKET))
-                    .setGcsDataSink(
-                        new GcsData().setBucketName(SINK_GCS_BUCKET))
+                    .setGcsDataSource(new GcsData().setBucketName(SOURCE_GCS_BUCKET))
+                    .setGcsDataSink(new GcsData().setBucketName(SINK_GCS_BUCKET))
                     .setObjectConditions(
                         new ObjectConditions()
                             .setMinTimeElapsedSinceLastModification("2592000s" /* 30 days */))
@@ -197,7 +205,8 @@ public class ITStoragetransferSamplesTest {
     final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
     System.setOut(new PrintStream(sampleOutputCapture));
 
-    CheckLatestTransferOperationApiary.checkLatestTransferOperationApiary(PROJECT_ID, response.getName());
+    CheckLatestTransferOperationApiary.checkLatestTransferOperationApiary(
+        PROJECT_ID, response.getName());
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
@@ -215,10 +224,8 @@ public class ITStoragetransferSamplesTest {
             .setProjectId(PROJECT_ID)
             .setTransferSpec(
                 new TransferSpec()
-                    .setGcsDataSource(
-                        new GcsData().setBucketName(SOURCE_GCS_BUCKET))
-                    .setGcsDataSink(
-                        new GcsData().setBucketName(SINK_GCS_BUCKET))
+                    .setGcsDataSource(new GcsData().setBucketName(SOURCE_GCS_BUCKET))
+                    .setGcsDataSink(new GcsData().setBucketName(SINK_GCS_BUCKET))
                     .setObjectConditions(
                         new ObjectConditions()
                             .setMinTimeElapsedSinceLastModification("2592000s" /* 30 days */))
@@ -248,10 +255,14 @@ public class ITStoragetransferSamplesTest {
     final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
     System.setOut(new PrintStream(sampleOutputCapture));
 
-    TransferFromAws.transferFromAws(PROJECT_ID, "Sample transfer job from S3 to GCS.",
-        AMAZON_BUCKET, SINK_GCS_BUCKET,
+    TransferFromAws.transferFromAws(
+        PROJECT_ID,
+        "Sample transfer job from S3 to GCS.",
+        AMAZON_BUCKET,
+        SINK_GCS_BUCKET,
         new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime(),
-        System.getenv("AWS_ACCESS_KEY_ID"), System.getenv("AWS_SECRET_ACCESS_KEY"));
+        System.getenv("AWS_ACCESS_KEY_ID"),
+        System.getenv("AWS_SECRET_ACCESS_KEY"));
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
@@ -264,10 +275,14 @@ public class ITStoragetransferSamplesTest {
     final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
     System.setOut(new PrintStream(sampleOutputCapture));
 
-    TransferFromAwsApiary.transferFromAws(PROJECT_ID, "Sample transfer job from S3 to GCS.",
-        AMAZON_BUCKET, SINK_GCS_BUCKET,
+    TransferFromAwsApiary.transferFromAws(
+        PROJECT_ID,
+        "Sample transfer job from S3 to GCS.",
+        AMAZON_BUCKET,
+        SINK_GCS_BUCKET,
         new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime(),
-        System.getenv("AWS_ACCESS_KEY_ID"), System.getenv("AWS_SECRET_ACCESS_KEY"));
+        System.getenv("AWS_ACCESS_KEY_ID"),
+        System.getenv("AWS_SECRET_ACCESS_KEY"));
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
@@ -280,30 +295,46 @@ public class ITStoragetransferSamplesTest {
     final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
     System.setOut(new PrintStream(sampleOutputCapture));
 
-    TransferToNearlineApiary
-        .transferToNearlineApiary(PROJECT_ID, "Sample transfer job from GCS to GCS Nearline.",
-            SOURCE_GCS_BUCKET, SINK_GCS_BUCKET,
-            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime());
+    TransferToNearlineApiary.transferToNearlineApiary(
+        PROJECT_ID,
+        "Sample transfer job from GCS to GCS Nearline.",
+        SOURCE_GCS_BUCKET,
+        SINK_GCS_BUCKET,
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime());
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
-    assertThat(sampleOutput)
-        .contains("\"Sample transfer job from GCS to GCS Nearline.\"");
+    assertThat(sampleOutput).contains("\"Sample transfer job from GCS to GCS Nearline.\"");
   }
+
   @Test
   public void testTransferToNearline() throws Exception {
     PrintStream standardOut = System.out;
     final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
     System.setOut(new PrintStream(sampleOutputCapture));
 
-    TransferToNearline
-        .transferToNearline(PROJECT_ID, "Sample transfer job from GCS to GCS Nearline.",
-            SOURCE_GCS_BUCKET, SINK_GCS_BUCKET,
-            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime());
+    TransferToNearline.transferToNearline(
+        PROJECT_ID,
+        "Sample transfer job from GCS to GCS Nearline.",
+        SOURCE_GCS_BUCKET,
+        SINK_GCS_BUCKET,
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime());
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
-    assertThat(sampleOutput)
-        .contains("\"Sample transfer job from GCS to GCS Nearline.\"");
+    assertThat(sampleOutput).contains("\"Sample transfer job from GCS to GCS Nearline.\"");
+  }
+
+  @Test
+  public void testQuickstart() throws Exception {
+    PrintStream standardOut = System.out;
+    final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(sampleOutputCapture));
+
+    QuickstartSample.quickStartSample(PROJECT_ID, SOURCE_GCS_BUCKET, SINK_GCS_BUCKET);
+
+    String sampleOutput = sampleOutputCapture.toString();
+    System.setOut(standardOut);
+    assertThat(sampleOutput).contains("Created transfer job between two GCS buckets:");
   }
 }

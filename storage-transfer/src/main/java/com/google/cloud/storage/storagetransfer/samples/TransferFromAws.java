@@ -35,13 +35,15 @@ import java.util.Calendar;
 public class TransferFromAws {
 
   // Creates a one-off transfer job from Amazon S3 to Google Cloud Storage.
-  public static void transferFromAws(String projectId,
+  public static void transferFromAws(
+      String projectId,
       String jobDescription,
       String awsSourceBucket,
       String gcsSinkBucket,
       long startDateTime,
       String awsAccessKeyId,
-      String awsSecretAccessKey) throws IOException {
+      String awsSecretAccessKey)
+      throws IOException {
 
     // Your Google Cloud Project ID
     // String projectId = "your-project-id";
@@ -67,35 +69,40 @@ public class TransferFromAws {
     // String awsSecretAccessKey = System.getenv("AWS_SECRET_ACCESS_KEY");
 
     // Set up source and sink
-    TransferSpec transferSpec = TransferSpec.newBuilder()
-        .setAwsS3DataSource(
-            AwsS3Data.newBuilder()
-                .setBucketName(awsSourceBucket)
-                .setAwsAccessKey(
-                    AwsAccessKey.newBuilder()
-                        .setAccessKeyId(awsAccessKeyId)
-                        .setSecretAccessKey(awsSecretAccessKey)))
-        .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket)).build();
+    TransferSpec transferSpec =
+        TransferSpec.newBuilder()
+            .setAwsS3DataSource(
+                AwsS3Data.newBuilder()
+                    .setBucketName(awsSourceBucket)
+                    .setAwsAccessKey(
+                        AwsAccessKey.newBuilder()
+                            .setAccessKeyId(awsAccessKeyId)
+                            .setSecretAccessKey(awsSecretAccessKey)))
+            .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket))
+            .build();
 
     // Parse epoch timestamp into the model classes
     Calendar startCalendar = Calendar.getInstance();
     startCalendar.setTimeInMillis(startDateTime);
     // Note that this is a Date from the model class package, not a java.util.Date
-    Date startDate = Date.newBuilder()
-        .setYear(startCalendar.get(Calendar.YEAR))
-        .setMonth(startCalendar.get(Calendar.MONTH) + 1)
-        .setDay(startCalendar.get(Calendar.DAY_OF_MONTH))
-        .build();
-    TimeOfDay startTime = TimeOfDay.newBuilder()
-        .setHours(startCalendar.get(Calendar.HOUR_OF_DAY))
-        .setMinutes(startCalendar.get(Calendar.MINUTE))
-        .setSeconds(startCalendar.get(Calendar.SECOND))
-        .build();
-    Schedule schedule = Schedule.newBuilder()
-        .setScheduleStartDate(startDate)
-        .setScheduleEndDate(startDate)
-        .setStartTimeOfDay(startTime)
-        .build();
+    Date startDate =
+        Date.newBuilder()
+            .setYear(startCalendar.get(Calendar.YEAR))
+            .setMonth(startCalendar.get(Calendar.MONTH) + 1)
+            .setDay(startCalendar.get(Calendar.DAY_OF_MONTH))
+            .build();
+    TimeOfDay startTime =
+        TimeOfDay.newBuilder()
+            .setHours(startCalendar.get(Calendar.HOUR_OF_DAY))
+            .setMinutes(startCalendar.get(Calendar.MINUTE))
+            .setSeconds(startCalendar.get(Calendar.SECOND))
+            .build();
+    Schedule schedule =
+        Schedule.newBuilder()
+            .setScheduleStartDate(startDate)
+            .setScheduleEndDate(startDate)
+            .setStartTimeOfDay(startTime)
+            .build();
 
     // Set up the transfer job
     TransferJob transferJob =
@@ -105,14 +112,15 @@ public class TransferFromAws {
             .setTransferSpec(transferSpec)
             .setSchedule(schedule)
             .setStatus(Status.ENABLED)
-        .build();
+            .build();
 
     // Create a Transfer Service client
     StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
 
     // Create the transfer job
-    TransferJob response = storageTransfer.createTransferJob(CreateTransferJobRequest.newBuilder()
-        .setTransferJob(transferJob).build());
+    TransferJob response =
+        storageTransfer.createTransferJob(
+            CreateTransferJobRequest.newBuilder().setTransferJob(transferJob).build());
 
     System.out.println("Created transfer job from AWS to GCS:");
     System.out.println(response.toString());

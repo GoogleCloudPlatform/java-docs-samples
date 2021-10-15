@@ -33,14 +33,17 @@ import java.io.IOException;
 import java.util.Calendar;
 
 public class TransferToNearline {
-  /** Creates a one-off transfer job that transfers objects in a standard GCS bucket that are more
-   *  than 30 days old to a Nearline GCS bucket.
+  /**
+   * Creates a one-off transfer job that transfers objects in a standard GCS bucket that are more
+   * than 30 days old to a Nearline GCS bucket.
    */
-  public static void transferToNearline(String projectId,
+  public static void transferToNearline(
+      String projectId,
       String jobDescription,
       String gcsSourceBucket,
       String gcsNearlineSinkBucket,
-      long startDateTime) throws IOException {
+      long startDateTime)
+      throws IOException {
 
     // Your Google Cloud Project ID
     // String projectId = "your-project-id";
@@ -63,16 +66,18 @@ public class TransferToNearline {
     Calendar startCalendar = Calendar.getInstance();
     startCalendar.setTimeInMillis(startDateTime);
     // Note that this is a Date from the model class package, not a java.util.Date
-    Date date = Date.newBuilder()
-        .setYear(startCalendar.get(Calendar.YEAR))
-        .setMonth(startCalendar.get(Calendar.MONTH) + 1)
-        .setDay(startCalendar.get(Calendar.DAY_OF_MONTH))
-        .build();
-    TimeOfDay time = TimeOfDay.newBuilder()
-        .setHours(startCalendar.get(Calendar.HOUR_OF_DAY))
-        .setMinutes(startCalendar.get(Calendar.MINUTE))
-        .setSeconds(startCalendar.get(Calendar.SECOND))
-        .build();
+    Date date =
+        Date.newBuilder()
+            .setYear(startCalendar.get(Calendar.YEAR))
+            .setMonth(startCalendar.get(Calendar.MONTH) + 1)
+            .setDay(startCalendar.get(Calendar.DAY_OF_MONTH))
+            .build();
+    TimeOfDay time =
+        TimeOfDay.newBuilder()
+            .setHours(startCalendar.get(Calendar.HOUR_OF_DAY))
+            .setMinutes(startCalendar.get(Calendar.MINUTE))
+            .setSeconds(startCalendar.get(Calendar.SECOND))
+            .build();
 
     TransferJob transferJob =
         TransferJob.newBuilder()
@@ -84,19 +89,21 @@ public class TransferToNearline {
                     .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsNearlineSinkBucket))
                     .setObjectConditions(
                         ObjectConditions.newBuilder()
-                            .setMinTimeElapsedSinceLastModification(Duration.newBuilder().setSeconds(2592000 /* 30 days */)))
+                            .setMinTimeElapsedSinceLastModification(
+                                Duration.newBuilder().setSeconds(2592000 /* 30 days */)))
                     .setTransferOptions(
                         TransferOptions.newBuilder().setDeleteObjectsFromSourceAfterTransfer(true)))
             .setSchedule(Schedule.newBuilder().setScheduleStartDate(date).setStartTimeOfDay(time))
             .setStatus(Status.ENABLED)
-        .build();
+            .build();
 
     // Create a Transfer Service client
     StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
 
     // Create the transfer job
-    TransferJob response = storageTransfer.createTransferJob(CreateTransferJobRequest.newBuilder()
-        .setTransferJob(transferJob).build());
+    TransferJob response =
+        storageTransfer.createTransferJob(
+            CreateTransferJobRequest.newBuilder().setTransferJob(transferJob).build());
 
     System.out.println("Created transfer job from standard bucket to Nearline bucket:");
     System.out.println(response.toString());

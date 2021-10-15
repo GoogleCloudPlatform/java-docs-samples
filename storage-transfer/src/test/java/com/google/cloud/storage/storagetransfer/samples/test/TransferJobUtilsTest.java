@@ -25,9 +25,7 @@ import org.junit.Test;
 
 public class TransferJobUtilsTest {
 
-  /**
-   * Tests whether createDate() builds the correct date from a formatted String.
-   */
+  /** Tests whether createDate() builds the correct date from a formatted String. */
   @Test
   public void testCreateDate() throws Exception {
     Date date = TransferJobUtils.createDate("2000-12-30");
@@ -37,9 +35,7 @@ public class TransferJobUtilsTest {
     assertThat(date).isEqualTo(new Date().setYear(2016).setMonth(9).setDay(8));
   }
 
-  /**
-   * Tests whether createTimeOfDay() builds the correct time from a formatted String.
-   */
+  /** Tests whether createTimeOfDay() builds the correct time from a formatted String. */
   @Test
   public void testCreateTimeOfDay() throws Exception {
     TimeOfDay time = TransferJobUtils.createTimeOfDay("17:00:42");

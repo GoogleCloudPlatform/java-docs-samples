@@ -18,7 +18,6 @@ package com.google.cloud.storage.storagetransfer.samples;
 
 // [START storagetransfer_get_latest_transfer_operation]
 
-
 import com.google.longrunning.Operation;
 import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
 import com.google.storagetransfer.v1.proto.TransferProto.GetTransferJobRequest;
@@ -40,19 +39,25 @@ public class CheckLatestTransferOperation {
     StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
 
     // Get transfer job and check latest operation
-    TransferJob transferJob = storageTransfer.getTransferJob(GetTransferJobRequest.newBuilder().setJobName(jobName).setProjectId(projectId).build());
+    TransferJob transferJob =
+        storageTransfer.getTransferJob(
+            GetTransferJobRequest.newBuilder().setJobName(jobName).setProjectId(projectId).build());
     String latestOperationName = transferJob.getLatestOperationName();
 
     if (!latestOperationName.isEmpty()) {
       Operation operation = storageTransfer.getOperationsClient().getOperation(latestOperationName);
-      TransferOperation latestOperation = TransferOperation.parseFrom(operation.getMetadata().getValue());
+      TransferOperation latestOperation =
+          TransferOperation.parseFrom(operation.getMetadata().getValue());
 
       System.out.println("The latest operation for transfer job " + jobName + " is:");
       System.out.println(latestOperation.toString());
 
     } else {
-      System.out.println("Transfer job " + jobName + " hasn't run yet,"
-          + " try again once the job starts running.");
+      System.out.println(
+          "Transfer job "
+              + jobName
+              + " hasn't run yet,"
+              + " try again once the job starts running.");
     }
   }
 }

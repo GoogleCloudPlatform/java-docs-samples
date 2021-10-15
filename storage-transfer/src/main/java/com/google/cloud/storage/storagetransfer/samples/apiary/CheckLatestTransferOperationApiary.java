@@ -43,23 +43,29 @@ public class CheckLatestTransferOperationApiary {
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(StoragetransferScopes.all());
     }
-    Storagetransfer storageTransfer = new Storagetransfer.Builder(Utils.getDefaultTransport(),
-        Utils.getDefaultJsonFactory(), new HttpCredentialsAdapter(credential))
-        .build();
+    Storagetransfer storageTransfer =
+        new Storagetransfer.Builder(
+                Utils.getDefaultTransport(),
+                Utils.getDefaultJsonFactory(),
+                new HttpCredentialsAdapter(credential))
+            .build();
 
     // Get transfer job and check latest operation
     TransferJob transferJob = storageTransfer.transferJobs().get(jobName, projectId).execute();
     String latestOperationName = transferJob.getLatestOperationName();
 
     if (latestOperationName != null) {
-      Operation latestOperation = storageTransfer.transferOperations().get(latestOperationName)
-          .execute();
+      Operation latestOperation =
+          storageTransfer.transferOperations().get(latestOperationName).execute();
       System.out.println("The latest operation for transfer job " + jobName + " is:");
       System.out.println(latestOperation.toPrettyString());
 
     } else {
-      System.out.println("Transfer job " + jobName + " does not have an operation scheduled yet,"
-          + " try again once the job starts running.");
+      System.out.println(
+          "Transfer job "
+              + jobName
+              + " does not have an operation scheduled yet,"
+              + " try again once the job starts running.");
     }
   }
 }

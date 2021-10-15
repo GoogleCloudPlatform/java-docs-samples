@@ -37,13 +37,15 @@ import java.util.Calendar;
 public class TransferFromAwsApiary {
 
   // Creates a one-off transfer job from Amazon S3 to Google Cloud Storage.
-  public static void transferFromAws(String projectId,
+  public static void transferFromAws(
+      String projectId,
       String jobDescription,
       String awsSourceBucket,
       String gcsSinkBucket,
       long startDateTime,
       String awsAccessKeyId,
-      String awsSecretAccessKey) throws IOException {
+      String awsSecretAccessKey)
+      throws IOException {
 
     // Your Google Cloud Project ID
     // String projectId = "your-project-id";
@@ -69,32 +71,36 @@ public class TransferFromAwsApiary {
     // String awsSecretAccessKey = System.getenv("AWS_SECRET_ACCESS_KEY");
 
     // Set up source and sink
-    TransferSpec transferSpec = new TransferSpec()
-        .setAwsS3DataSource(
-            new AwsS3Data()
-                .setBucketName(awsSourceBucket)
-                .setAwsAccessKey(
-                    new AwsAccessKey()
-                        .setAccessKeyId(awsAccessKeyId)
-                        .setSecretAccessKey(awsSecretAccessKey)))
-        .setGcsDataSink(new GcsData().setBucketName(gcsSinkBucket));
+    TransferSpec transferSpec =
+        new TransferSpec()
+            .setAwsS3DataSource(
+                new AwsS3Data()
+                    .setBucketName(awsSourceBucket)
+                    .setAwsAccessKey(
+                        new AwsAccessKey()
+                            .setAccessKeyId(awsAccessKeyId)
+                            .setSecretAccessKey(awsSecretAccessKey)))
+            .setGcsDataSink(new GcsData().setBucketName(gcsSinkBucket));
 
     // Parse epoch timestamp into the model classes
     Calendar startCalendar = Calendar.getInstance();
     startCalendar.setTimeInMillis(startDateTime);
     // Note that this is a Date from the model class package, not a java.util.Date
-    Date startDate = new Date()
-        .setYear(startCalendar.get(Calendar.YEAR))
-        .setMonth(startCalendar.get(Calendar.MONTH) + 1)
-        .setDay(startCalendar.get(Calendar.DAY_OF_MONTH));
-    TimeOfDay startTime = new TimeOfDay()
-        .setHours(startCalendar.get(Calendar.HOUR_OF_DAY))
-        .setMinutes(startCalendar.get(Calendar.MINUTE))
-        .setSeconds(startCalendar.get(Calendar.SECOND));
-    Schedule schedule = new Schedule()
-        .setScheduleStartDate(startDate)
-        .setScheduleEndDate(startDate)
-        .setStartTimeOfDay(startTime);
+    Date startDate =
+        new Date()
+            .setYear(startCalendar.get(Calendar.YEAR))
+            .setMonth(startCalendar.get(Calendar.MONTH) + 1)
+            .setDay(startCalendar.get(Calendar.DAY_OF_MONTH));
+    TimeOfDay startTime =
+        new TimeOfDay()
+            .setHours(startCalendar.get(Calendar.HOUR_OF_DAY))
+            .setMinutes(startCalendar.get(Calendar.MINUTE))
+            .setSeconds(startCalendar.get(Calendar.SECOND));
+    Schedule schedule =
+        new Schedule()
+            .setScheduleStartDate(startDate)
+            .setScheduleEndDate(startDate)
+            .setStartTimeOfDay(startTime);
 
     // Set up the transfer job
     TransferJob transferJob =
@@ -110,9 +116,12 @@ public class TransferFromAwsApiary {
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(StoragetransferScopes.all());
     }
-    Storagetransfer storageTransfer = new Storagetransfer.Builder(Utils.getDefaultTransport(),
-        Utils.getDefaultJsonFactory(), new HttpCredentialsAdapter(credential))
-        .build();
+    Storagetransfer storageTransfer =
+        new Storagetransfer.Builder(
+                Utils.getDefaultTransport(),
+                Utils.getDefaultJsonFactory(),
+                new HttpCredentialsAdapter(credential))
+            .build();
 
     // Create the transfer job
     TransferJob response = storageTransfer.transferJobs().create(transferJob).execute();
