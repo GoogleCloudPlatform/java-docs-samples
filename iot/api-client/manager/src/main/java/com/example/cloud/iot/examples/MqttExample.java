@@ -433,7 +433,7 @@ public class MqttExample {
               "Invalid algorithm " + options.algorithm + ". Should be one of 'RS256' or 'ES256'.");
         }
         client.disconnect();
-        client.connect();
+        client.connect(connectOptions);
         attachCallback(client, options.deviceId);
       }
       // [END iot_mqtt_jwt_refresh]
