@@ -35,7 +35,7 @@ public class GetFirewallRule {
 
 
   // Retrieves the firewall rule given by the firewallRuleName if present.
-  public static void getFirewallRule(String project, String firewallRuleName)
+  public static Firewall getFirewallRule(String project, String firewallRuleName)
       throws IOException {
     /* Initialize client that will be used to send requests. This client only needs to be created
        once, and can be reused for multiple requests. After completing all of your requests, call
@@ -44,6 +44,7 @@ public class GetFirewallRule {
     try (FirewallsClient firewallsClient = FirewallsClient.create()) {
       Firewall response = firewallsClient.get(project, firewallRuleName);
       System.out.println(response);
+      return response;
     }
   }
 }

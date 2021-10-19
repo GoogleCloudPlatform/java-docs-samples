@@ -19,6 +19,7 @@ package compute;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.compute.v1.Firewall;
 import com.google.cloud.compute.v1.FirewallsClient;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
@@ -245,7 +246,10 @@ public class SnippetsIT {
   @Test
   public void testCreateFirewallRule() throws IOException {
     // Assert that firewall rule has been created as part of the setup.
-    compute.GetFirewallRule.getFirewallRule(PROJECT_ID, FIREWALL_RULE_CREATE);
+    Firewall response = compute.GetFirewallRule.getFirewallRule(PROJECT_ID, FIREWALL_RULE_CREATE);
+    Assert.assertTrue(response.getTargetTagsList()
+        .stream()
+        .anyMatch(x -> x.equalsIgnoreCase("web")));
     compute.GetFirewallRule.getFirewallRule(PROJECT_ID, FIREWALL_RULE_DELETE);
     assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
     assertThat(stdOut.toString()).contains(FIREWALL_RULE_DELETE);
