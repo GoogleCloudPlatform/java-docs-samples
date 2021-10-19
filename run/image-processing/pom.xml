@@ -39,19 +39,12 @@ limitations under the License.
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>2020.0.4</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
       <!-- [START cloudrun_imageproc_dep_management] -->
       <!-- [START run_imageproc_dep_management] -->
       <dependency>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.google.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>1.2.8.RELEASE</version>
+        <version>2.0.4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -88,11 +81,11 @@ limitations under the License.
       <version>20210307</version>
     </dependency>
     <dependency>
-      <groupId>org.springframework.cloud</groupId>
+      <groupId>com.google.cloud</groupId>
       <artifactId>spring-cloud-gcp-starter-vision</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.cloud</groupId>
+      <groupId>com.google.cloud</groupId>
       <artifactId>spring-cloud-gcp-starter-storage</artifactId>
     </dependency>
     <dependency>
