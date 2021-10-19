@@ -28,7 +28,7 @@ import javax.sql.DataSource;
 public class CloudSqlConnectionPool {
 
   public static DataSource createConnectionPool(String dbUser, String dbPass, String dbName,
-      String cloudSqlConnectionName) {
+      String instanceConnectionName) {
     HikariConfig config = new HikariConfig();
     config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
     config.setUsername(dbUser); // e.g. "root", "sqlserver"
@@ -37,7 +37,7 @@ public class CloudSqlConnectionPool {
 
     config.addDataSourceProperty("socketFactoryClass",
         "com.google.cloud.sql.sqlserver.SocketFactory");
-    config.addDataSourceProperty("socketFactoryConstructorArg", cloudSqlConnectionName);
+    config.addDataSourceProperty("socketFactoryConstructorArg", instanceConnectionName);
     DataSource pool = new HikariDataSource(config);
     return pool;
   }

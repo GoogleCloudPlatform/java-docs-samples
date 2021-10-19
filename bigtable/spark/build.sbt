@@ -23,7 +23,7 @@ version := "0.1"
 scalaVersion := "2.11.12"
 val sparkVersion = "2.4.8"
 val bigtableVersion = "1.25.0"
-val hbaseVersion = "2.4.6"
+val hbaseVersion = "2.4.7"
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % sparkVersion % Provided,

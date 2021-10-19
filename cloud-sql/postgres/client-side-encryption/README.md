@@ -26,7 +26,7 @@ by following these [instructions](https://cloud.google.com/kms/docs/iam).
 ## Running Locally
 
 Before running, copy the `example.envrc` file to `.envrc` and replace the values for 
-`GOOGLE_APPLICATION_CREDENTIALS`, `DB_USER`, `DB_PASS`, `DB_NAME`, `CLOUD_SQL_CONNECTION_NAME`,
+`GOOGLE_APPLICATION_CREDENTIALS`, `DB_USER`, `DB_PASS`, `DB_NAME`, `INSTANCE_CONNECTION_NAME`,
 and `CLOUD_KMS_URI` with the values from your project. Then run `source .envrc` or optionally use 
 [direnv](https://direnv.net/).
 

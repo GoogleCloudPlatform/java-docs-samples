@@ -98,14 +98,14 @@ mvn clean package com.google.cloud.tools:jib-maven-plugin:2.8.0:build \
     Create secrets via the command line:
     ```sh
     echo -n "my-awesome-project:us-central1:my-cloud-sql-instance" | \
-        gcloud secrets versions add CLOUD_SQL_CONNECTION_NAME_SECRET --data-file=-
+        gcloud secrets versions add INSTANCE_CONNECTION_NAME_SECRET --data-file=-
     ```
 
     Deploy the service to Cloud Run specifying the env var name and secret name:
     ```sh
     gcloud beta run deploy SERVICE --image gcr.io/[YOUR_PROJECT_ID]/run-sql \
-        --add-cloudsql-instances [CLOUD_SQL_CONNECTION_NAME] \
-        --update-secrets CLOUD_SQL_CONNECTION_NAME=[CLOUD_SQL_CONNECTION_NAME_SECRET]:latest
+        --add-cloudsql-instances [INSTANCE_CONNECTION_NAME] \
+        --update-secrets INSTANCE_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME_SECRET]:latest
     ```
 
 1. Navigate to the URL noted in Step 2.
