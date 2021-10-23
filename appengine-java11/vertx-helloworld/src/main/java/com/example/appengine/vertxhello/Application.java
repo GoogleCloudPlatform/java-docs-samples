@@ -32,10 +32,13 @@ public class Application extends AbstractVerticle {
   WebClient webClient;
 
   @Override
-  public void start(Future<Void> startFuture) {
-    webClient = WebClient.create(vertx);
+  public void start() throws Exception {
+    // Initialize router
     Router router = Router.router(vertx);
+    // Add default route to router
     router.route().handler(this::handleDefault);
+    // Initialize web client to create HTTP requests
+    webClient = WebClient.create(vertx);
 
     // Get the PORT environment variable for the server object to listen on
     int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
@@ -43,9 +46,10 @@ public class Application extends AbstractVerticle {
     vertx
         .createHttpServer()
         .requestHandler(router)
-        .listen(port, ar -> startFuture.handle(ar.mapEmpty()));
+        .listen(port);
   }
 
+  /** Use the WebClient to make a request to the metadata server */
   private void handleDefault(RoutingContext routingContext) {
     webClient
         .get(METADATA_PORT, METADATA_HOST, "/computeMetadata/v1/project/project-id")

@@ -16,7 +16,7 @@
 
 package com.example.task;
 
-// [START taskqueues_new_task]
+// [START cloud_tasks_taskqueues_new_task]
 import com.google.cloud.tasks.v2.AppEngineHttpRequest;
 import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.HttpMethod;
@@ -67,4 +67,4 @@ public class CreateTask {
     }
   }
 }
-// [END taskqueues_new_task]
+// [END cloud_tasks_taskqueues_new_task]

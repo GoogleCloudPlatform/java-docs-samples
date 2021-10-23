@@ -40,7 +40,7 @@ public class FhirStorePatch {
     // String fhirStoreName =
     //    String.format(
     //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
-    // String pubsubTopic = "your-pubsub-topic";
+    // String pubsubTopic = "projects/your-project-id/topics/your-pubsub-topic";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();

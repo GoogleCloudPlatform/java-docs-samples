@@ -16,22 +16,21 @@
 
 package functions;
 
-// [START functions_background_helloworld]
 // [START functions_helloworld_pubsub]
 
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-import functions.eventpojos.PubSubMessage;
+import com.google.events.cloud.pubsub.v1.Message;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class HelloPubSub implements BackgroundFunction<PubSubMessage> {
+public class HelloPubSub implements BackgroundFunction<Message> {
   private static final Logger logger = Logger.getLogger(HelloPubSub.class.getName());
 
   @Override
-  public void accept(PubSubMessage message, Context context) {
+  public void accept(Message message, Context context) {
     String name = "world";
     if (message != null && message.getData() != null) {
       name = new String(
@@ -42,5 +41,4 @@ public class HelloPubSub implements BackgroundFunction<PubSubMessage> {
     return;
   }
 }
-// [END functions_background_helloworld]
 // [END functions_helloworld_pubsub]

@@ -31,7 +31,7 @@ import org.junit.Test;
 // [END imports]
 
 // [START NameAndHelper]
-public class LocalMemcacheTest {
+public class LocalMemcacheTest extends BaseTestConfiguration {
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalMemcacheServiceTestConfig());

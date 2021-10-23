@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- [START cloudrun_manual_logging_logback] -->
 <!-- [START run_manual_logging_logback] -->
 <configuration>
   <appender name="jsonConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
@@ -19,3 +20,4 @@
   </root>
 </configuration>
 <!-- [END run_manual_logging_logback] -->
+<!-- [END cloudrun_manual_logging_logback] -->

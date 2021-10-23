@@ -59,7 +59,7 @@ public class DecodedGoogleJWTWrapper {
 
   // In Java we can only assure that an object is of class Map, we can check for key and value
   // types of an object added to Map, but only if Map is not empty.
-  @SuppressWarnings({"rawtypes","unchecked"})
+  @SuppressWarnings({"rawtypes", "unchecked"})
   private Map<String, Object> castToMetadataMap(Object object) {
     if (object instanceof Map) {
       Map map = (Map) object;

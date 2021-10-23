@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START pubsub_appengine_flex_push]
+// [START gae_flex_pubsub_push]
 @WebServlet(value = "/pubsub/push")
 public class PubSubPush extends HttpServlet {
 
@@ -52,7 +52,7 @@ public class PubSubPush extends HttpServlet {
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
-  // [END pubsub_appengine_flex_push]
+  // [END gae_flex_pubsub_push]
 
   private Message getMessage(HttpServletRequest request) throws IOException {
     String requestBody = request.getReader().lines().collect(Collectors.joining("\n"));

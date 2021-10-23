@@ -49,6 +49,7 @@ public final class CustomAttributeSample {
   // [START custom_attribute_job]
 
   /** Generate a job with a custom attribute. */
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public static Job generateJobWithACustomAttribute(String companyName) {
     // requisition id should be a unique Id in your system.
     String requisitionId = "jobWithACustomAttribute:" + String.valueOf(new Random().nextLong());

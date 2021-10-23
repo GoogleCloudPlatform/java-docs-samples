@@ -20,6 +20,10 @@ package kms;
 import com.google.cloud.kms.v1.CryptoKeyVersionName;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
 import com.google.cloud.kms.v1.PublicKey;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
+import com.google.protobuf.Int64Value;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -51,8 +55,30 @@ public class GetPublicKey {
 
       // Get the public key.
       PublicKey publicKey = client.getPublicKey(keyVersionName);
+
+      // Optional, but recommended: perform integrity verification on response.
+      // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
+      // https://cloud.google.com/kms/docs/data-integrity-guidelines
+      if (!publicKey.getName().equals(keyVersionName.toString())) {
+        throw new IOException("GetPublicKey: request to server corrupted");
+      }
+
+      // See helper below.
+      if (!crcMatches(publicKey.getPemCrc32C().getValue(),
+          publicKey.getPemBytes().toByteArray())) {
+        throw new IOException("GetPublicKey: response from server corrupted");
+      }
+
       System.out.printf("Public key: %s%n", publicKey.getPem());
     }
+  }
+
+  private long getCrc32cAsLong(byte[] data) {
+    return Hashing.crc32c().hashBytes(data).padToLong();
+  }
+
+  private boolean crcMatches(long expectedCrc, byte[] data) {
+    return expectedCrc == getCrc32cAsLong(data);
   }
 }
 // [END kms_get_public_key]

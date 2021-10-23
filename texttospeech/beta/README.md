@@ -41,38 +41,38 @@ To get started, [download][maven-download] and [install][maven-install] it.
 [auth]: https://cloud.google.com/docs/authentication/getting-started
 
 ## Quckstart
-Synthesize text to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/QuickstartSample.java)
+Synthesize text to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/texttospeech/cloud-client/src/main/java/com/example/texttospeech/QuickstartSample.java)
 ```
 mvn exec:java -DQuickstart
 ```
 
 ## List Voices
-This sample lists all the supported voices. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/ListAllSupportedVoices.java)
+This sample lists all the supported voices. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/texttospeech/cloud-client/src/main/java/com/example/texttospeech/ListAllSupportedVoices.java)
 ```
 mvn exec:java -DListVoices
 ```
 
 ## Synthesize Text
-This sample synthesizes text to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeText.java)
+This sample synthesizes text to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeText.java)
 ```
 mvn exec:java -DSynthesizeText -Dexec.args='--text "hello"'
 ```
-This sample synthesizes text with an audio profile to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeText.java)
+This sample synthesizes text with an audio profile to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeText.java)
 ```
 mvn exec:java -DSynthesizeText -Dexec.args='--text "hello" "telephony-class-application"'
 ```
-This sample synthesizes ssml to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeText.java)
+This sample synthesizes ssml to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeText.java)
 ```
 mvn exec:java -DSynthesizeText -Dexec.args='--ssml "<speak>Hello there.</speak>"'
 ```
 
 ## Synthesize File
-This sample synthesizes a text file to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeFile.java)
+This sample synthesizes a text file to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeFile.java)
 ```
 mvn exec:java -DSynthesizeFile -Dexec.args='--text resources/hello.txt'
 ```
 
-This sample synthesizes a ssml file to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeFile.java)
+This sample synthesizes a ssml file to an output audio file. [Java Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/texttospeech/cloud-client/src/main/java/com/example/texttospeech/SynthesizeFile.java)
 ```
 mvn exec:java -DSynthesizeFile -Dexec.args='--ssml resources/hello.ssml'
 ```

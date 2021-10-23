@@ -40,7 +40,7 @@ public class DicomStorePatch {
     // String dicomStoreName =
     //    String.format(
     //        DICOM_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-dicom-id");
-    // String pubsubTopic = "your-pubsub-topic";
+    // String pubsubTopic = "projects/your-project-id/topics/your-pubsub-topic";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();

@@ -17,7 +17,7 @@
 package com.example.task;
 
 import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -32,6 +32,7 @@ import org.junit.runners.JUnit4;
 
 /** Tests for creating Tasks with App Engine targets. */
 @RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class CreateTaskIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;

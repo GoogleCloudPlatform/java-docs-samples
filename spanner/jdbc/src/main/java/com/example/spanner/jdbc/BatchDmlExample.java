@@ -46,14 +46,14 @@ class BatchDmlExample {
       connection.setAutoCommit(false);
       try (Statement statement = connection.createStatement()) {
         statement.addBatch(
-            "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
-                + "VALUES (10, 'Marc', 'Richards')");
+            "INSERT INTO Singers (SingerId, FirstName, LastName, Revenues)\n"
+                + "VALUES (10, 'Marc', 'Richards', 100000)");
         statement.addBatch(
-            "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
-                + "VALUES (11, 'Amirah', 'Finney')");
+            "INSERT INTO Singers (SingerId, FirstName, LastName, Revenues)\n"
+                + "VALUES (11, 'Amirah', 'Finney', 195944.10)");
         statement.addBatch(
-            "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
-                + "VALUES (12, 'Reece', 'Dunn')");
+            "INSERT INTO Singers (SingerId, FirstName, LastName, Revenues)\n"
+                + "VALUES (12, 'Reece', 'Dunn', 10449.90)");
         int[] updateCounts = statement.executeBatch();
         connection.commit();
         System.out.printf("Batch insert counts: %s%n", Arrays.toString(updateCounts));

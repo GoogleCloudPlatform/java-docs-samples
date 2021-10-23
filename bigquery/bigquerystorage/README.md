@@ -1,4 +1,4 @@
-# Getting Started with BigQuery and the Google Java API Client library
+# Getting Started with BigQueryStorage and the Google Java API Client library
 
-This sample has moved to a new location: 
-https://github.com/googleapis/java-bigquerystorage/tree/master/samples
+The samples have been moved to live alongside the Java client library for Cloud BigQueryStorage:
+[BigQueryStorage samples](https://github.com/googleapis/java-bigquerystorage/tree/main/samples/snippets/src/main/java/com/example/bigquerystorage)

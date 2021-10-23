@@ -12,14 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START cloudrun_imageproc_dockerfile]
 # [START run_imageproc_dockerfile]
-# Use AdoptOpenJDK for base image.
-# It's important to use OpenJDK 8u191 or above that has container support enabled.
-# https://hub.docker.com/r/adoptopenjdk/openjdk11
-FROM adoptopenjdk/openjdk11:alpine-slim
+# Use eclipse-temurin for base image.
+# It's important to use JDK 8u191 or above that has container support enabled.
+# https://hub.docker.com/_/eclipse-temurin/
+# https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
+FROM eclipse-temurin:11-jre
 
 # Install Imagemagick into the container image.
 # For more on system packages review the system packages tutorial.
 # https://cloud.google.com/run/docs/tutorials/system-packages#dockerfile
-RUN apk add --no-cache imagemagick
+RUN set -ex; \
+  apt-get -y update; \
+  apt-get -y install imagemagick; \
+  rm -rf /var/lib/apt/lists/*
 # [END run_imageproc_dockerfile]
+# [END cloudrun_imageproc_dockerfile]

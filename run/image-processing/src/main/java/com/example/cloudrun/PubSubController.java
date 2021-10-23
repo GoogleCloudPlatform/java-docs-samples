@@ -16,6 +16,7 @@
 
 package com.example.cloudrun;
 
+// [START cloudrun_imageproc_controller]
 // [START run_imageproc_controller]
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -31,13 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PubSubController {
   @RequestMapping(value = "/", method = RequestMethod.POST)
-  public ResponseEntity receiveMessage(@RequestBody Body body) {
+  public ResponseEntity<String> receiveMessage(@RequestBody Body body) {
     // Get PubSub message from request body.
     Body.Message message = body.getMessage();
     if (message == null) {
       String msg = "Bad Request: invalid Pub/Sub message format";
       System.out.println(msg);
-      return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
     }
 
     // Decode the Pub/Sub message.
@@ -45,18 +46,18 @@ public class PubSubController {
     JsonObject data;
     try {
       String decodedMessage = new String(Base64.getDecoder().decode(pubSubMessage));
-      data = new JsonParser().parse(decodedMessage).getAsJsonObject();
+      data = JsonParser.parseString(decodedMessage).getAsJsonObject();
     } catch (Exception e) {
       String msg = "Error: Invalid Pub/Sub message: data property is not valid base64 encoded JSON";
       System.out.println(msg);
-      return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
     }
 
     // Validate the message is a Cloud Storage event.
     if (data.get("name") == null || data.get("bucket") == null) {
       String msg = "Error: Invalid Cloud Storage notification: expected name and bucket properties";
       System.out.println(msg);
-      return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
     }
 
     try {
@@ -64,9 +65,10 @@ public class PubSubController {
     } catch (Exception e) {
       String msg = String.format("Error: Blurring image: %s", e.getMessage());
       System.out.println(msg);
-      return new ResponseEntity(msg, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return new ResponseEntity(HttpStatus.OK);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }
 // [END run_imageproc_controller]
+// [END cloudrun_imageproc_controller]

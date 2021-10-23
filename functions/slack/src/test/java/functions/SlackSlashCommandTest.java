@@ -24,11 +24,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.github.seratch.jslack.app_backend.SlackSignature;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.gson.Gson;
+import com.slack.api.app_backend.SlackSignature;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -91,8 +91,8 @@ public class SlackSlashCommandTest {
 
   @Test
   public void requiresSlackAuthHeadersTest() throws IOException, GeneralSecurityException {
-    String jsonStr = gson.toJson(Map.of("text", "foo"));
-    StringReader requestReadable = new StringReader(jsonStr);
+    String urlEncodedStr = "text=foo";
+    StringReader requestReadable = new StringReader(urlEncodedStr);
 
     when(request.getMethod()).thenReturn("POST");
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
@@ -105,7 +105,7 @@ public class SlackSlashCommandTest {
 
   @Test
   public void recognizesValidSlackTokenTest() throws IOException, GeneralSecurityException {
-    StringReader requestReadable = new StringReader("{}");
+    StringReader requestReadable = new StringReader("");
 
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
     when(request.getMethod()).thenReturn("POST");
@@ -117,8 +117,8 @@ public class SlackSlashCommandTest {
 
   @Test
   public void handlesSearchErrorTest() throws IOException, GeneralSecurityException {
-    String jsonStr = gson.toJson(Map.of("text", "foo"));
-    StringReader requestReadable = new StringReader(jsonStr);
+    String urlEncodedStr = "text=foo";
+    StringReader requestReadable = new StringReader(urlEncodedStr);
 
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
     when(request.getMethod()).thenReturn("POST");
@@ -132,8 +132,8 @@ public class SlackSlashCommandTest {
 
   @Test
   public void handlesEmptyKgResultsTest() throws IOException, GeneralSecurityException {
-    String jsonStr = gson.toJson(Map.of("text", "asdfjkl13579"));
-    StringReader requestReadable = new StringReader(jsonStr);
+    String urlEncodedStr = "text=asdfjkl13579";
+    StringReader requestReadable = new StringReader(urlEncodedStr);
 
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
     when(request.getMethod()).thenReturn("POST");
@@ -148,8 +148,24 @@ public class SlackSlashCommandTest {
 
   @Test
   public void handlesPopulatedKgResultsTest() throws IOException, GeneralSecurityException {
-    String jsonStr = gson.toJson(Map.of("text", "lion"));
-    StringReader requestReadable = new StringReader(jsonStr);
+    String urlEncodedStr = "text=lion";
+    StringReader requestReadable = new StringReader(urlEncodedStr);
+
+    when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
+    when(request.getMethod()).thenReturn("POST");
+
+    SlackSlashCommand functionInstance = new SlackSlashCommand(alwaysValidVerifier);
+
+    functionInstance.service(request, response);
+
+    writerOut.flush();
+    assertThat(responseOut.toString()).contains("https://en.wikipedia.org/wiki/Lion");
+  }
+
+  @Test
+  public void handlesMultipleUrlParamsTest() throws IOException, GeneralSecurityException {
+    String urlEncodedStr = "unused=foo&text=lion";
+    StringReader requestReadable = new StringReader(urlEncodedStr);
 
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
     when(request.getMethod()).thenReturn("POST");

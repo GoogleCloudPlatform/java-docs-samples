@@ -18,7 +18,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.compute.Compute;
 import com.google.api.services.compute.ComputeScopes;
 import com.google.api.services.compute.model.AccessConfig;
@@ -79,7 +79,7 @@ public class ComputeEngineSample {
   private static HttpTransport httpTransport;
 
   /** Global instance of the JSON factory. */
-  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+  private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
   public static void main(String[] args) {
     try {
@@ -235,6 +235,14 @@ public class ComputeEngineSample {
     return delete.execute();
   }
 
+  public static String getLastWordFromUrl(String url) {
+    if (url != null) {
+      String[] bits = url.split("/");
+      url = bits[bits.length - 1];
+    }
+    return url;
+  }
+
   // [START wait_until_complete]
   /**
    * Wait until {@code operation} is completed.
@@ -250,11 +258,8 @@ public class ComputeEngineSample {
       Compute compute, Operation operation, long timeout) throws Exception {
     long start = System.currentTimeMillis();
     final long pollInterval = 5 * 1000;
-    String zone = operation.getZone(); // null for global/regional operations
-    if (zone != null) {
-      String[] bits = zone.split("/");
-      zone = bits[bits.length - 1];
-    }
+    String zone = getLastWordFromUrl(operation.getZone()); // null for global/regional operations
+    String region = getLastWordFromUrl(operation.getRegion());
     String status = operation.getStatus();
     String opId = operation.getName();
     while (operation != null && !status.equals("DONE")) {
@@ -266,6 +271,9 @@ public class ComputeEngineSample {
       System.out.println("waiting...");
       if (zone != null) {
         Compute.ZoneOperations.Get get = compute.zoneOperations().get(PROJECT_ID, zone, opId);
+        operation = get.execute();
+      } else if (region != null) {
+        Compute.RegionOperations.Get get = compute.regionOperations().get(PROJECT_ID, region, opId);
         operation = get.execute();
       } else {
         Compute.GlobalOperations.Get get = compute.globalOperations().get(PROJECT_ID, opId);

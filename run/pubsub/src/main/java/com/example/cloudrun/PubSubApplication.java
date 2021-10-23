@@ -16,6 +16,7 @@
 
 package com.example.cloudrun;
 
+// [START cloudrun_pubsub_server]
 // [START run_pubsub_server]
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,3 +28,4 @@ public class PubSubApplication {
   }
 }
 // [END run_pubsub_server]
+// [END cloudrun_pubsub_server]

@@ -17,6 +17,7 @@
 package functions;
 
 // [START functions_tips_lazy_globals]
+// [START cloudrun_tips_global_lazy]
 // [START run_tips_global_lazy]
 
 import com.google.cloud.functions.HttpFunction;
@@ -67,4 +68,5 @@ public class LazyFields implements HttpFunction {
   }
 }
 // [END run_tips_global_lazy]
+// [END cloudrun_tips_global_lazy]
 // [END functions_tips_lazy_globals]

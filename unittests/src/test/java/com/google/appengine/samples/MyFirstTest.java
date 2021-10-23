@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class MyFirstTest {
+public class MyFirstTest extends BaseTestConfiguration {
   @Test
   public void testAddition() {
     assertEquals(4, 2 + 2);

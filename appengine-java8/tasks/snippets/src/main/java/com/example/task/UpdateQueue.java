@@ -16,7 +16,7 @@
 
 package com.example.task;
 
-// [START taskqueues_processing_rate]
+// [START cloud_tasks_taskqueues_processing_rate]
 import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.LocationName;
 import com.google.cloud.tasks.v2.Queue;
@@ -51,4 +51,4 @@ public class UpdateQueue {
     }
   }
 }
-// [END taskqueues_processing_rate]
+// [END cloud_tasks_taskqueues_processing_rate]

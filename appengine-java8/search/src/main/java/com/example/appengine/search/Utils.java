@@ -39,6 +39,7 @@ public class Utils {
    * @throws InterruptedException When Thread.sleep is interrupted.
    */
   // [START putting_document_with_retry]
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public static void indexADocument(String indexName, Document document)
       throws InterruptedException {
     IndexSpec indexSpec = IndexSpec.newBuilder().setName(indexName).build();

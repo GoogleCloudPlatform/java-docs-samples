@@ -29,6 +29,7 @@ public class ObjectifyHelper implements ServletContextListener {
   /**
    * This will be invoked as part of a warmup request, or the first user request if no warmup
    * request.
+   *
    * @param event ServletContextEvent.
    */
   public void contextInitialized(ServletContextEvent event) {

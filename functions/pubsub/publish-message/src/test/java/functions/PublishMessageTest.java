@@ -75,7 +75,7 @@ public class PublishMessageTest {
 
     writerOut.flush();
     assertThat(responseOut.toString()).isEqualTo(
-        "Missing 'topic' and/or 'subscription' parameter(s).");
+        "Missing 'topic' and/or 'message' parameter(s).");
   }
 
   @Test

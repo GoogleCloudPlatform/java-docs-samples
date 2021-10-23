@@ -3,7 +3,7 @@
 This sample shows how to deploy a Hello World [Spring Boot](https://spring.io/projects/spring-boot)
 application to Cloud Run.
 
-For more details on how to work with this sample read the [Google Cloud Run Java Samples README](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/run).
+For more details on how to work with this sample read the [Google Cloud Run Java Samples README](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/run).
 
 [![Run in Google Cloud][run_img]][run_link]
 

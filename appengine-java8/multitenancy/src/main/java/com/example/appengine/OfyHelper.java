@@ -30,6 +30,7 @@ public class OfyHelper implements ServletContextListener {
 
   /**
    * A ServletContextListener initializer.
+   *
    * @param event .
    */
   public void contextInitialized(ServletContextEvent event) {

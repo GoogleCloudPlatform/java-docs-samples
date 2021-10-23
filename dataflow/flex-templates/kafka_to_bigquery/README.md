@@ -1,6 +1,6 @@
 # Dataflow Flex templates - Kafka to BigQuery
 
-[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/editor)
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=dataflow/flex-templates/kafka_to_bigquery/README.md)
 
 Samples showing how to create and run an
 [Apache Beam](https://beam.apache.org/) template with a custom Docker image on
@@ -223,34 +223,38 @@ gcloud compute instances create-with-container kafka-vm \
 First, let's build the container image.
 
 ```sh
-export TEMPLATE_IMAGE="gcr.io/$PROJECT/samples/dataflow/streaming-beam-sql:latest"
-
 # Build and package the application as an uber-jar file.
 mvn clean package
-
-# Build the Dataflow Flex template image into Container Registry.
-gcloud builds submit --tag "$TEMPLATE_IMAGE" .
 ```
 
 Now we can create the template file.
 
 ```sh
+export TEMPLATE_IMAGE="gcr.io/$PROJECT/samples/dataflow/kafka-to-bigquery-sql:latest"
 export TEMPLATE_PATH="gs://$BUCKET/samples/dataflow/templates/kafka-to-bigquery.json"
 
 # Build the Flex Template.
-gcloud beta dataflow flex-template build $TEMPLATE_PATH \
-  --image "$TEMPLATE_IMAGE" \
-  --sdk-language "JAVA" \
-  --metadata-file "metadata.json"
+gcloud dataflow flex-template build $TEMPLATE_PATH \
+    --image-gcr-path "$TEMPLATE_IMAGE" \
+    --sdk-language "JAVA" \
+    --flex-template-base-image JAVA11 \
+    --metadata-file "metadata.json" \
+    --jar "target/kafka-to-bigquery-1.0.jar" \
+    --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="org.apache.beam.samples.KafkaToBigQuery"
 ```
 
 Finally, to run a Dataflow job using the template.
 
 ```sh
+export REGION="us-central1"
+
 # Run the Flex Template.
-gcloud beta dataflow flex-template run "kafka-to-bigquery-`date +%Y%m%d-%H%M%S`" \
-  --template-file-gcs-location "$TEMPLATE_PATH" \
-  --parameters "inputTopic=messages,outputTable=$PROJECT:$DATASET.$TABLE,bootstrapServer=$KAFKA_ADDRESS:9092"
+gcloud dataflow flex-template run "kafka-to-bigquery-`date +%Y%m%d-%H%M%S`" \
+    --template-file-gcs-location "$TEMPLATE_PATH" \
+    --parameters inputTopic="messages" \
+    --parameters outputTable="$PROJECT:$DATASET.$TABLE" \
+    --parameters bootstrapServer="$KAFKA_ADDRESS:9092" \
+    --region "$REGION"
 ```
 
 Run the following query to check the results in BigQuery.

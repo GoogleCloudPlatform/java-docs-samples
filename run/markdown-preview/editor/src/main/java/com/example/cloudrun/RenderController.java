@@ -36,6 +36,7 @@ public class RenderController {
 
   private static final Logger logger = LoggerFactory.getLogger(RenderController.class);
 
+  // [START cloudrun_secure_request_do]
   // [START run_secure_request_do]
   // '/render' expects a JSON body payload with a 'data' property holding plain text
   // for rendering.
@@ -56,6 +57,7 @@ public class RenderController {
     return html;
   }
   // [END run_secure_request_do]
+  // [END cloudrun_secure_request_do]
 
   // Instantiate OkHttpClient
   private static final OkHttpClient ok =
@@ -64,6 +66,7 @@ public class RenderController {
           .writeTimeout(500, TimeUnit.MILLISECONDS)
           .build();
 
+  // [START cloudrun_secure_request]
   // [START run_secure_request]
   // makeAuthenticatedRequest creates a new HTTP request authenticated by a JSON Web Tokens (JWT)
   // retrievd from Application Default Credentials.
@@ -98,4 +101,5 @@ public class RenderController {
     return html;
   }
   // [END run_secure_request]
+  // [END cloudrun_secure_request]
 }

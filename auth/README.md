@@ -34,3 +34,20 @@ You can then run a given `ClassName` via:
 
     mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.AuthExample
         -Dexec.args="compute"
+
+## Downscoping with Credential Access Boundaries
+
+The same configuration above applies. 
+
+To run the samples for [Downscoping with Credential Access Boundaries](https://cloud.google.com/iam/docs/downscoping-short-lived-credentials)
+you must provide both a bucket name and object name under the TODO(developer): in the main method of `DownscopingExample`. 
+
+You can then run `DownscopingExample` via:
+
+	mvn exec:exec
+
+## Tests
+Run all tests:
+```
+   mvn clean verify
+```

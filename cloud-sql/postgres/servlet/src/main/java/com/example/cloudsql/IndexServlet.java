@@ -43,14 +43,22 @@ import javax.sql.DataSource;
 @WebServlet(name = "Index", value = "")
 public class IndexServlet extends HttpServlet {
 
+  class TemplateData {
+
+    public int tabCount;
+    public int spaceCount;
+    public List<Vote> recentVotes;
+
+    public TemplateData(int tabCount, int spaceCount, List<Vote> recentVotes) {
+      this.tabCount = tabCount;
+      this.spaceCount = spaceCount;
+      this.recentVotes = recentVotes;
+    }
+  }
+
   private static final Logger LOGGER = Logger.getLogger(IndexServlet.class.getName());
 
-  @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws IOException, ServletException {
-    // Extract the pool from the Servlet Context, reusing the one that was created
-    // in the ContextListener when the application was started
-    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
+  public TemplateData getTemplateData(DataSource pool) throws ServletException {
 
     int tabCount = 0;
     int spaceCount = 0;
@@ -59,7 +67,7 @@ public class IndexServlet extends HttpServlet {
       // PreparedStatements are compiled by the database immediately and executed at a later date.
       // Most databases cache previously compiled queries, which improves efficiency.
       String stmt1 = "SELECT candidate, time_cast FROM votes ORDER BY time_cast DESC LIMIT 5";
-      try (PreparedStatement voteStmt = conn.prepareStatement(stmt1); ) {
+      try (PreparedStatement voteStmt = conn.prepareStatement(stmt1);) {
         // Execute the statement
         ResultSet voteResults = voteStmt.executeQuery();
         // Convert a ResultSet into Vote objects
@@ -73,7 +81,7 @@ public class IndexServlet extends HttpServlet {
       // PreparedStatements can also be executed multiple times with different arguments. This can
       // improve efficiency, and project a query from being vulnerable to an SQL injection.
       String stmt2 = "SELECT COUNT(vote_id) FROM votes WHERE candidate=?";
-      try (PreparedStatement voteCountStmt = conn.prepareStatement(stmt2); ) {
+      try (PreparedStatement voteCountStmt = conn.prepareStatement(stmt2);) {
         voteCountStmt.setString(1, "TABS");
         ResultSet tabResult = voteCountStmt.executeQuery();
         if (tabResult.next()) { // Move to the first result
@@ -95,11 +103,24 @@ public class IndexServlet extends HttpServlet {
               + "steps in the README and try again.",
           ex);
     }
+    TemplateData templateData = new TemplateData(tabCount, spaceCount, recentVotes);
+
+    return templateData;
+  }
+
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws IOException, ServletException {
+    // Extract the pool from the Servlet Context, reusing the one that was created
+    // in the ContextListener when the application was started
+    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
+
+    TemplateData templateData = getTemplateData(pool);
 
     // Add variables and render the page
-    req.setAttribute("tabCount", tabCount);
-    req.setAttribute("spaceCount", spaceCount);
-    req.setAttribute("recentVotes", recentVotes);
+    req.setAttribute("tabCount", templateData.tabCount);
+    req.setAttribute("spaceCount", templateData.spaceCount);
+    req.setAttribute("recentVotes", templateData.recentVotes);
     req.getRequestDispatcher("/index.jsp").forward(req, resp);
   }
 
@@ -140,7 +161,7 @@ public class IndexServlet extends HttpServlet {
 
       // PreparedStatements can be more efficient and project against injections.
       String stmt = "INSERT INTO votes (time_cast, candidate) VALUES (?, ?);";
-      try (PreparedStatement voteStmt = conn.prepareStatement(stmt); ) {
+      try (PreparedStatement voteStmt = conn.prepareStatement(stmt);) {
         voteStmt.setTimestamp(1, now);
         voteStmt.setString(2, team);
 

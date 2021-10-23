@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class HL7v2MessagePatch {
   private static final String MESSAGE_NAME =
       "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s/messages/%s";

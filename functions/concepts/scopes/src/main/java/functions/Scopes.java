@@ -17,6 +17,7 @@
 package functions;
 
 // [START functions_tips_scopes]
+// [START cloudrun_tips_global_scope]
 // [START run_tips_global_scope]
 
 import com.google.cloud.functions.HttpFunction;
@@ -54,4 +55,5 @@ public class Scopes implements HttpFunction {
   }
 }
 // [END run_tips_global_scope]
+// [END cloudrun_tips_global_scope]
 // [END functions_tips_scopes]

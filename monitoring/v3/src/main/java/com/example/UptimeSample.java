@@ -214,6 +214,7 @@ public class UptimeSample {
   // [END monitoring_uptime_check_list_configs]]
 
   // [START monitoring_uptime_check_list_ips]]
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   private static void listUptimeCheckIPs() throws IOException {
     try (UptimeCheckServiceClient client = UptimeCheckServiceClient.create()) {
       ListUptimeCheckIpsPagedResponse response =

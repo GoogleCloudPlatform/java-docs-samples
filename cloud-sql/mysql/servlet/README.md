@@ -21,13 +21,13 @@ Download a JSON key to use to authenticate your connection.
 1. Use the information noted in the previous steps:
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
-export CLOUD_SQL_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>'
+export INSTANCE_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
 export DB_USER='my-db-user'
 export DB_PASS='my-db-pass'
 export DB_NAME='my_db'
 ```
 Note: Saving credentials in environment variables is convenient, but not secure - consider a more
-secure solution such as [Cloud KMS](https://cloud.google.com/kms/) to help keep secrets safe.
+secure solution such as [Cloud KMS](https://cloud.google.com/kms/) or [Secret Manager](https://cloud.google.com/secret-manager/) to help keep secrets safe.
 
 ## Deploying locally
 
@@ -55,7 +55,7 @@ The following command will run the application locally in the the GAE-developmen
 mvn appengine:run
 ```
 
-### Deploy to Google Cloud
+### Deploy to Google App Engine
 
 First, update `src/main/webapp/WEB-INF/appengine-web.xml` with the correct values to pass the
 environment variables into the runtime.
@@ -70,34 +70,53 @@ mvn clean package appengine:deploy
 See the [Cloud Run documentation](https://cloud.google.com/run/docs/configuring/connect-cloudsql)
 for more details on connecting a Cloud Run service to Cloud SQL.
 
-1. Build the container image:
+1. Build the container image using [Jib](https://cloud.google.com/java/getting-started/jib):
 
   ```sh
-  gcloud builds submit --tag gcr.io/[YOUR_PROJECT_ID]/run-mysql
+mvn clean package com.google.cloud.tools:jib-maven-plugin:2.8.0:build \
+ -Dimage=gcr.io/[YOUR_PROJECT_ID]/run-mysql -DskipTests
   ```
 
 2. Deploy the service to Cloud Run:
 
   ```sh
-  gcloud run deploy run-mysql --image gcr.io/[YOUR_PROJECT_ID]/run-mysql
+  gcloud run deploy run-mysql \
+    --image gcr.io/[YOUR_PROJECT_ID]/run-mysql \
+    --platform managed \
+    --allow-unauthenticated \
+    --region [REGION] \
+    --update-env-vars INSTANCE_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME] \
+    --update-env-vars DB_USER=[MY_DB_USER] \
+    --update-env-vars DB_PASS=[MY_DB_PASS] \
+    --update-env-vars DB_NAME=[MY_DB]
   ```
 
-  Take note of the URL output at the end of the deployment process.
-
-3. Configure the service for use with Cloud Run
-
-  ```sh
-  gcloud run services update run-mysql \
-      --add-cloudsql-instances [INSTANCE_CONNECTION_NAME] \
-      --set-env-vars CLOUD_SQL_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME],\
-        DB_USER=[MY_DB_USER],DB_PASS=[MY_DB_PASS],DB_NAME=[MY_DB]
-  ```
   Replace environment variables with the correct values for your Cloud SQL
   instance configuration.
 
-  This step can be done as part of deployment but is separated for clarity.
+  Take note of the URL output at the end of the deployment process.
 
-4. Navigate your browser to the URL noted in step 2.
+  It is recommended to use the [Secret Manager integration](https://cloud.google.com/run/docs/configuring/secrets) for Cloud Run instead
+  of using environment variables for the SQL configuration. The service injects the SQL credentials from
+  Secret Manager at runtime via an environment variable.
+
+  Create secrets via the command line:
+  ```sh
+  echo -n "my-awesome-project:us-central1:my-cloud-sql-instance" | \
+      gcloud secrets versions add INSTANCE_CONNECTION_NAME_SECRET --data-file=-
+  ```
+
+  Deploy the service to Cloud Run specifying the env var name and secret name:
+  ```sh
+  gcloud beta run deploy SERVICE --image gcr.io/[YOUR_PROJECT_ID]/run-sql \
+      --add-cloudsql-instances [INSTANCE_CONNECTION_NAME] \
+      --update-secrets INSTANCE_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME_SECRET]:latest,\
+        DB_USER=[DB_USER_SECRET]:latest, \
+        DB_PASS=[DB_PASS_SECRET]:latest, \
+        DB_NAME=[DB_NAME_SECRET]:latest
+  ```
+
+3. Navigate your browser to the URL noted in step 2.
 
   For more details about using Cloud Run see http://cloud.run.
   Review other [Java on Cloud Run samples](../../../run/).

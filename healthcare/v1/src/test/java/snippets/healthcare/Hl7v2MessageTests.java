@@ -16,8 +16,9 @@
 
 package snippets.healthcare;
 
-import static junit.framework.TestCase.assertNotNull;
+
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -118,6 +119,7 @@ public class Hl7v2MessageTests {
   }
 
   @Test
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void test_HL7v2MessageCreate() throws Exception {
     HL7v2MessageCreate.hl7v2MessageCreate(
         hl7v2StoreName, "new-hl7v2-message", "src/test/resources/hl7v2-sample-ingest.txt");
@@ -127,6 +129,7 @@ public class Hl7v2MessageTests {
   }
 
   @Test
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void test_GetHL7v2Message() throws Exception {
     HL7v2MessageGet.hl7v2MessageGet(messageName);
 
@@ -165,6 +168,7 @@ public class Hl7v2MessageTests {
   }
 
   @Test
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void test_DeleteHL7v2Message() throws Exception {
     HL7v2MessageDelete.hl7v2MessageDelete(messageName);
 

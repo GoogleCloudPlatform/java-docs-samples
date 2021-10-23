@@ -18,6 +18,7 @@ package com.example.spanner.jdbc;
 
 //[START spanner_jdbc_insert]
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -32,21 +33,23 @@ class InsertDataExample {
     final long singerId;
     final String firstName;
     final String lastName;
+    final BigDecimal revenues;
 
-    Singer(long singerId, String firstName, String lastName) {
+    Singer(long singerId, String firstName, String lastName, BigDecimal revenues) {
       this.singerId = singerId;
       this.firstName = firstName;
       this.lastName = lastName;
+      this.revenues = revenues;
     }
   }
 
   static final List<Singer> SINGERS =
       Arrays.asList(
-          new Singer(10, "Marc", "Richards"),
-          new Singer(20, "Catalina", "Smith"),
-          new Singer(30, "Alice", "Trentor"),
-          new Singer(40, "Lea", "Martin"),
-          new Singer(50, "David", "Lomond"));
+          new Singer(10, "Marc", "Richards", new BigDecimal("104100.00")),
+          new Singer(20, "Catalina", "Smith", new BigDecimal("9880.99")),
+          new Singer(30, "Alice", "Trentor", new BigDecimal("300183")),
+          new Singer(40, "Lea", "Martin", new BigDecimal("20118.12")),
+          new Singer(50, "David", "Lomond", new BigDecimal("311399.26")));
 
   static void insertData() throws SQLException {
     // TODO(developer): Replace these variables before running the sample.
@@ -69,14 +72,15 @@ class InsertDataExample {
       try (PreparedStatement ps =
           connection.prepareStatement(
               "INSERT INTO Singers\n"
-                  + "(SingerId, FirstName, LastName, SingerInfo)\n"
+                  + "(SingerId, FirstName, LastName, SingerInfo, Revenues)\n"
                   + "VALUES\n"
-                  + "(?, ?, ?, ?)")) {
+                  + "(?, ?, ?, ?, ?)")) {
         for (Singer singer : SINGERS) {
           ps.setLong(1, singer.singerId);
           ps.setString(2, singer.firstName);
           ps.setString(3, singer.lastName);
           ps.setNull(4, Types.BINARY);
+          ps.setBigDecimal(5, singer.revenues);
           ps.addBatch();
         }
         int[] updateCounts = ps.executeBatch();

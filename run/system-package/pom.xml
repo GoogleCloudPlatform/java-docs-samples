@@ -25,7 +25,7 @@ limitations under the License.
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.18</version>
+    <version>1.0.23</version>
   </parent>
 
   <properties>
@@ -38,28 +38,29 @@ limitations under the License.
     <dependency>
       <groupId>com.sparkjava</groupId>
       <artifactId>spark-core</artifactId>
-      <version>2.9.2</version>
+      <version>2.9.3</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.30</version>
+      <version>1.7.32</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <!-- [START cloudrun_system_package_jib] -->
       <!-- [START run_system_package_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>2.5.2</version>
+        <version>3.1.4</version>
         <configuration>
           <from>
             <image>gcr.io/PROJECT_ID/graphviz-base</image>
@@ -70,6 +71,7 @@ limitations under the License.
         </configuration>
       </plugin>
       <!-- [END run_system_package_jib] -->
+      <!-- [END cloudrun_system_package_jib] -->
     </plugins>
   </build>
 </project>

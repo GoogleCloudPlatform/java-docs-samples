@@ -15,6 +15,7 @@
  */
 
 package com.example.iap;
+
 // [START iap_validate_jwt]
 
 import com.google.api.client.http.HttpRequest;
@@ -42,11 +43,10 @@ public class VerifyIapRequestHeader {
         String.format("/projects/%s/apps/%s", Long.toUnsignedString(projectNumber), projectId));
   }
 
-  boolean verifyJwtForComputeEngine(
-      HttpRequest request, long projectNumber, long backendServiceId) throws Exception {
+  boolean verifyJwtForComputeEngine(HttpRequest request, long projectNumber, long backendServiceId)
+      throws Exception {
     // Check for iap jwt header in incoming request
-    String jwtToken = request.getHeaders()
-        .getFirstHeaderStringValue("x-goog-iap-jwt-assertion");
+    String jwtToken = request.getHeaders().getFirstHeaderStringValue("x-goog-iap-jwt-assertion");
     if (jwtToken == null) {
       return false;
     }
@@ -58,10 +58,8 @@ public class VerifyIapRequestHeader {
   }
 
   private boolean verifyJwt(String jwtToken, String expectedAudience) {
-    TokenVerifier tokenVerifier = TokenVerifier.newBuilder()
-        .setAudience(expectedAudience)
-        .setIssuer(IAP_ISSUER_URL)
-        .build();
+    TokenVerifier tokenVerifier =
+        TokenVerifier.newBuilder().setAudience(expectedAudience).setIssuer(IAP_ISSUER_URL).build();
     try {
       JsonWebToken jsonWebToken = tokenVerifier.verify(jwtToken);
 

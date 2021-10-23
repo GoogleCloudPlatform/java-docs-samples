@@ -108,18 +108,19 @@ public class Echo {
   }
   // [END echo_api_key]
 
-  private Message doEcho(Message message, Integer n) {
+  private Message doEcho(Message request, Integer n) {
+    Message response = new Message();
     if (n != null && n >= 0) {
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < n; i++) {
         if (i > 0) {
-          sb.append(" ");
+          sb.append(' ');
         }
-        sb.append(message.getMessage());
+        sb.append(request.getMessage());
       }
-      message.setMessage(sb.toString());
+      response.setMessage(sb.toString());
     }
-    return message;
+    return response;
   }
 
   /**

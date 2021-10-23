@@ -33,6 +33,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.logging.Logger;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -44,6 +45,7 @@ import org.mockito.MockitoAnnotations;
 
 @RunWith(JUnit4.class)
 public class HelloSpannerTest {
+  private AutoCloseable mocks;
   @Mock private HttpRequest request;
   @Mock private HttpResponse response;
   @Mock private DatabaseClient client;
@@ -70,13 +72,20 @@ public class HelloSpannerTest {
 
   @Before
   public void beforeTest() throws IOException {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
 
     responseOut = new StringWriter();
     writerOut = new BufferedWriter(responseOut);
     when(response.getWriter()).thenReturn(writerOut);
 
     logHandler.clear();
+  }
+
+  @After
+  public void releaseMocks() throws Exception {
+    if (mocks != null) {
+      mocks.close();
+    }
   }
 
   private void setupSuccessfulMockQuery() {

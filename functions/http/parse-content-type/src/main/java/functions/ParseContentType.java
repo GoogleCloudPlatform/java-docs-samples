@@ -40,7 +40,7 @@ public class ParseContentType implements HttpFunction {
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    String name;
+    String name = null;
 
     // Default values avoid null issues (with switch/case) and exceptions from get() (optionals)
     String contentType = request.getContentType().orElse("");
@@ -51,9 +51,8 @@ public class ParseContentType implements HttpFunction {
         JsonObject body = gson.fromJson(request.getReader(), JsonObject.class);
         if (body.has("name")) {
           name = body.get("name").getAsString();
-          break;
         }
-        // else: No "name" parameter specified; fall through to default case
+        break;
       case "application/octet-stream":
         // 'John', stored in a Buffer
         name = new String(Base64.getDecoder().decode(request.getInputStream().readAllBytes()),
@@ -68,20 +67,22 @@ public class ParseContentType implements HttpFunction {
         Optional<String> nameParam = request.getFirstQueryParameter("name");
         if (nameParam.isPresent()) {
           name = nameParam.get();
-          break;
         }
-        // else: No "name" parameter specified; fall through to default case
+        break;
       default:
-        // Invalid or missing header "Content-Type"
-        response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
+        // Invalid or missing "Content-Type" header
+        response.setStatusCode(HttpURLConnection.HTTP_UNSUPPORTED_TYPE);
         return;
     }
 
-    // Respond with a name, if one was detected
-    if (name != null) {
-      var writer = new PrintWriter(response.getWriter());
-      writer.printf("Hello %s!", name);
+    // Verify that a name was provided
+    if (name == null) {
+      response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
     }
+
+    // Respond with a name
+    var writer = new PrintWriter(response.getWriter());
+    writer.printf("Hello %s!", name);
   }
 }
 // [END functions_http_content]

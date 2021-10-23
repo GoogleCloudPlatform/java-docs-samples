@@ -1,0 +1,19 @@
+name: container-vulnerability
+description: Container Analysis Vulnerability
+filter: 'resource.type="cloud_function" resource.labels.function_name="occurrences-consumer" textPayload: "Image: "'
+labelExtractors:
+  cve: 'REGEXP_EXTRACT(textPayload, "CVE: (.*), Severity")'
+  image: 'REGEXP_EXTRACT(textPayload, "Image: (.*), CVE:")'
+  severity: 'REGEXP_EXTRACT(textPayload, "Severity: (.*)")'
+metricDescriptor:
+  description: Container Analysis Vulnerability
+  labels:
+    - description: CVE
+      key: cve
+    - description: Severity
+      key: severity
+    - description: Image Name
+      key: image
+  metricKind: DELTA
+  unit: '1'
+  valueType: INT64

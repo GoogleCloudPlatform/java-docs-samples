@@ -61,6 +61,12 @@ Sample(s) showing how to use [Google Cloud Pub/Sub] with [Google Cloud Dataflow]
     gcloud scheduler jobs run publisher-job
     ```
 
+1. Set `REGION` to a Dataflow [regional endpoint].
+
+   ```
+   export REGION=your-cloud-region
+   ```
+
 ## Setup
 
 The following instructions will help you prepare your development environment.
@@ -91,19 +97,23 @@ The following instructions will help you prepare your development environment.
 The following example will run a streaming pipeline. It will read messages from a Pub/Sub topic, then window them into fixed-sized intervals, and write one file per window into a GCS location.
 
 + `--project`: sets the Google Cloud project ID to run the pipeline on
++ `--region`: sets the Dataflow regional endpoint
 + `--inputTopic`: sets the input Pub/Sub topic to read messages from
 + `--output`: sets the output GCS path prefix to write files to
++ `--gcpTempLocation`: sets a GCP location for Dataflow to download temporary files
 + `--runner [optional]`: specifies the runner to run the pipeline, defaults to `DirectRunner`
 + `--windowSize [optional]`: specifies the window size in minutes, defaults to 1
 
 ```bash
 mvn compile exec:java \
-  -Dexec.mainClass=com.examples.pubsub.streaming.PubSubToGCS \
+  -Dexec.mainClass=com.examples.pubsub.streaming.PubSubToGcs \
   -Dexec.cleanupDaemonThreads=false \
   -Dexec.args="\
     --project=$PROJECT_NAME \
+    --region=$REGION \
     --inputTopic=projects/$PROJECT_NAME/topics/cron-topic \
     --output=gs://$BUCKET_NAME/samples/output \
+    --gcpTempLocation=gs://$BUCKET_NAME/temp \
     --runner=DataflowRunner \
     --windowSize=2"
 ```
@@ -164,3 +174,5 @@ gsutil ls gs://$BUCKET_NAME/samples/
 [GCP Console create Dataflow job page]: https://console.cloud.google.com/dataflow/createjob
 [GCP Console Dataflow page]: https://console.cloud.google.com/dataflow
 [GCP Console Storage page]: https://console.cloud.google.com/storage
+
+[regional endpoint]: https://cloud.google.com/dataflow/docs/concepts/regional-endpoints
