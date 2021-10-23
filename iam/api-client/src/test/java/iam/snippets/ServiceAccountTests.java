@@ -35,10 +35,11 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ServiceAccountTests {
 
-  private ByteArrayOutputStream bout;
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String SERVICE_ACCOUNT =
       "service-account-" + UUID.randomUUID().toString().substring(0, 8);
+  private static String SERVICE_ACCOUNT_KEY;
+  private ByteArrayOutputStream bout;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
@@ -90,6 +91,9 @@ public class ServiceAccountTests {
     CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Created key:"));
+    String serviceAccountKeyPath = got.substring(got.lastIndexOf(":") + 1);
+    SERVICE_ACCOUNT_KEY = serviceAccountKeyPath
+        .substring(serviceAccountKeyPath.lastIndexOf("/") + 1).trim();
   }
 
   @Test
@@ -97,6 +101,22 @@ public class ServiceAccountTests {
     ListServiceAccountKeys.listKeys(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Key:"));
+  }
+
+  @Test
+  public void stage2_testServiceAccountKeyDisable() {
+    DisableServiceAccountKey
+        .disableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
+    String got = bout.toString();
+    assertThat(got, containsString("Disabled service account key"));
+  }
+
+  @Test
+  public void stage2_testServiceAccountKeyEnable() {
+    EnableServiceAccountKey
+        .enableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
+    String got = bout.toString();
+    assertThat(got, containsString("Enabled service account key"));
   }
 
   @Test

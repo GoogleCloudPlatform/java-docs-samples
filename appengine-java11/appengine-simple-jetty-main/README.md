@@ -9,17 +9,21 @@ For more information on the Java 11 runtime, see
 [Migrating your App Engine app from Java 8 to Java 11](https://cloud.google.com/appengine/docs/standard/java11/java-differences).
 
 ## Install the dependency
-This sample is used as a dependency and must be install locally:
+
+This sample is used as a dependency and must be installed locally:
+
 ```
 mvn install
 ```
 
 ## Using the dependency
-See [`helloworld-servlet`](../helloworld-servlet) to see a complete example.
+
+See [`helloworld-servlet`](../helloworld-servlet) for a complete example.
 
 Your project's `pom.xml` needs to be updated accordingly:
 
 - Add the `appengine-simple-jetty-main` dependency:
+
 ```
 <dependency>
   <groupId>com.example.appengine.demo</groupId>
@@ -32,6 +36,7 @@ Your project's `pom.xml` needs to be updated accordingly:
 - On deployment, the App Engine runtime uploads files located in
 `${build.directory}/appengine-staging`. Add the `maven-dependency-plugin` to
 the build in order to copy dependencies to the correct folder:
+
 ```
 <plugin>
   <groupId>org.apache.maven.plugins</groupId>
@@ -54,20 +59,23 @@ the build in order to copy dependencies to the correct folder:
 </plugin>
 ```
 
-To use the dependency add the entrypoint to your `app.yaml` file. The
+To use the dependency, add the entrypoint to your `app.yaml` file. The
 entrypoint field will start the Jetty server and load your `WAR` file.
+
 ```
 runtime: java11
 entrypoint: 'java -cp "*" com.example.appengine.demo.jettymain.Main helloworld.war'
 ```
 
 ## Running locally
+
 The [Exec Maven Plugin][exec-plugin] has been added so you can run your
 application locally. It is possible to use the [Jetty Maven Plugin][jetty-plugin]
 for rapid development and testing, but using the Exec Maven Plugin will ensure
 the provided server is running your application as expected.
 
 - Start the server with your `WAR` file as an argument:
+
 ```
 mvn exec:java -Dexec.args="../sample/target/sample.war"
 ```

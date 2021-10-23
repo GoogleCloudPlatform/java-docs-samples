@@ -16,6 +16,7 @@
 
 package com.example.cloudrun;
 
+// [START cloudrun_service_to_service_auth]
 // [START run_service_to_service_auth]
 // [START functions_bearer_token]
 import com.google.api.client.http.GenericUrl;
@@ -54,3 +55,4 @@ public class Authentication {
 }
 // [END functions_bearer_token]
 // [END run_service_to_service_auth]
+// [END cloudrun_service_to_service_auth]

@@ -52,11 +52,14 @@ class ReadWriteTransactionExample {
       // the read/write / read-only state of the connection.
       statement.execute("SET TRANSACTION READ WRITE");
       statement.execute(
-          "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (17, 'Aqib', 'Currie')");
+          "INSERT INTO Singers (SingerId, FirstName, LastName, Revenues)\n"
+              + "VALUES (17, 'Aqib', 'Currie', 9812.10)");
       statement.execute(
-          "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (18, 'Chaya', 'Best')");
+          "INSERT INTO Singers (SingerId, FirstName, LastName, Revenues)\n"
+              + "VALUES (18, 'Chaya', 'Best', 38800)");
       statement.execute(
-          "INSERT INTO Singers (SingerId, FirstName, LastName) VALUES (19, 'Om', 'Marks')");
+          "INSERT INTO Singers (SingerId, FirstName, LastName, Revenues)\n"
+              + "VALUES (19, 'Om', 'Marks', 99999.99)");
       connection.commit();
       Timestamp commitTimestamp =
           connection.unwrap(CloudSpannerJdbcConnection.class).getCommitTimestamp();

@@ -20,16 +20,16 @@ package functions;
 
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-import functions.eventpojos.PubSubMessage;
+import com.google.events.cloud.pubsub.v1.Message;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 
-public class StackdriverLogging implements BackgroundFunction<PubSubMessage> {
+public class StackdriverLogging implements BackgroundFunction<Message> {
   private static final Logger logger = Logger.getLogger(StackdriverLogging.class.getName());
 
   @Override
-  public void accept(PubSubMessage message, Context context) {
+  public void accept(Message message, Context context) {
     String name = "World";
 
     if (!message.getData().isEmpty()) {

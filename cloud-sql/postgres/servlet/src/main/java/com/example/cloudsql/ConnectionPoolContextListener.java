@@ -36,8 +36,8 @@ public class ConnectionPoolContextListener implements ServletContextListener {
 
   // Saving credentials in environment variables is convenient, but not secure - consider a more
   // secure solution such as https://cloud.google.com/kms/ to help keep secrets safe.
-  private static final String CLOUD_SQL_CONNECTION_NAME =
-      System.getenv("CLOUD_SQL_CONNECTION_NAME");
+  private static final String INSTANCE_CONNECTION_NAME =
+      System.getenv("INSTANCE_CONNECTION_NAME");
   private static final String DB_USER = System.getenv("DB_USER");
   private static final String DB_PASS = System.getenv("DB_PASS");
   private static final String DB_NAME = System.getenv("DB_NAME");
@@ -47,11 +47,15 @@ public class ConnectionPoolContextListener implements ServletContextListener {
       justification = "Necessary for sample region tag.")
   private DataSource createConnectionPool() {
     // [START cloud_sql_postgres_servlet_create]
+    // Note: For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections
+    // which is preferred to using the Cloud SQL Auth Proxy with Unix sockets.
+    // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
+
     // The configuration object specifies behaviors for the connection pool.
     HikariConfig config = new HikariConfig();
 
     // The following URL is equivalent to setting the config options below:
-    // jdbc:postgresql:///<DB_NAME>?cloudSqlInstance=<CLOUD_SQL_CONNECTION_NAME>&
+    // jdbc:postgresql:///<DB_NAME>?cloudSqlInstance=<INSTANCE_CONNECTION_NAME>&
     // socketFactory=com.google.cloud.sql.postgres.SocketFactory&user=<DB_USER>&password=<DB_PASS>
     // See the link below for more info on building a JDBC URL for the Cloud SQL JDBC Socket Factory
     // https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#creating-the-jdbc-url
@@ -61,12 +65,14 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     config.setUsername(DB_USER); // e.g. "root", "postgres"
     config.setPassword(DB_PASS); // e.g. "my-password"
 
-    // For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections.
-    // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
     config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.postgres.SocketFactory");
-    config.addDataSourceProperty("cloudSqlInstance", CLOUD_SQL_CONNECTION_NAME);
+    config.addDataSourceProperty("cloudSqlInstance", INSTANCE_CONNECTION_NAME);
 
 
+    // The ipTypes argument can be used to specify a comma delimited list of preferred IP types 
+    // for connecting to a Cloud SQL instance. The argument ipTypes=PRIVATE will force the 
+    // SocketFactory to connect with an instance's associated private IP. 
+    config.addDataSourceProperty("ipTypes", "PUBLIC,PRIVATE");
 
     // ... Specify additional connection properties here.
     // [START_EXCLUDE]

@@ -21,7 +21,9 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.cloud.secretmanager.v1.AddSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.CreateSecretRequest;
 import com.google.cloud.secretmanager.v1.DeleteSecretRequest;
+import com.google.cloud.secretmanager.v1.DestroySecretVersionRequest;
 import com.google.cloud.secretmanager.v1.DisableSecretVersionRequest;
+import com.google.cloud.secretmanager.v1.EnableSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Replication;
 import com.google.cloud.secretmanager.v1.Secret;
@@ -46,6 +48,7 @@ import org.junit.runners.JUnit4;
 
 /** Integration (system) tests for {@link Snippets}. */
 @RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class SnippetsIT {
   private static final String IAM_USER =
       "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
@@ -53,12 +56,16 @@ public class SnippetsIT {
 
   private static Secret TEST_SECRET;
   private static Secret TEST_SECRET_TO_DELETE;
+  private static Secret TEST_SECRET_TO_DELETE_WITH_ETAG;
   private static Secret TEST_SECRET_WITH_VERSIONS;
   private static SecretName TEST_SECRET_TO_CREATE_NAME;
   private static SecretVersion TEST_SECRET_VERSION;
   private static SecretVersion TEST_SECRET_VERSION_TO_DESTROY;
+  private static SecretVersion TEST_SECRET_VERSION_TO_DESTROY_WITH_ETAG;
   private static SecretVersion TEST_SECRET_VERSION_TO_DISABLE;
+  private static SecretVersion TEST_SECRET_VERSION_TO_DISABLE_WITH_ETAG;
   private static SecretVersion TEST_SECRET_VERSION_TO_ENABLE;
+  private static SecretVersion TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG;
 
   private ByteArrayOutputStream stdOut;
 
@@ -68,14 +75,20 @@ public class SnippetsIT {
 
     TEST_SECRET = createSecret();
     TEST_SECRET_TO_DELETE = createSecret();
+    TEST_SECRET_TO_DELETE_WITH_ETAG = createSecret();
     TEST_SECRET_WITH_VERSIONS = createSecret();
     TEST_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
 
     TEST_SECRET_VERSION = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
+    TEST_SECRET_VERSION_TO_DESTROY_WITH_ETAG = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DISABLE = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
+    TEST_SECRET_VERSION_TO_DISABLE_WITH_ETAG = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_ENABLE = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
+    TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     disableSecretVersion(TEST_SECRET_VERSION_TO_ENABLE);
+    TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG = disableSecretVersion(
+        TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG);
   }
 
   @Before
@@ -97,6 +110,7 @@ public class SnippetsIT {
     deleteSecret(TEST_SECRET.getName());
     deleteSecret(TEST_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
+    deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
     deleteSecret(TEST_SECRET_WITH_VERSIONS.getName());
   }
 
@@ -168,8 +182,8 @@ public class SnippetsIT {
   @Test
   public void testAccessSecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION.getName());
-    new AccessSecretVersion()
-        .accessSecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
+    AccessSecretVersion.accessSecretVersion(
+        name.getProject(), name.getSecret(), name.getSecretVersion());
 
     assertThat(stdOut.toString()).contains("my super secret data");
   }
@@ -177,7 +191,7 @@ public class SnippetsIT {
   @Test
   public void testAddSecretVersion() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET_WITH_VERSIONS.getName());
-    new AddSecretVersion().addSecretVersion(name.getProject(), name.getSecret());
+    AddSecretVersion.addSecretVersion(name.getProject(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("Added secret version");
   }
@@ -185,7 +199,7 @@ public class SnippetsIT {
   @Test
   public void testCreateSecret() throws IOException {
     SecretName name = TEST_SECRET_TO_CREATE_NAME;
-    new CreateSecret().createSecret(name.getProject(), name.getSecret());
+    CreateSecret.createSecret(name.getProject(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("Created secret");
   }
@@ -193,7 +207,16 @@ public class SnippetsIT {
   @Test
   public void testDeleteSecret() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET_TO_DELETE.getName());
-    new DeleteSecret().deleteSecret(name.getProject(), name.getSecret());
+    DeleteSecret.deleteSecret(name.getProject(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Deleted secret");
+  }
+
+  @Test
+  public void testDeleteSecretWithEtag() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
+    String etag = TEST_SECRET_TO_DELETE_WITH_ETAG.getEtag();
+    DeleteSecretWithEtag.deleteSecret(name.getProject(), name.getSecret(), etag);
 
     assertThat(stdOut.toString()).contains("Deleted secret");
   }
@@ -201,8 +224,19 @@ public class SnippetsIT {
   @Test
   public void testDestroySecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION_TO_DESTROY.getName());
-    new DestroySecretVersion()
-        .destroySecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
+    DestroySecretVersion.destroySecretVersion(
+        name.getProject(), name.getSecret(), name.getSecretVersion());
+
+    assertThat(stdOut.toString()).contains("Destroyed secret version");
+  }
+
+  @Test
+  public void testDestroySecretVersionWithEtag() throws IOException {
+    SecretVersionName name = SecretVersionName.parse(
+        TEST_SECRET_VERSION_TO_DESTROY_WITH_ETAG.getName());
+    String etag = TEST_SECRET_VERSION_TO_DESTROY_WITH_ETAG.getEtag();
+    DestroySecretVersionWithEtag.destroySecretVersion(
+        name.getProject(), name.getSecret(), name.getSecretVersion(), etag);
 
     assertThat(stdOut.toString()).contains("Destroyed secret version");
   }
@@ -210,8 +244,19 @@ public class SnippetsIT {
   @Test
   public void testDisableSecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION_TO_DISABLE.getName());
-    new DisableSecretVersion()
-        .disableSecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
+    DisableSecretVersion.disableSecretVersion(
+        name.getProject(), name.getSecret(), name.getSecretVersion());
+
+    assertThat(stdOut.toString()).contains("Disabled secret version");
+  }
+
+  @Test
+  public void testDisableSecretVersionWithEtag() throws IOException {
+    SecretVersionName name = SecretVersionName.parse(
+        TEST_SECRET_VERSION_TO_DISABLE_WITH_ETAG.getName());
+    String etag = TEST_SECRET_VERSION_TO_DISABLE_WITH_ETAG.getEtag();
+    DisableSecretVersionWithEtag.disableSecretVersion(
+        name.getProject(), name.getSecret(), name.getSecretVersion(), etag);
 
     assertThat(stdOut.toString()).contains("Disabled secret version");
   }
@@ -219,8 +264,19 @@ public class SnippetsIT {
   @Test
   public void testEnableSecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION_TO_ENABLE.getName());
-    new EnableSecretVersion()
-        .enableSecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
+    EnableSecretVersion.enableSecretVersion(
+        name.getProject(), name.getSecret(), name.getSecretVersion());
+
+    assertThat(stdOut.toString()).contains("Enabled secret version");
+  }
+
+  @Test
+  public void testEnableSecretVersionWithEtag() throws IOException {
+    SecretVersionName name = SecretVersionName.parse(
+        TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG.getName());
+    String etag = TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG.getEtag();
+    EnableSecretVersionWithEtag.enableSecretVersion(
+        name.getProject(), name.getSecret(), name.getSecretVersion(), etag);
 
     assertThat(stdOut.toString()).contains("Enabled secret version");
   }
@@ -228,8 +284,8 @@ public class SnippetsIT {
   @Test
   public void testGetSecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION.getName());
-    new GetSecretVersion()
-        .getSecretVersion(name.getProject(), name.getSecret(), name.getSecretVersion());
+    GetSecretVersion.getSecretVersion(
+        name.getProject(), name.getSecret(), name.getSecretVersion());
 
     assertThat(stdOut.toString()).contains("Secret version");
     assertThat(stdOut.toString()).contains("state ENABLED");
@@ -238,7 +294,7 @@ public class SnippetsIT {
   @Test
   public void testGetSecret() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
-    new GetSecret().getSecret(name.getProject(), name.getSecret());
+    GetSecret.getSecret(name.getProject(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("Secret");
     assertThat(stdOut.toString()).contains("replication AUTOMATIC");
@@ -247,7 +303,7 @@ public class SnippetsIT {
   @Test
   public void testIamGrantAccess() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
-    new IamGrantAccess().iamGrantAccess(name.getProject(), name.getSecret(), IAM_USER);
+    IamGrantAccess.iamGrantAccess(name.getProject(), name.getSecret(), IAM_USER);
 
     assertThat(stdOut.toString()).contains("Updated IAM policy");
   }
@@ -255,7 +311,7 @@ public class SnippetsIT {
   @Test
   public void testIamRevokeAccess() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
-    new IamRevokeAccess().iamRevokeAccess(name.getProject(), name.getSecret(), IAM_USER);
+    IamRevokeAccess.iamRevokeAccess(name.getProject(), name.getSecret(), IAM_USER);
 
     assertThat(stdOut.toString()).contains("Updated IAM policy");
   }
@@ -263,7 +319,16 @@ public class SnippetsIT {
   @Test
   public void testListSecretVersions() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET_WITH_VERSIONS.getName());
-    new ListSecretVersions().listSecretVersions(name.getProject(), name.getSecret());
+    ListSecretVersions.listSecretVersions(name.getProject(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Secret version");
+  }
+
+  @Test
+  public void testListSecretVersionsWithFilter() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET_WITH_VERSIONS.getName());
+    ListSecretVersionsWithFilter.listSecretVersions(
+        name.getProject(), name.getSecret(), "name:1");
 
     assertThat(stdOut.toString()).contains("Secret version");
   }
@@ -271,7 +336,17 @@ public class SnippetsIT {
   @Test
   public void testListSecrets() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
-    new ListSecrets().listSecrets(name.getProject());
+    ListSecrets.listSecrets(name.getProject());
+
+    assertThat(stdOut.toString()).contains("Secret projects/");
+    assertThat(stdOut.toString()).contains(name.getSecret());
+  }
+
+  @Test
+  public void testListSecretsWithFilter() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    ListSecretsWithFilter.listSecrets(
+        name.getProject(), String.format("name:%s", name.getSecret()));
 
     assertThat(stdOut.toString()).contains("Secret projects/");
     assertThat(stdOut.toString()).contains(name.getSecret());
@@ -280,7 +355,7 @@ public class SnippetsIT {
   @Test
   public void testUpdateSecret() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
-    new UpdateSecret().updateSecret(name.getProject(), name.getSecret());
+    UpdateSecret.updateSecret(name.getProject(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("Updated secret");
   }

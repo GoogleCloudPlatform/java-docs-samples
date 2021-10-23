@@ -19,8 +19,8 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.2'
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.2.0'
+    classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:2.1.0'
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.4.2'
   }
 }
 // [END build_script]
@@ -38,8 +38,8 @@ apply plugin: 'com.google.cloud.tools.appengine'
 
 // [START dependencies]
 dependencies {
-    compile 'com.google.endpoints:endpoints-framework:2.0.9'
-    compile 'com.google.appengine:appengine-api-1.0-sdk:1.9.59'
+    compile 'com.google.endpoints:endpoints-framework:2.2.2'
+    compile 'com.google.appengine:appengine-api-1.0-sdk:1.9.91'
 
     compile 'javax.inject:javax.inject:1'
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'

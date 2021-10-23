@@ -33,7 +33,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LocalHighRepDatastoreTest {
+public class LocalHighRepDatastoreTest extends BaseTestConfiguration {
 
   // Maximum eventual consistency.
   private final LocalServiceTestHelper helper =

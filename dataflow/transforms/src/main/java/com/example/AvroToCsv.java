@@ -38,7 +38,7 @@ public class AvroToCsv {
 
   private static final Logger LOG = LoggerFactory.getLogger(AvroToCsv.class);
   private static final List<String> acceptedTypes = Arrays.asList(
-      new String[]{"string", "boolean", "int", "long", "float", "double"});
+      new String[]{"string", "boolean", "int", "long", "float", "double", "union"});
 
   private static String getSchema(String schemaPath) throws IOException {
     ReadableByteChannel channel = FileSystems.open(FileSystems.matchNewResource(

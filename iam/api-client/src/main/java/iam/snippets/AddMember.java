@@ -16,8 +16,8 @@
 package iam.snippets;
 
 // [START iam_modify_policy_add_member]
-import com.google.api.services.cloudresourcemanager.model.Binding;
-import com.google.api.services.cloudresourcemanager.model.Policy;
+import com.google.api.services.cloudresourcemanager.v3.model.Binding;
+import com.google.api.services.cloudresourcemanager.v3.model.Policy;
 import java.util.List;
 
 public class AddMember {

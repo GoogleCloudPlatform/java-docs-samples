@@ -1,13 +1,51 @@
 assign_issues:
-  - averikitsch
-  - dzlier-gcp
-  - gguuss
-  # - kurtisvg (OOO until 7/24)
-  - stephaniewang526
+  - GoogleCloudPlatform/java-samples-reviewers
+
+assign_issues_by:
+- labels:
+  - 'api: logging'
+  - 'api: clouderrorreporting'
+  to:
+  - simonz130
+- labels:
+  - 'api: cloudiot'
+  to:
+  - attilagargyan
+  - simoncsaba-g
+- labels:
+  - 'api: bigtable'
+  - 'api: datastore'
+  - 'api: firestore'
+  to:
+  - GoogleCloudPlatform/cloud-native-db-dpes
+- labels:
+  - 'api: cloudsql'
+  to:
+  - GoogleCloudPlatform/infra-db-dpes
+  
 assign_prs:
-  - averikitsch
-  - dzlier-gcp
-  - gguuss
-  # - kurtisvg (OOO until 7/24)
-  - lesv
-  - stephaniewang526
+  - GoogleCloudPlatform/java-samples-reviewers
+
+assign_prs_by:
+- labels:
+  - 'api: logging'
+  - 'api: clouderrorreporting'
+  to:
+  - simonz130
+- labels:
+  - 'api: cloudiot'
+  to:
+  - attilagargyan
+  - simoncsaba-g
+- labels:
+  - 'api: bigtable'
+  - 'api: datastore'
+  - 'api: firestore'
+  to:
+  - GoogleCloudPlatform/cloud-native-db-dpes
+- labels:
+  - 'api: cloudsql'
+  to:
+  - GoogleCloudPlatform/infra-db-dpes
+
+

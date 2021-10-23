@@ -3,7 +3,14 @@
 
 # The java-samples-reviewers team is the default owner for anything not
 # explicitly taken by someone else.
-*                         @GoogleCloudPlatform/java-samples-reviewers
 
-/datastore/                     @GoogleCloudPlatform/firestore-dpe @GoogleCloudPlatform/java-samples-reviewers
-/firestore/                     @GoogleCloudPlatform/firestore-dpe @GoogleCloudPlatform/java-samples-reviewers
+*                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+
+/bigtable/**/*.java             @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/cloud-sql/**/*.java            @GoogleCloudPlatform/infra-db-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/datastore/**/*.java            @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/firestore/**/*.java            @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/iot/                           @gcseh @GoogleCloudPlatform/api-iot @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/logging/                       @GoogleCloudPlatform/observability-devx @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/storage/**/*.java              @GoogleCloudPlatform/cloud-storage-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+.github/auto-approve.yml        @googleapis/github-automation/ @sofisl @GoogleCloudPlatform/java-samples-reviewers

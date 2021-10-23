@@ -24,7 +24,7 @@ import java.io.IOException;
 
 public class ListSecretVersions {
 
-  public void listSecretVersions() throws IOException {
+  public static void listSecretVersions() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String secretId = "your-secret-id";
@@ -32,16 +32,16 @@ public class ListSecretVersions {
   }
 
   // List all secret versions for a secret.
-  public void listSecretVersions(String projectId, String secretId) throws IOException {
+  public static void listSecretVersions(String projectId, String secretId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
       // Build the parent name.
-      SecretName projectName = SecretName.of(projectId, secretId);
+      SecretName secretName = SecretName.of(projectId, secretId);
 
       // Get all versions.
-      ListSecretVersionsPagedResponse pagedResponse = client.listSecretVersions(projectName);
+      ListSecretVersionsPagedResponse pagedResponse = client.listSecretVersions(secretName);
 
       // List all versions and their state.
       pagedResponse

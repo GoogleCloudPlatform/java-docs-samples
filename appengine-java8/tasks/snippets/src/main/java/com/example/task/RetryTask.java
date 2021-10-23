@@ -16,7 +16,7 @@
 
 package com.example.task;
 
-// [START taskqueues_retrying_tasks]
+// [START cloud_tasks_taskqueues_retrying_tasks]
 import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.LocationName;
 import com.google.cloud.tasks.v2.Queue;
@@ -82,4 +82,4 @@ public class RetryTask {
     }
   }
 }
-// [END taskqueues_retrying_tasks]
+// [END cloud_tasks_taskqueues_retrying_tasks]

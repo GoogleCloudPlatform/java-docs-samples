@@ -44,6 +44,7 @@ public class UtilsTest {
   }
 
   @Test
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void indexADocument_successfullyInvoked() throws Exception {
     String id = "test";
     Document doc =

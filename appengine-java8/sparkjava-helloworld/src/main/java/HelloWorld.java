@@ -20,8 +20,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 import spark.servlet.SparkApplication;
 
-
-
 public class HelloWorld implements SparkApplication {
 
   public static void main(String[] args) {
@@ -30,20 +28,19 @@ public class HelloWorld implements SparkApplication {
 
   @Override
   public void init() {
-    get("/", (request, response)
-        -> "Hello from SparkJava running on GAE Standard Java8 runtime.");
+    get("/", (request, response) -> "Hello from SparkJava running on GAE Standard Java8 runtime.");
 
-    get("/hello/:name", (request, response) -> {
-      return "SparkJava running on GAE Java8 says: Hello: " + request.params(":name");
-    });
+    get(
+        "/hello/:name",
+        (request, response) -> {
+          return "SparkJava running on GAE Java8 says: Hello: " + request.params(":name");
+        });
   }
 
   // Use Servlet annotation to define the Spark filter without web.xml:
   @WebFilter(
-          filterName = "SparkInitFilter", urlPatterns = {"/*"}, 
-          initParams = {
-             @WebInitParam(name = "applicationClass", value = "HelloWorld")
-      })
-  public static class SparkInitFilter extends spark.servlet.SparkFilter {
-  }
+      filterName = "SparkInitFilter",
+      urlPatterns = {"/*"},
+      initParams = {@WebInitParam(name = "applicationClass", value = "HelloWorld")})
+  public static class SparkInitFilter extends spark.servlet.SparkFilter {}
 }

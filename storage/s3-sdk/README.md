@@ -32,11 +32,13 @@ Install [Maven](http://maven.apache.org/).
 
 ## Test Sample
 
+1. Provide a service account which can be used to generate HMAC Key for the scope of the tests
+   
+   * GOOGLE_APPLICATION_CREDENTIALS=[PATH_TO_SERVICE_ACCOUNT_JSON]
+
 1. Set the following environment variable with the default project for Interoperable Storage Access Keys.
 
-   * GOOGLE_CLOUD_PROJECT_S3_SDK=[GOOGLE_PROJECT_ID]
-   * STORAGE_HMAC_ACCESS_KEY_ID=[ACCESS_KEY_ID]
-   * STORAGE_HMAC_ACCESS_SECRET_KEY=[ACCESS_SECRET_KEY]
+   * GOOGLE_CLOUD_PROJECT_S3_SDK_BUCKET_NAME=[GOOGLE_PROJECT_ID]
 
 1. Run test using the following Maven command:
 

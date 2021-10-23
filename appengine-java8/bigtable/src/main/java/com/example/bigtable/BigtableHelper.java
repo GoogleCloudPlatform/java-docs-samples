@@ -57,6 +57,7 @@ public class BigtableHelper implements ServletContextListener {
 
   /**
    * Get the shared connection to Cloud Bigtable.
+   *
    * @return the connection
    */
   public static Connection getConnection() {

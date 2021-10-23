@@ -1,0 +1,15 @@
+- getCurrentTime:
+    call: http.get
+    args:
+      url: https://us-central1-workflowsample.cloudfunctions.net/datetime
+    result: currentTime
+- readWikipedia:
+    call: http.get
+    args:
+      url: https://en.wikipedia.org/w/api.php
+      query:
+        action: opensearch
+        search: ${currentTime.body.dayOfTheWeek}
+    result: wikiResult
+- returnResult:
+    return: ${wikiResult.body[1]}

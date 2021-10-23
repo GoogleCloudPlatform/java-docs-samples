@@ -36,6 +36,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class HL7v2MessageIngest {
   private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s";
   private static final String MESSAGE_NAME =

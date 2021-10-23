@@ -126,9 +126,9 @@ public class TransactionsTest {
       // Transactions on entities in different entity groups
       txn = datastore.beginTransaction();
       tom = datastore.get(person.getKey());
-      Entity photoNotAChild = new Entity("Photo");
-      photoNotAChild.setProperty("photoUrl", "http://domain.com/path/to/photo.jpg");
-      datastore.put(txn, photoNotAChild);
+      Entity photoNotaChild = new Entity("Photo");
+      photoNotaChild.setProperty("photoUrl", "http://domain.com/path/to/photo.jpg");
+      datastore.put(txn, photoNotaChild);
 
       // Throws IllegalArgumentException because the Person entity
       // and the Photo entity belong to different entity groups.
@@ -141,6 +141,7 @@ public class TransactionsTest {
   }
 
   @Test
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void creatingAnEntityInASpecificEntityGroup() throws Exception {
     String boardName = "my-message-board";
 

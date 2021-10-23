@@ -45,8 +45,8 @@ class AutocommitUpdateDataExample {
       // The following statement will automatically be committed by the connection.
       int updateCount =
           statement.executeUpdate(
-              "INSERT INTO Singers (SingerId, FirstName, LastName)\n"
-                  + "VALUES (9999, 'Lloyd', 'Pineda')");
+              "INSERT INTO Singers (SingerId, FirstName, LastName, Revenues)\n"
+                  + "VALUES (9999, 'Lloyd', 'Pineda', 80100.29)");
       System.out.printf("Inserted %d row(s)%n", updateCount);
     }
   }

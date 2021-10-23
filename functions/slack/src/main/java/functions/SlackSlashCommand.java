@@ -16,7 +16,6 @@
 
 package functions;
 
-import com.github.seratch.jslack.app_backend.SlackSignature;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.kgsearch.v1.Kgsearch;
@@ -26,13 +25,18 @@ import com.google.cloud.functions.HttpResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.slack.api.app_backend.SlackSignature;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.security.GeneralSecurityException;
+import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
 
 public class SlackSlashCommand implements HttpFunction {
 
@@ -77,6 +81,7 @@ public class SlackSlashCommand implements HttpFunction {
   // [START functions_verify_webhook]
   /**
    * Verify that the webhook request came from Slack.
+   *
    * @param request Cloud Function request object in {@link HttpRequest} format.
    * @param requestBody Raw body of webhook request to check signature against.
    * @return true if the provided request came from Slack, false otherwise
@@ -88,7 +93,10 @@ public class SlackSlashCommand implements HttpFunction {
     if (!maybeTimestamp.isPresent() || !maybeSignature.isPresent()) {
       return false;
     }
-    return verifier.isValid(maybeTimestamp.get(), requestBody, maybeSignature.get(), 1L);
+
+    Long nowInMs = ZonedDateTime.now().toInstant().toEpochMilli();
+
+    return verifier.isValid(maybeTimestamp.get(), requestBody, maybeSignature.get(), nowInMs);
   }
   // [END functions_verify_webhook]
 
@@ -105,6 +113,7 @@ public class SlackSlashCommand implements HttpFunction {
 
   /**
    * Format the Knowledge Graph API response into a richly formatted Slack message.
+   *
    * @param kgResponse The response from the Knowledge Graph API as a {@link JsonObject}.
    * @param query The user's search query.
    * @return The formatted Slack message as a JSON string.
@@ -120,7 +129,7 @@ public class SlackSlashCommand implements HttpFunction {
 
     // Extract the first entity from the result list, if any
     if (entityList.size() == 0) {
-      attachmentJson.addProperty("text","No results match your query...");
+      attachmentJson.addProperty("text", "No results match your query...");
       responseJson.add("attachments", attachmentJson);
 
       return gson.toJson(responseJson);
@@ -146,7 +155,10 @@ public class SlackSlashCommand implements HttpFunction {
       addPropertyIfPresent(attachmentJson, "image_url", imageJson, "contentUrl");
     }
 
-    responseJson.add("attachments", attachmentJson);
+    JsonArray attachmentList = new JsonArray();
+    attachmentList.add(attachmentJson);
+
+    responseJson.add("attachments", attachmentList);
 
     return gson.toJson(responseJson);
   }
@@ -155,6 +167,7 @@ public class SlackSlashCommand implements HttpFunction {
   // [START functions_slack_request]
   /**
    * Send the user's search query to the Knowledge Graph API.
+   *
    * @param query The user's search query.
    * @return The Knowledge graph API results as a {@link JsonObject}.
    * @throws IOException if Knowledge Graph request fails
@@ -171,6 +184,7 @@ public class SlackSlashCommand implements HttpFunction {
   // [START functions_slack_search]
   /**
    * Receive a Slash Command request from Slack.
+   *
    * @param request Cloud Function request object.
    * @param response Cloud Function response object.
    * @throws IOException if Knowledge Graph request fails
@@ -186,9 +200,22 @@ public class SlackSlashCommand implements HttpFunction {
 
     // reader can only be read once per request, so we preserve its contents
     String bodyString = request.getReader().lines().collect(Collectors.joining());
-    JsonObject body = gson.fromJson(bodyString, JsonObject.class);
 
-    if (body == null || !body.has("text")) {
+    // Slack sends requests as URL-encoded strings
+    //   Java 11 doesn't have a standard library
+    //   function for this, so do it manually
+    Map<String, String> body = new HashMap<>();
+    for (String keyValuePair : bodyString.split("&")) {
+      String[] keyAndValue = keyValuePair.split("=");
+      if (keyAndValue.length == 2) {
+        String key = keyAndValue[0];
+        String value = keyAndValue[1];
+
+        body.put(key, value);
+      }
+    }
+
+    if (body == null || !body.containsKey("text")) {
       response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
       return;
     }
@@ -198,7 +225,7 @@ public class SlackSlashCommand implements HttpFunction {
       return;
     }
 
-    String query = body.get("text").getAsString();
+    String query = body.get("text");
 
     // Call knowledge graph API
     JsonObject kgResponse = searchKnowledgeGraph(query);
@@ -206,7 +233,10 @@ public class SlackSlashCommand implements HttpFunction {
     // Format response to Slack
     // See https://api.slack.com/docs/message-formatting
     BufferedWriter writer = response.getWriter();
+
     writer.write(formatSlackMessage(kgResponse, query));
+
+    response.setContentType("application/json");
   }
   // [END functions_slack_search]
 }

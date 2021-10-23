@@ -25,7 +25,7 @@ import java.io.IOException;
 
 public class CreateSecret {
 
-  public void createSecret() throws IOException {
+  public static void createSecret() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String secretId = "your-secret-id";
@@ -33,7 +33,7 @@ public class CreateSecret {
   }
 
   // Add a new version to the existing secret.
-  public void createSecret(String projectId, String secretId) throws IOException {
+  public static void createSecret(String projectId, String secretId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.

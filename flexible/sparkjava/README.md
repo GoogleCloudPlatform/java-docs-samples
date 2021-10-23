@@ -4,7 +4,7 @@
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 This app demonstrates how to use [Datastore with the Google Cloud client
-library](https://github.com/GoogleCloudPlatform/google-cloud-java/tree/master/google-cloud-datastore)
+library](https://github.com/GoogleCloudPlatform/google-cloud-java/tree/main/google-cloud-datastore)
 from within an [App Engine flexible
 environment](https://cloud.google.com/appengine/docs/flexible/java/hello-world)
 project using [SparkJava](http://sparkjava.com/). The app allows you to create
@@ -61,11 +61,11 @@ Datastore. Finally, the `resource/public` folder contains the home webpage,
 which uses jQuery to send HTTP requests to create, remove, and update records.
 
 Spark runs the [`main`
-method](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/managedvms/sparkjava-demo/src/main/java/com/google/appengine/sparkdemo/Main.java)
+method](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/managedvms/sparkjava-demo/src/main/java/com/google/appengine/sparkdemo/Main.java)
 upon server startup. The `main` method creates the controller,
-[`UserController`](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/managedvms/sparkjava-demo/src/main/java/com/google/appengine/sparkdemo/UserController.java).
+[`UserController`](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/managedvms/sparkjava-demo/src/main/java/com/google/appengine/sparkdemo/UserController.java).
 The URIs used to send HTTP requests in the [home
-page](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/managedvms/sparkjava-demo/src/main/resources/public/index.html)
+page](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/managedvms/sparkjava-demo/src/main/resources/public/index.html)
 correspond to methods in the `UserController` class. For example, the
 `index.html` code for `create` makes a `POST` request to the path `/api/users`
 with a body containing the name and email of a user to add. `UserController`
@@ -79,11 +79,11 @@ post("/api/users", (req, res) -> userService.createUser(
 ```
 This code snippet gets the name and email of the user from the POST request and
 passes it to `createUser` (in
-[`UserService.java`](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/managedvms/sparkjava-demo/src/main/java/com/google/appengine/sparkdemo/UserService.java))
+[`UserService.java`](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/managedvms/sparkjava-demo/src/main/java/com/google/appengine/sparkdemo/UserService.java))
 to create a database record using the Google Cloud client library. If you want
 a more in-depth tutorial on using Google Cloud client library Datastore client,
 see the [Getting
-Started](https://github.com/GoogleCloudPlatform/google-cloud-java/tree/master/google-cloud-datastore#getting-started)
+Started](https://github.com/GoogleCloudPlatform/google-cloud-java/tree/main/google-cloud-datastore#getting-started)
 section of the client library documentation.
 
 Communication with the Google Cloud Datastore requires authentication and
@@ -109,5 +109,5 @@ License
 -------
 
 Apache 2.0 - See
-[LICENSE](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/LICENSE)
+[LICENSE](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/LICENSE)
 for more information.

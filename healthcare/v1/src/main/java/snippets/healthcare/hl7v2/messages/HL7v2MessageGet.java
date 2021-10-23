@@ -30,6 +30,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.util.Collections;
 
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class HL7v2MessageGet {
   private static final String MESSAGE_NAME =
       "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s/messages/%s";

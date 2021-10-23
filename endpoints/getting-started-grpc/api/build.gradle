@@ -22,12 +22,12 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.17'
 
   }
 }
 
-def grpcVersion = '1.0.3'
+def grpcVersion = '1.41.0'
 
 dependencies {
   repositories {

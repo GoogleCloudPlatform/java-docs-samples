@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2021 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-// [START all]
-
 package com.google.cloud.storage.storagetransfer.samples;
 
+// [START storagetransfer_create_retry_handler]
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.http.HttpBackOffIOExceptionHandler;
 import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
@@ -96,4 +95,4 @@ public class RetryHttpInitializerWrapper implements HttpRequestInitializer {
         new HttpBackOffIOExceptionHandler(new ExponentialBackOff()).setSleeper(sleeper));
   }
 }
-// [END all]
+// [END storagetransfer_create_retry_handler]

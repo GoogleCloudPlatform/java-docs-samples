@@ -16,8 +16,8 @@
 
 package snippets.healthcare;
 
-import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -52,6 +52,7 @@ import snippets.healthcare.fhir.resources.FhirResourceListHistory;
 import snippets.healthcare.fhir.resources.FhirResourcePatch;
 import snippets.healthcare.fhir.resources.FhirResourceSearchGet;
 import snippets.healthcare.fhir.resources.FhirResourceSearchPost;
+import snippets.healthcare.fhir.resources.FhirResourceUpdate;
 
 @RunWith(JUnit4.class)
 public class FhirResourceTests {
@@ -179,19 +180,23 @@ public class FhirResourceTests {
   }
 
   @Test
+  public void test_FhirResourceUpdate() throws Exception {
+    JsonObject json = new JsonObject();
+    json.add("id", new JsonPrimitive(fhirResourceId));
+    json.add("resourceType", new JsonPrimitive(resourceType));
+    json.add("active", new JsonPrimitive(false));
+    FhirResourceUpdate.fhirResourceUpdate(fhirResourceName, json.toString());
+
+    String output = bout.toString();
+    assertThat(output, containsString("FHIR resource updated:"));
+  }
+
+  @Test
   public void test_FhirResourceGetPatientEverything() throws Exception {
     FhirResourceGetPatientEverything.fhirResourceGetPatientEverything(fhirResourceName);
 
     String output = bout.toString();
     assertThat(output, containsString("Patient compartment results:"));
-  }
-
-  @Test
-  public void test_FhirResourceDelete() throws Exception {
-    FhirResourceDelete.fhirResourceDelete(fhirResourceName);
-
-    String output = bout.toString();
-    assertThat(output, containsString("FHIR resource deleted."));
   }
 
   @Test
@@ -238,10 +243,17 @@ public class FhirResourceTests {
     JsonArray jarray = new JsonArray();
     jarray.add(json);
     FhirResourcePatch.fhirResourcePatch(fhirResourceName, jarray.toString());
-    FhirResourceDelete.fhirResourceDelete(fhirResourceName);
     FhirResourceDeletePurge.fhirResourceDeletePurge(fhirResourceName);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR resource history purged."));
+    assertThat(output, containsString("FHIR resource history purged (excluding current version)."));
+  }
+
+  @Test
+  public void test_FhirResourceDelete() throws Exception {
+    FhirResourceDelete.fhirResourceDelete(fhirResourceName);
+
+    String output = bout.toString();
+    assertThat(output, containsString("FHIR resource deleted."));
   }
 }

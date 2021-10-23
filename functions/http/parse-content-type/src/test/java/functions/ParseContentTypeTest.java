@@ -17,6 +17,8 @@
 package functions;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
@@ -29,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
@@ -115,5 +118,33 @@ public class ParseContentTypeTest {
 
     writerOut.flush();
     assertThat(responseOut.toString()).contains("Hello John!");
+  }
+
+  @Test
+  public void parseContentTypeTest_missingParameter() throws IOException {
+    // Send a request with JSON data
+    String requestJson = gson.toJson(Map.of("not_name", "John"));
+    BufferedReader bodyReader = new BufferedReader(new StringReader(requestJson));
+
+    when(request.getContentType()).thenReturn(Optional.of("application/json"));
+    when(request.getReader()).thenReturn(bodyReader);
+
+    new ParseContentType().service(request, response);
+
+    verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
+  }
+
+  @Test
+  public void parseContentTypeTest_unknownContentType() throws IOException {
+    // Send a request with JSON data
+    String requestJson = gson.toJson(Map.of("name", "John"));
+    BufferedReader bodyReader = new BufferedReader(new StringReader(requestJson));
+
+    when(request.getContentType()).thenReturn(Optional.of("application/unknown"));
+    when(request.getReader()).thenReturn(bodyReader);
+
+    new ParseContentType().service(request, response);
+
+    verify(response, times(1)).setStatusCode(HttpURLConnection.HTTP_UNSUPPORTED_TYPE);
   }
 }

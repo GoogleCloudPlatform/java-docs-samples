@@ -16,8 +16,8 @@
 
 package snippets.healthcare;
 
-import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;

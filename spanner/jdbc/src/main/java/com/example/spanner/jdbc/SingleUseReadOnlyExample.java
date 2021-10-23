@@ -16,7 +16,7 @@
 
 package com.example.spanner.jdbc;
 
-//[START spanner_jdbc_query]
+// [START spanner_jdbc_query]
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -50,12 +50,14 @@ public class SingleUseReadOnlyExample {
       // read/write mode.
       try (ResultSet rs =
           statement.executeQuery(
-              "SELECT SingerId, FirstName, LastName FROM Singers ORDER BY LastName")) {
+              "SELECT SingerId, FirstName, LastName, Revenues FROM Singers ORDER BY LastName")) {
         while (rs.next()) {
-          System.out.printf("%d %s %s%n", rs.getLong(1), rs.getString(2), rs.getString(3));
+          System.out.printf(
+              "%d %s %s %s%n",
+              rs.getLong(1), rs.getString(2), rs.getString(3), rs.getBigDecimal(4));
         }
       }
     }
   }
 }
-//[END spanner_jdbc_query]
+// [END spanner_jdbc_query]

@@ -19,6 +19,7 @@ package com.example.spanner.jdbc;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.jdbc.CloudSpannerJdbcConnection;
 import com.google.cloud.spanner.jdbc.JdbcSqlExceptionFactory.JdbcAbortedException;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -58,6 +59,8 @@ class TransactionWithRetryLoopExample {
                   .to("Breanna")
                   .set("LastName")
                   .to("Fountain")
+                  .set("Revenues")
+                  .to(new BigDecimal("29809.93"))
                   .build();
           Mutation mutationAlbums =
               Mutation.newInsertBuilder("Albums")
@@ -76,6 +79,8 @@ class TransactionWithRetryLoopExample {
               "Transaction committed at [%s]%n", spannerConnection.getCommitTimestamp().toString());
           break;
         } catch (JdbcAbortedException e) {
+          // Rollback the current transaction to initiate a new transaction on the next statement.
+          connection.rollback();
           // Transaction aborted, retry.
           System.out.println("Transaction aborted, starting retry");
         }
