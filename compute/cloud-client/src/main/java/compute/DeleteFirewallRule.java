@@ -48,6 +48,8 @@ public class DeleteFirewallRule {
 
       Operation operation = firewallsClient.delete(project, firewallRuleName);
       operationsClient.wait(project, operation.getName());
+
+      System.out.println("Deleted firewall rule -> " + firewallRuleName);
     }
   }
 }
