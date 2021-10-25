@@ -101,6 +101,7 @@ public class SnippetsIT {
     TimeUnit.SECONDS.sleep(10);
     compute.CreateFirewallRule.createFirewall(PROJECT_ID, FIREWALL_RULE_CREATE, NETWORK_NAME);
     compute.CreateFirewallRule.createFirewall(PROJECT_ID, FIREWALL_RULE_DELETE, NETWORK_NAME);
+    TimeUnit.SECONDS.sleep(10);
 
     // Create a Google Cloud Storage bucket for UsageReports
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
