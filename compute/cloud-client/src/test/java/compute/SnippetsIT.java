@@ -100,6 +100,10 @@ public class SnippetsIT {
     TimeUnit.SECONDS.sleep(10);
     compute.CreateFirewallRule.createFirewall(PROJECT_ID, FIREWALL_RULE_CREATE, NETWORK_NAME);
     TimeUnit.SECONDS.sleep(10);
+    // Moving the following tests to setup section as the created firewall rule is auto-deleted
+    // by GCE Enforcer within a few minutes.
+    testListFirewallRules();
+    testPatchFirewallRule();
 
     // Create a Google Cloud Storage bucket for UsageReports
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
@@ -140,6 +144,28 @@ public class SnippetsIT {
 
     return Base64.getEncoder()
         .encodeToString(stringBuilder.toString().getBytes(StandardCharsets.US_ASCII));
+  }
+
+  public static void testListFirewallRules() throws IOException {
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+    compute.ListFirewallRules.listFirewallRules(PROJECT_ID);
+    assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
+    stdOut.close();
+    System.setOut(null);
+  }
+
+  public static void testPatchFirewallRule() throws IOException, InterruptedException {
+    try (FirewallsClient client = FirewallsClient.create()) {
+      ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(stdOut));
+      Assert.assertEquals(1000, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
+      compute.PatchFirewallRule.patchFirewallPriority(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
+      TimeUnit.SECONDS.sleep(5);
+      Assert.assertEquals(500, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
+      stdOut.close();
+      System.setOut(null);
+    }
   }
 
   public static void deleteFirewallRuleIfNotDeletedByGceEnforcer(String projectId,
@@ -261,22 +287,6 @@ public class SnippetsIT {
     // Assert that firewall rule has been created as part of the setup.
     compute.GetFirewallRule.getFirewallRule(PROJECT_ID, FIREWALL_RULE_CREATE);
     assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
-  }
-
-  @Test
-  public void testListFirewallRules() throws IOException {
-    compute.ListFirewallRules.listFirewallRules(PROJECT_ID);
-    assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
-  }
-
-  @Test
-  public void testPatchFirewallRule() throws IOException, InterruptedException {
-    try (FirewallsClient client = FirewallsClient.create()) {
-      Assert.assertTrue(client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority() == 1000);
-      compute.PatchFirewallRule.patchFirewallPriority(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
-      TimeUnit.SECONDS.sleep(5);
-      Assert.assertTrue(client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority() == 500);
-    }
   }
 
   @Test
