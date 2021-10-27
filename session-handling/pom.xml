@@ -39,7 +39,7 @@ Copyright 2019 Google LLC
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
     <maven.compiler.failOnWarning>false</maven.compiler.failOnWarning>
     <maven.war.filteringDeploymentDescriptors>false</maven.war.filteringDeploymentDescriptors>
-    <jetty.version>9.4.43.v20210629</jetty.version>
+    <jetty.version>9.4.44.v20210927</jetty.version>
   </properties>
 
   <dependencies>
@@ -47,7 +47,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      <version>3.0.5</version>
+      <version>3.0.6</version>
     </dependency>
 
     <dependency>
@@ -59,7 +59,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>30.1.1-jre</version>
+      <version>31.0.1-jre</version>
       <scope>compile</scope>
     </dependency>
 
@@ -85,7 +85,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-chrome-driver</artifactId>
-      <version>3.141.59</version>
+      <version>4.0.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

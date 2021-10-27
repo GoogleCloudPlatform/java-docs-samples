@@ -37,7 +37,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
-    <jetty.version>9.4.43.v20210629</jetty.version>
+    <jetty.version>9.4.44.v20210927</jetty.version>
   </properties>
 
   <dependencies>
@@ -63,7 +63,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>30.1.1-jre</version>
+      <version>31.0.1-jre</version>
     </dependency>
   </dependencies>
 

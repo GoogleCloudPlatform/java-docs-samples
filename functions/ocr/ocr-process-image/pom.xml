@@ -41,7 +41,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>23.0.0</version>
+        <version>23.1.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -89,7 +89,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
-      <version>30.1.1-jre</version>
+      <version>31.0-jre</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -108,7 +108,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.7</version>
+        <version>0.9.8</version>
         <configuration>
           <functionTarget>
             functions.OcrProcessImage

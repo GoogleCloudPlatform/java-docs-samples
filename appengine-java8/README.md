@@ -43,7 +43,7 @@ access control, billing, and services.
 This sample demonstrates how to deploy an application on Google App Engine.
 
 - [Documentation][ae-docs]
-- [Code](https://github.com/GoogleCloudPlatform/getting-started-java/tree/master/appengine-standard-java8/helloworld)
+- [Code](https://github.com/GoogleCloudPlatform/getting-started-java/tree/main/appengine-standard-java8/helloworld)
 
 ### Sending Email
 

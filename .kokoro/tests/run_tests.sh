@@ -42,9 +42,9 @@ if [ -n "$KOKORO_GFILE_DIR" ]; then
 fi
 
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
-    # Update `gcloud` and log versioning for debugging.
-    gcloud components install beta --quiet
-    gcloud components update --quiet
+    # Update `gcloud` and log versioning for debugging
+    apt update && apt -y upgrade google-cloud-sdk
+    
     echo "********** GCLOUD INFO ***********"
     gcloud -v
     echo "********** MAVEN INFO  ***********"
@@ -77,7 +77,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     source "${KOKORO_GFILE_DIR}/cts_v4_secrets.txt"
     # shellcheck source=src/cloud_sql_secrets.txt
     source "${KOKORO_GFILE_DIR}/cloud_sql_secrets.txt"
-
+    # For Cloud Run filesystem sample
+    export FILESTORE_IP_ADDRESS=$(gcloud secrets versions access latest --secret fs-app)
     # Activate service account
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \

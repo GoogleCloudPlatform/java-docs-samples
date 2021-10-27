@@ -34,8 +34,8 @@ public class ConnectionPoolContextListener implements ServletContextListener {
 
   // Saving credentials in environment variables is convenient, but not secure - consider a more
   // secure solution such as https://cloud.google.com/kms/ to help keep secrets safe.
-  private static final String CLOUD_SQL_CONNECTION_NAME = System.getenv(
-      "CLOUD_SQL_CONNECTION_NAME");
+  private static final String INSTANCE_CONNECTION_NAME = System.getenv(
+      "INSTANCE_CONNECTION_NAME");
   private static final String DB_USER = System.getenv("DB_USER");
   private static final String DB_PASS = System.getenv("DB_PASS");
   private static final String DB_NAME = System.getenv("DB_NAME");
@@ -52,7 +52,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     // The following is equivalent to setting the config options below:
     // jdbc:sqlserver://;user=<DB_USER>;password=<DB_PASS>;databaseName=<DB_NAME>;
     // socketFactoryClass=com.google.cloud.sql.sqlserver.SocketFactory;
-    // socketFactoryConstructorArg=<CLOUD_SQL_CONNECTION_NAME>
+    // socketFactoryConstructorArg=<INSTANCE_CONNECTION_NAME>
     
     // See the link below for more info on building a JDBC URL for the Cloud SQL JDBC Socket Factory
     // https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#creating-the-jdbc-url
@@ -66,7 +66,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
 
     config.addDataSourceProperty("socketFactoryClass",
         "com.google.cloud.sql.sqlserver.SocketFactory");
-    config.addDataSourceProperty("socketFactoryConstructorArg", CLOUD_SQL_CONNECTION_NAME);
+    config.addDataSourceProperty("socketFactoryConstructorArg", INSTANCE_CONNECTION_NAME);
 
     // ... Specify additional connection properties here.
 

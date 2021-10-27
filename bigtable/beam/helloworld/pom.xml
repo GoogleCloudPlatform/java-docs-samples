@@ -15,8 +15,8 @@
     limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.bigtable</groupId>
@@ -53,8 +53,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core
-      </artifactId>
+      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core</artifactId>
       <version>${apache_beam.version}</version>
     </dependency>
 
@@ -62,7 +61,7 @@
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-beam</artifactId>
-      <version>1.25.0</version>
+      <version>1.25.1</version>
     </dependency>
     <!-- [END bigtable_beam_connector_dependency] -->
 
