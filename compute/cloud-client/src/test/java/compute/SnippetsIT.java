@@ -19,6 +19,7 @@ package compute;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.FirewallsClient;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
@@ -62,7 +63,6 @@ public class SnippetsIT {
   private static String BUCKET_NAME;
   private static String IMAGE_NAME;
   private static String FIREWALL_RULE_CREATE;
-  private static String FIREWALL_RULE_DELETE;
   private static String NETWORK_NAME;
   private static String RAW_KEY;
 
@@ -88,7 +88,6 @@ public class SnippetsIT {
     BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID();
     IMAGE_NAME = "windows-sql-cloud";
     FIREWALL_RULE_CREATE = "firewall-rule-" + UUID.randomUUID();
-    FIREWALL_RULE_DELETE = "firewall-rule-" + UUID.randomUUID();
     NETWORK_NAME = "global/networks/default";
     RAW_KEY = getBase64EncodedKey();
 
@@ -100,8 +99,11 @@ public class SnippetsIT {
         .createEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
     TimeUnit.SECONDS.sleep(10);
     compute.CreateFirewallRule.createFirewall(PROJECT_ID, FIREWALL_RULE_CREATE, NETWORK_NAME);
-    compute.CreateFirewallRule.createFirewall(PROJECT_ID, FIREWALL_RULE_DELETE, NETWORK_NAME);
     TimeUnit.SECONDS.sleep(10);
+    // Moving the following tests to setup section as the created firewall rule is auto-deleted
+    // by GCE Enforcer within a few minutes.
+    testListFirewallRules();
+    testPatchFirewallRule();
 
     // Create a Google Cloud Storage bucket for UsageReports
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
@@ -118,7 +120,7 @@ public class SnippetsIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    compute.DeleteFirewallRule.deleteFirewallRule(PROJECT_ID, FIREWALL_RULE_CREATE);
+    deleteFirewallRuleIfNotDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
@@ -142,6 +144,43 @@ public class SnippetsIT {
 
     return Base64.getEncoder()
         .encodeToString(stringBuilder.toString().getBytes(StandardCharsets.US_ASCII));
+  }
+
+  public static void testListFirewallRules() throws IOException {
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+    compute.ListFirewallRules.listFirewallRules(PROJECT_ID);
+    assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
+    stdOut.close();
+    System.setOut(null);
+  }
+
+  public static void testPatchFirewallRule() throws IOException, InterruptedException {
+    try (FirewallsClient client = FirewallsClient.create()) {
+      ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(stdOut));
+      Assert.assertEquals(1000, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
+      compute.PatchFirewallRule.patchFirewallPriority(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
+      TimeUnit.SECONDS.sleep(5);
+      Assert.assertEquals(500, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
+      stdOut.close();
+      System.setOut(null);
+    }
+  }
+
+  public static void deleteFirewallRuleIfNotDeletedByGceEnforcer(String projectId,
+      String firewallRule) throws IOException {
+    /* (**INTERNAL method**)
+      This method will prevent test failure if the firewall rule was auto-deleted by GCE Enforcer.
+      (Feel free to remove this method if not running on a Google-owned project.)
+     */
+    try {
+      GetFirewallRule.getFirewallRule(projectId, firewallRule);
+    } catch (NotFoundException e) {
+      System.out.println("Rule already deleted ! ");
+      return;
+    }
+    DeleteFirewallRule.deleteFirewallRule(projectId, firewallRule);
   }
 
   public static Status getInstanceStatus(String instanceName) throws IOException {
@@ -247,25 +286,7 @@ public class SnippetsIT {
   public void testCreateFirewallRule() throws IOException {
     // Assert that firewall rule has been created as part of the setup.
     compute.GetFirewallRule.getFirewallRule(PROJECT_ID, FIREWALL_RULE_CREATE);
-    compute.GetFirewallRule.getFirewallRule(PROJECT_ID, FIREWALL_RULE_DELETE);
     assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
-    assertThat(stdOut.toString()).contains(FIREWALL_RULE_DELETE);
-  }
-
-  @Test
-  public void testListFirewallRules() throws IOException {
-    compute.ListFirewallRules.listFirewallRules(PROJECT_ID);
-    assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
-  }
-
-  @Test
-  public void testPatchFirewallRule() throws IOException, InterruptedException {
-    try (FirewallsClient client = FirewallsClient.create()) {
-      Assert.assertTrue(client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority() == 1000);
-      compute.PatchFirewallRule.patchFirewallPriority(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
-      TimeUnit.SECONDS.sleep(5);
-      Assert.assertTrue(client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority() == 500);
-    }
   }
 
   @Test
