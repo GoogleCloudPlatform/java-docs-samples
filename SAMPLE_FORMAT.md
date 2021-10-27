@@ -34,7 +34,7 @@
 
 This doc maintains an outline for 'snippet' samples specific to Java. Currently, the Java canonical
 samples in this format are located 
-[here](https://github.com/googleapis/java-dlp/tree/master/samples/snippets).
+[here](https://github.com/googleapis/java-dlp/tree/main/samples/snippets).
 
 Larger sample applications should attempt to follow these guidelines as well, but some may
 be ignored or waived as there can be many structural differences between applications and snippets.
@@ -131,7 +131,7 @@ mind when setting up tests.
 * **Environment variables**  
   Minimize additional environment variables that need to be set to run the tests.
   If you do require additional environment variables, they should be added to
-  [run_tests.sh](../../blob/master/.kokoro/tests/run_tests.sh).
+  [run_tests.sh](../../blob/main/.kokoro/tests/run_tests.sh).
 
   Existing environment variables include:
   * `GOOGLE_APPLICATION_CREDENTIALS`

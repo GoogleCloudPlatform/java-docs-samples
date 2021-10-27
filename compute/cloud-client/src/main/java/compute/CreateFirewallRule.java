@@ -82,7 +82,7 @@ public class CreateFirewallRule {
       Operation operation = firewallsClient.insert(insertFirewallRequest);
       operationsClient.wait(project, operation.getName());
 
-      System.out.println("Firewall rule created successfully ! ");
+      System.out.println("Firewall rule created successfully -> " + firewallRuleName);
     }
   }
 }

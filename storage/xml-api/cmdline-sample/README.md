@@ -9,7 +9,7 @@ Using the Command Line Sample
 Browse Online
 --------------
 
-The main file is [StorageSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/storage/xml-api/cmdline-sample/src/main/java/StorageSample.java).
+The main file is [StorageSample.java](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/storage/xml-api/cmdline-sample/src/main/java/StorageSample.java).
 
 
 Setup
