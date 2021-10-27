@@ -67,7 +67,6 @@ public class HelloWorldWrite {
     // [END bigtable_beam_helloworld_write_transforms]
 
     p.run().waitUntilFinish();
-    System.exit(0);
   }
 
   // [START bigtable_beam_helloworld_options]

@@ -60,7 +60,6 @@ public class HelloWorldRead {
     // [END bigtable_beam_helloworld_read_transforms]
 
     p.run().waitUntilFinish();
-    System.exit(0);
   }
 
   public interface BigtableOptions extends DataflowPipelineOptions {
