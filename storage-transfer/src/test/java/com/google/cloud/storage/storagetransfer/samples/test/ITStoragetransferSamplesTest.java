@@ -37,7 +37,9 @@ import com.google.cloud.storage.storagetransfer.samples.test.util.TransferJobUti
 import com.google.cloud.storage.testing.RemoteStorageHelper;
 import com.google.common.collect.ImmutableList;
 import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
+import com.google.storagetransfer.v1.proto.TransferProto;
 import com.google.storagetransfer.v1.proto.TransferProto.GetGoogleServiceAccountRequest;
+import com.google.storagetransfer.v1.proto.TransferTypes;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
@@ -48,6 +50,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -60,6 +64,7 @@ public class ITStoragetransferSamplesTest {
   private static final String AMAZON_BUCKET = "sts-amazon-bucket" + UUID.randomUUID();
   private static Storage storage;
   private static AmazonS3 s3;
+  private static StorageTransferServiceClient sts;
 
   @BeforeClass
   public static void beforeClass() throws Exception {
@@ -86,60 +91,46 @@ public class ITStoragetransferSamplesTest {
             .setStorageClass(StorageClass.NEARLINE)
             .build());
 
-    grantBucketsStsPermissions();
+    sts = StorageTransferServiceClient.create();
+    String serviceAccount =
+        sts.getGoogleServiceAccount(
+                GetGoogleServiceAccountRequest.newBuilder().setProjectId(PROJECT_ID).build())
+            .getAccountEmail();
+
+    grantBucketsStsPermissions(serviceAccount, SOURCE_GCS_BUCKET);
+    grantBucketsStsPermissions(serviceAccount, SINK_GCS_BUCKET);
 
     s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_WEST_1).build();
 
     s3.createBucket(AMAZON_BUCKET);
   }
 
-  private static void grantBucketsStsPermissions() throws Exception {
-    StorageTransferServiceClient sts = StorageTransferServiceClient.create();
-
-    String serviceAccount =
-        sts.getGoogleServiceAccount(
-                GetGoogleServiceAccountRequest.newBuilder().setProjectId(PROJECT_ID).build())
-            .getAccountEmail();
-
-    sts.shutdownNow();
-
-    Policy sourceBucketPolicy =
-        storage.getIamPolicy(
-            SOURCE_GCS_BUCKET, Storage.BucketSourceOption.requestedPolicyVersion(3));
-
-    Policy sinkBucketPolicy =
-        storage.getIamPolicy(SINK_GCS_BUCKET, Storage.BucketSourceOption.requestedPolicyVersion(3));
+  private static void grantBucketsStsPermissions(String serviceAccount, String bucket)
+      throws Exception {
+    Policy policy =
+        storage.getIamPolicy(bucket, Storage.BucketSourceOption.requestedPolicyVersion(3));
 
     String objectViewer = "roles/storage.objectViewer";
     String bucketReader = "roles/storage.legacyBucketReader";
     String bucketWriter = "roles/storage.legacyBucketWriter";
     String member = "serviceAccount:" + serviceAccount;
 
-    List<Binding> sourceBindings = new ArrayList<>(sourceBucketPolicy.getBindingsList());
-    List<Binding> sinkBindings = new ArrayList<>(sinkBucketPolicy.getBindingsList());
+    List<Binding> bindings = new ArrayList<>(policy.getBindingsList());
 
     Binding objectViewerBinding =
         Binding.newBuilder().setRole(objectViewer).setMembers(Arrays.asList(member)).build();
-    sourceBindings.add(objectViewerBinding);
-    sinkBindings.add(objectViewerBinding);
+    bindings.add(objectViewerBinding);
 
     Binding bucketReaderBinding =
         Binding.newBuilder().setRole(bucketReader).setMembers(Arrays.asList(member)).build();
-    sourceBindings.add(bucketReaderBinding);
-    sinkBindings.add(bucketReaderBinding);
+    bindings.add(bucketReaderBinding);
 
     Binding bucketWriterBinding =
         Binding.newBuilder().setRole(bucketWriter).setMembers(Arrays.asList(member)).build();
-    sourceBindings.add(bucketWriterBinding);
-    sinkBindings.add(bucketWriterBinding);
+    bindings.add(bucketWriterBinding);
 
-    Policy.Builder newSourcePolicy =
-        sourceBucketPolicy.toBuilder().setBindings(sourceBindings).setVersion(3);
-    storage.setIamPolicy(SOURCE_GCS_BUCKET, newSourcePolicy.build());
-
-    Policy.Builder newSinkPolicy =
-        sinkBucketPolicy.toBuilder().setBindings(sinkBindings).setVersion(3);
-    storage.setIamPolicy(SINK_GCS_BUCKET, newSinkPolicy.build());
+    Policy.Builder newPolicy = policy.toBuilder().setBindings(bindings).setVersion(3);
+    storage.setIamPolicy(bucket, newPolicy.build());
   }
 
   private static void cleanAmazonBucket() {
@@ -164,6 +155,26 @@ public class ITStoragetransferSamplesTest {
     }
   }
 
+  // deletes a transfer job created by a sample to clean up
+  private void deleteTransferJob(String sampleOutput) {
+    Pattern pattern = Pattern.compile("(transferJobs/\\d+)");
+    Matcher matcher = pattern.matcher(sampleOutput);
+    matcher.find();
+    String jobName = matcher.group(1);
+
+    TransferTypes.TransferJob job =
+        TransferTypes.TransferJob.newBuilder()
+            .setName(jobName)
+            .setStatus(TransferTypes.TransferJob.Status.DELETED)
+            .build();
+    sts.updateTransferJob(
+        TransferProto.UpdateTransferJobRequest.newBuilder()
+            .setProjectId(PROJECT_ID)
+            .setJobName(jobName)
+            .setTransferJob(job)
+            .build());
+  }
+
   @AfterClass
   public static void afterClass() throws ExecutionException, InterruptedException {
     if (storage != null) {
@@ -176,6 +187,8 @@ public class ITStoragetransferSamplesTest {
     }
 
     cleanAmazonBucket();
+
+    sts.shutdownNow();
   }
 
   @Test
@@ -212,6 +225,18 @@ public class ITStoragetransferSamplesTest {
     System.setOut(standardOut);
     System.out.println(sampleOutput);
     assertThat(sampleOutput).contains(response.getName());
+
+    TransferTypes.TransferJob job =
+        TransferTypes.TransferJob.newBuilder()
+            .setName(response.getName())
+            .setStatus(TransferTypes.TransferJob.Status.DELETED)
+            .build();
+    sts.updateTransferJob(
+        TransferProto.UpdateTransferJobRequest.newBuilder()
+            .setProjectId(PROJECT_ID)
+            .setJobName(response.getName())
+            .setTransferJob(job)
+            .build());
   }
 
   @Test
@@ -247,6 +272,18 @@ public class ITStoragetransferSamplesTest {
     System.setOut(standardOut);
     System.out.println(sampleOutput);
     assertThat(sampleOutput).contains(response.getName());
+
+    TransferTypes.TransferJob job =
+        TransferTypes.TransferJob.newBuilder()
+            .setName(response.getName())
+            .setStatus(TransferTypes.TransferJob.Status.DELETED)
+            .build();
+    sts.updateTransferJob(
+        TransferProto.UpdateTransferJobRequest.newBuilder()
+            .setProjectId(PROJECT_ID)
+            .setJobName(response.getName())
+            .setTransferJob(job)
+            .build());
   }
 
   @Test
@@ -266,7 +303,9 @@ public class ITStoragetransferSamplesTest {
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
-    assertThat(sampleOutput).contains("\"Sample transfer job from S3 to GCS.\"");
+    assertThat(sampleOutput).contains("transferJobs/");
+
+    deleteTransferJob(sampleOutput);
   }
 
   @Test
@@ -286,7 +325,9 @@ public class ITStoragetransferSamplesTest {
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
-    assertThat(sampleOutput).contains("\"Sample transfer job from S3 to GCS.\"");
+    assertThat(sampleOutput).contains("transferJobs/");
+
+    deleteTransferJob(sampleOutput);
   }
 
   @Test
@@ -304,7 +345,9 @@ public class ITStoragetransferSamplesTest {
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
-    assertThat(sampleOutput).contains("\"Sample transfer job from GCS to GCS Nearline.\"");
+    assertThat(sampleOutput).contains("transferJobs/");
+
+    deleteTransferJob(sampleOutput);
   }
 
   @Test
@@ -322,7 +365,9 @@ public class ITStoragetransferSamplesTest {
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
-    assertThat(sampleOutput).contains("\"Sample transfer job from GCS to GCS Nearline.\"");
+    assertThat(sampleOutput).contains("transferJobs/");
+
+    deleteTransferJob(sampleOutput);
   }
 
   @Test
@@ -335,6 +380,9 @@ public class ITStoragetransferSamplesTest {
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
-    assertThat(sampleOutput).contains("Created transfer job between two GCS buckets:");
+    System.out.println(sampleOutput);
+    assertThat(sampleOutput).contains("transferJobs/");
+
+    deleteTransferJob(sampleOutput);
   }
 }
