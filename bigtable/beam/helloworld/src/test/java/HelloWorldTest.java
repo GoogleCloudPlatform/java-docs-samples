@@ -39,10 +39,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class HelloWorldTest {
+
   private static final String INSTANCE_ENV = "BIGTABLE_TESTING_INSTANCE";
   private static final String TABLE_ID =
       "mobile-time-series-" + UUID.randomUUID().toString().substring(0, 20);
   private static final String COLUMN_FAMILY_NAME = "stats_summary";
+  private static final String REGION = "us-central1";
 
   private static String projectId;
   private static String instanceId;
@@ -98,13 +100,21 @@ public class HelloWorldTest {
     }
   }
 
+  /**
+   * Test the writing data example as well as runtime dependency building. This must be run via
+   * Dataflow to verify it build otherwise it lets errors slip through that aren't checked during
+   * compilation. To run this test faster locally, comment out the runner parameter.
+   */
   @Test
   public void testWrite() {
     HelloWorldWrite.main(
-        new String[] {
-          "--bigtableProjectId=" + projectId,
-          "--bigtableInstanceId=" + instanceId,
-          "--bigtableTableId=" + TABLE_ID
+        new String[]{
+            "--bigtableProjectId=" + projectId,
+            "--project=" + projectId,
+            "--bigtableInstanceId=" + instanceId,
+            "--bigtableTableId=" + TABLE_ID,
+            "--region=" + REGION,
+            "--runner=dataflow",
         });
 
     long count = 0;
@@ -121,16 +131,16 @@ public class HelloWorldTest {
       System.out.println(
           "Unable to initialize service client, as a network error occurred: \n" + e.toString());
     }
-    assertThat(count).isGreaterThan(0);
+    assertThat(count).isEqualTo(3);
   }
 
   @Test
   public void testRead() {
     HelloWorldRead.main(
-        new String[] {
-          "--bigtableProjectId=" + projectId,
-          "--bigtableInstanceId=" + instanceId,
-          "--bigtableTableId=" + TABLE_ID
+        new String[]{
+            "--bigtableProjectId=" + projectId,
+            "--bigtableInstanceId=" + instanceId,
+            "--bigtableTableId=" + TABLE_ID
         });
 
     String output = bout.toString();

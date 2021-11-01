@@ -15,8 +15,8 @@
     limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.bigtable</groupId>
@@ -37,7 +37,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <apache_beam.version>2.33.0</apache_beam.version>
+    <!-- Keep this apache_beam.version in sync with version used in bigtable-hbase-beam -->
+    <!-- https://mvnrepository.com/artifact/com.google.cloud.bigtable/bigtable-hbase-beam -->
+    <apache_beam.version>2.24.0</apache_beam.version>
     <exec.cleanupDaemonThreads>false</exec.cleanupDaemonThreads>
   </properties>
 
@@ -54,7 +56,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core</artifactId>
+      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core
+      </artifactId>
       <version>${apache_beam.version}</version>
     </dependency>
 
@@ -77,6 +80,18 @@
       <artifactId>truth</artifactId>
       <version>1.1.3</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- guava is required override the guava from the shared-configuration which causes build issues -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.0.1-jre</version>
     </dependency>
   </dependencies>
 </project>
