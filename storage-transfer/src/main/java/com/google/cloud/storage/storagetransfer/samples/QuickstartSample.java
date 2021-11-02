@@ -17,8 +17,8 @@ package com.google.cloud.storage.storagetransfer.samples;
 
 // [START storagetransfer_quickstart]
 import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
-import com.google.storagetransfer.v1.proto.TransferProto;
 import com.google.storagetransfer.v1.proto.TransferProto.CreateTransferJobRequest;
+import com.google.storagetransfer.v1.proto.TransferProto.RunTransferJobRequest;
 import com.google.storagetransfer.v1.proto.TransferTypes.GcsData;
 import com.google.storagetransfer.v1.proto.TransferTypes.TransferJob;
 import com.google.storagetransfer.v1.proto.TransferTypes.TransferSpec;
@@ -52,7 +52,7 @@ public class QuickstartSample {
             CreateTransferJobRequest.newBuilder().setTransferJob(transferJob).build());
 
     storageTransfer.runTransferJobAsync(
-            TransferProto.RunTransferJobRequest.newBuilder()
+            RunTransferJobRequest.newBuilder()
             .setProjectId(projectId)
             .setJobName(response.getName())
             .build())
