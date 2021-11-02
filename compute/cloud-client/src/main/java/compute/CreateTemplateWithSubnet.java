@@ -32,7 +32,8 @@ public class CreateTemplateWithSubnet {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
-  /* TODO(developer): Replace these variables before running the sample.
+  /*
+    TODO(developer): Replace these variables before running the sample.
     projectId: project ID or project number of the Cloud project you use.
     network: the network to be used in the new template. This value uses
         the following format: "projects/{project}/global/networks/{network}"
@@ -86,7 +87,8 @@ public class CreateTemplateWithSubnet {
         System.out.println("Template creation from subnet failed ! ! " + response);
         return;
       }
-      System.out.printf("Template creation from subnet operation status %s: %s" , templateName, response.getStatus());
+      System.out.printf("Template creation from subnet operation status %s: %s", templateName,
+          response.getStatus());
     }
   }
 }

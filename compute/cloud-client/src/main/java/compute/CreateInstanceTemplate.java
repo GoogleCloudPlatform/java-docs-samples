@@ -95,7 +95,8 @@ public class CreateInstanceTemplate {
         System.out.println("Instance Template creation failed ! ! " + response);
         return;
       }
-      System.out.printf("Instance Template Operation Status %s: %s" , templateName, response.getStatus());
+      System.out
+          .printf("Instance Template Operation Status %s: %s", templateName, response.getStatus());
     }
   }
 }

@@ -55,7 +55,8 @@ public class DeleteInstanceTemplate {
         System.out.println("Instance template deletion failed ! ! " + response);
         return;
       }
-      System.out.printf("Instance template deletion operation status for %s: %s " , templateName, response.getStatus());
+      System.out.printf("Instance template deletion operation status for %s: %s ", templateName,
+          response.getStatus());
     }
   }
 }

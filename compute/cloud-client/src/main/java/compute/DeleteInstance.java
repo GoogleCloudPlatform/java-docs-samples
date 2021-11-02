@@ -65,7 +65,8 @@ public class DeleteInstance {
         System.out.println("Instance deletion failed ! ! " + response);
         return;
       }
-      System.out.printf("Operation Status for instance %s: %s ", instanceName, response.getStatus());
+      System.out
+          .printf("Operation Status for instance %s: %s ", instanceName, response.getStatus());
     }
   }
 }

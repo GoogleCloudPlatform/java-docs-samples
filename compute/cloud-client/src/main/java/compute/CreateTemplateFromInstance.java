@@ -55,7 +55,8 @@ public class CreateTemplateFromInstance {
               // Device name must match the name of a disk attached to the instance you are
               // basing your template on.
               .setDeviceName("disk-1")
-              // Replace the original boot disk image used in your instance with a Rocky Linux image.
+              // Replace the original boot disk image used in your instance
+              // with a Rocky Linux image.
               .setInstantiateFrom(InstantiateFrom.CUSTOM_IMAGE)
               .setCustomImage("projects/rocky-linux-cloud/global/images/family/rocky-linux-8")
               // Override the AutoDelete setting.
@@ -80,7 +81,8 @@ public class CreateTemplateFromInstance {
         System.out.println("Instance Template creation failed ! ! " + response);
         return;
       }
-      System.out.printf("Instance Template creation operation status %s: %s" , templateName, response.getStatus());
+      System.out.printf("Instance Template creation operation status %s: %s", templateName,
+          response.getStatus());
     }
   }
 }
