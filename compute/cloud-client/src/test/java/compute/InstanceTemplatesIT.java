@@ -79,6 +79,8 @@ public class InstanceTemplatesIT {
   public static void cleanup() throws IOException, ExecutionException, InterruptedException {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
+    assertThat(stdOut.toString()).contains("Operation Status for instance " + MACHINE_NAME);
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE);
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_WITH_SUBNET);
