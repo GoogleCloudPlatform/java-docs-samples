@@ -25,13 +25,11 @@ package compute;
 
 import com.google.cloud.compute.v1.GlobalOperationsClient;
 import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.Project;
 import com.google.cloud.compute.v1.ProjectsClient;
 import com.google.cloud.compute.v1.SetUsageExportBucketProjectRequest;
 import com.google.cloud.compute.v1.UsageExportLocation;
 import java.io.IOException;
-import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
 // [END compute_usage_report_disable]
@@ -83,20 +81,14 @@ public class SetUsageExportBucket {
       }
 
       // Set the usage export location.
-      Operation response = projectsClient
+      Operation operation = projectsClient
           .setUsageExportBucket(SetUsageExportBucketProjectRequest.newBuilder()
               .setProject(project)
               .setUsageExportLocationResource(usageExportLocation)
               .build());
 
       // Wait for the operation to complete.
-      // Timeout is set at 3 minutes.
-      LocalTime endTime = LocalTime.now().plusMinutes(3);
-      while (response.getStatus() != Status.DONE
-          && LocalTime.now().isBefore(endTime)) {
-        response = globalOperationsClient.get(project, String.valueOf(response.getId()));
-        TimeUnit.SECONDS.sleep(3);
-      }
+      Operation response = globalOperationsClient.wait(project, operation.getName());
 
       if (response.hasError()) {
         System.out.println("Setting usage export bucket failed ! ! " + response);
@@ -159,20 +151,14 @@ public class SetUsageExportBucket {
       UsageExportLocation usageExportLocation = UsageExportLocation.newBuilder().build();
 
       // Disable the usage export location.
-      Operation response = projectsClient
+      Operation operation = projectsClient
           .setUsageExportBucket(SetUsageExportBucketProjectRequest.newBuilder()
               .setProject(project)
               .setUsageExportLocationResource(usageExportLocation)
               .build());
 
       // Wait for the operation to complete.
-      // Timeout is set at 3 minutes.
-      LocalTime endTime = LocalTime.now().plusMinutes(3);
-      while (response.getStatus() != Status.DONE
-          && LocalTime.now().isBefore(endTime)) {
-        response = globalOperationsClient.get(project, String.valueOf(response.getId()));
-        TimeUnit.SECONDS.sleep(3);
-      }
+      Operation response = globalOperationsClient.wait(project, operation.getName());
 
       if (response.hasError()) {
         System.out.println("Disable usage export bucket failed ! ! " + response);

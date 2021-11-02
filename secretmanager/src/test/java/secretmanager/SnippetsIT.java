@@ -325,9 +325,28 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testListSecretVersionsWithFilter() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET_WITH_VERSIONS.getName());
+    ListSecretVersionsWithFilter.listSecretVersions(
+        name.getProject(), name.getSecret(), "name:1");
+
+    assertThat(stdOut.toString()).contains("Secret version");
+  }
+
+  @Test
   public void testListSecrets() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
     ListSecrets.listSecrets(name.getProject());
+
+    assertThat(stdOut.toString()).contains("Secret projects/");
+    assertThat(stdOut.toString()).contains(name.getSecret());
+  }
+
+  @Test
+  public void testListSecretsWithFilter() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    ListSecretsWithFilter.listSecrets(
+        name.getProject(), String.format("name:%s", name.getSecret()));
 
     assertThat(stdOut.toString()).contains("Secret projects/");
     assertThat(stdOut.toString()).contains(name.getSecret());

@@ -47,15 +47,15 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.5.3</version>
+        <version>2.5.5</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <!-- [START pubsub_spring_dependency_manager] -->
       <dependency>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.google.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>1.2.8.RELEASE</version>
+        <version>2.0.5</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -71,7 +71,7 @@
     <!-- [START pubsub_spring_boot_starter] -->
     <!-- [START pubsub_spring_integration] -->
     <dependency>
-      <groupId>org.springframework.cloud</groupId>
+      <groupId>com.google.cloud</groupId>
       <artifactId>spring-cloud-gcp-starter-pubsub</artifactId>
     </dependency>
     <!-- [END pubsub_spring_boot_starter] -->
@@ -82,7 +82,7 @@
     <!-- [END pubsub_spring_integration] -->
     <!-- [START pubsub_spring_cloud_stream_binder] -->
     <dependency>
-      <groupId>org.springframework.cloud</groupId>
+      <groupId>com.google.cloud</groupId>
       <artifactId>spring-cloud-gcp-pubsub-stream-binder</artifactId>
     </dependency>
     <!-- [END pubsub_spring_cloud_stream_binder] -->
@@ -93,7 +93,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>2.5.3</version>
+        <version>2.5.5</version>
         <configuration>
           <mainClass>demo.PubSubApplication</mainClass>
         </configuration>

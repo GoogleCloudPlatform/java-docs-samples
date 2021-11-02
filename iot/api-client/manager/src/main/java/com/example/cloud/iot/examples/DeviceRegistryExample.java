@@ -74,7 +74,7 @@ import org.apache.commons.cli.HelpFormatter;
  * Before running the example, we have to create private and public keys, as described in
  * cloud.google.com/iot. Since we are interacting with the device manager, we will only use the
  * public keys. The private keys are used to sign JWTs to authenticate devices. See the <a
- * href="https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/iot/api-client/mqtt_example">MQTT
+ * href="https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/iot/api-client/mqtt_example">MQTT
  * client example</a> for more information.
  *
  * Finally, compile and run the example with:

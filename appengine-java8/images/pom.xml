@@ -39,7 +39,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-       <version>1.9.90</version>
+       <version>1.9.91</version>
     </dependency>
 
     <dependency>
@@ -76,7 +76,7 @@ Copyright 2015 Google Inc.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.1</version>
+        <version>3.3.2</version>
       </plugin>
     </plugins>
   </build>

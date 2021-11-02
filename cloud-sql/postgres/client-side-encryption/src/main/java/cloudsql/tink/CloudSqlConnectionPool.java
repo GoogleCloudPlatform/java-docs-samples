@@ -29,13 +29,13 @@ import javax.sql.DataSource;
 public class CloudSqlConnectionPool {
 
   public static DataSource createConnectionPool(String dbUser, String dbPass, String dbName,
-      String cloudSqlConnectionName) throws GeneralSecurityException {
+      String instanceConnectionName) throws GeneralSecurityException {
     HikariConfig config = new HikariConfig();
     config.setJdbcUrl(String.format("jdbc:postgresql:///%s", dbName));
     config.setUsername(dbUser); // e.g. "root", "postgres"
     config.setPassword(dbPass); // e.g. "my-password"
     config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.postgres.SocketFactory");
-    config.addDataSourceProperty("cloudSqlInstance", cloudSqlConnectionName);
+    config.addDataSourceProperty("cloudSqlInstance", instanceConnectionName);
     DataSource pool = new HikariDataSource(config);
     return pool;
   }

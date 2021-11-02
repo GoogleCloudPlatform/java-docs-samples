@@ -17,11 +17,11 @@ package examples;
 // [START pubsublite_to_gcs]
 
 import com.google.cloud.pubsublite.SubscriptionPath;
-import com.google.cloud.pubsublite.beam.PubsubLiteIO;
-import com.google.cloud.pubsublite.beam.SubscriberOptions;
 import com.google.cloud.pubsublite.proto.SequencedMessage;
 import org.apache.beam.examples.common.WriteOneFilePerWindow;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.pubsublite.PubsubLiteIO;
+import org.apache.beam.sdk.io.gcp.pubsublite.SubscriberOptions;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
@@ -74,16 +74,14 @@ public class PubsubliteToGcs {
 
     options.setStreaming(true);
 
-    SubscriberOptions subscriberOpitons =
+    SubscriberOptions subscriberOptions =
         SubscriberOptions.newBuilder()
             .setSubscriptionPath(SubscriptionPath.parse(options.getSubscription()))
             .build();
 
     Pipeline pipeline = Pipeline.create(options);
     pipeline
-        // TODO: Replace the I/O connector with the one released with Apache Beam when it's stable.
-        // https://issues.apache.org/jira/browse/BEAM-10114
-        .apply("Read From Pub/Sub Lite", PubsubLiteIO.read(subscriberOpitons))
+        .apply("Read From Pub/Sub Lite", PubsubLiteIO.read(subscriberOptions))
         .apply(
             "Convert messages",
             MapElements.into(TypeDescriptors.strings())

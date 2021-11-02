@@ -3,7 +3,8 @@
 
 # The java-samples-reviewers team is the default owner for anything not
 # explicitly taken by someone else.
-*                         @GoogleCloudPlatform/java-samples-reviewers
+
+*                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 
 /bigtable/**/*.java             @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 /cloud-sql/**/*.java            @GoogleCloudPlatform/infra-db-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver

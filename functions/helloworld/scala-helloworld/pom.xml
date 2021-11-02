@@ -59,7 +59,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.11.2</version>
+      <version>4.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
-      <version>30.1.1-jre</version>
+      <version>31.0-jre</version>
       <scope>test</scope>
     </dependency>
     <!-- [START functions_scala_pom] -->
@@ -98,7 +98,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.7</version>
+        <version>0.9.8</version>
         <configuration>
           <functionTarget>functions.ScalaHelloWorld</functionTarget>
         </configuration>

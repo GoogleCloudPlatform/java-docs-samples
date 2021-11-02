@@ -22,7 +22,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.17'
 
   }
 }
@@ -31,9 +31,9 @@ dependencies {
   repositories {
     mavenCentral()
   }
-  compile 'io.grpc:grpc-netty:1.0.1'
-  compile 'io.grpc:grpc-protobuf:1.0.1'
-  compile 'io.grpc:grpc-stub:1.0.1'
+  compile 'io.grpc:grpc-netty:1.41.0'
+  compile 'io.grpc:grpc-protobuf:1.41.0'
+  compile 'io.grpc:grpc-stub:1.41.0'
 }
 
 protobuf {

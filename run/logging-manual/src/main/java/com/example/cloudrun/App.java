@@ -44,7 +44,10 @@ public class App {
           // [START run_manual_logging]
           // Build structured log messages as an object.
           Object globalLogFields = null;
+
           // Add log correlation to nest all log messages beneath request log in Log Viewer.
+          // TODO(developer): delete this code if you're creating a Cloud
+          //                  Function and it is *NOT* triggered by HTTP.
           String traceHeader = req.headers("x-cloud-trace-context");
           if (traceHeader != null && project != null) {
             String trace = traceHeader.split("/")[0];
@@ -53,6 +56,8 @@ public class App {
                     "logging.googleapis.com/trace",
                     String.format("projects/%s/traces/%s", project, trace));
           }
+          // -- End log correlation code --
+
           // Create a structured log entry using key value pairs.
           logger.error(
               "This is the default display field.",

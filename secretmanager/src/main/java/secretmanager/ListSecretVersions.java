@@ -38,10 +38,10 @@ public class ListSecretVersions {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
       // Build the parent name.
-      SecretName projectName = SecretName.of(projectId, secretId);
+      SecretName secretName = SecretName.of(projectId, secretId);
 
       // Get all versions.
-      ListSecretVersionsPagedResponse pagedResponse = client.listSecretVersions(projectName);
+      ListSecretVersionsPagedResponse pagedResponse = client.listSecretVersions(secretName);
 
       // List all versions and their state.
       pagedResponse
