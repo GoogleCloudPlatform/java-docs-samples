@@ -68,6 +68,7 @@ public class CreateInstance {
               .setBoot(true)
               .setAutoDelete(true)
               .setType(Type.PERSISTENT)
+              .setDeviceName("disk-1")
               .setInitializeParams(
                   AttachedDiskInitializeParams.newBuilder().setSourceImage(sourceImage)
                       .setDiskSizeGb(diskSizeGb).build())

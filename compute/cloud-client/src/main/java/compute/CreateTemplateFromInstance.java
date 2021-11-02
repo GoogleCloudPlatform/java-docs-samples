@@ -36,8 +36,8 @@ public class CreateTemplateFromInstance {
     // instance: the instance to base the new template on. This value uses the following format:
     // **NOTE**: "projects/{project}/zones/{zone}/instances/{instance_name}"
     // templateName: name of the new template to create.
-    String projectId = "";
-    String templateName = "";
+    String projectId = "your-project-id";
+    String templateName = "template-name";
     String instance = "projects/{project}/zones/{zone}/instances/{instance_name}";
     createTemplateFromInstance(projectId, templateName, instance);
   }
