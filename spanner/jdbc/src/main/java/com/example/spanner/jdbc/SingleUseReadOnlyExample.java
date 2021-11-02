@@ -17,7 +17,6 @@
 package com.example.spanner.jdbc;
 
 // [START spanner_jdbc_query]
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -34,9 +33,6 @@ public class SingleUseReadOnlyExample {
     singleUseReadOnly(projectId, instanceId, databaseId);
   }
 
-  @SuppressFBWarnings(
-      value = "OBL_UNSATISFIED_OBLIGATION",
-      justification = "https://github.com/spotbugs/spotbugs/issues/293")
   static void singleUseReadOnly(String projectId, String instanceId, String databaseId)
       throws SQLException {
     String connectionUrl =

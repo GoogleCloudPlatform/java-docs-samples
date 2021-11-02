@@ -16,7 +16,6 @@
 
 package com.example.spanner.jdbc;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -31,9 +30,6 @@ class CreateConnectionWithUrlPropertiesExample {
     createConnectionWithUrlProperties(projectId, instanceId, databaseId);
   }
 
-  @SuppressFBWarnings(
-      value = "OBL_UNSATISFIED_OBLIGATION",
-      justification = "https://github.com/spotbugs/spotbugs/issues/293")
   // Creates a JDBC connection to a Cloud Spanner database using URL properties.
   static void createConnectionWithUrlProperties(
       String projectId, String instanceId, String databaseId) throws SQLException {
