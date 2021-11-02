@@ -52,10 +52,10 @@ public class DeleteInstanceTemplate {
       Operation response = globalOperationsClient.wait(projectId, operation.getName());
 
       if (response.hasError()) {
-        System.out.println("Instance deletion failed ! ! " + response);
+        System.out.println("Instance template deletion failed ! ! " + response);
         return;
       }
-      System.out.println("Instance deletion operation status: " + response.getStatus());
+      System.out.printf("Instance template deletion operation status for %s: %s " , templateName, response.getStatus());
     }
   }
 }

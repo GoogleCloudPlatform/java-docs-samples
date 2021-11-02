@@ -86,7 +86,7 @@ public class CreateTemplateWithSubnet {
         System.out.println("Template creation from subnet failed ! ! " + response);
         return;
       }
-      System.out.println("Template creation from subnet operation status: " + response.getStatus());
+      System.out.printf("Template creation from subnet operation status %s: %s" , templateName, response.getStatus());
     }
   }
 }

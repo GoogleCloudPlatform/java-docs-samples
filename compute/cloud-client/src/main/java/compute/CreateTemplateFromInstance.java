@@ -77,10 +77,10 @@ public class CreateTemplateFromInstance {
       Operation response = globalOperationsClient.wait(projectId, operation.getName());
 
       if (response.hasError()) {
-        System.out.println("Instance creation failed ! ! " + response);
+        System.out.println("Instance Template creation failed ! ! " + response);
         return;
       }
-      System.out.println("Instance creation operation status: " + response.getStatus());
+      System.out.printf("Instance Template creation operation status %s: %s" , templateName, response.getStatus());
     }
   }
 }
