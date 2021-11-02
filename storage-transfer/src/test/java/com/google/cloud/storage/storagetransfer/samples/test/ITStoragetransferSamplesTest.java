@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.cloud.storage.storagetransfer.samples.test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -135,16 +151,16 @@ public class ITStoragetransferSamplesTest {
 
   private static void cleanAmazonBucket() {
     try {
-      ObjectListing object_listing = s3.listObjects(AMAZON_BUCKET);
+      ObjectListing objectListing = s3.listObjects(AMAZON_BUCKET);
       while (true) {
-        for (Iterator<?> iterator = object_listing.getObjectSummaries().iterator();
+        for (Iterator<?> iterator = objectListing.getObjectSummaries().iterator();
             iterator.hasNext(); ) {
           S3ObjectSummary summary = (S3ObjectSummary) iterator.next();
           s3.deleteObject(AMAZON_BUCKET, summary.getKey());
         }
 
-        if (object_listing.isTruncated()) {
-          object_listing = s3.listNextBatchOfObjects(object_listing);
+        if (objectListing.isTruncated()) {
+          objectListing = s3.listNextBatchOfObjects(objectListing);
         } else {
           break;
         }
