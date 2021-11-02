@@ -41,11 +41,13 @@ public class DeleteInstanceTemplate {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create();
         GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
 
-      DeleteInstanceTemplateRequest deleteInstanceTemplateRequest = DeleteInstanceTemplateRequest.newBuilder()
+      DeleteInstanceTemplateRequest deleteInstanceTemplateRequest = DeleteInstanceTemplateRequest
+          .newBuilder()
           .setProject(projectId)
           .setInstanceTemplate(templateName).build();
 
-      Operation operation = instanceTemplatesClient.deleteCallable().futureCall(deleteInstanceTemplateRequest).get();
+      Operation operation = instanceTemplatesClient.deleteCallable()
+          .futureCall(deleteInstanceTemplateRequest).get();
 
       Operation response = globalOperationsClient.wait(projectId, operation.getName());
 

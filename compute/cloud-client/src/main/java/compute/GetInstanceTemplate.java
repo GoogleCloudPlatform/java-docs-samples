@@ -35,9 +35,10 @@ public class GetInstanceTemplate {
   //  Retrieve an instance template, which you can use to create virtual machine
   //  (VM) instances and managed instance groups (MIGs).
   public static void getInstanceTemplate(String projectId, String templateName) throws IOException {
-    try(InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
+    try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
 
-      GetInstanceTemplateRequest getInstanceTemplateRequest = GetInstanceTemplateRequest.newBuilder()
+      GetInstanceTemplateRequest getInstanceTemplateRequest = GetInstanceTemplateRequest
+          .newBuilder()
           .setProject(projectId)
           .setInstanceTemplate(templateName).build();
 

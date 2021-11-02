@@ -17,6 +17,7 @@
 package compute;
 
 // [START compute_start_instance]
+
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;

@@ -31,10 +31,11 @@ public class ListInstanceTemplates {
 
   // Get a list of InstanceTemplate objects available in a project.
   public static void listInstanceTemplates(String projectId) throws IOException {
-    try(InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
+    try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
       int count = 0;
       System.out.println("Listing instance templates...");
-      for(InstanceTemplate instanceTemplate : instanceTemplatesClient.list(projectId).iterateAll()) {
+      for (InstanceTemplate instanceTemplate : instanceTemplatesClient.list(projectId)
+          .iterateAll()) {
         System.out.printf("%s. %s%n", ++count, instanceTemplate.getName());
       }
     }
