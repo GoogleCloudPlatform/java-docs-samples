@@ -258,7 +258,7 @@ public class CreateInstancesAdvanced {
      *
      * @return Instance object.
      */
-    private static Instance createFromPublicImage(String project, String zone, String instanceName)
+    public static Instance createFromPublicImage(String project, String zone, String instanceName)
         throws IOException, InterruptedException, ExecutionException {
         try (ImagesClient imagesClient = ImagesClient.create()) {
             // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
@@ -284,7 +284,7 @@ public class CreateInstancesAdvanced {
      *
      * @return Instance object.
      */
-    private static Instance createFromCustomImage(String project, String zone, String instanceName, String customImage)
+    public static Instance createFromCustomImage(String project, String zone, String instanceName, String customImage)
         throws IOException, InterruptedException, ExecutionException {
         String diskType = String.format("zones/%s/diskTypes/pd-standard", zone);
         Vector<AttachedDisk> disks = new Vector<>();
@@ -305,7 +305,7 @@ public class CreateInstancesAdvanced {
      *
      * @return Instance object.
      */
-    private static Instance createWithAdditionalDisk(String project, String zone, String instanceName)
+    public static Instance createWithAdditionalDisk(String project, String zone, String instanceName)
         throws IOException, InterruptedException, ExecutionException {
         try (ImagesClient imagesClient = ImagesClient.create()) {
             // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
@@ -333,7 +333,7 @@ public class CreateInstancesAdvanced {
      *
      * @return Instance object.
      */
-    private static Instance createFromSnapshot(String project, String zone, String instanceName, String snapshotName)
+    public static Instance createFromSnapshot(String project, String zone, String instanceName, String snapshotName)
         throws IOException, InterruptedException, ExecutionException {
         String diskType = String.format("zones/%s/diskTypes/pd-standard", zone);
         Vector<AttachedDisk> disks = new Vector<>();
@@ -356,7 +356,7 @@ public class CreateInstancesAdvanced {
      *
      * @return Instance object.
      */
-    private static Instance createWithSnapshottedDataDisk(String project, String zone, String instanceName, String snapshotName)
+    public static Instance createWithSnapshottedDataDisk(String project, String zone, String instanceName, String snapshotName)
         throws IOException, InterruptedException, ExecutionException {
         try (ImagesClient imagesClient = ImagesClient.create()) {
             // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
@@ -387,7 +387,7 @@ public class CreateInstancesAdvanced {
      *
      * @return Instance object.
      */
-    private static Instance createFromPublicImage(String project, String zone, String instanceName, String networkLink, String subnetworkLink)
+    public static Instance createWithSubnetwork(String project, String zone, String instanceName, String networkLink, String subnetworkLink)
         throws IOException, InterruptedException, ExecutionException {
         try (ImagesClient imagesClient = ImagesClient.create()) {
             // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
