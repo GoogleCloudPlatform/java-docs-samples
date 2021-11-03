@@ -71,7 +71,8 @@ public class CreateInstanceFromTemplate {
         return;
       }
       System.out
-          .println("Instance creation from template: Operation Status: " + response.getStatus());
+          .printf("Instance creation from template: Operation Status %s: %s ", instanceName,
+              response.getStatus());
     }
   }
 }

@@ -99,4 +99,45 @@ public class CreateInstanceTemplate {
           .printf("Instance Template Operation Status %s: %s", templateName, response.getStatus());
     }
   }
+
+  public static void createInstanceTemplateWithDiskType(String projectId, String templateName)
+      throws IOException, ExecutionException, InterruptedException {
+    try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create();
+        GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
+
+      AttachedDisk disk = AttachedDisk.newBuilder()
+          .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
+              .setDiskSizeGb(10)
+              .setSourceImage("projects/debian-cloud/global/images/family/debian-10").build())
+          .setAutoDelete(true)
+          .setBoot(true)
+          .setType(AttachedDisk.Type.PERSISTENT).build();
+
+      InstanceTemplate instanceTemplate = InstanceTemplate.newBuilder()
+          .setName(templateName)
+          .setProperties(InstanceProperties.newBuilder()
+              .setMachineType("n1-standard-1")
+              .addDisks(disk)
+              .addNetworkInterfaces(NetworkInterface.newBuilder()
+                  .setName("global/networks/default").build()).build()).build();
+
+      InsertInstanceTemplateRequest insertInstanceTemplateRequest = InsertInstanceTemplateRequest
+          .newBuilder()
+          .setProject(projectId)
+          .setInstanceTemplateResource(instanceTemplate).build();
+
+      Operation operation = instanceTemplatesClient.insertCallable()
+          .futureCall(insertInstanceTemplateRequest).get();
+
+      // Wait for the operation to complete.
+      Operation response = globalOperationsClient.wait(projectId, operation.getName());
+
+      if (response.hasError()) {
+        System.out.println("Instance Template creation failed ! ! " + response);
+        return;
+      }
+      System.out
+          .printf("Instance Template Operation Status %s: %s", templateName, response.getStatus());
+    }
+  }
 }

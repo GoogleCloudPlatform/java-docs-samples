@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,8 +44,11 @@ public class InstanceTemplatesIT {
   private static String TEMPLATE_NAME;
   private static String TEMPLATE_NAME_FROM_INSTANCE;
   private static String TEMPLATE_NAME_WITH_SUBNET;
+  private static String TEMPLATE_NAME_WITH_DISK;
   private static String ZONE;
   private static String MACHINE_NAME;
+  private static String MACHINE_NAME_2;
+  private static String MACHINE_NAME_3;
 
   private ByteArrayOutputStream stdOut;
 
@@ -56,32 +60,71 @@ public class InstanceTemplatesIT {
 
   @BeforeClass
   public static void setup() throws IOException, ExecutionException, InterruptedException {
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     TEMPLATE_NAME = "template-name-" + UUID.randomUUID();
     ZONE = "us-central1-a";
     MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
+    MACHINE_NAME_2 = "my-new-test-instance" + UUID.randomUUID();
+    MACHINE_NAME_3 = "my-new-test-instance" + UUID.randomUUID();
     TEMPLATE_NAME_FROM_INSTANCE = "my-new-test-instance" + UUID.randomUUID();
     TEMPLATE_NAME_WITH_SUBNET = "my-new-test-instance" + UUID.randomUUID();
+    TEMPLATE_NAME_WITH_DISK = "my-new-test-instance" + UUID.randomUUID();
 
+    // Create templates.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
+    assertThat(stdOut.toString()).contains("Instance Template Operation Status " + TEMPLATE_NAME);
     CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     TimeUnit.SECONDS.sleep(10);
     CreateTemplateFromInstance.createTemplateFromInstance(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE,
         getInstance(ZONE, MACHINE_NAME).getSelfLink());
+    assertThat(stdOut.toString())
+        .contains("Instance Template creation operation status " + TEMPLATE_NAME_FROM_INSTANCE);
     CreateTemplateWithSubnet.createTemplateWithSubnet(PROJECT_ID, "global/networks/default",
         "regions/asia-east1/subnetworks/default", TEMPLATE_NAME_WITH_SUBNET);
+    assertThat(stdOut.toString())
+        .contains("Template creation from subnet operation status " + TEMPLATE_NAME_WITH_SUBNET);
     TimeUnit.SECONDS.sleep(10);
+
+    // Create instances.
+    CreateInstanceFromTemplate.createInstanceFromTemplate(PROJECT_ID, ZONE, MACHINE_NAME_2,
+        "global/instanceTemplates/" + TEMPLATE_NAME);
+    assertThat(stdOut.toString())
+        .contains("Instance creation from template: Operation Status " + MACHINE_NAME_2);
+    CreateInstanceTemplate.createInstanceTemplateWithDiskType(PROJECT_ID, TEMPLATE_NAME_WITH_DISK);
+    CreateInstanceFromTemplateWithOverrides
+        .createInstanceFromTemplateWithOverrides(PROJECT_ID, ZONE, MACHINE_NAME_3,
+            TEMPLATE_NAME_WITH_DISK);
+    assertThat(stdOut.toString()).contains(
+        "Instance creation from template with overrides: Operation Status " + MACHINE_NAME_3);
+    Assert.assertEquals(getInstance(ZONE, MACHINE_NAME_3).getDisksCount(), 2);
+    System.setOut(null);
   }
 
   @AfterClass
   public static void cleanup() throws IOException, ExecutionException, InterruptedException {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+    // Delete instances.
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
+    assertThat(stdOut.toString()).contains("Operation Status for instance " + MACHINE_NAME);
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_2);
+    assertThat(stdOut.toString()).contains("Operation Status for instance " + MACHINE_NAME_2);
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_3);
+    assertThat(stdOut.toString()).contains("Operation Status for instance " + MACHINE_NAME_3);
+    // Delete instance templates.
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
+    assertThat(stdOut.toString())
+        .contains("Instance template deletion operation status for " + TEMPLATE_NAME);
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE);
+    assertThat(stdOut.toString())
+        .contains("Instance template deletion operation status for " + TEMPLATE_NAME_FROM_INSTANCE);
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_WITH_SUBNET);
+    assertThat(stdOut.toString())
+        .contains("Instance template deletion operation status for " + TEMPLATE_NAME_WITH_SUBNET);
     System.setOut(null);
   }
 
