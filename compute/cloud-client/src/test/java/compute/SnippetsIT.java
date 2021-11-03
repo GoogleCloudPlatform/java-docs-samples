@@ -20,14 +20,20 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.FirewallsClient;
+import com.google.cloud.compute.v1.GlobalOperationsClient;
+import com.google.cloud.compute.v1.Image;
+import com.google.cloud.compute.v1.ImagesClient;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
 import com.google.cloud.compute.v1.UsageExportLocation;
+import com.google.cloud.compute.v1.ZoneOperationsClient;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
@@ -86,18 +92,20 @@ public class SnippetsIT {
         .that(System.getenv(envVarName)).isNotEmpty();
   }
 
-  private static Image getActiveDebian() {
+  private static Image getActiveDebian()
+      throws IOException, InterruptedException, ExecutionException {
     try (ImagesClient imagesClient = ImagesClient.create()) {
       Image image = imagesClient.getFromFamily("debian-cloud", "debian-10");
       return image;
     }
   }
 
-  private static Disk createSourceDisk() {
-    try (DiskClient disksClient = DisksClient.create();
+  private static Disk createSourceDisk()
+      throws IOException, InterruptedException, ExecutionException {
+    try (DisksClient disksClient = DisksClient.create();
         ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
 
-      Disk disk = Disk.newBuider().
+      Disk disk = Disk.newBuilder()
           .setSourceImage(getActiveDebian().getSelfLink())
           .setName("test-disk-" + UUID.randomUUID())
           .build();
@@ -109,8 +117,9 @@ public class SnippetsIT {
     }
   }
 
-  private static void deleteDisk(Disk disk) {
-    try (DiskClient disksClient = DisksClient.create();
+  private static void deleteDisk(Disk disk)
+      throws IOException, InterruptedException, ExecutionException {
+    try (DisksClient disksClient = DisksClient.create();
         ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
       Operation operation = disksClient.delete(PROJECT_ID, ZONE, disk.getName());
       Operation response = zoneOperationsClient.wait(PROJECT_ID, ZONE, operation.getName());
@@ -118,34 +127,38 @@ public class SnippetsIT {
     }
   }
 
-  private static Snapshot createSnapshot(Disk srcDisk) {
-    try (SnapshotsClient snapshotsClient = SnapshotClient.create();
-         DiskClient disksClient = DisksClient.create();
-         ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
+  private static Snapshot createSnapshot(Disk srcDisk)
+      throws IOException, InterruptedException, ExecutionException {
+    try (SnapshotsClient snapshotsClient = SnapshotsClient.create();
+        DisksClient disksClient = DisksClient.create();
+        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
 
-        Snapshot snapshot = Snapshot.newBuilder()
-            .setName("test-snap-" + UUID.randomUUID())
-            .build();
+      Snapshot snapshot = Snapshot.newBuilder()
+          .setName("test-snap-" + UUID.randomUUID())
+          .build();
 
-        Operation operation = disksClient.createSnapshot(PROJECT_ID, ZONE, srcDisk.getSelfLink(), snapshot);
-        Operation response = zoneOperationsClient.wait(PROJECT_ID, ZONE, operation.getName());
-        return snapshotsClient.get(PROJECT_ID, snapshot.name);
+      Operation operation = disksClient.createSnapshot(PROJECT_ID, ZONE, srcDisk.getName(),
+          snapshot);
+      Operation response = zoneOperationsClient.wait(PROJECT_ID, ZONE, operation.getName());
+      return snapshotsClient.get(PROJECT_ID, snapshot.getName());
     }
   }
 
-  private static void deleteSnapshot(Snapshot snapshot) {
-    try (SnapshotsClient snapshotsClient = SnapshotClient.create();
+  private static void deleteSnapshot(Snapshot snapshot)
+      throws IOException, InterruptedException, ExecutionException {
+    try (SnapshotsClient snapshotsClient = SnapshotsClient.create();
         GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
       Operation operation = snapshotsClient.delete(PROJECT_ID, snapshot.getName());
-      Operation response = globalOperationsClient.wait(PROJECT_ID, ZONE, operation.getName());
+      Operation response = globalOperationsClient.wait(PROJECT_ID, operation.getName());
       return;
     }
   }
 
-  private static Image createImage(Disk srcDisk) {
+  private static Image createImage(Disk srcDisk)
+      throws IOException, InterruptedException, ExecutionException {
     try (ImagesClient imagesClient = ImagesClient.create();
-        DiskClient disksClient = DisksClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
+        DisksClient disksClient = DisksClient.create();
+        GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
 
       Image image = Image.newBuilder()
           .setName("test-img-" + UUID.randomUUID())
@@ -153,16 +166,17 @@ public class SnippetsIT {
           .build();
 
       Operation operation = imagesClient.insert(PROJECT_ID, image);
-      Operation response = zoneOperationsClient.wait(PROJECT_ID, ZONE, operation.getName());
+      Operation response = globalOperationsClient.wait(PROJECT_ID, operation.getName());
       return imagesClient.get(PROJECT_ID, image.getName());
     }
   }
 
-  private static void deleteImage(Image image) {
+  private static void deleteImage(Image image)
+      throws IOException, InterruptedException, ExecutionException {
     try (ImagesClient imagesClient = ImagesClient.create();
         GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
       Operation operation = imagesClient.delete(PROJECT_ID, image.getName());
-      Operation response = globalOperationsClient.wait(PROJECT_ID, ZONE, operation.getName());
+      Operation response = globalOperationsClient.wait(PROJECT_ID, operation.getName());
       return;
     }
   }
@@ -178,17 +192,17 @@ public class SnippetsIT {
     MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance" + UUID.randomUUID();
     MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance" + UUID.randomUUID();
     MACHINE_NAME_ENCRYPTED = "encrypted-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_PUBLIC_IMAGE = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_CUSTOM_IMAGE = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_ADDITIONAL_DISK = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_SNAPSHOT = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_SNAPSHOT_ADDITIONAL = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_SUBNETWORK = "my-new-test-instance" + UUID.randomUUID();
+    MACHINE_NAME_PUBLIC_IMAGE = "test-instance-pub-" + UUID.randomUUID();
+    MACHINE_NAME_CUSTOM_IMAGE = "test-instance-cust-" + UUID.randomUUID();
+    MACHINE_NAME_ADDITIONAL_DISK = "test-instance-add-" + UUID.randomUUID();
+    MACHINE_NAME_SNAPSHOT = "test-instance-snap-" + UUID.randomUUID();
+    MACHINE_NAME_SNAPSHOT_ADDITIONAL = "test-instance-snapa-" + UUID.randomUUID();
+    MACHINE_NAME_SUBNETWORK = "test-instance-subnet-" + UUID.randomUUID();
     BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID();
     IMAGE_PROJECT_NAME = "windows-sql-cloud";
     FIREWALL_RULE_CREATE = "firewall-rule-" + UUID.randomUUID();
     NETWORK_NAME = "global/networks/default";
-    SUBNETWORK_NAME = "regions/us-central1/subnetworks/default"
+    SUBNETWORK_NAME = "regions/us-central1/subnetworks/default";
     RAW_KEY = getBase64EncodedKey();
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
@@ -202,12 +216,18 @@ public class SnippetsIT {
     TEST_SNAPSHOT = createSnapshot(TEST_DISK);
     TEST_IMAGE = createImage(TEST_DISK);
 
-    compute.CreateInstancesAdvanced.createFromPublicImage(PROJECT_ID, ZONE, MACHINE_NAME_PUBLIC_IMAGE);
-    compute.CreateInstancesAdvanced.createFromCustomImage(PROJECT_ID, ZONE, MACHINE_NAME_CUSTOM_IMAGE, TEST_IMAGE.getSelfLink());
-    compute.CreateInstancesAdvanced.createWithAdditionalDisk(PROJECT_ID, ZONE, MACHINE_NAME_ADDITIONAL_DISK);
-    compute.CreateInstancesAdvanced.createFromSnapshot(PROJECT_ID, ZONE, MACHINE_NAME_SNAPSHOT, TEST_SNAPSHOT.getSelfLink());
-    compute.CreateInstancesAdvanced.createWithSnapshottedDataDisk(PROJECT_ID, ZONE, MACHINE_NAME_SNAPSHOT_ADDITIONAL, TEST_SNAPSHOT.getSelfLink());
-    compute.CreateInstancesAdvanced.createWithSubnetwork(PROJECT_ID, ZONE, MACHINE_NAME_SUBNETWORK, NETWORK_NAME, SUBNETWORK_NAME);
+    compute.CreateInstancesAdvanced.createFromPublicImage(PROJECT_ID, ZONE,
+        MACHINE_NAME_PUBLIC_IMAGE);
+    compute.CreateInstancesAdvanced.createFromCustomImage(PROJECT_ID, ZONE,
+        MACHINE_NAME_CUSTOM_IMAGE, TEST_IMAGE.getSelfLink());
+    compute.CreateInstancesAdvanced.createWithAdditionalDisk(PROJECT_ID, ZONE,
+        MACHINE_NAME_ADDITIONAL_DISK);
+    compute.CreateInstancesAdvanced.createFromSnapshot(PROJECT_ID, ZONE, MACHINE_NAME_SNAPSHOT,
+        TEST_SNAPSHOT.getSelfLink());
+    compute.CreateInstancesAdvanced.createWithSnapshottedDataDisk(PROJECT_ID, ZONE,
+        MACHINE_NAME_SNAPSHOT_ADDITIONAL, TEST_SNAPSHOT.getSelfLink());
+    compute.CreateInstancesAdvanced.createWithSubnetwork(PROJECT_ID, ZONE, MACHINE_NAME_SUBNETWORK,
+        NETWORK_NAME, SUBNETWORK_NAME);
 
     TimeUnit.SECONDS.sleep(10);
     compute.CreateFirewallRule.createFirewall(PROJECT_ID, FIREWALL_RULE_CREATE, NETWORK_NAME);
