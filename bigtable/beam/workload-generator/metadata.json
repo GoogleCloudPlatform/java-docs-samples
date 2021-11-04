@@ -1,0 +1,21 @@
+{
+  "name": "Bigtable workload generator",
+  "description": "An Apache Beam that puts a specified read QPS to a Bigtable table.",
+  "parameters": [
+    {
+      "name": "bigtableInstanceId",
+      "label": "abc",
+      "helpText": "abc"
+    },
+    {
+      "name": "bigtableTableId",
+      "label": "abc",
+      "helpText": "abc"
+    },
+    {
+      "name": "workloadQPS",
+      "label": "abc",
+      "helpText": "abc"
+    }
+  ]
+}
