@@ -26,25 +26,25 @@ package compute;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDisk.Type;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
-import com.google.cloud.compute.v1.InsertInstanceRequest;
 import com.google.cloud.compute.v1.Image;
 import com.google.cloud.compute.v1.ImagesClient;
+import com.google.cloud.compute.v1.InsertInstanceRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 
 public class CreateInstancesAdvanced {
-// [END compute_instances_create_from_image ]
-// [END compute_instances_create_from_custom_image]
-// [END compute_instances_create_from_image_plus_empty_disk]
-// [END compute_instances_create_from_snapshot]
-// [END compute_instances_create_from_image_plus_snapshot_disk]
-// [END compute_instances_create_with_subnet]
+  // [END compute_instances_create_from_image ]
+  // [END compute_instances_create_from_custom_image]
+  // [END compute_instances_create_from_image_plus_empty_disk]
+  // [END compute_instances_create_from_snapshot]
+  // [END compute_instances_create_from_image_plus_snapshot_disk]
+  // [END compute_instances_create_with_subnet]
 
   public static void main(String[] args)
       throws IOException, InterruptedException, ExecutionException {
@@ -52,14 +52,13 @@ public class CreateInstancesAdvanced {
     String project = "your-project-id";
     String zone = "zone-name";
     String instanceName = "instance-name";
-//        createInstance(project, zone, instanceName);
   }
 
-// [START compute_instances_create_with_subnet]
-// [START compute_instances_create_from_image_plus_snapshot_disk]
-// [START compute_instances_create_from_image_plus_empty_disk]
-// [START compute_instances_create_from_custom_image]
-// [START compute_instances_create_from_image]
+  // [START compute_instances_create_with_subnet]
+  // [START compute_instances_create_from_image_plus_snapshot_disk]
+  // [START compute_instances_create_from_image_plus_empty_disk]
+  // [START compute_instances_create_from_custom_image]
+  // [START compute_instances_create_from_image]
 
   /**
    * Create an AttachedDisk object to be used in VM instance creation. Uses an image as the source
@@ -96,13 +95,13 @@ public class CreateInstancesAdvanced {
     return disk;
   }
 
-// [END compute_instances_create_from_image]
-// [END compute_instances_create_from_custom_image]
-// [END compute_instances_create_from_image_plus_empty_disk]
-// [END compute_instances_create_from_image_plus_snapshot_disk]
-// [END compute_instances_create_with_subnet]
+  // [END compute_instances_create_from_image]
+  // [END compute_instances_create_from_custom_image]
+  // [END compute_instances_create_from_image_plus_empty_disk]
+  // [END compute_instances_create_from_image_plus_snapshot_disk]
+  // [END compute_instances_create_with_subnet]
 
-// [START compute_instances_create_from_image_plus_empty_disk]
+  // [START compute_instances_create_from_image_plus_empty_disk]
 
   /**
    * Create an AttachedDisk object to be used in VM instance creation. The created disk contains no
@@ -118,8 +117,8 @@ public class CreateInstancesAdvanced {
     AttachedDisk disk =
         AttachedDisk.newBuilder()
             .setBoot(false)
-            // Remember to set auto_delete to True if you want the disk to be deleted when you delete
-            // your VM instance.
+            // Remember to set auto_delete to True if you want the disk to be deleted when
+            // you delete your VM instance.
             .setAutoDelete(true)
             .setType(Type.PERSISTENT)
             .setInitializeParams(
@@ -130,10 +129,10 @@ public class CreateInstancesAdvanced {
             .build();
     return disk;
   }
-// [END compute_instances_create_from_image_plus_empty_disk]
+  // [END compute_instances_create_from_image_plus_empty_disk]
 
-// [START compute_instances_create_from_image_plus_snapshot_disk]
-// [START compute_instances_create_from_snapshot]
+  // [START compute_instances_create_from_image_plus_snapshot_disk]
+  // [START compute_instances_create_from_snapshot]
 
   /**
    * @param diskType     the type of disk you want to create. This value uses the following format:
@@ -143,7 +142,8 @@ public class CreateInstancesAdvanced {
    * @param boot         boolean flag indicating whether this disk should be used as a boot disk of
    *                     an instance
    * @param diskSnapshot disk snapshot to use when creating this disk. You must have read access to
-   *                     this disk. This value uses the following format: "projects/{project_name}/global/snapshots/{snapshot_name}"
+   *                     this disk. This value uses the following format:
+   *                     "projects/{project_name}/global/snapshots/{snapshot_name}"
    * @return AttachedDisk object configured to be created using the specified snapshot.
    */
   private static AttachedDisk diskFromSnapshot(String diskType, int diskSizeGb, boolean boot,
@@ -151,8 +151,8 @@ public class CreateInstancesAdvanced {
     AttachedDisk disk =
         AttachedDisk.newBuilder()
             .setBoot(boot)
-            // Remember to set auto_delete to True if you want the disk to be deleted when you delete
-            // your VM instance.
+            // Remember to set auto_delete to True if you want the disk to be deleted when
+            // you delete your VM instance.
             .setAutoDelete(true)
             .setType(Type.PERSISTENT)
             .setInitializeParams(
@@ -165,15 +165,15 @@ public class CreateInstancesAdvanced {
     return disk;
   }
 
-// [END compute_instances_create_from_image_plus_snapshot_disk]
-// [END compute_instances_create_from_snapshot]
+  // [END compute_instances_create_from_image_plus_snapshot_disk]
+  // [END compute_instances_create_from_snapshot]
 
-// [START compute_instances_create_with_subnet]
-// [START compute_instances_create_from_image_plus_snapshot_disk]
-// [START compute_instances_create_from_snapshot]
-// [START compute_instances_create_from_image_plus_empty_disk]
-// [START compute_instances_create_from_custom_image]
-// [START compute_instances_create_from_image]
+  // [START compute_instances_create_with_subnet]
+  // [START compute_instances_create_from_image_plus_snapshot_disk]
+  // [START compute_instances_create_from_snapshot]
+  // [START compute_instances_create_from_image_plus_empty_disk]
+  // [START compute_instances_create_from_custom_image]
+  // [START compute_instances_create_from_image]
 
   /**
    * Send an instance creation request to the Compute Engine API and wait for it to complete.
@@ -243,14 +243,14 @@ public class CreateInstancesAdvanced {
       return instancesClient.get(project, zone, instanceName);
     }
   }
-// [END compute_instances_create_from_image]
-// [END compute_instances_create_from_custom_image]
-// [END compute_instances_create_from_image_plus_empty_disk]
-// [END compute_instances_create_from_snapshot]
-// [END compute_instances_create_from_image_plus_snapshot_disk]
-// [END compute_instances_create_with_subnet]
+  // [END compute_instances_create_from_image]
+  // [END compute_instances_create_from_custom_image]
+  // [END compute_instances_create_from_image_plus_empty_disk]
+  // [END compute_instances_create_from_snapshot]
+  // [END compute_instances_create_from_image_plus_snapshot_disk]
+  // [END compute_instances_create_with_subnet]
 
-// [START compute_instances_create_from_image]
+  // [START compute_instances_create_from_image]
 
   /**
    * Create a new VM instance with Debian 10 operating system.
@@ -272,9 +272,9 @@ public class CreateInstancesAdvanced {
           "global/networks/default", null);
     }
   }
-// [END compute_instances_create_from_image]
+  // [END compute_instances_create_from_image]
 
-// [START compute_instances_create_from_custom_image]
+  // [START compute_instances_create_from_custom_image]
 
   /**
    * Create a new VM instance with custom image used as its boot disk.
@@ -295,9 +295,9 @@ public class CreateInstancesAdvanced {
     return createWithDisks(project, zone, instanceName, disks, "n1-standard-1",
         "global/networks/default", null);
   }
-// [END compute_instances_create_from_custom_image]
+  // [END compute_instances_create_from_custom_image]
 
-// [START compute_instances_create_from_image_plus_empty_disk]
+  // [START compute_instances_create_from_image_plus_empty_disk]
 
   /**
    * Create a new VM instance with Debian 10 operating system and a 11 GB additional empty disk.
@@ -320,9 +320,9 @@ public class CreateInstancesAdvanced {
           "global/networks/default", null);
     }
   }
-// [END compute_instances_create_from_image_plus_empty_disk]
+  // [END compute_instances_create_from_image_plus_empty_disk]
 
-// [START compute_instances_create_from_snapshot]
+  // [START compute_instances_create_from_snapshot]
 
   /**
    * Create a new VM instance with boot disk created from a snapshot.
@@ -343,9 +343,9 @@ public class CreateInstancesAdvanced {
     return createWithDisks(project, zone, instanceName, disks, "n1-standard-1",
         "global/networks/default", null);
   }
-// [END compute_instances_create_from_snapshot]
+  // [END compute_instances_create_from_snapshot]
 
-// [START compute_instances_create_from_image_plus_snapshot_disk]
+  // [START compute_instances_create_from_image_plus_snapshot_disk]
 
   /**
    * Create a new VM instance with Debian 10 operating system and data disk created from snapshot.
@@ -371,9 +371,9 @@ public class CreateInstancesAdvanced {
           "global/networks/default", null);
     }
   }
-// [END compute_instances_create_from_image_plus_snapshot_disk]
+  // [END compute_instances_create_from_image_plus_snapshot_disk]
 
-// [START compute_instances_create_from_image]
+  // [START compute_instances_create_from_image]
 
   /**
    * Create a new VM instance with Debian 10 operating system in specified network and subnetwork.
@@ -401,5 +401,5 @@ public class CreateInstancesAdvanced {
           subnetworkLink);
     }
   }
-// [END compute_instances_create_from_image]
+  // [END compute_instances_create_from_image]
 }
