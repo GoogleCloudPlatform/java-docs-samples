@@ -4,18 +4,28 @@
   "parameters": [
     {
       "name": "bigtableInstanceId",
-      "label": "abc",
-      "helpText": "abc"
+      "label": "Bigtable instance",
+      "helpText": "Bigtable instance to read from.",
+      "regexes": [
+        "[a-z]+[a-z\d\-]*[a-z\d]+"
+      ]
     },
     {
       "name": "bigtableTableId",
-      "label": "abc",
-      "helpText": "abc"
+      "label": "Bigtable table",
+      "helpText": "Bigtable table to read from.",
+      "regexes": [
+        "[a-z]+[a-z\d\-]*[a-z\d]+"
+      ]
     },
     {
       "name": "workloadQPS",
-      "label": "abc",
-      "helpText": "abc"
+      "label": "Workload QPS",
+      "helpText": "The QPS to put on the table (default 1000)",
+      "isOptional": true,
+      "regexes": [
+        "\d+"
+      ]
     }
   ]
 }

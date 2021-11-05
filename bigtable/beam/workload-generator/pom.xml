@@ -39,6 +39,33 @@
     <version>1.0.23</version>
   </parent>
 
+  <!-- Shading plugin needed to create uber jars for Dataflow flex templates. -->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.4</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer
+                    implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer">
+                  <mainClass>bigtable.WorkloadGenerator</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.beam</groupId>
@@ -52,7 +79,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core</artifactId>
+      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core
+      </artifactId>
       <version>${apache_beam.version}</version>
     </dependency>
 
