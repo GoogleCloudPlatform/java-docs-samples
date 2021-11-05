@@ -19,6 +19,7 @@ package compute;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
@@ -319,11 +320,14 @@ public class SnippetsIT {
      */
     try {
       GetFirewallRule.getFirewallRule(projectId, firewallRule);
+      DeleteFirewallRule.deleteFirewallRule(projectId, firewallRule);
     } catch (NotFoundException e) {
       System.out.println("Rule already deleted ! ");
       return;
+    } catch (InvalidArgumentException e) {
+      System.out.println("Rule is not ready (probably being deleted).");
+      return;
     }
-    DeleteFirewallRule.deleteFirewallRule(projectId, firewallRule);
   }
 
   public static Status getInstanceStatus(String instanceName) throws IOException {
