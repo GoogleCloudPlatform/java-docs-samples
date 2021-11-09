@@ -53,6 +53,18 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+<!--              todo: explain this? Exclude signed jars which cause build issue when shaded?-->
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/LICENSE</exclude>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
               <transformers>
                 <transformer
                     implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer">
