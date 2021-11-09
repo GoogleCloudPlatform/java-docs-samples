@@ -1,116 +1,125 @@
-// /*
-//  * Copyright 2021 Google LLC
-//  *
-//  * Licensed under the Apache License, Version 2.0 (the "License");
-//  * you may not use this file except in compliance with the License.
-//  * You may obtain a copy of the License at
-//  *
-//  * http://www.apache.org/licenses/LICENSE-2.0
-//  *
-//  * Unless required by applicable law or agreed to in writing, software
-//  * distributed under the License is distributed on an "AS IS" BASIS,
-//  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  * See the License for the specific language governing permissions and
-//  * limitations under the License.
-//  */
-//
-// package bigtable;
-//
-// import static org.junit.Assert.assertNotNull;
-//
-// import bigtable.BulkWrite.BigtableOptions;
-// import com.google.cloud.bigtable.admin.v2.BigtableInstanceAdminClient;
-// import com.google.cloud.bigtable.admin.v2.models.CreateInstanceRequest;
-// import com.google.cloud.bigtable.admin.v2.models.Instance;
-// import com.google.cloud.bigtable.admin.v2.models.StorageType;
-// import com.google.common.truth.Truth;
-// import java.io.ByteArrayOutputStream;
-// import java.io.IOException;
-// import java.io.PrintStream;
-// import java.security.GeneralSecurityException;
-// import java.util.UUID;
-// import org.apache.beam.runners.dataflow.DataflowRunner;
-// import org.apache.beam.sdk.options.PipelineOptionsFactory;
-// import org.junit.AfterClass;
-// import org.junit.Assert;
-// import org.junit.Before;
-// import org.junit.BeforeClass;
-// import org.junit.Test;
-//
-// public class WorkloadGeneratorTest {
-//
-//   private static final String PROJECT_ENV = "GOOGLE_CLOUD_PROJECT";
-//   private static final String INSTANCE_ID = "ins-" + UUID.randomUUID().toString().substring(0, 10);
-//   private static final String CLUSTER_ID = "cl-" + UUID.randomUUID().toString().substring(0, 10);
-//   private static final String REGION_ID = "us-central1";
-//   private static final String ZONE_ID = "us-central1-b";
-//   private static final int NUM_TABLES_TO_CREATE = 3;
-//   private static final double TABLE_SIZE = .5;
-//   private static final double BIGTABLE_SIZE = TABLE_SIZE * NUM_TABLES_TO_CREATE;
-//
-//   private static String projectId;
-//   private ByteArrayOutputStream bout;
-//
-//   private static String requireEnv(String varName) {
-//     String value = System.getenv(varName);
-//     assertNotNull(
-//         String.format("Environment variable '%s' is required to perform these tests.", varName),
-//         value);
-//     return value;
-//   }
-//
-//   @BeforeClass
-//   public static void beforeClass() {
-//
-//     projectId = requireEnv(PROJECT_ENV);
-//     try (BigtableInstanceAdminClient instanceAdmin =
-//         BigtableInstanceAdminClient.create(projectId)) {
-//       CreateInstanceRequest request = CreateInstanceRequest.of(INSTANCE_ID)
-//           .addCluster(CLUSTER_ID, ZONE_ID, 1, StorageType.SSD);
-//       Instance instance = instanceAdmin.createInstance(request);
-//     } catch (IOException e) {
-//       System.out.println("Error during BeforeClass while creating instance: \n" + e.toString());
-//       Assert.fail();
-//     }
-//   }
-//
-//   @Before
-//   public void setupStream() {
-//     bout = new ByteArrayOutputStream();
-//     System.setOut(new PrintStream(bout));
-//   }
-//
-//   @AfterClass
-//   public static void afterClass() {
-//     try (BigtableInstanceAdminClient instanceAdmin =
-//         BigtableInstanceAdminClient.create(projectId)) {
-//       instanceAdmin.deleteInstance(INSTANCE_ID);
-//     } catch (IOException e) {
-//       System.out.println("Error during AfterClass while deleting instance: \n" + e.toString());
-//     }
-//   }
-//
-//   @Test
-//   public void testBulkWrite() throws IOException, GeneralSecurityException {
-//     BigtableOptions options = PipelineOptionsFactory.create().as(BigtableOptions.class);
-//     options.setBigtableInstanceId(INSTANCE_ID);
-//     options.setBigtableSize(BIGTABLE_SIZE);
-//     options.setRunner(DataflowRunner.class);
-//     options.setRegion(REGION_ID);
-//
-//     BulkWrite.bulkWrite(options);
-//
-//     String output = bout.toString();
-//
-//     Truth.assertThat(output).contains("Cluster size 1");
-//     Truth.assertThat(output).contains("Creating 3 tables");
-//     Truth.assertThat(output).contains("Generate 500000 rows at 40MB per second for 3 tables");
-//     Truth.assertThat(output).contains("Create mutations that write 1 MB to each row");
-//
-//     options.setBigtableSize(0d);
-//     BulkWrite.bulkWrite(options);
-//
-//     output = bout.toString();
-//     Truth.assertThat(output).contains("Deleted 3 tables");
-//   }
-// }
+/*
+ * Copyright 2021 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package bigtable;
+
+import static org.junit.Assert.assertNotNull;
+
+import bigtable.WorkloadGenerator.BigtableWorkloadOptions;
+import bigtable.WorkloadGenerator.ReadFromTableFn;
+import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
+import com.google.cloud.bigtable.hbase.BigtableConfiguration;
+import com.google.common.truth.Truth;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.UUID;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Create;
+import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.util.Bytes;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+public class WorkloadGeneratorTest {
+
+  private static final String INSTANCE_ENV = "BIGTABLE_TESTING_INSTANCE";
+  private static final String TABLE_ID =
+      "mobile-time-series-" + UUID.randomUUID().toString().substring(0, 20);
+  private static final String COLUMN_FAMILY_NAME = "stats_summary";
+
+  private static String projectId;
+  private static String instanceId;
+  private static final String REGION_ID = "us-central1";
+
+  private ByteArrayOutputStream bout;
+
+  private static String requireEnv(String varName) {
+    String value = System.getenv(varName);
+    assertNotNull(
+        String.format("Environment variable '%s' is required to perform these tests.", varName),
+        value);
+    return value;
+  }
+
+  @BeforeClass
+  public static void beforeClass() {
+    projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
+    instanceId = requireEnv(INSTANCE_ENV);
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      Admin admin = connection.getAdmin();
+      HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(TABLE_ID));
+      descriptor.addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME));
+      admin.createTable(descriptor);
+    } catch (Exception e) {
+      System.out.println("Error during beforeClass: \n" + e.toString());
+    }
+  }
+
+  @Before
+  public void setupStream() {
+    bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
+  }
+
+  @AfterClass
+  public static void afterClass() {
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      Admin admin = connection.getAdmin();
+      Table table = connection.getTable(TableName.valueOf(Bytes.toBytes(TABLE_ID)));
+      admin.disableTable(table.getName());
+      admin.deleteTable(table.getName());
+    } catch (Exception e) {
+      System.out.println("Error during afterClass: \n" + e.toString());
+    }
+  }
+
+  @Test
+  public void testGenerateWorkload() {
+    BigtableWorkloadOptions options = PipelineOptionsFactory.create()
+        .as(BigtableWorkloadOptions.class);
+    options.setBigtableInstanceId(instanceId);
+    options.setBigtableTableId(TABLE_ID);
+    options.setRegion(REGION_ID);
+
+    Pipeline p = Pipeline.create(options);
+
+    CloudBigtableTableConfiguration bigtableTableConfig =
+        new CloudBigtableTableConfiguration.Builder()
+            .withProjectId(options.getProject())
+            .withInstanceId(options.getBigtableInstanceId())
+            .withTableId(options.getBigtableTableId())
+            .build();
+
+    // Initiates a new pipeline every second
+    p.apply(Create.of(1L))
+        .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig)));
+    p.run().waitUntilFinish();
+
+    String output = bout.toString();
+    Truth.assertThat(output.contains("Connected to table"));
+  }
+
+
+}

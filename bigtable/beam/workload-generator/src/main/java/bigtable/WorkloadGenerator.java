@@ -28,26 +28,11 @@ import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.joda.time.Duration;
 
-/*
-export TEMPLATE_PATH="gs://billybillybillybucket/bigtable-workload-template.json"
-
-gcloud dataflow flex-template run "generate-bigtable-workload-`date +%Y%m%d-%H%M%S`" \
-    --template-file-gcs-location "$TEMPLATE_PATH" \
-    --parameters bigtableInstanceId="testing-instance" \
-    --parameters bigtableTableId="mobile-time-series" \
-    --parameters workloadQPS=1000 \
-    --region "$REGION"
-
- */
 public class WorkloadGenerator {
-
-  static final long MINUTES_TO_SECONDS = 60;
-
   public static void main(String[] args) {
     BigtableWorkloadOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableWorkloadOptions.class);
@@ -65,12 +50,10 @@ public class WorkloadGenerator {
     Pipeline p = Pipeline.create(options);
 
     // Initiates a new pipeline every second
-    p.apply(GenerateSequence.from(0)
-            .withRate(options.getWorkloadQPS(), new Duration(1000))
-        // .withMaxReadTime(new Duration(options.getWorkloadDuration() * MINUTES_TO_SECONDS * 1000))
-    )
+    p.apply(GenerateSequence.from(0).withRate(options.getWorkloadQPS(), new Duration(1000)))
         .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig)));
 
+    System.out.println("Beginning to generate read workload.");
     p.run();
   }
 
@@ -78,6 +61,7 @@ public class WorkloadGenerator {
 
     public ReadFromTableFn(CloudBigtableConfiguration config) {
       super(config);
+      System.out.println("Connected to table.");
     }
 
     @ProcessElement
@@ -85,7 +69,6 @@ public class WorkloadGenerator {
       BigtableWorkloadOptions options = po.as(BigtableWorkloadOptions.class);
       try {
         Scan scan = new Scan();
-
         Table table = getConnection().getTable(TableName.valueOf(options.getBigtableTableId()));
         table.getScanner(scan);
       } catch (Exception e) {
@@ -108,14 +91,8 @@ public class WorkloadGenerator {
     String getBigtableTableId();
 
     void setBigtableTableId(String bigtableTableId);
-    //
-    // @Description("The number of minutes to run the workoad.")
-    // @Default.Integer(1)
-    // Integer getWorkloadDuration();
-    //
-    // void setWorkloadDuration(Integer workloadDuration);
 
-    @Description("The number of minutes to run the workoad.")
+    @Description("The number of minutes to run the workload.")
     @Default.Integer(1000)
     Integer getWorkloadQPS();
 

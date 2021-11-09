@@ -1,27 +1,91 @@
-# Bulk data generator
+# Bigtable workload generator
 
-This is a tool to fill up a Bigtable instance with a ton of data for demonstration purposes.
-It will set a table to a specific size, so if you set it to a smaller size than
-your instance, it will delete tables, so proceed with caution.
+This is a tool to perform a high number of reads to a Bigtable table for
+demonstration purposes. It is deployed as a Dataflow template, so it can easily
+be run.
 
-## Running instructions
+## Template
 
-1. Create a Bigtable instance
+### Running
+
+1. Set your environment variables
+
+    ```
+    TEMPLATE_PATH="gs://billybillybillybucket/bigtable-workload-template.json"
+    INSTANCE_ID=YOUR-INSTANCE-ID
+    TABLE_ID=YOUR-TABLE-ID
+    WORKLOAD_QPS=100 # Optional
+    REGION=us-central1
+    ```
+
+1. Run this command to start a job from dataflow template:
+
+    ```
+    JOB_NAME="generate-bigtable-workload-`date +%Y%m%d-%H%M%S`"
+    gcloud dataflow flex-template run $JOB_NAME \
+    --template-file-gcs-location "$TEMPLATE_PATH" \
+    --parameters bigtableInstanceId="$INSTANCE_ID" \
+    --parameters bigtableTableId="$TABLE_ID" \
+    --parameters workloadQPS=$WORKLOAD_QPS \
+    --region "$REGION"
+    ```
+
+1. Make sure to cancel the job once you are done.
+
+    ```
+    gcloud dataflow jobs cancel $JOB_NAME
+    ```
+
+### Deploying
+
+1. Build the project
+
+    ```
+    mvn clean package
+    ```
+
+1. Set the environment variables. To deploy a version on your project, update 
+   these with your own resources as described in the [Using Flex Templates](https://cloud.google.com/dataflow/docs/guides/templates/using-flex-templates)
+   documentation.
+
+   ```
+   export TEMPLATE_PATH="gs://cloud-bigtable-dataflow-templates/generate-workload.json"
+   export TEMPLATE_IMAGE="gcr.io/cloud-bigtable-ecosystem/dataflow/generate-workload:latest"
+   ```
+
+1. Deploy the template
+
+   ```
+   gcloud dataflow flex-template build $TEMPLATE_PATH /
+   --image-gcr-path "$TEMPLATE_IMAGE" /
+   --sdk-language "JAVA" /
+   --flex-template-base-image JAVA11 /
+   --metadata-file "metadata.json" /
+   --jar "target/workload-generator-0.1.jar" /
+   --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="bigtable.WorkloadGenerator```
+   ```
+
+## Building and running
+
+If you would like to modify this and run it yourself you can use these commands:
+
+1. Create a Bigtable instance and table
 
 2. Set up the environment variables
 
 ```
-GOOGLE_CLOUD_PROJECT=your-project-id
-INSTANCE_ID=your-instance-id
-BIGTABLE_SIZE=1.5 // Size in terabytes in .5 increments
-REGION=us-central1
+
+GOOGLE_CLOUD_PROJECT=your-project-id INSTANCE_ID=your-instance-id
+TABLE_ID=your-table-id WORKLOAD_QPS=100 # Optional REGION=us-central1
+
 ```
 
 3. Run the command
 
 ```
-mvn compile exec:java -Dexec.mainClass=BulkWrite \
-"-Dexec.args=--bigtableInstanceId=$INSTANCE_ID \
+mvn compile exec:java -Dexec.mainClass=WorkloadGenerator \
+"-Dexec.args=--bigtableInstanceId=$INSTANCE_ID =--bigtableTableId=$TABLE_ID \
 --runner=dataflow --project=$GOOGLE_CLOUD_PROJECT \
---bigtableSize=$BIGTABLE_SIZE --region=$REGION"
+--workloadQPS=$WORKLOAD_QPS --region=$REGION"
+
 ```
