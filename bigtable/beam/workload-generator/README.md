@@ -41,7 +41,7 @@ be run.
 1. Build the project
 
     ```
-    mvn clean package
+    mvn clean package -DskipTests
     ```
 
 1. Set the environment variables. To deploy a version on your project, update 
@@ -56,13 +56,13 @@ be run.
 1. Deploy the template
 
    ```
-   gcloud dataflow flex-template build $TEMPLATE_PATH /
-   --image-gcr-path "$TEMPLATE_IMAGE" /
-   --sdk-language "JAVA" /
-   --flex-template-base-image JAVA11 /
-   --metadata-file "metadata.json" /
-   --jar "target/workload-generator-0.1.jar" /
-   --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="bigtable.WorkloadGenerator```
+   gcloud dataflow flex-template build $TEMPLATE_PATH \
+   --image-gcr-path "$TEMPLATE_IMAGE" \
+   --sdk-language "JAVA" \
+   --flex-template-base-image JAVA11 \
+   --metadata-file "metadata.json" \
+   --jar "target/workload-generator-0.1.jar" \
+   --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="bigtable.WorkloadGenerator"
    ```
 
 ## Building and running
@@ -71,21 +71,19 @@ If you would like to modify this and run it yourself you can use these commands:
 
 1. Create a Bigtable instance and table
 
-2. Set up the environment variables
+1. Set up the environment variables
 
-```
+   ```
+   GOOGLE_CLOUD_PROJECT=your-project-id INSTANCE_ID=your-instance-id
+   TABLE_ID=your-table-id WORKLOAD_QPS=100 # Optional REGION=us-central1
+   ```
 
-GOOGLE_CLOUD_PROJECT=your-project-id INSTANCE_ID=your-instance-id
-TABLE_ID=your-table-id WORKLOAD_QPS=100 # Optional REGION=us-central1
+1. Run the command
 
-```
-
-3. Run the command
-
-```
-mvn compile exec:java -Dexec.mainClass=WorkloadGenerator \
-"-Dexec.args=--bigtableInstanceId=$INSTANCE_ID =--bigtableTableId=$TABLE_ID \
---runner=dataflow --project=$GOOGLE_CLOUD_PROJECT \
---workloadQPS=$WORKLOAD_QPS --region=$REGION"
-
-```
+   ```
+   mvn compile exec:java -Dexec.mainClass=WorkloadGenerator /
+   "-Dexec.args=--bigtableInstanceId=$INSTANCE_ID =--bigtableTableId=$TABLE_ID /
+   --runner=dataflow --project=$GOOGLE_CLOUD_PROJECT /
+   --workloadQPS=$WORKLOAD_QPS --region=$REGION"
+   
+   ```
