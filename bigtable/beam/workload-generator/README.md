@@ -11,7 +11,7 @@ be run.
 1. Set your environment variables
 
     ```
-    TEMPLATE_PATH="gs://billybillybillybucket/bigtable-workload-template.json"
+    TEMPLATE_PATH="gs://cloud-bigtable-dataflow-templates/generate-workload.json"
     INSTANCE_ID=YOUR-INSTANCE-ID
     TABLE_ID=YOUR-TABLE-ID
     WORKLOAD_QPS=100 # Optional
