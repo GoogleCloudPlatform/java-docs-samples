@@ -7,7 +7,7 @@
       "label": "Bigtable instance",
       "helpText": "Bigtable instance to read from.",
       "regexes": [
-        "[a-z]+[a-z\\d\\-]*[a-z\\d]+"
+        "[a-z]+[-a-z0-9]*[a-z0-9]+"
       ]
     },
     {
@@ -15,7 +15,7 @@
       "label": "Bigtable table",
       "helpText": "Bigtable table to read from.",
       "regexes": [
-        "[a-z]+[a-z\\d\\-]*[a-z\\d]+"
+        "[a-z]+[-a-z0-9]*[a-z0-9]+"
       ]
     },
     {
@@ -24,7 +24,7 @@
       "helpText": "The QPS to put on the table (default 1000)",
       "isOptional": true,
       "regexes": [
-        "\\d+"
+        "[0-9]+"
       ]
     }
   ]
