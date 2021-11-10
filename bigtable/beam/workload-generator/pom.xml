@@ -53,7 +53,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-<!--              todo: explain this? Exclude signed jars which cause build issue when shaded?-->
+              <!-- Exclude signed jars which cause build issue when deploying shaded jar -->
               <filters>
                 <filter>
                   <artifact>*:*</artifact>
