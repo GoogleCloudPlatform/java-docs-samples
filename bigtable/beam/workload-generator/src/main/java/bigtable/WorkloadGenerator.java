@@ -19,6 +19,7 @@ package bigtable;
 import com.google.cloud.bigtable.beam.AbstractCloudBigtableTableDoFn;
 import com.google.cloud.bigtable.beam.CloudBigtableConfiguration;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
+import java.io.IOException;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.GenerateSequence;
@@ -33,6 +34,7 @@ import org.apache.hadoop.hbase.client.Table;
 import org.joda.time.Duration;
 
 public class WorkloadGenerator {
+
   public static void main(String[] args) {
     BigtableWorkloadOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableWorkloadOptions.class);
@@ -65,16 +67,11 @@ public class WorkloadGenerator {
     }
 
     @ProcessElement
-    public void processElement(PipelineOptions po) {
+    public void processElement(PipelineOptions po) throws IOException {
       BigtableWorkloadOptions options = po.as(BigtableWorkloadOptions.class);
-      try {
-        Scan scan = new Scan();
-        Table table = getConnection().getTable(TableName.valueOf(options.getBigtableTableId()));
-        table.getScanner(scan);
-      } catch (Exception e) {
-        System.out.println("Error reading.");
-        e.printStackTrace();
-      }
+      Scan scan = new Scan();
+      Table table = getConnection().getTable(TableName.valueOf(options.getBigtableTableId()));
+      table.getScanner(scan);
     }
   }
 

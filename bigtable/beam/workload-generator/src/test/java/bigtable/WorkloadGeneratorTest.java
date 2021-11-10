@@ -16,13 +16,13 @@
 
 package bigtable;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import bigtable.WorkloadGenerator.BigtableWorkloadOptions;
 import bigtable.WorkloadGenerator.ReadFromTableFn;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
-import com.google.common.truth.Truth;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
@@ -118,7 +118,7 @@ public class WorkloadGeneratorTest {
     p.run().waitUntilFinish();
 
     String output = bout.toString();
-    Truth.assertThat(output.contains("Connected to table"));
+    assertThat(output.contains("Connected to table"));
   }
 
 
