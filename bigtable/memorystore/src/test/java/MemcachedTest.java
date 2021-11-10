@@ -132,7 +132,7 @@ public class MemcachedTest {
     String output = bout.toString();
     assertThat(output, CoreMatchers.containsString("Value fetched from Bigtable: PQ2A.190405.003"));
 
-    // retry if we didn't yet get the result in the cache
+    // retry (due to occasional flakiness) if we didn't yet get the result in the cache
     int retryCount = 0;
     Matcher<String> foundInCache =
         CoreMatchers.containsString("Value fetched from cache: PQ2A.190405.003");
