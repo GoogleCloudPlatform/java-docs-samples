@@ -137,6 +137,7 @@ public class MemcachedTest {
     Matcher<String> foundInCache = CoreMatchers.containsString("Value fetched from cache: PQ2A.190405.003");
     while (retryCount < 5 && !foundInCache.matches(output)) {
       Memcached.main(null);
+      output = bout.toString();
       retryCount++;
     }
     assertThat(output, foundInCache);
