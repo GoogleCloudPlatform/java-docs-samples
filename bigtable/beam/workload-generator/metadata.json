@@ -19,8 +19,8 @@
       ]
     },
     {
-      "name": "workloadQPS",
-      "label": "Workload QPS",
+      "name": "workloadRate",
+      "label": "Workload Rate",
       "helpText": "The QPS to put on the table (default 1000)",
       "isOptional": true,
       "regexes": [

@@ -52,9 +52,8 @@ public class WorkloadGenerator {
     Pipeline p = Pipeline.create(options);
 
     // Initiates a new pipeline every second
-    p.apply(GenerateSequence.from(0).withRate(options.getWorkloadQPS(), new Duration(1000)))
+    p.apply(GenerateSequence.from(0).withRate(options.getWorkloadRate(), new Duration(1000)))
         .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig)));
-
     System.out.println("Beginning to generate read workload.");
     p.run();
   }
@@ -89,11 +88,11 @@ public class WorkloadGenerator {
 
     void setBigtableTableId(String bigtableTableId);
 
-    @Description("The number of minutes to run the workload.")
+    @Description("The QPS for the workload to produce.")
     @Default.Integer(1000)
-    Integer getWorkloadQPS();
+    Integer getWorkloadRate();
 
-    void setWorkloadQPS(Integer workloadQPS);
+    void setWorkloadRate(Integer workloadRate);
   }
 
 }
