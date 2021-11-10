@@ -36,7 +36,7 @@ be run.
     gcloud dataflow jobs cancel $JOB_NAME
     ```
 
-### Deploying
+### Deploying instructions
 
 1. Build the project
 
@@ -51,6 +51,7 @@ be run.
    ```
    export TEMPLATE_PATH="gs://cloud-bigtable-dataflow-templates/generate-workload.json"
    export TEMPLATE_IMAGE="gcr.io/cloud-bigtable-ecosystem/dataflow/generate-workload:latest"
+   export LOGS_PATH="gs://cloud-bigtable-dataflow-templates-logs/workload-generator"
    ```
 
 1. Deploy the template
@@ -62,8 +63,11 @@ be run.
    --flex-template-base-image JAVA11 \
    --metadata-file "metadata.json" \
    --jar "target/workload-generator-0.1.jar" \
-   --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="bigtable.WorkloadGenerator"
+   --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="bigtable.WorkloadGenerator" \
+   --gcs-log-dir="$LOGS_PATH"
    ```
+
+   Note: Make sure your account or service account has cloudbuild and storage permissions.
 
 ## Building and running
 
