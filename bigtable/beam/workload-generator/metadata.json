@@ -7,7 +7,7 @@
       "label": "Bigtable instance",
       "helpText": "Bigtable instance to read from.",
       "regexes": [
-        "[a-z]+[-a-z0-9]*[a-z0-9]+"
+        "[A-Za-z]+[-A-Za-z0-9]*[A-Za-z0-9]+"
       ]
     },
     {
@@ -15,7 +15,7 @@
       "label": "Bigtable table",
       "helpText": "Bigtable table to read from.",
       "regexes": [
-        "[a-z]+[-a-z0-9]*[a-z0-9]+"
+        "[A-Za-z]+[-A-Za-z0-9]*[A-Za-z0-9]+"
       ]
     },
     {
