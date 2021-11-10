@@ -101,9 +101,8 @@ public class HelloWorldTest {
   }
 
   /**
-   * Test the writing data example as well as runtime dependency building. This must be run via
-   * Dataflow to verify it build otherwise it lets errors slip through that aren't checked during
-   * compilation. To run this test faster locally, comment out the runner parameter.
+   * This is tested via dataflow to ensure there are no dependency conflicts which can cause
+   * runtime errors. To run this test faster locally, comment out the runner parameter.
    */
   @Test
   public void testWrite() {

@@ -17,7 +17,7 @@ Dataflow pipeline.
     GOOGLE_CLOUD_PROJECT=your-project-id
     BIGTABLE_PROJECT=your-project-id
     INSTANCE_ID=your-instance-id
-    TABLE_ID=your-instance-id
+    TABLE_ID=your-table-id
     REGION=us-central1
     ```
 
