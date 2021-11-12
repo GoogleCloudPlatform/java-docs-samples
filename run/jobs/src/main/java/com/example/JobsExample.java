@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ abstract class JobsExample {
 
   // User-provided environment variables
   private static int SLEEP_MS = Integer.parseInt(System.getenv().getOrDefault("SLEEP_MS", "0"));
-  private static float FAIL_RATE = Float.parseFloat(System.getenv().getOrDefault("FAIL_RATE", "0.0"));
+  private static float FAIL_RATE =
+      Float.parseFloat(System.getenv().getOrDefault("FAIL_RATE", "0.0"));
 
   // Start script
   public static void main(String[] args) {
@@ -47,7 +48,9 @@ abstract class JobsExample {
     // Simulate errors
     if (failureRate < 0 || failureRate > 1) {
       System.err.println(
-          String.format("Invalid FAIL_RATE value: %s. Must be a float between 0 and 1 inclusive.", failureRate));
+          String.format(
+              "Invalid FAIL_RATE value: %s. Must be a float between 0 and 1 inclusive.",
+              failureRate));
       return;
     }
     if (Math.random() < failureRate) {
