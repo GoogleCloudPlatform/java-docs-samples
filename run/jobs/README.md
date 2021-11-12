@@ -1,16 +1,34 @@
-## Building the application
-Run `mvn clean package` to generate a runnable JAR file.
+# Cloud Run Sample
 
-## Running locally
-To run the application locally, use the following command:
+## Build
 
-```
-java -Djava.security.egd=file:/dev/./urandom -jar target/jobs-example-0.0.1.jar
-```
-
-## Containerizing with Buildpacks
-To convert the application into a container for use with Cloud Run jobs, use the following [`pack`](https://buildpacks.io/docs/tools/pack/) command:
+* Set an environment variable with your GCP Project ID:
 
 ```
-pack build <TODO>
+export GOOGLE_CLOUD_PROJECT=<PROJECT_ID>
 ```
+
+* Use a [Buildpack](https://github.com/GoogleCloudPlatform/buildpacks) to build the container:
+
+```sh
+gcloud builds submit --pack image=gcr.io/${GOOGLE_CLOUD_PROJECT}/logger-job
+```
+
+## Run Locally
+
+```sh
+docker run --rm gcr.io/${GOOGLE_CLOUD_PROJECT}/logger-job
+
+# With environment variables 
+docker run --rm -e FAIL_RATE=0.9 -e SLEEP_MS=1000 gcr.io/${GOOGLE_CLOUD_PROJECT}/logger-job
+```
+
+## Test
+
+```sh
+mvn clean verify
+```
+
+## Deploy
+
+~coming soon~

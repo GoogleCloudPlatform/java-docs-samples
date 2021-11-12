@@ -23,10 +23,10 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 
-public class JobsExampleTest {
+public class JobsExampleTests {
 
+  private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream output;
 
   @Before
@@ -38,22 +38,28 @@ public class JobsExampleTest {
 
   @After
   public void afterEach() {
-    output = null;
-    System.setOut(null);
-    System.setErr(null);
+    System.setOut(originalOut);
+    output.reset();
   }
 
   @Test
-  public void handlesSuccess() throws Exception {
-    JobsExample.runJob(0);
-    assertThat(output.toString()).contains("Completed Task 0");
+  public void handlesSuccess() throws InterruptedException {
+    JobsExample.runTask(0, 0.0f);
+    assertThat(output.toString()).contains("Completed Task #0");
   }
 
   @Test
-  public void handlesFailure() throws Exception {
-    RuntimeException err = Assertions.assertThrows(
-        RuntimeException.class,
-        () -> JobsExample.runJob(1));
-    assertThat(err.getMessage()).contains("Task 0, Attempt 0 failed.");
+  public void handlesFailure() throws InterruptedException {
+    try {
+      JobsExample.runTask(0, 0.999f);
+    } catch(RuntimeException err) {
+      assertThat(err.getMessage()).contains("Task Failed.");
+    }
+  }
+
+  @Test
+  public void runsMain() {
+    JobsExample.main(null);
+    assertThat(output.toString()).contains("Completed Task #0");
   }
 }
