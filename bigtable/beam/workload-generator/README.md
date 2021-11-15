@@ -78,8 +78,10 @@ If you would like to modify this and run it yourself you can use these commands:
 1. Set up the environment variables
 
    ```
-   GOOGLE_CLOUD_PROJECT=your-project-id INSTANCE_ID=your-instance-id
-   TABLE_ID=your-table-id WORKLOAD_QPS=100 # Optional REGION=us-central1
+   GOOGLE_CLOUD_PROJECT=your-project-id
+   INSTANCE_ID=your-instance-id
+   TABLE_ID=your-table-id WORKLOAD_QPS=100 # Optional
+   REGION=us-central1
    ```
 
 1. Run the command
