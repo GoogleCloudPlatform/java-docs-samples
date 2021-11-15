@@ -26,7 +26,9 @@ spec:
       labels:
         app: gke-cloud-sql-app
     spec:
-      serviceAccountName: <YOUR-KSA-NAME>
+      # For more information about using Kubernetes service accounts see: 
+      # https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts
+      serviceAccountName: <YOUR-KSA-NAME> # TODO(developer): replace this value.
       containers:
       - name: gke-cloud-sql-app
         # Replace <LOCATION> with your Artifact Registry location (e.g., us-central1).
