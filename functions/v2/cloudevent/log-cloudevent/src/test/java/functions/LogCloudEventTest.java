@@ -13,3 +13,66 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package functions;
+
+import static com.google.common.truth.Truth.assertThat;
+
+import com.google.common.testing.TestLogHandler;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import io.cloudevents.CloudEvent;
+import io.cloudevents.core.builder.CloudEventBuilder;
+import java.net.URI;
+import java.util.Base64;
+import java.util.logging.Logger;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+@RunWith(JUnit4.class)
+public class LogCloudEventTest {
+    private static final Logger logger = Logger.getLogger(LogCloudEvent.class.getName());
+    private static final TestLogHandler logHandler = new TestLogHandler();
+
+    @BeforeClass
+    public static void beforeClass() {
+        logger.addHandler(logHandler);
+    }
+
+    @Test
+    public void functionsLogCloudEvent_shouldLogCloudEvent() throws Exception {
+        JsonObject request = new JsonObject();
+        request.addProperty("@type", "test type");
+
+        JsonObject protoPayload = new JsonObject();
+        protoPayload.add("request", request);
+
+        JsonObject metadata = new JsonObject();
+        metadata.addProperty("callerIp", "0.0.0.0");
+        metadata.addProperty("callerSuppliedUserAgent", "test useragent");
+
+        protoPayload.add("requestMetadata", metadata);
+        protoPayload.addProperty("resourceName", "test resource");
+
+        JsonObject encodedData = new JsonObject();
+        encodedData.add("protoPayload", protoPayload);
+        encodedData.addProperty("name", "test name");
+
+
+        CloudEvent event =
+                CloudEventBuilder.v1()
+                        .withId("0")
+                        .withSubject("test subject")
+                        .withType("google.cloud.audit.log.v1.written")
+                        .withSource(URI.create("https://example.com"))
+                        .withData(new Gson().toJson(encodedData).getBytes())
+                        .build();
+
+        new LogCloudEvent().accept(event);
+
+        assertThat("Event Subject: " + event.getSubject()).isEqualTo(
+                logHandler.getStoredLogRecords().get(3).getMessage());
+    }
+}
