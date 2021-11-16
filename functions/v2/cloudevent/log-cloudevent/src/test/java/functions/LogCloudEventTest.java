@@ -39,7 +39,7 @@ public class LogCloudEventTest {
   @BeforeClass
   public static void beforeClass() {
     logger.addHandler(logHandler);
-}
+  }
 
   @Test
   public void functionsLogCloudEvent_shouldLogCloudEvent() throws Exception {
@@ -64,7 +64,7 @@ public class LogCloudEventTest {
 
 
     CloudEvent event =
-      CloudEventBuilder.v1()
+        CloudEventBuilder.v1()
         .withId("0")
         .withSubject("test subject")
         .withType("google.cloud.audit.log.v1.written")
@@ -75,6 +75,6 @@ public class LogCloudEventTest {
     new LogCloudEvent().accept(event);
 
     assertThat("Event Subject: " + event.getSubject()).isEqualTo(
-      logHandler.getStoredLogRecords().get(1).getMessage());
+        logHandler.getStoredLogRecords().get(1).getMessage());
   }
 }
