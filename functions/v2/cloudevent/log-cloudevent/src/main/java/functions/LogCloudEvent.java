@@ -29,8 +29,7 @@ public class LogCloudEvent implements CloudEventsFunction {
 
   @Override
   public void accept(CloudEvent event) {
-    logger.info("Event: " + event.getId());
-    logger.info("Event Attribute Names: " + event.getAttributeNames().toString());
+    // Print out details from the CloudEvent
     logger.info("Event Type: " + event.getType());
     logger.info("Event Subject: " + event.getSubject());
 
@@ -39,11 +38,11 @@ public class LogCloudEvent implements CloudEventsFunction {
 
       Gson gson = new Gson();
       JsonObject eventData = gson.fromJson(cloudEventData, JsonObject.class);
-      System.out.println(gson.toJson(eventData));
 
       // Print out details from the Cloud Audit Logging entry
       JsonObject payload = eventData.getAsJsonObject("protoPayload");
       logger.info("Resource name: " + payload.get("resourceName").toString());
+      logger.info("API Method: " + payload.get("methodName"));
 
       JsonObject request = payload.getAsJsonObject("request");
       if (request != null) {

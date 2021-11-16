@@ -33,46 +33,48 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class LogCloudEventTest {
-    private static final Logger logger = Logger.getLogger(LogCloudEvent.class.getName());
-    private static final TestLogHandler logHandler = new TestLogHandler();
+  private static final Logger logger = Logger.getLogger(LogCloudEvent.class.getName());
+  private static final TestLogHandler logHandler = new TestLogHandler();
 
-    @BeforeClass
-    public static void beforeClass() {
-        logger.addHandler(logHandler);
-    }
+  @BeforeClass
+  public static void beforeClass() {
+    logger.addHandler(logHandler);
+}
 
-    @Test
-    public void functionsLogCloudEvent_shouldLogCloudEvent() throws Exception {
-        JsonObject request = new JsonObject();
-        request.addProperty("@type", "test type");
+  @Test
+  public void functionsLogCloudEvent_shouldLogCloudEvent() throws Exception {
+    // Build a CloudEvent Log Entry
+    JsonObject request = new JsonObject();
+    request.addProperty("@type", "test type");
 
-        JsonObject protoPayload = new JsonObject();
-        protoPayload.add("request", request);
+    JsonObject protoPayload = new JsonObject();
+    protoPayload.add("request", request);
 
-        JsonObject metadata = new JsonObject();
-        metadata.addProperty("callerIp", "0.0.0.0");
-        metadata.addProperty("callerSuppliedUserAgent", "test useragent");
+    JsonObject metadata = new JsonObject();
+    metadata.addProperty("callerIp", "0.0.0.0");
+    metadata.addProperty("callerSuppliedUserAgent", "test useragent");
 
-        protoPayload.add("requestMetadata", metadata);
-        protoPayload.addProperty("resourceName", "test resource");
+    protoPayload.add("requestMetadata", metadata);
+    protoPayload.addProperty("resourceName", "test resource");
+    protoPayload.addProperty("methodName", "test method");
 
-        JsonObject encodedData = new JsonObject();
-        encodedData.add("protoPayload", protoPayload);
-        encodedData.addProperty("name", "test name");
+    JsonObject encodedData = new JsonObject();
+    encodedData.add("protoPayload", protoPayload);
+    encodedData.addProperty("name", "test name");
 
 
-        CloudEvent event =
-                CloudEventBuilder.v1()
-                        .withId("0")
-                        .withSubject("test subject")
-                        .withType("google.cloud.audit.log.v1.written")
-                        .withSource(URI.create("https://example.com"))
-                        .withData(new Gson().toJson(encodedData).getBytes())
-                        .build();
+    CloudEvent event =
+      CloudEventBuilder.v1()
+        .withId("0")
+        .withSubject("test subject")
+        .withType("google.cloud.audit.log.v1.written")
+        .withSource(URI.create("https://example.com"))
+        .withData(new Gson().toJson(encodedData).getBytes())
+        .build();
 
-        new LogCloudEvent().accept(event);
+    new LogCloudEvent().accept(event);
 
-        assertThat("Event Subject: " + event.getSubject()).isEqualTo(
-                logHandler.getStoredLogRecords().get(3).getMessage());
-    }
+    assertThat("Event Subject: " + event.getSubject()).isEqualTo(
+      logHandler.getStoredLogRecords().get(1).getMessage());
+  }
 }
