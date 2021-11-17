@@ -15,8 +15,8 @@
     limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.bigtable</groupId>
@@ -38,6 +38,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <apache_beam.version>2.31.0</apache_beam.version>
+    <exec.cleanupDaemonThreads>false</exec.cleanupDaemonThreads>
   </properties>
 
   <dependencies>
@@ -53,7 +54,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core</artifactId>
+      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core
+      </artifactId>
       <version>${apache_beam.version}</version>
     </dependency>
 
@@ -61,7 +63,7 @@
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-beam</artifactId>
-      <version>1.25.0</version>
+      <version>1.25.1</version>
     </dependency>
     <!-- [END bigtable_beam_connector_dependency] -->
 
@@ -76,6 +78,18 @@
       <artifactId>truth</artifactId>
       <version>1.1.3</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- manually declare guava to override version from shared-configuration -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.0.1-jre</version>
     </dependency>
   </dependencies>
 </project>

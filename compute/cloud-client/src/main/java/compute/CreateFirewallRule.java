@@ -65,6 +65,7 @@ public class CreateFirewallRule {
               Allowed.newBuilder().addPorts("80").addPorts("443").setIPProtocol("tcp").build())
           .addSourceRanges("0.0.0.0/0")
           .setNetwork(network)
+          .addTargetTags("web")
           .setDescription("Allowing TCP traffic on port 80 and 443 from Internet.")
           .build();
 
@@ -81,7 +82,7 @@ public class CreateFirewallRule {
       Operation operation = firewallsClient.insert(insertFirewallRequest);
       operationsClient.wait(project, operation.getName());
 
-      System.out.println("Firewall rule created successfully ! ");
+      System.out.println("Firewall rule created successfully -> " + firewallRuleName);
     }
   }
 }

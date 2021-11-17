@@ -16,7 +16,6 @@
 
 package com.example.spanner.jdbc;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -32,9 +31,6 @@ class CreateConnectionWithDefaultProjectIdExample {
     createConnectionWithDefaultProjectId(instanceId, databaseId);
   }
 
-  @SuppressFBWarnings(
-      value = "OBL_UNSATISFIED_OBLIGATION",
-      justification = "https://github.com/spotbugs/spotbugs/issues/293")
   // Creates a JDBC connection to a Cloud Spanner database using the default Google Project ID.
   static void createConnectionWithDefaultProjectId(String instanceId, String databaseId)
       throws SQLException {

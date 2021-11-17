@@ -43,7 +43,7 @@ public class PubSubAuthenticatedPush extends HttpServlet {
           /**
            * Please change example.com to match with value you are providing while creating
            * subscription as provided in @see <a
-           * href="https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/appengine-java8/pubsub">README</a>.
+           * href="https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/appengine-java8/pubsub">README</a>.
            */
           .setAudience(Collections.singletonList("example.com"))
           .build();

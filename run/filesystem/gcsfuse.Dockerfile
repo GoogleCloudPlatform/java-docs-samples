@@ -43,7 +43,7 @@ RUN set -e; \
     apt-get update; \
     apt-get install -y gcsfuse && apt-get clean
 
-# Create mount directory for service
+# Set fallback mount directory
 ENV MNT_DIR /mnt/gcs
 
 # Copy the jar to the production image from the builder stage.
@@ -53,7 +53,8 @@ COPY --from=builder /app/target/filesystem-*.jar /filesystem.jar
 COPY gcsfuse_run.sh ./gcsfuse_run.sh
 RUN chmod +x ./gcsfuse_run.sh
 
-# Set the init-process (PID1) as the default executable
+# Use tini to manage zombie processes and signal forwarding
+# https://github.com/krallin/tini
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
 # Run the web service on container startup.

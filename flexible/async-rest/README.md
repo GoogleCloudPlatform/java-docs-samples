@@ -7,7 +7,7 @@
 
 This web app demonstrates using asynchronous servlet techniques to reduce server resources.
 
-The code for this tutorial is [here](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/flexible/async-rest).
+The code for this tutorial is [here](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/flexible/async-rest).
 
 
 ## Initial Setup ##

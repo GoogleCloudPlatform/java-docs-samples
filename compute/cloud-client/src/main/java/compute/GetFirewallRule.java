@@ -43,7 +43,7 @@ public class GetFirewallRule {
        clean up any remaining background resources. */
     try (FirewallsClient firewallsClient = FirewallsClient.create()) {
       Firewall response = firewallsClient.get(project, firewallRuleName);
-      System.out.println(response);
+      System.out.print(response.getName());
     }
   }
 }

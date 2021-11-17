@@ -35,7 +35,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>23.1.0</version>
+        <version>24.0.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -67,7 +67,7 @@
     <dependency>
       <groupId>commons-cli</groupId>
       <artifactId>commons-cli</artifactId>
-      <version>1.4</version>
+      <version>1.5.0</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -77,7 +77,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>2.0.44.Final</version>
+      <version>2.0.45.Final</version>
     </dependency>
     <!-- [END dependencies] -->
     <dependency>

@@ -17,7 +17,6 @@
 package com.example.spanner.jdbc;
 
 import com.google.cloud.spanner.jdbc.CloudSpannerJdbcConnection;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -33,9 +32,6 @@ class CreateConnectionWithCustomHostExample {
     createConnectionWithCustomHost(projectId, instanceId, databaseId, port);
   }
 
-  @SuppressFBWarnings(
-      value = "OBL_UNSATISFIED_OBLIGATION",
-      justification = "https://github.com/spotbugs/spotbugs/issues/293")
   // Creates a JDBC connection to a Cloud Spanner database on a custom host.
   static void createConnectionWithCustomHost(
       String projectId, String instanceId, String databaseId, int port) throws SQLException {
