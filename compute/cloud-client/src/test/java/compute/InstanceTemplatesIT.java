@@ -62,8 +62,8 @@ public class InstanceTemplatesIT {
     TEMPLATE_NAME = "template-name-" + UUID.randomUUID();
     ZONE = "us-central1-a";
     MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
-    TEMPLATE_NAME_FROM_INSTANCE = "my-new-test-instance" + UUID.randomUUID();
-    TEMPLATE_NAME_WITH_SUBNET = "my-new-test-instance" + UUID.randomUUID();
+    TEMPLATE_NAME_FROM_INSTANCE = "template-from-instance" + UUID.randomUUID();
+    TEMPLATE_NAME_WITH_SUBNET = "template-subnet-instance" + UUID.randomUUID();
 
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
