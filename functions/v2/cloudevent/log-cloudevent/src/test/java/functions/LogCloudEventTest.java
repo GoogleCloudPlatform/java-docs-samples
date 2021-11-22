@@ -71,6 +71,6 @@ public class LogCloudEventTest {
     assertThat("Event Subject: " + event.getSubject()).isEqualTo(
         logHandler.getStoredLogRecords().get(1).getMessage());
     assertThat("Authenticated User: " + email).isEqualTo(
-      logHandler.getStoredLogRecords().get(4).getMessage());
+        logHandler.getStoredLogRecords().get(4).getMessage());
   }
 }
