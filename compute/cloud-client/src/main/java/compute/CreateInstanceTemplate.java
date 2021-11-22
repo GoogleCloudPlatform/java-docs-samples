@@ -59,6 +59,7 @@ public class CreateInstanceTemplate {
       AttachedDisk attachedDisk = AttachedDisk.newBuilder()
           .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
               .setSourceImage(sourceImage)
+              .setDiskType("pd-standard")
               .setDiskSizeGb(250).build())
           .setAutoDelete(true)
           .setBoot(true).build();
@@ -96,7 +97,7 @@ public class CreateInstanceTemplate {
         return;
       }
       System.out
-          .printf("Instance Template Operation Status %s: %s", templateName, response.getStatus());
+          .printf("Instance Template Operation Status %s: %s \n", templateName, response.getStatus());
     }
   }
 }
