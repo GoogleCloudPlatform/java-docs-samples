@@ -30,28 +30,30 @@ public class LogCloudEvent implements CloudEventsFunction {
   @Override
   public void accept(CloudEvent event) {
     // Print out details from the CloudEvent
+    // The type of event related to the originating occurrence
     logger.info("Event Type: " + event.getType());
+    // The subject of the event in the context of the event producer
     logger.info("Event Subject: " + event.getSubject());
 
     if (event.getData() != null) {
+      // Extract data from CloudEvent wrapper
       String cloudEventData = new String(event.getData().toBytes(), StandardCharsets.UTF_8);
 
       Gson gson = new Gson();
+      // Convert data into a JSON object
       JsonObject eventData = gson.fromJson(cloudEventData, JsonObject.class);
 
-      // Print out details from the Cloud Audit Logging entry
+      // Extract Cloud Audit Log data from protoPayload
+      // https://cloud.google.com/logging/docs/audit#audit_log_entry_structure
       JsonObject payload = eventData.getAsJsonObject("protoPayload");
-      logger.info("Resource name: " + payload.get("resourceName").toString());
-      logger.info("API Method: " + payload.get("methodName"));
+      logger.info("API Method: " + payload.get("methodName").getAsString());
+      logger.info("Resource name: " + payload.get("resourceName").getAsString());
 
-      JsonObject request = payload.getAsJsonObject("request");
-      if (request != null) {
-        logger.info("Request type: " + request.get("@type").toString());
-      }
-      JsonObject metadata = payload.getAsJsonObject("requestMetadata");
-      if (metadata != null) {
-        logger.info("Caller IP: " + metadata.get("callerIp").toString());
-        logger.info("User agent: " + metadata.get("callerSuppliedUserAgent").toString());
+      JsonObject auth = payload.getAsJsonObject("authenticationInfo");
+      if (auth != null) {
+        // The email address of the authenticated user 
+        // (or service account on behalf of third party principal) making the request
+        logger.info("Authenticated User: " + auth.get("principleEmail").getAsString()); 
       }
     }
   }
