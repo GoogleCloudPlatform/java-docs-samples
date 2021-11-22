@@ -231,7 +231,7 @@ public class SnippetsIT {
   @Test
   public void testDeleteInstance() throws IOException, InterruptedException, ExecutionException {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
-    assertThat(stdOut.toString()).contains("Operation Status: DONE");
+    assertThat(stdOut.toString()).contains("Operation Status for instance " + MACHINE_NAME_DELETE + ": DONE");
   }
 
   @Test
