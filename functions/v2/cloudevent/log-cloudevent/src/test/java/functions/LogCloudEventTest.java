@@ -24,7 +24,6 @@ import com.google.gson.JsonObject;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import java.net.URI;
-import java.util.Base64;
 import java.util.logging.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,17 +43,12 @@ public class LogCloudEventTest {
   @Test
   public void functionsLogCloudEvent_shouldLogCloudEvent() throws Exception {
     // Build a CloudEvent Log Entry
-    JsonObject request = new JsonObject();
-    request.addProperty("@type", "test type");
-
     JsonObject protoPayload = new JsonObject();
-    protoPayload.add("request", request);
+    JsonObject authInfo = new JsonObject();
+    String email = "test@gmail.com";
+    authInfo.addProperty("principleEmail", email);
 
-    JsonObject metadata = new JsonObject();
-    metadata.addProperty("callerIp", "0.0.0.0");
-    metadata.addProperty("callerSuppliedUserAgent", "test useragent");
-
-    protoPayload.add("requestMetadata", metadata);
+    protoPayload.add("authenticationInfo", authInfo);
     protoPayload.addProperty("resourceName", "test resource");
     protoPayload.addProperty("methodName", "test method");
 
@@ -76,5 +70,7 @@ public class LogCloudEventTest {
 
     assertThat("Event Subject: " + event.getSubject()).isEqualTo(
         logHandler.getStoredLogRecords().get(1).getMessage());
+    assertThat("Authenticated User: " + email).isEqualTo(
+        logHandler.getStoredLogRecords().get(4).getMessage());
   }
 }
