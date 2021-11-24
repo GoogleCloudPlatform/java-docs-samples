@@ -54,21 +54,24 @@ public class AutoLabelInstance implements CloudEventsFunction {
       // Extract the email address of the authenticated user
       // (or service account on behalf of third party principal) making the request
       String creator = auth.get("principalEmail").getAsString();
-      if (creator == null)
+      if (creator == null) {
         throw new RuntimeException("`principalEmail` not found in protoPayload.");
+      }
       // Format the 'creator' parameter to match GCE label validation requirements
       creator = creator.toLowerCase().replaceAll("\\W", "-");
 
       // Get relevant VM instance details from the CloudEvent `subject` property
       // Example: compute.googleapis.com/projects/<PROJECT>/zones/<ZONE>/instances/<INSTANCE>
       String subject = event.getSubject();
-      if (subject == null || subject == "")
+      if (subject == null || subject == "") {
         throw new RuntimeException("Missing CloudEvent `subject`.");
+      }
       String[] params = subject.split("/");
 
       // Validate data
-      if (params.length < 7)
+      if (params.length < 7) {
         throw new RuntimeException("Can not parse resource from CloudEvent `subject`: " + subject);
+      }
       String project = params[2];
       String zone = params[4];
       String instanceName = params[6];
