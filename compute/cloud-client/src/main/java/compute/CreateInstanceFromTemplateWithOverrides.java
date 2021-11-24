@@ -15,6 +15,7 @@
  */
 
 package compute;
+
 // [START compute_instances_create_from_template_with_overrides]
 
 import com.google.cloud.compute.v1.AttachedDisk;
@@ -58,7 +59,8 @@ public class CreateInstanceFromTemplateWithOverrides {
     createInstanceFromTemplateWithOverrides(projectId, zone, instanceName, instanceTemplateName);
   }
 
-  // Creates a Compute Engine VM instance from an instance template, but overrides the disk and machine type options in the template.
+  // Creates a Compute Engine VM instance from an instance template,
+  // but overrides the disk and machine type options in the template.
   public static void createInstanceFromTemplateWithOverrides(String projectId, String zone,
       String instanceName, String instanceTemplateName)
       throws IOException, ExecutionException, InterruptedException {

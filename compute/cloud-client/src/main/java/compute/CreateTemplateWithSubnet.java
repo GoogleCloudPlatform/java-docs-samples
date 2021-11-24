@@ -32,7 +32,7 @@ public class CreateTemplateWithSubnet {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
-  /*
+    /*
     TODO(developer): Replace these variables before running the sample.
     projectId: project ID or project number of the Cloud project you use.
     network: the network to be used in the new template. This value uses
@@ -40,7 +40,7 @@ public class CreateTemplateWithSubnet {
     subnetwork: the subnetwork to be used in the new template. This value
         uses the following format: "projects/{project}/regions/{region}/subnetworks/{subnetwork}"
     templateName: name of the new template to create.
-   */
+    */
     String projectId = "your-project-id";
     String network = "projects/{project}/global/networks/{network}";
     String subnetwork = "projects/{project}/regions/{region}/subnetworks/{subnetwork}";

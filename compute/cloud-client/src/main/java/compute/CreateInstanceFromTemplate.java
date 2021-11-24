@@ -16,6 +16,7 @@
 
 
 package compute;
+
 // [START compute_instances_create_from_template]
 
 import com.google.cloud.compute.v1.InsertInstanceRequest;
@@ -44,13 +45,13 @@ public class CreateInstanceFromTemplate {
     String projectId = "your-project-id";
     String zone = "zone-name";
     String instanceName = "instance-name";
-    String instanceTemplateURL = "instance-template-url";
-    createInstanceFromTemplate(projectId, zone, instanceName, instanceTemplateURL);
+    String instanceTemplateUrl = "instance-template-url";
+    createInstanceFromTemplate(projectId, zone, instanceName, instanceTemplateUrl);
   }
 
   // Create a new instance from template in the specified project and zone.
   public static void createInstanceFromTemplate(String projectId, String zone, String instanceName,
-      String instanceTemplateURL)
+      String instanceTemplateUrl)
       throws IOException, ExecutionException, InterruptedException {
 
     try (InstancesClient instancesClient = InstancesClient.create();
@@ -60,7 +61,7 @@ public class CreateInstanceFromTemplate {
           .setProject(projectId)
           .setZone(zone)
           .setInstanceResource(Instance.newBuilder().setName(instanceName).build())
-          .setSourceInstanceTemplate(instanceTemplateURL).build();
+          .setSourceInstanceTemplate(instanceTemplateUrl).build();
 
       Operation operation = instancesClient.insertCallable().futureCall(insertInstanceRequest)
           .get();
