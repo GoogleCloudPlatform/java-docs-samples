@@ -17,7 +17,6 @@
 package com.example.spanner.jdbc;
 
 //[START spanner_jdbc_insert]
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -59,9 +58,6 @@ class InsertDataExample {
     insertData(projectId, instanceId, databaseId);
   }
 
-  @SuppressFBWarnings(
-      value = "OBL_UNSATISFIED_OBLIGATION",
-      justification = "https://github.com/spotbugs/spotbugs/issues/293")
   static void insertData(String projectId, String instanceId, String databaseId)
       throws SQLException {
     String connectionUrl =

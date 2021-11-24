@@ -67,7 +67,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudiot</artifactId>
-      <version>v1-rev20211004-1.32.1</version>
+      <version>v1-rev20211108-1.32.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -77,7 +77,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-core</artifactId>
-      <version>2.2.0</version>
+      <version>2.3.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>

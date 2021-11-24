@@ -76,7 +76,7 @@ public class HelloWorldRead {
     void setBigtableInstanceId(String bigtableInstanceId);
 
     @Description("The Bigtable table ID in the instance.")
-    @Default.String("bigtable-table")
+    @Default.String("mobile-time-series")
     String getBigtableTableId();
 
     void setBigtableTableId(String bigtableTableId);

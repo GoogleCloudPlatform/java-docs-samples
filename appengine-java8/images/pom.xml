@@ -39,13 +39,13 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-       <version>1.9.91</version>
+       <version>1.9.92</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.appengine.tools</groupId>
       <artifactId>appengine-gcs-client</artifactId>
-      <version>0.8.1</version>
+      <version>0.8.2</version>
     </dependency>
 
     <dependency>

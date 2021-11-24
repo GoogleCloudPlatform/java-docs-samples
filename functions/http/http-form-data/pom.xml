@@ -67,7 +67,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>4.0.0</version>
+      <version>4.1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -86,7 +86,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.8</version>
+        <version>0.10.0</version>
         <configuration>
           <functionTarget>functions.HttpFormData</functionTarget>
         </configuration>
