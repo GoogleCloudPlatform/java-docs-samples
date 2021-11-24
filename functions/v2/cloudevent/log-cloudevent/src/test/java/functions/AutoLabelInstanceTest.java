@@ -24,7 +24,6 @@ import com.google.gson.JsonObject;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import java.net.URI;
-import java.util.Base64;
 import java.util.logging.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,8 +32,12 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class AutoLabelInstanceTest {
-  private static final Logger logger = Logger.getLogger(LogCloudEvent.class.getName());
+  private static final Logger logger = Logger.getLogger(AutoLabelInstance.class.getName());
   private static final TestLogHandler logHandler = new TestLogHandler();
+
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String ZONE = "us-central1-a";
+  private static final String INSTANCE = "lite1";
 
   @BeforeClass
   public static void beforeClass() {
@@ -45,68 +48,37 @@ public class AutoLabelInstanceTest {
   public void functionsAutoLabelInstance() throws Exception {
     // Build a CloudEvent Log Entry
     JsonObject protoPayload = new JsonObject();
+    JsonObject authInfo = new JsonObject();
+    String email = "test@gmail.com";
+    authInfo.addProperty("principalEmail", email);
 
-    JsonObject auth = new JsonObject();
-    metadata.addProperty("callerIp", "0.0.0.0");
-    metadata.addProperty("callerSuppliedUserAgent", "test useragent");
+    protoPayload.add("authenticationInfo", authInfo);
 
-    protoPayload.add("requestMetadata", metadata);
-    protoPayload.addProperty("resourceName", "test resource");
-    protoPayload.addProperty("methodName", "test method");
+    String resource =
+        String.format(
+            "compute.googleapis.com/projects/%s/zones/%s/instances/%s", PROJECT_ID, ZONE, INSTANCE);
+    protoPayload.addProperty("resourceName", resource);
+    protoPayload.addProperty("methodName", "beta.compute.instances.insert");
 
     JsonObject encodedData = new JsonObject();
     encodedData.add("protoPayload", protoPayload);
-
+    encodedData.addProperty("name", "test name");
 
     CloudEvent event =
         CloudEventBuilder.v1()
-        .withId("0")
-        .withSubject("test subject")
-        .withType("google.cloud.audit.log.v1.written")
-        .withSource(URI.create("https://example.com"))
-        .withData(new Gson().toJson(encodedData).getBytes())
-        .build();
+            .withId("0")
+            .withSubject(resource)
+            .withType("google.cloud.audit.log.v1.written")
+            .withSource(URI.create("https://example.com"))
+            .withData(new Gson().toJson(encodedData).getBytes())
+            .build();
 
-    new LogCloudEvent().accept(event);
+    new AutoLabelInstance().accept(event);
 
-    assertThat("Event Subject: " + event.getSubject()).isEqualTo(
-        logHandler.getStoredLogRecords().get(1).getMessage());
+    assertThat(
+            String.format(
+                "Adding label, \"{'creator': '%s'}\", to instance, \"%s\".",
+                "test-gmail-com", INSTANCE))
+        .isEqualTo(logHandler.getStoredLogRecords().get(0).getMessage());
   }
 }
-
-// {
-//   "protoPayload": {
-//     "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
-//     "authenticationInfo": {
-//       "principalEmail": "akitsch@google.com"
-//     },
-//     "requestMetadata": {
-//       "callerIp": "2601:601:1100:2350:e8b5:f86f:8406:4692",
-//       "callerSuppliedUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36,gzip(gfe),gzip(gfe)"
-//     },
-//     "serviceName": "compute.googleapis.com",
-//     "methodName": "beta.compute.instances.insert",
-//     "resourceName": "projects/starter-akitsch/zones/us-central1-a/instances/instance-1",
-//     "request": {
-//       "@type": "type.googleapis.com/compute.instances.insert"
-//     }
-//   },
-//   "insertId": "p9fn8ie1fn8w",
-//   "resource": {
-//     "type": "gce_instance",
-//     "labels": {
-//       "project_id": "starter-akitsch",
-//       "zone": "us-central1-a",
-//       "instance_id": "3212917591118034299"
-//     }
-//   },
-//   "timestamp": "2021-11-22T21:29:01.980019Z",
-//   "severity": "NOTICE",
-//   "logName": "projects/starter-akitsch/logs/cloudaudit.googleapis.com%2Factivity",
-//   "operation": {
-//     "id": "operation-1637616532093-5d1674fac7a19-e355d053-5a13b52b",
-//     "producer": "compute.googleapis.com",
-//     "last": true
-//   },
-//   "receiveTimestamp": "2021-11-22T21:29:02.440154971Z"
-// }
