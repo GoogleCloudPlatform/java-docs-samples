@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.cloud.functions</groupId>
-  <artifactId>functions-log-cloudevent</artifactId>
+  <artifactId>label-compute-instance</artifactId>
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -45,11 +45,22 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-compute</artifactId>
+      <version>1.5.0-alpha</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.8.8</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>4.0.0-rc-2</version>
+    </dependency>
+
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>com.google.truth</groupId>
@@ -87,7 +98,7 @@
         <artifactId>function-maven-plugin</artifactId>
         <version>0.10.0</version>
         <configuration>
-          <functionTarget>functions.LogCloudEvent</functionTarget>
+          <functionTarget>functions.AutoLabelInstance</functionTarget>
         </configuration>
       </plugin>
       <plugin>
