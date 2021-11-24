@@ -44,19 +44,19 @@ limitations under the License.
     <dependency>
       <groupId>net.logstash.logback</groupId>
       <artifactId>logstash-logback-encoder</artifactId>
-      <version>6.6</version>
+      <version>7.0.1</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.6</version>
+      <version>1.2.7</version>
     </dependency>
     <!-- [END run_manual_logging_dep] -->
     <!-- [END cloudrun_manual_logging_dep] -->
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>4.9.2</version>
+      <version>4.9.3</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

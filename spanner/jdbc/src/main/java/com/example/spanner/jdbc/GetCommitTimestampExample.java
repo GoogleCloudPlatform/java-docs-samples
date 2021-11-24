@@ -16,7 +16,6 @@
 
 package com.example.spanner.jdbc;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -33,9 +32,6 @@ class GetCommitTimestampExample {
     getCommitTimestamp(projectId, instanceId, databaseId);
   }
 
-  @SuppressFBWarnings(
-      value = "OBL_UNSATISFIED_OBLIGATION",
-      justification = "https://github.com/spotbugs/spotbugs/issues/293")
   // Get the commit timestamp of a transaction.
   static void getCommitTimestamp(String projectId, String instanceId, String databaseId)
       throws SQLException {

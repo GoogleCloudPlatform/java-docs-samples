@@ -17,7 +17,6 @@
 package com.example.spanner.jdbc;
 
 //[START spanner_jdbc_create_table]
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -33,9 +32,6 @@ class CreateTableExample {
     createTable(projectId, instanceId, databaseId);
   }
 
-  @SuppressFBWarnings(
-      value = "OBL_UNSATISFIED_OBLIGATION",
-      justification = "https://github.com/spotbugs/spotbugs/issues/293")
   static void createTable(String projectId, String instanceId, String databaseId)
       throws SQLException {
     String connectionUrl =

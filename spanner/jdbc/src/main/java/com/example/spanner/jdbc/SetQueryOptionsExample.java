@@ -17,7 +17,6 @@
 package com.example.spanner.jdbc;
 
 //[START spanner_jdbc_set_statement_for_query_options]
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -34,9 +33,6 @@ class SetQueryOptionsExample {
     setQueryOptions(projectId, instanceId, databaseId);
   }
 
-  @SuppressFBWarnings(
-      value = "OBL_UNSATISFIED_OBLIGATION",
-      justification = "https://github.com/spotbugs/spotbugs/issues/293")
   static void setQueryOptions(String projectId, String instanceId, String databaseId)
       throws SQLException {
     String connectionUrl =

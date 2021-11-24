@@ -17,7 +17,6 @@
 package com.example.spanner.jdbc;
 
 //[START spanner_jdbc_batch_transaction]
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -34,9 +33,6 @@ class BatchDmlExample {
     batchDml(projectId, instanceId, databaseId);
   }
 
-  @SuppressFBWarnings(
-      value = "OBL_UNSATISFIED_OBLIGATION",
-      justification = "https://github.com/spotbugs/spotbugs/issues/293")
   static void batchDml(String projectId, String instanceId, String databaseId) throws SQLException {
     String connectionUrl =
         String.format(
