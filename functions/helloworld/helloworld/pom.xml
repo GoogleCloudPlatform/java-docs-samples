@@ -71,7 +71,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.12.4</version>
+      <version>4.1.0</version>
       <scope>test</scope>
     </dependency>
     <!-- [START functions_example_pom] -->
@@ -96,7 +96,7 @@
         <!-- [START functions_maven_specify_function] -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.9.8</version>
+        <version>0.10.0</version>
         <configuration>
           <functionTarget>functions.HelloWorld</functionTarget>
         </configuration>

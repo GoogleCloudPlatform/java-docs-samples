@@ -15,7 +15,7 @@ scaffolding for other frameworks and use cases.
 ## Getting the sample code
 
 Get the latest sample code from GitHub using Git or download the repository as a ZIP file.
-([Download](https://github.com/GoogleCloudPlatform/java-docs-samples/archive/master.zip))
+([Download](https://github.com/GoogleCloudPlatform/java-docs-samples/archive/main.zip))
 
     git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
 

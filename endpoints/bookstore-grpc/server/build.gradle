@@ -30,5 +30,5 @@ jar {
 dependencies {
   compile project(':api')
   compile 'com.google.auto.value:auto-value:1.8.2'
-  compile 'commons-cli:commons-cli:1.4'
+  compile 'commons-cli:commons-cli:1.5.0'
 }

@@ -28,13 +28,13 @@ import javax.sql.DataSource;
 public class CloudSqlConnectionPool {
 
   public static DataSource createConnectionPool(String dbUser, String dbPass, String dbName,
-      String cloudSqlConnectionName) {
+      String instanceConnectionName) {
     HikariConfig config = new HikariConfig();
     config.setJdbcUrl(String.format("jdbc:mysql:///%s", dbName));
     config.setUsername(dbUser);
     config.setPassword(dbPass);
     config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.mysql.SocketFactory");
-    config.addDataSourceProperty("cloudSqlInstance", cloudSqlConnectionName);
+    config.addDataSourceProperty("cloudSqlInstance", instanceConnectionName);
     DataSource pool = new HikariDataSource(config);
     return pool;
   }

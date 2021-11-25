@@ -42,10 +42,9 @@ if [ -n "$KOKORO_GFILE_DIR" ]; then
 fi
 
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
-    # Update `gcloud` and log versioning for debugging.
-    gcloud components install beta --quiet
-    gcloud components install alpha --quiet
-    gcloud components update --quiet
+    # Update `gcloud` and log versioning for debugging
+    apt update && apt -y upgrade google-cloud-sdk
+    
     echo "********** GCLOUD INFO ***********"
     gcloud -v
     echo "********** MAVEN INFO  ***********"

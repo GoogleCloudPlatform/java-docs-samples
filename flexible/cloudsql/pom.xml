@@ -56,17 +56,17 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.32.1</version>
+      <version>1.32.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.32.1</version>
+      <version>1.32.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-servlet</artifactId>
-      <version>1.32.1</version>
+      <version>1.32.2</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -79,7 +79,7 @@
     <dependency>                        <!-- http://dev.mysql.com/doc/connector-j/en/ -->
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.26</version>
+      <version>8.0.27</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>

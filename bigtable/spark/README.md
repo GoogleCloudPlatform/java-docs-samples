@@ -2,7 +2,7 @@
 
 ## Overview
 
-The project shows how to read data from or write data to [Cloud Bigtable](https://cloud.google.com/bigtable) using [Apache Spark](https://spark.apache.org/) and [Apache HBase™ Spark Connector](https://github.com/apache/hbase-connectors/tree/master/spark).
+The project shows how to read data from or write data to [Cloud Bigtable](https://cloud.google.com/bigtable) using [Apache Spark](https://spark.apache.org/) and [Apache HBase™ Spark Connector](https://github.com/apache/hbase-connectors/tree/main/spark).
 
 **Apache Spark** is the execution environment that can distribute and parallelize data processing (loading data from and writing data to various data sources).
 Apache Spark provides DataSource API for external systems to plug into as data sources (also known as data providers).

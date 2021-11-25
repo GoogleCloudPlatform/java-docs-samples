@@ -16,7 +16,6 @@
 
 package com.example.spanner.jdbc;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -34,9 +33,6 @@ class CreateConnectionWithCredentialsExample {
     createConnectionWithCredentials(projectId, instanceId, databaseId, credentialsFile);
   }
 
-  @SuppressFBWarnings(
-      value = "OBL_UNSATISFIED_OBLIGATION",
-      justification = "https://github.com/spotbugs/spotbugs/issues/293")
   // Creates a JDBC connection to a Cloud Spanner database using specific credentials.
   static void createConnectionWithCredentials(
       String projectId, String instanceId, String databaseId, String pathToCredentialsFile)

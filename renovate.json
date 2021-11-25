@@ -91,7 +91,7 @@
         "com.google.apis:google-api-services-dataflow"
       ],
       "enabled": false,
-      "description": "@anguillanneuf: This package is no longer actively maintained. Best to use the version specified in https://github.com/googleapis/google-api-java-client-services/tree/master/clients/google-api-services-dataflow/v1b3"
+      "description": "@anguillanneuf: This package is no longer actively maintained. Best to use the version specified in https://github.com/googleapis/google-api-java-client-services/tree/main/clients/google-api-services-dataflow/v1b3"
     },
     {
       "matchPackagePatterns": [ "org.springframework.boot" ],
