@@ -39,7 +39,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class FilesystemApplicationIT {
+public class ApplicationTests {
 
   private static final String project = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String suffix = UUID.randomUUID().toString();
