@@ -2,8 +2,8 @@
 
 The code samples demonstrate two ways to send messages to and receive messages from [Cloud Pub/Sub](https://cloud.google.com/pubsub/docs/) from your Spring application using: 
 
-* [Spring Integration Channel Adapters](https://cloud.spring.io/spring-cloud-gcp/reference/html/#channel-adapters-for-cloud-pubsub)
-* [Spring Cloud Stream Binders](https://cloud.spring.io/spring-cloud-gcp/reference/html/#spring-cloud-stream)
+* [Spring Integration Channel Adapters](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html#channel-adapters-for-cloud-pubsub)
+* [Spring Cloud Stream Binders](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html#spring-cloud-stream)
 
 When the application starts, it will do the following every ten seconds: 
 1. send a message which contains a random integer [0-1000) to a Pub/Sub topic `topic-one` via a Spring Cloud Stream output binder; 
