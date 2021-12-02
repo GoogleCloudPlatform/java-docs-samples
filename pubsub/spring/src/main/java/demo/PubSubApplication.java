@@ -91,7 +91,12 @@ public class PubSubApplication {
     PubSubMessageHandler adapter = new PubSubMessageHandler(pubsubTemplate, "topic-two");
 
     adapter.setSuccessCallback(
-        ((ackId, message) -> LOGGER.info(message + ": " + ackId + " published!")));
+        ((ackId, message) ->
+            LOGGER.info(
+                message
+                    + ": "
+                    + ackId
+                    + " was sent via the outbound channel adapter to topic-two!")));
 
     adapter.setFailureCallback(
         (cause, message) -> LOGGER.info("Error sending " + message + " due to " + cause));

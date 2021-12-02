@@ -68,6 +68,7 @@ public class PubSubApplicationIT {
         topicAdminClient.createTopic(TopicName.of(projectId, topicOneId));
         topicAdminClient.createTopic(TopicName.of(projectId, topicTwoId));
       } catch (AlreadyExistsException ignore) {
+        System.out.println("Using existing topics.");
       }
     }
 
@@ -87,6 +88,7 @@ public class PubSubApplicationIT {
         subscriptionAdminClient.createSubscription(subscriptionOne);
         subscriptionAdminClient.createSubscription(subscriptionTwo);
       } catch (AlreadyExistsException ignore) {
+        System.out.println("Using existing subscriptions");
       }
     }
   }
@@ -104,5 +106,6 @@ public class PubSubApplicationIT {
     demo.PubSubApplication.main(new String[] {});
 
     assertThat(bout.toString()).contains("Started PubSubApplication");
+    assertThat(bout.toString()).contains("Sending a message via the output binder to topic-one!");
   }
 }
