@@ -183,10 +183,9 @@ public class SnippetsIT {
     DeleteFirewallRule.deleteFirewallRule(projectId, firewallRule);
   }
 
-  public static Status getInstanceStatus(String instanceName) throws IOException {
+  public static Instance getInstance(String instanceName) throws IOException {
     try (InstancesClient instancesClient = InstancesClient.create()) {
-      Instance response = instancesClient.get(PROJECT_ID, ZONE, instanceName);
-      return response.getStatus();
+      return instancesClient.get(PROJECT_ID, ZONE, instanceName);
     }
   }
 
@@ -205,14 +204,14 @@ public class SnippetsIT {
   @Test
   public void testCreateInstance() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME);
-    Assert.assertSame(response, Status.RUNNING);
+    Instance response = getInstance(MACHINE_NAME);
+    assertThat(response.getName()).contains(MACHINE_NAME);
   }
 
   @Test
   public void testCreateEncryptedInstance() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_ENCRYPTED);
+    Status response = getInstance(MACHINE_NAME_ENCRYPTED).getStatus();
     Assert.assertSame(response, Status.RUNNING);
   }
 
@@ -293,54 +292,54 @@ public class SnippetsIT {
   @Test
   public void testInstanceOperations()
       throws IOException, ExecutionException, InterruptedException {
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME), Status.RUNNING);
+    Assert.assertSame(getInstance(MACHINE_NAME).getStatus(), Status.RUNNING);
 
     // Stopping the instance.
     StopInstance.stopInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     // Wait for the operation to complete. Setting timeout to 3 mins.
     LocalDateTime endTime = LocalDateTime.now().plusMinutes(3);
-    while (getInstanceStatus(MACHINE_NAME) == Status.STOPPING
+    while (getInstance(MACHINE_NAME).getStatus() == Status.STOPPING
         && LocalDateTime.now().isBefore(endTime)) {
       TimeUnit.SECONDS.sleep(5);
     }
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME), Status.TERMINATED);
+    Assert.assertSame(getInstance(MACHINE_NAME).getStatus(), Status.TERMINATED);
 
     // Starting the instance.
     StartInstance.startInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     // Wait for the operation to complete. Setting timeout to 3 mins.
     endTime = LocalDateTime.now().plusMinutes(3);
-    while (getInstanceStatus(MACHINE_NAME) != Status.RUNNING
+    while (getInstance(MACHINE_NAME).getStatus() != Status.RUNNING
         && LocalDateTime.now().isBefore(endTime)) {
       TimeUnit.SECONDS.sleep(5);
     }
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME), Status.RUNNING);
+    Assert.assertSame(getInstance(MACHINE_NAME).getStatus(), Status.RUNNING);
   }
 
   @Test
   public void testEncryptedInstanceOperations()
       throws IOException, ExecutionException, InterruptedException {
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.RUNNING);
+    Assert.assertSame(getInstance(MACHINE_NAME_ENCRYPTED).getStatus(), Status.RUNNING);
 
     // Stopping the encrypted instance.
     StopInstance.stopInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED);
     // Wait for the operation to complete. Setting timeout to 3 mins.
     LocalDateTime endTime = LocalDateTime.now().plusMinutes(3);
-    while (getInstanceStatus(MACHINE_NAME_ENCRYPTED) == Status.STOPPING
+    while (getInstance(MACHINE_NAME_ENCRYPTED).getStatus() == Status.STOPPING
         && LocalDateTime.now().isBefore(endTime)) {
       TimeUnit.SECONDS.sleep(5);
     }
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.TERMINATED);
+    Assert.assertSame(getInstance(MACHINE_NAME_ENCRYPTED).getStatus(), Status.TERMINATED);
 
     // Starting the encrypted instance.
     StartEncryptedInstance
         .startEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
     // Wait for the operation to complete. Setting timeout to 3 mins.
     endTime = LocalDateTime.now().plusMinutes(3);
-    while (getInstanceStatus(MACHINE_NAME_ENCRYPTED) != Status.RUNNING
+    while (getInstance(MACHINE_NAME_ENCRYPTED).getStatus() != Status.RUNNING
         && LocalDateTime.now().isBefore(endTime)) {
       TimeUnit.SECONDS.sleep(5);
     }
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.RUNNING);
+    Assert.assertSame(getInstance(MACHINE_NAME_ENCRYPTED).getStatus(), Status.RUNNING);
   }
 
 }
