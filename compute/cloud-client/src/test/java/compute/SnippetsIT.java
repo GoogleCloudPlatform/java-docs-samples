@@ -330,10 +330,9 @@ public class SnippetsIT {
     }
   }
 
-  public static Status getInstanceStatus(String instanceName) throws IOException {
+  public static Instance getInstance(String instanceName) throws IOException {
     try (InstancesClient instancesClient = InstancesClient.create()) {
-      Instance response = instancesClient.get(PROJECT_ID, ZONE, instanceName);
-      return response.getStatus();
+      return instancesClient.get(PROJECT_ID, ZONE, instanceName);
     }
   }
 
@@ -352,57 +351,57 @@ public class SnippetsIT {
   @Test
   public void testCreateInstance() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME);
-    Assert.assertSame(response, Status.RUNNING);
+    Instance response = getInstance(MACHINE_NAME);
+    assertThat(response.getName()).contains(MACHINE_NAME);
   }
 
   @Test
   public void testCreateEncryptedInstance() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_ENCRYPTED);
-    Assert.assertSame(response, Status.RUNNING);
+    Instance response = getInstance(MACHINE_NAME_ENCRYPTED);
+    assertThat(response.getName()).contains(MACHINE_NAME_ENCRYPTED);
   }
 
   @Test
   public void testCreatePublicImage() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_PUBLIC_IMAGE);
-    Assert.assertSame(response, Status.RUNNING);
+    Instance response = getInstance(MACHINE_NAME_PUBLIC_IMAGE);
+    assertThat(response.getName()).contains(MACHINE_NAME_PUBLIC_IMAGE);
   }
 
   @Test
   public void testCreateCustomImage() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_CUSTOM_IMAGE);
-    Assert.assertSame(response, Status.RUNNING);
+    Instance response = getInstance(MACHINE_NAME_CUSTOM_IMAGE);
+    assertThat(response.getName()).contains(MACHINE_NAME_CUSTOM_IMAGE);
   }
 
   @Test
   public void testCreateAdditionalDisk() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_ADDITIONAL_DISK);
-    Assert.assertSame(response, Status.RUNNING);
+    Instance response = getInstance(MACHINE_NAME_ADDITIONAL_DISK);
+    assertThat(response.getName()).contains(MACHINE_NAME_ADDITIONAL_DISK);
   }
 
   @Test
   public void testCreateFromSnapshot() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_SNAPSHOT);
-    Assert.assertSame(response, Status.RUNNING);
+    Instance response = getInstance(MACHINE_NAME_SNAPSHOT);
+    assertThat(response.getName()).contains(MACHINE_NAME_SNAPSHOT);
   }
 
   @Test
   public void testCreateFromSnapshotAdditional() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_SNAPSHOT_ADDITIONAL);
-    Assert.assertSame(response, Status.RUNNING);
+    Instance response = getInstance(MACHINE_NAME_SNAPSHOT_ADDITIONAL);
+    assertThat(response.getName()).contains(MACHINE_NAME_SNAPSHOT);
   }
 
   @Test
   public void testCreateInSubnetwork() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_SUBNETWORK);
-    Assert.assertSame(response, Status.RUNNING);
+    Instance response = getInstance(MACHINE_NAME_SUBNETWORK);
+    assertThat(response.getName()).contains(MACHINE_NAME_SNAPSHOT);
   }
 
   @Test
@@ -481,54 +480,54 @@ public class SnippetsIT {
   @Test
   public void testInstanceOperations()
       throws IOException, ExecutionException, InterruptedException {
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME), Status.RUNNING);
+    Assert.assertSame(getInstance(MACHINE_NAME).getStatus(), Status.RUNNING);
 
     // Stopping the instance.
     StopInstance.stopInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     // Wait for the operation to complete. Setting timeout to 3 mins.
     LocalDateTime endTime = LocalDateTime.now().plusMinutes(3);
-    while (getInstanceStatus(MACHINE_NAME) == Status.STOPPING
+    while (getInstance(MACHINE_NAME).getStatus() == Status.STOPPING
         && LocalDateTime.now().isBefore(endTime)) {
       TimeUnit.SECONDS.sleep(5);
     }
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME), Status.TERMINATED);
+    Assert.assertSame(getInstance(MACHINE_NAME).getStatus(), Status.TERMINATED);
 
     // Starting the instance.
     StartInstance.startInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     // Wait for the operation to complete. Setting timeout to 3 mins.
     endTime = LocalDateTime.now().plusMinutes(3);
-    while (getInstanceStatus(MACHINE_NAME) != Status.RUNNING
+    while (getInstance(MACHINE_NAME).getStatus() != Status.RUNNING
         && LocalDateTime.now().isBefore(endTime)) {
       TimeUnit.SECONDS.sleep(5);
     }
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME), Status.RUNNING);
+    Assert.assertSame(getInstance(MACHINE_NAME).getStatus(), Status.RUNNING);
   }
 
   @Test
   public void testEncryptedInstanceOperations()
       throws IOException, ExecutionException, InterruptedException {
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.RUNNING);
+    Assert.assertSame(getInstance(MACHINE_NAME_ENCRYPTED).getStatus(), Status.RUNNING);
 
     // Stopping the encrypted instance.
     StopInstance.stopInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED);
     // Wait for the operation to complete. Setting timeout to 3 mins.
     LocalDateTime endTime = LocalDateTime.now().plusMinutes(3);
-    while (getInstanceStatus(MACHINE_NAME_ENCRYPTED) == Status.STOPPING
+    while (getInstance(MACHINE_NAME_ENCRYPTED).getStatus() == Status.STOPPING
         && LocalDateTime.now().isBefore(endTime)) {
       TimeUnit.SECONDS.sleep(5);
     }
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.TERMINATED);
+    Assert.assertSame(getInstance(MACHINE_NAME_ENCRYPTED).getStatus(), Status.TERMINATED);
 
     // Starting the encrypted instance.
     StartEncryptedInstance
         .startEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
     // Wait for the operation to complete. Setting timeout to 3 mins.
     endTime = LocalDateTime.now().plusMinutes(3);
-    while (getInstanceStatus(MACHINE_NAME_ENCRYPTED) != Status.RUNNING
+    while (getInstance(MACHINE_NAME_ENCRYPTED).getStatus() != Status.RUNNING
         && LocalDateTime.now().isBefore(endTime)) {
       TimeUnit.SECONDS.sleep(5);
     }
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.RUNNING);
+    Assert.assertSame(getInstance(MACHINE_NAME_ENCRYPTED).getStatus(), Status.RUNNING);
   }
 
 }
