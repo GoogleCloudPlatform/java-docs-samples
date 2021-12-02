@@ -25,7 +25,7 @@ Copyright 2019 Google LLC
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.23</version>
+    <version>1.0.24</version>
   </parent>
 
   <properties>
