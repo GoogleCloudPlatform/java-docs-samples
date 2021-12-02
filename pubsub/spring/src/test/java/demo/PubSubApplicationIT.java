@@ -51,8 +51,8 @@ public class PubSubApplicationIT {
       try {
         topicAdminClient.createTopic(TopicName.of(projectId, topicOneId));
         topicAdminClient.createTopic(TopicName.of(projectId, topicTwoId));
-      } catch (AlreadyExistsException ignore) { }
-
+      } catch (AlreadyExistsException ignore) {
+      }
     }
 
     try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
@@ -70,7 +70,8 @@ public class PubSubApplicationIT {
       try {
         subscriptionAdminClient.createSubscription(subscriptionOne);
         subscriptionAdminClient.createSubscription(subscriptionTwo);
-      } catch (AlreadyExistsException ignore) { }
+      } catch (AlreadyExistsException ignore) {
+      }
     }
   }
 
@@ -84,7 +85,7 @@ public class PubSubApplicationIT {
   public void testPubSubApplication() throws Exception {
     bout.reset();
 
-    demo.PubSubApplication.main(new String[]{});
+    demo.PubSubApplication.main(new String[] {});
 
     assertThat(bout.toString()).contains("Started PubSubApplication");
   }

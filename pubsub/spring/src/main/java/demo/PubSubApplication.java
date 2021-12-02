@@ -20,7 +20,6 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
-import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler.FailureCallback;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import java.util.Random;
@@ -39,7 +38,6 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
@@ -93,8 +91,7 @@ public class PubSubApplication {
     PubSubMessageHandler adapter = new PubSubMessageHandler(pubsubTemplate, "topic-two");
 
     adapter.setFailureCallback(
-        (cause, message) -> LOGGER.info("Error sending " + message + " due to " + cause)
-    );
+        (cause, message) -> LOGGER.info("Error sending " + message + " due to " + cause));
     return adapter;
   }
   // [END pubsub_spring_outbound_channel_adapter]
@@ -116,20 +113,20 @@ public class PubSubApplication {
   public Supplier<Flux<Message<String>>> sendMessageToTopicOne() {
     return () ->
         Flux.<Message<String>>generate(
-            sink -> {
-              try {
-                Thread.sleep(10000);
-              } catch (InterruptedException e) {
-                // stop sleep earlier.
-              }
+                sink -> {
+                  try {
+                    Thread.sleep(10000);
+                  } catch (InterruptedException e) {
+                    // stop sleep earlier.
+                  }
 
-              Message<String> message =
-                  MessageBuilder.withPayload("message-" + rand.nextInt(1000)).build();
-              LOGGER.info(
-                  "Sending a message via the output binder to topic-one! Payload: "
-                      + message.getPayload());
-              sink.next(message);
-            })
+                  Message<String> message =
+                      MessageBuilder.withPayload("message-" + rand.nextInt(1000)).build();
+                  LOGGER.info(
+                      "Sending a message via the output binder to topic-one! Payload: "
+                          + message.getPayload());
+                  sink.next(message);
+                })
             .subscribeOn(Schedulers.boundedElastic());
   }
   // [END pubsub_spring_cloud_stream_output_binder]
