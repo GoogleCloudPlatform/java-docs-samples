@@ -27,6 +27,7 @@ import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.TopicName;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -105,6 +106,14 @@ public class PubSubApplicationIT {
 
     demo.PubSubApplication.main(new String[] {});
 
+    TimeUnit.MINUTES.sleep(1);
+
     assertThat(bout.toString()).contains("Started PubSubApplication");
+    assertThat(bout.toString()).contains("Sending a message via the output binder to topic-one!");
+    assertThat(bout.toString())
+        .contains("Message arrived via an inbound channel adapter from sub-one!");
+    assertThat(bout.toString())
+        .contains("Message was sent via the outbound channel adapter to topic-two!");
+    assertThat(bout.toString()).contains("Message arrived via an input binder from topic-two!");
   }
 }
