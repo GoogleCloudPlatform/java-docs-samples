@@ -90,8 +90,12 @@ public class PubSubApplication {
   public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
     PubSubMessageHandler adapter = new PubSubMessageHandler(pubsubTemplate, "topic-two");
 
+    adapter.setSuccessCallback(
+        ((ackId, message) -> LOGGER.info(message + ": " + ackId + " published!")));
+
     adapter.setFailureCallback(
         (cause, message) -> LOGGER.info("Error sending " + message + " due to " + cause));
+
     return adapter;
   }
   // [END pubsub_spring_outbound_channel_adapter]
