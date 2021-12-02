@@ -20,6 +20,7 @@ import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
+import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler.FailureCallback;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import java.util.Random;
@@ -91,18 +92,9 @@ public class PubSubApplication {
   public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
     PubSubMessageHandler adapter = new PubSubMessageHandler(pubsubTemplate, "topic-two");
 
-    adapter.setPublishCallback(
-        new ListenableFutureCallback<String>() {
-          @Override
-          public void onFailure(Throwable throwable) {
-            LOGGER.info("There was an error sending the message.");
-          }
-
-          @Override
-          public void onSuccess(String result) {
-            LOGGER.info("Message was sent via the outbound channel adapter to topic-two!");
-          }
-        });
+    adapter.setFailureCallback(
+        (cause, message) -> LOGGER.info("Error sending " + message + " due to " + cause)
+    );
     return adapter;
   }
   // [END pubsub_spring_outbound_channel_adapter]
@@ -138,7 +130,7 @@ public class PubSubApplication {
                       + message.getPayload());
               sink.next(message);
             })
-            .subscribeOn(Schedulers.elastic());
+            .subscribeOn(Schedulers.boundedElastic());
   }
   // [END pubsub_spring_cloud_stream_output_binder]
 }
