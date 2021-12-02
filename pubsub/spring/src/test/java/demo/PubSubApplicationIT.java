@@ -106,6 +106,5 @@ public class PubSubApplicationIT {
     demo.PubSubApplication.main(new String[] {});
 
     assertThat(bout.toString()).contains("Started PubSubApplication");
-    assertThat(bout.toString()).contains("Sending a message via the output binder to topic-one!");
   }
 }

@@ -92,11 +92,7 @@ public class PubSubApplication {
 
     adapter.setSuccessCallback(
         ((ackId, message) ->
-            LOGGER.info(
-                message
-                    + ": "
-                    + ackId
-                    + " was sent via the outbound channel adapter to topic-two!")));
+            LOGGER.info("Message was sent via the outbound channel adapter to topic-two!")));
 
     adapter.setFailureCallback(
         (cause, message) -> LOGGER.info("Error sending " + message + " due to " + cause));
@@ -126,7 +122,7 @@ public class PubSubApplication {
                   try {
                     Thread.sleep(10000);
                   } catch (InterruptedException e) {
-                    // stop sleep earlier.
+                    // Stop sleep earlier.
                   }
 
                   Message<String> message =
