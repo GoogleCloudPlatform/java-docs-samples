@@ -32,8 +32,6 @@ import com.google.cloud.video.transcoder.v1.TranscoderServiceClient;
 import com.google.cloud.video.transcoder.v1.VideoStream;
 import com.google.protobuf.Duration;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 
 public class CreateJobWithConcatenatedInputs {
 
@@ -42,31 +40,23 @@ public class CreateJobWithConcatenatedInputs {
     String projectId = "my-project-id";
     String location = "us-central1";
     String inputUri1 = "gs://my-bucket/my-video-file1";
-    Float startTimeOffset1 = 0.0f;
-    Float endTimeOffset1 = 8.1f;
+    Duration startTimeInput1 = Duration.newBuilder().setSeconds(0).setNanos(0).build();
+    Duration endTimeInput1 = Duration.newBuilder().setSeconds(8).setNanos(100000000).build();
     String inputUri2 = "gs://my-bucket/my-video-file2";
-    Float startTimeOffset2 = 3.5f;
-    Float endTimeOffset2 = 15f;
+    Duration startTimeInput2 = Duration.newBuilder().setSeconds(3).setNanos(500000000).build();
+    Duration endTimeInput2 = Duration.newBuilder().setSeconds(15).setNanos(0).build();
     String outputUri = "gs://my-bucket/my-output-folder/";
 
     createJobWithConcatenatedInputs(
         projectId,
         location,
         inputUri1,
-        startTimeOffset1,
-        endTimeOffset1,
+        startTimeInput1,
+        endTimeInput1,
         inputUri2,
-        startTimeOffset2,
-        endTimeOffset2,
+        startTimeInput2,
+        endTimeInput2,
         outputUri);
-  }
-
-  public static int toNanos(Float timeOffset) {
-    DecimalFormat df = new DecimalFormat(".####");
-    BigDecimal toNanos = new BigDecimal("1000000000");
-    BigDecimal bd = new BigDecimal(df.format(timeOffset));
-    BigDecimal fractionalPart = bd.remainder(BigDecimal.ONE);
-    return fractionalPart.multiply(toNanos).intValue();
   }
 
   // Creates a job from an ad-hoc configuration that concatenates two input videos.
@@ -74,23 +64,13 @@ public class CreateJobWithConcatenatedInputs {
       String projectId,
       String location,
       String inputUri1,
-      Float startTimeOffset1,
-      Float endTimeOffset1,
+      Duration startTimeInput1,
+      Duration endTimeInput1,
       String inputUri2,
-      Float startTimeOffset2,
-      Float endTimeOffset2,
+      Duration startTimeInput2,
+      Duration endTimeInput2,
       String outputUri)
       throws IOException {
-
-    int startTimeOffset1Sec = (int) Math.floor(startTimeOffset1);
-    int startTimeOffset1NanoSec = toNanos(startTimeOffset1);
-    int endTimeOffset1Sec = (int) Math.floor(endTimeOffset1);
-    int endTimeOffset1NanoSec = toNanos(endTimeOffset1);
-
-    int startTimeOffset2Sec = (int) Math.floor(startTimeOffset2);
-    int startTimeOffset2NanoSec = toNanos(startTimeOffset2);
-    int endTimeOffset2Sec = (int) Math.floor(endTimeOffset2);
-    int endTimeOffset2NanoSec = toNanos(endTimeOffset2);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -130,36 +110,20 @@ public class CreateJobWithConcatenatedInputs {
                       .addElementaryStreams("audio_stream0")
                       .build())
               .addEditList(
-                  0,
+                  0, // Index in the edit list
                   EditAtom.newBuilder()
                       .setKey("atom1")
                       .addInputs("input1")
-                      .setStartTimeOffset(
-                          Duration.newBuilder()
-                              .setSeconds(startTimeOffset1Sec)
-                              .setNanos(startTimeOffset1NanoSec)
-                              .build())
-                      .setEndTimeOffset(
-                          Duration.newBuilder()
-                              .setSeconds(endTimeOffset1Sec)
-                              .setNanos(endTimeOffset1NanoSec)
-                              .build())
+                      .setStartTimeOffset(startTimeInput1)
+                      .setEndTimeOffset(endTimeInput1)
                       .build())
               .addEditList(
-                  1,
+                  1, // Index in the edit list
                   EditAtom.newBuilder()
                       .setKey("atom2")
                       .addInputs("input2")
-                      .setStartTimeOffset(
-                          Duration.newBuilder()
-                              .setSeconds(startTimeOffset2Sec)
-                              .setNanos(startTimeOffset2NanoSec)
-                              .build())
-                      .setEndTimeOffset(
-                          Duration.newBuilder()
-                              .setSeconds(endTimeOffset2Sec)
-                              .setNanos(endTimeOffset2NanoSec)
-                              .build())
+                      .setStartTimeOffset(startTimeInput2)
+                      .setEndTimeOffset(endTimeInput2)
                       .build())
               .build();
 
