@@ -29,6 +29,7 @@ import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageClass;
 import com.google.cloud.storage.StorageOptions;
+import com.google.protobuf.Duration;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -127,7 +128,10 @@ public class CreateJobWithConcatenatedInputsTest {
   public void test_CreateJobWithConcatenatedInputs() throws Exception {
     String jobName = String.format("projects/%s/locations/%s/jobs/", PROJECT_NUMBER, LOCATION);
     CreateJobWithConcatenatedInputs.createJobWithConcatenatedInputs(
-        PROJECT_ID, LOCATION, INPUT_1_URI, 0f, 8.1f, INPUT_2_URI, 3.5f, 15f, OUTPUT_URI_FOR_CONCAT);
+        PROJECT_ID, LOCATION, INPUT_1_URI, Duration.newBuilder().setSeconds(0).setNanos(0).build(),
+        Duration.newBuilder().setSeconds(8).setNanos(100000000).build(), INPUT_2_URI,
+        Duration.newBuilder().setSeconds(3).setNanos(500000000).build(),
+        Duration.newBuilder().setSeconds(15).setNanos(0).build(), OUTPUT_URI_FOR_CONCAT);
     String output = bout.toString();
     assertThat(output, containsString(jobName));
     String[] arr = output.split("/");
