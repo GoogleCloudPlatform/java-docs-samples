@@ -22,6 +22,7 @@ import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import java.io.IOException;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.io.GenerateSequence;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
@@ -41,7 +42,7 @@ public class WorkloadGenerator {
     generateWorkload(options);
   }
 
-  static void generateWorkload(BigtableWorkloadOptions options) {
+  static PipelineResult generateWorkload(BigtableWorkloadOptions options) {
     CloudBigtableTableConfiguration bigtableTableConfig =
         new CloudBigtableTableConfiguration.Builder()
             .withProjectId(options.getProject())
@@ -55,7 +56,7 @@ public class WorkloadGenerator {
     p.apply(GenerateSequence.from(0).withRate(options.getWorkloadRate(), new Duration(1000)))
         .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig)));
     System.out.println("Beginning to generate read workload.");
-    p.run();
+    return p.run();
   }
 
   public static class ReadFromTableFn extends AbstractCloudBigtableTableDoFn<Long, Void> {
@@ -94,5 +95,4 @@ public class WorkloadGenerator {
 
     void setWorkloadRate(Integer workloadRate);
   }
-
 }

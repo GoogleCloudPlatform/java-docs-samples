@@ -21,12 +21,25 @@ import static org.junit.Assert.assertNotNull;
 
 import bigtable.WorkloadGenerator.BigtableWorkloadOptions;
 import bigtable.WorkloadGenerator.ReadFromTableFn;
+import com.google.api.services.dataflow.model.Job;
+import com.google.bigtable.repackaged.com.google.cloud.monitoring.v3.MetricServiceClient;
+import com.google.bigtable.repackaged.com.google.cloud.monitoring.v3.MetricServiceClient.ListTimeSeriesPagedResponse;
+import com.google.bigtable.repackaged.com.google.monitoring.v3.ListTimeSeriesRequest;
+import com.google.bigtable.repackaged.com.google.monitoring.v3.ProjectName;
+import com.google.bigtable.repackaged.com.google.monitoring.v3.TimeInterval;
+import com.google.bigtable.repackaged.com.google.monitoring.v3.TimeSeries;
+import com.google.bigtable.repackaged.com.google.protobuf.util.Timestamps;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.IOException;
+import java.util.Date;
 import java.util.UUID;
+import org.apache.beam.runners.dataflow.DataflowClient;
+import org.apache.beam.runners.dataflow.DataflowPipelineJob;
+import org.apache.beam.runners.dataflow.DataflowRunner;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.sdk.transforms.ParDo;
@@ -79,8 +92,8 @@ public class WorkloadGeneratorTest {
 
   @Before
   public void setupStream() {
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
+    // bout = new ByteArrayOutputStream();
+    // System.setOut(new PrintStream(bout));
   }
 
   @AfterClass
@@ -121,5 +134,58 @@ public class WorkloadGeneratorTest {
     assertThat(output.contains("Connected to table"));
   }
 
+  @Test
+  public void testPipeline() throws IOException, InterruptedException {
+    String workloadJobName = "bigtable-workload-generator-test-" + new Date().getTime();
+    int waitDuration = 10 * 60 * 1000;
+    int rate = 1000;
 
+    BigtableWorkloadOptions options = PipelineOptionsFactory.create()
+        .as(BigtableWorkloadOptions.class);
+    options.setBigtableInstanceId(instanceId);
+    options.setBigtableTableId(TABLE_ID);
+    options.setWorkloadRate(rate);
+    options.setRegion(REGION_ID);
+    options.setRunner(DataflowRunner.class);
+    options.setJobName(workloadJobName);
+
+    PipelineResult pipelineResult = WorkloadGenerator.generateWorkload(options);
+
+    MetricServiceClient metricServiceClient = MetricServiceClient.create();
+    ProjectName name = ProjectName.of(projectId);
+
+    // Wait X minutes and then get metrics for the X minute period.
+    Thread.sleep(waitDuration);
+    long startMillis = System.currentTimeMillis() - waitDuration;
+
+    TimeInterval interval =
+        TimeInterval.newBuilder()
+            .setStartTime(Timestamps.fromMillis(startMillis))
+            .setEndTime(Timestamps.fromMillis(System.currentTimeMillis()))
+            .build();
+
+    ListTimeSeriesRequest request =
+        ListTimeSeriesRequest.newBuilder()
+            .setName(name.toString())
+            .setFilter("metric.type=\"bigtable.googleapis.com/server/request_count\"")
+            .setInterval(interval)
+            .build();
+    ListTimeSeriesPagedResponse response = metricServiceClient.listTimeSeries(request);
+
+    long startRequestCount = 0;
+    long endRequestCount = 0;
+    for (TimeSeries ts : response.iterateAll()) {
+      startRequestCount = ts.getPoints(0).getValue().getInt64Value();
+      endRequestCount = ts.getPoints(ts.getPointsCount() - 1).getValue().getInt64Value();
+    }
+    assertThat(endRequestCount - startRequestCount > rate);
+
+    // Stop the running job.
+    String jobId = ((DataflowPipelineJob) pipelineResult).getJobId();
+    DataflowClient client = DataflowClient.create(options);
+    Job job = client.getJob(jobId);
+
+    job.setRequestedState("JOB_STATE_CANCELLED");
+    client.updateJob(jobId, job);
+  }
 }

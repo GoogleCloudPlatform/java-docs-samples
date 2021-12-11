@@ -26,7 +26,7 @@
   <properties>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <apache_beam.version>2.31.0</apache_beam.version>
+    <apache_beam.version>2.34.0</apache_beam.version>
   </properties>
 
   <!--
@@ -39,7 +39,7 @@
     <version>1.0.23</version>
   </parent>
 
-  <!-- Shading plugin needed to create uber jars for Dataflow flex templates. -->
+  <!--   Shading plugin needed to create uber jars for Dataflow flex templates. -->
   <build>
     <plugins>
       <plugin>
@@ -105,12 +105,6 @@
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-beam</artifactId>
       <version>1.25.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-bigtable</artifactId>
-      <version>2.2.0</version>
     </dependency>
 
     <dependency>
