@@ -28,7 +28,7 @@ Copyright 2017 Google Inc.
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.23</version>
+    <version>1.2.0</version>
   </parent>
 
   <!-- [START compiler] -->
@@ -42,7 +42,7 @@ Copyright 2017 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.92</version>
+      <version>1.9.93</version>
     </dependency>
 
     <dependency>
@@ -68,7 +68,7 @@ Copyright 2017 Google Inc.
     <dependency>
       <groupId>org.thymeleaf</groupId>
       <artifactId>thymeleaf</artifactId>
-      <version>3.0.12.RELEASE</version>
+      <version>3.0.14.RELEASE</version>
     </dependency>
 
   </dependencies>
