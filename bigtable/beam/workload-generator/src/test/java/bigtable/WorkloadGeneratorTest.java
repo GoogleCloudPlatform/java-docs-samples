@@ -137,7 +137,7 @@ public class WorkloadGeneratorTest {
   @Test
   public void testPipeline() throws IOException, InterruptedException {
     String workloadJobName = "bigtable-workload-generator-test-" + new Date().getTime();
-    int waitDuration = 10 * 60 * 1000;
+    final int WAIT_DURATION = 10 * 60 * 1000;
     int rate = 1000;
 
     BigtableWorkloadOptions options = PipelineOptionsFactory.create()
@@ -149,14 +149,14 @@ public class WorkloadGeneratorTest {
     options.setRunner(DataflowRunner.class);
     options.setJobName(workloadJobName);
 
-    PipelineResult pipelineResult = WorkloadGenerator.generateWorkload(options);
+    final PipelineResult pipelineResult = WorkloadGenerator.generateWorkload(options);
 
     MetricServiceClient metricServiceClient = MetricServiceClient.create();
     ProjectName name = ProjectName.of(projectId);
 
     // Wait X minutes and then get metrics for the X minute period.
-    Thread.sleep(waitDuration);
-    long startMillis = System.currentTimeMillis() - waitDuration;
+    Thread.sleep(WAIT_DURATION);
+    long startMillis = System.currentTimeMillis() - WAIT_DURATION;
 
     TimeInterval interval =
         TimeInterval.newBuilder()
