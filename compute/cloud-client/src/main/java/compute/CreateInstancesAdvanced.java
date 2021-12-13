@@ -23,6 +23,7 @@ package compute;
 // [START compute_instances_create_from_custom_image]
 // [START compute_instances_create_from_image ]
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDisk.Type;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
@@ -33,7 +34,6 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
@@ -64,16 +64,15 @@ public class CreateInstancesAdvanced {
    * Create an AttachedDisk object to be used in VM instance creation. Uses an image as the source
    * for the new disk.
    *
-   * @param diskType    the type of disk you want to create. This value uses the following format:
-   *                    "zones/{zone}/diskTypes/(pd-standard|pd-ssd|pd-balanced|pd-extreme)". For
-   *                    example: "zones/us-west3-b/diskTypes/pd-ssd"
-   * @param diskSizeGb  size of the new disk in gigabytes
-   * @param boot        boolean flag indicating whether this disk should be used as a boot disk of
-   *                    an instance
+   * @param diskType the type of disk you want to create. This value uses the following format:
+   * "zones/{zone}/diskTypes/(pd-standard|pd-ssd|pd-balanced|pd-extreme)". For example:
+   * "zones/us-west3-b/diskTypes/pd-ssd"
+   * @param diskSizeGb size of the new disk in gigabytes
+   * @param boot boolean flag indicating whether this disk should be used as a boot disk of an
+   * instance
    * @param sourceImage source image to use when creating this disk. You must have read access to
-   *                    this disk. This can be one of the publicly available images or an image from
-   *                    one of your projects. This value uses the following format:
-   *                    "projects/{project_name}/global/images/{image_name}"
+   * this disk. This can be one of the publicly available images or an image from one of your
+   * projects. This value uses the following format: "projects/{project_name}/global/images/{image_name}"
    * @return AttachedDisk object configured to be created using the specified image.
    */
   private static AttachedDisk diskFromImage(String diskType, int diskSizeGb, boolean boot,
@@ -107,9 +106,9 @@ public class CreateInstancesAdvanced {
    * Create an AttachedDisk object to be used in VM instance creation. The created disk contains no
    * data and requires formatting before it can be used.
    *
-   * @param diskType   the type of disk you want to create. This value uses the following format:
-   *                   "zones/{zone}/diskTypes/(pd-standard|pd-ssd|pd-balanced|pd-extreme)". For
-   *                   example: "zones/us-west3-b/diskTypes/pd-ssd"
+   * @param diskType the type of disk you want to create. This value uses the following format:
+   * "zones/{zone}/diskTypes/(pd-standard|pd-ssd|pd-balanced|pd-extreme)". For example:
+   * "zones/us-west3-b/diskTypes/pd-ssd"
    * @param diskSizeGb size of the new disk in gigabytes
    * @return AttachedDisk object configured to be created as an empty disk.
    */
@@ -135,15 +134,14 @@ public class CreateInstancesAdvanced {
   // [START compute_instances_create_from_snapshot]
 
   /**
-   * @param diskType     the type of disk you want to create. This value uses the following format:
-   *                     "zones/{zone}/diskTypes/(pd-standard|pd-ssd|pd-balanced|pd-extreme)". For
-   *                     example: "zones/us-west3-b/diskTypes/pd-ssd"
-   * @param diskSizeGb   size of the new disk in gigabytes
-   * @param boot         boolean flag indicating whether this disk should be used as a boot disk of
-   *                     an instance
+   * @param diskType the type of disk you want to create. This value uses the following format:
+   * "zones/{zone}/diskTypes/(pd-standard|pd-ssd|pd-balanced|pd-extreme)". For example:
+   * "zones/us-west3-b/diskTypes/pd-ssd"
+   * @param diskSizeGb size of the new disk in gigabytes
+   * @param boot boolean flag indicating whether this disk should be used as a boot disk of an
+   * instance
    * @param diskSnapshot disk snapshot to use when creating this disk. You must have read access to
-   *                     this disk. This value uses the following format:
-   *                     "projects/{project_name}/global/snapshots/{snapshot_name}"
+   * this disk. This value uses the following format: "projects/{project_name}/global/snapshots/{snapshot_name}"
    * @return AttachedDisk object configured to be created using the specified snapshot.
    */
   private static AttachedDisk diskFromSnapshot(String diskType, int diskSizeGb, boolean boot,
@@ -178,26 +176,24 @@ public class CreateInstancesAdvanced {
   /**
    * Send an instance creation request to the Compute Engine API and wait for it to complete.
    *
-   * @param project      project ID or project number of the Cloud project you want to use.
-   * @param zone         name of the zone to create the instance in. For example: "us-west3-b"
+   * @param project project ID or project number of the Cloud project you want to use.
+   * @param zone name of the zone to create the instance in. For example: "us-west3-b"
    * @param instanceName name of the new virtual machine (VM) instance.
-   * @param disks        a list of compute_v1.AttachedDisk objects describing the disks you want to
-   *                     attach to your new instance.
-   * @param machineType  machine type of the VM being created. This value uses the following format:
-   *                     "zones/{zone}/machineTypes/{type_name}". For example:
-   *                     "zones/europe-west3-c/machineTypes/f1-micro"
-   * @param network      name of the network you want the new instance to use. For example:
-   *                     "global/networks/default" represents the network named "default", which is
-   *                     created automatically for each project.
-   * @param subnetwork   name of the subnetwork you want the new instance to use. This value uses
-   *                     the following format: "regions/{region}/subnetworks/{subnetwork_name}"
+   * @param disks a list of compute_v1.AttachedDisk objects describing the disks you want to attach
+   * to your new instance.
+   * @param machineType machine type of the VM being created. This value uses the following format:
+   * "zones/{zone}/machineTypes/{type_name}". For example: "zones/europe-west3-c/machineTypes/f1-micro"
+   * @param network name of the network you want the new instance to use. For example:
+   * "global/networks/default" represents the network named "default", which is created
+   * automatically for each project.
+   * @param subnetwork name of the subnetwork you want the new instance to use. This value uses the
+   * following format: "regions/{region}/subnetworks/{subnetwork_name}"
    * @return Instance object.
    */
   private static Instance createWithDisks(String project, String zone, String instanceName,
       Vector<AttachedDisk> disks, String machineType, String network, String subnetwork)
       throws IOException, InterruptedException, ExecutionException {
-    try (InstancesClient instancesClient = InstancesClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
       // Use the network interface provided in the networkName argument.
       NetworkInterface networkInterface;
       if (subnetwork != null) {
@@ -220,7 +216,7 @@ public class CreateInstancesAdvanced {
               .addNetworkInterfaces(networkInterface)
               .build();
 
-      System.out.println(String.format("Creating instance: %s at %s ", instanceName, zone));
+      System.out.printf("Creating instance: %s at %s ", instanceName, zone);
 
       // Insert the instance in the specified project and zone.
       InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
@@ -228,11 +224,11 @@ public class CreateInstancesAdvanced {
           .setZone(zone)
           .setInstanceResource(instanceResource).build();
 
-      Operation operation = instancesClient.insertCallable().futureCall(insertInstanceRequest)
-          .get();
+      OperationFuture<Operation, Operation> operation = instancesClient.insertAsync(
+          insertInstanceRequest);
 
       // Wait for the operation to complete.
-      Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
+      Operation response = operation.get();
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);
@@ -255,8 +251,8 @@ public class CreateInstancesAdvanced {
   /**
    * Create a new VM instance with Debian 10 operating system.
    *
-   * @param project      project ID or project number of the Cloud project you want to use.
-   * @param zone         name of the zone to create the instance in. For example: "us-west3-b"
+   * @param project project ID or project number of the Cloud project you want to use.
+   * @param zone name of the zone to create the instance in. For example: "us-west3-b"
    * @param instanceName name of the new virtual machine (VM) instance.
    * @return Instance object.
    */
@@ -279,11 +275,11 @@ public class CreateInstancesAdvanced {
   /**
    * Create a new VM instance with custom image used as its boot disk.
    *
-   * @param project      project ID or project number of the Cloud project you want to use.
-   * @param zone         name of the zone to create the instance in. For example: "us-west3-b"
+   * @param project project ID or project number of the Cloud project you want to use.
+   * @param zone name of the zone to create the instance in. For example: "us-west3-b"
    * @param instanceName name of the new virtual machine (VM) instance.
-   * @param customImage  link to the custom image you want to use in the form of:
-   *                     "projects/{project_name}/global/images/{image_name}"
+   * @param customImage link to the custom image you want to use in the form of:
+   * "projects/{project_name}/global/images/{image_name}"
    * @return Instance object.
    */
   public static Instance createFromCustomImage(String project, String zone, String instanceName,
@@ -302,8 +298,8 @@ public class CreateInstancesAdvanced {
   /**
    * Create a new VM instance with Debian 10 operating system and a 11 GB additional empty disk.
    *
-   * @param project      project ID or project number of the Cloud project you want to use.
-   * @param zone         name of the zone to create the instance in. For example: "us-west3-b"
+   * @param project project ID or project number of the Cloud project you want to use.
+   * @param zone name of the zone to create the instance in. For example: "us-west3-b"
    * @param instanceName name of the new virtual machine (VM) instance.
    * @return Instance object.
    */
@@ -327,11 +323,11 @@ public class CreateInstancesAdvanced {
   /**
    * Create a new VM instance with boot disk created from a snapshot.
    *
-   * @param project      project ID or project number of the Cloud project you want to use.
-   * @param zone         name of the zone to create the instance in. For example: "us-west3-b"
+   * @param project project ID or project number of the Cloud project you want to use.
+   * @param zone name of the zone to create the instance in. For example: "us-west3-b"
    * @param instanceName name of the new virtual machine (VM) instance.
    * @param snapshotName link to the snapshot you want to use as the source of your boot disk in the
-   *                     form of: "projects/{project_name}/global/snapshots/{snapshot_name}"
+   * form of: "projects/{project_name}/global/snapshots/{snapshot_name}"
    * @return Instance object.
    */
   public static Instance createFromSnapshot(String project, String zone, String instanceName,
@@ -350,11 +346,11 @@ public class CreateInstancesAdvanced {
   /**
    * Create a new VM instance with Debian 10 operating system and data disk created from snapshot.
    *
-   * @param project      project ID or project number of the Cloud project you want to use.
-   * @param zone         name of the zone to create the instance in. For example: "us-west3-b"
+   * @param project project ID or project number of the Cloud project you want to use.
+   * @param zone name of the zone to create the instance in. For example: "us-west3-b"
    * @param instanceName name of the new virtual machine (VM) instance.
    * @param snapshotName link to the snapshot you want to use as the source of your data disk in the
-   *                     form of: "projects/{project_name}/global/snapshots/{snapshot_name}"
+   * form of: "projects/{project_name}/global/snapshots/{snapshot_name}"
    * @return Instance object.
    */
   public static Instance createWithSnapshottedDataDisk(String project, String zone,
@@ -378,14 +374,14 @@ public class CreateInstancesAdvanced {
   /**
    * Create a new VM instance with Debian 10 operating system in specified network and subnetwork.
    *
-   * @param project        project ID or project number of the Cloud project you want to use.
-   * @param zone           name of the zone to create the instance in. For example: "us-west3-b"
-   * @param instanceName   name of the new virtual machine (VM) instance.
-   * @param networkLink    name of the network you want the new instance to use. For example:
-   *                       "global/networks/default" represents the network named "default", which
-   *                       is created automatically for each project.
+   * @param project project ID or project number of the Cloud project you want to use.
+   * @param zone name of the zone to create the instance in. For example: "us-west3-b"
+   * @param instanceName name of the new virtual machine (VM) instance.
+   * @param networkLink name of the network you want the new instance to use. For example:
+   * "global/networks/default" represents the network named "default", which is created
+   * automatically for each project.
    * @param subnetworkLink name of the subnetwork you want the new instance to use. This value uses
-   *                       the following format: "regions/{region}/subnetworks/{subnetwork_name}"
+   * the following format: "regions/{region}/subnetworks/{subnetwork_name}"
    * @return Instance object.
    */
   public static Instance createWithSubnetwork(String project, String zone, String instanceName,

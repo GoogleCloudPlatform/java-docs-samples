@@ -18,15 +18,17 @@ package compute;
 
 // [START compute_firewall_delete]
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.FirewallsClient;
-import com.google.cloud.compute.v1.GlobalOperationsClient;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class DeleteFirewallRule {
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args)
+      throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample
     // project: project ID or project number of the Cloud project you want to use.
     // firewallRuleName: name of the firewall rule you want to delete.
@@ -38,16 +40,16 @@ public class DeleteFirewallRule {
 
   // Deletes a firewall rule from the project.
   public static void deleteFirewallRule(String project, String firewallRuleName)
-      throws IOException {
+      throws IOException, ExecutionException, InterruptedException {
     /* Initialize client that will be used to send requests. This client only needs to be created
        once, and can be reused for multiple requests. After completing all of your requests, call
        the `firewallsClient.close()` method on the client to safely
        clean up any remaining background resources. */
-    try (FirewallsClient firewallsClient = FirewallsClient.create();
-        GlobalOperationsClient operationsClient = GlobalOperationsClient.create()) {
+    try (FirewallsClient firewallsClient = FirewallsClient.create()) {
 
-      Operation operation = firewallsClient.delete(project, firewallRuleName);
-      operationsClient.wait(project, operation.getName());
+      OperationFuture<Operation, Operation> operation = firewallsClient.deleteAsync(project,
+          firewallRuleName);
+      operation.get();
 
       System.out.println("Deleted firewall rule -> " + firewallRuleName);
     }

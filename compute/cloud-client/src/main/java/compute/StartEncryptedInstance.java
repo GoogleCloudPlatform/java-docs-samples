@@ -18,6 +18,7 @@ package compute;
 
 // [START compute_start_enc_instance]
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.CustomerEncryptionKey;
 import com.google.cloud.compute.v1.CustomerEncryptionKeyProtectedDisk;
 import com.google.cloud.compute.v1.GetInstanceRequest;
@@ -27,7 +28,6 @@ import com.google.cloud.compute.v1.InstancesStartWithEncryptionKeyRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.StartWithEncryptionKeyInstanceRequest;
-import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -59,8 +59,7 @@ public class StartEncryptedInstance {
        once, and can be reused for multiple requests. After completing all of your requests, call
        the `instancesClient.close()` method on the client to safely
        clean up any remaining background resources. */
-    try (InstancesClient instancesClient = InstancesClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
 
       GetInstanceRequest getInstanceRequest = GetInstanceRequest.newBuilder()
           .setProject(project)
@@ -93,11 +92,9 @@ public class StartEncryptedInstance {
               .setInstancesStartWithEncryptionKeyRequestResource(startWithEncryptionKeyRequest)
               .build();
 
-      Operation operation = instancesClient.startWithEncryptionKeyCallable()
-          .futureCall(encryptionKeyInstanceRequest)
-          .get();
-
-      Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
+      OperationFuture<Operation, Operation> operation = instancesClient.startWithEncryptionKeyAsync(
+          encryptionKeyInstanceRequest);
+      Operation response = operation.get();
 
       if (response.getStatus() == Status.DONE) {
         System.out.println("Encrypted instance started successfully ! ");

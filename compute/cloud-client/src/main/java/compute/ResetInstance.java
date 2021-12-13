@@ -18,11 +18,11 @@ package compute;
 
 // [START compute_reset_instance]
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ResetInstanceRequest;
-import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -49,8 +49,7 @@ public class ResetInstance {
        once, and can be reused for multiple requests. After completing all of your requests, call
        the `instancesClient.close()` method on the client to safely
        clean up any remaining background resources. */
-    try (InstancesClient instancesClient = InstancesClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
 
       ResetInstanceRequest resetInstanceRequest = ResetInstanceRequest.newBuilder()
           .setProject(project)
@@ -58,11 +57,9 @@ public class ResetInstance {
           .setInstance(instanceName)
           .build();
 
-      Operation operation = instancesClient.resetCallable()
-          .futureCall(resetInstanceRequest)
-          .get();
-
-      Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
+      OperationFuture<Operation, Operation> operation = instancesClient.resetAsync(
+          resetInstanceRequest);
+      Operation response = operation.get();
 
       if (response.getStatus() == Status.DONE) {
         System.out.println("Instance reset successfully ! ");

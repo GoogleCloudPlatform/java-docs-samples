@@ -36,7 +36,7 @@ public class WaitForOperation {
 
   // Waits for the specified operation to complete.
   public static void waitForOperation(String project, Operation operation)
-      throws IOException, InterruptedException {
+      throws IOException {
     try (ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
 
       // Check if the operation hasn't been completed already.
