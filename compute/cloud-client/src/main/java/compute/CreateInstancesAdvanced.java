@@ -72,7 +72,8 @@ public class CreateInstancesAdvanced {
    * instance
    * @param sourceImage source image to use when creating this disk. You must have read access to
    * this disk. This can be one of the publicly available images or an image from one of your
-   * projects. This value uses the following format: "projects/{project_name}/global/images/{image_name}"
+   * projects. This value uses the following format:
+   * "projects/{project_name}/global/images/{image_name}"
    * @return AttachedDisk object configured to be created using the specified image.
    */
   private static AttachedDisk diskFromImage(String diskType, int diskSizeGb, boolean boot,
@@ -141,7 +142,8 @@ public class CreateInstancesAdvanced {
    * @param boot boolean flag indicating whether this disk should be used as a boot disk of an
    * instance
    * @param diskSnapshot disk snapshot to use when creating this disk. You must have read access to
-   * this disk. This value uses the following format: "projects/{project_name}/global/snapshots/{snapshot_name}"
+   * this disk. This value uses the following format:
+   * "projects/{project_name}/global/snapshots/{snapshot_name}"
    * @return AttachedDisk object configured to be created using the specified snapshot.
    */
   private static AttachedDisk diskFromSnapshot(String diskType, int diskSizeGb, boolean boot,
@@ -182,7 +184,8 @@ public class CreateInstancesAdvanced {
    * @param disks a list of compute_v1.AttachedDisk objects describing the disks you want to attach
    * to your new instance.
    * @param machineType machine type of the VM being created. This value uses the following format:
-   * "zones/{zone}/machineTypes/{type_name}". For example: "zones/europe-west3-c/machineTypes/f1-micro"
+   * "zones/{zone}/machineTypes/{type_name}".
+   * For example: "zones/europe-west3-c/machineTypes/f1-micro"
    * @param network name of the network you want the new instance to use. For example:
    * "global/networks/default" represents the network named "default", which is created
    * automatically for each project.
