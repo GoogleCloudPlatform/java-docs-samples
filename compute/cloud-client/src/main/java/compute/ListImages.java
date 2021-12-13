@@ -64,7 +64,7 @@ public class ListImages {
         imageCount++;
         System.out.println(image.getName());
       }
-      System.out.println(String.format("Image count in %s is: %s", project, imageCount));
+      System.out.printf("Image count in %s is: %s", project, imageCount);
     }
   }
   // [END compute_images_list]
