@@ -25,7 +25,7 @@ repositories {
 }
 
 bootRun {
-    mainClass = 'demo.PubSubApplication'
+    mainClassName = 'demo.PubSubApplication'
 }
 
 group = 'demo'
