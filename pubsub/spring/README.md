@@ -34,7 +34,7 @@ This sample requires [Java](https://www.java.com/en/download/) and [Maven](http:
     ```
    
     ```
-    gradle booRun
+    gradle bootRun
     ```
     
     You should observe an incoming message getting sent to `topic-one`, received from `sub-one`, sent to `topic-two`, and received from `topic-two` in the logged messages:
