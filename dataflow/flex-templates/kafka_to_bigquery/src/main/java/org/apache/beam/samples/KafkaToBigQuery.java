@@ -41,8 +41,8 @@ import org.apache.beam.sdk.values.TypeDescriptor;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An Apache Beam pipeline that reads JSON encoded messages from Kafka and
