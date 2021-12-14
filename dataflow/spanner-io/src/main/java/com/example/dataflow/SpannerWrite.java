@@ -29,8 +29,8 @@ import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /*
 This sample demonstrates how to write to a Spanner table.
@@ -128,7 +128,7 @@ public class SpannerWrite {
    *   singer_id\tfirstName\tlastName
    */
   static class ParseSinger extends DoFn<String, Singer> {
-    private static final Logger LOG = LoggerFactory.getLogger(ParseSinger.class);
+    private static final Logger LOG = LogManager.getLogger(ParseSinger.class);
 
     @ProcessElement
     public void processElement(ProcessContext c) {
@@ -149,7 +149,7 @@ public class SpannerWrite {
    *   singer_id\talbumId\talbumTitle
    */
   static class ParseAlbum extends DoFn<String, Album> {
-    private static final Logger LOG = LoggerFactory.getLogger(ParseAlbum.class);
+    private static final Logger LOG = LogManager.getLogger(ParseAlbum.class);
 
     @ProcessElement
     public void processElement(ProcessContext c) {

@@ -41,15 +41,15 @@ import org.apache.beam.sdk.values.TypeDescriptor;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * An Apache Beam pipeline that reads JSON encoded messages from Kafka and
  * writes them to a BigQuery table.
  */
 public class KafkaToBigQuery {
-  private static final Logger LOG = LoggerFactory.getLogger(KafkaToBigQuery.class);
+  private static final Logger LOG = LogManager.getLogger(KafkaToBigQuery.class);
   private static final Gson GSON = new Gson();
 
   public interface Options extends StreamingOptions {
