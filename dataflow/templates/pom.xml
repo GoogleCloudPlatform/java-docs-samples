@@ -40,7 +40,7 @@
     <maven-exec-plugin.version>3.0.0</maven-exec-plugin.version>
     <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
     <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
-    <slf4j.version>1.7.32</slf4j.version>
+    <log4j2.version>2.15.0</log4j2.version>
   </properties>
 
   <repositories>
@@ -131,16 +131,16 @@
   </build>
 
   <dependencies>
-    <!-- slf4j API frontend binding with JUL backend -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j2.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <version>${slf4j.version}</version>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j2.version}</version>
+      <scope>runtime</scope>
     </dependency>
 
     <!-- Apache Beam
