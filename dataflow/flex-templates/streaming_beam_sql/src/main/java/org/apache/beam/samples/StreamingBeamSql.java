@@ -42,17 +42,17 @@ import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.Row;
 import org.apache.beam.sdk.values.TypeDescriptor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An Apache Beam streaming pipeline that reads JSON encoded messages fromPub/Sub,
  * uses Beam SQL to transform the message data, and writes the results to a BigQuery.
  */
 public class StreamingBeamSql {
-  private static final Logger LOG = LoggerFactory.getLogger(StreamingBeamSql.class);
+  private static final Logger LOG = LogManager.getLogger(StreamingBeamSql.class);
   private static final Gson GSON = new Gson();
 
   public interface Options extends StreamingOptions {
