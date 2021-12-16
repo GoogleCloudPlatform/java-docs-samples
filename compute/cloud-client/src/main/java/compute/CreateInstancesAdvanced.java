@@ -84,7 +84,7 @@ public class CreateInstancesAdvanced {
             // Remember to set auto_delete to True if you want the disk to be deleted when
             // you delete your VM instance.
             .setAutoDelete(true)
-            .setType(Type.PERSISTENT)
+            .setType(Type.PERSISTENT.toString())
             .setInitializeParams(
                 AttachedDiskInitializeParams.newBuilder()
                     .setSourceImage(sourceImage)
@@ -120,7 +120,7 @@ public class CreateInstancesAdvanced {
             // Remember to set auto_delete to True if you want the disk to be deleted when
             // you delete your VM instance.
             .setAutoDelete(true)
-            .setType(Type.PERSISTENT)
+            .setType(Type.PERSISTENT.toString())
             .setInitializeParams(
                 AttachedDiskInitializeParams.newBuilder()
                     .setDiskSizeGb(diskSizeGb)
@@ -154,7 +154,7 @@ public class CreateInstancesAdvanced {
             // Remember to set auto_delete to True if you want the disk to be deleted when
             // you delete your VM instance.
             .setAutoDelete(true)
-            .setType(Type.PERSISTENT)
+            .setType(Type.PERSISTENT.toString())
             .setInitializeParams(
                 AttachedDiskInitializeParams.newBuilder()
                     .setSourceSnapshot(diskSnapshot)
