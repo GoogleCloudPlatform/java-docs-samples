@@ -59,7 +59,7 @@ public class CreateFirewallRule {
       // The below firewall rule is created in the default network.
       Firewall firewallRule = Firewall.newBuilder()
           .setName(firewallRuleName)
-          .setDirection(Direction.INGRESS)
+          .setDirection(Direction.INGRESS.toString())
           .addAllowed(
               Allowed.newBuilder().addPorts("80").addPorts("443").setIPProtocol("tcp").build())
           .addSourceRanges("0.0.0.0/0")

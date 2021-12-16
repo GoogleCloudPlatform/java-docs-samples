@@ -61,8 +61,7 @@ public class ListAllInstances {
         if (!zoneInstances.getValue().getInstancesList().isEmpty()) {
           // zoneInstances.getKey() returns the fully qualified address.
           // Hence, strip it to get the zone name only
-          System.out.println(
-              String.format("Instances at %s: ", zone.substring(zone.lastIndexOf('/') + 1)));
+          System.out.printf("Instances at %s: ", zone.substring(zone.lastIndexOf('/') + 1));
           for (Instance instance : zoneInstances.getValue().getInstancesList()) {
             System.out.println(instance.getName());
           }

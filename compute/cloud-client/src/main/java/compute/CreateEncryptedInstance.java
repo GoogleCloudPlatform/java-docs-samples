@@ -59,7 +59,7 @@ public class CreateEncryptedInstance {
        networkName: network interface to associate with the instance. */
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
     String sourceImage = String
-        .format("projects/debian-cloud/global/images/family/%s", "debian-10");
+        .format("projects/debian-cloud/global/images/family/%s", "debian-11");
     long diskSizeGb = 10L;
     String networkName = "default";
 
@@ -73,7 +73,7 @@ public class CreateEncryptedInstance {
           AttachedDisk.newBuilder()
               .setBoot(true)
               .setAutoDelete(true)
-              .setType(Type.PERSISTENT)
+              .setType(Type.PERSISTENT.toString())
               .setInitializeParams(
                   AttachedDiskInitializeParams.newBuilder()
                       .setSourceImage(sourceImage)
