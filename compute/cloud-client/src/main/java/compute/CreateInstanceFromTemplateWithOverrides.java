@@ -70,7 +70,7 @@ public class CreateInstanceFromTemplateWithOverrides {
         InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
 
       String machineType = "n1-standard-1";
-      String newDiskSourceImage = "projects/debian-cloud/global/images/family/debian-10";
+      String newDiskSourceImage = "projects/debian-cloud/global/images/family/debian-11";
 
       // Retrieve an instance template.
       InstanceTemplate instanceTemplate = instanceTemplatesClient
