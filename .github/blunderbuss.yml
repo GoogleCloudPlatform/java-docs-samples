@@ -22,6 +22,10 @@ assign_issues_by:
   - 'api: cloudsql'
   to:
   - GoogleCloudPlatform/infra-db-dpes
+- labels:
+  - 'api: spanner'
+  to:
+  - ansh0l
   
 assign_prs:
   - GoogleCloudPlatform/java-samples-reviewers
