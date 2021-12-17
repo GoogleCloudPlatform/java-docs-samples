@@ -33,29 +33,28 @@ repositories {
     }
 }
 
+def beamVersion = '2.34.0'
+def slf4jVersion = '1.7.32'
 dependencies {
     implementation 'com.github.spotbugs:spotbugs-annotations:4.5.0'
-    implementation 'org.slf4j:slf4j-api:1.7.32'
-    implementation 'org.slf4j:slf4j-jdk14:1.7.32'
-    implementation 'org.apache.beam:beam-sdks-java-core:2.34.0'
-    implementation 'org.apache.beam:beam-sdks-java-io-google-cloud-platform:2.34.0'
-    implementation 'org.apache.beam:beam-examples-java:2.34.0'
-    implementation 'com.github.spotbugs:spotbugs-annotations:4.5.0'
-    runtimeOnly 'org.apache.beam:beam-runners-direct-java:2.34.0'
-    runtimeOnly 'org.apache.beam:beam-runners-google-cloud-dataflow-java:2.34.0'
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    implementation "org.slf4j:slf4j-jdk14:${slf4jVersion}"
+    implementation "org.apache.beam:beam-sdks-java-core:${beamVersion}"
+    implementation "org.apache.beam:beam-sdks-java-io-google-cloud-platform:${beamVersion}"
+    implementation "org.apache.beam:beam-examples-java:${beamVersion}"
+    runtimeOnly "org.apache.beam:beam-runners-direct-java:${beamVersion}"
+    runtimeOnly "org.apache.beam:beam-runners-google-cloud-dataflow-java:${beamVersion}"
     testImplementation 'com.google.api-client:google-api-client:1.32.2'
     testImplementation 'com.google.apis:google-api-services-dataflow:v1b3-rev20210825-1.32.1'
     testImplementation 'com.google.cloud:google-cloud-core:2.3.2'
-    testImplementation 'org.hamcrest:hamcrest-all:1.3'
     testImplementation 'com.google.cloud:google-cloud-storage:2.1.9'
     testImplementation 'com.google.truth:truth:1.1.3'
-    testImplementation 'com.google.cloud:google-cloud-core:2.3.2'
+    testImplementation 'org.hamcrest:hamcrest-all:1.3'
 }
 
 group = 'com.example'
 version = '1.0.0-SNAPSHOT'
 description = 'pubsublite-streaming'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 task execute (type:JavaExec) {
     mainClass = 'examples.PubsubliteToGcs'

@@ -33,23 +33,23 @@ repositories {
     }
 }
 
+def beamVersion = '2.34.0'
+def slf4jVersion = '1.7.32'
 dependencies {
     implementation 'com.github.spotbugs:spotbugs-annotations:4.5.0'
-    implementation 'org.apache.beam:beam-sdks-java-core:2.34.0'
-    implementation 'org.apache.beam:beam-sdks-java-io-google-cloud-platform:2.34.0'
-    implementation 'org.apache.beam:beam-examples-java:2.34.0'
-    implementation 'org.slf4j:slf4j-api:1.7.32'
-    implementation 'org.slf4j:slf4j-jdk14:1.7.32'
-    implementation 'com.github.spotbugs:spotbugs-annotations:4.5.0'
-    runtimeOnly 'org.apache.beam:beam-runners-direct-java:2.34.0'
-    runtimeOnly 'org.apache.beam:beam-runners-google-cloud-dataflow-java:2.34.0'
+    implementation "org.apache.beam:beam-sdks-java-core:${beamVersion}"
+    implementation "org.apache.beam:beam-sdks-java-io-google-cloud-platform:${beamVersion}"
+    implementation "org.apache.beam:beam-examples-java:${beamVersion}"
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    implementation "org.slf4j:slf4j-jdk14:${slf4jVersion}"
+    runtimeOnly "org.apache.beam:beam-runners-direct-java:${beamVersion}"
+    runtimeOnly "org.apache.beam:beam-runners-google-cloud-dataflow-java:${beamVersion}"
     testImplementation 'com.google.cloud:google-cloud-core:2.3.2'
 }
 
 group = 'com.example'
 version = '1.0.0-SNAPSHOT'
 description = 'pubsub-streaming'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 task execute (type:JavaExec) {
     mainClass = 'com.examples.pubsub.streaming.PubSubToGcs'

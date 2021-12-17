@@ -104,12 +104,9 @@ The following example will run a streaming pipeline. It will read messages from 
 + `--runner [optional]`: specifies the runner to run the pipeline, defaults to `DirectRunner`
 + `--windowSize [optional]`: specifies the window size in minutes, defaults to 1
 
-Maven:
+Gradle:
 ```bash
-mvn compile exec:java \
-  -Dexec.mainClass=com.examples.pubsub.streaming.PubSubToGcs \
-  -Dexec.cleanupDaemonThreads=false \
-  -Dexec.args="\
+gradle execute -Dexec.args="\
     --project=$PROJECT_NAME \
     --region=$REGION \
     --inputTopic=projects/$PROJECT_NAME/topics/cron-topic \
@@ -119,9 +116,12 @@ mvn compile exec:java \
     --windowSize=2"
 ```
 
-Gradle:
+Maven:
 ```bash
-gradle execute -Dexec.args="\
+mvn compile exec:java \
+  -Dexec.mainClass=com.examples.pubsub.streaming.PubSubToGcs \
+  -Dexec.cleanupDaemonThreads=false \
+  -Dexec.args="\
     --project=$PROJECT_NAME \
     --region=$REGION \
     --inputTopic=projects/$PROJECT_NAME/topics/cron-topic \
