@@ -14,8 +14,8 @@ be run as a Dataflow job.
     TEMPLATE_PATH="gs://cloud-bigtable-dataflow-templates/generate-workload.json"
     INSTANCE_ID=YOUR-INSTANCE-ID
     TABLE_ID=YOUR-TABLE-ID
-    WORKLOAD_QPS=100 # Optional
     REGION=us-central1
+    WORKLOAD_QPS=100 # Optional
     ```
 
 1. Run this command to start a job from dataflow template:
@@ -26,8 +26,8 @@ be run as a Dataflow job.
     --template-file-gcs-location "$TEMPLATE_PATH" \
     --parameters bigtableInstanceId="$INSTANCE_ID" \
     --parameters bigtableTableId="$TABLE_ID" \
-    --parameters workloadQPS=$WORKLOAD_QPS \
-    --region "$REGION"
+    --region "$REGION" \
+    --parameters workloadQPS=$WORKLOAD_QPS
     ```
 
 1. Make sure to cancel the job once you are done.
@@ -37,6 +37,10 @@ be run as a Dataflow job.
     ```
 
 ### Deploying a template instructions
+
+These instructions are for maintenance of the workload generator, but if you 
+would like to modify this example and deploy the template yourself, you can 
+follow them to do so.
 
 1. Build the project
 
@@ -80,16 +84,17 @@ If you would like to modify this and run it yourself you can use these commands:
    ```
    GOOGLE_CLOUD_PROJECT=your-project-id
    INSTANCE_ID=your-instance-id
-   TABLE_ID=your-table-id WORKLOAD_QPS=100 # Optional
    REGION=us-central1
+   TABLE_ID=your-table-id WORKLOAD_QPS=100 # Optional
    ```
 
 1. Run the command
 
    ```
-   mvn compile exec:java -Dexec.mainClass=WorkloadGenerator /
-   "-Dexec.args=--bigtableInstanceId=$INSTANCE_ID =--bigtableTableId=$TABLE_ID /
-   --runner=dataflow --project=$GOOGLE_CLOUD_PROJECT /
-   --workloadQPS=$WORKLOAD_QPS --region=$REGION"
+   mvn compile exec:java -Dexec.mainClass=WorkloadGenerator \
+   "-Dexec.args=--bigtableInstanceId=$INSTANCE_ID =--bigtableTableId=$TABLE_ID \
+   --runner=dataflow --project=$GOOGLE_CLOUD_PROJECT \
+   --region=$REGION" \
+   --workloadQPS=$WORKLOAD_QPS 
    
    ```

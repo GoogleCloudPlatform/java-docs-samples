@@ -33,6 +33,7 @@ import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Date;
 import java.util.UUID;
 import org.apache.beam.runners.dataflow.DataflowClient;
@@ -92,8 +93,8 @@ public class WorkloadGeneratorTest {
 
   @Before
   public void setupStream() {
-    // bout = new ByteArrayOutputStream();
-    // System.setOut(new PrintStream(bout));
+    bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
   }
 
   @AfterClass
