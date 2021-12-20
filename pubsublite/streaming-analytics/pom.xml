@@ -21,7 +21,7 @@
 
   <groupId>com.example</groupId>
   <artifactId>pubsublite-streaming</artifactId>
-  <version>1.0</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -150,13 +150,13 @@
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
       <version>1.32.2</version>
-      <scope>runtime</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-dataflow</artifactId>
-      <version>v1b3-rev20210408-1.31.0</version>
-      <scope>runtime</scope>
+      <version>v1b3-rev20210825-1.32.1</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
