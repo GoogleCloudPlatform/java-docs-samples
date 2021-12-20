@@ -2,7 +2,7 @@
 
 This is a tool to perform a high number of reads to a Bigtable table for
 demonstration purposes. It is deployed as a Dataflow template, so it can easily
-be run.
+be run as a Dataflow job.
 
 ## Template
 
