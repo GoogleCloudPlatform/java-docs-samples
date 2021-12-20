@@ -36,7 +36,7 @@ be run as a Dataflow job.
     gcloud dataflow jobs cancel $JOB_NAME
     ```
 
-### Deploying instructions
+### Deploying a template instructions
 
 1. Build the project
 
