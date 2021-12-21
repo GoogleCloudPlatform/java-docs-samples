@@ -85,7 +85,8 @@ If you would like to modify this and run it yourself you can use these commands:
    GOOGLE_CLOUD_PROJECT=your-project-id
    INSTANCE_ID=your-instance-id
    REGION=us-central1
-   TABLE_ID=your-table-id WORKLOAD_QPS=100 # Optional
+   TABLE_ID=your-table-id 
+   WORKLOAD_QPS=100 # Optional
    ```
 
 1. Run the command
@@ -96,5 +97,4 @@ If you would like to modify this and run it yourself you can use these commands:
    --runner=dataflow --project=$GOOGLE_CLOUD_PROJECT \
    --region=$REGION" \
    --workloadQPS=$WORKLOAD_QPS 
-   
    ```
