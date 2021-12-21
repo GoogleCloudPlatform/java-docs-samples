@@ -29,8 +29,8 @@ import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /*
 This sample demonstrates how to write to a Spanner table.
@@ -99,7 +99,8 @@ public class SpannerWrite {
     String firstName;
     String lastName;
 
-    Singer() {}
+    Singer() {
+    }
 
     Singer(long singerId, String firstName, String lastName) {
       this.singerId = singerId;
@@ -114,7 +115,8 @@ public class SpannerWrite {
     long albumId;
     String albumTitle;
 
-    Album() {}
+    Album() {
+    }
 
     Album(long singerId, long albumId, String albumTitle) {
       this.singerId = singerId;
@@ -124,11 +126,12 @@ public class SpannerWrite {
   }
 
   /**
-   * Parses each tab-delimited line into a Singer object. The line format is the following:
-   *   singer_id\tfirstName\tlastName
+   * Parses each tab-delimited line into a Singer object. The line format is the
+   * following:
+   * singer_id\tfirstName\tlastName
    */
   static class ParseSinger extends DoFn<String, Singer> {
-    private static final Logger LOG = LogManager.getLogger(ParseSinger.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ParseSinger.class);
 
     @ProcessElement
     public void processElement(ProcessContext c) {
@@ -145,11 +148,12 @@ public class SpannerWrite {
   }
 
   /**
-   * Parses each tab-delimited line into an Album object. The line format is the following:
-   *   singer_id\talbumId\talbumTitle
+   * Parses each tab-delimited line into an Album object. The line format is the
+   * following:
+   * singer_id\talbumId\talbumTitle
    */
   static class ParseAlbum extends DoFn<String, Album> {
-    private static final Logger LOG = LogManager.getLogger(ParseAlbum.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ParseAlbum.class);
 
     @ProcessElement
     public void processElement(ProcessContext c) {
