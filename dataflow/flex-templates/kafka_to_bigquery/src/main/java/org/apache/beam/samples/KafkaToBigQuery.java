@@ -39,17 +39,17 @@ import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.TypeDescriptor;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An Apache Beam pipeline that reads JSON encoded messages from Kafka and
  * writes them to a BigQuery table.
  */
 public class KafkaToBigQuery {
-  private static final Logger LOG = LogManager.getLogger(KafkaToBigQuery.class);
+  private static final Logger LOG = LoggerFactory.getLogger(KafkaToBigQuery.class);
   private static final Gson GSON = new Gson();
 
   public interface Options extends StreamingOptions {
@@ -59,8 +59,8 @@ public class KafkaToBigQuery {
 
     void setInputTopic(String value);
 
-    @Description(
-        "BigQuery table to write to, in the form 'project:dataset.table' or 'dataset.table'.")
+    @Description("BigQuery table to write to, in the form "
+        + "'project:dataset.table' or 'dataset.table'.")
     @Default.String("beam_samples.streaming_beam_sql")
     String getOutputTable();
 
