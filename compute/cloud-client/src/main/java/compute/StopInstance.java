@@ -18,11 +18,11 @@ package compute;
 
 // [START compute_stop_instance]
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.StopInstanceRequest;
-import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -49,8 +49,7 @@ public class StopInstance {
        once, and can be reused for multiple requests. After completing all of your requests, call
        the `instancesClient.close()` method on the client to safely
        clean up any remaining background resources. */
-    try (InstancesClient instancesClient = InstancesClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
 
       StopInstanceRequest stopInstanceRequest = StopInstanceRequest.newBuilder()
           .setProject(project)
@@ -58,11 +57,9 @@ public class StopInstance {
           .setInstance(instanceName)
           .build();
 
-      Operation operation = instancesClient.stopCallable()
-          .futureCall(stopInstanceRequest)
-          .get();
-
-      Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
+      OperationFuture<Operation, Operation> operation = instancesClient.stopAsync(
+          stopInstanceRequest);
+      Operation response = operation.get();
 
       if (response.getStatus() == Status.DONE) {
         System.out.println("Instance stopped successfully ! ");

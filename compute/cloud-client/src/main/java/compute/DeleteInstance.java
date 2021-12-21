@@ -18,10 +18,10 @@ package compute;
 
 // [START compute_instances_delete]
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.DeleteInstanceRequest;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -44,10 +44,9 @@ public class DeleteInstance {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `instancesClient.close()` method on the client to safely
     // clean up any remaining background resources.
-    try (InstancesClient instancesClient = InstancesClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
 
-      System.out.println(String.format("Deleting instance: %s ", instanceName));
+      System.out.printf("Deleting instance: %s ", instanceName);
 
       // Describe which instance is to be deleted.
       DeleteInstanceRequest deleteInstanceRequest = DeleteInstanceRequest.newBuilder()
@@ -55,11 +54,10 @@ public class DeleteInstance {
           .setZone(zone)
           .setInstance(instanceName).build();
 
-      Operation operation = instancesClient.deleteCallable().futureCall(deleteInstanceRequest)
-          .get();
-
+      OperationFuture<Operation, Operation> operation = instancesClient.deleteAsync(
+          deleteInstanceRequest);
       // Wait for the operation to complete.
-      Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
+      Operation response = operation.get();
 
       if (response.hasError()) {
         System.out.println("Instance deletion failed ! ! " + response);

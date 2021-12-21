@@ -94,7 +94,7 @@ fi
 
 btlr_args=(
     "run"
-    "--max-cmd-duration=20m"
+    "--max-cmd-duration=40m"
     "**/pom.xml"
 )
 

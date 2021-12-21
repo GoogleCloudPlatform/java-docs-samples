@@ -23,13 +23,14 @@ package compute;
 // [START compute_usage_report_get]
 // [START compute_usage_report_disable]
 
-import com.google.cloud.compute.v1.GlobalOperationsClient;
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Project;
 import com.google.cloud.compute.v1.ProjectsClient;
 import com.google.cloud.compute.v1.SetUsageExportBucketProjectRequest;
 import com.google.cloud.compute.v1.UsageExportLocation;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 // [END compute_usage_report_disable]
@@ -38,7 +39,8 @@ import java.util.concurrent.TimeUnit;
 
 public class SetUsageExportBucket {
 
-  public static void main(String[] args) throws IOException, InterruptedException {
+  public static void main(String[] args)
+      throws IOException, InterruptedException, ExecutionException {
     // TODO(developer): Replace these variables before running the sample.
     // TODO(developer): Create a Google Cloud Storage bucket.
     // bucketName: Cloud Storage Bucket used to store Compute Engine usage reports.
@@ -57,14 +59,13 @@ public class SetUsageExportBucket {
   // This sample presents how to interpret the default value for the report name prefix parameter.
   public static void setUsageExportBucket(String project, String bucketName,
       String reportNamePrefix)
-      throws IOException, InterruptedException {
+      throws IOException, InterruptedException, ExecutionException {
 
     // bucketName: Cloud Storage Bucket used to store Compute Engine usage reports.
     // An existing Google Cloud Storage bucket is required.
     // reportNamePrefix: Prefix of the name of the usage report that would
     // store Google Compute Engine data.
-    try (ProjectsClient projectsClient = ProjectsClient.create();
-        GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
+    try (ProjectsClient projectsClient = ProjectsClient.create()) {
 
       // Initialize UsageExportLocation object with provided bucket name and report name prefix.
       UsageExportLocation usageExportLocation = UsageExportLocation.newBuilder()
@@ -81,14 +82,14 @@ public class SetUsageExportBucket {
       }
 
       // Set the usage export location.
-      Operation operation = projectsClient
-          .setUsageExportBucket(SetUsageExportBucketProjectRequest.newBuilder()
+      OperationFuture<Operation, Operation> operation = projectsClient
+          .setUsageExportBucketAsync(SetUsageExportBucketProjectRequest.newBuilder()
               .setProject(project)
               .setUsageExportLocationResource(usageExportLocation)
               .build());
 
       // Wait for the operation to complete.
-      Operation response = globalOperationsClient.wait(project, operation.getName());
+      Operation response = operation.get();
 
       if (response.hasError()) {
         System.out.println("Setting usage export bucket failed ! ! " + response);
@@ -142,23 +143,22 @@ public class SetUsageExportBucket {
 
   // Disable Compute Engine usage export bucket for the Cloud project.
   public static boolean disableUsageExportBucket(String project)
-      throws IOException, InterruptedException {
+      throws IOException, InterruptedException, ExecutionException {
 
-    try (ProjectsClient projectsClient = ProjectsClient.create();
-        GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
+    try (ProjectsClient projectsClient = ProjectsClient.create()) {
 
       // Initialize UsageExportLocation object with empty builder to disable usage reports.
       UsageExportLocation usageExportLocation = UsageExportLocation.newBuilder().build();
 
       // Disable the usage export location.
-      Operation operation = projectsClient
-          .setUsageExportBucket(SetUsageExportBucketProjectRequest.newBuilder()
+      OperationFuture<Operation, Operation> operation = projectsClient
+          .setUsageExportBucketAsync(SetUsageExportBucketProjectRequest.newBuilder()
               .setProject(project)
               .setUsageExportLocationResource(usageExportLocation)
               .build());
 
       // Wait for the operation to complete.
-      Operation response = globalOperationsClient.wait(project, operation.getName());
+      Operation response = operation.get();
 
       if (response.hasError()) {
         System.out.println("Disable usage export bucket failed ! ! " + response);

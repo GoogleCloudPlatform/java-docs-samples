@@ -19,12 +19,12 @@ package compute;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.FirewallsClient;
-import com.google.cloud.compute.v1.GlobalOperationsClient;
 import com.google.cloud.compute.v1.Image;
 import com.google.cloud.compute.v1.ImagesClient;
 import com.google.cloud.compute.v1.Instance;
@@ -34,7 +34,6 @@ import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
 import com.google.cloud.compute.v1.UsageExportLocation;
-import com.google.cloud.compute.v1.ZoneOperationsClient;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
@@ -91,95 +90,6 @@ public class SnippetsIT {
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
         .that(System.getenv(envVarName)).isNotEmpty();
-  }
-
-  private static Image getActiveDebian()
-      throws IOException, InterruptedException, ExecutionException {
-    try (ImagesClient imagesClient = ImagesClient.create()) {
-      Image image = imagesClient.getFromFamily("debian-cloud", "debian-10");
-      return image;
-    }
-  }
-
-  private static Disk createSourceDisk()
-      throws IOException, InterruptedException, ExecutionException {
-    try (DisksClient disksClient = DisksClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
-
-      Disk disk = Disk.newBuilder()
-          .setSourceImage(getActiveDebian().getSelfLink())
-          .setName("test-disk-" + UUID.randomUUID())
-          .build();
-
-      Operation operation = disksClient.insert(PROJECT_ID, ZONE, disk);
-      // Wait for the operation to complete.
-      Operation response = zoneOperationsClient.wait(PROJECT_ID, ZONE, operation.getName());
-      return disksClient.get(PROJECT_ID, ZONE, disk.getName());
-    }
-  }
-
-  private static void deleteDisk(Disk disk)
-      throws IOException, InterruptedException, ExecutionException {
-    try (DisksClient disksClient = DisksClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
-      Operation operation = disksClient.delete(PROJECT_ID, ZONE, disk.getName());
-      Operation response = zoneOperationsClient.wait(PROJECT_ID, ZONE, operation.getName());
-      return;
-    }
-  }
-
-  private static Snapshot createSnapshot(Disk srcDisk)
-      throws IOException, InterruptedException, ExecutionException {
-    try (SnapshotsClient snapshotsClient = SnapshotsClient.create();
-        DisksClient disksClient = DisksClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
-
-      Snapshot snapshot = Snapshot.newBuilder()
-          .setName("test-snap-" + UUID.randomUUID())
-          .build();
-
-      Operation operation = disksClient.createSnapshot(PROJECT_ID, ZONE, srcDisk.getName(),
-          snapshot);
-      Operation response = zoneOperationsClient.wait(PROJECT_ID, ZONE, operation.getName());
-      return snapshotsClient.get(PROJECT_ID, snapshot.getName());
-    }
-  }
-
-  private static void deleteSnapshot(Snapshot snapshot)
-      throws IOException, InterruptedException, ExecutionException {
-    try (SnapshotsClient snapshotsClient = SnapshotsClient.create();
-        GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
-      Operation operation = snapshotsClient.delete(PROJECT_ID, snapshot.getName());
-      Operation response = globalOperationsClient.wait(PROJECT_ID, operation.getName());
-      return;
-    }
-  }
-
-  private static Image createImage(Disk srcDisk)
-      throws IOException, InterruptedException, ExecutionException {
-    try (ImagesClient imagesClient = ImagesClient.create();
-        DisksClient disksClient = DisksClient.create();
-        GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
-
-      Image image = Image.newBuilder()
-          .setName("test-img-" + UUID.randomUUID())
-          .setSourceDisk(srcDisk.getSelfLink())
-          .build();
-
-      Operation operation = imagesClient.insert(PROJECT_ID, image);
-      Operation response = globalOperationsClient.wait(PROJECT_ID, operation.getName());
-      return imagesClient.get(PROJECT_ID, image.getName());
-    }
-  }
-
-  private static void deleteImage(Image image)
-      throws IOException, InterruptedException, ExecutionException {
-    try (ImagesClient imagesClient = ImagesClient.create();
-        GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
-      Operation operation = imagesClient.delete(PROJECT_ID, image.getName());
-      Operation response = globalOperationsClient.wait(PROJECT_ID, operation.getName());
-      return;
-    }
   }
 
   @BeforeClass
@@ -278,6 +188,89 @@ public class SnippetsIT {
     System.setOut(null);
   }
 
+  private static Image getActiveDebian()
+      throws IOException {
+    try (ImagesClient imagesClient = ImagesClient.create()) {
+      return imagesClient.getFromFamily("debian-cloud", "debian-11");
+    }
+  }
+
+  private static Disk createSourceDisk()
+      throws IOException, ExecutionException, InterruptedException {
+    try (DisksClient disksClient = DisksClient.create()) {
+
+      Disk disk = Disk.newBuilder()
+          .setSourceImage(getActiveDebian().getSelfLink())
+          .setName("test-disk-" + UUID.randomUUID())
+          .build();
+
+      OperationFuture<Operation, Operation> operation = disksClient.insertAsync(PROJECT_ID, ZONE,
+          disk);
+      // Wait for the operation to complete.
+      operation.get();
+      return disksClient.get(PROJECT_ID, ZONE, disk.getName());
+    }
+  }
+
+  private static void deleteDisk(Disk disk)
+      throws IOException, InterruptedException, ExecutionException {
+    try (DisksClient disksClient = DisksClient.create()) {
+      OperationFuture<Operation, Operation> operation = disksClient.deleteAsync(PROJECT_ID, ZONE,
+          disk.getName());
+      operation.get();
+    }
+  }
+
+  private static Snapshot createSnapshot(Disk srcDisk)
+      throws IOException, InterruptedException, ExecutionException {
+    try (SnapshotsClient snapshotsClient = SnapshotsClient.create();
+        DisksClient disksClient = DisksClient.create()) {
+
+      Snapshot snapshot = Snapshot.newBuilder()
+          .setName("test-snap-" + UUID.randomUUID())
+          .build();
+
+      OperationFuture<Operation, Operation> operation = disksClient.createSnapshotAsync(PROJECT_ID,
+          ZONE, srcDisk.getName(),
+          snapshot);
+      operation.get();
+      return snapshotsClient.get(PROJECT_ID, snapshot.getName());
+    }
+  }
+
+  private static void deleteSnapshot(Snapshot snapshot)
+      throws IOException, InterruptedException, ExecutionException {
+    try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
+      OperationFuture<Operation, Operation> operation = snapshotsClient.deleteAsync(PROJECT_ID,
+          snapshot.getName());
+      operation.get();
+    }
+  }
+
+  private static Image createImage(Disk srcDisk)
+      throws IOException, InterruptedException, ExecutionException {
+    try (ImagesClient imagesClient = ImagesClient.create()) {
+
+      Image image = Image.newBuilder()
+          .setName("test-img-" + UUID.randomUUID())
+          .setSourceDisk(srcDisk.getSelfLink())
+          .build();
+
+      OperationFuture<Operation, Operation> operation = imagesClient.insertAsync(PROJECT_ID, image);
+      operation.get();
+      return imagesClient.get(PROJECT_ID, image.getName());
+    }
+  }
+
+  private static void deleteImage(Image image)
+      throws IOException, InterruptedException, ExecutionException {
+    try (ImagesClient imagesClient = ImagesClient.create()) {
+      OperationFuture<Operation, Operation> operation = imagesClient.deleteAsync(PROJECT_ID,
+          image.getName());
+      operation.get();
+    }
+  }
+
   public static String getBase64EncodedKey() {
     String sampleSpace = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     StringBuilder stringBuilder = new StringBuilder();
@@ -299,7 +292,8 @@ public class SnippetsIT {
     System.setOut(null);
   }
 
-  public static void testPatchFirewallRule() throws IOException, InterruptedException {
+  public static void testPatchFirewallRule()
+      throws IOException, InterruptedException, ExecutionException {
     try (FirewallsClient client = FirewallsClient.create()) {
       ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
       System.setOut(new PrintStream(stdOut));
@@ -313,7 +307,7 @@ public class SnippetsIT {
   }
 
   public static void deleteFirewallRuleIfNotDeletedByGceEnforcer(String projectId,
-      String firewallRule) throws IOException {
+      String firewallRule) throws IOException, ExecutionException, InterruptedException {
     /* (**INTERNAL method**)
       This method will prevent test failure if the firewall rule was auto-deleted by GCE Enforcer.
       (Feel free to remove this method if not running on a Google-owned project.)
@@ -323,14 +317,12 @@ public class SnippetsIT {
       DeleteFirewallRule.deleteFirewallRule(projectId, firewallRule);
     } catch (NotFoundException e) {
       System.out.println("Rule already deleted ! ");
-      return;
     } catch (InvalidArgumentException e) {
       System.out.println("Rule is not ready (probably being deleted).");
-      return;
     }
   }
 
-  public static Status getInstanceStatus(String instanceName) throws IOException {
+  public static String getInstanceStatus(String instanceName) throws IOException {
     try (InstancesClient instancesClient = InstancesClient.create()) {
       Instance response = instancesClient.get(PROJECT_ID, ZONE, instanceName);
       return response.getStatus();
@@ -352,57 +344,57 @@ public class SnippetsIT {
   @Test
   public void testCreateInstance() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME);
-    Assert.assertSame(response, Status.RUNNING);
+    String response = getInstanceStatus(MACHINE_NAME);
+    Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
   public void testCreateEncryptedInstance() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_ENCRYPTED);
-    Assert.assertSame(response, Status.RUNNING);
+    String response = getInstanceStatus(MACHINE_NAME_ENCRYPTED);
+    Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
   public void testCreatePublicImage() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_PUBLIC_IMAGE);
-    Assert.assertSame(response, Status.RUNNING);
+    String response = getInstanceStatus(MACHINE_NAME_PUBLIC_IMAGE);
+    Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
   public void testCreateCustomImage() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_CUSTOM_IMAGE);
-    Assert.assertSame(response, Status.RUNNING);
+    String response = getInstanceStatus(MACHINE_NAME_CUSTOM_IMAGE);
+    Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
   public void testCreateAdditionalDisk() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_ADDITIONAL_DISK);
-    Assert.assertSame(response, Status.RUNNING);
+    String response = getInstanceStatus(MACHINE_NAME_ADDITIONAL_DISK);
+    Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
   public void testCreateFromSnapshot() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_SNAPSHOT);
-    Assert.assertSame(response, Status.RUNNING);
+    String response = getInstanceStatus(MACHINE_NAME_SNAPSHOT);
+    Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
   public void testCreateFromSnapshotAdditional() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_SNAPSHOT_ADDITIONAL);
-    Assert.assertSame(response, Status.RUNNING);
+    String response = getInstanceStatus(MACHINE_NAME_SNAPSHOT_ADDITIONAL);
+    Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
   public void testCreateInSubnetwork() throws IOException {
     // Check if the instance was successfully created during the setup.
-    Status response = getInstanceStatus(MACHINE_NAME_SUBNETWORK);
-    Assert.assertSame(response, Status.RUNNING);
+    String response = getInstanceStatus(MACHINE_NAME_SUBNETWORK);
+    Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
@@ -424,18 +416,19 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testWaitForOperation() throws IOException, InterruptedException {
+  public void testWaitForOperation() throws IOException, InterruptedException, ExecutionException {
     // Construct a delete request and get the operation instance.
     InstancesClient instancesClient = InstancesClient.create();
-    Operation operation = instancesClient.delete(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
-
-    // Pass the operation ID and wait for it to complete.
-    compute.WaitForOperation.waitForOperation(PROJECT_ID, operation);
+    OperationFuture<Operation, Operation> operation = instancesClient.deleteAsync(PROJECT_ID, ZONE,
+        MACHINE_NAME_WAIT_FOR_OP);
+    // Wait for the operation to complete.
+    operation.get();
     assertThat(stdOut.toString().contains("Operation Status: DONE"));
   }
 
   @Test
-  public void testSetUsageBucketExportCustomPrefix() throws IOException, InterruptedException {
+  public void testSetUsageBucketExportCustomPrefix()
+      throws IOException, InterruptedException, ExecutionException {
     // Set custom Report Name Prefix.
     String customPrefix = "my-custom-prefix";
     compute.SetUsageExportBucket.setUsageExportBucket(PROJECT_ID, BUCKET_NAME, customPrefix);
@@ -481,54 +474,54 @@ public class SnippetsIT {
   @Test
   public void testInstanceOperations()
       throws IOException, ExecutionException, InterruptedException {
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME), Status.RUNNING);
+    Assert.assertEquals(getInstanceStatus(MACHINE_NAME), Status.RUNNING.toString());
 
     // Stopping the instance.
     StopInstance.stopInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     // Wait for the operation to complete. Setting timeout to 3 mins.
     LocalDateTime endTime = LocalDateTime.now().plusMinutes(3);
-    while (getInstanceStatus(MACHINE_NAME) == Status.STOPPING
+    while (getInstanceStatus(MACHINE_NAME).equalsIgnoreCase(Status.STOPPING.toString())
         && LocalDateTime.now().isBefore(endTime)) {
       TimeUnit.SECONDS.sleep(5);
     }
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME), Status.TERMINATED);
+    Assert.assertEquals(getInstanceStatus(MACHINE_NAME), Status.TERMINATED.toString());
 
     // Starting the instance.
     StartInstance.startInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     // Wait for the operation to complete. Setting timeout to 3 mins.
     endTime = LocalDateTime.now().plusMinutes(3);
-    while (getInstanceStatus(MACHINE_NAME) != Status.RUNNING
+    while (getInstanceStatus(MACHINE_NAME).equalsIgnoreCase(Status.RUNNING.toString())
         && LocalDateTime.now().isBefore(endTime)) {
       TimeUnit.SECONDS.sleep(5);
     }
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME), Status.RUNNING);
+    Assert.assertEquals(getInstanceStatus(MACHINE_NAME), Status.RUNNING.toString());
   }
 
   @Test
   public void testEncryptedInstanceOperations()
       throws IOException, ExecutionException, InterruptedException {
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.RUNNING);
+    Assert.assertEquals(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.RUNNING.toString());
 
     // Stopping the encrypted instance.
     StopInstance.stopInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED);
     // Wait for the operation to complete. Setting timeout to 3 mins.
     LocalDateTime endTime = LocalDateTime.now().plusMinutes(3);
-    while (getInstanceStatus(MACHINE_NAME_ENCRYPTED) == Status.STOPPING
+    while (getInstanceStatus(MACHINE_NAME_ENCRYPTED).equalsIgnoreCase(Status.STOPPING.toString())
         && LocalDateTime.now().isBefore(endTime)) {
       TimeUnit.SECONDS.sleep(5);
     }
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.TERMINATED);
+    Assert.assertEquals(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.TERMINATED.toString());
 
     // Starting the encrypted instance.
     StartEncryptedInstance
         .startEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
     // Wait for the operation to complete. Setting timeout to 3 mins.
     endTime = LocalDateTime.now().plusMinutes(3);
-    while (getInstanceStatus(MACHINE_NAME_ENCRYPTED) != Status.RUNNING
+    while (getInstanceStatus(MACHINE_NAME_ENCRYPTED).equalsIgnoreCase(Status.RUNNING.toString())
         && LocalDateTime.now().isBefore(endTime)) {
       TimeUnit.SECONDS.sleep(5);
     }
-    Assert.assertSame(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.RUNNING);
+    Assert.assertEquals(getInstanceStatus(MACHINE_NAME_ENCRYPTED), Status.RUNNING.toString());
   }
 
 }

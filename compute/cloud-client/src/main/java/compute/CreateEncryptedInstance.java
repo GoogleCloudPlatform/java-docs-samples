@@ -18,6 +18,7 @@ package compute;
 
 // [START compute_instances_create_encrypted]
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDisk.Type;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
@@ -27,7 +28,6 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -59,7 +59,7 @@ public class CreateEncryptedInstance {
        networkName: network interface to associate with the instance. */
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
     String sourceImage = String
-        .format("projects/debian-cloud/global/images/family/%s", "debian-10");
+        .format("projects/debian-cloud/global/images/family/%s", "debian-11");
     long diskSizeGb = 10L;
     String networkName = "default";
 
@@ -67,14 +67,13 @@ public class CreateEncryptedInstance {
        once, and can be reused for multiple requests. After completing all of your requests, call
        the `instancesClient.close()` method on the client to safely
        clean up any remaining background resources. */
-    try (InstancesClient instancesClient = InstancesClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
       // Instance creation requires at least one persistent disk and one network interface.
       AttachedDisk disk =
           AttachedDisk.newBuilder()
               .setBoot(true)
               .setAutoDelete(true)
-              .setType(Type.PERSISTENT)
+              .setType(Type.PERSISTENT.toString())
               .setInitializeParams(
                   AttachedDiskInitializeParams.newBuilder()
                       .setSourceImage(sourceImage)
@@ -99,7 +98,7 @@ public class CreateEncryptedInstance {
               .addNetworkInterfaces(networkInterface)
               .build();
 
-      System.out.println(String.format("Creating instance: %s at %s ", instanceName, zone));
+      System.out.printf("Creating instance: %s at %s ", instanceName, zone);
 
       // Insert the instance in the specified project and zone.
       InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
@@ -108,13 +107,11 @@ public class CreateEncryptedInstance {
           .setInstanceResource(instanceResource)
           .build();
 
-      Operation operation =
-          instancesClient.insertCallable()
-              .futureCall(insertInstanceRequest)
-              .get();
+      OperationFuture<Operation, Operation> operation =
+          instancesClient.insertAsync(insertInstanceRequest);
 
       // Wait for the operation to complete.
-      Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
+      Operation response = operation.get();
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);

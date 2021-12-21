@@ -23,7 +23,7 @@
     <dependency>
       <artifactId>google-cloud-compute</artifactId>
       <groupId>com.google.cloud</groupId>
-      <version>1.3.0-alpha</version>
+      <version>1.6.0-beta</version>
     </dependency>
     <dependency>
       <artifactId>google-cloud-storage</artifactId>
@@ -63,7 +63,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>24.0.0</version>
+        <version>24.1.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
