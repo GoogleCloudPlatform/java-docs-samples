@@ -48,114 +48,112 @@ import org.joda.time.Duration;
 import org.joda.time.Instant;
 
 /**
- * An Apache Beam streaming pipeline that reads JSON encoded messages
- * fromPub/Sub,
- * uses Beam SQL to transform the message data, and writes the results to a
- * BigQuery.
+ * An Apache Beam streaming pipeline that reads JSON encoded messages fromPub/Sub,
+ * uses Beam SQL to transform the message data, and writes the results to a BigQuery.
  */
 public class StreamingBeamSql {
-    private static final Logger LOG = LoggerFactory.getLogger(StreamingBeamSql.class);
-    private static final Gson GSON = new Gson();
+  private static final Logger LOG = LoggerFactory.getLogger(StreamingBeamSql.class);
+  private static final Gson GSON = new Gson();
 
-    public interface Options extends StreamingOptions {
-        @Description("Pub/Sub subscription to read from.")
-        @Validation.Required
-        String getInputSubscription();
+  public interface Options extends StreamingOptions {
+    @Description("Pub/Sub subscription to read from.")
+    @Validation.Required
+    String getInputSubscription();
 
-        void setInputSubscription(String value);
+    void setInputSubscription(String value);
 
-        @Description("BigQuery table to write to, in the form "
-                + "'project:dataset.table' or 'dataset.table'.")
-        @Default.String("beam_samples.streaming_beam_sql")
-        String getOutputTable();
+    @Description("BigQuery table to write to, in the form "
+        + "'project:dataset.table' or 'dataset.table'.")
+    @Default.String("beam_samples.streaming_beam_sql")
+    String getOutputTable();
 
-        void setOutputTable(String value);
-    }
+    void setOutputTable(String value);
+  }
 
-    @DefaultCoder(AvroCoder.class)
-    private static class PageReviewMessage {
-        @Nullable
-        String url;
-        @Nullable
-        String review;
-    }
+  @DefaultCoder(AvroCoder.class)
+  private static class PageReviewMessage {
+    @Nullable
+    String url;
+    @Nullable
+    String review;
+  }
 
-    public static void main(final String[] args) {
-        Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
-        options.setStreaming(true);
+  public static void main(final String[] args) {
+    Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
+    options.setStreaming(true);
 
-        var project = options.as(GcpOptions.class).getProject();
-        var subscription = ProjectSubscriptionName
-                .of(project, options.getInputSubscription()).toString();
+    var project = options.as(GcpOptions.class).getProject();
+    var subscription = ProjectSubscriptionName
+        .of(project, options.getInputSubscription()).toString();
 
-        var schema = Schema.builder()
-                .addStringField("url")
-                .addDoubleField("page_score")
-                .addDateTimeField("processing_time")
-                .build();
+    var schema = Schema.builder()
+        .addStringField("url")
+        .addDoubleField("page_score")
+        .addDateTimeField("processing_time")
+        .build();
 
-        var pipeline = Pipeline.create(options);
-        pipeline
-                // Read, parse, and validate messages from Pub/Sub.
-                .apply("Read messages from Pub/Sub", PubsubIO.readStrings().fromSubscription(subscription))
-                .apply("Parse JSON into SQL rows", MapElements.into(TypeDescriptor.of(Row.class))
-                        .via(message -> {
-                            // This is a good place to add error handling.
-                            // The first transform should act as a validation layer to make sure
-                            // that any data coming to the processing pipeline must be valid.
-                            // See `MapElements.MapWithFailures` for more details.
-                            LOG.info("message: {}", message);
-                            var msg = GSON.fromJson(message, PageReviewMessage.class);
-                            return Row.withSchema(schema).addValues(
-                                    msg.url, // row url
-                                    msg.review.equals("positive") ? 1.0 : 0.0, // row page_score
-                                    new Instant() // row processing_time
-                            ).build();
-                        }))
-                .setRowSchema(schema) // make sure to set the row schema for the PCollection
+    var pipeline = Pipeline.create(options);
+    pipeline
+        // Read, parse, and validate messages from Pub/Sub.
+        .apply("Read messages from Pub/Sub", PubsubIO.readStrings().fromSubscription(subscription))
+        .apply("Parse JSON into SQL rows", MapElements.into(TypeDescriptor.of(Row.class))
+            .via(message -> {
+              // This is a good place to add error handling.
+              // The first transform should act as a validation layer to make sure
+              // that any data coming to the processing pipeline must be valid.
+              // See `MapElements.MapWithFailures` for more details.
+              LOG.info("message: {}", message);
+              var msg = GSON.fromJson(message, PageReviewMessage.class);
+              return Row.withSchema(schema).addValues(
+                  msg.url,                                    // row url
+                  msg.review.equals("positive") ? 1.0 : 0.0,  // row page_score
+                  new Instant()                               // row processing_time
+              ).build();
+            })).setRowSchema(schema) // make sure to set the row schema for the PCollection
 
-                // Add timestamps and bundle elements into windows.
-                .apply("Add processing time", WithTimestamps
-                        .of((row) -> row.getDateTime("processing_time").toInstant()))
-                .apply("Fixed-size windows", Window.into(FixedWindows.of(Duration.standardMinutes(1))))
+        // Add timestamps and bundle elements into windows.
+        .apply("Add processing time", WithTimestamps
+            .of((row) -> row.getDateTime("processing_time").toInstant()))
+        .apply("Fixed-size windows", Window.into(FixedWindows.of(Duration.standardMinutes(1))))
 
-                // Apply a SQL query for every window of elements.
-                .apply("Run Beam SQL query", SqlTransform.query(
-                        "SELECT "
-                                + "  url, "
-                                + "  COUNT(page_score) AS num_reviews, "
-                                + "  AVG(page_score) AS score, "
-                                + "  MIN(processing_time) AS first_date, "
-                                + "  MAX(processing_time) AS last_date "
-                                + "FROM PCOLLECTION "
-                                + "GROUP BY url"))
+        // Apply a SQL query for every window of elements.
+        .apply("Run Beam SQL query", SqlTransform.query(
+            "SELECT "
+                + "  url, "
+                + "  COUNT(page_score) AS num_reviews, "
+                + "  AVG(page_score) AS score, "
+                + "  MIN(processing_time) AS first_date, "
+                + "  MAX(processing_time) AS last_date "
+                + "FROM PCOLLECTION "
+                + "GROUP BY url"
+        ))
 
-                // Convert the SQL Rows into BigQuery TableRows and write them to BigQuery.
-                .apply("Convert to BigQuery TableRow", MapElements.into(TypeDescriptor.of(TableRow.class))
-                        .via(row -> {
-                            LOG.info("rating summary: {} {} ({} reviews)", row.getDouble("score"),
-                                    row.getString("url"), row.getInt64("num_reviews"));
-                            return new TableRow()
-                                    .set("url", row.getString("url"))
-                                    .set("num_reviews", row.getInt64("num_reviews"))
-                                    .set("score", row.getDouble("score"))
-                                    .set("first_date", row.getDateTime("first_date").toInstant().toString())
-                                    .set("last_date", row.getDateTime("last_date").toInstant().toString());
-                        }))
-                .apply("Write to BigQuery", BigQueryIO.writeTableRows()
-                        .to(options.getOutputTable())
-                        .withSchema(new TableSchema().setFields(Arrays.asList(
-                                // To learn more about the valid BigQuery types:
-                                // https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types
-                                new TableFieldSchema().setName("url").setType("STRING"),
-                                new TableFieldSchema().setName("num_reviews").setType("INTEGER"),
-                                new TableFieldSchema().setName("score").setType("FLOAT64"),
-                                new TableFieldSchema().setName("first_date").setType("TIMESTAMP"),
-                                new TableFieldSchema().setName("last_date").setType("TIMESTAMP"))))
-                        .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
-                        .withWriteDisposition(WriteDisposition.WRITE_APPEND));
+        // Convert the SQL Rows into BigQuery TableRows and write them to BigQuery.
+        .apply("Convert to BigQuery TableRow", MapElements.into(TypeDescriptor.of(TableRow.class))
+            .via(row -> {
+              LOG.info("rating summary: {} {} ({} reviews)", row.getDouble("score"),
+                  row.getString("url"), row.getInt64("num_reviews"));
+              return new TableRow()
+                  .set("url", row.getString("url"))
+                  .set("num_reviews", row.getInt64("num_reviews"))
+                  .set("score", row.getDouble("score"))
+                  .set("first_date", row.getDateTime("first_date").toInstant().toString())
+                  .set("last_date", row.getDateTime("last_date").toInstant().toString());
+            }))
+        .apply("Write to BigQuery", BigQueryIO.writeTableRows()
+            .to(options.getOutputTable())
+            .withSchema(new TableSchema().setFields(Arrays.asList(
+                // To learn more about the valid BigQuery types:
+                //   https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types
+                new TableFieldSchema().setName("url").setType("STRING"),
+                new TableFieldSchema().setName("num_reviews").setType("INTEGER"),
+                new TableFieldSchema().setName("score").setType("FLOAT64"),
+                new TableFieldSchema().setName("first_date").setType("TIMESTAMP"),
+                new TableFieldSchema().setName("last_date").setType("TIMESTAMP"))))
+            .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
+            .withWriteDisposition(WriteDisposition.WRITE_APPEND));
 
-        // For a Dataflow Flex Template, do NOT waitUntilFinish().
-        pipeline.run();
-    }
+    // For a Dataflow Flex Template, do NOT waitUntilFinish().
+    pipeline.run();
+  }
 }
