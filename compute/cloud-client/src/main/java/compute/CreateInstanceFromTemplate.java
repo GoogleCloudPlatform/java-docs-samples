@@ -23,7 +23,6 @@ import com.google.cloud.compute.v1.InsertInstanceRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -54,8 +53,7 @@ public class CreateInstanceFromTemplate {
       String instanceTemplateUrl)
       throws IOException, ExecutionException, InterruptedException {
 
-    try (InstancesClient instancesClient = InstancesClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
 
       InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
           .setProject(projectId)
@@ -63,9 +61,7 @@ public class CreateInstanceFromTemplate {
           .setInstanceResource(Instance.newBuilder().setName(instanceName).build())
           .setSourceInstanceTemplate(instanceTemplateUrl).build();
 
-      Operation operation = instancesClient.insertCallable().futureCall(insertInstanceRequest)
-          .get();
-      Operation response = zoneOperationsClient.wait(projectId, zone, operation.getName());
+      Operation response = instancesClient.insertAsync(insertInstanceRequest).get();
 
       if (response.hasError()) {
         System.out.println("Instance creation from template failed ! ! " + response);

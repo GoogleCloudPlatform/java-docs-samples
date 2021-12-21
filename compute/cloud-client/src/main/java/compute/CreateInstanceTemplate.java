@@ -48,8 +48,7 @@ public class CreateInstanceTemplate {
    */
   public static void createInstanceTemplate(String projectId, String templateName)
       throws IOException, ExecutionException, InterruptedException {
-    try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create();
-        GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
+    try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
 
       String machineType = "e2-standard-4";
       String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
@@ -70,8 +69,8 @@ public class CreateInstanceTemplate {
           // The template lets the instance use an external IP address.
           .addAccessConfigs(AccessConfig.newBuilder()
               .setName("External NAT")
-              .setType(AccessConfig.Type.ONE_TO_ONE_NAT)
-              .setNetworkTier(NetworkTier.PREMIUM).build()).build();
+              .setType(AccessConfig.Type.ONE_TO_ONE_NAT.toString())
+              .setNetworkTier(NetworkTier.PREMIUM.toString()).build()).build();
 
       InstanceProperties instanceProperties = InstanceProperties.newBuilder()
           .addDisks(attachedDisk)
@@ -86,10 +85,7 @@ public class CreateInstanceTemplate {
               .setProperties(instanceProperties).build()).build();
 
       // Create the Instance Template.
-      Operation operation = instanceTemplatesClient.insertCallable()
-          .futureCall(insertInstanceTemplateRequest).get();
-      // Wait for the operation to complete.
-      Operation response = globalOperationsClient.wait(projectId, operation.getName());
+      Operation response = instanceTemplatesClient.insertAsync(insertInstanceTemplateRequest).get();
 
       if (response.hasError()) {
         System.out.println("Instance Template creation failed ! ! " + response);
@@ -111,7 +107,7 @@ public class CreateInstanceTemplate {
               .setSourceImage("projects/debian-cloud/global/images/family/debian-10").build())
           .setAutoDelete(true)
           .setBoot(true)
-          .setType(AttachedDisk.Type.PERSISTENT).build();
+          .setType(AttachedDisk.Type.PERSISTENT.toString()).build();
 
       InstanceTemplate instanceTemplate = InstanceTemplate.newBuilder()
           .setName(templateName)
@@ -126,11 +122,7 @@ public class CreateInstanceTemplate {
           .setProject(projectId)
           .setInstanceTemplateResource(instanceTemplate).build();
 
-      Operation operation = instanceTemplatesClient.insertCallable()
-          .futureCall(insertInstanceTemplateRequest).get();
-
-      // Wait for the operation to complete.
-      Operation response = globalOperationsClient.wait(projectId, operation.getName());
+      Operation response = instanceTemplatesClient.insertAsync(insertInstanceTemplateRequest).get();
 
       if (response.hasError()) {
         System.out.println("Instance Template creation failed ! ! " + response);

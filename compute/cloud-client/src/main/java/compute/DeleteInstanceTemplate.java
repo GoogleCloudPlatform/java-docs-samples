@@ -17,7 +17,6 @@
 package compute;
 
 import com.google.cloud.compute.v1.DeleteInstanceTemplateRequest;
-import com.google.cloud.compute.v1.GlobalOperationsClient;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
@@ -38,18 +37,14 @@ public class DeleteInstanceTemplate {
   // Delete an instance template.
   public static void deleteInstanceTemplate(String projectId, String templateName)
       throws IOException, ExecutionException, InterruptedException {
-    try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create();
-        GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
+    try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
 
       DeleteInstanceTemplateRequest deleteInstanceTemplateRequest = DeleteInstanceTemplateRequest
           .newBuilder()
           .setProject(projectId)
           .setInstanceTemplate(templateName).build();
 
-      Operation operation = instanceTemplatesClient.deleteCallable()
-          .futureCall(deleteInstanceTemplateRequest).get();
-
-      Operation response = globalOperationsClient.wait(projectId, operation.getName());
+      Operation response = instanceTemplatesClient.deleteAsync(deleteInstanceTemplateRequest).get();
 
       if (response.hasError()) {
         System.out.println("Instance template deletion failed ! ! " + response);

@@ -26,7 +26,6 @@ import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -66,7 +65,6 @@ public class CreateInstanceFromTemplateWithOverrides {
       throws IOException, ExecutionException, InterruptedException {
 
     try (InstancesClient instancesClient = InstancesClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create();
         InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
 
       String machineType = "n1-standard-1";
@@ -82,7 +80,7 @@ public class CreateInstanceFromTemplateWithOverrides {
               .setSourceImage(newDiskSourceImage).build())
           .setAutoDelete(true)
           .setBoot(false)
-          .setType(AttachedDisk.Type.PERSISTENT).build();
+          .setType(AttachedDisk.Type.PERSISTENT.toString()).build();
 
       Instance instance = Instance.newBuilder()
           .setName(instanceName)
@@ -102,11 +100,7 @@ public class CreateInstanceFromTemplateWithOverrides {
           .setInstanceResource(instance)
           .setSourceInstanceTemplate(instanceTemplate.getSelfLink()).build();
 
-      Operation operation = instancesClient.insertCallable().futureCall(insertInstanceRequest)
-          .get();
-
-      // Wait for the create operation to complete.
-      Operation response = zoneOperationsClient.wait(projectId, zone, operation.getName());
+      Operation response = instancesClient.insertAsync(insertInstanceRequest).get();
 
       if (response.hasError()) {
         System.out.println("Instance creation from template with overrides failed ! ! " + response);
