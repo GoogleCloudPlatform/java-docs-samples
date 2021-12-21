@@ -22,15 +22,15 @@ import com.google.cloud.compute.v1.Allowed;
 import com.google.cloud.compute.v1.Firewall;
 import com.google.cloud.compute.v1.Firewall.Direction;
 import com.google.cloud.compute.v1.FirewallsClient;
-import com.google.cloud.compute.v1.GlobalOperationsClient;
 import com.google.cloud.compute.v1.InsertFirewallRequest;
-import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class CreateFirewallRule {
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args)
+      throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample
     /* project: project ID or project number of the Cloud project you want to use.
        firewallRuleName: name of the rule that is created.
@@ -49,18 +49,17 @@ public class CreateFirewallRule {
   // Creates a simple firewall rule allowing for incoming HTTP and 
   // HTTPS access from the entire Internet.
   public static void createFirewall(String project, String firewallRuleName, String network)
-      throws IOException {
+      throws IOException, ExecutionException, InterruptedException {
     /* Initialize client that will be used to send requests. This client only needs to be created
        once, and can be reused for multiple requests. After completing all of your requests, call
        the `firewallsClient.close()` method on the client to safely
        clean up any remaining background resources. */
-    try (FirewallsClient firewallsClient = FirewallsClient.create();
-        GlobalOperationsClient operationsClient = GlobalOperationsClient.create()) {
+    try (FirewallsClient firewallsClient = FirewallsClient.create()) {
 
       // The below firewall rule is created in the default network.
       Firewall firewallRule = Firewall.newBuilder()
           .setName(firewallRuleName)
-          .setDirection(Direction.INGRESS)
+          .setDirection(Direction.INGRESS.toString())
           .addAllowed(
               Allowed.newBuilder().addPorts("80").addPorts("443").setIPProtocol("tcp").build())
           .addSourceRanges("0.0.0.0/0")
@@ -79,8 +78,7 @@ public class CreateFirewallRule {
           .setFirewallResource(firewallRule)
           .setProject(project).build();
 
-      Operation operation = firewallsClient.insert(insertFirewallRequest);
-      operationsClient.wait(project, operation.getName());
+      firewallsClient.insertAsync(insertFirewallRequest).get();
 
       System.out.println("Firewall rule created successfully -> " + firewallRuleName);
     }

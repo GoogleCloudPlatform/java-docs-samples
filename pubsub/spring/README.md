@@ -16,21 +16,27 @@ When the application starts, it will do the following every ten seconds:
 
 This sample requires [Java](https://www.java.com/en/download/) and [Maven](http://maven.apache.org/) for building the application.
 
-1.  **Follow the Java development environment set-up instructions in [the documentation](https://cloud.google.com/java/docs/setup).**
+1. **Follow the Java development environment set-up instructions in [the documentation](https://cloud.google.com/java/docs/setup).**
 
-1.  Enable APIs for your project.
+2. Enable APIs for your project.
     [Click here](https://console.cloud.google.com/flows/enableapi?apiid=pubsub.googleapis.com&showconfirmation=true)
     to visit Cloud Platform Console and enable the Google Cloud Pub/Sub API.
 
-1.  Create a new topic `topic-one` and attach a subscription `sub-one` to it, then do the same for `topic-two` and `sub-two`, via the Cloud Platform Console's
+3. Create a new topic `topic-one` and attach a subscription `sub-one` to it, then do the same for `topic-two` and `sub-two`, via the Cloud Platform Console's
     [Cloud Pub/Sub section](http://console.cloud.google.com/pubsub).
 
-1.  Enable application default credentials by running the command `gcloud auth application-default login`.
+4. Enable application default credentials by running the command `gcloud auth application-default login`.
 
-1.  Run the following Maven command to run `PubSubApplication`:
+5. Run the following Maven or Gradle commands to run `PubSubApplication`:
+
     ```
     mvn clean spring-boot:run
     ```
+   
+    ```
+    gradle bootRun
+    ```
+    
     You should observe an incoming message getting sent to `topic-one`, received from `sub-one`, sent to `topic-two`, and received from `topic-two` in the logged messages:
     ```
     2020-08-10 17:29:18.807  INFO 27310 --- [           main] demo.PubSubApplication                   : Started PubSubApplication in 6.063 seconds (JVM running for 6.393)
