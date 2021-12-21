@@ -39,10 +39,10 @@ import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.TypeDescriptor;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An Apache Beam pipeline that reads JSON encoded messages from Kafka and
@@ -59,7 +59,8 @@ public class KafkaToBigQuery {
 
     void setInputTopic(String value);
 
-    @Description("BigQuery table to write to, in the form 'project:dataset.table' or 'dataset.table'.")
+    @Description("BigQuery table to write to, in the form "
+        + "'project:dataset.table' or 'dataset.table'.")
     @Default.String("beam_samples.streaming_beam_sql")
     String getOutputTable();
 
