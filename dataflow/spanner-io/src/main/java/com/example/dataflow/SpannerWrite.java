@@ -29,8 +29,8 @@ import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
 This sample demonstrates how to write to a Spanner table.
@@ -99,8 +99,7 @@ public class SpannerWrite {
     String firstName;
     String lastName;
 
-    Singer() {
-    }
+    Singer() {}
 
     Singer(long singerId, String firstName, String lastName) {
       this.singerId = singerId;
@@ -115,8 +114,7 @@ public class SpannerWrite {
     long albumId;
     String albumTitle;
 
-    Album() {
-    }
+    Album() {}
 
     Album(long singerId, long albumId, String albumTitle) {
       this.singerId = singerId;
@@ -126,8 +124,7 @@ public class SpannerWrite {
   }
 
   /**
-   * Parses each tab-delimited line into a Singer object. The line format is the
-   * following:
+   * Parses each tab-delimited line into a Singer object. The line format is the following:
    * singer_id\tfirstName\tlastName
    */
   static class ParseSinger extends DoFn<String, Singer> {
@@ -148,8 +145,7 @@ public class SpannerWrite {
   }
 
   /**
-   * Parses each tab-delimited line into an Album object. The line format is the
-   * following:
+   * Parses each tab-delimited line into an Album object. The line format is the following:
    * singer_id\talbumId\talbumTitle
    */
   static class ParseAlbum extends DoFn<String, Album> {

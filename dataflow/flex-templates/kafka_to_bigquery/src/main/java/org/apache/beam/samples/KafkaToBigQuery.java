@@ -75,10 +75,8 @@ public class KafkaToBigQuery {
   @DefaultCoder(AvroCoder.class)
   private static class PageRating {
     Instant processingTime;
-    @Nullable
-    String url;
-    @Nullable
-    String rating;
+    @Nullable String url;
+    @Nullable String rating;
   }
 
   public static void main(final String[] args) {
