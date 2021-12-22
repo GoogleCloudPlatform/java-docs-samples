@@ -45,6 +45,7 @@
   </dependencyManagement>
 
   <dependencies>
+
     <!-- [START spanner_spring_data_r2dbc_dependency] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -71,6 +72,13 @@
     </dependency>
 
     <!-- Test dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
