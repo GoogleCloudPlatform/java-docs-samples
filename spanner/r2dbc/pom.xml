@@ -5,13 +5,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.example</groupId>
-  <artifactId>cloud-spanner-r2dbc</artifactId>
+  <artifactId>cloud-spanner-r2dbc-sample</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <spring-boot.version>2.5.5</spring-boot.version>
+    <spring-boot.version>2.5.8</spring-boot.version>
   </properties>
 
   <!--
@@ -33,11 +33,18 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
-
     <!-- [START spanner_spring_data_r2dbc_dependency] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -61,21 +68,12 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-webflux</artifactId>
-      <version>${spring-boot.version}</version>
     </dependency>
 
     <!-- Test dependencies -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <version>${spring-boot.version}</version>
       <scope>test</scope>
     </dependency>
 

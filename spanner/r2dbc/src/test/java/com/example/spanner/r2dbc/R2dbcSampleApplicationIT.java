@@ -16,8 +16,7 @@
 
 package com.example.spanner.r2dbc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.spanner.DatabaseAdminClient;
@@ -27,10 +26,9 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,12 +36,13 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT,
+    classes = {R2dbcSampleApplication.class, WebController.class})
 public class R2dbcSampleApplicationIT {
 
   @DynamicPropertySource
@@ -73,7 +72,7 @@ public class R2dbcSampleApplicationIT {
   DatabaseAdminClient dbAdminClient;
 
   // setup/teardown cannot be static because then properties will not be injected yet
-  @Before
+  @BeforeEach
   public void createDatabase() {
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
@@ -81,7 +80,7 @@ public class R2dbcSampleApplicationIT {
     dbAdminClient.createDatabase(instance, this.databaseName, Collections.EMPTY_LIST);
   }
 
-  @After
+  @AfterEach
   public void dropDatabase() {
     dbAdminClient.dropDatabase(instance, this.databaseName);
   }
@@ -90,7 +89,7 @@ public class R2dbcSampleApplicationIT {
   public void testAllWebEndpoints() {
 
     // DDL takes time; extend timeout to avoid "Timeout on blocking read" exceptions.
-    webTestClient = webTestClient.mutate().responseTimeout(Duration.ofSeconds(30)).build();
+    webTestClient = webTestClient.mutate().responseTimeout(Duration.ofSeconds(300)).build();
 
     this.webTestClient.post().uri("/createTable").exchange()
         .expectBody(String.class).isEqualTo("table NAMES created successfully");
@@ -107,8 +106,8 @@ public class R2dbcSampleApplicationIT {
         .expectBody(Name[].class)
         .consumeWith(result -> {
           Name[] names = result.getResponseBody();
-          assertEquals("1 row expected", 1, names.length);
-          assertEquals("where is Bob?", "Bob", names[0].getName());
+          assertEquals(1, names.length, "1 row expected");
+          assertEquals("Bob", names[0].getName(), "where is Bob?");
           uuid.set(names[0].getUuid());
         });
 
