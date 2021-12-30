@@ -43,6 +43,8 @@ public class InstanceTemplatesIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String TEMPLATE_NAME;
   private static String TEMPLATE_NAME_WITH_DISK;
+  private static String TEMPLATE_NAME_FROM_INSTANCE;
+  private static String TEMPLATE_NAME_WITH_SUBNET;
   private static String ZONE;
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_2;
@@ -69,11 +71,21 @@ public class InstanceTemplatesIT {
     MACHINE_NAME_2 = "my-new-test-instance" + UUID.randomUUID();
     MACHINE_NAME_3 = "my-new-test-instance" + UUID.randomUUID();
     TEMPLATE_NAME_WITH_DISK = "my-new-test-instance" + UUID.randomUUID();
+    TEMPLATE_NAME_FROM_INSTANCE = "my-new-test-instance" + UUID.randomUUID();
+    TEMPLATE_NAME_WITH_SUBNET = "my-new-test-instance" + UUID.randomUUID();
 
     // Create templates.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status " + TEMPLATE_NAME);
     CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
+    CreateTemplateFromInstance.createTemplateFromInstance(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE,
+        getInstance(ZONE, MACHINE_NAME).getSelfLink());
+    assertThat(stdOut.toString())
+        .contains("Instance Template creation operation status " + TEMPLATE_NAME_FROM_INSTANCE);
+    CreateTemplateWithSubnet.createTemplateWithSubnet(PROJECT_ID, "global/networks/default",
+        "regions/asia-east1/subnetworks/default", TEMPLATE_NAME_WITH_SUBNET);
+    assertThat(stdOut.toString())
+        .contains("Template creation from subnet operation status " + TEMPLATE_NAME_WITH_SUBNET);
     TimeUnit.SECONDS.sleep(10);
 
     // Create instances.
@@ -104,6 +116,12 @@ public class InstanceTemplatesIT {
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     assertThat(stdOut.toString())
         .contains("Instance template deletion operation status for " + TEMPLATE_NAME);
+    DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE);
+    assertThat(stdOut.toString())
+        .contains("Instance template deletion operation status for " + TEMPLATE_NAME_FROM_INSTANCE);
+    DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_WITH_SUBNET);
+    assertThat(stdOut.toString())
+        .contains("Instance template deletion operation status for " + TEMPLATE_NAME_WITH_SUBNET);
     stdOut.close();
     System.setOut(null);
   }
@@ -130,12 +148,18 @@ public class InstanceTemplatesIT {
   public void testGetInstanceTemplate() throws IOException {
     GetInstanceTemplate.getInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains(TEMPLATE_NAME);
+    GetInstanceTemplate.getInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE);
+    assertThat(stdOut.toString()).contains(TEMPLATE_NAME_FROM_INSTANCE);
+    GetInstanceTemplate.getInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_WITH_SUBNET);
+    assertThat(stdOut.toString()).contains(TEMPLATE_NAME_WITH_SUBNET);
   }
 
   @Test
   public void testListInstanceTemplates() throws IOException {
     ListInstanceTemplates.listInstanceTemplates(PROJECT_ID);
     assertThat(stdOut.toString()).contains(TEMPLATE_NAME);
+    assertThat(stdOut.toString()).contains(TEMPLATE_NAME_FROM_INSTANCE);
+    assertThat(stdOut.toString()).contains(TEMPLATE_NAME_WITH_SUBNET);
   }
 
 }
