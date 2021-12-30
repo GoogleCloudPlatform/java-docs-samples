@@ -88,6 +88,7 @@ public class InstanceTemplatesIT {
     assertThat(stdOut.toString()).contains(
         "Instance creation from template with overrides: Operation Status " + MACHINE_NAME_3);
     Assert.assertEquals(getInstance(ZONE, MACHINE_NAME_3).getDisksCount(), 2);
+    stdOut.close();
     System.setOut(null);
   }
 
@@ -103,6 +104,7 @@ public class InstanceTemplatesIT {
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     assertThat(stdOut.toString())
         .contains("Instance template deletion operation status for " + TEMPLATE_NAME);
+    stdOut.close();
     System.setOut(null);
   }
 

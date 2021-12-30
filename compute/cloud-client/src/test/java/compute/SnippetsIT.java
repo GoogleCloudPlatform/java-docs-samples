@@ -94,6 +94,8 @@ public class SnippetsIT {
 
   @BeforeClass
   public static void setUp() throws IOException, InterruptedException, ExecutionException {
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
@@ -151,17 +153,19 @@ public class SnippetsIT {
     // Create a Google Cloud Storage bucket for UsageReports
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
     storage.create(BucketInfo.of(BUCKET_NAME));
+
+    stdOut.close();
+    System.setOut(null);
   }
 
 
   @AfterClass
   public static void cleanup() throws IOException, InterruptedException, ExecutionException {
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
     // Delete all instances created for testing.
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
 
     deleteFirewallRuleIfNotDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED);
