@@ -72,18 +72,18 @@ public class InstanceTemplatesIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     String templateUUID = UUID.randomUUID().toString();
-    TEMPLATE_NAME = "testing-template-" + templateUUID;
-    TEMPLATE_NAME_WITH_DISK = "testing-template-disk-" + templateUUID;
-    TEMPLATE_NAME_FROM_INSTANCE = "testing-template-instance-" + templateUUID;
-    TEMPLATE_NAME_WITH_SUBNET = "testing-template-subnet-" + templateUUID;
+    TEMPLATE_NAME = "test-csam-template-" + templateUUID;
+    TEMPLATE_NAME_WITH_DISK = "test-csam-template-disk-" + templateUUID;
+    TEMPLATE_NAME_FROM_INSTANCE = "test-csam-template-inst-" + templateUUID;
+    TEMPLATE_NAME_WITH_SUBNET = "test-csam-template-snet-" + templateUUID;
     String instanceUUID = UUID.randomUUID().toString();
-    MACHINE_NAME_CR = "testing-instance" + instanceUUID;
-    MACHINE_NAME_CR_TEMPLATE = "testing-instance-template-" + instanceUUID;
+    MACHINE_NAME_CR = "test-csam-instance" + instanceUUID;
+    MACHINE_NAME_CR_TEMPLATE = "test-csam-inst-template-" + instanceUUID;
     MACHINE_NAME_CR_TEMPLATE_OR =
-        "testing-instance-temp-or-" + instanceUUID;
+        "test-csam-inst-temp-or-" + instanceUUID;
 
     // Check for resources created >24hours which haven't been deleted in the project.
-    cleanUpExistingTestResources();
+    cleanUpExistingTestResources("test-csam-");
 
     // Create templates.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
@@ -144,7 +144,7 @@ public class InstanceTemplatesIT {
   // Cleans existing test resources if any.
   // If the project contains too many instances, use "filter" when listing resources
   // and delete the listed resources based on the timestamp.
-  public static void cleanUpExistingTestResources()
+  public static void cleanUpExistingTestResources(String prefixToDelete)
       throws IOException, ExecutionException, InterruptedException {
     boolean isBefore24Hours = false;
     // Delete templates which starts with name: "testing" and has creation timestamp >24 hours.
@@ -152,7 +152,7 @@ public class InstanceTemplatesIT {
         .iterateAll()) {
       isBefore24Hours = Instant.parse(template.getCreationTimestamp())
           .isBefore(Instant.now().minus(24, ChronoUnit.HOURS));
-      if (template.getName().contains("testing-") && isBefore24Hours) {
+      if (template.getName().contains(prefixToDelete) && isBefore24Hours) {
         DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, template.getName());
       }
     }
@@ -163,7 +163,7 @@ public class InstanceTemplatesIT {
       for (Instance instance : instanceGroup.getValue().getInstancesList()) {
         isBefore24Hours = Instant.parse(instance.getCreationTimestamp())
             .isBefore(Instant.now().minus(24, ChronoUnit.HOURS));
-        if (instance.getName().contains("testing-") && isBefore24Hours) {
+        if (instance.getName().contains(prefixToDelete) && isBefore24Hours) {
           DeleteInstance.deleteInstance(PROJECT_ID, instanceZone, instance.getName());
         }
       }
