@@ -59,8 +59,8 @@ public class KafkaToBigQuery {
 
     void setInputTopic(String value);
 
-    @Description(
-        "BigQuery table to write to, in the form 'project:dataset.table' or 'dataset.table'.")
+    @Description("BigQuery table to write to, in the form "
+        + "'project:dataset.table' or 'dataset.table'.")
     @Default.String("beam_samples.streaming_beam_sql")
     String getOutputTable();
 

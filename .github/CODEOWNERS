@@ -12,5 +12,7 @@
 /firestore/**/*.java            @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 /iot/                           @gcseh @GoogleCloudPlatform/api-iot @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 /logging/                       @GoogleCloudPlatform/observability-devx @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/pubsub/                        @GoogleCloudPlatform/api-pubsub-and-pubsublite @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/pubsublite/                    @GoogleCloudPlatform/api-pubsub-and-pubsublite @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 /storage/**/*.java              @GoogleCloudPlatform/cloud-storage-dpes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 .github/auto-approve.yml        @googleapis/github-automation/ @sofisl @GoogleCloudPlatform/java-samples-reviewers

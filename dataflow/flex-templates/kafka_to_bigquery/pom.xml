@@ -22,7 +22,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.0.23</version>
+    <version>1.2.0</version>
   </parent>
 
   <groupId>org.apache.beam.samples</groupId>
@@ -34,7 +34,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <beam.version>2.31.0</beam.version>
+    <beam.version>2.34.0</beam.version>
     <kafka.version>7.0.0-ce</kafka.version>
 
     <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
@@ -127,7 +127,6 @@
   </build>
 
   <dependencies>
-    <!-- slf4j API frontend binding with JUL backend -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -137,6 +136,7 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
       <version>${slf4j.version}</version>
+      <scope>runtime</scope>
     </dependency>
 
     <!-- Apache Beam

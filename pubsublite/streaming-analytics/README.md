@@ -73,6 +73,19 @@ The following example runs a streaming pipeline. Choose `DirectRunner` to test i
 + `--region [optional]`: the Dataflow region, optional if using `DirectRunner`
 + `--tempLocation`: a Cloud Storage location for temporary files, optional if using `DirectRunner`
 
+Gradle:
+```sh
+gradle execute -Dexec.args="\
+    --subscription=projects/$PROJECT_ID/locations/$LITE_LOCATION/subscriptions/$SUBSCRIPTION \
+    --output=gs://$BUCKET/samples/output \
+    --windowSize=1 \
+    --runner=DataflowRunner \
+    --project=$PROJECT_ID \
+    --region=$DATAFLOW_REGION \
+    --tempLocation=gs://$BUCKET/temp"
+```
+
+Maven: 
 ```sh
 mvn compile exec:java \
   -Dexec.mainClass=examples.PubsubliteToGcs \

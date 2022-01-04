@@ -125,7 +125,7 @@ public class SpannerWrite {
 
   /**
    * Parses each tab-delimited line into a Singer object. The line format is the following:
-   *   singer_id\tfirstName\tlastName
+   * singer_id\tfirstName\tlastName
    */
   static class ParseSinger extends DoFn<String, Singer> {
     private static final Logger LOG = LoggerFactory.getLogger(ParseSinger.class);
@@ -146,7 +146,7 @@ public class SpannerWrite {
 
   /**
    * Parses each tab-delimited line into an Album object. The line format is the following:
-   *   singer_id\talbumId\talbumTitle
+   * singer_id\talbumId\talbumTitle
    */
   static class ParseAlbum extends DoFn<String, Album> {
     private static final Logger LOG = LoggerFactory.getLogger(ParseAlbum.class);

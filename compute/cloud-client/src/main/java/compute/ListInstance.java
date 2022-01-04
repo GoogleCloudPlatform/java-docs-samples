@@ -39,7 +39,7 @@ public class ListInstance {
     // safely clean up any remaining background resources.
     try (InstancesClient instancesClient = InstancesClient.create()) {
       // Set the project and zone to retrieve instances present in the zone.
-      System.out.println(String.format("Listing instances from %s in %s:", project, zone));
+      System.out.printf("Listing instances from %s in %s:", project, zone);
       for (Instance zoneInstance : instancesClient.list(project, zone).iterateAll()) {
         System.out.println(zoneInstance.getName());
       }

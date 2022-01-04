@@ -17,11 +17,12 @@
 package compute;
 
 // [START compute_start_instance]
+
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.StartInstanceRequest;
-import com.google.cloud.compute.v1.ZoneOperationsClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -47,8 +48,7 @@ public class StartInstance {
        once, and can be reused for multiple requests. After completing all of your requests, call
        the `instancesClient.close()` method on the client to safely
        clean up any remaining background resources. */
-    try (InstancesClient instancesClient = InstancesClient.create();
-        ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
 
       // Create the request.
       StartInstanceRequest startInstanceRequest = StartInstanceRequest.newBuilder()
@@ -57,12 +57,11 @@ public class StartInstance {
           .setInstance(instanceName)
           .build();
 
-      Operation operation = instancesClient.startCallable()
-          .futureCall(startInstanceRequest)
-          .get();
+      OperationFuture<Operation, Operation> operation = instancesClient.startAsync(
+          startInstanceRequest);
 
       // Wait for the operation to complete.
-      Operation response = zoneOperationsClient.wait(project, zone, operation.getName());
+      Operation response = operation.get();
 
       if (response.getStatus() == Status.DONE) {
         System.out.println("Instance started successfully ! ");

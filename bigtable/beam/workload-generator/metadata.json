@@ -1,0 +1,31 @@
+{
+  "name": "Bigtable workload generator",
+  "description": "An Apache Beam that puts a specified read QPS to a Bigtable table.",
+  "parameters": [
+    {
+      "name": "bigtableInstanceId",
+      "label": "Bigtable instance",
+      "helpText": "Bigtable instance to read from.",
+      "regexes": [
+        "[A-Za-z]+[-A-Za-z0-9]*[A-Za-z0-9]+"
+      ]
+    },
+    {
+      "name": "bigtableTableId",
+      "label": "Bigtable table",
+      "helpText": "Bigtable table to read from.",
+      "regexes": [
+        "[A-Za-z]+[-A-Za-z0-9]*[A-Za-z0-9]+"
+      ]
+    },
+    {
+      "name": "workloadRate",
+      "label": "Workload Rate",
+      "helpText": "The QPS to put on the table (default 1000)",
+      "isOptional": true,
+      "regexes": [
+        "[0-9]+"
+      ]
+    }
+  ]
+}
