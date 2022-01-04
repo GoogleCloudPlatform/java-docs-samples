@@ -147,20 +147,28 @@ public class InstanceTemplatesIT {
   public static void cleanUpExistingTestResources(String prefixToDelete)
       throws IOException, ExecutionException, InterruptedException {
     boolean isBefore24Hours = false;
-    // Delete templates which starts with name: "testing" and has creation timestamp >24 hours.
+
+    // Delete templates which starts with the given prefixToDelete and has creation timestamp >24 hours.
     for (InstanceTemplate template : ListInstanceTemplates.listInstanceTemplates(PROJECT_ID)
         .iterateAll()) {
+      if(!template.hasCreationTimestamp()) {
+        continue;
+      }
       isBefore24Hours = Instant.parse(template.getCreationTimestamp())
           .isBefore(Instant.now().minus(24, ChronoUnit.HOURS));
       if (template.getName().contains(prefixToDelete) && isBefore24Hours) {
         DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, template.getName());
       }
     }
-    // Delete instances which starts with name: "testing" and has creation timestamp >24 hours.
+
+    // Delete instances which starts with the given prefixToDelete and has creation timestamp >24 hours.
     for (Entry<String, InstancesScopedList> instanceGroup : ListAllInstances.listAllInstances(
         PROJECT_ID).iterateAll()) {
       String instanceZone = instanceGroup.getKey();
       for (Instance instance : instanceGroup.getValue().getInstancesList()) {
+        if(!instance.hasCreationTimestamp()) {
+          continue;
+        }
         isBefore24Hours = Instant.parse(instance.getCreationTimestamp())
             .isBefore(Instant.now().minus(24, ChronoUnit.HOURS));
         if (instance.getName().contains(prefixToDelete) && isBefore24Hours) {
