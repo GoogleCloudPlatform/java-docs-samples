@@ -44,8 +44,9 @@ public class CreateTemplateWithSubnet {
     templateName: name of the new template to create.
     */
     String projectId = "your-project-id";
-    String network = "projects/{project}/global/networks/{network}";
-    String subnetwork = "projects/{project}/regions/{region}/subnetworks/{subnetwork}";
+    String network = String.format("projects/%s/global/networks/%s", projectId, "network");
+    String subnetwork = String.format("projects/%s/regions/%s/subnetworks/%s", projectId, "region",
+        "subnetwork");
     String templateName = "template-name";
     createTemplateWithSubnet(projectId, network, subnetwork, templateName);
   }
@@ -59,26 +60,31 @@ public class CreateTemplateWithSubnet {
 
       AttachedDisk disk = AttachedDisk.newBuilder()
           .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
-              .setSourceImage("projects/debian-cloud/global/images/family/debian-11")
+              .setSourceImage(
+                  String.format("projects/%s/global/images/family/%s", "debian-cloud", "debian-11"))
               .setDiskSizeGb(250).build())
           .setAutoDelete(true)
-          .setBoot(true).build();
+          .setBoot(true)
+          .build();
 
       InstanceProperties instanceProperties = InstanceProperties.newBuilder()
           .addDisks(disk)
           .setMachineType("e2-standard-4")
           .addNetworkInterfaces(NetworkInterface.newBuilder()
               .setNetwork(network)
-              .setSubnetwork(subnetwork).build()).build();
+              .setSubnetwork(subnetwork).build())
+          .build();
 
       InstanceTemplate instanceTemplate = InstanceTemplate.newBuilder()
           .setName(templateName)
-          .setProperties(instanceProperties).build();
+          .setProperties(instanceProperties)
+          .build();
 
       InsertInstanceTemplateRequest insertInstanceTemplateRequest = InsertInstanceTemplateRequest
           .newBuilder()
           .setProject(projectId)
-          .setInstanceTemplateResource(instanceTemplate).build();
+          .setInstanceTemplateResource(instanceTemplate)
+          .build();
 
       Operation operation = instanceTemplatesClient.insertCallable()
           .futureCall(insertInstanceTemplateRequest).get();

@@ -40,7 +40,8 @@ public class CreateTemplateFromInstance {
     // templateName: name of the new template to create.
     String projectId = "your-project-id";
     String templateName = "template-name";
-    String instance = "projects/{project}/zones/{zone}/instances/{instance_name}";
+    String instance = String.format("projects/%s/zones/%s/instances/%s", projectId, "zone",
+        "instanceName");
     createTemplateFromInstance(projectId, templateName, instance);
   }
 
@@ -60,19 +61,24 @@ public class CreateTemplateFromInstance {
               // Replace the original boot disk image used in your instance
               // with a Rocky Linux image.
               .setInstantiateFrom(InstantiateFrom.CUSTOM_IMAGE.toString())
-              .setCustomImage("projects/rocky-linux-cloud/global/images/family/rocky-linux-8")
+              .setCustomImage(
+                  String.format("projects/%s/global/images/family/%s", "rocky-linux-cloud",
+                      "rocky-linux-8"))
               // Override the AutoDelete setting.
-              .setAutoDelete(true).build()).build();
+              .setAutoDelete(true).build())
+          .build();
 
       InstanceTemplate instanceTemplate = InstanceTemplate.newBuilder()
           .setName(templateName)
           .setSourceInstance(instance)
-          .setSourceInstanceParams(sourceInstanceParams).build();
+          .setSourceInstanceParams(sourceInstanceParams)
+          .build();
 
       InsertInstanceTemplateRequest insertInstanceTemplateRequest = InsertInstanceTemplateRequest
           .newBuilder()
           .setProject(projectId)
-          .setInstanceTemplateResource(instanceTemplate).build();
+          .setInstanceTemplateResource(instanceTemplate)
+          .build();
 
       Operation operation = instanceTemplatesClient.insertCallable()
           .futureCall(insertInstanceTemplateRequest).get();

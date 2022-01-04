@@ -21,6 +21,7 @@ package compute;
 import com.google.cloud.compute.v1.AggregatedListInstancesRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
+import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
 import java.io.IOException;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class ListAllInstances {
   }
 
   // List all instances in the specified project ID.
-  public static void listAllInstances(String project) throws IOException {
+  public static AggregatedListPagedResponse listAllInstances(String project) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `instancesClient.close()` method on the client to 
@@ -68,6 +69,7 @@ public class ListAllInstances {
         }
       }
       System.out.println("####### Listing all instances complete #######");
+      return response;
     }
   }
 

@@ -20,10 +20,15 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Instance;
+import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstancesClient;
+import com.google.cloud.compute.v1.InstancesScopedList;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -41,14 +46,15 @@ public class InstanceTemplatesIT {
 
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String DEFAULT_REGION = "us-central1";
+  private static final String DEFAULT_ZONE = DEFAULT_REGION + "-a";
   private static String TEMPLATE_NAME;
   private static String TEMPLATE_NAME_WITH_DISK;
   private static String TEMPLATE_NAME_FROM_INSTANCE;
   private static String TEMPLATE_NAME_WITH_SUBNET;
-  private static String ZONE;
-  private static String MACHINE_NAME;
-  private static String MACHINE_NAME_2;
-  private static String MACHINE_NAME_3;
+  private static String MACHINE_NAME_CR;
+  private static String MACHINE_NAME_CR_TEMPLATE;
+  private static String MACHINE_NAME_CR_TEMPLATE_OR;
 
   private ByteArrayOutputStream stdOut;
 
@@ -65,41 +71,50 @@ public class InstanceTemplatesIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    TEMPLATE_NAME = "template-name-" + UUID.randomUUID();
-    ZONE = "us-central1-a";
-    MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_2 = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_3 = "my-new-test-instance" + UUID.randomUUID();
-    TEMPLATE_NAME_WITH_DISK = "my-new-test-instance" + UUID.randomUUID();
-    TEMPLATE_NAME_FROM_INSTANCE = "my-new-test-instance" + UUID.randomUUID();
-    TEMPLATE_NAME_WITH_SUBNET = "my-new-test-instance" + UUID.randomUUID();
+    String templateUUID = UUID.randomUUID().toString();
+    TEMPLATE_NAME = "testing-template-" + templateUUID;
+    TEMPLATE_NAME_WITH_DISK = "testing-template-disk-" + templateUUID;
+    TEMPLATE_NAME_FROM_INSTANCE = "testing-template-instance-" + templateUUID;
+    TEMPLATE_NAME_WITH_SUBNET = "testing-template-subnet-" + templateUUID;
+    String instanceUUID = UUID.randomUUID().toString();
+    MACHINE_NAME_CR = "testing-instance" + instanceUUID;
+    MACHINE_NAME_CR_TEMPLATE = "testing-instance-template-" + instanceUUID;
+    MACHINE_NAME_CR_TEMPLATE_OR =
+        "testing-instance-temp-or-" + instanceUUID;
+
+    // Check for resources created >24hours which haven't been deleted in the project.
+    cleanUpExistingTestResources();
 
     // Create templates.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status " + TEMPLATE_NAME);
-    CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
+    CreateInstance.createInstance(PROJECT_ID, DEFAULT_ZONE, MACHINE_NAME_CR);
+    TimeUnit.SECONDS.sleep(10);
     CreateTemplateFromInstance.createTemplateFromInstance(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE,
-        getInstance(ZONE, MACHINE_NAME).getSelfLink());
+        getInstance(DEFAULT_ZONE, MACHINE_NAME_CR).getSelfLink());
     assertThat(stdOut.toString())
         .contains("Instance Template creation operation status " + TEMPLATE_NAME_FROM_INSTANCE);
     CreateTemplateWithSubnet.createTemplateWithSubnet(PROJECT_ID, "global/networks/default",
-        "regions/asia-east1/subnetworks/default", TEMPLATE_NAME_WITH_SUBNET);
+        String.format("regions/%s/subnetworks/default", DEFAULT_REGION), TEMPLATE_NAME_WITH_SUBNET);
     assertThat(stdOut.toString())
         .contains("Template creation from subnet operation status " + TEMPLATE_NAME_WITH_SUBNET);
     TimeUnit.SECONDS.sleep(10);
 
     // Create instances.
-    CreateInstanceFromTemplate.createInstanceFromTemplate(PROJECT_ID, ZONE, MACHINE_NAME_2,
+    CreateInstanceFromTemplate.createInstanceFromTemplate(PROJECT_ID, DEFAULT_ZONE,
+        MACHINE_NAME_CR_TEMPLATE,
         "global/instanceTemplates/" + TEMPLATE_NAME);
     assertThat(stdOut.toString())
-        .contains("Instance creation from template: Operation Status " + MACHINE_NAME_2);
+        .contains("Instance creation from template: Operation Status " + MACHINE_NAME_CR_TEMPLATE);
     CreateInstanceTemplate.createInstanceTemplateWithDiskType(PROJECT_ID, TEMPLATE_NAME_WITH_DISK);
     CreateInstanceFromTemplateWithOverrides
-        .createInstanceFromTemplateWithOverrides(PROJECT_ID, ZONE, MACHINE_NAME_3,
+        .createInstanceFromTemplateWithOverrides(PROJECT_ID, DEFAULT_ZONE,
+            MACHINE_NAME_CR_TEMPLATE_OR,
             TEMPLATE_NAME_WITH_DISK);
     assertThat(stdOut.toString()).contains(
-        "Instance creation from template with overrides: Operation Status " + MACHINE_NAME_3);
-    Assert.assertEquals(getInstance(ZONE, MACHINE_NAME_3).getDisksCount(), 2);
+        "Instance creation from template with overrides: Operation Status "
+            + MACHINE_NAME_CR_TEMPLATE_OR);
+    Assert.assertEquals(getInstance(DEFAULT_ZONE, MACHINE_NAME_CR_TEMPLATE_OR).getDisksCount(), 2);
     stdOut.close();
     System.setOut(null);
   }
@@ -109,9 +124,9 @@ public class InstanceTemplatesIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     // Delete instances.
-    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
-    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_2);
-    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_3);
+    DeleteInstance.deleteInstance(PROJECT_ID, DEFAULT_ZONE, MACHINE_NAME_CR);
+    DeleteInstance.deleteInstance(PROJECT_ID, DEFAULT_ZONE, MACHINE_NAME_CR_TEMPLATE);
+    DeleteInstance.deleteInstance(PROJECT_ID, DEFAULT_ZONE, MACHINE_NAME_CR_TEMPLATE_OR);
     // Delete instance templates.
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     assertThat(stdOut.toString())
@@ -124,6 +139,35 @@ public class InstanceTemplatesIT {
         .contains("Instance template deletion operation status for " + TEMPLATE_NAME_WITH_SUBNET);
     stdOut.close();
     System.setOut(null);
+  }
+
+  // Cleans existing test resources if any.
+  // If the project contains too many instances, use "filter" when listing resources
+  // and delete the listed resources based on the timestamp.
+  public static void cleanUpExistingTestResources()
+      throws IOException, ExecutionException, InterruptedException {
+    boolean isBefore24Hours = false;
+    // Delete templates which starts with name: "testing" and has creation timestamp >24 hours.
+    for (InstanceTemplate template : ListInstanceTemplates.listInstanceTemplates(PROJECT_ID)
+        .iterateAll()) {
+      isBefore24Hours = Instant.parse(template.getCreationTimestamp())
+          .isBefore(Instant.now().minus(24, ChronoUnit.HOURS));
+      if (template.getName().contains("testing-") && isBefore24Hours) {
+        DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, template.getName());
+      }
+    }
+    // Delete instances which starts with name: "testing" and has creation timestamp >24 hours.
+    for (Entry<String, InstancesScopedList> instanceGroup : ListAllInstances.listAllInstances(
+        PROJECT_ID).iterateAll()) {
+      String instanceZone = instanceGroup.getKey();
+      for (Instance instance : instanceGroup.getValue().getInstancesList()) {
+        isBefore24Hours = Instant.parse(instance.getCreationTimestamp())
+            .isBefore(Instant.now().minus(24, ChronoUnit.HOURS));
+        if (instance.getName().contains("testing-") && isBefore24Hours) {
+          DeleteInstance.deleteInstance(PROJECT_ID, instanceZone, instance.getName());
+        }
+      }
+    }
   }
 
   public static Instance getInstance(String zone, String instanceName) throws IOException {

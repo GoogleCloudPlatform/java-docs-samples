@@ -18,6 +18,7 @@ package compute;
 
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
+import com.google.cloud.compute.v1.InstanceTemplatesClient.ListPagedResponse;
 import java.io.IOException;
 
 public class ListInstanceTemplates {
@@ -30,14 +31,15 @@ public class ListInstanceTemplates {
   }
 
   // Get a list of InstanceTemplate objects available in a project.
-  public static void listInstanceTemplates(String projectId) throws IOException {
+  public static ListPagedResponse listInstanceTemplates(String projectId) throws IOException {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
       int count = 0;
       System.out.println("Listing instance templates...");
-      for (InstanceTemplate instanceTemplate : instanceTemplatesClient.list(projectId)
-          .iterateAll()) {
+      ListPagedResponse templates = instanceTemplatesClient.list(projectId);
+      for (InstanceTemplate instanceTemplate : templates.iterateAll()) {
         System.out.printf("%s. %s%n", ++count, instanceTemplate.getName());
       }
+      return templates;
     }
   }
 }
