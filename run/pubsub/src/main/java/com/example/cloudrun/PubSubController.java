@@ -18,6 +18,7 @@ package com.example.cloudrun;
 
 // [START cloudrun_pubsub_handler]
 // [START run_pubsub_handler]
+import com.example.cloudrun.Body;
 import java.util.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
