@@ -148,7 +148,8 @@ public class InstanceTemplatesIT {
       throws IOException, ExecutionException, InterruptedException {
     boolean isBefore24Hours = false;
 
-    // Delete templates which starts with the given prefixToDelete and has creation timestamp >24 hours.
+    // Delete templates which starts with the given prefixToDelete and
+    // has creation timestamp >24 hours.
     for (InstanceTemplate template : ListInstanceTemplates.listInstanceTemplates(PROJECT_ID)
         .iterateAll()) {
       if (!template.hasCreationTimestamp()) {
@@ -161,7 +162,8 @@ public class InstanceTemplatesIT {
       }
     }
 
-    // Delete instances which starts with the given prefixToDelete and has creation timestamp >24 hours.
+    // Delete instances which starts with the given prefixToDelete and
+    // has creation timestamp >24 hours.
     for (Entry<String, InstancesScopedList> instanceGroup : ListAllInstances.listAllInstances(
         PROJECT_ID).iterateAll()) {
       String instanceZone = instanceGroup.getKey();
