@@ -328,7 +328,7 @@ public class SnippetsIT {
     } catch (NotFoundException e) {
       System.out.println("Rule already deleted ! ");
       return true;
-    } catch (InvalidArgumentException e) {
+    } catch (InvalidArgumentException | NullPointerException e) {
       System.out.println("Rule is not ready (probably being deleted).");
       return true;
     }
