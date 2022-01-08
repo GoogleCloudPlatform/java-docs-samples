@@ -15,7 +15,7 @@ be run as a Dataflow job.
     INSTANCE_ID=YOUR-INSTANCE-ID
     TABLE_ID=YOUR-TABLE-ID
     REGION=us-central1
-    WORKLOAD_QPS=100 # Optional
+    WORKLOAD_QPS=100 # Optional, default to 1000
     ```
 
 1. Run this command to start a job from dataflow template:
@@ -27,7 +27,7 @@ be run as a Dataflow job.
     --parameters bigtableInstanceId="$INSTANCE_ID" \
     --parameters bigtableTableId="$TABLE_ID" \
     --region "$REGION" \
-    --parameters workloadQPS=$WORKLOAD_QPS
+    --parameters workloadRate=$WORKLOAD_QPS
     ```
 
 1. Make sure to cancel the job once you are done.
