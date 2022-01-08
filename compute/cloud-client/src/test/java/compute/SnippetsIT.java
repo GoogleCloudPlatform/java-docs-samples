@@ -291,30 +291,34 @@ public class SnippetsIT {
 
   public static void testListFirewallRules()
       throws IOException, ExecutionException, InterruptedException {
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
     if (!isFirewallRuleDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE)) {
-      ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-      System.setOut(new PrintStream(stdOut));
       compute.ListFirewallRules.listFirewallRules(PROJECT_ID);
       assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
-      stdOut.close();
-      System.setOut(null);
     }
+    // Clear system output to not affect other tests.
+    // Refrain from setting out to null.
+    stdOut.close();
+    System.setOut(new PrintStream(new ByteArrayOutputStream()));
   }
 
   public static void testPatchFirewallRule()
       throws IOException, InterruptedException, ExecutionException {
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
     if (!isFirewallRuleDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE)) {
       try (FirewallsClient client = FirewallsClient.create()) {
-        ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(stdOut));
         Assert.assertEquals(1000, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
         compute.PatchFirewallRule.patchFirewallPriority(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
         TimeUnit.SECONDS.sleep(5);
         Assert.assertEquals(500, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
-        stdOut.close();
-        System.setOut(null);
       }
     }
+    // Clear system output to not affect other tests.
+    // Refrain from setting out to null as it will throw NullPointer in the subsequent tests.
+    stdOut.close();
+    System.setOut(new PrintStream(new ByteArrayOutputStream()));
   }
 
   public static boolean isFirewallRuleDeletedByGceEnforcer(String projectId,
