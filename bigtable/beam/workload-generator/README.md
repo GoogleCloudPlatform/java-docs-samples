@@ -21,7 +21,7 @@ be run as a Dataflow job.
 1. Run this command to start a job from dataflow template:
 
     ```
-    JOB_NAME="generate-bigtable-workload-`date +%Y%m%d-%H%M%S`"
+    JOB_NAME="generate-bigtable-workload"
     gcloud dataflow flex-template run $JOB_NAME \
     --template-file-gcs-location "$TEMPLATE_PATH" \
     --parameters bigtableInstanceId="$INSTANCE_ID" \
@@ -33,9 +33,11 @@ be run as a Dataflow job.
 1. Make sure to cancel the job once you are done.
 
     ```
-    gcloud dataflow jobs cancel $JOB_NAME
+    JOB_ID=$(gcloud dataflow jobs list --filter="name=serve-recommendation-workload" --format="value(JOB_ID)" --region="us-central1" --status=active --limit=1)
+    gcloud dataflow jobs cancel $JOB_ID --region=$REGION
     ```
 
+1. 
 ### Deploying a template instructions
 
 These instructions are for maintenance of the workload generator, but if you 
@@ -96,5 +98,5 @@ If you would like to modify this and run it yourself you can use these commands:
    "-Dexec.args=--bigtableInstanceId=$INSTANCE_ID =--bigtableTableId=$TABLE_ID \
    --runner=dataflow --project=$GOOGLE_CLOUD_PROJECT \
    --region=$REGION" \
-   --workloadQPS=$WORKLOAD_QPS 
+   --workloadRate=$WORKLOAD_QPS 
    ```
