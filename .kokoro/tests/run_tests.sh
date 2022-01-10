@@ -55,30 +55,37 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Setup required env variables
     export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
     export TRANSCODER_PROJECT_NUMBER="779844219229" # For Transcoder samples
-    export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-acct.json
+    export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets/service-acct.json
     # For Tasks samples
     export QUEUE_ID=my-appengine-queue
     export LOCATION_ID=us-east1
     # For Datalabeling samples to hit the testing endpoint
     export DATALABELING_ENDPOINT="test-datalabeling.sandbox.googleapis.com:443"
-    # shellcheck source=src/aws-secrets.sh
-    source "${KOKORO_GFILE_DIR}/aws-secrets.sh"
-    # shellcheck source=src/dlp_secrets.txt
-    source "${KOKORO_GFILE_DIR}/dlp_secrets.txt"
-    # shellcheck source=src/bigtable_secrets.txt
-    source "${KOKORO_GFILE_DIR}/bigtable_secrets.txt"
-    # shellcheck source=src/automl_secrets.txt
-    source "${KOKORO_GFILE_DIR}/automl_secrets.txt"
-    # shellcheck source=src/functions_secrets.txt
-    source "${KOKORO_GFILE_DIR}/functions_secrets.txt"
-    # spellcheck source=src/firestore_secrets.txt
-    source "${KOKORO_GFILE_DIR}/firestore_secrets.txt"
-    # spellcheck source=src/cts_v4_secrets.txt
-    source "${KOKORO_GFILE_DIR}/cts_v4_secrets.txt"
-    # shellcheck source=src/cloud_sql_secrets.txt
-    source "${KOKORO_GFILE_DIR}/cloud_sql_secrets.txt"
     # For Cloud Run filesystem sample
     export FILESTORE_IP_ADDRESS=$(gcloud secrets versions access latest --secret fs-app)
+    
+    SECRET_FILES=("java-docs-samples-service-account.json" \
+    "java-aws-samples-secrets.txt" \
+    "java-dlp-samples-secrets.txt" \
+    "java-bigtable-samples-secrets.txt" \
+    "java-automl-samples-secrets.txt" \
+    "java-functions-samples-secrets.txt" \
+    "java-firestore-samples-secrets.txt" \
+    "java-cts-v4-samples-secrets.txt" \
+    "java-cloud-sql-samples-secrets.txt")
+
+    # create secret dir
+    mkdir -p "${KOKORO_GFILE_DIR}/secrets"
+    
+    for SECRET in "${SECRET_FILES[@]}"; do
+      # grab latest version of secret
+      gcloud secrets versions access latest --secret="${SECRET%.*}" > "${KOKORO_GFILE_DIR}/secrets/$SECRET"
+      # execute secret file contents
+      if [[ "$SECRET" != *json ]]; then
+        source "${KOKORO_GFILE_DIR}/secrets/$SECRET"
+      fi
+    done
+  
     # Activate service account
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
