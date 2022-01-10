@@ -30,14 +30,13 @@ be run as a Dataflow job.
     --parameters workloadRate=$WORKLOAD_QPS
     ```
 
-1. Make sure to cancel the job once you are done.
+1. Make sure to cancel the job once you are done. Search the job name in the list of ids and then delete the job with that id. Note that it can only cancel the job once it's started, so if the snippet fails, try again or check in the [Dataflow console](https://console.cloud.google.com/dataflow).
 
     ```
     JOB_ID=$(gcloud dataflow jobs list --filter="name=serve-recommendation-workload" --format="value(JOB_ID)" --region="us-central1" --status=active --limit=1)
     gcloud dataflow jobs cancel $JOB_ID --region=$REGION
     ```
 
-1. 
 ### Deploying a template instructions
 
 These instructions are for maintenance of the workload generator, but if you 
