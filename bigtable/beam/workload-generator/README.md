@@ -30,10 +30,18 @@ be run as a Dataflow job.
     --parameters workloadRate=$WORKLOAD_QPS
     ```
 
-1. Make sure to cancel the job once you are done. Search the job name in the list of ids and then delete the job with that id. Note that it can only cancel the job once it's started, so if the snippet fails, try again or check in the [Dataflow console](https://console.cloud.google.com/dataflow).
+1. Make sure to cancel the job once you are done. Get the job id by listing the Dataflow jobs with a matching name.
 
     ```
-    JOB_ID=$(gcloud dataflow jobs list --filter="name=serve-recommendation-workload" --format="value(JOB_ID)" --region="us-central1" --status=active --limit=1)
+    gcloud dataflow jobs list --filter=$JOB_NAME --region=$REGION
+    ```
+    
+    ```
+    JOB_ID=your-job-id
+    ```
+    
+1. Use the `JOB_ID` found to cancel the job. Note that it can only cancel the job once it's started, so if the command fails, try again once the status has changed or check in the [Dataflow console].
+    ```
     gcloud dataflow jobs cancel $JOB_ID --region=$REGION
     ```
 
