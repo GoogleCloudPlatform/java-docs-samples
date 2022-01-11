@@ -167,7 +167,9 @@ public class SnippetsIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    deleteFirewallRuleIfNotDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE);
+    if (!isFirewallRuleDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE)) {
+      DeleteFirewallRule.deleteFirewallRule(PROJECT_ID, FIREWALL_RULE_CREATE);
+    }
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
@@ -287,30 +289,41 @@ public class SnippetsIT {
         .encodeToString(stringBuilder.toString().getBytes(StandardCharsets.US_ASCII));
   }
 
-  public static void testListFirewallRules() throws IOException {
+  public static void testListFirewallRules()
+      throws IOException, ExecutionException, InterruptedException {
+    final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    compute.ListFirewallRules.listFirewallRules(PROJECT_ID);
-    assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
+    if (!isFirewallRuleDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE)) {
+      compute.ListFirewallRules.listFirewallRules(PROJECT_ID);
+      assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
+    }
+    // Clear system output to not affect other tests.
+    // Refrain from setting out to null.
     stdOut.close();
-    System.setOut(null);
+    System.setOut(out);
   }
 
   public static void testPatchFirewallRule()
       throws IOException, InterruptedException, ExecutionException {
-    try (FirewallsClient client = FirewallsClient.create()) {
-      ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-      System.setOut(new PrintStream(stdOut));
-      Assert.assertEquals(1000, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
-      compute.PatchFirewallRule.patchFirewallPriority(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
-      TimeUnit.SECONDS.sleep(5);
-      Assert.assertEquals(500, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
-      stdOut.close();
-      System.setOut(null);
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+    if (!isFirewallRuleDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE)) {
+      try (FirewallsClient client = FirewallsClient.create()) {
+        Assert.assertEquals(1000, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
+        compute.PatchFirewallRule.patchFirewallPriority(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
+        TimeUnit.SECONDS.sleep(5);
+        Assert.assertEquals(500, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
+      }
     }
+    // Clear system output to not affect other tests.
+    // Refrain from setting out to null as it will throw NullPointer in the subsequent tests.
+    stdOut.close();
+    System.setOut(out);
   }
 
-  public static void deleteFirewallRuleIfNotDeletedByGceEnforcer(String projectId,
+  public static boolean isFirewallRuleDeletedByGceEnforcer(String projectId,
       String firewallRule) throws IOException, ExecutionException, InterruptedException {
     /* (**INTERNAL method**)
       This method will prevent test failure if the firewall rule was auto-deleted by GCE Enforcer.
@@ -318,12 +331,14 @@ public class SnippetsIT {
      */
     try {
       GetFirewallRule.getFirewallRule(projectId, firewallRule);
-      DeleteFirewallRule.deleteFirewallRule(projectId, firewallRule);
     } catch (NotFoundException e) {
       System.out.println("Rule already deleted ! ");
-    } catch (InvalidArgumentException e) {
+      return true;
+    } catch (InvalidArgumentException | NullPointerException e) {
       System.out.println("Rule is not ready (probably being deleted).");
+      return true;
     }
+    return false;
   }
 
   public static String getInstanceStatus(String instanceName) throws IOException {
