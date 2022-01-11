@@ -291,6 +291,7 @@ public class SnippetsIT {
 
   public static void testListFirewallRules()
       throws IOException, ExecutionException, InterruptedException {
+    PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     if (!isFirewallRuleDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE)) {
@@ -300,11 +301,12 @@ public class SnippetsIT {
     // Clear system output to not affect other tests.
     // Refrain from setting out to null.
     stdOut.close();
-    System.setOut(new PrintStream(new ByteArrayOutputStream()));
+    System.setOut(out);
   }
 
   public static void testPatchFirewallRule()
       throws IOException, InterruptedException, ExecutionException {
+    PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     if (!isFirewallRuleDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE)) {
@@ -318,7 +320,7 @@ public class SnippetsIT {
     // Clear system output to not affect other tests.
     // Refrain from setting out to null as it will throw NullPointer in the subsequent tests.
     stdOut.close();
-    System.setOut(new PrintStream(new ByteArrayOutputStream()));
+    System.setOut(out);
   }
 
   public static boolean isFirewallRuleDeletedByGceEnforcer(String projectId,
