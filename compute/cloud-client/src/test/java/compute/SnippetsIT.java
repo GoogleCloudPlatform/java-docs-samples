@@ -291,8 +291,8 @@ public class SnippetsIT {
 
   public static void testListFirewallRules()
       throws IOException, ExecutionException, InterruptedException {
-    PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    PrintStream out = System.out;
     System.setOut(new PrintStream(stdOut));
     if (!isFirewallRuleDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE)) {
       compute.ListFirewallRules.listFirewallRules(PROJECT_ID);
@@ -306,8 +306,8 @@ public class SnippetsIT {
 
   public static void testPatchFirewallRule()
       throws IOException, InterruptedException, ExecutionException {
-    PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    PrintStream out = System.out;
     System.setOut(new PrintStream(stdOut));
     if (!isFirewallRuleDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE)) {
       try (FirewallsClient client = FirewallsClient.create()) {
