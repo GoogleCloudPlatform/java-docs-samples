@@ -55,7 +55,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Setup required env variables
     export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
     export TRANSCODER_PROJECT_NUMBER="779844219229" # For Transcoder samples
-    export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets/service-acct.json
+    export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets/java-docs-samples-service-account.json
     # For Tasks samples
     export QUEUE_ID=my-appengine-queue
     export LOCATION_ID=us-east1
