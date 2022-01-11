@@ -58,7 +58,8 @@ public class CreateJobWithEmbeddedCaptionsTest {
   private static final String TEST_CAPTIONS_PATH =
       "src/test/java/com/example/transcoder/testdata/" + TEST_CAPTIONS_NAME;
   private static final String CAPTIONS_URI = "gs://" + BUCKET_NAME + "/" + TEST_CAPTIONS_NAME;
-  private static final String OUTPUT_URI_FOR_AD_HOC = "gs://" + BUCKET_NAME + "/test-output-embedded-captions/";
+  private static final String OUTPUT_URI_FOR_AD_HOC =
+      "gs://" + BUCKET_NAME + "/test-output-embedded-captions/";
   private static String PROJECT_ID;
   private static String PROJECT_NUMBER;
   private static String JOB_ID;
