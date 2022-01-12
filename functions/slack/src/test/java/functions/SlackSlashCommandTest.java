@@ -148,7 +148,7 @@ public class SlackSlashCommandTest {
 
   @Test
   public void handlesPopulatedKgResultsTest() throws IOException, GeneralSecurityException {
-    String urlEncodedStr = "text=lion";
+    String urlEncodedStr = "text=kolach";
     StringReader requestReadable = new StringReader(urlEncodedStr);
 
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
@@ -159,12 +159,12 @@ public class SlackSlashCommandTest {
     functionInstance.service(request, response);
 
     writerOut.flush();
-    assertThat(responseOut.toString()).contains("https://en.wikipedia.org/wiki/Lion");
+    assertThat(responseOut.toString()).contains("https://en.wikipedia.org/wiki/Kolach");
   }
 
   @Test
   public void handlesMultipleUrlParamsTest() throws IOException, GeneralSecurityException {
-    String urlEncodedStr = "unused=foo&text=lion";
+    String urlEncodedStr = "unused=foo&text=kolach";
     StringReader requestReadable = new StringReader(urlEncodedStr);
 
     when(request.getReader()).thenReturn(new BufferedReader(requestReadable));
@@ -175,6 +175,6 @@ public class SlackSlashCommandTest {
     functionInstance.service(request, response);
 
     writerOut.flush();
-    assertThat(responseOut.toString()).contains("https://en.wikipedia.org/wiki/Lion");
+    assertThat(responseOut.toString()).contains("https://en.wikipedia.org/wiki/Kolach");
   }
 }
