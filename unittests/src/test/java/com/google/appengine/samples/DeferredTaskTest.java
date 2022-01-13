@@ -80,7 +80,7 @@ public class DeferredTaskTest {
   public void tearDown() {
     MyTask.taskRan = false;
     requestReset();
-    helperTearDown();
+    // helperTearDown();
   }
 
   @Test
