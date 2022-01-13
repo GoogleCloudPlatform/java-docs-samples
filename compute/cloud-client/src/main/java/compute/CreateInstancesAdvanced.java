@@ -21,7 +21,7 @@ package compute;
 // [START compute_instances_create_from_snapshot]
 // [START compute_instances_create_from_image_plus_empty_disk]
 // [START compute_instances_create_from_custom_image]
-// [START compute_instances_create_from_image ]
+// [START compute_instances_create_from_image]
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AttachedDisk;
@@ -39,7 +39,7 @@ import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
 public class CreateInstancesAdvanced {
-  // [END compute_instances_create_from_image ]
+  // [END compute_instances_create_from_image]
   // [END compute_instances_create_from_custom_image]
   // [END compute_instances_create_from_image_plus_empty_disk]
   // [END compute_instances_create_from_snapshot]
