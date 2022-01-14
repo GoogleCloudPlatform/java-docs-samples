@@ -57,7 +57,7 @@ public class ExampleSystemIT {
         .uri(URI.create(functionUrl))
         .GET();
 
-    // Used to test functions that require end-user authentication
+    // Used to test functions that require authenticated invokers
     if (ACCESS_TOKEN != null) {
       getRequestBuilder.header("Authorization", "Bearer " + ACCESS_TOKEN);
     }
