@@ -41,7 +41,7 @@ public class ParseXml implements HttpFunction {
       throws IOException, ParserConfigurationException {
 
     try {
-      DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+      DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
       var writer = new PrintWriter(response.getWriter());
 
       // Get request body
@@ -49,7 +49,7 @@ public class ParseXml implements HttpFunction {
           request.getInputStream().readAllBytes());
 
       // Parse + process XML
-      Document doc = dBuilder.parse(bodyStream);
+      Document doc = docBuilder.parse(bodyStream);
       writer.printf("Root element: %s", doc.getDocumentElement().getNodeName());
     } catch (SAXException e) {
       response.setStatusCode(HttpURLConnection.HTTP_BAD_REQUEST);
