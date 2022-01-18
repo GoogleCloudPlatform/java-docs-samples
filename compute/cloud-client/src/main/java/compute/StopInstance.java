@@ -42,7 +42,7 @@ public class StopInstance {
     stopInstance(project, zone, instanceName);
   }
 
-  // Stops a stopped Google Compute Engine instance.
+  // Stops a started Google Compute Engine instance.
   public static void stopInstance(String project, String zone, String instanceName)
       throws IOException, ExecutionException, InterruptedException {
     /* Initialize client that will be used to send requests. This client only needs to be created
