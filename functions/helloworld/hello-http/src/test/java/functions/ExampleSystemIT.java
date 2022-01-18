@@ -36,7 +36,9 @@ public class ExampleSystemIT {
   private static final String BASE_URL = System.getenv("FUNCTIONS_BASE_URL");
 
   // Access token used to send requests to authenticated-only functions
-  // TODO<developer>: set this value if your function requires authentication
+  // TODO<developer>: Set this value if your function requires authentication.
+  //                  See the documentation for more info:
+  // https://cloud.google.com/functions/docs/securing/authenticating
   private static final String ACCESS_TOKEN = System.getenv("FUNCTIONS_ACCESS_TOKEN");
 
   private static HttpClient client = HttpClient.newHttpClient();
