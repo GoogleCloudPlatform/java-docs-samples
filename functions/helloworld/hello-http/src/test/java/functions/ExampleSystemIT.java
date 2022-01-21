@@ -23,6 +23,7 @@ import static com.google.common.truth.Truth.assertThat;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,12 @@ public class ExampleSystemIT {
   // Root URL pointing to your Cloud Functions deployment
   // TODO<developer>: set this value, as an environment variable or within your test code
   private static final String BASE_URL = System.getenv("FUNCTIONS_BASE_URL");
+
+  // Access token used to send requests to authenticated-only functions
+  // TODO<developer>: Set this value if your function requires authentication.
+  //                  See the documentation for more info:
+  // https://cloud.google.com/functions/docs/securing/authenticating
+  private static final String ACCESS_TOKEN = System.getenv("FUNCTIONS_ACCESS_TOKEN");
 
   private static HttpClient client = HttpClient.newHttpClient();
 
@@ -48,8 +55,16 @@ public class ExampleSystemIT {
     }
 
     // [START functions_http_system_test]
-    java.net.http.HttpRequest getRequest =
-        java.net.http.HttpRequest.newBuilder().uri(URI.create(functionUrl)).GET().build();
+    HttpRequest.Builder getRequestBuilder = java.net.http.HttpRequest.newBuilder()
+        .uri(URI.create(functionUrl))
+        .GET();
+
+    // Used to test functions that require authenticated invokers
+    if (ACCESS_TOKEN != null) {
+      getRequestBuilder.header("Authorization", "Bearer " + ACCESS_TOKEN);
+    }
+
+    java.net.http.HttpRequest getRequest = getRequestBuilder.build();
 
     HttpResponse response = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
     assertThat(response.body().toString()).isEqualTo("Hello world!");
