@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Instance;
-import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstancesClient;
-import com.google.cloud.compute.v1.InstancesScopedList;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -83,7 +78,8 @@ public class InstanceTemplatesIT {
         "test-csam-inst-temp-or-" + instanceUUID;
 
     // Check for resources created >24hours which haven't been deleted in the project.
-    cleanUpExistingTestResources("test-csam-");
+    Util.cleanUpExistingInstanceTemplates("test-csam-", PROJECT_ID);
+    Util.cleanUpExistingInstances("test-csam-", PROJECT_ID);
 
     // Create templates.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
@@ -114,7 +110,8 @@ public class InstanceTemplatesIT {
     assertThat(stdOut.toString()).contains(
         "Instance creation from template with overrides: Operation Status "
             + MACHINE_NAME_CR_TEMPLATE_OR);
-    Assert.assertEquals(getInstance(DEFAULT_ZONE, MACHINE_NAME_CR_TEMPLATE_OR).getDisksCount(), 2);
+    Assert.assertEquals(
+        getInstance(DEFAULT_ZONE, MACHINE_NAME_CR_TEMPLATE_OR).getDisksCount(), 2);
     stdOut.close();
     System.setOut(null);
   }
@@ -141,45 +138,6 @@ public class InstanceTemplatesIT {
     System.setOut(null);
   }
 
-  // Cleans existing test resources if any.
-  // If the project contains too many instances, use "filter" when listing resources
-  // and delete the listed resources based on the timestamp.
-  public static void cleanUpExistingTestResources(String prefixToDelete)
-      throws IOException, ExecutionException, InterruptedException {
-    boolean isBefore24Hours = false;
-
-    // Delete templates which starts with the given prefixToDelete and
-    // has creation timestamp >24 hours.
-    for (InstanceTemplate template : ListInstanceTemplates.listInstanceTemplates(PROJECT_ID)
-        .iterateAll()) {
-      if (!template.hasCreationTimestamp()) {
-        continue;
-      }
-      isBefore24Hours = Instant.parse(template.getCreationTimestamp())
-          .isBefore(Instant.now().minus(24, ChronoUnit.HOURS));
-      if (template.getName().contains(prefixToDelete) && isBefore24Hours) {
-        DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, template.getName());
-      }
-    }
-
-    // Delete instances which starts with the given prefixToDelete and
-    // has creation timestamp >24 hours.
-    for (Entry<String, InstancesScopedList> instanceGroup : ListAllInstances.listAllInstances(
-        PROJECT_ID).iterateAll()) {
-      String instanceZone = instanceGroup.getKey();
-      for (Instance instance : instanceGroup.getValue().getInstancesList()) {
-        if (!instance.hasCreationTimestamp()) {
-          continue;
-        }
-        isBefore24Hours = Instant.parse(instance.getCreationTimestamp())
-            .isBefore(Instant.now().minus(24, ChronoUnit.HOURS));
-        if (instance.getName().contains(prefixToDelete) && isBefore24Hours) {
-          DeleteInstance.deleteInstance(PROJECT_ID, instanceZone, instance.getName());
-        }
-      }
-    }
-  }
-
   public static Instance getInstance(String zone, String instanceName) throws IOException {
     try (InstancesClient instancesClient = InstancesClient.create()) {
       return instancesClient.get(PROJECT_ID, zone, instanceName);
@@ -197,6 +155,7 @@ public class InstanceTemplatesIT {
     stdOut = null;
     System.setOut(null);
   }
+
 
   @Test
   public void testGetInstanceTemplate() throws IOException {
