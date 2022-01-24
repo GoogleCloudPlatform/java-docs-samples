@@ -42,8 +42,8 @@ public class Util {
       if (!template.hasCreationTimestamp()) {
         continue;
       }
-      if (template.getName().contains(prefixToDelete) &&
-          isCreatedBeforeThresholdTime(template.getCreationTimestamp())) {
+      if (template.getName().contains(prefixToDelete)
+          && isCreatedBeforeThresholdTime(template.getCreationTimestamp())) {
         DeleteInstanceTemplate.deleteInstanceTemplate(projectId, template.getName());
       }
     }
@@ -61,8 +61,8 @@ public class Util {
         if (!instance.hasCreationTimestamp()) {
           continue;
         }
-        if (instance.getName().contains(prefixToDelete) &&
-            isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
+        if (instance.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
           DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
         }
       }
