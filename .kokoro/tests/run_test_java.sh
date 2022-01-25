@@ -37,6 +37,7 @@ fi
 
 # Build and deploy Cloud Functions hello-world samples
 # (Some of these samples have E2E tests that use deployed functions.)
+echo "TQZAX (debug): ${file}"
 if [[ "$file" == "functions/helloworld/"* ]]; then
     "$SCRIPT_DIR"/build_cloud_functions.sh
     EXIT=$?
@@ -47,6 +48,8 @@ if [[ "$file" == "functions/helloworld/"* ]]; then
     else
     echo -e "\n Cloud Functions build/deploy completed.\n"
     fi
+else
+    echo "NOT MATCHING FUNCTIONS!"
 fi
 
 # Use maven to execute the tests for the project.
