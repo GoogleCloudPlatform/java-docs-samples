@@ -35,6 +35,20 @@ if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
     exit 0
 fi
 
+# Build and deploy Cloud Functions hello-world samples
+# (Some of these samples have E2E tests that use deployed functions.)
+if [[ "$file" == "functions/helloworld/"* ]]; then
+    "$SCRIPT_DIR"/build_cloud_functions.sh
+    EXIT=$?
+
+    if [[ $EXIT -ne 0 ]]; then
+    RTN=1
+    echo -e "\n Cloud Functions build/deploy failed: gcloud returned a non-zero exit code. \n"
+    else
+    echo -e "\n Cloud Functions build/deploy completed.\n"
+    fi
+fi
+
 # Use maven to execute the tests for the project.
 mvn --quiet --batch-mode --fail-at-end clean verify \
     -Dfile.encoding="UTF-8" \
@@ -63,19 +77,6 @@ if [[ "$file" == "run/"* ]]; then
     echo -e "\n Cloud Run build/deploy failed: gcloud returned a non-zero exit code. \n"
     else
     echo -e "\n Cloud Run build/deploy completed.\n"
-    fi
-fi
-
-# Build and deploy Cloud Functions samples
-if [[ "$file" == "functions/"* ]]; then
-    "$SCRIPT_DIR"/build_cloud_functions.sh
-    EXIT=$?
-
-    if [[ $EXIT -ne 0 ]]; then
-    RTN=1
-    echo -e "\n Cloud Functions build/deploy failed: gcloud returned a non-zero exit code. \n"
-    else
-    echo -e "\n Cloud Functions build/deploy completed.\n"
     fi
 fi
 
