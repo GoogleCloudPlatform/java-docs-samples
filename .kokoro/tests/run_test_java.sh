@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+file="$(pwd)"
+
 # Fail the tests if no Java version was found.
 POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
 ALLOWED_VERSIONS=("1.8" "11")
@@ -38,7 +40,7 @@ fi
 # Build and deploy Cloud Functions hello-world samples
 # (Some of these samples have E2E tests that use deployed functions.)
 echo "TQZAX (debug): ${file}"
-if [[ "$file" == "functions/helloworld/"* ]]; then
+if [[ "$file" == *"functions/helloworld/"* ]]; then
     "$SCRIPT_DIR"/build_cloud_functions.sh
     EXIT=$?
 
