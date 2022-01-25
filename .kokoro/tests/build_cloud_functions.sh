@@ -17,14 +17,15 @@
 set -eo pipefail
 
 FUNCTIONS_JAVA_RUNTIME="java11"
+FUNCTIONS_REGION="us-central1"
 
 # Register post-test cleanup.
 # Only needed if deploy completed.
 function cleanup {
   set -x
-  gcloud functions delete $FUNCTIONS_HTTP_FN_NAME -q || true
-  gcloud functions delete $FUNCTIONS_PUBSUB_FN_NAME -q || true
-  gcloud functions delete $FUNCTIONS_GCS_FN_NAME -q || true
+  gcloud functions delete $FUNCTIONS_HTTP_FN_NAME --region $FUNCTIONS_REGION -q || true
+  gcloud functions delete $FUNCTIONS_PUBSUB_FN_NAME --region $FUNCTIONS_REGION -q || true
+  gcloud functions delete $FUNCTIONS_GCS_FN_NAME --region $FUNCTIONS_REGION -q || true
   mvn -q -B clean
 }
 trap cleanup EXIT
@@ -53,18 +54,21 @@ set -x
 
 echo "Deploying function HelloHttp to: ${FUNCTIONS_HTTP_FN_NAME}"
 gcloud functions deploy $FUNCTIONS_HTTP_FN_NAME \
+  --region $FUNCTIONS_REGION \
   --runtime $FUNCTIONS_JAVA_RUNTIME \
   --entry-point "functions.HelloHttp" \
   --trigger-http
 
 echo "Deploying function HelloGcs to: ${FUNCTIONS_PUBSUB_FN_NAME}"
 gcloud functions deploy $FUNCTIONS_PUBSUB_FN_NAME \
+  --region $FUNCTIONS_REGION \
   --runtime $FUNCTIONS_JAVA_RUNTIME \
   --entry-point "functions.HelloPubSub" \
   --trigger-topic $FUNCTIONS_TOPIC
 
 echo "Deploying function HelloHttp to: ${FUNCTIONS_GCS_FN_NAME}"
 gcloud functions deploy $FUNCTIONS_GCS_FN_NAME \
+  --region $FUNCTIONS_REGION \
   --runtime $FUNCTIONS_JAVA_RUNTIME \
   --entry-point "functions.HelloGcs" \
   --trigger-bucket $FUNCTIONS_BUCKET
