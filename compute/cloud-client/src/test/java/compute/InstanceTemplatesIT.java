@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,12 +41,15 @@ public class InstanceTemplatesIT {
 
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String DEFAULT_REGION = "us-central1";
+  private static final String DEFAULT_ZONE = DEFAULT_REGION + "-a";
   private static String TEMPLATE_NAME;
   private static String TEMPLATE_NAME_WITH_DISK;
-  private static String ZONE;
-  private static String MACHINE_NAME;
-  private static String MACHINE_NAME_2;
-  private static String MACHINE_NAME_3;
+  private static String TEMPLATE_NAME_FROM_INSTANCE;
+  private static String TEMPLATE_NAME_WITH_SUBNET;
+  private static String MACHINE_NAME_CR;
+  private static String MACHINE_NAME_CR_TEMPLATE;
+  private static String MACHINE_NAME_CR_TEMPLATE_OR;
 
   private ByteArrayOutputStream stdOut;
 
@@ -63,31 +66,52 @@ public class InstanceTemplatesIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    TEMPLATE_NAME = "template-name-" + UUID.randomUUID();
-    ZONE = "us-central1-a";
-    MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_2 = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_3 = "my-new-test-instance" + UUID.randomUUID();
-    TEMPLATE_NAME_WITH_DISK = "my-new-test-instance" + UUID.randomUUID();
+    String templateUUID = UUID.randomUUID().toString();
+    TEMPLATE_NAME = "test-csam-template-" + templateUUID;
+    TEMPLATE_NAME_WITH_DISK = "test-csam-template-disk-" + templateUUID;
+    TEMPLATE_NAME_FROM_INSTANCE = "test-csam-template-inst-" + templateUUID;
+    TEMPLATE_NAME_WITH_SUBNET = "test-csam-template-snet-" + templateUUID;
+    String instanceUUID = UUID.randomUUID().toString();
+    MACHINE_NAME_CR = "test-csam-instance" + instanceUUID;
+    MACHINE_NAME_CR_TEMPLATE = "test-csam-inst-template-" + instanceUUID;
+    MACHINE_NAME_CR_TEMPLATE_OR =
+        "test-csam-inst-temp-or-" + instanceUUID;
+
+    // Check for resources created >24hours which haven't been deleted in the project.
+    Util.cleanUpExistingInstanceTemplates("test-csam-", PROJECT_ID);
+    Util.cleanUpExistingInstances("test-csam-", PROJECT_ID);
 
     // Create templates.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status " + TEMPLATE_NAME);
-    CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
+    CreateInstance.createInstance(PROJECT_ID, DEFAULT_ZONE, MACHINE_NAME_CR);
+    TimeUnit.SECONDS.sleep(10);
+    CreateTemplateFromInstance.createTemplateFromInstance(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE,
+        getInstance(DEFAULT_ZONE, MACHINE_NAME_CR).getSelfLink());
+    assertThat(stdOut.toString())
+        .contains("Instance Template creation operation status " + TEMPLATE_NAME_FROM_INSTANCE);
+    CreateTemplateWithSubnet.createTemplateWithSubnet(PROJECT_ID, "global/networks/default",
+        String.format("regions/%s/subnetworks/default", DEFAULT_REGION), TEMPLATE_NAME_WITH_SUBNET);
+    assertThat(stdOut.toString())
+        .contains("Template creation from subnet operation status " + TEMPLATE_NAME_WITH_SUBNET);
     TimeUnit.SECONDS.sleep(10);
 
     // Create instances.
-    CreateInstanceFromTemplate.createInstanceFromTemplate(PROJECT_ID, ZONE, MACHINE_NAME_2,
+    CreateInstanceFromTemplate.createInstanceFromTemplate(PROJECT_ID, DEFAULT_ZONE,
+        MACHINE_NAME_CR_TEMPLATE,
         "global/instanceTemplates/" + TEMPLATE_NAME);
     assertThat(stdOut.toString())
-        .contains("Instance creation from template: Operation Status " + MACHINE_NAME_2);
+        .contains("Instance creation from template: Operation Status " + MACHINE_NAME_CR_TEMPLATE);
     CreateInstanceTemplate.createInstanceTemplateWithDiskType(PROJECT_ID, TEMPLATE_NAME_WITH_DISK);
     CreateInstanceFromTemplateWithOverrides
-        .createInstanceFromTemplateWithOverrides(PROJECT_ID, ZONE, MACHINE_NAME_3,
+        .createInstanceFromTemplateWithOverrides(PROJECT_ID, DEFAULT_ZONE,
+            MACHINE_NAME_CR_TEMPLATE_OR,
             TEMPLATE_NAME_WITH_DISK);
     assertThat(stdOut.toString()).contains(
-        "Instance creation from template with overrides: Operation Status " + MACHINE_NAME_3);
-    Assert.assertEquals(getInstance(ZONE, MACHINE_NAME_3).getDisksCount(), 2);
+        "Instance creation from template with overrides: Operation Status "
+            + MACHINE_NAME_CR_TEMPLATE_OR);
+    Assert.assertEquals(
+        getInstance(DEFAULT_ZONE, MACHINE_NAME_CR_TEMPLATE_OR).getDisksCount(), 2);
     stdOut.close();
     System.setOut(null);
   }
@@ -97,13 +121,19 @@ public class InstanceTemplatesIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     // Delete instances.
-    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
-    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_2);
-    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_3);
+    DeleteInstance.deleteInstance(PROJECT_ID, DEFAULT_ZONE, MACHINE_NAME_CR);
+    DeleteInstance.deleteInstance(PROJECT_ID, DEFAULT_ZONE, MACHINE_NAME_CR_TEMPLATE);
+    DeleteInstance.deleteInstance(PROJECT_ID, DEFAULT_ZONE, MACHINE_NAME_CR_TEMPLATE_OR);
     // Delete instance templates.
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     assertThat(stdOut.toString())
         .contains("Instance template deletion operation status for " + TEMPLATE_NAME);
+    DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE);
+    assertThat(stdOut.toString())
+        .contains("Instance template deletion operation status for " + TEMPLATE_NAME_FROM_INSTANCE);
+    DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_WITH_SUBNET);
+    assertThat(stdOut.toString())
+        .contains("Instance template deletion operation status for " + TEMPLATE_NAME_WITH_SUBNET);
     stdOut.close();
     System.setOut(null);
   }
@@ -126,16 +156,23 @@ public class InstanceTemplatesIT {
     System.setOut(null);
   }
 
+
   @Test
   public void testGetInstanceTemplate() throws IOException {
     GetInstanceTemplate.getInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains(TEMPLATE_NAME);
+    GetInstanceTemplate.getInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE);
+    assertThat(stdOut.toString()).contains(TEMPLATE_NAME_FROM_INSTANCE);
+    GetInstanceTemplate.getInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_WITH_SUBNET);
+    assertThat(stdOut.toString()).contains(TEMPLATE_NAME_WITH_SUBNET);
   }
 
   @Test
   public void testListInstanceTemplates() throws IOException {
     ListInstanceTemplates.listInstanceTemplates(PROJECT_ID);
     assertThat(stdOut.toString()).contains(TEMPLATE_NAME);
+    assertThat(stdOut.toString()).contains(TEMPLATE_NAME_FROM_INSTANCE);
+    assertThat(stdOut.toString()).contains(TEMPLATE_NAME_WITH_SUBNET);
   }
 
 }
