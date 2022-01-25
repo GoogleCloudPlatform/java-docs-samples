@@ -16,6 +16,7 @@
 
 set -eo pipefail
 
+file="$(pwd)"
 FUNCTIONS_JAVA_RUNTIME="java11"
 FUNCTIONS_REGION="us-central1"
 
