@@ -43,7 +43,7 @@ public class ExampleSystemIT {
 
   // Name of the deployed function
   // TODO<developer>: Set this to HelloHttp, as an environment variable or within your test code
-  private static final String ACCESS_TOKEN = System.getenv("FUNCTIONS_HTTP_FN_NAME");
+  private static final String FUNCTION_DEPLOYED_NAME = System.getenv("FUNCTIONS_HTTP_FN_NAME");
 
   private static HttpClient client = HttpClient.newHttpClient();
 
