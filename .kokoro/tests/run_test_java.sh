@@ -14,6 +14,7 @@
 # limitations under the License.
 
 file="$(pwd)"
+SCRIPT_DIR="$(dirname $0)/"
 
 # Fail the tests if no Java version was found.
 POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
