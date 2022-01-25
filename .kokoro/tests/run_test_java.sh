@@ -66,6 +66,19 @@ if [[ "$file" == "run/"* ]]; then
     fi
 fi
 
+# Build and deploy Cloud Functions samples
+if [[ "$file" == "functions/"* ]]; then
+    "$SCRIPT_DIR"/build_cloud_functions.sh
+    EXIT=$?
+
+    if [[ $EXIT -ne 0 ]]; then
+    RTN=1
+    echo -e "\n Cloud Functions build/deploy failed: gcloud returned a non-zero exit code. \n"
+    else
+    echo -e "\n Cloud Functions build/deploy completed.\n"
+    fi
+fi
+
 # If this is a periodic build, send the test log to the FlakyBot.
 # See https://github.com/googleapis/repo-automation-bots/tree/main/packages/flakybot.
 if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"periodic"* ]]; then

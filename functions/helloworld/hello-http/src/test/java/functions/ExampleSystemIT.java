@@ -41,11 +41,15 @@ public class ExampleSystemIT {
   // https://cloud.google.com/functions/docs/securing/authenticating
   private static final String ACCESS_TOKEN = System.getenv("FUNCTIONS_ACCESS_TOKEN");
 
+  // Name of the deployed function
+  // TODO<developer>: Set this to HelloHttp, as an environment variable or within your test code
+  private static final String ACCESS_TOKEN = System.getenv("FUNCTIONS_HTTP_FN_NAME");
+
   private static HttpClient client = HttpClient.newHttpClient();
 
   @Test
   public void helloHttp_shouldRunWithFunctionsFramework() throws IOException, InterruptedException {
-    String functionUrl = BASE_URL + "/HelloHttp";
+    String functionUrl = BASE_URL + "/" + FUNCTION_DEPLOYED_NAME;
 
     // [END functions_http_system_test]
     // Skip this test if FUNCTIONS_BASE_URL is not set
