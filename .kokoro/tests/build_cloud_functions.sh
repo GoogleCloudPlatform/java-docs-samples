@@ -40,8 +40,8 @@ trap cleanup EXIT
 requireEnv() {
   test "${!1}" || (echo "Environment Variable '$1' not found" && exit 1)
 }
-requireEnv $FUNCTIONS_TOPIC
-requireEnv $FUNCTIONS_BUCKET
+requireEnv "FUNCTIONS_TOPIC"
+requireEnv "FUNCTIONS_BUCKET"
 
 # We must explicitly specify function names for event-based functions
 
