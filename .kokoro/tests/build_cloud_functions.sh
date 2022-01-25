@@ -23,9 +23,16 @@ FUNCTIONS_REGION="us-central1"
 # Only needed if deploy completed.
 function cleanup {
   set -x
-  gcloud functions delete $FUNCTIONS_HTTP_FN_NAME --region $FUNCTIONS_REGION -q || true
-  gcloud functions delete $FUNCTIONS_PUBSUB_FN_NAME --region $FUNCTIONS_REGION -q || true
-  gcloud functions delete $FUNCTIONS_GCS_FN_NAME --region $FUNCTIONS_REGION -q || true
+  if [[ "$file" == *"hello-http"* ]]; then
+    gcloud functions delete $FUNCTIONS_HTTP_FN_NAME \
+      --region="$FUNCTIONS_REGION" -q || true
+  elif [[ "$file" == *"hello-pubsub"* ]]; then
+    gcloud functions delete $FUNCTIONS_PUBSUB_FN_NAME \
+      --region="$FUNCTIONS_REGION" -q || true
+  elif [[ "$file" == *"hello-gcs"* ]]; then
+    gcloud functions delete $FUNCTIONS_GCS_FN_NAME \
+      --region="$FUNCTIONS_REGION" -q || true
+  fi
   mvn -q -B clean
 }
 trap cleanup EXIT
@@ -52,26 +59,28 @@ export FUNCTIONS_GCS_FN_NAME="gcs-${SUFFIX}"
 # Deploy functions
 set -x
 
-echo "Deploying function HelloHttp to: ${FUNCTIONS_HTTP_FN_NAME}"
-gcloud functions deploy $FUNCTIONS_HTTP_FN_NAME \
-  --region $FUNCTIONS_REGION \
-  --runtime $FUNCTIONS_JAVA_RUNTIME \
-  --entry-point "functions.HelloHttp" \
-  --trigger-http
-
-echo "Deploying function HelloGcs to: ${FUNCTIONS_PUBSUB_FN_NAME}"
-gcloud functions deploy $FUNCTIONS_PUBSUB_FN_NAME \
-  --region $FUNCTIONS_REGION \
-  --runtime $FUNCTIONS_JAVA_RUNTIME \
-  --entry-point "functions.HelloPubSub" \
-  --trigger-topic $FUNCTIONS_TOPIC
-
-echo "Deploying function HelloHttp to: ${FUNCTIONS_GCS_FN_NAME}"
-gcloud functions deploy $FUNCTIONS_GCS_FN_NAME \
-  --region $FUNCTIONS_REGION \
-  --runtime $FUNCTIONS_JAVA_RUNTIME \
-  --entry-point "functions.HelloGcs" \
-  --trigger-bucket $FUNCTIONS_BUCKET
+if [[ "$file" == *"hello-http"* ]]; then
+  echo "Deploying function HelloHttp to: ${FUNCTIONS_HTTP_FN_NAME}"
+  gcloud functions deploy $FUNCTIONS_HTTP_FN_NAME \
+    --region $FUNCTIONS_REGION \
+    --runtime $FUNCTIONS_JAVA_RUNTIME \
+    --entry-point "functions.HelloHttp" \
+    --trigger-http
+elif [[ "$file" == *"hello-pubsub"* ]]; then
+  echo "Deploying function HelloPubSub to: ${FUNCTIONS_PUBSUB_FN_NAME}"
+  gcloud functions deploy $FUNCTIONS_PUBSUB_FN_NAME \
+    --region $FUNCTIONS_REGION \
+    --runtime $FUNCTIONS_JAVA_RUNTIME \
+    --entry-point "functions.HelloPubSub" \
+    --trigger-topic $FUNCTIONS_TOPIC
+elif [[ "$file" == *"hello-gcs"* ]]; then
+  echo "Deploying function HelloGcs to: ${FUNCTIONS_GCS_FN_NAME}"
+  gcloud functions deploy $FUNCTIONS_GCS_FN_NAME \
+    --region $FUNCTIONS_REGION \
+    --runtime $FUNCTIONS_JAVA_RUNTIME \
+    --entry-point "functions.HelloGcs" \
+    --trigger-bucket $FUNCTIONS_BUCKET
+fi
 
 set +x
 
