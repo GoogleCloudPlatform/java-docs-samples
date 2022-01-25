@@ -51,17 +51,20 @@ export FUNCTIONS_GCS_FN_NAME="gcs-${SUFFIX}"
 # Deploy functions
 set -x
 
+echo "Deploying function HelloHttp to: ${FUNCTIONS_HTTP_FN_NAME}"
 gcloud functions deploy $FUNCTIONS_HTTP_FN_NAME \
   --runtime $FUNCTIONS_JAVA_RUNTIME \
   --entry-point "functions.HelloHttp" \
   --trigger-http
 
-gcloud functions deploy $FUNCTIONS_GCS_FN_NAME \
+echo "Deploying function HelloGcs to: ${FUNCTIONS_PUBSUB_FN_NAME}"
+gcloud functions deploy $FUNCTIONS_PUBSUB_FN_NAME \
   --runtime $FUNCTIONS_JAVA_RUNTIME \
   --entry-point "functions.HelloPubSub" \
   --trigger-topic $FUNCTIONS_TOPIC
 
-gcloud functions deploy $FUNCTIONS_PUBSUB_FN_NAME \
+echo "Deploying function HelloHttp to: ${FUNCTIONS_GCS_FN_NAME}"
+gcloud functions deploy $FUNCTIONS_GCS_FN_NAME \
   --runtime $FUNCTIONS_JAVA_RUNTIME \
   --entry-point "functions.HelloGcs" \
   --trigger-bucket $FUNCTIONS_BUCKET
