@@ -54,6 +54,7 @@ public class ExampleSystemIT {
 
     // DEBUG
     System.out.println("DBG: " + functionUrl);
+    assertThat(functionUrl).isEqualTo("https://us-central1-java-docs-samples-testing.cloudfunctions.net/http-6684");
 
     // [END functions_http_system_test]
     // Skip this test if FUNCTIONS_BASE_URL is not set
