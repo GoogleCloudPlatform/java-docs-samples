@@ -128,6 +128,18 @@
       <version>${beam.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client</artifactId>
+      <version>1.32.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-dataflow</artifactId>
+      <version>v1b3-rev20210825-1.32.1</version>
+    </dependency>
+
     <!-- Test dependencies -->
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -144,18 +156,6 @@
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <version>1.1.3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api-client</groupId>
-      <artifactId>google-api-client</artifactId>
-      <version>1.32.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-dataflow</artifactId>
-      <version>v1b3-rev20210825-1.32.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
