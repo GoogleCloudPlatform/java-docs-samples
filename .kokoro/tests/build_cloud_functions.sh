@@ -55,7 +55,7 @@ elif [[ "$file" == *"hello-pubsub"* ]]; then
     --region $FUNCTIONS_REGION \
     --runtime $FUNCTIONS_JAVA_RUNTIME \
     --entry-point "functions.HelloPubSub" \
-    --trigger-topic $FUNCTIONS_TOPIC
+    --trigger-topic $FUNCTIONS_SYSTEM_TEST_TOPIC
 elif [[ "$file" == *"hello-gcs"* ]]; then
   echo "Deploying function HelloGcs to: ${FUNCTIONS_GCS_FN_NAME}"
   gcloud functions deploy $FUNCTIONS_GCS_FN_NAME \
