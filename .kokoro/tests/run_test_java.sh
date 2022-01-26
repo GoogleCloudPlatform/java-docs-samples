@@ -40,19 +40,19 @@ fi
 
 # Build and deploy Cloud Functions hello-world samples
 # (Some of these samples have E2E tests that use deployed functions.)
-echo "TQZAX (debug): ${file}"
 if [[ "$file" == *"functions/helloworld/"* ]]; then
     "$SCRIPT_DIR"/build_cloud_functions.sh
     EXIT=$?
 
     if [[ $EXIT -ne 0 ]]; then
-    RTN=1
-    echo -e "\n Cloud Functions build/deploy failed: gcloud returned a non-zero exit code. \n"
+        RTN=1
+        echo -e "\n Cloud Functions build/deploy failed: gcloud returned a non-zero exit code. \n"
     else
-    echo -e "\n Cloud Functions build/deploy completed.\n"
+        echo -e "\n Cloud Functions build/deploy completed.\n"
+
+        # Wait for functions to warm up (and start detecting events)
+        sleep 1m
     fi
-else
-    echo "NOT MATCHING FUNCTIONS!"
 fi
 
 # Use maven to execute the tests for the project.
