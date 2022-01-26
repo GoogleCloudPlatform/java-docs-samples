@@ -52,6 +52,9 @@ public class ExampleSystemIT {
   public void helloHttp_shouldRunWithFunctionsFramework() throws IOException, InterruptedException {
     String functionUrl = BASE_URL + "/" + FUNCTION_DEPLOYED_NAME;
 
+    // DEBUG
+    System.out.println("DBG: " + functionUrl);
+
     // [END functions_http_system_test]
     // Skip this test if FUNCTIONS_BASE_URL is not set
     if (BASE_URL == null) {
