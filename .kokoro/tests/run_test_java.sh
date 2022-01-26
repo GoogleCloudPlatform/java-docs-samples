@@ -64,6 +64,11 @@ mvn --quiet --batch-mode --fail-at-end clean verify \
     -Dbigtable.instanceID=instance
 EXIT=$?
 
+# Tear down (deployed) Cloud Functions after deployment tests are run
+if [[ "$file" == *"functions/helloworld/"* ]]; then
+    "$SCRIPT_DIR"/teardown_cloud_functions.sh
+fi
+
 if [[ $EXIT -ne 0 ]]; then
     RTN=1
     echo -e "\n Testing failed: Maven returned a non-zero exit code. \n"

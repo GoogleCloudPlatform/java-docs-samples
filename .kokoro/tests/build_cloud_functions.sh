@@ -20,24 +20,6 @@ file="$(pwd)"
 FUNCTIONS_JAVA_RUNTIME="java11"
 FUNCTIONS_REGION="us-central1"
 
-# Register post-test cleanup.
-# Only needed if deploy completed.
-function cleanup {
-  set -x
-  if [[ "$file" == *"hello-http"* ]]; then
-    gcloud functions delete $FUNCTIONS_HTTP_FN_NAME \
-      --region="$FUNCTIONS_REGION" -q || true
-  elif [[ "$file" == *"hello-pubsub"* ]]; then
-    gcloud functions delete $FUNCTIONS_PUBSUB_FN_NAME \
-      --region="$FUNCTIONS_REGION" -q || true
-  elif [[ "$file" == *"hello-gcs"* ]]; then
-    gcloud functions delete $FUNCTIONS_GCS_FN_NAME \
-      --region="$FUNCTIONS_REGION" -q || true
-  fi
-  mvn -q -B clean
-}
-trap cleanup EXIT
-
 requireEnv() {
   test "${!1}" || (echo "Environment Variable '$1' not found" && exit 1)
 }
