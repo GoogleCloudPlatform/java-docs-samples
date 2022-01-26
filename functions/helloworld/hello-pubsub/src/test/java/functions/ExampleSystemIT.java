@@ -65,6 +65,9 @@ public class ExampleSystemIT {
   }
 
   private static String getLogEntriesAsString(String startTimestamp) {
+    // DBG
+    assertThat(FUNCTION_DEPLOYED_NAME).isEqualTo("pubsub-6684");
+
     // Construct Stackdriver logging filter
     // See this page for more info: https://cloud.google.com/logging/docs/view/advanced-queries
     String filter = "resource.type=\"cloud_function\""
