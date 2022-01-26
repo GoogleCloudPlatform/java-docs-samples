@@ -36,11 +36,11 @@ public class ExampleSystemIT {
   // TODO<developer>: set this value, as an environment variable or within your test code
   private static final String BASE_URL = System.getenv("FUNCTIONS_BASE_URL");
 
-  // Access token used to send requests to authenticated-only functions
+  // Identity token used to send requests to authenticated-only functions
   // TODO<developer>: Set this value if your function requires authentication.
   //                  See the documentation for more info:
   // https://cloud.google.com/functions/docs/securing/authenticating
-  private static final String ACCESS_TOKEN = System.getenv("FUNCTIONS_ACCESS_TOKEN");
+  private static final String IDENTITY_TOKEN = System.getenv("FUNCTIONS_IDENTITY_TOKEN");
 
   // Name of the deployed function
   // TODO<developer>: Set this to HelloHttp, as an environment variable or within your test code
@@ -69,8 +69,8 @@ public class ExampleSystemIT {
         .GET();
 
     // Used to test functions that require authenticated invokers
-    if (ACCESS_TOKEN != null) {
-      getRequestBuilder.header("Authorization", "Bearer " + ACCESS_TOKEN);
+    if (IDENTITY_TOKEN != null) {
+      getRequestBuilder.header("Authorization", "Bearer " + IDENTITY_TOKEN);
     }
 
     java.net.http.HttpRequest getRequest = getRequestBuilder.build();

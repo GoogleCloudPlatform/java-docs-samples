@@ -64,7 +64,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # For Cloud Run filesystem sample
     export FILESTORE_IP_ADDRESS=$(gcloud secrets versions access latest --secret fs-app)
     # For Functions samples
-    export FUNCTIONS_ACCESS_TOKEN=$(gcloud auth print-access-token)
+    export FUNCTIONS_IDENTITY_TOKEN=$(gcloud auth print-identity-token)
 
     SECRET_FILES=("java-docs-samples-service-account.json" \
     "java-aws-samples-secrets.txt" \
