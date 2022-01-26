@@ -69,7 +69,7 @@ public class ExampleSystemIT {
     // See this page for more info: https://cloud.google.com/logging/docs/view/advanced-queries
     String filter = "resource.type=\"cloud_function\""
         + " AND severity=INFO"
-        + " AND resource.labels.function_name=" + FUNCTION_DEPLOYED_NAME
+        + String.format(" AND resource.labels.function_name=\"%s\"", FUNCTION_DEPLOYED_NAME)
         + String.format(" AND timestamp>=\"%s\"", startTimestamp);
 
     // Get Stackdriver logging entries
