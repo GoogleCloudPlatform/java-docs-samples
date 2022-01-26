@@ -21,6 +21,7 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -71,6 +72,8 @@ public class ExampleSystemIT {
     java.net.http.HttpRequest getRequest = getRequestBuilder.build();
 
     HttpResponse response = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
+
+    assertThat(response.statusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
     assertThat(response.body().toString()).isEqualTo("Hello world!");
   }
 }
