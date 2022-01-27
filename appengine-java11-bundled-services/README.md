@@ -59,7 +59,7 @@ This way, it should  be easy to migrate your existing GAE Java8 applications to 
 This sample demonstrates how to use the App Engine Datastore APIs in a Java11 web application on Google App Engine Java11.
 
 - [Documentation][ae-docs]
-- [Code](https://github.com/GoogleCloudPlatform/getting-started-java/tree/main/appengine-standard-java11-bunded-services/datastore)
+- [Code](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/appengine-standard-java11-bunded-services/datastore)
 
 ### How to change an App Engine Java 8 application to App Engine Java11 bundled services
 
