@@ -37,7 +37,7 @@ access control, billing, and services.
 [cloud-console]: https://console.cloud.google.com/
 
 
-## Difference between App Engine Java8 and Java11 Bundled Services
+## Development differences between App Engine Java8 and Java11 Bundled Services
 
 The only difference between a Java8 application and a Java11 application is in the `appengine-web.xml` file
 where you need to define the Java11 runtime and declare you need the App Engine APIs:
@@ -65,7 +65,8 @@ This sample demonstrates how to use the App Engine Datastore APIs in a Java11 we
 
 You can execute the following steps to transform the java8 appengine-web.xml file to a java11 appengine-web.xml file:
 
-     git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
+     ```shell
+	 git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
 	 cd java-docs-samples
 	 cp -pr appengine-java8 /tmp/java11-samples
 	 cd /tmp/java11-samples
@@ -73,7 +74,8 @@ You can execute the following steps to transform the java8 appengine-web.xml fil
 	 shopt -s globstar dotglob
      for f in **/appengine-web.xml; do sed -i 's.<runtime>java8</runtime>.<runtime>java11</runtime><app-engine-apis>true</app-engine-apis>.' ${f}; done 
 	 # on MacOS
-     for f in **/appengine-web.xml; do sed -i'' -e 's.<runtime>java8</runtime>.<runtime>java11</runtime><app-engine-apis>true</app-engine-apis>.' ${f}; done 
+     for f in **/appengine-web.xml; do sed -i'' -e 's.<runtime>java8</runtime>.<runtime>java11</runtime><app-engine-apis>true</app-engine-apis>.' ${f}; done
+	 ```
 	 
 You will see in the `tmp/java11` directory all the correct code samples to compile and deploy to the Java11 AppEngine runtime, with bundled services.
 Just follow the same documentation as the [Java8 samples][java8-samples].
