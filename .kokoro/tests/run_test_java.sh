@@ -41,7 +41,7 @@ fi
 # Build and deploy Cloud Functions hello-world samples
 # (Some of these samples have E2E tests that use deployed functions.)
 if [[ "$file" == *"functions/helloworld/"* ]]; then
-    "$SCRIPT_DIR"/build_cloud_functions.sh
+    source "$SCRIPT_DIR"/build_cloud_functions.sh
     EXIT=$?
 
     if [[ $EXIT -ne 0 ]]; then
@@ -66,7 +66,7 @@ EXIT=$?
 
 # Tear down (deployed) Cloud Functions after deployment tests are run
 if [[ "$file" == *"functions/helloworld/"* ]]; then
-    "$SCRIPT_DIR"/teardown_cloud_functions.sh
+    source "$SCRIPT_DIR"/teardown_cloud_functions.sh
 fi
 
 if [[ $EXIT -ne 0 ]]; then
