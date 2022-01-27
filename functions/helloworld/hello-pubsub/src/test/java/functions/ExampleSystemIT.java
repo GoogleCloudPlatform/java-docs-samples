@@ -47,7 +47,9 @@ public class ExampleSystemIT {
   // TODO<developer>: set these values (as environment variables)
   private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
   private static final String TOPIC_NAME = System.getenv("FUNCTIONS_SYSTEM_TEST_TOPIC");
-  private static final String FUNCTION_DEPLOYED_NAME = "HelloPubSub";
+
+  // TODO<developer>: set this value (as an environment variable) to HelloPubSub
+  private static final String FUNCTION_DEPLOYED_NAME = System.getenv("FUNCTIONS_PUBSUB_FN_NAME");
 
   private static Logging loggingClient;
 

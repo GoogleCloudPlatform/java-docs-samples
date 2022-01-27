@@ -29,9 +29,7 @@ import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.StreamingOptions;
 import org.apache.beam.sdk.options.Validation.Required;
 import org.apache.beam.sdk.transforms.MapElements;
-import org.apache.beam.sdk.transforms.windowing.AfterProcessingTime;
 import org.apache.beam.sdk.transforms.windowing.FixedWindows;
-import org.apache.beam.sdk.transforms.windowing.Repeatedly;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.TypeDescriptors;
 import org.joda.time.Duration;
@@ -96,19 +94,9 @@ public class PubsubliteToGcs {
             "Apply windowing function",
             Window
                 // Group the elements using fixed-sized time intervals based on the element
-                // timestamp. The element timestamp is the publish time associated with a message.
-                .<String>into(FixedWindows.of(Duration.standardMinutes(options.getWindowSize())))
-                // Fire a trigger every 30 seconds after receiving the first element.
-                .triggering(
-                    Repeatedly.forever(
-                        AfterProcessingTime.pastFirstElementInPane()
-                            .plusDelayOf(Duration.standardSeconds(30))))
-                // Ignore late elements.
-                .withAllowedLateness(Duration.ZERO)
-                // Accumulate elements in fired panes. This will make sure that elements collected
-                // in an earlier pane by an earlier trigger will not be overwritten by those
-                // arriving later due to a later trigger fired in the same window.
-                .accumulatingFiredPanes())
+                // timestamp (using the default event time trigger). The element timestamp
+                // is the publish timestamp associated with a message.
+                .<String>into(FixedWindows.of(Duration.standardMinutes(options.getWindowSize()))))
         .apply("Write elements to GCS", new WriteOneFilePerWindow(options.getOutput(), numShards));
 
     // Execute the pipeline. You may add `.waitUntilFinish()` to observe logs in your console, but

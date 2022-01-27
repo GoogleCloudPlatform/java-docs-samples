@@ -21,6 +21,7 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -35,17 +36,21 @@ public class ExampleSystemIT {
   // TODO<developer>: set this value, as an environment variable or within your test code
   private static final String BASE_URL = System.getenv("FUNCTIONS_BASE_URL");
 
-  // Access token used to send requests to authenticated-only functions
+  // Identity token used to send requests to authenticated-only functions
   // TODO<developer>: Set this value if your function requires authentication.
   //                  See the documentation for more info:
   // https://cloud.google.com/functions/docs/securing/authenticating
-  private static final String ACCESS_TOKEN = System.getenv("FUNCTIONS_ACCESS_TOKEN");
+  private static final String IDENTITY_TOKEN = System.getenv("FUNCTIONS_IDENTITY_TOKEN");
+
+  // Name of the deployed function
+  // TODO<developer>: Set this to HelloHttp, as an environment variable or within your test code
+  private static final String FUNCTION_DEPLOYED_NAME = System.getenv("FUNCTIONS_HTTP_FN_NAME");
 
   private static HttpClient client = HttpClient.newHttpClient();
 
   @Test
   public void helloHttp_shouldRunWithFunctionsFramework() throws IOException, InterruptedException {
-    String functionUrl = BASE_URL + "/HelloHttp";
+    String functionUrl = BASE_URL + "/" + FUNCTION_DEPLOYED_NAME;
 
     // [END functions_http_system_test]
     // Skip this test if FUNCTIONS_BASE_URL is not set
@@ -60,13 +65,15 @@ public class ExampleSystemIT {
         .GET();
 
     // Used to test functions that require authenticated invokers
-    if (ACCESS_TOKEN != null) {
-      getRequestBuilder.header("Authorization", "Bearer " + ACCESS_TOKEN);
+    if (IDENTITY_TOKEN != null) {
+      getRequestBuilder.header("Authorization", "Bearer " + IDENTITY_TOKEN);
     }
 
     java.net.http.HttpRequest getRequest = getRequestBuilder.build();
 
     HttpResponse response = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
+
+    assertThat(response.statusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
     assertThat(response.body().toString()).isEqualTo("Hello world!");
   }
 }

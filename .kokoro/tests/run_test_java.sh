@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+file="$(pwd)"
+SCRIPT_DIR="$(dirname $0)/"
+
 # Fail the tests if no Java version was found.
 POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
 ALLOWED_VERSIONS=("1.8" "11")
@@ -35,6 +38,23 @@ if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
     exit 0
 fi
 
+# Build and deploy Cloud Functions hello-world samples
+# (Some of these samples have E2E tests that use deployed functions.)
+if [[ "$file" == *"functions/helloworld/"* ]]; then
+    source "$SCRIPT_DIR"/build_cloud_functions.sh
+    EXIT=$?
+
+    if [[ $EXIT -ne 0 ]]; then
+        RTN=1
+        echo -e "\n Cloud Functions build/deploy failed: gcloud returned a non-zero exit code. \n"
+    else
+        echo -e "\n Cloud Functions build/deploy completed.\n"
+
+        # Wait for functions to warm up (and start detecting events)
+        sleep 1m
+    fi
+fi
+
 # Use maven to execute the tests for the project.
 mvn --quiet --batch-mode --fail-at-end clean verify \
     -Dfile.encoding="UTF-8" \
@@ -43,6 +63,11 @@ mvn --quiet --batch-mode --fail-at-end clean verify \
     -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
     -Dbigtable.instanceID=instance
 EXIT=$?
+
+# Tear down (deployed) Cloud Functions after deployment tests are run
+if [[ "$file" == *"functions/helloworld/"* ]]; then
+    source "$SCRIPT_DIR"/teardown_cloud_functions.sh
+fi
 
 if [[ $EXIT -ne 0 ]]; then
     RTN=1

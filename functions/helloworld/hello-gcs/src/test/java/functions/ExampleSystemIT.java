@@ -46,7 +46,9 @@ public class ExampleSystemIT {
   // TODO<developer>: set these values (as environment variables)
   private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
   private static final String FUNCTIONS_BUCKET = System.getenv("FUNCTIONS_BUCKET");
-  private static final String FUNCTION_DEPLOYED_NAME = "HelloGcs";
+
+  // TODO<developer>: set this value (as an environment variable) to HelloGcs
+  private static final String FUNCTION_DEPLOYED_NAME = System.getenv("FUNCTIONS_GCS_FN_NAME");
   private static final Storage STORAGE = StorageOptions.getDefaultInstance().getService();
 
   private static Logging loggingClient;
