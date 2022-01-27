@@ -39,6 +39,9 @@ export FUNCTIONS_HTTP_FN_NAME="http-${SUFFIX}"
 export FUNCTIONS_PUBSUB_FN_NAME="pubsub-${SUFFIX}"
 export FUNCTIONS_GCS_FN_NAME="gcs-${SUFFIX}"
 
+# Set identity token (required for functions without --allow-unauthenticated)
+export FUNCTIONS_IDENTITY_TOKEN=$(gcloud auth print-identity-token)
+
 # Deploy functions
 set -x
 
