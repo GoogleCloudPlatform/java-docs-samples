@@ -26,6 +26,7 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Base64;
 import java.util.Collections;
 
 public class CreateServiceAccountKey {
@@ -55,7 +56,13 @@ public class CreateServiceAccountKey {
                   new CreateServiceAccountKeyRequest())
               .execute();
 
-      System.out.println("Created key: " + key.getName());
+      // The privateKeyData field contains the base64-encoded service account key
+      // in JSON format.
+      // TODO(Developer): Save the below key (json_key_file) to a secure location.
+      //  You cannot download it later.
+      String json_key_file = new String(Base64.getDecoder().decode(key.getPrivateKeyData()));
+
+      System.out.println("Key created successfully");
     } catch (IOException e) {
       System.out.println("Unable to create service account key: \n" + e.toString());
     }
