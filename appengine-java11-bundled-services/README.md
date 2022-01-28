@@ -49,6 +49,13 @@ where you need to define the Java11 runtime and declare you need the App Engine 
 </appengine-web-app>
 ```
 
+While the Java11 runtime is in Beta, in order to deploy the application, you can use the `beta` value for the `gcloudMode` Cloud SDK parameter like:
+
+```shell
+ mvn appengine:deploy -Dapp.deploy.gcloudMode=beta
+```
+
+
 Everything else should remain the same in terms of App Engine APIs access, WAR project packaging, and deployment.
 This way, it should  be easy to migrate your existing GAE Java8 applications to GAE Java11.
 
