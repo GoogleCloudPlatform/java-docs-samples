@@ -88,12 +88,10 @@ public class ServiceAccountTests {
 
   @Test
   public void stage2_testServiceAccountKeyCreate() {
-    CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
+    SERVICE_ACCOUNT_KEY = CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
-    assertThat(got, containsString("Created key:"));
-    String serviceAccountKeyPath = got.substring(got.lastIndexOf(":") + 1);
-    SERVICE_ACCOUNT_KEY = serviceAccountKeyPath
-        .substring(serviceAccountKeyPath.lastIndexOf("/") + 1).trim();
+    assertNotNull(SERVICE_ACCOUNT_KEY);
+    assertThat(got, containsString("Key created successfully"));
   }
 
   @Test
