@@ -148,7 +148,7 @@ public class WorkloadGeneratorTest {
     options.setBigtableTableId(TABLE_ID);
     options.setWorkloadRate(rate);
     options.setRegion(REGION_ID);
-    options.setWorkloadDuration(WORKLOAD_DURATION);
+    options.setWorkloadDurationMinutes(WORKLOAD_DURATION);
     options.setRunner(DataflowRunner.class);
     options.setJobName(workloadJobName);
 

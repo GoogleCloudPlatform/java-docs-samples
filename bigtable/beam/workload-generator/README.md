@@ -29,7 +29,7 @@ be run as a Dataflow job.
     --parameters bigtableTableId="$TABLE_ID" \
     --region "$REGION" \
     --parameters workloadRate=$WORKLOAD_QPS
-    --parameters workloadDuration=$WORKLOAD_DURATION
+    --parameters workloadDurationMinutes=$WORKLOAD_DURATION
     ```
 
 ### Deploying a template instructions
@@ -94,5 +94,5 @@ If you would like to modify this and run it yourself you can use these commands:
    --runner=dataflow --project=$GOOGLE_CLOUD_PROJECT \
    --region=$REGION" \
    --workloadQPS=$WORKLOAD_QPS 
-   --workloadDuration=$WORKLOAD_DURATION 
+   --workloadDurationMinutes=$WORKLOAD_DURATION 
    ```

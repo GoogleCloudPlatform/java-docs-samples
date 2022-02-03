@@ -73,7 +73,7 @@ public class WorkloadGenerator {
         e.printStackTrace();
         System.out.println("Unable to cancel job.");
       }
-    }, options.getWorkloadDuration(), TimeUnit.MINUTES);
+    }, options.getWorkloadDurationMinutes(), TimeUnit.MINUTES);
 
     return pipelineResult;
   }
@@ -126,7 +126,7 @@ public class WorkloadGenerator {
 
     @Description("The duration for the workload to run in minutes.")
     @Default.Integer(10)
-    Integer getWorkloadDuration();
+    Integer getWorkloadDurationMinutes();
 
     void setWorkloadDuration(Integer workloadDuration);
   }
