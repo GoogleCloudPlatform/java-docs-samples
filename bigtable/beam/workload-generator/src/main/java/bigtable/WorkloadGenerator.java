@@ -128,6 +128,6 @@ public class WorkloadGenerator {
     @Default.Integer(10)
     Integer getWorkloadDurationMinutes();
 
-    void setWorkloadDuration(Integer workloadDuration);
+    void setWorkloadDurationMinutes(Integer workloadDurationMinutes);
   }
 }
