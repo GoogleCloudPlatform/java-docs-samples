@@ -40,7 +40,8 @@ public class BasicWebhook implements HttpFunction {
     JsonObject parsedRequest = gson.fromJson(request.getReader(), JsonObject.class);
 
     // For more information on the structure of this object https://cloud.google.com/dialogflow/cx/docs/reference/rest/v3/Fulfillment
-    String requestTag = parsedRequest.getAsJsonObject("fulfillmentInfo").getAsJsonPrimitive("tag").toString();
+    String requestTag = parsedRequest.getAsJsonObject("fulfillmentInfo")
+        .getAsJsonPrimitive("tag").toString();
     JsonObject responseObject = null;
     String defaultIntent = '"' + "Default Welcome Intent" + '"';
     String secondIntent = '"' + "get-agent-name" + '"';
