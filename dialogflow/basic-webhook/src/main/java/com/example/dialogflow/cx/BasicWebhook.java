@@ -66,7 +66,7 @@ public class BasicWebhook implements HttpFunction {
     BufferedWriter writer = response.getWriter();
 
     //Sends the responseObject
-    writer.write(o.toString());
+    writer.write(responseObject.toString());
   }
 }
 // [END dialogflow_webhook]
