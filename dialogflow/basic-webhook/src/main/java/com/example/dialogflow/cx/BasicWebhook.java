@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,27 +33,30 @@ import com.google.gson.JsonParser;
 import java.io.BufferedWriter;
 
 public class BasicWebhook implements HttpFunction {
-
+  @Override
   public void service(HttpRequest request, HttpResponse response) throws Exception {
     JsonParser parser = new JsonParser();
     Gson gson = new GsonBuilder().create();
+    JsonObject parsedRequest = gson.fromJson(request.getReader(), JsonObject.class);
 
-    JsonObject job = gson.fromJson(request.getReader(), JsonObject.class);
-    String str = job.getAsJsonObject("fulfillmentInfo").getAsJsonPrimitive("tag").toString();
-    JsonObject o = null;
-    String a = '"' + "Default Welcome Intent" + '"';
-    String b = '"' + "get-agent-name" + '"';
+    // For more information on the structure of this object https://cloud.google.com/dialogflow/cx/docs/reference/rest/v3/Fulfillment
+    String requestTag = parsedRequest.getAsJsonObject("fulfillmentInfo").getAsJsonPrimitive("tag").toString();
+    JsonObject responseObject = null;
+    String defaultIntent = '"' + "Default Welcome Intent" + '"';
+    String secondIntent = '"' + "get-agent-name" + '"';
     String responseText = "";
 
-    if (str.equals(a)) {
+    // Compares the Intent Tag to provide the correct response 
+    if (requestTag.equals(defaultIntent)) {
       responseText = '"' + "Hello from a Java GCF Webhook" + '"';
-    } else if (str.equals(b)) {
+    } else if (requestTag.equals(secondIntent)) {
       responseText = '"' + "My name is Flowhook" + '"';
     } else {
       responseText = '"' + "Sorry I didn't get that" + '"';
     }
 
-    o =
+    // Constructing the response jsonObject 
+    responseObject =
         parser
             .parse(
                 "{ \"fulfillment_response\": { \"messages\": [ { \"text\": { \"text\": ["
@@ -61,6 +64,8 @@ public class BasicWebhook implements HttpFunction {
                     + "] } } ] } }")
             .getAsJsonObject();
     BufferedWriter writer = response.getWriter();
+
+    //Sends the responseObject
     writer.write(o.toString());
   }
 }
