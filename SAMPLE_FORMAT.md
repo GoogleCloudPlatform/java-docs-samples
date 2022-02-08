@@ -355,7 +355,7 @@ Snippet methods should specify a return type of `void` and avoid returning any v
 possible. Instead, show the user how to interact with a returned object programmatically by printing
 some example attributes to the console. 
 ```java
-public static void main(main(String[] args) {
+public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String filePath = "path/to/image.png";

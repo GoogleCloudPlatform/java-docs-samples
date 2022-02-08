@@ -16,6 +16,7 @@ be run as a Dataflow job.
     TABLE_ID=YOUR-TABLE-ID
     REGION=us-central1
     WORKLOAD_QPS=100 # Optional, default to 1000
+    WORKLOAD_DURATION=15 # Optional, default to 10
     ```
 
 1. Run this command to start a job from dataflow template:
@@ -28,21 +29,7 @@ be run as a Dataflow job.
     --parameters bigtableTableId="$TABLE_ID" \
     --region "$REGION" \
     --parameters workloadRate=$WORKLOAD_QPS
-    ```
-
-1. Make sure to cancel the job once you are done. Get the job id by listing the Dataflow jobs with a matching name.
-
-    ```
-    gcloud dataflow jobs list --filter=$JOB_NAME --region=$REGION
-    ```
-    
-    ```
-    JOB_ID=your-job-id
-    ```
-    
-1. Use the `JOB_ID` found to cancel the job. Note that it can only cancel the job once it's started, so if the command fails, try again once the status has changed or check in the [Dataflow console].
-    ```
-    gcloud dataflow jobs cancel $JOB_ID --region=$REGION
+    --parameters workloadDurationMinutes=$WORKLOAD_DURATION
     ```
 
 ### Deploying a template instructions
@@ -96,6 +83,7 @@ If you would like to modify this and run it yourself you can use these commands:
    REGION=us-central1
    TABLE_ID=your-table-id 
    WORKLOAD_QPS=100 # Optional
+   WORKLOAD_DURATION=15 # Optional, default to 10
    ```
 
 1. Run the command
@@ -105,5 +93,6 @@ If you would like to modify this and run it yourself you can use these commands:
    "-Dexec.args=--bigtableInstanceId=$INSTANCE_ID =--bigtableTableId=$TABLE_ID \
    --runner=dataflow --project=$GOOGLE_CLOUD_PROJECT \
    --region=$REGION" \
-   --workloadRate=$WORKLOAD_QPS 
+   --workloadQPS=$WORKLOAD_QPS 
+   --workloadDurationMinutes=$WORKLOAD_DURATION 
    ```
