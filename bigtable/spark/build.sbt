@@ -70,10 +70,7 @@ ThisBuild / assemblyMergeStrategy := {
     case ps @ (x :: xs) if ps.last.endsWith(".proto") => MergeStrategy.first
     case _ => MergeStrategy.deduplicate
   }
-  case PathList("javax", "servlet", xs @ _*)         => MergeStrategy.first
-  case PathList("javax", "ws", xs @ _*)         => MergeStrategy.first
-  case PathList("javax", "activation", xs @ _*)         => MergeStrategy.first
-  case PathList("javax", "inject", xs @ _*)         => MergeStrategy.first
+  case PathList("javax", xs @ _*)         => MergeStrategy.first
   case PathList("io", "netty", xs @ _*)         => MergeStrategy.first
   case PathList(ps @ _*) if ps.last endsWith ".proto" => MergeStrategy.first
   case PathList(ps @ _*) if ps.last endsWith "module-info.class" => MergeStrategy.discard
