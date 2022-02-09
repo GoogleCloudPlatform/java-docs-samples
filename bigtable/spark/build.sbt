@@ -60,15 +60,24 @@ excludeDependencies ++= Seq(
   ExclusionRule(organization = "org.mortbay.jetty", "servlet-api")
 )
 
-assemblyMergeStrategy in assembly := {
+ThisBuild / assemblyMergeStrategy := {
   case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.first
   case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
+  case PathList("META-INF", "native", xs @ _*)         => MergeStrategy.first
+  case PathList("META-INF", "native-image", xs @ _*)         => MergeStrategy.first
+  case PathList("mozilla", "public-suffix-list.txt")         => MergeStrategy.first
   case PathList("google", xs @ _*) => xs match {
     case ps @ (x :: xs) if ps.last.endsWith(".proto") => MergeStrategy.first
     case _ => MergeStrategy.deduplicate
   }
+  case PathList("javax", "servlet", xs @ _*)         => MergeStrategy.first
+  case PathList("javax", "ws", xs @ _*)         => MergeStrategy.first
+  case PathList("javax", "activation", xs @ _*)         => MergeStrategy.first
+  case PathList("javax", "inject", xs @ _*)         => MergeStrategy.first
+  case PathList("io", "netty", xs @ _*)         => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith ".proto" => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith "module-info.class" => MergeStrategy.discard
   case x =>
-    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
     oldStrategy(x)
-    MergeStrategy.first
 }
