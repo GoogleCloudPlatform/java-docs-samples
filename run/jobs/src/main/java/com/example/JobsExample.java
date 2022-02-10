@@ -17,7 +17,7 @@
 package com.example;
 
 abstract class JobsExample {
-
+  // [START cloudrun_jobs_env_vars]
   // These values are provided automatically by the Cloud Run Jobs runtime.
   private static String TASK_NUM = System.getenv().getOrDefault("TASK_NUM", "0");
   private static String ATTEMPT_NUM = System.getenv().getOrDefault("ATTEMPT_NUM", "0");
@@ -26,6 +26,7 @@ abstract class JobsExample {
   private static int SLEEP_MS = Integer.parseInt(System.getenv().getOrDefault("SLEEP_MS", "0"));
   private static float FAIL_RATE =
       Float.parseFloat(System.getenv().getOrDefault("FAIL_RATE", "0.0"));
+  // [END cloudrun_jobs_env_vars]
 
   // Start script
   public static void main(String[] args) {
@@ -34,8 +35,10 @@ abstract class JobsExample {
       runTask(SLEEP_MS, FAIL_RATE);
     } catch (RuntimeException | InterruptedException e) {
       System.err.println(String.format("Task #%s, Attempt #%s failed.", TASK_NUM, ATTEMPT_NUM));
+      // [START cloudrun_jobs_exit_process]
       // Catch error and denote process-level failure to retry Task
       System.exit(1);
+      // [END cloudrun_jobs_exit_process]
     }
   }
 
