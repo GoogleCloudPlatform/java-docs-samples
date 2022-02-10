@@ -18,6 +18,7 @@ package com.example.cloud.bigtable.scheduledbackups;
 
 import com.example.cloud.bigtable.scheduledbackups.resource.CreateBackupMessage;
 import com.example.cloud.bigtable.scheduledbackups.resource.PubSubMessage;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminClient;
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminSettings;
 import com.google.cloud.bigtable.admin.v2.models.Backup;
@@ -31,7 +32,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.threeten.bp.Instant;
 
 public class CreateBackup implements BackgroundFunction<PubSubMessage> {
