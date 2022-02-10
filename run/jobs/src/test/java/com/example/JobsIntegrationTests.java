@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class JobsIntegrationTests {
 
   @BeforeClass
   public static void setup() throws Exception {
-    service = "job-quickstart-f374953a-498c-43b8-847a-7998ae5665d5"; // "job-quickstart-" + suffix;
+    service = "job-quickstart-" + suffix;
 
     ProcessBuilder setup = new ProcessBuilder();
     setup.command(
