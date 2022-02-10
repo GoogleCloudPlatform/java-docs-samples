@@ -16,31 +16,27 @@
 
 package com.example;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.channels.InterruptedByTimeoutException;
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.Logging;
 import com.google.cloud.logging.Logging.EntryListOption;
 import com.google.cloud.logging.LoggingOptions;
 import com.google.cloud.logging.Payload;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.channels.InterruptedByTimeoutException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class JobsIntegrationTests {
 
@@ -50,16 +46,16 @@ public class JobsIntegrationTests {
 
   @BeforeClass
   public static void setup() throws Exception {
-    service = "job-quickstart-f374953a-498c-43b8-847a-7998ae5665d5"; //"job-quickstart-" + suffix;
+    service = "job-quickstart-f374953a-498c-43b8-847a-7998ae5665d5"; // "job-quickstart-" + suffix;
 
     ProcessBuilder setup = new ProcessBuilder();
     setup.command(
-      "gcloud",
-      "builds",
-      "submit",
-      "--project=" + project,
-      "--config=./src/test/java/com/example/resources/e2e_test_setup.yaml",
-      String.format("--substitutions=_SERVICE=%s,_VERSION=%s", service, suffix));
+        "gcloud",
+        "builds",
+        "submit",
+        "--project=" + project,
+        "--config=./src/test/java/com/example/resources/e2e_test_setup.yaml",
+        String.format("--substitutions=_SERVICE=%s,_VERSION=%s", service, suffix));
 
     setup.redirectErrorStream(true);
     System.out.println("Start Cloud Build...");
@@ -84,14 +80,14 @@ public class JobsIntegrationTests {
   public static void cleanup() throws IOException, InterruptedException {
     ProcessBuilder cleanup = new ProcessBuilder();
     cleanup.command(
-      "gcloud",
-      "builds",
-      "submit",
-      "--config",
-      "./src/test/java/com/example/resources/e2e_test_cleanup.yaml",
-      "--region=us-central1",
-      "--project=" + project,
-      String.format("--substitutions _SERVICE=%s,_VERSION=%s", service, suffix));
+        "gcloud",
+        "builds",
+        "submit",
+        "--config",
+        "./src/test/java/com/example/resources/e2e_test_cleanup.yaml",
+        "--region=us-central1",
+        "--project=" + project,
+        String.format("--substitutions _SERVICE=%s,_VERSION=%s", service, suffix));
 
     cleanup.start();
   }
@@ -105,12 +101,12 @@ public class JobsIntegrationTests {
       DateFormat rfc3339 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
       String logFilter =
           "resource.type = \"cloud_run_revision\""
-            + " resource.labels.service_name = \""
-            + service
-            + "\" resource.labels.location = \"us-central1\""
-            + " timestamp>=\""
-            + rfc3339.format(calendar.getTime())
-            + "\" -protoPayload.serviceName=\"run.googleapis.com\"";
+              + " resource.labels.service_name = \""
+              + service
+              + "\" resource.labels.location = \"us-central1\""
+              + " timestamp>=\""
+              + rfc3339.format(calendar.getTime())
+              + "\" -protoPayload.serviceName=\"run.googleapis.com\"";
 
       System.out.println(logFilter);
       Page<LogEntry> entries = logging.listLogEntries(EntryListOption.filter(logFilter));
@@ -118,8 +114,11 @@ public class JobsIntegrationTests {
       for (LogEntry logEntry : entries.iterateAll()) {
         if (!logEntry.getLogName().contains("cloudaudit")) {
           Payload<String> payload = logEntry.getPayload();
-          if (payload.getData().contains("Task")) found = true;
-        };
+          if (payload.getData().contains("Task")) { 
+            found = true; 
+          };
+        }
+        ;
       }
       assertTrue("Log was not found.", found);
     }
