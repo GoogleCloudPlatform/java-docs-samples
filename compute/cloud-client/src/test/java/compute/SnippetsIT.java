@@ -118,6 +118,11 @@ public class SnippetsIT {
     SUBNETWORK_NAME = "regions/us-central1/subnetworks/default";
     RAW_KEY = getBase64EncodedKey();
 
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("my-new-test-instance", PROJECT_ID);
+    Util.cleanUpExistingInstances("encrypted-test-instance", PROJECT_ID);
+    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID);
+
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
