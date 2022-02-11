@@ -96,6 +96,14 @@ public class PubsubliteToGcs {
                 // Group the elements using fixed-sized time intervals based on the element
                 // timestamp (using the default event time trigger). The element timestamp
                 // is the publish timestamp associated with a message.
+                //
+                // NOTE: If data is not being continuously ingested, such as with a batch or
+                // intermittent publisher, the final window will never close as the watermark
+                // will not advance. If this is a possibility with your pipeline, you should
+                // add an additional processing time trigger to force window closure after
+                // enough time has passed. See
+                // https://beam.apache.org/documentation/programming-guide/#triggers
+                // for more information.
                 .<String>into(FixedWindows.of(Duration.standardMinutes(options.getWindowSize()))))
         .apply("Write elements to GCS", new WriteOneFilePerWindow(options.getOutput(), numShards));
 
