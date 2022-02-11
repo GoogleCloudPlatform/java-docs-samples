@@ -47,7 +47,8 @@ public class SetDeleteProtection {
 
     try (InstancesClient instancesClient = InstancesClient.create()) {
 
-      SetDeletionProtectionInstanceRequest request = SetDeletionProtectionInstanceRequest.newBuilder()
+      SetDeletionProtectionInstanceRequest request =
+          SetDeletionProtectionInstanceRequest.newBuilder()
           .setProject(project)
           .setZone(zone)
           .setResource(instanceName)
