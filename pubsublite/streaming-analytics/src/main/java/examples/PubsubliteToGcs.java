@@ -93,10 +93,14 @@ public class PubsubliteToGcs {
         .apply(
             "Apply windowing function",
             Window
-                // Group the elements using fixed-sized time intervals based on the element
-                // timestamp (using the default event time trigger). The element timestamp
-                // is the publish timestamp associated with a message.
-                .<String>into(FixedWindows.of(Duration.standardMinutes(options.getWindowSize()))))
+                // Group the elements into windows based on when they are processed by Dataflow.
+                .<String>into(new GlobalWindows())
+                // Create a new window on fixed time intervals based on when the pipeline receives
+                // the message.
+                .triggering(AfterProcessingTime.pastFirstElementInPane().plusDelayOf(
+                    Duration.standardMinutes(options.getWindowSize())))
+                // Write output to GCS, then discard buffered messages.
+                .discardingFiredPanes())
         .apply("Write elements to GCS", new WriteOneFilePerWindow(options.getOutput(), numShards));
 
     // Execute the pipeline. You may add `.waitUntilFinish()` to observe logs in your console, but
