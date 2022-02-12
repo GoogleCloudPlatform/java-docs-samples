@@ -38,15 +38,15 @@ public class CreateInstanceDeleteProtection {
     // instanceName: name of the new virtual machine.
     // deleteProtection: boolean value indicating if the new virtual machine should be
     // protected against deletion or not.
-    String project = "your-project-id";
+    String projectId = "your-project-id-or-number";
     String zone = "zone-name";
     String instanceName = "instance-name";
     boolean deleteProtection = true;
-    createInstanceDeleteProtection(project, zone, instanceName, deleteProtection);
+    createInstanceDeleteProtection(projectId, zone, instanceName, deleteProtection);
   }
 
   // Send an instance creation request to the Compute Engine API and wait for it to complete.
-  public static void createInstanceDeleteProtection(String project, String zone,
+  public static void createInstanceDeleteProtection(String projectId, String zone,
       String instanceName, boolean deleteProtection)
       throws IOException, ExecutionException, InterruptedException {
 
@@ -56,8 +56,9 @@ public class CreateInstanceDeleteProtection {
     long diskSizeGb = 10L;
     String networkName = "default";
 
+    // Instance creation requires at least one persistent disk and one network interface.
     try (InstancesClient instancesClient = InstancesClient.create()) {
-      // Instance creation requires at least one persistent disk and one network interface.
+
       AttachedDisk disk =
           AttachedDisk.newBuilder()
               .setBoot(true)
@@ -91,7 +92,7 @@ public class CreateInstanceDeleteProtection {
 
       // Prepare the request to insert an instance.
       InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
-          .setProject(project)
+          .setProject(projectId)
           .setZone(zone)
           .setInstanceResource(instanceResource)
           .build();

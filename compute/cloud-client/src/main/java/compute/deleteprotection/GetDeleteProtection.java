@@ -29,18 +29,18 @@ public class GetDeleteProtection {
     // project: project ID or project number of the Cloud project you want to use.
     // zone: name of the zone you want to use. For example: “us-west3-b”
     // instanceName: name of the new virtual machine.
-    String project = "your-project-id";
+    String projectId = "your-project-id-or-number";
     String zone = "zone-name";
     String instanceName = "instance-name";
-    getDeleteProtection(project, zone, instanceName);
+    getDeleteProtection(projectId, zone, instanceName);
   }
 
   // Returns the state of delete protection flag of given instance.
-  public static boolean getDeleteProtection(String project, String zone,
+  public static boolean getDeleteProtection(String projectId, String zone,
       String instanceName) throws IOException {
 
     try (InstancesClient instancesClient = InstancesClient.create()) {
-      Instance instance = instancesClient.get(project, zone, instanceName);
+      Instance instance = instancesClient.get(projectId, zone, instanceName);
       boolean deleteProtection = instance.getDeletionProtection();
       System.out.printf("Retrieved Delete Protection setting for instance: %s : %s", instanceName,
           deleteProtection);

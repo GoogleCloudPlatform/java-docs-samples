@@ -33,15 +33,15 @@ public class SetDeleteProtection {
     // instanceName: name of the new virtual machine.
     // deleteProtection: boolean value indicating if the new virtual machine should be
     // protected against deletion or not.
-    String project = "your-project-id";
+    String projectId = "your-project-id-or-number";
     String zone = "zone-name";
     String instanceName = "instance-name";
     boolean deleteProtection = true;
-    setDeleteProtection(project, zone, instanceName, deleteProtection);
+    setDeleteProtection(projectId, zone, instanceName, deleteProtection);
   }
 
   // Updates the "Delete Protection" setting of given instance.
-  public static void setDeleteProtection(String project, String zone,
+  public static void setDeleteProtection(String projectId, String zone,
       String instanceName, boolean deleteProtection)
       throws IOException, ExecutionException, InterruptedException {
 
@@ -49,15 +49,16 @@ public class SetDeleteProtection {
 
       SetDeletionProtectionInstanceRequest request =
           SetDeletionProtectionInstanceRequest.newBuilder()
-          .setProject(project)
-          .setZone(zone)
-          .setResource(instanceName)
-          .setDeletionProtection(deleteProtection)
-          .build();
+              .setProject(projectId)
+              .setZone(zone)
+              .setResource(instanceName)
+              .setDeletionProtection(deleteProtection)
+              .build();
 
       instancesClient.setDeletionProtectionAsync(request).get();
-      // Double-check by retrieving the updated setting from the instance.
-      System.out.println("Updated Delete Protection setting.");
+      // Retrieve the updated setting from the instance.
+      System.out.printf("Updated Delete Protection setting: %s",
+          instancesClient.get(projectId, zone, instanceName).getDeletionProtection());
     }
   }
 }
