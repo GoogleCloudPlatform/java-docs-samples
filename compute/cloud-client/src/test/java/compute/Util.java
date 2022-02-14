@@ -52,11 +52,11 @@ public class Util {
 
   // Delete instances which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
-  public static void cleanUpExistingInstances(String prefixToDelete, String projectId)
+  public static void cleanUpExistingInstances(String prefixToDelete, String projectId,
+      String instanceZone)
       throws IOException, ExecutionException, InterruptedException {
     for (Entry<String, InstancesScopedList> instanceGroup : ListAllInstances.listAllInstances(
         projectId).iterateAll()) {
-      String instanceZone = instanceGroup.getKey();
       for (Instance instance : instanceGroup.getValue().getInstancesList()) {
         if (!instance.hasCreationTimestamp()) {
           continue;
