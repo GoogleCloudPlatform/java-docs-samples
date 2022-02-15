@@ -43,7 +43,7 @@ public class BasicWebhook implements HttpFunction {
     String requestTag = parsedRequest.getAsJsonObject("fulfillmentInfo")
         .getAsJsonPrimitive("tag").toString();
     JsonObject responseObject = null;
-    String defaultIntent = '"' + "Default Welcome Intent" + '"';
+    String defaultIntent = "\"Default Welcome Intent\"";
     String secondIntent = '"' + "get-agent-name" + '"';
     String responseText = "";
 
