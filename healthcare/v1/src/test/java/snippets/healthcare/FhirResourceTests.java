@@ -143,7 +143,7 @@ public class FhirResourceTests {
 
   @Test
   public void test_FhirResourceSearchGet() throws Exception {
-    FhirResourceSearchGet.fhirResourceSearchGet(resourcePath);
+    FhirResourceSearchGet.fhirResourceSearchGet(fhirStoreName, resourceType);
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource search results:"));
