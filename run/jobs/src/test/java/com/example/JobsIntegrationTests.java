@@ -116,9 +116,8 @@ public class JobsIntegrationTests {
           Payload<String> payload = logEntry.getPayload();
           if (payload.getData().contains("Task")) { 
             found = true; 
-          };
+          }
         }
-        ;
       }
       assertTrue("Log was not found.", found);
     }
