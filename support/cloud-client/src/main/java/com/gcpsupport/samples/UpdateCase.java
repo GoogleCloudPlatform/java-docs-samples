@@ -58,7 +58,8 @@ public class UpdateCase {
 
             InputStream credentialsInputStream = new FileInputStream(new File(PRIVATE_KEY_JSON_PATH));
             
-            GoogleCredentials credentials = ServiceAccountCredentials.fromStream(Objects.requireNonNull(credentialsInputStream))
+            GoogleCredentials credentials = ServiceAccountCredentials
+                                            .fromStream(Objects.requireNonNull(credentialsInputStream))
                                             .createScoped(Collections.singletonList(CLOUD_SUPPORT_SCOPE));
 
             HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
