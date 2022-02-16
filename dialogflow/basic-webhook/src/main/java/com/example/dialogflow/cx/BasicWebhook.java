@@ -16,6 +16,8 @@
 
 package com.example.dialogflow.cx;
 
+// The following snippet is used in https://cloud.google.com/dialogflow/cx/docs/concept/webhook
+
 // [START dialogflow_webhook]
 
 // TODO: add GSON dependency to Pom file
