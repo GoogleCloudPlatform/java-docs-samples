@@ -30,18 +30,17 @@ public class SubscribeToTopic implements CloudEventsFunction {
 
   @Override
   public void accept(CloudEvent event) {
-    logger.info("Event: " + event.getId());
-    logger.info("Event Type: " + event.getType());
-
+    // The Pub/Sub message is passed as the CloudEvent's data payload.
     if (event.getData() != null) {
+      // Extract Cloud Event data and convert to PubSubBody
       String cloudEventData = new String(event.getData().toBytes(), StandardCharsets.UTF_8);
       Gson gson = new Gson();
       PubSubBody body = gson.fromJson(cloudEventData, PubSubBody.class);
-      // Retrieve PubSub message data
+      // Retrieve and decode PubSub message data
       String encodedData = body.getMessage().getData();
       String decodedData =
           new String(Base64.getDecoder().decode(encodedData), StandardCharsets.UTF_8);
-      logger.info("Event data: " + decodedData);
+      logger.info("Hello, " + decodedData + "!");
     }
   }
 }
