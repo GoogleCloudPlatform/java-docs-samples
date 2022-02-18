@@ -70,7 +70,7 @@ Copyright 2018 Google LLC
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.44.v20210927</version>
+        <version>11.0.8</version>
       </plugin>
     </plugins>
   </build>

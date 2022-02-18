@@ -35,7 +35,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml>
-    <jetty.maven.plugin>9.4.44.v20210927</jetty.maven.plugin>
+    <jetty.maven.plugin>11.0.8</jetty.maven.plugin>
   </properties>
 
   <dependencies>
