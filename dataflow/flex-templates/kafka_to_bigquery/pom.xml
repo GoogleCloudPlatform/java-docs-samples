@@ -35,7 +35,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <beam.version>2.34.0</beam.version>
-    <kafka.version>7.0.0-ce</kafka.version>
+    <kafka.version>7.0.1-ce</kafka.version>
 
     <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
