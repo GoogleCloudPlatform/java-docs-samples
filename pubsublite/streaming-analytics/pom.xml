@@ -36,11 +36,11 @@
 
     <beam.version>2.36.0</beam.version>
 
-    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.10.0</maven-compiler-plugin.version>
     <maven-exec-plugin.version>3.0.0</maven-exec-plugin.version>
     <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
     <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
-    <slf4j.version>1.7.32</slf4j.version>
+    <slf4j.version>1.7.36</slf4j.version>
   </properties>
 
   <repositories>
@@ -131,7 +131,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.32.2</version>
+      <version>1.33.2</version>
     </dependency>
 
     <dependency>
