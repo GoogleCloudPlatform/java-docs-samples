@@ -33,10 +33,8 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <beam.version>2.34.0</beam.version>
+    <beam.version>2.36.0</beam.version>
     <kafka.version>7.0.1-ce</kafka.version>
-
     <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
     <maven-compiler-plugin.version>3.10.0</maven-compiler-plugin.version>
     <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>

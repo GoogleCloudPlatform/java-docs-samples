@@ -37,8 +37,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <apache_beam.version>2.33.0</apache_beam.version>
+    <apache_beam.version>2.36.0</apache_beam.version>
     <slf4j.version>1.7.36</slf4j.version>
   </properties>
 
