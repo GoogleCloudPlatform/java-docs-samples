@@ -60,12 +60,7 @@ public class JobsIntegrationTests {
     setup.redirectErrorStream(true);
     System.out.println("Start Cloud Build...");
     Process p = setup.start();
-    // Set timeout
-//     if (!p.waitFor(15, TimeUnit.MINUTES)) {
-//       p.destroy();
-//       System.out.println("Process timed out.");
-//       throw new InterruptedByTimeoutException();
-//     }
+
     // Read process output
     BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
     String line;
