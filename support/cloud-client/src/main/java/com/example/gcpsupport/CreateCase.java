@@ -1,4 +1,20 @@
-package com.gcpsupport.samples;
+/**
+ * Copyright (C) 2022 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.example.gcpsupport;
 
 // [START gcpsupport_create_case]
 
@@ -10,7 +26,6 @@ import java.io.Reader;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Map;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -22,10 +37,8 @@ import com.google.api.services.cloudsupport.v2beta.CloudSupport;
 import com.google.api.services.cloudsupport.v2beta.model.CloudSupportCase;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.services.cloudsupport.v2beta.model.SearchCaseClassificationsResponse;
-
 
 // sample code to create a support case using support API
 public class CreateCase {
@@ -33,23 +46,27 @@ public class CreateCase {
     // Shared constants
     final static String CLOUD_SUPPORT_SCOPE = "https://www.googleapis.com/auth/cloudsupport";
 
-    // TODO(developer): Replace this variable with the path 
-    // to your service account private key file.
-    final static String PRIVATE_KEY_JSON_PATH = "/<---path--->/key.json";
-
     public static void main(String[] args) {
-       
+
         // Before creating a new case, list all valid classifications of a case with
         // listValidClassifications() first to get a valid classification.
         // A valid classification is required for creating a new case.
         listValidClassifcations();
 
         // TODO(developer): Create a json object with your new case and put path here
-        String createCasePath = "/<---path--->/createCase.json"; 
+        String createCasePath = "/<---path--->/*.json";
 
         // TODO(developer): Replace this variable with your project id
-        String PARENT_RESOURCE = "projects/<---project id--->";
-        createCase(PARENT_RESOURCE, createCasePath);
+        String projectId = "00000";
+
+        String PARENT_RESOURCE = String.format("projects/%s", projectId);
+
+        try {
+            CloudSupportCase csc = createCase(PARENT_RESOURCE, createCasePath);
+            System.out.println("Name of new case is: " + csc.getName());
+        } catch (IOException e) {
+            System.out.println("IOException caught! \n" + e);
+        }
 
     }
 
@@ -62,12 +79,11 @@ public class CreateCase {
             JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
             HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
-            InputStream credentialsInputStream = new FileInputStream(new File(PRIVATE_KEY_JSON_PATH));
-            
-            GoogleCredentials credentials = ServiceAccountCredentials
-                                            .fromStream(Objects.requireNonNull(credentialsInputStream))
-                                            .createScoped(Collections.singletonList(CLOUD_SUPPORT_SCOPE));
-
+            // this will only work if you have already set the environment variable
+            // GOOGLE_APPLICATION_CREDENTIALS to point to the path with your service account
+            // key
+            GoogleCredentials credentials = GoogleCredentials.getApplicationDefault()
+                    .createScoped(Collections.singletonList(CLOUD_SUPPORT_SCOPE));
             HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
 
             return new CloudSupport.Builder(httpTransport, jsonFactory, requestInitializer).build();
@@ -112,21 +128,13 @@ public class CreateCase {
     }
 
     // create a new case
-    public static void createCase(String parentResource, String newCasePath) {
+    public static CloudSupportCase createCase(String parentResource, String newCasePath) throws IOException {
 
-        try {
+        CloudSupport supportService = getCloudSupportService();
+        CloudSupportCase newContent = getCloudSupportCaseJsonObject(newCasePath);
+        CloudSupportCase newCaseResponse = supportService.cases().create(parentResource, newContent).execute();
 
-            CloudSupport supportService = getCloudSupportService();
-
-            CloudSupportCase newContent = getCloudSupportCaseJsonObject(newCasePath);
-
-            CloudSupportCase newCaseResponse = supportService.cases().create(parentResource, newContent).execute();
-
-            System.out.println("Created case's name is: " + newCaseResponse.getName());
-
-        } catch (IOException e) {
-            System.out.println("IOException caught in createCase()! \n" + e);
-        }
+        return newCaseResponse;
 
     }
 }

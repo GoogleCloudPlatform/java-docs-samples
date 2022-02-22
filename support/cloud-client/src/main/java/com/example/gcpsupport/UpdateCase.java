@@ -1,4 +1,20 @@
-package com.gcpsupport.samples;
+/**
+ * Copyright (C) 2022 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.example.gcpsupport;
 
 // [START gcpsupport_update_cases]
 
@@ -10,7 +26,6 @@ import java.io.Reader;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
-import java.util.Objects;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -21,9 +36,7 @@ import com.google.api.services.cloudsupport.v2beta.CloudSupport;
 import com.google.api.services.cloudsupport.v2beta.model.CloudSupportCase;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.api.client.json.JsonObjectParser;
-
 
 // sample code to update a support case using support API
 public class UpdateCase {
@@ -31,19 +44,26 @@ public class UpdateCase {
     // Shared constants
     final static String CLOUD_SUPPORT_SCOPE = "https://www.googleapis.com/auth/cloudsupport";
 
-    // TODO(developer): Replace this variable with the path 
-    // to your service account private key file.
-    final static String PRIVATE_KEY_JSON_PATH = "/<---path--->/key.json";
-
     public static void main(String[] args) {
 
-        // TODO(developer): Create a json object with your new case and put path here
-        String updatedCasePath = "/<---path--->/updateCase.json"; 
+        try {
+            // TODO(developer): Create a json object with your new case and put path here
+            String updatedCasePath = "/<---path--->/*.json";
 
-        // TODO(developer): Replace this variable with your project id
-        String PARENT_RESOURCE = "projects/<---project id--->";
-        updateCase(PARENT_RESOURCE + "/cases/<---case id--->", updatedCasePath);
+            // TODO(developer): Replace this variable with your project id
+            String projectId = "00000";
+            String PARENT_RESOURCE = String.format("projects/%s", projectId);
 
+            // TODO(developer): Replace this variable with your case id
+            String caseId = "00000";
+            String CASE = String.format("/cases/%s", caseId);
+
+            CloudSupportCase updatedCase = updateCase(PARENT_RESOURCE + CASE, updatedCasePath);
+
+            System.out.println("Updated case object is: " + updatedCase + "\n\n\n");
+        } catch (IOException e) {
+            System.out.println("IOException caught! \n" + e);
+        }
 
     }
 
@@ -56,12 +76,11 @@ public class UpdateCase {
             JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
             HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
-            InputStream credentialsInputStream = new FileInputStream(new File(PRIVATE_KEY_JSON_PATH));
-            
-            GoogleCredentials credentials = ServiceAccountCredentials
-                                            .fromStream(Objects.requireNonNull(credentialsInputStream))
-                                            .createScoped(Collections.singletonList(CLOUD_SUPPORT_SCOPE));
-
+            // this will only work if you have already set the environment variable
+            // GOOGLE_APPLICATION_CREDENTIALS to point to the path with your service account
+            // key
+            GoogleCredentials credentials = GoogleCredentials.getApplicationDefault()
+                    .createScoped(Collections.singletonList(CLOUD_SUPPORT_SCOPE));
             HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
 
             return new CloudSupport.Builder(httpTransport, jsonFactory, requestInitializer).build();
@@ -79,29 +98,23 @@ public class UpdateCase {
 
     // helper method to get a CloudSupportCase object
     private static CloudSupportCase getCloudSupportCaseJsonObject(String jsonPathName) throws IOException {
+
         JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
         JsonObjectParser parser = new JsonObjectParser(jsonFactory);
         InputStream stream = new FileInputStream(new File(jsonPathName));
         Reader reader = new InputStreamReader(stream, "UTF-8");
+
         return parser.parseAndClose(reader, CloudSupportCase.class);
     }
 
     // update one case
-    public static void updateCase(String nameOfCase, String updatedCasePath) {
+    public static CloudSupportCase updateCase(String nameOfCase, String updatedCasePath) throws IOException {
 
-        try {
+        CloudSupport supportService = getCloudSupportService();
+        CloudSupportCase updateCase = getCloudSupportCaseJsonObject(updatedCasePath);
+        CloudSupportCase updateCaseResponse = supportService.cases().patch(nameOfCase, updateCase).execute();
 
-            CloudSupport supportService = getCloudSupportService();
-
-            CloudSupportCase updateCase = getCloudSupportCaseJsonObject(updatedCasePath);
-
-            CloudSupportCase updateCaseResponse = supportService.cases().patch(nameOfCase, updateCase).execute();
-
-            System.out.println("Updated case object is: " + updateCaseResponse + "\n\n\n");
-
-        } catch (IOException e) {
-            System.out.println("IOException caught in updateCase()! \n" + e);
-        }
+        return updateCaseResponse;
 
     }
 }
