@@ -20,6 +20,7 @@ package com.example.dialogflow.cx;
 
 // [START dialogflow_webhook]
 
+// TODO: Change class name to Example
 // TODO: add GSON dependency to Pom file
 // (https://mvnrepository.com/artifact/com.google.code.gson/gson/2.8.5)
 // TODO: Uncomment the line bellow before running cloud function
@@ -46,16 +47,16 @@ public class BasicWebhook implements HttpFunction {
         .getAsJsonPrimitive("tag").toString();
     JsonObject responseObject = null;
     String defaultIntent = "\"Default Welcome Intent\"";
-    String secondIntent = '"' + "get-agent-name" + '"';
+    String secondIntent = "\"get-agent-name\"";
     String responseText = "";
 
     // Compares the Intent Tag to provide the correct response 
     if (requestTag.equals(defaultIntent)) {
-      responseText = '"' + "Hello from a Java GCF Webhook" + '"';
+      responseText = "\"Hello from a Java GCF Webhook\"";
     } else if (requestTag.equals(secondIntent)) {
-      responseText = '"' + "My name is Flowhook" + '"';
+      responseText = "\"My name is Flowhook\"";
     } else {
-      responseText = '"' + "Sorry I didn't get that" + '"';
+      responseText = "\"Sorry I didn't get that\"";
     }
 
     // Constructing the response jsonObject 
