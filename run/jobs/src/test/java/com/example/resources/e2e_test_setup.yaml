@@ -33,8 +33,8 @@ steps:
     ./src/test/java/com/example/resources/retry.sh "gcloud alpha run jobs create ${_SERVICE} \
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --region ${_REGION} \
-      --tasks 2 \
-      --set-env-vars=SLEEP_MS=100 \
+      --tasks 5 \
+      --set-env-vars=SLEEP_MS=10 \
       --max-retries 0 \
       --wait"
 
