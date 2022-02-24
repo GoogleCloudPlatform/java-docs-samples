@@ -68,7 +68,7 @@ public class BasicWebhookIT {
     new BasicWebhook().service(request, response);
     writerOut.flush();
 
-    JsonObject responseObject = parser.parse(responseOut.toString().getAsJsonObject();
+    JsonObject responseObject = parser.parse(responseOut.toString().getAsJsonObject());
 
     assertThat(responseObject.fulfillment_response.messages[0].text.text[0]).contains("Hello from a Java GCF Webhook");
   }
