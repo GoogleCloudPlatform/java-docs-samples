@@ -26,10 +26,6 @@ package com.example.dialogflow.cx;
 // TODO: Uncomment the line bellow before running cloud function
 // package com.example;
 
-import com.google.cloud.dialogflow.cx.v3.ResponseMessage;
-import com.google.cloud.dialogflow.cx.v3.WebhookResponse.FulfillmentResponse;
-import com.google.cloud.dialogflow.cx.v3.WebhookResponse;
-import com.google.cloud.dialogflow.cx.v3.ResponseMessage.Text;
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
@@ -43,33 +39,37 @@ public class BasicWebhook implements HttpFunction {
   @Override
   public void service(HttpRequest request, HttpResponse response) throws Exception {
     JsonParser parser = new JsonParser();
-    Gson gson = new GsonBuilder().setLenient().create();
+    Gson gson = new GsonBuilder().create();
     JsonObject parsedRequest = gson.fromJson(request.getReader(), JsonObject.class);
 
     // For more information on the structure of this object https://cloud.google.com/dialogflow/cx/docs/reference/rest/v3/Fulfillment
     String requestTag = parsedRequest.getAsJsonObject("fulfillmentInfo")
         .getAsJsonPrimitive("tag").toString();
+    JsonObject responseObject = null;
     String defaultIntent = "\"Default Welcome Intent\"";
-    String secondIntent = '"' + "get-agent-name" + '"';
+    String secondIntent = "\"get-agent-name\"";
     String responseText = "";
 
     // Compares the Intent Tag to provide the correct response 
     if (requestTag.equals(defaultIntent)) {
-      responseText = "Hello from a Java GCF Webhook";
+      responseText = "\"Hello from a Java GCF Webhook\"";
     } else if (requestTag.equals(secondIntent)) {
-      responseText = "My name is Flowhook";
+      responseText = "\"My name is Flowhook\"";
     } else {
-      responseText = "Sorry I didn't get that";
+      responseText = "\"Sorry I didn't get that\"";
     }
 
-    ResponseMessage text = ResponseMessage.newBuilder().setText(ResponseMessage.Text.newBuilder().addText(responseText).build()).build();
-        
-    FulfillmentResponse responseObject = FulfillmentResponse.newBuilder().addMessages(0, text).build();
-
+    // Constructing the response jsonObject 
+    responseObject =
+        parser
+            .parse(
+                "{ \"fulfillment_response\": { \"messages\": [ { \"text\": { \"text\": ["
+                    + responseText
+                    + "] } } ] } }")
+            .getAsJsonObject();
     BufferedWriter writer = response.getWriter();
 
     //Sends the responseObject
-
     writer.write(responseObject.toString());
   }
 }

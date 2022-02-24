@@ -22,6 +22,8 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -56,7 +58,7 @@ public class BasicWebhookIT {
 
   @Test
   public void helloHttp_bodyParamsPost() throws IOException, Exception {
-
+    JsonParser parser = new JsonParser();
     String jsonString = "{'fulfillmentInfo': {'tag': 'Default Welcome Intent'}}";
 
     BufferedReader jsonReader = new BufferedReader(new StringReader(jsonString));
@@ -66,6 +68,8 @@ public class BasicWebhookIT {
     new BasicWebhook().service(request, response);
     writerOut.flush();
 
-    assertThat(responseOut.toString()).contains("Hello from a Java GCF Webhook");
+    JsonObject responseObject = parser.parse(responseOut.toString().getAsJsonObject();
+
+    assertThat(responseObject.fulfillment_response.messages[0].text.text[0]).contains("Hello from a Java GCF Webhook");
   }
 }
