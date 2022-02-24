@@ -44,6 +44,7 @@ public class UpdateCase {
 
     try {
       // TODO(developer): Create a json object with your new case and put path here
+      // see an example under support/cloud-client/data/updateCase.json
       String updatedCasePath = "/<---path--->/*.json";
 
       // TODO(developer): Replace this variable with your project id
