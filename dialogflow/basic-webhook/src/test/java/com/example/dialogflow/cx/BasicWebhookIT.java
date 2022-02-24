@@ -70,6 +70,10 @@ public class BasicWebhookIT {
 
     JsonObject responseObject = parser.parse(responseOut.toString().getAsJsonObject());
 
-    assertThat(responseObject.fulfillment_response.messages[0].text.text[0]).contains("Hello from a Java GCF Webhook");
+    JsonObject fulfillment_response = responseObject.getJSONObject("fulfillment_response");
+
+    JsonObject messages = fulfillment_response.getJSONObject("messages");
+
+    assertThat(message.toString()).contains("Hello from a Java GCF Webhook");
   }
 }
