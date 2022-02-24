@@ -15,21 +15,65 @@ package com.example.gcpsupport;
 
 import static org.junit.Assert.assertTrue;
 
+import com.google.api.services.cloudsupport.v2beta.CloudSupport;
+import com.google.api.services.cloudsupport.v2beta.model.CloseCaseRequest;
 import com.google.api.services.cloudsupport.v2beta.model.CloudSupportCase;
+import java.io.File;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class GetCaseTest {
+
+  private CloudSupportCase csc;
+
+  @Before
+  public void createCase() {
+
+    String basePath = new File("").getAbsolutePath();
+    String newCasePath = basePath + "/data/case.json";
+    String parentResource = System.getenv("PARENT_RESOURCE");
+
+    try {
+      csc = CreateCase.createCase(parentResource, newCasePath);
+    } catch (IOException e) {
+      System.out.println("IOException caught! \n" + e);
+    }
+  }
+
+  @After
+  public void closeNewCase() {
+
+    if (csc == null) return;
+
+    try {
+      String nameOfCase = csc.getName();
+
+      CloudSupport supportService = Starter.getCloudSupportService();
+      CloseCaseRequest request = new CloseCaseRequest();
+
+      supportService.cases().close(nameOfCase, request).execute();
+
+      csc = null;
+    } catch (IOException e) {
+      System.out.println("IOException caught! \n" + e);
+
+    } catch (GeneralSecurityException e) {
+      System.out.println("GeneralSecurityException caught! \n" + e);
+    }
+  }
 
   @Test
   public void getsCaseWithCorrectName() {
 
     try {
-      String sampleCaseResource = System.getenv("EXAMPLE_CASE");
+      String expectedName = csc.getName();
 
-      CloudSupportCase csc = GetCase.getCase(sampleCaseResource);
+      CloudSupportCase actualCase = GetCase.getCase(expectedName);
 
-      assertTrue(csc.getName().contains(sampleCaseResource));
+      assertTrue(expectedName.equals(actualCase.getName()));
 
     } catch (IOException e) {
       System.out.println("IOException caught! \n" + e);
