@@ -63,6 +63,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     export DATALABELING_ENDPOINT="test-datalabeling.sandbox.googleapis.com:443"
     # For Cloud Run filesystem sample
     export FILESTORE_IP_ADDRESS=$(gcloud secrets versions access latest --secret fs-app)
+    # For Cloud Support API to reference a parent resource
+    export PARENT_RESOURCE="projects/206675117367"
     
     SECRET_FILES=("java-docs-samples-service-account.json" \
     "java-aws-samples-secrets.txt" \
