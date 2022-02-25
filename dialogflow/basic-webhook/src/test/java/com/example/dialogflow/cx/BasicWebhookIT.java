@@ -19,9 +19,6 @@ package com.example.dialogflow.cx;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
-
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.gson.Gson;
@@ -59,7 +56,6 @@ public class BasicWebhookIT {
 
   @Test
   public void helloHttp_bodyParamsPost() throws IOException, Exception {
-    JsonParser parser = new JsonParser();
     String jsonString = "{'fulfillmentInfo': {'tag': 'Default Welcome Intent'}}";
 
     BufferedReader jsonReader = new BufferedReader(new StringReader(jsonString));
@@ -69,6 +65,6 @@ public class BasicWebhookIT {
     new BasicWebhook().service(request, response);
     writerOut.flush();
 
-    assertThat(responseOut.toString()).equals("");
+    assertThat(responseOut.toString()).contains("Hello from a Java GCF Webhook");
   }
 }
