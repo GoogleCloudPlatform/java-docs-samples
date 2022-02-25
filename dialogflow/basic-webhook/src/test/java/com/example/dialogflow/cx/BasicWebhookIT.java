@@ -16,7 +16,7 @@
 
 package com.example.dialogflow.cx;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertEquals;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
@@ -65,6 +65,10 @@ public class BasicWebhookIT {
     new BasicWebhook().service(request, response);
     writerOut.flush();
 
-    assertThat(responseOut.toString()).contains("Hello from a Java GCF Webhook");
+    String expectedResponse = 
+                "{ \"fulfillment_response\": { \"messages\": [ { \"text\": { \"text\": ["
+                   + "\"Hello from a Java GCF Webhook\"" + "] } } ] } }"
+
+    assertEquals(responseOut.toString(),expectedResponse);
   }
 }
