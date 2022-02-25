@@ -58,7 +58,6 @@ public class BasicWebhookIT {
 
   @Test
   public void helloHttp_bodyParamsPost() throws IOException, Exception {
-    JsonParser parser = new JsonParser();
     String jsonString = "{'fulfillmentInfo': {'tag': 'Default Welcome Intent'}}";
 
     BufferedReader jsonReader = new BufferedReader(new StringReader(jsonString));
@@ -67,13 +66,21 @@ public class BasicWebhookIT {
 
     new BasicWebhook().service(request, response);
     writerOut.flush();
-
+    JsonParser parser = new JsonParser();
     JsonObject responseObject = parser.parse(responseOut.toString().getAsJsonObject());
 
-    JsonObject fulfillment_response = responseObject.getJSONObject("fulfillment_response");
+    JsonObject fulfillmentResponse = responseObject.getAsJsonObject("fulfillment_response");
 
-    JsonObject messages = fulfillment_response.getJSONObject("messages");
+    JsonObject messageArray = fulfillmentResponse.getAsJsonArray("messages");
 
-    assertThat(message.toString()).contains("Hello from a Java GCF Webhook");
+    JsonObject textIndex = messageArray.get(0).getAsJsonObject();
+
+    JsonObject text1 = textIndex.getAsJsonObject("text");
+
+    JsonObject textArray = text1.getAsJsonArray("text");
+
+    JsonObject text = textArray.get(0).getAsJsonObject();
+
+    assertThat(text.toString()).contains("Hello from a Java GCF Webhook");
   }
 }
