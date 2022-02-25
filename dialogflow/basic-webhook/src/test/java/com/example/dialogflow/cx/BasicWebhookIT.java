@@ -67,7 +67,7 @@ public class BasicWebhookIT {
 
     String expectedResponse = 
                 "{ \"fulfillment_response\": { \"messages\": [ { \"text\": { \"text\": ["
-                   + "\"Hello from a Java GCF Webhook\"" + "] } } ] } }"
+                   + "\"Hello from a Java GCF Webhook\"" + "] } } ] } }";
 
     assertEquals(responseOut.toString(),expectedResponse);
   }
