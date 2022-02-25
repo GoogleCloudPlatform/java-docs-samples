@@ -66,8 +66,8 @@ public class BasicWebhookIT {
     writerOut.flush();
 
     String expectedResponse = 
-                "{ \"fulfillment_response\": { \"messages\": [ { \"text\": { \"text\": ["
-                   + "\"Hello from a Java GCF Webhook\"" + "] } } ] } }";
+                "{\"fulfillment_response\":{\"messages\":[{\"text\":{\"text\":["
+                   + "\"Hello from a Java GCF Webhook\"" + "]}}]}}";
 
     assertThat(responseOut.toString()).isEqualTo(expectedResponse);
   }
