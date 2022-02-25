@@ -16,7 +16,6 @@
 
 package com.example.dialogflow.cx;
 
-import static com.google.common.truth.Truth.assertEquals;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
@@ -27,6 +26,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -69,6 +69,6 @@ public class BasicWebhookIT {
                 "{ \"fulfillment_response\": { \"messages\": [ { \"text\": { \"text\": ["
                    + "\"Hello from a Java GCF Webhook\"" + "] } } ] } }";
 
-    assertEquals(responseOut.toString(),expectedResponse);
+    assertEquals(responseOut.toString(), expectedResponse);
   }
 }
