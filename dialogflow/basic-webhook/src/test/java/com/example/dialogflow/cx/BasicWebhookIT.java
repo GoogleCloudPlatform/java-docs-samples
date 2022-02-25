@@ -71,6 +71,9 @@ public class BasicWebhookIT {
 
     JsonObject fulfillmentResponse = responseObject.getAsJsonObject("fulfillment_response");
 
-    assertThat(fulfillmentResponse.toString()).equals("");
+    String expectedResponse = 
+        "{ \"fulfillment_response\": { \"messages\": [ { \"text\": { \"text\": [ \"Hello from a Java GCF Webhook\" ] } } ] } }"
+
+    assertThat(responseOut.toString()).equals(expectedResponse)
   }
 }
