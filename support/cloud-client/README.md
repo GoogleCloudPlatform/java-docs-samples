@@ -9,12 +9,12 @@ The [Cloud Support API](https://cloud.google.com/support/docs/reference/rest) pr
 
 ## Setup
 
-You will first need to enable Cloud Support API and have all the prerequisites completed as outlined in the Process overview [here](https://cloud.google.com/support/docs/reference/v1#process-overview). This includes the following:
+You will need to enable Cloud Support API and have all the prerequisites. This includes the following:
 
 - A Google Cloud project with an active support account
 - Enable the Cloud Support API
 - [Create a service account](https://cloud.google.com/docs/authentication/getting-started) with the appropriate IAM permissions
-- Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable pointing to the downloaded credentials file.
+- Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable pointing to the downloaded credentials JSON file.
 
 ## Running
 
