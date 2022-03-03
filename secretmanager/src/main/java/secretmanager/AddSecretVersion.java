@@ -23,6 +23,8 @@ import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersion;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
+import java.util.zip.CRC32C;
+import java.util.zip.Checksum;
 
 public class AddSecretVersion {
 
@@ -40,11 +42,19 @@ public class AddSecretVersion {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
       SecretName secretName = SecretName.of(projectId, secretId);
+      byte[] data = "my super secret data".getBytes();
+      // Calculate data checksum. The library is available in Java 9+.
+      // If using Java 8, the following library may be used:
+      // https://cloud.google.com/appengine/docs/standard/java/javadoc/com/google/appengine/api/files/Crc32c
+      Checksum checksum = new CRC32C();
+      checksum.update(data, 0, data.length);
 
       // Create the secret payload.
       SecretPayload payload =
           SecretPayload.newBuilder()
-              .setData(ByteString.copyFromUtf8("my super secret data"))
+              .setData(ByteString.copyFrom(data))
+              // Providing data checksum is optional.
+              .setDataCrc32C(checksum.getValue())
               .build();
 
       // Add the secret version.

@@ -21,6 +21,8 @@ import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import java.io.IOException;
+import java.util.zip.CRC32C;
+import java.util.zip.Checksum;
 
 public class AccessSecretVersion {
 
@@ -44,6 +46,17 @@ public class AccessSecretVersion {
 
       // Access the secret version.
       AccessSecretVersionResponse response = client.accessSecretVersion(secretVersionName);
+
+      // Verify checksum. The used library is available in Java 9+.
+      // If using Java 8, you may use the following:
+      // https://cloud.google.com/appengine/docs/standard/java/javadoc/com/google/appengine/api/files/Crc32c
+      byte[] data = response.getPayload().getData().toByteArray();
+      Checksum checksum = new CRC32C();
+      checksum.update(data, 0, data.length);
+      if (response.getPayload().getDataCrc32C() != checksum.getValue()) {
+        System.out.printf("Data corruption detected.");
+        return;
+      }
 
       // Print the secret payload.
       //
