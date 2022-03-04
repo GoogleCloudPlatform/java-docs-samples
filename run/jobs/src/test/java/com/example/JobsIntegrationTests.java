@@ -104,15 +104,22 @@ public class JobsIntegrationTests {
               + "\" -protoPayload.serviceName=\"run.googleapis.com\"";
 
       System.out.println(logFilter);
-      Page<LogEntry> entries = logging.listLogEntries(EntryListOption.filter(logFilter));
       Boolean found = false;
-      for (LogEntry logEntry : entries.iterateAll()) {
-        if (!logEntry.getLogName().contains("cloudaudit")) {
-          Payload<String> payload = logEntry.getPayload();
-          if (payload.getData().contains("Task")) { 
-            found = true; 
+      // Retry up to 5 times
+      for (int i = 0; i < 5; i++) {
+        Page<LogEntry> entries = logging.listLogEntries(EntryListOption.filter(logFilter));
+        for (LogEntry logEntry : entries.iterateAll()) {
+          if (!logEntry.getLogName().contains("cloudaudit")) {
+            Payload<String> payload = logEntry.getPayload();
+            if (payload.getData().contains("Task")) { 
+              found = true; 
+            }
           }
         }
+        if (found) {
+          break;
+        }
+        Thread.sleep(i * 30000);
       }
       assertTrue("Log was not found.", found);
     }
