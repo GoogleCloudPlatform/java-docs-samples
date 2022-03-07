@@ -117,7 +117,10 @@ public class JobsIntegrationTests {
             }
           }
         }
-        Thread.sleep(i * 30000);
+        if (found) {
+          break;
+        }
+        TimeUnit.SECONDS.sleep(i * 30);
       }
       assertTrue("Log was not found.", found);
     }
