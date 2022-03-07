@@ -106,18 +106,16 @@ public class JobsIntegrationTests {
       System.out.println(logFilter);
       Boolean found = false;
       // Retry up to 5 times
-      for (int i = 0; i < 5; i++) {
+      for (int i = 1; i <= 5; i++) {
         Page<LogEntry> entries = logging.listLogEntries(EntryListOption.filter(logFilter));
         for (LogEntry logEntry : entries.iterateAll()) {
           if (!logEntry.getLogName().contains("cloudaudit")) {
             Payload<String> payload = logEntry.getPayload();
             if (payload.getData().contains("Task")) { 
-              found = true; 
+              found = true;
+              break;
             }
           }
-        }
-        if (found) {
-          break;
         }
         Thread.sleep(i * 30000);
       }
