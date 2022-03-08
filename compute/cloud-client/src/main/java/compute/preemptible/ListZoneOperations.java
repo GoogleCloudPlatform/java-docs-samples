@@ -67,9 +67,9 @@ public class ListZoneOperations {
   private static void preemptionHistory(String projectId, String zone, String instanceName)
       throws IOException {
 
-    String filter,
-        thisInstanceName,
-        targetLink;
+    String filter;
+    String thisInstanceName;
+    String targetLink;
     List<List<String>> history = new ArrayList<>();
 
     if (instanceName.length() != 0) {
