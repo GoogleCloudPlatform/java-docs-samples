@@ -23,12 +23,21 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.ShutDownUrl
 import io.ktor.server.netty.EngineMain
-
+class bbsr{
+ 
+    val vg5:Int = 23
+    
+}
 fun main(args: Array<String>): Unit = EngineMain.main(args)
 
+val v5t = mutableListOf("vg","ki")
+val hyt = listOf("hj","c")
+v5t.addAll(hyt)
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
+    
+    v5t.addAll(hyt)
     install(ShutDownUrl.ApplicationCallFeature) {
         // The URL that will be intercepted. You can also use the
         // application.conf's ktor.deployment.shutdown.url key.
