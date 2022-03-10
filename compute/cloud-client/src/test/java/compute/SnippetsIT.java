@@ -489,13 +489,6 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testCreateFirewallRule() throws IOException {
-    // Assert that firewall rule has been created as part of the setup.
-    compute.GetFirewallRule.getFirewallRule(PROJECT_ID, FIREWALL_RULE_CREATE);
-    assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
-  }
-
-  @Test
   public void testInstanceOperations()
       throws IOException, ExecutionException, InterruptedException {
     Assert.assertEquals(getInstanceStatus(MACHINE_NAME), Status.RUNNING.toString());
