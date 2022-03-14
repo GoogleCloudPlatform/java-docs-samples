@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
  * 5. Drops the created table and change stream.
  */
 public class ChangeStreamSample {
-  private static final long TIMEOUT_MINUTES = 2;
+  private static final long TIMEOUT_MINUTES = 10;
 
   public static void run(String instanceId, String databaseId, String prefix) {
     final String tableName = prefix + "_Singers";

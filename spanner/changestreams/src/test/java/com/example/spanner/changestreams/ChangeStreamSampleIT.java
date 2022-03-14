@@ -30,6 +30,7 @@ import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -73,7 +74,8 @@ public class ChangeStreamSampleIT {
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
     try {
-      dbClient.createDatabase(instanceId, databaseId, Collections.emptyList()).get();
+      dbClient.createDatabase(instanceId, databaseId, Collections.emptyList())
+          .get(10, TimeUnit.MINUTES);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -105,6 +107,8 @@ public class ChangeStreamSampleIT {
     ChangeStreamSample.run(instanceId, databaseId, prefix);
 
     String got = bout.toString();
+    System.setOut(stdOut);
+    System.out.println("Standard output: " + got);
     Assert.assertTrue(got.contains("Received a ChildPartitionsRecord"));
     Assert.assertTrue(got.contains("Received a DataChangeRecord"));
     Assert.assertTrue(got.contains("mods=[Mod{keysJson={\"SingerId\":\"1\"}, "
