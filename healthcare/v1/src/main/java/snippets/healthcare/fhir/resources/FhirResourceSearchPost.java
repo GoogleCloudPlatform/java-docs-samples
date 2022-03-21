@@ -85,7 +85,7 @@ public class FhirResourceSearchPost {
       responseEntity.writeTo(System.err);
       throw new RuntimeException();
     }
-    System.out.println("FHIR resource POST search result: ");
+    System.out.println("FHIR resource POST search results: ");
     responseEntity.writeTo(System.out);
   }
 
