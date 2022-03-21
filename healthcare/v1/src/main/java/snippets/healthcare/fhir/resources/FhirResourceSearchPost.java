@@ -50,12 +50,18 @@ public class FhirResourceSearchPost {
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "resource-type");
 
-    // Initialize the client, which will be used to interact with the service.
-    CloudHealthcare client = createClient();
+    // The endpoint URL for the Healthcare API. Required for HttpClient.
+    String rootUrl = "https://healthcare.googleapis.com";
 
+    // Instantiate the client, which will be used to interact with the service.
     HttpClient httpClient = HttpClients.createDefault();
-    String uri = String.format("%sv1/%s/_search", client.getRootUrl(), resourceName);
+    String uri = String.format("%s/v1/%s/_search", rootUrl, resourceName);
     URIBuilder uriBuilder = new URIBuilder(uri).setParameter("access_token", getAccessToken());
+    // To set additional parameters for search filtering, add them to the URIBuilder. For
+    // example, to search for a Patient with the family name "Smith", specify the following:
+    // uriBuilder.setParameter("family:exact", "Smith");
+
+    // Set a body otherwise HttpClient complains there is no Content-Length set.
     StringEntity requestEntity = new StringEntity("");
 
     HttpUriRequest request =
@@ -67,6 +73,7 @@ public class FhirResourceSearchPost {
             .addHeader("Accept", "application/fhir+json; charset=utf-8")
             .build();
 
+    System.out.println(request);
     // Execute the request and process the results.
     HttpResponse response = httpClient.execute(request);
     HttpEntity responseEntity = response.getEntity();
@@ -78,7 +85,7 @@ public class FhirResourceSearchPost {
       responseEntity.writeTo(System.err);
       throw new RuntimeException();
     }
-    System.out.println("FHIR resource search results: ");
+    System.out.println("FHIR resource POST search result: ");
     responseEntity.writeTo(System.out);
   }
 
@@ -107,7 +114,7 @@ public class FhirResourceSearchPost {
     GoogleCredentials credential =
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    
+
     return credential.refreshAccessToken().getTokenValue();
   }
 }
