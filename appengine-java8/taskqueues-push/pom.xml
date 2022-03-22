@@ -48,7 +48,7 @@ Copyright 2016 Google Inc.
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20211205</version>
+      <version>20220320</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
