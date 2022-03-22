@@ -41,6 +41,8 @@ import org.apache.http.impl.client.HttpClients;
 public class FhirResourceSearchPost {
   private static final String FHIR_NAME =
       "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
+  // The endpoint URL for the Healthcare API. Required for HttpClient.
+  private static final String ROOT_URL = "https://healthcare.googleapis.com";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
@@ -50,12 +52,9 @@ public class FhirResourceSearchPost {
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", "resource-type");
 
-    // The endpoint URL for the Healthcare API. Required for HttpClient.
-    String rootUrl = "https://healthcare.googleapis.com";
-
     // Instantiate the client, which will be used to interact with the service.
     HttpClient httpClient = HttpClients.createDefault();
-    String uri = String.format("%s/v1/%s/_search", rootUrl, resourceName);
+    String uri = String.format("%s/v1/%s/_search", ROOT_URL, resourceName);
     URIBuilder uriBuilder = new URIBuilder(uri).setParameter("access_token", getAccessToken());
     // To set additional parameters for search filtering, add them to the URIBuilder. For
     // example, to search for a Patient with the family name "Smith", specify the following:
