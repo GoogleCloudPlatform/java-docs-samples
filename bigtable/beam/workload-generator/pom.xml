@@ -26,7 +26,7 @@
   <properties>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <apache_beam.version>2.36.0</apache_beam.version>
+    <apache_beam.version>2.37.0</apache_beam.version>
   </properties>
 
   <!--
