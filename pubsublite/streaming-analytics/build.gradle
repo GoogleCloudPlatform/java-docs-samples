@@ -36,7 +36,7 @@ repositories {
 def beamVersion = '2.36.0'
 def slf4jVersion = '1.7.36'
 dependencies {
-    implementation 'com.github.spotbugs:spotbugs-annotations:4.5.3'
+    implementation 'com.github.spotbugs:spotbugs-annotations:4.6.0'
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     implementation "org.slf4j:slf4j-jdk14:${slf4jVersion}"
     implementation "org.apache.beam:beam-sdks-java-core:${beamVersion}"
