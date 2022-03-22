@@ -73,7 +73,6 @@ public class FhirResourceSearchPost {
             .addHeader("Accept", "application/fhir+json; charset=utf-8")
             .build();
 
-    System.out.println(request);
     // Execute the request and process the results.
     HttpResponse response = httpClient.execute(request);
     HttpEntity responseEntity = response.getEntity();
