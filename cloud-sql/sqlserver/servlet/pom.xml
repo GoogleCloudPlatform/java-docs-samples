@@ -40,7 +40,7 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
+      <version>4.0.1</version>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
@@ -57,12 +57,12 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>cloud-sql-connector-jdbc-sqlserver</artifactId>
-      <version>1.4.1</version>
+      <version>1.4.4</version>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>

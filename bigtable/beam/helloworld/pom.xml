@@ -37,7 +37,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <apache_beam.version>2.32.0</apache_beam.version>
+    <apache_beam.version>2.37.0</apache_beam.version>
     <exec.cleanupDaemonThreads>false</exec.cleanupDaemonThreads>
   </properties>
 
@@ -63,7 +63,7 @@
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-beam</artifactId>
-      <version>1.26.1</version>
+      <version>2.0.0</version>
     </dependency>
     <!-- [END bigtable_beam_connector_dependency] -->
 

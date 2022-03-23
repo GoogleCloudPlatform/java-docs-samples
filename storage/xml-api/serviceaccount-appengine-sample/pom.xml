@@ -35,7 +35,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <google-api-client.version>1.32.2</google-api-client.version>
+    <google-api-client.version>1.33.2</google-api-client.version>
     <webappDirectory>${project.build.directory}/${project.build.finalName}
     </webappDirectory>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -97,7 +97,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.93</version>
+      <version>2.0.4</version>
     </dependency>
 
     <dependency>

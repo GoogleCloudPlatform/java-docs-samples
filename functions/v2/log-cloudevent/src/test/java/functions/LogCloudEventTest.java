@@ -46,7 +46,7 @@ public class LogCloudEventTest {
     JsonObject protoPayload = new JsonObject();
     JsonObject authInfo = new JsonObject();
     String email = "test@gmail.com";
-    authInfo.addProperty("principleEmail", email);
+    authInfo.addProperty("principalEmail", email);
 
     protoPayload.add("authenticationInfo", authInfo);
     protoPayload.addProperty("resourceName", "test resource");

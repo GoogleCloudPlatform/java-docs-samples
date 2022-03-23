@@ -22,8 +22,8 @@ version := "0.1"
 // https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-release-1.4
 scalaVersion := "2.11.12"
 val sparkVersion = "2.4.8"
-val bigtableVersion = "1.26.1"
-val hbaseVersion = "2.4.8"
+val bigtableVersion = "2.0.0"
+val hbaseVersion = "2.4.9"
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % sparkVersion % Provided,
@@ -60,15 +60,21 @@ excludeDependencies ++= Seq(
   ExclusionRule(organization = "org.mortbay.jetty", "servlet-api")
 )
 
-assemblyMergeStrategy in assembly := {
+ThisBuild / assemblyMergeStrategy := {
   case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.first
   case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
+  case PathList("META-INF", "native", xs @ _*)         => MergeStrategy.first
+  case PathList("META-INF", "native-image", xs @ _*)         => MergeStrategy.first
+  case PathList("mozilla", "public-suffix-list.txt")         => MergeStrategy.first
   case PathList("google", xs @ _*) => xs match {
     case ps @ (x :: xs) if ps.last.endsWith(".proto") => MergeStrategy.first
     case _ => MergeStrategy.deduplicate
   }
+  case PathList("javax", xs @ _*)         => MergeStrategy.first
+  case PathList("io", "netty", xs @ _*)         => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith ".proto" => MergeStrategy.first
+  case PathList(ps @ _*) if ps.last endsWith "module-info.class" => MergeStrategy.discard
   case x =>
-    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
     oldStrategy(x)
-    MergeStrategy.first
 }

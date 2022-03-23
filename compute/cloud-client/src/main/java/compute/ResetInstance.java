@@ -42,7 +42,7 @@ public class ResetInstance {
     resetInstance(project, zone, instanceName);
   }
 
-  // Resets a stopped Google Compute Engine instance (with unencrypted disks).
+  // Resets a running Google Compute Engine instance (with unencrypted disks).
   public static void resetInstance(String project, String zone, String instanceName)
       throws IOException, ExecutionException, InterruptedException {
     /* Initialize client that will be used to send requests. This client only needs to be created

@@ -39,10 +39,10 @@ apply plugin: 'com.google.cloud.tools.appengine'
 // [START dependencies]
 dependencies {
     compile 'com.google.endpoints:endpoints-framework:2.2.2'
-    compile 'com.google.appengine:appengine-api-1.0-sdk:1.9.93'
+    compile 'com.google.appengine:appengine-api-1.0-sdk:2.0.4'
 
     compile 'javax.inject:javax.inject:1'
-    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 }
 // [END dependencies]
 

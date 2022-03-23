@@ -60,7 +60,7 @@ limitations under the License.
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20211205</version>
+      <version>20220320</version>
   </dependency>
   <dependency>
       <groupId>com.google.truth</groupId>
@@ -87,7 +87,7 @@ limitations under the License.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.1.4</version>
+        <version>3.2.0</version>
         <configuration>
           <to>
             <image>gcr.io/PROJECT_ID/eventarc-generic</image>

@@ -16,10 +16,15 @@
 
 package bigtable;
 
+import com.google.api.services.dataflow.model.Job;
 import com.google.cloud.bigtable.beam.AbstractCloudBigtableTableDoFn;
 import com.google.cloud.bigtable.beam.CloudBigtableConfiguration;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import java.io.IOException;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import org.apache.beam.runners.dataflow.DataflowClient;
+import org.apache.beam.runners.dataflow.DataflowPipelineJob;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.PipelineResult;
@@ -56,7 +61,31 @@ public class WorkloadGenerator {
     p.apply(GenerateSequence.from(0).withRate(options.getWorkloadRate(), new Duration(1000)))
         .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig)));
     System.out.println("Beginning to generate read workload.");
-    return p.run();
+    PipelineResult pipelineResult = p.run();
+
+
+    // Cancel the workload after the scheduled time.
+    ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+    exec.schedule(() -> {
+      try {
+        cancelJob(options, (DataflowPipelineJob) pipelineResult);
+      } catch (IOException e) {
+        e.printStackTrace();
+        System.out.println("Unable to cancel job.");
+      }
+    }, options.getWorkloadDurationMinutes(), TimeUnit.MINUTES);
+
+    return pipelineResult;
+  }
+
+  private static void cancelJob(BigtableWorkloadOptions options, DataflowPipelineJob pipelineResult)
+      throws IOException {
+    String jobId = pipelineResult.getJobId();
+    DataflowClient client = DataflowClient.create(options);
+    Job job = client.getJob(jobId);
+
+    job.setRequestedState("JOB_STATE_CANCELLED");
+    client.updateJob(jobId, job);
   }
 
   public static class ReadFromTableFn extends AbstractCloudBigtableTableDoFn<Long, Void> {
@@ -94,5 +123,11 @@ public class WorkloadGenerator {
     Integer getWorkloadRate();
 
     void setWorkloadRate(Integer workloadRate);
+
+    @Description("The duration for the workload to run in minutes.")
+    @Default.Integer(10)
+    Integer getWorkloadDurationMinutes();
+
+    void setWorkloadDurationMinutes(Integer workloadDurationMinutes);
   }
 }

@@ -46,12 +46,12 @@ limitations under the License.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.32</version>
+      <version>1.7.36</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.32</version>
+      <version>1.7.36</version>
     </dependency>
     <!-- [END run_broken_service_dep] -->
     <!-- [END cloudrun_broken_service_dep] -->
@@ -77,7 +77,7 @@ limitations under the License.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.1.4</version>
+        <version>3.2.0</version>
         <configuration>
           <to>
             <image>gcr.io/PROJECT_ID/hello-service</image>

@@ -118,6 +118,11 @@ public class SnippetsIT {
     SUBNETWORK_NAME = "regions/us-central1/subnetworks/default";
     RAW_KEY = getBase64EncodedKey();
 
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("my-new-test-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("encrypted-test-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
+
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_DELETE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
@@ -481,13 +486,6 @@ public class SnippetsIT {
     // ================= Paginated list of images ================
     ListImages.listImagesByPage(IMAGE_PROJECT_NAME, 2);
     Assert.assertTrue(stdOut.toString().contains("Page Number: 1"));
-  }
-
-  @Test
-  public void testCreateFirewallRule() throws IOException {
-    // Assert that firewall rule has been created as part of the setup.
-    compute.GetFirewallRule.getFirewallRule(PROJECT_ID, FIREWALL_RULE_CREATE);
-    assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
   }
 
   @Test

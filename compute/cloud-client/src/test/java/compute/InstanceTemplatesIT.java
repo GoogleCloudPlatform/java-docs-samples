@@ -79,7 +79,7 @@ public class InstanceTemplatesIT {
 
     // Check for resources created >24hours which haven't been deleted in the project.
     Util.cleanUpExistingInstanceTemplates("test-csam-", PROJECT_ID);
-    Util.cleanUpExistingInstances("test-csam-", PROJECT_ID);
+    Util.cleanUpExistingInstances("test-csam-", PROJECT_ID, DEFAULT_ZONE);
 
     // Create templates.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);

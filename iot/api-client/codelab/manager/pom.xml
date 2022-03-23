@@ -52,7 +52,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20211205</version>
+      <version>20220320</version>
     </dependency>
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
@@ -72,7 +72,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.115.0</version>
+      <version>1.116.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -87,7 +87,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.32.2</version>
+      <version>1.33.2</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>

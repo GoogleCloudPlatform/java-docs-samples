@@ -74,7 +74,7 @@ public class PubSubAuthenticatedPush extends HttpServlet {
       // Note: For high volume push requests, it would save some network overhead
       // if you verify the tokens offline by decoding them using Google's Public
       // Cert; caching already seen tokens works best when a large volume of
-      // messsages have prompted a singple push server to handle them, in which
+      // messsages have prompted a single push server to handle them, in which
       // case they would all share the same token for a limited time window.
       GoogleIdToken idToken = verifier.verify(authorization);
 

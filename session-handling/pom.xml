@@ -53,7 +53,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-      <version>4.0.0</version>
+      <version>4.0.1</version>
     </dependency>
 
     <dependency>
@@ -66,7 +66,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-contrib-http-util</artifactId>
-      <version>0.28.3</version>
+      <version>0.31.0</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -85,7 +85,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-chrome-driver</artifactId>
-      <version>4.1.0</version>
+      <version>4.1.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -104,7 +104,7 @@ Copyright 2019 Google LLC
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.1.4</version>
+        <version>3.2.0</version>
         <configuration>
           <to>
             <image>gcr.io/${gcloud.appId}/session-handling</image>

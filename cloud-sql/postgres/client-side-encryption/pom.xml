@@ -41,14 +41,14 @@
         <dependency>
           <groupId>com.google.cloud</groupId>
           <artifactId>libraries-bom</artifactId>
-          <version>24.0.0</version>
+          <version>25.0.0</version>
           <type>pom</type>
           <scope>import</scope>
         </dependency>
       <dependency>
         <groupId>com.google.api-client</groupId>
         <artifactId>google-api-client</artifactId>
-        <version>1.32.2</version>
+        <version>1.33.2</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -57,7 +57,7 @@
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.40.1</version>
+      <version>1.41.4</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
@@ -67,7 +67,7 @@
         <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.3.1</version>
+      <version>42.3.3</version>
     </dependency>
     <dependency>
       <groupId>com.google.crypto.tink</groupId>
@@ -82,7 +82,7 @@
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
 
     <dependency>

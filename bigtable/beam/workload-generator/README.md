@@ -15,25 +15,21 @@ be run as a Dataflow job.
     INSTANCE_ID=YOUR-INSTANCE-ID
     TABLE_ID=YOUR-TABLE-ID
     REGION=us-central1
-    WORKLOAD_QPS=100 # Optional, default to 1000
+    WORKLOAD_RATE=100 # Optional, default to 1000
+    WORKLOAD_DURATION=15 # Optional, default to 10
     ```
 
 1. Run this command to start a job from dataflow template:
 
     ```
-    JOB_NAME="generate-bigtable-workload-`date +%Y%m%d-%H%M%S`"
+    JOB_NAME="generate-bigtable-workload"
     gcloud dataflow flex-template run $JOB_NAME \
     --template-file-gcs-location "$TEMPLATE_PATH" \
     --parameters bigtableInstanceId="$INSTANCE_ID" \
     --parameters bigtableTableId="$TABLE_ID" \
     --region "$REGION" \
-    --parameters workloadRate=$WORKLOAD_QPS
-    ```
-
-1. Make sure to cancel the job once you are done.
-
-    ```
-    gcloud dataflow jobs cancel $JOB_NAME
+    --parameters workloadRate=$WORKLOAD_RATE
+    --parameters workloadDurationMinutes=$WORKLOAD_DURATION
     ```
 
 ### Deploying a template instructions
@@ -86,7 +82,8 @@ If you would like to modify this and run it yourself you can use these commands:
    INSTANCE_ID=your-instance-id
    REGION=us-central1
    TABLE_ID=your-table-id 
-   WORKLOAD_QPS=100 # Optional
+   WORKLOAD_RATE=100 # Optional
+   WORKLOAD_DURATION=15 # Optional, default to 10
    ```
 
 1. Run the command
@@ -96,5 +93,6 @@ If you would like to modify this and run it yourself you can use these commands:
    "-Dexec.args=--bigtableInstanceId=$INSTANCE_ID =--bigtableTableId=$TABLE_ID \
    --runner=dataflow --project=$GOOGLE_CLOUD_PROJECT \
    --region=$REGION" \
-   --workloadQPS=$WORKLOAD_QPS 
+   --workloadRate=$WORKLOAD_RATE 
+   --workloadDurationMinutes=$WORKLOAD_DURATION 
    ```

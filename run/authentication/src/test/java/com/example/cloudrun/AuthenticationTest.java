@@ -29,7 +29,7 @@ public class AuthenticationTest {
   @Test
   public void canMakeGetRequest() throws IOException {
     String url = "https://example.com";
-    HttpResponse response = Authentication.makeGetRequest(url);
+    HttpResponse response = Authentication.makeGetRequest(url, url);
     assertThat(response.parseAsString(), containsString("Example Domain"));
     assertThat(response.getContentType(), containsString("text/html"));
     assertThat(response.getStatusCode(), equalTo(200));
@@ -39,7 +39,7 @@ public class AuthenticationTest {
   public void failsMakeGetRequestWithoutProtocol() throws IOException {
     String url = "example.com/";
     try {
-      Authentication.makeGetRequest(url);
+      Authentication.makeGetRequest(url, url);
     } catch (IllegalArgumentException e) {
       assertThat(e.getMessage(), containsString("no protocol"));
     }

@@ -138,7 +138,8 @@ public class WorkloadGeneratorTest {
   @Test
   public void testPipeline() throws IOException, InterruptedException {
     String workloadJobName = "bigtable-workload-generator-test-" + new Date().getTime();
-    final int WAIT_DURATION = 10 * 60 * 1000;
+    final int WORKLOAD_DURATION = 10;
+    final int WAIT_DURATION = WORKLOAD_DURATION * 60 * 1000;
     int rate = 1000;
 
     BigtableWorkloadOptions options = PipelineOptionsFactory.create()
@@ -147,6 +148,7 @@ public class WorkloadGeneratorTest {
     options.setBigtableTableId(TABLE_ID);
     options.setWorkloadRate(rate);
     options.setRegion(REGION_ID);
+    options.setWorkloadDurationMinutes(WORKLOAD_DURATION);
     options.setRunner(DataflowRunner.class);
     options.setJobName(workloadJobName);
 
@@ -186,7 +188,6 @@ public class WorkloadGeneratorTest {
     DataflowClient client = DataflowClient.create(options);
     Job job = client.getJob(jobId);
 
-    job.setRequestedState("JOB_STATE_CANCELLED");
-    client.updateJob(jobId, job);
+    assertThat(job.getCurrentState().equals("JOB_STATE_CANCELLED"));
   }
 }

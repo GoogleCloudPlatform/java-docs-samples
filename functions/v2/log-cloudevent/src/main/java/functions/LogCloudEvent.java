@@ -53,7 +53,7 @@ public class LogCloudEvent implements CloudEventsFunction {
       if (auth != null) {
         // The email address of the authenticated user 
         // (or service account on behalf of third party principal) making the request
-        logger.info("Authenticated User: " + auth.get("principleEmail").getAsString()); 
+        logger.info("Authenticated User: " + auth.get("principalEmail").getAsString()); 
       }
     }
   }

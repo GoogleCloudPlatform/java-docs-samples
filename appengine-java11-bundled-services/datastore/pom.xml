@@ -40,13 +40,13 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.4</version>
     </dependency>
 
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
+      <version>4.0.1</version>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
@@ -54,14 +54,14 @@
     <dependency>
       <groupId>com.google.auto.value</groupId>
       <artifactId>auto-value</artifactId>
-      <version>1.8.2</version>
+      <version>1.9</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>com.google.auto.value</groupId>
       <artifactId>auto-value-annotations</artifactId>
-      <version>1.8.2</version>
+      <version>1.9</version>
     </dependency>
 
     <dependency>
@@ -99,19 +99,19 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -147,7 +147,7 @@
             <annotationProcessorPath>
               <groupId>com.google.auto.value</groupId>
               <artifactId>auto-value</artifactId>
-              <version>1.8.2</version>
+              <version>1.9</version>
             </annotationProcessorPath>
           </annotationProcessorPaths>
         </configuration>

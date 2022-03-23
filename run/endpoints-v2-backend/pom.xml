@@ -58,7 +58,7 @@ limitations under the License.
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.5.13</version>
+            <version>1.6.6</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -96,7 +96,7 @@ limitations under the License.
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>3.1.4</version>
+                <version>3.2.0</version>
                 <configuration>
                     <to>
                         <image>gcr.io/${endpoints.project.id}/endpoints-container</image>
@@ -106,7 +106,7 @@ limitations under the License.
             <plugin>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-maven-plugin</artifactId>
-                <version>1.3</version>
+                <version>1.4</version>
                 <executions>
                     <execution>
                         <id>integration-test</id>

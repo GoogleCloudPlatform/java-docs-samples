@@ -52,7 +52,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
+      <version>4.0.1</version>
       <scope>provided</scope>
     </dependency>
 
@@ -99,7 +99,7 @@ Copyright 2019 Google LLC
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>copy</id>

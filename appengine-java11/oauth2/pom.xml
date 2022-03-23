@@ -57,14 +57,14 @@
       <dependency>
         <groupId>com.google.oauth-client</groupId>
         <artifactId>google-oauth-client</artifactId>
-        <version>1.32.1</version>
+        <version>1.33.1</version>
         <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>com.google.oauth-client</groupId>
         <artifactId>google-oauth-client-servlet</artifactId>
-        <version>1.32.1</version>
+        <version>1.33.1</version>
         <scope>provided</scope>
       </dependency>
 
@@ -77,14 +77,14 @@
       <dependency>
         <groupId>com.google.http-client</groupId>
         <artifactId>google-http-client-jackson2</artifactId>
-        <version>1.40.1</version>
+        <version>1.41.4</version>
       </dependency>
       <!-- [END gae_java11_oauth2_dependencies] -->
 
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
-        <version>3.1.0</version>
+        <version>4.0.1</version>
         <type>jar</type>
         <scope>provided</scope>
       </dependency>
@@ -120,7 +120,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.0</version>
           <executions>
             <execution>
               <id>copy</id>
