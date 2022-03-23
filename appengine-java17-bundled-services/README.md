@@ -72,7 +72,7 @@ This sample demonstrates how to use the App Engine Datastore APIs in a Java17 we
 
 You can execute the following steps to transform the java8 appengine-web.xml file to a java17 appengine-web.xml file:
 
-     ```
+```
 	 git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
 	 cd java-docs-samples
 	 cp -pr appengine-java8 /tmp/java17-samples
@@ -82,7 +82,7 @@ You can execute the following steps to transform the java8 appengine-web.xml fil
      for f in **/appengine-web.xml; do sed -i 's.<runtime>java8</runtime>.<runtime>java17</runtime><app-engine-apis>true</app-engine-apis>.' ${f}; done 
 	 # on MacOS
      for f in **/appengine-web.xml; do sed -i'' -e 's.<runtime>java8</runtime>.<runtime>java17</runtime><app-engine-apis>true</app-engine-apis>.' ${f}; done
-	 ```
+```
 	 
 You will see in the `tmp/java17` directory all the correct code samples to compile and deploy to the Java17 AppEngine runtime, with bundled services.
 Just follow the same documentation as the [Java8 samples][java8-samples].
