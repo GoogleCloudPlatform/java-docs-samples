@@ -42,7 +42,7 @@ access control, billing, and services.
 The only difference between a Java8 application and a Java17 application is in the `appengine-web.xml` file
 where you need to define the Java17 runtime and declare you need the App Engine APIs:
 
-```XML
+```
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
     <runtime>java17</runtime>
     <app-engine-apis>true</app-engine-apis>
@@ -51,7 +51,7 @@ where you need to define the Java17 runtime and declare you need the App Engine 
 
 While the Java17 runtime is in Beta, in order to deploy the application, you can use the `beta` value for the `gcloudMode` Cloud SDK parameter like:
 
-```shell
+```
  mvn appengine:deploy -Dapp.deploy.gcloudMode=beta
 ```
 
@@ -72,7 +72,7 @@ This sample demonstrates how to use the App Engine Datastore APIs in a Java17 we
 
 You can execute the following steps to transform the java8 appengine-web.xml file to a java17 appengine-web.xml file:
 
-     ```shell
+     ```
 	 git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
 	 cd java-docs-samples
 	 cp -pr appengine-java8 /tmp/java17-samples
