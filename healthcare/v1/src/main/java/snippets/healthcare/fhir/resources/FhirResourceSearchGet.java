@@ -42,7 +42,7 @@ public class FhirResourceSearchGet {
   private static final String FHIR_NAME =
       "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
   // The endpoint URL for the Healthcare API. Required for HttpClient.
-  private static final String ROOT_URL = "https://healthcare.googleapis.com";
+  private static final String API_ENDPOINT = "https://healthcare.googleapis.com";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
