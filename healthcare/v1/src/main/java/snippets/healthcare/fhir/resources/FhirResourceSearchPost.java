@@ -54,7 +54,7 @@ public class FhirResourceSearchPost {
 
     // Instantiate the client, which will be used to interact with the service.
     HttpClient httpClient = HttpClients.createDefault();
-    String uri = String.format("%s/v1/%s/_search", ROOT_URL, resourceName);
+    String uri = String.format("%s/v1/%s/_search", API_ENDPOINT, resourceName);
     URIBuilder uriBuilder = new URIBuilder(uri).setParameter("access_token", getAccessToken());
     // To set additional parameters for search filtering, add them to the URIBuilder. For
     // example, to search for a Patient with the family name "Smith", specify the following:
