@@ -53,6 +53,7 @@ While the Java17 runtime is in Beta, in order to deploy the application, you can
 
 ```shell
  mvn appengine:deploy -Dapp.deploy.gcloudMode=beta
+ mvn appengine:deployIndex
 ```
 
 
