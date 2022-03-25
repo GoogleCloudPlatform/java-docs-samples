@@ -69,9 +69,9 @@
 <!-- [END iamcredentials_java_dependency]-->
 <!-- [START troubleshooter_java_dependency]-->
     <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-policytroubleshooter</artifactId>
-      <version>v1-rev20211008-1.32.1</version>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-policy-troubleshooter</artifactId>
+      <version>1.0.2</version>
     </dependency>
 <!-- [END troubleshooter_java_dependency]-->
     <dependency>
