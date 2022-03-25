@@ -143,10 +143,10 @@ public class FhirResourceTests {
 
   @Test
   public void test_FhirResourceSearchGet() throws Exception {
-    FhirResourceSearchGet.fhirResourceSearchGet(fhirStoreName, resourceType);
+    FhirResourceSearchGet.fhirResourceSearchGet(resourcePath);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR resource search results:"));
+    assertThat(output, containsString("FHIR resource GET search results:"));
   }
 
   @Test
@@ -154,7 +154,7 @@ public class FhirResourceTests {
     FhirResourceSearchPost.fhirResourceSearchPost(resourcePath);
 
     String output = bout.toString();
-    assertThat(output, containsString("FHIR resource search results:"));
+    assertThat(output, containsString("FHIR resource POST search results:"));
   }
 
   @Test
