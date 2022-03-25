@@ -45,4 +45,6 @@ and SOME-VERSION with a valid version number.
 
 ```sh
 mvn clean package appengine:deploy
+mvn appengine:deployIndex
+
 ```
