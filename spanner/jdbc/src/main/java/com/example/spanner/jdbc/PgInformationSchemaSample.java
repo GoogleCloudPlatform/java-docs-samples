@@ -53,7 +53,7 @@ class PgInformationSchemaSample {
       // metadata columns.
 
       // Get all the user tables in the database. PostgreSQL uses the `public` schema for user
-      // tables. The table_catalog is equal to the database name.
+      // tables.
       try (ResultSet tables =
           connection
               .createStatement()
