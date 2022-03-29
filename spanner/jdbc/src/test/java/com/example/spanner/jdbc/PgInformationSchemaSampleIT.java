@@ -30,10 +30,7 @@ public class PgInformationSchemaSampleIT extends BaseJdbcPgExamplesIT {
             () ->
                 PgInformationSchemaSample.pgInformationSchema(
                     ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
-    assertTrue(
-        out,
-        out.contains(
-            String.format("Table: %s.public.venues (User defined type: null)", databaseId)));
+    assertTrue(out, out.contains("Table: .public.venues (User defined type: null)"));
     assertTrue(out, out.contains("Table in JDBC metadata: ..venues"));
   }
 }
