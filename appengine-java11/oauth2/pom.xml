@@ -77,7 +77,7 @@
       <dependency>
         <groupId>com.google.http-client</groupId>
         <artifactId>google-http-client-jackson2</artifactId>
-        <version>1.41.4</version>
+        <version>1.41.5</version>
       </dependency>
       <!-- [END gae_java11_oauth2_dependencies] -->
 
