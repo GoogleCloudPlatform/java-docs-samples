@@ -106,7 +106,7 @@
         <artifactId>function-maven-plugin</artifactId>
         <version>0.10.0</version>
         <configuration>
-          <functionTarget>functions.KotlinHelloWorld</functionTarget>
+          <functionTarget>functions.HelloWorld</functionTarget>
         </configuration>
       </plugin>
       <plugin>
