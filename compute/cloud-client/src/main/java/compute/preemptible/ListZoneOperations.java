@@ -72,7 +72,7 @@ public class ListZoneOperations {
     String targetLink;
     List<List<String>> history = new ArrayList<>();
 
-    if (instanceName.length() != 0) {
+    if (instanceName != null && instanceName.length() != 0) {
       filter = String.format(
           "operationType=\"compute.instances.preempted\" AND targetLink:instances/%s",
           instanceName);
