@@ -84,8 +84,9 @@ public class ListZoneOperations {
       targetLink = operation.getTargetLink();
       thisInstanceName = targetLink.substring(targetLink.lastIndexOf("/") + 1);
 
-      // The filter used is not 100% accurate, it's `contains` not `equals`
-      // So we need to check the name to make sure it's the one we want.
+      // The filter used above performs a 'contains' operation instead of 'equals'
+      // So, the result (thisInstanceName) might not be tightly coupled with instanceName.
+      // Hence, we need to check the name to make sure it's the one we want.
       if (thisInstanceName.equalsIgnoreCase(instanceName)) {
         Instant instant = Instant.from(
             DateTimeFormatter.ISO_INSTANT.parse(operation.getInsertTime()));
