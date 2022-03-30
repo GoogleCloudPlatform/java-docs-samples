@@ -47,7 +47,7 @@ dependencies {
     testImplementation 'com.google.api-client:google-api-client:1.33.2'
     testImplementation 'com.google.apis:google-api-services-dataflow:v1b3-rev20210825-1.32.1'
     testImplementation 'com.google.cloud:google-cloud-core:2.3.2'
-    testImplementation 'com.google.cloud:google-cloud-storage:2.4.5'
+    testImplementation 'com.google.cloud:google-cloud-storage:2.5.1'
     testImplementation 'com.google.truth:truth:1.1.3'
     testImplementation 'org.hamcrest:hamcrest-all:1.3'
 }
