@@ -33,7 +33,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class KotlinHelloPubSubTest {
   private static final Logger logger = Logger.getLogger(
-      KotlinHelloPubSub.class.getName());
+      HelloPubSub.class.getName());
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   @BeforeClass
@@ -52,7 +52,7 @@ public class KotlinHelloPubSubTest {
     pubSubMessage.setData(Base64.getEncoder().encodeToString(
         "John".getBytes(StandardCharsets.UTF_8)));
 
-    new KotlinHelloPubSub().accept(pubSubMessage, new MockContext());
+    new HelloPubSub().accept(pubSubMessage, new MockContext());
 
     String message = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello John!").isEqualTo(message);
@@ -60,7 +60,7 @@ public class KotlinHelloPubSubTest {
 
   @Test
   public void functionsHelloworldPubSubKotlin_shouldPrintHelloWorld() throws Exception {
-    new KotlinHelloPubSub().accept(new Message(), new MockContext());
+    new HelloPubSub().accept(new Message(), new MockContext());
 
     String message = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello world!").isEqualTo(message);
