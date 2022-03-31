@@ -34,7 +34,7 @@ import java.util.List;
 public class Quickstart {
 
   public static void main(String[] args) {
-    // TODO: Replace with your project ID.
+    // TODO: Replace with your project ID in the form "projects/your-project-name".
     String projectId = "your-project";
     // TODO: Replace with the ID of your member in the form "user:member@example.com"
     String member = "your-member";
