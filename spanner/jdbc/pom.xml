@@ -46,7 +46,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
-      <version>6.17.3</version>
+      <version>6.23.1</version>
     </dependency>
     <!--CSV parsing dependencies -->
     <dependency>
