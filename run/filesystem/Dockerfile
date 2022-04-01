@@ -28,7 +28,7 @@ RUN mvn package -DskipTests
 
 # Use AdoptOpenJDK for base image.
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:18-jdk
 
 # Install filesystem dependencies
 RUN apt-get update -y && apt-get install -y \
