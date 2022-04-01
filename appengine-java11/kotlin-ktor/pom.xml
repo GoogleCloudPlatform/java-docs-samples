@@ -97,7 +97,7 @@ limitations under the License.
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-test-junit</artifactId>
-      <version>1.6.10</version>
+      <version>1.6.20</version>
       <scope>test</scope>
     </dependency>
   
