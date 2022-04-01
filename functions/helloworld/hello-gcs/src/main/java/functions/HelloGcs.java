@@ -22,6 +22,10 @@ import com.google.cloud.functions.Context;
 import functions.eventpojos.GcsEvent;
 import java.util.logging.Logger;
 
+/**
+ * Example Cloud Storage-triggered function.
+ * This function can process any event from Cloud Storage.
+ */
 public class HelloGcs implements BackgroundFunction<GcsEvent> {
   private static final Logger logger = Logger.getLogger(HelloGcs.class.getName());
 
