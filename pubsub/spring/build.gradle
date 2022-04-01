@@ -38,7 +38,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:2.5.7'
     implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub:3.2.0'
     implementation 'org.springframework.integration:spring-integration-core:5.5.10'
-    implementation 'com.google.cloud:spring-cloud-gcp-pubsub-stream-binder:3.1.0'
+    implementation 'com.google.cloud:spring-cloud-gcp-pubsub-stream-binder:3.2.0'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.google.truth:truth:1.1.3'
     testImplementation 'org.springframework.boot:spring-boot-test:2.5.7'
