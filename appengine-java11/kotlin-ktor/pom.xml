@@ -123,7 +123,7 @@ limitations under the License.
       <plugin>
         <artifactId>kotlin-maven-plugin</artifactId>
         <groupId>org.jetbrains.kotlin</groupId>
-        <version>1.6.10</version>
+        <version>1.6.20</version>
         <executions>
           <execution>
             <id>compile</id>
