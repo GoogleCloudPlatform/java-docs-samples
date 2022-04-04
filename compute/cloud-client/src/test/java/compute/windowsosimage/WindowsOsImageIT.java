@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class WindowsOSImageIT {
+public class WindowsOsImageIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
@@ -154,7 +154,7 @@ public class WindowsOSImageIT {
       throws IOException, ExecutionException, InterruptedException {
     expectedException.expect(IllegalStateException.class);
     expectedException.expectMessage(String.format("Instance %s should be stopped.", INSTANCE_NAME));
-    CreateWindowsOSImage.createWindowsOSImage(
+    CreateWindowsOsImage.createWindowsOsImage(
         PROJECT_ID, ZONE, DISK_NAME, IMAGE_NAME, "eu", false);
   }
 
@@ -162,7 +162,7 @@ public class WindowsOSImageIT {
   @Test
   public void testCreateWindowsImage_pass()
       throws IOException, ExecutionException, InterruptedException {
-    CreateWindowsOSImage.createWindowsOSImage(
+    CreateWindowsOsImage.createWindowsOsImage(
         PROJECT_ID, ZONE, DISK_NAME, IMAGE_NAME, "eu", true);
     assertThat(stdOut.toString()).contains("Image created.");
   }

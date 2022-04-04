@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class CreateWindowsOSImage {
+public class CreateWindowsOsImage {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
@@ -50,11 +50,11 @@ public class CreateWindowsOSImage {
     // Create the image even if the source disk is attached to a running instance.
     boolean forceCreate = false;
 
-    createWindowsOSImage(project, zone, sourceDiskName, imageName, storageLocation, forceCreate);
+    createWindowsOsImage(project, zone, sourceDiskName, imageName, storageLocation, forceCreate);
   }
 
   // Creates a new Windows image from the specified source disk.
-  public static void createWindowsOSImage(String project, String zone, String sourceDiskName,
+  public static void createWindowsOsImage(String project, String zone, String sourceDiskName,
       String imageName, String storageLocation, boolean forceCreate)
       throws IOException, ExecutionException, InterruptedException {
 
@@ -121,11 +121,13 @@ public class CreateWindowsOSImage {
               + "https://www.googleapis.com/compute/v1/projects/PROJECT/zones/ZONE/instances/INSTANCE_NAME");
     }
 
-    return new HashMap<>() {{
-      put("instanceName", parsedName[splitLength - 1]);
-      put("instanceZone", parsedName[splitLength - 3]);
-      put("instanceProjectId", parsedName[splitLength - 5]);
-    }};
+    return new HashMap<>() {
+      {
+        put("instanceName", parsedName[splitLength - 1]);
+        put("instanceZone", parsedName[splitLength - 3]);
+        put("instanceProjectId", parsedName[splitLength - 5]);
+      }
+    };
   }
 
 }
