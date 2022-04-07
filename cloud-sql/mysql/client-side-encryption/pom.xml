@@ -62,7 +62,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>mysql-socket-factory-connector-j-8</artifactId>
-      <version>1.4.4</version>
+      <version>1.5.0</version>
     </dependency>
     <dependency>
       <groupId>mysql</groupId>
