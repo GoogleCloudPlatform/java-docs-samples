@@ -13,6 +13,7 @@
 // limitations under the License.
 
 package compute.windows.windowsinstances;
+
 // [START compute_get_instance_serial_port]
 
 import com.google.cloud.compute.v1.InstancesClient;

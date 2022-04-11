@@ -13,6 +13,7 @@
 // limitations under the License.
 
 package compute.windows.windowsinstances;
+
 // [START compute_create_windows_instance_internal_ip]
 
 import com.google.cloud.compute.v1.AttachedDisk;
