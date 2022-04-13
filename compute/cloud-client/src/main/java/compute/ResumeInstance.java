@@ -52,7 +52,7 @@ public class ResumeInstance {
       String currentInstanceState = instancesClient.get(project, zone, instanceName).getStatus();
 
       // Check if the instance is currently suspended.
-      if (currentInstanceState.equalsIgnoreCase(Status.SUSPENDED.toString())) {
+      if (!currentInstanceState.equalsIgnoreCase(Status.SUSPENDED.toString())) {
         throw new RuntimeException(
             String.format("Only suspended instances can be resumed. Instance %s is in %s state.",
                 instanceName, currentInstanceState));

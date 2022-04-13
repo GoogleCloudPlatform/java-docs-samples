@@ -46,13 +46,16 @@ public class CreateInstance {
   public static void createInstance(String project, String zone, String instanceName)
       throws IOException, InterruptedException, ExecutionException {
     // Below are sample values that can be replaced.
-    // machineType: machine type of the VM being created. This value uses the format zones/{zone}/machineTypes/{type_name}. For a list of machine types, see https://cloud.google.com/compute/docs/machine-types
-    // sourceImage: path to the operating system image to mount. For details about images you can mount, see https://cloud.google.com/compute/docs/images
+    // machineType: machine type of the VM being created.
+    // *   This value uses the format zones/{zone}/machineTypes/{type_name}.
+    // *   For a list of machine types, see https://cloud.google.com/compute/docs/machine-types
+    // sourceImage: path to the operating system image to mount.
+    // *   For details about images you can mount, see https://cloud.google.com/compute/docs/images
     // diskSizeGb: storage size of the boot disk to attach to the instance.
     // networkName: network interface to associate with the instance.
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
     String sourceImage = String
-        .format("projects/debian-cloud/global/images/family/%s", "debian-10");
+        .format("projects/debian-cloud/global/images/family/%s", "debian-11");
     long diskSizeGb = 10L;
     String networkName = "default";
 
@@ -69,12 +72,15 @@ public class CreateInstance {
               .setType(Type.PERSISTENT.toString())
               .setDeviceName("disk-1")
               .setInitializeParams(
-                  AttachedDiskInitializeParams.newBuilder().setSourceImage(sourceImage)
-                      .setDiskSizeGb(diskSizeGb).build())
+                  AttachedDiskInitializeParams.newBuilder()
+                      .setSourceImage(sourceImage)
+                      .setDiskSizeGb(diskSizeGb)
+                      .build())
               .build();
 
       // Use the network interface provided in the networkName argument.
-      NetworkInterface networkInterface = NetworkInterface.newBuilder().setName(networkName)
+      NetworkInterface networkInterface = NetworkInterface.newBuilder()
+          .setName(networkName)
           .build();
 
       // Bind `instanceName`, `machineType`, `disk`, and `networkInterface` to an instance.
@@ -92,7 +98,8 @@ public class CreateInstance {
       InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
           .setProject(project)
           .setZone(zone)
-          .setInstanceResource(instanceResource).build();
+          .setInstanceResource(instanceResource)
+          .build();
 
       OperationFuture<Operation, Operation> operation = instancesClient.insertAsync(
           insertInstanceRequest);
