@@ -36,7 +36,7 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 dependencies {
     implementation 'com.github.spotbugs:spotbugs-annotations:4.6.0'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.5.7'
-    implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub:3.2.0'
+    implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub:3.2.1'
     implementation 'org.springframework.integration:spring-integration-core:5.5.10'
     implementation 'com.google.cloud:spring-cloud-gcp-pubsub-stream-binder:3.2.1'
     testImplementation 'junit:junit:4.13.2'
