@@ -95,7 +95,7 @@
     },
     {
       "matchPackagePatterns": [ "org.springframework.boot" ],
-      "matchCurrentVersion": "/.*RELEASE/"
+      "matchCurrentVersion": "!/.*[SNAPSHOT | M]/"
     }
   ],
   "labels": [

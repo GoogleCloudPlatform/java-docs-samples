@@ -62,12 +62,12 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudiot</artifactId>
-      <version>v1-rev20211108-1.32.1</version>
+      <version>v1-rev20220330-1.32.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.116.1</version>
+      <version>1.116.3</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -87,7 +87,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.33.2</version>
+      <version>1.33.4</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
@@ -97,12 +97,12 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-jackson2</artifactId>
-      <version>1.33.2</version>
+      <version>1.33.4</version>
     </dependency>
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.41.4</version>
+      <version>1.41.6</version>
     </dependency>
 
     <!-- LTS for Java EE -->

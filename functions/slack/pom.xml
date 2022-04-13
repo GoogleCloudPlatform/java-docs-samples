@@ -66,7 +66,7 @@
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.41.4</version>
+      <version>1.41.6</version>
     </dependency>
     
     <dependency>
@@ -77,7 +77,7 @@
     <dependency>
       <groupId>com.slack.api</groupId>
       <artifactId>slack-app-backend</artifactId>
-      <version>1.20.2</version>
+      <version>1.21.1</version>
     </dependency>
 
     <!-- The following dependencies are only required for testing -->
@@ -90,7 +90,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>4.1.0</version>
+      <version>4.4.0</version>
       <scope>test</scope>
     </dependency>
 

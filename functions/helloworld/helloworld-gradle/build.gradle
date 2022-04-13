@@ -38,7 +38,7 @@ dependencies {
   testImplementation 'com.google.cloud.functions:functions-framework-api:1.0.4'
   testImplementation 'junit:junit:4.13.2'
   testImplementation 'com.google.truth:truth:1.1.3'
-  testImplementation 'org.mockito:mockito-core:4.1.0'
+  testImplementation 'org.mockito:mockito-core:4.4.0'
 
   // [START functions_example_pom_dependencies]
   // [START functions_gradle_add_dependencies]

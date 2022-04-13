@@ -50,7 +50,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-gson</artifactId>
-      <version>1.33.2</version>
+      <version>1.33.4</version>
     </dependency>
   </dependencies>
 
