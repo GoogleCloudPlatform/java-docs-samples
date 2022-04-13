@@ -39,11 +39,9 @@ To see the results of the sample application, open
 
 ## Deploying
 
-In the following command, replace YOUR-PROJECT-ID with your
-[Google Cloud Project ID](https://developers.google.com/console/help/new/#projectnumber)
-and SOME-VERSION with a valid version number.
 
 ```sh
 mvn clean package appengine:deploy  -Dapp.deploy.gcloudMode=beta
+mvn appengine:deployIndex
 
 ```
