@@ -31,11 +31,11 @@ public class HelloError implements HttpFunction {
   @Override
   public void service(HttpRequest request, HttpResponse response)
       throws IOException {
-    // These will NOT be reported to Stackdriver error reporting
+    // These will NOT be reported to Error Reporting
     System.err.println("I failed you");
     logger.severe("I failed you");
 
-    // This WILL be reported to Stackdriver error reporting
+    // This WILL be reported to Error Reporting
     throw new RuntimeException("I failed you");
   }
 }
