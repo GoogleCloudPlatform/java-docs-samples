@@ -12,6 +12,6 @@
   limitations under the License.
 -->
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-  <runtime>java11</runtime>
+  <runtime>java17</runtime>
   <app-engine-apis>true</app-engine-apis>
 </appengine-web-app>
