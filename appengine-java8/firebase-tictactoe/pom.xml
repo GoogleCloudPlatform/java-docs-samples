@@ -72,7 +72,7 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>1.33.4</version>
+      <version>1.34.0</version>
     </dependency>
 
 
