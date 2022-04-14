@@ -64,7 +64,7 @@
       <dependency>
         <groupId>com.google.oauth-client</groupId>
         <artifactId>google-oauth-client-servlet</artifactId>
-        <version>1.33.2</version>
+        <version>1.33.3</version>
         <scope>provided</scope>
       </dependency>
 
