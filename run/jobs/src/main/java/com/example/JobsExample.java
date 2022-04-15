@@ -15,13 +15,16 @@
  */
 
 // [START cloudrun_jobs_quickstart]
+
 package com.example;
 
 abstract class JobsExample {
   // [START cloudrun_jobs_env_vars]
   // These values are provided automatically by the Cloud Run Jobs runtime.
-  private static String CLOUD_RUN_TASK_INDEX = System.getenv().getOrDefault("CLOUD_RUN_TASK_INDEX", "0");
-  private static String CLOUD_RUN_TASK_ATTEMPT = System.getenv().getOrDefault("CLOUD_RUN_TASK_ATTEMPT", "0");
+  private static String CLOUD_RUN_TASK_INDEX =
+      System.getenv().getOrDefault("CLOUD_RUN_TASK_INDEX", "0");
+  private static String CLOUD_RUN_TASK_ATTEMPT =
+      System.getenv().getOrDefault("CLOUD_RUN_TASK_ATTEMPT", "0");
 
   // User-provided environment variables
   private static int SLEEP_MS = Integer.parseInt(System.getenv().getOrDefault("SLEEP_MS", "0"));
@@ -31,11 +34,15 @@ abstract class JobsExample {
 
   // Start script
   public static void main(String[] args) {
-    System.out.println(String.format("Starting Task #%s, Attempt #%s...", CLOUD_RUN_TASK_INDEX, CLOUD_RUN_TASK_ATTEMPT));
+    System.out.println(
+        String.format(
+            "Starting Task #%s, Attempt #%s...", CLOUD_RUN_TASK_INDEX, CLOUD_RUN_TASK_ATTEMPT));
     try {
       runTask(SLEEP_MS, FAIL_RATE);
     } catch (RuntimeException | InterruptedException e) {
-      System.err.println(String.format("Task #%s, Attempt #%s failed.", CLOUD_RUN_TASK_INDEX, CLOUD_RUN_TASK_ATTEMPT));
+      System.err.println(
+          String.format(
+              "Task #%s, Attempt #%s failed.", CLOUD_RUN_TASK_INDEX, CLOUD_RUN_TASK_ATTEMPT));
       // [START cloudrun_jobs_exit_process]
       // Catch error and denote process-level failure to retry Task
       System.exit(1);
