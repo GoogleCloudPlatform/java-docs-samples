@@ -95,8 +95,8 @@ public class JobsIntegrationTests {
       calendar.add(Calendar.MINUTE, -5);
       DateFormat rfc3339 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
       String logFilter =
-          "resource.type = \"cloud_run_revision\""
-              + " resource.labels.service_name = \""
+          "resource.type = \"cloud_run_job\""
+              + " resource.labels.job_name = \""
               + service
               + "\" resource.labels.location = \"us-central1\""
               + " timestamp>=\""
