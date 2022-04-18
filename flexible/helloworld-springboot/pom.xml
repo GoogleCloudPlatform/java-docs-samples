@@ -78,7 +78,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.4.1</version>
+        <version>2.4.2</version>
         <configuration>
           <!-- setting a property to "GCLOUD_CONFIG" will deploy using the gcloud settings for the property -->
           <projectId>GCLOUD_CONFIG</projectId>
