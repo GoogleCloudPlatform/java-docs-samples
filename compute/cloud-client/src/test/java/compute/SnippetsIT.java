@@ -48,6 +48,7 @@ import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -490,7 +491,19 @@ public class SnippetsIT {
 
   @Test
   public void testInstanceOperations()
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Assert.assertEquals(getInstanceStatus(MACHINE_NAME), Status.RUNNING.toString());
+
+    // Suspending the instance.
+    // Once the machine is running, give it some time to fully start all processes
+    // before trying to suspend it.
+    TimeUnit.SECONDS.sleep(45);
+    SuspendInstance.suspendInstance(PROJECT_ID, ZONE, MACHINE_NAME);
+    TimeUnit.SECONDS.sleep(10);
+    Assert.assertEquals(getInstanceStatus(MACHINE_NAME), Status.SUSPENDED.toString());
+
+    // Resuming the instance.
+    ResumeInstance.resumeInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     Assert.assertEquals(getInstanceStatus(MACHINE_NAME), Status.RUNNING.toString());
 
     // Stopping the instance.
