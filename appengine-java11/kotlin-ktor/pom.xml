@@ -83,7 +83,7 @@ limitations under the License.
     </dependency>
     <dependency>
       <groupId>io.ktor</groupId>
-      <artifactId>ktor-server-core</artifactId>
+      <artifactId>ktor-server</artifactId>
     </dependency>
     <dependency>
       <groupId>io.ktor</groupId>
