@@ -33,7 +33,7 @@ repositories {
     }
 }
 
-def beamVersion = '2.37.0'
+def beamVersion = '2.38.0'
 def slf4jVersion = '1.7.36'
 dependencies {
     implementation 'com.github.spotbugs:spotbugs-annotations:4.6.0'
