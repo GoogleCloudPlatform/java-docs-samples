@@ -29,6 +29,54 @@ export DB_NAME='my_db'
 Note: Saving credentials in environment variables is convenient, but not secure - consider a more
 secure solution such as [Cloud KMS](https://cloud.google.com/kms/) or [Secret Manager](https://cloud.google.com/secret-manager/) to help keep secrets safe.
 
+## Configure SSL Certificates
+For deployments that connect directly to a Cloud SQL instance with TCP, without using the Cloud SQL Proxy, configuring SSL certificates will ensure the connection is encrypted. 
+1. Use the gcloud CLI to [download the server certificate](https://cloud.google.com/sql/docs/mysql/configure-ssl-instance#server-certs) for your Cloud SQL instance.
+    - Get information about the service certificate:
+        ```
+        gcloud beta sql ssl server-ca-certs list --instance=INSTANCE_NAME
+        ```
+    - Create a server certificate:
+        ```
+        gcloud beta sql ssl server-ca-certs create --instance=INSTANCE_NAME
+        ```
+    - Download the certificate information to a local PEM file
+        ```
+        gcloud beta sql ssl server-ca-certs list \
+          --format="value(cert)" \
+          --instance=INSTANCE_NAME > \
+          server-ca.pem
+        ```
+
+1. Use the gcloud CLI to [create and download a client public key certificate and client private key](https://cloud.google.com/sql/docs/mysql/configure-ssl-instance#client-certs)
+    - Create a client certificate using the ssl client-certs create command:
+        ```
+        gcloud sql ssl client-certs create CERT_NAME client-key.pem --instance=INSTANCE_NAME
+        ```
+    - Retrieve the public key for the certificate you just created and copy it into the client-cert.pem file with the ssl client-certs describe command:
+        ```
+        gcloud sql ssl client-certs describe CERT_NAME \
+          --instance=INSTANCE_NAME \
+          --format="value(cert)" > client-cert.pem
+        ```
+1. [Import the server certificate into a custom Java truststore](https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-reference-using-ssl.html) using `keytool`:
+      ```
+      keytool -importcert -alias MySQLCACert -file server-ca.pem \
+    -keystore <truststore-filename> -storepass <password>
+      ```  
+1. Set the `TRUST_CERT_KEYSTORE_PATH` and `TRUST_CERT_KEYSTORE_PASSWD` environment variables to the values used in the previous step.
+1. [Import the client certificate and key into a custom Java keystore](https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-reference-using-ssl.html) using `openssl` and `keytool`:
+    - Convert the client key and certificate files to a PKCS #12 archive:
+        ```
+        openssl pkcs12 -export -in client-cert.pem -inkey client-key.pem \
+          -name "mysqlclient" -passout pass:mypassword -out client-keystore.p12
+        ```
+    - Import the client key and certificate into a Java keystore:
+       ```
+       keytool -importkeystore -srckeystore client-keystore.p12 -srcstoretype pkcs12 \
+        -srcstorepass <password> -destkeystore <keystore-filename> -deststoretype JKS -deststorepass <password>
+       ```
+1. Set the `CLIENT_CERT_KEYSTORE_PATH` and `CLIENT_CERT_KEYSTORE_PASSWD` environment variables to the values used in the previous step.
 ## Deploying locally
 
 To run this application locally, run the following command inside the project folder:
