@@ -44,7 +44,7 @@ limitations under the License.
     <dependency>
       <groupId>net.logstash.logback</groupId>
       <artifactId>logstash-logback-encoder</artifactId>
-      <version>7.0.1</version>
+      <version>7.1</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -73,7 +73,7 @@ limitations under the License.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.2.1</version>
         <configuration>
           <to>
             <image>gcr.io/PROJECT_ID/logging-manual</image>

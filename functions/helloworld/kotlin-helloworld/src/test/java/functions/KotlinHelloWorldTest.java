@@ -50,7 +50,7 @@ public class KotlinHelloWorldTest {
 
   @Test
   public void functionsHelloworldGetKotlin_shouldPrintHelloWorld() throws IOException {
-    new KotlinHelloWorld().service(request, response);
+    new HelloWorld().service(request, response);
 
     writerOut.flush();
     assertThat(responseOut.toString()).contains("Hello World!");

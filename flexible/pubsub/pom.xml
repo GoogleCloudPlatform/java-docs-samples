@@ -36,7 +36,7 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
-    <appengine.maven.plugin>2.4.1</appengine.maven.plugin>
+    <appengine.maven.plugin>2.4.2</appengine.maven.plugin>
     <jetty>9.4.44.v20210927</jetty>
   </properties>
 
@@ -64,7 +64,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.116.2</version>
+      <version>1.116.4</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>

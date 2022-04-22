@@ -22,7 +22,7 @@ import com.google.cloud.functions.HttpResponse
 import java.io.IOException
 import java.util.logging.Logger
 
-class KotlinHelloWorld : HttpFunction {
+class HelloWorld : HttpFunction {
     // Simple function to return "Hello World"
     @Throws(IOException::class)
     override fun service(request: HttpRequest, response: HttpResponse) {

@@ -57,14 +57,14 @@
       <dependency>
         <groupId>com.google.oauth-client</groupId>
         <artifactId>google-oauth-client</artifactId>
-        <version>1.33.1</version>
+        <version>1.33.3</version>
         <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>com.google.oauth-client</groupId>
         <artifactId>google-oauth-client-servlet</artifactId>
-        <version>1.33.1</version>
+        <version>1.33.3</version>
         <scope>provided</scope>
       </dependency>
 
@@ -77,7 +77,7 @@
       <dependency>
         <groupId>com.google.http-client</groupId>
         <artifactId>google-http-client-jackson2</artifactId>
-        <version>1.41.4</version>
+        <version>1.41.7</version>
       </dependency>
       <!-- [END gae_java11_oauth2_dependencies] -->
 
@@ -104,7 +104,7 @@
         <plugin>
           <groupId>com.google.cloud.tools</groupId>
           <artifactId>appengine-maven-plugin</artifactId>
-          <version>2.4.1</version>
+          <version>2.4.2</version>
           <configuration>
             <projectId>GCLOUD_CONFIG</projectId>
             <version>oauth2</version>

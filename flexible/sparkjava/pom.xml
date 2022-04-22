@@ -36,7 +36,7 @@ limitations under the License.
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
 
-    <appengine.maven.plugin>2.4.1</appengine.maven.plugin>
+    <appengine.maven.plugin>2.4.2</appengine.maven.plugin>
     <app.stage.artifact>${project.build.directory}/spark-1.0-jar-with-dependencies.jar</app.stage.artifact>
   </properties>
 

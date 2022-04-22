@@ -32,7 +32,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-jobs</artifactId>
-      <version>v3-rev20220303-1.32.1</version>
+      <version>v3-rev20220325-1.32.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
@@ -42,7 +42,7 @@
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.41.4</version>
+      <version>1.41.7</version>
     </dependency> 
     <!-- [END dependencies] -->
 
