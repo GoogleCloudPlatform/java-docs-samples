@@ -69,8 +69,8 @@ public class CreatingManagingWindowsInstancesIT {
     INSTANCE_NAME_EXTERNAL = "windows-test-instance-external-" + uuid;
     INSTANCE_NAME_INTERNAL = "windows-test-instance-internal-" + uuid;
     FIREWALL_RULE_NAME = "windows-test-firewall-" + uuid;
-    NETWORK_NAME = "global/networks/default-compute";
-    SUBNETWORK_NAME = "regions/europe-central2/subnetworks/default-compute";
+    NETWORK_NAME = "global/networks/default";
+    SUBNETWORK_NAME = "regions/europe-central2/subnetworks/default";
     ROUTE_NAME = "windows-test-route-" + uuid;
 
     stdOut.close();
@@ -115,7 +115,7 @@ public class CreatingManagingWindowsInstancesIT {
         INSTANCE_NAME_INTERNAL, NETWORK_NAME, SUBNETWORK_NAME);
     assertThat(stdOut.toString()).contains("Instance created " + INSTANCE_NAME_INTERNAL);
     CreateFirewallRuleForWindowsActivationHost.createFirewallRuleForWindowsActivationHost(
-        PROJECT_ID, ZONE, NETWORK_NAME);
+        PROJECT_ID, FIREWALL_RULE_NAME, NETWORK_NAME);
     assertThat(stdOut.toString()).contains(
         String.format("Firewall rule created %s", FIREWALL_RULE_NAME));
     CreateRouteToWindowsActivationHost.createRouteToWindowsActivationHost(PROJECT_ID, ROUTE_NAME,
