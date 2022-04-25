@@ -71,6 +71,11 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M6</version>
         <type>maven-plugin</type>
+        <configuration>
+          <includes>
+            <include>*IT.java</include>
+          </includes>
+        </configuration>
       </dependency>
     </dependencies>
   </dependencyManagement>
