@@ -46,20 +46,20 @@ public class CreateRouteToWindowsActivationHost {
   public static void createRouteToWindowsActivationHost(String projectId, String routeName,
       String networkName)
       throws IOException, ExecutionException, InterruptedException {
-
+    // Instantiates a client.
     try (RoutesClient routesClient = RoutesClient.create()) {
 
       // If you have Windows instances without external IP addresses,
       // you must also enable Private Google Access so that instances
       // with only internal IP addresses can send traffic to the external
       // IP address for kms.windows.googlecloud.com.
-      // More infromation: https://cloud.google.com/vpc/docs/configure-private-google-access#enabling
+      // More information: https://cloud.google.com/vpc/docs/configure-private-google-access#enabling
       Route route = Route.newBuilder()
           .setName(routeName)
           .setDestRange("35.190.247.13/32")
           .setNetwork(networkName)
           .setNextHopGateway(
-              String.format("project/%s/global/gateways/default-internet-gateway", projectId))
+              String.format("projects/%s/global/gateways/default-internet-gateway", projectId))
           .build();
 
       InsertRouteRequest request = InsertRouteRequest.newBuilder()
@@ -67,6 +67,7 @@ public class CreateRouteToWindowsActivationHost {
           .setRouteResource(route)
           .build();
 
+      // Wait for the operation to complete.
       Operation operation = routesClient.insertAsync(request).get();
 
       if (operation.hasError()) {

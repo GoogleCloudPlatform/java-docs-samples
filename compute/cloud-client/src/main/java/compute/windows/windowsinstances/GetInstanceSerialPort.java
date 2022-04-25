@@ -39,7 +39,7 @@ public class GetInstanceSerialPort {
   // Prints an instance serial port output.
   public static void getInstanceSerialPort(String projectId, String zone, String instanceName)
       throws IOException {
-
+    // Instantiates a client.
     try (InstancesClient instancesClient = InstancesClient.create()) {
 
       SerialPortOutput serialPortOutput = instancesClient.getSerialPortOutput(projectId, zone,
