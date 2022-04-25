@@ -14,22 +14,16 @@
 
 package com.example.appengine
 
-import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.application.install
 import io.ktor.http.ContentType
-import io.ktor.response.respondText
-import io.ktor.routing.get
-import io.ktor.routing.routing
-import io.ktor.server.engine.ShutDownUrl
-import io.ktor.server.netty.EngineMain
+import io.ktor.server.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 
-fun main(args: Array<String>): Unit = EngineMain.main(args)
+fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-@Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
-fun Application.module(testing: Boolean = false) {
-    install(ShutDownUrl.ApplicationCallFeature) {
+fun Application.module() {
+    install(ShutDownUrl.ApplicationCallPlugin) {
         // The URL that will be intercepted. You can also use the
         // application.conf's ktor.deployment.shutdown.url key.
         shutDownUrl = "/_ah/stop"
@@ -37,10 +31,10 @@ fun Application.module(testing: Boolean = false) {
         // A function that will be executed to get the exit code of the process
         exitCodeSupplier = { 0 } // ApplicationCall.() -> Int
     }
-
     routing {
         get("/") {
             call.respondText("Hello World!", contentType = ContentType.Text.Plain)
         }
     }
 }
+
