@@ -47,13 +47,14 @@ class PgCastDataTypeSample {
           connection
               .createStatement()
               .executeQuery(
-                  "select 1::varchar as str, '2'::int as int, 3::decimal as dec,"
+                  "select 1::varchar as str, '2'::bigint as bigint, 3::numeric as num,"
                       + "'4'::bytea as bytes, 5::float as float, 'true'::bool as bool, "
-                      + "'2021-11-03T09:35:01UTC'::timestamptz as timestamp")) {
+                      + "'2021-11-03T09:35:01UTC'::timestamptz as timestamp, "
+                      + "'2022-04-25'::date as date")) {
         while (resultSet.next()) {
           System.out.printf("String: %s\n", resultSet.getString("str"));
-          System.out.printf("Int: %d\n", resultSet.getLong("int"));
-          System.out.printf("Decimal: %s\n", resultSet.getBigDecimal("dec"));
+          System.out.printf("Bigint: %d\n", resultSet.getLong("bigint"));
+          System.out.printf("Numeric: %s\n", resultSet.getBigDecimal("num"));
           System.out.printf(
               "Bytes: %s\n", Base64.getEncoder().encodeToString(resultSet.getBytes("bytes")));
           System.out.printf("Float: %f\n", resultSet.getDouble("float"));
@@ -63,6 +64,7 @@ class PgCastDataTypeSample {
               OffsetDateTime.ofInstant(
                   Instant.ofEpochMilli(resultSet.getTimestamp("timestamp").getTime()),
                   ZoneId.of("UTC")));
+          System.out.printf("Date: %s\n", resultSet.getDate("date"));
         }
       }
     }

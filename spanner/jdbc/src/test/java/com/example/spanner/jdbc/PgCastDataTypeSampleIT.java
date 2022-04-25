@@ -31,11 +31,12 @@ public class PgCastDataTypeSampleIT extends BaseJdbcPgExamplesIT {
                 PgCastDataTypeSample.pgCastDataType(
                     ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
     assertTrue(out, out.contains("String: 1"));
-    assertTrue(out, out.contains("Int: 2"));
-    assertTrue(out, out.contains("Decimal: 3"));
+    assertTrue(out, out.contains("Bigint: 2"));
+    assertTrue(out, out.contains("Numeric: 3"));
     assertTrue(out, out.contains("Bytes: NA=="));
     assertTrue(out, out.contains("Float: 5.000000"));
     assertTrue(out, out.contains("Bool: true"));
     assertTrue(out, out.contains("Timestamp: 2021-11-03T09:35:01Z"));
+    assertTrue(out, out.contains("Date: 2022-04-25"));
   }
 }

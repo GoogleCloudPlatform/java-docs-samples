@@ -70,15 +70,16 @@ class PgCaseSensitivitySample {
                       .set("singerid")
                       .to(1L)
                       // Column names in mutations are always case-insensitive, regardless whether
-                      // the
-                      // columns were double-quoted or not during creation.
+                      // the columns were double-quoted or not during creation.
                       .set("firstname")
                       .to("Bruce")
                       .set("lastname")
                       .to("Allison")
                       .build()));
 
-      try (ResultSet singers = connection.createStatement().executeQuery("SELECT * FROM Singers")) {
+      try (ResultSet singers = connection
+          .createStatement()
+          .executeQuery("SELECT SingerId, \"FirstName\", \"LastName\" FROM Singers")) {
         while (singers.next()) {
           System.out.printf(
               "SingerId: %d, FirstName: %s, LastName: %s\n",
@@ -100,7 +101,7 @@ class PgCaseSensitivitySample {
               .executeQuery(
                   "SELECT "
                       + "singerid AS \"SingerId\", "
-                      + "concat(\"FirstName\", ' '::varchar, \"LastName\") AS \"FullName\" "
+                      + "\"FirstName\" || ' ' || \"LastName\" AS \"FullName\" "
                       + "FROM Singers")) {
         while (singers.next()) {
           System.out.printf(

@@ -42,8 +42,10 @@ class PgPartitionedDmlSample {
       // be executed using Partitioned DML. This is also supported on Spanner PostgreSQL.
       // See https://cloud.google.com/spanner/docs/dml-partitioned for more information.
 
-      // Switch to Partitioned DML.
-      connection.createStatement().execute("SET AUTOCOMMIT_DML_MODE='PARTITIONED_NON_ATOMIC'");
+      // Switch to Partitioned DML. Note that we must prefix all Spanner specific session statements
+      // with `SPANNER.`.
+      connection.createStatement()
+          .execute("SET SPANNER.AUTOCOMMIT_DML_MODE='PARTITIONED_NON_ATOMIC'");
       // Execute the DML statement.
       int deletedCount = connection.createStatement().executeUpdate("DELETE FROM Singers");
       // The returned update count is the lower bound of the number of records that was deleted.
