@@ -59,6 +59,7 @@ public class CreateWindowsServerInstanceExternalIp {
     //  *    https://cloud.google.com/compute/docs/images#os-compute-support
     String sourceImageFamily = "windows-2012-r2";
 
+    // Instantiates a client.
     try (InstancesClient instancesClient = InstancesClient.create()) {
 
       AttachedDisk attachedDisk = AttachedDisk.newBuilder()
@@ -103,6 +104,7 @@ public class CreateWindowsServerInstanceExternalIp {
           .setInstanceResource(instance)
           .build();
 
+      // Wait for the operation to complete.
       Operation operation = instancesClient.insertAsync(request).get();
 
       if (operation.hasError()) {

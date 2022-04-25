@@ -48,11 +48,13 @@ public class CreateFirewallRuleForWindowsActivationHost {
   public static void createFirewallRuleForWindowsActivationHost(String projectId,
       String firewallRuleName, String networkName)
       throws IOException, ExecutionException, InterruptedException {
-
+    // Instantiates a client.
     try (FirewallsClient firewallsClient = FirewallsClient.create()) {
 
       Firewall firewall = Firewall.newBuilder()
           .setName(firewallRuleName)
+          // These are the default values for kms.windows.googlecloud.com
+          // See, https://cloud.google.com/compute/docs/instances/windows/creating-managing-windows-instances#firewall_rule_requirements
           .addAllowed(Allowed.newBuilder()
               .setIPProtocol("tcp")
               .addPorts("1688")
@@ -68,6 +70,7 @@ public class CreateFirewallRuleForWindowsActivationHost {
           .setFirewallResource(firewall)
           .build();
 
+      // Wait for the operation to complete.
       Operation operation = firewallsClient.insertAsync(request).get();
 
       if (operation.hasError()) {
