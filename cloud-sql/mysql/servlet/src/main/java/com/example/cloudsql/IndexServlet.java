@@ -38,7 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 
-
 @SuppressFBWarnings(
     value = {"SE_NO_SERIALVERSIONID", "WEM_WEAK_EXCEPTION_MESSAGING"},
     justification = "Not needed for IndexServlet, Exception adds context")
@@ -51,7 +50,7 @@ public class IndexServlet extends HttpServlet {
     try {
       return TemplateData.getTemplateData(pool);
     } catch (SQLException ex) {
-     throw new ServletException(ex);
+      throw new ServletException(ex);
     }
   }
 
