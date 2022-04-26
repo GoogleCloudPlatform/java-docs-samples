@@ -73,7 +73,8 @@ public class Main implements HttpFunction {
 
   private void submitVote(HttpRequest req, HttpResponse resp) throws IOException {
     Timestamp now = new Timestamp(new Date().getTime());
-    String team = validateTeam(req.getFirstQueryParameter("team").get());
+    JsonObject body = gson.fromJson(req.getReader(), JsonObject.class);
+    String team = validateTeam(body.get("team").getAsString());
     if (team == null) {
       resp.setStatusCode(400);
       resp.getWriter().append("Invalid team specified.");
@@ -131,7 +132,7 @@ public class Main implements HttpFunction {
         respContent.addProperty("tabCount", templateData.tabCount);
         respContent.addProperty("spaceCount", templateData.spaceCount);
         respContent.addProperty("recentVotes", gson.toJson(templateData.recentVotes));
-        resp.getWriter().write(respContent.getAsString());
+        resp.getWriter().write(respContent.toString());
         resp.setStatusCode(HttpURLConnection.HTTP_OK);
         break;
       case "POST":

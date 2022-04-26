@@ -97,6 +97,12 @@
       <artifactId>java-function-invoker</artifactId>
       <version>1.0.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud.functions</groupId>
+      <artifactId>functions-framework-api</artifactId>
+      <version>1.0.4</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -119,6 +125,23 @@
           <deploy.version>GCLOUD_CONFIG</deploy.version>
         </configuration>
      </plugin>
+     <plugin>
+        <!--
+          Google Cloud Functions Framework Maven plugin
+
+          This plugin allows you to run Cloud Functions Java code
+          locally. Use the following terminal command to run a
+          given function locally:
+
+          mvn function:run -Drun.functionTarget=your.package.yourFunction
+        -->
+        <groupId>com.google.cloud.functions</groupId>
+        <artifactId>function-maven-plugin</artifactId>
+        <version>0.10.0</version>
+        <configuration>
+          <functionTarget>com.example.cloudsql.functions.Main</functionTarget>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>
