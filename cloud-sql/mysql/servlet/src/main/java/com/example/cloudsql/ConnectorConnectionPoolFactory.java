@@ -67,10 +67,12 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
     }
     // [START cloud_sql_mysql_servlet_connect_connector]
 
+    // [END cloud_sql_mysql_servlet_connect_unix]
     // The ipTypes argument can be used to specify a comma delimited list of preferred IP types
     // for connecting to a Cloud SQL instance. The argument ipTypes=PRIVATE will force the
     // SocketFactory to connect with an instance's associated private IP.
     config.addDataSourceProperty("ipTypes", "PUBLIC,PRIVATE");
+    // [START cloud_sql_mysql_servlet_connect_unix]
 
     // ... Specify additional connection properties here.
     // [START_EXCLUDE]
