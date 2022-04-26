@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,9 @@ class PgInformationSchemaSample {
 
   static void pgInformationSchema(String projectId, String instanceId, String databaseId)
       throws SQLException {
+    // Create a JDBC connection to the database. A connection can be reused to execute multiple
+    // statements. After completing all of your statements, call the "close" method on the
+    // connection to safely clean up any remaining resources.
     try (Connection connection =
         DriverManager.getConnection(
             String.format(

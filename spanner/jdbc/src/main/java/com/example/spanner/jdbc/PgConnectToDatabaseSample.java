@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,9 @@ class PgConnectToDatabaseSample {
       throws SQLException {
     // Connecting to a Cloud Spanner PostgreSQL database using the Spanner JDBC driver uses the same
     // JDBC URL as for normal Spanner databases. The JDBC driver will automatically detect the
-    // dialect that is used by the underlying database.
+    // dialect that is used by the underlying database. A connection can be reused to execute
+    // multiple statements. After completing all of your statements, call the "close" method on the
+    // connection to safely clean up any remaining resources.
     try (Connection connection =
         DriverManager.getConnection(
             String.format(
