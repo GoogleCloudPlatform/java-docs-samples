@@ -63,7 +63,12 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     ServletContext servletContext = event.getServletContext();
     DataSource pool = (DataSource) servletContext.getAttribute("my-pool");
     if (pool == null) {
-      pool = ConnectionPoolFactory.createConnectionPool();
+      if (System.getenv("INSTANCE_HOST") != null) {
+        pool = TcpConnectionPoolFactory.createConnectionPool();
+      } else {
+        pool = ConnectorConnectionPoolFactory.createConnectionPool();
+      }
+
       servletContext.setAttribute("my-pool", pool);
     }
     try {
