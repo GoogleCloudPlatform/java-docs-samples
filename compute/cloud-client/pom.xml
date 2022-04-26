@@ -97,6 +97,7 @@
         <configuration>
           <parallel>all</parallel>
           <useUnlimitedThreads>true</useUnlimitedThreads>
+          <forkCount>2.5C</forkCount>
           <includes>
             <include>**/*IT.java</include>
           </includes>
