@@ -59,7 +59,7 @@ Copyright 2015 Google Inc.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.4.1</version>
+        <version>2.4.2</version>
         <configuration>
           <projectId>GCLOUD_CONFIG</projectId>
           <version>GCLOUD_CONFIG</version>

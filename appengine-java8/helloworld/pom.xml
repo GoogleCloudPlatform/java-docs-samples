@@ -87,7 +87,7 @@ limitations under the License.
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>4.4.0</version>
+      <version>4.5.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -99,7 +99,7 @@ limitations under the License.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.4.1</version>
+        <version>2.4.2</version>
         <configuration>
           <!-- can be set w/ -DprojectId=myProjectId on command line -->
           <projectId>myProjectId</projectId>

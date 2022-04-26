@@ -49,10 +49,8 @@ where you need to define the Java11 runtime and declare you need the App Engine 
 </appengine-web-app>
 ```
 
-While the Java11 runtime is in Beta, in order to deploy the application, you can use the `beta` value for the `gcloudMode` Cloud SDK parameter like:
-
 ```shell
- mvn appengine:deploy -Dapp.deploy.gcloudMode=beta
+ mvn appengine:deploy
 ```
 
 
@@ -72,17 +70,17 @@ This sample demonstrates how to use the App Engine Datastore APIs in a Java11 we
 
 You can execute the following steps to transform the java8 appengine-web.xml file to a java11 appengine-web.xml file:
 
-     ```shell
-	 git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
-	 cd java-docs-samples
-	 cp -pr appengine-java8 /tmp/java11-samples
-	 cd /tmp/java11-samples
-	 # On Linux:
-	 shopt -s globstar dotglob
-     for f in **/appengine-web.xml; do sed -i 's.<runtime>java8</runtime>.<runtime>java11</runtime><app-engine-apis>true</app-engine-apis>.' ${f}; done 
-	 # on MacOS
-     for f in **/appengine-web.xml; do sed -i'' -e 's.<runtime>java8</runtime>.<runtime>java11</runtime><app-engine-apis>true</app-engine-apis>.' ${f}; done
-	 ```
+```shell
+git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
+cd java-docs-samples
+cp -pr appengine-java8 /tmp/java11-samples
+cd /tmp/java11-samples
+# On Linux:
+shopt -s globstar dotglob
+for f in **/appengine-web.xml; do sed -i 's.<runtime>java8</runtime>.<runtime>java11</runtime><app-engine-apis>true</app-engine-apis>.' ${f}; done 
+# on MacOS
+for f in **/appengine-web.xml; do sed -i'' -e 's.<runtime>java8</runtime>.<runtime>java11</runtime><app-engine-apis>true</app-engine-apis>.' ${f}; done
+ ```
 	 
 You will see in the `tmp/java11` directory all the correct code samples to compile and deploy to the Java11 AppEngine runtime, with bundled services.
 Just follow the same documentation as the [Java8 samples][java8-samples].

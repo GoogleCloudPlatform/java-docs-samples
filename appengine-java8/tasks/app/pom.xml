@@ -50,7 +50,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-tasks</artifactId>
-      <version>2.1.10</version>
+      <version>2.1.11</version>
     </dependency>
 
     <!-- Test Dependencies -->
@@ -80,7 +80,7 @@ Copyright 2019 Google LLC
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.4.1</version>
+        <version>2.4.2</version>
         <configuration>
           <projectId>GCLOUD_CONFIG</projectId>
           <version>GCLOUD_CONFIG</version>
