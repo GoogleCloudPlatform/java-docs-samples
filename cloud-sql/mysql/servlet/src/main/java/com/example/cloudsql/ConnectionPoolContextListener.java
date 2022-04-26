@@ -68,7 +68,6 @@ public class ConnectionPoolContextListener implements ServletContextListener {
       } else {
         pool = ConnectorConnectionPoolFactory.createConnectionPool();
       }
-
       servletContext.setAttribute("my-pool", pool);
     }
     try {

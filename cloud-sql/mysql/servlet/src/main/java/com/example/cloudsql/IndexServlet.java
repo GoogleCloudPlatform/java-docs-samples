@@ -47,67 +47,12 @@ public class IndexServlet extends HttpServlet {
 
   private static final Logger LOGGER = Logger.getLogger(IndexServlet.class.getName());
 
-  class TemplateData {
-
-    public int tabCount;
-    public int spaceCount;
-    public List<Vote> recentVotes;
-
-    public TemplateData(int tabCount, int spaceCount, List<Vote> recentVotes) {
-      this.tabCount = tabCount;
-      this.spaceCount = spaceCount;
-      this.recentVotes = recentVotes;
-    }
-  }
-
-  public TemplateData getTemplateData(DataSource pool) throws ServletException {
-
-    int tabCount = 0;
-    int spaceCount = 0;
-    List<Vote> recentVotes = new ArrayList<>();
-    try (Connection conn = pool.getConnection()) {
-      // PreparedStatements are compiled by the database immediately and executed at a later date.
-      // Most databases cache previously compiled queries, which improves efficiency.
-      String stmt1 = "SELECT candidate, time_cast FROM votes ORDER BY time_cast DESC LIMIT 5";
-      try (PreparedStatement voteStmt = conn.prepareStatement(stmt1);) {
-        // Execute the statement
-        ResultSet voteResults = voteStmt.executeQuery();
-        // Convert a ResultSet into Vote objects
-        while (voteResults.next()) {
-          String candidate = voteResults.getString(1);
-          Timestamp timeCast = voteResults.getTimestamp(2);
-          recentVotes.add(new Vote(candidate, timeCast));
-        }
-      }
-
-      // PreparedStatements can also be executed multiple times with different arguments. This can
-      // improve efficiency, and project a query from being vulnerable to an SQL injection.
-      String stmt2 = "SELECT COUNT(vote_id) FROM votes WHERE candidate=?";
-      try (PreparedStatement voteCountStmt = conn.prepareStatement(stmt2);) {
-        voteCountStmt.setString(1, "TABS");
-        ResultSet tabResult = voteCountStmt.executeQuery();
-        if (tabResult.next()) { // Move to the first result
-          tabCount = tabResult.getInt(1);
-        }
-
-        voteCountStmt.setString(1, "SPACES");
-        ResultSet spaceResult = voteCountStmt.executeQuery();
-        if (spaceResult.next()) { // Move to the first result
-          spaceCount = spaceResult.getInt(1);
-        }
-      }
+  TemplateData getTemplateData(DataSource pool) throws ServletException {
+    try {
+      return TemplateData.getTemplateData(pool);
     } catch (SQLException ex) {
-      // If something goes wrong, the application needs to react appropriately. This might mean
-      // getting a new connection and executing the query again, or it might mean redirecting the
-      // user to a different page to let them know something went wrong.
-      throw new ServletException(
-          "Unable to successfully connect to the database. Please check the "
-              + "steps in the README and try again.",
-          ex);
+     throw new ServletException(ex);
     }
-    TemplateData templateData = new TemplateData(tabCount, spaceCount, recentVotes);
-
-    return templateData;
   }
 
   @Override

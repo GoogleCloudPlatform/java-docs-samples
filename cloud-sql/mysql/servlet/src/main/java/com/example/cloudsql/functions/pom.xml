@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example.cloud.functions</groupId>
+  <artifactId>functions-cloud-sql-mysql</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <properties>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+  </properties>
+
+  <dependencies>
+    <!-- Required for Function primitives -->
+    <dependency>
+      <groupId>com.google.cloud.functions</groupId>
+      <artifactId>functions-framework-api</artifactId>
+      <version>1.0.4</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <!--
+          Google Cloud Functions Framework Maven plugin
+
+          This plugin allows you to run Cloud Functions Java code
+          locally. Use the following terminal command to run a
+          given function locally:
+
+          mvn function:run -Drun.functionTarget=your.package.yourFunction
+        -->
+        <groupId>com.google.cloud.functions</groupId>
+        <artifactId>function-maven-plugin</artifactId>
+        <version>0.10.0</version>
+        <configuration>
+          <functionTarget>com.example.cloudsql.functions.Main</functionTarget>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
