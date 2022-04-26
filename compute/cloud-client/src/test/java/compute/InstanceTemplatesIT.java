@@ -61,6 +61,7 @@ public class InstanceTemplatesIT {
 
   @BeforeClass
   public static void setup() throws IOException, ExecutionException, InterruptedException {
+    final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
@@ -113,11 +114,12 @@ public class InstanceTemplatesIT {
     Assert.assertEquals(
         getInstance(DEFAULT_ZONE, MACHINE_NAME_CR_TEMPLATE_OR).getDisksCount(), 2);
     stdOut.close();
-    System.setOut(null);
+    System.setOut(out);
   }
 
   @AfterClass
   public static void cleanup() throws IOException, ExecutionException, InterruptedException {
+    final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     // Delete instances.
@@ -135,7 +137,7 @@ public class InstanceTemplatesIT {
     assertThat(stdOut.toString())
         .contains("Instance template deletion operation status for " + TEMPLATE_NAME_WITH_SUBNET);
     stdOut.close();
-    System.setOut(null);
+    System.setOut(out);
   }
 
   public static Instance getInstance(String zone, String instanceName) throws IOException {

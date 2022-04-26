@@ -94,6 +94,7 @@ public class SnippetsIT {
 
   @BeforeClass
   public static void setUp() throws IOException, InterruptedException, ExecutionException {
+    final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
@@ -160,12 +161,13 @@ public class SnippetsIT {
     storage.create(BucketInfo.of(BUCKET_NAME));
 
     stdOut.close();
-    System.setOut(null);
+    System.setOut(out);
   }
 
 
   @AfterClass
   public static void cleanup() throws IOException, InterruptedException, ExecutionException {
+    final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     // Delete all instances created for testing.
@@ -196,7 +198,7 @@ public class SnippetsIT {
     bucket.delete();
 
     stdOut.close();
-    System.setOut(null);
+    System.setOut(out);
   }
 
   private static Image getActiveDebian()
