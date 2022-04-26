@@ -98,7 +98,6 @@ public class Main implements HttpFunction {
           .write(
               "Unable to successfully cast vote! Please check the application "
                   + "logs for more details.");
-      resp.setStatusCode(HttpURLConnection.HTTP_CREATED);
     }
   }
 
@@ -119,6 +118,7 @@ public class Main implements HttpFunction {
                 + "in the README and try again.",
             ex);
       }
+      resp.setStatusCode(HttpURLConnection.HTTP_CREATED);
     }
 
     String method = req.getMethod();
