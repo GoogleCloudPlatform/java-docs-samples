@@ -17,9 +17,7 @@
 package com.example.cloudsql;
 
 import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import javax.sql.DataSource;
 
 public class ConnectionPoolFactory {
 

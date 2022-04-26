@@ -96,11 +96,17 @@ and verify that
  has been added in your build section as a plugin.
 
 
-### Development Server
+### App Engine Development Server
 
 The following command will run the application locally in the the GAE-development server:
 ```bash
 mvn appengine:run
+```
+
+### Cloud Functions Development Server
+To run the application locally as a Cloud Function, run the following command:
+```
+mvn function:run -Drun.functionTarget=com.example.cloudsql.functions.Main
 ```
 
 ### Deploy to Google App Engine
@@ -168,3 +174,14 @@ mvn clean package com.google.cloud.tools:jib-maven-plugin:2.8.0:build \
 
   For more details about using Cloud Run see http://cloud.run.
   Review other [Java on Cloud Run samples](../../../run/).
+
+### Deploy to Google Cloud Functions
+
+To deploy the application to Cloud Functions, first fill in the values for required environment variables in `.env.yaml`. Then run the following command
+```
+gcloud functions deploy mysql-sample \
+  --trigger-http \
+  --entry-point com.example.cloudsql.functions.Main \
+  --runtime java11 \
+  --env-vars-file .env.yaml
+```
