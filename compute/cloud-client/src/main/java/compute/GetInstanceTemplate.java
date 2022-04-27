@@ -16,6 +16,8 @@
 
 package compute;
 
+// [START compute_template_get]
+
 import com.google.cloud.compute.v1.GetInstanceTemplateRequest;
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
@@ -47,3 +49,4 @@ public class GetInstanceTemplate {
     }
   }
 }
+// [END compute_template_get]

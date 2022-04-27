@@ -16,6 +16,8 @@
 
 package compute;
 
+// [START compute_template_delete]
+
 import com.google.cloud.compute.v1.DeleteInstanceTemplateRequest;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.Operation;
@@ -55,3 +57,4 @@ public class DeleteInstanceTemplate {
     }
   }
 }
+// [END compute_template_delete]
