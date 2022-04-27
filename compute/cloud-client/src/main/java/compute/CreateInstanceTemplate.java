@@ -16,6 +16,7 @@
 
 package compute;
 
+// [START compute_template_create]
 import com.google.cloud.compute.v1.AccessConfig;
 import com.google.cloud.compute.v1.AccessConfig.NetworkTier;
 import com.google.cloud.compute.v1.AttachedDisk;
@@ -133,3 +134,4 @@ public class CreateInstanceTemplate {
     }
   }
 }
+// [END compute_template_create]
