@@ -26,10 +26,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -53,7 +53,7 @@ public class CreatingManagingWindowsInstancesIT {
         .that(System.getenv(envVarName)).isNotEmpty();
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() throws IOException, ExecutionException, InterruptedException {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
@@ -83,13 +83,13 @@ public class CreatingManagingWindowsInstancesIT {
     }
   }
 
-  @Before
+  @BeforeEach
   public void beforeEach() {
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
   }
 
-  @After
+  @AfterEach
   public void afterEach() {
     stdOut = null;
     System.setOut(null);
