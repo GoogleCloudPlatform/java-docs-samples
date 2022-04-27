@@ -37,6 +37,8 @@ import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreateInstancesAdvanced {
   // [END compute_instances_create_from_image]
@@ -195,7 +197,7 @@ public class CreateInstancesAdvanced {
    */
   private static Instance createWithDisks(String project, String zone, String instanceName,
       Vector<AttachedDisk> disks, String machineType, String network, String subnetwork)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     try (InstancesClient instancesClient = InstancesClient.create()) {
       // Use the network interface provided in the networkName argument.
       NetworkInterface networkInterface;
@@ -231,7 +233,8 @@ public class CreateInstancesAdvanced {
           insertInstanceRequest);
 
       // Wait for the operation to complete.
-      Operation response = operation.get();
+      Operation response = operation.get(3, TimeUnit.MINUTES);
+      ;
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);
@@ -260,7 +263,7 @@ public class CreateInstancesAdvanced {
    * @return Instance object.
    */
   public static Instance createFromPublicImage(String project, String zone, String instanceName)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     try (ImagesClient imagesClient = ImagesClient.create()) {
       // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
       Image image = imagesClient.getFromFamily("debian-cloud", "debian-10");
@@ -287,7 +290,7 @@ public class CreateInstancesAdvanced {
    */
   public static Instance createFromCustomImage(String project, String zone, String instanceName,
       String customImage)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String diskType = String.format("zones/%s/diskTypes/pd-standard", zone);
     Vector<AttachedDisk> disks = new Vector<>();
     disks.add(diskFromImage(diskType, 10, true, customImage));
@@ -307,7 +310,7 @@ public class CreateInstancesAdvanced {
    * @return Instance object.
    */
   public static Instance createWithAdditionalDisk(String project, String zone, String instanceName)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     try (ImagesClient imagesClient = ImagesClient.create()) {
       // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
       Image image = imagesClient.getFromFamily("debian-cloud", "debian-10");
@@ -335,7 +338,7 @@ public class CreateInstancesAdvanced {
    */
   public static Instance createFromSnapshot(String project, String zone, String instanceName,
       String snapshotName)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String diskType = String.format("zones/%s/diskTypes/pd-standard", zone);
     Vector<AttachedDisk> disks = new Vector<>();
     disks.add(diskFromSnapshot(diskType, 11, true, snapshotName));
@@ -358,7 +361,7 @@ public class CreateInstancesAdvanced {
    */
   public static Instance createWithSnapshottedDataDisk(String project, String zone,
       String instanceName, String snapshotName)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     try (ImagesClient imagesClient = ImagesClient.create()) {
       // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
       Image image = imagesClient.getFromFamily("debian-cloud", "debian-10");
@@ -389,7 +392,7 @@ public class CreateInstancesAdvanced {
    */
   public static Instance createWithSubnetwork(String project, String zone, String instanceName,
       String networkLink, String subnetworkLink)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     try (ImagesClient imagesClient = ImagesClient.create()) {
       // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
       Image image = imagesClient.getFromFamily("debian-cloud", "debian-10");

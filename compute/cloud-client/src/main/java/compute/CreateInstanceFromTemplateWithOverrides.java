@@ -28,11 +28,13 @@ import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreateInstanceFromTemplateWithOverrides {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     /* TODO(developer): Replace these variables before running the sample.
      * projectId - ID or number of the project you want to use.
      * zone - Name of the zone you want to check, for example: us-west3-b
@@ -62,7 +64,7 @@ public class CreateInstanceFromTemplateWithOverrides {
   // but overrides the disk and machine type options in the template.
   public static void createInstanceFromTemplateWithOverrides(String projectId, String zone,
       String instanceName, String instanceTemplateName)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     try (InstancesClient instancesClient = InstancesClient.create();
         InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
@@ -100,7 +102,8 @@ public class CreateInstanceFromTemplateWithOverrides {
           .setInstanceResource(instance)
           .setSourceInstanceTemplate(instanceTemplate.getSelfLink()).build();
 
-      Operation response = instancesClient.insertAsync(insertInstanceRequest).get();
+      Operation response = instancesClient.insertAsync(insertInstanceRequest)
+          .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Instance creation from template with overrides failed ! ! " + response);

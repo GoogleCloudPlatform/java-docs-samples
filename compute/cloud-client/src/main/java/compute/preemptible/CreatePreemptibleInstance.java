@@ -28,11 +28,13 @@ import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Scheduling;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreatePreemptibleInstance {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // projectId: project ID or project number of the Cloud project you want to use.
     // zone: name of the zone you want to use. For example: “us-west3-b”
@@ -47,7 +49,7 @@ public class CreatePreemptibleInstance {
   // Send an instance creation request with preemptible settings to the Compute Engine API
   // and wait for it to complete.
   public static void createPremptibleInstance(String projectId, String zone, String instanceName)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     String machineType = String.format("zones/%s/machineTypes/e2-small", zone);
     String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
@@ -97,7 +99,9 @@ public class CreatePreemptibleInstance {
           .build();
 
       // Wait for the create operation to complete.
-      Operation response = instancesClient.insertAsync(insertInstanceRequest).get();
+      Operation response = instancesClient.insertAsync(insertInstanceRequest)
+          .get(3, TimeUnit.MINUTES);
+      ;
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);

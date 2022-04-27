@@ -25,6 +25,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class Util {
   // Cleans existing test resources if any.
@@ -36,7 +37,7 @@ public class Util {
   // Delete templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
   public static void cleanUpExistingInstanceTemplates(String prefixToDelete, String projectId)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     for (InstanceTemplate template : ListInstanceTemplates.listInstanceTemplates(projectId)
         .iterateAll()) {
       if (!template.hasCreationTimestamp()) {
@@ -54,7 +55,7 @@ public class Util {
   // has creation timestamp >24 hours.
   public static void cleanUpExistingInstances(String prefixToDelete, String projectId,
       String instanceZone)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     for (Entry<String, InstancesScopedList> instanceGroup : ListAllInstances.listAllInstances(
         projectId).iterateAll()) {
       for (Instance instance : instanceGroup.getValue().getInstancesList()) {

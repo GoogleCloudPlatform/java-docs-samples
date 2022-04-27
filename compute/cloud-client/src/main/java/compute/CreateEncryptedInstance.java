@@ -30,11 +30,13 @@ import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreateEncryptedInstance {
 
   public static void main(String[] args)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     String project = "your-project-id";
     String zone = "zone-name";
@@ -48,7 +50,7 @@ public class CreateEncryptedInstance {
   // in the specified project and zone.
   public static void createEncryptedInstance(String project, String zone, String instanceName,
       String diskEncryptionKey)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     /* Below are sample values that can be replaced.
        machineType: machine type of the VM being created.
        (This value uses the format zones/{zone}/machineTypes/{type_name}.
@@ -111,7 +113,8 @@ public class CreateEncryptedInstance {
           instancesClient.insertAsync(insertInstanceRequest);
 
       // Wait for the operation to complete.
-      Operation response = operation.get();
+      Operation response = operation.get(3, TimeUnit.MINUTES);
+      ;
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);

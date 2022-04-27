@@ -37,7 +37,7 @@
     <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>gax-httpjson</artifactId>
-      <version>0.100.0</version>
+      <version>0.99.0</version>
     </dependency>
 
 
@@ -54,6 +54,25 @@
       <scope>test</scope>
       <version>4.13.2</version>
     </dependency>
+
+    <!--
+    JUnit Jupiter dependencies to run BeforeEach and AfterEach methods
+    (in tandem with mvn surefire) before every test.
+    Without these, mvn surefire skips these methods and leads to concurrency
+    issues.
+    -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.8.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.8.2</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -63,7 +82,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>25.1.0</version>
+        <version>25.0.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -87,5 +106,25 @@
   </properties>
 
   <version>1.0-SNAPSHOT</version>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M6</version>
+        <configuration>
+          <!-- run both classes and methods in parallel -->
+          <parallel>all</parallel>
+          <useUnlimitedThreads>true</useUnlimitedThreads>
+          <forkCount>10C</forkCount>
+          <reuseForks>true</reuseForks>
+          <includes>
+            <include>**/*IT.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
