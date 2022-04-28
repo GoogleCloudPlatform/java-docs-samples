@@ -30,7 +30,9 @@ Note: Saving credentials in environment variables is convenient, but not secure 
 secure solution such as [Cloud KMS](https://cloud.google.com/kms/) or [Secret Manager](https://cloud.google.com/secret-manager/) to help keep secrets safe.
 
 ## Configure SSL Certificates
-For deployments that connect directly to a Cloud SQL instance with TCP, without using the Cloud SQL Proxy, configuring SSL certificates will ensure the connection is encrypted. 
+For deployments that connect directly to a Cloud SQL instance with TCP,
+without using the Cloud SQL Proxy,
+configuring SSL certificates will ensure the connection is encrypted. 
 1. Use the gcloud CLI to [download the server certificate](https://cloud.google.com/sql/docs/mysql/configure-ssl-instance#server-certs) for your Cloud SQL instance.
     - Get information about the service certificate:
         ```
