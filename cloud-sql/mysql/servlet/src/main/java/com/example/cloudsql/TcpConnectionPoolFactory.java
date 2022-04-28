@@ -16,17 +16,14 @@
 
 package com.example.cloudsql;
 
+// [START cloud_sql_mysql_servlet_connect_tcp]
+// [START cloud_sql_mysql_servlet_connect_tcp_sslcerts]
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.sql.DataSource;
 
-
 public class TcpConnectionPoolFactory extends ConnectionPoolFactory {
-
-  @SuppressFBWarnings(
-      value = "USBR_UNNECESSARY_STORE_BEFORE_RETURN",
-      justification = "Necessary for sample region tag.")
 
   // Saving credentials in environment variables is convenient, but not secure - consider a more
   // secure solution such as https://cloud.google.com/kms/ to help keep secrets safe.
@@ -37,6 +34,7 @@ public class TcpConnectionPoolFactory extends ConnectionPoolFactory {
   private static final String INSTANCE_HOST = System.getenv("INSTANCE_HOST");
   private static final String DB_PORT = System.getenv("DB_PORT");
 
+  // [END cloud_sql_mysql_servlet_connect_tcp]
   private static final String TRUST_CERT_KEYSTORE_PATH = System.getenv(
       "TRUST_CERT_KEYSTORE_PATH");
   private static final String TRUST_CERT_KEYSTORE_PASSWD = System.getenv(
@@ -45,10 +43,9 @@ public class TcpConnectionPoolFactory extends ConnectionPoolFactory {
       "CLIENT_CERT_KEYSTORE_PATH");
   private static final String CLIENT_CERT_KEYSTORE_PASSWD = System.getenv(
       "CLIENT_CERT_KEYSTORE_PASSWD");
+  // [START cloud_sql_mysql_servlet_connect_tcp]
 
   public static DataSource createConnectionPool() {
-    // [START cloud_sql_mysql_servlet_connect_tcp]
-    // [START cloud_sql_mysql_servlet_connect_tcp_sslcerts]
     // The configuration object specifies behaviors for the connection pool.
     HikariConfig config = new HikariConfig();
 
@@ -87,10 +84,8 @@ public class TcpConnectionPoolFactory extends ConnectionPoolFactory {
     // [END_EXCLUDE]
 
     // Initialize the connection pool using the configuration object.
-    DataSource pool = new HikariDataSource(config);
-    // [END cloud_sql_mysql_servlet_connect_tcp]
-    // [END cloud_sql_mysql_servlet_connect_tcp_sslcerts]
-    return pool;
+    return new HikariDataSource(config);
   }
-
 }
+// [END cloud_sql_mysql_servlet_connect_tcp]
+// [END cloud_sql_mysql_servlet_connect_tcp_sslcerts]

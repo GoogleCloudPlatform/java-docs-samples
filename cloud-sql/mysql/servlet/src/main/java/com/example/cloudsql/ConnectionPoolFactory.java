@@ -17,13 +17,9 @@
 package com.example.cloudsql;
 
 import com.zaxxer.hikari.HikariConfig;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class ConnectionPoolFactory {
 
-  @SuppressFBWarnings(
-      value = "USBR_UNNECESSARY_STORE_BEFORE_RETURN",
-      justification = "Necessary for sample region tag.")
   public static HikariConfig configureConnectionPool(HikariConfig config) {
     // [START cloud_sql_mysql_servlet_limit]
     // maximumPoolSize limits the total number of concurrent connections this pool will keep. Ideal

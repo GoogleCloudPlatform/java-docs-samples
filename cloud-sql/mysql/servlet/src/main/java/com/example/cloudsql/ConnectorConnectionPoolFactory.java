@@ -16,11 +16,12 @@
 
 package com.example.cloudsql;
 
+// [START cloud_sql_mysql_servlet_connect_connector]
+// [START cloud_sql_mysql_servlet_connect_unix]
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.sql.DataSource;
-
 
 public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
 
@@ -33,12 +34,8 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
   private static final String DB_PASS = System.getenv("DB_PASS");
   private static final String DB_NAME = System.getenv("DB_NAME");
 
-  @SuppressFBWarnings(
-      value = "USBR_UNNECESSARY_STORE_BEFORE_RETURN",
-      justification = "Necessary for sample region tag.")
   public static DataSource createConnectionPool() {
-    // [START cloud_sql_mysql_servlet_connect_connector]
-    // [START cloud_sql_mysql_servlet_connect_unix]
+
     // The configuration object specifies behaviors for the connection pool.
     HikariConfig config = new HikariConfig();
 
@@ -80,10 +77,8 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
     // [END_EXCLUDE]
 
     // Initialize the connection pool using the configuration object.
-    DataSource pool = new HikariDataSource(config);
-    // [END cloud_sql_mysql_servlet_connect_connector]
-    // [END cloud_sql_mysql_servlet_connect_unix]
-    return pool;
+    return new HikariDataSource(config);
   }
-
 }
+// [END cloud_sql_mysql_servlet_connect_connector]
+// [END cloud_sql_mysql_servlet_connect_unix]
