@@ -38,7 +38,6 @@ public class TemplateData {
   }
 
   public static TemplateData getTemplateData(DataSource pool) throws SQLException {
-
     int tabCount = 0;
     int spaceCount = 0;
     List<Vote> recentVotes = new ArrayList<>();
