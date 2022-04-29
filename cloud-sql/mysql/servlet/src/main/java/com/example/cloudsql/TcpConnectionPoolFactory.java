@@ -66,7 +66,7 @@ public class TcpConnectionPoolFactory extends ConnectionPoolFactory {
     // connection is encrypted.
     // See the link below for more information on how to configure SSL Certificates for use with
     // MySQL Connector/J
-    //
+    // https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-reference-using-ssl.html
     if (CLIENT_CERT_KEYSTORE_PATH != null && TRUST_CERT_KEYSTORE_PATH != null) {
       config.addDataSourceProperty("trustCertificateKeyStoreUrl",
           String.format("file:%s", TRUST_CERT_KEYSTORE_PATH));
