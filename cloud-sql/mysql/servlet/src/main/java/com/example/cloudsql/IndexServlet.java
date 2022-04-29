@@ -67,27 +67,13 @@ public class IndexServlet extends HttpServlet {
     req.getRequestDispatcher("/index.jsp").forward(req, resp);
   }
 
-  // Used to validate user input. All user provided data should be validated and sanitized before
-  // being used something like a SQL query. Returns null if invalid.
-  @Nullable
-  private String validateTeam(String input) {
-    if (input != null) {
-      input = input.toUpperCase(Locale.ENGLISH);
-      // Must be either "TABS" or "SPACES"
-      if (!"TABS".equals(input) && !"SPACES".equals(input)) {
-        return null;
-      }
-    }
-    return input;
-  }
-
   @SuppressFBWarnings(
       value = {"SERVLET_PARAMETER", "XSS_SERVLET"},
       justification = "Input is validated and sanitized.")
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     // Get the team from the request and record the time of the vote.
-    String team = validateTeam(req.getParameter("team"));
+    String team = InputValidator.validateTeam(req.getParameter("team"));
     Timestamp now = new Timestamp(new Date().getTime());
     if (team == null) {
       resp.setStatus(400);

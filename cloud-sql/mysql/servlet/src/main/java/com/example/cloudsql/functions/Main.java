@@ -17,6 +17,8 @@
 package com.example.cloudsql.functions;
 
 import com.example.cloudsql.ConnectorConnectionPoolFactory;
+import com.example.cloudsql.DatabaseSetup;
+import com.example.cloudsql.InputValidator;
 import com.example.cloudsql.TcpConnectionPoolFactory;
 import com.example.cloudsql.TemplateData;
 import com.google.cloud.functions.HttpFunction;
@@ -43,38 +45,23 @@ public class Main implements HttpFunction {
   private Logger logger = Logger.getLogger(Main.class.getName());
   private static final Gson gson = new Gson();
 
-  private void createTable(DataSource pool) throws SQLException {
-    // Safely attempt to create the table schema.
-    try (Connection conn = pool.getConnection()) {
-      String stmt =
-          "CREATE TABLE IF NOT EXISTS votes ( "
-              + "vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, candidate CHAR(6) NOT NULL,"
-              + " PRIMARY KEY (vote_id) );";
-      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
-        createTableStatement.execute();
-      }
-    }
-  }
+  private void returnVoteCounts(HttpRequest req, HttpResponse resp)
+      throws SQLException, IOException {
+    TemplateData templateData = TemplateData.getTemplateData(pool);
+    JsonObject respContent = new JsonObject();
 
-  // Used to validate user input. All user provided data should be validated and sanitized before
-  // being used something like a SQL query. Returns null if invalid.
-  @Nullable
-  private String validateTeam(String input) {
-    if (input != null) {
-      input = input.toUpperCase(Locale.ENGLISH);
-      // Must be either "TABS" or "SPACES"
-      if (!"TABS".equals(input) && !"SPACES".equals(input)) {
-        return null;
-      }
-    }
-    return input;
+    // Return JSON Data
+    respContent.addProperty("tabCount", templateData.tabCount);
+    respContent.addProperty("spaceCount", templateData.spaceCount);
+    respContent.addProperty("recentVotes", gson.toJson(templateData.recentVotes));
+    resp.getWriter().write(respContent.toString());
+    resp.setStatusCode(HttpURLConnection.HTTP_OK);
   }
-
 
   private void submitVote(HttpRequest req, HttpResponse resp) throws IOException {
     Timestamp now = new Timestamp(new Date().getTime());
     JsonObject body = gson.fromJson(req.getReader(), JsonObject.class);
-    String team = validateTeam(body.get("team").getAsString());
+    String team = InputValidator.validateTeam(body.get("team").getAsString());
     if (team == null) {
       resp.setStatusCode(400);
       resp.getWriter().append("Invalid team specified.");
@@ -112,7 +99,7 @@ public class Main implements HttpFunction {
         pool = ConnectorConnectionPoolFactory.createConnectionPool();
       }
       try {
-        createTable(pool);
+        DatabaseSetup.createTable(pool);
       } catch (SQLException ex) {
         throw new RuntimeException(
             "Unable to verify table schema. Please double check the steps"
@@ -125,15 +112,7 @@ public class Main implements HttpFunction {
     String method = req.getMethod();
     switch (method) {
       case "GET":
-        TemplateData templateData = TemplateData.getTemplateData(pool);
-        JsonObject respContent = new JsonObject();
-
-        // Return JSON Data
-        respContent.addProperty("tabCount", templateData.tabCount);
-        respContent.addProperty("spaceCount", templateData.spaceCount);
-        respContent.addProperty("recentVotes", gson.toJson(templateData.recentVotes));
-        resp.getWriter().write(respContent.toString());
-        resp.setStatusCode(HttpURLConnection.HTTP_OK);
+        returnVoteCounts(req, resp);
         break;
       case "POST":
         submitVote(req, resp);
@@ -143,6 +122,5 @@ public class Main implements HttpFunction {
         resp.getWriter().write(String.format("HTTP Method %s is not supported", method));
         break;
     }
-
   }
 }

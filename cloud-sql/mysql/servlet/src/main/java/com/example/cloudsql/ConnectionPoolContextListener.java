@@ -33,20 +33,6 @@ import javax.sql.DataSource;
 @WebListener("Creates a connection pool that is stored in the Servlet's context for later use.")
 public class ConnectionPoolContextListener implements ServletContextListener {
 
-
-  private void createTable(DataSource pool) throws SQLException {
-    // Safely attempt to create the table schema.
-    try (Connection conn = pool.getConnection()) {
-      String stmt =
-          "CREATE TABLE IF NOT EXISTS votes ( "
-              + "vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, candidate CHAR(6) NOT NULL,"
-              + " PRIMARY KEY (vote_id) );";
-      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
-        createTableStatement.execute();
-      }
-    }
-  }
-
   @Override
   public void contextDestroyed(ServletContextEvent event) {
     // This function is called when the Servlet is destroyed.
@@ -71,7 +57,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
       servletContext.setAttribute("my-pool", pool);
     }
     try {
-      createTable(pool);
+      DatabaseSetup.createTable(pool);
     } catch (SQLException ex) {
       throw new RuntimeException(
           "Unable to verify table schema. Please double check the steps"
