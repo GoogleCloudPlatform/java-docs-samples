@@ -44,7 +44,7 @@ import org.junit.runners.JUnit4;
 public class DeleteProtectionIT {
 
   @ClassRule
-  public Timeout timeout = new Timeout(1, TimeUnit.MINUTES);
+  public Timeout timeout = new Timeout(1, TimeUnit.SECONDS);
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
