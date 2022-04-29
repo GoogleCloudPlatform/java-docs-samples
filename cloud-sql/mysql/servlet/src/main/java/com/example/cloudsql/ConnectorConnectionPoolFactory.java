@@ -26,9 +26,9 @@ import javax.sql.DataSource;
 public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
 
   // Note: Saving credentials in environment variables is convenient, but not
-	// secure - consider a more secure solution such as
-	// Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
-	// keep secrets safe.
+  // secure - consider a more secure solution such as
+  // Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
+  // keep secrets safe.
   private static final String INSTANCE_CONNECTION_NAME =
       System.getenv("INSTANCE_CONNECTION_NAME");
   private static final String INSTANCE_UNIX_SOCKET = System.getenv("INSTANCE_UNIX_SOCKET");
