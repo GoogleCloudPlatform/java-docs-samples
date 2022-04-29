@@ -59,7 +59,7 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
     // Unix sockets are not natively supported in Java, so it is necessary to use the Cloud SQL JDBC
     // Socket Factory to connect.
     // Note: For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections
-    // which is preferred to using the Cloud SQL Proxy with Unix sockets.
+    // which is usually preferable to using the Cloud SQL Proxy with Unix sockets.
     // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
     if (INSTANCE_UNIX_SOCKET != null) {
       config.addDataSourceProperty("unixSocketPath", INSTANCE_UNIX_SOCKET);
