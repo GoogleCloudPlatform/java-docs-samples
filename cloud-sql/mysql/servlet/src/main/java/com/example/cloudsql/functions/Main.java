@@ -45,8 +45,10 @@ public class Main implements HttpFunction {
   // Uses the "initialization-on-demand holder" idiom
   // More information: https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
   private static class PoolHolder {
+
     // Making the default constructor private prohibits instantiation of this class
-    private PoolHolder() {}
+    private PoolHolder() {
+    }
 
     // This value is initialized only if (and when) the getInstance() function below is called
     private static final DataSource INSTANCE = setupPool();
