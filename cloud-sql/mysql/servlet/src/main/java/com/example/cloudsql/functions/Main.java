@@ -38,12 +38,45 @@ import javax.sql.DataSource;
 
 public class Main implements HttpFunction {
 
-  private DataSource pool;
   private Logger logger = Logger.getLogger(Main.class.getName());
   private static final Gson gson = new Gson();
 
+  // Declared at cold-start, but only initialized if/when the function executes
+  // Uses the "initialization-on-demand holder" idiom
+  // More information: https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
+  private static class PoolHolder {
+    // Making the default constructor private prohibits instantiation of this class
+    private PoolHolder() {}
+
+    // This value is initialized only if (and when) the getInstance() function below is called
+    private static final DataSource INSTANCE = setupPool();
+
+    private static DataSource setupPool() {
+      DataSource pool;
+      if (System.getenv("INSTANCE_HOST") != null) {
+        pool = TcpConnectionPoolFactory.createConnectionPool();
+      } else {
+        pool = ConnectorConnectionPoolFactory.createConnectionPool();
+      }
+      try {
+        Utils.createTable(pool);
+      } catch (SQLException ex) {
+        throw new RuntimeException(
+            "Unable to verify table schema. Please double check the steps"
+                + "in the README and try again.",
+            ex);
+      }
+      return pool;
+    }
+
+    private static DataSource getInstance() {
+      return PoolHolder.INSTANCE;
+    }
+  }
+
   private void returnVoteCounts(HttpRequest req, HttpResponse resp)
       throws SQLException, IOException {
+    DataSource pool = PoolHolder.getInstance();
     TemplateData templateData = TemplateData.getTemplateData(pool);
     JsonObject respContent = new JsonObject();
 
@@ -56,6 +89,7 @@ public class Main implements HttpFunction {
   }
 
   private void submitVote(HttpRequest req, HttpResponse resp) throws IOException {
+    DataSource pool = PoolHolder.getInstance();
     Timestamp now = new Timestamp(new Date().getTime());
     JsonObject body = gson.fromJson(req.getReader(), JsonObject.class);
     String team = Utils.validateTeam(body.get("team").getAsString());
@@ -88,23 +122,6 @@ public class Main implements HttpFunction {
 
   @Override
   public void service(HttpRequest req, HttpResponse resp) throws IOException, SQLException {
-    // lazily initialize pool and create table
-    if (pool == null) {
-      if (System.getenv("INSTANCE_HOST") != null) {
-        pool = TcpConnectionPoolFactory.createConnectionPool();
-      } else {
-        pool = ConnectorConnectionPoolFactory.createConnectionPool();
-      }
-      try {
-        Utils.createTable(pool);
-      } catch (SQLException ex) {
-        throw new RuntimeException(
-            "Unable to verify table schema. Please double check the steps"
-                + "in the README and try again.",
-            ex);
-      }
-      resp.setStatusCode(HttpURLConnection.HTTP_CREATED);
-    }
 
     String method = req.getMethod();
     switch (method) {
