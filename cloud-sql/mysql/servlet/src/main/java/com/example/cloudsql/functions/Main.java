@@ -17,10 +17,9 @@
 package com.example.cloudsql.functions;
 
 import com.example.cloudsql.ConnectorConnectionPoolFactory;
-import com.example.cloudsql.DatabaseSetup;
-import com.example.cloudsql.InputValidator;
 import com.example.cloudsql.TcpConnectionPoolFactory;
 import com.example.cloudsql.TemplateData;
+import com.example.cloudsql.Utils;
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
@@ -33,10 +32,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nullable;
 import javax.sql.DataSource;
 
 public class Main implements HttpFunction {
@@ -61,7 +58,7 @@ public class Main implements HttpFunction {
   private void submitVote(HttpRequest req, HttpResponse resp) throws IOException {
     Timestamp now = new Timestamp(new Date().getTime());
     JsonObject body = gson.fromJson(req.getReader(), JsonObject.class);
-    String team = InputValidator.validateTeam(body.get("team").getAsString());
+    String team = Utils.validateTeam(body.get("team").getAsString());
     if (team == null) {
       resp.setStatusCode(400);
       resp.getWriter().append("Invalid team specified.");
@@ -99,7 +96,7 @@ public class Main implements HttpFunction {
         pool = ConnectorConnectionPoolFactory.createConnectionPool();
       }
       try {
-        DatabaseSetup.createTable(pool);
+        Utils.createTable(pool);
       } catch (SQLException ex) {
         throw new RuntimeException(
             "Unable to verify table schema. Please double check the steps"

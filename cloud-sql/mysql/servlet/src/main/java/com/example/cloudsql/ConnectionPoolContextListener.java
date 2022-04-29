@@ -18,8 +18,6 @@ package com.example.cloudsql;
 
 import com.zaxxer.hikari.HikariDataSource;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -57,7 +55,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
       servletContext.setAttribute("my-pool", pool);
     }
     try {
-      DatabaseSetup.createTable(pool);
+      Utils.createTable(pool);
     } catch (SQLException ex) {
       throw new RuntimeException(
           "Unable to verify table schema. Please double check the steps"

@@ -37,7 +37,6 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
   private static final String DB_NAME = System.getenv("DB_NAME");
 
   public static DataSource createConnectionPool() {
-
     // The configuration object specifies behaviors for the connection pool.
     HikariConfig config = new HikariConfig();
 
@@ -56,9 +55,9 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
     config.addDataSourceProperty("cloudSqlInstance", INSTANCE_CONNECTION_NAME);
 
     // [END cloud_sql_mysql_servlet_connect_connector]
-    // Unix sockets are not natively supported in Java, so it is necessary to use the Cloud SQL JDBC
-    // Socket Factory to connect.
-    // Note: For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections
+    // Unix sockets are not natively supported in Java, so it is necessary to use the Cloud SQL
+    // Java Connector to connect.
+    // Note: For Java users, the Cloud SQL Java Connector can provide authenticated connections
     // which is usually preferable to using the Cloud SQL Proxy with Unix sockets.
     // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
     if (INSTANCE_UNIX_SOCKET != null) {

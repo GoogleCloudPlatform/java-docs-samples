@@ -23,10 +23,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -73,7 +71,7 @@ public class IndexServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     // Get the team from the request and record the time of the vote.
-    String team = InputValidator.validateTeam(req.getParameter("team"));
+    String team = Utils.validateTeam(req.getParameter("team"));
     Timestamp now = new Timestamp(new Date().getTime());
     if (team == null) {
       resp.setStatus(400);

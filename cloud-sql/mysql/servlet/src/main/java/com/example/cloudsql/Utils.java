@@ -16,10 +16,14 @@
 
 package com.example.cloudsql;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Locale;
 import javax.annotation.Nullable;
+import javax.sql.DataSource;
 
-public class InputValidator {
+public class Utils {
 
   // Used to validate user input. All user provided data should be validated and sanitized before
   // being used something like a SQL query. Returns null if invalid.
@@ -34,4 +38,19 @@ public class InputValidator {
     }
     return input;
   }
+
+  public static void createTable(DataSource pool) throws SQLException {
+    // Safely attempt to create the table schema.
+    try (Connection conn = pool.getConnection()) {
+      String stmt =
+          "CREATE TABLE IF NOT EXISTS votes ( "
+              + "vote_id SERIAL NOT NULL, time_cast timestamp NOT NULL, candidate CHAR(6) NOT NULL,"
+              + " PRIMARY KEY (vote_id) );";
+      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt);) {
+        createTableStatement.execute();
+      }
+    }
+  }
+
+
 }
