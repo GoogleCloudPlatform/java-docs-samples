@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -41,7 +42,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CustomHostnameInstanceIT {
 
-  @Rule
+  @ClassRule
   public Timeout timeout = new Timeout(1, TimeUnit.MINUTES);
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
