@@ -76,7 +76,7 @@ public class TemplateData {
       // If something goes wrong, the application needs to react appropriately. This might mean
       // getting a new connection and executing the query again, or it might mean redirecting the
       // user to a different page to let them know something went wrong.
-      throw new ServletException(
+      throw new SQLException(
           "Unable to successfully connect to the database. Please check the "
               + "steps in the README and try again.",
           ex);

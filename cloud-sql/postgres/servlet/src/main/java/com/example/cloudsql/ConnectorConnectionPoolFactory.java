@@ -75,11 +75,11 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
     // [END cloud_sql_postgres_servlet_connect_unix]
     // [START cloud_sql_postgres_servlet_auto_iam_authn]
     // If connecting using automatic database authentication, follow the instructions for
-    // connecting using the connector, but set the DB_IAM_USER value to an IAM user or service account
-    // that has been given access to the database.
+    // connecting using the connector, but set the DB_IAM_USER value to an IAM user or
+    // service account that has been given access to the database.
     // See https://cloud.google.com/sql/docs/postgres/iam-logins for more details.
     String dbIamUser = System.getenv("DB_IAM_USER");
-    if (DB_IAM_USER != null) {
+    if (dbIamUser != null) {
       config.addDataSourceProperty("enableIamAuth", "true");
       config.addDataSourceProperty("user", dbIamUser);
       // Password must be set to a nonempty value to bypass driver validation errors.
