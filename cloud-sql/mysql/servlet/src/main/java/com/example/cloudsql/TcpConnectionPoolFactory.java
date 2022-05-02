@@ -26,7 +26,7 @@ import javax.sql.DataSource;
 public class TcpConnectionPoolFactory extends ConnectionPoolFactory {
 
   // Saving credentials in environment variables is convenient, but not secure - consider a more
-  // secure solution such as https://cloud.google.com/kms/ to help keep secrets safe.
+  // secure solution such as https://cloud.google.com/secret-manager/ to help keep secrets safe.
   private static final String DB_USER = System.getenv("DB_USER");
   private static final String DB_PASS = System.getenv("DB_PASS");
   private static final String DB_NAME = System.getenv("DB_NAME");
