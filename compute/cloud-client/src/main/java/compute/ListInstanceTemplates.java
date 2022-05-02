@@ -16,6 +16,8 @@
 
 package compute;
 
+// [START compute_template_list]
+
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.InstanceTemplatesClient.ListPagedResponse;
@@ -43,3 +45,4 @@ public class ListInstanceTemplates {
     }
   }
 }
+// [END compute_template_list]

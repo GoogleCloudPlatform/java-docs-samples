@@ -56,7 +56,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-iam</artifactId>
-      <version>v1-rev20220413-1.32.1</version>
+      <version>v1-rev20220421-1.32.1</version>
     </dependency>
 <!-- [END iam_java_dependency] -->
 <!-- [END iam_java_quickstart_dependency] -->
