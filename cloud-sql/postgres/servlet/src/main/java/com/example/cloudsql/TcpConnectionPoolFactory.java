@@ -63,8 +63,8 @@ public class TcpConnectionPoolFactory extends ConnectionPoolFactory {
     // the Postgres JDBC driver
     // https://jdbc.postgresql.org/documentation/head/ssl-client.html
     if (SSL_CERT_PATH != null && SSL_CA_PATH != null) {
-      config.addDataSourceProperty("ssl","true");
-      config.addDataSourceProperty("sslmode","verify-full");
+      config.addDataSourceProperty("ssl", "true");
+      config.addDataSourceProperty("sslmode", "verify-full");
 
       config.addDataSourceProperty("sslkey", SSL_CLIENT_KEY_PATH;
       config.addDataSourceProperty("sslpassword", SSL_CLIENT_KEY_PASSWD);
