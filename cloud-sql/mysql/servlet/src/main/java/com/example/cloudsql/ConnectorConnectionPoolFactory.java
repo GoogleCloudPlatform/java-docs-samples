@@ -57,7 +57,7 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
     // [END cloud_sql_mysql_servlet_connect_connector]
     // Unix sockets are not natively supported in Java, so it is necessary to use the Cloud SQL
     // Java Connector to connect. When setting INSTANCE_UNIX_SOCKET, the connector will 
-    // call an external package that will enable Unix socket connections
+    // call an external package that will enable Unix socket connections.
     // Note: For Java users, the Cloud SQL Java Connector can provide authenticated connections
     // which is usually preferable to using the Cloud SQL Proxy with Unix sockets.
     // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
