@@ -33,7 +33,7 @@
     <exec.mainClass>com.example.appengine.Application</exec.mainClass>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
-    <micronaut.version>3.4.2</micronaut.version>
+    <micronaut.version>3.4.3</micronaut.version>
   </properties>
 
   <dependencies>
