@@ -112,16 +112,19 @@ public class ListChannelEventsTest {
     try {
       DeleteChannel.deleteChannel(PROJECT_ID, LOCATION, CHANNEL_ID);
     } catch (NotFoundException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.out.printf(String.valueOf(e));
     }
 
     try {
       DeleteChannel.deleteChannel(PROJECT_ID, LOCATION, CHANNEL_ID);
     } catch (NotFoundException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.out.printf(String.valueOf(e));
     }
 
     try {
       DeleteInput.deleteInput(PROJECT_ID, LOCATION, INPUT_ID);
     } catch (NotFoundException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.out.printf(String.valueOf(e));
     }
     System.setOut(originalOut);
     bout.reset();

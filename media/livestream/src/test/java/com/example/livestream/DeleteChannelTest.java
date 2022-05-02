@@ -99,6 +99,7 @@ public class DeleteChannelTest {
     try {
       DeleteInput.deleteInput(PROJECT_ID, LOCATION, INPUT_ID);
     } catch (NotFoundException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.out.printf(String.valueOf(e));
     }
     System.setOut(originalOut);
     bout.reset();

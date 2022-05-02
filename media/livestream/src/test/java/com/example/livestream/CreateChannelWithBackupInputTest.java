@@ -44,7 +44,7 @@ public class CreateChannelWithBackupInputTest {
       "my-primary-input-" + UUID.randomUUID().toString().substring(0, 25);
   private static final String BACKUP_INPUT_ID =
       "my-backup-input-" + UUID.randomUUID().toString().substring(0, 25);
-  String OUTPUT_URI = "gs://my-bucket/my-output-folder/";
+  private static final String OUTPUT_URI = "gs://my-bucket/my-output-folder/";
 
   private static String PROJECT_ID;
   private static String CHANNEL_NAME;
@@ -113,16 +113,19 @@ public class CreateChannelWithBackupInputTest {
     try {
       DeleteChannel.deleteChannel(PROJECT_ID, LOCATION, CHANNEL_ID);
     } catch (NotFoundException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.out.printf(String.valueOf(e));
     }
 
     try {
       DeleteInput.deleteInput(PROJECT_ID, LOCATION, PRIMARY_INPUT_ID);
     } catch (NotFoundException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.out.printf(String.valueOf(e));
     }
 
     try {
       DeleteInput.deleteInput(PROJECT_ID, LOCATION, BACKUP_INPUT_ID);
     } catch (NotFoundException | InterruptedException | ExecutionException | TimeoutException e) {
+      System.out.printf(String.valueOf(e));
     }
     System.setOut(originalOut);
     bout.reset();
