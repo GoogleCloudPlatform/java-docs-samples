@@ -61,7 +61,7 @@ configuring SSL certificates will ensure the connection is encrypted.
       --instance=INSTANCE_NAME \
       --format="value(cert)" > client-cert.pem
         ```
-3. Convert the downloaded PEM certificate and key to a PKCS12 archive using `keytool`:
+3. Convert the downloaded PEM certificate and key to a PKCS12 archive using `openssl`:
    ```
    openssl pkcs12 -export -in client-cert.pem -inkey client-key.pem \
    -name "mysqlclient" -passout pass:<password> -out client-keystore.p12
