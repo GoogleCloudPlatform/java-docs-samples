@@ -66,7 +66,7 @@ public class TcpConnectionPoolFactory extends ConnectionPoolFactory {
       config.addDataSourceProperty("ssl", "true");
       config.addDataSourceProperty("sslmode", "verify-full");
 
-      config.addDataSourceProperty("sslkey", SSL_CLIENT_KEY_PATH;
+      config.addDataSourceProperty("sslkey", SSL_CLIENT_KEY_PATH);
       config.addDataSourceProperty("sslpassword", SSL_CLIENT_KEY_PASSWD);
       config.addDataSourceProperty("sslrootcert", SSL_SERVER_CA_PATH);
     }
