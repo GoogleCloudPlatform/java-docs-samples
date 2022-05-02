@@ -20,7 +20,7 @@ REGION=us-central1
 3. Run the command
 
 ```
-mvn compile exec:java -Dexec.mainClass=BulkWrite \
+mvn compile exec:java -Dexec.mainClass=bigtable.BulkWrite \
 "-Dexec.args=--bigtableInstanceId=$INSTANCE_ID \
 --runner=dataflow --project=$GOOGLE_CLOUD_PROJECT \
 --bigtableSize=$BIGTABLE_SIZE --region=$REGION"
