@@ -18,7 +18,7 @@ SCRIPT_DIR="$(dirname $0)/"
 
 # Fail the tests if no Java version was found.
 POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
-ALLOWED_VERSIONS=("1.8" "11")
+ALLOWED_VERSIONS=("1.8" "11" "17")
 # shellcheck disable=SC2199
 # shellcheck disable=SC2076
 if [[ "$POM_JAVA" = "" ]] || [[ !  "${ALLOWED_VERSIONS[@]}" =~ "${POM_JAVA}" ]]; then
