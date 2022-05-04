@@ -115,6 +115,7 @@ fi
 echo -e "\n******************** TESTING PROJECTS ********************"
 test_prog="$PWD/.kokoro/tests/run_test_java.sh"
 
+git version
 git diff --exit-code origin/main... .
 echo $?
 
