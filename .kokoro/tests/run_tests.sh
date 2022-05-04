@@ -115,6 +115,9 @@ fi
 echo -e "\n******************** TESTING PROJECTS ********************"
 test_prog="$PWD/.kokoro/tests/run_test_java.sh"
 
+git diff --exit-code origin/main... .
+echo $?
+
 # Use btlr to run all the tests in each folder 
 echo "btlr" "${btlr_args[@]}" -- "${test_prog}"
 btlr "${btlr_args[@]}" -- "${test_prog}"
