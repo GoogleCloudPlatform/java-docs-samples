@@ -116,7 +116,7 @@ echo -e "\n******************** TESTING PROJECTS ********************"
 test_prog="$PWD/.kokoro/tests/run_test_java.sh"
 
 git version
-git diff --exit-code "$GIT_DIFF"
+git --git-dir "${PWD}/.git" diff --exit-code $GIT_DIFF
 
 # Use btlr to run all the tests in each folder 
 echo "btlr" "${btlr_args[@]}" -- "${test_prog}"
