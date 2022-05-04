@@ -16,10 +16,7 @@
 
 package com.example.cloudsql;
 
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 import javax.servlet.ServletContextEvent;

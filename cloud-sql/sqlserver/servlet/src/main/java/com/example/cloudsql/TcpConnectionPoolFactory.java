@@ -46,7 +46,8 @@ public class TcpConnectionPoolFactory extends ConnectionPoolFactory {
     HikariConfig config = new HikariConfig();
 
     // Configure which instance and what database user to connect with.
-    config.setJdbcUrl(String.format("jdbc:sqlserver://%s:%s;databaseName=%s", INSTANCE_HOST, DB_PORT, DB_NAME));
+    config.setJdbcUrl(
+        String.format("jdbc:sqlserver://%s:%s;databaseName=%s", INSTANCE_HOST, DB_PORT, DB_NAME));
     config.setUsername(DB_USER); // e.g. "root", "sqlserver"
     config.setPassword(DB_PASS); // e.g. "my-password"
 
