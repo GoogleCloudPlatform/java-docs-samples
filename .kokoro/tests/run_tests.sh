@@ -45,6 +45,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Update `gcloud` and log versioning for debugging
     apt update && apt -y upgrade google-cloud-sdk
     
+    echo "********** GIT INFO ***********"
+    git version
     echo "********** GCLOUD INFO ***********"
     gcloud -v
     echo "********** MAVEN INFO  ***********"
@@ -114,9 +116,6 @@ fi
 
 echo -e "\n******************** TESTING PROJECTS ********************"
 test_prog="$PWD/.kokoro/tests/run_test_java.sh"
-
-git version
-git diff --exit-code $GIT_DIFF
 
 # Use btlr to run all the tests in each folder 
 echo "btlr" "${btlr_args[@]}" -- "${test_prog}"
