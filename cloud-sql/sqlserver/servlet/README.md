@@ -31,6 +31,34 @@ export DB_NAME='my_db'
 Note: Saving credentials in environment variables is convenient, but not secure - consider a more
 secure solution such as [Cloud KMS](https://cloud.google.com/kms/) or [Secret Manager](https://cloud.google.com/secret-manager/) to help keep secrets safe.
 
+## Configure SSL Certificates
+For deployments that connect directly to a Cloud SQL instance with TCP,
+without using the Cloud SQL Proxy,
+configuring SSL certificates will ensure the connection is encrypted. 
+1. Use the gcloud CLI to [download the server certificate](https://cloud.google.com/sql/docs/mysql/configure-ssl-instance#server-certs) for your Cloud SQL instance.
+    - Get information about the service certificate:
+        ```
+        gcloud beta sql ssl server-ca-certs list --instance=INSTANCE_NAME
+        ```
+    - Create a server certificate:
+        ```
+        gcloud beta sql ssl server-ca-certs create --instance=INSTANCE_NAME
+        ```
+    - Download the certificate information to a local PEM file
+        ```
+        gcloud beta sql ssl server-ca-certs list \
+          --format="value(cert)" \
+          --instance=INSTANCE_NAME > \
+          server-ca.pem
+        ```
+
+1. [Import the server certificate into a custom Java truststore](https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-reference-using-ssl.html) using `keytool`:
+      ```
+      keytool -importcert -alias MySQLCACert -file server-ca.pem \
+    -keystore <truststore-filename> -storepass <password>
+      ```  
+1. Set the `TRUST_CERT_KEYSTORE_PATH` and `TRUST_CERT_KEYSTORE_PASSWD` environment variables to the values used in the previous step.
+
 ## Deploying locally
 
 To run this application locally, run the following command inside the project folder:
@@ -50,7 +78,7 @@ and verify that
  has been added in your build section as a plugin.
 
 
-### Development Server
+### App Engine Development Server
 
 The following command will run the application locally in the the GAE-development server:
 ```bash
@@ -58,6 +86,12 @@ mvn clean package appengine:run
 ```
 
 Note: if the GAE development server fails to start, check that you are using a supported version of Java. Supported versions are Java 8 and Java 11.
+
+### Cloud Functions Development Server
+To run the application locally as a Cloud Function, run the following command:
+```
+mvn function:run -Drun.functionTarget=com.example.cloudsql.functions.Main
+```
 
 ### Deploy to Google Cloud
 
@@ -124,6 +158,17 @@ mvn clean package com.google.cloud.tools:jib-maven-plugin:2.8.0:build \
 
   For more details about using Cloud Run see http://cloud.run.
   Review other [Java on Cloud Run samples](../../../run/).
+
+### Deploy to Google Cloud Functions
+
+To deploy the application to Cloud Functions, first fill in the values for required environment variables in `.env.yaml`. Then run the following command
+```
+gcloud functions deploy mysql-sample \
+  --trigger-http \
+  --entry-point com.example.cloudsql.functions.Main \
+  --runtime java11 \
+  --env-vars-file .env.yaml
+```
 
 ### Cleanup
 To avoid incurring any charges, navigate to your project's [App Engine settings](https://console.cloud.google.com/appengine/settings) and click `Disable Application`. Also [delete your Cloud SQL Instance](https://cloud.google.com/sql/docs/mysql/delete-instance) if you no longer need it.
