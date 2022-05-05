@@ -102,7 +102,7 @@
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.41.7</version>
+      <version>1.41.8</version>
     </dependency>
 
     <!-- LTS for Java EE -->
