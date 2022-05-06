@@ -20,7 +20,7 @@ buildscript {
 
   dependencies {
     classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:2.1.0'
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.4.2'
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.4.3'
   }
 }
 // [END build_script]
