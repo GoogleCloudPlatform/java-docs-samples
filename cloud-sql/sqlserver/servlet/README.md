@@ -163,7 +163,7 @@ mvn clean package com.google.cloud.tools:jib-maven-plugin:2.8.0:build \
 
 To deploy the application to Cloud Functions, first fill in the values for required environment variables in `.env.yaml`. Then run the following command
 ```
-gcloud functions deploy mysql-sample \
+gcloud functions deploy sql-sample \
   --trigger-http \
   --entry-point com.example.cloudsql.functions.Main \
   --runtime java11 \
