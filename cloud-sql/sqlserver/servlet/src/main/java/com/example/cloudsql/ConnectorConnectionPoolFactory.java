@@ -57,6 +57,10 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
         "com.google.cloud.sql.sqlserver.SocketFactory");
     config.addDataSourceProperty("socketFactoryConstructorArg", INSTANCE_CONNECTION_NAME);
 
+    // The Java Connector provides SSL encryption, so it should be disabled
+    // at the driver level.
+    config.addDataSourceProperty("encrypt", "false");
+
     // ... Specify additional connection properties here.
     // [START_EXCLUDE]
     configureConnectionPool(config);
