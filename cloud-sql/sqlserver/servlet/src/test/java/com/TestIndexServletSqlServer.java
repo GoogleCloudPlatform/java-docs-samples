@@ -93,6 +93,7 @@ public class TestIndexServletSqlServer {
         "com.google.cloud.sql.sqlserver.SocketFactory");
     config.addDataSourceProperty("socketFactoryConstructorArg",
         System.getenv("SQLSERVER_CONNECTION_NAME"));
+    config.addDataSourceProperty("encrypt", "false");
 
     pool = new HikariDataSource(config);
     createTable(pool);
