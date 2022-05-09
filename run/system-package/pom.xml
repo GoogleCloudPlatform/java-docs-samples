@@ -60,6 +60,7 @@ limitations under the License.
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M5</version>
         <configuration>
+          <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
           <argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
         </configuration>
       </plugin>
