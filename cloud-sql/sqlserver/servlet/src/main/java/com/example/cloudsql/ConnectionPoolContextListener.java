@@ -60,6 +60,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
       event.getServletContext().setAttribute("my-pool", pool);
     }
     try {
+      // from src/main/java/com/example/cloudsql/Utils.java
       Utils.createTable(pool);
     } catch (SQLException ex) {
       throw new RuntimeException("Unable to verify table schema. Please double check the steps"
