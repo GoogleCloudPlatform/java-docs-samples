@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,13 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
-
 import functions.eventpojos.GcsEvent;
-import functions.eventpojos.MockContext;
 import io.cloudevents.CloudEvent;
-import io.cloudevents.CloudEventData;
 import io.cloudevents.core.builder.CloudEventBuilder;
-import io.cloudevents.core.data.PojoCloudEventData;
-
 import java.net.URI;
 import java.util.List;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -69,20 +63,20 @@ public class ImageMagickTest {
     gcsEvent.setName(imageName);
     Gson gson = new Gson();
     CloudEvent event =
-      CloudEventBuilder.v1()
-          .withId("0")
-          .withType("gcs.event")
-          .withSource(URI.create("https://example.com"))
-          .withData(gson.toJson(gcsEvent).getBytes())
-          .build();
+        CloudEventBuilder.v1()
+            .withId("0")
+            .withType("gcs.event")
+            .withSource(URI.create("https://example.com"))
+            .withData(gson.toJson(gcsEvent).getBytes())
+            .build();
 
     assertThat(BLURRED_BUCKET_NAME).isNotNull();
     new ImageMagick().accept(event);
 
     List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
-    
-    String uploadedMessage = String.format(
-        "Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, imageName);
+
+    String uploadedMessage =
+        String.format("Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, imageName);
     assertThat(logs.get(2).getMessage()).isEqualTo(uploadedMessage);
   }
 
@@ -94,17 +88,17 @@ public class ImageMagickTest {
     gcsEvent.setName(imageName);
     Gson gson = new Gson();
     CloudEvent event =
-      CloudEventBuilder.v1()
-          .withId("0")
-          .withType("gcs.event")
-          .withSource(URI.create("https://example.com"))
-          .withData(gson.toJson(gcsEvent).getBytes())
-          .build();
+        CloudEventBuilder.v1()
+            .withId("0")
+            .withType("gcs.event")
+            .withSource(URI.create("https://example.com"))
+            .withData(gson.toJson(gcsEvent).getBytes())
+            .build();
 
     new ImageMagick().accept(event);
 
-    assertThat(LOG_HANDLER.getStoredLogRecords().get(1).getMessage()).isEqualTo(
-        "Detected wakeupcat.jpg as OK.");
+    assertThat(LOG_HANDLER.getStoredLogRecords().get(1).getMessage())
+        .isEqualTo("Detected wakeupcat.jpg as OK.");
   }
 
   @Test
@@ -115,16 +109,16 @@ public class ImageMagickTest {
     gcsEvent.setName(imageName);
     Gson gson = new Gson();
     CloudEvent event =
-      CloudEventBuilder.v1()
-          .withId("0")
-          .withType("gcs.event")
-          .withSource(URI.create("https://example.com"))
-          .withData(gson.toJson(gcsEvent).getBytes())
-          .build();
+        CloudEventBuilder.v1()
+            .withId("0")
+            .withType("gcs.event")
+            .withSource(URI.create("https://example.com"))
+            .withData(gson.toJson(gcsEvent).getBytes())
+            .build();
 
     new ImageMagick().accept(event);
 
-    assertThat(LOG_HANDLER.getStoredLogRecords().get(1).getMessage()).contains(
-        "Error opening file");
+    assertThat(LOG_HANDLER.getStoredLogRecords().get(1).getMessage())
+        .contains("Error opening file");
   }
 }

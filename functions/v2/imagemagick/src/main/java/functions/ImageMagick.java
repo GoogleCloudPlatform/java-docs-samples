@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package functions;
 
 // [START functions_imagemagick_setup]
 
-
 import com.google.cloud.functions.CloudEventsFunction;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
@@ -30,12 +29,13 @@ import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
 import com.google.cloud.vision.v1.Feature;
 import com.google.cloud.vision.v1.Feature.Type;
-import com.google.gson.Gson;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageSource;
 import com.google.cloud.vision.v1.SafeSearchAnnotation;
+import com.google.gson.Gson;
 import functions.eventpojos.GcsEvent;
+import io.cloudevents.CloudEvent;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -44,8 +44,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import io.cloudevents.CloudEvent;
 
 public class ImageMagick implements CloudEventsFunction {
 
