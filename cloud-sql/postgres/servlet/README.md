@@ -27,10 +27,50 @@ export DB_PASS='my-db-pass'
 export DB_NAME='my_db'
 ```
 Note: Saving credentials in environment variables is convenient, but not secure - consider a more
-secure solution such as [Cloud KMS](https://cloud.google.com/kms/) to help keep secrets safe.
+secure solution such as [Secret Manager](https://cloud.google.com/secret-manager/) to help keep secrets safe.
+
+## Configure SSL Certificates
+For deployments that connect directly to a Cloud SQL instance with TCP,
+without using the Cloud SQL Proxy,
+configuring SSL certificates will ensure the connection is encrypted.
+1. Use the gcloud CLI to [download the server certificate](https://cloud.google.com/sql/docs/mysql/configure-ssl-instance#server-certs) for your Cloud SQL instance.
+    - Get information about the service certificate:
+        ```
+        gcloud beta sql ssl server-ca-certs list --instance=INSTANCE_NAME
+        ```
+    - Create a server certificate:
+        ```
+        gcloud beta sql ssl server-ca-certs create --instance=INSTANCE_NAME
+        ```
+    - Download the certificate information to a local PEM file
+        ```
+        gcloud beta sql ssl server-ca-certs list \
+          --format="value(cert)" \
+          --instance=INSTANCE_NAME > \
+          server-ca.pem
+        ```
+
+2. Use the gcloud CLI to [create and download a client public key certificate and client private key](https://cloud.google.com/sql/docs/postgres/configure-ssl-instance#client-certs)
+    - Create a client certificate using the ssl client-certs create command:
+        ```
+        gcloud sql ssl client-certs create CERT_NAME client-key.pem --instance=INSTANCE_NAME
+        ```
+    - Retrieve the public key for the certificate you just created and copy it into the client-cert.pem file with the ssl client-certs describe command:
+      ```
+      gcloud sql ssl client-certs describe CERT_NAME \
+      --instance=INSTANCE_NAME \
+      --format="value(cert)" > client-cert.pem
+        ```
+3. Convert the downloaded PEM certificate and key to a PKCS12 archive using `openssl`:
+   ```
+   openssl pkcs12 -export -in client-cert.pem -inkey client-key.pem \
+   -name "mysqlclient" -passout pass:<password> -out client-keystore.p12
+   ```
+4. Set the `SSL_CLIENT_KEY_PATH` and `SSL_CLIENT_KEY_PASSWD` environment variables to the values from the previous step. 
+The client key path should point to the PKCS12 archive file.
+6. Set the `SSL_SERVER_CA_PATH` environment variables to point to the `server-ca.pem` file downloaded earlier
 
 ## Deploying locally
-
 To run this application locally, run the following command inside the project folder:
 
 ```bash
@@ -48,11 +88,17 @@ and verify that
  has been added in your build section as a plugin.
 
 
-### Development Server
+### App Engine Development Server
 
 The following command will run the application locally in the the GAE-development server:
 ```bash
 mvn appengine:run
+```
+
+### Cloud Functions Development Server
+To run the application locally as a Cloud Function, run the following command:
+```
+mvn function:run -Drun.functionTarget=com.example.cloudsql.functions.Main
 ```
 
 ### Deploy to Google App Engine
@@ -120,3 +166,14 @@ mvn clean package com.google.cloud.tools:jib-maven-plugin:2.8.0:build \
 
   For more details about using Cloud Run see http://cloud.run.
   Review other [Java on Cloud Run samples](../../../run/).
+
+### Deploy to Google Cloud Functions
+
+To deploy the application to Cloud Functions, first fill in the values for required environment variables in `.env.yaml`. Then run the following command
+```
+gcloud functions deploy sql-sample \
+  --trigger-http \
+  --entry-point com.example.cloudsql.functions.Main \
+  --runtime java11 \
+  --env-vars-file .env.yaml
+```

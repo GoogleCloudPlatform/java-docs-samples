@@ -105,6 +105,8 @@
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
         <version>3.0.0-M5</version>
         <configuration>
+          <!-- This is needed for Java 17 compatibility -->
+          <argLine>--add-opens java.base/java.time=ALL-UNNAMED</argLine>
           <includes>
             <include>**/*Test.java</include>
           </includes>

@@ -69,6 +69,11 @@ limitations under the License.
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes
     </outputDirectory>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version>
+      </plugin>
       <!-- for deployment of web application -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>

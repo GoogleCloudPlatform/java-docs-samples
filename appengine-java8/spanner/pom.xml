@@ -86,7 +86,11 @@
         <version>9.4.44.v20210927</version>
       </plugin>
       <!-- END -->
-
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.8.1</version>
