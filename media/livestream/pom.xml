@@ -35,7 +35,6 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
   </properties>
-  <!-- [START dependencies] -->
   <!--  Using libraries-bom to manage versions.
   See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
   <dependencyManagement>
@@ -65,7 +64,6 @@
       <artifactId>maven-compiler-plugin</artifactId>
       <version>3.8.1</version>
     </dependency>
-    <!-- [END dependencies] -->
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
