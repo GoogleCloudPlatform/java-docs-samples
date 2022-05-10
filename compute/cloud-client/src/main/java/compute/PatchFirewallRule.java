@@ -66,7 +66,6 @@ public class PatchFirewallRule {
       OperationFuture<Operation, Operation> operation = firewallsClient.patchAsync(
           patchFirewallRequest);
       operation.get(3, TimeUnit.MINUTES);
-      ;
       System.out.println("Firewall Patch applied successfully ! ");
     }
   }

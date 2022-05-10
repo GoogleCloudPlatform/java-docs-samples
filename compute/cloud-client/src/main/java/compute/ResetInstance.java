@@ -62,7 +62,6 @@ public class ResetInstance {
       OperationFuture<Operation, Operation> operation = instancesClient.resetAsync(
           resetInstanceRequest);
       Operation response = operation.get(3, TimeUnit.MINUTES);
-      ;
 
       if (response.getStatus() == Status.DONE) {
         System.out.println("Instance reset successfully ! ");

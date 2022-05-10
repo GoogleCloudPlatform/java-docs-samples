@@ -81,7 +81,6 @@ public class CreateFirewallRule {
           .setProject(project).build();
 
       firewallsClient.insertAsync(insertFirewallRequest).get(3, TimeUnit.MINUTES);
-      ;
 
       System.out.println("Firewall rule created successfully -> " + firewallRuleName);
     }

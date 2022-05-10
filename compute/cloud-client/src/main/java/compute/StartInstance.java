@@ -64,7 +64,6 @@ public class StartInstance {
 
       // Wait for the operation to complete.
       Operation response = operation.get(3, TimeUnit.MINUTES);
-      ;
 
       if (response.getStatus() == Status.DONE) {
         System.out.println("Instance started successfully ! ");

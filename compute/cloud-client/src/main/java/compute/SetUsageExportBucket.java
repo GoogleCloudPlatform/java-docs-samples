@@ -91,7 +91,6 @@ public class SetUsageExportBucket {
 
       // Wait for the operation to complete.
       Operation response = operation.get(3, TimeUnit.MINUTES);
-      ;
 
       if (response.hasError()) {
         System.out.println("Setting usage export bucket failed ! ! " + response);
@@ -169,7 +168,7 @@ public class SetUsageExportBucket {
       }
 
       // Wait for the settings to be effected.
-      TimeUnit.SECONDS.sleep(5);
+      TimeUnit.SECONDS.sleep(10);
       // Return false if the usage reports is disabled.
       return projectsClient.get(project).getUsageExportLocation().hasBucketName();
     }

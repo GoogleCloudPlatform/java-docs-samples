@@ -62,7 +62,6 @@ public class StopInstance {
       OperationFuture<Operation, Operation> operation = instancesClient.stopAsync(
           stopInstanceRequest);
       Operation response = operation.get(3, TimeUnit.MINUTES);
-      ;
 
       if (response.getStatus() == Status.DONE) {
         System.out.println("Instance stopped successfully ! ");

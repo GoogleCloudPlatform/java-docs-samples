@@ -89,7 +89,6 @@ public class CreateInstanceTemplate {
       // Create the Instance Template.
       Operation response = instanceTemplatesClient.insertAsync(insertInstanceTemplateRequest)
           .get(3, TimeUnit.MINUTES);
-      ;
 
       if (response.hasError()) {
         System.out.println("Instance Template creation failed ! ! " + response);
@@ -128,7 +127,6 @@ public class CreateInstanceTemplate {
 
       Operation response = instanceTemplatesClient.insertAsync(insertInstanceTemplateRequest)
           .get(3, TimeUnit.MINUTES);
-      ;
 
       if (response.hasError()) {
         System.out.println("Instance Template creation failed ! ! " + response);

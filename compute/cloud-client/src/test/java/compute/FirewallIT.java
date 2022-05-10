@@ -93,8 +93,9 @@ public class FirewallIT {
     System.setOut(out);
   }
 
-  public static boolean isFirewallRuleDeletedByGceEnforcer(String projectId,
-      String firewallRule) throws IOException, ExecutionException, InterruptedException {
+  public static boolean isFirewallRuleDeletedByGceEnforcer(
+      String projectId, String firewallRule)
+      throws IOException {
     /* (**INTERNAL method**)
       This method will prevent test failure if the firewall rule was auto-deleted by GCE Enforcer.
       (Feel free to remove this method if not running on a Google-owned project.)
@@ -102,7 +103,7 @@ public class FirewallIT {
     try {
       GetFirewallRule.getFirewallRule(projectId, firewallRule);
     } catch (NotFoundException e) {
-      System.out.println("Rule already deleted ! ");
+      System.out.println("Rule already deleted! ");
       return true;
     } catch (InvalidArgumentException | NullPointerException e) {
       System.out.println("Rule is not ready (probably being deleted).");

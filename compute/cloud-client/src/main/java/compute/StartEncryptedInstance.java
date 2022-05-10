@@ -97,7 +97,6 @@ public class StartEncryptedInstance {
       OperationFuture<Operation, Operation> operation = instancesClient.startWithEncryptionKeyAsync(
           encryptionKeyInstanceRequest);
       Operation response = operation.get(3, TimeUnit.MINUTES);
-      ;
 
       if (response.getStatus() == Status.DONE) {
         System.out.println("Encrypted instance started successfully ! ");

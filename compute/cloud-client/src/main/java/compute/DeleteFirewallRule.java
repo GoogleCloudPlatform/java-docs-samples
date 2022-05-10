@@ -52,7 +52,6 @@ public class DeleteFirewallRule {
       OperationFuture<Operation, Operation> operation = firewallsClient.deleteAsync(project,
           firewallRuleName);
       operation.get(3, TimeUnit.MINUTES);
-      ;
 
       System.out.println("Deleted firewall rule -> " + firewallRuleName);
     }

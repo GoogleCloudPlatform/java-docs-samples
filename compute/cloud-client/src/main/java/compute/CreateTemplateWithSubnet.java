@@ -90,7 +90,6 @@ public class CreateTemplateWithSubnet {
 
       Operation operation = instanceTemplatesClient.insertCallable()
           .futureCall(insertInstanceTemplateRequest).get(3, TimeUnit.MINUTES);
-      ;
 
       Operation response = globalOperationsClient.wait(projectId, operation.getName());
 

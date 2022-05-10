@@ -65,7 +65,6 @@ public class CreateInstanceFromTemplate {
 
       Operation response = instancesClient.insertAsync(insertInstanceRequest)
           .get(3, TimeUnit.MINUTES);
-      ;
 
       if (response.hasError()) {
         System.out.println("Instance creation from template failed ! ! " + response);

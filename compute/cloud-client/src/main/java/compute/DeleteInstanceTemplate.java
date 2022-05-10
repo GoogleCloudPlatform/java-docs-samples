@@ -48,7 +48,6 @@ public class DeleteInstanceTemplate {
 
       Operation response = instanceTemplatesClient.deleteAsync(deleteInstanceTemplateRequest)
           .get(3, TimeUnit.MINUTES);
-      ;
 
       if (response.hasError()) {
         System.out.println("Instance template deletion failed ! ! " + response);

@@ -60,7 +60,6 @@ public class DeleteInstance {
           deleteInstanceRequest);
       // Wait for the operation to complete.
       Operation response = operation.get(3, TimeUnit.MINUTES);
-      ;
 
       if (response.hasError()) {
         System.out.println("Instance deletion failed ! ! " + response);
