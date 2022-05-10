@@ -27,12 +27,16 @@ import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
 import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.IntStream;
 
 public class Util {
   // Cleans existing test resources if any.
@@ -109,6 +113,26 @@ public class Util {
               .build();
 
       return instanceTemplatesClient.list(listInstanceTemplatesRequest);
+    }
+  }
+
+  public static String getBase64EncodedKey() {
+    String sampleSpace = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    StringBuilder stringBuilder = new StringBuilder();
+    SecureRandom random = new SecureRandom();
+    IntStream.range(0, 32)
+        .forEach(
+            x -> stringBuilder.append(sampleSpace.charAt(random.nextInt(sampleSpace.length()))));
+
+    return Base64.getEncoder()
+        .encodeToString(stringBuilder.toString().getBytes(StandardCharsets.US_ASCII));
+  }
+
+  public static String getInstanceStatus(String project, String zone, String instanceName)
+      throws IOException {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+      Instance response = instancesClient.get(project, zone, instanceName);
+      return response.getStatus();
     }
   }
 

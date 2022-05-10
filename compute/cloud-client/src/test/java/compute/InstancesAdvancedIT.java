@@ -23,9 +23,7 @@ import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Image;
 import com.google.cloud.compute.v1.ImagesClient;
-import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
-import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
@@ -220,12 +218,6 @@ public class InstancesAdvancedIT {
     }
   }
 
-  public static String getInstanceStatus(String instanceName) throws IOException {
-    try (InstancesClient instancesClient = InstancesClient.create()) {
-      Instance response = instancesClient.get(PROJECT_ID, ZONE, instanceName);
-      return response.getStatus();
-    }
-  }
 
   @BeforeEach
   public void beforeEach() {
@@ -242,42 +234,42 @@ public class InstancesAdvancedIT {
   @Test
   public void testCreatePublicImage() throws IOException {
     // Check if the instance was successfully created during the setup.
-    String response = getInstanceStatus(MACHINE_NAME_PUBLIC_IMAGE);
+    String response = Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_PUBLIC_IMAGE);
     Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
   public void testCreateCustomImage() throws IOException {
     // Check if the instance was successfully created during the setup.
-    String response = getInstanceStatus(MACHINE_NAME_CUSTOM_IMAGE);
+    String response = Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_CUSTOM_IMAGE);
     Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
   public void testCreateAdditionalDisk() throws IOException {
     // Check if the instance was successfully created during the setup.
-    String response = getInstanceStatus(MACHINE_NAME_ADDITIONAL_DISK);
+    String response = Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_ADDITIONAL_DISK);
     Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
   public void testCreateFromSnapshot() throws IOException {
     // Check if the instance was successfully created during the setup.
-    String response = getInstanceStatus(MACHINE_NAME_SNAPSHOT);
+    String response = Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_SNAPSHOT);
     Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
   public void testCreateFromSnapshotAdditional() throws IOException {
     // Check if the instance was successfully created during the setup.
-    String response = getInstanceStatus(MACHINE_NAME_SNAPSHOT_ADDITIONAL);
+    String response = Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_SNAPSHOT_ADDITIONAL);
     Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
   @Test
   public void testCreateInSubnetwork() throws IOException {
     // Check if the instance was successfully created during the setup.
-    String response = getInstanceStatus(MACHINE_NAME_SUBNETWORK);
+    String response = Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_SUBNETWORK);
     Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
