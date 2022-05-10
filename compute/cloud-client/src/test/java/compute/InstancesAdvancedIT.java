@@ -95,7 +95,7 @@ public class InstancesAdvancedIT {
     TEST_SNAPSHOT = createSnapshot(TEST_DISK);
     TEST_IMAGE = createImage(TEST_DISK);
 
-    // Util.cleanUpExistingInstances("test-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance", PROJECT_ID, ZONE);
 
     compute.CreateInstancesAdvanced.createFromPublicImage(PROJECT_ID, ZONE,
         MACHINE_NAME_PUBLIC_IMAGE);
