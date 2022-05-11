@@ -97,7 +97,7 @@
           locally. Use the following terminal command to run a
           given function locally:
 
-          mvn function:run -Drun.functionTarget=your.package.yourFunction
+          mvn function:run -Drun.functionTarget=functions.ImageMagick
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
