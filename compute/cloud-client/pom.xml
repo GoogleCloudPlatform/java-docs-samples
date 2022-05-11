@@ -113,6 +113,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M6</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit47</artifactId>
+            <version>3.0.0-M6</version>
+          </dependency>
+        </dependencies>
         <configuration>
           <!-- run both classes and methods in parallel -->
           <parallel>all</parallel>
