@@ -168,7 +168,7 @@ public class SetUsageExportBucket {
       }
 
       // Wait for the settings to be effected.
-      TimeUnit.SECONDS.sleep(10);
+      TimeUnit.SECONDS.sleep(15);
       // Return false if the usage reports is disabled.
       return projectsClient.get(project).getUsageExportLocation().hasBucketName();
     }
