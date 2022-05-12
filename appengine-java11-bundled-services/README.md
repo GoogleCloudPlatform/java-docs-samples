@@ -39,15 +39,26 @@ access control, billing, and services.
 
 ## Development differences between App Engine Java8 and Java11 Bundled Services
 
-The only difference between a Java8 application and a Java11 application is in the `appengine-web.xml` file
+The only differences between a Java8 application and a Java11 application are the addition of the bundled services JAR, and an added line in the `appengine-web.xml` file
 where you need to define the Java11 runtime and declare you need the App Engine APIs:
 
+In `appengine-web.xml`:
 ```XML
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
     <runtime>java11</runtime>
     <app-engine-apis>true</app-engine-apis>
 </appengine-web-app>
 ```
+
+In your `pom.xml`'s `<dependencies>`:
+```XML
+<dependency>
+    <groupId>com.google.appengine</groupId>
+    <artifactId>appengine-api-1.0-sdk</artifactId>
+    <version>2.0.4</version> <!-- or later-->
+</dependency>
+```
+
 
 ```shell
  mvn appengine:deploy
