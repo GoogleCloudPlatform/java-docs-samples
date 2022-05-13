@@ -25,11 +25,13 @@ import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreateWindowsServerInstanceInternalIp {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // projectId - ID or number of the project you want to use.
     String projectId = "your-google-cloud-project-id";
@@ -57,7 +59,7 @@ public class CreateWindowsServerInstanceInternalIp {
   // Creates a new Windows Server instance that has only an internal IP address.
   public static void createWindowsServerInstanceInternalIp(String projectId, String zone,
       String instanceName, String networkLink, String subnetworkLink)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     // machineType - Machine type you want to create in following format:
     //  *    "zones/{zone}/machineTypes/{type_name}". For example:
@@ -116,7 +118,8 @@ public class CreateWindowsServerInstanceInternalIp {
           .build();
 
       // Wait for the operation to complete.
-      Operation operation = instancesClient.insertAsync(request).get();
+      Operation operation = instancesClient.insertAsync(request).get(3, TimeUnit.MINUTES);
+      ;
 
       if (operation.hasError()) {
         System.out.printf("Error in creating instance %s", operation.getError());

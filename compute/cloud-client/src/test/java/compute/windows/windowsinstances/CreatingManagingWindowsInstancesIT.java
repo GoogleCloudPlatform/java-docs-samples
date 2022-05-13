@@ -26,14 +26,18 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
+@Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class CreatingManagingWindowsInstancesIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -54,7 +58,8 @@ public class CreatingManagingWindowsInstancesIT {
   }
 
   @BeforeAll
-  public static void setup() throws IOException, ExecutionException, InterruptedException {
+  public static void setup()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
@@ -77,9 +82,10 @@ public class CreatingManagingWindowsInstancesIT {
     System.setOut(out);
   }
 
-  public static void deleteRoute() throws IOException, ExecutionException, InterruptedException {
+  public static void deleteRoute()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (RoutesClient routesClient = RoutesClient.create()) {
-      routesClient.deleteAsync(PROJECT_ID, ROUTE_NAME).get();
+      routesClient.deleteAsync(PROJECT_ID, ROUTE_NAME).get(3, TimeUnit.MINUTES);
     }
   }
 
@@ -97,7 +103,7 @@ public class CreatingManagingWindowsInstancesIT {
 
   @Test
   public void testCreateWindowsServerInstanceExternalIp()
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Create Windows server instance with external IP.
     CreateWindowsServerInstanceExternalIp.createWindowsServerInstanceExternalIp(PROJECT_ID, ZONE,
         INSTANCE_NAME_EXTERNAL);
@@ -109,7 +115,7 @@ public class CreatingManagingWindowsInstancesIT {
 
   @Test
   public void testCreateWindowsServerInstanceInternalIp()
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Create Windows server instance with internal IP and firewall rule.
     CreateWindowsServerInstanceInternalIp.createWindowsServerInstanceInternalIp(PROJECT_ID, ZONE,
         INSTANCE_NAME_INTERNAL, NETWORK_NAME, SUBNETWORK_NAME);

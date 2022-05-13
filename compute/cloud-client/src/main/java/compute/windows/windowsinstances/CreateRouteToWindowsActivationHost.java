@@ -22,11 +22,13 @@ import com.google.cloud.compute.v1.Route;
 import com.google.cloud.compute.v1.RoutesClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreateRouteToWindowsActivationHost {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // projectId - ID or number of the project you want to use.
     String projectId = "your-google-cloud-project-id";
@@ -45,7 +47,7 @@ public class CreateRouteToWindowsActivationHost {
   // Creates a new route to kms.windows.googlecloud.com (35.190.247.13) for Windows activation.
   public static void createRouteToWindowsActivationHost(String projectId, String routeName,
       String networkName)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Instantiates a client.
     try (RoutesClient routesClient = RoutesClient.create()) {
 
@@ -68,7 +70,8 @@ public class CreateRouteToWindowsActivationHost {
           .build();
 
       // Wait for the operation to complete.
-      Operation operation = routesClient.insertAsync(request).get();
+      Operation operation = routesClient.insertAsync(request).get(3, TimeUnit.MINUTES);
+      ;
 
       if (operation.hasError()) {
         System.out.printf("Error in creating route %s", operation.getError());
