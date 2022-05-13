@@ -38,11 +38,11 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -56,7 +56,6 @@ public class WindowsOsImageIT {
   private static String DISK_NAME;
   private static String IMAGE_NAME;
   @Rule
-  public ExpectedException expectedException = ExpectedException.none();
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
@@ -157,10 +156,11 @@ public class WindowsOsImageIT {
   @Test
   public void testCreateWindowsImage_failDueToRunningInstance()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    expectedException.expect(IllegalStateException.class);
-    expectedException.expectMessage(String.format("Instance %s should be stopped.", INSTANCE_NAME));
-    CreateWindowsOsImage.createWindowsOsImage(
-        PROJECT_ID, ZONE, DISK_NAME, IMAGE_NAME, "eu", false);
+    Assertions.assertThrows(
+        IllegalStateException.class,
+        () -> CreateWindowsOsImage.createWindowsOsImage(PROJECT_ID, ZONE, DISK_NAME, IMAGE_NAME,
+            "eu", false),
+        String.format("Instance %s should be stopped.", INSTANCE_NAME));
   }
 
 
