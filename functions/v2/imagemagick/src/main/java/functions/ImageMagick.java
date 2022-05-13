@@ -16,7 +16,7 @@
 
 package functions;
 
-// [START cloudfunctions_imagemagick_setup]
+// [START functions_imagemagick_setup]
 
 import com.google.cloud.functions.CloudEventsFunction;
 import com.google.cloud.storage.Blob;
@@ -50,9 +50,9 @@ public class ImageMagick implements CloudEventsFunction {
   private static Storage storage = StorageOptions.getDefaultInstance().getService();
   private static final String BLURRED_BUCKET_NAME = System.getenv("BLURRED_BUCKET_NAME");
   private static final Logger logger = Logger.getLogger(ImageMagick.class.getName());
-  // [END cloudfunctions_imagemagick_setup]
+  // [END functions_imagemagick_setup]
 
-  // [START cloudfunctions_imagemagick_analyze]
+  // [START functions_imagemagick_analyze]
   @Override
   // Blurs uploaded images that are flagged as Adult or Violence.
   public void accept(CloudEvent event) {
@@ -100,9 +100,9 @@ public class ImageMagick implements CloudEventsFunction {
       logger.log(Level.SEVERE, "Error with Vision API: " + e.getMessage(), e);
     }
   }
-  // [END cloudfunctions_imagemagick_analyze]
+  // [END functions_imagemagick_analyze]
 
-  // [START cloudfunctions_imagemagick_blur]
+  // [START functions_imagemagick_blur]
   // Blurs the file described by blobInfo using ImageMagick,
   // and uploads it to the blurred bucket.
   private static void blur(BlobInfo blobInfo) throws IOException {
@@ -139,7 +139,7 @@ public class ImageMagick implements CloudEventsFunction {
     Files.delete(download);
     Files.delete(upload);
   }
-  // [END cloudfunctions_imagemagick_blur]
+  // [END functions_imagemagick_blur]
 
   // Converts CloudEvent data payload to a GcsEvent
   private static GcsEvent getEventData(CloudEvent event) {
@@ -151,6 +151,6 @@ public class ImageMagick implements CloudEventsFunction {
     }
     return new GcsEvent();
   }
-  // [START cloudfunctions_imagemagick_setup]
+  // [START functions_imagemagick_setup]
 }
-// [END cloudfunctions_imagemagick_setup]
+// [END functions_imagemagick_setup]
