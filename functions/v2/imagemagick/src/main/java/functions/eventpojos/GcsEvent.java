@@ -19,7 +19,7 @@ package functions.eventpojos;
 import java.io.Serializable;
 import java.util.Date;
 
-// [START cloudfunctions_helloworld_gcs_event]
+// [START functions_helloworld_gcs_event]
 public class GcsEvent implements Serializable {
   // Cloud Functions uses GSON to populate this object.
   // Field types/names are specified by Cloud Functions
@@ -70,4 +70,4 @@ public class GcsEvent implements Serializable {
     this.updated = updated;
   }
 }
-// [END cloudfunctions_helloworld_gcs_event]
+// [END functions_helloworld_gcs_event]
