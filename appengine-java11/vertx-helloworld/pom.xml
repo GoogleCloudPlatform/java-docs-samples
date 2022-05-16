@@ -41,17 +41,17 @@ limitations under the License.
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
-      <version>4.2.7</version>
+      <version>4.3.0</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web</artifactId>
-      <version>4.2.7</version>
+      <version>4.3.0</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web-client</artifactId>
-      <version>4.2.7</version>
+      <version>4.3.0</version>
     </dependency>
 
     <dependency>
@@ -68,7 +68,7 @@ limitations under the License.
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-unit</artifactId>
-      <version>4.2.7</version>
+      <version>4.3.0</version>
     </dependency>
   </dependencies>
   <build>
