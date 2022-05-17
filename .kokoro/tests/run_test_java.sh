@@ -38,8 +38,8 @@ if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
     exit 0
 fi
 
-if [[ "$file" == *"run/hello-broken/"* ]]; then
-    echo -e "\n Skipping tests: Java version ($POM_JAVA) not required ($JAVA_VERSION)\n"
+if [[ $JAVA_VERSION == "17" ]] && [[ "$file" == *"run/hello-broken/"* ]] || [[ "$file" == *"run/filesystem/"* ]]; then
+    echo -e "\n Skipping tests: Sample ($file) tests do not work with Java 17\n"
     exit 0
 fi
 
