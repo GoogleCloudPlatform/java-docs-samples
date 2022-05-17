@@ -38,6 +38,11 @@ if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
     exit 0
 fi
 
+if [[ "$file" == *"run/hello-broken/"* ]]; then
+    echo -e "\n Skipping tests: Java version ($POM_JAVA) not required ($JAVA_VERSION)\n"
+    exit 0
+fi
+
 # Build and deploy Cloud Functions hello-world samples
 # (Some of these samples have E2E tests that use deployed functions.)
 if [[ "$file" == *"functions/helloworld/"* ]]; then

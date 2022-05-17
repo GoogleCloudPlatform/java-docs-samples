@@ -60,9 +60,9 @@ limitations under the License.
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M5</version>
         <configuration>
-          <forkCount>3</forkCount>
-          <reuseForks>true</reuseForks>
-          <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+          <!-- Needed only for Java 17 -->
+          <forkCount>0</forkCount>
+          <argLine>-Xmx1024m</argLine>
           <argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
         </configuration>
       </plugin>
