@@ -40,7 +40,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>2.0.4</version>
+      <version>2.0.5</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -78,19 +78,19 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>2.0.4</version>
+      <version>2.0.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>2.0.4</version>
+      <version>2.0.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>2.0.4</version>
+      <version>2.0.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>

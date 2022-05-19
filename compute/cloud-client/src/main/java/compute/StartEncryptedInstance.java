@@ -30,11 +30,13 @@ import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.StartWithEncryptionKeyInstanceRequest;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class StartEncryptedInstance {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     /* project: project ID or project number of the Cloud project your instance belongs to.
        zone: name of the zone your instance belongs to.
@@ -54,7 +56,7 @@ public class StartEncryptedInstance {
   // Starts a stopped Google Compute Engine instance (with encrypted disks).
   public static void startEncryptedInstance(String project, String zone, String instanceName,
       String key)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     /* Initialize client that will be used to send requests. This client only needs to be created
        once, and can be reused for multiple requests. After completing all of your requests, call
        the `instancesClient.close()` method on the client to safely
@@ -94,7 +96,7 @@ public class StartEncryptedInstance {
 
       OperationFuture<Operation, Operation> operation = instancesClient.startWithEncryptionKeyAsync(
           encryptionKeyInstanceRequest);
-      Operation response = operation.get();
+      Operation response = operation.get(3, TimeUnit.MINUTES);
 
       if (response.getStatus() == Status.DONE) {
         System.out.println("Encrypted instance started successfully ! ");
