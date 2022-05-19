@@ -27,11 +27,13 @@ import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreateInstanceWithCustomHostname {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // hostName: Custom hostname of the new VM instance.
     // *    Custom hostnames must conform to RFC 1035 requirements for valid hostnames.
@@ -45,7 +47,7 @@ public class CreateInstanceWithCustomHostname {
   // Creates an instance with custom hostname.
   public static void createInstanceWithCustomHostname(String projectId, String zone,
       String instanceName, String hostName)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     //  machineType - Machine type for the VM instance specified in the following format:
     //  *    "zones/{zone}/machineTypes/{type_name}". For example:
     //  *    "zones/europe-west3-c/machineTypes/f1-micro"
@@ -101,7 +103,8 @@ public class CreateInstanceWithCustomHostname {
           .setInstanceResource(instanceResource).build();
 
       // Wait for the create operation to complete.
-      Operation response = instancesClient.insertAsync(request).get();
+      Operation response = instancesClient.insertAsync(request).get(3, TimeUnit.MINUTES);
+      ;
 
       if (response.hasError()) {
         System.out.printf("Instance creation failed for instance: %s ; Response: %s ! ! ",

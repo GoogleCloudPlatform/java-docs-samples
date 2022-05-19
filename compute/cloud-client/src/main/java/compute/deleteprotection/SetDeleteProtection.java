@@ -22,11 +22,13 @@ import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.SetDeletionProtectionInstanceRequest;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class SetDeleteProtection {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // project: project ID or project number of the Cloud project you want to use.
     // zone: name of the zone you want to use. For example: “us-west3-b”
@@ -43,7 +45,7 @@ public class SetDeleteProtection {
   // Updates the "Delete Protection" setting of given instance.
   public static void setDeleteProtection(String projectId, String zone,
       String instanceName, boolean deleteProtection)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     try (InstancesClient instancesClient = InstancesClient.create()) {
 
@@ -55,7 +57,8 @@ public class SetDeleteProtection {
               .setDeletionProtection(deleteProtection)
               .build();
 
-      instancesClient.setDeletionProtectionAsync(request).get();
+      instancesClient.setDeletionProtectionAsync(request).get(3, TimeUnit.MINUTES);
+      ;
       // Retrieve the updated setting from the instance.
       System.out.printf("Updated Delete Protection setting: %s",
           instancesClient.get(projectId, zone, instanceName).getDeletionProtection());

@@ -50,13 +50,13 @@
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.41.7</version>
+      <version>1.41.8</version>
     </dependency>
 <!-- [START iam_java_dependency] -->
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-iam</artifactId>
-      <version>v1-rev20220428-1.32.1</version>
+      <version>v1-rev20220509-1.32.1</version>
     </dependency>
 <!-- [END iam_java_dependency] -->
 <!-- [END iam_java_quickstart_dependency] -->
