@@ -24,8 +24,6 @@ import com.google.api.gax.rpc.NotFoundException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -63,6 +61,9 @@ public class DeleteInputTest {
   @Before
   public void beforeTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Clean up old inputs in the test project.
+    TestUtils.cleanStaleInputs(PROJECT_ID, LOCATION);
+
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
@@ -79,7 +80,6 @@ public class DeleteInputTest {
   @Test
   public void test_DeleteInput()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-
     DeleteInput.deleteInput(PROJECT_ID, LOCATION, INPUT_ID);
     String output = bout.toString();
     assertThat(output, containsString("Deleted input"));
@@ -88,33 +88,6 @@ public class DeleteInputTest {
 
   @After
   public void tearDown() throws IOException {
-
-    // Clean up old test inputs
-    ListInputs.listInputs(PROJECT_ID, LOCATION);
-    String output = bout.toString();
-    String[] lines = output.split("\\r?\\n");
-    List<String> inputIDs = new ArrayList<>();
-    for (String s : lines) {
-      if (s.contains("/")) {
-        String[] name = s.split("/");
-        inputIDs.add(String.valueOf(name[name.length - 1]));
-      }
-    }
-    bout.reset();
-
-    TestUtils tu = new TestUtils();
-    for (String id : inputIDs) {
-      if (tu.isInputStale(PROJECT_ID, LOCATION, id)) {
-        try {
-          DeleteInput.deleteInput(PROJECT_ID, LOCATION, id);
-        } catch (NotFoundException
-            | InterruptedException
-            | ExecutionException
-            | TimeoutException e) {
-          // The input may be attached to a channel. Handle this in the channel deletion code.
-        }
-      }
-    }
     System.setOut(originalOut);
     bout.reset();
   }

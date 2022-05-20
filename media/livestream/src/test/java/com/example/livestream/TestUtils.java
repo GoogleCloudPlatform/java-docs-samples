@@ -16,24 +16,46 @@
 
 package com.example.livestream;
 
+import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.video.livestream.v1.DeleteInputRequest;
 import com.google.cloud.video.livestream.v1.Input;
-import com.google.cloud.video.livestream.v1.InputName;
+import com.google.cloud.video.livestream.v1.ListInputsRequest;
 import com.google.cloud.video.livestream.v1.LivestreamServiceClient;
+import com.google.cloud.video.livestream.v1.LocationName;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class TestUtils {
 
   private static final int DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS = 10800; // 3 hours
 
-  public boolean isInputStale(String projectID, String location, String inputID)
-      throws IOException {
+  public static void cleanStaleInputs(String projectId, String location) {
     try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      InputName name = InputName.of(projectID, location, inputID);
-      Input response = livestreamServiceClient.getInput(name);
+      var listInputsRequest =
+          ListInputsRequest.newBuilder()
+              .setParent(LocationName.of(projectId, location).toString())
+              .build();
 
-      return response.getCreateTime().getSeconds()
-          < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS;
+      LivestreamServiceClient.ListInputsPagedResponse response =
+          livestreamServiceClient.listInputs(listInputsRequest);
+
+      for (Input input : response.iterateAll()) {
+        if (input.getCreateTime().getSeconds()
+            < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
+          var deleteInputRequest =
+              DeleteInputRequest.newBuilder()
+                  .setName(input.getName())
+                  .build();
+          livestreamServiceClient.deleteInputAsync(deleteInputRequest).get(1, TimeUnit.MINUTES);
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (NotFoundException | InterruptedException | ExecutionException | TimeoutException e) {
+      e.printStackTrace();
     }
   }
 }

@@ -38,9 +38,9 @@ import org.junit.runners.JUnit4;
 public class ListInputsTest {
 
   private static final String LOCATION = "us-central1";
-  private static String PROJECT_ID;
   private static final String INPUT_ID =
       "my-input-" + UUID.randomUUID().toString().substring(0, 25);
+  private static String PROJECT_ID;
   private static String INPUT_NAME;
   private static PrintStream originalOut;
   private ByteArrayOutputStream bout;
@@ -61,6 +61,9 @@ public class ListInputsTest {
   @Before
   public void beforeTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Clean up old inputs in the test project.
+    TestUtils.cleanStaleInputs(PROJECT_ID, LOCATION);
+
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
