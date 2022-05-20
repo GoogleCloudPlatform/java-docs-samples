@@ -18,12 +18,9 @@ package com.example.livestream;
 
 // [START livestream_delete_input]
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.video.livestream.v1.DeleteInputRequest;
 import com.google.cloud.video.livestream.v1.InputName;
 import com.google.cloud.video.livestream.v1.LivestreamServiceClient;
-import com.google.cloud.video.livestream.v1.OperationMetadata;
-import com.google.protobuf.Empty;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -43,16 +40,15 @@ public class DeleteInput {
   public static void deleteInput(String projectId, String location, String inputId)
       throws InterruptedException, ExecutionException, TimeoutException, IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
       var deleteInputRequest =
           DeleteInputRequest.newBuilder()
               .setName(InputName.of(projectId, location, inputId).toString())
               .build();
 
-      OperationFuture<Empty, OperationMetadata> call =
-          livestreamServiceClient.deleteInputAsync(deleteInputRequest);
-      call.get(1, TimeUnit.MINUTES);
+      livestreamServiceClient.deleteInputAsync(deleteInputRequest).get(1, TimeUnit.MINUTES);
       System.out.println("Deleted input");
     }
   }
