@@ -29,7 +29,6 @@ public class TestUtils {
   public boolean isInputStale(String projectID, String location, String inputID)
       throws IOException {
     try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-
       InputName name = InputName.of(projectID, location, inputID);
       Input response = livestreamServiceClient.getInput(name);
 
