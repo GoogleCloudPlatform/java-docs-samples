@@ -45,7 +45,6 @@ public class DeleteInput {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-
       var deleteInputRequest =
           DeleteInputRequest.newBuilder()
               .setName(InputName.of(projectId, location, inputId).toString())
