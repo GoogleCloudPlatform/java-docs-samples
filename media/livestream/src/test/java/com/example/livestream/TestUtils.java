@@ -19,9 +19,12 @@ package com.example.livestream;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.video.livestream.v1.Channel;
 import com.google.cloud.video.livestream.v1.DeleteChannelRequest;
+import com.google.cloud.video.livestream.v1.DeleteEventRequest;
 import com.google.cloud.video.livestream.v1.DeleteInputRequest;
+import com.google.cloud.video.livestream.v1.Event;
 import com.google.cloud.video.livestream.v1.Input;
 import com.google.cloud.video.livestream.v1.ListChannelsRequest;
+import com.google.cloud.video.livestream.v1.ListEventsRequest;
 import com.google.cloud.video.livestream.v1.ListInputsRequest;
 import com.google.cloud.video.livestream.v1.LivestreamServiceClient;
 import com.google.cloud.video.livestream.v1.LocationName;
@@ -77,7 +80,7 @@ public class TestUtils {
       for (Channel channel : response.iterateAll()) {
         if (channel.getCreateTime().getSeconds()
             < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
-
+          // Stop the channel
           try {
             livestreamServiceClient.stopChannelAsync(channel.getName()).get(1, TimeUnit.MINUTES);
           } catch (ExecutionException e) {
@@ -87,6 +90,20 @@ public class TestUtils {
             e.printStackTrace();
             continue;
           }
+          // Delete the channel events
+          var listEventsRequest =
+              ListEventsRequest.newBuilder().setParent(channel.getName()).build();
+
+          LivestreamServiceClient.ListEventsPagedResponse eventsResponse =
+              livestreamServiceClient.listEvents(listEventsRequest);
+
+          for (Event event : eventsResponse.iterateAll()) {
+            var deleteEventRequest =
+                DeleteEventRequest.newBuilder().setName(event.getName()).build();
+
+            livestreamServiceClient.deleteEvent(deleteEventRequest);
+          }
+          // Delete the channel
           var deleteChannelRequest =
               DeleteChannelRequest.newBuilder().setName(channel.getName()).build();
 
