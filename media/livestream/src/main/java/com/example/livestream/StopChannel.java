@@ -16,54 +16,36 @@
 
 package com.example.livestream;
 
-// [START livestream_update_input]
+// [START livestream_stop_channel]
 
-import com.google.cloud.video.livestream.v1.Input;
-import com.google.cloud.video.livestream.v1.InputName;
+import com.google.cloud.video.livestream.v1.ChannelName;
 import com.google.cloud.video.livestream.v1.LivestreamServiceClient;
-import com.google.cloud.video.livestream.v1.PreprocessingConfig;
-import com.google.cloud.video.livestream.v1.PreprocessingConfig.Crop;
-import com.google.cloud.video.livestream.v1.UpdateInputRequest;
-import com.google.protobuf.FieldMask;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class UpdateInput {
+public class StopChannel {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
-    String inputId = "my-input-id";
+    String channelId = "my-channel-id";
 
-    updateInput(projectId, location, inputId);
+    stopChannel(projectId, location, channelId);
   }
 
-  public static void updateInput(String projectId, String location, String inputId)
+  public static void stopChannel(String projectId, String location, String channelId)
       throws InterruptedException, ExecutionException, TimeoutException, IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      var updateInputRequest =
-          UpdateInputRequest.newBuilder()
-              .setInput(
-                  Input.newBuilder()
-                      .setName(InputName.of(projectId, location, inputId).toString())
-                      .setPreprocessingConfig(
-                          PreprocessingConfig.newBuilder()
-                              .setCrop(Crop.newBuilder().setTopPixels(5).setBottomPixels(5).build())
-                              .build())
-                      .build())
-              .setUpdateMask(FieldMask.newBuilder().addPaths("preprocessing_config").build())
-              .build();
-
-      Input result =
-          livestreamServiceClient.updateInputAsync(updateInputRequest).get(1, TimeUnit.MINUTES);
-      System.out.println("Updated input: " + result.getName());
+      ChannelName name = ChannelName.of(projectId, location, channelId);
+      livestreamServiceClient.stopChannelAsync(name).get(1, TimeUnit.MINUTES);
+      System.out.println("Stopped channel");
     }
   }
 }
-// [END livestream_update_input]
+// [END livestream_stop_channel]
