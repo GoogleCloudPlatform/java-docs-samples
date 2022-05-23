@@ -16,45 +16,42 @@
 
 package com.example.livestream;
 
-// [START livestream_create_input]
+// [START livestream_list_channels]
 
-import com.google.cloud.video.livestream.v1.CreateInputRequest;
-import com.google.cloud.video.livestream.v1.Input;
+import com.google.cloud.video.livestream.v1.Channel;
+import com.google.cloud.video.livestream.v1.ListChannelsRequest;
 import com.google.cloud.video.livestream.v1.LivestreamServiceClient;
 import com.google.cloud.video.livestream.v1.LocationName;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-public class CreateInput {
+public class ListChannels {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
-    String inputId = "my-input-id";
 
-    createInput(projectId, location, inputId);
+    listChannels(projectId, location);
   }
 
-  public static void createInput(String projectId, String location, String inputId)
-      throws InterruptedException, ExecutionException, TimeoutException, IOException {
+  public static void listChannels(String projectId, String location) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      var createInputRequest =
-          CreateInputRequest.newBuilder()
+      var listChannelsRequest =
+          ListChannelsRequest.newBuilder()
               .setParent(LocationName.of(projectId, location).toString())
-              .setInputId(inputId)
-              .setInput(Input.newBuilder().setType(Input.Type.RTMP_PUSH).build())
               .build();
 
-      Input result =
-          livestreamServiceClient.createInputAsync(createInputRequest).get(1, TimeUnit.MINUTES);
-      System.out.println("Input: " + result.getName());
+      LivestreamServiceClient.ListChannelsPagedResponse response =
+          livestreamServiceClient.listChannels(listChannelsRequest);
+      System.out.println("Channels:");
+
+      for (Channel channel : response.iterateAll()) {
+        System.out.println(channel.getName());
+      }
     }
   }
 }
-// [END livestream_create_input]
+// [END livestream_list_channels]

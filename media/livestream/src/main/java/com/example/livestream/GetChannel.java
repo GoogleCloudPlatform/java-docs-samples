@@ -16,45 +16,34 @@
 
 package com.example.livestream;
 
-// [START livestream_create_input]
+// [START livestream_get_channel]
 
-import com.google.cloud.video.livestream.v1.CreateInputRequest;
-import com.google.cloud.video.livestream.v1.Input;
+import com.google.cloud.video.livestream.v1.Channel;
+import com.google.cloud.video.livestream.v1.ChannelName;
 import com.google.cloud.video.livestream.v1.LivestreamServiceClient;
-import com.google.cloud.video.livestream.v1.LocationName;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-public class CreateInput {
+public class GetChannel {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
-    String inputId = "my-input-id";
+    String channelId = "my-channel-id";
 
-    createInput(projectId, location, inputId);
+    getChannel(projectId, location, channelId);
   }
 
-  public static void createInput(String projectId, String location, String inputId)
-      throws InterruptedException, ExecutionException, TimeoutException, IOException {
+  public static void getChannel(String projectId, String location, String channelId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      var createInputRequest =
-          CreateInputRequest.newBuilder()
-              .setParent(LocationName.of(projectId, location).toString())
-              .setInputId(inputId)
-              .setInput(Input.newBuilder().setType(Input.Type.RTMP_PUSH).build())
-              .build();
-
-      Input result =
-          livestreamServiceClient.createInputAsync(createInputRequest).get(1, TimeUnit.MINUTES);
-      System.out.println("Input: " + result.getName());
+      ChannelName name = ChannelName.of(projectId, location, channelId);
+      Channel response = livestreamServiceClient.getChannel(name);
+      System.out.println("Channel: " + response.getName());
     }
   }
 }
-// [END livestream_create_input]
+// [END livestream_get_channel]
