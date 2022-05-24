@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.cloud.bigtable.connect;
+package com.example.bigtable;
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import com.google.cloud.bigtable.hbase.BigtableOptionsFactory;
@@ -60,4 +60,8 @@ public class BigtableConnect {
     connection = ConnectionFactory.createConnection(config);
   }
   // [END bigtable_connect_with_configuration]
+
+  protected void closeConnection() throws IOException {
+    connection.close();
+  }
 }

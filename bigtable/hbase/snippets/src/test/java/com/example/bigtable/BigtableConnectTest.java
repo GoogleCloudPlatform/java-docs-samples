@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package com.example.cloud.bigtable.connect;
+package com.example.bigtable;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.io.IOException;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
@@ -36,6 +39,11 @@ public class BigtableConnectTest {
   public void prepare() throws Exception {
     helper = new BigtableConnect();
     helper.main(projectId, instanceId);
+  }
+
+  @After
+  public void tearDown() throws IOException {
+    helper.closeConnection();
   }
 
   @Test
