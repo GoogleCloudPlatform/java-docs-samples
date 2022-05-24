@@ -41,7 +41,7 @@ public class DeleteSlate {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
-      var deleteSlateRequest =
+      DeleteSlateRequest deleteSlateRequest =
           DeleteSlateRequest.newBuilder()
               .setName(SlateName.of(projectId, location, slateId).toString())
               .build();

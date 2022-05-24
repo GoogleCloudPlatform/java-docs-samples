@@ -42,7 +42,7 @@ public class GetSlate {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
-      var getSlateRequest =
+      GetSlateRequest getSlateRequest =
           GetSlateRequest.newBuilder()
               .setName(SlateName.of(projectId, location, slateId).toString())
               .build();

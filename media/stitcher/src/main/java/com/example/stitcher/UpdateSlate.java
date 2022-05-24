@@ -32,11 +32,13 @@ public class UpdateSlate {
     String projectId = "my-project-id";
     String location = "us-central1";
     String slateId = "my-slate-id";
-    String slateUri = "my-slate-uri"; // URI of an MP4 video with at least one audio track
+    String slateUri =
+        "https://my-slate-uri/test.mp4"; // URI of an MP4 video with at least one audio track
 
     updateSlate(projectId, location, slateId, slateUri);
   }
 
+  // updateSlate updates the slate URI for an existing slate.
   public static void updateSlate(String projectId, String location, String slateId, String slateUri)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -44,13 +46,15 @@ public class UpdateSlate {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
-      var updateSlateRequest =
+      UpdateSlateRequest updateSlateRequest =
           UpdateSlateRequest.newBuilder()
               .setSlate(
                   Slate.newBuilder()
                       .setName(SlateName.of(projectId, location, slateId).toString())
                       .setUri(slateUri)
                       .build())
+              // Set the update mask to the uri field in the existing slate. You must set the mask
+              // to the field you want to update.
               .setUpdateMask(FieldMask.newBuilder().addPaths("uri").build())
               .build();
 

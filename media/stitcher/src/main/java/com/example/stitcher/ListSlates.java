@@ -40,7 +40,7 @@ public class ListSlates {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
-      var listSlatesRequest =
+      ListSlatesRequest listSlatesRequest =
           ListSlatesRequest.newBuilder()
               .setParent(LocationName.of(projectId, location).toString())
               .build();

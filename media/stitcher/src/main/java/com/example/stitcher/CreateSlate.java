@@ -31,7 +31,8 @@ public class CreateSlate {
     String projectId = "my-project-id";
     String location = "us-central1";
     String slateId = "my-slate-id";
-    String slateUri = "my-slate-uri"; // URI of an MP4 video with at least one audio track
+    String slateUri =
+        "https://my-slate-uri/test.mp4"; // URI of an MP4 video with at least one audio track
 
     createSlate(projectId, location, slateId, slateUri);
   }
@@ -43,7 +44,7 @@ public class CreateSlate {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
-      var createSlateRequest =
+      CreateSlateRequest createSlateRequest =
           CreateSlateRequest.newBuilder()
               .setParent(LocationName.of(projectId, location).toString())
               .setSlateId(slateId)
@@ -51,7 +52,7 @@ public class CreateSlate {
               .build();
 
       Slate response = videoStitcherServiceClient.createSlate(createSlateRequest);
-      System.out.println("Slate: " + response.getName());
+      System.out.println("Created new slate: " + response.getName());
     }
   }
 }
