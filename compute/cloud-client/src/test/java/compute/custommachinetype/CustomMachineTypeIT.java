@@ -133,7 +133,7 @@ public class CustomMachineTypeIT {
     // Custom instance creation with helper.
     Instance instance = CreateWithHelper.createInstanceWithCustomMachineTypeWithHelper(PROJECT_ID,
         ZONE, CUSTOM_MACHINE_TYPE_INSTANCE_WITH_HELPER,
-        CreateWithHelper.CPUSeries.E2.getCpuSeries(), 4,
+        CreateWithHelper.CpuSeries.E2.getCpuSeries(), 4,
         8192);
     assertThat(stdOut.toString()).contains("Instance created");
     assertThat(instance.getName()).contains(CUSTOM_MACHINE_TYPE_INSTANCE_WITH_HELPER);
@@ -146,7 +146,7 @@ public class CustomMachineTypeIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Instance instance = CreateInstanceWithCustomSharedCore.createInstanceWithCustomSharedCore(
         PROJECT_ID, ZONE, CUSTOM_MACHINE_TYPE_INSTANCE_WITH_SHARED_CORE,
-        CreateInstanceWithCustomSharedCore.CPUSeries.E2_MICRO.getCpuSeries(), 2048);
+        CreateInstanceWithCustomSharedCore.CpuSeries.E2_MICRO.getCpuSeries(), 2048);
     assertThat(stdOut.toString()).contains("Instance created");
     assertThat(instance.getName()).contains(CUSTOM_MACHINE_TYPE_INSTANCE_WITH_SHARED_CORE);
     Assertions.assertTrue(instance.getMachineType()

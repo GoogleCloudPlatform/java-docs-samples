@@ -39,7 +39,7 @@ import java.util.stream.IntStream;
 
 public class CreateWithHelper {
 
-  public enum CPUSeries {
+  public enum CpuSeries {
     N1("custom"),
     N2("n2-custom"),
     N2D("n2d-custom"),
@@ -48,12 +48,12 @@ public class CreateWithHelper {
     E2_SMALL("e2-custom-small"),
     E2_MEDIUM("e2-custom-medium");
 
-    private static final Map<String, CreateInstanceWithCustomSharedCore.CPUSeries> ENUM_MAP;
+    private static final Map<String, CpuSeries> ENUM_MAP;
 
     // Build an immutable map of String name to enum pairs.
     static {
-      Map<String, CreateInstanceWithCustomSharedCore.CPUSeries> map = new ConcurrentHashMap<>();
-      for (CreateInstanceWithCustomSharedCore.CPUSeries instance : CreateInstanceWithCustomSharedCore.CPUSeries.values()) {
+      Map<String, CpuSeries> map = new ConcurrentHashMap<>();
+      for (CpuSeries instance : CpuSeries.values()) {
         map.put(instance.getCpuSeries(), instance);
       }
       ENUM_MAP = Collections.unmodifiableMap(map);
@@ -61,11 +61,11 @@ public class CreateWithHelper {
 
     private final String cpuSeries;
 
-    CPUSeries(String cpuSeries) {
+    CpuSeries(String cpuSeries) {
       this.cpuSeries = cpuSeries;
     }
 
-    public static CreateInstanceWithCustomSharedCore.CPUSeries get(String name) {
+    public static CpuSeries get(String name) {
       return ENUM_MAP.get(name);
     }
 
@@ -77,7 +77,9 @@ public class CreateWithHelper {
   static final class TypeLimits {
 
     int[] allowedCores;
-    int minMemPerCore, maxMemPerCore, extraMemoryLimit;
+    int minMemPerCore;
+    int maxMemPerCore;
+    int extraMemoryLimit;
     boolean allowExtraMemory;
 
     TypeLimits(int[] allowedCores, int minMemPerCore, int maxMemPerCore, boolean allowExtraMemory,
@@ -92,7 +94,7 @@ public class CreateWithHelper {
 
   // The limits for various CPU types are described on:
   // https://cloud.google.com/compute/docs/general-purpose-machines
-  enum LIMITS {
+  enum Limits {
     CPUSeries_E2(new TypeLimits(range(2, 33, 2), 512, 8192, false, 0)),
     CPUSeries_E2MICRO(new TypeLimits(new int[]{}, 1024, 2048, false, 0)),
     CPUSeries_E2SMALL(new TypeLimits(new int[]{}, 2048, 4096, false, 0)),
@@ -106,7 +108,7 @@ public class CreateWithHelper {
 
     private final TypeLimits typeLimits;
 
-    LIMITS(TypeLimits typeLimits) {
+    Limits(TypeLimits typeLimits) {
       this.typeLimits = typeLimits;
     }
 
@@ -115,14 +117,14 @@ public class CreateWithHelper {
     }
   }
 
-  static ImmutableMap<String, LIMITS> typeLimitsMap = ImmutableMap.<String, LIMITS>builder()
-      .put("N1", LIMITS.CPUSeries_N1)
-      .put("N2", LIMITS.CPUSeries_N2)
-      .put("N2D", LIMITS.CPUSeries_N2D)
-      .put("E2", LIMITS.CPUSeries_E2)
-      .put("E2_MICRO", LIMITS.CPUSeries_E2MICRO)
-      .put("E2_SMALL", LIMITS.CPUSeries_E2SMALL)
-      .put("E2_MEDIUM", LIMITS.CPUSeries_E2SMALL)
+  static ImmutableMap<String, Limits> typeLimitsMap = ImmutableMap.<String, Limits>builder()
+      .put("N1", Limits.CPUSeries_N1)
+      .put("N2", Limits.CPUSeries_N2)
+      .put("N2D", Limits.CPUSeries_N2D)
+      .put("E2", Limits.CPUSeries_E2)
+      .put("E2_MICRO", Limits.CPUSeries_E2MICRO)
+      .put("E2_SMALL", Limits.CPUSeries_E2SMALL)
+      .put("E2_MEDIUM", Limits.CPUSeries_E2SMALL)
       .build();
 
   static int[] range(int start, int stop, int step) {
@@ -159,16 +161,16 @@ public class CreateWithHelper {
         coreCount, memory);
   }
 
-  public static String customMachineTypeURI(String zone, String cpuSeries, int coreCount,
+  public static String customMachineTypeUri(String zone, String cpuSeries, int coreCount,
       int memory) {
 
-    if (!Arrays.asList(CPUSeries.E2.cpuSeries, CPUSeries.N1.cpuSeries, CPUSeries.N2.cpuSeries,
-        CPUSeries.N2D.cpuSeries).contains(cpuSeries)) {
+    if (!Arrays.asList(CpuSeries.E2.cpuSeries, CpuSeries.N1.cpuSeries, CpuSeries.N2.cpuSeries,
+        CpuSeries.N2D.cpuSeries).contains(cpuSeries)) {
       return String.format("Incorrect cpu type: %s", cpuSeries);
     }
 
     TypeLimits typeLimit = Objects.requireNonNull(
-        typeLimitsMap.get(CPUSeries.get(cpuSeries).name())).typeLimits;
+        typeLimitsMap.get(CpuSeries.get(cpuSeries).name())).typeLimits;
 
     // Check whether the requested parameters are allowed.
     // Find more information about limitations of custom machine types at:
@@ -207,8 +209,8 @@ public class CreateWithHelper {
     }
 
     // Return the custom machine type in form of a string acceptable by Compute Engine API.
-    if (Arrays.asList(CPUSeries.E2_SMALL.name(), CPUSeries.E2_MICRO.name(),
-        CPUSeries.E2_MEDIUM.name()).contains(cpuSeries)) {
+    if (Arrays.asList(CpuSeries.E2_SMALL.name(), CpuSeries.E2_MICRO.name(),
+        CpuSeries.E2_MEDIUM.name()).contains(cpuSeries)) {
       return String.format("zones/%s/machineTypes/%s-%s", zone, cpuSeries, memory);
     }
 
@@ -225,7 +227,7 @@ public class CreateWithHelper {
       String instanceName, String cpuSeries, int coreCount, int memory)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
-    String machineTypeResponse = customMachineTypeURI(zone, cpuSeries, coreCount, memory);
+    String machineTypeResponse = customMachineTypeUri(zone, cpuSeries, coreCount, memory);
     // Check for error string.
     if (!machineTypeResponse.startsWith("zones/")) {
       System.out.printf("Unable to create custom machine type string: %s%n", machineTypeResponse);

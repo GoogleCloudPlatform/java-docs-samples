@@ -66,16 +66,16 @@ public class UpdateMemory {
       Instance instance = instancesClient.get(getInstanceRequest);
 
       // Check the machine type.
-      if (!(instance.getMachineType().contains("machineTypes/n1-") || instance.getMachineType()
-          .contains("machineTypes/n2-") || instance.getMachineType()
-          .contains("machineTypes/n2d-"))) {
+      if (!(instance.getMachineType().contains("machineTypes/n1-")
+          || instance.getMachineType().contains("machineTypes/n2-")
+          || instance.getMachineType().contains("machineTypes/n2d-"))) {
         System.out.println("extra memory is available only for N1, N2 and N2D CPUs");
         return Instance.getDefaultInstance();
       }
 
       // Make sure that the machine is turned off.
-      if (!(instance.getStatus().equals(Status.TERMINATED.toString()) ||
-          instance.getStatus().equals(Status.STOPPED.toString()))) {
+      if (!(instance.getStatus().equals(Status.TERMINATED.toString())
+          || instance.getStatus().equals(Status.STOPPED.toString()))) {
 
         StopInstanceRequest stopInstanceRequest = StopInstanceRequest.newBuilder()
             .setProject(project)
@@ -98,14 +98,15 @@ public class UpdateMemory {
       String start = machineType.substring(0, machineType.lastIndexOf("-"));
 
       // Prepare the request.
-      SetMachineTypeInstanceRequest setMachineTypeInstanceRequest = SetMachineTypeInstanceRequest.newBuilder()
-          .setProject(project)
-          .setZone(zone)
-          .setInstance(instanceName)
-          .setInstancesSetMachineTypeRequestResource(InstancesSetMachineTypeRequest.newBuilder()
-              .setMachineType(String.format("%s-%d-ext", start, newMemory))
-              .build())
-          .build();
+      SetMachineTypeInstanceRequest setMachineTypeInstanceRequest =
+          SetMachineTypeInstanceRequest.newBuilder()
+              .setProject(project)
+              .setZone(zone)
+              .setInstance(instanceName)
+              .setInstancesSetMachineTypeRequestResource(InstancesSetMachineTypeRequest.newBuilder()
+                  .setMachineType(String.format("%s-%d-ext", start, newMemory))
+                  .build())
+              .build();
 
       // Wait for the operation to complete.
       Operation response = instancesClient.setMachineTypeAsync(setMachineTypeInstanceRequest)

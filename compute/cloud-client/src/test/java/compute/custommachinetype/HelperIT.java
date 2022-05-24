@@ -19,9 +19,9 @@ package compute.custommachinetype;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import compute.custommachinetype.HelperClass.CPUSeries;
+import compute.custommachinetype.HelperClass.CpuSeries;
 import compute.custommachinetype.HelperClass.CustomMachineType;
-import compute.custommachinetype.HelperClass.LIMITS;
+import compute.custommachinetype.HelperClass.Limits;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -89,8 +89,8 @@ public class HelperIT {
     CustomMachineType customMachineType = null;
 
     // N1
-    customMachineType = HelperClass.createCustomMachineType(ZONE, CPUSeries.N1.getCpuSeries(), 8192,
-        8, LIMITS.CPUSeries_N1.getTypeLimits());
+    customMachineType = HelperClass.createCustomMachineType(ZONE, CpuSeries.N1.getCpuSeries(), 8192,
+        8, Limits.CPUSeries_N1.getTypeLimits());
     assertWithMessage("Error in createCustomMachineType").that(stdOut.toString())
         .doesNotContain("Error in validation: null");
     Assertions.assertTrue(customMachineType.toString()
@@ -101,8 +101,8 @@ public class HelperIT {
     System.setOut(new PrintStream(stdOut));
 
     // N2
-    customMachineType = HelperClass.createCustomMachineType(ZONE, CPUSeries.N2.getCpuSeries(), 4096,
-        4, LIMITS.CPUSeries_N2.getTypeLimits());
+    customMachineType = HelperClass.createCustomMachineType(ZONE, CpuSeries.N2.getCpuSeries(), 4096,
+        4, Limits.CPUSeries_N2.getTypeLimits());
     assertWithMessage("Error in createCustomMachineType").that(stdOut.toString())
         .doesNotContain("Error in validation: null");
     Assertions.assertTrue(customMachineType.toString()
@@ -113,8 +113,8 @@ public class HelperIT {
     System.setOut(new PrintStream(stdOut));
 
     // N2D
-    customMachineType = HelperClass.createCustomMachineType(ZONE, CPUSeries.N2D.getCpuSeries(),
-        8192, 4, LIMITS.CPUSeries_N2D.getTypeLimits());
+    customMachineType = HelperClass.createCustomMachineType(ZONE, CpuSeries.N2D.getCpuSeries(),
+        8192, 4, Limits.CPUSeries_N2D.getTypeLimits());
     assertWithMessage("Error in createCustomMachineType").that(stdOut.toString())
         .doesNotContain("Error in validation: null");
     Assertions.assertTrue(customMachineType.toString()
@@ -125,8 +125,8 @@ public class HelperIT {
     System.setOut(new PrintStream(stdOut));
 
     // E2
-    customMachineType = HelperClass.createCustomMachineType(ZONE, CPUSeries.E2.getCpuSeries(), 8192,
-        8, LIMITS.CPUSeries_E2.getTypeLimits());
+    customMachineType = HelperClass.createCustomMachineType(ZONE, CpuSeries.E2.getCpuSeries(), 8192,
+        8, Limits.CPUSeries_E2.getTypeLimits());
     assertWithMessage("Error in createCustomMachineType").that(stdOut.toString())
         .doesNotContain("Error in validation: null");
     Assertions.assertTrue(customMachineType.toString()
@@ -137,8 +137,8 @@ public class HelperIT {
     System.setOut(new PrintStream(stdOut));
 
     // E2SMALL
-    customMachineType = HelperClass.createCustomMachineType(ZONE, CPUSeries.E2_SMALL.getCpuSeries(),
-        4096, 0, LIMITS.CPUSeries_E2SMALL.getTypeLimits());
+    customMachineType = HelperClass.createCustomMachineType(ZONE, CpuSeries.E2_SMALL.getCpuSeries(),
+        4096, 0, Limits.CPUSeries_E2SMALL.getTypeLimits());
     assertWithMessage("Error in createCustomMachineType").that(stdOut.toString())
         .doesNotContain("Error in validation: null");
     Assertions.assertTrue(customMachineType.toString()
@@ -149,8 +149,8 @@ public class HelperIT {
     System.setOut(new PrintStream(stdOut));
 
     // E2MICRO
-    customMachineType = HelperClass.createCustomMachineType(ZONE, CPUSeries.E2_MICRO.getCpuSeries(),
-        2048, 0, LIMITS.CPUSeries_E2MICRO.getTypeLimits());
+    customMachineType = HelperClass.createCustomMachineType(ZONE, CpuSeries.E2_MICRO.getCpuSeries(),
+        2048, 0, Limits.CPUSeries_E2MICRO.getTypeLimits());
     assertWithMessage("Error in createCustomMachineType").that(stdOut.toString())
         .doesNotContain("Error in validation: null");
     Assertions.assertTrue(customMachineType.toString()
@@ -162,7 +162,7 @@ public class HelperIT {
 
     // E2MEDIUM
     customMachineType = HelperClass.createCustomMachineType(ZONE,
-        CPUSeries.E2_MEDIUM.getCpuSeries(), 8192, 0, LIMITS.CPUSeries_E2MEDIUM.getTypeLimits());
+        CpuSeries.E2_MEDIUM.getCpuSeries(), 8192, 0, Limits.CPUSeries_E2MEDIUM.getTypeLimits());
     assertWithMessage("Error in createCustomMachineType").that(stdOut.toString())
         .doesNotContain("Error in validation: null");
     Assertions.assertTrue(customMachineType.toString()
@@ -174,8 +174,8 @@ public class HelperIT {
     System.setOut(new PrintStream(stdOut));
 
     // N2
-    customMachineType = HelperClass.createCustomMachineType(ZONE, CPUSeries.N2.getCpuSeries(),
-        638720, 8, LIMITS.CPUSeries_N2.getTypeLimits());
+    customMachineType = HelperClass.createCustomMachineType(ZONE, CpuSeries.N2.getCpuSeries(),
+        638720, 8, Limits.CPUSeries_N2.getTypeLimits());
     assertWithMessage("Error in createCustomMachineType").that(stdOut.toString())
         .doesNotContain("Error in validation: null");
     Assertions.assertTrue(customMachineType.toString()
@@ -187,17 +187,17 @@ public class HelperIT {
   @Test
   public void testCustomMachineTypeBad() {
     // bad memory 256
-    HelperClass.createCustomMachineType(ZONE, CPUSeries.N1.getCpuSeries(), 8194, 8,
-        LIMITS.CPUSeries_N1.getTypeLimits());
+    HelperClass.createCustomMachineType(ZONE, CpuSeries.N1.getCpuSeries(), 8194, 8,
+        Limits.CPUSeries_N1.getTypeLimits());
     assertThat(stdOut.toString()).contains("Requested memory must be a multiple of 256 MB");
 
     // wrong cpu count
-    HelperClass.createCustomMachineType(ZONE, CPUSeries.N2.getCpuSeries(), 8194, 66,
-        LIMITS.CPUSeries_N2.getTypeLimits());
+    HelperClass.createCustomMachineType(ZONE, CpuSeries.N2.getCpuSeries(), 8194, 66,
+        Limits.CPUSeries_N2.getTypeLimits());
     String expectedOutput = String.format(
         "Invalid number of cores requested. Allowed number of cores for %s is: %s",
-        CPUSeries.N2.getCpuSeries(),
-        Arrays.toString(LIMITS.CPUSeries_N2.getTypeLimits().allowedCores));
+        CpuSeries.N2.getCpuSeries(),
+        Arrays.toString(Limits.CPUSeries_N2.getTypeLimits().allowedCores));
     assertThat(stdOut.toString()).contains(expectedOutput);
   }
 

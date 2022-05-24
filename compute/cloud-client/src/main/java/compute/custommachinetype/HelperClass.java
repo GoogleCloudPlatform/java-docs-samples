@@ -30,7 +30,7 @@ public class HelperClass {
    * This class allows to create custom machine types to be used with the VM instances.
    */
 
-  public enum CPUSeries {
+  public enum CpuSeries {
     N1("custom"),
     N2("n2-custom"),
     N2D("n2d-custom"),
@@ -39,12 +39,12 @@ public class HelperClass {
     E2_SMALL("e2-custom-small"),
     E2_MEDIUM("e2-custom-medium");
 
-    private static final Map<String, CreateInstanceWithCustomSharedCore.CPUSeries> ENUM_MAP;
+    private static final Map<String, CpuSeries> ENUM_MAP;
 
     // Build an immutable map of String name to enum pairs.
     static {
-      Map<String, CreateInstanceWithCustomSharedCore.CPUSeries> map = new ConcurrentHashMap<>();
-      for (CreateInstanceWithCustomSharedCore.CPUSeries instance : CreateInstanceWithCustomSharedCore.CPUSeries.values()) {
+      Map<String, CpuSeries> map = new ConcurrentHashMap<>();
+      for (CpuSeries instance : CpuSeries.values()) {
         map.put(instance.name().toLowerCase(), instance);
       }
       ENUM_MAP = Collections.unmodifiableMap(map);
@@ -52,11 +52,11 @@ public class HelperClass {
 
     private final String cpuSeries;
 
-    CPUSeries(String cpuSeries) {
+    CpuSeries(String cpuSeries) {
       this.cpuSeries = cpuSeries;
     }
 
-    public static CreateInstanceWithCustomSharedCore.CPUSeries get(String name) {
+    public static CpuSeries get(String name) {
       return ENUM_MAP.get(name.toLowerCase());
     }
 
@@ -68,7 +68,9 @@ public class HelperClass {
   static final class TypeLimits {
 
     int[] allowedCores;
-    int minMemPerCore, maxMemPerCore, extraMemoryLimit;
+    int minMemPerCore;
+    int maxMemPerCore;
+    int extraMemoryLimit;
     boolean allowExtraMemory;
 
     TypeLimits(int[] allowedCores, int minMemPerCore, int maxMemPerCore, boolean allowExtraMemory,
@@ -83,7 +85,7 @@ public class HelperClass {
 
   // The limits for various CPU types are described on:
   // https://cloud.google.com/compute/docs/general-purpose-machines
-  enum LIMITS {
+  enum Limits {
     CPUSeries_E2(new TypeLimits(range(2, 33, 2), 512, 8192, false, 0)),
     CPUSeries_E2MICRO(new TypeLimits(new int[]{}, 1024, 2048, false, 0)),
     CPUSeries_E2SMALL(new TypeLimits(new int[]{}, 2048, 4096, false, 0)),
@@ -97,7 +99,7 @@ public class HelperClass {
 
     private final TypeLimits typeLimits;
 
-    LIMITS(TypeLimits typeLimits) {
+    Limits(TypeLimits typeLimits) {
       this.typeLimits = typeLimits;
     }
 
@@ -128,9 +130,9 @@ public class HelperClass {
     @Override
     public String toString() {
 
-      if (cpuSeries.equalsIgnoreCase(CPUSeries.E2_SMALL.cpuSeries) ||
-          cpuSeries.equalsIgnoreCase(CPUSeries.E2_MICRO.cpuSeries) ||
-          cpuSeries.equalsIgnoreCase(CPUSeries.E2_MEDIUM.cpuSeries)) {
+      if (cpuSeries.equalsIgnoreCase(CpuSeries.E2_SMALL.cpuSeries)
+          || cpuSeries.equalsIgnoreCase(CpuSeries.E2_MICRO.cpuSeries)
+          || cpuSeries.equalsIgnoreCase(CpuSeries.E2_MEDIUM.cpuSeries)) {
         return String.format("zones/%s/machineTypes/%s-%d", zone, cpuSeries, memory);
       }
 
@@ -206,8 +208,8 @@ public class HelperClass {
 
   // Return the custom machine type in form of a string acceptable by Compute Engine API.
   public static String returnCustomMachineTypeString(CustomMachineType cmt) {
-    if (Arrays.asList(CPUSeries.E2_SMALL.name(), CPUSeries.E2_MICRO.name(),
-        CPUSeries.E2_MEDIUM.name()).contains(cmt.cpuSeries)) {
+    if (Arrays.asList(CpuSeries.E2_SMALL.name(), CpuSeries.E2_MICRO.name(),
+        CpuSeries.E2_MEDIUM.name()).contains(cmt.cpuSeries)) {
       return String.format("zones/%s/machineTypes/%s-%s", cmt.zone, cmt.cpuSeries, cmt.memory);
     }
 
@@ -232,8 +234,8 @@ public class HelperClass {
   public static CustomMachineType createCustomMachineType(String zone, String cpuSeries, int memory,
       int coreCount,
       TypeLimits typeLimit) {
-    if (Arrays.asList(CPUSeries.E2_SMALL.name(), CPUSeries.E2_MICRO.name(),
-        CPUSeries.E2_MEDIUM.name()).contains(cpuSeries)) {
+    if (Arrays.asList(CpuSeries.E2_SMALL.name(), CpuSeries.E2_MICRO.name(),
+        CpuSeries.E2_MEDIUM.name()).contains(cpuSeries)) {
       coreCount = 2;
     }
 
