@@ -17,7 +17,6 @@
 package com.example.bigtable;
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
-import com.google.cloud.bigtable.hbase.BigtableOptionsFactory;
 import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -32,11 +31,11 @@ public class BigtableConnect {
   public static Connection connection = null;
 
   public static void main(String... args) {
-    projectId = args[0];  // my-gcp-project-id
+    projectId = args[0]; // my-gcp-project-id
     instanceId = args[1]; // my-bigtable-instance-id
 
     if (args.length > 2) {
-      appProfileId = args[2];    // my-bigtable-app-profile-id or default if not provided.
+      appProfileId = args[2]; // my-bigtable-app-profile-id or default if not provided.
     }
   }
 
