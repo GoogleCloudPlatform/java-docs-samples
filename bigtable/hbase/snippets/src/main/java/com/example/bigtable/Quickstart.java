@@ -16,10 +16,9 @@
 
 // [START bigtable_quickstart_hbase]
 
-package com.example.cloud.bigtable.quickstart;
+package com.example.bigtable;
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
-
 import java.io.IOException;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
@@ -29,16 +28,16 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 
 /**
- * A quickstart application that shows connecting to a Cloud Bigtable instance
- * using the native HBase API to read a row from a table.
+ * A quickstart application that shows connecting to a Cloud Bigtable instance using the native
+ * HBase API to read a row from a table.
  */
 public class Quickstart {
 
   public static void main(String... args) {
 
-    String projectId = args[0];  // my-gcp-project-id
+    String projectId = args[0]; // my-gcp-project-id
     String instanceId = args[1]; // my-bigtable-instance-id
-    String tableId = args[2];    // my-bigtable-table-id
+    String tableId = args[2]; // my-bigtable-table-id
 
     // Create a connection to the Cloud Bigtable instance.
     // Use try-with-resources to make sure the connection is closed correctly
@@ -51,8 +50,8 @@ public class Quickstart {
 
         // Read a row
         String rowKey = "r1";
-        System.out.printf("--- Reading for row-key: %s for provided table: %s ---\n",
-            rowKey, tableId);
+        System.out.printf(
+            "--- Reading for row-key: %s for provided table: %s ---\n", rowKey, tableId);
 
         // Retrieve the result
         Result result = table.get(new Get(Bytes.toBytes(rowKey)));
@@ -64,7 +63,7 @@ public class Quickstart {
 
         System.out.println(" --- Finished reading row --- ");
 
-      }  catch (IOException e) {
+      } catch (IOException e) {
         // handle exception while connecting to a table
         throw e;
       }

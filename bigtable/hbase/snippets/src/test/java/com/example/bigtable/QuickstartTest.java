@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
-package com.example.cloud.bigtable.quickstart.it;
+package com.example.bigtable;
 
 import static org.junit.Assert.assertTrue;
 
-import com.example.cloud.bigtable.quickstart.Quickstart;
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -38,22 +36,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Cloud Bigtable Quickstart integration tests
- */
+/** Cloud Bigtable Quickstart integration tests */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class QuickstartIT {
+public class QuickstartTest {
 
   // provide your project id as an env var
-  private final String projectId = System.getProperty("bigtable.test.projectID");
-  private final String instanceId = System.getProperty("bigtable.test.instanceID");
+  private final String projectId = System.getProperty("bigtable.projectID");
+  private final String instanceId = System.getProperty("bigtable.instanceID");
 
   private final String tableId = formatForTest("my-table");
   private final String columnFamilyName = "my-column-family";
   private final String columnName = "my-column";
   private final String data = "my-data";
-
 
   private String formatForTest(String name) {
     return name + "-" + UUID.randomUUID().toString().substring(0, 20);
@@ -72,8 +67,8 @@ public class QuickstartIT {
           String rowKey = "r1";
 
           Put put = new Put(Bytes.toBytes(rowKey));
-          put.addColumn(Bytes.toBytes(columnFamilyName), Bytes.toBytes(columnName),
-              Bytes.toBytes(data));
+          put.addColumn(
+              Bytes.toBytes(columnFamilyName), Bytes.toBytes(columnName), Bytes.toBytes(data));
           table.put(put);
         }
       }
