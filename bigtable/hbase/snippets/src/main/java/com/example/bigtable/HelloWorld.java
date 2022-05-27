@@ -1,27 +1,25 @@
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * <p>Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.cloud.bigtable.helloworld;
+package com.example.bigtable;
 
 // [START bigtable_hw_imports_hbase]
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
-
+import java.io.IOException;
+// [END bigtable_hw_imports_hbase]
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
@@ -34,9 +32,6 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
-
-import java.io.IOException;
-// [END bigtable_hw_imports_hbase]
 
 /**
  * A minimal application that connects to Cloud Bigtable using the native HBase API and performs
@@ -55,7 +50,7 @@ public class HelloWorld {
   };
 
   /** Connects to Cloud Bigtable, runs some basic operations and prints the results. */
-  private static void doHelloWorld(String projectId, String instanceId) {
+  protected static void doHelloWorld(String projectId, String instanceId) {
 
     // [START bigtable_hw_connect_hbase]
     // Create the Bigtable connection, use try-with-resources to make sure it gets closed
@@ -71,7 +66,7 @@ public class HelloWorld {
         HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(TABLE_NAME));
         descriptor.addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME));
 
-        print("Create table " + descriptor.getNameAsString());
+        System.out.println("HelloWorld: Create table " + descriptor.getNameAsString());
         admin.createTable(descriptor);
         // [END bigtable_hw_create_table_hbase]
 
@@ -80,7 +75,7 @@ public class HelloWorld {
         Table table = connection.getTable(TableName.valueOf(TABLE_NAME));
 
         // Write some rows to the table
-        print("Write some greetings to the table");
+        System.out.println("HelloWorld: Write some greetings to the table");
         for (int i = 0; i < GREETINGS.length; i++) {
           // Each row has a unique row key.
           //
@@ -115,7 +110,7 @@ public class HelloWorld {
         // Now scan across all rows.
         Scan scan = new Scan();
 
-        print("Scan for all greetings:");
+        System.out.println("HelloWorld: Scan for all greetings:");
         ResultScanner scanner = table.getScanner(scan);
         for (Result row : scanner) {
           byte[] valueBytes = row.getValue(COLUMN_FAMILY_NAME, COLUMN_NAME);
@@ -125,13 +120,13 @@ public class HelloWorld {
 
         // [START bigtable_hw_delete_table_hbase]
         // Clean up by disabling and then deleting the table
-        print("Delete the table");
+        System.out.println("HelloWorld: Delete the table");
         admin.disableTable(table.getName());
         admin.deleteTable(table.getName());
         // [END bigtable_hw_delete_table_hbase]
       } catch (IOException e) {
         if (admin.tableExists(TableName.valueOf(TABLE_NAME))) {
-          print("Cleaning up table");
+          System.out.println("HelloWorld: Cleaning up table");
           admin.disableTable(TableName.valueOf(TABLE_NAME));
           admin.deleteTable(TableName.valueOf(TABLE_NAME));
         }
@@ -140,15 +135,7 @@ public class HelloWorld {
     } catch (IOException e) {
       System.err.println("Exception while running HelloWorld: " + e.getMessage());
       e.printStackTrace();
-
-      System.exit(1);
     }
-
-    System.exit(0);
-  }
-
-  private static void print(String msg) {
-    System.out.println("HelloWorld: " + msg);
   }
 
   public static void main(String[] args) {
