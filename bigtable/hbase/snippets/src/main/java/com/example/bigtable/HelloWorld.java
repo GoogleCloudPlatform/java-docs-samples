@@ -41,7 +41,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 public class HelloWorld {
 
   // Refer to table metadata names by byte array in the HBase API
-  private static final byte[] TABLE_NAME = Bytes.toBytes("Hello-Bigtable-" + UUID.randomUUID().toString().substring(0, 19));
+  private static final byte[] TABLE_NAME =
+      Bytes.toBytes("Hello-Bigtable-" + UUID.randomUUID().toString().substring(0, 19));
   private static final byte[] COLUMN_FAMILY_NAME = Bytes.toBytes("cf1");
   private static final byte[] COLUMN_NAME = Bytes.toBytes("greeting");
 
