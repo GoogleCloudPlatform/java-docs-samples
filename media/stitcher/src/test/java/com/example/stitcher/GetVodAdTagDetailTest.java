@@ -72,16 +72,16 @@ public class GetVodAdTagDetailTest {
     String output = bout.toString();
     String[] arr = output.split("/");
     SESSION_ID = arr[arr.length - 1].replace("\n", "");
-    String SESSION_NAME = String.format("locations/%s/vodSessions/%s/", LOCATION, SESSION_ID);
+    String sessionName = String.format("locations/%s/vodSessions/%s/", LOCATION, SESSION_ID);
     bout.reset();
 
     ListVodAdTagDetails.listVodAdTagDetails(PROJECT_ID, LOCATION, SESSION_ID);
     Matcher idMatcher =
-        Pattern.compile("name: \"projects/.*/" + SESSION_NAME + "vodAdTagDetails/(.*)\"")
+        Pattern.compile("name: \"projects/.*/" + sessionName + "vodAdTagDetails/(.*)\"")
             .matcher(bout.toString());
     if (idMatcher.find()) {
       AD_TAG_DETAIL_ID = idMatcher.group(1);
-      AD_TAG_DETAIL_NAME = SESSION_NAME + "vodAdTagDetails/" + AD_TAG_DETAIL_ID;
+      AD_TAG_DETAIL_NAME = sessionName + "vodAdTagDetails/" + AD_TAG_DETAIL_ID;
     }
     bout.reset();
   }

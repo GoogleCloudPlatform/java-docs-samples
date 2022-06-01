@@ -72,16 +72,16 @@ public class GetVodStitchDetailTest {
     String output = bout.toString();
     String[] arr = output.split("/");
     SESSION_ID = arr[arr.length - 1].replace("\n", "");
-    String SESSION_NAME = String.format("locations/%s/vodSessions/%s/", LOCATION, SESSION_ID);
+    String sessionName = String.format("locations/%s/vodSessions/%s/", LOCATION, SESSION_ID);
     bout.reset();
 
     ListVodStitchDetails.listVodStitchDetails(PROJECT_ID, LOCATION, SESSION_ID);
     Matcher idMatcher =
-        Pattern.compile("name: \"projects/.*/" + SESSION_NAME + "vodStitchDetails/(.*)\"")
+        Pattern.compile("name: \"projects/.*/" + sessionName + "vodStitchDetails/(.*)\"")
             .matcher(bout.toString());
     if (idMatcher.find()) {
       STITCH_DETAIL_ID = idMatcher.group(1);
-      STITCH_DETAIL_NAME = SESSION_NAME + "vodStitchDetails/" + STITCH_DETAIL_ID;
+      STITCH_DETAIL_NAME = sessionName + "vodStitchDetails/" + STITCH_DETAIL_ID;
     }
     bout.reset();
   }
