@@ -16,7 +16,7 @@
 
 package secretmanager;
 
-// [START secretmanager_update_secret]
+// [START secretmanager_update_secret_with_alias]
 import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretName;
@@ -58,4 +58,4 @@ public class UpdateSecretWithAlias {
     }
   }
 }
-// [END secretmanager_update_secret]
+// [END secretmanager_update_secret_with_alias]
