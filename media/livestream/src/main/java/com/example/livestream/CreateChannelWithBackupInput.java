@@ -71,8 +71,8 @@ public class CreateChannelWithBackupInput {
           VideoStream.newBuilder()
               .setH264(
                   H264CodecSettings.newBuilder()
-                      .setProfile("main")
-                      .setBitrateBps(1000000)
+                      .setProfile("high")
+                      .setBitrateBps(3000000)
                       .setFrameRate(30)
                       .setHeightPixels(720)
                       .setWidthPixels(1280))
