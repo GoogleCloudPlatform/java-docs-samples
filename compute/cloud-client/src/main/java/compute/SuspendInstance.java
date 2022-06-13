@@ -33,7 +33,7 @@ public class SuspendInstance {
     // TODO(developer): Replace these variables before running the sample.
     // project: project ID or project number of the Cloud project your instance belongs to.
     // zone: name of the zone your instance belongs to.
-    // instanceName: name of the instance your want to suspend.
+    // instanceName: name of the instance you want to suspend.
 
     String project = "your-project-id";
     String zone = "zone-name";
