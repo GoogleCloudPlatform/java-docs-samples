@@ -44,13 +44,13 @@ export FUNCTIONS_IDENTITY_TOKEN=$(gcloud auth print-identity-token)
 
 # Identify function language
 # (Currently only applicable for Pub/Sub functions)
-$LANGUAGE = "" # Java = empty string
+$LANGUAGE="" # Java = empty string
 if [[ "$file" == *"scala"* ]]; then
-  $LANGUAGE = "Scala"
+  $LANGUAGE="Scala"
 elif [[ "$file" == *"groovy"* ]]; then
-  $LANGUAGE = "Groovy"
+  $LANGUAGE="Groovy"
 elif [[ "$file" == *"kotlin"* ]]; then
-  $LANGUAGE = "Kotlin"
+  $LANGUAGE="Kotlin"
 fi
 
 # Deploy functions
