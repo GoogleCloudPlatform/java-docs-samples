@@ -120,7 +120,7 @@ public class UptimeIT {
         UptimeSample.main("delete", "-n", config.getDisplayName());
         return;
       } catch (Exception e) {
-        System.out.println("Attempt %d failed. Retrying. Error: " + e.toString());
+        System.out.println("Attempt " + count + " failed. Retrying. Error: " + e.toString());
         Thread.sleep(3000);
       }
     }

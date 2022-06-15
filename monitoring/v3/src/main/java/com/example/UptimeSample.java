@@ -253,7 +253,8 @@ public class UptimeSample {
     try (UptimeCheckServiceClient client = UptimeCheckServiceClient.create()) {
       String fullCheckName = UptimeCheckConfigName.format(projectId, checkName);
       UptimeCheckConfig config = client.getUptimeCheckConfig(fullCheckName);
-      client.deleteUptimeCheckConfig(config.getName());  // checkId format: projects/[PROJECT_ID_OR_NUMBER]/uptimeCheckConfigs/[UPTIME_CHECK_ID]
+      // name format: projects/[PROJECT_ID_OR_NUMBER]/uptimeCheckConfigs/[UPTIME_CHECK_ID]
+      client.deleteUptimeCheckConfig(config.getName());
     } catch (Exception e) {
       usage("Exception deleting uptime check: " + e.toString());
       throw e;

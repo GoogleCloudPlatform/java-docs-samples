@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.HttpHostConnectException;
@@ -58,6 +58,7 @@ public class CreateBackupTestIT {
   private static final String TABLE_ID = "tbl-" + UUID.randomUUID().toString().substring(0, 10);
   private static final String ZONE_ID = "us-east1-b";
   private static final String COLUMN_FAMILY_NAME = "cf1";
+  private static final Logger logger = Logger.getLogger(CreateBackupTestIT.class.getName());
 
   private static String projectId;
 
@@ -79,21 +80,22 @@ public class CreateBackupTestIT {
   @BeforeClass
   public static void setUp() throws IOException {
     projectId = requireEnv(PROJECT_ENV);
-
-    try (BigtableInstanceAdminClient instanceAdmin = BigtableInstanceAdminClient.create(projectId)) {
-      CreateInstanceRequest request = CreateInstanceRequest.of(INSTANCE_ID)
-          .addCluster(CLUSTER_ID, ZONE_ID, 1, StorageType.SSD);
+    try (BigtableInstanceAdminClient instanceAdmin =
+        BigtableInstanceAdminClient.create(projectId)) {
+      CreateInstanceRequest request =
+          CreateInstanceRequest.of(INSTANCE_ID).addCluster(CLUSTER_ID, ZONE_ID, 1, StorageType.SSD);
       Instance instance = instanceAdmin.createInstance(request);
     } catch (IOException e) {
-      System.out.println("Error during BeforeClass while creating instance: \n" + e.toString());
+      logger.info("Error during BeforeClass while creating instance: \n" + e.toString());
       throw (e);
     }
 
-    try (BigtableTableAdminClient tableAdmin = BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
+    try (BigtableTableAdminClient tableAdmin =
+        BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
       // Create a table.
       tableAdmin.createTable(CreateTableRequest.of(TABLE_ID).addFamily(COLUMN_FAMILY_NAME));
     } catch (IOException e) {
-      System.out.println("Error during BeforeClass while creating table: \n" + e.toString());
+      logger.info("Error during BeforeClass while creating table: \n" + e.toString());
       throw (e);
     }
 
@@ -101,29 +103,28 @@ public class CreateBackupTestIT {
     String baseDir = System.getProperty("basedir");
 
     // Emulate the function locally by running the Functions Framework Maven plugin
-    emulatorProcess = new ProcessBuilder()
-        .command("mvn", "function:run")
-        .directory(new File(baseDir))
-        .start();
+    emulatorProcess =
+        new ProcessBuilder().command("mvn", "function:run").directory(new File(baseDir)).start();
   }
 
   @AfterClass
   public static void cleanUp() throws IOException {
-    try (BigtableTableAdminClient tableAdmin = BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
+    try (BigtableTableAdminClient tableAdmin =
+        BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
       for (String backup : tableAdmin.listBackups(CLUSTER_ID)) {
         tableAdmin.deleteBackup(CLUSTER_ID, backup);
       }
       tableAdmin.deleteTable(TABLE_ID);
     } catch (IOException e) {
-      System.out.println("Error during AfterClass while deleting backup and table: \n"
-          + e.toString());
+      logger.info("Error during AfterClass while deleting backup and table: \n" + e.toString());
       throw (e);
     }
 
-    try (BigtableInstanceAdminClient instanceAdmin = BigtableInstanceAdminClient.create(projectId)) {
+    try (BigtableInstanceAdminClient instanceAdmin =
+        BigtableInstanceAdminClient.create(projectId)) {
       instanceAdmin.deleteInstance(INSTANCE_ID);
     } catch (IOException e) {
-      System.out.println("Error during AfterClass while deleting instance: \n" + e.toString());
+      logger.info("Error during AfterClass while deleting instance: \n" + e.toString());
       throw (e);
     }
     // Terminate the running Functions Framework Maven plugin process (if it's still
@@ -136,10 +137,11 @@ public class CreateBackupTestIT {
   @Test
   public void testCreateBackup() throws Throwable {
     String functionUrl = BASE_URL + "/createBackup";
-    String msg = String.format(
-        "{\"projectId\":\"%s\", \"instanceId\":\"%s\", \"tableId\":\"%s\", \"clusterId\":\"%s\","
-            + "\"expireHours\":%d}",
-        projectId, INSTANCE_ID, TABLE_ID, CLUSTER_ID, 8);
+    String msg =
+        String.format(
+            "{\"projectId\":\"%s\", \"instanceId\":\"%s\", \"tableId\":\"%s\", \"clusterId\":\"%s\","
+                + "\"expireHours\":%d}",
+            projectId, INSTANCE_ID, TABLE_ID, CLUSTER_ID, 8);
     String msgBase64 = Base64.getEncoder().encodeToString(msg.getBytes(StandardCharsets.UTF_8));
     Map<String, String> msgMap = new HashMap<>();
     msgMap.put("data", msgBase64);
@@ -152,38 +154,48 @@ public class CreateBackupTestIT {
 
     // The Functions Framework Maven plugin process takes time to start up
     // Use resilience4j to retry the test HTTP request until the plugin responds
-    RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
-        .maxAttempts(12)
-        .retryExceptions(HttpHostConnectException.class)
-        .retryOnResult(u -> {
-          // Retry if the Functions Framework process has no stdout content
-          // See `retryOnResultPredicate` here: https://resilience4j.readme.io/docs/retry
-          try {
-            return emulatorProcess.getErrorStream().available() == 0;
-          } catch (IOException e) {
-            return true;
-          }
-        })
-        .intervalFunction(IntervalFunction.ofExponentialBackoff(200, 2))
-        .build());
+    RetryRegistry registry =
+        RetryRegistry.of(
+            RetryConfig.custom()
+                .maxAttempts(12)
+                .retryExceptions(HttpHostConnectException.class)
+                .retryOnResult(
+                    u -> {
+                      // Retry if the Functions Framework process has no stdout content
+                      // See `retryOnResultPredicate` here:
+                      // https://resilience4j.readme.io/docs/retry
+                      try {
+                        return emulatorProcess.getErrorStream().available() == 0;
+                      } catch (IOException e) {
+                        return true;
+                      }
+                    })
+                .intervalFunction(IntervalFunction.ofExponentialBackoff(200, 2))
+                .build());
     Retry retry = registry.retry("my");
 
     // Perform the request-retry process
-    CheckedRunnable retriableFunc = Retry.decorateCheckedRunnable(
-        retry, () -> client.execute(postRequest));
+    CheckedRunnable retriableFunc =
+        Retry.decorateCheckedRunnable(retry, () -> client.execute(postRequest));
     retriableFunc.run();
-    // Wait 2 mins for the backup to be created.
-    TimeUnit.MINUTES.sleep(2);
+
     // Check if backup exists
     List<String> backups = new ArrayList<String>();
-    try (BigtableTableAdminClient tableAdmin = BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
-      backups = tableAdmin.listBackups(CLUSTER_ID);
-    } catch (IOException e) {
-      System.out.println("Unable to list backups: \n" + e.toString());
-      throw (e);
+    int maxAttempts = 5;
+    for (int count = 0; count < maxAttempts; count++) {
+      try (BigtableTableAdminClient tableAdmin =
+          BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
+        backups = tableAdmin.listBackups(CLUSTER_ID);
+        assertThat(backups.size()).isEqualTo(1);
+        String expectedBackupPrefix = TABLE_ID + "-backup-";
+        assertThat(backups.get(0).contains(expectedBackupPrefix));
+        return;
+      } catch (Exception e) {
+        logger.info("Unable to list backups: \n" + e.toString());
+        logger.info("Attempt " + count + " failed. Retrying.");
+        Thread.sleep(3000);
+      }
     }
-    assertThat(backups.size()).isEqualTo(1);
-    String expectedBackupPrefix = TABLE_ID + "-backup-";
-    assertThat(backups.get(0).contains(expectedBackupPrefix));
+    assertThat(false);
   }
 }
