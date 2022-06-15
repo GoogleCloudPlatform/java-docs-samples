@@ -114,6 +114,6 @@ public class UptimeIT {
 
   @Test
   public void test3_DeleteUptimeCheck() throws Exception {
-    UptimeSample.main("delete", "-n", config.getDisplayName());
+    UptimeSample.main("delete", "-n", config.getName());
   }
 }
