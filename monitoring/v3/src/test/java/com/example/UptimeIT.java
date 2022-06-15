@@ -38,10 +38,9 @@ public class UptimeIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
-  private static UptimeCheckConfig config =
-      UptimeCheckConfig.newBuilder()
-          .setDisplayName("check-" + UUID.randomUUID().toString().substring(0, 6))
-          .build();
+  private static UptimeCheckConfig config = UptimeCheckConfig.newBuilder()
+      .setDisplayName("check-" + UUID.randomUUID().toString().substring(0, 6))
+      .build();
 
   @BeforeClass
   public static void setUpClass() {
@@ -65,14 +64,34 @@ public class UptimeIT {
 
   @Test
   public void test2_UpdateUptimeCheck() throws Exception {
-    UptimeSample.main("update", "-n", config.getDisplayName(), "-a", "/updated");
-    assertThat(bout.toString()).contains("/updated");
+    int maxAttempts = 5;
+    for (int count = 0; count < maxAttempts; count++) {
+      try {
+        UptimeSample.main("update", "-n", config.getDisplayName(), "-a", "/updated");
+        assertThat(bout.toString()).contains("/updated");
+        return;
+      } catch (Exception e) {
+        System.out.println("Attempt %d failed. Retrying. Error: " + e.toString());
+        Thread.sleep(3000);
+      }
+    }
+    assertThat(false);
   }
 
   @Test
   public void test2_GetUptimeCheck() throws Exception {
-    UptimeSample.main("get", "-n", config.getDisplayName());
-    assertThat(bout.toString()).contains(config.getDisplayName());
+    int maxAttempts = 5;
+    for (int count = 0; count < maxAttempts; count++) {
+      try {
+        UptimeSample.main("get", "-n", config.getDisplayName());
+        assertThat(bout.toString()).contains(config.getDisplayName());
+        return;
+      } catch (Exception e) {
+         System.out.println("Attempt %d failed. Retrying. Error: " + e.toString());
+         Thread.sleep(3000);
+      }
+    }
+    assertThat(false);
   }
 
   @Test
