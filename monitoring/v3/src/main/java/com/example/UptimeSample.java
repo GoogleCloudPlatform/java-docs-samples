@@ -134,7 +134,7 @@ public class UptimeSample {
         break;
       case "delete":
         deleteUptimeCheckConfig(
-            cl.getOptionValue(DISPLAY_NAME_OPTION.getOpt(), "new uptime check"));
+            projectId, cl.getOptionValue(DISPLAY_NAME_OPTION.getOpt(), "new uptime check"));
         break;
       default:
         usage(null);
@@ -248,11 +248,12 @@ public class UptimeSample {
   // [END monitoring_uptime_check_get]]
 
   // [START monitoring_uptime_check_delete]]
-  private static void deleteUptimeCheckConfig(String checkName)
+  private static void deleteUptimeCheckConfig(String projectId, String checkName)
       throws IOException {
     try (UptimeCheckServiceClient client = UptimeCheckServiceClient.create()) {
-      // checkName format: projects/[PROJECT_ID_OR_NUMBER]/uptimeCheckConfigs/[UPTIME_CHECK_ID]
-      client.deleteUptimeCheckConfig(checkName);
+      String fullCheckName = UptimeCheckConfigName.format(projectId, checkName);
+      UptimeCheckConfig config = client.getUptimeCheckConfig(fullCheckName);
+      client.deleteUptimeCheckConfig(config.getName());  // checkId format: projects/[PROJECT_ID_OR_NUMBER]/uptimeCheckConfigs/[UPTIME_CHECK_ID]
     } catch (Exception e) {
       usage("Exception deleting uptime check: " + e.toString());
       throw e;

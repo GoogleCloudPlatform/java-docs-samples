@@ -114,6 +114,16 @@ public class UptimeIT {
 
   @Test
   public void test3_DeleteUptimeCheck() throws Exception {
-    UptimeSample.main("delete", "-n", config.getName());
+    int maxAttempts = 5;
+    for (int count = 0; count < maxAttempts; count++) {
+      try {
+        UptimeSample.main("delete", "-n", config.getDisplayName());
+        return;
+      } catch (Exception e) {
+        System.out.println("Attempt %d failed. Retrying. Error: " + e.toString());
+        Thread.sleep(3000);
+      }
+    }
+    assertThat(false);
   }
 }
