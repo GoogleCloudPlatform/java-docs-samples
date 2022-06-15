@@ -139,8 +139,8 @@ public class CreateBackupTestIT {
     String functionUrl = BASE_URL + "/createBackup";
     String msg =
         String.format(
-            "{\"projectId\":\"%s\", \"instanceId\":\"%s\", \"tableId\":\"%s\", \"clusterId\":\"%s\","
-                + "\"expireHours\":%d}",
+            "{\"projectId\":\"%s\", \"instanceId\":\"%s\", \"tableId\":\"%s\", "
+                + "\"clusterId\":\"%s\", \"expireHours\":%d}",
             projectId, INSTANCE_ID, TABLE_ID, CLUSTER_ID, 8);
     String msgBase64 = Base64.getEncoder().encodeToString(msg.getBytes(StandardCharsets.UTF_8));
     Map<String, String> msgMap = new HashMap<>();
