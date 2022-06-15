@@ -51,7 +51,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 public class CreateBackupTestIT {
   private static final String PROJECT_ENV = "GOOGLE_CLOUD_PROJECT";
   private static final String INSTANCE_ID = "ins-" + UUID.randomUUID().toString().substring(0, 10);
@@ -81,23 +80,21 @@ public class CreateBackupTestIT {
   public static void setUp() throws IOException {
     projectId = requireEnv(PROJECT_ENV);
 
-    try (BigtableInstanceAdminClient instanceAdmin =
-        BigtableInstanceAdminClient.create(projectId)) {
+    try (BigtableInstanceAdminClient instanceAdmin = BigtableInstanceAdminClient.create(projectId)) {
       CreateInstanceRequest request = CreateInstanceRequest.of(INSTANCE_ID)
-              .addCluster(CLUSTER_ID, ZONE_ID, 1, StorageType.SSD);
+          .addCluster(CLUSTER_ID, ZONE_ID, 1, StorageType.SSD);
       Instance instance = instanceAdmin.createInstance(request);
     } catch (IOException e) {
       System.out.println("Error during BeforeClass while creating instance: \n" + e.toString());
-      throw(e);
+      throw (e);
     }
 
-    try (BigtableTableAdminClient tableAdmin =
-        BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
+    try (BigtableTableAdminClient tableAdmin = BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
       // Create a table.
       tableAdmin.createTable(CreateTableRequest.of(TABLE_ID).addFamily(COLUMN_FAMILY_NAME));
     } catch (IOException e) {
       System.out.println("Error during BeforeClass while creating table: \n" + e.toString());
-      throw(e);
+      throw (e);
     }
 
     // Get the sample's base directory (the one containing a pom.xml file)
@@ -112,26 +109,25 @@ public class CreateBackupTestIT {
 
   @AfterClass
   public static void cleanUp() throws IOException {
-    try (BigtableTableAdminClient tableAdmin =
-        BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
+    try (BigtableTableAdminClient tableAdmin = BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
       for (String backup : tableAdmin.listBackups(CLUSTER_ID)) {
         tableAdmin.deleteBackup(CLUSTER_ID, backup);
       }
       tableAdmin.deleteTable(TABLE_ID);
     } catch (IOException e) {
       System.out.println("Error during AfterClass while deleting backup and table: \n"
-                             + e.toString());
-      throw(e);
+          + e.toString());
+      throw (e);
     }
 
-    try (BigtableInstanceAdminClient instanceAdmin =
-        BigtableInstanceAdminClient.create(projectId)) {
+    try (BigtableInstanceAdminClient instanceAdmin = BigtableInstanceAdminClient.create(projectId)) {
       instanceAdmin.deleteInstance(INSTANCE_ID);
     } catch (IOException e) {
       System.out.println("Error during AfterClass while deleting instance: \n" + e.toString());
       throw (e);
     }
-    // Terminate the running Functions Framework Maven plugin process (if it's still running)
+    // Terminate the running Functions Framework Maven plugin process (if it's still
+    // running)
     if (emulatorProcess.isAlive()) {
       emulatorProcess.destroy();
     }
@@ -151,14 +147,23 @@ public class CreateBackupTestIT {
     dataMap.put("data", msgMap);
     String jsonStr = gson.toJson(dataMap);
 
-    HttpPost postRequest =  new HttpPost(URI.create(functionUrl));
+    HttpPost postRequest = new HttpPost(URI.create(functionUrl));
     postRequest.setEntity(new StringEntity(jsonStr));
 
     // The Functions Framework Maven plugin process takes time to start up
     // Use resilience4j to retry the test HTTP request until the plugin responds
     RetryRegistry registry = RetryRegistry.of(RetryConfig.custom()
-        .maxAttempts(8)
+        .maxAttempts(12)
         .retryExceptions(HttpHostConnectException.class)
+        .retryOnResult(u -> {
+          // Retry if the Functions Framework process has no stdout content
+          // See `retryOnResultPredicate` here: https://resilience4j.readme.io/docs/retry
+          try {
+            return emulatorProcess.getErrorStream().available() == 0;
+          } catch (IOException e) {
+            return true;
+          }
+        })
         .intervalFunction(IntervalFunction.ofExponentialBackoff(200, 2))
         .build());
     Retry retry = registry.retry("my");
@@ -171,8 +176,7 @@ public class CreateBackupTestIT {
     TimeUnit.MINUTES.sleep(2);
     // Check if backup exists
     List<String> backups = new ArrayList<String>();
-    try (BigtableTableAdminClient tableAdmin =
-        BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
+    try (BigtableTableAdminClient tableAdmin = BigtableTableAdminClient.create(projectId, INSTANCE_ID)) {
       backups = tableAdmin.listBackups(CLUSTER_ID);
     } catch (IOException e) {
       System.out.println("Unable to list backups: \n" + e.toString());
