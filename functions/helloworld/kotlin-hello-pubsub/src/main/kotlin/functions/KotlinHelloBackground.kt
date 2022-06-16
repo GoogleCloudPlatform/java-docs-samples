@@ -24,7 +24,7 @@ import java.util.Base64
 import java.util.logging.Logger
 
 
-class HelloPubSub : BackgroundFunction<Message> {
+class KotlinHelloPubSub : BackgroundFunction<Message> {
     override fun accept(message: Message, context: Context) {
         // name's default value is "world"
         var name = "world"
@@ -38,7 +38,7 @@ class HelloPubSub : BackgroundFunction<Message> {
     }
 
     companion object {
-        private val LOGGER = Logger.getLogger(HelloPubSub::class.java.name)
+        private val LOGGER = Logger.getLogger(KotlinHelloPubSub::class.java.name)
     }
 }
 // [END functions_helloworld_pubsub]
