@@ -16,6 +16,8 @@
 
 package compute;
 
+// [START compute_template_get]
+
 import com.google.cloud.compute.v1.GetInstanceTemplateRequest;
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
@@ -26,7 +28,7 @@ public class GetInstanceTemplate {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     // projectId: project ID or project number of the Cloud project you use.
-    // templateName: name of the new template to retrieve.
+    // templateName: name of the template to retrieve.
     String projectId = "your-project-id";
     String templateName = "template-name";
     getInstanceTemplate(projectId, templateName);
@@ -47,3 +49,4 @@ public class GetInstanceTemplate {
     }
   }
 }
+// [END compute_template_get]

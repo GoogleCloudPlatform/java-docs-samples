@@ -28,11 +28,13 @@ import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.SourceInstanceParams;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreateTemplateFromInstance {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // projectId: project ID or project number of the Cloud project you use.
     // instance: the instance to base the new template on. This value uses the following format:
@@ -49,7 +51,7 @@ public class CreateTemplateFromInstance {
   // This new template specifies a different boot disk.
   public static void createTemplateFromInstance(String projectId, String templateName,
       String instance)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create();
         GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
 
@@ -81,7 +83,7 @@ public class CreateTemplateFromInstance {
           .build();
 
       Operation operation = instanceTemplatesClient.insertCallable()
-          .futureCall(insertInstanceTemplateRequest).get();
+          .futureCall(insertInstanceTemplateRequest).get(3, TimeUnit.MINUTES);
 
       Operation response = globalOperationsClient.wait(projectId, operation.getName());
 

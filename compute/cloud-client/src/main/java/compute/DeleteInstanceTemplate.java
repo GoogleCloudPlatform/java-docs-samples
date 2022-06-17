@@ -16,16 +16,20 @@
 
 package compute;
 
+// [START compute_template_delete]
+
 import com.google.cloud.compute.v1.DeleteInstanceTemplateRequest;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class DeleteInstanceTemplate {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // projectId: project ID or project number of the Cloud project you use.
     // templateName: name of the new template to create.
@@ -36,7 +40,7 @@ public class DeleteInstanceTemplate {
 
   // Delete an instance template.
   public static void deleteInstanceTemplate(String projectId, String templateName)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
 
       DeleteInstanceTemplateRequest deleteInstanceTemplateRequest = DeleteInstanceTemplateRequest
@@ -44,7 +48,8 @@ public class DeleteInstanceTemplate {
           .setProject(projectId)
           .setInstanceTemplate(templateName).build();
 
-      Operation response = instanceTemplatesClient.deleteAsync(deleteInstanceTemplateRequest).get();
+      Operation response = instanceTemplatesClient.deleteAsync(deleteInstanceTemplateRequest)
+          .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Instance template deletion failed ! ! " + response);
@@ -55,3 +60,4 @@ public class DeleteInstanceTemplate {
     }
   }
 }
+// [END compute_template_delete]

@@ -33,10 +33,10 @@ repositories {
     }
 }
 
-def beamVersion = '2.34.0'
-def slf4jVersion = '1.7.32'
+def beamVersion = '2.38.0'
+def slf4jVersion = '1.7.36'
 dependencies {
-    implementation 'com.github.spotbugs:spotbugs-annotations:4.5.3'
+    implementation 'com.github.spotbugs:spotbugs-annotations:4.7.0'
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     implementation "org.slf4j:slf4j-jdk14:${slf4jVersion}"
     implementation "org.apache.beam:beam-sdks-java-core:${beamVersion}"
@@ -44,10 +44,10 @@ dependencies {
     implementation "org.apache.beam:beam-examples-java:${beamVersion}"
     runtimeOnly "org.apache.beam:beam-runners-direct-java:${beamVersion}"
     runtimeOnly "org.apache.beam:beam-runners-google-cloud-dataflow-java:${beamVersion}"
-    testImplementation 'com.google.api-client:google-api-client:1.32.2'
+    testImplementation 'com.google.api-client:google-api-client:1.34.1'
     testImplementation 'com.google.apis:google-api-services-dataflow:v1b3-rev20210825-1.32.1'
     testImplementation 'com.google.cloud:google-cloud-core:2.3.2'
-    testImplementation 'com.google.cloud:google-cloud-storage:2.1.9'
+    testImplementation 'com.google.cloud:google-cloud-storage:2.6.1'
     testImplementation 'com.google.truth:truth:1.1.3'
     testImplementation 'org.hamcrest:hamcrest-all:1.3'
 }

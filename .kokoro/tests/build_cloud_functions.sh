@@ -42,6 +42,17 @@ export FUNCTIONS_GCS_FN_NAME="gcs-${SUFFIX}"
 # Set identity token (required for functions without --allow-unauthenticated)
 export FUNCTIONS_IDENTITY_TOKEN=$(gcloud auth print-identity-token)
 
+# Identify function language
+# (Currently only applicable for Pub/Sub functions)
+export LANGUAGE="" # Java = empty string
+if [[ "$file" == *"scala"* ]]; then
+  export LANGUAGE="Scala"
+elif [[ "$file" == *"groovy"* ]]; then
+  export LANGUAGE="Groovy"
+elif [[ "$file" == *"kotlin"* ]]; then
+  export LANGUAGE="Kotlin"
+fi
+
 # Deploy functions
 set -x
 
@@ -57,7 +68,7 @@ elif [[ "$file" == *"hello-pubsub"* ]]; then
   gcloud functions deploy $FUNCTIONS_PUBSUB_FN_NAME \
     --region $FUNCTIONS_REGION \
     --runtime $FUNCTIONS_JAVA_RUNTIME \
-    --entry-point "functions.HelloPubSub" \
+    --entry-point "functions.${LANGUAGE}HelloPubSub" \
     --trigger-topic $FUNCTIONS_SYSTEM_TEST_TOPIC
 elif [[ "$file" == *"hello-gcs"* ]]; then
   echo "Deploying function HelloGcs to: ${FUNCTIONS_GCS_FN_NAME}"

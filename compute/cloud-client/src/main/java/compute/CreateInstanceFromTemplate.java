@@ -25,11 +25,13 @@ import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreateInstanceFromTemplate {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     /*  TODO(developer): Replace these variables before running the sample.
         projectId - ID or number of the project you want to use.
         zone - Name of the zone you want to check, for example: us-west3-b
@@ -51,7 +53,7 @@ public class CreateInstanceFromTemplate {
   // Create a new instance from template in the specified project and zone.
   public static void createInstanceFromTemplate(String projectId, String zone, String instanceName,
       String instanceTemplateUrl)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     try (InstancesClient instancesClient = InstancesClient.create()) {
 
@@ -61,7 +63,8 @@ public class CreateInstanceFromTemplate {
           .setInstanceResource(Instance.newBuilder().setName(instanceName).build())
           .setSourceInstanceTemplate(instanceTemplateUrl).build();
 
-      Operation response = instancesClient.insertAsync(insertInstanceRequest).get();
+      Operation response = instancesClient.insertAsync(insertInstanceRequest)
+          .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Instance creation from template failed ! ! " + response);

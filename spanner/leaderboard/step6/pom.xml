@@ -33,7 +33,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>24.0.0</version>
+        <version>25.0.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -84,7 +84,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M5</version>
+        <version>3.0.0-M6</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

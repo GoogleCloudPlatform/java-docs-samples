@@ -40,7 +40,7 @@ dependencies {
 
 protobuf {
   protoc {
-    artifact = 'com.google.protobuf:protoc:3.19.3'
+    artifact = 'com.google.protobuf:protoc:3.20.1'
   }
 
   plugins {

@@ -20,7 +20,6 @@ limitations under the License.
 
   <!--  The parent pom defines common style checks and testing strategies for our samples.
 	Removing or replacing it should not affect the execution of the samples in anyway. -->
-
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
@@ -33,7 +32,7 @@ limitations under the License.
         <!-- Import dependency management from Spring Boot -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.5.4</version>
+        <version>2.6.6</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -55,7 +54,7 @@ limitations under the License.
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.7</version>
+      <version>2.11.0</version>
     </dependency>
 
     <dependency>

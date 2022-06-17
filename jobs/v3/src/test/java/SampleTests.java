@@ -54,7 +54,7 @@ public class SampleTests {
     assertThat(bout.toString())
         .containsMatch(
             ".*completionResults.*\"suggestion\":"
-                + "\"Google Search\",\"type\":\"COMPANY_NAME\"}.*\n"
+                + "\"Google.*\",\"type\":\"COMPANY_NAME\"}.*\n"
                 + ".*completionResults.*\"suggestion\""
                 + ":\"Software Engineer\",\"type\":\"JOB_TITLE\".*\n"
                 + ".*completionResults.*\"suggestion\""

@@ -21,6 +21,8 @@ import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import java.io.IOException;
+import java.util.zip.CRC32C;
+import java.util.zip.Checksum;
 
 public class AccessSecretVersion {
 
@@ -44,6 +46,17 @@ public class AccessSecretVersion {
 
       // Access the secret version.
       AccessSecretVersionResponse response = client.accessSecretVersion(secretVersionName);
+
+      // Verify checksum. The used library is available in Java 9+.
+      // If using Java 8, you may use the following:
+      // https://github.com/google/guava/blob/e62d6a0456420d295089a9c319b7593a3eae4a83/guava/src/com/google/common/hash/Hashing.java#L395
+      byte[] data = response.getPayload().getData().toByteArray();
+      Checksum checksum = new CRC32C();
+      checksum.update(data, 0, data.length);
+      if (response.getPayload().getDataCrc32C() != checksum.getValue()) {
+        System.out.printf("Data corruption detected.");
+        return;
+      }
 
       // Print the secret payload.
       //

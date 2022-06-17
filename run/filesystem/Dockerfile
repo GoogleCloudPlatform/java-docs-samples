@@ -16,7 +16,7 @@
 
 # Use the official maven/Java 11 image to create a build artifact.
 # https://hub.docker.com/_/maven
-FROM maven:3.8.4-jdk-11 as builder
+FROM maven:3.8.5-jdk-11 as builder
 
 # Copy local code to the container image.
 WORKDIR /app
@@ -28,7 +28,7 @@ RUN mvn package -DskipTests
 
 # Use AdoptOpenJDK for base image.
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:18-jdk
 
 # Install filesystem dependencies
 RUN apt-get update -y && apt-get install -y \

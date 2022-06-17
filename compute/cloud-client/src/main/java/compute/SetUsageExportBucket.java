@@ -32,6 +32,7 @@ import com.google.cloud.compute.v1.UsageExportLocation;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 // [END compute_usage_report_disable]
 // [END compute_usage_report_get]
@@ -40,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 public class SetUsageExportBucket {
 
   public static void main(String[] args)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // TODO(developer): Create a Google Cloud Storage bucket.
     // bucketName: Cloud Storage Bucket used to store Compute Engine usage reports.
@@ -59,7 +60,7 @@ public class SetUsageExportBucket {
   // This sample presents how to interpret the default value for the report name prefix parameter.
   public static void setUsageExportBucket(String project, String bucketName,
       String reportNamePrefix)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
     // bucketName: Cloud Storage Bucket used to store Compute Engine usage reports.
     // An existing Google Cloud Storage bucket is required.
@@ -89,7 +90,7 @@ public class SetUsageExportBucket {
               .build());
 
       // Wait for the operation to complete.
-      Operation response = operation.get();
+      Operation response = operation.get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Setting usage export bucket failed ! ! " + response);
@@ -143,7 +144,7 @@ public class SetUsageExportBucket {
 
   // Disable Compute Engine usage export bucket for the Cloud project.
   public static boolean disableUsageExportBucket(String project)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
 
@@ -158,7 +159,8 @@ public class SetUsageExportBucket {
               .build());
 
       // Wait for the operation to complete.
-      Operation response = operation.get();
+      Operation response = operation.get(3, TimeUnit.MINUTES);
+      ;
 
       if (response.hasError()) {
         System.out.println("Disable usage export bucket failed ! ! " + response);
@@ -166,7 +168,7 @@ public class SetUsageExportBucket {
       }
 
       // Wait for the settings to be effected.
-      TimeUnit.SECONDS.sleep(5);
+      TimeUnit.SECONDS.sleep(15);
       // Return false if the usage reports is disabled.
       return projectsClient.get(project).getUsageExportLocation().hasBucketName();
     }

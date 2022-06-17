@@ -27,18 +27,20 @@ import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import org.junit.After;
-import org.junit.AfterClass;
+import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
+@Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class InstanceTemplatesIT {
-
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String DEFAULT_REGION = "us-central1";
@@ -59,8 +61,10 @@ public class InstanceTemplatesIT {
         .that(System.getenv(envVarName)).isNotEmpty();
   }
 
-  @BeforeClass
-  public static void setup() throws IOException, ExecutionException, InterruptedException {
+  @BeforeAll
+  public static void setup()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
@@ -79,7 +83,7 @@ public class InstanceTemplatesIT {
 
     // Check for resources created >24hours which haven't been deleted in the project.
     Util.cleanUpExistingInstanceTemplates("test-csam-", PROJECT_ID);
-    Util.cleanUpExistingInstances("test-csam-", PROJECT_ID);
+    Util.cleanUpExistingInstances("test-csam-", PROJECT_ID, DEFAULT_ZONE);
 
     // Create templates.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
@@ -113,11 +117,13 @@ public class InstanceTemplatesIT {
     Assert.assertEquals(
         getInstance(DEFAULT_ZONE, MACHINE_NAME_CR_TEMPLATE_OR).getDisksCount(), 2);
     stdOut.close();
-    System.setOut(null);
+    System.setOut(out);
   }
 
-  @AfterClass
-  public static void cleanup() throws IOException, ExecutionException, InterruptedException {
+  @AfterAll
+  public static void cleanup()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     // Delete instances.
@@ -135,7 +141,7 @@ public class InstanceTemplatesIT {
     assertThat(stdOut.toString())
         .contains("Instance template deletion operation status for " + TEMPLATE_NAME_WITH_SUBNET);
     stdOut.close();
-    System.setOut(null);
+    System.setOut(out);
   }
 
   public static Instance getInstance(String zone, String instanceName) throws IOException {
@@ -144,13 +150,13 @@ public class InstanceTemplatesIT {
     }
   }
 
-  @Before
+  @BeforeEach
   public void beforeEach() {
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
   }
 
-  @After
+  @AfterEach
   public void afterEach() {
     stdOut = null;
     System.setOut(null);

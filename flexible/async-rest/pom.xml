@@ -36,7 +36,7 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
-    <appengine.maven.plugin>2.4.1</appengine.maven.plugin>
+    <appengine.maven.plugin>2.4.2</appengine.maven.plugin>
     <jetty>9.4.44.v20210927</jetty>
 
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -44,6 +44,11 @@
   </properties>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version>
+      </plugin>
        <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>

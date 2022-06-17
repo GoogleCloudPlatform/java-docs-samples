@@ -66,33 +66,33 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.32</version>
+      <version>1.7.36</version>
       <scope>provided</scope>
     </dependency>
     <!-- Dependencies for Cloud SQL -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.27</version>
+      <version>8.0.29</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>mysql-socket-factory-connector-j-8</artifactId>
-      <version>1.4.1</version>
+      <version>1.6.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>4.1.0</version>
+      <version>4.5.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -120,7 +120,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>copy</id>
@@ -156,7 +156,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.4.1</version>
+        <version>2.4.2</version>
         <configuration>
           <projectId>GCLOUD_CONFIG</projectId>
           <version>cloudsql</version>

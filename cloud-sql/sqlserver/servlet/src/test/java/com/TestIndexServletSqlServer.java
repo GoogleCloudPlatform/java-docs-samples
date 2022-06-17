@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.example.cloudsql.IndexServlet.TemplateData;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.io.PrintWriter;
@@ -94,6 +93,7 @@ public class TestIndexServletSqlServer {
         "com.google.cloud.sql.sqlserver.SocketFactory");
     config.addDataSourceProperty("socketFactoryConstructorArg",
         System.getenv("SQLSERVER_CONNECTION_NAME"));
+    config.addDataSourceProperty("encrypt", "false");
 
     pool = new HikariDataSource(config);
     createTable(pool);

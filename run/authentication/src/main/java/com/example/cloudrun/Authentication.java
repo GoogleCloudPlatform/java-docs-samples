@@ -17,7 +17,6 @@
 package com.example.cloudrun;
 
 // [START cloudrun_service_to_service_auth]
-// [START run_service_to_service_auth]
 // [START functions_bearer_token]
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
@@ -33,9 +32,17 @@ import java.io.IOException;
 public class Authentication {
 
   // makeGetRequest makes a GET request to the specified Cloud Run or
-  // Cloud Functions endpoint, serviceUrl (must be a complete URL), by
-  // authenticating with an Id token retrieved from Application Default Credentials.
-  public static HttpResponse makeGetRequest(String serviceUrl) throws IOException {
+  // Cloud Functions endpoint `serviceUrl` (must be a complete URL), by
+  // authenticating with an ID token retrieved from Application Default
+  // Credentials using the specified `audience`.
+  //
+  // [END functions_bearer_token]
+  // Example `audience` value (Cloud Run): https://my-cloud-run-service.run.app/
+  // [END cloudrun_service_to_service_auth]
+  // [START functions_bearer_token]
+  // Example `audience` value (Cloud Functions): https://project-region-projectid.cloudfunctions.net/myFunction
+  // [START cloudrun_service_to_service_auth]
+  public static HttpResponse makeGetRequest(String serviceUrl, String audience) throws IOException {
     GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
     if (!(credentials instanceof IdTokenProvider)) {
       throw new IllegalArgumentException("Credentials are not an instance of IdTokenProvider.");
@@ -43,7 +50,7 @@ public class Authentication {
     IdTokenCredentials tokenCredential =
         IdTokenCredentials.newBuilder()
             .setIdTokenProvider((IdTokenProvider) credentials)
-            .setTargetAudience(serviceUrl)
+            .setTargetAudience(audience)
             .build();
 
     GenericUrl genericUrl = new GenericUrl(serviceUrl);
@@ -54,5 +61,4 @@ public class Authentication {
   }
 }
 // [END functions_bearer_token]
-// [END run_service_to_service_auth]
 // [END cloudrun_service_to_service_auth]

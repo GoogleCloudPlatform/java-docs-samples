@@ -11,7 +11,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <spring-boot.version>2.5.8</spring-boot.version>
+    <spring-boot.version>2.6.6</spring-boot.version>
   </properties>
 
   <!--
@@ -29,7 +29,7 @@
      <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>24.0.0</version>
+        <version>25.0.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
