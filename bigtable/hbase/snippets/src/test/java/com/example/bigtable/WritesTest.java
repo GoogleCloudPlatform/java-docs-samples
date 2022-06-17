@@ -16,8 +16,8 @@
 
 package com.example.bigtable;
 
-import static org.junit.Assert.assertNotNull;
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.ByteArrayOutputStream;

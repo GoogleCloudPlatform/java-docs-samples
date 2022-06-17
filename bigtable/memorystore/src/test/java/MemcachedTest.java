@@ -15,9 +15,9 @@
  */
 
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertNotNull;
-import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminClient;
 import com.google.cloud.bigtable.admin.v2.models.CreateTableRequest;
@@ -133,7 +133,7 @@ public class MemcachedTest {
     // retry (due to occasional flakiness) if we didn't yet get the result in the cache
     int retryCount = 0;
     String foundInCache = "Value fetched from cache: PQ2A.190405.003";
-    while (retryCount < 5 && !output.contains(foundInCache) {
+    while (retryCount < 5 && !output.contains(foundInCache)) {
       Memcached.main(null);
       output = bout.toString();
       retryCount++;
