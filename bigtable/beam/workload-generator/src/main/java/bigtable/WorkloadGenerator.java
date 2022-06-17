@@ -68,6 +68,7 @@ public class WorkloadGenerator {
     ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
     exec.schedule(() -> {
       try {
+        System.out.println("Cancelling job.");
         cancelJob(options, (DataflowPipelineJob) pipelineResult);
       } catch (IOException e) {
         e.printStackTrace();

@@ -31,6 +31,10 @@ import com.google.bigtable.repackaged.com.google.monitoring.v3.TimeSeries;
 import com.google.bigtable.repackaged.com.google.protobuf.util.Timestamps;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
+import com.google.dataflow.v1beta3.FlexTemplatesServiceClient;
+import com.google.dataflow.v1beta3.LaunchFlexTemplateParameter;
+import com.google.dataflow.v1beta3.LaunchFlexTemplateRequest;
+import com.google.dataflow.v1beta3.LaunchFlexTemplateResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -132,7 +136,7 @@ public class WorkloadGeneratorTest {
     p.run().waitUntilFinish();
 
     String output = bout.toString();
-    assertThat(output.contains("Connected to table"));
+    assertThat(output).contains("Connected to table");
   }
 
   @Test
@@ -181,13 +185,46 @@ public class WorkloadGeneratorTest {
       startRequestCount = ts.getPoints(0).getValue().getInt64Value();
       endRequestCount = ts.getPoints(ts.getPointsCount() - 1).getValue().getInt64Value();
     }
-    assertThat(endRequestCount - startRequestCount > rate);
+    assertThat(endRequestCount - startRequestCount > rate).isTrue();
 
-    // Stop the running job.
+    // Ensure the job is stopped after duration.
     String jobId = ((DataflowPipelineJob) pipelineResult).getJobId();
     DataflowClient client = DataflowClient.create(options);
     Job job = client.getJob(jobId);
 
-    assertThat(job.getCurrentState().equals("JOB_STATE_CANCELLED"));
+    assertThat(job.getCurrentState()).matches("JOB_STATE_CANCELLED");
+  }
+
+  @Test
+  public void testDeployedPipeline() throws IOException, InterruptedException {
+    FlexTemplatesServiceClient flexTemplatesServiceClient =
+        FlexTemplatesServiceClient.create();
+    LaunchFlexTemplateRequest request =
+        LaunchFlexTemplateRequest.newBuilder()
+            .setProjectId(projectId)
+            .setLaunchParameter(
+                LaunchFlexTemplateParameter.newBuilder()
+                    .setContainerSpecGcsPath(
+                        "gs://cloud-bigtable-dataflow-templates/generate-workload.json")
+                    .setJobName("generate-workload" + UUID.randomUUID().toString().substring(0, 20))
+                    .putParameters("bigtableInstanceId", instanceId)
+                    .putParameters("bigtableTableId", TABLE_ID)
+                    .build())
+            .build();
+
+    LaunchFlexTemplateResponse response = flexTemplatesServiceClient.launchFlexTemplate(request);
+
+    String jobId = response.getJob().getId();
+    BigtableWorkloadOptions options = PipelineOptionsFactory.create()
+        .as(BigtableWorkloadOptions.class);
+    DataflowClient client = DataflowClient.create(options);
+
+    Thread.sleep(3 * 60 * 1000);
+    Job job = client.getJob(jobId);
+    assertThat(job.getCurrentState()).matches("JOB_STATE_RUNNING");
+
+    // Cancel job manually because test job never ends.
+    job.setRequestedState("JOB_STATE_CANCELLED");
+    client.updateJob(jobId, job);
   }
 }

@@ -90,7 +90,7 @@ If you would like to modify this and run it yourself you can use these commands:
 
    ```
    mvn compile exec:java -Dexec.mainClass=WorkloadGenerator \
-   "-Dexec.args=--bigtableInstanceId=$INSTANCE_ID =--bigtableTableId=$TABLE_ID \
+   "-Dexec.args=--bigtableInstanceId=$INSTANCE_ID --bigtableTableId=$TABLE_ID \
    --runner=dataflow --project=$GOOGLE_CLOUD_PROJECT \
    --region=$REGION" \
    --workloadQPS=$WORKLOAD_QPS 

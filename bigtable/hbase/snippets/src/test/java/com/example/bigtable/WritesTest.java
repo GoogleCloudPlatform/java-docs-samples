@@ -17,7 +17,7 @@
 package com.example.bigtable;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.ByteArrayOutputStream;
@@ -30,7 +30,6 @@ import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.hamcrest.CoreMatchers;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -93,7 +92,7 @@ public class WritesTest {
     WriteSimple.writeSimple(projectId, instanceId, TABLE_ID);
 
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Successfully wrote row"));
+    assertThat(output).contains("Successfully wrote row");
   }
 
   @Test
@@ -101,7 +100,7 @@ public class WritesTest {
     WriteBatch.writeBatch(projectId, instanceId, TABLE_ID);
 
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Successfully wrote 2 rows"));
+    assertThat(output).contains("Successfully wrote 2 rows");
   }
 
   @Test
@@ -109,7 +108,7 @@ public class WritesTest {
     WriteConditionally.writeConditionally(projectId, instanceId, TABLE_ID);
 
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Successfully updated row's os_name"));
+    assertThat(output).contains("Successfully updated row's os_name");
   }
 
   @Test
@@ -117,6 +116,6 @@ public class WritesTest {
     WriteIncrement.writeIncrement(projectId, instanceId, TABLE_ID);
 
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Successfully updated row"));
+    assertThat(output).contains("Successfully updated row");
   }
 }
