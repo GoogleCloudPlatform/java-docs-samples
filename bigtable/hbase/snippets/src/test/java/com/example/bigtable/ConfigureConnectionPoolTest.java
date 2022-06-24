@@ -16,12 +16,11 @@
 
 package com.example.bigtable;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -65,6 +64,6 @@ public class ConfigureConnectionPoolTest {
     ConfigureConnectionPool.configureConnectionPool(projectId, instanceId);
 
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Connected with pool size of 10"));
+    assertThat(output).contains("Connected with pool size of 10");
   }
 }

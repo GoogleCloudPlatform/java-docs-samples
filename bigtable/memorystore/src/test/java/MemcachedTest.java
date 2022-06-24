@@ -15,9 +15,9 @@
  */
 
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminClient;
 import com.google.cloud.bigtable.admin.v2.models.CreateTableRequest;
@@ -26,8 +26,6 @@ import com.google.cloud.bigtable.data.v2.models.RowMutation;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matcher;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -130,17 +128,16 @@ public class MemcachedTest {
     Memcached.main(null);
 
     String output = bout.toString();
-    assertThat(output, CoreMatchers.containsString("Value fetched from Bigtable: PQ2A.190405.003"));
+    assertThat(output).contains("Value fetched from Bigtable: PQ2A.190405.003");
 
     // retry (due to occasional flakiness) if we didn't yet get the result in the cache
     int retryCount = 0;
-    Matcher<String> foundInCache =
-        CoreMatchers.containsString("Value fetched from cache: PQ2A.190405.003");
-    while (retryCount < 5 && !foundInCache.matches(output)) {
+    String foundInCache = "Value fetched from cache: PQ2A.190405.003";
+    while (retryCount < 5 && !output.contains(foundInCache)) {
       Memcached.main(null);
       output = bout.toString();
       retryCount++;
     }
-    assertThat(output, foundInCache);
+    assertThat(output).contains(foundInCache);
   }
 }
