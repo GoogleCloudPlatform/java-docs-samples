@@ -18,7 +18,6 @@ package com.example.dataflow;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
@@ -31,7 +30,6 @@ import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionRunner;
 import com.google.common.collect.ImmutableList;
-import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -223,8 +221,7 @@ public class SpannerReadIT {
           "--databaseId=" + databaseId,
           "--output=" + outPath,
           "--table=albums",
-          "--runner=DirectRunner",
-          "--dialect=" + dialect
+          "--runner=DirectRunner"
         });
 
     String content = Files.readAllLines(outPath).stream().collect(Collectors.joining("\n"));
@@ -240,8 +237,7 @@ public class SpannerReadIT {
           "--instanceId=" + instanceId,
           "--databaseId=" + databaseId,
           "--output=" + outPath,
-          "--runner=DirectRunner",
-          "--dialect=" + dialect
+          "--runner=DirectRunner"
         });
 
     String content = Files.readAllLines(outPath).stream().collect(Collectors.joining("\n"));
@@ -259,8 +255,7 @@ public class SpannerReadIT {
           "--databaseId=" + databaseId,
           "--singersFilename=" + singersPath,
           "--albumsFilename=" + albumsPath,
-          "--runner=DirectRunner",
-          "--dialect=" + dialect
+          "--runner=DirectRunner"
         });
 
     assertEquals(4, Files.readAllLines(singersPath).size());

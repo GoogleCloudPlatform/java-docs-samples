@@ -19,11 +19,11 @@ package com.example.dataflow;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
+import com.google.cloud.spanner.Dialect;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.ReadContext;
 import com.google.cloud.spanner.ResultSet;
@@ -33,7 +33,7 @@ import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionRunner;
-import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
+import com.google.common.collect.ImmutableList;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -46,9 +46,26 @@ import javax.annotation.Nullable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
+@RunWith(Parameterized.class)
 public class SpannerGroupWriteIT {
+
+  @Parameter
+  public Dialect dialect;
+
+  @Parameters(name = "dialect = {0}")
+  public static List<Object[]> data() {
+    List<Object[]> parameters = new ArrayList<>();
+    for (Dialect dialect : Dialect.values()) {
+      parameters.add(new Object[] {dialect});
+    }
+    return parameters;
+  }
 
   private final Random random = new Random();
   private String instanceId;
@@ -74,17 +91,35 @@ public class SpannerGroupWriteIT {
       // Does not exist, ignore.
     }
 
-    OperationFuture<Database, CreateDatabaseMetadata> op =
-        adminClient.createDatabase(
-            instanceId,
-            databaseId,
-            Arrays.asList(
-                "CREATE TABLE users ("
-                    + "id STRING(MAX) NOT NULL, state STRING(MAX) NOT NULL) PRIMARY KEY (id)",
-                "CREATE TABLE PendingReviews (id INT64, action STRING(MAX), "
-                    + "note STRING(MAX), userId STRING(MAX),) PRIMARY KEY (id)"));
-
-    op.get();
+    if (dialect == Dialect.POSTGRESQL) {
+      Database database =
+          adminClient
+              .newDatabaseBuilder(
+                  DatabaseId.of(spannerOptions.getProjectId(), instanceId, databaseId))
+              .setDialect(Dialect.POSTGRESQL)
+              .build();
+      adminClient.createDatabase(database, ImmutableList.of()).get();
+      adminClient.updateDatabaseDdl(
+          instanceId,
+          databaseId,
+          Arrays.asList(
+              "CREATE TABLE users "
+                  + "(id varchar NOT NULL primary key, state varchar NOT NULL)",
+              "CREATE TABLE PendingReviews (id bigint primary key, action varchar, "
+                  + "note varchar, userId varchar)"),
+          null).get();
+    } else {
+      adminClient
+          .createDatabase(
+              instanceId,
+              databaseId,
+              Arrays.asList(
+                  "CREATE TABLE users ("
+                      + "id STRING(MAX) NOT NULL, state STRING(MAX) NOT NULL) PRIMARY KEY (id)",
+                  "CREATE TABLE PendingReviews (id INT64, action STRING(MAX), "
+                      + "note STRING(MAX), userId STRING(MAX),) PRIMARY KEY (id)"))
+          .get();
+    }
 
     DatabaseClient dbClient = getDbClient();
 
@@ -135,27 +170,46 @@ public class SpannerGroupWriteIT {
           "--instanceId=" + instanceId,
           "--databaseId=" + databaseId,
           "--suspiciousUsersFile=" + tempPath,
-          "--runner=DirectRunner"
+          "--runner=DirectRunner",
+          "--dialect=" + dialect
         });
 
     DatabaseClient dbClient = getDbClient();
+    Statement countUsersStatement;
+    if (dialect == Dialect.POSTGRESQL) {
+      countUsersStatement =
+          Statement.newBuilder("SELECT COUNT(*) FROM users WHERE STATE = $1")
+              .bind("p1")
+              .to("BLOCKED")
+              .build();
+    } else {
+      countUsersStatement =
+          Statement.newBuilder("SELECT COUNT(*) FROM users WHERE STATE = @state")
+              .bind("state")
+              .to("BLOCKED")
+              .build();
+    }
     try (ReadContext context = dbClient.singleUse()) {
-      ResultSet rs =
-          context.executeQuery(
-              Statement.newBuilder("SELECT COUNT(*) FROM users WHERE STATE = @state")
-                  .bind("state")
-                  .to("BLOCKED")
-                  .build());
+      ResultSet rs = context.executeQuery(countUsersStatement);
       assertTrue(rs.next());
       assertEquals(10, rs.getLong(0));
     }
+    Statement countPendingReviewsStatement;
+    if (dialect == Dialect.POSTGRESQL) {
+      countPendingReviewsStatement =
+          Statement.newBuilder("SELECT COUNT(*) FROM PendingReviews WHERE ACTION = $1")
+              .bind("p1")
+              .to("REVIEW ACCOUNT")
+              .build();
+    } else {
+      countPendingReviewsStatement =
+          Statement.newBuilder("SELECT COUNT(*) FROM PendingReviews WHERE ACTION = @action")
+              .bind("action")
+              .to("REVIEW ACCOUNT")
+              .build();
+    }
     try (ReadContext context = dbClient.singleUse()) {
-      ResultSet rs =
-          context.executeQuery(
-              Statement.newBuilder("SELECT COUNT(*) FROM PendingReviews WHERE ACTION = @action")
-                  .bind("action")
-                  .to("REVIEW ACCOUNT")
-                  .build());
+      ResultSet rs = context.executeQuery(countPendingReviewsStatement);
       assertTrue(rs.next());
       assertEquals(10, rs.getLong(0));
     }
