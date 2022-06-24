@@ -147,7 +147,12 @@ public class SpannerGroupWrite {
     // [END spanner_dataflow_writegroup]
   }
 
-  static void pgWrite(String instanceId, String databaseId, Pipeline pipeline, PCollection<String> suspiciousUserIds, Timestamp timestamp) {
+  static void pgWrite(
+      String instanceId,
+      String databaseId,
+      Pipeline pipeline,
+      PCollection<String> suspiciousUserIds,
+      Timestamp timestamp) {
     // [START spanner_pg_dataflow_writegroup]
     PCollectionView<Dialect> dialectView =
         pipeline.apply(Create.of(Dialect.POSTGRESQL)).apply(View.asSingleton());
