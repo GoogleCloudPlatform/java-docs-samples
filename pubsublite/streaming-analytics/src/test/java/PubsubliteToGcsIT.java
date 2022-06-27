@@ -69,8 +69,8 @@ public class PubsubliteToGcsIT {
   private static final String cloudRegion = "us-east1";
   private static final char zoneId = 'b';
   private static final String suffix = UUID.randomUUID().toString().substring(0, 6);
-  private static final String topicId = "pubsublite-streaming-analytics-" + suffix;
-  private static final String subscriptionId = "pubsublite-streaming-analytics-" + suffix;
+  private static final String topicId = "pubsublite-streaming-analytics-topic-" + suffix;
+  private static final String subscriptionId = "pubsublite-streaming-analytics-sub-" + suffix;
   private static final String bucketName = "pubsublite-it";
   private static final String directoryPrefix = "samples/" + suffix;
   private static final String jobName = "pubsublite-dataflow-job-" + suffix;
@@ -136,7 +136,7 @@ public class PubsubliteToGcsIT {
     // Create a test topic and subscription.
     try (AdminClient adminClient = AdminClient.create(adminClientSettings)) {
       Topic responseTopic = adminClient.createTopic(topic).get();
-      System.out.println(responseTopic.getAllFields() + "created successfully.");
+      System.out.println(responseTopic.getAllFields() + " created successfully.");
       Subscription response = adminClient.createSubscription(subscription).get();
       System.out.println(response.getAllFields() + " created successfully.");
     }
@@ -155,7 +155,7 @@ public class PubsubliteToGcsIT {
     // Delete the output files.
     Page<Blob> blobs = storage.list(bucketName, Storage.BlobListOption.prefix(directoryPrefix));
     for (Blob blob : blobs.iterateAll()) {
-      // storage.delete(bucketName, blob.getName());
+      storage.delete(bucketName, blob.getName());
       System.out.println("Deleted a file: " + blob.getName());
     }
 
