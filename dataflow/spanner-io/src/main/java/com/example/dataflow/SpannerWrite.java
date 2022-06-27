@@ -16,19 +16,25 @@
 
 package com.example.dataflow;
 
+import com.google.cloud.spanner.Dialect;
 import com.google.cloud.spanner.Mutation;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.coders.AvroCoder;
 import org.apache.beam.sdk.coders.DefaultCoder;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerIO;
+import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.options.Default.Enum;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.Validation;
+import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.View;
 import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.PCollectionView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,6 +97,13 @@ public class SpannerWrite {
     String getDatabaseId();
 
     void setDatabaseId(String value);
+
+    @Description("Dialect of the database that is used")
+    @Default
+    @Enum("GOOGLE_STANDARD_SQL")
+    Dialect getDialect();
+
+    void setDialect(Dialect dialect);
   }
 
   @DefaultCoder(AvroCoder.class)
@@ -191,7 +204,8 @@ public class SpannerWrite {
         // Finally write the Mutations to Spanner
         .apply("WriteSingers", SpannerIO.write()
             .withInstanceId(instanceId)
-            .withDatabaseId(databaseId));
+            .withDatabaseId(databaseId)
+            .withDialectView(p.apply(Create.of(options.getDialect())).apply(View.asSingleton())));
 
     // Read albums from a tab-delimited file
     PCollection<Album> albums = p
@@ -199,6 +213,16 @@ public class SpannerWrite {
         // Parse the tab-delimited lines into Album objects
         .apply("ParseAlbums", ParDo.of(new ParseAlbum()));
 
+    if (options.getDialect() == Dialect.POSTGRESQL) {
+      pgWrite(instanceId, databaseId, p, albums);
+    } else {
+      spannerWrite(instanceId, databaseId, albums);
+    }
+
+    p.run().waitUntilFinish();
+  }
+
+  static void spannerWrite(String instanceId, String databaseId, PCollection<Album> albums) {
     // [START spanner_dataflow_write]
     albums
         // Spanner expects a Mutation object, so create it using the Album's data
@@ -218,7 +242,31 @@ public class SpannerWrite {
             .withInstanceId(instanceId)
             .withDatabaseId(databaseId));
     // [END spanner_dataflow_write]
+  }
 
-    p.run().waitUntilFinish();
+  static void pgWrite(
+      String instanceId, String databaseId, Pipeline pipeline, PCollection<Album> albums) {
+    // [START spanner_pg_dataflow_write]
+    PCollectionView<Dialect> dialectView =
+        pipeline.apply(Create.of(Dialect.POSTGRESQL)).apply(View.asSingleton());
+    albums
+        // Spanner expects a Mutation object, so create it using the Album's data
+        .apply("CreateAlbumMutation", ParDo.of(new DoFn<Album, Mutation>() {
+          @ProcessElement
+          public void processElement(ProcessContext c) {
+            Album album = c.element();
+            c.output(Mutation.newInsertOrUpdateBuilder("albums")
+                .set("singerId").to(album.singerId)
+                .set("albumId").to(album.albumId)
+                .set("albumTitle").to(album.albumTitle)
+                .build());
+          }
+        }))
+        // Write mutations to Spanner
+        .apply("WriteAlbums", SpannerIO.write()
+            .withInstanceId(instanceId)
+            .withDatabaseId(databaseId)
+            .withDialectView(dialectView));
+    // [END spanner_pg_dataflow_write]
   }
 }

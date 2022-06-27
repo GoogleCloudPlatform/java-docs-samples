@@ -16,12 +16,16 @@
 
 package com.example.dataflow;
 
+import com.google.cloud.spanner.Dialect;
+import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.spanner.ReadOperation;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerConfig;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerIO;
+import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.options.Default.Enum;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
@@ -52,6 +56,13 @@ public class SpannerReadAll {
 
     void setDatabaseId(String value);
 
+    @Description("Dialect of the database that is used")
+    @Default
+    @Enum("GOOGLE_STANDARD_SQL")
+    Dialect getDialect();
+
+    void setDialect(Dialect dialect);
+
     @Description("Output filename for records size")
     @Validation.Required
     String getOutput();
@@ -66,6 +77,24 @@ public class SpannerReadAll {
     SpannerConfig spannerConfig = SpannerConfig.create()
         .withInstanceId(options.getInstanceId())
         .withDatabaseId(options.getDatabaseId());
+
+    PCollection<Struct> allRecords;
+    if (options.getDialect() == Dialect.POSTGRESQL) {
+      allRecords = pgReadAll(spannerConfig, p);
+    } else {
+      allRecords = spannerReadAll(spannerConfig, p);
+    }
+
+    PCollection<Long> dbEstimatedSize = allRecords.apply(EstimateSize.create())
+        .apply(Sum.longsGlobally());
+
+    dbEstimatedSize.apply(ToString.elements()).apply(TextIO.write().to(options.getOutput())
+        .withoutSharding());
+
+    p.run().waitUntilFinish();
+  }
+
+  static PCollection<Struct> spannerReadAll(SpannerConfig spannerConfig, Pipeline p) {
     // [START spanner_dataflow_readall]
     PCollection<Struct> allRecords = p.apply(SpannerIO.read()
         .withSpannerConfig(spannerConfig)
@@ -79,13 +108,38 @@ public class SpannerReadAll {
             })).apply(SpannerIO.readAll().withSpannerConfig(spannerConfig));
     // [END spanner_dataflow_readall]
 
-    PCollection<Long> dbEstimatedSize = allRecords.apply(EstimateSize.create())
-        .apply(Sum.longsGlobally());
+    return allRecords;
+  }
 
-    dbEstimatedSize.apply(ToString.elements()).apply(TextIO.write().to(options.getOutput())
-        .withoutSharding());
+  static PCollection<Struct> pgReadAll(SpannerConfig spannerConfig, Pipeline p) {
+    // [START spanner_pg_dataflow_readall]
+    PCollection<Struct> allRecords =
+        p.apply(
+                SpannerIO.read()
+                    .withSpannerConfig(spannerConfig)
+                    .withBatching(false)
+                    .withQuery(
+                        Statement.newBuilder(
+                                "SELECT t.table_name FROM information_schema.tables AS t "
+                                    + "WHERE t.table_catalog = $1 AND t.table_schema = $2")
+                            .bind("p1")
+                            .to(spannerConfig.getDatabaseId().get())
+                            .bind("p2")
+                            .to("public")
+                            .build()))
+            .apply(
+                MapElements.into(TypeDescriptor.of(ReadOperation.class))
+                    .via(
+                        (SerializableFunction<Struct, ReadOperation>)
+                            input -> {
+                              String tableName = input.getString(0);
+                              return ReadOperation.create()
+                                  .withQuery("SELECT * FROM \"" + tableName + "\"");
+                            }))
+            .apply(SpannerIO.readAll().withSpannerConfig(spannerConfig));
+    // [END spanner_pg_dataflow_readall]
 
-    p.run().waitUntilFinish();
+    return allRecords;
   }
 
 }

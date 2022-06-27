@@ -17,6 +17,7 @@
 package com.example.dataflow;
 
 import com.google.cloud.Timestamp;
+import com.google.cloud.spanner.Dialect;
 import com.google.cloud.spanner.Mutation;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
@@ -24,13 +25,18 @@ import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.spanner.MutationGroup;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerIO;
+import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.options.Default.Enum;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.Validation;
+import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.SimpleFunction;
+import org.apache.beam.sdk.transforms.View;
 import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.PCollectionView;
 
 /**
  * This sample demonstrates how to group together mutations when writing to the Cloud Spanner
@@ -51,6 +57,13 @@ public class SpannerGroupWrite {
 
     void setDatabaseId(String value);
 
+    @Description("Dialect of the database that is used")
+    @Default
+    @Enum("GOOGLE_STANDARD_SQL")
+    Dialect getDialect();
+
+    void setDialect(Dialect dialect);
+
     @Description("Singers output filename in the format: singer_id\tfirst_name\tlast_name")
     @Validation.Required
     String getSuspiciousUsersFile();
@@ -67,12 +80,82 @@ public class SpannerGroupWrite {
     String databaseId = options.getDatabaseId();
 
     String usersIdFile = options.getSuspiciousUsersFile();
-
     PCollection<String> suspiciousUserIds = p.apply(TextIO.read().from(usersIdFile));
-
     final Timestamp timestamp = Timestamp.now();
 
+    if (options.getDialect() == Dialect.POSTGRESQL) {
+      pgWrite(instanceId, databaseId, p, suspiciousUserIds, timestamp);
+    } else {
+      spannerWrite(instanceId, databaseId, suspiciousUserIds, timestamp);
+    }
+
+    p.run().waitUntilFinish();
+
+  }
+
+  static void spannerWrite(
+      String instanceId,
+      String databaseId,
+      PCollection<String> suspiciousUserIds,
+      Timestamp timestamp) {
     // [START spanner_dataflow_writegroup]
+    PCollection<MutationGroup> mutations =
+        suspiciousUserIds.apply(
+            MapElements.via(
+                new SimpleFunction<String, MutationGroup>() {
+
+                  @Override
+                  public MutationGroup apply(String userId) {
+                    // Immediately block the user.
+                    Mutation userMutation =
+                        Mutation.newUpdateBuilder("Users")
+                            .set("id")
+                            .to(userId)
+                            .set("state")
+                            .to("BLOCKED")
+                            .build();
+                    long generatedId =
+                        Hashing.sha1()
+                            .newHasher()
+                            .putString(userId, Charsets.UTF_8)
+                            .putLong(timestamp.getSeconds())
+                            .putLong(timestamp.getNanos())
+                            .hash()
+                            .asLong();
+
+                    // Add an entry to pending review requests.
+                    Mutation pendingReview =
+                        Mutation.newInsertOrUpdateBuilder("PendingReviews")
+                            .set("id")
+                            .to(generatedId) // Must be deterministically generated.
+                            .set("userId")
+                            .to(userId)
+                            .set("action")
+                            .to("REVIEW ACCOUNT")
+                            .set("note")
+                            .to("Suspicious activity detected.")
+                            .build();
+
+                    return MutationGroup.create(userMutation, pendingReview);
+                  }
+                }));
+
+    mutations.apply(SpannerIO.write()
+        .withInstanceId(instanceId)
+        .withDatabaseId(databaseId)
+        .grouped());
+    // [END spanner_dataflow_writegroup]
+  }
+
+  static void pgWrite(
+      String instanceId,
+      String databaseId,
+      Pipeline pipeline,
+      PCollection<String> suspiciousUserIds,
+      Timestamp timestamp) {
+    // [START spanner_pg_dataflow_writegroup]
+    PCollectionView<Dialect> dialectView =
+        pipeline.apply(Create.of(Dialect.POSTGRESQL)).apply(View.asSingleton());
     PCollection<MutationGroup> mutations = suspiciousUserIds
         .apply(MapElements.via(new SimpleFunction<String, MutationGroup>() {
 
@@ -105,11 +188,9 @@ public class SpannerGroupWrite {
     mutations.apply(SpannerIO.write()
         .withInstanceId(instanceId)
         .withDatabaseId(databaseId)
+        .withDialectView(dialectView)
         .grouped());
-    // [END spanner_dataflow_writegroup]
-
-    p.run().waitUntilFinish();
-
+    // [END spanner_pg_dataflow_writegroup]
   }
 
 }

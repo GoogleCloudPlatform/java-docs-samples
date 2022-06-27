@@ -18,20 +18,21 @@ package com.example.dataflow;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
+import com.google.cloud.spanner.Dialect;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionRunner;
-import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
+import com.google.common.collect.ImmutableList;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -41,9 +42,26 @@ import javax.annotation.Nullable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
+@RunWith(Parameterized.class)
 public class SpannerReadIT {
+
+  @Parameter
+  public Dialect dialect;
+
+  @Parameters(name = "dialect = {0}")
+  public static List<Object[]> data() {
+    List<Object[]> parameters = new ArrayList<>();
+    for (Dialect dialect : Dialect.values()) {
+      parameters.add(new Object[] {dialect});
+    }
+    return parameters;
+  }
 
   private final Random random = new Random();
   private String instanceId;
@@ -68,18 +86,37 @@ public class SpannerReadIT {
       // Does not exist, ignore.
     }
 
-    OperationFuture<Database, CreateDatabaseMetadata> op =
-        adminClient.createDatabase(
-            instanceId,
-            databaseId,
-            Arrays.asList(
-                "CREATE TABLE Singers "
-                    + "(singerId INT64 NOT NULL, firstName STRING(MAX) NOT NULL, "
-                    + "lastName STRING(MAX) NOT NULL,) PRIMARY KEY (singerId)",
-                "CREATE TABLE Albums (singerId INT64 NOT NULL, albumId INT64 NOT NULL, "
-                    + "albumTitle STRING(MAX) NOT NULL,) PRIMARY KEY (singerId, albumId)"));
-
-    op.get();
+    if (dialect == Dialect.POSTGRESQL) {
+      Database database =
+          adminClient
+              .newDatabaseBuilder(
+                  DatabaseId.of(spannerOptions.getProjectId(), instanceId, databaseId))
+              .setDialect(Dialect.POSTGRESQL)
+              .build();
+      adminClient.createDatabase(database, ImmutableList.of()).get();
+      adminClient.updateDatabaseDdl(
+          instanceId,
+          databaseId,
+          Arrays.asList(
+              "CREATE TABLE Singers "
+                  + "(singerId bigint NOT NULL primary key, firstName varchar NOT NULL, "
+                  + "lastName varchar NOT NULL)",
+              "CREATE TABLE Albums (singerId bigint NOT NULL, albumId bigint NOT NULL, "
+                  + "albumTitle varchar NOT NULL, PRIMARY KEY (singerId, albumId))"),
+          null).get();
+    } else {
+      adminClient
+          .createDatabase(
+              instanceId,
+              databaseId,
+              Arrays.asList(
+                  "CREATE TABLE Singers "
+                      + "(singerId INT64 NOT NULL, firstName STRING(MAX) NOT NULL, "
+                      + "lastName STRING(MAX) NOT NULL,) PRIMARY KEY (singerId)",
+                  "CREATE TABLE Albums (singerId INT64 NOT NULL, albumId INT64 NOT NULL, "
+                      + "albumTitle STRING(MAX) NOT NULL,) PRIMARY KEY (singerId, albumId)"))
+          .get();
+    }
 
     List<Mutation> mutations =
         Arrays.asList(
@@ -166,7 +203,8 @@ public class SpannerReadIT {
           "--instanceId=" + instanceId,
           "--databaseId=" + databaseId,
           "--output=" + outPath,
-          "--runner=DirectRunner"
+          "--runner=DirectRunner",
+          "--dialect=" + dialect
         });
 
     String content = Files.readAllLines(outPath).stream().collect(Collectors.joining("\n"));
