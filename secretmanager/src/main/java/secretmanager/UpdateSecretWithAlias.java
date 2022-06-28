@@ -50,7 +50,7 @@ public class UpdateSecretWithAlias {
               .build();
 
       // Build the field mask.
-      FieldMask fieldMask = FieldMaskUtil.fromString("versionAliases");
+      FieldMask fieldMask = FieldMaskUtil.fromString("version_aliases");
 
       // Update the secret.
       Secret updatedSecret = client.updateSecret(secret, fieldMask);
