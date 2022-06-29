@@ -40,6 +40,7 @@ public class Authentication {
   // Example `audience` value (Cloud Run): https://my-cloud-run-service.run.app/
   // [END cloudrun_service_to_service_auth]
   // [START functions_bearer_token]
+  // For Cloud Functions, endpoint (`serviceUrl`) and `audience` are the same.
   // Example `audience` value (Cloud Functions): https://project-region-projectid.cloudfunctions.net/myFunction
   // [START cloudrun_service_to_service_auth]
   public static HttpResponse makeGetRequest(String serviceUrl, String audience) throws IOException {
