@@ -35,6 +35,9 @@ import com.google.api.services.storagetransfer.v1.model.TransferOptions;
 import com.google.api.services.storagetransfer.v1.model.TransferSpec;
 import com.google.cloud.Binding;
 import com.google.cloud.Policy;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.BucketInfo.LifecycleRule;
 import com.google.cloud.storage.BucketInfo.LifecycleRule.LifecycleAction;
@@ -42,9 +45,13 @@ import com.google.cloud.storage.BucketInfo.LifecycleRule.LifecycleCondition;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageClass;
 import com.google.cloud.storage.storagetransfer.samples.CheckLatestTransferOperation;
+import com.google.cloud.storage.storagetransfer.samples.DownloadToPosix;
 import com.google.cloud.storage.storagetransfer.samples.QuickstartSample;
+import com.google.cloud.storage.storagetransfer.samples.TransferBetweenPosix;
 import com.google.cloud.storage.storagetransfer.samples.TransferFromAws;
+import com.google.cloud.storage.storagetransfer.samples.TransferFromPosix;
 import com.google.cloud.storage.storagetransfer.samples.TransferToNearline;
+import com.google.cloud.storage.storagetransfer.samples.TransferUsingManifest;
 import com.google.cloud.storage.storagetransfer.samples.apiary.CheckLatestTransferOperationApiary;
 import com.google.cloud.storage.storagetransfer.samples.apiary.CreateTransferClient;
 import com.google.cloud.storage.storagetransfer.samples.apiary.TransferFromAwsApiary;
@@ -57,7 +64,10 @@ import com.google.storagetransfer.v1.proto.TransferProto;
 import com.google.storagetransfer.v1.proto.TransferProto.GetGoogleServiceAccountRequest;
 import com.google.storagetransfer.v1.proto.TransferTypes;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -173,7 +183,7 @@ public class ITStoragetransferSamplesTest {
 
   // deletes a transfer job created by a sample to clean up
   private void deleteTransferJob(String sampleOutput) {
-    Pattern pattern = Pattern.compile("(transferJobs/\\d+)");
+    Pattern pattern = Pattern.compile("(transferJobs/.+)");
     Matcher matcher = pattern.matcher(sampleOutput);
     matcher.find();
     String jobName = matcher.group(1);
@@ -396,9 +406,91 @@ public class ITStoragetransferSamplesTest {
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
-    System.out.println(sampleOutput);
     assertThat(sampleOutput).contains("transferJobs/");
 
     deleteTransferJob(sampleOutput);
+  }
+
+  @Test
+  public void testDownloadToPosix() throws Exception {
+    PrintStream standardOut = System.out;
+    final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(sampleOutputCapture));
+
+    String sinkAgentPoolName = ""; // use default agent pool
+    String rootDirectory = Files.createTempDirectory("sts-download-to-posix-test").toString();
+    String gcsSourcePath = rootDirectory + "/";
+
+    storage.create(BlobInfo.newBuilder(SOURCE_GCS_BUCKET, gcsSourcePath + "test.txt").build());
+    try {
+      DownloadToPosix.downloadToPosix(PROJECT_ID, sinkAgentPoolName, SOURCE_GCS_BUCKET, gcsSourcePath, rootDirectory);
+    } finally {
+      storage.delete(BlobId.of(SOURCE_GCS_BUCKET, gcsSourcePath + "test.txt"));
+      String sampleOutput = sampleOutputCapture.toString();
+      System.setOut(standardOut);
+      assertThat(sampleOutput).contains("transferJobs/");
+      deleteTransferJob(sampleOutput);
+    }
+  }
+
+  @Test
+  public void testTransferFromPosix() throws Exception {
+    PrintStream standardOut = System.out;
+    final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(sampleOutputCapture));
+
+    String sourceAgentPoolName = ""; // use default agent pool
+    String rootDirectory = Files.createTempDirectory("sts-transfer-from-posix-test").toString();
+
+    TransferFromPosix.transferFromPosix(PROJECT_ID, sourceAgentPoolName, rootDirectory, SINK_GCS_BUCKET);
+
+    String sampleOutput = sampleOutputCapture.toString();
+    System.setOut(standardOut);
+    assertThat(sampleOutput).contains("transferJobs/");
+    deleteTransferJob(sampleOutput);
+  }
+
+
+
+  @Test
+  public void testTransferBetweenPosix() throws Exception {
+    PrintStream standardOut = System.out;
+    final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(sampleOutputCapture));
+
+    String sinkAgentPoolName = ""; // use default agent pool
+    String sourceAgentPoolName = ""; // use default agent pool
+    String rootDirectory = Files.createTempDirectory("sts-posix-test-source").toString();
+    String destinationDirectory =  Files.createTempDirectory("sts-posix-test-sink").toString();
+
+    TransferBetweenPosix.transferBetweenPosix(
+            PROJECT_ID, sourceAgentPoolName, sinkAgentPoolName, rootDirectory, destinationDirectory, SINK_GCS_BUCKET);
+
+    String sampleOutput = sampleOutputCapture.toString();
+    System.setOut(standardOut);
+    assertThat(sampleOutput).contains("transferJobs/");
+    deleteTransferJob(sampleOutput);
+  }
+
+  @Test
+  public void testTransferUsingManifest() throws Exception {
+    PrintStream standardOut = System.out;
+    final ByteArrayOutputStream sampleOutputCapture = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(sampleOutputCapture));
+
+    String sourceAgentPoolName = ""; // use default agent pool
+    String rootDirectory = Files.createTempDirectory("sts-manifest-test").toString();
+
+    storage.create(BlobInfo.newBuilder(SOURCE_GCS_BUCKET, "manifest.csv").build());
+    try {
+      TransferUsingManifest.transferUsingManifest(PROJECT_ID, sourceAgentPoolName, rootDirectory, SINK_GCS_BUCKET,
+              "gs://" + SOURCE_GCS_BUCKET + "/manifest.csv");
+    } finally {
+      storage.delete(BlobId.of(SOURCE_GCS_BUCKET, "manifest.csv"));
+      String sampleOutput = sampleOutputCapture.toString();
+      System.setOut(standardOut);
+      assertThat(sampleOutput).contains("transferJobs/");
+      deleteTransferJob(sampleOutput);
+    }
   }
 }

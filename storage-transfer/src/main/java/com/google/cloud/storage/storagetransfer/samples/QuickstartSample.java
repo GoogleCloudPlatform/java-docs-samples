@@ -36,6 +36,7 @@ public class QuickstartSample {
 
     // The name of the  GCS bucket to transfer  objects to
     // String gcsSinkBucket = "your-sink-gcs-bucket";
+
     StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
 
     TransferJob transferJob =
