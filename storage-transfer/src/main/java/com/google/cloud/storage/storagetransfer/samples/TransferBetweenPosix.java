@@ -16,6 +16,7 @@
 
 package com.google.cloud.storage.storagetransfer.samples;
 
+// [START storagetransfer_transfer_posix_to_posix]
 import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
 import com.google.storagetransfer.v1.proto.TransferProto;
 import com.google.storagetransfer.v1.proto.TransferTypes.GcsData;
@@ -70,3 +71,4 @@ public class TransferBetweenPosix {
                 + " with name " + response.getName());
     }
 }
+// [END storagetransfer_transfer_posix_to_posix]

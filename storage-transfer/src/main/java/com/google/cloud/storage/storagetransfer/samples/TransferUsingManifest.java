@@ -16,6 +16,8 @@
 
 package com.google.cloud.storage.storagetransfer.samples;
 
+// [START storagetransfer_manifest_request]
+
 import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
 import com.google.storagetransfer.v1.proto.TransferProto;
 import com.google.storagetransfer.v1.proto.TransferTypes.TransferManifest;
@@ -68,3 +70,4 @@ public class TransferUsingManifest {
 
     }
 }
+// [END storagetransfer_manifest_request]

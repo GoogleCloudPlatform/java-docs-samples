@@ -16,6 +16,7 @@
 
 package com.google.cloud.storage.storagetransfer.samples;
 
+// [START storagetransfer_download_to_posix]
 import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
 import com.google.storagetransfer.v1.proto.TransferProto.CreateTransferJobRequest;
 import com.google.storagetransfer.v1.proto.TransferTypes.PosixFilesystem;
@@ -67,3 +68,4 @@ public class DownloadToPosix {
                 "name " + response.getName());
     }
 }
+// [END storagetransfer_download_to_posix]
