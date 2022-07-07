@@ -35,7 +35,6 @@ import com.google.api.services.storagetransfer.v1.model.TransferOptions;
 import com.google.api.services.storagetransfer.v1.model.TransferSpec;
 import com.google.cloud.Binding;
 import com.google.cloud.Policy;
-import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.BucketInfo;
@@ -64,10 +63,8 @@ import com.google.storagetransfer.v1.proto.TransferProto;
 import com.google.storagetransfer.v1.proto.TransferProto.GetGoogleServiceAccountRequest;
 import com.google.storagetransfer.v1.proto.TransferTypes;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.PrintStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -423,7 +420,8 @@ public class ITStoragetransferSamplesTest {
 
     storage.create(BlobInfo.newBuilder(SOURCE_GCS_BUCKET, gcsSourcePath + "test.txt").build());
     try {
-      DownloadToPosix.downloadToPosix(PROJECT_ID, sinkAgentPoolName, SOURCE_GCS_BUCKET, gcsSourcePath, rootDirectory);
+      DownloadToPosix.downloadToPosix(
+          PROJECT_ID, sinkAgentPoolName, SOURCE_GCS_BUCKET, gcsSourcePath, rootDirectory);
     } finally {
       storage.delete(BlobId.of(SOURCE_GCS_BUCKET, gcsSourcePath + "test.txt"));
       String sampleOutput = sampleOutputCapture.toString();
@@ -442,15 +440,14 @@ public class ITStoragetransferSamplesTest {
     String sourceAgentPoolName = ""; // use default agent pool
     String rootDirectory = Files.createTempDirectory("sts-transfer-from-posix-test").toString();
 
-    TransferFromPosix.transferFromPosix(PROJECT_ID, sourceAgentPoolName, rootDirectory, SINK_GCS_BUCKET);
+    TransferFromPosix.transferFromPosix(
+        PROJECT_ID, sourceAgentPoolName, rootDirectory, SINK_GCS_BUCKET);
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
     assertThat(sampleOutput).contains("transferJobs/");
     deleteTransferJob(sampleOutput);
   }
-
-
 
   @Test
   public void testTransferBetweenPosix() throws Exception {
@@ -461,10 +458,15 @@ public class ITStoragetransferSamplesTest {
     String sinkAgentPoolName = ""; // use default agent pool
     String sourceAgentPoolName = ""; // use default agent pool
     String rootDirectory = Files.createTempDirectory("sts-posix-test-source").toString();
-    String destinationDirectory =  Files.createTempDirectory("sts-posix-test-sink").toString();
+    String destinationDirectory = Files.createTempDirectory("sts-posix-test-sink").toString();
 
     TransferBetweenPosix.transferBetweenPosix(
-            PROJECT_ID, sourceAgentPoolName, sinkAgentPoolName, rootDirectory, destinationDirectory, SINK_GCS_BUCKET);
+        PROJECT_ID,
+        sourceAgentPoolName,
+        sinkAgentPoolName,
+        rootDirectory,
+        destinationDirectory,
+        SINK_GCS_BUCKET);
 
     String sampleOutput = sampleOutputCapture.toString();
     System.setOut(standardOut);
@@ -483,8 +485,12 @@ public class ITStoragetransferSamplesTest {
 
     storage.create(BlobInfo.newBuilder(SOURCE_GCS_BUCKET, "manifest.csv").build());
     try {
-      TransferUsingManifest.transferUsingManifest(PROJECT_ID, sourceAgentPoolName, rootDirectory, SINK_GCS_BUCKET,
-              "gs://" + SOURCE_GCS_BUCKET + "/manifest.csv");
+      TransferUsingManifest.transferUsingManifest(
+          PROJECT_ID,
+          sourceAgentPoolName,
+          rootDirectory,
+          SINK_GCS_BUCKET,
+          "gs://" + SOURCE_GCS_BUCKET + "/manifest.csv");
     } finally {
       storage.delete(BlobId.of(SOURCE_GCS_BUCKET, "manifest.csv"));
       String sampleOutput = sampleOutputCapture.toString();

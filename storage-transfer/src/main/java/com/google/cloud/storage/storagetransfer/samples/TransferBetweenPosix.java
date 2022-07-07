@@ -21,54 +21,73 @@ import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
 import com.google.storagetransfer.v1.proto.TransferProto;
 import com.google.storagetransfer.v1.proto.TransferTypes.GcsData;
 import com.google.storagetransfer.v1.proto.TransferTypes.PosixFilesystem;
-import com.google.storagetransfer.v1.proto.TransferTypes.TransferSpec;
 import com.google.storagetransfer.v1.proto.TransferTypes.TransferJob;
-
+import com.google.storagetransfer.v1.proto.TransferTypes.TransferSpec;
 import java.io.IOException;
 
 public class TransferBetweenPosix {
-    public static void transferBetweenPosix(String projectId, String sourceAgentPoolName, String sinkAgentPoolName,
-                                            String rootDirectory, String destinationDirectory, String bucketName) throws IOException {
-        // Your project id
-        // String projectId = "my-project-id";
+  public static void transferBetweenPosix(
+      String projectId,
+      String sourceAgentPoolName,
+      String sinkAgentPoolName,
+      String rootDirectory,
+      String destinationDirectory,
+      String bucketName)
+      throws IOException {
+    // Your project id
+    // String projectId = "my-project-id";
 
-        // The agent pool associated with the POSIX data source. If not provided, defaults to the default agent
-        // String sourceAgentPoolName = "projects/my-project/agentPools/transfer_service_default";
+    // The agent pool associated with the POSIX data source. If not provided, defaults to the
+    // default agent
+    // String sourceAgentPoolName = "projects/my-project/agentPools/transfer_service_default";
 
-        // The agent pool associated with the POSIX data sink. If not provided, defaults to the default agent
-        // String sinkAgentPoolName = "projects/my-project/agentPools/transfer_service_default";
+    // The agent pool associated with the POSIX data sink. If not provided, defaults to the default
+    // agent
+    // String sinkAgentPoolName = "projects/my-project/agentPools/transfer_service_default";
 
-        // The root directory path on the source filesystem
-        // String rootDirectory = "/directory/to/transfer/source"
+    // The root directory path on the source filesystem
+    // String rootDirectory = "/directory/to/transfer/source"
 
-        // The root directory path on the sink filesystem
-        // String destinationDirectory = "/directory/to/transfer/sink"
+    // The root directory path on the sink filesystem
+    // String destinationDirectory = "/directory/to/transfer/sink"
 
-        // The ID of the GCS bucket for intermediate storage
-        // String bucketName = "my-intermediate-bucket";
+    // The ID of the GCS bucket for intermediate storage
+    // String bucketName = "my-intermediate-bucket";
 
-        TransferJob transferJob = TransferJob.newBuilder()
-                .setProjectId(projectId)
-                .setTransferSpec(TransferSpec.newBuilder()
-                        .setSinkAgentPoolName(sinkAgentPoolName)
-                        .setSourceAgentPoolName(sourceAgentPoolName)
-                        .setPosixDataSource(PosixFilesystem.newBuilder().setRootDirectory(rootDirectory).build())
-                        .setPosixDataSink(PosixFilesystem.newBuilder().setRootDirectory(destinationDirectory).build())
-                        .setGcsIntermediateDataLocation(GcsData.newBuilder().setBucketName(bucketName).build())
-                        .build())
-                .setStatus(TransferJob.Status.ENABLED)
-                .build();
+    TransferJob transferJob =
+        TransferJob.newBuilder()
+            .setProjectId(projectId)
+            .setTransferSpec(
+                TransferSpec.newBuilder()
+                    .setSinkAgentPoolName(sinkAgentPoolName)
+                    .setSourceAgentPoolName(sourceAgentPoolName)
+                    .setPosixDataSource(
+                        PosixFilesystem.newBuilder().setRootDirectory(rootDirectory).build())
+                    .setPosixDataSink(
+                        PosixFilesystem.newBuilder().setRootDirectory(destinationDirectory).build())
+                    .setGcsIntermediateDataLocation(
+                        GcsData.newBuilder().setBucketName(bucketName).build())
+                    .build())
+            .setStatus(TransferJob.Status.ENABLED)
+            .build();
 
-        // Create a Transfer Service client
-        StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
+    // Create a Transfer Service client
+    StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
 
-        // Create the transfer job
-        TransferJob response =
-                storageTransfer.createTransferJob(
-                        TransferProto.CreateTransferJobRequest.newBuilder().setTransferJob(transferJob).build());
+    // Create the transfer job
+    TransferJob response =
+        storageTransfer.createTransferJob(
+            TransferProto.CreateTransferJobRequest.newBuilder()
+                .setTransferJob(transferJob)
+                .build());
 
-        System.out.println("Created and ran a transfer job from " + rootDirectory + " to " + destinationDirectory
-                + " with name " + response.getName());
-    }
+    System.out.println(
+        "Created and ran a transfer job from "
+            + rootDirectory
+            + " to "
+            + destinationDirectory
+            + " with name "
+            + response.getName());
+  }
 }
 // [END storagetransfer_transfer_posix_to_posix]
