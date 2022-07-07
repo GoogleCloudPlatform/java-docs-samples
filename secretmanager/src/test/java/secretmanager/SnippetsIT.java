@@ -359,4 +359,12 @@ public class SnippetsIT {
 
     assertThat(stdOut.toString()).contains("Updated secret");
   }
+  
+  @Test
+  public void testUpdateSecretWithAlias() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    UpdateSecretWithAlias.updateSecret(name.getProject(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("test");
+  }
 }
