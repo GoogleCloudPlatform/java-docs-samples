@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google Inc.
+ * Copyright 2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class TransferFromPosix {
                 .setTransferSpec(TransferSpec.newBuilder()
                         .setSourceAgentPoolName(sourceAgentPoolName)
                         .setPosixDataSource(PosixFilesystem.newBuilder().setRootDirectory(rootDirectory).build())
-                        .setGcsDataSink((GcsData.newBuilder().setBucketName(gcsSinkBucket))
+                        .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket)
                         .build()))
                 .setStatus(TransferJob.Status.ENABLED)
                 .build();

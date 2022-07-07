@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google Inc.
+ * Copyright 2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class DownloadToPosix {
                 .setProjectId(projectId)
                 .setTransferSpec(TransferSpec.newBuilder()
                         .setSinkAgentPoolName(sinkAgentPoolName)
-                        .setGcsDataSource((GcsData.newBuilder().setBucketName(gcsSourceBucket).setPath(gcsSourcePath)))
+                        .setGcsDataSource(GcsData.newBuilder().setBucketName(gcsSourceBucket).setPath(gcsSourcePath))
                         .setPosixDataSink(PosixFilesystem.newBuilder().setRootDirectory(rootDirectory).build())
                         .build())
                 .setStatus(TransferJob.Status.ENABLED)
