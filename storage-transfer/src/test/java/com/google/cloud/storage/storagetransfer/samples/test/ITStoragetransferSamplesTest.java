@@ -183,7 +183,7 @@ public class ITStoragetransferSamplesTest {
     Pattern pattern = Pattern.compile("(transferJobs/.+)");
     Matcher matcher = pattern.matcher(sampleOutput);
     matcher.find();
-    String jobName = matcher.group(1);
+    String jobName = matcher.group(1).trim().replace("\"", ""); //may be a trailing quote
 
     TransferTypes.TransferJob job =
         TransferTypes.TransferJob.newBuilder()
