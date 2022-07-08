@@ -180,10 +180,10 @@ public class ITStoragetransferSamplesTest {
 
   // deletes a transfer job created by a sample to clean up
   private void deleteTransferJob(String sampleOutput) {
-    Pattern pattern = Pattern.compile("(transferJobs/.+)");
+    Pattern pattern = Pattern.compile("(transferJobs/[a-zA-Z0-9]+)");
     Matcher matcher = pattern.matcher(sampleOutput);
     matcher.find();
-    String jobName = matcher.group(1).trim().replace("\"", ""); //may be a trailing quote
+    String jobName = matcher.group(1);
 
     TransferTypes.TransferJob job =
         TransferTypes.TransferJob.newBuilder()
