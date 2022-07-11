@@ -94,27 +94,36 @@ public class SpannerReadAll {
     p.run().waitUntilFinish();
   }
 
-  static PCollection<Struct> spannerReadAll(SpannerConfig spannerConfig, Pipeline p) {
+  static PCollection<Struct> spannerReadAll(SpannerConfig spannerConfig, Pipeline pipeline) {
     // [START spanner_dataflow_readall]
-    PCollection<Struct> allRecords = p.apply(SpannerIO.read()
-        .withSpannerConfig(spannerConfig)
-        .withBatching(false)
-        .withQuery("SELECT t.table_name FROM information_schema.tables AS t WHERE t"
-            + ".table_catalog = '' AND t.table_schema = ''")).apply(
-        MapElements.into(TypeDescriptor.of(ReadOperation.class))
-            .via((SerializableFunction<Struct, ReadOperation>) input -> {
-              String tableName = input.getString(0);
-              return ReadOperation.create().withQuery("SELECT * FROM " + tableName);
-            })).apply(SpannerIO.readAll().withSpannerConfig(spannerConfig));
+    PCollection<Struct> allRecords =
+        pipeline
+            .apply(
+                SpannerIO.read()
+                    .withSpannerConfig(spannerConfig)
+                    .withBatching(false)
+                    .withQuery(
+                        "SELECT t.table_name FROM information_schema.tables AS t WHERE t"
+                            + ".table_catalog = '' AND t.table_schema = ''"))
+            .apply(
+                MapElements.into(TypeDescriptor.of(ReadOperation.class))
+                    .via(
+                        (SerializableFunction<Struct, ReadOperation>)
+                            input -> {
+                              String tableName = input.getString(0);
+                              return ReadOperation.create().withQuery("SELECT * FROM " + tableName);
+                            }))
+            .apply(SpannerIO.readAll().withSpannerConfig(spannerConfig));
     // [END spanner_dataflow_readall]
 
     return allRecords;
   }
 
-  static PCollection<Struct> pgReadAll(SpannerConfig spannerConfig, Pipeline p) {
+  static PCollection<Struct> pgReadAll(SpannerConfig spannerConfig, Pipeline pipeline) {
     // [START spanner_pg_dataflow_readall]
     PCollection<Struct> allRecords =
-        p.apply(
+        pipeline
+            .apply(
                 SpannerIO.read()
                     .withSpannerConfig(spannerConfig)
                     .withBatching(false)
@@ -141,5 +150,4 @@ public class SpannerReadAll {
 
     return allRecords;
   }
-
 }

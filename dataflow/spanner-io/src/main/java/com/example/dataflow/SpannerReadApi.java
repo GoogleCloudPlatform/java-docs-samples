@@ -16,10 +16,13 @@
 
 package com.example.dataflow;
 
+import com.google.cloud.spanner.Dialect;
 import com.google.cloud.spanner.Struct;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerIO;
+import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.options.Default.Enum;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
@@ -47,6 +50,13 @@ public class SpannerReadApi {
 
     void setDatabaseId(String value);
 
+    @Description("Dialect of the database that is used")
+    @Default
+    @Enum("GOOGLE_STANDARD_SQL")
+    Dialect getDialect();
+
+    void setDialect(Dialect dialect);
+
     @Description("Output filename for records size")
     @Validation.Required
     String getOutput();
@@ -57,20 +67,17 @@ public class SpannerReadApi {
 
   public static void main(String[] args) {
     Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
-    Pipeline p = Pipeline.create(options);
+    Pipeline pipeline = Pipeline.create(options);
 
     String instanceId = options.getInstanceId();
     String databaseId = options.getDatabaseId();
-    // [START spanner_dataflow_readapi]
-    // Query for all the columns and rows in the specified Spanner table
-    PCollection<Struct> records = p.apply(
-        SpannerIO.read()
-            .withInstanceId(instanceId)
-            .withDatabaseId(databaseId)
-            .withTable("Singers")
-            .withColumns("singerId", "firstName", "lastName"));
-    // [END spanner_dataflow_readapi]
-
+    Dialect dialect = options.getDialect();
+    PCollection<Struct> records;
+    if (dialect == Dialect.POSTGRESQL) {
+      records = pgRead(instanceId, databaseId, pipeline);
+    } else {
+      records = spannerRead(instanceId, databaseId, pipeline);
+    }
 
     PCollection<Long> tableEstimatedSize = records
         // Estimate the size of every row
@@ -83,6 +90,32 @@ public class SpannerReadApi {
         .apply(ToString.elements())
         .apply(TextIO.write().to(options.getOutput()).withoutSharding());
 
-    p.run().waitUntilFinish();
+    pipeline.run().waitUntilFinish();
+  }
+
+  static PCollection<Struct> spannerRead(String instanceId, String databaseId, Pipeline pipeline) {
+    // [START spanner_dataflow_readapi]
+    // Query for all the columns and rows in the specified Spanner table
+    PCollection<Struct> records = pipeline.apply(
+        SpannerIO.read()
+            .withInstanceId(instanceId)
+            .withDatabaseId(databaseId)
+            .withTable("Singers")
+            .withColumns("singerId", "firstName", "lastName"));
+    // [END spanner_dataflow_readapi]
+    return records;
+  }
+
+  static PCollection<Struct> pgRead(String instanceId, String databaseId, Pipeline pipeline) {
+    // [START spanner_pg_dataflow_readapi]
+    // Query for all the columns and rows in the specified Spanner table
+    PCollection<Struct> records = pipeline.apply(
+        SpannerIO.read()
+            .withInstanceId(instanceId)
+            .withDatabaseId(databaseId)
+            .withTable("singers")
+            .withColumns("singer_id", "first_name", "last_name"));
+    // [END spanner_pg_dataflow_readapi]
+    return records;
   }
 }

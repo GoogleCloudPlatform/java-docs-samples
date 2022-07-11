@@ -86,13 +86,13 @@ public class SpannerRead {
 
   public static void main(String[] args) {
     Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
-    Pipeline p = Pipeline.create(options);
+    Pipeline pipeline = Pipeline.create(options);
 
     String instanceId = options.getInstanceId();
     String databaseId = options.getDatabaseId();
     // [START spanner_dataflow_read]
     // Query for all the columns and rows in the specified Spanner table
-    PCollection<Struct> records = p.apply(
+    PCollection<Struct> records = pipeline.apply(
         SpannerIO.read()
             .withInstanceId(instanceId)
             .withDatabaseId(databaseId)
@@ -111,6 +111,6 @@ public class SpannerRead {
         .apply(ToString.elements())
         .apply(TextIO.write().to(options.getOutput()).withoutSharding());
 
-    p.run().waitUntilFinish();
+    pipeline.run().waitUntilFinish();
   }
 }
