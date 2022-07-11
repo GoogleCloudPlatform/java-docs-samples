@@ -39,7 +39,8 @@ public class ConnectorIamAuthConnectionPoolFactory extends ConnectionPoolFactory
 
     // The following URL is equivalent to setting the config options below:
     // jdbc:postgresql:///<DB_NAME>?cloudSqlInstance=<INSTANCE_CONNECTION_NAME>&
-    // socketFactory=com.google.cloud.sql.postgres.SocketFactory&user=<DB_IAM_USER>&password=password
+    // socketFactory=com.google.cloud.sql.postgres.SocketFactory&user=<DB_IAM_USER>&
+    // password=password
     // See the link below for more info on building a JDBC URL for the Cloud SQL JDBC Socket Factory
     // https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#creating-the-jdbc-url
 
