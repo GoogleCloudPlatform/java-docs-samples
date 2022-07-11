@@ -16,13 +16,12 @@
 
 package com.example.cloudsql;
 
-// [START cloud_sql_postgres_servlet_connect_connector]
-// [START cloud_sql_postgres_servlet_connect_unix]
+// [START cloud_sql_postgres_servlet_auto_iam_authn]
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 
-public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
+public class ConnectorIamAuthConnectionPoolFactory extends ConnectionPoolFactory {
 
   // Note: Saving credentials in environment variables is convenient, but not
   // secure - consider a more secure solution such as
@@ -31,8 +30,7 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
   private static final String INSTANCE_CONNECTION_NAME =
       System.getenv("INSTANCE_CONNECTION_NAME");
   private static final String INSTANCE_UNIX_SOCKET = System.getenv("INSTANCE_UNIX_SOCKET");
-  private static final String DB_USER = System.getenv("DB_USER");
-  private static final String DB_PASS = System.getenv("DB_PASS");
+  private static final String DB_IAM_USER = System.getenv("DB_IAM_USER");
   private static final String DB_NAME = System.getenv("DB_NAME");
 
   public static DataSource createConnectionPool() {
@@ -41,36 +39,27 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
 
     // The following URL is equivalent to setting the config options below:
     // jdbc:postgresql:///<DB_NAME>?cloudSqlInstance=<INSTANCE_CONNECTION_NAME>&
-    // socketFactory=com.google.cloud.sql.postgres.SocketFactory&user=<DB_USER>&password=<DB_PASS>
+    // socketFactory=com.google.cloud.sql.postgres.SocketFactory&user=<DB_IAM_USER>&password=password
     // See the link below for more info on building a JDBC URL for the Cloud SQL JDBC Socket Factory
     // https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory#creating-the-jdbc-url
 
-    // Configure which instance and what database user to connect with.
+    // Configure which instance and what database to connect with.
     config.setJdbcUrl(String.format("jdbc:postgresql:///%s", DB_NAME));
-    config.setUsername(DB_USER); // e.g. "root", _postgres"
-    config.setPassword(DB_PASS); // e.g. "my-password"
 
     config.addDataSourceProperty("socketFactory", "com.google.cloud.sql_postgres.SocketFactory");
     config.addDataSourceProperty("cloudSqlInstance", INSTANCE_CONNECTION_NAME);
 
-    // [END cloud_sql_postgres_servlet_connect_connector]
-    // Unix sockets are not natively supported in Java, so it is necessary to use the Cloud SQL
-    // Java Connector to connect. When setting INSTANCE_UNIX_SOCKET, the connector will 
-    // call an external package that will enable Unix socket connections.
-    // Note: For Java users, the Cloud SQL Java Connector can provide authenticated connections
-    // which is usually preferable to using the Cloud SQL Proxy with Unix sockets.
-    // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
-    if (INSTANCE_UNIX_SOCKET != null) {
-      config.addDataSourceProperty("unixSocketPath", INSTANCE_UNIX_SOCKET);
-    }
-    // [START cloud_sql_postgres_servlet_connect_connector]
-
-    // [END cloud_sql_postgres_servlet_connect_unix]
-    // The ipTypes argument can be used to specify a comma delimited list of preferred IP types
-    // for connecting to a Cloud SQL instance. The argument ipTypes=PRIVATE will force the
-    // SocketFactory to connect with an instance's associated private IP.
-    config.addDataSourceProperty("ipTypes", "PUBLIC,PRIVATE");
-    // [START cloud_sql_postgres_servlet_connect_unix]
+    // If connecting using automatic database authentication, follow the instructions for
+    // connecting using the connector, but set the DB_IAM_USER value to an IAM user or
+    // service account that has been given access to the database.
+    // See https://cloud.google.com/sql/docs/postgres/iam-logins for more details.
+    config.addDataSourceProperty("enableIamAuth", "true");
+    config.addDataSourceProperty("user", DB_IAM_USER);
+    // Password must be set to a nonempty value to bypass driver validation errors.
+    config.addDataSourceProperty("password", "password");
+    // Explicitly set sslmode to disable to prevent driver from hanging.
+    // The Java Connector will handle SSL so it is unneccesary to enable it at the driver level.
+    config.addDataSourceProperty("sslmode", "disable");
 
 
     // ... Specify additional connection properties here.
@@ -82,5 +71,4 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
     return new HikariDataSource(config);
   }
 }
-// [END cloud_sql_postgres_servlet_connect_connector]
-// [END cloud_sql_postgres_servlet_connect_unix]
+// [END cloud_sql_postgres_servlet_auto_iam_authn]
