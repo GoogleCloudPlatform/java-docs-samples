@@ -49,6 +49,8 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     if (pool == null) {
       if (System.getenv("INSTANCE_HOST") != null) {
         pool = TcpConnectionPoolFactory.createConnectionPool();
+      } else if (System.getenv("DB_IAM_USER") != null) {
+        pool = ConnectorIamAuthnConnectionPoolFactory.createConnectionPool();
       } else {
         pool = ConnectorConnectionPoolFactory.createConnectionPool();
       }

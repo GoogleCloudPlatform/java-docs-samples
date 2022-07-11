@@ -21,7 +21,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 
-public class ConnectorIamAuthConnectionPoolFactory extends ConnectionPoolFactory {
+public class ConnectorIamAuthnConnectionPoolFactory extends ConnectionPoolFactory {
 
   // Note: Saving credentials in environment variables is convenient, but not
   // secure - consider a more secure solution such as
@@ -29,7 +29,6 @@ public class ConnectorIamAuthConnectionPoolFactory extends ConnectionPoolFactory
   // keep secrets safe.
   private static final String INSTANCE_CONNECTION_NAME =
       System.getenv("INSTANCE_CONNECTION_NAME");
-  private static final String INSTANCE_UNIX_SOCKET = System.getenv("INSTANCE_UNIX_SOCKET");
   private static final String DB_IAM_USER = System.getenv("DB_IAM_USER");
   private static final String DB_NAME = System.getenv("DB_NAME");
 
