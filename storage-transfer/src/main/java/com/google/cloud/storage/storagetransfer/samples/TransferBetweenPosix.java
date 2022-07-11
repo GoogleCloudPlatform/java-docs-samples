@@ -39,17 +39,17 @@ public class TransferBetweenPosix {
 
     // The agent pool associated with the POSIX data source. If not provided, defaults to the
     // default agent
-    // String sourceAgentPoolName = "projects/my-project/agentPools/transfer_service_default";
+    // String sourceAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
 
     // The agent pool associated with the POSIX data sink. If not provided, defaults to the default
     // agent
-    // String sinkAgentPoolName = "projects/my-project/agentPools/transfer_service_default";
+    // String sinkAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
 
     // The root directory path on the source filesystem
-    // String rootDirectory = "/directory/to/transfer/source"
+    // String rootDirectory = "/directory/to/transfer/source";
 
     // The root directory path on the sink filesystem
-    // String destinationDirectory = "/directory/to/transfer/sink"
+    // String destinationDirectory = "/directory/to/transfer/sink";
 
     // The ID of the GCS bucket for intermediate storage
     // String bucketName = "my-intermediate-bucket";

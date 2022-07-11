@@ -31,11 +31,11 @@ public class TransferFromPosix {
       String projectId, String sourceAgentPoolName, String rootDirectory, String gcsSinkBucket)
       throws IOException {
     // Your project id
-    // String projectId = "myproject-id";
+    // String projectId = "my-project-id";
 
     // The agent pool associated with the POSIX data source. If not provided, defaults to the
     // default agent
-    // String sourceAgentPoolName = "projects/my-project/agentPools/transfer_service_default";
+    // String sourceAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
 
     // The root directory path on the source filesystem
     // String rootDirectory = "/directory/to/transfer/source";

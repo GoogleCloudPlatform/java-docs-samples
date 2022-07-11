@@ -33,14 +33,15 @@ public class TransferUsingManifest {
       String sourceAgentPoolName,
       String rootDirectory,
       String gcsSinkBucket,
-      String manifestLocation)
+      String manifestBucket,
+      String manifestObjectName)
       throws IOException {
     // Your project id
-    // String projectId = "myproject-id";
+    // String projectId = "my-project-id";
 
     // The agent pool associated with the POSIX data source. If not provided, defaults to the
     // default agent
-    // String sourceAgentPoolName = "projects/my-project/agentPools/transfer_service_default";
+    // String sourceAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
 
     // The root directory path on the source filesystem
     // String rootDirectory = "/directory/to/transfer/source";
@@ -48,10 +49,13 @@ public class TransferUsingManifest {
     // The ID of the GCS bucket to transfer data to
     // String gcsSinkBucket = "my-sink-bucket";
 
-    // The location of the manifest file that specifies which file to transfer. Must be a "gs://"
-    // url
-    // String manifestLocation = "gs://my-bucket/path/to/manifest.csv";
+    // The ID of the GCS bucket which has your manifest file
+    // String manifestBucket = "my-bucket";
 
+    // The ID of the object in manifestBucket that specifies which files to transfer
+    // String manifestObjectName = "path/to/manifest.csv";
+
+    String manifestLocation = "gs://" + manifestBucket + "/" + manifestObjectName;
     TransferJob transferJob =
         TransferJob.newBuilder()
             .setProjectId(projectId)

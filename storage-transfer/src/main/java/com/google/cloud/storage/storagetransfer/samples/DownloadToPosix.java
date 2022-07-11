@@ -41,7 +41,7 @@ public class DownloadToPosix {
     // Make sure that the pub/sub resources are set up for this agent pool, or you'll get an error
     // (See the
     // "agent pools" tab in the Data Transfer Console)
-    // String sinkAgentPoolName = "projects/my-project/agentPools/transfer_service_default";
+    // String sinkAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
 
     // Your GCS source bucket name
     // String gcsSourceBucket = "my-gcs-source-bucket";

@@ -490,7 +490,8 @@ public class ITStoragetransferSamplesTest {
           sourceAgentPoolName,
           rootDirectory,
           SINK_GCS_BUCKET,
-          "gs://" + SOURCE_GCS_BUCKET + "/manifest.csv");
+          SOURCE_GCS_BUCKET,
+              "manifest.csv");
     } finally {
       storage.delete(BlobId.of(SOURCE_GCS_BUCKET, "manifest.csv"));
       String sampleOutput = sampleOutputCapture.toString();
