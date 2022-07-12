@@ -364,7 +364,7 @@ public class SamplesTest {
     do {
       result = HighVulnerabilitiesForImage.findHighSeverityVulnerabilitiesForImage(
           imageUrl, PROJECT_ID);
-      sleep(SLEEP_TIME);
+      sleep(SLEEP_TIME * 2);
       tries += 1;
     } while (result.size() != 1 && tries < TRY_LIMIT);
     assertEquals(1, result.size());
