@@ -238,7 +238,7 @@ public class SamplesTest {
     int tries = 0;
     do {
       newCount = receiver.messageCount;
-      sleep(SLEEP_TIME);
+      sleep(SLEEP_TIME * 2);
       tries += 1;
     } while (newCount <= startVal && tries < TRY_LIMIT);
     assertTrue(receiver.messageCount > startVal);
