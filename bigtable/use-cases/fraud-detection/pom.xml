@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>fraud-detection</artifactId>
+
+  <dependencies>
+    <dependency>
+      <artifactId>beam-runners-direct-java</artifactId>
+      <groupId>org.apache.beam</groupId>
+      <version>${apache_beam.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
+      <groupId>org.apache.beam</groupId>
+      <version>${apache_beam.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core
+      </artifactId>
+      <groupId>org.apache.beam</groupId>
+      <version>${apache_beam.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>httpclient</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <version>4.5.10</version>
+    </dependency>
+    <!-- [START bigtable_beam_connector_dependency] -->
+    <dependency>
+      <artifactId>bigtable-hbase-beam</artifactId>
+      <groupId>com.google.cloud.bigtable</groupId>
+      <version>2.3.0</version>
+    </dependency>
+    <!-- [END bigtable_beam_connector_dependency] -->
+    <dependency>
+      <artifactId>google-cloud-aiplatform</artifactId>
+      <groupId>com.google.cloud</groupId>
+      <version>2.9.7</version>
+    </dependency>
+    <dependency>
+      <artifactId>google-cloud-storage</artifactId>
+      <groupId>com.google.cloud</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <scope>test</scope>
+      <version>4.13.2</version>
+    </dependency>
+    <dependency>
+      <artifactId>truth</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>guava</artifactId>
+          <groupId>com.google.guava</groupId>
+        </exclusion>
+      </exclusions>
+      <groupId>com.google.truth</groupId>
+      <scope>test</scope>
+      <version>1.1.3</version>
+    </dependency>
+    <!-- manually declare guava to override version from shared-configuration -->
+    <dependency>
+      <artifactId>guava</artifactId>
+      <groupId>com.google.guava</groupId>
+      <version>31.1-jre</version>
+    </dependency>
+    <dependency>
+      <artifactId>slf4j-api</artifactId>
+      <groupId>org.slf4j</groupId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>slf4j-simple</artifactId>
+      <groupId>org.slf4j</groupId>
+      <version>${slf4j.version}</version>
+    </dependency>
+  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>libraries-bom</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>25.4.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <groupId>org.example</groupId>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <properties>
+    <apache_beam.version>2.40.0</apache_beam.version>
+    <exec.cleanupDaemonThreads>false</exec.cleanupDaemonThreads>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <slf4j.version>1.7.36</slf4j.version>
+  </properties>
+
+  <version>1.0-SNAPSHOT</version>
+
+</project>
