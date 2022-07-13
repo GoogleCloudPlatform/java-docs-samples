@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Instance;
+import com.google.cloud.compute.v1.InstancesClient;
 import compute.DeleteInstance;
 import compute.Util;
 import java.io.ByteArrayOutputStream;
@@ -56,6 +57,7 @@ public class CustomMachineTypeIT {
   private static String CUSTOM_MACHINE_TYPE_INSTANCE_EXT_MEMORY;
 
   private ByteArrayOutputStream stdOut;
+  private static InstancesClient instancesClient;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -72,7 +74,9 @@ public class CustomMachineTypeIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    // Cleanup existing stale resources.
+    instancesClient = InstancesClient.create();
+
+    // Clean up existing stale resources.
     Util.cleanUpExistingInstances("cmt-test-", PROJECT_ID, ZONE);
 
     String randomUUID = UUID.randomUUID().toString().split("-")[0];
@@ -102,6 +106,7 @@ public class CustomMachineTypeIT {
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, EXTRA_MEM_INSTANCE_WITHOUT_HELPER);
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, CUSTOM_MACHINE_TYPE_INSTANCE_EXT_MEMORY);
 
+    instancesClient.close();
     stdOut.close();
     System.setOut(out);
   }
@@ -121,8 +126,9 @@ public class CustomMachineTypeIT {
   @Test
   public void testCreateInstanceWithCustomMachineType()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Instance instance = CreateCustomMachineType.createInstanceWithCustomMachineType(PROJECT_ID,
+    CreateCustomMachineType.createInstanceWithCustomMachineType(PROJECT_ID,
         ZONE, CUSTOM_MACHINE_TYPE_INSTANCE, CUSTOM_MACHINE_TYPE);
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE, CUSTOM_MACHINE_TYPE_INSTANCE);
     assertThat(stdOut.toString()).contains("Instance created");
     Assertions.assertTrue(instance.getMachineType().endsWith(CUSTOM_MACHINE_TYPE));
   }
@@ -131,10 +137,12 @@ public class CustomMachineTypeIT {
   public void testCreateInstanceWithCustomMachineTypeWithHelper()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Custom instance creation with helper.
-    Instance instance = CreateWithHelper.createInstanceWithCustomMachineTypeWithHelper(PROJECT_ID,
+    CreateWithHelper.createInstanceWithCustomMachineTypeWithHelper(PROJECT_ID,
         ZONE, CUSTOM_MACHINE_TYPE_INSTANCE_WITH_HELPER,
         CreateWithHelper.CpuSeries.E2.getCpuSeries(), 4,
         8192);
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE,
+        CUSTOM_MACHINE_TYPE_INSTANCE_WITH_HELPER);
     assertThat(stdOut.toString()).contains("Instance created");
     assertThat(instance.getName()).contains(CUSTOM_MACHINE_TYPE_INSTANCE_WITH_HELPER);
     Assertions.assertTrue(instance.getMachineType()
@@ -144,9 +152,11 @@ public class CustomMachineTypeIT {
   @Test
   public void testCreateInstanceWithCustomSharedCore()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Instance instance = CreateInstanceWithCustomSharedCore.createInstanceWithCustomSharedCore(
+    CreateInstanceWithCustomSharedCore.createInstanceWithCustomSharedCore(
         PROJECT_ID, ZONE, CUSTOM_MACHINE_TYPE_INSTANCE_WITH_SHARED_CORE,
         CreateInstanceWithCustomSharedCore.CpuSeries.E2_MICRO.getCpuSeries(), 2048);
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE,
+        CUSTOM_MACHINE_TYPE_INSTANCE_WITH_SHARED_CORE);
     assertThat(stdOut.toString()).contains("Instance created");
     assertThat(instance.getName()).contains(CUSTOM_MACHINE_TYPE_INSTANCE_WITH_SHARED_CORE);
     Assertions.assertTrue(instance.getMachineType()
@@ -159,8 +169,10 @@ public class CustomMachineTypeIT {
     CreateCustomMachineType.createInstanceWithCustomMachineType(PROJECT_ID, ZONE,
         CUSTOM_MACHINE_TYPE_INSTANCE_EXT_MEMORY, CUSTOM_MACHINE_TYPE);
     assertThat(stdOut.toString()).contains("Instance created");
-    Instance instance = UpdateMemory.modifyInstanceWithExtendedMemory(PROJECT_ID, ZONE,
+    UpdateMemory.modifyInstanceWithExtendedMemory(PROJECT_ID, ZONE,
         CUSTOM_MACHINE_TYPE_INSTANCE_EXT_MEMORY, 819200);
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE,
+        CUSTOM_MACHINE_TYPE_INSTANCE_EXT_MEMORY);
     assertThat(stdOut.toString()).contains("Instance updated!");
     Assertions.assertTrue(instance.getMachineType().endsWith("819200-ext"));
   }
@@ -168,8 +180,10 @@ public class CustomMachineTypeIT {
   @Test
   public void testCreateInstanceWithCustomMachineTypeWithoutHelper()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Instance instance = CreateWithoutHelper.createInstanceWithCustomMachineTypeWithoutHelper(
+    CreateWithoutHelper.createInstanceWithCustomMachineTypeWithoutHelper(
         PROJECT_ID, ZONE, CUSTOM_MACHINE_TYPE_INSTANCE_WITHOUT_HELPER, "e2-custom", 4, 8192);
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE,
+        CUSTOM_MACHINE_TYPE_INSTANCE_WITHOUT_HELPER);
     assertThat(stdOut.toString()).contains("Instance created");
     Assertions.assertTrue(instance.getMachineType()
         .endsWith(String.format("zones/%s/machineTypes/e2-custom-4-8192", ZONE)));
@@ -178,8 +192,9 @@ public class CustomMachineTypeIT {
   @Test
   public void testCreateInstanceWithExtraMemWithoutHelper()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Instance instance = ExtraMemoryWithoutHelper.createInstanceWithExtraMemoryWithoutHelper(
+    ExtraMemoryWithoutHelper.createInstanceWithExtraMemoryWithoutHelper(
         PROJECT_ID, ZONE, EXTRA_MEM_INSTANCE_WITHOUT_HELPER, "custom", 4, 24320);
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE, EXTRA_MEM_INSTANCE_WITHOUT_HELPER);
     assertThat(stdOut.toString()).contains("Instance created");
     Assertions.assertTrue(instance.getMachineType()
         .endsWith(String.format("zones/%s/machineTypes/custom-4-24320-ext", ZONE)));

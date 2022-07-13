@@ -38,10 +38,10 @@ public class CreateCustomMachineType {
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "your-google-cloud-project-id";
     // Name of the zone to create the instance in. For example: "us-west3-b".
-    String zone = "gcloud-zone";
+    String zone = "google-cloud-zone";
     // Name of the new virtual machine (VM) instance.
     String instanceName = "instance-name";
-    // Machine type of the VM being created. This value uses the
+    // Machine type of the VM being created. This value must be in the
     // following format: "zones/{zone}/machineTypes/{typeName}".
     // For example: "zones/europe-west3-c/machineTypes/f1-micro"
     // OR
@@ -51,19 +51,26 @@ public class CreateCustomMachineType {
     createInstanceWithCustomMachineType(projectId, zone, instanceName, machineType);
   }
 
-  // Sends an instance creation request to the Compute Engine API and waits for it to complete.
-  public static Instance createInstanceWithCustomMachineType(String project, String zone,
-      String instanceName, String machineType)
+  // Sends an instance creation request to the Compute Engine API and waits for it to complete
+  // and returns the created Instance.
+  public static void createInstanceWithCustomMachineType(
+      String project, String zone, String instanceName, String machineType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `instancesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
     try (InstancesClient instancesClient = InstancesClient.create()) {
 
       AttachedDisk attachedDisk = AttachedDisk.newBuilder()
           .setInitializeParams(
               // Describe the size and source image of the boot disk to attach to the instance.
+              // The list of public images available in Compute Engine can be found here:
+              // https://cloud.google.com/compute/docs/images#list_of_public_images_available_on
               AttachedDiskInitializeParams.newBuilder()
                   .setSourceImage(
-                      String.format("projects/debian-cloud/global/images/family/%s", "debian-11"))
+                      String.format("projects/%s/global/images/family/%s", "debian-cloud",
+                          "debian-11"))
                   .setDiskSizeGb(10)
                   .build()
           )
@@ -72,7 +79,7 @@ public class CreateCustomMachineType {
           .setType(AttachedDisk.Type.PERSISTENT.name())
           .build();
 
-      // Collect information into the Instance object.
+      // Create the Instance object with the relevant information.
       Instance instance = Instance.newBuilder()
           .setName(instanceName)
           .addDisks(attachedDisk)
@@ -81,24 +88,24 @@ public class CreateCustomMachineType {
               NetworkInterface.newBuilder().setName("global/networks/default").build())
           .build();
 
-      // Prepare the request to insert an instance.
+      // Create the insert instance request object.
       InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
           .setProject(project)
           .setZone(zone)
           .setInstanceResource(instance)
           .build();
 
-      // Wait for the operation to complete.
+      // Invoke the API with the request object and wait for the operation to complete.
       Operation response = instancesClient.insertAsync(insertInstanceRequest)
           .get(3, TimeUnit.MINUTES);
+
       // Check for errors.
       if (response.hasError()) {
-        System.out.println("Instance creation failed ! ! " + response);
-        return Instance.getDefaultInstance();
+        System.out.println("Instance creation failed!!" + response);
+        return;
       }
       System.out.printf("Instance created : %s", instanceName);
       System.out.println("Operation Status: " + response.getStatus());
-      return instancesClient.get(project, zone, instanceName);
     }
   }
 }

@@ -40,7 +40,7 @@ public class UpdateMemory {
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "your-google-cloud-project-id";
     // Name of the zone to create the instance in. For example: "us-west3-b".
-    String zone = "gcloud-zone";
+    String zone = "google-cloud-zone";
     // Name of the new virtual machine (VM) instance.
     String instanceName = "instance-name";
     // The amount of memory for the VM instance, in megabytes.
@@ -49,14 +49,17 @@ public class UpdateMemory {
     modifyInstanceWithExtendedMemory(projectId, zone, instanceName, newMemory);
   }
 
-  // Modify an existing VM to use extended memory.
-  public static Instance modifyInstanceWithExtendedMemory(String project, String zone,
-      String instanceName, int newMemory)
+  // Modify an existing VM to use extended memory and return the modified Instance.
+  public static void modifyInstanceWithExtendedMemory(
+      String project, String zone, String instanceName, int newMemory)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `instancesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
     try (InstancesClient instancesClient = InstancesClient.create()) {
 
-      // Prepare the request to insert an instance.
+      // Create the get instance request object.
       GetInstanceRequest getInstanceRequest = GetInstanceRequest.newBuilder()
           .setProject(project)
           .setZone(zone)
@@ -70,7 +73,7 @@ public class UpdateMemory {
           || instance.getMachineType().contains("machineTypes/n2-")
           || instance.getMachineType().contains("machineTypes/n2d-"))) {
         System.out.println("extra memory is available only for N1, N2 and N2D CPUs");
-        return Instance.getDefaultInstance();
+        return;
       }
 
       // Make sure that the machine is turned off.
@@ -88,16 +91,16 @@ public class UpdateMemory {
         Operation response = operation.get(3, TimeUnit.MINUTES);
         if (response.hasError()) {
           System.out.printf("Unable to stop instance %s", response.getError());
-          return Instance.getDefaultInstance();
+          return;
         }
       }
 
-      // Modify the machine definition, remember that extended memory
+      // Modify the machine definition. Note that extended memory
       // is available only for N1, N2 and N2D CPUs.
       String machineType = instance.getMachineType();
       String start = machineType.substring(0, machineType.lastIndexOf("-"));
 
-      // Prepare the request.
+      // Create the machine type instance request object.
       SetMachineTypeInstanceRequest setMachineTypeInstanceRequest =
           SetMachineTypeInstanceRequest.newBuilder()
               .setProject(project)
@@ -108,17 +111,16 @@ public class UpdateMemory {
                   .build())
               .build();
 
-      // Wait for the operation to complete.
+      // Invoke the API with the request object and wait for the operation to complete.
       Operation response = instancesClient.setMachineTypeAsync(setMachineTypeInstanceRequest)
           .get(3, TimeUnit.MINUTES);
 
       // Check for errors.
       if (response.hasError()) {
         System.out.printf("Unable to update instance %s", response.getError());
-        return Instance.getDefaultInstance();
+        return;
       }
       System.out.println("Instance updated!");
-      return instancesClient.get(project, zone, instanceName);
     }
   }
 }
