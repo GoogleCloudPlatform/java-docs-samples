@@ -47,5 +47,3 @@ output "pubsub_output_subscription" {
   description = "The pub/sub output subscription used in this Terraform run."
   value       = google_pubsub_subscription.tf-fd-pubsub-output-subscription.name
 }
-
-
