@@ -64,7 +64,8 @@ public class CreateInstanceWithCustomSharedCore {
   }
 
   // Construct URI for a custom machine type with a shared core.
-  public static String customMachineTypeSharedCoreUri(String zone, String cpuSeries, int memory) {
+  public static String customMachineTypeSharedCoreUri(String zone, String cpuSeries, int memory)
+      throws Exception {
 
     if (!Arrays.asList(CpuSeries.E2_SMALL.cpuSeries, CpuSeries.E2_MICRO.cpuSeries,
         CpuSeries.E2_MEDIUM.cpuSeries).contains(cpuSeries)) {
@@ -83,34 +84,36 @@ public class CreateInstanceWithCustomSharedCore {
     // 1. Check the number of cores and if the coreCount is present in allowedCores.
     if (typeLimit.allowedCores.length > 0 && Arrays.stream(typeLimit.allowedCores)
         .noneMatch(x -> x == coreCount)) {
-      return String.format(
+      throw new Exception(String.format(
           "Invalid number of cores requested. Number of cores requested for CPU %s should be one of: %s",
           cpuSeries,
-          Arrays.toString(typeLimit.allowedCores));
+          Arrays.toString(typeLimit.allowedCores)));
     }
 
     // 2. Memory must be a multiple of 256 MB
     if (memory % 256 != 0) {
-      return "Requested memory must be a multiple of 256 MB";
+      throw new Exception("Requested memory must be a multiple of 256 MB");
     }
 
     // 3. Check if the requested memory isn't too little
     if (memory < coreCount * typeLimit.minMemPerCore) {
-      return String.format("Requested memory is too low. Minimum memory for %s is %s MB per core",
-          cpuSeries, typeLimit.minMemPerCore);
+      throw new Exception(
+          String.format("Requested memory is too low. Minimum memory for %s is %s MB per core",
+              cpuSeries, typeLimit.minMemPerCore));
     }
 
     // 4. Check if the requested memory isn't too much
     if (memory > coreCount * typeLimit.maxMemPerCore && !typeLimit.allowExtraMemory) {
-      return String.format(
+      throw new Exception(String.format(
           "Requested memory is too large.. Maximum memory allowed for %s is %s MB per core",
-          cpuSeries, typeLimit.extraMemoryLimit);
+          cpuSeries, typeLimit.extraMemoryLimit));
     }
 
     // 5. Check if the requested memory isn't too large
     if (memory > typeLimit.extraMemoryLimit && typeLimit.allowExtraMemory) {
-      return String.format("Requested memory is too large.. Maximum memory allowed for %s is %s MB",
-          cpuSeries, typeLimit.extraMemoryLimit);
+      throw new Exception(
+          String.format("Requested memory is too large.. Maximum memory allowed for %s is %s MB",
+              cpuSeries, typeLimit.extraMemoryLimit));
     }
 
     // Check if the CPU Series is E2 and return the custom machine type in the form of a string
@@ -147,10 +150,11 @@ public class CreateInstanceWithCustomSharedCore {
       String project, String zone, String instanceName, String cpuSeries, int memory)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Construct the URI string identifying the machine type.
-    String machineTypeURI = customMachineTypeSharedCoreUri(zone, cpuSeries, memory);
-    // Check for error string.
-    if (!machineTypeURI.startsWith("zones/")) {
-      System.out.printf("Unable to create custom machine type string: %s%n", machineTypeURI);
+    String machineTypeURI = null;
+    try {
+      machineTypeURI = customMachineTypeSharedCoreUri(zone, cpuSeries, memory);
+    } catch (Exception e) {
+      System.out.printf("Unable to create custom machine type string: %s%n", e);
       return;
     }
 

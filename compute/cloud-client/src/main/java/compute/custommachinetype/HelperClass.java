@@ -41,40 +41,42 @@ public class HelperClass {
   // Validate whether the requested parameters are allowed.
   // Find more information about limitations of custom machine types at:
   // https://cloud.google.com/compute/docs/general-purpose-machines#custom_machine_types
-  public static String validate(CustomMachineType cmt) {
+  public static String validate(CustomMachineType cmt) throws Exception {
 
     // Check the number of cores and if the coreCount is present in allowedCores.
     if (cmt.typeLimit.allowedCores.length > 0 && Arrays.stream(cmt.typeLimit.allowedCores)
         .noneMatch(x -> x == cmt.coreCount)) {
-      return String.format(
+      throw new Exception(String.format(
           "Invalid number of cores requested. Allowed number of cores for %s is: %s",
           cmt.cpuSeries,
-          Arrays.toString(cmt.typeLimit.allowedCores));
+          Arrays.toString(cmt.typeLimit.allowedCores)));
     }
 
     // Memory must be a multiple of 256 MB.
     if (cmt.memory % 256 != 0) {
-      return "Requested memory must be a multiple of 256 MB";
+      throw new Exception("Requested memory must be a multiple of 256 MB");
     }
 
     // Check if the requested memory isn't too little.
     if (cmt.memory < cmt.coreCount * cmt.typeLimit.minMemPerCore) {
-      return String.format("Requested memory is too low. Minimum memory for %s is %s MB per core",
-          cmt.cpuSeries, cmt.typeLimit.minMemPerCore);
+      throw new Exception(
+          String.format("Requested memory is too low. Minimum memory for %s is %s MB per core",
+              cmt.cpuSeries, cmt.typeLimit.minMemPerCore));
     }
 
     // Check if the requested memory isn't too much.
     if (cmt.memory > cmt.coreCount * cmt.typeLimit.maxMemPerCore
         && !cmt.typeLimit.allowExtraMemory) {
-      return String.format(
+      throw new Exception(String.format(
           "Requested memory is too large.. Maximum memory allowed for %s is %s MB per core",
-          cmt.cpuSeries, cmt.typeLimit.extraMemoryLimit);
+          cmt.cpuSeries, cmt.typeLimit.extraMemoryLimit));
     }
 
     // Check if the requested memory isn't too large.
     if (cmt.memory > cmt.typeLimit.extraMemoryLimit && cmt.typeLimit.allowExtraMemory) {
-      return String.format("Requested memory is too large.. Maximum memory allowed for %s is %s MB",
-          cmt.cpuSeries, cmt.typeLimit.extraMemoryLimit);
+      throw new Exception(
+          String.format("Requested memory is too large.. Maximum memory allowed for %s is %s MB",
+              cmt.cpuSeries, cmt.typeLimit.extraMemoryLimit));
     }
 
     return null;
@@ -151,10 +153,11 @@ public class HelperClass {
 
     CustomMachineType cmt = new CustomMachineType(zone, cpuSeries, memory, coreCount, typeLimit);
 
-    String response = validate(cmt);
-    if (response != null) {
+    try {
+      validate(cmt);
+    } catch (Exception e) {
       // Error in validation.
-      System.out.printf("Error in validation: %s", response);
+      System.out.printf("Error in validation: %s", e);
     }
     return cmt;
   }
