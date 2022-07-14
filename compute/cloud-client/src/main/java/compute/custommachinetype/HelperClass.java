@@ -41,12 +41,12 @@ public class HelperClass {
   // Validate whether the requested parameters are allowed.
   // Find more information about limitations of custom machine types at:
   // https://cloud.google.com/compute/docs/general-purpose-machines#custom_machine_types
-  public static String validate(CustomMachineType cmt) throws Exception {
+  public static String validate(CustomMachineType cmt) {
 
     // Check the number of cores and if the coreCount is present in allowedCores.
     if (cmt.typeLimit.allowedCores.length > 0 && Arrays.stream(cmt.typeLimit.allowedCores)
         .noneMatch(x -> x == cmt.coreCount)) {
-      throw new Exception(String.format(
+      throw new Error(String.format(
           "Invalid number of cores requested. Allowed number of cores for %s is: %s",
           cmt.cpuSeries,
           Arrays.toString(cmt.typeLimit.allowedCores)));
@@ -54,12 +54,12 @@ public class HelperClass {
 
     // Memory must be a multiple of 256 MB.
     if (cmt.memory % 256 != 0) {
-      throw new Exception("Requested memory must be a multiple of 256 MB");
+      throw new Error("Requested memory must be a multiple of 256 MB");
     }
 
     // Check if the requested memory isn't too little.
     if (cmt.memory < cmt.coreCount * cmt.typeLimit.minMemPerCore) {
-      throw new Exception(
+      throw new Error(
           String.format("Requested memory is too low. Minimum memory for %s is %s MB per core",
               cmt.cpuSeries, cmt.typeLimit.minMemPerCore));
     }
@@ -67,14 +67,14 @@ public class HelperClass {
     // Check if the requested memory isn't too much.
     if (cmt.memory > cmt.coreCount * cmt.typeLimit.maxMemPerCore
         && !cmt.typeLimit.allowExtraMemory) {
-      throw new Exception(String.format(
+      throw new Error(String.format(
           "Requested memory is too large.. Maximum memory allowed for %s is %s MB per core",
           cmt.cpuSeries, cmt.typeLimit.extraMemoryLimit));
     }
 
     // Check if the requested memory isn't too large.
     if (cmt.memory > cmt.typeLimit.extraMemoryLimit && cmt.typeLimit.allowExtraMemory) {
-      throw new Exception(
+      throw new Error(
           String.format("Requested memory is too large.. Maximum memory allowed for %s is %s MB",
               cmt.cpuSeries, cmt.typeLimit.extraMemoryLimit));
     }
@@ -155,7 +155,7 @@ public class HelperClass {
 
     try {
       validate(cmt);
-    } catch (Exception e) {
+    } catch (Error e) {
       // Error in validation.
       System.out.printf("Error in validation: %s", e);
     }

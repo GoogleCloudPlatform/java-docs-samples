@@ -67,11 +67,11 @@ public class CreateWithHelper {
   }
 
   public static String customMachineTypeUri(String zone, String cpuSeries, int coreCount,
-      int memory) throws Exception {
+      int memory) {
 
     if (!Arrays.asList(CpuSeries.E2.cpuSeries, CpuSeries.N1.cpuSeries, CpuSeries.N2.cpuSeries,
         CpuSeries.N2D.cpuSeries).contains(cpuSeries)) {
-      throw new Exception(String.format("Incorrect cpu type: %s", cpuSeries));
+      throw new Error(String.format("Incorrect cpu type: %s", cpuSeries));
     }
 
     TypeLimits typeLimit = Objects.requireNonNull(
@@ -84,34 +84,35 @@ public class CreateWithHelper {
     // 1. Check the number of cores and if the coreCount is present in allowedCores.
     if (typeLimit.allowedCores.length > 0 && Arrays.stream(typeLimit.allowedCores)
         .noneMatch(x -> x == coreCount)) {
-      throw new Exception(String.format(
-          "Invalid number of cores requested. Number of cores requested for CPU %s should be one of: %s",
+      throw new Error(String.format(
+          "Invalid number of cores requested. "
+              + "Number of cores requested for CPU %s should be one of: %s",
           cpuSeries,
           Arrays.toString(typeLimit.allowedCores)));
     }
 
     // 2. Memory must be a multiple of 256 MB
     if (memory % 256 != 0) {
-      throw new Exception("Requested memory must be a multiple of 256 MB");
+      throw new Error("Requested memory must be a multiple of 256 MB");
     }
 
     // 3. Check if the requested memory isn't too little
     if (memory < coreCount * typeLimit.minMemPerCore) {
-      throw new Exception(
+      throw new Error(
           String.format("Requested memory is too low. Minimum memory for %s is %s MB per core",
               cpuSeries, typeLimit.minMemPerCore));
     }
 
     // 4. Check if the requested memory isn't too much
     if (memory > coreCount * typeLimit.maxMemPerCore && !typeLimit.allowExtraMemory) {
-      throw new Exception(String.format(
+      throw new Error(String.format(
           "Requested memory is too large.. Maximum memory allowed for %s is %s MB per core",
           cpuSeries, typeLimit.extraMemoryLimit));
     }
 
     // 5. Check if the requested memory isn't too large
     if (memory > typeLimit.extraMemoryLimit && typeLimit.allowExtraMemory) {
-      throw new Exception(
+      throw new Error(
           String.format("Requested memory is too large.. Maximum memory allowed for %s is %s MB",
               cpuSeries, typeLimit.extraMemoryLimit));
     }
@@ -130,7 +131,8 @@ public class CreateWithHelper {
           memory);
     }
 
-    // Return the custom machine type in the form of a standard string acceptable by Compute Engine API.
+    // Return the custom machine type in the form of a standard string
+    // acceptable by Compute Engine API.
     return String.format("zones/%s/machineTypes/%s-%s-%s", zone, cpuSeries, coreCount, memory);
   }
 
@@ -149,13 +151,7 @@ public class CreateWithHelper {
       String project, String zone, String instanceName, String cpuSeries, int coreCount, int memory)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Construct the URI string identifying the machine type.
-    String machineTypeURI = null;
-    try {
-      machineTypeURI = customMachineTypeUri(zone, cpuSeries, coreCount, memory);
-    } catch (Exception e) {
-      System.out.printf("Unable to create custom machine type string: %s%n", e);
-      return;
-    }
+    String machineTypeUri = customMachineTypeUri(zone, cpuSeries, coreCount, memory);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -185,7 +181,7 @@ public class CreateWithHelper {
       Instance instance = Instance.newBuilder()
           .setName(instanceName)
           .addDisks(attachedDisk)
-          .setMachineType(machineTypeURI)
+          .setMachineType(machineTypeUri)
           .addNetworkInterfaces(
               NetworkInterface.newBuilder().setName("global/networks/default").build())
           .build();
@@ -203,8 +199,7 @@ public class CreateWithHelper {
 
       // Check for errors.
       if (response.hasError()) {
-        System.out.println("Instance creation failed!!" + response);
-        return;
+        throw new Error("Instance creation failed!!" + response);
       }
       System.out.printf("Instance created : %s", instanceName);
       System.out.println("Operation Status: " + response.getStatus());
