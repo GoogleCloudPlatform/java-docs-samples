@@ -50,12 +50,13 @@ public class FraudDetectionTestUtil {
   // Parse Terraform output and populate the variables needed for testing.
   private static void parseTerraformOutput(Process terraformProcess) throws IOException {
     BufferedReader reader =
-        new BufferedReader(new InputStreamReader(terraformProcess.getInputStream()));
+        new BufferedReader(new InputStreamReader(terraformProcess.getErrorStream()));
 
     // Process terraform output.
     String line;
     while ((line = reader.readLine()) != null) {
       System.out.println(line);
+      System.err.println(line);
       if (line.contains("pubsub_input_topic = ")) {
         // example: pubsub_output_topic = "THE NAME WE WANT"
         StreamingPipelineTest.pubsubInputTopic = line.split("\"")[1];
