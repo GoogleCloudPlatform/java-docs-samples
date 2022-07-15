@@ -26,6 +26,39 @@ import com.google.storagetransfer.v1.proto.TransferTypes.TransferSpec;
 import java.io.IOException;
 
 public class TransferBetweenPosix {
+
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+
+    // Your project id
+    String projectId = "my-project-id";
+
+    // The agent pool associated with the POSIX data source. If not provided, defaults to the
+    // default agent
+    String sourceAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
+
+    // The agent pool associated with the POSIX data sink. If not provided, defaults to the default
+    // agent
+    String sinkAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
+
+    // The root directory path on the source filesystem
+    String rootDirectory = "/directory/to/transfer/source";
+
+    // The root directory path on the sink filesystem
+    String destinationDirectory = "/directory/to/transfer/sink";
+
+    // The ID of the GCS bucket for intermediate storage
+    String bucketName = "my-intermediate-bucket";
+
+    transferBetweenPosix(
+        projectId,
+        sourceAgentPoolName,
+        sinkAgentPoolName,
+        rootDirectory,
+        destinationDirectory,
+        bucketName);
+  }
+
   public static void transferBetweenPosix(
       String projectId,
       String sourceAgentPoolName,
@@ -34,25 +67,6 @@ public class TransferBetweenPosix {
       String destinationDirectory,
       String bucketName)
       throws IOException {
-    // Your project id
-    // String projectId = "my-project-id";
-
-    // The agent pool associated with the POSIX data source. If not provided, defaults to the
-    // default agent
-    // String sourceAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
-
-    // The agent pool associated with the POSIX data sink. If not provided, defaults to the default
-    // agent
-    // String sinkAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
-
-    // The root directory path on the source filesystem
-    // String rootDirectory = "/directory/to/transfer/source";
-
-    // The root directory path on the sink filesystem
-    // String destinationDirectory = "/directory/to/transfer/sink";
-
-    // The ID of the GCS bucket for intermediate storage
-    // String bucketName = "my-intermediate-bucket";
 
     TransferJob transferJob =
         TransferJob.newBuilder()
@@ -71,23 +85,27 @@ public class TransferBetweenPosix {
             .setStatus(TransferJob.Status.ENABLED)
             .build();
 
-    // Create a Transfer Service client
-    StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources,
+    // or use "try-with-close" statement to do this automatically.
+    try (StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create()) {
 
-    // Create the transfer job
-    TransferJob response =
-        storageTransfer.createTransferJob(
-            TransferProto.CreateTransferJobRequest.newBuilder()
-                .setTransferJob(transferJob)
-                .build());
+      // Create the transfer job
+      TransferJob response =
+          storageTransfer.createTransferJob(
+              TransferProto.CreateTransferJobRequest.newBuilder()
+                  .setTransferJob(transferJob)
+                  .build());
 
-    System.out.println(
-        "Created and ran a transfer job from "
-            + rootDirectory
-            + " to "
-            + destinationDirectory
-            + " with name "
-            + response.getName());
+      System.out.println(
+          "Created and ran a transfer job from "
+              + rootDirectory
+              + " to "
+              + destinationDirectory
+              + " with name "
+              + response.getName());
+    }
   }
 }
 // [END storagetransfer_transfer_posix_to_posix]

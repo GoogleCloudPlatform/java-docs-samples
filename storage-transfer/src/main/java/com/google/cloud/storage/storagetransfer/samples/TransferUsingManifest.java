@@ -28,6 +28,38 @@ import com.google.storagetransfer.v1.proto.TransferTypes.TransferSpec;
 import java.io.IOException;
 
 public class TransferUsingManifest {
+
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+
+    // Your project id
+    String projectId = "my-project-id";
+
+    // The agent pool associated with the POSIX data source. If not provided, defaults to the
+    // default agent
+    String sourceAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
+
+    // The root directory path on the source filesystem
+    String rootDirectory = "/directory/to/transfer/source";
+
+    // The ID of the GCS bucket to transfer data to
+    String gcsSinkBucket = "my-sink-bucket";
+
+    // The ID of the GCS bucket which has your manifest file
+    String manifestBucket = "my-bucket";
+
+    // The ID of the object in manifestBucket that specifies which files to transfer
+    String manifestObjectName = "path/to/manifest.csv";
+
+    transferUsingManifest(
+        projectId,
+        sourceAgentPoolName,
+        rootDirectory,
+        gcsSinkBucket,
+        manifestBucket,
+        manifestObjectName);
+  }
+
   public static void transferUsingManifest(
       String projectId,
       String sourceAgentPoolName,
@@ -36,25 +68,6 @@ public class TransferUsingManifest {
       String manifestBucket,
       String manifestObjectName)
       throws IOException {
-    // Your project id
-    // String projectId = "my-project-id";
-
-    // The agent pool associated with the POSIX data source. If not provided, defaults to the
-    // default agent
-    // String sourceAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
-
-    // The root directory path on the source filesystem
-    // String rootDirectory = "/directory/to/transfer/source";
-
-    // The ID of the GCS bucket to transfer data to
-    // String gcsSinkBucket = "my-sink-bucket";
-
-    // The ID of the GCS bucket which has your manifest file
-    // String manifestBucket = "my-bucket";
-
-    // The ID of the object in manifestBucket that specifies which files to transfer
-    // String manifestObjectName = "path/to/manifest.csv";
-
     String manifestLocation = "gs://" + manifestBucket + "/" + manifestObjectName;
     TransferJob transferJob =
         TransferJob.newBuilder()
@@ -70,26 +83,30 @@ public class TransferUsingManifest {
             .setStatus(TransferJob.Status.ENABLED)
             .build();
 
-    // Create a Transfer Service client
-    StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources,
+    // or use "try-with-close" statement to do this automatically.
+    try (StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create()) {
 
-    // Create the transfer job
-    TransferJob response =
-        storageTransfer.createTransferJob(
-            TransferProto.CreateTransferJobRequest.newBuilder()
-                .setTransferJob(transferJob)
-                .build());
+      // Create the transfer job
+      TransferJob response =
+          storageTransfer.createTransferJob(
+              TransferProto.CreateTransferJobRequest.newBuilder()
+                  .setTransferJob(transferJob)
+                  .build());
 
-    System.out.println(
-        "Created and ran a transfer job from "
-            + rootDirectory
-            + " to "
-            + gcsSinkBucket
-            + " using "
-            + "manifest file "
-            + manifestLocation
-            + " with name "
-            + response.getName());
+      System.out.println(
+          "Created and ran a transfer job from "
+              + rootDirectory
+              + " to "
+              + gcsSinkBucket
+              + " using "
+              + "manifest file "
+              + manifestLocation
+              + " with name "
+              + response.getName());
+    }
   }
 }
 // [END storagetransfer_manifest_request]

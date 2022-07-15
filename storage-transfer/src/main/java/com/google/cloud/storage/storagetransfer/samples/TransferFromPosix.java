@@ -27,22 +27,28 @@ import java.io.IOException;
 
 public class TransferFromPosix {
 
-  public static void transferFromPosix(
-      String projectId, String sourceAgentPoolName, String rootDirectory, String gcsSinkBucket)
-      throws IOException {
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+
     // Your project id
-    // String projectId = "my-project-id";
+    String projectId = "my-project-id";
 
     // The agent pool associated with the POSIX data source. If not provided, defaults to the
     // default agent
-    // String sourceAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
+    String sourceAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
 
     // The root directory path on the source filesystem
-    // String rootDirectory = "/directory/to/transfer/source";
+    String rootDirectory = "/directory/to/transfer/source";
 
     // The ID of the GCS bucket to transfer data to
-    // String gcsSinkBucket = "my-sink-bucket";
+    String gcsSinkBucket = "my-sink-bucket";
 
+    transferFromPosix(projectId, sourceAgentPoolName, rootDirectory, gcsSinkBucket);
+  }
+
+  public static void transferFromPosix(
+      String projectId, String sourceAgentPoolName, String rootDirectory, String gcsSinkBucket)
+      throws IOException {
     TransferJob transferJob =
         TransferJob.newBuilder()
             .setProjectId(projectId)
@@ -55,24 +61,28 @@ public class TransferFromPosix {
             .setStatus(TransferJob.Status.ENABLED)
             .build();
 
-    // Create a Transfer Service client
-    StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources,
+    // or use "try-with-close" statement to do this automatically.
+    try (StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create()) {
 
-    // Create the transfer job
-    TransferJob response =
-        storageTransfer.createTransferJob(
-            TransferProto.CreateTransferJobRequest.newBuilder()
-                .setTransferJob(transferJob)
-                .build());
+      // Create the transfer job
+      TransferJob response =
+          storageTransfer.createTransferJob(
+              TransferProto.CreateTransferJobRequest.newBuilder()
+                  .setTransferJob(transferJob)
+                  .build());
 
-    System.out.println(
-        "Created a transfer job from "
-            + rootDirectory
-            + " to "
-            + gcsSinkBucket
-            + " with "
-            + "name "
-            + response.getName());
+      System.out.println(
+          "Created a transfer job from "
+              + rootDirectory
+              + " to "
+              + gcsSinkBucket
+              + " with "
+              + "name "
+              + response.getName());
+    }
   }
 }
 // [END storagetransfer_transfer_from_posix]

@@ -26,6 +26,30 @@ import com.google.storagetransfer.v1.proto.TransferTypes.TransferSpec;
 import java.io.IOException;
 
 public class DownloadToPosix {
+
+  public static void main(String[] args) throws IOException {
+
+    // TODO(developer): Replace these variables before running the sample.
+
+    // Your project id
+    String projectId = "my-project-id";
+
+    // The agent pool associated with the POSIX data sink. Defaults to the default agent if not
+    // specified
+    String sinkAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
+
+    // Your GCS source bucket name
+    String gcsSourceBucket = "my-gcs-source-bucket";
+
+    // A directory prefix on the Google Cloud Storage bucket to download from
+    String gcsSourcePath = "foo/bar/";
+
+    // The root directory path on the source filesystem
+    String rootDirectory = "/path/to/transfer/source";
+
+    downloadToPosix(projectId, sinkAgentPoolName, gcsSourceBucket, gcsSourcePath, rootDirectory);
+  }
+
   public static void downloadToPosix(
       String projectId,
       String sinkAgentPoolName,
@@ -33,25 +57,6 @@ public class DownloadToPosix {
       String gcsSourcePath,
       String rootDirectory)
       throws IOException {
-    // Your project id
-    // String projectId = "my-project-id";
-
-    // The agent pool associated with the POSIX data sink. Defaults to the default agent if not
-    // specified
-    // Make sure that the pub/sub resources are set up for this agent pool, or you'll get an error
-    // (See the
-    // "agent pools" tab in the Data Transfer Console)
-    // String sinkAgentPoolName = "projects/my-project-id/agentPools/transfer_service_default";
-
-    // Your GCS source bucket name
-    // String gcsSourceBucket = "my-gcs-source-bucket";
-
-    // A directory prefix on the Google Cloud Storage bucket to download from
-    // String gcsSourcePath = "foo/bar/";
-
-    // The root directory path on the source filesystem
-    // String rootDirectory = "/path/to/transfer/source";
-
     TransferJob transferJob =
         TransferJob.newBuilder()
             .setProjectId(projectId)
@@ -66,22 +71,25 @@ public class DownloadToPosix {
             .setStatus(TransferJob.Status.ENABLED)
             .build();
 
-    // Create a Transfer Service client
-    StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources,
+    // or use "try-with-close" statement to do this automatically.
+    try (StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create()) {
+      // Create the transfer job
+      TransferJob response =
+          storageTransfer.createTransferJob(
+              CreateTransferJobRequest.newBuilder().setTransferJob(transferJob).build());
 
-    // Create the transfer job
-    TransferJob response =
-        storageTransfer.createTransferJob(
-            CreateTransferJobRequest.newBuilder().setTransferJob(transferJob).build());
-
-    System.out.println(
-        "Created and ran a transfer job from "
-            + gcsSourcePath
-            + " to "
-            + rootDirectory
-            + " with "
-            + "name "
-            + response.getName());
+      System.out.println(
+          "Created and ran a transfer job from "
+              + gcsSourcePath
+              + " to "
+              + rootDirectory
+              + " with "
+              + "name "
+              + response.getName());
+    }
   }
 }
 // [END storagetransfer_download_to_posix]
