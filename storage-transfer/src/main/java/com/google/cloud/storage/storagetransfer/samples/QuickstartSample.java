@@ -36,6 +36,7 @@ public class QuickstartSample {
 
     // The name of the  GCS bucket to transfer  objects to
     // String gcsSinkBucket = "your-sink-gcs-bucket";
+
     StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
 
     TransferJob transferJob =
@@ -52,12 +53,13 @@ public class QuickstartSample {
         storageTransfer.createTransferJob(
             CreateTransferJobRequest.newBuilder().setTransferJob(transferJob).build());
 
-    storageTransfer.runTransferJobAsync(
+    storageTransfer
+        .runTransferJobAsync(
             RunTransferJobRequest.newBuilder()
-            .setProjectId(projectId)
-            .setJobName(response.getName())
-            .build())
-            .get();
+                .setProjectId(projectId)
+                .setJobName(response.getName())
+                .build())
+        .get();
     System.out.println(
         "Created and ran transfer job between two GCS buckets with name " + response.getName());
   }
