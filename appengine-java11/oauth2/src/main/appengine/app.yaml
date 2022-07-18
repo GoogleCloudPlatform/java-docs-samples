@@ -19,4 +19,10 @@ entrypoint: 'java -cp "*" com.example.appengine.demo.jettymain.Main oauth2.war'
 env_variables:
   CLIENT_ID: '<YOUR_CLIENT_ID>'
   CLIENT_SECRET: '<YOUR_CLIENT_SECRET>'
+
+handlers:
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto
 # [END gae_java11_oauth2_yaml]

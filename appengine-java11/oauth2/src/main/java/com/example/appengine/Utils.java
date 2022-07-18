@@ -64,6 +64,7 @@ public class Utils {
   /** Returns the redirect URI for the given HTTP servlet request. */
   static String getRedirectUri(HttpServletRequest req) {
     GenericUrl url = new GenericUrl(req.getRequestURL().toString());
+    url.setScheme("https");
     url.setRawPath("/oauth2callback");
     return url.build();
   }
