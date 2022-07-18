@@ -46,7 +46,7 @@ public class UpdateSecretWithAlias {
       Secret secret =
           Secret.newBuilder()
               .setName(secretName.toString())
-              .putVersionAliases("test", 1l)
+              .getVersionAliasesMap().put("test", 1l)
               .build();
 
       // Build the field mask.
