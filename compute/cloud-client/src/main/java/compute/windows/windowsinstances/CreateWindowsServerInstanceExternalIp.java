@@ -86,7 +86,7 @@ public class CreateWindowsServerInstanceExternalIp {
                   .setType("ONE_TO_ONE_NAT")
                   .setName("External NAT")
                   .build())
-              // If you going you use custom VPC network, it must be configured
+              // If you're going to use a custom VPC network, it must be configured
               // to allow access to kms.windows.googlecloud.com.
               // https://cloud.google.com/compute/docs/instances/windows/creating-managing-windows-instances#kms-server.
               .setName("global/networks/default")
