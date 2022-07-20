@@ -1,4 +1,12 @@
 # Samples Format
+
+The [Google Cloud Samples Style Guide][style-guide] is considered the primary
+guidelines for all Google Cloud samples. This section details some additional,
+Java-specific rules that will be merged into the Samples Style Guide in the near
+future. 
+
+[style-guide]: https://googlecloudplatform.github.io/samples-style-guide/
+
 ## Table of Contents
   * [Java Version](#java-version)
   * [Specific Goals](#specific-goals)
