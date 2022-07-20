@@ -48,7 +48,7 @@ public class DeleteInput {
               .setName(InputName.of(projectId, location, inputId).toString())
               .build();
 
-      livestreamServiceClient.deleteInputAsync(deleteInputRequest).get(1, TimeUnit.MINUTES);
+      livestreamServiceClient.deleteInputAsync(deleteInputRequest).get(10, TimeUnit.MINUTES);
       System.out.println("Deleted input");
     }
   }

@@ -61,7 +61,7 @@ public class UpdateInput {
               .build();
 
       Input result =
-          livestreamServiceClient.updateInputAsync(updateInputRequest).get(1, TimeUnit.MINUTES);
+          livestreamServiceClient.updateInputAsync(updateInputRequest).get(10, TimeUnit.MINUTES);
       System.out.println("Updated input: " + result.getName());
     }
   }

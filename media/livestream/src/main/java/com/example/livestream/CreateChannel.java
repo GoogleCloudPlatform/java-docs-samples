@@ -125,7 +125,7 @@ public class CreateChannel {
               .build();
 
       Channel result =
-          livestreamServiceClient.createChannelAsync(createChannelRequest).get(1, TimeUnit.MINUTES);
+          livestreamServiceClient.createChannelAsync(createChannelRequest).get(10, TimeUnit.MINUTES);
       System.out.println("Channel: " + result.getName());
     }
   }

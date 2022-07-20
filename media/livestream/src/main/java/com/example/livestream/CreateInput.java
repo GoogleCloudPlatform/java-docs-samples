@@ -52,7 +52,7 @@ public class CreateInput {
               .build();
 
       Input result =
-          livestreamServiceClient.createInputAsync(createInputRequest).get(1, TimeUnit.MINUTES);
+          livestreamServiceClient.createInputAsync(createInputRequest).get(10, TimeUnit.MINUTES);
       System.out.println("Input: " + result.getName());
     }
   }

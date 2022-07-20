@@ -48,7 +48,7 @@ public class DeleteChannel {
               .setName(ChannelName.of(projectId, location, channelId).toString())
               .build();
 
-      livestreamServiceClient.deleteChannelAsync(deleteChannelRequest).get(1, TimeUnit.MINUTES);
+      livestreamServiceClient.deleteChannelAsync(deleteChannelRequest).get(10, TimeUnit.MINUTES);
       System.out.println("Deleted channel");
     }
   }

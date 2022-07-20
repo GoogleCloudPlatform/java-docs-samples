@@ -43,7 +43,7 @@ public class StartChannel {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
       ChannelName name = ChannelName.of(projectId, location, channelId);
-      livestreamServiceClient.startChannelAsync(name).get(1, TimeUnit.MINUTES);
+      livestreamServiceClient.startChannelAsync(name).get(10, TimeUnit.MINUTES);
       System.out.println("Started channel");
     }
   }

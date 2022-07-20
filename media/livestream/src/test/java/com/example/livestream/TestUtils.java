@@ -57,7 +57,7 @@ public class TestUtils {
         if (input.getCreateTime().getSeconds()
             < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
           var deleteInputRequest = DeleteInputRequest.newBuilder().setName(input.getName()).build();
-          livestreamServiceClient.deleteInputAsync(deleteInputRequest).get(1, TimeUnit.MINUTES);
+          livestreamServiceClient.deleteInputAsync(deleteInputRequest).get(10, TimeUnit.MINUTES);
         }
       }
     } catch (IOException e) {
@@ -82,7 +82,7 @@ public class TestUtils {
             < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
           // Stop the channel
           try {
-            livestreamServiceClient.stopChannelAsync(channel.getName()).get(1, TimeUnit.MINUTES);
+            livestreamServiceClient.stopChannelAsync(channel.getName()).get(10, TimeUnit.MINUTES);
           } catch (ExecutionException e) {
             // Ignore error if the channel isn't stopped or the stop operation times out.
             e.printStackTrace();
@@ -107,7 +107,7 @@ public class TestUtils {
           var deleteChannelRequest =
               DeleteChannelRequest.newBuilder().setName(channel.getName()).build();
 
-          livestreamServiceClient.deleteChannelAsync(deleteChannelRequest).get(1, TimeUnit.MINUTES);
+          livestreamServiceClient.deleteChannelAsync(deleteChannelRequest).get(10, TimeUnit.MINUTES);
         }
       }
     } catch (IOException e) {
