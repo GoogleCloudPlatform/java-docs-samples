@@ -44,7 +44,7 @@ dependencies {
     implementation "org.apache.beam:beam-examples-java:${beamVersion}"
     runtimeOnly "org.apache.beam:beam-runners-direct-java:${beamVersion}"
     runtimeOnly "org.apache.beam:beam-runners-google-cloud-dataflow-java:${beamVersion}"
-    testImplementation 'com.google.api-client:google-api-client:1.34.1'
+    testImplementation 'com.google.api-client:google-api-client:1.35.2'
     testImplementation 'com.google.apis:google-api-services-dataflow:v1b3-rev20210825-1.32.1'
     testImplementation 'com.google.cloud:google-cloud-core:2.3.2'
     testImplementation 'com.google.cloud:google-cloud-storage:2.6.1'
