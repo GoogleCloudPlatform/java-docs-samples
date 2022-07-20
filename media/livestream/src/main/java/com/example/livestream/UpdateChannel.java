@@ -64,7 +64,9 @@ public class UpdateChannel {
               .build();
 
       Channel result =
-          livestreamServiceClient.updateChannelAsync(updateChannelRequest).get(10, TimeUnit.MINUTES);
+          livestreamServiceClient
+              .updateChannelAsync(updateChannelRequest)
+              .get(10, TimeUnit.MINUTES);
       System.out.println("Updated channel: " + result.getName());
     }
   }

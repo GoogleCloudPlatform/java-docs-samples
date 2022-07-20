@@ -107,7 +107,9 @@ public class TestUtils {
           var deleteChannelRequest =
               DeleteChannelRequest.newBuilder().setName(channel.getName()).build();
 
-          livestreamServiceClient.deleteChannelAsync(deleteChannelRequest).get(10, TimeUnit.MINUTES);
+          livestreamServiceClient
+              .deleteChannelAsync(deleteChannelRequest)
+              .get(10, TimeUnit.MINUTES);
         }
       }
     } catch (IOException e) {
