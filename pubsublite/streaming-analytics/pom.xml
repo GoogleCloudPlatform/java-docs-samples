@@ -34,7 +34,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <beam.version>2.39.0</beam.version>
+    <beam.version>2.40.0</beam.version>
 
     <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
     <maven-exec-plugin.version>3.0.0</maven-exec-plugin.version>
