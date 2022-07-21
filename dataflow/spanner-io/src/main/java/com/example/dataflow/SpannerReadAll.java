@@ -80,9 +80,9 @@ public class SpannerReadAll {
 
     PCollection<Struct> allRecords;
     if (options.getDialect() == Dialect.POSTGRESQL) {
-      allRecords = pgReadAll(spannerConfig, p);
+      allRecords = postgreSqlReadAll(spannerConfig, p);
     } else {
-      allRecords = spannerReadAll(spannerConfig, p);
+      allRecords = googleSqlReadAll(spannerConfig, p);
     }
 
     PCollection<Long> dbEstimatedSize = allRecords.apply(EstimateSize.create())
@@ -94,27 +94,41 @@ public class SpannerReadAll {
     p.run().waitUntilFinish();
   }
 
-  static PCollection<Struct> spannerReadAll(SpannerConfig spannerConfig, Pipeline p) {
+  /** GoogleSQL databases use the empty string as the default catalog and schema values. */
+  static PCollection<Struct> googleSqlReadAll(SpannerConfig spannerConfig, Pipeline pipeline) {
     // [START spanner_dataflow_readall]
-    PCollection<Struct> allRecords = p.apply(SpannerIO.read()
-        .withSpannerConfig(spannerConfig)
-        .withBatching(false)
-        .withQuery("SELECT t.table_name FROM information_schema.tables AS t WHERE t"
-            + ".table_catalog = '' AND t.table_schema = ''")).apply(
-        MapElements.into(TypeDescriptor.of(ReadOperation.class))
-            .via((SerializableFunction<Struct, ReadOperation>) input -> {
-              String tableName = input.getString(0);
-              return ReadOperation.create().withQuery("SELECT * FROM " + tableName);
-            })).apply(SpannerIO.readAll().withSpannerConfig(spannerConfig));
+    PCollection<Struct> allRecords =
+        pipeline
+            .apply(
+                SpannerIO.read()
+                    .withSpannerConfig(spannerConfig)
+                    .withBatching(false)
+                    .withQuery(
+                        "SELECT t.table_name FROM information_schema.tables AS t WHERE t"
+                            + ".table_catalog = '' AND t.table_schema = ''"))
+            .apply(
+                MapElements.into(TypeDescriptor.of(ReadOperation.class))
+                    .via(
+                        (SerializableFunction<Struct, ReadOperation>)
+                            input -> {
+                              String tableName = input.getString(0);
+                              return ReadOperation.create().withQuery("SELECT * FROM " + tableName);
+                            }))
+            .apply(SpannerIO.readAll().withSpannerConfig(spannerConfig));
     // [END spanner_dataflow_readall]
 
     return allRecords;
   }
 
-  static PCollection<Struct> pgReadAll(SpannerConfig spannerConfig, Pipeline p) {
+  /**
+   * PostgreSQL databases use 'public' as the default schema and the unqualified database name as
+   * the default catalog name.
+   */
+  static PCollection<Struct> postgreSqlReadAll(SpannerConfig spannerConfig, Pipeline pipeline) {
     // [START spanner_pg_dataflow_readall]
     PCollection<Struct> allRecords =
-        p.apply(
+        pipeline
+            .apply(
                 SpannerIO.read()
                     .withSpannerConfig(spannerConfig)
                     .withBatching(false)
@@ -141,5 +155,4 @@ public class SpannerReadAll {
 
     return allRecords;
   }
-
 }

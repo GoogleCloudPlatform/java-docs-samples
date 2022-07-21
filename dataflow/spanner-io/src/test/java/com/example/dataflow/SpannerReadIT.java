@@ -29,6 +29,7 @@ import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionRunner;
+import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableList;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -94,16 +95,18 @@ public class SpannerReadIT {
               .setDialect(Dialect.POSTGRESQL)
               .build();
       adminClient.createDatabase(database, ImmutableList.of()).get();
-      adminClient.updateDatabaseDdl(
-          instanceId,
-          databaseId,
-          Arrays.asList(
-              "CREATE TABLE Singers "
-                  + "(singerId bigint NOT NULL primary key, firstName varchar NOT NULL, "
-                  + "lastName varchar NOT NULL)",
-              "CREATE TABLE Albums (singerId bigint NOT NULL, albumId bigint NOT NULL, "
-                  + "albumTitle varchar NOT NULL, PRIMARY KEY (singerId, albumId))"),
-          null).get();
+      adminClient
+          .updateDatabaseDdl(
+              instanceId,
+              databaseId,
+              Arrays.asList(
+                  "CREATE TABLE Singers "
+                      + "(singer_id bigint NOT NULL primary key, first_name varchar NOT NULL, "
+                      + "last_name varchar NOT NULL)",
+                  "CREATE TABLE Albums (singer_id bigint NOT NULL, album_id bigint NOT NULL, "
+                      + "album_title varchar NOT NULL, PRIMARY KEY (singer_id, album_id))"),
+              null)
+          .get();
     } else {
       adminClient
           .createDatabase(
@@ -111,61 +114,61 @@ public class SpannerReadIT {
               databaseId,
               Arrays.asList(
                   "CREATE TABLE Singers "
-                      + "(singerId INT64 NOT NULL, firstName STRING(MAX) NOT NULL, "
-                      + "lastName STRING(MAX) NOT NULL,) PRIMARY KEY (singerId)",
-                  "CREATE TABLE Albums (singerId INT64 NOT NULL, albumId INT64 NOT NULL, "
-                      + "albumTitle STRING(MAX) NOT NULL,) PRIMARY KEY (singerId, albumId)"))
+                      + "(SingerId INT64 NOT NULL, FirstName STRING(MAX) NOT NULL, "
+                      + "LastName STRING(MAX) NOT NULL,) PRIMARY KEY (SingerId)",
+                  "CREATE TABLE Albums (SingerId INT64 NOT NULL, AlbumId INT64 NOT NULL, "
+                      + "AlbumTitle STRING(MAX) NOT NULL,) PRIMARY KEY (SingerId, AlbumId)"))
           .get();
     }
 
     List<Mutation> mutations =
         Arrays.asList(
-            Mutation.newInsertBuilder("singers")
-                .set("singerId")
+            Mutation.newInsertBuilder("Singers")
+                .set(formatColumnName("SingerId", dialect))
                 .to(1L)
-                .set("firstName")
+                .set(formatColumnName("FirstName", dialect))
                 .to("John")
-                .set("lastName")
+                .set(formatColumnName("LastName", dialect))
                 .to("Lennon")
                 .build(),
-            Mutation.newInsertBuilder("singers")
-                .set("singerId")
+            Mutation.newInsertBuilder("Singers")
+                .set(formatColumnName("SingerId", dialect))
                 .to(2L)
-                .set("firstName")
+                .set(formatColumnName("FirstName", dialect))
                 .to("Paul")
-                .set("lastName")
+                .set(formatColumnName("LastName", dialect))
                 .to("Mccartney")
                 .build(),
-            Mutation.newInsertBuilder("singers")
-                .set("singerId")
+            Mutation.newInsertBuilder("Singers")
+                .set(formatColumnName("SingerId", dialect))
                 .to(3L)
-                .set("firstName")
+                .set(formatColumnName("FirstName", dialect))
                 .to("George")
-                .set("lastName")
+                .set(formatColumnName("LastName", dialect))
                 .to("Harrison")
                 .build(),
-            Mutation.newInsertBuilder("singers")
-                .set("singerId")
+            Mutation.newInsertBuilder("Singers")
+                .set(formatColumnName("SingerId", dialect))
                 .to(4L)
-                .set("firstName")
+                .set(formatColumnName("FirstName", dialect))
                 .to("Ringo")
-                .set("lastName")
+                .set(formatColumnName("LastName", dialect))
                 .to("Starr")
                 .build(),
-            Mutation.newInsertBuilder("albums")
-                .set("singerId")
+            Mutation.newInsertBuilder("Albums")
+                .set(formatColumnName("SingerId", dialect))
                 .to(1L)
-                .set("albumId")
+                .set(formatColumnName("AlbumId", dialect))
                 .to(1L)
-                .set("albumTitle")
+                .set(formatColumnName("AlbumTitle", dialect))
                 .to("Imagine")
                 .build(),
-            Mutation.newInsertBuilder("albums")
-                .set("singerId")
+            Mutation.newInsertBuilder("Albums")
+                .set(formatColumnName("SingerId", dialect))
                 .to(2L)
-                .set("albumId")
+                .set(formatColumnName("AlbumId", dialect))
                 .to(1L)
-                .set("albumTitle")
+                .set(formatColumnName("AlbumTitle", dialect))
                 .to("Pipes of Peace")
                 .build());
 
@@ -181,6 +184,16 @@ public class SpannerReadIT {
             return null;
           }
         });
+  }
+
+  /**
+   * Format the column name to use the idiomatic form for the given dialect. That is; Camel-case for
+   * GoogleSQL and lower_underscore for PostgreSQL.
+   */
+  static String formatColumnName(String column, Dialect dialect) {
+    return dialect == Dialect.POSTGRESQL
+        ? CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, column)
+        : column;
   }
 
   @After
@@ -237,7 +250,8 @@ public class SpannerReadIT {
           "--instanceId=" + instanceId,
           "--databaseId=" + databaseId,
           "--output=" + outPath,
-          "--runner=DirectRunner"
+          "--runner=DirectRunner",
+          "--dialect=" + dialect
         });
 
     String content = Files.readAllLines(outPath).stream().collect(Collectors.joining("\n"));
@@ -246,7 +260,7 @@ public class SpannerReadIT {
   }
 
   @Test
-  public void reaTransactionalReadEndToEnd() throws Exception {
+  public void readTransactionalReadEndToEnd() throws Exception {
     Path singersPath = Files.createTempFile("singers", "txt");
     Path albumsPath = Files.createTempFile("albums", "txt");
     TransactionalRead.main(
@@ -255,7 +269,8 @@ public class SpannerReadIT {
           "--databaseId=" + databaseId,
           "--singersFilename=" + singersPath,
           "--albumsFilename=" + albumsPath,
-          "--runner=DirectRunner"
+          "--runner=DirectRunner",
+          "--dialect=" + dialect
         });
 
     assertEquals(4, Files.readAllLines(singersPath).size());

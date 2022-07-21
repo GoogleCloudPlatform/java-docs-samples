@@ -214,15 +214,19 @@ public class SpannerWrite {
         .apply("ParseAlbums", ParDo.of(new ParseAlbum()));
 
     if (options.getDialect() == Dialect.POSTGRESQL) {
-      pgWrite(instanceId, databaseId, p, albums);
+      postgreSqlWrite(instanceId, databaseId, p, albums);
     } else {
-      spannerWrite(instanceId, databaseId, albums);
+      googleSqlWrite(instanceId, databaseId, albums);
     }
 
     p.run().waitUntilFinish();
   }
 
-  static void spannerWrite(String instanceId, String databaseId, PCollection<Album> albums) {
+  /**
+   * Mutations depend on the dialect that is used, and will by default use {@link
+   * Dialect#GOOGLE_STANDARD_SQL}.
+   */
+  static void googleSqlWrite(String instanceId, String databaseId, PCollection<Album> albums) {
     // [START spanner_dataflow_write]
     albums
         // Spanner expects a Mutation object, so create it using the Album's data
@@ -244,7 +248,11 @@ public class SpannerWrite {
     // [END spanner_dataflow_write]
   }
 
-  static void pgWrite(
+  /**
+   * Mutations depend on the dialect that is used. We therefore need to set the dialect to {@link
+   * Dialect#POSTGRESQL} for PostgreSQL databases.
+   */
+  static void postgreSqlWrite(
       String instanceId, String databaseId, Pipeline pipeline, PCollection<Album> albums) {
     // [START spanner_pg_dataflow_write]
     PCollectionView<Dialect> dialectView =
