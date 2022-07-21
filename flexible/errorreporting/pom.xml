@@ -31,7 +31,7 @@
   </parent>
 
   <properties>
-    <appengine.maven.plugin>2.4.2</appengine.maven.plugin>
+    <appengine.maven.plugin>2.4.3</appengine.maven.plugin>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml>
