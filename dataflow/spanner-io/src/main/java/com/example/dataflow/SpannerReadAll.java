@@ -80,9 +80,9 @@ public class SpannerReadAll {
 
     PCollection<Struct> allRecords;
     if (options.getDialect() == Dialect.POSTGRESQL) {
-      allRecords = pgReadAll(spannerConfig, p);
+      allRecords = postgreSqlReadAll(spannerConfig, p);
     } else {
-      allRecords = spannerReadAll(spannerConfig, p);
+      allRecords = googleSqlReadAll(spannerConfig, p);
     }
 
     PCollection<Long> dbEstimatedSize = allRecords.apply(EstimateSize.create())
@@ -94,7 +94,8 @@ public class SpannerReadAll {
     p.run().waitUntilFinish();
   }
 
-  static PCollection<Struct> spannerReadAll(SpannerConfig spannerConfig, Pipeline pipeline) {
+  /** GoogleSQL databases use the empty string as the default catalog and schema values. */
+  static PCollection<Struct> googleSqlReadAll(SpannerConfig spannerConfig, Pipeline pipeline) {
     // [START spanner_dataflow_readall]
     PCollection<Struct> allRecords =
         pipeline
@@ -119,7 +120,11 @@ public class SpannerReadAll {
     return allRecords;
   }
 
-  static PCollection<Struct> pgReadAll(SpannerConfig spannerConfig, Pipeline pipeline) {
+  /**
+   * PostgreSQL databases use 'public' as the default schema and the unqualified database name as
+   * the default catalog name.
+   */
+  static PCollection<Struct> postgreSqlReadAll(SpannerConfig spannerConfig, Pipeline pipeline) {
     // [START spanner_pg_dataflow_readall]
     PCollection<Struct> allRecords =
         pipeline

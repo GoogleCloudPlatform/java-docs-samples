@@ -84,16 +84,20 @@ public class SpannerGroupWrite {
     final Timestamp timestamp = Timestamp.now();
 
     if (options.getDialect() == Dialect.POSTGRESQL) {
-      pgWrite(instanceId, databaseId, p, suspiciousUserIds, timestamp);
+      postgreSqlWrite(instanceId, databaseId, p, suspiciousUserIds, timestamp);
     } else {
-      spannerWrite(instanceId, databaseId, suspiciousUserIds, timestamp);
+      googleSqlWrite(instanceId, databaseId, suspiciousUserIds, timestamp);
     }
 
     p.run().waitUntilFinish();
 
   }
 
-  static void spannerWrite(
+  /**
+   * {@link MutationGroup} depends on the dialect that is used, and will by default use {@link
+   * Dialect#GOOGLE_STANDARD_SQL}.
+   */
+  static void googleSqlWrite(
       String instanceId,
       String databaseId,
       PCollection<String> suspiciousUserIds,
@@ -147,7 +151,11 @@ public class SpannerGroupWrite {
     // [END spanner_dataflow_writegroup]
   }
 
-  static void pgWrite(
+  /**
+   * {@link MutationGroup} depends on the dialect that is used. We therefore need to set the dialect
+   * to {@link Dialect#POSTGRESQL} for PostgreSQL databases.
+   */
+  static void postgreSqlWrite(
       String instanceId,
       String databaseId,
       Pipeline pipeline,

@@ -74,9 +74,9 @@ public class SpannerReadApi {
     Dialect dialect = options.getDialect();
     PCollection<Struct> records;
     if (dialect == Dialect.POSTGRESQL) {
-      records = pgRead(instanceId, databaseId, pipeline);
+      records = postgreSqlRead(instanceId, databaseId, pipeline);
     } else {
-      records = spannerRead(instanceId, databaseId, pipeline);
+      records = googleSqlRead(instanceId, databaseId, pipeline);
     }
 
     PCollection<Long> tableEstimatedSize = records
@@ -93,7 +93,12 @@ public class SpannerReadApi {
     pipeline.run().waitUntilFinish();
   }
 
-  static PCollection<Struct> spannerRead(String instanceId, String databaseId, Pipeline pipeline) {
+  /**
+   * GoogleSQL databases retain the casing of table and column names. It is therefore common to use
+   * CamelCase for identifiers.
+   */
+  static PCollection<Struct> googleSqlRead(
+      String instanceId, String databaseId, Pipeline pipeline) {
     // [START spanner_dataflow_readapi]
     // Query for all the columns and rows in the specified Spanner table
     PCollection<Struct> records = pipeline.apply(
@@ -106,7 +111,12 @@ public class SpannerReadApi {
     return records;
   }
 
-  static PCollection<Struct> pgRead(String instanceId, String databaseId, Pipeline pipeline) {
+  /**
+   * PostgreSQL databases automatically fold identifiers to lower case. It is therefore common to
+   * use all lower case identifiers with underscores to separate multiple words in an identifier.
+   */
+  static PCollection<Struct> postgreSqlRead(
+      String instanceId, String databaseId, Pipeline pipeline) {
     // [START spanner_pg_dataflow_readapi]
     // Query for all the columns and rows in the specified Spanner table
     PCollection<Struct> records = pipeline.apply(
