@@ -77,7 +77,7 @@ public class CreateDiskFromImage {
         System.out.println("Disk creation failed ! ! " + response);
         return;
       }
-      System.out.println("Operation Status: " + response.getStatus());
+      System.out.println("Disk created from image. Operation Status: " + response.getStatus());
     }
   }
 }

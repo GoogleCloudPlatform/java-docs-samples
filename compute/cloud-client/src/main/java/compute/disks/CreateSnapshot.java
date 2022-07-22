@@ -76,7 +76,7 @@ public class CreateSnapshot {
     // clean up any remaining background resources.
     try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
 
-      if (zone.isEmpty() || region.isEmpty()) {
+      if (zone.isEmpty() && region.isEmpty()) {
         throw new Error("You need to specify 'zone' or 'region' for this function to work");
       }
 
@@ -94,7 +94,7 @@ public class CreateSnapshot {
         disk = disksClient.get(projectId, zone, diskName);
       } else {
         RegionDisksClient regionDisksClient = RegionDisksClient.create();
-        disk = regionDisksClient.get(diskProjectId, zone, diskName);
+        disk = regionDisksClient.get(diskProjectId, region, diskName);
       }
 
       Snapshot snapshotResource;

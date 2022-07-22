@@ -85,7 +85,7 @@ public class CreateEmptyDisk {
         System.out.println("Disk creation failed ! ! " + response);
         return;
       }
-      System.out.println("Operation Status: " + response.getStatus());
+      System.out.println("Empty disk created. Operation Status: " + response.getStatus());
     }
 
   }

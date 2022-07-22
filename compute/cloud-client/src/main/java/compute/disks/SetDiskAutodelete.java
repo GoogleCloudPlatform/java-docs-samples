@@ -91,7 +91,8 @@ public class SetDiskAutodelete {
         System.out.println("Failed to update Disk autodelete field ! ! " + response);
         return;
       }
-      System.out.println("Operation Status: " + response.getStatus());
+      System.out.println(
+          "Disk autodelete field updated. Operation Status: " + response.getStatus());
     }
   }
 }
