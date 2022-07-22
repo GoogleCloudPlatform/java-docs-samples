@@ -10,7 +10,7 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License
+// limitations under the License.
 
 package compute.disks;
 
@@ -42,7 +42,7 @@ public class CreateDiskFromImage {
     // The type of disk you want to create. This value uses the following format:
     // "zones/{zone}/diskTypes/(pd-standard|pd-ssd|pd-balanced|pd-extreme)".
     // For example: "zones/us-west3-b/diskTypes/pd-ssd"
-    String diskType = "zones/us-west3-b/diskTypes/pd-ssd";
+    String diskType = String.format("zones/%s/diskTypes/pd-ssd", zone);
 
     // Size of the new disk in gigabytes.
     long diskSizeGb = 10;
@@ -60,8 +60,13 @@ public class CreateDiskFromImage {
       String diskType, long diskSizeGb, String sourceImage)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `disksClient.close()` method on the client to safely
+    // clean up any remaining background resources.
     try (DisksClient disksClient = DisksClient.create()) {
 
+      // Set the disk properties.
       Disk disk = Disk.newBuilder()
           .setSizeGb(diskSizeGb)
           .setName(diskName)
@@ -70,11 +75,12 @@ public class CreateDiskFromImage {
           .setSourceImage(sourceImage)
           .build();
 
+      // Wait for the create disk operation to complete.
       Operation response = disksClient.insertAsync(projectId, zone, disk)
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Disk creation failed ! ! " + response);
+        System.out.println("Disk creation failed!" + response);
         return;
       }
       System.out.println("Disk created from image. Operation Status: " + response.getStatus());

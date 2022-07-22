@@ -43,19 +43,21 @@ public class CreateDiskFromSnapshot {
     // The type of disk you want to create. This value uses the following format:
     // "zones/{zone}/diskTypes/(pd-standard|pd-ssd|pd-balanced|pd-extreme)".
     // For example: "zones/us-west3-b/diskTypes/pd-ssd"
-    String diskType = "zones/us-west3-b/diskTypes/pd-ssd";
+    String diskType = String.format("zones/%s/diskTypes/pd-ssd", zone);
 
     // Size of the new disk in gigabytes.
     long diskSizeGb = 10;
 
     // A link to the snapshot you want to use as a source for the new disk.
-    // This value uses the following format: "projects/{project_name}/global/snapshots/{snapshot_name}"
-    String snapshotLink = "projects/project_name/global/snapshots/snapshot_name";
+    // This value uses the following format:
+    // "projects/{projectName}/global/snapshots/{snapshotName}"
+    String snapshotLink = String.format("projects/%s/global/snapshots/%s", projectId,
+        "SNAPSHOT_NAME");
 
     createDiskFromSnapshot(projectId, zone, diskName, diskType, diskSizeGb, snapshotLink);
   }
 
-  // Creates a new disk in a project in given zone.
+  // Creates a new disk in a project in given zone, using a snapshot.
   public static void createDiskFromSnapshot(String projectId, String zone, String diskName,
       String diskType, long diskSizeGb, String snapshotLink)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -87,7 +89,7 @@ public class CreateDiskFromSnapshot {
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Disk creation failed ! ! " + response);
+        System.out.println("Disk creation failed!" + response);
         return;
       }
       System.out.println("Disk created. Operation Status: " + response.getStatus());

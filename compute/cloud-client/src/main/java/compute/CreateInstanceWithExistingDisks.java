@@ -53,7 +53,8 @@ public class CreateInstanceWithExistingDisks {
     createInstanceWithExistingDisks(projectId, zone, instanceName, diskNames);
   }
 
-  // Create a new VM instance using selected disks. The first disk in diskNames will be used as boot disk.
+  // Create a new VM instance using selected disks.
+  // The first disk in diskNames will be used as boot disk.
   public static void createInstanceWithExistingDisks(String projectId, String zone,
       String instanceName, List<String> diskNames)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -107,7 +108,7 @@ public class CreateInstanceWithExistingDisks {
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Instance creation failed ! ! " + response);
+        System.out.println("Instance creation failed!" + response);
         return;
       }
       System.out.println("Operation Status: " + response.getStatus());

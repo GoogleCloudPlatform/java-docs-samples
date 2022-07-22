@@ -64,7 +64,7 @@ public class DeleteDisk {
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Disk deletion failed ! ! " + response);
+        System.out.println("Disk deletion failed!" + response);
         return;
       }
       System.out.println("Operation Status: " + response.getStatus());

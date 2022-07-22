@@ -74,6 +74,7 @@ public class SetDiskAutodelete {
                 diskName));
       }
 
+      // Create the request object.
       SetDiskAutoDeleteInstanceRequest request = SetDiskAutoDeleteInstanceRequest.newBuilder()
           .setProject(projectId)
           .setZone(zone)
@@ -88,7 +89,7 @@ public class SetDiskAutodelete {
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Failed to update Disk autodelete field ! ! " + response);
+        System.out.println("Failed to update Disk autodelete field!" + response);
         return;
       }
       System.out.println(

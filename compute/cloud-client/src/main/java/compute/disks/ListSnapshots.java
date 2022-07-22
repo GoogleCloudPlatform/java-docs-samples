@@ -31,7 +31,7 @@ public class ListSnapshots {
 
     // Filter to be applied when listing snapshots. Learn more about filters here:
     // https://cloud.google.com/python/docs/reference/compute/latest/google.cloud.compute_v1.types.ListSnapshotsRequest
-    String filter = "filter";
+    String filter = "FILTER_CONDITION";
 
     listSnapshots(projectId, filter);
   }
@@ -45,6 +45,7 @@ public class ListSnapshots {
     // clean up any remaining background resources.
     try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
 
+      // Create the List Snapshot request.
       ListSnapshotsRequest listSnapshotsRequest = ListSnapshotsRequest.newBuilder()
           .setProject(projectId)
           .setFilter(filter)

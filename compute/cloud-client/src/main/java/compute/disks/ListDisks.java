@@ -37,7 +37,7 @@ public class ListDisks {
 
     // Filter to be applied when listing disks. Learn more about filters here:
     // https://cloud.google.com/python/docs/reference/compute/latest/google.cloud.compute_v1.types.ListDisksRequest
-    String filter = "filter";
+    String filter = "FILTER_CONDITION";
 
     listDisks(projectId, zone, filter);
   }

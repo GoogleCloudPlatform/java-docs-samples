@@ -59,7 +59,7 @@ public class CreateSnapshot {
 
     // project ID or project number of the Cloud project that
     // hosts the disk you want to snapshot. If not provided, will look for
-    // the disk in the `project_id` project.
+    // the disk in the `projectId` project.
     String diskProjectId = "YOUR_DISK_PROJECT_ID";
 
     createSnapshot(projectId, diskName, snapshotName, zone, region, location, diskProjectId);
@@ -84,10 +84,13 @@ public class CreateSnapshot {
         throw new Error("You can't set both 'zone' and 'region' parameters");
       }
 
+      // If Disk's project id is not specified, then the projectId parameter will be used.
       if (diskProjectId.isEmpty()) {
         diskProjectId = projectId;
       }
 
+      // If zone is not empty, use the DisksClient to create a disk.
+      // Else, use the RegionDisksClient.
       Disk disk;
       if (!zone.isEmpty()) {
         DisksClient disksClient = DisksClient.create();
@@ -97,8 +100,8 @@ public class CreateSnapshot {
         disk = regionDisksClient.get(diskProjectId, region, diskName);
       }
 
+      // Set the snapshot properties.
       Snapshot snapshotResource;
-
       if (!location.isEmpty()) {
         snapshotResource = Snapshot.newBuilder()
             .setName(snapshotName)
@@ -112,14 +115,16 @@ public class CreateSnapshot {
             .build();
       }
 
+      // Wait for the operation to complete.
       Operation operation = snapshotsClient.insertAsync(projectId, snapshotResource)
           .get(3, TimeUnit.MINUTES);
 
       if (operation.hasError()) {
-        System.out.println("Snapshot creation failed ! ! " + operation);
+        System.out.println("Snapshot creation failed!" + operation);
         return;
       }
 
+      // Retrieve the created snapshot.
       Snapshot snapshot = snapshotsClient.get(projectId, snapshotName);
       System.out.printf("Snapshot created: %s", snapshot.getName());
 

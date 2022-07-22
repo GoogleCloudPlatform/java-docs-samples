@@ -43,7 +43,7 @@ public class CreateEmptyDisk {
     // The type of disk you want to create. This value uses the following format:
     // "zones/{zone}/diskTypes/(pd-standard|pd-ssd|pd-balanced|pd-extreme)".
     // For example: "zones/us-west3-b/diskTypes/pd-ssd"
-    String diskType = "zones/us-west3-b/diskTypes/pd-ssd";
+    String diskType = String.format("zones/%s/diskTypes/pd-ssd", zone);
 
     // Size of the new disk in gigabytes.
     long diskSizeGb = 10;
@@ -51,7 +51,7 @@ public class CreateEmptyDisk {
     createEmptyDisk(projectId, zone, diskName, diskType, diskSizeGb);
   }
 
-  // Creates a new empty disk in a project in given zone.
+  // Creates a new empty disk in a project in the given zone.
   public static void createEmptyDisk(String projectId, String zone, String diskName,
       String diskType, long diskSizeGb)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -82,7 +82,7 @@ public class CreateEmptyDisk {
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Disk creation failed ! ! " + response);
+        System.out.println("Disk creation failed!" + response);
         return;
       }
       System.out.println("Empty disk created. Operation Status: " + response.getStatus());
