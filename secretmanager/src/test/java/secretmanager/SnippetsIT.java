@@ -205,6 +205,15 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testCreateSecretWithUserManagedReplication() throws IOException {
+    SecretName name = TEST_SECRET_TO_CREATE_NAME;
+    List<String> locations = Arrays.asList("us-east1", "us-east4", "us-west1");
+    CreateSecret.createSecretWithUserManagedReplication(name.getProject(), name.getSecret(), locations);
+
+    assertThat(stdOut.toString()).contains("Created secret");
+  }
+
+  @Test
   public void testDeleteSecret() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET_TO_DELETE.getName());
     DeleteSecret.deleteSecret(name.getProject(), name.getSecret());
