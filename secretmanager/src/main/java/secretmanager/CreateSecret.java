@@ -23,8 +23,8 @@ import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
 public class CreateSecret {
 
@@ -64,7 +64,8 @@ public class CreateSecret {
   }
 
   // Create a new Secret with UserManaged replication
-  public static void createSecretWithUserManagedReplication(String projectId, String secretId, List<String> locations) throws IOException {
+  public static void createSecretWithUserManagedReplication(
+      String projectId, String secretId, List<String> locations) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -74,8 +75,9 @@ public class CreateSecret {
 
       // Set Replication
       Replication.UserManaged.Builder replication = Replication.UserManaged.newBuilder();
-      for(String location: locations){
-        replication.addReplicas(Replication.UserManaged.Replica.newBuilder().setLocation(location).build());
+      for (String location : locations) {
+        replication.addReplicas(
+            Replication.UserManaged.Replica.newBuilder().setLocation(location).build());
       }
 
       // Build the secret to create.
