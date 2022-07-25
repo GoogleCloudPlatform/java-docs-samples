@@ -36,7 +36,7 @@ public class CreateSecret {
 
     // TODO(developer): Replace these locations with the locations where replication is needed.
     List<String> locations = Arrays.asList("us-east1", "us-east4", "us-west1");
-    createSecretUserManagedReplication(projectId, secretId, locations);
+    createSecretWithUserManagedReplication(projectId, secretId, locations);
   }
 
   // Create a new Secret with Automatic replication
