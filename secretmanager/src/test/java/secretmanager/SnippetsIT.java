@@ -81,7 +81,7 @@ public class SnippetsIT {
     TEST_SECRET_TO_DELETE_WITH_ETAG = createSecret();
     TEST_SECRET_WITH_VERSIONS = createSecret();
     TEST_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
-    TEST_UMMR_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
+    TEST_UMMR_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId("java-ummr"));
 
     TEST_SECRET_VERSION = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
@@ -121,6 +121,10 @@ public class SnippetsIT {
 
   private static String randomSecretId() {
     return "java-" + System.currentTimeMillis();
+  }
+
+  private static String randomSecretId(String secretPrefix) {
+    return secretPrefix + "-" + System.currentTimeMillis();
   }
 
   private static Secret createSecret() throws IOException {
