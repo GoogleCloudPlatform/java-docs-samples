@@ -45,6 +45,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import java.util.List;
+import java.util.Arrays;
 
 /** Integration (system) tests for {@link Snippets}. */
 @RunWith(JUnit4.class)
