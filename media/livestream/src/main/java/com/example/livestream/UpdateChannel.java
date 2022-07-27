@@ -62,7 +62,7 @@ public class UpdateChannel {
                               .build()))
               .setUpdateMask(FieldMask.newBuilder().addPaths("input_attachments").build())
               .build();
-
+      // First API call in a project can take up to 10 minutes.
       Channel result =
           livestreamServiceClient
               .updateChannelAsync(updateChannelRequest)

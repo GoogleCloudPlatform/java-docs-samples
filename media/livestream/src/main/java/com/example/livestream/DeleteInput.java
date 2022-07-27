@@ -47,7 +47,7 @@ public class DeleteInput {
           DeleteInputRequest.newBuilder()
               .setName(InputName.of(projectId, location, inputId).toString())
               .build();
-
+      // First API call in a project can take up to 10 minutes.
       livestreamServiceClient.deleteInputAsync(deleteInputRequest).get(10, TimeUnit.MINUTES);
       System.out.println("Deleted input");
     }

@@ -123,7 +123,7 @@ public class CreateChannel {
                               .setMaxSegmentCount(5)
                               .build()))
               .build();
-
+      // First API call in a project can take up to 10 minutes.
       Channel result =
           livestreamServiceClient
               .createChannelAsync(createChannelRequest)

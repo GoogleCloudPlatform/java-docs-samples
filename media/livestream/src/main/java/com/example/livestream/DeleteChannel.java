@@ -47,7 +47,7 @@ public class DeleteChannel {
           DeleteChannelRequest.newBuilder()
               .setName(ChannelName.of(projectId, location, channelId).toString())
               .build();
-
+      // First API call in a project can take up to 10 minutes.
       livestreamServiceClient.deleteChannelAsync(deleteChannelRequest).get(10, TimeUnit.MINUTES);
       System.out.println("Deleted channel");
     }
