@@ -59,9 +59,9 @@ public class UpdateInput {
                       .build())
               .setUpdateMask(FieldMask.newBuilder().addPaths("preprocessing_config").build())
               .build();
-
+      // First API call in a project can take up to 10 minutes.
       Input result =
-          livestreamServiceClient.updateInputAsync(updateInputRequest).get(1, TimeUnit.MINUTES);
+          livestreamServiceClient.updateInputAsync(updateInputRequest).get(10, TimeUnit.MINUTES);
       System.out.println("Updated input: " + result.getName());
     }
   }
