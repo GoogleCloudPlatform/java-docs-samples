@@ -47,14 +47,14 @@ public class CreateInstanceWithExistingDisks {
     String instanceName = "YOUR_INSTANCE_NAME";
 
     // Array of disk names to be attached to the new virtual machine.
-    // First disk in this list will be used as the boot device.
+    // First disk in this list will be used as the boot disk.
     List<String> diskNames = new ArrayList<>();
 
     createInstanceWithExistingDisks(projectId, zone, instanceName, diskNames);
   }
 
-  // Create a new VM instance using selected disks.
-  // The first disk in diskNames will be used as boot disk.
+  // Create a new VM instance using the selected disks.
+  // The first disk in diskNames will be used as the boot disk.
   public static void createInstanceWithExistingDisks(String projectId, String zone,
       String instanceName, List<String> diskNames)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -82,7 +82,7 @@ public class CreateInstanceWithExistingDisks {
         );
       }
 
-      // Make the first disk in the list as the boot device.
+      // Make the first disk in the list as the boot disk.
       attachedDisks.set(0,
           AttachedDisk.newBuilder(attachedDisks.get(0)).setBoot(true).build());
 

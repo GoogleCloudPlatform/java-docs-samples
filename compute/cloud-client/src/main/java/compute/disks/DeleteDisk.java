@@ -33,7 +33,7 @@ public class DeleteDisk {
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
 
-    // Name of the zone in which is the disk you want to delete.
+    // The zone from where you want to delete the disk.
     String zone = "europe-central2-b";
 
     // Name of the disk you want to delete.

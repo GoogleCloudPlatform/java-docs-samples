@@ -42,13 +42,13 @@ public class CreateSnapshot {
     // Name of the disk you want to create.
     String diskName = "YOUR_DISK_NAME";
 
-    // Name of the snapshot to be created.
+    // Name of the snapshot that you want to create.
     String snapshotName = "YOUR_SNAPSHOT_NAME";
 
-    // Name of the zone in which is the disk you want to snapshot (for zonal disks).
+    // The zone of the source disk from which you create the snapshot (for zonal disks).
     String zone = "europe-central2-b";
 
-    // Name of the region in which is the disk you want to snapshot (for regional disks).
+    // The region of the source disk from which you create the snapshot (for regional disks).
     String region = "your-disk-region";
 
     // The Cloud Storage multi-region or the Cloud Storage region where you
@@ -57,9 +57,9 @@ public class CreateSnapshot {
     // https://cloud.google.com/storage/docs/locations#available-locations
     String location = "europe-central2";
 
-    // project ID or project number of the Cloud project that
-    // hosts the disk you want to snapshot. If not provided, will look for
-    // the disk in the `projectId` project.
+    // Project ID or project number of the Cloud project that
+    // hosts the disk you want to snapshot. If not provided, the value will be defaulted
+    // to 'projectId' value.
     String diskProjectId = "YOUR_DISK_PROJECT_ID";
 
     createSnapshot(projectId, diskName, snapshotName, zone, region, location, diskProjectId);

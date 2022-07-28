@@ -34,13 +34,13 @@ public class SetDiskAutodelete {
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
 
-    // Name of the zone in which is the disk you want to modify.
+    // The zone of the disk that you want to modify.
     String zone = "europe-central2-b";
 
     // Name of the instance the disk is attached to.
     String instanceName = "YOUR_INSTANCE_NAME";
 
-    // The name of the disk which flag you want to modify.
+    // The name of the disk for which you want to modify the autodelete flag.
     String diskName = "YOUR_DISK_NAME";
 
     // The new value of the autodelete flag.

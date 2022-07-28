@@ -32,7 +32,7 @@ public class ListDisks {
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
 
-    // Name of the zone in which to list the disks.
+    // The zone where the disks are located.
     String zone = "europe-central2-b";
 
     // Filter to be applied when listing disks. Learn more about filters here:

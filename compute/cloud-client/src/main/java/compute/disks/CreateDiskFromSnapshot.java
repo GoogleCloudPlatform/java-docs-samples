@@ -48,7 +48,7 @@ public class CreateDiskFromSnapshot {
     // Size of the new disk in gigabytes.
     long diskSizeGb = 10;
 
-    // A link to the snapshot you want to use as a source for the new disk.
+    // The full path and name of the snapshot that you want to use as the source for the new disk.
     // This value uses the following format:
     // "projects/{projectName}/global/snapshots/{snapshotName}"
     String snapshotLink = String.format("projects/%s/global/snapshots/%s", projectId,
@@ -77,7 +77,7 @@ public class CreateDiskFromSnapshot {
           .setSourceSnapshot(snapshotLink)
           .build();
 
-      // Create the Insert disk request.
+      // Create the insert disk request.
       InsertDiskRequest insertDiskRequest = InsertDiskRequest.newBuilder()
           .setProject(projectId)
           .setZone(zone)

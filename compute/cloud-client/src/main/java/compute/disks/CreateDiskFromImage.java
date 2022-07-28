@@ -47,7 +47,7 @@ public class CreateDiskFromImage {
     // Size of the new disk in gigabytes.
     long diskSizeGb = 10;
 
-    // Source image to use when creating this disk. You must have read access to this disk. This
+    // Source image to be used when creating this disk. You must have read access to this disk. This
     // can be one of the publicly available images or an image from one of your projects.
     // This value uses the following format: "projects/{project_name}/global/images/{image_name}"
     String sourceImage = String.format("projects/%s/global/images/%s", projectId, "IMAGE_NAME");
@@ -55,7 +55,7 @@ public class CreateDiskFromImage {
     createDiskFromImage(projectId, zone, diskName, diskType, diskSizeGb, sourceImage);
   }
 
-  // Creates a new disk in a project in given zone using an image as base.
+  // Use the source image to create a disk in a project in a specified zone.
   public static void createDiskFromImage(String projectId, String zone, String diskName,
       String diskType, long diskSizeGb, String sourceImage)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
