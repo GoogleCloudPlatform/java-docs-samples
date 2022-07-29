@@ -51,10 +51,10 @@ public class ListSnapshots {
           .setFilter(filter)
           .build();
 
+      System.out.println("List of snapshots:");
       for (Snapshot snapshot : snapshotsClient.list(listSnapshotsRequest).iterateAll()) {
         System.out.println(snapshot.getName());
       }
-      System.out.println("Listed all snapshots");
     }
   }
 }

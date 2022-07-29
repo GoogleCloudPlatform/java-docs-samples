@@ -59,10 +59,10 @@ public class ListDisks {
           .setFilter(filter)
           .build();
 
+      System.out.println("List of disks:");
       for (Disk disk : disksClient.list(listDisksRequest).iterateAll()) {
         System.out.println(disk.getName());
       }
-      System.out.println("Listed all disks.");
     }
   }
 }

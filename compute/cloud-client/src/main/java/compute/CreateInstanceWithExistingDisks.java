@@ -48,7 +48,7 @@ public class CreateInstanceWithExistingDisks {
 
     // Array of disk names to be attached to the new virtual machine.
     // First disk in this list will be used as the boot disk.
-    List<String> diskNames = new ArrayList<>();
+    List<String> diskNames = List.of("your-boot-disk", "another-disk1", "another-disk2");
 
     createInstanceWithExistingDisks(projectId, zone, instanceName, diskNames);
   }
@@ -72,19 +72,24 @@ public class CreateInstanceWithExistingDisks {
 
       // Create the list of attached disks to be used in instance creation.
       List<AttachedDisk> attachedDisks = new ArrayList<>();
-      Disk disk = null;
-      for (String name : diskNames) {
-        disk = disksClient.get(projectId, zone, name);
-        attachedDisks.add(
-            AttachedDisk.newBuilder()
-                .setSource(disk.getSelfLink())
-                .build()
-        );
-      }
+      for (int i = 0; i < diskNames.size(); i++) {
+        String diskName = diskNames.get(i);
+        Disk disk = disksClient.get(projectId, zone, diskName);
+        AttachedDisk attDisk = null;
 
-      // Make the first disk in the list as the boot disk.
-      attachedDisks.set(0,
-          AttachedDisk.newBuilder(attachedDisks.get(0)).setBoot(true).build());
+        if (i == 0) {
+          // Make the first disk in the list as the boot disk.
+          attDisk = AttachedDisk.newBuilder()
+              .setSource(disk.getSelfLink())
+              .setBoot(true)
+              .build();
+        } else {
+          attDisk = AttachedDisk.newBuilder()
+              .setSource(disk.getSelfLink())
+              .build();
+        }
+        attachedDisks.add(attDisk);
+      }
 
       // Create the instance.
       Instance instance = Instance.newBuilder()
