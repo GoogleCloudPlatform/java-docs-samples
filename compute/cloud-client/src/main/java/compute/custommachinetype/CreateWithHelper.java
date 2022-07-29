@@ -39,182 +39,23 @@ import java.util.stream.IntStream;
 
 public class CreateWithHelper {
 
-  // Returns the array of integers within the given range, incremented by the specified step.
-  // start (inclusive): starting number of the range
-  // stop (inclusive): ending number of the range
-  // step : increment value
-  static int[] getNumsInRangeWithStep(int start, int stop, int step) {
-    return IntStream.range(start, stop).filter(x -> (x - start) % step == 0).toArray();
-  }
+  // This class defines the configurable parameters for a custom VM.
+  static final class TypeLimits {
 
-  public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
-    String projectId = "your-google-cloud-project-id";
-    // Name of the zone to create the instance in. For example: "us-west3-b".
-    String zone = "google-cloud-zone";
-    // Name of the new virtual machine (VM) instance.
-    String instanceName = "instance-name";
-    String cpuSeries = "N1";
-    // Number of CPU cores you want to use.
-    int coreCount = 2;
-    // The amount of memory for the VM instance, in megabytes.
-    int memory = 256;
+    int[] allowedCores;
+    int minMemPerCore;
+    int maxMemPerCore;
+    int extraMemoryLimit;
+    boolean allowExtraMemory;
 
-    createInstanceWithCustomMachineTypeWithHelper(projectId, zone, instanceName, cpuSeries,
-        coreCount, memory);
-  }
-
-  public static String customMachineTypeUri(String zone, String cpuSeries, int coreCount,
-      int memory) {
-
-    if (!Arrays.asList(CpuSeries.E2.cpuSeries, CpuSeries.N1.cpuSeries, CpuSeries.N2.cpuSeries,
-        CpuSeries.N2D.cpuSeries).contains(cpuSeries)) {
-      throw new Error(String.format("Incorrect cpu type: %s", cpuSeries));
+    TypeLimits(int[] allowedCores, int minMemPerCore, int maxMemPerCore, boolean allowExtraMemory,
+        int extraMemoryLimit) {
+      this.allowedCores = allowedCores;
+      this.minMemPerCore = minMemPerCore;
+      this.maxMemPerCore = maxMemPerCore;
+      this.allowExtraMemory = allowExtraMemory;
+      this.extraMemoryLimit = extraMemoryLimit;
     }
-
-    TypeLimits typeLimit = Objects.requireNonNull(
-        typeLimitsMap.get(CpuSeries.get(cpuSeries).name())).typeLimits;
-
-    // Perform the following checks to verify if the requested parameters are allowed.
-    // Find more information about limitations of custom machine types at:
-    // https://cloud.google.com/compute/docs/general-purpose-machines#custom_machine_types
-    //
-    // 1. Check the number of cores and if the coreCount is present in allowedCores.
-    if (typeLimit.allowedCores.length > 0 && Arrays.stream(typeLimit.allowedCores)
-        .noneMatch(x -> x == coreCount)) {
-      throw new Error(String.format(
-          "Invalid number of cores requested. "
-              + "Number of cores requested for CPU %s should be one of: %s",
-          cpuSeries,
-          Arrays.toString(typeLimit.allowedCores)));
-    }
-
-    // 2. Memory must be a multiple of 256 MB
-    if (memory % 256 != 0) {
-      throw new Error("Requested memory must be a multiple of 256 MB");
-    }
-
-    // 3. Check if the requested memory isn't too little
-    if (memory < coreCount * typeLimit.minMemPerCore) {
-      throw new Error(
-          String.format("Requested memory is too low. Minimum memory for %s is %s MB per core",
-              cpuSeries, typeLimit.minMemPerCore));
-    }
-
-    // 4. Check if the requested memory isn't too much
-    if (memory > coreCount * typeLimit.maxMemPerCore && !typeLimit.allowExtraMemory) {
-      throw new Error(String.format(
-          "Requested memory is too large.. Maximum memory allowed for %s is %s MB per core",
-          cpuSeries, typeLimit.extraMemoryLimit));
-    }
-
-    // 5. Check if the requested memory isn't too large
-    if (memory > typeLimit.extraMemoryLimit && typeLimit.allowExtraMemory) {
-      throw new Error(
-          String.format("Requested memory is too large.. Maximum memory allowed for %s is %s MB",
-              cpuSeries, typeLimit.extraMemoryLimit));
-    }
-
-    // Check if the CPU Series is E2 and return the custom machine type in the form of a string
-    // acceptable by Compute Engine API.
-    if (Arrays.asList(CpuSeries.E2_SMALL.cpuSeries, CpuSeries.E2_MICRO.cpuSeries,
-        CpuSeries.E2_MEDIUM.cpuSeries).contains(cpuSeries)) {
-      return String.format("zones/%s/machineTypes/%s-%s", zone, cpuSeries, memory);
-    }
-
-    // Check if extended memory was requested and return the extended custom machine type
-    // in the form of a string acceptable by Compute Engine API.
-    if (memory > coreCount * typeLimit.maxMemPerCore) {
-      return String.format("zones/%s/machineTypes/%s-%s-%s-ext", zone, cpuSeries, coreCount,
-          memory);
-    }
-
-    // Return the custom machine type in the form of a standard string
-    // acceptable by Compute Engine API.
-    return String.format("zones/%s/machineTypes/%s-%s-%s", zone, cpuSeries, coreCount, memory);
-  }
-
-  static ImmutableMap<String, Limits> typeLimitsMap = ImmutableMap.<String, Limits>builder()
-      .put("N1", Limits.CPUSeries_N1)
-      .put("N2", Limits.CPUSeries_N2)
-      .put("N2D", Limits.CPUSeries_N2D)
-      .put("E2", Limits.CPUSeries_E2)
-      .put("E2_MICRO", Limits.CPUSeries_E2MICRO)
-      .put("E2_SMALL", Limits.CPUSeries_E2SMALL)
-      .put("E2_MEDIUM", Limits.CPUSeries_E2SMALL)
-      .build();
-
-  // Create a VM instance with a custom machine type.
-  public static void createInstanceWithCustomMachineTypeWithHelper(
-      String project, String zone, String instanceName, String cpuSeries, int coreCount, int memory)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Construct the URI string identifying the machine type.
-    String machineTypeUri = customMachineTypeUri(zone, cpuSeries, coreCount, memory);
-
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `instancesClient.close()` method on the client to safely
-    // clean up any remaining background resources.
-    try (InstancesClient instancesClient = InstancesClient.create()) {
-
-      AttachedDisk attachedDisk = AttachedDisk.newBuilder()
-          .setInitializeParams(
-              // Describe the size and source image of the boot disk to attach to the instance.
-              // The list of public images available in Compute Engine can be found here:
-              // https://cloud.google.com/compute/docs/images#list_of_public_images_available_on
-              AttachedDiskInitializeParams.newBuilder()
-                  .setSourceImage(
-                      String.format("projects/%s/global/images/family/%s", "debian-cloud",
-                          "debian-11"))
-                  .setDiskSizeGb(10)
-                  .build()
-          )
-          // Remember to set auto_delete to True if you want the disk to be deleted when you delete
-          // your VM instance.
-          .setAutoDelete(true)
-          .setBoot(true)
-          .build();
-
-      // Create the Instance object with the relevant information.
-      Instance instance = Instance.newBuilder()
-          .setName(instanceName)
-          .addDisks(attachedDisk)
-          .setMachineType(machineTypeUri)
-          .addNetworkInterfaces(
-              NetworkInterface.newBuilder().setName("global/networks/default").build())
-          .build();
-
-      // Create the insert instance request object.
-      InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
-          .setProject(project)
-          .setZone(zone)
-          .setInstanceResource(instance)
-          .build();
-
-      // Invoke the API with the request object and wait for the operation to complete.
-      Operation response = instancesClient.insertAsync(insertInstanceRequest)
-          .get(3, TimeUnit.MINUTES);
-
-      // Check for errors.
-      if (response.hasError()) {
-        throw new Error("Instance creation failed!!" + response);
-      }
-      System.out.printf("Instance created : %s", instanceName);
-      System.out.println("Operation Status: " + response.getStatus());
-    }
-  }
-
-  static int gbToMb(int value) {
-    return value << 10;
-  }
-
-  static int[] concat(int[] a, int[] b) {
-    int[] result = new int[a.length + b.length];
-    System.arraycopy(a, 0, result, 0, a.length);
-    System.arraycopy(b, 0, result, a.length, b.length);
-    return result;
   }
 
   public enum CpuSeries {
@@ -284,24 +125,182 @@ public class CreateWithHelper {
     }
   }
 
-  // This class defines the configurable parameters for a custom VM.
-  static final class TypeLimits {
+  static ImmutableMap<String, Limits> typeLimitsMap = ImmutableMap.<String, Limits>builder()
+      .put("N1", Limits.CPUSeries_N1)
+      .put("N2", Limits.CPUSeries_N2)
+      .put("N2D", Limits.CPUSeries_N2D)
+      .put("E2", Limits.CPUSeries_E2)
+      .put("E2_MICRO", Limits.CPUSeries_E2MICRO)
+      .put("E2_SMALL", Limits.CPUSeries_E2SMALL)
+      .put("E2_MEDIUM", Limits.CPUSeries_E2SMALL)
+      .build();
 
-    int[] allowedCores;
-    int minMemPerCore;
-    int maxMemPerCore;
-    int extraMemoryLimit;
-    boolean allowExtraMemory;
+  // Returns the array of integers within the given range, incremented by the specified step.
+  // start (inclusive): starting number of the range
+  // stop (inclusive): ending number of the range
+  // step : increment value
+  static int[] getNumsInRangeWithStep(int start, int stop, int step) {
+    return IntStream.range(start, stop).filter(x -> (x - start) % step == 0).toArray();
+  }
 
-    TypeLimits(int[] allowedCores, int minMemPerCore, int maxMemPerCore, boolean allowExtraMemory,
-        int extraMemoryLimit) {
-      this.allowedCores = allowedCores;
-      this.minMemPerCore = minMemPerCore;
-      this.maxMemPerCore = maxMemPerCore;
-      this.allowExtraMemory = allowExtraMemory;
-      this.extraMemoryLimit = extraMemoryLimit;
+  static int gbToMb(int value) {
+    return value << 10;
+  }
+
+  static int[] concat(int[] a, int[] b) {
+    int[] result = new int[a.length + b.length];
+    System.arraycopy(a, 0, result, 0, a.length);
+    System.arraycopy(b, 0, result, a.length, b.length);
+    return result;
+  }
+
+  public static void main(String[] args)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // TODO(developer): Replace these variables before running the sample.
+    // Project ID or project number of the Cloud project you want to use.
+    String projectId = "your-google-cloud-project-id";
+    // Name of the zone to create the instance in. For example: "us-west3-b".
+    String zone = "google-cloud-zone";
+    // Name of the new virtual machine (VM) instance.
+    String instanceName = "instance-name";
+    String cpuSeries = "N1";
+    // Number of CPU cores you want to use.
+    int coreCount = 2;
+    // The amount of memory for the VM instance, in megabytes.
+    int memory = 256;
+
+    createInstanceWithCustomMachineTypeWithHelper(
+        projectId, zone, instanceName, cpuSeries, coreCount, memory);
+  }
+
+  // Create a VM instance with a custom machine type.
+  public static void createInstanceWithCustomMachineTypeWithHelper(
+      String project, String zone, String instanceName, String cpuSeries, int coreCount, int memory)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Construct the URI string identifying the machine type.
+    String machineTypeUri = customMachineTypeUri(zone, cpuSeries, coreCount, memory);
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `instancesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+
+      AttachedDisk attachedDisk = AttachedDisk.newBuilder()
+          .setInitializeParams(
+              // Describe the size and source image of the boot disk to attach to the instance.
+              // The list of public images available in Compute Engine can be found here:
+              // https://cloud.google.com/compute/docs/images#list_of_public_images_available_on
+              AttachedDiskInitializeParams.newBuilder()
+                  .setSourceImage(
+                      String.format("projects/%s/global/images/family/%s", "debian-cloud",
+                          "debian-11"))
+                  .setDiskSizeGb(10)
+                  .build()
+          )
+          // Remember to set auto_delete to True if you want the disk to be deleted when you delete
+          // your VM instance.
+          .setAutoDelete(true)
+          .setBoot(true)
+          .build();
+
+      // Create the Instance object with the relevant information.
+      Instance instance = Instance.newBuilder()
+          .setName(instanceName)
+          .addDisks(attachedDisk)
+          .setMachineType(machineTypeUri)
+          .addNetworkInterfaces(
+              NetworkInterface.newBuilder().setName("global/networks/default").build())
+          .build();
+
+      // Create the insert instance request object.
+      InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
+          .setProject(project)
+          .setZone(zone)
+          .setInstanceResource(instance)
+          .build();
+
+      // Invoke the API with the request object and wait for the operation to complete.
+      Operation response = instancesClient.insertAsync(insertInstanceRequest)
+          .get(3, TimeUnit.MINUTES);
+
+      // Check for errors.
+      if (response.hasError()) {
+        throw new Error("Instance creation failed!!" + response);
+      }
+      System.out.printf("Instance created : %s", instanceName);
+      System.out.println("Operation Status: " + response.getStatus());
     }
   }
 
+  public static String customMachineTypeUri(String zone, String cpuSeries, int coreCount,
+      int memory) {
+
+    if (!Arrays.asList(CpuSeries.E2.cpuSeries, CpuSeries.N1.cpuSeries, CpuSeries.N2.cpuSeries,
+        CpuSeries.N2D.cpuSeries).contains(cpuSeries)) {
+      throw new Error(String.format("Incorrect cpu type: %s", cpuSeries));
+    }
+
+    TypeLimits typeLimit = Objects.requireNonNull(
+        typeLimitsMap.get(CpuSeries.get(cpuSeries).name())).typeLimits;
+
+    // Perform the following checks to verify if the requested parameters are allowed.
+    // Find more information about limitations of custom machine types at:
+    // https://cloud.google.com/compute/docs/general-purpose-machines#custom_machine_types
+
+    // 1. Check the number of cores and if the coreCount is present in allowedCores.
+    if (typeLimit.allowedCores.length > 0 && Arrays.stream(typeLimit.allowedCores)
+        .noneMatch(x -> x == coreCount)) {
+      throw new Error(String.format(
+          "Invalid number of cores requested. "
+              + "Number of cores requested for CPU %s should be one of: %s",
+          cpuSeries,
+          Arrays.toString(typeLimit.allowedCores)));
+    }
+
+    // 2. Memory must be a multiple of 256 MB
+    if (memory % 256 != 0) {
+      throw new Error("Requested memory must be a multiple of 256 MB");
+    }
+
+    // 3. Check if the requested memory isn't too little
+    if (memory < coreCount * typeLimit.minMemPerCore) {
+      throw new Error(
+          String.format("Requested memory is too low. Minimum memory for %s is %s MB per core",
+              cpuSeries, typeLimit.minMemPerCore));
+    }
+
+    // 4. Check if the requested memory isn't too much
+    if (memory > coreCount * typeLimit.maxMemPerCore && !typeLimit.allowExtraMemory) {
+      throw new Error(String.format(
+          "Requested memory is too large.. Maximum memory allowed for %s is %s MB per core",
+          cpuSeries, typeLimit.extraMemoryLimit));
+    }
+
+    // 5. Check if the requested memory isn't too large
+    if (memory > typeLimit.extraMemoryLimit && typeLimit.allowExtraMemory) {
+      throw new Error(
+          String.format("Requested memory is too large.. Maximum memory allowed for %s is %s MB",
+              cpuSeries, typeLimit.extraMemoryLimit));
+    }
+
+    // Check if the CPU Series is E2 and return the custom machine type in the form of a string
+    // acceptable by Compute Engine API.
+    if (Arrays.asList(CpuSeries.E2_SMALL.cpuSeries, CpuSeries.E2_MICRO.cpuSeries,
+        CpuSeries.E2_MEDIUM.cpuSeries).contains(cpuSeries)) {
+      return String.format("zones/%s/machineTypes/%s-%s", zone, cpuSeries, memory);
+    }
+
+    // Check if extended memory was requested and return the extended custom machine type
+    // in the form of a string acceptable by Compute Engine API.
+    if (memory > coreCount * typeLimit.maxMemPerCore) {
+      return String.format("zones/%s/machineTypes/%s-%s-%s-ext", zone, cpuSeries, coreCount,
+          memory);
+    }
+
+    // Return the custom machine type in the form of a standard string
+    // acceptable by Compute Engine API.
+    return String.format("zones/%s/machineTypes/%s-%s-%s", zone, cpuSeries, coreCount, memory);
+  }
 }
 // [END compute_custom_machine_type_create_with_helper]

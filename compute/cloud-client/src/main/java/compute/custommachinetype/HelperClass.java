@@ -30,79 +30,7 @@ public class HelperClass {
    * This class allows you to create custom machine types to be used with the VM instances.
    */
 
-  // Returns the array of integers within the given range, incremented by the specified step.
-  // start (inclusive): starting number of the range
-  // stop (inclusive): ending number of the range
-  // step : increment value
-  static int[] getNumsInRangeWithStep(int start, int stop, int step) {
-    return IntStream.range(start, stop).filter(x -> (x - start) % step == 0).toArray();
-  }
-
-  // Validate whether the requested parameters are allowed.
-  // Find more information about limitations of custom machine types at:
-  // https://cloud.google.com/compute/docs/general-purpose-machines#custom_machine_types
-  public static String validate(CustomMachineType cmt) {
-
-    // Check the number of cores and if the coreCount is present in allowedCores.
-    if (cmt.typeLimit.allowedCores.length > 0 && Arrays.stream(cmt.typeLimit.allowedCores)
-        .noneMatch(x -> x == cmt.coreCount)) {
-      throw new Error(String.format(
-          "Invalid number of cores requested. Allowed number of cores for %s is: %s",
-          cmt.cpuSeries,
-          Arrays.toString(cmt.typeLimit.allowedCores)));
-    }
-
-    // Memory must be a multiple of 256 MB.
-    if (cmt.memory % 256 != 0) {
-      throw new Error("Requested memory must be a multiple of 256 MB");
-    }
-
-    // Check if the requested memory isn't too little.
-    if (cmt.memory < cmt.coreCount * cmt.typeLimit.minMemPerCore) {
-      throw new Error(
-          String.format("Requested memory is too low. Minimum memory for %s is %s MB per core",
-              cmt.cpuSeries, cmt.typeLimit.minMemPerCore));
-    }
-
-    // Check if the requested memory isn't too much.
-    if (cmt.memory > cmt.coreCount * cmt.typeLimit.maxMemPerCore
-        && !cmt.typeLimit.allowExtraMemory) {
-      throw new Error(String.format(
-          "Requested memory is too large.. Maximum memory allowed for %s is %s MB per core",
-          cmt.cpuSeries, cmt.typeLimit.extraMemoryLimit));
-    }
-
-    // Check if the requested memory isn't too large.
-    if (cmt.memory > cmt.typeLimit.extraMemoryLimit && cmt.typeLimit.allowExtraMemory) {
-      throw new Error(
-          String.format("Requested memory is too large.. Maximum memory allowed for %s is %s MB",
-              cmt.cpuSeries, cmt.typeLimit.extraMemoryLimit));
-    }
-
-    return null;
-  }
-
-  // Return the custom machine type in the form of a string acceptable by Compute Engine API.
-  public static String returnCustomMachineTypeString(CustomMachineType cmt) {
-    // Check if the requested CPU belongs to E2 series.
-    if (Arrays.asList(CpuSeries.E2_SMALL.name(), CpuSeries.E2_MICRO.name(),
-        CpuSeries.E2_MEDIUM.name()).contains(cmt.cpuSeries)) {
-      return String.format("zones/%s/machineTypes/%s-%s", cmt.zone, cmt.cpuSeries, cmt.memory);
-    }
-
-    // Check if extended memory was requested.
-    if (cmt.memory > cmt.coreCount * cmt.typeLimit.maxMemPerCore) {
-      return String.format("zones/%s/machineTypes/%s-%s-%s-ext", cmt.zone, cmt.cpuSeries,
-          cmt.coreCount,
-          cmt.memory);
-    }
-
-    return String.format("zones/%s/machineTypes/%s-%s-%s", cmt.zone, cmt.cpuSeries, cmt.coreCount,
-        cmt.memory);
-  }
-
   static class CustomMachineType {
-
     String zone;
     String cpuSeries;
     int memory;
@@ -122,7 +50,6 @@ public class HelperClass {
 
     @Override
     public String toString() {
-
       if (cpuSeries.equalsIgnoreCase(CpuSeries.E2_SMALL.cpuSeries)
           || cpuSeries.equalsIgnoreCase(CpuSeries.E2_MICRO.cpuSeries)
           || cpuSeries.equalsIgnoreCase(CpuSeries.E2_MEDIUM.cpuSeries)) {
@@ -143,34 +70,23 @@ public class HelperClass {
     }
   }
 
-  // Create a custom machine type.
-  public static CustomMachineType createCustomMachineType(String zone, String cpuSeries, int memory,
-      int coreCount, TypeLimits typeLimit) {
-    if (Arrays.asList(CpuSeries.E2_SMALL.name(), CpuSeries.E2_MICRO.name(),
-        CpuSeries.E2_MEDIUM.name()).contains(cpuSeries)) {
-      coreCount = 2;
+  // This class defines the configurable parameters for a custom VM.
+  static final class TypeLimits {
+
+    int[] allowedCores;
+    int minMemPerCore;
+    int maxMemPerCore;
+    int extraMemoryLimit;
+    boolean allowExtraMemory;
+
+    TypeLimits(int[] allowedCores, int minMemPerCore, int maxMemPerCore, boolean allowExtraMemory,
+        int extraMemoryLimit) {
+      this.allowedCores = allowedCores;
+      this.minMemPerCore = minMemPerCore;
+      this.maxMemPerCore = maxMemPerCore;
+      this.allowExtraMemory = allowExtraMemory;
+      this.extraMemoryLimit = extraMemoryLimit;
     }
-
-    CustomMachineType cmt = new CustomMachineType(zone, cpuSeries, memory, coreCount, typeLimit);
-
-    try {
-      validate(cmt);
-    } catch (Error e) {
-      // Error in validation.
-      System.out.printf("Error in validation: %s", e);
-    }
-    return cmt;
-  }
-
-  static int gbToMb(int value) {
-    return value << 10;
-  }
-
-  static int[] concat(int[] a, int[] b) {
-    int[] result = new int[a.length + b.length];
-    System.arraycopy(a, 0, result, 0, a.length);
-    System.arraycopy(b, 0, result, a.length, b.length);
-    return result;
   }
 
   public enum CpuSeries {
@@ -240,6 +156,44 @@ public class HelperClass {
     }
   }
 
+  // Returns the array of integers within the given range, incremented by the specified step.
+  // start (inclusive): starting number of the range
+  // stop (inclusive): ending number of the range
+  // step : increment value
+  static int[] getNumsInRangeWithStep(int start, int stop, int step) {
+    return IntStream.range(start, stop).filter(x -> (x - start) % step == 0).toArray();
+  }
+
+  static int gbToMb(int value) {
+    return value << 10;
+  }
+
+  static int[] concat(int[] a, int[] b) {
+    int[] result = new int[a.length + b.length];
+    System.arraycopy(a, 0, result, 0, a.length);
+    System.arraycopy(b, 0, result, a.length, b.length);
+    return result;
+  }
+
+  // Return the custom machine type in the form of a string acceptable by Compute Engine API.
+  public static String returnCustomMachineTypeString(CustomMachineType cmt) {
+    // Check if the requested CPU belongs to E2 series.
+    if (Arrays.asList(CpuSeries.E2_SMALL.name(), CpuSeries.E2_MICRO.name(),
+        CpuSeries.E2_MEDIUM.name()).contains(cmt.cpuSeries)) {
+      return String.format("zones/%s/machineTypes/%s-%s", cmt.zone, cmt.cpuSeries, cmt.memory);
+    }
+
+    // Check if extended memory was requested.
+    if (cmt.memory > cmt.coreCount * cmt.typeLimit.maxMemPerCore) {
+      return String.format("zones/%s/machineTypes/%s-%s-%s-ext", cmt.zone, cmt.cpuSeries,
+          cmt.coreCount,
+          cmt.memory);
+    }
+
+    return String.format("zones/%s/machineTypes/%s-%s-%s", cmt.zone, cmt.cpuSeries, cmt.coreCount,
+        cmt.memory);
+  }
+
   // Returns machine type in a format without the zone. For example, n2-custom-0-10240.
   // This format is used to create instance templates.
   public static String machineType(CustomMachineType cmt) {
@@ -247,23 +201,69 @@ public class HelperClass {
     return machineType[machineType.length - 1];
   }
 
-  // This class defines the configurable parameters for a custom VM.
-  static final class TypeLimits {
+  // Validate whether the requested parameters are allowed.
+  // Find more information about limitations of custom machine types at:
+  // https://cloud.google.com/compute/docs/general-purpose-machines#custom_machine_types
+  public static String validate(CustomMachineType cmt) {
 
-    int[] allowedCores;
-    int minMemPerCore;
-    int maxMemPerCore;
-    int extraMemoryLimit;
-    boolean allowExtraMemory;
-
-    TypeLimits(int[] allowedCores, int minMemPerCore, int maxMemPerCore, boolean allowExtraMemory,
-        int extraMemoryLimit) {
-      this.allowedCores = allowedCores;
-      this.minMemPerCore = minMemPerCore;
-      this.maxMemPerCore = maxMemPerCore;
-      this.allowExtraMemory = allowExtraMemory;
-      this.extraMemoryLimit = extraMemoryLimit;
+    // Check the number of cores and if the coreCount is present in allowedCores.
+    if (cmt.typeLimit.allowedCores.length > 0 && Arrays.stream(cmt.typeLimit.allowedCores)
+        .noneMatch(x -> x == cmt.coreCount)) {
+      throw new Error(String.format(
+          "Invalid number of cores requested. Allowed number of cores for %s is: %s",
+          cmt.cpuSeries,
+          Arrays.toString(cmt.typeLimit.allowedCores)));
     }
+
+    // Memory must be a multiple of 256 MB.
+    if (cmt.memory % 256 != 0) {
+      throw new Error("Requested memory must be a multiple of 256 MB");
+    }
+
+    // Check if the requested memory isn't too little.
+    if (cmt.memory < cmt.coreCount * cmt.typeLimit.minMemPerCore) {
+      throw new Error(
+          String.format("Requested memory is too low. Minimum memory for %s is %s MB per core",
+              cmt.cpuSeries, cmt.typeLimit.minMemPerCore));
+    }
+
+    // Check if the requested memory isn't too much.
+    if (cmt.memory > cmt.coreCount * cmt.typeLimit.maxMemPerCore
+        && !cmt.typeLimit.allowExtraMemory) {
+      throw new Error(String.format(
+          "Requested memory is too large.. Maximum memory allowed for %s is %s MB per core",
+          cmt.cpuSeries, cmt.typeLimit.extraMemoryLimit));
+    }
+
+    // Check if the requested memory isn't too large.
+    if (cmt.memory > cmt.typeLimit.extraMemoryLimit && cmt.typeLimit.allowExtraMemory) {
+      throw new Error(
+          String.format("Requested memory is too large.. Maximum memory allowed for %s is %s MB",
+              cmt.cpuSeries, cmt.typeLimit.extraMemoryLimit));
+    }
+
+    return null;
   }
+
+  // Create a custom machine type.
+  public static CustomMachineType createCustomMachineType(String zone, String cpuSeries, int memory,
+      int coreCount, TypeLimits typeLimit) {
+    if (Arrays.asList(CpuSeries.E2_SMALL.getCpuSeries(), CpuSeries.E2_MICRO.getCpuSeries(),
+        CpuSeries.E2_MEDIUM.getCpuSeries()).contains(cpuSeries)) {
+      coreCount = 2;
+    }
+
+    CustomMachineType cmt = new CustomMachineType(zone, cpuSeries, memory, coreCount, typeLimit);
+
+    try {
+      validate(cmt);
+    } catch (Error e) {
+      // Error in validation.
+      System.out.printf("Error in validation: %s", e);
+      return null;
+    }
+    return cmt;
+  }
+
 }
 // [END compute_custom_machine_type_helper_class]

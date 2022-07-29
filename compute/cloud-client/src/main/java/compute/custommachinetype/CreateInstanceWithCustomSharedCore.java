@@ -39,12 +39,119 @@ import java.util.stream.IntStream;
 
 public class CreateInstanceWithCustomSharedCore {
 
+  // This class defines the configurable parameters for a custom VM.
+  static final class TypeLimits {
+
+    int[] allowedCores;
+    int minMemPerCore;
+    int maxMemPerCore;
+    int extraMemoryLimit;
+    boolean allowExtraMemory;
+
+    TypeLimits(int[] allowedCores, int minMemPerCore, int maxMemPerCore, boolean allowExtraMemory,
+        int extraMemoryLimit) {
+      this.allowedCores = allowedCores;
+      this.minMemPerCore = minMemPerCore;
+      this.maxMemPerCore = maxMemPerCore;
+      this.allowExtraMemory = allowExtraMemory;
+      this.extraMemoryLimit = extraMemoryLimit;
+    }
+  }
+
+  public enum CpuSeries {
+    N1("custom"),
+    N2("n2-custom"),
+    N2D("n2d-custom"),
+    E2("e2-custom"),
+    E2_MICRO("e2-custom-micro"),
+    E2_SMALL("e2-custom-small"),
+    E2_MEDIUM("e2-custom-medium");
+
+    private static final Map<String, CpuSeries> ENUM_MAP;
+
+    static {
+      ENUM_MAP = init();
+    }
+
+    // Build an immutable map of String name to enum pairs.
+    public static Map<String, CpuSeries> init() {
+      Map<String, CpuSeries> map = new ConcurrentHashMap<>();
+      for (CpuSeries instance : CpuSeries.values()) {
+        map.put(instance.getCpuSeries(), instance);
+      }
+      return Collections.unmodifiableMap(map);
+    }
+
+    private final String cpuSeries;
+
+    CpuSeries(String cpuSeries) {
+      this.cpuSeries = cpuSeries;
+    }
+
+    public static CpuSeries get(String name) {
+      return ENUM_MAP.get(name);
+    }
+
+    public String getCpuSeries() {
+      return this.cpuSeries;
+    }
+  }
+
+  // This enum correlates a machine type with its limits.
+  // The limits for various CPU types are described in:
+  // https://cloud.google.com/compute/docs/general-purpose-machines
+  enum Limits {
+    CPUSeries_E2(new TypeLimits(getNumsInRangeWithStep(2, 33, 2), 512, 8192, false, 0)),
+    CPUSeries_E2MICRO(new TypeLimits(new int[]{}, 1024, 2048, false, 0)),
+    CPUSeries_E2SMALL(new TypeLimits(new int[]{}, 2048, 4096, false, 0)),
+    CPUSeries_E2MEDIUM(new TypeLimits(new int[]{}, 4096, 8192, false, 0)),
+    CPUSeries_N2(
+        new TypeLimits(concat(getNumsInRangeWithStep(2, 33, 2), getNumsInRangeWithStep(36, 129, 4)),
+            512, 8192, true, gbToMb(624))),
+    CPUSeries_N2D(
+        new TypeLimits(new int[]{2, 4, 8, 16, 32, 48, 64, 80, 96}, 512, 8192, true, gbToMb(768))),
+    CPUSeries_N1(
+        new TypeLimits(concat(new int[]{1}, getNumsInRangeWithStep(2, 97, 2)), 922, 6656, true,
+            gbToMb(624)));
+
+    private final TypeLimits typeLimits;
+
+    Limits(TypeLimits typeLimits) {
+      this.typeLimits = typeLimits;
+    }
+
+    public TypeLimits getTypeLimits() {
+      return typeLimits;
+    }
+  }
+
+  static ImmutableMap<String, Limits> typeLimitsMap = ImmutableMap.<String, Limits>builder()
+      .put("N1", Limits.CPUSeries_N1)
+      .put("N2", Limits.CPUSeries_N2)
+      .put("N2D", Limits.CPUSeries_N2D)
+      .put("E2", Limits.CPUSeries_E2)
+      .put("E2_MICRO", Limits.CPUSeries_E2MICRO)
+      .put("E2_SMALL", Limits.CPUSeries_E2SMALL)
+      .put("E2_MEDIUM", Limits.CPUSeries_E2SMALL)
+      .build();
+
   // Returns the array of integers within the given range, incremented by the specified step.
   // start (inclusive): starting number of the range
   // stop (inclusive): ending number of the range
   // step : increment value
   static int[] getNumsInRangeWithStep(int start, int stop, int step) {
     return IntStream.range(start, stop).filter(x -> (x - start) % step == 0).toArray();
+  }
+
+  static int gbToMb(int value) {
+    return value << 10;
+  }
+
+  static int[] concat(int[] a, int[] b) {
+    int[] result = new int[a.length + b.length];
+    System.arraycopy(a, 0, result, 0, a.length);
+    System.arraycopy(b, 0, result, a.length, b.length);
+    return result;
   }
 
   public static void main(String[] args)
@@ -61,6 +168,65 @@ public class CreateInstanceWithCustomSharedCore {
     int memory = 256;
 
     createInstanceWithCustomSharedCore(projectId, zone, instanceName, cpuSeries, memory);
+  }
+
+  // Create a new VM instance with a custom type using shared CPUs and returns the created
+  // Instance.
+  public static void createInstanceWithCustomSharedCore(
+      String project, String zone, String instanceName, String cpuSeries, int memory)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Construct the URI string identifying the machine type.
+    String machineTypeUri = customMachineTypeSharedCoreUri(zone, cpuSeries, memory);
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `instancesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+
+      AttachedDisk attachedDisk = AttachedDisk.newBuilder()
+          .setInitializeParams(
+              // Describe the size and source image of the boot disk to attach to the instance.
+              // The list of public images available in Compute Engine can be found here:
+              // https://cloud.google.com/compute/docs/images#list_of_public_images_available_on
+              AttachedDiskInitializeParams.newBuilder()
+                  .setSourceImage(
+                      String.format("projects/%s/global/images/family/%s", "debian-cloud",
+                          "debian-11"))
+                  .setDiskSizeGb(10)
+                  .build()
+          )
+          .setAutoDelete(true)
+          .setBoot(true)
+          .setType(AttachedDisk.Type.PERSISTENT.name())
+          .build();
+
+      // Create the Instance object with the relevant information.
+      Instance instance = Instance.newBuilder()
+          .setName(instanceName)
+          .addDisks(attachedDisk)
+          .setMachineType(machineTypeUri)
+          .addNetworkInterfaces(
+              NetworkInterface.newBuilder().setName("global/networks/default").build())
+          .build();
+
+      // Create the insert instance request object.
+      InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
+          .setProject(project)
+          .setZone(zone)
+          .setInstanceResource(instance)
+          .build();
+
+      // Invoke the API with the request object and wait for the operation to complete.
+      Operation response = instancesClient.insertAsync(insertInstanceRequest)
+          .get(3, TimeUnit.MINUTES);
+      // Check for errors.
+      if (response.hasError()) {
+        throw new Error("Instance creation failed!!" + response);
+      }
+      System.out.printf("Instance created : %s", instanceName);
+      System.out.println("Operation Status: " + response.getStatus());
+    }
   }
 
   // Construct URI for a custom machine type with a shared core.
@@ -135,170 +301,5 @@ public class CreateInstanceWithCustomSharedCore {
     return String.format("zones/%s/machineTypes/%s-%s-%s", zone, cpuSeries, coreCount, memory);
   }
 
-  static ImmutableMap<String, Limits> typeLimitsMap = ImmutableMap.<String, Limits>builder()
-      .put("N1", Limits.CPUSeries_N1)
-      .put("N2", Limits.CPUSeries_N2)
-      .put("N2D", Limits.CPUSeries_N2D)
-      .put("E2", Limits.CPUSeries_E2)
-      .put("E2_MICRO", Limits.CPUSeries_E2MICRO)
-      .put("E2_SMALL", Limits.CPUSeries_E2SMALL)
-      .put("E2_MEDIUM", Limits.CPUSeries_E2SMALL)
-      .build();
-
-  // Create a new VM instance with a custom type using shared CPUs and returns the created
-  // Instance.
-  public static void createInstanceWithCustomSharedCore(
-      String project, String zone, String instanceName, String cpuSeries, int memory)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Construct the URI string identifying the machine type.
-    String machineTypeUri = customMachineTypeSharedCoreUri(zone, cpuSeries, memory);
-
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `instancesClient.close()` method on the client to safely
-    // clean up any remaining background resources.
-    try (InstancesClient instancesClient = InstancesClient.create()) {
-
-      AttachedDisk attachedDisk = AttachedDisk.newBuilder()
-          .setInitializeParams(
-              // Describe the size and source image of the boot disk to attach to the instance.
-              // The list of public images available in Compute Engine can be found here:
-              // https://cloud.google.com/compute/docs/images#list_of_public_images_available_on
-              AttachedDiskInitializeParams.newBuilder()
-                  .setSourceImage(
-                      String.format("projects/%s/global/images/family/%s", "debian-cloud",
-                          "debian-11"))
-                  .setDiskSizeGb(10)
-                  .build()
-          )
-          .setAutoDelete(true)
-          .setBoot(true)
-          .setType(AttachedDisk.Type.PERSISTENT.name())
-          .build();
-
-      // Create the Instance object with the relevant information.
-      Instance instance = Instance.newBuilder()
-          .setName(instanceName)
-          .addDisks(attachedDisk)
-          .setMachineType(machineTypeUri)
-          .addNetworkInterfaces(
-              NetworkInterface.newBuilder().setName("global/networks/default").build())
-          .build();
-
-      // Create the insert instance request object.
-      InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
-          .setProject(project)
-          .setZone(zone)
-          .setInstanceResource(instance)
-          .build();
-
-      // Invoke the API with the request object and wait for the operation to complete.
-      Operation response = instancesClient.insertAsync(insertInstanceRequest)
-          .get(3, TimeUnit.MINUTES);
-      // Check for errors.
-      if (response.hasError()) {
-        throw new Error("Instance creation failed!!" + response);
-      }
-      System.out.printf("Instance created : %s", instanceName);
-      System.out.println("Operation Status: " + response.getStatus());
-    }
-  }
-
-  static int gbToMb(int value) {
-    return value << 10;
-  }
-
-  static int[] concat(int[] a, int[] b) {
-    int[] result = new int[a.length + b.length];
-    System.arraycopy(a, 0, result, 0, a.length);
-    System.arraycopy(b, 0, result, a.length, b.length);
-    return result;
-  }
-
-  public enum CpuSeries {
-    N1("custom"),
-    N2("n2-custom"),
-    N2D("n2d-custom"),
-    E2("e2-custom"),
-    E2_MICRO("e2-custom-micro"),
-    E2_SMALL("e2-custom-small"),
-    E2_MEDIUM("e2-custom-medium");
-
-    private static final Map<String, CpuSeries> ENUM_MAP;
-
-    static {
-      ENUM_MAP = init();
-    }
-
-    // Build an immutable map of String name to enum pairs.
-    public static Map<String, CpuSeries> init() {
-      Map<String, CpuSeries> map = new ConcurrentHashMap<>();
-      for (CpuSeries instance : CpuSeries.values()) {
-        map.put(instance.getCpuSeries(), instance);
-      }
-      return Collections.unmodifiableMap(map);
-    }
-
-    private final String cpuSeries;
-
-    CpuSeries(String cpuSeries) {
-      this.cpuSeries = cpuSeries;
-    }
-
-    public static CpuSeries get(String name) {
-      return ENUM_MAP.get(name);
-    }
-
-    public String getCpuSeries() {
-      return this.cpuSeries;
-    }
-  }
-
-  // This enum correlates a machine type with its limits.
-  // The limits for various CPU types are described in:
-  // https://cloud.google.com/compute/docs/general-purpose-machines
-  enum Limits {
-    CPUSeries_E2(new TypeLimits(getNumsInRangeWithStep(2, 33, 2), 512, 8192, false, 0)),
-    CPUSeries_E2MICRO(new TypeLimits(new int[]{}, 1024, 2048, false, 0)),
-    CPUSeries_E2SMALL(new TypeLimits(new int[]{}, 2048, 4096, false, 0)),
-    CPUSeries_E2MEDIUM(new TypeLimits(new int[]{}, 4096, 8192, false, 0)),
-    CPUSeries_N2(
-        new TypeLimits(concat(getNumsInRangeWithStep(2, 33, 2), getNumsInRangeWithStep(36, 129, 4)),
-            512, 8192, true, gbToMb(624))),
-    CPUSeries_N2D(
-        new TypeLimits(new int[]{2, 4, 8, 16, 32, 48, 64, 80, 96}, 512, 8192, true, gbToMb(768))),
-    CPUSeries_N1(
-        new TypeLimits(concat(new int[]{1}, getNumsInRangeWithStep(2, 97, 2)), 922, 6656, true,
-            gbToMb(624)));
-
-    private final TypeLimits typeLimits;
-
-    Limits(TypeLimits typeLimits) {
-      this.typeLimits = typeLimits;
-    }
-
-    public TypeLimits getTypeLimits() {
-      return typeLimits;
-    }
-  }
-
-  // This class defines the configurable parameters for a custom VM.
-  static final class TypeLimits {
-
-    int[] allowedCores;
-    int minMemPerCore;
-    int maxMemPerCore;
-    int extraMemoryLimit;
-    boolean allowExtraMemory;
-
-    TypeLimits(int[] allowedCores, int minMemPerCore, int maxMemPerCore, boolean allowExtraMemory,
-        int extraMemoryLimit) {
-      this.allowedCores = allowedCores;
-      this.minMemPerCore = minMemPerCore;
-      this.maxMemPerCore = maxMemPerCore;
-      this.allowExtraMemory = allowExtraMemory;
-      this.extraMemoryLimit = extraMemoryLimit;
-    }
-  }
 }
 // [END compute_custom_machine_type_create_shared_with_helper]
