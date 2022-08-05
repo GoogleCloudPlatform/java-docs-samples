@@ -43,17 +43,15 @@ public class UpdateSecretWithAlias {
       SecretName secretName = SecretName.of(projectId, secretId);
 
       // Build the updated secret.
-      Secret secret =
+      Secret.Builder secret =
           Secret.newBuilder()
               .setName(secretName.toString())
-              .getVersionAliasesMap().put("test", 1l);
-      secret.build();
-      
+              .getVersionAliasesMap().put("test", 1l);      
       // Build the field mask.
       FieldMask fieldMask = FieldMaskUtil.fromString("version_aliases");
 
       // Update the secret.
-      Secret updatedSecret = client.updateSecret(secret, fieldMask);
+      Secret updatedSecret = client.updateSecret(secret.build(), fieldMask);
       System.out.printf("Updated secret %s\n", updatedSecret.getName());
     }
   }
