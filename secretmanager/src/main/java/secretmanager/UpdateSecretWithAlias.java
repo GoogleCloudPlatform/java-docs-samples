@@ -53,7 +53,7 @@ public class UpdateSecretWithAlias {
 
       // Update the secret.
       Secret updatedSecret = client.updateSecret(secret.build(), fieldMask);
-      System.out.printf("Updated secret %s\n", updatedSecret.getName());
+      System.out.printf("Updated alias map: %s\n", updatedSecret.getVersionAliasesMap().toString());
     }
   }
 }
