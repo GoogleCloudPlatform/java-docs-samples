@@ -50,7 +50,7 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
     config.setUsername(DB_USER); // e.g. "root", _postgres"
     config.setPassword(DB_PASS); // e.g. "my-password"
 
-    config.addDataSourceProperty("socketFactory", "com.google.cloud.sql_postgres.SocketFactory");
+    config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.postgres.SocketFactory");
     config.addDataSourceProperty("cloudSqlInstance", INSTANCE_CONNECTION_NAME);
 
     // [END cloud_sql_postgres_servlet_connect_connector]
