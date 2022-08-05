@@ -363,7 +363,7 @@ public class SnippetsIT {
   @Test
   public void testUpdateSecretWithAlias() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET_WITH_VERSIONS.getName());
-    UpdateSecret.updateSecret(name.getProject(), name.getSecret());
+    UpdateSecretWithAlias.updateSecret(name.getProject(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("test");
   }
