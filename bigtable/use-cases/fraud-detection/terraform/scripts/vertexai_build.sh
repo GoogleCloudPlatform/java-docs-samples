@@ -28,6 +28,12 @@ gcloud ai models upload \
   --artifact-uri=gs://${BUCKET_NAME}/ml_model/
 MODEL_ID=$(gcloud ai models list   --region=$REGION   --filter=display_name=$MODEL_NAME 2>/dev/null | grep "$MODEL_NAME" | awk '{ print $1 }')
 
+# Make sure there is no previous endpoints with the same name.
+PREV_ENDPOINT_IDS=$(gcloud ai endpoints list --region=$REGION --filter=display_name=$ENDPOINT_NAME 2>/dev/null | grep "$ENDPOINT_NAME" | awk '{ print $1 }')
+echo "Previous endpoints = $PREV_ENDPOINT_IDS"
+for PREV_ENDPOINT in ${PREV_ENDPOINT_IDS}; do
+	yes | gcloud ai endpoints delete $PREV_ENDPOINT --region=$REGION
+done
 
 gcloud ai endpoints create \
   --region=$REGION \

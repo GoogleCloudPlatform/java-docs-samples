@@ -61,9 +61,9 @@ public class StreamingPipelineTest {
         FraudDetectionTestUtil.runCommand(
             "terraform -chdir=terraform/ init"), 0);
     assertEquals(
-        FraudDetectionTestUtil.runCommand(
+        FraudDetectionTestUtil.runCommand2(
             "terraform -chdir=terraform/ apply -auto-approve -var=project_id=" + projectID),
-        0);
+        "0");
 
     // Make sure we have the variables we need
     FraudDetectionTestUtil.requireVar(pubsubInputTopic);

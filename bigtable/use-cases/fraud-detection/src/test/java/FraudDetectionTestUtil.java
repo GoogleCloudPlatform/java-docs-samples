@@ -79,11 +79,52 @@ public class FraudDetectionTestUtil {
     }
   }
 
+  // Parse Terraform output and populate the variables needed for testing.
+  private static String parseTerraformOutput2(Process terraformProcess) throws IOException {
+    BufferedReader reader =
+        new BufferedReader(new InputStreamReader(terraformProcess.getInputStream()));
+    StringBuilder answer = new StringBuilder();
+    // Process terraform output.
+    String line;
+    while ((line = reader.readLine()) != null) {
+      System.err.println(line);
+      answer.append(line).append("\n");
+      if (line.contains("pubsub_input_topic = ")) {
+        // example: pubsub_output_topic = "THE NAME WE WANT"
+        StreamingPipelineTest.pubsubInputTopic = line.split("\"")[1];
+      } else if (line.contains("pubsub_output_topic = ")) {
+        // example: pubsub_output_subscription = "THE NAME WE WANT"
+        StreamingPipelineTest.pubsubOutputTopic = line.split("\"")[1];
+      } else if (line.contains("pubsub_output_subscription = ")) {
+        // example: gcs_bucket = "THE NAME WE WANT"
+        StreamingPipelineTest.pubsubOutputSubscription = line.split("\"")[1];
+      } else if (line.contains("gcs_bucket = ")) {
+        // example: gcs_bucket = "THE NAME WE WANT"
+        StreamingPipelineTest.gcsBucket = line.split("\"")[1];
+      } else if (line.contains("cbt_instance = ")) {
+        // example: cbt_instance = "THE NAME WE WANT"
+        StreamingPipelineTest.cbtInstanceID = line.split("\"")[1];
+      } else if (line.contains("cbt_table = ")) {
+        // example: cbt_table = "THE NAME WE WANT"
+        StreamingPipelineTest.cbtTableID = line.split("\"")[1];
+      }
+    }
+    return answer.toString();
+  }
+
   public static int runCommand(String command) throws IOException, InterruptedException {
     Process process = new ProcessBuilder(command.split(" ")).start();
     parseTerraformOutput(process);
     // Wait for the process to finish running and return the exit code.
     return process.waitFor();
+  }
+
+  public static String runCommand2(String command) throws IOException, InterruptedException {
+    Process process = new ProcessBuilder(command.split(" ")).start();
+    String answer = parseTerraformOutput2(process);
+    // Wait for the process to finish running and return the exit code.
+    int r = process.waitFor();
+    return answer;
   }
 
   // Returns all transactions in a file inside a GCS bucket.

@@ -56,7 +56,7 @@
     <dependency>
       <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
-      <version>LATEST</version>
+      <version>31.1-jre</version>
     </dependency>
     <dependency>
       <artifactId>slf4j-api</artifactId>
