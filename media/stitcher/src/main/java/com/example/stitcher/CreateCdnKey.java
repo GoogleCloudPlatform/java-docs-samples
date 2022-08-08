@@ -43,9 +43,9 @@ public class CreateCdnKey {
         projectId, location, cdnKeyId, hostname, gcdnKeyname, gcdnPrivateKey, akamaiTokenKey);
   }
 
-  // createCdnKey creates an Akamai or Google CDN key. If akamaiTokenKey is
+  // createCdnKey creates an Akamai or Cloud CDN key. If akamaiTokenKey is
   // provided, then create an Akamai key. If akamaiTokenKey is not provided (""),
-  // then create a Google CDN key.
+  // then create a Cloud CDN key.
   public static void createCdnKey(
       String projectId,
       String location,

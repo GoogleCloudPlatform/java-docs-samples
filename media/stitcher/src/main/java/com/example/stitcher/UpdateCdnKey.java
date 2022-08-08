@@ -46,7 +46,7 @@ public class UpdateCdnKey {
 
   // updateCdnKey updates the hostname and key fields for an existing CDN key. If akamaiTokenKey is
   // provided, then update the existing Akamai key fields. If akamaiTokenKey is not provided (""),
-  // then update the existing Google CDN key fields. Update hostname regardless of key type.
+  // then update the existing Cloud CDN key fields. Update hostname regardless of key type.
   public static void updateCdnKey(
       String projectId,
       String location,
@@ -91,7 +91,7 @@ public class UpdateCdnKey {
       UpdateCdnKeyRequest updateCdnKeyRequest =
           UpdateCdnKeyRequest.newBuilder()
               .setCdnKey(cdnKey)
-              // Update the hostname field and the fields for the specific key type (Google CDN
+              // Update the hostname field and the fields for the specific key type (Cloud CDN
               // or Akamai). You must set the mask to the fields you want to update.
               .setUpdateMask(FieldMask.newBuilder().addPaths("hostname").addPaths(path).build())
               .build();
