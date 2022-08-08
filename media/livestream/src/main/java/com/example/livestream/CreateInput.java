@@ -50,9 +50,9 @@ public class CreateInput {
               .setInputId(inputId)
               .setInput(Input.newBuilder().setType(Input.Type.RTMP_PUSH).build())
               .build();
-      // First API call in a project can take up to 10 minutes.
+      // First API call in a project can take up to 15 minutes.
       Input result =
-          livestreamServiceClient.createInputAsync(createInputRequest).get(10, TimeUnit.MINUTES);
+          livestreamServiceClient.createInputAsync(createInputRequest).get(15, TimeUnit.MINUTES);
       System.out.println("Input: " + result.getName());
     }
   }
