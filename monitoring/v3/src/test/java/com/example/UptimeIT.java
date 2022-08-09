@@ -32,9 +32,9 @@ import org.junit.runners.MethodSorters;
 import org.junit.Ignore;
 
 /** Integration (system) tests for {@link UptimeSample}. */
-@Ignore
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
+@Ignore
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UptimeIT {
   private ByteArrayOutputStream bout;
