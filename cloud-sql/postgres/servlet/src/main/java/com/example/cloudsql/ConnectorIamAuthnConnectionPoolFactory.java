@@ -46,7 +46,7 @@ public class ConnectorIamAuthnConnectionPoolFactory extends ConnectionPoolFactor
     // Configure which instance and what database to connect with.
     config.setJdbcUrl(String.format("jdbc:postgresql:///%s", DB_NAME));
 
-    config.addDataSourceProperty("socketFactory", "com.google.cloud.sql_postgres.SocketFactory");
+    config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.postgres.SocketFactory");
     config.addDataSourceProperty("cloudSqlInstance", INSTANCE_CONNECTION_NAME);
 
     // If connecting using automatic database authentication, follow the instructions for
