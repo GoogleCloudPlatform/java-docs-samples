@@ -63,7 +63,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
-      <version>1.117.0</version>
+      <version>1.120.3</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
