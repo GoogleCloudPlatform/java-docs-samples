@@ -29,8 +29,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
+import org.junit.Ignore;
 
 /** Integration (system) tests for {@link UptimeSample}. */
+@Ignore
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
