@@ -57,6 +57,7 @@ import com.google.cloud.storage.storagetransfer.samples.apiary.TransferFromAwsAp
 import com.google.cloud.storage.storagetransfer.samples.apiary.TransferToNearlineApiary;
 import com.google.cloud.storage.storagetransfer.samples.test.util.TransferJobUtils;
 import com.google.cloud.storage.testing.RemoteStorageHelper;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.cloud.testing.junit4.StdOutCaptureRule;
 import com.google.common.collect.ImmutableList;
 import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
@@ -89,6 +90,7 @@ public class ITStoragetransferSamplesTest {
   private static AmazonS3 s3;
   private static StorageTransferServiceClient sts;
 
+  @Rule public MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   @Rule public final StdOutCaptureRule stdOutCaptureRule = new StdOutCaptureRule();
 
   @BeforeClass
