@@ -1,11 +1,11 @@
 #!/bin/bash
 
 REGION=$1
-AI_NAME=$2
+UUID=$2
 
-MODEL_NAME=tf-fd-ml-model
-EP_NAME=tf-fd-ml-model-ep
-DEPLOYED_MODEL_NAME=tf-fd-ml-deployed-model
+MODEL_NAME=tf-fd-ml-model-$UUID
+EP_NAME=tf-fd-ml-model-ep-$UUID
+DEPLOYED_MODEL_NAME=tf-fd-ml-deployed-model-$UUID
 
 echo "REGION = $REGION"
 echo "MODEL_NAME = $MODEL_NAME"

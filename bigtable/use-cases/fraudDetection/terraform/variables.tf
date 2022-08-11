@@ -1,8 +1,3 @@
-#variable "credentials_path" {
-#  description = "The path to gcloud credentials json file."
-#  type        = string
-#}
-
 variable "project_id" {
   description = "The ID of the project in which to provision resources."
   type        = string

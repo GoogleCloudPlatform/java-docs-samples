@@ -14,7 +14,7 @@ provider "google" {
 }
 
 # Create a random string to make each run unique.
-resource "random_string" "random_id" {
+resource "random_string" "uuid" {
   length  = 15
   special = false
   upper   = false
@@ -22,18 +22,18 @@ resource "random_string" "random_id" {
 
 # Create the Cloud Bigtable instance that will be used.
 resource "google_bigtable_instance" "tf-fd-instance" {
-  name                = "tf-fd-instance-${random_string.random_id.result}"
+  name                = "featurestore-${random_string.uuid.result}"
   deletion_protection = false
   cluster {
-    cluster_id   = "tf-cluster"
-    num_nodes    = 3
+    cluster_id   = "featurestore-c1"
+    num_nodes    = 1
     storage_type = "SSD"
   }
 }
 
 # Create a CBT table and create two column families.
 resource "google_bigtable_table" "tf-fd-table" {
-  name          = "tf-fd-table-${random_string.random_id.result}"
+  name          = "customer-information-${random_string.uuid.result}"
   instance_name = google_bigtable_instance.tf-fd-instance.name
   column_family {
     family = "demographics"
@@ -45,19 +45,19 @@ resource "google_bigtable_table" "tf-fd-table" {
 
 # Create the pubsub input topic.
 resource "google_pubsub_topic" "tf-fd-pubsub-input-topic" {
-  name                       = "tf-fd-pubsub-input-topic-${random_string.random_id.result}"
+  name                       = "transaction-stream-${random_string.uuid.result}"
   message_retention_duration = "604800s"
 }
 
 # Create the pubsub output topic.
 resource "google_pubsub_topic" "tf-fd-pubsub-output-topic" {
-  name                       = "tf-fd-pubsub-output-topic-${random_string.random_id.result}"
+  name                       = "fraud-result-stream-${random_string.uuid.result}"
   message_retention_duration = "604800s"
 }
 
 # Create the pubsub output topic subscription.
 resource "google_pubsub_subscription" "tf-fd-pubsub-output-subscription" {
-  name  = "tf-fd-pubsub-output-subscription-${random_string.random_id.result}"
+  name  = "fraud-result-stream-subscription-${random_string.uuid.result}"
   topic = google_pubsub_topic.tf-fd-pubsub-output-topic.name
 
   message_retention_duration = "604800s"
@@ -66,7 +66,7 @@ resource "google_pubsub_subscription" "tf-fd-pubsub-output-subscription" {
 
 # Create a GCS bucket that will contain the datasets used.
 resource "google_storage_bucket" "tf-fd-bucket" {
-  name                        = "tf-fd-bucket-${random_string.random_id.result}"
+  name                        = "fraud-decetion-${random_string.uuid.result}"
   location                    = var.region
   force_destroy               = true
   uniform_bucket_level_access = true
@@ -156,8 +156,8 @@ module "vertexai" {
   platform = "linux"
 
   create_cmd_entrypoint  = "${path.module}/scripts/vertexai_build.sh"
-  create_cmd_body        = "${var.region} ${random_string.random_id.result} ${google_storage_bucket.tf-fd-bucket.name}"
+  create_cmd_body        = "${var.region} ${random_string.uuid.result} ${google_storage_bucket.tf-fd-bucket.name}"
 
   destroy_cmd_entrypoint = "${path.module}/scripts/vertexai_destroy.sh"
-  destroy_cmd_body       = "${var.region} ${random_string.random_id.result}"
+  destroy_cmd_body       = "${var.region} ${random_string.uuid.result}"
 }

@@ -67,6 +67,13 @@ public class StreamingPipelineTest {
     FraudDetectionTestUtil.requireVar(gcsBucket);
     FraudDetectionTestUtil.requireVar(cbtInstanceID);
     FraudDetectionTestUtil.requireVar(cbtTableID);
+
+    System.out.println("pubsubInputTopic= " + pubsubInputTopic);
+    System.out.println("pubsubOutputTopic= " + pubsubOutputTopic);
+    System.out.println("pubsubOutputSubscription= " + pubsubOutputSubscription);
+    System.out.println("gcsBucket= " + gcsBucket);
+    System.out.println("cbtInstanceID= " + cbtInstanceID);
+    System.out.println("cbtTableID= " + cbtTableID);
   }
 
 }

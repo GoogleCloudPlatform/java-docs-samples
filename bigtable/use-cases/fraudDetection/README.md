@@ -1,6 +1,6 @@
 # Credit card fraud-detection using Cloud Bigtable
 
-This sample application aims to build a fast and scalable fraud detection system using Cloud Bigtable as its feature store. The feature store holds Demographic information (customer ids, addresses, etc) and Historical transactions. When deciding if a transaction is fraudulent or not, the feature store is queried to fetch the customer demographic information and the transaction history.
+This sample application aims to build a fast and scalable fraud detection system using Cloud Bigtable as its feature store. The feature store holds demographic information (customer ids, addresses, etc.) and historical transactions. In order to determine if a transaction is fraudulent, the feature store is queries the customer demographic information and transaction history.
 
 Cloud Bigtable is a great fit to use as a feature store for the following reasons:
 
@@ -8,20 +8,20 @@ Cloud Bigtable is a great fit to use as a feature store for the following reason
     
 2.  **Fast:** It has a very low latency which helps in this use case because the system needs to identify if a transaction is fraudulent or not as soon as possible.
     
-3.  **Low maintenance:** Lower maintenance compared to relational offerings. Also, Cloud Bigtable supports garbage collection policies which simplify customers’ history management.
+3.  **Managed service:** Cloud Bigtable provides the speed and scale all in a managed service. There are also maintenance features like seamless scaling and replication as well as integrations with popular big data tools like Hadoop, Dataflow and Dataproc.
 
 ## System design
-![Fraud detection design](fraud-detection-design.jpg)
+![Fraud detection design](fraud-detection-design.svg)
 
-**1.  Input/Output Cloud Pubsub topics:** The real-time transactions arrive at the Cloud Pubsub input topic, and the output is sent to Cloud Pubsub output topic.
+**1.  Input/Output Cloud Pub/Sub topics:** The real-time transactions arrive at the Cloud Pub/Sub input topic, and the output is sent to Cloud Pub/Sub output topic.
     
 **2.  ML Model:** The component that decides the probability of a transaction of being fraudulent. This project provides a pre-trained ML model and hosts it on VertexAI (See ML Model section).
     
 **3.  Cloud Bigtable as a Feature Store:** Cloud Bigtable stores Customers’ demographics and historical data. The Dataflow pipeline queries Cloud Bigtable in real-time when to get and aggregate the customer’s demographics and historical data.
     
-**4.  Dataflow Pipeline:** The streaming pipeline that orchestrates this whole operation. It reads the transaction details from the Cloud Pubsub input topic, queries Cloud Bigtable to build a feature vector that is sent to the ML model, and lastly, it writes the output to the Cloud Pubsub output topic.
+**4.  Dataflow Pipeline:** The streaming pipeline that orchestrates this whole operation. It reads the transaction details from the Cloud Pub/Sub input topic, queries Cloud Bigtable to build a feature vector that is sent to the ML model, and lastly, it writes the output to the Cloud Pub/Sub output topic.
     
-**5.  Data warehouse (BigQuery, Spark, etc):** This component stores the full history of all transactions queried by the system. It runs batch jobs for continuously training the ML model. Note that this component is outside the scope of this project as a pre-trained ML model is provided for simplicity.
+**5.  Data-warehouse (BigQuery, Spark, etc):** This component stores the full history of all transactions queried by the system. It runs batch jobs for continuously training the ML model. Note that this component is outside the scope of this project as a pre-trained ML model is provided for simplicity.
 
 The system design is written using the Terraform framework. All components details can be found in the file **terraform/main.tf** and it includes the components listed above.
 

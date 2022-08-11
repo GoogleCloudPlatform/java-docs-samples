@@ -1,6 +1,6 @@
-output "random_id" {
+output "uuid" {
   description = "The random uuid used in this Terraform run"
-  value       = random_string.random_id.result
+  value       = random_string.uuid.result
 }
 
 output "project_id" {
