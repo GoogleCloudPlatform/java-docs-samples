@@ -23,7 +23,7 @@ Cloud Bigtable is a great fit to use as a feature store for the following reason
     
 **5.  Data-warehouse (BigQuery, Spark, etc):** This component stores the full history of all transactions queried by the system. It runs batch jobs for continuously training the ML model. Note that this component is outside the scope of this project as a pre-trained ML model is provided for simplicity.
 
-The system design is written using the Terraform framework. All components details can be found in the file **terraform/main.tf** and it includes the components listed above.
+The system design is written using the Terraform framework. All components' details can be found in the file **terraform/main.tf** and it includes the components listed above.
 
 ## Datasets
 
@@ -38,20 +38,20 @@ The directory **terraform/datasets/testing_data** stores the datasets that can b
 
 ### Schema design
 
-In Cloud Bigtable the data is organized in tables, which have rows identified by a unique row key, they can have an arbitrary number of columns and for every row key and column multiple versions of value might be stored. This allows storing historical data within the same table row which greatly simplifies query patterns. In this application we’re going to demonstrate how easy it is to store data in Cloud Bigtable for fraud detection use-cases.
+Cloud Bigtable stores data in tables, each of which is a sorted key/value map. The table is composed of rows, each of which typically describes a single entity, and columns, which contain individual values for each row. Each row/column intersection can contain multiple cells. Each cell contains a unique timestamped version of the data for that row and column.
 
-This design uses a single table to store all customers information following [table design best practices.](https://cloud.google.com/bigtable/docs/schema-design#tables) The table is structured as follows:
+This design uses a single table to store all customers' information following [table design best practices.](https://cloud.google.com/bigtable/docs/schema-design#tables) The table is structured as follows:
 
   
-  | row key | demographics column family | historical transactions column family |  
------------- | :-----------: | -----------: |  
-user_id 1| Customer’s demographic information |Transaction details at time 10|   
- | | | Transaction details at time 7|
- | | | Transaction details at time 4|
- | | | ...|
-user_id 2| Customer’s demographic information |Transaction details at time 8|   
- | | | Transaction details at time 7|
- | | | ...|
+| row key   |     demographics column family     | historical transactions column family |  
+|-----------|:----------------------------------:|--------------------------------------:|
+| user_id 1 | Customer’s demographic information |        Transaction details at time 10 |   
+ |           |                                    |         Transaction details at time 7 |
+ |           |                                    |         Transaction details at time 4 |
+ |           |                                    |                                   ... |
+| user_id 2 | Customer’s demographic information |         Transaction details at time 8 |   
+ |           |                                    |         Transaction details at time 7 |
+ |           |                                    |                                   ... |
  
 **Row Key:** The row key is the unique userID. 
 
@@ -60,7 +60,7 @@ user_id 2| Customer’s demographic information |Transaction details at time 8|
 
 ### Column families
 
-The data is separated over two column families. Having multiple column families allows for different garbage collection policies (See garbage collection section).
+The data is separated over two column families. Having multiple column families allows for different garbage collection policies (See garbage collection section). Moreover, it is used to group data that is often queried together.
 
 **Demographics Column Family:** This column family contains the demographics data for customers. Usually, each customer will have one value for each column in this column family.
 
@@ -70,11 +70,11 @@ The data is separated over two column families. Having multiple column families 
 
 **Number of nodes**
 
-The Terraform code creates a Cloud Bigtable instance that has 3 nodes. This is a configurable number based on the amount of data and the volume of traffic received by the system. Moreover, Cloud Bigtable supports [autoscaling](https://cloud.google.com/bigtable/docs/autoscaling) where the number of nodes is dynamically selected based on the current system load.
+The Terraform code creates a Cloud Bigtable instance that has 1 node. This is a configurable number based on the amount of data and the volume of traffic received by the system. Moreover, Cloud Bigtable supports [autoscaling](https://cloud.google.com/bigtable/docs/autoscaling) where the number of nodes is dynamically selected based on the current system load.
 
 **Garbage Collection Policy**
 
-The current Terraform code does not have any garbage collection policies. However, it could be beneficial for this use case to set a garbage collection policy for the History column family. The ML model doesn’t need to read all the history of the customer. For example, you can set a garbage collection policy to delete all transactions that are older than N months but keep at least M last transactions. The Demographics column family could have a policy that prevents having more than one value in each column. You can read more about Cloud Bigtable Garbage Collection Policies by reading: [Types of garbage collection](https://cloud.google.com/bigtable/docs/garbage-collection#types)  
+The current Terraform code does not have any garbage collection policies. However, it could be beneficial for this use case to set a garbage collection policy for the History column family. The ML model does not need to read all the history of the customer. For example, you can set a garbage collection policy to delete all transactions that are older than N months but keep at least M last transactions. The demographics column family could have a policy that prevents having more than one value in each column. You can read more about Cloud Bigtable Garbage Collection Policies by reading: [Types of garbage collection](https://cloud.google.com/bigtable/docs/garbage-collection#types)  
 
 **Replication**
 

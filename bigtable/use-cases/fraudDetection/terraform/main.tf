@@ -66,7 +66,7 @@ resource "google_pubsub_subscription" "tf-fd-pubsub-output-subscription" {
 
 # Create a GCS bucket that will contain the datasets used.
 resource "google_storage_bucket" "tf-fd-bucket" {
-  name                        = "fraud-decetion-${random_string.uuid.result}"
+  name                        = "fraud-detection-${random_string.uuid.result}"
   location                    = var.region
   force_destroy               = true
   uniform_bucket_level_access = true

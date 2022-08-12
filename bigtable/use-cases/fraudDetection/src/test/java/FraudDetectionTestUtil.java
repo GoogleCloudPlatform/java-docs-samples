@@ -46,22 +46,16 @@ public class FraudDetectionTestUtil {
     while ((line = reader.readLine()) != null) {
       System.out.println(line);
       if (line.contains("pubsub_input_topic = ")) {
-        // example: pubsub_output_topic = "THE NAME WE WANT"
         StreamingPipelineTest.pubsubInputTopic = line.split("\"")[1];
       } else if (line.contains("pubsub_output_topic = ")) {
-        // example: pubsub_output_subscription = "THE NAME WE WANT"
         StreamingPipelineTest.pubsubOutputTopic = line.split("\"")[1];
       } else if (line.contains("pubsub_output_subscription = ")) {
-        // example: gcs_bucket = "THE NAME WE WANT"
         StreamingPipelineTest.pubsubOutputSubscription = line.split("\"")[1];
       } else if (line.contains("gcs_bucket = ")) {
-        // example: gcs_bucket = "THE NAME WE WANT"
         StreamingPipelineTest.gcsBucket = line.split("\"")[1];
       } else if (line.contains("cbt_instance = ")) {
-        // example: cbt_instance = "THE NAME WE WANT"
         StreamingPipelineTest.cbtInstanceID = line.split("\"")[1];
       } else if (line.contains("cbt_table = ")) {
-        // example: cbt_table = "THE NAME WE WANT"
         StreamingPipelineTest.cbtTableID = line.split("\"")[1];
       }
     }

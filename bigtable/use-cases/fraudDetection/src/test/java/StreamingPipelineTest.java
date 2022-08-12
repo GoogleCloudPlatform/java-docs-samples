@@ -31,7 +31,6 @@ public class StreamingPipelineTest {
   static String pubsubInputTopic;
   static String pubsubOutputTopic;
   static String pubsubOutputSubscription;
-  // The environment variable projectID is important to be set before running the tests.
   private static String projectID;
 
   @BeforeClass
@@ -60,7 +59,7 @@ public class StreamingPipelineTest {
 
   // Assert that the variables exported by Terraform are not null.
   @Test
-  public void testLegitTransactions() {
+  public void testTerraformSetup() {
     FraudDetectionTestUtil.requireVar(pubsubInputTopic);
     FraudDetectionTestUtil.requireVar(pubsubOutputTopic);
     FraudDetectionTestUtil.requireVar(pubsubOutputSubscription);
