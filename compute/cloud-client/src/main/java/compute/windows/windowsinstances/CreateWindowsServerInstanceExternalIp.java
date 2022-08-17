@@ -107,7 +107,7 @@ public class CreateWindowsServerInstanceExternalIp {
           .build();
 
       // Wait for the operation to complete.
-      Operation operation = instancesClient.insertAsync(request).get(3, TimeUnit.MINUTES);
+      Operation operation = instancesClient.insertAsync(request).get(5, TimeUnit.MINUTES);
 
       if (operation.hasError()) {
         System.out.printf("Error in creating instance %s", operation.getError());

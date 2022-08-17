@@ -30,6 +30,7 @@ import com.google.cloud.compute.v1.SnapshotsClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +57,7 @@ public class InstancesAdvancedIT {
   private static String MACHINE_NAME_SNAPSHOT;
   private static String MACHINE_NAME_SNAPSHOT_ADDITIONAL;
   private static String MACHINE_NAME_SUBNETWORK;
+  private static String MACHINE_NAME_EXISTING_DISK;
   private static Disk TEST_DISK;
   private static Image TEST_IMAGE;
   private static Snapshot TEST_SNAPSHOT;
@@ -79,13 +81,15 @@ public class InstancesAdvancedIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
+    UUID uuid = UUID.randomUUID();
     ZONE = "us-central1-a";
-    MACHINE_NAME_PUBLIC_IMAGE = "test-instance-pub-" + UUID.randomUUID();
-    MACHINE_NAME_CUSTOM_IMAGE = "test-instance-cust-" + UUID.randomUUID();
-    MACHINE_NAME_ADDITIONAL_DISK = "test-instance-add-" + UUID.randomUUID();
-    MACHINE_NAME_SNAPSHOT = "test-instance-snap-" + UUID.randomUUID();
-    MACHINE_NAME_SNAPSHOT_ADDITIONAL = "test-instance-snapa-" + UUID.randomUUID();
-    MACHINE_NAME_SUBNETWORK = "test-instance-subnet-" + UUID.randomUUID();
+    MACHINE_NAME_PUBLIC_IMAGE = "test-instance-pub-" + uuid;
+    MACHINE_NAME_CUSTOM_IMAGE = "test-instance-cust-" + uuid;
+    MACHINE_NAME_ADDITIONAL_DISK = "test-instance-add-" + uuid;
+    MACHINE_NAME_SNAPSHOT = "test-instance-snap-" + uuid;
+    MACHINE_NAME_SNAPSHOT_ADDITIONAL = "test-instance-snapa-" + uuid;
+    MACHINE_NAME_SUBNETWORK = "test-instance-subnet-" + uuid;
+    MACHINE_NAME_EXISTING_DISK = "test-instance-exis" + uuid;
     NETWORK_NAME = "global/networks/default";
     SUBNETWORK_NAME = "regions/us-central1/subnetworks/default";
 
@@ -107,6 +111,8 @@ public class InstancesAdvancedIT {
         MACHINE_NAME_SNAPSHOT_ADDITIONAL, TEST_SNAPSHOT.getSelfLink());
     compute.CreateInstancesAdvanced.createWithSubnetwork(PROJECT_ID, ZONE, MACHINE_NAME_SUBNETWORK,
         NETWORK_NAME, SUBNETWORK_NAME);
+    CreateInstanceWithExistingDisks.createInstanceWithExistingDisks(PROJECT_ID, ZONE,
+        MACHINE_NAME_EXISTING_DISK, List.of(TEST_DISK.getName()));
 
     TimeUnit.SECONDS.sleep(10);
     stdOut.close();
@@ -126,6 +132,7 @@ public class InstancesAdvancedIT {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_SNAPSHOT);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_SNAPSHOT_ADDITIONAL);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_SUBNETWORK);
+    compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_EXISTING_DISK);
 
     deleteImage(TEST_IMAGE);
     deleteSnapshot(TEST_SNAPSHOT);
@@ -270,6 +277,13 @@ public class InstancesAdvancedIT {
   public void testCreateInSubnetwork() throws IOException {
     // Check if the instance was successfully created during the setup.
     String response = Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_SUBNETWORK);
+    Assert.assertEquals(response, Status.RUNNING.toString());
+  }
+
+  @Test
+  public void testCreateInstanceWithExistingDisks() throws IOException {
+    // Check if the instance was successfully created during the setup.
+    String response = Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_EXISTING_DISK);
     Assert.assertEquals(response, Status.RUNNING.toString());
   }
 

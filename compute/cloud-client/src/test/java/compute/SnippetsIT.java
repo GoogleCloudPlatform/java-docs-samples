@@ -151,6 +151,12 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testGetInstance() throws IOException {
+    GetInstance.getInstance(PROJECT_ID, ZONE, MACHINE_NAME);
+    assertThat(stdOut.toString()).contains("Retrieved the instance");
+  }
+
+  @Test
   public void testCreateEncryptedInstance() throws IOException {
     // Check if the instance was successfully created during the setup.
     String response = Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED);
