@@ -1,35 +1,35 @@
-# Credit card fraud-detection using Cloud Bigtable
+# Credit card fraud detection using Cloud Bigtable
 
-This sample application aims to build a fast and scalable fraud detection system using Cloud Bigtable as its feature store. The feature store holds demographic information (customer ids, addresses, etc.) and historical transactions. In order to determine if a transaction is fraudulent, the feature store is queries the customer demographic information and transaction history.
+This sample application aims to build a fast and scalable fraud detection system using Cloud Bigtable as its feature store. The feature store holds demographic information (customer ids, addresses, etc.) and historical transactions. In order to determine if a transaction is fraudulent, the feature store queries the customer demographic information and transaction history.
 
 Cloud Bigtable is a great fit to use as a feature store for the following reasons:
 
-1.  **Scalable:** Cloud Bigtable can handle petabytes of data allowing the fraud-detection service to scale to many customers.
+1.  **Scalable:** Cloud Bigtable can handle petabytes of data, allowing the fraud detection service to scale to many customers.
     
 2.  **Fast:** It has a very low latency which helps in this use case because the system needs to identify if a transaction is fraudulent or not as soon as possible.
     
 3.  **Managed service:** Cloud Bigtable provides the speed and scale all in a managed service. There are also maintenance features like seamless scaling and replication as well as integrations with popular big data tools like Hadoop, Dataflow and Dataproc.
 
 ## System design
-![Fraud detection design](fraud-detection-design.svg)
+![Fraud detection design](fraud detection-design.svg)
 
-**1.  Input/Output Cloud Pub/Sub topics:** The real-time transactions arrive at the Cloud Pub/Sub input topic, and the output is sent to Cloud Pub/Sub output topic.
+**1.  Input/Output Cloud Pub/Sub topics:** The real-time transactions arrive at the Cloud Pub/Sub input topic, and the output is sent to the Cloud Pub/Sub output topic.
     
-**2.  ML Model:** The component that decides the probability of a transaction of being fraudulent. This project provides a pre-trained ML model and hosts it on VertexAI (See ML Model section).
+**2.  ML Model:** The component that decides the probability of a transaction of being fraudulent. This sample application provides a pre-trained ML model and hosts it on VertexAI ([See ML Model section](#ml-model)).
     
-**3.  Cloud Bigtable as a Feature Store:** Cloud Bigtable stores Customers’ demographics and historical data. The Dataflow pipeline queries Cloud Bigtable in real-time when to get and aggregate the customer’s demographics and historical data.
+**3.  Cloud Bigtable as a Feature Store:** Cloud Bigtable stores customers’ demographics and historical data. The Dataflow pipeline queries Cloud Bigtable in real-time and aggregates customers' demographics and historical data.
     
 **4.  Dataflow Pipeline:** The streaming pipeline that orchestrates this whole operation. It reads the transaction details from the Cloud Pub/Sub input topic, queries Cloud Bigtable to build a feature vector that is sent to the ML model, and lastly, it writes the output to the Cloud Pub/Sub output topic.
     
-**5.  Data-warehouse (BigQuery, Spark, etc):** This component stores the full history of all transactions queried by the system. It runs batch jobs for continuously training the ML model. Note that this component is outside the scope of this project as a pre-trained ML model is provided for simplicity.
+**5.  Data warehouse (BigQuery, Spark, etc):** This component stores the full history of all transactions queried by the system. It runs batch jobs for continuously training the ML model. Note that this component is outside the scope of this sample application as a pre-trained ML model is provided for simplicity.
 
 The system design is written using the Terraform framework. All components' details can be found in the file **terraform/main.tf** and it includes the components listed above.
 
 ## Datasets
 
-This project uses [Sparkov Data Generation Simulator](https://github.com/namebrandon/Sparkov_Data_Generation) to generate the datasets that are used for training the ML model and for testing it.
+This sample application uses [Sparkov Data Generation Simulator](https://github.com/namebrandon/Sparkov_Data_Generation) to generate the datasets that are used for training the ML model and for testing it.
 
-The directory **terraform/datasets/training_data** stores the datasets used for training the ML model. A pre-trained ML model comes with this project, but a custom ML model can be trained as well.
+The directory **terraform/datasets/training_data** stores the datasets used for training the ML model. A pre-trained ML model comes with this sample application, but a custom ML model can be trained as well.
 
 The directory **terraform/datasets/testing_data** stores the datasets that can be used for testing the ML model. The ML model was never trained against these transactions. Two testing datasets are provided: a dataset containing fraudulent transactions, and another dataset containing legitimate transactions.
 
@@ -74,14 +74,14 @@ The Terraform code creates a Cloud Bigtable instance that has 1 node. This is a 
 
 **Garbage Collection Policy**
 
-The current Terraform code does not have any garbage collection policies. However, it could be beneficial for this use case to set a garbage collection policy for the History column family. The ML model does not need to read all the history of the customer. For example, you can set a garbage collection policy to delete all transactions that are older than N months but keep at least M last transactions. The demographics column family could have a policy that prevents having more than one value in each column. You can read more about Cloud Bigtable Garbage Collection Policies by reading: [Types of garbage collection](https://cloud.google.com/bigtable/docs/garbage-collection#types)  
+The current Terraform code does not have any garbage collection policies. However, it could be beneficial for this use case to set a garbage collection policy for the History column family. The ML model does not need to read all the history of the customer. For example, you can set a garbage collection policy to delete all transactions that are older than `N` months but keep at least `M` last transactions. The demographics column family could have a policy that prevents having more than one value in each column. You can read more about Cloud Bigtable Garbage Collection Policies by reading: [Types of garbage collection](https://cloud.google.com/bigtable/docs/garbage-collection#types)  
 
 **Replication**
 
-The current Cloud Bigtable instance configuration does not provide any replication. However, in order to improve the system availability and lower the latency for transactions in different regions, the table can be replicated into multiple zones. This will make the system eventually consistent, but in a use-case like fraud-detection eventual consistency usually works well. You can learn more by reading [Cloud Bigtable replication use cases](https://cloud.google.com/bigtable/docs/replication-overview#use-cases).
+The current Cloud Bigtable instance configuration does not provide any replication. However, in order to improve the system availability and lower the latency for transactions in different regions, the table can be replicated into multiple zones. This will make the system eventually consistent, but in a use-case like fraud detection eventual consistency usually works well. You can learn more by reading [Cloud Bigtable replication use cases](https://cloud.google.com/bigtable/docs/replication-overview#use-cases).
 
 ## ML Model
 
-This project provides a pre-trained Boosted Trees Classifier ML model that uses similar parameters to what was done here: [How to build a serverless real-time credit card fraud detection solution](https://cloud.google.com/blog/products/data-analytics/how-to-build-a-fraud-detection-solution)
+This sample application provides a pre-trained Boosted Trees Classifier ML model that uses similar parameters to what was done here: [How to build a serverless real-time credit card fraud detection solution](https://cloud.google.com/blog/products/data-analytics/how-to-build-a-fraud-detection-solution)
 
 The ML model is located in the path: **terraform/model**

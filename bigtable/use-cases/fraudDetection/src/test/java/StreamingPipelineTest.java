@@ -38,7 +38,7 @@ public class StreamingPipelineTest {
     projectID = FraudDetectionTestUtil.requireEnv("GOOGLE_CLOUD_PROJECT");
     System.out.println("Project id = " + projectID);
     // Run terraform and populate all variables necessary for testing and assert
-    // that the exit code it 0 (no errors).
+    // that the exit code is 0 (no errors).
     assertEquals(
         FraudDetectionTestUtil.runCommand(
             "terraform -chdir=terraform/ init"), 0);

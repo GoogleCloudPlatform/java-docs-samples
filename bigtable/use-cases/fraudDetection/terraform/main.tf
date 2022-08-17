@@ -2,7 +2,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "4.23.0"
+      version = ">= 4.23.0"
     }
   }
 }
@@ -79,7 +79,7 @@ resource "google_storage_bucket_object" "tf-fd-bucket-temp-folder" {
   bucket  = google_storage_bucket.tf-fd-bucket.name
 }
 
-# Create a history-dataset folder that contains all of historical transactions.
+# Create a history-dataset folder that contains all the historical transactions.
 resource "google_storage_bucket_object" "tf-fd-bucket-history-dataset-folder" {
   name    = "training_dataset/"
   content = "."
@@ -93,7 +93,7 @@ resource "google_storage_bucket_object" "tf-fd-bucket-test-dataset-folder" {
   bucket  = google_storage_bucket.tf-fd-bucket.name
 }
 
-# Create a model folder that contains the already-trained ML-Model.
+# Create a model folder that contains the already-trained ML model.
 resource "google_storage_bucket_object" "tf-fd-bucket-model-folder" {
   name    = "ml_model/"
   content = "."
@@ -116,7 +116,7 @@ resource "google_storage_bucket_object" "fraud_transactions" {
   bucket = google_storage_bucket.tf-fd-bucket.name
 }
 
-# A CSV file that contains legit transactions generated
+# A CSV file that contains legitimate transactions generated
 # by the simulator. This is useful for testing the model.
 resource "google_storage_bucket_object" "legit_transactions" {
   name   = "testing_dataset/legit_transactions.csv"
@@ -132,7 +132,7 @@ resource "google_storage_bucket_object" "customers" {
 }
 
 # A CSV file that contains the historical transactions
-# that were used when training the ML-model.
+# that were used when training the ML model.
 resource "google_storage_bucket_object" "transactions" {
   name   = "training_dataset/transactions.csv"
   source = "./datasets/training_data/transactions.csv"
