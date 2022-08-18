@@ -67,10 +67,11 @@ public class FraudDetectionTestUtil {
         new BufferedReader(new InputStreamReader(terraformProcess.getInputStream()));
 
     // Process terraform output.
-    String line = "";
+    String line;
+    StringBuilder answer = new StringBuilder();
     while ((line = reader.readLine()) != null) {
-      // System.out.println(line);
-      line += line + "\n";
+      System.out.println(line);
+      answer.append(line).append("\n");
       if (line.contains("pubsub_input_topic = ")) {
         StreamingPipelineTest.pubsubInputTopic = line.split("\"")[1];
       } else if (line.contains("pubsub_output_topic = ")) {
@@ -85,7 +86,7 @@ public class FraudDetectionTestUtil {
         StreamingPipelineTest.cbtTableID = line.split("\"")[1];
       }
     }
-    return line;
+    return answer.toString();
   }
 
   public static int runCommand(String command) throws IOException, InterruptedException {
