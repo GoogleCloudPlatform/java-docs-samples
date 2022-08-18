@@ -53,8 +53,8 @@ public class StreamingPipelineTest {
         FraudDetectionTestUtil.runCommand(
             "terraform -chdir=terraform/ init"), 0);
     assertEquals(
-        FraudDetectionTestUtil.runCommand(
-            "terraform -chdir=terraform/ apply -auto-approve -var=project_id=" + projectID), 0);
+        FraudDetectionTestUtil.runCommand2(
+            "terraform -chdir=terraform/ apply -auto-approve -var=project_id=" + projectID), "0");
   }
 
   @AfterClass
