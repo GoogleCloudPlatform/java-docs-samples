@@ -161,3 +161,16 @@ module "vertexai" {
   destroy_cmd_entrypoint = "${path.module}/scripts/vertexai_destroy.sh"
   destroy_cmd_body       = "${var.region} ${random_string.uuid.result}"
 }
+
+# Load both demographics and historical data to Cloud Bigtable so that
+# the dataflow pipeline can aggregate the data properly before querying
+# the ML model.
+module "load_cbt" {
+  source  = "terraform-google-modules/gcloud/google"
+  version = "~> 2.0"
+
+  platform = "linux"
+
+  create_cmd_entrypoint = "${path.module}/scripts/load_cbt.sh"
+  create_cmd_body       = "${var.project_id} ${var.region} ${google_bigtable_instance.tf-fd-instance.name} ${google_bigtable_table.tf-fd-table.name} ${google_storage_bucket.tf-fd-bucket.name}"
+}
