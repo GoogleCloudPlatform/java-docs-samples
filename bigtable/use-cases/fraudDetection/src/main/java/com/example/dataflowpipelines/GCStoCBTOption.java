@@ -78,4 +78,15 @@ public interface GCStoCBTOption extends DataflowPipelineOptions {
    * @param location transaction history file location.
    */
   void setHistoryInputFile(String location);
+
+  /**
+   * @return Random UUID.
+   */
+  @Description("A random UUID to make the job name unique.")
+  String getRandomUUID();
+
+  /**
+   * @param randomUUID a random string to make the job name unique.
+   */
+  void setRandomUUID(String randomUUID);
 }

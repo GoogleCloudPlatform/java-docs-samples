@@ -172,5 +172,5 @@ module "load_cbt" {
   platform = "linux"
 
   create_cmd_entrypoint = "${path.module}/scripts/load_cbt.sh"
-  create_cmd_body       = "${var.project_id} ${var.region} ${google_bigtable_instance.tf-fd-instance.name} ${google_bigtable_table.tf-fd-table.name} ${google_storage_bucket.tf-fd-bucket.name}"
+  create_cmd_body       = "${var.project_id} ${var.region} ${google_bigtable_instance.tf-fd-instance.name} ${google_bigtable_table.tf-fd-table.name} ${google_storage_bucket.tf-fd-bucket.name} ${random_string.uuid.result}"
 }
