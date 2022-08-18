@@ -278,8 +278,19 @@ public class SamplesTest {
     Occurrence result = client.createOccurrence(ProjectName.format(PROJECT_ID), newOcc);
 
     // poll again
-    Occurrence found = PollDiscoveryOccurrenceFinished.pollDiscoveryOccurrenceFinished(
-        imageUrl, PROJECT_ID, 5);
+    int maxAttempts = 5;
+    int attempt = 1;
+    Occurrence found = null;
+    if (found == null && attempt <= maxAttempts) {
+      try {
+        found = PollDiscoveryOccurrenceFinished.pollDiscoveryOccurrenceFinished(
+          imageUrl, PROJECT_ID, 5);
+      } catch(TimeoutException e) {
+        System.out.printf("Attempt %d/%d failed with a TimeoutException. Retrying.", attempt, maxAttempts);
+      }
+      attempt += 1;
+      sleep(3000);
+    }
     AnalysisStatus foundStatus = found.getDiscovery().getAnalysisStatus();
     assertEquals(foundStatus, AnalysisStatus.FINISHED_SUCCESS);
 
