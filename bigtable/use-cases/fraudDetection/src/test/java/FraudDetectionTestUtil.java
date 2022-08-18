@@ -61,10 +61,41 @@ public class FraudDetectionTestUtil {
     }
   }
 
+  // Parse Terraform output and populate the variables needed for testing.
+  private static String parseTerraformOutput2(Process terraformProcess) throws IOException {
+    BufferedReader reader =
+        new BufferedReader(new InputStreamReader(terraformProcess.getInputStream()));
+
+    // Process terraform output.
+    String line = "";
+    while ((line = reader.readLine()) != null) {
+      // System.out.println(line);
+      line += line + "\n";
+      if (line.contains("pubsub_input_topic = ")) {
+        StreamingPipelineTest.pubsubInputTopic = line.split("\"")[1];
+      } else if (line.contains("pubsub_output_topic = ")) {
+        StreamingPipelineTest.pubsubOutputTopic = line.split("\"")[1];
+      } else if (line.contains("pubsub_output_subscription = ")) {
+        StreamingPipelineTest.pubsubOutputSubscription = line.split("\"")[1];
+      } else if (line.contains("gcs_bucket = ")) {
+        StreamingPipelineTest.gcsBucket = line.split("\"")[1];
+      } else if (line.contains("cbt_instance = ")) {
+        StreamingPipelineTest.cbtInstanceID = line.split("\"")[1];
+      } else if (line.contains("cbt_table = ")) {
+        StreamingPipelineTest.cbtTableID = line.split("\"")[1];
+      }
+    }
+    return line;
+  }
+
   public static int runCommand(String command) throws IOException, InterruptedException {
     Process process = new ProcessBuilder(command.split(" ")).start();
     parseTerraformOutput(process);
     // Wait for the process to finish running and return the exit code.
     return process.waitFor();
+  }
+  public static String runCommand2(String command) throws IOException, InterruptedException {
+    Process process = new ProcessBuilder(command.split(" ")).start();
+    return parseTerraformOutput2(process);
   }
 }
