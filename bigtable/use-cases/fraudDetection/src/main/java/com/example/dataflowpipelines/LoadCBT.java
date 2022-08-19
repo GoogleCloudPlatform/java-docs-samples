@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.example.dataflowpipelines;
 
-import com.example.pubsubcbt.PubsubCBTHelper;
+import com.example.pubsubcbt.DataflowCBTHelper;
 import com.example.pubsubcbt.RowDetails;
 import com.example.util.CustomerDemographics;
 import com.example.util.TransactionDetails;
@@ -28,12 +28,12 @@ import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
 
 // Load customer demographics and history into Cloud Bigtable.
-public final class GCSToCBT {
+public final class LoadCBT {
 
   /**
    * Hiding the constructor.
    */
-  private GCSToCBT() {
+  private LoadCBT() {
   }
 
   /**
@@ -41,9 +41,9 @@ public final class GCSToCBT {
    */
   public static void main(final String[] args) throws
       IllegalArgumentException {
-    GCStoCBTOption options =
+    LoadCBTOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation()
-            .as(GCStoCBTOption.class);
+            .as(LoadCBTOptions.class);
     options.setJobName("fd-load-cbt-pipeline-" + options.getRandomUUID());
 
     CloudBigtableTableConfiguration config =
@@ -56,7 +56,7 @@ public final class GCSToCBT {
     // Create a pipeline that reads the GCS demographics csv file
     // and write it into CBT.
     Pipeline pDemographics = Pipeline.create(options);
-    PubsubCBTHelper pubsubCBTHelper = new PubsubCBTHelper(config);
+    DataflowCBTHelper dataflowCBTHelper = new DataflowCBTHelper(config);
     PCollection<RowDetails> demographicsLine =
         pDemographics
             .apply("ReadGCSFile",
@@ -72,12 +72,12 @@ public final class GCSToCBT {
                         out.output(new CustomerDemographics(row));
                       }
                     }));
-    pubsubCBTHelper.writeToCBT(demographicsLine);
+    dataflowCBTHelper.writeToCBT(demographicsLine);
 
     // Create a pipeline that reads the GCS history csv file and write
     // it into CBT
     Pipeline pHistory = Pipeline.create(options);
-    pubsubCBTHelper = new PubsubCBTHelper(config);
+    dataflowCBTHelper = new DataflowCBTHelper(config);
     PCollection<RowDetails> historyLine =
         pHistory
             .apply("ReadGCSFile",
@@ -93,7 +93,7 @@ public final class GCSToCBT {
                         out.output(new TransactionDetails(row));
                       }
                     }));
-    pubsubCBTHelper.writeToCBT(historyLine);
+    dataflowCBTHelper.writeToCBT(historyLine);
 
     // Wait until all the data is loaded into CBT.
     pDemographics.run().waitUntilFinish();

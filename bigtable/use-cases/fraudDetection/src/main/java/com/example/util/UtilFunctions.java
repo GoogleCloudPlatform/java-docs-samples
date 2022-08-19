@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,52 +19,7 @@ import java.util.ArrayList;
 
 public final class UtilFunctions {
 
-  /**
-   * number of milliseconds in a minute.
-   */
-  public static final long MINUTE_IN_MILLISECONDS = 60L * 1000;
-  /**
-   * number of milliseconds in a day.
-   */
-  public static final long DAY_IN_MILLISECONDS = 24L * 3600 * 1000;
-  /**
-   * number of milliseconds in a week.
-   */
-  public static final long WEEK_IN_MILLISECONDS = 7L * 24 * 3600 * 1000;
-  /**
-   * number of milliseconds in a month.
-   */
-  public static final long MONTH_IN_MILLISECONDS = 30L * 24 * 3600 * 1000;
-
-  /**
-   * number of milliseconds in a minute.
-   */
-
-  private UtilFunctions() {
-  }
-
-  /**
-   * @param lat1 latitude of the first point
-   * @param lat2 latitude of the second point
-   * @param lon1 longitude of the first point
-   * @param lon2 longitude of the second point
-   * @return the distance between two points in kilometers.
-   */
-  public static double distanceKM(final double lat1, final double lat2,
-      final double lon1, final double lon2) {
-
-    final int earthRadius = 6371; // Radius of the earth
-
-    double latDistance = Math.toRadians(lat2 - lat1);
-    double lonDistance = Math.toRadians(lon2 - lon1);
-    double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-        + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-        * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    double distance = earthRadius * c;
-    distance = Math.pow(distance, 2);
-    return Math.sqrt(distance);
-  }
+  private UtilFunctions() { }
 
   /**
    * @param input ArrayList of Strings

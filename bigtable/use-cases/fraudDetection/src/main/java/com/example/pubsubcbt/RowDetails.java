@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,10 @@ import org.apache.hadoop.hbase.util.Bytes;
 @DefaultCoder(AvroCoder.class)
 
 /*
- * Facilitates reading/writing to/from pubsub and reading/writing to/from
- * Cloud Bigtable. Used to create an object with the following format:
+ * Facilitates reading/writing from/to Cloud Bigtable. Classes that extend this
+ * class can easily construct their objects by reading a comma-separated line,
+ * or reading from a Cloud Bigtable instance.
+ * Used to create an object with the following format:
  * rowKey, [TimestampMilliseconds=VALUE], column1, column2, ... etc
  * The TimestampMilliseconds field is optional.
  * In order to use this class, member variables needs to be the same name as
@@ -169,9 +171,9 @@ public abstract class RowDetails {
   }
 
   /**
-   * @return a line to write to Cloud Pubsub
+   * @return a comma separated string.
    */
-  public String toPubsub() throws IllegalAccessException {
+  public String toCommaSeparatedString() throws IllegalAccessException {
     ArrayList<String> values =
         new ArrayList<>(Arrays.asList(getValues()));
     return UtilFunctions.arrayListToCommasString(values);

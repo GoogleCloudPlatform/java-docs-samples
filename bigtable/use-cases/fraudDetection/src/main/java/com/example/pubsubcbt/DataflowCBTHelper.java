@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import com.google.cloud.bigtable.beam.AbstractCloudBigtableTableDoFn;
 import com.google.cloud.bigtable.beam.CloudBigtableIO;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import com.google.common.base.Preconditions;
-import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
@@ -31,19 +30,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class facilitates writing any object that extends RowDetails to CBT and
- * Pubsub. It assumes that the first member variable is the rowKey, and the rest
+ * This class facilitates writing any object that extends RowDetails to
+ * CBT in a Dataflow pipeline.
+ * It assumes that the first member variable is the rowKey, and the rest
  * of the variables will be written to CBT using ColumnFamily:VariableName =
  * VariableValue.
  */
-public class PubsubCBTHelper extends
+public class DataflowCBTHelper extends
     AbstractCloudBigtableTableDoFn<RowDetails, PDone> {
 
   /**
    * a Logger object to help logging details.
    */
   private final Logger logger = LoggerFactory.getLogger(
-      PubsubCBTHelper.class);
+      DataflowCBTHelper.class);
 
   /**
    * Convert a RowDetails into a Mutation.
@@ -89,16 +89,16 @@ public class PubsubCBTHelper extends
       };
 
   /**
-   * Constructs a PubsubCBTHelper object.
+   * Constructs a DataflowCBTHelper object.
    *
    * @param config the CloudBigtableTableConfiguration
    */
-  public PubsubCBTHelper(final CloudBigtableTableConfiguration config) {
+  public DataflowCBTHelper(final CloudBigtableTableConfiguration config) {
     super(config);
   }
 
   /**
-   * Constructs a PubsubCBTHelper object.
+   * Constructs a DataflowCBTHelper object.
    *
    * @param row the RowDetails object to write to CBT
    */
@@ -108,29 +108,5 @@ public class PubsubCBTHelper extends
             "WriteToBigtable",
             CloudBigtableIO.writeToTable(
                 (CloudBigtableTableConfiguration) this.getConfig()));
-  }
-
-  /**
-   * Write to Cloud Pubsub.
-   *
-   * @param row the RowDetails object to write to Cloud Pubsub
-   * @param pubsubTopic the topic to use when writing to Cloud Pubsub
-   */
-  public void writeToPubsub(final PCollection<RowDetails> row,
-      final String pubsubTopic) {
-    row.apply(
-            "Preprocess Output",
-            ParDo.of(
-                new DoFn<RowDetails, String>() {
-                  @ProcessElement
-                  public void processElement(
-                      @Element final RowDetails modelOutput,
-                      final OutputReceiver<String> out)
-                      throws IllegalAccessException {
-                    out.output(modelOutput.toPubsub());
-                  }
-                }))
-        .apply("Write to PubSub",
-            PubsubIO.writeStrings().to(pubsubTopic));
   }
 }

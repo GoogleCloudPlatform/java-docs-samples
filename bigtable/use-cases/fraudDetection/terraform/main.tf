@@ -162,8 +162,8 @@ module "vertexai" {
   destroy_cmd_body       = "${var.region} ${random_string.uuid.result}"
 }
 
-# Load both demographics and historical data to Cloud Bigtable so that
-# the dataflow pipeline can aggregate the data properly before querying
+# Load both demographics and historical data into Cloud Bigtable so that
+# the dataflow pipeline can aggregate data properly before querying
 # the ML model.
 module "load_cbt" {
   source  = "terraform-google-modules/gcloud/google"
