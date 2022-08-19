@@ -41,4 +41,4 @@ gcloud ai endpoints deploy-model $ENDPOINT_ID \
 DEPLOYED_MODEL_ID=$(gcloud ai endpoints describe $ENDPOINT_ID --region=$REGION 2>/dev/null | grep "id:" | awk -F  "'" '{print $2}')
 
 # Export ENDPOINT_ID as it will be used by the dataflow job
-echo $ENDPOINT_ID > ./Scripts/ENDPOINT_ID.output
+echo $ENDPOINT_ID > ./scripts/ENDPOINT_ID-$UUID.output

@@ -33,6 +33,6 @@ if ! { [ -z "$MODEL_ID" ]; }; then
 	yes | gcloud ai models delete $MODEL_ID --region=us-central1
 fi
 
-if test -f "./Scripts/ENDPOINT_ID.output"; then
-    rm ./Scripts/ENDPOINT_ID.output
+if test -f "./scripts/ENDPOINT_ID-$UUID.output"; then
+    rm ./scripts/ENDPOINT_ID-$UUID.output
 fi
