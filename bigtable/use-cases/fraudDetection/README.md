@@ -62,7 +62,7 @@ This design uses a single table to store all customers' information following [t
 
 The data is separated over two column families. Having multiple column families allows for different garbage collection policies (See garbage collection section). Moreover, it is used to group data that is often queried together.
 
-**Demographics Column Family:** This column family contains the demographics data for customers. Usually, each customer will have one value for each column in this column family.
+**Demographics Column Family:** This column family contains the demographic data for customers. Usually, each customer will have one value for each column in this column family.
 
 **History Column Family:** This column family contains the historical transaction that this specific user had before. The dataflow pipeline aggregates the data in this column family and sends them along with the demographics data to the ML model.
 
@@ -85,3 +85,57 @@ The current Cloud Bigtable instance configuration does not provide any replicati
 This sample application provides a pre-trained Boosted Trees Classifier ML model that uses similar parameters to what was done here: [How to build a serverless real-time credit card fraud detection solution](https://cloud.google.com/blog/products/data-analytics/how-to-build-a-fraud-detection-solution)
 
 The ML model is located in the path: **terraform/model**
+
+## How to Use
+
+### Prerequisites
+1) [Have a GCP project.](https://cloud.google.com/resource-manager/docs/creating-managing-projects)
+2) [Have a service account that contains the following permissions:](https://cloud.google.com/docs/authentication/production)
+   1) Bigtable Administrator
+   2) Cloud Dataflow Service Agent
+   3) Compute Admin
+   4) Dataflow Admin
+   5) Dataflow Worker
+   6) Datapipelines Service Agent
+   7) Storage Admin
+   8) Vertex AI User
+3) Set these environment variables:
+```
+export GOOGLE_APPLICATION_CREDENTIALS={YOUR CREDS PATH}
+export PROJECT_ID={YOUR PROJECT ID}
+```
+
+### Running steps
+
+**1) Build the infrastructure**
+```
+cd terraform
+terraform init
+terraform apply -var="project_id=$PROJECT_ID"
+```
+This builds the infrastructure shown above, populates Cloud Bigtable with customers’ demographics data, and populates Cloud Bigtable with customers’ historical data. It takes about 5-10 minutes to finish.
+It builds the following resources:
+
+| Resource                         | Resource Name                                                                                                                           |
+|----------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| Cloud Bigtable Instance          | tf-fd-instance                                                                                                                          |
+| Cloud Bigtable Table             | tf-fd-table                                                                                                                             |
+| Cloud Bigtable Column Family     | history, demographics                                                                                                                   |
+| Cloud Pubsub Input Topic         | tf-fd-pubsub-input-topic                                                                                                                |
+| Cloud Pubsub Output Topic        | tf-fd-pubsub-output-topic                                                                                                               |
+| Cloud Pubsub Output Subscription | tf-fd-pubsub-output-subscription                                                                                                        |
+| Google Storage Bucket            | tf-fd-bucket-{RANDOM\_ID}                                                                                                               |
+| Google Storage Objects           | 1.  Temp directory<br/> 2.Testing-data <br/>3. Training-data <br/> 4. Pretrained ML model                                               |
+    | VertexAI Model                   | tf-fd-ml-model                                                                                                                          |
+    | VertexAI Endpoint                | **Name:** tf-fd-ml-model-ep <br/> **Id:** Determined in runtime, stored in Scripts/ENDPOINT\_ID.output                                  |
+| Dataflow Load CBT                | **Name:** fd-load-cbt-pipeline<br/> **Description:** Creates a batch job that loads both historical and demographic data from GS to CBT |
+
+**Alternatively**, you can run the maven test which will run the terraform commands and build the infrastructure, read the testing datasets, send them to the Cloud Pubsub input topic and wait for the response.
+`mvn test`
+
+
+
+
+
+
+
