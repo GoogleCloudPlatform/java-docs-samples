@@ -163,13 +163,8 @@ export TEMPLATE_PATH="gs://$BUCKET/samples/dataflow/templates/streaming-beam-sql
 export TEMPLATE_IMAGE="gcr.io/$PROJECT/samples/dataflow/streaming-beam-sql:latest"
 
 # Build the Flex Template.
-gcloud dataflow flex-template build $TEMPLATE_PATH \
-    --image-gcr-path "$TEMPLATE_IMAGE" \
-    --sdk-language "JAVA" \
-    --flex-template-base-image JAVA11 \
-    --metadata-file "metadata.json" \
-    --jar "target/streaming-beam-sql-1.0.jar" \
-    --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="org.apache.beam.samples.StreamingBeamSql"
+gutil cp metadata.json $TEMPLATE_PATH
+mvn compile com.google.cloud.tools:jib-maven-plugin:2.8.0:build  -Dimage=gcr.io/$PROJECT_ID/$IMAGE_NAME 
 ```
 
 The template is now available through the template file in the Cloud Storage

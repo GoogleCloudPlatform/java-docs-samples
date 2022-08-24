@@ -15,8 +15,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -38,7 +38,6 @@
 
     <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
     <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
-    <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
     <maven-exec-plugin.version>3.0.0</maven-exec-plugin.version>
     <slf4j.version>1.7.36</slf4j.version>
   </properties>
@@ -83,37 +82,25 @@
         <version>${maven-compiler-plugin.version}</version>
       </plugin>
 
-      <!-- The maven shade plugin is used to create an uber-jar with all the
-        dependencies needed to run as a standalone jar.
-        Do not minimize the jar since that removes some of the required
-        classes for the runners. -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>${maven-shade-plugin.version}</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-              </transformers>
-              <filters>
-                <filter>
-                  <artifact>*:*</artifact>
-                  <excludes>
-                    <exclude>META-INF/*.SF</exclude>
-                    <exclude>META-INF/*.DSA</exclude>
-                    <exclude>META-INF/*.RSA</exclude>
-                  </excludes>
-                </filter>
-              </filters>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>2.8.0</version>
+        <configuration>
+          <from>
+            <image>gcr.io/dataflow-templates-base/java11-template-launcher-base:flex_templates_base_image_release_20220725_RC00@sha256:574bbd0bf4ff744b0c4fcc26de598acc1309cbde1f106912be9e6df1fcb39de5</image>
+          </from>
+          <to>
+            <image>gcr.io/PROJECT/IMAGE</image>
+          </to>
+          <container>
+            <entrypoint>INHERIT</entrypoint>
+            <environment>
+              <FLEX_TEMPLATE_JAVA_MAIN_CLASS>org.apache.beam.samples.StreamingBeamSql</FLEX_TEMPLATE_JAVA_MAIN_CLASS>
+              <FLEX_TEMPLATE_JAVA_CLASSPATH>/app/resources:/app/classes:/app/libs/*</FLEX_TEMPLATE_JAVA_CLASSPATH>
+            </environment>
+          </container>
+        </configuration>
       </plugin>
     </plugins>
 
