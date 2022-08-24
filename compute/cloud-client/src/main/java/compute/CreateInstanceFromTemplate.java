@@ -68,7 +68,8 @@ public class CreateInstanceFromTemplate {
       InstanceTemplate instanceTemplate = instanceTemplatesClient.get(projectId,
           instanceTemplateName);
 
-      // Adjust diskType field of the instance template to use the URL formatting required by instances.insert.diskType
+      // Adjust diskType field of the instance template to use the URL formatting 
+      // required by instances.insert.diskType
       // For instance template, there is only a name, not URL.
       List<AttachedDisk> reformattedAttachedDisks = new ArrayList<>();
       for (AttachedDisk disk : instanceTemplate.getProperties().getDisksList()) {
