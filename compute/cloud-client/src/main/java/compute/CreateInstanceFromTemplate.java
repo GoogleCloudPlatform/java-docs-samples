@@ -59,14 +59,11 @@ public class CreateInstanceFromTemplate {
 
   // Create a new instance from template in the specified project and zone.
   public static void createInstanceFromTemplate(String projectId, String zone, String instanceName,
-      String instanceTemplateUrl)
+      String instanceTemplateName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     try (InstancesClient instancesClient = InstancesClient.create();
         InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
-
-      String instanceTemplateName = instanceTemplateUrl.substring(
-          instanceTemplateUrl.lastIndexOf("/") + 1);
 
       InstanceTemplate instanceTemplate = instanceTemplatesClient.get(projectId,
           instanceTemplateName);
