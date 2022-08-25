@@ -41,7 +41,7 @@ import org.junit.runners.JUnit4;
 public class CreatingManagingWindowsInstancesIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "europe-central2-b";
+  private static final String ZONE = "us-central1-b";
   private static String INSTANCE_NAME_EXTERNAL;
   private static String INSTANCE_NAME_INTERNAL;
   private static String FIREWALL_RULE_NAME;
@@ -75,7 +75,7 @@ public class CreatingManagingWindowsInstancesIT {
     INSTANCE_NAME_INTERNAL = "windows-test-instance-internal-" + uuid;
     FIREWALL_RULE_NAME = "windows-test-firewall-" + uuid;
     NETWORK_NAME = "global/networks/default";
-    SUBNETWORK_NAME = "regions/europe-central2/subnetworks/default";
+    SUBNETWORK_NAME = "regions/us-central1/subnetworks/default";
     ROUTE_NAME = "windows-test-route-" + uuid;
 
     stdOut.close();
