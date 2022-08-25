@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 public class HelperIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "europe-central2-b";
+  private static final String ZONE = "us-central1-a";
 
   private ByteArrayOutputStream stdOut;
 

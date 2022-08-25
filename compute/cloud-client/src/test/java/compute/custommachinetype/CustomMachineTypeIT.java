@@ -45,7 +45,7 @@ import org.junit.runners.JUnit4;
 public class CustomMachineTypeIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "europe-central2-b";
+  private static final String ZONE = "us-central1-a";
   private static final String CUSTOM_MACHINE_TYPE = String.format(
       "zones/%s/machineTypes/n2-custom-8-10240", ZONE);
 
