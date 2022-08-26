@@ -140,6 +140,7 @@ public class FirewallIT {
     System.setOut(out);
   }
 
+  //Run the test in presubmit
   @Test
   public void testPatchFirewallRule()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
