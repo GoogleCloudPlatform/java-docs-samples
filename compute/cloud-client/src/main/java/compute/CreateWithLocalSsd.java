@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateWithLocalSSD {
+public class CreateWithLocalSsd {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -45,11 +45,11 @@ public class CreateWithLocalSSD {
     // instanceName: name of the new virtual machine (VM) instance.
     String instanceName = "instance-name";
 
-    createWithLocalSSD(project, zone, instanceName);
+    createWithLocalSsd(project, zone, instanceName);
   }
 
   // Create a new VM instance with Debian 10 operating system and SSD local disk.
-  public static void createWithLocalSSD(String project, String zone, String instanceName)
+  public static void createWithLocalSsd(String project, String zone, String instanceName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     // Get the latest debian image.
@@ -59,7 +59,7 @@ public class CreateWithLocalSSD {
     List<AttachedDisk> disks = new ArrayList<>();
     String diskType = String.format("zones/%s/diskTypes/pd-standard", zone);
     disks.add(diskFromImage(diskType, 10, true, newestDebian.getSelfLink(), true));
-    disks.add(localSSDDisk(zone));
+    disks.add(localSsdDisk(zone));
 
     // Create the instance.
     Instance instance = createInstance(project, zone, instanceName, disks);
@@ -108,11 +108,12 @@ public class CreateWithLocalSSD {
   private static AttachedDisk diskFromImage(String diskType, int diskSizeGb, boolean boot,
       String sourceImage, boolean autoDelete) {
 
-    AttachedDiskInitializeParams attachedDiskInitializeParams = AttachedDiskInitializeParams.newBuilder()
-        .setSourceImage(sourceImage)
-        .setDiskSizeGb(diskSizeGb)
-        .setDiskType(diskType)
-        .build();
+    AttachedDiskInitializeParams attachedDiskInitializeParams =
+        AttachedDiskInitializeParams.newBuilder()
+            .setSourceImage(sourceImage)
+            .setDiskSizeGb(diskSizeGb)
+            .setDiskType(diskType)
+            .build();
 
     AttachedDisk bootDisk = AttachedDisk.newBuilder()
         .setInitializeParams(attachedDiskInitializeParams)
@@ -129,11 +130,12 @@ public class CreateWithLocalSSD {
   // no data and requires formatting before it can be used.
   // Args:
   //    zone: The zone in which the local SSD drive will be attached.
-  private static AttachedDisk localSSDDisk(String zone) {
+  private static AttachedDisk localSsdDisk(String zone) {
 
-    AttachedDiskInitializeParams attachedDiskInitializeParams = AttachedDiskInitializeParams.newBuilder()
-        .setDiskType(String.format("zones/%s/diskTypes/local-ssd", zone))
-        .build();
+    AttachedDiskInitializeParams attachedDiskInitializeParams =
+        AttachedDiskInitializeParams.newBuilder()
+            .setDiskType(String.format("zones/%s/diskTypes/local-ssd", zone))
+            .build();
 
     AttachedDisk disk = AttachedDisk.newBuilder()
         .setType(AttachedDisk.Type.SCRATCH.name())

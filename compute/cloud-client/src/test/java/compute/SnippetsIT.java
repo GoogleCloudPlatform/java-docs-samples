@@ -172,7 +172,7 @@ public class SnippetsIT {
   public void testCreateWithLocalSSD()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Assert that the instance is created.
-    CreateWithLocalSSD.createWithLocalSSD(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
+    CreateWithLocalSsd.createWithLocalSsd(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
     assertThat(stdOut.toString()).contains("Instance created with local SSD:");
 
     try (InstancesClient instancesClient = InstancesClient.create()) {
