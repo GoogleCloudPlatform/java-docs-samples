@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -81,7 +82,7 @@ public class SnippetsIT {
     TEST_SECRET_TO_DELETE_WITH_ETAG = createSecret();
     TEST_SECRET_WITH_VERSIONS = createSecret();
     TEST_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
-    TEST_UMMR_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId("java-ummr"));
+    TEST_UMMR_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
 
     TEST_SECRET_VERSION = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
@@ -120,11 +121,8 @@ public class SnippetsIT {
   }
 
   private static String randomSecretId() {
-    return "java-" + System.currentTimeMillis();
-  }
-
-  private static String randomSecretId(String secretPrefix) {
-    return secretPrefix + "-" + System.currentTimeMillis();
+    Random random = new Random();
+    return "java-" + String.valueOf(random.nextLong());
   }
 
   private static Secret createSecret() throws IOException {
@@ -217,7 +215,7 @@ public class SnippetsIT {
   public void testCreateSecretWithUserManagedReplication() throws IOException {
     SecretName name = TEST_UMMR_SECRET_TO_CREATE_NAME;
     List<String> locations = Arrays.asList("us-east1", "us-east4", "us-west1");
-    CreateSecret.createSecretWithUserManagedReplication(
+    CreateSecretWithUserManagedReplication.createSecret(
         name.getProject(), name.getSecret(), locations);
 
     assertThat(stdOut.toString()).contains("Created secret");
