@@ -46,7 +46,7 @@ public class CreateSecretWithUserManagedReplication {
       // Build the parent name from the project.
       ProjectName projectName = ProjectName.of(projectId);
 
-      // Set replication
+      // Set replication.
       Replication.UserManaged.Builder replication = Replication.UserManaged.newBuilder();
       for (String location : locations) {
         replication.addReplicas(
