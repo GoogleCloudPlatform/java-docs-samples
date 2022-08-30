@@ -103,7 +103,7 @@ public class InstanceTemplatesIT {
     // Create instances.
     CreateInstanceFromTemplate.createInstanceFromTemplate(PROJECT_ID, DEFAULT_ZONE,
         MACHINE_NAME_CR_TEMPLATE,
-        "global/instanceTemplates/" + TEMPLATE_NAME);
+        TEMPLATE_NAME);
     assertThat(stdOut.toString())
         .contains("Instance creation from template: Operation Status " + MACHINE_NAME_CR_TEMPLATE);
     CreateInstanceTemplate.createInstanceTemplateWithDiskType(PROJECT_ID, TEMPLATE_NAME_WITH_DISK);

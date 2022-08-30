@@ -27,6 +27,8 @@ import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -76,6 +78,23 @@ public class CreateInstanceFromTemplateWithOverrides {
       InstanceTemplate instanceTemplate = instanceTemplatesClient
           .get(projectId, instanceTemplateName);
 
+      // Adjust diskType field of the instance template to use the URL formatting 
+      // required by instances.insert.diskType
+      // For instance template, there is only a name, not URL.
+      List<AttachedDisk> reformattedAttachedDisks = new ArrayList<>();
+      for (AttachedDisk disk : instanceTemplate.getProperties().getDisksList()) {
+        disk = AttachedDisk.newBuilder(disk)
+            .setInitializeParams(AttachedDiskInitializeParams
+                .newBuilder(disk.getInitializeParams())
+                .setDiskType(
+                    String.format(
+                        "zones/%s/diskTypes/%s", zone, disk.getInitializeParams().getDiskType()))
+                .build())
+            .build();
+
+        reformattedAttachedDisks.add(disk);
+      }
+
       AttachedDisk newdisk = AttachedDisk.newBuilder()
           .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
               .setDiskSizeGb(10)
@@ -92,7 +111,7 @@ public class CreateInstanceFromTemplateWithOverrides {
           // corresponding values provided in the request.
           // When adding a new disk to existing disks,
           // insert all existing disks as well.
-          .addAllDisks(instanceTemplate.getProperties().getDisksList())
+          .addAllDisks(reformattedAttachedDisks)
           .addDisks(newdisk)
           .build();
 

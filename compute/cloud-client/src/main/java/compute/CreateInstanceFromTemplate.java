@@ -19,11 +19,18 @@ package compute;
 
 // [START compute_instances_create_from_template]
 
+import com.google.cloud.compute.v1.AttachedDisk;
+import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
 import com.google.cloud.compute.v1.InsertInstanceRequest;
 import com.google.cloud.compute.v1.Instance;
+import com.google.cloud.compute.v1.InstanceProperties;
+import com.google.cloud.compute.v1.InstanceTemplate;
+import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -52,16 +59,47 @@ public class CreateInstanceFromTemplate {
 
   // Create a new instance from template in the specified project and zone.
   public static void createInstanceFromTemplate(String projectId, String zone, String instanceName,
-      String instanceTemplateUrl)
+      String instanceTemplateName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
-    try (InstancesClient instancesClient = InstancesClient.create()) {
+    try (InstancesClient instancesClient = InstancesClient.create();
+        InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
+
+      InstanceTemplate instanceTemplate = instanceTemplatesClient.get(projectId,
+          instanceTemplateName);
+
+      // Adjust diskType field of the instance template to use the URL formatting 
+      // required by instances.insert.diskType
+      // For instance template, there is only a name, not URL.
+      List<AttachedDisk> reformattedAttachedDisks = new ArrayList<>();
+      for (AttachedDisk disk : instanceTemplate.getProperties().getDisksList()) {
+        disk = AttachedDisk.newBuilder(disk)
+            .setInitializeParams(AttachedDiskInitializeParams
+                .newBuilder(disk.getInitializeParams())
+                .setDiskType(
+                    String.format(
+                        "zones/%s/diskTypes/%s", zone, disk.getInitializeParams().getDiskType()))
+                .build())
+            .build();
+
+        reformattedAttachedDisks.add(disk);
+      }
+
+      // Clear existing disks and set the reformatted disks in the instance template.
+      instanceTemplate = InstanceTemplate
+          .newBuilder(instanceTemplate)
+          .setProperties(InstanceProperties
+              .newBuilder(instanceTemplate.getProperties())
+              .clearDisks()
+              .addAllDisks(reformattedAttachedDisks)
+              .build())
+          .build();
 
       InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
           .setProject(projectId)
           .setZone(zone)
           .setInstanceResource(Instance.newBuilder().setName(instanceName).build())
-          .setSourceInstanceTemplate(instanceTemplateUrl).build();
+          .setSourceInstanceTemplate(instanceTemplate.getSelfLink()).build();
 
       Operation response = instancesClient.insertAsync(insertInstanceRequest)
           .get(3, TimeUnit.MINUTES);
