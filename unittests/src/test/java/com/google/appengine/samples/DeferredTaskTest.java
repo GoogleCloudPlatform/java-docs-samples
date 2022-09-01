@@ -84,7 +84,7 @@ public class DeferredTaskTest {
     requestReset();
     try {
       helperTearDown();
-    } catch (/*TestTimedOutException*/ Exception ex) {
+    } catch (/*TestTimedOutException*/ Throwable ex) {
       // Ignoring, flaky test, sometimes we do timeout.
       Logger.getLogger(DeferredTaskTest.class.getName()).log(Level.SEVERE, null, ex);
     }
