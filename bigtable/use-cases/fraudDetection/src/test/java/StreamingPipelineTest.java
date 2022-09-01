@@ -91,7 +91,7 @@ public class StreamingPipelineTest {
     System.out.println("Running testCBT");
 
     // Count the number of rows and make sure it equals to the number of customers added
-    // in the LoadCBT pipeline.
+    // in the LoadDataset pipeline.
     try (Connection connection =
         BigtableConfiguration.connect(projectID, cbtInstanceID)) {
       Table table = connection.getTable(TableName.valueOf(cbtTableID));

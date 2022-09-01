@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.pubsubcbt;
+package bigtable.fraud.utils;
 
-import com.example.util.UtilFunctions;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +59,7 @@ public abstract class RowDetails {
    *
    * @param line a comma-seperated line used to build a RowDetails object.
    */
-  public RowDetails(final String line) throws IllegalAccessException {
+  public RowDetails(final String line) {
     timestampMillisecond = Long.MAX_VALUE;
     List<String> values = new LinkedList<>(Arrays.asList(line.split(", ")));
 
@@ -86,7 +85,7 @@ public abstract class RowDetails {
    *
    * @param row a row result read from Cloud Bigtable
    */
-  public RowDetails(final Result row) throws IllegalAccessException {
+  public RowDetails(final Result row) {
     // All the columns in this object need to belong to the same column family.
     byte[] columnFamilyBytes = getColFamily().getBytes();
 
@@ -143,8 +142,7 @@ public abstract class RowDetails {
    * Sets the values into the class member variables.
    * @param values the values to use when initializing the member variables.
    */
-  public void setValues(final String[] values)
-      throws IllegalAccessException, RuntimeException {
+  public void setValues(final String[] values) {
     Field[] fields = getClass().getDeclaredFields();
     if (fields.length != values.length) {
       throw new RuntimeException(
@@ -152,7 +150,11 @@ public abstract class RowDetails {
     }
     for (int i = 0; i < fields.length; i++) {
       fields[i].setAccessible(true);
-      fields[i].set(this, values[i]);
+      try {
+        fields[i].set(this, values[i]);
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      }
     }
   }
 

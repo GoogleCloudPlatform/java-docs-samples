@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.util;
+package bigtable.fraud.utils;
 
-import com.example.pubsubcbt.RowDetails;
 import org.apache.beam.sdk.coders.AvroCoder;
 import org.apache.beam.sdk.coders.DefaultCoder;
 import org.apache.hadoop.hbase.client.Result;
@@ -57,7 +56,7 @@ public final class TransactionDetails extends RowDetails {
    *
    * @param line a comma-seperated TransactionDetails line.
    */
-  public TransactionDetails(final String line) throws IllegalAccessException {
+  public TransactionDetails(final String line) {
     super(line);
   }
 
@@ -66,7 +65,7 @@ public final class TransactionDetails extends RowDetails {
    *
    * @param row a result row read from Cloud Bigtable.
    */
-  public TransactionDetails(final Result row) throws IllegalAccessException {
+  public TransactionDetails(final Result row) {
     super(row);
   }
 

@@ -165,12 +165,12 @@ module "vertexai" {
 # Load both demographics and historical data into Cloud Bigtable so that
 # the dataflow pipeline can aggregate data properly before querying
 # the ML model.
-module "load_cbt" {
+module "load_dataset" {
   source  = "terraform-google-modules/gcloud/google"
   version = "~> 2.0"
 
   platform = "linux"
 
-  create_cmd_entrypoint = "${path.module}/scripts/load_cbt.sh"
+  create_cmd_entrypoint = "${path.module}/scripts/load_dataset.sh"
   create_cmd_body       = "${var.project_id} ${var.region} ${google_bigtable_instance.tf-fd-instance.name} ${google_bigtable_table.tf-fd-table.name} ${google_storage_bucket.tf-fd-bucket.name} ${random_string.uuid.result}"
 }

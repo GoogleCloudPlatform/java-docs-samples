@@ -15,6 +15,6 @@
  */
 
 /**
- * Classes that help to read from/to Cloud Bigtable and Cloud Pubsub.
+ * Classes that will have the Dataflow pipelines that will be run.
  */
-package com.example.pubsubcbt;
+package bigtable.fraud.beam;

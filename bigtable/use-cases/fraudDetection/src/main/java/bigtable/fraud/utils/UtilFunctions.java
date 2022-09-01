@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.util;
+package bigtable.fraud.utils;
 
 import java.util.ArrayList;
 
@@ -26,14 +26,14 @@ public final class UtilFunctions {
    * @return comma-seperated string from the input
    */
   public static String arrayListToCommasString(final ArrayList<String> input) {
-    StringBuilder mlFeaturesStr = new StringBuilder();
+    StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < input.size(); i++) {
       if (i == 0) {
-        mlFeaturesStr.append(input.get(i));
+        stringBuilder.append(input.get(i));
       } else {
-        mlFeaturesStr.append(", ").append(input.get(i));
+        stringBuilder.append(", ").append(input.get(i));
       }
     }
-    return mlFeaturesStr.toString();
+    return stringBuilder.toString();
   }
 }

@@ -116,19 +116,19 @@ terraform apply -var="project_id=$PROJECT_ID"
 This builds the infrastructure shown above, populates Cloud Bigtable with customers’ demographics data, and populates Cloud Bigtable with customers’ historical data. It takes about 5-10 minutes to finish.
 It builds the following resources:
 
-| Resource                         | Resource Name                                                                                                                           |
-|----------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| Cloud Bigtable Instance          | tf-fd-instance                                                                                                                          |
-| Cloud Bigtable Table             | tf-fd-table                                                                                                                             |
-| Cloud Bigtable Column Family     | history, demographics                                                                                                                   |
-| Cloud Pubsub Input Topic         | tf-fd-pubsub-input-topic                                                                                                                |
-| Cloud Pubsub Output Topic        | tf-fd-pubsub-output-topic                                                                                                               |
-| Cloud Pubsub Output Subscription | tf-fd-pubsub-output-subscription                                                                                                        |
-| Google Storage Bucket            | tf-fd-bucket-{RANDOM\_ID}                                                                                                               |
-| Google Storage Objects           | 1.  Temp directory<br/> 2.Testing-data <br/>3. Training-data <br/> 4. Pretrained ML model                                               |
-    | VertexAI Model                   | tf-fd-ml-model                                                                                                                          |
-    | VertexAI Endpoint                | **Name:** tf-fd-ml-model-ep <br/> **Id:** Determined in runtime, stored in Scripts/ENDPOINT\_ID.output                                  |
-| Dataflow Load CBT                | **Name:** fd-load-cbt-pipeline<br/> **Description:** Creates a batch job that loads both historical and demographic data from GS to CBT |
+| Resource                         | Resource Name                                                                                                                                                                                                 |
+|----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Cloud Bigtable Instance          | featurestore-{RANDOM\_ID}                                                                                                                                                                                     |
+| Cloud Bigtable Table             | customer-information-{RANDOM\_ID}                                                                                                                                                                             |
+| Cloud Bigtable Column Family     | demographics, history                                                                                                                                                                                         |
+| Cloud Pubsub Input Topic         | transaction-stream-{RANDOM\_ID}                                                                                                                                                                               |
+| Cloud Pubsub Output Topic        | fraud-result-stream-{RANDOM\_ID}                                                                                                                                                                              |
+| Cloud Pubsub Output Subscription | fraud-result-stream-subscription-{RANDOM\_ID}                                                                                                                                                                 |
+| Google Storage Bucket            | fraud-detection-{RANDOM\_ID}                                                                                                                                                                                  |
+| Google Storage Objects           | 1. Temp directory<br/> 2. Testing-data <br/>3. Training-data <br/> 4. Pretrained ML model                                                                                                                     |
+    | VertexAI Model                   | fraud-ml-model-{RANDOM\_ID}                                                                                                                                                                                   |
+    | VertexAI Endpoint                | **Name:** fraud-ml-model-ep-{RANDOM\_ID} <br/> **Id:** Determined in runtime, stored in Scripts/ENDPOINT\_ID.output                                                                                           |
+| Dataflow Load CBT                | **Name:** load-customer-demographics-{RANDOM\_ID}, load-customer-historical-transactions-{RANDOM\_ID} <br/> **Description:** Creates batch jobs that load both historical and demographic data from GS to CBT |
 
 **Alternatively**, you can run the maven test which will run the terraform commands and build the infrastructure, read the testing datasets, send them to the Cloud Pubsub input topic and wait for the response.
 `mvn test`

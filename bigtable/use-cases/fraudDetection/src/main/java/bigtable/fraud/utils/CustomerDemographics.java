@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.util;
+package bigtable.fraud.utils;
 
-import com.example.pubsubcbt.RowDetails;
 import org.apache.beam.sdk.coders.AvroCoder;
 import org.apache.beam.sdk.coders.DefaultCoder;
 import org.apache.hadoop.hbase.client.Result;
@@ -53,8 +52,7 @@ public final class CustomerDemographics extends RowDetails {
    *
    * @param line a CustomerDemographics comma-seperated line
    */
-  public CustomerDemographics(final String line)
-      throws IllegalAccessException {
+  public CustomerDemographics(final String line) {
     super(line);
   }
 
@@ -63,8 +61,7 @@ public final class CustomerDemographics extends RowDetails {
    *
    * @param row a row result read from Cloud Bigtable.
    */
-  public CustomerDemographics(final Result row)
-      throws IllegalAccessException {
+  public CustomerDemographics(final Result row) {
     super(row);
   }
 

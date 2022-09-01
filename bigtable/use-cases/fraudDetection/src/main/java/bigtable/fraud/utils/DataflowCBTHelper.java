@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.pubsubcbt;
+package bigtable.fraud.utils;
 
 import com.google.cloud.bigtable.beam.AbstractCloudBigtableTableDoFn;
 import com.google.cloud.bigtable.beam.CloudBigtableIO;
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class facilitates writing any object that extends RowDetails to
  * CBT in a Dataflow pipeline.
- * It assumes that the first member variable is the rowKey, and the rest
+ * It assumes that the first member variable is the row key, and the rest
  * of the variables will be written to CBT using ColumnFamily:VariableName =
  * VariableValue.
  */
@@ -47,6 +47,7 @@ public class DataflowCBTHelper extends
 
   /**
    * Convert a RowDetails into a Mutation.
+   * The row key is the first member variable in the class that inherits RowDetails.
    */
   private DoFn<RowDetails, Mutation> mutationTransform =
       new DoFn<RowDetails, Mutation>() {
@@ -59,7 +60,7 @@ public class DataflowCBTHelper extends
             byte[] family = Bytes.toBytes(c.element().getColFamily());
             String[] writeHeaders = c.element().getHeaders();
             String[] values = c.element().getValues();
-            byte[] rowKey = Bytes.toBytes(values[0]);
+            byte[] rowkey = Bytes.toBytes(values[0]);
 
             Preconditions.checkArgument(writeHeaders.length
                 == values.length);
@@ -72,7 +73,7 @@ public class DataflowCBTHelper extends
             }
 
             // Create a mutation.
-            Put row = new Put(rowKey);
+            Put row = new Put(rowkey);
             for (int i = 1; i < values.length; i++) {
               row.addColumn(
                   family, Bytes.toBytes(writeHeaders[i]), writeTimestamp,

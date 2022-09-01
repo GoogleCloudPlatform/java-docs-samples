@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.dataflowpipelines;
+package bigtable.fraud.beam;
 
 import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
 import org.apache.beam.sdk.options.Description;
@@ -22,7 +22,7 @@ import org.apache.beam.sdk.options.Description;
  * This interface contains all the necessary command line arguments when
  * writing to CBT.
  */
-public interface LoadCBTOptions extends DataflowPipelineOptions {
+public interface LoadDatasetOptions extends DataflowPipelineOptions {
 
   /**
    * @return Cloud project id.

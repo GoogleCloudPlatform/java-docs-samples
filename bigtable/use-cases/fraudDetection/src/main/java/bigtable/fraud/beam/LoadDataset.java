@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.dataflowpipelines;
+package bigtable.fraud.beam;
 
-import com.example.pubsubcbt.DataflowCBTHelper;
-import com.example.pubsubcbt.RowDetails;
-import com.example.util.CustomerDemographics;
-import com.example.util.TransactionDetails;
+import bigtable.fraud.utils.CustomerDemographics;
+import bigtable.fraud.utils.DataflowCBTHelper;
+import bigtable.fraud.utils.TransactionDetails;
+import bigtable.fraud.utils.RowDetails;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
-import org.apache.beam.sdk.transforms.DoFn;
-import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.TypeDescriptor;
 
 // Load customer demographics and history into Cloud Bigtable.
-public final class LoadCBT {
+public final class LoadDataset {
 
   /**
    * Hiding the constructor.
    */
-  private LoadCBT() {
+  private LoadDataset() {
   }
 
   /**
@@ -41,10 +42,10 @@ public final class LoadCBT {
    */
   public static void main(final String[] args) throws
       IllegalArgumentException {
-    LoadCBTOptions options =
+    LoadDatasetOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation()
-            .as(LoadCBTOptions.class);
-    options.setJobName("fd-load-cbt-pipeline-" + options.getRandomUUID());
+            .as(LoadDatasetOptions.class);
+    options.setJobName("load-customer-demographics-" + options.getRandomUUID());
 
     CloudBigtableTableConfiguration config =
         new CloudBigtableTableConfiguration.Builder()
@@ -55,48 +56,34 @@ public final class LoadCBT {
 
     // Create a pipeline that reads the GCS demographics csv file
     // and write it into CBT.
-    Pipeline pDemographics = Pipeline.create(options);
     DataflowCBTHelper dataflowCBTHelper = new DataflowCBTHelper(config);
+    Pipeline pDemographics = Pipeline.create(options);
     PCollection<RowDetails> demographicsLine =
         pDemographics
             .apply("ReadGCSFile",
                 TextIO.read().from(options.getDemographicsInputFile()))
             .apply(
-                ParDo.of(
-                    new DoFn<String, RowDetails>() {
-                      @ProcessElement
-                      public void processElement(
-                          @Element final String row,
-                          final OutputReceiver<RowDetails> out)
-                          throws IllegalAccessException {
-                        out.output(new CustomerDemographics(row));
-                      }
-                    }));
+                MapElements.into(TypeDescriptor.of(RowDetails.class))
+                    .via(CustomerDemographics::new));
     dataflowCBTHelper.writeToCBT(demographicsLine);
+    PipelineResult pDemographicsRun = pDemographics.run();
 
     // Create a pipeline that reads the GCS history csv file and write
     // it into CBT
-    Pipeline pHistory = Pipeline.create(options);
     dataflowCBTHelper = new DataflowCBTHelper(config);
+    options.setJobName("load-customer-historical-transactions-" + options.getRandomUUID());
+    Pipeline pHistory = Pipeline.create(options);
     PCollection<RowDetails> historyLine =
         pHistory
             .apply("ReadGCSFile",
                 TextIO.read().from(options.getHistoryInputFile()))
             .apply(
-                ParDo.of(
-                    new DoFn<String, RowDetails>() {
-                      @ProcessElement
-                      public void processElement(
-                          @Element final String row,
-                          final OutputReceiver<RowDetails> out)
-                          throws IllegalAccessException {
-                        out.output(new TransactionDetails(row));
-                      }
-                    }));
+                MapElements.into(TypeDescriptor.of(RowDetails.class))
+                    .via(TransactionDetails::new));
     dataflowCBTHelper.writeToCBT(historyLine);
+    PipelineResult pHistoryRun = pHistory.run();
 
-    // Wait until all the data is loaded into CBT.
-    pDemographics.run().waitUntilFinish();
-    pHistory.run().waitUntilFinish();
+    pDemographicsRun.waitUntilFinish();
+    pHistoryRun.waitUntilFinish();
   }
 }
