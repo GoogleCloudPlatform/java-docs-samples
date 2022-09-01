@@ -38,31 +38,35 @@ public class CreateWithLocalSsd {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // project: project ID or project number of the Cloud project you want to use.
-    String project = "your-project-id";
+    // projectId: project ID or project number of the Cloud project you want to use.
+    String projectId = "your-project-id";
     // zone: name of the zone to create the instance in. For example: "us-west3-b"
     String zone = "zone-name";
     // instanceName: name of the new virtual machine (VM) instance.
     String instanceName = "instance-name";
 
-    createWithLocalSsd(project, zone, instanceName);
+    createWithLocalSsd(projectId, zone, instanceName);
   }
 
   // Create a new VM instance with Debian 10 operating system and SSD local disk.
-  public static void createWithLocalSsd(String project, String zone, String instanceName)
+  public static void createWithLocalSsd(String projectId, String zone, String instanceName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
+    int diskSizeGb = 10;
+    boolean boot = true;
+    boolean autoDelete = true;
+    String diskType = String.format("zones/%s/diskTypes/pd-standard", zone);
     // Get the latest debian image.
     Image newestDebian = getImageFromFamily("debian-cloud", "debian-10");
+    List<AttachedDisk> disks = new ArrayList<>();
 
     // Create the disks to be included in the instance.
-    List<AttachedDisk> disks = new ArrayList<>();
-    String diskType = String.format("zones/%s/diskTypes/pd-standard", zone);
-    disks.add(diskFromImage(diskType, 10, true, newestDebian.getSelfLink(), true));
-    disks.add(localSsdDisk(zone));
+    disks.add(
+        createDiskFromImage(diskType, diskSizeGb, boot, newestDebian.getSelfLink(), autoDelete));
+    disks.add(createLocalSsdDisk(zone));
 
     // Create the instance.
-    Instance instance = createInstance(project, zone, instanceName, disks);
+    Instance instance = createInstance(projectId, zone, instanceName, disks);
 
     if (instance != null) {
       System.out.printf("Instance created with local SSD: %s", instance.getName());
@@ -105,7 +109,7 @@ public class CreateWithLocalSsd {
   //
   //    autoDelete: boolean flag indicating whether this disk should be deleted
   //    with the VM that uses it.
-  private static AttachedDisk diskFromImage(String diskType, int diskSizeGb, boolean boot,
+  private static AttachedDisk createDiskFromImage(String diskType, int diskSizeGb, boolean boot,
       String sourceImage, boolean autoDelete) {
 
     AttachedDiskInitializeParams attachedDiskInitializeParams =
@@ -130,7 +134,7 @@ public class CreateWithLocalSsd {
   // no data and requires formatting before it can be used.
   // Args:
   //    zone: The zone in which the local SSD drive will be attached.
-  private static AttachedDisk localSsdDisk(String zone) {
+  private static AttachedDisk createLocalSsdDisk(String zone) {
 
     AttachedDiskInitializeParams attachedDiskInitializeParams =
         AttachedDiskInitializeParams.newBuilder()
@@ -148,12 +152,12 @@ public class CreateWithLocalSsd {
 
   // Send an instance creation request to the Compute Engine API and wait for it to complete.
   // Args:
-  //    project: project ID or project number of the Cloud project you want to use.
+  //    projectId: project ID or project number of the Cloud project you want to use.
   //    zone: name of the zone to create the instance in. For example: "us-west3-b"
   //    instanceName: name of the new virtual machine (VM) instance.
   //    disks: a list of compute.v1.AttachedDisk objects describing the disks
   //           you want to attach to your new instance.
-  private static Instance createInstance(String project, String zone, String instanceName,
+  private static Instance createInstance(String projectId, String zone, String instanceName,
       List<AttachedDisk> disks)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -165,7 +169,8 @@ public class CreateWithLocalSsd {
       // machineType: machine type of the VM being created. This value uses the
       // following format: "zones/{zone}/machineTypes/{type_name}".
       // For example: "zones/europe-west3-c/machineTypes/f1-micro"
-      String machineType = String.format("zones/%s/machineTypes/%s", zone, "n1-standard-1");
+      String typeName = "n1-standard-1";
+      String machineType = String.format("zones/%s/machineTypes/%s", zone, typeName);
 
       // networkLink: name of the network you want the new instance to use.
       // For example: "global/networks/default" represents the network
@@ -180,15 +185,14 @@ public class CreateWithLocalSsd {
           .addAllDisks(disks)
           .build();
 
-      Operation response = instancesClient.insertAsync(project, zone, instance)
+      Operation response = instancesClient.insertAsync(projectId, zone, instance)
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Instance creation failed ! ! " + response);
-        return null;
+        throw new Error("Instance creation failed ! ! " + response);
       }
       System.out.println("Operation Status: " + response.getStatus());
-      return instancesClient.get(project, zone, instanceName);
+      return instancesClient.get(projectId, zone, instanceName);
     }
 
   }
