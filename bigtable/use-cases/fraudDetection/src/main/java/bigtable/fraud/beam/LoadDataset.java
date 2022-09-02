@@ -71,7 +71,8 @@ public final class LoadDataset {
     // Create a pipeline that reads the GCS history csv file and write
     // it into CBT
     dataflowCBTHelper = new DataflowCBTHelper(config);
-    options.setJobName("load-customer-historical-transactions-" + options.getRandomUUID());
+    options.setJobName("load-customer-historical-transactions-"
+        + options.getRandomUUID());
     Pipeline pHistory = Pipeline.create(options);
     PCollection<RowDetails> historyLine =
         pHistory

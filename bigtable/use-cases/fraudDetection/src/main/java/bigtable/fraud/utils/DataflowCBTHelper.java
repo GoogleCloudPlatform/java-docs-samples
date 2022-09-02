@@ -47,7 +47,8 @@ public class DataflowCBTHelper extends
 
   /**
    * Convert a RowDetails into a Mutation.
-   * The row key is the first member variable in the class that inherits RowDetails.
+   * The row key is the first member variable in the class that
+   * inherits RowDetails.
    */
   private DoFn<RowDetails, Mutation> mutationTransform =
       new DoFn<RowDetails, Mutation>() {
