@@ -102,10 +102,10 @@ public class DataflowCBTHelper extends
   /**
    * Constructs a DataflowCBTHelper object.
    *
-   * @param row the RowDetails object to write to CBT
+   * @param rows the RowDetails PCollection to write to CBT
    */
-  public void writeToCBT(final PCollection<RowDetails> row) {
-    row.apply("TransformParsingsToBigtable", ParDo.of(mutationTransform))
+  public void writeToCBT(final PCollection<RowDetails> rows) {
+    rows.apply("TransformParsingsToBigtable", ParDo.of(mutationTransform))
         .apply(
             "WriteToBigtable",
             CloudBigtableIO.writeToTable(

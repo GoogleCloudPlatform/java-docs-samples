@@ -58,14 +58,14 @@ public final class LoadDataset {
     // and write it into CBT.
     DataflowCBTHelper dataflowCBTHelper = new DataflowCBTHelper(config);
     Pipeline pDemographics = Pipeline.create(options);
-    PCollection<RowDetails> demographicsLine =
+    PCollection<RowDetails> demographicsLines =
         pDemographics
             .apply("ReadGCSFile",
                 TextIO.read().from(options.getDemographicsInputFile()))
             .apply(
                 MapElements.into(TypeDescriptor.of(RowDetails.class))
                     .via(CustomerDemographics::new));
-    dataflowCBTHelper.writeToCBT(demographicsLine);
+    dataflowCBTHelper.writeToCBT(demographicsLines);
     PipelineResult pDemographicsRun = pDemographics.run();
 
     // Create a pipeline that reads the GCS history csv file and write
@@ -74,14 +74,14 @@ public final class LoadDataset {
     options.setJobName("load-customer-historical-transactions-"
         + options.getRandomUUID());
     Pipeline pHistory = Pipeline.create(options);
-    PCollection<RowDetails> historyLine =
+    PCollection<RowDetails> historyLines =
         pHistory
             .apply("ReadGCSFile",
                 TextIO.read().from(options.getHistoryInputFile()))
             .apply(
                 MapElements.into(TypeDescriptor.of(RowDetails.class))
                     .via(TransactionDetails::new));
-    dataflowCBTHelper.writeToCBT(historyLine);
+    dataflowCBTHelper.writeToCBT(historyLines);
     PipelineResult pHistoryRun = pHistory.run();
 
     pDemographicsRun.waitUntilFinish();
