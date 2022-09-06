@@ -37,6 +37,9 @@ import com.google.protobuf.ByteString;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -59,6 +62,7 @@ public class SnippetsIT {
   private static Secret TEST_SECRET_TO_DELETE_WITH_ETAG;
   private static Secret TEST_SECRET_WITH_VERSIONS;
   private static SecretName TEST_SECRET_TO_CREATE_NAME;
+  private static SecretName TEST_UMMR_SECRET_TO_CREATE_NAME;
   private static SecretVersion TEST_SECRET_VERSION;
   private static SecretVersion TEST_SECRET_VERSION_TO_DESTROY;
   private static SecretVersion TEST_SECRET_VERSION_TO_DESTROY_WITH_ETAG;
@@ -78,6 +82,7 @@ public class SnippetsIT {
     TEST_SECRET_TO_DELETE_WITH_ETAG = createSecret();
     TEST_SECRET_WITH_VERSIONS = createSecret();
     TEST_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
+    TEST_UMMR_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
 
     TEST_SECRET_VERSION = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
@@ -109,13 +114,15 @@ public class SnippetsIT {
 
     deleteSecret(TEST_SECRET.getName());
     deleteSecret(TEST_SECRET_TO_CREATE_NAME.toString());
+    deleteSecret(TEST_UMMR_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
     deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
     deleteSecret(TEST_SECRET_WITH_VERSIONS.getName());
   }
 
   private static String randomSecretId() {
-    return "java-" + System.currentTimeMillis();
+    Random random = new Random();
+    return "java-" + String.valueOf(random.nextLong());
   }
 
   private static Secret createSecret() throws IOException {
@@ -200,6 +207,16 @@ public class SnippetsIT {
   public void testCreateSecret() throws IOException {
     SecretName name = TEST_SECRET_TO_CREATE_NAME;
     CreateSecret.createSecret(name.getProject(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Created secret");
+  }
+
+  @Test
+  public void testCreateSecretWithUserManagedReplication() throws IOException {
+    SecretName name = TEST_UMMR_SECRET_TO_CREATE_NAME;
+    List<String> locations = Arrays.asList("us-east1", "us-east4", "us-west1");
+    CreateSecretWithUserManagedReplication.createSecret(
+        name.getProject(), name.getSecret(), locations);
 
     assertThat(stdOut.toString()).contains("Created secret");
   }
