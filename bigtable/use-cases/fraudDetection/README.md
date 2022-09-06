@@ -130,9 +130,6 @@ It builds the following resources:
     | VertexAI Endpoint                | **Name:** fraud-ml-model-ep-{RANDOM\_ID} <br/> **Id:** Determined in runtime, stored in Scripts/ENDPOINT\_ID.output                                                                                           |
 | Dataflow Load CBT                | **Name:** load-customer-demographics-{RANDOM\_ID}, load-customer-historical-transactions-{RANDOM\_ID} <br/> **Description:** Creates batch jobs that load both historical and demographic data from GS to CBT |
 
-**Alternatively**, you can run the maven test which will run the terraform commands and build the infrastructure, read the testing datasets, send them to the Cloud Pubsub input topic and wait for the response.
-`mvn test`
-
 
 
 
