@@ -66,7 +66,7 @@ public abstract class RowDetails {
     // If a custom timestamp is to be used, it should be the second field
     // and in this format: TimestampMilliseconds=TIME
     if (values.size() >= 2 && values.get(1)
-        .contains("TimestampMilliseconds=")) {
+        .startsWith("TimestampMilliseconds=")) {
       long timestampMilliseconds = Long.parseLong(
           values.get(1).split("TimestampMilliseconds=")[1]);
       values.remove(1);

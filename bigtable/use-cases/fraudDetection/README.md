@@ -11,7 +11,7 @@ Cloud Bigtable is a great fit to use as a feature store for the following reason
 3.  **Managed service:** Cloud Bigtable provides the speed and scale all in a managed service. There are also maintenance features like seamless scaling and replication as well as integrations with popular big data tools like Hadoop, Dataflow and Dataproc.
 
 ## System design
-![Fraud detection design](fraud detection-design.svg)
+![Fraud detection design](fraud-detection-design.svg)
 
 **1.  Input/Output Cloud Pub/Sub topics:** The real-time transactions arrive at the Cloud Pub/Sub input topic, and the output is sent to the Cloud Pub/Sub output topic.
     
@@ -125,11 +125,10 @@ It builds the following resources:
 | Cloud Pubsub Output Topic        | fraud-result-stream-{RANDOM\_ID}                                                                                                                                                                              |
 | Cloud Pubsub Output Subscription | fraud-result-stream-subscription-{RANDOM\_ID}                                                                                                                                                                 |
 | Google Storage Bucket            | fraud-detection-{RANDOM\_ID}                                                                                                                                                                                  |
-| Google Storage Objects           | 1. Temp directory<br/> 2. Testing-data <br/>3. Training-data <br/> 4. Pretrained ML model                                                                                                                     |
-    | VertexAI Model                   | fraud-ml-model-{RANDOM\_ID}                                                                                                                                                                                   |
-    | VertexAI Endpoint                | **Name:** fraud-ml-model-ep-{RANDOM\_ID} <br/> **Id:** Determined in runtime, stored in Scripts/ENDPOINT\_ID.output                                                                                           |
+| Google Storage Objects           | 1. temp/ directory (for temporary dataflow generated files) <br/> 2. testing_dataset/ directory <br/>3. training_dataset/ directory <br/> 4. ml_model/ directory                                              |
+| VertexAI Model                   | fraud-ml-model-{RANDOM\_ID}                                                                                                                                                                                   |
+| VertexAI Endpoint                | **Name:** fraud-ml-model-ep-{RANDOM\_ID} <br/> **Id:** Determined in runtime, stored in Scripts/ENDPOINT\_ID.output                                                                                           |
 | Dataflow Load CBT                | **Name:** load-customer-demographics-{RANDOM\_ID}, load-customer-historical-transactions-{RANDOM\_ID} <br/> **Description:** Creates batch jobs that load both historical and demographic data from GS to CBT |
-
 
 
 

@@ -100,14 +100,6 @@ resource "google_storage_bucket_object" "tf-fd-bucket-model-folder" {
   bucket  = google_storage_bucket.tf-fd-bucket.name
 }
 
-# Create a dataflow templates folder that contains
-# the dataflow templates that will be deployed.
-resource "google_storage_bucket_object" "tf-fd-bucket-templates-folder" {
-  name    = "dataflow_templates/"
-  content = "."
-  bucket  = google_storage_bucket.tf-fd-bucket.name
-}
-
 # A CSV file that contains fraudulent transactions generated
 # by the simulator. This is useful for testing the model.
 resource "google_storage_bucket_object" "fraud_transactions" {
