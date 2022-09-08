@@ -116,19 +116,20 @@ terraform apply -var="project_id=$PROJECT_ID"
 This builds the infrastructure shown above, populates Cloud Bigtable with customers’ demographics data, and populates Cloud Bigtable with customers’ historical data. It takes about 5-10 minutes to finish.
 It builds the following resources:
 
-| Resource                         | Resource Name                                                                                                                                                                                                 |
-|----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Cloud Bigtable Instance          | featurestore-{RANDOM\_ID}                                                                                                                                                                                     |
-| Cloud Bigtable Table             | customer-information-{RANDOM\_ID}                                                                                                                                                                             |
-| Cloud Bigtable Column Family     | demographics, history                                                                                                                                                                                         |
-| Cloud Pubsub Input Topic         | transaction-stream-{RANDOM\_ID}                                                                                                                                                                               |
-| Cloud Pubsub Output Topic        | fraud-result-stream-{RANDOM\_ID}                                                                                                                                                                              |
-| Cloud Pubsub Output Subscription | fraud-result-stream-subscription-{RANDOM\_ID}                                                                                                                                                                 |
-| Google Storage Bucket            | fraud-detection-{RANDOM\_ID}                                                                                                                                                                                  |
-| Google Storage Objects           | 1. temp/ directory (for temporary dataflow generated files) <br/> 2. testing_dataset/ directory <br/>3. training_dataset/ directory <br/> 4. ml_model/ directory                                              |
-| VertexAI Model                   | fraud-ml-model-{RANDOM\_ID}                                                                                                                                                                                   |
-| VertexAI Endpoint                | **Name:** fraud-ml-model-ep-{RANDOM\_ID} <br/> **Id:** Determined in runtime, stored in Scripts/ENDPOINT\_ID.output                                                                                           |
-| Dataflow Load CBT                | **Name:** load-customer-demographics-{RANDOM\_ID}, load-customer-historical-transactions-{RANDOM\_ID} <br/> **Description:** Creates batch jobs that load both historical and demographic data from GS to CBT |
+| Resource                            | Resource Name                                                                                                         |
+|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| Cloud Bigtable Instance             | featurestore-{RANDOM\_ID}                                                                                             |
+| Cloud Bigtable Table                | customer-information-{RANDOM\_ID}                                                                                     |
+| Cloud Bigtable Column Family        | demographics, history                                                                                                 |
+| Cloud Pubsub Input Topic            | transaction-stream-{RANDOM\_ID}                                                                                       |
+| Cloud Pubsub Output Topic           | fraud-result-stream-{RANDOM\_ID}                                                                                      |
+| Cloud Pubsub Output Subscription    | fraud-result-stream-subscription-{RANDOM\_ID}                                                                         |
+| Google Storage Bucket               | fraud-detection-{RANDOM\_ID}                                                                                          |
+| Google Storage Objects              | * temp/ (*for temporary dataflow generated files*) <br/> * testing_dataset/ <br/>* training_dataset/ <br/>* ml_model/ |
+| VertexAI Model                      | fraud-ml-model-{RANDOM\_ID}                                                                                           |
+| VertexAI Endpoint                   | *The endpoint Id is determined in runtime, stored in Scripts/ENDPOINT\_ID.output*                                     |
+| Dataflow Load Demographics Data Job | load-customer-demographics-{RANDOM\_ID} (*batch job that loads demographics data from GS to Cloud Bigtable*)          |
+| Dataflow Load Historical Data Job   | load-customer-historical-transactions-{RANDOM\_ID} (*batch job that loads historical data from GS to Cloud Bigtable*) |
 
 
 
