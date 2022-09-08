@@ -76,16 +76,16 @@ public class CreateWithLocalSsd {
 
   // Retrieve the newest image that is part of a given family in a project.
   // Args:
-  //    project: project ID or project number of the Cloud project you want to get image from.
+  //    projectId: project ID or project number of the Cloud project you want to get image from.
   //    family: name of the image family you want to get image from.
-  private static Image getImageFromFamily(String project, String family) throws IOException {
+  private static Image getImageFromFamily(String projectId, String family) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `imagesClient.close()` method on the client to safely
     // clean up any remaining background resources.
     try (ImagesClient imagesClient = ImagesClient.create()) {
       // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
-      return imagesClient.getFromFamily(project, family);
+      return imagesClient.getFromFamily(projectId, family);
     }
   }
 
