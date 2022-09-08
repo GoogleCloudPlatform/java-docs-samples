@@ -20,6 +20,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.compute.v1.AttachedDisk;
+import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
@@ -55,6 +57,7 @@ public class SnippetsIT {
   private static String MACHINE_NAME_LIST_INSTANCE;
   private static String MACHINE_NAME_WAIT_FOR_OP;
   private static String MACHINE_NAME_ENCRYPTED;
+  private static String MACHINE_NAME_WITH_SSD;
   private static String BUCKET_NAME;
   private static String IMAGE_PROJECT_NAME;
   private static String RAW_KEY;
@@ -81,6 +84,7 @@ public class SnippetsIT {
     MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance" + UUID.randomUUID();
     MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance" + UUID.randomUUID();
     MACHINE_NAME_ENCRYPTED = "encrypted-test-instance" + UUID.randomUUID();
+    MACHINE_NAME_WITH_SSD = "test-instance-with-ssd" + UUID.randomUUID();
     BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID();
     IMAGE_PROJECT_NAME = "windows-sql-cloud";
     RAW_KEY = Util.getBase64EncodedKey();
@@ -120,6 +124,7 @@ public class SnippetsIT {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
+    compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
 
     // Delete the Google Cloud Storage bucket created for usage reports.
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
@@ -163,6 +168,22 @@ public class SnippetsIT {
     Assert.assertEquals(response, Status.RUNNING.toString());
   }
 
+  @Test
+  public void testCreateWithLocalSSD()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Assert that the instance is created.
+    CreateWithLocalSsd.createWithLocalSsd(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
+    assertThat(stdOut.toString()).contains("Instance created with local SSD:");
+
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+      Instance instance = instancesClient.get(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
+      // Assert that atleast one of the disks has the type "SCRATCH".
+      Assert.assertTrue(instance.getDisksList().stream()
+          .anyMatch(disk -> disk.getType().equalsIgnoreCase(AttachedDisk.Type.SCRATCH.name())));
+      // Assert that there are only 2 disks present.
+      Assert.assertEquals(instance.getDisksList().size(), 2);
+    }
+  }
 
   @Test
   public void testListInstance() throws IOException {
