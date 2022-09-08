@@ -49,16 +49,13 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * test runner
- */
+/** test runner */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SamplesTest {
@@ -71,10 +68,7 @@ public class SamplesTest {
   private static final int SLEEP_TIME = 1000;
   private static final int TRY_LIMIT = 10;
 
-  @Rule
-  public TestName name = new TestName();
-
-
+  @Rule public TestName name = new TestName();
 
   @AfterClass
   public static void tearDownClass() {
@@ -89,11 +83,10 @@ public class SamplesTest {
     }
   }
 
-
   @Before
   public void setUp() throws Exception {
     System.out.println(name.getMethodName());
-    noteId =  "note-" + (new Date()).getTime() + name.getMethodName();
+    noteId = "note-" + (new Date()).getTime() + name.getMethodName();
     imageUrl = "www." + (new Date()).getTime() + name.getMethodName() + ".com";
     noteObj = CreateNote.createNote(noteId, PROJECT_ID);
   }
@@ -163,8 +156,8 @@ public class SamplesTest {
     int newCount;
     int tries = 0;
     int origCount = OccurrencesForImage.getOccurrencesForImage(imageUrl, PROJECT_ID);
-    final Occurrence o = CreateOccurrence.createOccurrence(
-        imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+    final Occurrence o =
+        CreateOccurrence.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     do {
       newCount = OccurrencesForImage.getOccurrencesForImage(imageUrl, PROJECT_ID);
       sleep(SLEEP_TIME);
@@ -184,8 +177,8 @@ public class SamplesTest {
     int newCount;
     int tries = 0;
     int origCount = OccurrencesForNote.getOccurrencesForNote(noteId, PROJECT_ID);
-    final Occurrence o = CreateOccurrence.createOccurrence(
-        imageUrl, noteId, PROJECT_ID, PROJECT_ID);
+    final Occurrence o =
+        CreateOccurrence.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     do {
       newCount = OccurrencesForNote.getOccurrencesForNote(noteId, PROJECT_ID);
       sleep(SLEEP_TIME);
@@ -258,10 +251,10 @@ public class SamplesTest {
       // test passes
     }
     // create discovery note
-    Note newNote = Note.newBuilder()
-        .setDiscovery(DiscoveryNote.newBuilder()
-            .setAnalysisKind(NoteKind.DISCOVERY))
-        .build();
+    Note newNote =
+        Note.newBuilder()
+            .setDiscovery(DiscoveryNote.newBuilder().setAnalysisKind(NoteKind.DISCOVERY))
+            .build();
 
     String discNoteId = "discovery-note-" + (new Date()).getTime();
     NoteName noteName = NoteName.of(PROJECT_ID, discNoteId);
@@ -269,17 +262,31 @@ public class SamplesTest {
     client.createNote(ProjectName.format(PROJECT_ID), discNoteId, newNote);
 
     // create discovery occurrence
-    Occurrence newOcc = Occurrence.newBuilder()
-        .setNoteName(noteName.toString())
-        .setResourceUri(imageUrl)
-        .setDiscovery(DiscoveryOccurrence.newBuilder()
-            .setAnalysisStatus(AnalysisStatus.FINISHED_SUCCESS))
-        .build();
+    Occurrence newOcc =
+        Occurrence.newBuilder()
+            .setNoteName(noteName.toString())
+            .setResourceUri(imageUrl)
+            .setDiscovery(
+                DiscoveryOccurrence.newBuilder().setAnalysisStatus(AnalysisStatus.FINISHED_SUCCESS))
+            .build();
     Occurrence result = client.createOccurrence(ProjectName.format(PROJECT_ID), newOcc);
 
     // poll again
-    Occurrence found = PollDiscoveryOccurrenceFinished.pollDiscoveryOccurrenceFinished(
-        imageUrl, PROJECT_ID, 5);
+    int maxAttempts = 5;
+    int attempt = 1;
+    Occurrence found = null;
+    if (found == null && attempt <= maxAttempts) {
+      try {
+        found =
+            PollDiscoveryOccurrenceFinished.pollDiscoveryOccurrenceFinished(
+                imageUrl, PROJECT_ID, 5);
+      } catch (TimeoutException e) {
+        System.out.printf(
+            "Attempt %d/%d failed with a TimeoutException. Retrying.", attempt, maxAttempts);
+      }
+      attempt += 1;
+      sleep(3000);
+    }
     AnalysisStatus foundStatus = found.getDiscovery().getAnalysisStatus();
     assertEquals(foundStatus, AnalysisStatus.FINISHED_SUCCESS);
 
@@ -292,14 +299,15 @@ public class SamplesTest {
 
   @Test
   public void testFindVulnerabilitiesForImage() throws Exception {
-    List<Occurrence> result = VulnerabilityOccurrencesForImage.findVulnerabilityOccurrencesForImage(
-        imageUrl, PROJECT_ID);
+    List<Occurrence> result =
+        VulnerabilityOccurrencesForImage.findVulnerabilityOccurrencesForImage(imageUrl, PROJECT_ID);
     assertEquals(result.size(), 0);
     Occurrence o = CreateOccurrence.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
     int tries = 0;
     do {
-      result = VulnerabilityOccurrencesForImage.findVulnerabilityOccurrencesForImage(
-          imageUrl, PROJECT_ID);
+      result =
+          VulnerabilityOccurrencesForImage.findVulnerabilityOccurrencesForImage(
+              imageUrl, PROJECT_ID);
       sleep(SLEEP_TIME);
       tries += 1;
     } while (result.size() != 1 && tries < TRY_LIMIT);
@@ -314,56 +322,62 @@ public class SamplesTest {
   @Test
   public void testFindHighSeverityVulnerabilitiesForImage() throws Exception {
     // check before creation
-    List<Occurrence> result = HighVulnerabilitiesForImage.findHighSeverityVulnerabilitiesForImage(
-        imageUrl, PROJECT_ID);
+    List<Occurrence> result =
+        HighVulnerabilitiesForImage.findHighSeverityVulnerabilitiesForImage(imageUrl, PROJECT_ID);
     assertEquals(0, result.size());
 
     // create low severity occurrence
     Occurrence low;
     low = CreateOccurrence.createOccurrence(imageUrl, noteId, PROJECT_ID, PROJECT_ID);
-    result = HighVulnerabilitiesForImage.findHighSeverityVulnerabilitiesForImage(
-        imageUrl, PROJECT_ID);
+    result =
+        HighVulnerabilitiesForImage.findHighSeverityVulnerabilitiesForImage(imageUrl, PROJECT_ID);
     assertEquals(0, result.size());
 
     // create high severity note
-    Note newNote = Note.newBuilder()
-        .setVulnerability(VulnerabilityNote.newBuilder()
-            .setSeverity(Severity.CRITICAL)
-            .addDetails(VulnerabilityNote.Detail.newBuilder()
-                .setAffectedCpeUri("your-uri-here")
-                .setAffectedPackage("your-package-here")
-                .setAffectedVersionStart(Version.newBuilder()
-                    .setKind(Version.VersionKind.MINIMUM))
-                .setAffectedVersionEnd(Version.newBuilder()
-                    .setKind(Version.VersionKind.MAXIMUM))))
-        .build();
+    Note newNote =
+        Note.newBuilder()
+            .setVulnerability(
+                VulnerabilityNote.newBuilder()
+                    .setSeverity(Severity.CRITICAL)
+                    .addDetails(
+                        VulnerabilityNote.Detail.newBuilder()
+                            .setAffectedCpeUri("your-uri-here")
+                            .setAffectedPackage("your-package-here")
+                            .setAffectedVersionStart(
+                                Version.newBuilder().setKind(Version.VersionKind.MINIMUM))
+                            .setAffectedVersionEnd(
+                                Version.newBuilder().setKind(Version.VersionKind.MAXIMUM))))
+            .build();
 
     String vulnNoteId = "severe-note-" + (new Date()).getTime();
     ContainerAnalysisClient client = ContainerAnalysisClient.create();
     client.getGrafeasClient().createNote(ProjectName.format(PROJECT_ID), vulnNoteId, newNote);
 
     // create high severity occurrence
-    Occurrence critical = Occurrence.newBuilder()
-        .setNoteName(NoteName.of(PROJECT_ID, vulnNoteId).toString())
-        .setResourceUri(imageUrl)
-        .setVulnerability(VulnerabilityOccurrence.newBuilder()
-            .setEffectiveSeverity(Severity.CRITICAL)
-            .addPackageIssue(PackageIssue.newBuilder()
-                .setAffectedCpeUri("your-uri-here")
-                .setAffectedPackage("your-package-here")
-                .setAffectedVersion(Version.newBuilder()
-                    .setKind(Version.VersionKind.MINIMUM))
-                .setFixedVersion(Version.newBuilder()
-                    .setKind(Version.VersionKind.MAXIMUM))))
-        .build();
+    Occurrence critical =
+        Occurrence.newBuilder()
+            .setNoteName(NoteName.of(PROJECT_ID, vulnNoteId).toString())
+            .setResourceUri(imageUrl)
+            .setVulnerability(
+                VulnerabilityOccurrence.newBuilder()
+                    .setEffectiveSeverity(Severity.CRITICAL)
+                    .addPackageIssue(
+                        PackageIssue.newBuilder()
+                            .setAffectedCpeUri("your-uri-here")
+                            .setAffectedPackage("your-package-here")
+                            .setAffectedVersion(
+                                Version.newBuilder().setKind(Version.VersionKind.MINIMUM))
+                            .setFixedVersion(
+                                Version.newBuilder().setKind(Version.VersionKind.MAXIMUM))))
+            .build();
 
     critical = client.getGrafeasClient().createOccurrence(ProjectName.format(PROJECT_ID), critical);
 
     // check again
     int tries = 0;
     do {
-      result = HighVulnerabilitiesForImage.findHighSeverityVulnerabilitiesForImage(
-          imageUrl, PROJECT_ID);
+      result =
+          HighVulnerabilitiesForImage.findHighSeverityVulnerabilitiesForImage(imageUrl, PROJECT_ID);
       sleep(SLEEP_TIME * 2);
       tries += 1;
     } while (result.size() != 1 && tries < TRY_LIMIT);
