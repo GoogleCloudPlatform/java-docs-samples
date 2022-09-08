@@ -4,9 +4,9 @@ REGION=$1
 UUID=$2
 BUCKET_NAME=$3
 
-MODEL_NAME=tf-fd-ml-model-$UUID
-ENDPOINT_NAME=tf-fd-ml-model-ep-$UUID
-DEPLOYED_MODEL_NAME=tf-fd-ml-deployed-model-$UUID
+MODEL_NAME=fraud-ml-model-$UUID
+ENDPOINT_NAME=fraud-ml-model-ep-$UUID
+DEPLOYED_MODEL_NAME=fraud-ml-deployed-model-$UUID
 
 echo "REGION = $REGION"
 echo "MODEL_NAME = $MODEL_NAME"
@@ -41,4 +41,4 @@ gcloud ai endpoints deploy-model $ENDPOINT_ID \
 DEPLOYED_MODEL_ID=$(gcloud ai endpoints describe $ENDPOINT_ID --region=$REGION 2>/dev/null | grep "id:" | awk -F  "'" '{print $2}')
 
 # Export ENDPOINT_ID as it will be used by the dataflow job
-echo $ENDPOINT_ID > ./Scripts/ENDPOINT_ID.output
+echo $ENDPOINT_ID > ./scripts/ENDPOINT_ID-$UUID.output

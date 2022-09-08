@@ -100,14 +100,6 @@ resource "google_storage_bucket_object" "tf-fd-bucket-model-folder" {
   bucket  = google_storage_bucket.tf-fd-bucket.name
 }
 
-# Create a dataflow templates folder that contains
-# the dataflow templates that will be deployed.
-resource "google_storage_bucket_object" "tf-fd-bucket-templates-folder" {
-  name    = "dataflow_templates/"
-  content = "."
-  bucket  = google_storage_bucket.tf-fd-bucket.name
-}
-
 # A CSV file that contains fraudulent transactions generated
 # by the simulator. This is useful for testing the model.
 resource "google_storage_bucket_object" "fraud_transactions" {
@@ -160,4 +152,17 @@ module "vertexai" {
 
   destroy_cmd_entrypoint = "${path.module}/scripts/vertexai_destroy.sh"
   destroy_cmd_body       = "${var.region} ${random_string.uuid.result}"
+}
+
+# Load both demographics and historical data into Cloud Bigtable so that
+# the dataflow pipeline can aggregate data properly before querying
+# the ML model.
+module "load_dataset" {
+  source  = "terraform-google-modules/gcloud/google"
+  version = "~> 2.0"
+
+  platform = "linux"
+
+  create_cmd_entrypoint = "${path.module}/scripts/load_dataset.sh"
+  create_cmd_body       = "${var.project_id} ${var.region} ${google_bigtable_instance.tf-fd-instance.name} ${google_bigtable_table.tf-fd-table.name} ${google_storage_bucket.tf-fd-bucket.name} ${random_string.uuid.result}"
 }

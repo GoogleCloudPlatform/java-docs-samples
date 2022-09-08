@@ -11,7 +11,7 @@ Cloud Bigtable is a great fit to use as a feature store for the following reason
 3.  **Managed service:** Cloud Bigtable provides the speed and scale all in a managed service. There are also maintenance features like seamless scaling and replication as well as integrations with popular big data tools like Hadoop, Dataflow and Dataproc.
 
 ## System design
-![Fraud detection design](fraud detection-design.svg)
+![Fraud detection design](fraud-detection-design.svg)
 
 **1.  Input/Output Cloud Pub/Sub topics:** The real-time transactions arrive at the Cloud Pub/Sub input topic, and the output is sent to the Cloud Pub/Sub output topic.
     
@@ -62,7 +62,7 @@ This design uses a single table to store all customers' information following [t
 
 The data is separated over two column families. Having multiple column families allows for different garbage collection policies (See garbage collection section). Moreover, it is used to group data that is often queried together.
 
-**Demographics Column Family:** This column family contains the demographics data for customers. Usually, each customer will have one value for each column in this column family.
+**Demographics Column Family:** This column family contains the demographic data for customers. Usually, each customer will have one value for each column in this column family.
 
 **History Column Family:** This column family contains the historical transaction that this specific user had before. The dataflow pipeline aggregates the data in this column family and sends them along with the demographics data to the ML model.
 
@@ -85,3 +85,54 @@ The current Cloud Bigtable instance configuration does not provide any replicati
 This sample application provides a pre-trained Boosted Trees Classifier ML model that uses similar parameters to what was done here: [How to build a serverless real-time credit card fraud detection solution](https://cloud.google.com/blog/products/data-analytics/how-to-build-a-fraud-detection-solution)
 
 The ML model is located in the path: **terraform/model**
+
+## How to Use
+
+### Prerequisites
+1) [Have a GCP project.](https://cloud.google.com/resource-manager/docs/creating-managing-projects)
+2) [Have a service account that contains the following permissions:](https://cloud.google.com/docs/authentication/production)
+   1) Bigtable Administrator
+   2) Cloud Dataflow Service Agent
+   3) Compute Admin
+   4) Dataflow Admin
+   5) Dataflow Worker
+   6) Datapipelines Service Agent
+   7) Storage Admin
+   8) Vertex AI User
+3) Set these environment variables:
+```
+export GOOGLE_APPLICATION_CREDENTIALS={YOUR CREDS PATH}
+export PROJECT_ID={YOUR PROJECT ID}
+```
+
+### Running steps
+
+**1) Build the infrastructure**
+```
+cd terraform
+terraform init
+terraform apply -var="project_id=$PROJECT_ID"
+```
+This builds the infrastructure shown above, populates Cloud Bigtable with customers’ demographics data, and populates Cloud Bigtable with customers’ historical data. It takes about 5-10 minutes to finish.
+It builds the following resources:
+
+| Resource                            | Resource Name                                                                                                         |
+|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| Cloud Bigtable Instance             | featurestore-{RANDOM\_ID}                                                                                             |
+| Cloud Bigtable Table                | customer-information-{RANDOM\_ID}                                                                                     |
+| Cloud Bigtable Column Family        | demographics, history                                                                                                 |
+| Cloud Pubsub Input Topic            | transaction-stream-{RANDOM\_ID}                                                                                       |
+| Cloud Pubsub Output Topic           | fraud-result-stream-{RANDOM\_ID}                                                                                      |
+| Cloud Pubsub Output Subscription    | fraud-result-stream-subscription-{RANDOM\_ID}                                                                         |
+| Google Storage Bucket               | fraud-detection-{RANDOM\_ID}                                                                                          |
+| Google Storage Objects              | * temp/ (*for temporary dataflow generated files*) <br/> * testing_dataset/ <br/>* training_dataset/ <br/>* ml_model/ |
+| VertexAI Model                      | fraud-ml-model-{RANDOM\_ID}                                                                                           |
+| VertexAI Endpoint                   | *The endpoint Id is determined in runtime, stored in Scripts/ENDPOINT\_ID.output*                                     |
+| Dataflow Load Demographics Data Job | load-customer-demographics-{RANDOM\_ID} (*batch job that loads demographics data from GS to Cloud Bigtable*)          |
+| Dataflow Load Historical Data Job   | load-customer-historical-transactions-{RANDOM\_ID} (*batch job that loads historical data from GS to Cloud Bigtable*) |
+
+
+
+
+
+

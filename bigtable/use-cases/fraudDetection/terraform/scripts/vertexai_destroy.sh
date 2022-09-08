@@ -3,9 +3,9 @@
 REGION=$1
 UUID=$2
 
-MODEL_NAME=tf-fd-ml-model-$UUID
-EP_NAME=tf-fd-ml-model-ep-$UUID
-DEPLOYED_MODEL_NAME=tf-fd-ml-deployed-model-$UUID
+MODEL_NAME=fraud-ml-model-$UUID
+EP_NAME=fraud-ml-model-ep-$UUID
+DEPLOYED_MODEL_NAME=fraud-ml-deployed-model-$UUID
 
 echo "REGION = $REGION"
 echo "MODEL_NAME = $MODEL_NAME"
@@ -33,6 +33,6 @@ if ! { [ -z "$MODEL_ID" ]; }; then
 	yes | gcloud ai models delete $MODEL_ID --region=us-central1
 fi
 
-if test -f "./Scripts/ENDPOINT_ID.output"; then
-    rm ./Scripts/ENDPOINT_ID.output
+if test -f "./scripts/ENDPOINT_ID-$UUID.output"; then
+    rm ./scripts/ENDPOINT_ID-$UUID.output
 fi
