@@ -16,6 +16,17 @@
 
 import static org.junit.Assert.assertNotNull;
 
+import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
+import com.google.cloud.pubsub.v1.stub.SubscriberStub;
+import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import com.google.pubsub.v1.AcknowledgeRequest;
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.PullRequest;
+import com.google.pubsub.v1.PullResponse;
+import com.google.pubsub.v1.ReceivedMessage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -66,5 +77,65 @@ public class FraudDetectionTestUtil {
     parseTerraformOutput(process);
     // Wait for the process to finish running and return the exit code.
     return process.waitFor();
+  }
+
+  // Returns all transactions in a file inside a GCS bucket.
+  public static String[] getTransactions(String projectID, String gcsBucket, String filePath) {
+    // Set StorageOptions for reading.
+    StorageOptions options = StorageOptions.newBuilder()
+        .setProjectId(projectID).build();
+
+    Storage storage = options.getService();
+    Blob blob = storage.get(gcsBucket, filePath);
+    String fileContent = new String(blob.getContent());
+    // return all transactions inside gcsBucket/filePath.
+    return fileContent.split("\n");
+  }
+
+  public static SubscriberStub buildSubscriberStub() throws IOException {
+    // Build Subscriber stub settings.
+    SubscriberStubSettings subscriberStubSettings =
+        SubscriberStubSettings.newBuilder()
+            .setTransportChannelProvider(
+                SubscriberStubSettings.defaultGrpcTransportProviderBuilder()
+                    .setMaxInboundMessageSize(1 * 1024 * 1024) // 1MB (maximum message size).
+                    .build())
+            .build();
+    return GrpcSubscriberStub.create(subscriberStubSettings);
+  }
+
+  // Read one message from subscriptionId, ack it and returns it.
+  public static String readOneMessage(SubscriberStub subscriberStub, String projectId,
+      String subscriptionId) throws IOException {
+    String subscriptionName = ProjectSubscriptionName.format(projectId, subscriptionId);
+    PullRequest pullRequest =
+        PullRequest.newBuilder().setMaxMessages(1).setSubscription(subscriptionName).build();
+
+    // Try to receive a message.
+    ReceivedMessage receivedMessage = null;
+    String payload = null;
+    int numOfRetries = 20;
+    while (receivedMessage == null && numOfRetries-- > 0) {
+      PullResponse pullResponse = subscriberStub.pullCallable().call(pullRequest);
+      if (pullResponse.getReceivedMessagesList().size() > 0) {
+        receivedMessage = pullResponse.getReceivedMessagesList().get(0);
+        payload = receivedMessage.getMessage().getData().toStringUtf8();
+      }
+    }
+
+    // If no message is available, return null.
+    if (receivedMessage == null) {
+      return null;
+    }
+
+    // Ack the message.
+    String ackId = receivedMessage.getAckId();
+    AcknowledgeRequest acknowledgeRequest =
+        AcknowledgeRequest.newBuilder()
+            .setSubscription(subscriptionName)
+            .addAckIds(ackId)
+            .build();
+    subscriberStub.acknowledgeCallable().call(acknowledgeRequest);
+    return payload;
   }
 }

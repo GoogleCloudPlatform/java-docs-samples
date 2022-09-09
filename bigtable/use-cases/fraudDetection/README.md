@@ -116,22 +116,82 @@ terraform apply -var="project_id=$PROJECT_ID"
 This builds the infrastructure shown above, populates Cloud Bigtable with customers’ demographics data, and populates Cloud Bigtable with customers’ historical data. It takes about 5-10 minutes to finish.
 It builds the following resources:
 
-| Resource                            | Resource Name                                                                                                         |
-|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| Cloud Bigtable Instance             | featurestore-{RANDOM\_ID}                                                                                             |
-| Cloud Bigtable Table                | customer-information-{RANDOM\_ID}                                                                                     |
-| Cloud Bigtable Column Family        | demographics, history                                                                                                 |
-| Cloud Pubsub Input Topic            | transaction-stream-{RANDOM\_ID}                                                                                       |
-| Cloud Pubsub Output Topic           | fraud-result-stream-{RANDOM\_ID}                                                                                      |
-| Cloud Pubsub Output Subscription    | fraud-result-stream-subscription-{RANDOM\_ID}                                                                         |
-| Google Storage Bucket               | fraud-detection-{RANDOM\_ID}                                                                                          |
-| Google Storage Objects              | * temp/ (*for temporary dataflow generated files*) <br/> * testing_dataset/ <br/>* training_dataset/ <br/>* ml_model/ |
-| VertexAI Model                      | fraud-ml-model-{RANDOM\_ID}                                                                                           |
-| VertexAI Endpoint                   | *The endpoint Id is determined in runtime, stored in Scripts/ENDPOINT\_ID.output*                                     |
-| Dataflow Load Demographics Data Job | load-customer-demographics-{RANDOM\_ID} (*batch job that loads demographics data from GS to Cloud Bigtable*)          |
-| Dataflow Load Historical Data Job   | load-customer-historical-transactions-{RANDOM\_ID} (*batch job that loads historical data from GS to Cloud Bigtable*) |
+| Resource                            | Resource Name                                                                                                                               |
+|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| Cloud Bigtable Instance             | featurestore-{RANDOM\_ID}                                                                                                                   |
+| Cloud Bigtable Table                | customer-information-{RANDOM\_ID}                                                                                                           |
+| Cloud Bigtable Column Family        | demographics, history                                                                                                                       |
+| Cloud Pubsub Input Topic            | transaction-stream-{RANDOM\_ID}                                                                                                             |
+| Cloud Pubsub Output Topic           | fraud-result-stream-{RANDOM\_ID}                                                                                                            |
+| Cloud Pubsub Output Subscription    | fraud-result-stream-subscription-{RANDOM\_ID}                                                                                               |
+| Google Storage Bucket               | fraud-detection-{RANDOM\_ID}                                                                                                                |
+| Google Storage Objects              | * temp/ (*for temporary dataflow generated files*) <br/> * testing_dataset/ <br/>* training_dataset/ <br/>* ml_model/                       |
+| VertexAI Model                      | fraud-ml-model-{RANDOM\_ID}                                                                                                                 |
+| VertexAI Endpoint                   | *The endpoint Id is determined in runtime, stored in Scripts/ENDPOINT\_ID.output*                                                           |
+| Dataflow Load Demographics Data Job | load-customer-demographics-{RANDOM\_ID} (*batch job that loads demographics data from GS to Cloud Bigtable*)                                |
+| Dataflow Load Historical Data Job   | load-customer-historical-transactions-{RANDOM\_ID} (*batch job that loads historical data from GS to Cloud Bigtable*)                       |
+| Dataflow Fraud Detection Job        | fraud-detection-{RANDOM\_ID} (*streaming job that listens to the input Pub/Sub topic and produces the results to the output Pub/Sub topic*) |
 
+*Note: For simplicity, running the Terraform commands will build the
+infrastructure mentioned above and then run 2 Java programs that will create
+the Dataflow pipelines. Alternatively, you could create a Dataflow template and
+let Terraform deploy those templates rather than running the Java code inside
+Terraform code.*
 
+You can know all the names of the created resources by running:
+```
+terraform output
+```
+
+**2) Interacting with the environment**
+
+Send transactions to the Cloud Pub/Sub input topic, and wait for the results
+in the output topic. To do this, you can use [gcloud](https://cloud.google.com/pubsub/docs/publish-receive-messages-gcloud#publish_messages) 
+, any of the [Pub/Sub client SDKs](https://cloud.google.com/pubsub/docs/publish-receive-messages-client-library#publish_messages)
+, or the [console](https://cloud.google.com/pubsub/docs/publish-receive-messages-console#publish_a_message_to_the_topic)
+
+For example, you can pick transactions from **terraform/Datasets/testing-data/fraud_transactions.csv**
+that follow this pattern stored in **terraform/Datasets/testing-data/transactions_header.csv**
+
+Transaction header:
+```
+user_id, unix_time_millisecond, transaction_num, amount, merchant_id, merch_lat, merch_long, is_fraud
+```
+
+Submitting a transaction example
+
+```
+INPUT_TOPIC=$(terraform output pubsub_input_topic | tr -d '"')
+SUBSCRIPTION=$(terraform output pubsub_output_subscription | tr -d '"')
+TRANSACTION="3563761482, TimestampMilliseconds=1647487125000, eb0e996a46d9f80d7339398d2c653639, 937.02, 188548615082, 38.806136, -90.321706, ?"
+
+gcloud pubsub topics publish $INPUT_TOPIC --message="$TRANSACTION"
+gcloud pubsub subscriptions pull $SUBSCRIPTION --auto-ack
+```
+
+Output example (in this case the transaction was fraudulent):
+```
+Transaction id: eb0e996a46d9f80d7339398d2c653639, isFraud: 1
+```
+
+**3) Destroying with the environment**
+You can destroy all the resources created by running the following command:
+```
+terraform destroy -var="project_id=$PROJECT_ID"
+```
+
+### Changing System Components
+**Replacing the ML model**
+
+You can change the ML model simply by swapping the terraform/model/model.bst with your model. Terraform deploys it to VertexAI and exposes the endpoint.
+
+**Changing the Dataset**
+
+The following steps are needed to change the dataset:
+1) Replace the demographics and historical datasets in terraform/datasets/training_data.
+2) Train an ML model using the new dataset, and follow the steps above for replacing the ML model.
+3) Add the new fields to CustomerDemographics, and TransactionDetails classes.
+4) Potentially, change the AggregatedData class to generate a new feature vector based on the new dataset.
 
 
 
