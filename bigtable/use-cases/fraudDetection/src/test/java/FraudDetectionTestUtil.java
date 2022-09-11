@@ -114,12 +114,18 @@ public class FraudDetectionTestUtil {
     // Try to receive a message.
     ReceivedMessage receivedMessage = null;
     String payload = null;
-    while (receivedMessage == null) {
+    int numOfRetries = 20;
+    while (receivedMessage == null && numOfRetries-- > 0) {
       PullResponse pullResponse = subscriberStub.pullCallable().call(pullRequest);
       if (pullResponse.getReceivedMessagesList().size() > 0) {
         receivedMessage = pullResponse.getReceivedMessagesList().get(0);
         payload = receivedMessage.getMessage().getData().toStringUtf8();
       }
+    }
+
+    // If no message is available, return null.
+    if (receivedMessage == null) {
+      return null;
     }
 
     // Ack the message.

@@ -40,6 +40,7 @@ public class StreamingPipelineTest {
   // Constants used in testing.
   private static final long N_OF_CUSTOMERS = 1000;
   private static final long N_OF_TRANSACTIONS_TO_TEST = 250;
+  private static final long N_OF_TRANSACTIONS_TO_WAIT_FOR = 200;
   private static final double MODEL_ACCURACY_THRESHOLD = 0.5;
 
   // The following variables are populated automatically by running Terraform.
@@ -155,7 +156,7 @@ public class StreamingPipelineTest {
       publisher.publish(pubsubMessage);
     }
 
-    for (int i = 0; i < N_OF_TRANSACTIONS_TO_TEST; i++) {
+    for (int i = 0; i < N_OF_TRANSACTIONS_TO_WAIT_FOR; i++) {
       // Wait for the output in the output Pubsub topic.
       String message =
           FraudDetectionTestUtil.readOneMessage(
