@@ -164,7 +164,7 @@ public class StreamingPipelineTest {
 
       // TODO: remove
       if (message == null) {
-        assertEquals(1000, i);
+        assertEquals(projectID, "aa");
       }
       // if message is null it means that we waited for a long time
       // and haven't received a message.
