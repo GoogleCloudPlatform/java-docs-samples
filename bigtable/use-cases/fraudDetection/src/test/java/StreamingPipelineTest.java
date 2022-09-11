@@ -161,6 +161,11 @@ public class StreamingPipelineTest {
       String message =
           FraudDetectionTestUtil.readOneMessage(
               subscriberStub, projectID, pubsubOutputSubscription);
+
+      // TODO: remove
+      if (message == null) {
+        assertEquals(1000, i);
+      }
       // if message is null it means that we waited for a long time
       // and haven't received a message.
       assertNotNull(message);
