@@ -154,9 +154,9 @@ public class StreamingPipelineTest {
           FraudDetectionTestUtil.readOneMessage(
               subscriberStub, projectID, pubsubOutputSubscription);
 
-      // if we have waited for a long time and haven't received a message, skip it.
-      if(message == null)
-        continue;
+      // if message is null it means that we waited for a long time
+      // and haven't received a message.
+      assertNotNull(message);
 
       // Update the ML model accuracy testing variables.
       totalTransactionsTested++;
