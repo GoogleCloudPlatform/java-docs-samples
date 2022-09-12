@@ -26,7 +26,7 @@ echo "CBT_TABLE = $CBT_TABLE"
 echo "RANDOM_UUID = $RANDOM_UUID"
 echo "ML_ENDPOINT_ID = $ML_ENDPOINT_ID"
 
-~/homebrew/bin/mvn compile exec:java -f ../pom.xml -Dexec.mainClass=bigtable.fraud.beam.FraudDetection -Dexec.cleanupDaemonThreads=false \
+mvn compile exec:java -f ../pom.xml -Dexec.mainClass=bigtable.fraud.beam.FraudDetection -Dexec.cleanupDaemonThreads=false \
 "-Dexec.args= --runner=DataflowRunner --project=$PROJECT_ID --region=$REGION \
 --gcpTempLocation=gs://$GCS_BUCKET/temp --outputTopic=projects/$PROJECT_ID/topics/$PUBSUB_OUTPUT_TOPIC \
 --inputTopic=projects/$PROJECT_ID/topics/$PUBSUB_INPUT_TOPIC --projectID=$PROJECT_ID \
