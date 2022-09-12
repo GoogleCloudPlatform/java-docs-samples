@@ -60,24 +60,6 @@ public final class FraudDetection {
       FraudDetection.class);
 
   /**
-   * Convert the line read from Cloud Pubsub into a TransactionDetails object.
-   */
-  static final DoFn<String, TransactionDetails> PREPROCESS_INPUT =
-      new DoFn<String, TransactionDetails>() {
-        @ProcessElement
-        public void processElement(
-            final DoFn<String, TransactionDetails>.ProcessContext c) {
-          try {
-            TransactionDetails transactionDetails = new TransactionDetails(
-                c.element());
-            c.output(transactionDetails);
-          } catch (Exception e) {
-            LOGGER.error("Failed to preprocess {}", c.element(), e);
-          }
-        }
-      };
-
-  /**
    * Set the field isFraud to true if the fraud_probability was >= 0.1 This is a
    * configurable number that should be tuned depending on the ML model.
    */
@@ -139,6 +121,24 @@ public final class FraudDetection {
       }
     }
   }
+
+  /**
+   * Convert the line read from Cloud Pubsub into a TransactionDetails object.
+   */
+  static final DoFn<String, TransactionDetails> PREPROCESS_INPUT =
+      new DoFn<String, TransactionDetails>() {
+        @ProcessElement
+        public void processElement(
+            final DoFn<String, TransactionDetails>.ProcessContext c) {
+          try {
+            TransactionDetails transactionDetails = new TransactionDetails(
+                c.element());
+            c.output(transactionDetails);
+          } catch (Exception e) {
+            LOGGER.error("Failed to preprocess {}", c.element(), e);
+          }
+        }
+      };
 
   /**
    * Query the ML model.
@@ -210,7 +210,7 @@ public final class FraudDetection {
   /**
    * @param args the input arguments.
    */
-  public static void main(final String[] args) {
+  public static void main(final String[] args) throws IOException {
     FraudDetectionOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation()
             .as(FraudDetectionOptions.class);
