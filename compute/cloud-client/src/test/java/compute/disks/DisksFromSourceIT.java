@@ -85,7 +85,7 @@ public class DisksFromSourceIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    // requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     ZONE = "us-central1-a";
@@ -112,8 +112,8 @@ public class DisksFromSourceIT {
     }
 
     // Create KMS Encrypted disk.
-    // The service account service-{PROJECT_ID}@compute-system.iam.gserviceaccount.com needs to
-    // have the cloudkms.cryptoKeyVersions.useToEncrypt permission to execute this test.
+    // The service account needs to have the cloudkms.cryptoKeyVersions.useToEncrypt
+    // permission to execute this test.
     CRYPTO_KEY = createKmsKey();
     CreateKmsEncryptedDisk.createKmsEncryptedDisk(PROJECT_ID, ZONE, KMS_ENCRYPTED_DISK_NAME,
         DISK_TYPE, 25, CRYPTO_KEY.getName(), "", DEBIAN_IMAGE.getSelfLink());

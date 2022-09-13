@@ -55,12 +55,14 @@ public class CreateKmsEncryptedDisk {
     String kmsKeyName = "kms-key-name";
 
     // A link to the disk you want to use as a source for the new disk.
-    //     This value uses the following format: "projects/{project_name}/zones/{zone}/disks/{disk_name}"
+    //     This value uses the following format:
+    //     "projects/{project_name}/zones/{zone}/disks/{disk_name}"
     String diskLink = String.format("projects/%s/zones/%s/disks/%s", "PROJECT_NAME", "ZONE",
         "DISK_NAME");
 
     // A link to the image you want to use as a source for the new disk.
-    //     This value uses the following format: "projects/{project_name}/global/images/{image_name}"
+    //     This value uses the following format:
+    //     "projects/{project_name}/global/images/{image_name}"
     String imageLink = String.format("projects/%s/global/images/%s", "PROJECT_NAME", "IMAGE_NAME");
 
     createKmsEncryptedDisk(project, zone, diskName, diskType, diskSizeGb, kmsKeyName, diskLink,

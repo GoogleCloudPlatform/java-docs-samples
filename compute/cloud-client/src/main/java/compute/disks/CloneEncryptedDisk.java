@@ -50,7 +50,8 @@ public class CloneEncryptedDisk {
     int diskSizeGb = 10;
 
     // A link to the disk you want to use as a source for the new disk.
-    //     This value uses the following format: "projects/{project_name}/zones/{zone}/disks/{disk_name}"
+    //     This value uses the following format:
+    //     "projects/{project_name}/zones/{zone}/disks/{disk_name}"
     String diskLink = String.format("projects/%s/zones/%s/disks/%s", "PROJECT_NAME", "ZONE",
         "DISK_NAME");
 
@@ -63,7 +64,8 @@ public class CloneEncryptedDisk {
         encryptionKey);
   }
 
-  // Creates a zonal non-boot persistent disk in a project with the copy of data from an existing disk.
+  // Creates a zonal non-boot persistent disk in a project with the copy of data
+  // from an existing disk.
   // The encryption key must be the same for the source disk and the new disk.
   public static void createDiskFromCustomerEncryptedKey(String project, String zone,
       String diskName,
