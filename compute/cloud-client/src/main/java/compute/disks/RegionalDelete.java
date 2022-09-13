@@ -53,12 +53,11 @@ public class RegionalDelete {
           .get(3, TimeUnit.MINUTES);
 
       if (operation.hasError()) {
-        System.out.println("Disk deletion failed!" + operation);
-        return;
+        System.out.println("Disk deletion failed!");
+        throw new Error(operation.getError().toString());
       }
       System.out.println("Operation Status: " + operation.getStatus());
     }
   }
-
 }
 // [END compute_regional_disk_delete]

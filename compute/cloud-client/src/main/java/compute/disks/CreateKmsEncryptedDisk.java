@@ -55,21 +55,21 @@ public class CreateKmsEncryptedDisk {
     String kmsKeyName = "kms-key-name";
 
     // A link to the disk you want to use as a source for the new disk.
-    //     This value uses the following format:
-    //     "projects/{project_name}/zones/{zone}/disks/{disk_name}"
+    // This value uses the following format:
+    // "projects/{project_name}/zones/{zone}/disks/{disk_name}"
     String diskLink = String.format("projects/%s/zones/%s/disks/%s", "PROJECT_NAME", "ZONE",
         "DISK_NAME");
 
     // A link to the image you want to use as a source for the new disk.
-    //     This value uses the following format:
-    //     "projects/{project_name}/global/images/{image_name}"
+    // This value uses the following format:
+    // "projects/{project_name}/global/images/{image_name}"
     String imageLink = String.format("projects/%s/global/images/%s", "PROJECT_NAME", "IMAGE_NAME");
 
     createKmsEncryptedDisk(project, zone, diskName, diskType, diskSizeGb, kmsKeyName, diskLink,
         imageLink);
   }
 
-  // Creates a zonal disk in a project. If you do not provide values for disk_link or image_link,
+  // Creates a zonal disk in a project. If you do not provide values for diskLink or imageLink,
   // an empty disk will be created.
   public static void createKmsEncryptedDisk(String project, String zone, String diskName,
       String diskType, int diskSizeGb, String kmsKeyName, String diskLink, String imageLink)
@@ -109,8 +109,8 @@ public class CreateKmsEncryptedDisk {
               .build()).get(3, TimeUnit.MINUTES);
 
       if (operation.hasError()) {
-        System.out.println("Disk creation failed!" + operation);
-        return;
+        System.out.println("Disk creation failed!");
+        throw new Error(operation.getError().toString());
       }
       System.out.println(
           "Disk created with KMS encryption key. Operation Status: " + operation.getStatus());

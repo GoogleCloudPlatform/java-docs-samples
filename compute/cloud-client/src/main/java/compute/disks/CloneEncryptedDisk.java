@@ -50,14 +50,13 @@ public class CloneEncryptedDisk {
     int diskSizeGb = 10;
 
     // A link to the disk you want to use as a source for the new disk.
-    //     This value uses the following format:
-    //     "projects/{project_name}/zones/{zone}/disks/{disk_name}"
+    // This value uses the following format:
+    // "projects/{project_name}/zones/{zone}/disks/{disk_name}"
     String diskLink = String.format("projects/%s/zones/%s/disks/%s", "PROJECT_NAME", "ZONE",
         "DISK_NAME");
 
-    // encryptionKey: customer-supplied encryption key used for encrypting
-    //     data in the source disk. The data will be encrypted with the same key
-    //     in the new disk.
+    // Customer-supplied encryption key used for encrypting data in the source disk.
+    // The data will be encrypted with the same key in the new disk.
     byte[] encryptionKey = null;
 
     createDiskFromCustomerEncryptedKey(project, zone, diskName, diskType, diskSizeGb, diskLink,
@@ -68,8 +67,7 @@ public class CloneEncryptedDisk {
   // from an existing disk.
   // The encryption key must be the same for the source disk and the new disk.
   public static void createDiskFromCustomerEncryptedKey(String project, String zone,
-      String diskName,
-      String diskType, int diskSizeGb, String diskLink, byte[] encryptionKey)
+      String diskName, String diskType, int diskSizeGb, String diskLink, byte[] encryptionKey)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -99,8 +97,8 @@ public class CloneEncryptedDisk {
               .build()).get(3, TimeUnit.MINUTES);
 
       if (operation.hasError()) {
-        System.out.println("Disk creation failed!" + operation);
-        return;
+        System.out.println("Disk creation failed!");
+        throw new Error(operation.getError().toString());
       }
       System.out.println(
           "Disk cloned with customer encryption key. Operation Status: " + operation.getStatus());

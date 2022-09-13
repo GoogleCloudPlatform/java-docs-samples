@@ -54,14 +54,14 @@ public class RegionalCreateFromSource {
     int diskSizeGb = 10;
 
     // A link to the disk you want to use as a source for the new disk.
-    //     This value uses the following format:
-    //     "projects/{project_name}/zones/{zone}/disks/{disk_name}"
+    // This value uses the following format:
+    // "projects/{project_name}/zones/{zone}/disks/{disk_name}"
     String diskLink = String.format("projects/%s/zones/%s/disks/%s", "PROJECT_NAME", "ZONE",
         "DISK_NAME");
 
     // A link to the snapshot you want to use as a source for the new disk.
-    //     This value uses the following format:
-    //     "projects/{project_name}/global/snapshots/{snapshot_name}"
+    // This value uses the following format:
+    // "projects/{project_name}/global/snapshots/{snapshot_name}"
     String snapshotLink = String.format("projects/%s/global/snapshots/%s", "PROJECT_NAME",
         "SNAPSHOT_NAME");
 
@@ -70,9 +70,9 @@ public class RegionalCreateFromSource {
   }
 
   // Creates a regional disk from an existing zonal disk in a given project.
-  public static void createRegionalDisk(String project, String region, List<String> replicaZones,
-      String diskName, String diskType, int diskSizeGb,
-      String diskLink, String snapshotLink)
+  public static void createRegionalDisk(
+      String project, String region, List<String> replicaZones, String diskName, String diskType,
+      int diskSizeGb, String diskLink, String snapshotLink)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -102,8 +102,8 @@ public class RegionalCreateFromSource {
           .get(3, TimeUnit.MINUTES);
 
       if (operation.hasError()) {
-        System.out.println("Disk creation failed!" + operation);
-        return;
+        System.out.println("Disk creation failed!");
+        throw new Error(operation.getError().toString());
       }
       System.out.println(
           "Regional disk created. Operation Status: " + operation.getStatus());

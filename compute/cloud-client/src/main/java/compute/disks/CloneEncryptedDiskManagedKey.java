@@ -49,8 +49,8 @@ public class CloneEncryptedDiskManagedKey {
     int diskSizeGb = 10;
 
     // A link to the disk you want to use as a source for the new disk.
-    //     This value uses the following format:
-    //     "projects/{project_name}/zones/{zone}/disks/{disk_name}"
+    // This value uses the following format:
+    // "projects/{project_name}/zones/{zone}/disks/{disk_name}"
     String diskLink = String.format("projects/%s/zones/%s/disks/%s", "PROJECT_NAME", "ZONE",
         "DISK_NAME");
 
@@ -96,13 +96,12 @@ public class CloneEncryptedDiskManagedKey {
               .build()).get(3, TimeUnit.MINUTES);
 
       if (operation.hasError()) {
-        System.out.println("Disk creation failed!" + operation);
-        return;
+        System.out.println("Disk creation failed!");
+        throw new Error(operation.getError().toString());
       }
       System.out.println(
           "Disk cloned with KMS encryption key. Operation Status: " + operation.getStatus());
     }
-
   }
 }
 // [END compute_disk_clone_encrypted_disk_kms]

@@ -47,8 +47,8 @@ public class CreateFromSource {
     int diskSizeGb = 10;
 
     // A link to the disk you want to use as a source for the new disk.
-    //     This value uses the following format:
-    //     "projects/{project_name}/zones/{zone}/disks/{disk_name}"
+    // This value uses the following format:
+    // "projects/{project_name}/zones/{zone}/disks/{disk_name}"
     String diskLink = String.format("projects/%s/zones/%s/disks/%s", "PROJECT_NAME", "ZONE",
         "DISK_NAME");
 
@@ -75,11 +75,12 @@ public class CreateFromSource {
           .build();
 
       // Wait for the insert instance operation to complete.
-      Operation operation = disksClient.insertAsync(project, zone, disk).get(3, TimeUnit.MINUTES);
+      Operation operation = disksClient.insertAsync(project, zone, disk)
+          .get(3, TimeUnit.MINUTES);
 
       if (operation.hasError()) {
-        System.out.println("Disk creation failed!" + operation);
-        return;
+        System.out.println("Disk creation failed!");
+        throw new Error(operation.getError().toString());
       }
       System.out.println(
           "Disk created from source. Operation Status: " + operation.getStatus());
