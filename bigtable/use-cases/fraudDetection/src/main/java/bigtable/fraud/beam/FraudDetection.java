@@ -65,6 +65,24 @@ public final class FraudDetection {
    */
   private static final double FRAUD_PROBABILITY_THRESHOLD = 0.1d;
 
+  /**
+   * Convert the line read from Cloud Pubsub into a TransactionDetails object.
+   */
+  static final DoFn<String, TransactionDetails> PREPROCESS_INPUT =
+      new DoFn<String, TransactionDetails>() {
+        @ProcessElement
+        public void processElement(
+            final DoFn<String, TransactionDetails>.ProcessContext c) {
+          try {
+            TransactionDetails transactionDetails = new TransactionDetails(
+                c.element());
+            c.output(transactionDetails);
+          } catch (Exception e) {
+            LOGGER.error("Failed to preprocess {}", c.element(), e);
+          }
+        }
+      };
+
   // Read the transaction history for that customer, and outputs an
   // AggregatedData object.
   public static class ReadFromTableFn
@@ -116,96 +134,100 @@ public final class FraudDetection {
 
         c.output(aggregatedData);
       } catch (Exception e) {
-        LOGGER.error("Failed to preprocess {}", c.element(), e);
+        LOGGER.error("Failed to read from Cloud Bigtable {}", c.element(), e);
         throw e;
       }
     }
   }
 
-  /**
-   * Convert the line read from Cloud Pubsub into a TransactionDetails object.
-   */
-  static final DoFn<String, TransactionDetails> PREPROCESS_INPUT =
-      new DoFn<String, TransactionDetails>() {
-        @ProcessElement
-        public void processElement(
-            final DoFn<String, TransactionDetails>.ProcessContext c) {
-          try {
-            TransactionDetails transactionDetails = new TransactionDetails(
-                c.element());
-            c.output(transactionDetails);
-          } catch (Exception e) {
-            LOGGER.error("Failed to preprocess {}", c.element(), e);
-          }
+  public static final class QueryMlModelFn
+      extends DoFn<AggregatedData, RowDetails> {
+    /**
+     * The region of the ML model.
+     */
+    private String mlRegion;
+
+    /**
+     * The client that sends requests to the ML model, and receive responses.
+     */
+    private PredictionServiceClient predictionServiceClient;
+
+    /**
+     * @param region the MLRegion that will be used.
+     */
+    public QueryMlModelFn(final String region) {
+      mlRegion = region;
+    }
+
+    /**
+     * Set up the ML model client.
+     */
+    @DoFn.Setup
+    public void setup() throws IOException {
+      PredictionServiceSettings predictionServiceSettings =
+          PredictionServiceSettings.newBuilder()
+              .setEndpoint(mlRegion + "-aiplatform.googleapis.com:443")
+              .build();
+      predictionServiceClient =
+          PredictionServiceClient.create(predictionServiceSettings);
+    }
+
+    /**
+     * @param c the process context that converts queries the ML Model.
+     */
+    @ProcessElement
+    public void processElement(
+        final DoFn<AggregatedData, RowDetails>.ProcessContext c) {
+      try {
+        // Get pipeline options.
+        FraudDetectionOptions options = c.getPipelineOptions()
+            .as(FraudDetectionOptions.class);
+        String payload = c.element().getMLFeatures();
+        String endpointID = options.getMLEndpoint();
+        String projectID = options.getProjectID();
+
+        LOGGER.info(
+            "Querying the ML model for these features: " + c.element()
+                .getMLFeatures());
+
+        EndpointName endpointName =
+            EndpointName.of(projectID, options.getMLRegion(), endpointID);
+
+        ListValue.Builder listValue = ListValue.newBuilder();
+        JsonFormat.parser().merge(payload, listValue);
+        List<Value> instanceList = listValue.getValuesList();
+
+        // Send a predection request and receive a response.
+        PredictRequest predictRequest =
+            PredictRequest.newBuilder()
+                .setEndpoint(endpointName.toString())
+                .addAllInstances(instanceList)
+                .build();
+
+        PredictResponse predictResponse = predictionServiceClient.predict(
+            predictRequest);
+        double fraudProbability =
+            predictResponse
+                .getPredictionsList()
+                .get(0)
+                .getListValue()
+                .getValues(0)
+                .getNumberValue();
+
+        LOGGER.info("fraudProbability = " + fraudProbability);
+
+        if (fraudProbability >= FRAUD_PROBABILITY_THRESHOLD) {
+          c.element().getTransactionDetails().setIsFraud("1");
+        } else {
+          c.element().getTransactionDetails().setIsFraud("0");
         }
-      };
 
-  /**
-   * Query the ML model.
-   */
-  static final DoFn<AggregatedData, RowDetails> QUERY_ML_MODEL =
-      new DoFn<AggregatedData, RowDetails>() {
-        @ProcessElement
-        public void processElement(
-            final DoFn<AggregatedData, RowDetails>.ProcessContext c) {
-          try {
-            // Get pipeline options.
-            FraudDetectionOptions options = c.getPipelineOptions()
-                .as(FraudDetectionOptions.class);
-            String payload = c.element().getMLFeatures();
-            String endpointID = options.getMLEndpoint();
-            String projectID = options.getProjectID();
-
-            LOGGER.info(
-                "Querying the ML model for these features: " + c.element()
-                    .getMLFeatures());
-
-            // Query the ML using the endpointID.
-            PredictionServiceSettings predictionServiceSettings =
-                PredictionServiceSettings.newBuilder()
-                    .setEndpoint(options.getMLRegion()
-                        + "-aiplatform.googleapis.com:443")
-                    .build();
-            PredictionServiceClient predictionServiceClient =
-                PredictionServiceClient.create(predictionServiceSettings);
-
-            EndpointName endpointName =
-                EndpointName.of(projectID, options.getMLRegion(), endpointID);
-
-            ListValue.Builder listValue = ListValue.newBuilder();
-            JsonFormat.parser().merge(payload, listValue);
-            List<Value> instanceList = listValue.getValuesList();
-
-            // Send a predection request and receive a response.
-            PredictRequest predictRequest =
-                PredictRequest.newBuilder()
-                    .setEndpoint(endpointName.toString())
-                    .addAllInstances(instanceList)
-                    .build();
-            PredictResponse predictResponse = predictionServiceClient.predict(
-                predictRequest);
-            double fraudProbability =
-                predictResponse
-                    .getPredictionsList()
-                    .get(0)
-                    .getListValue()
-                    .getValues(0)
-                    .getNumberValue();
-
-            LOGGER.info("fraudProbability = " + fraudProbability);
-
-            if (fraudProbability >= FRAUD_PROBABILITY_THRESHOLD) {
-              c.element().getTransactionDetails().setIsFraud("1");
-            } else {
-              c.element().getTransactionDetails().setIsFraud("0");
-            }
-
-            c.output(c.element().getTransactionDetails());
-          } catch (Exception e) {
-            LOGGER.error("Failed to preprocess {}", c.element(), e);
-          }
-        }
-      };
+        c.output(c.element().getTransactionDetails());
+      } catch (Exception e) {
+        LOGGER.error("Failed to query the ML model {}", c.element(), e);
+      }
+    }
+  }
 
   /**
    * @param args the input arguments.
@@ -235,7 +257,8 @@ public final class FraudDetection {
             .apply("Preprocess Input", ParDo.of(PREPROCESS_INPUT))
             .apply("Read from Cloud Bigtable",
                 ParDo.of(new ReadFromTableFn(config)))
-            .apply("Query ML Model", ParDo.of(QUERY_ML_MODEL));
+            .apply("Query ML Model",
+                ParDo.of(new QueryMlModelFn(options.getMLRegion())));
 
     modelOutput
         .apply(
