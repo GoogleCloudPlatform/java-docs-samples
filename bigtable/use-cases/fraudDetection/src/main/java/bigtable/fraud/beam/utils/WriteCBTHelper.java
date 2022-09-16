@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bigtable.fraud.beam;
+package bigtable.fraud.beam.utils;
 
-import bigtable.fraud.utils.RowDetails;
 import com.google.common.base.Preconditions;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.hadoop.hbase.client.Mutation;

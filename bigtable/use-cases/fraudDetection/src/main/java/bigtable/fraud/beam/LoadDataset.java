@@ -15,9 +15,10 @@
  */
 package bigtable.fraud.beam;
 
-import bigtable.fraud.utils.CustomerDemographics;
-import bigtable.fraud.utils.TransactionDetails;
-import bigtable.fraud.utils.RowDetails;
+import bigtable.fraud.beam.utils.CustomerDemographics;
+import bigtable.fraud.beam.utils.TransactionDetails;
+import bigtable.fraud.beam.utils.RowDetails;
+import bigtable.fraud.beam.utils.WriteCBTHelper;
 import com.google.cloud.bigtable.beam.CloudBigtableIO;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import org.apache.beam.sdk.Pipeline;

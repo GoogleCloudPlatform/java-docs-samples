@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bigtable.fraud.utils;
+package bigtable.fraud.beam.utils;
 
 import java.util.ArrayList;
 import org.apache.beam.sdk.coders.AvroCoder;
@@ -63,8 +63,7 @@ public final class AggregatedData {
    */
   public AggregatedData(
       final CustomerDemographics iCustomerDemographics,
-      final TransactionDetails iTransactionDetails, final Result row)
-      throws IllegalAccessException {
+      final TransactionDetails iTransactionDetails, final Result row) {
     this.customerDemographics = iCustomerDemographics;
     this.transactionDetails = iTransactionDetails;
 

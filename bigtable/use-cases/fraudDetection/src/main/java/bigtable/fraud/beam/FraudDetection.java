@@ -15,10 +15,11 @@
  */
 package bigtable.fraud.beam;
 
-import bigtable.fraud.utils.AggregatedData;
-import bigtable.fraud.utils.CustomerDemographics;
-import bigtable.fraud.utils.RowDetails;
-import bigtable.fraud.utils.TransactionDetails;
+import bigtable.fraud.beam.utils.AggregatedData;
+import bigtable.fraud.beam.utils.CustomerDemographics;
+import bigtable.fraud.beam.utils.RowDetails;
+import bigtable.fraud.beam.utils.TransactionDetails;
+import bigtable.fraud.beam.utils.WriteCBTHelper;
 import com.google.cloud.aiplatform.v1.EndpointName;
 import com.google.cloud.aiplatform.v1.PredictRequest;
 import com.google.cloud.aiplatform.v1.PredictResponse;

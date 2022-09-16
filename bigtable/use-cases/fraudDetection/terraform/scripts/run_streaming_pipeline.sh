@@ -12,7 +12,7 @@ RANDOM_UUID=$8
 ML_ENDPOINT_ID=$(cat scripts/ENDPOINT_ID-$RANDOM_UUID.output)
 
 if { [ -z "$ML_ENDPOINT_ID" ]; }; then
-	echo "ML endpoint was not written properly."
+	echo "ML endpoint was not written, which means that vertexai_build.sh failed deploying the model."
 	exit 1
 fi
 

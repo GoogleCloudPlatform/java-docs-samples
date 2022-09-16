@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bigtable.fraud.utils;
+package bigtable.fraud.beam.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,24 +127,21 @@ public final class TransactionDetails extends RowDetails {
    * customer.
    */
   public ArrayList<TransactionDetails> getLastTransactions(
-      final Result row, final long duration)
-      throws IllegalAccessException {
+      final Result row, final long duration) {
     ArrayList<TransactionDetails> lastTransactions = new ArrayList<>();
     String[] headers = getHeaders();
 
     // Create ArrayList that will hold the cells when we read from CBT and
-    // ignore the first element because it will hold the rowKey, and we
-    // already know the rowKey (userID).
+    // ignore the first element because it will hold the row key, and we
+    // already know the row key (userID).
     ArrayList<List<Cell>> cells = new ArrayList<>();
     cells.add(null);
-    for (int i = 0; i < headers.length; i++) {
-      if (i != 0) {
+    for (int i = 1; i < headers.length; i++) {
         cells.add(row.getColumnCells(Bytes.toBytes(getColFamily()),
             Bytes.toBytes(headers[i])));
         if (cells.get(i).size() == 0) {
           return lastTransactions;
         }
-      }
     }
 
     // Iterate over all the transactions of that user that fit in the
