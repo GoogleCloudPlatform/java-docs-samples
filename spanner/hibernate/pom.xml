@@ -26,13 +26,6 @@
 
   <!-- [START spanner_hibernate_dependencies] -->
   <dependencies>
-    <!-- The Hibernate dialect for Spanner dependency -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-spanner-hibernate-dialect</artifactId>
-      <version>1.5.2</version>
-    </dependency>
-
     <!-- The Spanner JDBC driver dependency -->
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -42,9 +35,9 @@
 
     <!-- Hibernate core dependency -->
     <dependency>
-      <groupId>org.hibernate</groupId>
+      <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>5.6.5.Final</version>
+      <version>6.0.0.Final</version>
     </dependency>
   </dependencies>
   <!-- [END spanner_hibernate_dependencies] -->
@@ -75,8 +68,12 @@
     <repository>
       <id>snapshots-repo</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <releases><enabled>false</enabled></releases>
-      <snapshots><enabled>true</enabled></snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
   </repositories>
   <!-- [END spanner_hibernate_snapshot_repo] -->
