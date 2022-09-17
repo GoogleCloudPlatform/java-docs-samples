@@ -51,7 +51,7 @@ public class HibernateSampleApplication {
   /**
    * Saves a {@link Person} entity into a Spanner table.
    */
-  public static void savePerson(Session session) {
+  private static void savePerson(Session session) {
     session.beginTransaction();
 
     WireTransferPayment payment1 = new WireTransferPayment();
