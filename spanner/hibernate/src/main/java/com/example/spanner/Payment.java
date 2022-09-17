@@ -24,7 +24,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 
 /**
  * An example {@link Entity} which demonstrates usage of {@link Inheritance}.
@@ -35,7 +35,7 @@ public abstract class Payment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Type(type = "uuid-char")
+  @JdbcTypeCode(java.sql.Types.VARCHAR)
   private UUID id;
 
   private Long amount;
