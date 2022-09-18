@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>6.0.0.Final</version>
+      <version>6.1.3.Final</version>
     </dependency>
   </dependencies>
   <!-- [END spanner_hibernate_dependencies] -->
