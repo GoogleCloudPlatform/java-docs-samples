@@ -158,7 +158,7 @@ public class DisksFromSourceIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, KMS_ENCRYPTED_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, DISK_FROM_DISK);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, DISK_FROM_IMAGE);
-    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, DISK_NAME_REGIONAL);
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, DISK_NAME_REGIONAL);
 
     stdOut.close();
     System.setOut(out);
