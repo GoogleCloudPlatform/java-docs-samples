@@ -61,8 +61,9 @@ public final class FraudDetection {
       FraudDetection.class);
 
   /**
-   * Set the field isFraud to true if the fraud_probability was >= 0.1. This is a
-   * configurable number that should be tuned depending on the ML model.
+   * Set the field isFraud to true if the fraud_probability was >= 0.1.
+   * This is a configurable number that should be tuned depending on
+   * the ML model.
    */
   private static final double FRAUD_PROBABILITY_THRESHOLD = 0.1d;
 

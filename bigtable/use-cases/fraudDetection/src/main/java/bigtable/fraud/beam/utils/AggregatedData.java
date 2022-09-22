@@ -37,7 +37,8 @@ public final class AggregatedData {
    */
   private double lastTransactionMinutesDiff;
   /**
-   * Stores the distance between this transaction and the last one in kilometers.
+   * Stores the distance between this transaction and the last one
+   * in kilometers.
    */
   private double lastTransactionKMsDiff;
   /**
