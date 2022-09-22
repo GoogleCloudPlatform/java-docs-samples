@@ -21,6 +21,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -28,7 +31,6 @@ import java.net.URISyntaxException;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -36,11 +38,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.fhir.FhirStoreCreate;
@@ -75,12 +72,16 @@ public class FhirResourceTests {
   private static String resourcePath;
   private static String resourceType = "Patient";
 
-  private static String implementationGuideFilePath = "src/test/resources/ImplementationGuideExample.json";
-  private static String implementationGuideUrl = "http://example.com/ImplementationGuide/example.implementation.guide";
-  private static String structureDefinitionFilePath = "src/test/resources/StructureDefinitionExample.json";
-  private static String structureDefinitionProfileUrlFilePath = "src/test/resources/StructureDefinitionProfileUrlExample.json";
-  private static String profileUrl = "http://example.com/StructureDefinition/example-patient-profile-url";
-  
+  private static String implementationGuideFilePath =
+      "src/test/resources/ImplementationGuideExample.json";
+  private static String implementationGuideUrl =
+      "http://example.com/ImplementationGuide/example.implementation.guide";
+  private static String structureDefinitionFilePath =
+      "src/test/resources/StructureDefinitionExample.json";
+  private static String structureDefinitionProfileUrlFilePath =
+      "src/test/resources/StructureDefinitionProfileUrlExample.json";
+  private static String profileUrl =
+      "http://example.com/StructureDefinition/example-patient-profile-url";
 
   private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream bout;
@@ -100,11 +101,8 @@ public class FhirResourceTests {
   @BeforeClass
   public static void setUp() throws IOException {
     String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    datasetName = String.format(
-        "projects/%s/locations/%s/datasets/%s",
-        PROJECT_ID,
-        REGION_ID,
-        datasetId);
+    datasetName =
+        String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
 
     String fhirStoreId = "fhir-" + UUID.randomUUID().toString().replaceAll("-", "_");
@@ -113,7 +111,7 @@ public class FhirResourceTests {
     FhirStoreCreate.fhirStoreCreate(datasetName, fhirStoreId);
   }
 
-   @AfterClass
+  @AfterClass
   public static void deleteTempItems() throws IOException {
     DatasetDelete.datasetDelete(datasetName);
   }
@@ -128,11 +126,8 @@ public class FhirResourceTests {
     Matcher idMatcher = Pattern.compile("\"id\": \"([^\"]*)\",").matcher(bout.toString());
     if (idMatcher.find()) {
       fhirResourceId = idMatcher.group(1);
-      fhirResourceName = String.format(
-          "%s/fhir/%s/%s",
-          fhirStoreName,
-          resourceType,
-          fhirResourceId);
+      fhirResourceName =
+          String.format("%s/fhir/%s/%s", fhirStoreName, resourceType, fhirResourceId);
     }
 
     bout = new ByteArrayOutputStream();
@@ -145,7 +140,6 @@ public class FhirResourceTests {
     bout.reset();
   }
 
-
   @Test
   public void test_FhirResourceCreate() throws Exception {
     FhirResourceCreate.fhirResourceCreate(fhirStoreName, resourceType);
@@ -154,7 +148,7 @@ public class FhirResourceTests {
     assertThat(output, containsString("FHIR resource created:"));
   }
 
-   @Test
+  @Test
   public void test_FhirResourceValidate() throws Exception {
     FhirResourceValidate.fhirResourceValidate(resourcePath, resourceType);
 
@@ -278,8 +272,10 @@ public class FhirResourceTests {
     // Create a StructureDefinition resource that only exists in the FHIR store
     // to ensure that the fhirResourceValidateProfileUrl method fails, because the
     // validation does not adhere to the constraints in the StructureDefinition.
-    FhirCreateStructureDefinition.fhirCreateStructureDefinition(fhirStoreName, structureDefinitionProfileUrlFilePath);
-    FhirResourceValidateProfileUrl.fhirResourceValidateProfileUrl(resourcePath, resourceType, profileUrl);
+    FhirCreateStructureDefinition.fhirCreateStructureDefinition(
+        fhirStoreName, structureDefinitionProfileUrlFilePath);
+    FhirResourceValidateProfileUrl.fhirResourceValidateProfileUrl(
+        resourcePath, resourceType, profileUrl);
 
     String output = bout.toString();
     // Should fail because the FHIR resource we are validating does not
@@ -288,25 +284,28 @@ public class FhirResourceTests {
     assertThat(output, containsString("\"severity\": \"error\""));
   }
 
-   @Test
+  @Test
   public void test_FhirCreateStructureDefinition() throws Exception {
-    FhirCreateStructureDefinition.fhirCreateStructureDefinition(fhirStoreName, structureDefinitionFilePath);
+    FhirCreateStructureDefinition.fhirCreateStructureDefinition(
+        fhirStoreName, structureDefinitionFilePath);
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR StructureDefinition resource created:"));
   }
 
-   @Test
+  @Test
   public void test_FhirCreateImplementationGuide() throws Exception {
-    FhirCreateImplementationGuide.fhirCreateImplementationGuide(fhirStoreName, implementationGuideFilePath);
+    FhirCreateImplementationGuide.fhirCreateImplementationGuide(
+        fhirStoreName, implementationGuideFilePath);
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR ImplementationGuide resource created:"));
   }
 
-   @Test
+  @Test
   public void test_FhirEnableImplementationGuide() throws Exception {
-    FhirEnableImplementationGuide.fhirEnableImplementationGuide(fhirStoreName, implementationGuideUrl);
+    FhirEnableImplementationGuide.fhirEnableImplementationGuide(
+        fhirStoreName, implementationGuideUrl);
 
     String output = bout.toString();
     assertThat(output, containsString("ImplementationGuide enabled:"));

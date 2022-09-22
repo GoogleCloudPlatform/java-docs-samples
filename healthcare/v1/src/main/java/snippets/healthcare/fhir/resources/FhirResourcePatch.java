@@ -110,7 +110,7 @@ public class FhirResourcePatch {
     GoogleCredentials credential =
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    
+
     return credential.refreshAccessToken().getTokenValue();
   }
 }

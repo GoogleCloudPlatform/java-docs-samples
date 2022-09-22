@@ -40,19 +40,14 @@ import org.apache.http.impl.client.HttpClients;
 // [START healthcare_resource_validate_profile_url]
 
 public class FhirResourceValidateProfileUrl {
-    private static final String FHIR_NAME =
-    "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
-    private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-    private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();    
+  private static final String FHIR_NAME =
+      "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
+  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-    /**
-     * @param fhirStoreName
-     * @param resourceType
-     * @throws IOException
-     * @throws URISyntaxException
-     */
-    public static void fhirResourceValidateProfileUrl(String resourceName, String resourceType, String profileUrl)
-    throws IOException, URISyntaxException {
+  public static void fhirResourceValidateProfileUrl(
+      String resourceName, String resourceType, String profileUrl)
+      throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", resourceType);
@@ -73,7 +68,10 @@ public class FhirResourceValidateProfileUrl {
     // supply a new body with data that corresponds to the resource you
     // are validating.
     StringEntity requestEntity =
-    new StringEntity("{\"name\": [{\"use\": \"official\",\"family\": \"Smith\",\"given\": [\"Darcy\"]}],\"gender\": \"female\",\"birthDate\": \"1970-01-01\",\"resourceType\": \"Patient\"}");
+        new StringEntity(
+            "{\"name\": [{\"use\": \"official\",\"family\": \"Smith\",\"given\":"
+                + " [\"Darcy\"]}],\"gender\": \"female\",\"birthDate\":"
+                + " \"1970-01-01\",\"resourceType\": \"Patient\"}");
 
     HttpUriRequest request =
         RequestBuilder.post()
@@ -123,7 +121,7 @@ public class FhirResourceValidateProfileUrl {
     GoogleCredentials credential =
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    
+
     return credential.refreshAccessToken().getTokenValue();
   }
 }

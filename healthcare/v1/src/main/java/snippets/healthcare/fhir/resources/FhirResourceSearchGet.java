@@ -35,7 +35,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 
 public class FhirResourceSearchGet {
@@ -61,10 +60,7 @@ public class FhirResourceSearchGet {
     // example, to search for a Patient with the family name "Smith", specify the following:
     // uriBuilder.setParameter("family:exact", "Smith");
 
-    HttpUriRequest request =
-        RequestBuilder.get()
-            .setUri(uriBuilder.build())
-            .build();
+    HttpUriRequest request = RequestBuilder.get().setUri(uriBuilder.build()).build();
 
     // Execute the request and process the results.
     HttpResponse response = httpClient.execute(request);

@@ -22,15 +22,16 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
-import com.google.api.services.healthcare.v1.CloudHealthcare.Projects.Locations.Datasets.FhirStores;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1.model.FhirStore;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -40,29 +41,14 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import com.google.api.client.json.GenericJson;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.io.FileInputStream;
-import com.google.api.client.json.JsonObjectParser;
-import java.io.File;
 
 public class FhirCreateImplementationGuide {
-    private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
-    private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-    private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
+  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-    /**
-     * @param fhirStoreName
-     * @param filePath
-     * @throws IOException
-     * @throws URISyntaxException
-     */
-    public static void fhirCreateImplementationGuide(String fhirStoreName, String filePath) throws IOException, URISyntaxException {
+  public static void fhirCreateImplementationGuide(String fhirStoreName, String filePath)
+      throws IOException, URISyntaxException {
     // String fhirStoreName =
     //    String.format(
     //        FHIR_NAME, "project-id", "location", "dataset-id", "fhir-store-id");
@@ -72,7 +58,8 @@ public class FhirCreateImplementationGuide {
     CloudHealthcare client = createClient();
 
     HttpClient httpClient = HttpClients.createDefault();
-    String uri = String.format("%sv1/%s/fhir/ImplementationGuide", client.getRootUrl(), fhirStoreName);
+    String uri =
+        String.format("%sv1/%s/fhir/ImplementationGuide", client.getRootUrl(), fhirStoreName);
     URIBuilder uriBuilder = new URIBuilder(uri).setParameter("access_token", getAccessToken());
 
     // Load the data from JSON file containing the ImplementationGuide resource.
@@ -94,7 +81,8 @@ public class FhirCreateImplementationGuide {
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED) {
       System.err.print(
           String.format(
-              "Exception creating FHIR ImplementationGuide resource: %s\n", response.getStatusLine().toString()));
+              "Exception creating FHIR ImplementationGuide resource: %s\n",
+              response.getStatusLine().toString()));
       responseEntity.writeTo(System.err);
       throw new RuntimeException();
     }
@@ -127,7 +115,7 @@ public class FhirCreateImplementationGuide {
     GoogleCredentials credential =
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    
+
     return credential.refreshAccessToken().getTokenValue();
   }
 }

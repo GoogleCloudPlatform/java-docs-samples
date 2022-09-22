@@ -56,7 +56,12 @@ public class FhirResourceCreate {
     String uri = String.format("%sv1/%s/fhir/%s", client.getRootUrl(), fhirStoreName, resourceType);
     URIBuilder uriBuilder = new URIBuilder(uri).setParameter("access_token", getAccessToken());
     StringEntity requestEntity =
-        new StringEntity("{\"resourceType\": \"" + resourceType + "\", \"language\": \"en\", \"gender\": \"female\", \"birthDate\": \"1970-01-01\", \"name\": [{\"use\": \"official\", \"family\": \"Smith\", \"given\": [\"Darcy\"]}]}");
+        new StringEntity(
+            "{\"resourceType\": \""
+                + resourceType
+                + "\", \"language\": \"en\", \"gender\": \"female\", \"birthDate\": \"1970-01-01\","
+                + " \"name\": [{\"use\": \"official\", \"family\": \"Smith\", \"given\":"
+                + " [\"Darcy\"]}]}");
 
     HttpUriRequest request =
         RequestBuilder.post()
@@ -106,7 +111,7 @@ public class FhirResourceCreate {
     GoogleCredentials credential =
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    
+
     return credential.refreshAccessToken().getTokenValue();
   }
 }

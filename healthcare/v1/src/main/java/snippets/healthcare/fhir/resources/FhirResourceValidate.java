@@ -40,19 +40,13 @@ import org.apache.http.impl.client.HttpClients;
 // [START healthcare_resource_validate]
 
 public class FhirResourceValidate {
-    private static final String FHIR_NAME =
-    "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
-    private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-    private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();    
+  private static final String FHIR_NAME =
+      "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
+  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-    /**
-     * @param fhirStoreName
-     * @param resourceType
-     * @throws IOException
-     * @throws URISyntaxException
-     */
-    public static void fhirResourceValidate(String resourceName, String resourceType)
-    throws IOException, URISyntaxException {
+  public static void fhirResourceValidate(String resourceName, String resourceType)
+      throws IOException, URISyntaxException {
     // String resourceName =
     //    String.format(
     //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", resourceType);
@@ -71,12 +65,11 @@ public class FhirResourceValidate {
     // are validating.
     StringEntity requestEntity =
         new StringEntity(
-            "{\"resourceType\": \"" + resourceType + "\"," +
-            "\"language\": \"en\"," +
-            "\"name\": [{\"use\": \"official\", \"family\": \"Smith\", \"given\": [\"Darcy\"]}]," +
-            "\"gender\": \"female\"," +
-            "\"birthDate\": \"1970-01-01\"}"
-            );
+            "{\"resourceType\": \""
+                + resourceType
+                + "\",\"language\": \"en\",\"name\": [{\"use\": \"official\", \"family\":"
+                + " \"Smith\", \"given\": [\"Darcy\"]}],\"gender\": \"female\",\"birthDate\":"
+                + " \"1970-01-01\"}");
 
     HttpUriRequest request =
         RequestBuilder.post()
@@ -126,7 +119,7 @@ public class FhirResourceValidate {
     GoogleCredentials credential =
         GoogleCredentials.getApplicationDefault()
             .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    
+
     return credential.refreshAccessToken().getTokenValue();
   }
 }

@@ -38,16 +38,13 @@ public class FhirEnableImplementationGuide {
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  /**
- * @param fhirStoreName
- * @param implementationGuideUrl
- * @throws IOException
- */
-public static void fhirEnableImplementationGuide(String fhirStoreName, String implementationGuideUrl) throws IOException {
+  public static void fhirEnableImplementationGuide(
+      String fhirStoreName, String implementationGuideUrl) throws IOException {
     // String fhirStoreName =
     //    String.format(
     //        FHIR_NAME, "project-id", "location", "dataset-id", "fhir-store-id");
-    // String implementationGuideUrl = "http://hl7.org/fhir/us/core/ImplementationGuide/hl7.fhir.us.core";
+    // String implementationGuideUrl =
+    // "http://hl7.org/fhir/us/core/ImplementationGuide/hl7.fhir.us.core";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
