@@ -36,10 +36,6 @@ public final class UtilFunctions {
    */
   public static final long MONTH_IN_MILLISECONDS = 30L * 24 * 3600 * 1000;
 
-  /**
-   * number of milliseconds in a minute.
-   */
-
   private UtilFunctions() {
   }
 

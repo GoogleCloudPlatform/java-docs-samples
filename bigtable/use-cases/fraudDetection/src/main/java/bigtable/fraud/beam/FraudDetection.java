@@ -61,13 +61,13 @@ public final class FraudDetection {
       FraudDetection.class);
 
   /**
-   * Set the field isFraud to true if the fraud_probability was >= 0.1 This is a
+   * Set the field isFraud to true if the fraud_probability was >= 0.1. This is a
    * configurable number that should be tuned depending on the ML model.
    */
   private static final double FRAUD_PROBABILITY_THRESHOLD = 0.1d;
 
   /**
-   * Convert the line read from Cloud Pubsub into a TransactionDetails object.
+   * Converts the line read from Cloud Pubsub into a TransactionDetails object.
    */
   static final DoFn<String, TransactionDetails> PREPROCESS_INPUT =
       new DoFn<String, TransactionDetails>() {
@@ -84,7 +84,7 @@ public final class FraudDetection {
         }
       };
 
-  // Read the transaction history for that customer, and outputs an
+  // Reads the transaction history for that customer, and outputs an
   // AggregatedData object.
   public static class ReadFromTableFn
       extends
@@ -105,7 +105,7 @@ public final class FraudDetection {
     @ProcessElement
     public void processElement(
         final DoFn<TransactionDetails, AggregatedData>.ProcessContext c)
-        throws IOException, IllegalAccessException {
+        throws IOException {
       try {
         FraudDetectionOptions options = c.getPipelineOptions()
             .as(FraudDetectionOptions.class);
@@ -161,7 +161,7 @@ public final class FraudDetection {
     }
 
     /**
-     * Set up the ML model client.
+     * Sets up the ML model client.
      */
     @DoFn.Setup
     public void setup() throws IOException {
@@ -198,7 +198,7 @@ public final class FraudDetection {
         JsonFormat.parser().merge(payload, listValue);
         List<Value> instanceList = listValue.getValuesList();
 
-        // Send a predection request and receive a response.
+        // Send a prediction request and receive a response.
         PredictRequest predictRequest =
             PredictRequest.newBuilder()
                 .setEndpoint(endpointName.toString())
