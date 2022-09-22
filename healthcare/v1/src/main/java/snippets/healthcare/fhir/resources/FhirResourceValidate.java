@@ -16,6 +16,7 @@
 
 package snippets.healthcare.fhir.resources;
 
+// [START healthcare_resource_validate]
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -36,8 +37,6 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
-
-// [START healthcare_resource_validate]
 
 public class FhirResourceValidate {
   private static final String FHIR_NAME =

@@ -119,3 +119,4 @@ public class FhirCreateImplementationGuide {
     return credential.refreshAccessToken().getTokenValue();
   }
 }
+// [END healthcare_create_implementation_guide]
