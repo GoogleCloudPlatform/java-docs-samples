@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,69 +16,66 @@
 
 package snippets.healthcare.fhir.resources;
 
-// [START healthcare_create_resource]
+// [START healthcare_enable_implementation_guide]
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
+import com.google.api.services.healthcare.v1.CloudHealthcare.Projects.Locations.Datasets.FhirStores;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
+import com.google.api.services.healthcare.v1.model.FhirStore;
+import com.google.api.services.healthcare.v1.model.ValidationConfig;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.methods.RequestBuilder;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
+import java.util.List;
 
-public class FhirResourceCreate {
+public class FhirEnableImplementationGuide {
   private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirResourceCreate(String fhirStoreName, String resourceType)
-      throws IOException, URISyntaxException {
+  /**
+ * @param fhirStoreName
+ * @param implementationGuideUrl
+ * @throws IOException
+ */
+public static void fhirEnableImplementationGuide(String fhirStoreName, String implementationGuideUrl) throws IOException {
     // String fhirStoreName =
     //    String.format(
-    //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
-    // String resourceType = "Patient";
+    //        FHIR_NAME, "project-id", "location", "dataset-id", "fhir-store-id");
+    // String implementationGuideUrl = "http://hl7.org/fhir/us/core/ImplementationGuide/hl7.fhir.us.core";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
-    HttpClient httpClient = HttpClients.createDefault();
-    String uri = String.format("%sv1/%s/fhir/%s", client.getRootUrl(), fhirStoreName, resourceType);
-    URIBuilder uriBuilder = new URIBuilder(uri).setParameter("access_token", getAccessToken());
-    StringEntity requestEntity =
-        new StringEntity("{\"resourceType\": \"" + resourceType + "\", \"language\": \"en\", \"gender\": \"female\", \"birthDate\": \"1970-01-01\", \"name\": [{\"use\": \"official\", \"family\": \"Smith\", \"given\": [\"Darcy\"]}]}");
 
-    HttpUriRequest request =
-        RequestBuilder.post()
-            .setUri(uriBuilder.build())
-            .setEntity(requestEntity)
-            .addHeader("Content-Type", "application/fhir+json")
-            .addHeader("Accept-Charset", "utf-8")
-            .addHeader("Accept", "application/fhir+json; charset=utf-8")
-            .build();
+    // Fetch the initial state of the FHIR store.
+    FhirStores.Get getRequest =
+        client.projects().locations().datasets().fhirStores().get(fhirStoreName);
+    FhirStore store = getRequest.execute();
+
+    List<String> implementationGuideUrls = new ArrayList<String>();
+    implementationGuideUrls.add(implementationGuideUrl);
+    ValidationConfig validationConfig = new ValidationConfig();
+    validationConfig.setEnabledImplementationGuides(implementationGuideUrls);
+    store.setValidationConfig(validationConfig);
+
+    // Create PATCH request and configure any parameters.
+    FhirStores.Patch request =
+        client
+            .projects()
+            .locations()
+            .datasets()
+            .fhirStores()
+            .patch(fhirStoreName, store)
+            .setUpdateMask("validationConfig");
 
     // Execute the request and process the results.
-    HttpResponse response = httpClient.execute(request);
-    HttpEntity responseEntity = response.getEntity();
-    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED) {
-      System.err.print(
-          String.format(
-              "Exception creating FHIR resource: %s\n", response.getStatusLine().toString()));
-      responseEntity.writeTo(System.err);
-      throw new RuntimeException();
-    }
-    System.out.print("FHIR resource created: ");
-    responseEntity.writeTo(System.out);
+    store = request.execute();
+    System.out.println("ImplementationGuide enabled: \n" + store.toPrettyString());
   }
 
   private static CloudHealthcare createClient() throws IOException {
@@ -101,13 +98,5 @@ public class FhirResourceCreate {
         .setApplicationName("your-application-name")
         .build();
   }
-
-  private static String getAccessToken() throws IOException {
-    GoogleCredentials credential =
-        GoogleCredentials.getApplicationDefault()
-            .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
-    
-    return credential.refreshAccessToken().getTokenValue();
-  }
 }
-// [END healthcare_create_resource]
+// [END healthcare_enable_implementation_guide]

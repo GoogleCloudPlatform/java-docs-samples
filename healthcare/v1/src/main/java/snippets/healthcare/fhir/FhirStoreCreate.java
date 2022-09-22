@@ -49,7 +49,7 @@ public class FhirStoreCreate {
     Map<String, String> labels = new HashMap<String, String>();
     labels.put("key1", "value1");
     labels.put("key2", "value2");
-    String version = "STU3";
+    String version = "R4";
     FhirStore content = new FhirStore().setLabels(labels).setVersion(version);
 
     // Create request and configure any parameters.

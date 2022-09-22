@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,21 @@
 
 package snippets.healthcare.fhir.resources;
 
-// [START healthcare_create_resource]
+// [START healthcare_create_implementation_guide]
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
+import com.google.api.services.healthcare.v1.CloudHealthcare.Projects.Locations.Datasets.FhirStores;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
+import com.google.api.services.healthcare.v1.model.FhirStore;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -37,26 +40,45 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import com.google.api.client.json.GenericJson;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.io.FileInputStream;
+import com.google.api.client.json.JsonObjectParser;
+import java.io.File;
 
-public class FhirResourceCreate {
-  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
-  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-  private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+public class FhirCreateImplementationGuide {
+    private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
+    private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+    private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  public static void fhirResourceCreate(String fhirStoreName, String resourceType)
-      throws IOException, URISyntaxException {
+    /**
+     * @param fhirStoreName
+     * @param filePath
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    public static void fhirCreateImplementationGuide(String fhirStoreName, String filePath) throws IOException, URISyntaxException {
     // String fhirStoreName =
     //    String.format(
-    //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
-    // String resourceType = "Patient";
+    //        FHIR_NAME, "project-id", "location", "dataset-id", "fhir-store-id");
+    // String filePath = "ImplementationGuide-hl7.fhir.us.core.json";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
+
     HttpClient httpClient = HttpClients.createDefault();
-    String uri = String.format("%sv1/%s/fhir/%s", client.getRootUrl(), fhirStoreName, resourceType);
+    String uri = String.format("%sv1/%s/fhir/ImplementationGuide", client.getRootUrl(), fhirStoreName);
     URIBuilder uriBuilder = new URIBuilder(uri).setParameter("access_token", getAccessToken());
-    StringEntity requestEntity =
-        new StringEntity("{\"resourceType\": \"" + resourceType + "\", \"language\": \"en\", \"gender\": \"female\", \"birthDate\": \"1970-01-01\", \"name\": [{\"use\": \"official\", \"family\": \"Smith\", \"given\": [\"Darcy\"]}]}");
+
+    // Load the data from JSON file containing the ImplementationGuide resource.
+    List<String> lines = Files.readAllLines(Paths.get(filePath), Charset.defaultCharset());
+    String data = String.join("\n", lines);
+    StringEntity requestEntity = new StringEntity(data);
 
     HttpUriRequest request =
         RequestBuilder.post()
@@ -64,7 +86,6 @@ public class FhirResourceCreate {
             .setEntity(requestEntity)
             .addHeader("Content-Type", "application/fhir+json")
             .addHeader("Accept-Charset", "utf-8")
-            .addHeader("Accept", "application/fhir+json; charset=utf-8")
             .build();
 
     // Execute the request and process the results.
@@ -73,11 +94,11 @@ public class FhirResourceCreate {
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED) {
       System.err.print(
           String.format(
-              "Exception creating FHIR resource: %s\n", response.getStatusLine().toString()));
+              "Exception creating FHIR ImplementationGuide resource: %s\n", response.getStatusLine().toString()));
       responseEntity.writeTo(System.err);
       throw new RuntimeException();
     }
-    System.out.print("FHIR resource created: ");
+    System.out.print("FHIR ImplementationGuide resource created: ");
     responseEntity.writeTo(System.out);
   }
 
@@ -110,4 +131,3 @@ public class FhirResourceCreate {
     return credential.refreshAccessToken().getTokenValue();
   }
 }
-// [END healthcare_create_resource]

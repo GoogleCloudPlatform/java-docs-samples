@@ -21,10 +21,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -32,6 +28,7 @@ import java.net.URISyntaxException;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,9 +36,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.fhir.FhirStoreCreate;
+import snippets.healthcare.fhir.resources.FhirCreateImplementationGuide;
+import snippets.healthcare.fhir.resources.FhirCreateStructureDefinition;
+import snippets.healthcare.fhir.resources.FhirEnableImplementationGuide;
 import snippets.healthcare.fhir.resources.FhirResourceCreate;
 import snippets.healthcare.fhir.resources.FhirResourceDelete;
 import snippets.healthcare.fhir.resources.FhirResourceDeletePurge;
@@ -53,12 +58,13 @@ import snippets.healthcare.fhir.resources.FhirResourcePatch;
 import snippets.healthcare.fhir.resources.FhirResourceSearchGet;
 import snippets.healthcare.fhir.resources.FhirResourceSearchPost;
 import snippets.healthcare.fhir.resources.FhirResourceUpdate;
+import snippets.healthcare.fhir.resources.FhirResourceValidate;
+import snippets.healthcare.fhir.resources.FhirResourceValidateProfileUrl;
 
 @RunWith(JUnit4.class)
 public class FhirResourceTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION_ID = "us-central1";
-  private static final Gson gson = new Gson();
 
   private static String fhirStoreName;
   private static String datasetName;
@@ -68,6 +74,13 @@ public class FhirResourceTests {
 
   private static String resourcePath;
   private static String resourceType = "Patient";
+
+  private static String implementationGuideFilePath = "src/test/resources/ImplementationGuideExample.json";
+  private static String implementationGuideUrl = "http://example.com/ImplementationGuide/example.implementation.guide";
+  private static String structureDefinitionFilePath = "src/test/resources/StructureDefinitionExample.json";
+  private static String structureDefinitionProfileUrlFilePath = "src/test/resources/StructureDefinitionProfileUrlExample.json";
+  private static String profileUrl = "http://example.com/StructureDefinition/example-patient-profile-url";
+  
 
   private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream bout;
@@ -100,7 +113,7 @@ public class FhirResourceTests {
     FhirStoreCreate.fhirStoreCreate(datasetName, fhirStoreId);
   }
 
-  @AfterClass
+   @AfterClass
   public static void deleteTempItems() throws IOException {
     DatasetDelete.datasetDelete(datasetName);
   }
@@ -139,6 +152,16 @@ public class FhirResourceTests {
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource created:"));
+  }
+
+   @Test
+  public void test_FhirResourceValidate() throws Exception {
+    FhirResourceValidate.fhirResourceValidate(resourcePath, resourceType);
+
+    String output = bout.toString();
+    // Should succeed because we are validating a standard Patient resource
+    // against the base FHIR store profile without any customization
+    assertThat(output, containsString("\"text\": \"success\""));
   }
 
   @Test
@@ -185,6 +208,7 @@ public class FhirResourceTests {
     json.add("id", new JsonPrimitive(fhirResourceId));
     json.add("resourceType", new JsonPrimitive(resourceType));
     json.add("active", new JsonPrimitive(false));
+    json.add("gender", new JsonPrimitive("female"));
     FhirResourceUpdate.fhirResourceUpdate(fhirResourceName, json.toString());
 
     String output = bout.toString();
@@ -247,6 +271,45 @@ public class FhirResourceTests {
 
     String output = bout.toString();
     assertThat(output, containsString("FHIR resource history purged (excluding current version)."));
+  }
+
+  @Test
+  public void test_FhirResourceValidateProfileUrl() throws Exception {
+    // Create a StructureDefinition resource that only exists in the FHIR store
+    // to ensure that the fhirResourceValidateProfileUrl method fails, because the
+    // validation does not adhere to the constraints in the StructureDefinition.
+    FhirCreateStructureDefinition.fhirCreateStructureDefinition(fhirStoreName, structureDefinitionProfileUrlFilePath);
+    FhirResourceValidateProfileUrl.fhirResourceValidateProfileUrl(resourcePath, resourceType, profileUrl);
+
+    String output = bout.toString();
+    // Should fail because the FHIR resource we are validating does not
+    // adhere to the constraints in the StructureDefinition defined in
+    // structureDefinitionProfileUrlFilePath.
+    assertThat(output, containsString("\"severity\": \"error\""));
+  }
+
+   @Test
+  public void test_FhirCreateStructureDefinition() throws Exception {
+    FhirCreateStructureDefinition.fhirCreateStructureDefinition(fhirStoreName, structureDefinitionFilePath);
+
+    String output = bout.toString();
+    assertThat(output, containsString("FHIR StructureDefinition resource created:"));
+  }
+
+   @Test
+  public void test_FhirCreateImplementationGuide() throws Exception {
+    FhirCreateImplementationGuide.fhirCreateImplementationGuide(fhirStoreName, implementationGuideFilePath);
+
+    String output = bout.toString();
+    assertThat(output, containsString("FHIR ImplementationGuide resource created:"));
+  }
+
+   @Test
+  public void test_FhirEnableImplementationGuide() throws Exception {
+    FhirEnableImplementationGuide.fhirEnableImplementationGuide(fhirStoreName, implementationGuideUrl);
+
+    String output = bout.toString();
+    assertThat(output, containsString("ImplementationGuide enabled:"));
   }
 
   @Test

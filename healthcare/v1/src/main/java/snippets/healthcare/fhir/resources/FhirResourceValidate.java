@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package snippets.healthcare.fhir.resources;
 
-// [START healthcare_create_resource]
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -38,25 +37,46 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 
-public class FhirResourceCreate {
-  private static final String FHIR_NAME = "projects/%s/locations/%s/datasets/%s/fhirStores/%s";
-  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-  private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+// [START healthcare_resource_validate]
 
-  public static void fhirResourceCreate(String fhirStoreName, String resourceType)
-      throws IOException, URISyntaxException {
-    // String fhirStoreName =
+public class FhirResourceValidate {
+    private static final String FHIR_NAME =
+    "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
+    private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+    private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();    
+
+    /**
+     * @param fhirStoreName
+     * @param resourceType
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    public static void fhirResourceValidate(String resourceName, String resourceType)
+    throws IOException, URISyntaxException {
+    // String resourceName =
     //    String.format(
-    //        FHIR_NAME, "your-project-id", "your-region-id", "your-dataset-id", "your-fhir-id");
+    //        FHIR_NAME, "project-id", "region-id", "dataset-id", "store-id", resourceType);
     // String resourceType = "Patient";
 
     // Initialize the client, which will be used to interact with the service.
     CloudHealthcare client = createClient();
+
     HttpClient httpClient = HttpClients.createDefault();
-    String uri = String.format("%sv1/%s/fhir/%s", client.getRootUrl(), fhirStoreName, resourceType);
+    String uri = String.format("%s/v1/%s/$validate", client.getRootUrl(), resourceName);
     URIBuilder uriBuilder = new URIBuilder(uri).setParameter("access_token", getAccessToken());
+
+    // The body shown works with a Patient resource and is not guaranteed
+    // to work with other types of FHIR resources. If necessary,
+    // supply a new body with data that corresponds to the resource you
+    // are validating.
     StringEntity requestEntity =
-        new StringEntity("{\"resourceType\": \"" + resourceType + "\", \"language\": \"en\", \"gender\": \"female\", \"birthDate\": \"1970-01-01\", \"name\": [{\"use\": \"official\", \"family\": \"Smith\", \"given\": [\"Darcy\"]}]}");
+        new StringEntity(
+            "{\"resourceType\": \"" + resourceType + "\"," +
+            "\"language\": \"en\"," +
+            "\"name\": [{\"use\": \"official\", \"family\": \"Smith\", \"given\": [\"Darcy\"]}]," +
+            "\"gender\": \"female\"," +
+            "\"birthDate\": \"1970-01-01\"}"
+            );
 
     HttpUriRequest request =
         RequestBuilder.post()
@@ -70,14 +90,14 @@ public class FhirResourceCreate {
     // Execute the request and process the results.
     HttpResponse response = httpClient.execute(request);
     HttpEntity responseEntity = response.getEntity();
-    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED) {
+    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
       System.err.print(
           String.format(
-              "Exception creating FHIR resource: %s\n", response.getStatusLine().toString()));
+              "Exception validating FHIR resource: %s\n", response.getStatusLine().toString()));
       responseEntity.writeTo(System.err);
       throw new RuntimeException();
     }
-    System.out.print("FHIR resource created: ");
+    System.out.print("FHIR resource validated: ");
     responseEntity.writeTo(System.out);
   }
 
@@ -110,4 +130,4 @@ public class FhirResourceCreate {
     return credential.refreshAccessToken().getTokenValue();
   }
 }
-// [END healthcare_create_resource]
+// [END healthcare_resource_validate]
