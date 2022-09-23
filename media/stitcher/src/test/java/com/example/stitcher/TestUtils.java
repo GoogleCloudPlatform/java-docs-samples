@@ -35,7 +35,7 @@ public class TestUtils {
   public static final String SLATE_ID_PREFIX = "my-slate-";
   private static final int DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS = 10800; // 3 hours
 
-  // Clean up old test slates that are no longer used.
+  // Clean up old test slates.
   public static void cleanStaleSlates(String projectId, String location) throws IOException {
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
