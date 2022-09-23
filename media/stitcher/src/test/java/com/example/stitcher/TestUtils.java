@@ -48,15 +48,15 @@ public class TestUtils {
           videoStitcherServiceClient.listSlates(listSlatesRequest);
 
       for (Slate slate : response.iterateAll()) {
-        // Matcher matcher = Pattern.compile(SLATE_ID_PREFIX).matcher(slate.getName());
-        // if (matcher.find()) {
-        //   String createTime = slate.getName().substring(matcher.end()).trim();
-        //   long createEpochSec = Long.parseLong(createTime);
-        //   if (createEpochSec
-        //       < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
-        videoStitcherServiceClient.deleteSlate(slate.getName());
-        //   }
-        // }
+        Matcher matcher = Pattern.compile(SLATE_ID_PREFIX).matcher(slate.getName());
+        if (matcher.find()) {
+          String createTime = slate.getName().substring(matcher.end()).trim();
+          long createEpochSec = Long.parseLong(createTime);
+          if (createEpochSec
+              < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
+            videoStitcherServiceClient.deleteSlate(slate.getName());
+          }
+        }
       }
     } catch (IOException | NotFoundException e) {
       e.printStackTrace();
