@@ -154,14 +154,32 @@ module "vertexai" {
   destroy_cmd_body       = "${var.region} ${random_string.uuid.result}"
 }
 
+# Run the fraud-detection streaming pipeline.
+module "dataflow_pipeline" {
+  source  = "terraform-google-modules/gcloud/google"
+  version = "~> 2.0"
+
+  platform = "linux"
+
+  module_depends_on = [module.vertexai.wait]
+
+  create_cmd_entrypoint = "${path.module}/scripts/run_streaming_pipeline.sh"
+  create_cmd_body       = "${var.project_id} ${var.region} ${google_storage_bucket.tf-fd-bucket.name} ${google_pubsub_topic.tf-fd-pubsub-input-topic.name} ${google_pubsub_topic.tf-fd-pubsub-output-topic.name} ${google_bigtable_instance.tf-fd-instance.name} ${google_bigtable_table.tf-fd-table.name} ${random_string.uuid.result}"
+
+  destroy_cmd_entrypoint = "${path.module}/scripts/destroy_streaming_pipeline.sh"
+  destroy_cmd_body       = "${var.region} ${random_string.uuid.result}"
+}
+
 # Load both demographics and historical data into Cloud Bigtable so that
 # the dataflow pipeline can aggregate data properly before querying
 # the ML model.
+
 module "load_dataset" {
   source  = "terraform-google-modules/gcloud/google"
   version = "~> 2.0"
 
   platform = "linux"
+  module_depends_on = [module.dataflow_pipeline.wait]
 
   create_cmd_entrypoint = "${path.module}/scripts/load_dataset.sh"
   create_cmd_body       = "${var.project_id} ${var.region} ${google_bigtable_instance.tf-fd-instance.name} ${google_bigtable_table.tf-fd-table.name} ${google_storage_bucket.tf-fd-bucket.name} ${random_string.uuid.result}"

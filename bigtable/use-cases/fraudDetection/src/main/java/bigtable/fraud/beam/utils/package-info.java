@@ -18,4 +18,4 @@
  * Classes that will hold customer demographics, transactions history, and
  * aggregated data to be sent to the machine learning model.
  */
-package bigtable.fraud.utils;
+package bigtable.fraud.beam.utils;
