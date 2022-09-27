@@ -55,8 +55,6 @@ public class Person {
   @OneToMany(cascade = CascadeType.ALL)
   private List<Payment> payments = new ArrayList<>();
 
-  public Person() {}
-
   public UUID getId() {
     return id;
   }
