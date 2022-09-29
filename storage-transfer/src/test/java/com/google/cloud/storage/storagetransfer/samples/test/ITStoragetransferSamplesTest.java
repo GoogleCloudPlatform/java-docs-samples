@@ -43,14 +43,7 @@ import com.google.cloud.storage.BucketInfo.LifecycleRule.LifecycleAction;
 import com.google.cloud.storage.BucketInfo.LifecycleRule.LifecycleCondition;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageClass;
-import com.google.cloud.storage.storagetransfer.samples.CheckLatestTransferOperation;
-import com.google.cloud.storage.storagetransfer.samples.DownloadToPosix;
-import com.google.cloud.storage.storagetransfer.samples.QuickstartSample;
-import com.google.cloud.storage.storagetransfer.samples.TransferBetweenPosix;
-import com.google.cloud.storage.storagetransfer.samples.TransferFromAws;
-import com.google.cloud.storage.storagetransfer.samples.TransferFromPosix;
-import com.google.cloud.storage.storagetransfer.samples.TransferToNearline;
-import com.google.cloud.storage.storagetransfer.samples.TransferUsingManifest;
+import com.google.cloud.storage.storagetransfer.samples.*;
 import com.google.cloud.storage.storagetransfer.samples.apiary.CheckLatestTransferOperationApiary;
 import com.google.cloud.storage.storagetransfer.samples.apiary.CreateTransferClient;
 import com.google.cloud.storage.storagetransfer.samples.apiary.TransferFromAwsApiary;
@@ -448,5 +441,24 @@ public class ITStoragetransferSamplesTest {
       assertThat(sampleOutput).contains("transferJobs/");
       deleteTransferJob(sampleOutput);
     }
+  }
+
+  @Test
+  public void testTransferFromS3CompatibleSource() throws Exception {
+    String sourceAgentPoolName = ""; // use default agent pool
+    String sourcePath = ""; // use root directory
+    String region = "us-east-1";
+    String endpoint = "us-east-1.example.com";
+    String gcsPath = ""; // use root directory
+
+    TransferFromS3CompatibleSource.transferFromS3CompatibleSource(
+            PROJECT_ID, sourceAgentPoolName, AMAZON_BUCKET, sourcePath, region,
+            endpoint, TransferTypes.S3CompatibleMetadata.NetworkProtocol.NETWORK_PROTOCOL_HTTPS,
+            TransferTypes.S3CompatibleMetadata.RequestModel.REQUEST_MODEL_VIRTUAL_HOSTED_STYLE,
+            TransferTypes.S3CompatibleMetadata.AuthMethod.AUTH_METHOD_AWS_SIGNATURE_V4, SINK_GCS_BUCKET, gcsPath);
+
+    String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
+    assertThat(sampleOutput).contains("transferJobs/");
+    deleteTransferJob(sampleOutput);
   }
 }
