@@ -17,9 +17,9 @@
 package com.google.cloud.storage.storagetransfer.samples;
 
 // [START storagetransfer_transfer_from_s3_compatible_source]
+import static com.google.storagetransfer.v1.proto.TransferTypes.S3CompatibleMetadata.AuthMethod;
 import static com.google.storagetransfer.v1.proto.TransferTypes.S3CompatibleMetadata.NetworkProtocol;
 import static com.google.storagetransfer.v1.proto.TransferTypes.S3CompatibleMetadata.RequestModel;
-import static com.google.storagetransfer.v1.proto.TransferTypes.S3CompatibleMetadata.AuthMethod;
 
 import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
 import com.google.storagetransfer.v1.proto.TransferProto;
