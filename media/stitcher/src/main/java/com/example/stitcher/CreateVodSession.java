@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_create_vod_session]
+// [START videostitcher_create_vod_session]
 
 import com.google.cloud.video.stitcher.v1.CreateVodSessionRequest;
 import com.google.cloud.video.stitcher.v1.LocationName;
@@ -58,4 +58,4 @@ public class CreateVodSession {
     }
   }
 }
-// [END video_stitcher_create_vod_session]
+// [END videostitcher_create_vod_session]

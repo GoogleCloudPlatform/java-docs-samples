@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_create_slate]
+// [START videostitcher_create_slate]
 
 import com.google.cloud.video.stitcher.v1.CreateSlateRequest;
 import com.google.cloud.video.stitcher.v1.LocationName;
@@ -56,4 +56,4 @@ public class CreateSlate {
     }
   }
 }
-// [END video_stitcher_create_slate]
+// [END videostitcher_create_slate]
