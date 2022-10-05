@@ -21,22 +21,26 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.hibernate.annotations.JdbcTypeCode;
 
 /**
  * An example person entity.
  */
-@Entity(name = "Person")
+@Entity
 // [START spanner_hibernate_table_name]
 @Table(name = "PersonsTable")
 // [END spanner_hibernate_table_name]
-public class Person {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Person {
 
   // [START spanner_hibernate_generated_ids]
   @Id
@@ -52,7 +56,7 @@ public class Person {
   private String address;
 
   // An example of an entity relationship.
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Payment> payments = new ArrayList<>();
 
   public UUID getId() {
@@ -104,5 +108,24 @@ public class Person {
         + "\n address='" + address + '\''
         + "\n total_payments=" + payments.stream().mapToLong(Payment::getAmount).sum()
         + "\n}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Person)) {
+      return false;
+    }
+    Person person = (Person) o;
+    return id.equals(person.id) && name.equals(person.name) && Objects.equals(nickname,
+        person.nickname) && Objects.equals(address, person.address)
+        && Objects.equals(payments, person.payments);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, name, nickname, address, payments);
   }
 }

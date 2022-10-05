@@ -21,6 +21,7 @@
 
     <!-- Annotated entity classes -->
     <mapping class="com.example.spanner.Person"/>
+    <mapping class="com.example.spanner.TypedPerson"/>
     <mapping class="com.example.spanner.Payment"/>
     <mapping class="com.example.spanner.WireTransferPayment"/>
     <mapping class="com.example.spanner.CreditCardPayment"/>
