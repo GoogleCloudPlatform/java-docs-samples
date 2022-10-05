@@ -17,12 +17,14 @@
 package com.example.spanner;
 
 // [START spanner_hibernate_inheritance]
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.ManyToOne;
 import java.util.UUID;
 import org.hibernate.annotations.JdbcTypeCode;
 
@@ -40,6 +42,9 @@ public abstract class Payment {
 
   private Long amount;
 
+  @ManyToOne
+  private Person person;
+
   public UUID getId() {
     return id;
   }
@@ -54,6 +59,14 @@ public abstract class Payment {
 
   public void setAmount(Long amount) {
     this.amount = amount;
+  }
+
+  public Person getPerson() {
+    return person;
+  }
+
+  public void setPerson(Person person) {
+    this.person = person;
   }
 }
 // [END spanner_hibernate_inheritance]
