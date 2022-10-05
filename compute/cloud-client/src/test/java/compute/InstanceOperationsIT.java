@@ -16,12 +16,18 @@
 
 package compute;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
+import com.google.cloud.compute.v1.InstancesClient;
+import compute.disks.CloneEncryptedDisk;
+import compute.disks.DeleteDisk;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -45,6 +51,7 @@ public class InstanceOperationsIT {
   private static String ZONE;
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_ENCRYPTED;
+  private static String DISK_NAME;
   private static String RAW_KEY;
 
   private ByteArrayOutputStream stdOut;
@@ -67,6 +74,7 @@ public class InstanceOperationsIT {
     ZONE = "us-central1-a";
     MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
     MACHINE_NAME_ENCRYPTED = "encrypted-test-instance" + UUID.randomUUID();
+    DISK_NAME = "test-clone-disk-enc-" + UUID.randomUUID();
     RAW_KEY = Util.getBase64EncodedKey();
 
     // Cleanup existing stale resources.
@@ -94,6 +102,7 @@ public class InstanceOperationsIT {
     // Delete all instances created for testing.
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
+    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, DISK_NAME);
 
     stdOut.close();
     System.setOut(out);
@@ -109,6 +118,12 @@ public class InstanceOperationsIT {
   public void afterEach() {
     stdOut = null;
     System.setOut(null);
+  }
+
+  private static Instance getInstance(String machineName) throws IOException {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+      return instancesClient.get(PROJECT_ID, ZONE, machineName);
+    }
   }
 
   @Test
@@ -173,4 +188,18 @@ public class InstanceOperationsIT {
     Assert.assertEquals(Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED),
         Status.RUNNING.toString());
   }
+
+  @Test
+  public void testCloneEncryptedDisk()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Assert.assertEquals(Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED),
+        "RUNNING");
+    Instance instance = getInstance(MACHINE_NAME_ENCRYPTED);
+    String diskType = String.format("zones/%s/diskTypes/pd-standard", ZONE);
+    CloneEncryptedDisk.createDiskFromCustomerEncryptedKey(PROJECT_ID, ZONE, DISK_NAME, diskType, 10,
+        instance.getDisks(0).getSource(), RAW_KEY.getBytes(
+            StandardCharsets.UTF_8));
+    assertThat(stdOut.toString()).contains("Disk cloned with customer encryption key.");
+  }
+
 }
