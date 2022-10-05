@@ -23,9 +23,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
-/**
- * An example Hibernate application using the Google Cloud Spanner Dialect for Hibernate ORM.
- */
+/** An example Hibernate application using the Google Cloud Spanner Dialect for Hibernate ORM. */
 public class HibernateSampleApplication {
 
   /**
@@ -35,22 +33,20 @@ public class HibernateSampleApplication {
   public static void main(String[] args) {
 
     // Create Hibernate environment objects.
-    StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-        .configure()
-        .build();
-    SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata()
-        .buildSessionFactory();
-    Session session = sessionFactory.openSession();
+    StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
 
-    // Save an entity into Spanner Table.
-    savePerson(session);
-
-    session.close();
+    try (SessionFactory sessionFactory =
+        new MetadataSources(registry).buildMetadata().buildSessionFactory()) {
+      Session session = sessionFactory.openSession();
+      // Save an entity into Spanner Table.
+      savePerson(session);
+      session.close();
+    } catch (Exception e) {
+      StandardServiceRegistryBuilder.destroy(registry);
+    }
   }
 
-  /**
-   * Saves a {@link Person} entity into a Spanner table.
-   */
+  /** Saves a {@link Person} entity into a Spanner table. */
   private static void savePerson(Session session) {
     session.beginTransaction();
 
@@ -62,7 +58,7 @@ public class HibernateSampleApplication {
     payment2.setCreditCardId("creditcardId");
     payment2.setAmount(600L);
 
-    Person person = new Person();
+    Person person = new TypedPerson();
     person.setName("person");
     person.setNickName("purson");
     person.setAddress("address");
@@ -70,11 +66,10 @@ public class HibernateSampleApplication {
     person.addPayment(payment1);
     person.addPayment(payment2);
 
-    session.save(person);
+    session.persist(person);
     session.getTransaction().commit();
 
-    List<Person> personsInTable =
-        session.createQuery("from Person", Person.class).list();
+    List<Person> personsInTable = session.createQuery("from Person", Person.class).list();
 
     System.out.println(
         String.format("There are %d persons saved in the table:", personsInTable.size()));
