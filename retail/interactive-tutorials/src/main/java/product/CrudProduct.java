@@ -21,6 +21,7 @@
 package product;
 
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.CreateProductRequest;
 import com.google.cloud.retail.v2.DeleteProductRequest;
 import com.google.cloud.retail.v2.GetProductRequest;
@@ -37,7 +38,7 @@ public class CrudProduct {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Set projectId to your Google Cloud Platform project ID.
-    String projectId = "my-project";
+    String projectId = ServiceOptions.getDefaultProjectId();
     String generatedProductId = UUID.randomUUID().toString();
     String branchName =
         String.format(
