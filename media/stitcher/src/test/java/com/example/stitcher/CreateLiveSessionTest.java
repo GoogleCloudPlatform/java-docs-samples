@@ -24,7 +24,6 @@ import com.google.api.gax.rpc.NotFoundException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -42,8 +41,7 @@ public class CreateLiveSessionTest {
   // (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
   private static final String LIVE_AD_TAG_URI =
       "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=";
-  private static final String SLATE_ID =
-      "my-slate-" + UUID.randomUUID().toString().substring(0, 25);
+  private static final String SLATE_ID = TestUtils.getSlateId();
   private static final String SLATE_URI =
       "https://storage.googleapis.com/cloud-samples-data/media/ForBiggerEscapes.mp4";
   private static String PROJECT_ID;
@@ -66,6 +64,7 @@ public class CreateLiveSessionTest {
 
   @Before
   public void beforeTest() throws IOException {
+    TestUtils.cleanStaleSlates(PROJECT_ID, LOCATION);
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
