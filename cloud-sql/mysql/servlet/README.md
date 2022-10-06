@@ -113,12 +113,12 @@ mvn function:run -Drun.functionTarget=com.example.cloudsql.functions.Main
 
 ### Deploy to Google App Engine
 
-First, update `src/main/webapp/WEB-INF/appengine-web.xml` with the correct values to pass the
-environment variables into the runtime.
+First, update [`src/main/webapp/WEB-INF/appengine-web.xml`](src/main/webapp/WEB-INF/appengine-web.xml)
+with the correct values to pass the environment variables into the runtime.
 
 Next, the following command will deploy the application to your Google Cloud project:
 ```bash
-mvn clean package appengine:deploy
+mvn clean package appengine:deploy -DskipTests
 ```
 
 ### Deploy to Cloud Run
