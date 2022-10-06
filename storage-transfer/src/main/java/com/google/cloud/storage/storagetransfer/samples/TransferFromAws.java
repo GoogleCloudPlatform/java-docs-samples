@@ -40,9 +40,7 @@ public class TransferFromAws {
       String jobDescription,
       String awsSourceBucket,
       String gcsSinkBucket,
-      long startDateTime,
-      String awsAccessKeyId,
-      String awsSecretAccessKey)
+      long startDateTime)
       throws IOException {
 
     // Your Google Cloud Project ID
@@ -63,10 +61,10 @@ public class TransferFromAws {
     //     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime();
 
     // The ID used to access your AWS account. Should be accessed via environment variable.
-    // String awsAccessKeyId = System.getenv("AWS_ACCESS_KEY_ID");
+    String awsAccessKeyId = System.getenv("AWS_ACCESS_KEY_ID");
 
     // The Secret Key used to access your AWS account. Should be accessed via environment variable.
-    // String awsSecretAccessKey = System.getenv("AWS_SECRET_ACCESS_KEY");
+    String awsSecretAccessKey = System.getenv("AWS_SECRET_ACCESS_KEY");
 
     // Set up source and sink
     TransferSpec transferSpec =
