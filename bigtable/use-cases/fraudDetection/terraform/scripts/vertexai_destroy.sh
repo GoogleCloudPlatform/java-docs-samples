@@ -20,7 +20,8 @@ ENDPOINT_ID=$(gcloud ai endpoints list \
           --region=$REGION \
           --filter=displayName:$EP_NAME \
           --format="value(ENDPOINT_ID.scope())")
-DEPLOYED_MODEL_ID=$(gcloud ai endpoints describe $ENDPOINT_ID --region=$REGION --format="value(deployedModels.id)")
+DEPLOYED_MODEL_ID=$(gcloud ai endpoints describe $ENDPOINT_ID --region=$REGION \
+          --format="value(deployedModels.id)")
 
 echo "MODEL_ID = $MODEL_ID"
 echo "ENDPOINT_ID = $ENDPOINT_ID"
@@ -28,7 +29,8 @@ echo "DEPLOYED_MODEL_ID = $DEPLOYED_MODEL_ID"
 
 if ! { [ -z "$ENDPOINT_ID" ] && [ -z "$DEPLOYED_MODEL_ID" ]; }; then
 	echo "RAN it"
-	yes | gcloud ai endpoints undeploy-model $ENDPOINT_ID --deployed-model-id=$DEPLOYED_MODEL_ID --region=us-central1
+	yes | gcloud ai endpoints undeploy-model $ENDPOINT_ID \
+	        --deployed-model-id=$DEPLOYED_MODEL_ID --region=us-central1
 fi
 
 if ! { [ -z "$ENDPOINT_ID" ]; }; then
