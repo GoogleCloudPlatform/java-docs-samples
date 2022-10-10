@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Load demographics and historical transactions data from GCS into CBT.
+# Load customer profiles and historical transactions data from GCS into CBT.
 
 PROJECT_ID=$1
 REGION=$2
@@ -18,6 +18,6 @@ echo "GCS_BUCKET=$GCS_BUCKET"
 mvn -f ../pom.xml compile exec:java -Dexec.mainClass=bigtable.fraud.beam.LoadDataset -Dexec.cleanupDaemonThreads=false \
 "-Dexec.args= --runner=DataflowRunner --project=$PROJECT_ID --projectID=$PROJECT_ID --region=$REGION \
 --gcpTempLocation=gs://$GCS_BUCKET/temp --CBTInstanceId=$CBT_INSTANCE --CBTTableId=$CBT_TABLE \
---demographicsInputFile=gs://$GCS_BUCKET/training_dataset/customers.csv \
+--customerProfileInputFile=gs://$GCS_BUCKET/training_dataset/customers.csv \
 --historyInputFile=gs://$GCS_BUCKET/training_dataset/transactions.csv \
 --randomUUID=$RANDOM_UUID"

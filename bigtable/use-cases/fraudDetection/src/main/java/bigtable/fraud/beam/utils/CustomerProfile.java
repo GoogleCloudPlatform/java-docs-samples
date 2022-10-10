@@ -20,7 +20,7 @@ import org.apache.beam.sdk.coders.DefaultCoder;
 import org.apache.hadoop.hbase.client.Result;
 
 @DefaultCoder(AvroCoder.class)
-public final class CustomerDemographics extends RowDetails {
+public final class CustomerProfile extends RowDetails {
 
   /**
    * The incoming request's customer id.
@@ -48,20 +48,20 @@ public final class CustomerDemographics extends RowDetails {
   private String accountNumber;
 
   /**
-   * Constructs CustomerDemographics object.
+   * Constructs CustomerProfile object.
    *
-   * @param line a CustomerDemographics comma-seperated line
+   * @param line a CustomerProfile comma-seperated line
    */
-  public CustomerDemographics(final String line) {
+  public CustomerProfile(final String line) {
     super(line);
   }
 
   /**
-   * Constructs CustomerDemographics object.
+   * Constructs CustomerProfile object.
    *
    * @param row a row result read from Cloud Bigtable.
    */
-  public CustomerDemographics(final Result row) {
+  public CustomerProfile(final Result row) {
     super(row);
   }
 
@@ -81,6 +81,6 @@ public final class CustomerDemographics extends RowDetails {
 
   @Override
   public String getColFamily() {
-    return "demographics";
+    return "customer_profile";
   }
 }

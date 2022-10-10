@@ -16,7 +16,7 @@
 package bigtable.fraud.beam;
 
 import bigtable.fraud.beam.utils.AggregatedData;
-import bigtable.fraud.beam.utils.CustomerDemographics;
+import bigtable.fraud.beam.utils.CustomerProfile;
 import bigtable.fraud.beam.utils.RowDetails;
 import bigtable.fraud.beam.utils.TransactionDetails;
 import bigtable.fraud.beam.utils.WriteCBTHelper;
@@ -127,12 +127,12 @@ public final class FraudDetection {
         Preconditions.checkArgument(new String(row.getRow()).equals(
             transactionDetails.getCustomerID()));
 
-        CustomerDemographics customerDemographics = new CustomerDemographics(
+        CustomerProfile customerProfile = new CustomerProfile(
             row);
 
         // Generate an AggregatedData object.
         AggregatedData aggregatedData =
-            new AggregatedData(customerDemographics, transactionDetails, row);
+            new AggregatedData(customerProfile, transactionDetails, row);
 
         c.output(aggregatedData);
       } catch (Exception e) {

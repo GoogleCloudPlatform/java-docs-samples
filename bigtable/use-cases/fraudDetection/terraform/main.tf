@@ -36,7 +36,7 @@ resource "google_bigtable_table" "tf-fd-table" {
   name          = "customer-information-${random_string.uuid.result}"
   instance_name = google_bigtable_instance.tf-fd-instance.name
   column_family {
-    family = "demographics"
+    family = "user_profile"
   }
   column_family {
     family = "history"
@@ -116,7 +116,7 @@ resource "google_storage_bucket_object" "legit_transactions" {
   bucket = google_storage_bucket.tf-fd-bucket.name
 }
 
-# A CSV file that contains customers' demographics.
+# A CSV file that contains customers' profiles.
 resource "google_storage_bucket_object" "customers" {
   name   = "training_dataset/customers.csv"
   source = "./datasets/training_data/customers.csv"
@@ -170,7 +170,7 @@ module "dataflow_pipeline" {
   destroy_cmd_body       = "${var.region} ${random_string.uuid.result}"
 }
 
-# Load both demographics and historical data into Cloud Bigtable so that
+# Load both profiles and historical data into Cloud Bigtable so that
 # the dataflow pipeline can aggregate data properly before querying
 # the ML model.
 
