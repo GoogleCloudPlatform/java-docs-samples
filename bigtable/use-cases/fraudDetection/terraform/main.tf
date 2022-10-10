@@ -36,7 +36,7 @@ resource "google_bigtable_table" "tf-fd-table" {
   name          = "customer-information-${random_string.uuid.result}"
   instance_name = google_bigtable_instance.tf-fd-instance.name
   column_family {
-    family = "user_profile"
+    family = "customer_profile"
   }
   column_family {
     family = "history"
