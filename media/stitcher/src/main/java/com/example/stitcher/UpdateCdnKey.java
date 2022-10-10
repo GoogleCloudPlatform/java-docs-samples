@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_update_cdn_key]
+// [START videostitcher_update_cdn_key]
 
 import com.google.cloud.video.stitcher.v1.AkamaiCdnKey;
 import com.google.cloud.video.stitcher.v1.CdnKey;
@@ -101,4 +101,4 @@ public class UpdateCdnKey {
     }
   }
 }
-// [END video_stitcher_update_cdn_key]
+// [END videostitcher_update_cdn_key]

@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_delete_cdn_key]
+// [START videostitcher_delete_cdn_key]
 
 import com.google.cloud.video.stitcher.v1.CdnKeyName;
 import com.google.cloud.video.stitcher.v1.DeleteCdnKeyRequest;
@@ -51,4 +51,4 @@ public class DeleteCdnKey {
     }
   }
 }
-// [END video_stitcher_delete_cdn_key]
+// [END videostitcher_delete_cdn_key]

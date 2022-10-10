@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_delete_slate]
+// [START videostitcher_delete_slate]
 
 import com.google.cloud.video.stitcher.v1.DeleteSlateRequest;
 import com.google.cloud.video.stitcher.v1.SlateName;
@@ -51,4 +51,4 @@ public class DeleteSlate {
     }
   }
 }
-// [END video_stitcher_delete_slate]
+// [END videostitcher_delete_slate]

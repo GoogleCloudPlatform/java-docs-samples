@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_get_live_session]
+// [START videostitcher_get_live_session]
 
 import com.google.cloud.video.stitcher.v1.GetLiveSessionRequest;
 import com.google.cloud.video.stitcher.v1.LiveSession;
@@ -52,4 +52,4 @@ public class GetLiveSession {
     }
   }
 }
-// [END video_stitcher_get_live_session]
+// [END videostitcher_get_live_session]
