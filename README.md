@@ -1,7 +1,6 @@
 # Google Cloud Platform Java Samples
 
 ![Kokoro Build Status](https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples.png)
-[![Coverage Status](https://codecov.io/gh/GoogleCloudPlatform/java-docs-samples/branch/main/graph/badge.svg)](https://codecov.io/gh/GoogleCloudPlatform/java-docs-samples)
 
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
