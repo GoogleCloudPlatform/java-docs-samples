@@ -1,6 +1,6 @@
 # Credit card fraud detection using Cloud Bigtable
 
-This sample application aims to build a fast and scalable fraud detection system using Cloud Bigtable as its feature store. The feature store holds demographic information (customer ids, addresses, etc.) and historical transactions. In order to determine if a transaction is fraudulent, the feature store queries the customer demographic information and transaction history.
+This sample application aims to build a fast and scalable fraud detection system using Cloud Bigtable as its feature store. The feature store holds metadata information (customer ids, addresses, etc.) and historical transactions. In order to determine if a transaction is fraudulent, the feature store queries the customer metadata information and transaction history.
 
 Cloud Bigtable is a great fit to use as a feature store for the following reasons:
 
@@ -17,7 +17,7 @@ Cloud Bigtable is a great fit to use as a feature store for the following reason
     
 **2.  ML Model:** The component that decides the probability of a transaction of being fraudulent. This sample application provides a pre-trained ML model and hosts it on VertexAI ([See ML Model section](#ml-model)).
     
-**3.  Cloud Bigtable as a Feature Store:** Cloud Bigtable stores customers’ demographics and historical data. The Dataflow pipeline queries Cloud Bigtable in real-time and aggregates customers' demographics and historical data.
+**3.  Cloud Bigtable as a Feature Store:** Cloud Bigtable stores customers’ metadata and historical data. The Dataflow pipeline queries Cloud Bigtable in real-time and aggregates customers' metadata and historical data.
     
 **4.  Dataflow Pipeline:** The streaming pipeline that orchestrates this whole operation. It reads the transaction details from the Cloud Pub/Sub input topic, queries Cloud Bigtable to build a feature vector that is sent to the ML model, and lastly, it writes the output to the Cloud Pub/Sub output topic.
     
@@ -43,13 +43,13 @@ Cloud Bigtable stores data in tables, each of which is a sorted key/value map. T
 This design uses a single table to store all customers' information following [table design best practices.](https://cloud.google.com/bigtable/docs/schema-design#tables) The table is structured as follows:
 
   
-| row key   |     demographics column family     | historical transactions column family |  
+| row key   |       metadata column family       | historical transactions column family |  
 |-----------|:----------------------------------:|--------------------------------------:|
-| user_id 1 | Customer’s demographic information |        Transaction details at time 10 |   
+| user_id 1 | Customer’s metadata information |        Transaction details at time 10 |   
  |           |                                    |         Transaction details at time 7 |
  |           |                                    |         Transaction details at time 4 |
  |           |                                    |                                   ... |
-| user_id 2 | Customer’s demographic information |         Transaction details at time 8 |   
+| user_id 2 | Customer’s metadata information |         Transaction details at time 8 |   
  |           |                                    |         Transaction details at time 7 |
  |           |                                    |                                   ... |
  
@@ -62,9 +62,9 @@ This design uses a single table to store all customers' information following [t
 
 The data is separated over two column families. Having multiple column families allows for different garbage collection policies (See garbage collection section). Moreover, it is used to group data that is often queried together.
 
-**Demographics Column Family:** This column family contains the demographic data for customers. Usually, each customer will have one value for each column in this column family.
+**Metadata Column Family:** This column family contains the metadata data for customers. Usually, each customer will have one value for each column in this column family.
 
-**History Column Family:** This column family contains the historical transaction that this specific user had before. The dataflow pipeline aggregates the data in this column family and sends them along with the demographics data to the ML model.
+**History Column Family:** This column family contains the historical transaction that this specific user had before. The dataflow pipeline aggregates the data in this column family and sends them along with the metadata data to the ML model.
 
 ### Cloud Bigtable configurations
 
@@ -74,7 +74,7 @@ The Terraform code creates a Cloud Bigtable instance that has 1 node. This is a 
 
 **Garbage Collection Policy**
 
-The current Terraform code does not have any garbage collection policies. However, it could be beneficial for this use case to set a garbage collection policy for the History column family. The ML model does not need to read all the history of the customer. For example, you can set a garbage collection policy to delete all transactions that are older than `N` months but keep at least `M` last transactions. The demographics column family could have a policy that prevents having more than one value in each column. You can read more about Cloud Bigtable Garbage Collection Policies by reading: [Types of garbage collection](https://cloud.google.com/bigtable/docs/garbage-collection#types)  
+The current Terraform code does not have any garbage collection policies. However, it could be beneficial for this use case to set a garbage collection policy for the History column family. The ML model does not need to read all the history of the customer. For example, you can set a garbage collection policy to delete all transactions that are older than `N` months but keep at least `M` last transactions. The metadata column family could have a policy that prevents having more than one value in each column. You can read more about Cloud Bigtable Garbage Collection Policies by reading: [Types of garbage collection](https://cloud.google.com/bigtable/docs/garbage-collection#types)  
 
 **Replication**
 
@@ -113,14 +113,14 @@ cd terraform
 terraform init
 terraform apply -var="project_id=$PROJECT_ID"
 ```
-This builds the infrastructure shown above, populates Cloud Bigtable with customers’ demographics data, and populates Cloud Bigtable with customers’ historical data. It takes about 5-10 minutes to finish.
+This builds the infrastructure shown above, populates Cloud Bigtable with customers’ metadata data, and populates Cloud Bigtable with customers’ historical data. It takes about 5-10 minutes to finish.
 It builds the following resources:
 
 | Resource                            | Resource Name                                                                                                                               |
 |-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | Cloud Bigtable Instance             | featurestore-{RANDOM\_ID}                                                                                                                   |
 | Cloud Bigtable Table                | customer-information-{RANDOM\_ID}                                                                                                           |
-| Cloud Bigtable Column Family        | demographics, history                                                                                                                       |
+| Cloud Bigtable Column Family        | metadata, history                                                                                                                       |
 | Cloud Pubsub Input Topic            | transaction-stream-{RANDOM\_ID}                                                                                                             |
 | Cloud Pubsub Output Topic           | fraud-result-stream-{RANDOM\_ID}                                                                                                            |
 | Cloud Pubsub Output Subscription    | fraud-result-stream-subscription-{RANDOM\_ID}                                                                                               |
@@ -128,7 +128,7 @@ It builds the following resources:
 | Google Storage Objects              | * temp/ (*for temporary dataflow generated files*) <br/> * testing_dataset/ <br/>* training_dataset/ <br/>* ml_model/                       |
 | VertexAI Model                      | fraud-ml-model-{RANDOM\_ID}                                                                                                                 |
 | VertexAI Endpoint                   | *The endpoint Id is determined in runtime, stored in Scripts/ENDPOINT\_ID.output*                                                           |
-| Dataflow Load Demographics Data Job | load-customer-demographics-{RANDOM\_ID} (*batch job that loads demographics data from GS to Cloud Bigtable*)                                |
+| Dataflow Load Metadata Data Job | load-customer-metadata-{RANDOM\_ID} (*batch job that loads metadata data from GS to Cloud Bigtable*)                                |
 | Dataflow Load Historical Data Job   | load-customer-historical-transactions-{RANDOM\_ID} (*batch job that loads historical data from GS to Cloud Bigtable*)                       |
 | Dataflow Fraud Detection Job        | fraud-detection-{RANDOM\_ID} (*streaming job that listens to the input Pub/Sub topic and produces the results to the output Pub/Sub topic*) |
 
@@ -189,9 +189,9 @@ You can change the ML model simply by swapping the terraform/model/model.bst wit
 **Changing the Dataset**
 
 The following steps are needed to change the dataset:
-1) Replace the demographics and historical datasets in terraform/datasets/training_data.
+1) Replace the metadata and historical datasets in terraform/datasets/training_data.
 2) Train an ML model using the new dataset, and follow the steps above for replacing the ML model.
-3) Add the new fields to CustomerDemographics, and TransactionDetails classes.
+3) Add the new fields to CustomerMetadata, and TransactionDetails classes.
 4) Potentially, change the AggregatedData class to generate a new feature vector based on the new dataset.
 
 
