@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_get_vod_session]
+// [START videostitcher_get_vod_session]
 
 import com.google.cloud.video.stitcher.v1.GetVodSessionRequest;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
@@ -52,4 +52,4 @@ public class GetVodSession {
     }
   }
 }
-// [END video_stitcher_get_vod_session]
+// [END videostitcher_get_vod_session]

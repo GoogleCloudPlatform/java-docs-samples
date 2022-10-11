@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_create_live_session]
+// [START videostitcher_create_live_session]
 
 import com.google.cloud.video.stitcher.v1.AdTag;
 import com.google.cloud.video.stitcher.v1.CreateLiveSessionRequest;
@@ -66,4 +66,4 @@ public class CreateLiveSession {
     }
   }
 }
-// [END video_stitcher_create_live_session]
+// [END videostitcher_create_live_session]

@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_get_cdn_key]
+// [START videostitcher_get_cdn_key]
 
 import com.google.cloud.video.stitcher.v1.CdnKey;
 import com.google.cloud.video.stitcher.v1.CdnKeyName;
@@ -52,4 +52,4 @@ public class GetCdnKey {
     }
   }
 }
-// [END video_stitcher_get_cdn_key]
+// [END videostitcher_get_cdn_key]

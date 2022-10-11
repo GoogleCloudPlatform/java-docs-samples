@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_update_slate]
+// [START videostitcher_update_slate]
 
 import com.google.cloud.video.stitcher.v1.Slate;
 import com.google.cloud.video.stitcher.v1.SlateName;
@@ -63,4 +63,4 @@ public class UpdateSlate {
     }
   }
 }
-// [END video_stitcher_update_slate]
+// [END videostitcher_update_slate]

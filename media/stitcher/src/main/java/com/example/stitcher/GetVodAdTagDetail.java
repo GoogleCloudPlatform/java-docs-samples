@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_get_vod_ad_tag_detail]
+// [START videostitcher_get_vod_ad_tag_detail]
 
 import com.google.cloud.video.stitcher.v1.GetVodAdTagDetailRequest;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
@@ -56,4 +56,4 @@ public class GetVodAdTagDetail {
     }
   }
 }
-// [END video_stitcher_get_vod_ad_tag_detail]
+// [END videostitcher_get_vod_ad_tag_detail]

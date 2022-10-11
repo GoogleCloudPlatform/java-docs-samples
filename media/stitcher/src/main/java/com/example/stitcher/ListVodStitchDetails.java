@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_list_vod_stitch_details]
+// [START videostitcher_list_vod_stitch_details]
 
 import com.google.cloud.video.stitcher.v1.ListVodStitchDetailsRequest;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
@@ -57,4 +57,4 @@ public class ListVodStitchDetails {
     }
   }
 }
-// [END video_stitcher_list_vod_stitch_details]
+// [END videostitcher_list_vod_stitch_details]
