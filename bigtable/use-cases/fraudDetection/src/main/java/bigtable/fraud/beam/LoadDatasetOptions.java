@@ -58,15 +58,15 @@ public interface LoadDatasetOptions extends DataflowPipelineOptions {
   void setCBTTableId(String tableID);
 
   /**
-   * @return customer demographics input file.
+   * @return customer metadata input file.
    */
-  @Description("The Cloud Storage path to the demographics CSV file.")
-  String getDemographicsInputFile();
+  @Description("The Cloud Storage path to the metadata CSV file.")
+  String getMetadataInputFile();
 
   /**
-   * @param location customer demographics file location.
+   * @param location customer metadata file location.
    */
-  void setDemographicsInputFile(String location);
+  void setMetadataInputFile(String location);
 
   /**
    * @return transactions history input file.

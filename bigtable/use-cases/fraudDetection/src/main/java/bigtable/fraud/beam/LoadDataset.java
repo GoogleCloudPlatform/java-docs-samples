@@ -15,7 +15,7 @@
  */
 package bigtable.fraud.beam;
 
-import bigtable.fraud.beam.utils.CustomerDemographics;
+import bigtable.fraud.beam.utils.CustomerMetadata;
 import bigtable.fraud.beam.utils.TransactionDetails;
 import bigtable.fraud.beam.utils.RowDetails;
 import bigtable.fraud.beam.utils.WriteCBTHelper;
@@ -29,7 +29,7 @@ import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.TypeDescriptor;
 
-// Load customer demographics and history into Cloud Bigtable.
+// Load customer metadata and history into Cloud Bigtable.
 public final class LoadDataset {
 
   /**
@@ -46,7 +46,7 @@ public final class LoadDataset {
     LoadDatasetOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation()
             .as(LoadDatasetOptions.class);
-    options.setJobName("load-customer-demographics-" + options.getRandomUUID());
+    options.setJobName("load-customer-metadata-" + options.getRandomUUID());
 
     CloudBigtableTableConfiguration config =
         new CloudBigtableTableConfiguration.Builder()
@@ -55,21 +55,21 @@ public final class LoadDataset {
             .withTableId(options.getCBTTableId())
             .build();
 
-    // Create a pipeline that reads the GCS demographics csv file
+    // Create a pipeline that reads the GCS metadata csv file
     // and write it into CBT.
-    Pipeline pDemographics = Pipeline.create(options);
-    pDemographics
+    Pipeline pMetadata = Pipeline.create(options);
+    pMetadata
         .apply("ReadGCSFile",
-            TextIO.read().from(options.getDemographicsInputFile()))
+            TextIO.read().from(options.getMetadataInputFile()))
         .apply(
             MapElements.into(TypeDescriptor.of(RowDetails.class))
-                .via(CustomerDemographics::new))
+                .via(CustomerMetadata::new))
         .apply("TransformParsingsToBigtable",
             ParDo.of(WriteCBTHelper.MUTATION_TRANSFORM))
         .apply(
             "WriteToBigtable",
             CloudBigtableIO.writeToTable(config));
-    PipelineResult pDemographicsRun = pDemographics.run();
+    PipelineResult pMetadataRun = pMetadata.run();
 
     // Create a pipeline that reads the GCS history csv file and write
     // it into CBT
@@ -89,7 +89,7 @@ public final class LoadDataset {
             CloudBigtableIO.writeToTable(config));
     PipelineResult pHistoryRun = pHistory.run();
 
-    pDemographicsRun.waitUntilFinish();
+    pMetadataRun.waitUntilFinish();
     pHistoryRun.waitUntilFinish();
   }
 }

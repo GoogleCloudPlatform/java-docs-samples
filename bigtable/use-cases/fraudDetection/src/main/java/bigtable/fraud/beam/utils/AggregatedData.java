@@ -28,9 +28,9 @@ public final class AggregatedData {
    */
   private TransactionDetails transactionDetails;
   /**
-   * Stores the incoming transaction customer demographics.
+   * Stores the incoming transaction customer metadata.
    */
-  private CustomerDemographics customerDemographics;
+  private CustomerMetadata customerMetadata;
   /**
    * Stores the time difference between this transaction and the last one in
    * minutes.
@@ -58,14 +58,14 @@ public final class AggregatedData {
   /**
    * Construct an AggregatedData object.
    *
-   * @param iCustomerDemographics the incoming customer demographic object.
+   * @param iCustomerMetadata the incoming customer metadata object.
    * @param iTransactionDetails the incoming transaction details object.
    * @param row a result row read from Cloud Bigtable.
    */
   public AggregatedData(
-      final CustomerDemographics iCustomerDemographics,
+      final CustomerMetadata iCustomerMetadata,
       final TransactionDetails iTransactionDetails, final Result row) {
-    this.customerDemographics = iCustomerDemographics;
+    this.customerMetadata = iCustomerMetadata;
     this.transactionDetails = iTransactionDetails;
 
     // Get last transaction.
@@ -162,8 +162,8 @@ public final class AggregatedData {
     mlFeatures.add(String.valueOf(avgAmountSpentLastWeek));
     mlFeatures.add(String.valueOf(avgAmountSpentLastMonth));
     mlFeatures.add(String.valueOf(numOfTransactionLastDay));
-    mlFeatures.add(String.valueOf(customerDemographics.getId()));
-    mlFeatures.add(customerDemographics.getCcNumber());
+    mlFeatures.add(String.valueOf(customerMetadata.getId()));
+    mlFeatures.add(customerMetadata.getCcNumber());
     mlFeatures.add(String.valueOf(transactionDetails.getTransactionAmount()));
     mlFeatures.add(String.valueOf(transactionDetails.getMerchantID()));
 
