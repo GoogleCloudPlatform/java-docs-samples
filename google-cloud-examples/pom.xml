@@ -10,6 +10,11 @@
   <description>
     Examples for google-cloud.
   </description>
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.2.0</version>
+  </parent>
   <properties>
     <site.installationModule>google-cloud-examples</site.installationModule>
   </properties>
@@ -18,7 +23,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>25.4.0</version>
+        <version>26.1.3</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

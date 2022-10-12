@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.cloud.examples.securitycenter.snippets;
 
 import com.google.api.gax.longrunning.OperationFuture;
@@ -315,8 +316,8 @@ public class AssetSnippets {
 
     Preconditions.checkNotNull(
         org_id,
-        "Organization ID must either be set in the environment variable \"ORGANIZATION_ID\" or passed"
-            + " as the first parameter to the program.");
+        "Organization ID must either be set in the environment variable \"ORGANIZATION_ID\" or"
+            + " passed as the first parameter to the program.");
 
     listAssetsWithFilter(OrganizationName.of(org_id));
   }
