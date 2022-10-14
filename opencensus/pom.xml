@@ -46,7 +46,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>25.0.0</version>
+        <version>26.1.3</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -71,9 +71,9 @@
       <version>${opencensus.version}</version>
     </dependency>
     <dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>google-cloud-core</artifactId>
-		</dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-core</artifactId>
+    </dependency>
     <!-- [END monitoring_opencensus_metrics_dependencies] -->
   </dependencies>
 
