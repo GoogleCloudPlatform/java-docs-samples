@@ -152,7 +152,13 @@ public class ManagerIT {
       DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     }
 
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -176,7 +182,13 @@ public class ManagerIT {
       DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     }
 
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -194,7 +206,13 @@ public class ManagerIT {
 
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -213,7 +231,13 @@ public class ManagerIT {
 
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -232,9 +256,15 @@ public class ManagerIT {
 
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
-    }
+    }    
   }
 
   @Test
@@ -252,7 +282,13 @@ public class ManagerIT {
 
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -272,7 +308,13 @@ public class ManagerIT {
 
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -292,7 +334,13 @@ public class ManagerIT {
 
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -307,7 +355,13 @@ public class ManagerIT {
     Assert.assertFalse(got.contains("eventNotificationConfigs"));
 
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -322,7 +376,13 @@ public class ManagerIT {
     Assert.assertTrue(got.contains("ETAG"));
 
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -338,7 +398,13 @@ public class ManagerIT {
     Assert.assertTrue(got.contains("ETAG"));
 
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -375,7 +441,13 @@ public class ManagerIT {
     // Clean up
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -410,7 +482,13 @@ public class ManagerIT {
     // Clean up
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -446,7 +524,13 @@ public class ManagerIT {
     // Clean up
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -482,7 +566,13 @@ public class ManagerIT {
     // Clean up
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -537,7 +627,13 @@ public class ManagerIT {
     // Clean up
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -575,7 +671,13 @@ public class ManagerIT {
     // Clean up
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -610,7 +712,13 @@ public class ManagerIT {
     // Clean up
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -663,7 +771,13 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteDevice(gatewayName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -711,7 +825,13 @@ public class ManagerIT {
     // Clean up
     DeviceRegistryExample.deleteDevice(gatewayName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
@@ -766,7 +886,13 @@ public class ManagerIT {
     DeviceRegistryExample.deleteDevice(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteDevice(gatewayName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
     DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try {
+      TopicAdminClient topicAdminClient = TopicAdminClient.create();
+    } catch (ApiException e) {
+      if (e.getStatusCode() != Status.Code.ALREADY_EXISTS) {
+        throw e;
+      }
+    } finally {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
