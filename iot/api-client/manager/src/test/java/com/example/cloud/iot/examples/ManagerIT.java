@@ -188,7 +188,8 @@ public class ManagerIT {
     try {
       topic = DeviceRegistryExample.createIotTopic(PROJECT_ID, TOPIC_ID);
       DeviceRegistryExample.createRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID, TOPIC_ID);
-      DeviceRegistryExample.createDeviceWithNoAuth(deviceName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
+      DeviceRegistryExample.createDeviceWithNoAuth(deviceName, PROJECT_ID, CLOUD_REGION,
+          REGISTRY_ID);
 
       String got = bout.toString(StandardCharsets.UTF_8.name());
       Assert.assertTrue(got.contains("Created device: {"));
@@ -780,11 +781,11 @@ public class ManagerIT {
       String got = bout.toString(StandardCharsets.UTF_8.name());
       Assert.assertTrue(got.contains("error_type"));
 
-      } finally {
+    } finally {
       // Clean up
       DeviceRegistryExample.deleteDevice(gatewayName, PROJECT_ID, CLOUD_REGION, REGISTRY_ID);
       DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
-      }
+    }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
