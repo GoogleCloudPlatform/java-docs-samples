@@ -39,6 +39,20 @@
     <opencensus.version>0.31.1</opencensus.version>
   </properties>
 
+ <!--  Using libraries-bom to manage versions.
+  See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>25.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- [START monitoring_opencensus_metrics_dependencies] -->
     <dependency>
@@ -56,6 +70,10 @@
       <artifactId>opencensus-exporter-stats-stackdriver</artifactId>
       <version>${opencensus.version}</version>
     </dependency>
+    <dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-core</artifactId>
+		</dependency>
     <!-- [END monitoring_opencensus_metrics_dependencies] -->
   </dependencies>
 
