@@ -25,6 +25,7 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,7 +36,9 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 public class DeferredTaskTest {
-  @Rule public Timeout testTimeout = new Timeout(10, TimeUnit.MINUTES);
+  @Rule public final Timeout testTimeout = new Timeout(10, TimeUnit.MINUTES);
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+
 
   // Unlike CountDownLatch, TaskCountDownlatch lets us reset.
   private static final LocalTaskQueueTestConfig.TaskCountDownLatch latch =

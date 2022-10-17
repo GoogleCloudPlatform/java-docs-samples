@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_get_slate]
+// [START videostitcher_get_slate]
 
 import com.google.cloud.video.stitcher.v1.GetSlateRequest;
 import com.google.cloud.video.stitcher.v1.Slate;
@@ -52,4 +52,4 @@ public class GetSlate {
     }
   }
 }
-// [END video_stitcher_get_slate]
+// [END videostitcher_get_slate]

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bigtable.fraud.utils;
+package bigtable.fraud.beam.utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

@@ -16,7 +16,7 @@
 
 package com.example.stitcher;
 
-// [START video_stitcher_list_slates]
+// [START videostitcher_list_slates]
 
 import com.google.cloud.video.stitcher.v1.ListSlatesRequest;
 import com.google.cloud.video.stitcher.v1.LocationName;
@@ -55,4 +55,4 @@ public class ListSlates {
     }
   }
 }
-// [END video_stitcher_list_slates]
+// [END videostitcher_list_slates]
