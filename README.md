@@ -1,6 +1,8 @@
 # Google Cloud Platform Java Samples
 
-![Kokoro Build Status](https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples.png)
+[![Build Status][java-8-badge]][java-8-link] [![Build 
+Status][java-11-badge]][java-11-link] [![Build 
+Status][java-17-badge]][java-17-link]
 
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
@@ -54,7 +56,7 @@ doesn't comply with the license.)
 
 Apache header:
 
-    Copyright 2020 Google LLC
+    Copyright 2022 Google LLC
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -72,5 +74,17 @@ Apache header:
 [cred]: http://google.github.io/google-auth-library-java/releases/0.6.0/apidocs/com/google/auth/Credentials.html?is-external=true
 [options]: http://googlecloudplatform.github.io/google-cloud-java/0.12.0/apidocs/com/google/cloud/ServiceOptions.Builder.html#setCredentials-com.google.auth.Credentials-
 [auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
+[java-8-badge]: 
+https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-8.svg
+[java-8-link]: 
+https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-8.html
+[java-11-badge]: 
+https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-11.svg
+[java-11-link]: 
+https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-11.html
+[java-17-badge]: 
+https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-17.svg
+[java-17-link]: 
+https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-17.html
 
 Java is a registered trademark of Oracle and/or its affiliates.
