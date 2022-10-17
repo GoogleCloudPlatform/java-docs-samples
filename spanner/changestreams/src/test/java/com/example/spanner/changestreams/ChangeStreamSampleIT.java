@@ -110,10 +110,9 @@ public class ChangeStreamSampleIT {
 
     String got = bout.toString();
     System.setOut(stdOut);
-    System.out.println("Standard output: " + got);
-    Assert.assertTrue(got.contains("Received a ChildPartitionsRecord"));
-    Assert.assertTrue(got.contains("Received a DataChangeRecord"));
-    Assert.assertTrue(got.contains("mods=[Mod{keysJson={\"SingerId\":\"1\"}, "
+    Assert.assertTrue(got, got.contains("Received a ChildPartitionsRecord"));
+    Assert.assertTrue(got, got.contains("Received a DataChangeRecord"));
+    Assert.assertTrue(got, got.contains("mods=[Mod{keysJson={\"SingerId\":\"1\"}, "
         + "oldValuesJson='', "
         + "newValuesJson="
         + "'{\"FirstName\":\"singer_1_first_name\",\"LastName\":\"singer_1_last_name\"}'}, "
