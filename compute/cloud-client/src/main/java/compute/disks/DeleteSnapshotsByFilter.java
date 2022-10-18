@@ -18,9 +18,9 @@ package compute.disks;
 
 import com.google.cloud.compute.v1.ListSnapshotsRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
-import com.google.cloud.compute.v1.SnapshotsClient.ListPagedResponse;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -41,50 +41,30 @@ public class DeleteSnapshotsByFilter {
     deleteSnapshotsByFilter(projectId, filter);
   }
 
-  // Delete a snapshot of a disk.
-  private static void deleteSnapshot(String projectId, String snapshotName)
+  // Deletes all snapshots in project that meet the filter criteria.
+  public static void deleteSnapshotsByFilter(String projectId, String filter)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `snapshotsClient.close()` method on the client to safely
     // clean up any remaining background resources.
     try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
-
-      Operation operation = snapshotsClient.deleteAsync(projectId, snapshotName)
-          .get(3, TimeUnit.MINUTES);
-
-      if (operation.hasError()) {
-        throw new Error("Snapshot deletion failed!" + operation.getError());
-      }
-      System.out.printf("Snapshot deleted: %s", snapshotName);
-    }
-  }
-
-  // List snapshots from a project.
-  private static ListPagedResponse listSnapshots(String projectId, String filter)
-      throws IOException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `snapshotsClient.close()` method on the client to safely
-    // clean up any remaining background resources.
-    try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
-
       // Create the List Snapshot request.
       ListSnapshotsRequest listSnapshotsRequest = ListSnapshotsRequest.newBuilder()
           .setProject(projectId)
           .setFilter(filter)
           .build();
 
-      return snapshotsClient.list(listSnapshotsRequest);
-    }
-  }
+      // Iterate through the resultant snapshots and delete them.
+      for (Snapshot snapshot : snapshotsClient.list(listSnapshotsRequest).iterateAll()) {
+        Operation operation = snapshotsClient.deleteAsync(projectId, snapshot.getName())
+            .get(3, TimeUnit.MINUTES);
 
-  // Deletes all snapshots in project that meet the filter criteria.
-  public static void deleteSnapshotsByFilter(String projectId, String filter)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-
-    for (Snapshot snapshot : listSnapshots(projectId, filter).iterateAll()) {
-      deleteSnapshot(projectId, snapshot.getName());
+        if (operation.hasError() || operation.getStatus() != Status.DONE) {
+          throw new Error("Snapshot deletion failed!" + operation.getError());
+        }
+        System.out.printf("Snapshot deleted: %s", snapshot.getName());
+      }
     }
   }
 }

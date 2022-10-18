@@ -40,7 +40,6 @@ public class GetSnapshot {
     // the `snapshotsClient.close()` method on the client to safely
     // clean up any remaining background resources.
     try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
-
       Snapshot snapshot = snapshotsClient.get(projectId, snapshotName);
       System.out.printf("Retrieved the snapshot: %s", snapshot.getName());
     }
