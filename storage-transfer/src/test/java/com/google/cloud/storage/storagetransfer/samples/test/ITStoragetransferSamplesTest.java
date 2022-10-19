@@ -311,9 +311,8 @@ public class ITStoragetransferSamplesTest {
         "Sample transfer job from S3 to GCS.",
         AMAZON_BUCKET,
         SINK_GCS_BUCKET,
-        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime(),
-        System.getenv("AWS_ACCESS_KEY_ID"),
-        System.getenv("AWS_SECRET_ACCESS_KEY"));
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00")
+            .getTime());
 
     String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
     assertThat(sampleOutput).contains("transferJobs/");
@@ -328,9 +327,8 @@ public class ITStoragetransferSamplesTest {
         "Sample transfer job from S3 to GCS.",
         AMAZON_BUCKET,
         SINK_GCS_BUCKET,
-        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime(),
-        System.getenv("AWS_ACCESS_KEY_ID"),
-        System.getenv("AWS_SECRET_ACCESS_KEY"));
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00")
+            .getTime());
 
     String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
     assertThat(sampleOutput).contains("transferJobs/");
