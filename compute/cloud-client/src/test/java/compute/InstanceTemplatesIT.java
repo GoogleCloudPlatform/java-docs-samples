@@ -134,6 +134,9 @@ public class InstanceTemplatesIT {
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     assertThat(stdOut.toString())
         .contains("Instance template deletion operation status for " + TEMPLATE_NAME);
+    DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_WITH_DISK);
+    assertThat(stdOut.toString())
+        .contains("Instance template deletion operation status for " + TEMPLATE_NAME_WITH_DISK);
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE);
     assertThat(stdOut.toString())
         .contains("Instance template deletion operation status for " + TEMPLATE_NAME_FROM_INSTANCE);
