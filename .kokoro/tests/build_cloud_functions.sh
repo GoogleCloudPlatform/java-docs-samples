@@ -56,7 +56,7 @@ fi
 # Deploy functions
 set -x
 
-for i in {1..5}; do # Retry
+for i in {1..5}; do # Retry up to 5 times
   if [[ "$file" == *"hello-http"* ]]; then
     echo "Deploying function HelloHttp to: ${FUNCTIONS_HTTP_FN_NAME}"
     gcloud functions deploy $FUNCTIONS_HTTP_FN_NAME \
@@ -64,7 +64,7 @@ for i in {1..5}; do # Retry
       --runtime $FUNCTIONS_JAVA_RUNTIME \
       --entry-point "functions.HelloHttp" \
       --trigger-http \
-      && break
+      && break || sleep 15
   elif [[ "$file" == *"hello-pubsub"* ]]; then
     echo "Deploying function HelloPubSub to: ${FUNCTIONS_PUBSUB_FN_NAME}"
     gcloud functions deploy $FUNCTIONS_PUBSUB_FN_NAME \
@@ -72,7 +72,7 @@ for i in {1..5}; do # Retry
       --runtime $FUNCTIONS_JAVA_RUNTIME \
       --entry-point "functions.${LANGUAGE}HelloPubSub" \
       --trigger-topic $FUNCTIONS_SYSTEM_TEST_TOPIC \
-      && break
+      && break || sleep 15
   elif [[ "$file" == *"hello-gcs"* ]]; then
     echo "Deploying function HelloGcs to: ${FUNCTIONS_GCS_FN_NAME}"
     gcloud functions deploy $FUNCTIONS_GCS_FN_NAME \
@@ -80,7 +80,7 @@ for i in {1..5}; do # Retry
       --runtime $FUNCTIONS_JAVA_RUNTIME \
       --entry-point "functions.HelloGcs" \
       --trigger-bucket $FUNCTIONS_BUCKET \
-      && break
+      && break || sleep 15
   fi
 done
 
