@@ -54,6 +54,7 @@ public class SnapshotsIT {
   private static String DISK_NAME;
   private static String REGIONAL_DISK_NAME;
   private static String SNAPSHOT_NAME;
+  private static String SNAPSHOT_NAME_DELETE_BY_FILTER;
   private static String SNAPSHOT_NAME_REGIONAL;
 
   private ByteArrayOutputStream stdOut;
@@ -79,6 +80,7 @@ public class SnapshotsIT {
     DISK_NAME = "gcloud-test-disk-" + uuid;
     REGIONAL_DISK_NAME = "gcloud-regional-test-disk-" + uuid;
     SNAPSHOT_NAME = "gcloud-test-snapshot-" + uuid;
+    SNAPSHOT_NAME_DELETE_BY_FILTER = "gcloud-test-snapshot-dbf-" + uuid;
     SNAPSHOT_NAME_REGIONAL = "gcloud-test-regional-snap-" + uuid;
 
     Image debianImage = null;
@@ -89,7 +91,10 @@ public class SnapshotsIT {
     // Create zonal snapshot.
     createDisk(PROJECT_ID, ZONE, DISK_NAME, debianImage.getSelfLink());
     CreateSnapshot.createSnapshot(PROJECT_ID, DISK_NAME, SNAPSHOT_NAME, ZONE, "", LOCATION, "");
+    CreateSnapshot.createSnapshot(PROJECT_ID, DISK_NAME, SNAPSHOT_NAME_DELETE_BY_FILTER, ZONE, "",
+        LOCATION, "");
     assertThat(stdOut.toString()).contains("Snapshot created: " + SNAPSHOT_NAME);
+    assertThat(stdOut.toString()).contains("Snapshot created: " + SNAPSHOT_NAME_DELETE_BY_FILTER);
 
     // Create regional snapshot.
     createRegionalDisk(PROJECT_ID, LOCATION, REGIONAL_DISK_NAME);
@@ -212,6 +217,20 @@ public class SnapshotsIT {
     ListSnapshots.listSnapshots(PROJECT_ID, "");
     assertThat(stdOut.toString()).contains(SNAPSHOT_NAME);
     assertThat(stdOut.toString()).contains(SNAPSHOT_NAME_REGIONAL);
+  }
+
+  @Test
+  public void testGetSnapshot() throws IOException {
+    GetSnapshot.getSnapshot(PROJECT_ID, SNAPSHOT_NAME);
+    assertThat(stdOut.toString()).contains("Retrieved the snapshot: ");
+  }
+
+  @Test
+  public void testDeleteSnapshotsByFilter()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    DeleteSnapshotsByFilter.deleteSnapshotsByFilter(PROJECT_ID,
+        "name = " + SNAPSHOT_NAME_DELETE_BY_FILTER);
+    assertThat(stdOut.toString()).contains("Snapshot deleted: " + SNAPSHOT_NAME_DELETE_BY_FILTER);
   }
 
 }
