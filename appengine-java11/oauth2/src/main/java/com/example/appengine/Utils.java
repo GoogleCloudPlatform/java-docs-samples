@@ -22,7 +22,7 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.MemoryDataStoreFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
@@ -48,7 +48,7 @@ public class Utils {
   static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
   /** Global instance of the JSON factory. */
-  static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+  static final GsonFactory JSON_FACTORY = new GsonFactory();
 
   /** Set your OAuth 2.0 Client Credentials */
   private static String CLIENT_ID = System.getenv("CLIENT_ID");
@@ -65,6 +65,7 @@ public class Utils {
   static String getRedirectUri(HttpServletRequest req) {
     GenericUrl url = new GenericUrl(req.getRequestURL().toString());
     url.setRawPath("/oauth2callback");
+    url.setScheme("https");
     return url.build();
   }
 
@@ -77,7 +78,6 @@ public class Utils {
     return new GoogleAuthorizationCodeFlow.Builder(
             HTTP_TRANSPORT, JSON_FACTORY, CLIENT_ID, CLIENT_SECRET, SCOPES)
         .setDataStoreFactory(DATA_STORE_FACTORY)
-        .setAccessType("offline")
         .build();
   }
   // [END gae_java11_oauth2_code_flow]
