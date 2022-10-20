@@ -28,12 +28,12 @@ requireEnv "FUNCTIONS_BUCKET"
 
 # We must explicitly specify function names for event-based functions
 
-# Version is in the format <PR#>-<GIT COMMIT SHA>.
+# Version is in the format <PR#>-<GIT COMMIT SHA>-<DATE>.
 # Ensures PR-based triggers of the same branch don't collide if Kokoro attempts
 # to run them concurrently.
 export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 # Builds not triggered by a PR will fall back to the commit hash then "latest".
-SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}
+SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}-$(date +%s)
 
 export FUNCTIONS_HTTP_FN_NAME="http-${SUFFIX}"
 export FUNCTIONS_PUBSUB_FN_NAME="pubsub-${SUFFIX}"
@@ -56,33 +56,28 @@ fi
 # Deploy functions
 set -x
 
-for i in {1..5}; do # Retry up to 5 times
-  if [[ "$file" == *"hello-http"* ]]; then
-    echo "Deploying function HelloHttp to: ${FUNCTIONS_HTTP_FN_NAME}"
-    gcloud functions deploy $FUNCTIONS_HTTP_FN_NAME \
-      --region $FUNCTIONS_REGION \
-      --runtime $FUNCTIONS_JAVA_RUNTIME \
-      --entry-point "functions.HelloHttp" \
-      --trigger-http \
-      && break || sleep 15
-  elif [[ "$file" == *"hello-pubsub"* ]]; then
-    echo "Deploying function HelloPubSub to: ${FUNCTIONS_PUBSUB_FN_NAME}"
-    gcloud functions deploy $FUNCTIONS_PUBSUB_FN_NAME \
-      --region $FUNCTIONS_REGION \
-      --runtime $FUNCTIONS_JAVA_RUNTIME \
-      --entry-point "functions.${LANGUAGE}HelloPubSub" \
-      --trigger-topic $FUNCTIONS_SYSTEM_TEST_TOPIC \
-      && break || sleep 15
-  elif [[ "$file" == *"hello-gcs"* ]]; then
-    echo "Deploying function HelloGcs to: ${FUNCTIONS_GCS_FN_NAME}"
-    gcloud functions deploy $FUNCTIONS_GCS_FN_NAME \
-      --region $FUNCTIONS_REGION \
-      --runtime $FUNCTIONS_JAVA_RUNTIME \
-      --entry-point "functions.HelloGcs" \
-      --trigger-bucket $FUNCTIONS_BUCKET \
-      && break || sleep 15
-  fi
-done
+if [[ "$file" == *"hello-http"* ]]; then
+  echo "Deploying function HelloHttp to: ${FUNCTIONS_HTTP_FN_NAME}"
+  gcloud functions deploy $FUNCTIONS_HTTP_FN_NAME \
+    --region $FUNCTIONS_REGION \
+    --runtime $FUNCTIONS_JAVA_RUNTIME \
+    --entry-point "functions.HelloHttp" \
+    --trigger-http \
+elif [[ "$file" == *"hello-pubsub"* ]]; then
+  echo "Deploying function HelloPubSub to: ${FUNCTIONS_PUBSUB_FN_NAME}"
+  gcloud functions deploy $FUNCTIONS_PUBSUB_FN_NAME \
+    --region $FUNCTIONS_REGION \
+    --runtime $FUNCTIONS_JAVA_RUNTIME \
+    --entry-point "functions.${LANGUAGE}HelloPubSub" \
+    --trigger-topic $FUNCTIONS_SYSTEM_TEST_TOPIC \
+elif [[ "$file" == *"hello-gcs"* ]]; then
+  echo "Deploying function HelloGcs to: ${FUNCTIONS_GCS_FN_NAME}"
+  gcloud functions deploy $FUNCTIONS_GCS_FN_NAME \
+    --region $FUNCTIONS_REGION \
+    --runtime $FUNCTIONS_JAVA_RUNTIME \
+    --entry-point "functions.HelloGcs" \
+    --trigger-bucket $FUNCTIONS_BUCKET \
+fi
 
 set +x
 
