@@ -56,28 +56,33 @@ fi
 # Deploy functions
 set -x
 
-if [[ "$file" == *"hello-http"* ]]; then
-  echo "Deploying function HelloHttp to: ${FUNCTIONS_HTTP_FN_NAME}"
-  gcloud functions deploy $FUNCTIONS_HTTP_FN_NAME \
-    --region $FUNCTIONS_REGION \
-    --runtime $FUNCTIONS_JAVA_RUNTIME \
-    --entry-point "functions.HelloHttp" \
-    --trigger-http
-elif [[ "$file" == *"hello-pubsub"* ]]; then
-  echo "Deploying function HelloPubSub to: ${FUNCTIONS_PUBSUB_FN_NAME}"
-  gcloud functions deploy $FUNCTIONS_PUBSUB_FN_NAME \
-    --region $FUNCTIONS_REGION \
-    --runtime $FUNCTIONS_JAVA_RUNTIME \
-    --entry-point "functions.${LANGUAGE}HelloPubSub" \
-    --trigger-topic $FUNCTIONS_SYSTEM_TEST_TOPIC
-elif [[ "$file" == *"hello-gcs"* ]]; then
-  echo "Deploying function HelloGcs to: ${FUNCTIONS_GCS_FN_NAME}"
-  gcloud functions deploy $FUNCTIONS_GCS_FN_NAME \
-    --region $FUNCTIONS_REGION \
-    --runtime $FUNCTIONS_JAVA_RUNTIME \
-    --entry-point "functions.HelloGcs" \
-    --trigger-bucket $FUNCTIONS_BUCKET
-fi
+for i in {1..5}; do # Retry
+  if [[ "$file" == *"hello-http"* ]]; then
+    echo "Deploying function HelloHttp to: ${FUNCTIONS_HTTP_FN_NAME}"
+    gcloud functions deploy $FUNCTIONS_HTTP_FN_NAME \
+      --region $FUNCTIONS_REGION \
+      --runtime $FUNCTIONS_JAVA_RUNTIME \
+      --entry-point "functions.HelloHttp" \
+      --trigger-http \
+      && break
+  elif [[ "$file" == *"hello-pubsub"* ]]; then
+    echo "Deploying function HelloPubSub to: ${FUNCTIONS_PUBSUB_FN_NAME}"
+    gcloud functions deploy $FUNCTIONS_PUBSUB_FN_NAME \
+      --region $FUNCTIONS_REGION \
+      --runtime $FUNCTIONS_JAVA_RUNTIME \
+      --entry-point "functions.${LANGUAGE}HelloPubSub" \
+      --trigger-topic $FUNCTIONS_SYSTEM_TEST_TOPIC \
+      && break
+  elif [[ "$file" == *"hello-gcs"* ]]; then
+    echo "Deploying function HelloGcs to: ${FUNCTIONS_GCS_FN_NAME}"
+    gcloud functions deploy $FUNCTIONS_GCS_FN_NAME \
+      --region $FUNCTIONS_REGION \
+      --runtime $FUNCTIONS_JAVA_RUNTIME \
+      --entry-point "functions.HelloGcs" \
+      --trigger-bucket $FUNCTIONS_BUCKET \
+      && break
+  fi
+done
 
 set +x
 
