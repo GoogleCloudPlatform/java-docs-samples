@@ -28,12 +28,12 @@ requireEnv "FUNCTIONS_BUCKET"
 
 # We must explicitly specify function names for event-based functions
 
-# Version is in the format <PR#>-<GIT COMMIT SHA>.
+# Version is in the format <PR#>-<GIT COMMIT SHA>-<DATE>.
 # Ensures PR-based triggers of the same branch don't collide if Kokoro attempts
 # to run them concurrently.
 export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 # Builds not triggered by a PR will fall back to the commit hash then "latest".
-SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}
+SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}-$(date +%s%N)
 
 export FUNCTIONS_HTTP_FN_NAME="http-${SUFFIX}"
 export FUNCTIONS_PUBSUB_FN_NAME="pubsub-${SUFFIX}"
