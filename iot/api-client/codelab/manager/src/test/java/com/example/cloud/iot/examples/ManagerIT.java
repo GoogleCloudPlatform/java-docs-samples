@@ -78,7 +78,7 @@ public class ManagerIT {
       Assert.assertTrue(terminal.getTerminalSize().toString().contains("x"));
       Assert.assertTrue(terminal.getTerminalSize().toString().contains("{"));
       Assert.assertTrue(terminal.getTerminalSize().toString().contains("}"));
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       // Don't fail when GUI not available: "/dev/tty (No such device or address)"
       System.out.println(e.getMessage());
     }
