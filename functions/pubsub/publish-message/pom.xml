@@ -112,7 +112,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version 3.0.0-M4 does not load JUnit5 correctly -->
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
-        <version>3.0.0-M5</version>
+        <version>3.0.0-M7</version>
         <configuration>
           <includes>
             <include>**/*Test.java</include>
