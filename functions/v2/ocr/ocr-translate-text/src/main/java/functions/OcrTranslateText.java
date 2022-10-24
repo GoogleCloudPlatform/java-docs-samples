@@ -1,17 +1,17 @@
 /*
  * Copyright 2022 Google LLC
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package functions;
@@ -36,12 +36,11 @@ import com.google.pubsub.v1.PubsubMessage;
 import functions.eventpojos.MessagePublishedData;
 import io.cloudevents.CloudEvent;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 public class OcrTranslateText implements CloudEventsFunction {
@@ -51,12 +50,13 @@ public class OcrTranslateText implements CloudEventsFunction {
   private static final String PROJECT_ID = getenv("GCP_PROJECT");
   private static final String RESULTS_TOPIC_NAME = getenv("RESULT_TOPIC");
   private static final String LOCATION_NAME = LocationName.of(PROJECT_ID, "global").toString();
+
   private Publisher publisher;
 
   public OcrTranslateText() throws IOException {
-    publisher = Publisher.newBuilder(
-        ProjectTopicName.of(PROJECT_ID, RESULTS_TOPIC_NAME)).build();
+    publisher = Publisher.newBuilder(ProjectTopicName.of(PROJECT_ID, RESULTS_TOPIC_NAME)).build();
   }
+  
   // Create custom deserializer to handle timestamps in event data
   class DateDeserializer implements JsonDeserializer<OffsetDateTime> {
     @Override
@@ -66,23 +66,32 @@ public class OcrTranslateText implements CloudEventsFunction {
       return OffsetDateTime.parse(json.getAsString());
     }
   }
+
   Gson gson =
       new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new DateDeserializer()).create();
 
   @Override
   public void accept(CloudEvent event) throws InterruptedException, IOException {
-    MessagePublishedData data = gson.fromJson(
-        new String(event.getData().toBytes(), StandardCharsets.UTF_8), MessagePublishedData.class);
-    OcrTranslateApiMessage ocrMessage = OcrTranslateApiMessage
-        .fromPubsubData(data.getMessage().getData().getBytes(StandardCharsets.UTF_8));
+    MessagePublishedData data =
+        gson.fromJson(
+            new String(event.getData().toBytes(), StandardCharsets.UTF_8),
+            MessagePublishedData.class);
+    OcrTranslateApiMessage ocrMessage =
+        OcrTranslateApiMessage.fromPubsubData(
+            data.getMessage().getData().getBytes(StandardCharsets.UTF_8));
 
     String targetLang = ocrMessage.getLang();
     logger.info("Translating text into " + targetLang);
 
     // Translate text to target language
     String text = ocrMessage.getText();
-    TranslateTextRequest request = TranslateTextRequest.newBuilder().setParent(LOCATION_NAME)
-        .setMimeType("text/plain").setTargetLanguageCode(targetLang).addContents(text).build();
+    TranslateTextRequest request =
+        TranslateTextRequest.newBuilder()
+            .setParent(LOCATION_NAME)
+            .setMimeType("text/plain")
+            .setTargetLanguageCode(targetLang)
+            .addContents(text)
+            .build();
 
     TranslateTextResponse response;
     try (TranslationServiceClient client = TranslationServiceClient.create()) {

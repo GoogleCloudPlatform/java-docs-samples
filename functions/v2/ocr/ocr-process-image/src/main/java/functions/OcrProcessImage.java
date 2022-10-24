@@ -77,6 +77,7 @@ public class OcrProcessImage implements CloudEventsFunction {
       return OffsetDateTime.parse(json.getAsString());
     }
   }
+
   Gson gson =
       new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new DateDeserializer()).create();
   // [END functions_ocr_setup]

@@ -23,9 +23,9 @@ import java.util.Map;
 // https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
 @lombok.Data
 public class Message {
-    private Map<String, String> attributes;
-    private String data;
-    private String messageID;
-    private String orderingKey;
-    private OffsetDateTime publishTime;
+  private Map<String, String> attributes;
+  private String data;
+  private String messageId;
+  private String orderingKey;
+  private OffsetDateTime publishTime;
 }

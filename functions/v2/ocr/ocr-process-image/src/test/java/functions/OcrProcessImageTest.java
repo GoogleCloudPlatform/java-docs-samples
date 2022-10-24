@@ -19,7 +19,6 @@ package functions;
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
 import com.google.gson.Gson;
-import functions.eventpojos.GcsEvent;
 import functions.eventpojos.StorageObjectData;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
@@ -36,8 +35,7 @@ import org.junit.Test;
 public class OcrProcessImageTest {
   private static String FUNCTIONS_BUCKET = "nodejs-docs-samples-tests";
 
-  private static final Logger logger = Logger.getLogger(
-      OcrProcessImage.class.getName());
+  private static final Logger logger = Logger.getLogger(OcrProcessImage.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
@@ -58,8 +56,14 @@ public class OcrProcessImageTest {
   public void functionsOcrProcess_shouldValidateParams() throws IOException, URISyntaxException {
     StorageObjectData data = new StorageObjectData();
     Gson gson = new Gson();
-    CloudEvent event = CloudEventBuilder.v1().withId("000").withType("google.cloud.storage.object.v1.finalized").withSource(new URI("curl-command")).withData("application/json", gson.toJson(data).getBytes()).build();
-    
+    CloudEvent event =
+        CloudEventBuilder.v1()
+            .withId("000")
+            .withType("google.cloud.storage.object.v1.finalized")
+            .withSource(new URI("curl-command"))
+            .withData("application/json", gson.toJson(data).getBytes())
+            .build();
+
     sampleUnderTest.accept(event);
   }
 
@@ -69,14 +73,20 @@ public class OcrProcessImageTest {
     data.setBucket(FUNCTIONS_BUCKET);
     data.setName("wakeupcat.jpg");
     Gson gson = new Gson();
-    CloudEvent event = CloudEventBuilder.v1().withId("000").withType("google.cloud.storage.object.v1.finalized").withSource(new URI("curl-command")).withData("application/json", gson.toJson(data).getBytes()).build();
+    CloudEvent event =
+        CloudEventBuilder.v1()
+            .withId("000")
+            .withType("google.cloud.storage.object.v1.finalized")
+            .withSource(new URI("curl-command"))
+            .withData("application/json", gson.toJson(data).getBytes())
+            .build();
 
     sampleUnderTest.accept(event);
 
     List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
-    Truth.assertThat(logs.get(1).getMessage()).contains(
-        "Extracted text from image: Wake up human!");
-    Truth.assertThat(logs.get(2).getMessage()).contains(
-        "Detected language en for file wakeupcat.jpg");
+    Truth.assertThat(logs.get(1).getMessage())
+        .contains("Extracted text from image: Wake up human!");
+    Truth.assertThat(logs.get(2).getMessage())
+        .contains("Detected language en for file wakeupcat.jpg");
   }
 }

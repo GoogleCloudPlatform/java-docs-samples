@@ -25,8 +25,8 @@ import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import functions.eventpojos.MessagePublishedData;
 import functions.eventpojos.Message;
+import functions.eventpojos.MessagePublishedData;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import java.io.IOException;
@@ -77,14 +77,21 @@ public class OcrSaveResultTest {
     Message message = new Message();
     message.setData(new String(Base64.getEncoder().encode("{}".getBytes())));
     data.setMessage(message);
-    
-    CloudEvent event = CloudEventBuilder.v1().withId("000").withType("google.cloud.pubsub.topic.v1.messagePublished").withSource(new URI("curl-command")).withData("application/json", gson.toJson(data).getBytes()).build();
+
+    CloudEvent event =
+        CloudEventBuilder.v1()
+            .withId("000")
+            .withType("google.cloud.pubsub.topic.v1.messagePublished")
+            .withSource(new URI("curl-command"))
+            .withData("application/json", gson.toJson(data).getBytes())
+            .build();
 
     new OcrSaveResult().accept(event);
   }
 
   @Test
-  public void functionsOcrSave_shouldPublishTranslatedText() throws IOException, URISyntaxException {
+  public void functionsOcrSave_shouldPublishTranslatedText()
+      throws IOException, URISyntaxException {
     String text = "Wake up human!";
     String filename = String.format("test-%s.jpg", RANDOM_STRING);
     String lang = "es";
@@ -98,7 +105,13 @@ public class OcrSaveResultTest {
     Message message = new Message();
     message.setData(new String(Base64.getEncoder().encode(gson.toJson(dataJson).getBytes())));
     data.setMessage(message);
-    CloudEvent event = CloudEventBuilder.v1().withId("000").withType("google.cloud.pubsub.topic.v1.messagePublished").withSource(new URI("curl-command")).withData("application/json", gson.toJson(data).getBytes()).build();
+    CloudEvent event =
+        CloudEventBuilder.v1()
+            .withId("000")
+            .withType("google.cloud.pubsub.topic.v1.messagePublished")
+            .withSource(new URI("curl-command"))
+            .withData("application/json", gson.toJson(data).getBytes())
+            .build();
 
     new OcrSaveResult().accept(event);
 
@@ -106,10 +119,10 @@ public class OcrSaveResultTest {
 
     // Check log messages
     List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
-    String expectedMessage = String.format(
-        "Saving result to %s in bucket %s", resultFilename, RESULT_BUCKET);
-    Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(1).getMessage()).isEqualTo(
-        expectedMessage);
+    String expectedMessage =
+        String.format("Saving result to %s in bucket %s", resultFilename, RESULT_BUCKET);
+    Truth.assertThat(LOG_HANDLER.getStoredLogRecords().get(1).getMessage())
+        .isEqualTo(expectedMessage);
 
     // Check that file was written
     BlobInfo resultBlob = STORAGE.get(RESULT_BUCKET, resultFilename);
