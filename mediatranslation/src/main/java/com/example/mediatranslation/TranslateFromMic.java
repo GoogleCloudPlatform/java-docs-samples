@@ -16,7 +16,7 @@
 
 package com.example.mediatranslation;
 
-// [START media_translation_translate_from_mic]
+// [START mediatranslation_translate_from_mic]
 
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ResponseObserver;
@@ -129,4 +129,4 @@ public class TranslateFromMic {
     }
   }
 }
-// [END media_translation_translate_from_mic]
+// [END mediatranslation_translate_from_mic]
