@@ -71,7 +71,7 @@
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-credentials</artifactId>
-      <version>1.6.0</version>
+      <version>1.12.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
