@@ -82,15 +82,12 @@ public class TranslateFromFile {
         // the audio.
         StreamingTranslateSpeechResult res = response.getResult();
         String translation = res.getTextTranslationResult().getTranslation();
-        String source = res.getRecognitionResult();
 
         if (res.getTextTranslationResult().getIsFinal()) {
           System.out.println(String.format("\nFinal translation: %s", translation));
-          System.out.println(String.format("Final recognition result: %s", source));
           break;
         }
         System.out.println(String.format("\nPartial translation: %s", translation));
-        System.out.println(String.format("Partial recognition result: %s", source));
       }
     }
   }
