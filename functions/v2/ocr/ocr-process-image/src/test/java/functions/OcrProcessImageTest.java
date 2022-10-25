@@ -46,6 +46,7 @@ public class OcrProcessImageTest {
   private static final Logger logger = Logger.getLogger(OcrProcessImage.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
+  
   // Create custom serializer to handle timestamps in event data
   class DateSerializer implements JsonSerializer<OffsetDateTime> {
     @Override
