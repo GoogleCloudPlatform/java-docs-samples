@@ -77,7 +77,12 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.9.1</version>
+   </dependency>
+  
   
     <!-- The following dependencies are only required for testing -->
     <dependency>

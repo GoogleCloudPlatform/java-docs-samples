@@ -24,14 +24,22 @@ import com.google.cloud.storage.StorageOptions;
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import functions.eventpojos.Message;
 import functions.eventpojos.MessagePublishedData;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -49,7 +57,18 @@ public class OcrSaveResultTest {
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
-  private static final Gson gson = new Gson();
+  // Create custom serializer to handle timestamps in event data
+  class DateSerializer implements JsonSerializer<OffsetDateTime> {
+    @Override
+    public JsonElement serialize(
+        OffsetDateTime time, Type typeOfSrc, JsonSerializationContext context)
+        throws JsonParseException {
+      return new JsonPrimitive(time.toString());
+    }
+  }
+
+  private final Gson gson =
+      new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new DateSerializer()).create();
 
   private static final Storage STORAGE = StorageOptions.getDefaultInstance().getService();
   private static final String RANDOM_STRING = UUID.randomUUID().toString();

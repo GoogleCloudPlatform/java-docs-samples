@@ -56,7 +56,7 @@ public class OcrTranslateText implements CloudEventsFunction {
   public OcrTranslateText() throws IOException {
     publisher = Publisher.newBuilder(ProjectTopicName.of(PROJECT_ID, RESULTS_TOPIC_NAME)).build();
   }
-  
+
   // Create custom deserializer to handle timestamps in event data
   class DateDeserializer implements JsonDeserializer<OffsetDateTime> {
     @Override
