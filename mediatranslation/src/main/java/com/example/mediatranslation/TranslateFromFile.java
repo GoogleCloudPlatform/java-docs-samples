@@ -16,7 +16,7 @@
 
 package com.example.mediatranslation;
 
-// [START media_translation_translate_from_file]
+// [START mediatranslation_translate_from_file]
 
 import com.google.api.gax.rpc.BidiStream;
 import com.google.cloud.mediatranslation.v1beta1.SpeechTranslationServiceClient;
@@ -92,4 +92,4 @@ public class TranslateFromFile {
     }
   }
 }
-// [END media_translation_translate_from_file]
+// [END mediatranslation_translate_from_file]
