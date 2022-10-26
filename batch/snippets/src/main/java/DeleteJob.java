@@ -49,7 +49,7 @@ public class DeleteJob {
       // Construct the parent path of the job.
       String name = String.format("projects/%s/locations/%s/jobs/%s", projectId, region, jobName);
 
-      batchServiceClient.deleteJobAsync(name).get(3, TimeUnit.MINUTES);
+      batchServiceClient.deleteJobAsync(name).get(5, TimeUnit.MINUTES);
       System.out.printf("Delete the job: %s", jobName);
     }
   }

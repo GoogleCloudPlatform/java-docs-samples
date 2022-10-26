@@ -132,7 +132,7 @@ public class CreateWithScriptNoMounting {
           batchServiceClient
               .createJobCallable()
               .futureCall(createJobRequest)
-              .get(3, TimeUnit.MINUTES);
+              .get(5, TimeUnit.MINUTES);
 
       System.out.printf("Successfully created the job: %s", result.getName());
     }
