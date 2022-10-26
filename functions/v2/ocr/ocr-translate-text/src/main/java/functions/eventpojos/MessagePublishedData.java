@@ -16,6 +16,7 @@
 
 package functions.eventpojos;
 
+// The event data when a message is published to a topic.
 @lombok.Data
 public class MessagePublishedData {
   private Message message;

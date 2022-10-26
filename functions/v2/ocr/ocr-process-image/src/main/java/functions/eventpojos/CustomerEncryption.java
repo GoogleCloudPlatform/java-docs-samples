@@ -16,16 +16,10 @@
 
 package functions.eventpojos;
 
-import java.time.OffsetDateTime;
-import java.util.Map;
-
-// Represents a PubSub message
-// https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
+// Metadata of customer-supplied encryption key for a Cloud Storage object
+// https://cloud.google.com/storage/docs/json_api/v1/objects
 @lombok.Data
-public class Message {
-  private Map<String, String> attributes;
-  private String data;
-  private String messageId;
-  private String orderingKey;
-  private OffsetDateTime publishTime;
+public class CustomerEncryption {
+  private String encryptionAlgorithm;
+  private String keySha256;
 }

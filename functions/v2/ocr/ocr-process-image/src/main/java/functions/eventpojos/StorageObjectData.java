@@ -52,10 +52,4 @@ public class StorageObjectData {
   private OffsetDateTime timeDeleted;
   private OffsetDateTime timeStorageClassUpdated;
   private OffsetDateTime updated;
-
-  @lombok.Data
-  public class CustomerEncryption {
-    private String encryptionAlgorithm;
-    private String keySha256;
-  }
 }
