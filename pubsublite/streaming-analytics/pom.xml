@@ -34,7 +34,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <beam.version>2.40.0</beam.version>
+    <beam.version>2.42.0</beam.version>
 
     <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
     <maven-exec-plugin.version>3.0.0</maven-exec-plugin.version>
@@ -137,7 +137,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-dataflow</artifactId>
-      <version>v1b3-rev20210825-1.32.1</version>
+      <version>v1b3-rev20220920-2.0.0</version>
     </dependency>
 
     <!-- Test dependencies -->
