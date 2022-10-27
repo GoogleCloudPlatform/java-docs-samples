@@ -62,7 +62,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>postgres-socket-factory</artifactId>
-      <version>1.4.1</version>
+      <version>1.7.1</version>
     </dependency>
         <dependency>
       <groupId>org.postgresql</groupId>
@@ -72,12 +72,12 @@
     <dependency>
       <groupId>com.google.crypto.tink</groupId>
       <artifactId>tink</artifactId>
-      <version>1.6.1</version>
+      <version>1.7.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.crypto.tink</groupId>
       <artifactId>tink-gcpkms</artifactId>
-      <version>1.6.1</version>
+      <version>1.7.0</version>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
