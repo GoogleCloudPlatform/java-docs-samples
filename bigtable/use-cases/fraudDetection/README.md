@@ -158,22 +158,30 @@ The ML model is located in the path: **terraform/model**
 
 ### Prerequisites
 
-1) [Have a GCP project.](https://cloud.google.com/resource-manager/docs/creating-managing-projects)
-2) [Have a service account that contains the following permissions:](https://cloud.google.com/docs/authentication/production)
-    1) Bigtable Administrator
-    2) Cloud Dataflow Service Agent
-    3) Compute Admin
-    4) Dataflow Admin
-    5) Dataflow Worker
-    6) Datapipelines Service Agent
-    7) Storage Admin
-    8) Vertex AI User
-3) Set these environment variables:
+1. [Have a GCP project.](https://cloud.google.com/resource-manager/docs/creating-managing-projects)
+2. [Have a service account that contains the following permissions:](https://cloud.google.com/docs/authentication/production)
+    1. Bigtable Administrator
+    1. Cloud Dataflow Service Agent
+    1. Compute Admin
+    1. Dataflow Admin
+    1. Dataflow Worker
+    1. Datapipelines Service Agent
+    1. Storage Admin
+    1. Vertex AI User
+3. Set these environment variables:
+   ```
+   export GOOGLE_APPLICATION_CREDENTIALS={YOUR CREDS PATH}
+   export PROJECT_ID={YOUR PROJECT ID}
+   ```
+   
+4. Enable the required APIs:
+   ```
+   gcloud services enable aiplatform.googleapis.com bigtable.googleapis.com
+   bigtableadmin.googleapis.com compute.googleapis.com dataflow.googleapis.com
+   pubsub.googleapis.com storage-api.googleapis.com
+   storage-component.googleapis.com
+   ```
 
-```
-export GOOGLE_APPLICATION_CREDENTIALS={YOUR CREDS PATH}
-export PROJECT_ID={YOUR PROJECT ID}
-```
 
 ### Running steps
 

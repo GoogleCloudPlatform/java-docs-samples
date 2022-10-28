@@ -42,15 +42,15 @@ import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class FraudDetection {
+
   private FraudDetection() {
   }
 
@@ -61,9 +61,8 @@ public final class FraudDetection {
       FraudDetection.class);
 
   /**
-   * Set the field isFraud to true if the fraud_probability was >= 0.1.
-   * This is a configurable number that should be tuned depending on
-   * the ML model.
+   * Set the field isFraud to true if the fraud_probability was >= 0.1. This is
+   * a configurable number that should be tuned depending on the ML model.
    */
   private static final double FRAUD_PROBABILITY_THRESHOLD = 0.1d;
 
@@ -92,8 +91,8 @@ public final class FraudDetection {
       AbstractCloudBigtableTableDoFn<TransactionDetails, AggregatedData> {
 
     /**
-     * @param config the CloudBigtableConfiguration used in reading from
-     * Cloud Bigtable.
+     * @param config the CloudBigtableConfiguration used in reading from Cloud
+     * Bigtable.
      */
     public ReadFromTableFn(final CloudBigtableConfiguration config) {
       super(config);
@@ -115,20 +114,15 @@ public final class FraudDetection {
             + transactionDetails.getCustomerID());
 
         // Read the cells for that customer ID.
-        Scan scan =
-            new Scan()
-                .withStartRow(Bytes.toBytes(transactionDetails.getCustomerID()))
-                .setOneRowLimit()
-                .setMaxVersions();
         Table table = getConnection().getTable(
             TableName.valueOf(options.getCBTTableId()));
-        ResultScanner data = table.getScanner(scan);
-        Result row = data.next();
+        Result row = table.get(
+            new Get(Bytes.toBytes(transactionDetails.getCustomerID())));
+
         Preconditions.checkArgument(new String(row.getRow()).equals(
             transactionDetails.getCustomerID()));
 
-        CustomerProfile customerProfile = new CustomerProfile(
-            row);
+        CustomerProfile customerProfile = new CustomerProfile(row);
 
         // Generate an AggregatedData object.
         AggregatedData aggregatedData =
@@ -144,6 +138,7 @@ public final class FraudDetection {
 
   public static final class QueryMlModelFn
       extends DoFn<AggregatedData, RowDetails> {
+
     /**
      * The region of the ML model.
      */
