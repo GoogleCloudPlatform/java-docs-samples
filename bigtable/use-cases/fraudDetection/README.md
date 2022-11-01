@@ -257,6 +257,13 @@ gcloud pubsub topics publish $INPUT_TOPIC --message="$TRANSACTION"
 gcloud pubsub subscriptions pull $SUBSCRIPTION --auto-ack
 ```
 
+Alternatively, you can run the send_transactions.sh script that will send a transaction to the Cloud Pub/Sub input topic every 5 seconds.
+
+```
+cd scripts
+sh send_transactions.sh
+```
+
 Output example (in this case the transaction was fraudulent):
 
 ```
