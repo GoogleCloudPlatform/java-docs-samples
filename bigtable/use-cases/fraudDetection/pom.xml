@@ -42,7 +42,7 @@
     <dependency>
       <artifactId>google-api-client</artifactId>
       <groupId>com.google.api-client</groupId>
-      <version>1.31.1</version>
+      <version>1.32.1</version>
     </dependency>
     <dependency>
       <artifactId>junit</artifactId>
