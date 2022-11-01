@@ -263,6 +263,13 @@ Output example (in this case the transaction was fraudulent):
 Transaction id: eb0e996a46d9f80d7339398d2c653639, isFraud: 1
 ```
 
+Alternatively, you can run the send_transactions.sh script that will send a transaction to the Cloud Pub/Sub input topic every 5 seconds.
+
+```
+cd scripts
+sh send_transactions.sh
+```
+
 **3) Resource cleanup**
 
 You can destroy all the resources created by running the following command:
