@@ -40,6 +40,11 @@
       <groupId>com.google.cloud</groupId>
     </dependency>
     <dependency>
+      <artifactId>google-api-client</artifactId>
+      <groupId>com.google.api-client</groupId>
+      <version>1.31.1</version>
+    </dependency>
+    <dependency>
       <artifactId>junit</artifactId>
       <groupId>junit</groupId>
       <scope>test</scope>
