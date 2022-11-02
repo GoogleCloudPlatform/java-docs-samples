@@ -16,8 +16,8 @@
 
 package com.example.spanner;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
 @Entity
 class WireTransferPayment extends Payment {
