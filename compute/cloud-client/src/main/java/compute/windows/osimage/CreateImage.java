@@ -15,6 +15,7 @@
 package compute.windows.osimage;
 
 // [START compute_windows_image_create]
+// [START compute_images_create]
 
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
@@ -32,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateWindowsOsImage {
+public class CreateImage {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -52,14 +53,17 @@ public class CreateWindowsOsImage {
     // Create the image even if the source disk is attached to a running instance.
     boolean forceCreate = false;
 
-    createWindowsOsImage(project, zone, sourceDiskName, imageName, storageLocation, forceCreate);
+    createImage(project, zone, sourceDiskName, imageName, storageLocation, forceCreate);
   }
 
-  // Creates a new Windows image from the specified source disk.
-  public static void createWindowsOsImage(String project, String zone, String sourceDiskName,
+  // Creates a new disk image from the specified source disk.
+  public static void createImage(String project, String zone, String sourceDiskName,
       String imageName, String storageLocation, boolean forceCreate)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `client.close()` method on the client to safely
+    // clean up any remaining background resources.
     try (ImagesClient imagesClient = ImagesClient.create();
         InstancesClient instancesClient = InstancesClient.create();
         DisksClient disksClient = DisksClient.create()) {
@@ -72,12 +76,18 @@ public class CreateWindowsOsImage {
         Instance instance = instancesClient.get(instanceInfo.get("instanceProjectId"),
             instanceInfo.get("instanceZone"), instanceInfo.get("instanceName"));
 
-        // Сhecking whether the instances is stopped.
+        // Сheck whether the instances are stopped.
         if (!Arrays.asList("TERMINATED", "STOPPED").contains(instance.getStatus())
             && !forceCreate) {
           throw new IllegalStateException(
               String.format(
-                  "Instance %s should be stopped. Please stop the instance using GCESysprep command or set forceCreate parameter to true (not recommended). More information here: https://cloud.google.com/compute/docs/instances/windows/creating-windows-os-image#api.",
+                  "Instance %s should be stopped. For Windows instances please stop the instance "
+                      + "using 'GCESysprep' command. For Linux instances just shut it down normally."
+                      + " You can suppress this error and create an image of the disk by setting "
+                      + "'forceCreate' parameter to true (not recommended). "
+                      + "More information here: "
+                      + "* https://cloud.google.com/compute/docs/instances/windows/creating-windows-os-image#api"
+                      + "* https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#prepare_instance_for_image",
                   instanceInfo.get("instanceName")));
         }
       }
@@ -104,7 +114,7 @@ public class CreateWindowsOsImage {
       Operation response = imagesClient.insertAsync(insertImageRequest).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Windows OS Image creation failed ! ! " + response);
+        System.out.println("Image creation failed ! ! " + response);
         return;
       }
 
@@ -133,4 +143,5 @@ public class CreateWindowsOsImage {
   }
 
 }
+// [END compute_images_create]
 // [END compute_windows_image_create]
