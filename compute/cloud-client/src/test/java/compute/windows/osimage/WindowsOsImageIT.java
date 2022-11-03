@@ -19,7 +19,6 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
-import com.google.cloud.compute.v1.ImagesClient;
 import com.google.cloud.compute.v1.InsertInstanceRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
@@ -128,11 +127,7 @@ public class WindowsOsImageIT {
     System.setOut(new PrintStream(stdOut));
 
     // Delete image.
-    ImagesClient imagesClient = ImagesClient.create();
-    Operation operation = imagesClient.deleteAsync(PROJECT_ID, IMAGE_NAME).get();
-    if (operation.hasError()) {
-      System.out.println("Image not deleted.");
-    }
+    DeleteImage.deleteImage(PROJECT_ID, IMAGE_NAME);
 
     // Delete instance.
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
@@ -158,7 +153,7 @@ public class WindowsOsImageIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Assertions.assertThrows(
         IllegalStateException.class,
-        () -> CreateWindowsOsImage.createWindowsOsImage(PROJECT_ID, ZONE, DISK_NAME, IMAGE_NAME,
+        () -> CreateImage.createImage(PROJECT_ID, ZONE, DISK_NAME, IMAGE_NAME,
             "eu", false),
         String.format("Instance %s should be stopped.", INSTANCE_NAME));
   }
@@ -167,7 +162,7 @@ public class WindowsOsImageIT {
   @Test
   public void testCreateWindowsImage_pass()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateWindowsOsImage.createWindowsOsImage(
+    CreateImage.createImage(
         PROJECT_ID, ZONE, DISK_NAME, IMAGE_NAME, "eu", true);
     assertThat(stdOut.toString()).contains("Image created.");
   }
