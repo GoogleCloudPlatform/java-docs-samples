@@ -82,7 +82,7 @@ public class CreateImage {
           throw new IllegalStateException(
               String.format(
                   "Instance %s should be stopped. For Windows instances please stop the instance "
-                      + "using 'GCESysprep' command. For Linux instances just shut it down normally."
+                      + "using GCESysprep command. For Linux instances just shut it down normally."
                       + " You can suppress this error and create an image of the disk by setting "
                       + "'forceCreate' parameter to true (not recommended). "
                       + "More information here: "
