@@ -1,0 +1,7 @@
+[
+  {
+    "name": "metric_name",
+    "description": "Metric log description",
+    "filter": ""
+  }
+]
