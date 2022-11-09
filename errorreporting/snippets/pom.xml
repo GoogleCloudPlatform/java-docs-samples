@@ -5,7 +5,7 @@
   <artifactId>java-docs-samples-errorreporting-snippets</artifactId>
   <packaging>jar</packaging>
   <name>Google Cloud Error Reporting Samples Parent</name>
-  <url>https://github.com/GoogleCloudPlatform/java-docs-samples/errorreporting</url>
+  <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/errorreporting</url>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
