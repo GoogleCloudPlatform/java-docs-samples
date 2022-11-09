@@ -39,7 +39,7 @@ import org.junit.runners.JUnit4;
 public class EndpointsTests {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION_ID = "us-central1";
+  private static final String LOCATION_ID = "us-east1";
   private static final String NAMESPACE_ID = "namespace-" + UUID.randomUUID().toString();
   private static final String SERVICE_ID = "service-" + UUID.randomUUID().toString();
   private static final String ENDPOINT_ID = "endpoint-" + UUID.randomUUID().toString();
