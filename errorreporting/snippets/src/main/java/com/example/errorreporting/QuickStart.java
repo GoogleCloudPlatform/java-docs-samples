@@ -16,7 +16,6 @@
 
 package com.example.errorreporting;
 
-// [START errorreporting_quickstart]
 // [START error_reporting_quickstart]
 // [START error_reporting_setup_java]
 
@@ -70,4 +69,3 @@ public class QuickStart {
 }
 // [END error_reporting_setup_java]
 // [END error_reporting_quickstart]
-// [END errorreporting_quickstart]

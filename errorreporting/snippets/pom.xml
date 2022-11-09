@@ -24,7 +24,7 @@
   </properties>
 
 
-  <!-- [START clouderrorreporting_install_with_bom] -->
+  <!-- [START error_reporting_install_with_bom] -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -61,5 +61,5 @@
     </dependency>
     <!-- END_EXCLUDE -->
   </dependencies>
-  <!-- [END clouderrorreporting_install_with_bom] -->
+  <!-- [END error_reporting_install_with_bom] -->
 </project>
