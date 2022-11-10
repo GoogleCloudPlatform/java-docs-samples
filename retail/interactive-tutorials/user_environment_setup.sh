@@ -85,7 +85,7 @@ gcloud auth activate-service-account --key-file ~/key.json
 
 
 # install needed Google client libraries
-cd ~/cloudshell_open/java-retail/samples/interactive-tutorials || exit
+cd ~/cloudshell_open/java-docs-samples/retail/interactive-tutorials || exit
 mvn clean install -DskipTests
 
 
