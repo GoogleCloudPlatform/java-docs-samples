@@ -52,7 +52,8 @@ public class ImportProductsGcs {
 
     // To check error handling, use an invalid catalog in request
     // branchName = String.format(
-    //     "projects/%s/locations/global/catalogs/invalid_catalog/branches/default_branch", projectId);
+    //     "projects/%s/locations/global/catalogs/invalid_catalog/branches/default_branch",
+    //     projectId);
 
     String gcsProductsObject = "products.json";
     // To check error handling, use an invalid product JSON.
