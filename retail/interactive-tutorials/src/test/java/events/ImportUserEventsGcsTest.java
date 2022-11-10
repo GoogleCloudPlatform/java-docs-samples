@@ -40,11 +40,11 @@ public class ImportUserEventsGcsTest {
   public void setUp() throws IOException, InterruptedException {
     EventsCreateGcsBucket.main();
 
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog =
+    final String projectId = ServiceOptions.getDefaultProjectId();
+    final String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    String bucketName = EventsCreateGcsBucket.getBucketName();
-    String gcsEventsObject = "user_events.json";
+    final String bucketName = EventsCreateGcsBucket.getBucketName();
+    final String gcsEventsObject = "user_events.json";
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;

@@ -38,8 +38,8 @@ public class ImportProductsInlineSourceTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String branchName =
+    final String projectId = ServiceOptions.getDefaultProjectId();
+    final String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     bout = new ByteArrayOutputStream();

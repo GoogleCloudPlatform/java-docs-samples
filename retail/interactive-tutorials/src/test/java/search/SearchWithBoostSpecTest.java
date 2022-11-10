@@ -37,10 +37,10 @@ public class SearchWithBoostSpecTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalogName =
+    final String projectId = ServiceOptions.getDefaultProjectId();
+    final String defaultCatalogName =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
+    final String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;

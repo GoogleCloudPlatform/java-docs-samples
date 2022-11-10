@@ -42,9 +42,9 @@ public class SetInventoryTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String generatedProductId = UUID.randomUUID().toString();
-    String productName =
+    final String projectId = ServiceOptions.getDefaultProjectId();
+    final String generatedProductId = UUID.randomUUID().toString();
+    final String productName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0/products/%s",
             projectId, generatedProductId);

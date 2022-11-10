@@ -21,8 +21,12 @@ import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
 
 import com.google.cloud.ServiceOptions;
-import com.google.cloud.retail.v2.*;
+import com.google.cloud.retail.v2.FulfillmentInfo;
+import com.google.cloud.retail.v2.PriceInfo;
+import com.google.cloud.retail.v2.Product;
 import com.google.cloud.retail.v2.Product.Availability;
+import com.google.cloud.retail.v2.ProductServiceClient;
+import com.google.cloud.retail.v2.SetInventoryRequest;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Int32Value;
 import java.io.IOException;

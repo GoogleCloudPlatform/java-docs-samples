@@ -37,8 +37,8 @@ public class ImportUserEventsInlineTest {
 
   @Before
   public void setUp() throws IOException, ExecutionException, InterruptedException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog =
+    final String projectId = ServiceOptions.getDefaultProjectId();
+    final String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
