@@ -43,12 +43,12 @@ public class CrudProductTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String generatedProductId = UUID.randomUUID().toString();
-    String branchName =
+    final String projectId = ServiceOptions.getDefaultProjectId();
+    final String generatedProductId = UUID.randomUUID().toString();
+    final String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
-    String productName = String.format("%s/products/%s", branchName, generatedProductId);
+    final String productName = String.format("%s/products/%s", branchName, generatedProductId);
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;

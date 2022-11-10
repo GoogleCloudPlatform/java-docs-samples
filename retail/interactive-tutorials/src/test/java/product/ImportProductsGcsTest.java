@@ -40,13 +40,13 @@ public class ImportProductsGcsTest {
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
     ProductsCreateGcsBucket.main();
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String branchName =
+    final String projectId = ServiceOptions.getDefaultProjectId();
+    final String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
-    String bucketName = ProductsCreateGcsBucket.getBucketName();
-    String gcsBucket = String.format("gs://%s", bucketName);
-    String gscProductsObject = "products.json";
+    final String bucketName = ProductsCreateGcsBucket.getBucketName();
+    final String gcsBucket = String.format("gs://%s", bucketName);
+    final String gscProductsObject = "products.json";
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;

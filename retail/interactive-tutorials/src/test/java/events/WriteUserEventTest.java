@@ -38,10 +38,10 @@ public class WriteUserEventTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog =
+    final String projectId = ServiceOptions.getDefaultProjectId();
+    final String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    String visitorId = UUID.randomUUID().toString();
+    final String visitorId = UUID.randomUUID().toString();
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;

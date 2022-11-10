@@ -32,14 +32,14 @@ import product.setup.ProductsCreateBigqueryTable;
 public class EventsCreateBigQueryTable {
 
   public static void main(String[] args) throws IOException {
-    String dataset = "user_events";
-    String validEventsTable = "events";
-    String invalidEventsTable = "events_some_invalid";
-    String eventsSchemaFilePath = "src/main/resources/events_schema.json";
+    final String dataset = "user_events";
+    final String validEventsTable = "events";
+    final String invalidEventsTable = "events_some_invalid";
+    final String eventsSchemaFilePath = "src/main/resources/events_schema.json";
     // user_events.json and user_events_some_invalid.json are located in the resources folder
-    String validEventsSourceFile =
+    final String validEventsSourceFile =
         ProductsCreateBigqueryTable.class.getResource("/user_events.json").getPath();
-    String invalidEventsSourceFile =
+    final String invalidEventsSourceFile =
         ProductsCreateBigqueryTable.class.getResource("/user_events_some_invalid.json").getPath();
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(eventsSchemaFilePath));

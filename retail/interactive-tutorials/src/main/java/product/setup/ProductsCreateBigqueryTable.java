@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
 public class ProductsCreateBigqueryTable {
 
   public static void main(String[] args) throws IOException {
-    String dataset = "products";
-    String validProductsTable = "products";
-    String invalidProductsTable = "products_some_invalid";
-    String productSchemaFilePath = "src/main/resources/product_schema.json";
-    String validProductsSourceFile =
+    final String dataset = "products";
+    final String validProductsTable = "products";
+    final String invalidProductsTable = "products_some_invalid";
+    final String productSchemaFilePath = "src/main/resources/product_schema.json";
+    final String validProductsSourceFile =
         ProductsCreateBigqueryTable.class.getResource("/products.json").getPath();
-    String invalidProductsSourceFile =
+    final String invalidProductsSourceFile =
         ProductsCreateBigqueryTable.class.getResource("/products_some_invalid.json").getPath();
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(productSchemaFilePath));

@@ -39,7 +39,7 @@ public class DeleteProductTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    String generatedProductId = UUID.randomUUID().toString();
+    final String generatedProductId = UUID.randomUUID().toString();
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
