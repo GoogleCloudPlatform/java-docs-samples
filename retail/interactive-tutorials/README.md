@@ -39,7 +39,7 @@ You can find the information about the Retail services in the [documentation](ht
 If you would like to have a closer look at the Retail API features and try them yourself,
 the best option is to use the [Interactive Tutorials](https://cloud.google.com/retail/docs/overview). In the documentation chapters find the "Guide me" button, the tutorials will be launched in the CloudShell environment, and you will be able to request the Retail services and check the response with minimum time and effort.
 
-The code samples in the directory **java-retail/samples/interactive-tutorials** are explicitly created for use with the Retail Interactive Tutorials.
+The code samples in the directory **java-docs-samples/retail/interactive-tutorials** are explicitly created for use with the Retail Interactive Tutorials.
 
 If, for some reason, you have decided to proceed with these code samples without the tutorial, please go through the following steps and set up the required preconditions.
 
@@ -52,10 +52,10 @@ To prepare the work environment you should perform the following steps:
 
 ### There are two ways to set up your work environment:
 
-- If you want to **speed up the process** of setting up the working environment, run the script java-retail/samples/interactive-tutorials/samples/interactive-tutorials/src/main/java/user_environment_setup.sh and skip the next **set up the work environment step-by-step** tutorial step:
+- If you want to **speed up the process** of setting up the working environment, run the script java-docs-samples/retail/interactive-tutorials/src/main/java/user_environment_setup.sh and skip the next **set up the work environment step-by-step** tutorial step:
 
     ```bash
-    bash java-retail/samples/interactive-tutorials/user_environment_setup.sh
+    bash java-docs-samples/retail/interactive-tutorials/user_environment_setup.sh
     ```
 
 - If you want to perform the environment set up step by step along with getting the explanation you should proceed with the next tutorial step.
@@ -120,7 +120,7 @@ Learn more about the [Java Google Cloud Retail library](https://googleapis.dev/j
     Go to the code samples directory, your starting point to run more commands.
 
     ```bash
-    cd java-retail/samples/interactive-tutorials/
+    cd java-docs-samples/retail/interactive-tutorials/
     ```
 
 ## Import catalog data
@@ -128,14 +128,14 @@ Learn more about the [Java Google Cloud Retail library](https://googleapis.dev/j
 <i>This step is required if this is the first Retail API tutorial that you run.
 Otherwise, you can skip it.</i>
 
-There is a java-retail/samples/interactive-tutorials/src/main/resources/products.json file with valid products prepared in the `resources` directory.
+There is a java-docs-samples/retail/interactive-tutorials/src/main/resources/products.json file with valid products prepared in the `resources` directory.
 
-The other file, java-retail/samples/interactive-tutorials/src/main/resources/products_some_invalid.json, contains both valid and invalid products. You will use it to check the error handling.
+The other file, java-docs-samples/retail/interactive-tutorials/src/main/resources/products_some_invalid.json, contains both valid and invalid products. You will use it to check the error handling.
 
 - If you want to **speed up the process**, run the following script in the Terminal directory to import all products to catalog and skip the next **Prepare the catalog data step-by-step** tutorial step:
 
     ```bash
-    bash java-retail/samples/interactive-tutorials/user_import_data_to_catalog.sh
+    bash java-docs-samples/retail/interactive-tutorials/user_import_data_to_catalog.sh
     ```
 
 - If you want to upload products to the catalog step by step along with getting the explanation, you should proceed with the next tutorial step.
@@ -152,10 +152,10 @@ The bucket name must be unique. For convenience, you can name it `<YOUR_PROJECT_
     Go to the code samples directory, your starting point to run more commands.
 
     ```bash
-    cd java-retail/samples/interactive-tutorials
+    cd java-docs-samples/retail/interactive-tutorials
     ```
 
-1. To create the bucket and upload the JSON file, open java-retail/samples/interactive-tutorials/src/main/java/product/setup/ProductsCreateGcsBucket.java file
+1. To create the bucket and upload the JSON file, open java-docs-samples/retail/interactive-tutorials/src/main/java/product/setup/ProductsCreateGcsBucket.java file
 
 1. Go to the **product** directory and run the following command in the Terminal:
 
@@ -180,7 +180,7 @@ The bucket name must be unique. For convenience, you can name it `<YOUR_PROJECT_
 
 ### Import products to the Retail Catalog
 
-To import the prepared products to a catalog, open java-retail/samples/interactive-tutorials/src/main/java/product/ImportProductsGcs.java file and run the following command in the Terminal:
+To import the prepared products to a catalog, open java-docs-samples/retail/interactive-tutorials/src/main/java/product/ImportProductsGcs.java file and run the following command in the Terminal:
 
 ```bash
 mvn compile exec:java -Dexec.mainClass=product.ImportProductsGcs

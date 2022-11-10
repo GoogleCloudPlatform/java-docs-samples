@@ -19,7 +19,7 @@
 	export GOOGLE_APPLICATION_CREDENTIALS=~/key.json
 
 	# Change the working directory
-	cd ~/cloudshell_open/java-retail/samples/interactive-tutorials/ || exit
+	cd ~/cloudshell_open/java-docs-samples/retail/interactive-tutorials/ || exit
 
 	# Run the sample for creating the GCS bucket and extract the output of that execution
 	output=$(mvn compile exec:java -Dexec.mainClass="product.setup.ProductsCreateGcsBucket")
