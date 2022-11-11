@@ -16,7 +16,7 @@
 
 package com.example.recommender;
 
-// [START recommendationsai_list_recommendations]
+// [START cloudrecommender_list_recommendations]
 
 import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.gax.rpc.PermissionDeniedException;
@@ -91,4 +91,4 @@ public class ListRecommendations {
     }
   }
 }
-// [END recommendationsai_list_recommendations]
+// [END cloudrecommender_list_recommendations]
