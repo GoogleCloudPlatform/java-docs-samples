@@ -8,7 +8,7 @@
   <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/datacatalog</url>
 
   <!--
-    The parent pom defines common style checks and testing strategies for our samples.
+    The parent pom defines common style checks and testing strategies for our samples. 
     Removing or replacing it should not affect the execution of the samples in anyway.
   -->
   <parent>
