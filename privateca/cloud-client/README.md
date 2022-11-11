@@ -1,6 +1,6 @@
 # Google Cloud Private Certificate Authority Service
 
-<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=privateca/samples/snippets/README.md">
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=privateca/snippets/README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 Google [Cloud Private Certificate Authority Service](https://cloud.google.com/certificate-authority-service) is a highly available, scalable Google Cloud service that enables you to simplify, automate, and customize the deployment, management, and security of private certificate authorities (CA).
@@ -66,7 +66,7 @@ git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
 4. Navigate to the sample code directory.
 
 ```
-cd privateca/samples/snippets
+cd privateca/snippets
 ```
 
 5. Run the **SnippetsIT** test file present under the test folder.
