@@ -136,7 +136,7 @@ public class CreateClusterWithAutoscaling {
           AutoscalingConfig.newBuilder().setPolicyUri(autoscalingPolicyUri).build();
 
       // Configure the settings for our cluster.
-      InstanceGroupConfig masterConfig =
+      InstanceGroupConfig mainConfig =
           InstanceGroupConfig.newBuilder()
               .setMachineTypeUri("n1-standard-2")
               .setNumInstances(1)
@@ -148,7 +148,7 @@ public class CreateClusterWithAutoscaling {
               .build();
       ClusterConfig clusterConfig =
           ClusterConfig.newBuilder()
-              .setMasterConfig(masterConfig)
+              .setmainConfig(mainConfig)
               .setWorkerConfig(workerConfig)
               .setAutoscalingConfig(autoscalingConfig)
               .build();

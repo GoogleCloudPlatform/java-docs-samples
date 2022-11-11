@@ -49,7 +49,7 @@ public class CreateCluster {
     try (ClusterControllerClient clusterControllerClient =
         ClusterControllerClient.create(clusterControllerSettings)) {
       // Configure the settings for our cluster.
-      InstanceGroupConfig masterConfig =
+      InstanceGroupConfig mainConfig =
           InstanceGroupConfig.newBuilder()
               .setMachineTypeUri("n1-standard-2")
               .setNumInstances(1)
@@ -61,7 +61,7 @@ public class CreateCluster {
               .build();
       ClusterConfig clusterConfig =
           ClusterConfig.newBuilder()
-              .setMasterConfig(masterConfig)
+              .setmainConfig(mainConfig)
               .setWorkerConfig(workerConfig)
               .build();
       // Create the cluster object with the desired cluster config.
