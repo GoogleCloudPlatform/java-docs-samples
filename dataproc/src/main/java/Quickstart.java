@@ -74,7 +74,7 @@ public class Quickstart {
         JobControllerClient jobControllerClient =
             JobControllerClient.create(jobControllerSettings)) {
       // Configure the settings for our cluster.
-      InstanceGroupConfig mainConfig =
+      InstanceGroupConfig masterConfig =
           InstanceGroupConfig.newBuilder()
               .setMachineTypeUri("n1-standard-2")
               .setNumInstances(1)
@@ -86,7 +86,7 @@ public class Quickstart {
               .build();
       ClusterConfig clusterConfig =
           ClusterConfig.newBuilder()
-              .setmainConfig(mainConfig)
+              .setMasterConfig(masterConfig)
               .setWorkerConfig(workerConfig)
               .build();
       // Create the cluster object with the desired cluster config.
