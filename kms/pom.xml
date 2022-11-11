@@ -24,7 +24,7 @@
   </properties>
 
 
-  <!-- [START cloudkms_install_with_bom] -->
+  <!-- [START kms_install_with_bom] -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -61,5 +61,5 @@
     </dependency>
     <!-- [END_EXCLUDE] -->
   </dependencies>
-  <!-- [END cloudkms_install_with_bom] -->
+  <!-- [END kms_install_with_bom] -->
 </project>
