@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,43 +16,45 @@
 
 package kms;
 
-// [START kms_get_public_key]
-import com.google.cloud.kms.v1.CryptoKeyVersionName;
+// [START kms_generate_random_bytes]
+import com.google.cloud.kms.v1.GenerateRandomBytesResponse;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
-import com.google.cloud.kms.v1.PublicKey;
+import com.google.cloud.kms.v1.LocationName;
+import com.google.cloud.kms.v1.ProtectionLevel;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.util.Base64;
 
-public class GetPublicKey {
+public class GenerateRandomBytes {
 
-  public void getPublicKey() throws IOException, GeneralSecurityException {
+  public void generateRandomBytes() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "us-east1";
-    String keyRingId = "my-key-ring";
-    String keyId = "my-key";
-    String keyVersionId = "123";
-    getPublicKey(projectId, locationId, keyRingId, keyId, keyVersionId);
+    int numBytes = 256;
+    generateRandomBytes(projectId, locationId, numBytes);
   }
 
-  // Get the public key associated with an asymmetric key.
-  public void getPublicKey(
-      String projectId, String locationId, String keyRingId, String keyId, String keyVersionId)
-      throws IOException, GeneralSecurityException {
+  // Create a new key for use with MacSign.
+  public void generateRandomBytes(String projectId, String locationId, int numBytes)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      // Build the key version name from the project, location, key ring, key,
-      // and key version.
-      CryptoKeyVersionName keyVersionName =
-          CryptoKeyVersionName.of(projectId, locationId, keyRingId, keyId, keyVersionId);
+      // Build the parent name for the location.
+      LocationName locationName = LocationName.of(projectId, locationId);
 
-      // Get the public key.
-      PublicKey publicKey = client.getPublicKey(keyVersionName);
-      System.out.printf("Public key: %s%n", publicKey.getPem());
+      // Generate the bytes.
+      GenerateRandomBytesResponse response =
+          client.generateRandomBytes(locationName.toString(), numBytes, ProtectionLevel.HSM);
+
+      // The data comes back as raw bytes, which may include non-printable
+      // characters. This base64-encodes the result so it can be printed below.
+      String encodedData = Base64.getEncoder().encodeToString(response.getData().toByteArray());
+
+      System.out.printf("Random bytes: %s", encodedData);
     }
   }
 }
-// [END kms_get_public_key]
+// [END kms_generate_random_bytes]

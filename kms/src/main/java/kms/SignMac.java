@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,35 @@
 
 package kms;
 
-// [START kms_disable_key_version]
-import com.google.cloud.kms.v1.CryptoKeyVersion;
-import com.google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState;
+// [START kms_sign_mac]
 import com.google.cloud.kms.v1.CryptoKeyVersionName;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
-import com.google.protobuf.FieldMask;
-import com.google.protobuf.util.FieldMaskUtil;
+import com.google.cloud.kms.v1.MacSignResponse;
+import com.google.protobuf.ByteString;
 import java.io.IOException;
+import java.util.Base64;
 
-public class DisableKeyVersion {
+public class SignMac {
 
-  public void disableKeyVersion() throws IOException {
+  public void signMac() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "us-east1";
     String keyRingId = "my-key-ring";
     String keyId = "my-key";
     String keyVersionId = "123";
-    disableKeyVersion(projectId, locationId, keyRingId, keyId, keyVersionId);
+    String data = "Data to sign";
+    signMac(projectId, locationId, keyRingId, keyId, keyVersionId, data);
   }
 
-  // Disable a key version from use.
-  public void disableKeyVersion(
-      String projectId, String locationId, String keyRingId, String keyId, String keyVersionId)
+  // Sign data with a given mac key.
+  public void signMac(
+      String projectId,
+      String locationId,
+      String keyRingId,
+      String keyId,
+      String keyVersionId,
+      String data)
       throws IOException {
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
@@ -51,20 +56,14 @@ public class DisableKeyVersion {
       CryptoKeyVersionName keyVersionName =
           CryptoKeyVersionName.of(projectId, locationId, keyRingId, keyId, keyVersionId);
 
-      // Build the updated key version, setting it to disbaled.
-      CryptoKeyVersion keyVersion =
-          CryptoKeyVersion.newBuilder()
-              .setName(keyVersionName.toString())
-              .setState(CryptoKeyVersionState.DISABLED)
-              .build();
+      // Generate an HMAC of the data.
+      MacSignResponse response = client.macSign(keyVersionName, ByteString.copyFromUtf8(data));
 
-      // Create a field mask of updated values.
-      FieldMask fieldMask = FieldMaskUtil.fromString("state");
-
-      // Disable the key version.
-      CryptoKeyVersion response = client.updateCryptoKeyVersion(keyVersion, fieldMask);
-      System.out.printf("Disabled key version: %s%n", response.getName());
+      // The data comes back as raw bytes, which may include non-printable
+      // characters. This base64-encodes the result so it can be printed below.
+      String encodedSignature = Base64.getEncoder().encodeToString(response.getMac().toByteArray());
+      System.out.printf("Signature: %s%n", encodedSignature);
     }
   }
 }
-// [END kms_disable_key_version]
+// [END kms_sign_mac]
