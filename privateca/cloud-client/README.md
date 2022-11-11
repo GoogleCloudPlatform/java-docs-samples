@@ -1,6 +1,6 @@
 # Google Cloud Private Certificate Authority Service
 
-<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-security-private-ca&page=editor&open_in_editor=samples/snippets/cloud-client/README.md">
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=privateca/samples/snippets/README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 Google [Cloud Private Certificate Authority Service](https://cloud.google.com/certificate-authority-service) is a highly available, scalable Google Cloud service that enables you to simplify, automate, and customize the deployment, management, and security of private certificate authorities (CA).
@@ -58,15 +58,15 @@ The following instructions will help you prepare your development environment.
 2. Download and install [Apache Maven](http://maven.apache.org/download.cgi) by following the [Maven installation guide](http://maven.apache.org/install.html) for your specific operating system.
 
 
-3. Clone the java-security-private-ca repository.
+3. Clone the GoogleCloudPlatform/java-docs-samples repository.
 ```
-git clone https://github.com/googleapis/java-security-private-ca.git
+git clone https://github.com/GoogleCloudPlatform/java-docs-samples.git
 ```
 
 4. Navigate to the sample code directory.
 
 ```
-cd java-security-private-ca/samples/snippets/cloud-client
+cd privateca/samples/snippets
 ```
 
 5. Run the **SnippetsIT** test file present under the test folder.
