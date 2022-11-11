@@ -16,33 +16,31 @@
 
 package kms;
 
-// [START kms_get_public_key]
+// [START kms_disable_key_version]
+import com.google.cloud.kms.v1.CryptoKeyVersion;
+import com.google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionState;
 import com.google.cloud.kms.v1.CryptoKeyVersionName;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
-import com.google.cloud.kms.v1.PublicKey;
-import com.google.common.hash.HashCode;
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hashing;
-import com.google.protobuf.Int64Value;
+import com.google.protobuf.FieldMask;
+import com.google.protobuf.util.FieldMaskUtil;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 
-public class GetPublicKey {
+public class DisableKeyVersion {
 
-  public void getPublicKey() throws IOException, GeneralSecurityException {
+  public void disableKeyVersion() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "us-east1";
     String keyRingId = "my-key-ring";
     String keyId = "my-key";
     String keyVersionId = "123";
-    getPublicKey(projectId, locationId, keyRingId, keyId, keyVersionId);
+    disableKeyVersion(projectId, locationId, keyRingId, keyId, keyVersionId);
   }
 
-  // Get the public key associated with an asymmetric key.
-  public void getPublicKey(
+  // Disable a key version from use.
+  public void disableKeyVersion(
       String projectId, String locationId, String keyRingId, String keyId, String keyVersionId)
-      throws IOException, GeneralSecurityException {
+      throws IOException {
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
     // completing all of your requests, call the "close" method on the client to
@@ -53,32 +51,20 @@ public class GetPublicKey {
       CryptoKeyVersionName keyVersionName =
           CryptoKeyVersionName.of(projectId, locationId, keyRingId, keyId, keyVersionId);
 
-      // Get the public key.
-      PublicKey publicKey = client.getPublicKey(keyVersionName);
+      // Build the updated key version, setting it to disbaled.
+      CryptoKeyVersion keyVersion =
+          CryptoKeyVersion.newBuilder()
+              .setName(keyVersionName.toString())
+              .setState(CryptoKeyVersionState.DISABLED)
+              .build();
 
-      // Optional, but recommended: perform integrity verification on response.
-      // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
-      // https://cloud.google.com/kms/docs/data-integrity-guidelines
-      if (!publicKey.getName().equals(keyVersionName.toString())) {
-        throw new IOException("GetPublicKey: request to server corrupted");
-      }
+      // Create a field mask of updated values.
+      FieldMask fieldMask = FieldMaskUtil.fromString("state");
 
-      // See helper below.
-      if (!crcMatches(publicKey.getPemCrc32C().getValue(),
-          publicKey.getPemBytes().toByteArray())) {
-        throw new IOException("GetPublicKey: response from server corrupted");
-      }
-
-      System.out.printf("Public key: %s%n", publicKey.getPem());
+      // Disable the key version.
+      CryptoKeyVersion response = client.updateCryptoKeyVersion(keyVersion, fieldMask);
+      System.out.printf("Disabled key version: %s%n", response.getName());
     }
   }
-
-  private long getCrc32cAsLong(byte[] data) {
-    return Hashing.crc32c().hashBytes(data).padToLong();
-  }
-
-  private boolean crcMatches(long expectedCrc, byte[] data) {
-    return expectedCrc == getCrc32cAsLong(data);
-  }
 }
-// [END kms_get_public_key]
+// [END kms_disable_key_version]
