@@ -24,7 +24,7 @@
   </properties>
 
 
-  <!-- [START recaptchaenterprise_install_with_bom] -->
+  <!-- [START recaptcha_enterprise_install_with_bom] -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -57,5 +57,5 @@
     </dependency>
     <!-- [END_EXCLUDE] -->
   </dependencies>
-  <!-- [END recaptchaenterprise_install_with_bom] -->
+  <!-- [END recaptcha_enterprise_install_with_bom] -->
 </project>
