@@ -127,9 +127,9 @@ public class CreateDenyPolicy {
                   PolicyRule.newBuilder()
                       // Set a description for the rule.
                       .setDescription(
-                          "block all principals from deleting projects, unless the principal is a " + 
-                          "member of project-admins@example.com and the project being deleted has " + 
-                          "a tag with the value test")
+                          "block all principals from deleting projects, unless the principal"
+                          + " is a member of project-admins@example.com and the project"
+                          + " being deleted has a tag with the value test")
                       .setDenyRule(denyRule)
                       .build())
               .build();
