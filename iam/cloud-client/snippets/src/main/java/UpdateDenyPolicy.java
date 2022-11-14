@@ -129,7 +129,9 @@ public class UpdateDenyPolicy {
                   PolicyRule.newBuilder()
                       // Set the rule description to update.
                       .setDescription(
-                          "Block all principals from deleting projects, unless the principal is a member of project-admins@example.com and the project being deleted has a tag with the value prod")
+                          "Block all principals from deleting projects, unless the principal is a " + 
+                          "member of project-admins@example.com and the project being deleted has " + 
+                          "a tag with the value prod")
                       // Set the deny rule to update.
                       .setDenyRule(denyRule)
                       .build())
