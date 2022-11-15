@@ -23,6 +23,7 @@ import com.google.cloud.vision.v1.ImportProductSetsGcsSource;
 import com.google.cloud.vision.v1.ImportProductSetsGcsSource.Builder;
 import com.google.cloud.vision.v1.ImportProductSetsInputConfig;
 import com.google.cloud.vision.v1.ImportProductSetsResponse;
+import com.google.cloud.vision.v1.LocationName;
 import com.google.cloud.vision.v1.ProductSearchClient;
 import com.google.cloud.vision.v1.ReferenceImage;
 import java.io.PrintStream;
@@ -57,7 +58,7 @@ public class ImportProductSets extends JPanel {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       // A resource that represents Google Cloud Platform location.
-      String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
+      String formattedParent = LocationName.format(projectId, computeRegion);
       Builder gcsSource = ImportProductSetsGcsSource.newBuilder().setCsvFileUri(gcsUri);
 
       // Set the input configuration along with Google Cloud Storage URI

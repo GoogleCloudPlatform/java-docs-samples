@@ -37,6 +37,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 public class ProductInProductSetManagement {
 
   // [START vision_product_search_add_product_to_product_set]
+
   /**
    * Add a product to a product set.
    *
@@ -52,8 +53,7 @@ public class ProductInProductSetManagement {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       // Get the full path of the product set.
-      String formattedName =
-          ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
+      String formattedName = ProductName.format(projectId, computeRegion, productSetId);
 
       // Get the full path of the product.
       String productPath = ProductName.of(projectId, computeRegion, productId).toString();
@@ -67,6 +67,7 @@ public class ProductInProductSetManagement {
   // [END vision_product_search_add_product_to_product_set]
 
   // [START vision_product_search_list_products_in_product_set]
+
   /**
    * List all products in a product set.
    *
@@ -80,8 +81,7 @@ public class ProductInProductSetManagement {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       // Get the full path of the product set.
-      String formattedName =
-          ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
+      String formattedName = ProductName.format(projectId, computeRegion, productSetId);
       // List all the products available in the product set.
       for (Product product : client.listProductsInProductSet(formattedName).iterateAll()) {
         // Display the product information
@@ -103,6 +103,7 @@ public class ProductInProductSetManagement {
   // [END vision_product_search_list_products_in_product_set]
 
   // [START vision_product_search_remove_product_from_product_set]
+
   /**
    * Remove a product from a product set.
    *
@@ -118,12 +119,10 @@ public class ProductInProductSetManagement {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       // Get the full path of the product set.
-      String formattedParent =
-          ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
+      String formattedParent = ProductName.format(projectId, computeRegion, productSetId);
 
       // Get the full path of the product.
-      String formattedName =
-          ProductSearchClient.formatProductName(projectId, computeRegion, productId);
+      String formattedName = ProductName.format(projectId, computeRegion, productId);
 
       // Remove the product from the product set.
       client.removeProductFromProductSet(formattedParent, formattedName);

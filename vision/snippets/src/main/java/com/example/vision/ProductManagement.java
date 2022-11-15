@@ -16,8 +16,10 @@
 
 package com.example.vision;
 
+import com.google.cloud.vision.v1.LocationName;
 import com.google.cloud.vision.v1.Product;
 import com.google.cloud.vision.v1.Product.KeyValue;
+import com.google.cloud.vision.v1.ProductName;
 import com.google.cloud.vision.v1.ProductSearchClient;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
@@ -58,7 +60,7 @@ public class ProductManagement {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       // A resource that represents Google Cloud Platform location.
-      String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
+      String formattedParent = LocationName.format(projectId, computeRegion);
       // Create a product with the product specification in the region.
       // Multiple labels are also supported.
       Product myProduct =
@@ -86,7 +88,7 @@ public class ProductManagement {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       // A resource that represents Google Cloud Platform location.
-      String formattedParent = ProductSearchClient.formatLocationName(projectId, computeRegion);
+      String formattedParent = LocationName.format(projectId, computeRegion);
 
       // List all the products available in the region.
       for (Product product : client.listProducts(formattedParent).iterateAll()) {
@@ -120,8 +122,7 @@ public class ProductManagement {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       // Get the full path of the product.
-      String formattedName =
-          ProductSearchClient.formatProductName(projectId, computeRegion, productId);
+      String formattedName = ProductName.format(projectId, computeRegion, productId);
       // Get complete detail of the product.
       Product product = client.getProduct(formattedName);
       // Display the product information
@@ -157,8 +158,7 @@ public class ProductManagement {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       // Get the full path of the product.
-      String formattedName =
-          ProductSearchClient.formatProductName(projectId, computeRegion, productId);
+      String formattedName = ProductName.format(projectId, computeRegion, productId);
 
       // Set product name, product labels and product display name.
       // Multiple labels are also supported.
@@ -201,8 +201,7 @@ public class ProductManagement {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       // Get the full path of the product.
-      String formattedName =
-          ProductSearchClient.formatProductName(projectId, computeRegion, productId);
+      String formattedName = ProductName.format(projectId, computeRegion, productId);
 
       // Delete a product.
       client.deleteProduct(formattedName);

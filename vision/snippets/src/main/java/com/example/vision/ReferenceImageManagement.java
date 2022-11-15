@@ -17,6 +17,7 @@
 package com.example.vision;
 
 import com.google.cloud.vision.v1.ImageName;
+import com.google.cloud.vision.v1.ProductName;
 import com.google.cloud.vision.v1.ProductSearchClient;
 import com.google.cloud.vision.v1.ReferenceImage;
 import java.io.IOException;
@@ -58,8 +59,7 @@ public class ReferenceImageManagement {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       // Get the full path of the product.
-      String formattedParent =
-          ProductSearchClient.formatProductName(projectId, computeRegion, productId);
+      String formattedParent = ProductName.format(projectId, computeRegion, productId);
       // Create a reference image.
       ReferenceImage referenceImage = ReferenceImage.newBuilder().setUri(gcsUri).build();
 
@@ -86,8 +86,7 @@ public class ReferenceImageManagement {
     try (ProductSearchClient client = ProductSearchClient.create()) {
 
       // Get the full path of the product.
-      String formattedParent =
-          ProductSearchClient.formatProductName(projectId, computeRegion, productId);
+      String formattedParent = ProductName.format(projectId, computeRegion, productId);
       for (ReferenceImage image : client.listReferenceImages(formattedParent).iterateAll()) {
         // Display the reference image information.
         System.out.println(String.format("Reference image name: %s", image.getName()));
