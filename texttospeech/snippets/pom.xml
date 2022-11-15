@@ -24,7 +24,7 @@
   </properties>
 
   <!-- [START tts_java_dependencies] -->
-  <!-- [START texttospeech_install_with_bom] -->
+  <!-- [START tts_install_with_bom] -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -65,5 +65,5 @@
   <!-- [START tts_java_dependencies] -->
   </dependencies>
   <!-- [END tts_java_dependencies] -->
-  <!-- [END texttospeech_install_with_bom] -->
+  <!-- [END tts_install_with_bom] -->
 </project>
