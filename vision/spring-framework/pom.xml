@@ -36,7 +36,7 @@ limitations under the License.
   <artifactId>spring-framework</artifactId>
   <name>Spring Framework with Cloud Vision Sample</name>
 
-  <!-- [START spring_vision_bom_fragment] -->
+  <!-- [START vision_spring_bom_fragment] -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -48,15 +48,15 @@ limitations under the License.
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <!-- [END spring_vision_bom_fragment] -->
+  <!-- [END vision_spring_bom_fragment] -->
 
   <dependencies>
-    <!-- [START spring_vision_dependency_fragment] -->
+    <!-- [START vision_spring_dependency_fragment] -->
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-gcp-starter-vision</artifactId>
     </dependency>
-    <!-- [END spring_vision_dependency_fragment] -->
+    <!-- [END vision_spring_dependency_fragment] -->
 
     <dependency>
       <groupId>org.springframework.boot</groupId>

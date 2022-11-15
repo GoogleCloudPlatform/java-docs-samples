@@ -40,9 +40,9 @@ public class VisionController {
 
   @Autowired private ResourceLoader resourceLoader;
 
-  // [START spring_vision_autowire]
+  // [START vision_spring_autowire]
   @Autowired private CloudVisionTemplate cloudVisionTemplate;
-  // [END spring_vision_autowire]
+  // [END vision_spring_autowire]
 
   /**
    * This method downloads an image from a URL and sends its contents to the Vision API for label
@@ -54,7 +54,7 @@ public class VisionController {
    */
   @GetMapping("/extractLabels")
   public ModelAndView extractLabels(String imageUrl, ModelMap map) {
-    // [START spring_vision_image_labelling]
+    // [START vision_spring_image_labelling]
     AnnotateImageResponse response =
         this.cloudVisionTemplate.analyzeImage(
             this.resourceLoader.getResource(imageUrl), Type.LABEL_DETECTION);
@@ -69,7 +69,7 @@ public class VisionController {
                       throw new IllegalStateException(String.format("Duplicate key %s", u));
                     },
                     LinkedHashMap::new));
-    // [END spring_vision_image_labelling]
+    // [END vision_spring_image_labelling]
 
     map.addAttribute("annotations", imageLabels);
     map.addAttribute("imageUrl", imageUrl);
@@ -79,10 +79,10 @@ public class VisionController {
 
   @GetMapping("/extractText")
   public String extractText(String imageUrl) {
-    // [START spring_vision_text_extraction]
+    // [START vision_spring_text_extraction]
     String textFromImage =
         this.cloudVisionTemplate.extractTextFromImage(this.resourceLoader.getResource(imageUrl));
     return "Text from image: " + textFromImage;
-    // [END spring_vision_text_extraction]
+    // [END vision_spring_text_extraction]
   }
 }

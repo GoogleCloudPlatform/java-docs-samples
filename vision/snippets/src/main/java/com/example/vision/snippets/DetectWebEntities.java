@@ -73,3 +73,4 @@ public class DetectWebEntities {
     }
   }
 }
+// [END vision_web_detection]
