@@ -5,7 +5,7 @@
   <artifactId>videointelligence-snippets</artifactId>
   <packaging>jar</packaging>
   <name>Google Cloud Video Intelligence Snippets</name>
-  <url>https://github.com/googleapis/java-video-intelligence</url>
+  <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/video</url>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
