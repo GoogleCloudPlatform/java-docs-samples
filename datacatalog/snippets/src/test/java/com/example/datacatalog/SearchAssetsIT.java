@@ -19,12 +19,12 @@ package com.example.datacatalog;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import io.grpc.StatusRuntimeException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import io.grpc.StatusRuntimeException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -81,7 +81,7 @@ public class SearchAssetsIT {
       } catch (StatusRuntimeException e) {
         // sleep for 1 minute
         try {
-          Thread.sleep(60000);
+          Thread.sleep(80000);
         } catch (InterruptedException ie) {
           // stop sleep earlier
         }
