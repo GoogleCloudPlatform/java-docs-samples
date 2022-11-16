@@ -1,4 +1,4 @@
-# [Cloud Video Intelligence: Java Samples](https://github.com/googleapis/java-video-intelligence)
+# [Cloud Video Intelligence: Java Samples](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/video)
 
 [![Open in Cloud Shell][shell_img]][shell_link]
 
