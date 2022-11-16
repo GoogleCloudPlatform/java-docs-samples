@@ -77,7 +77,7 @@ public class ProductSearch {
     try (ImageAnnotatorClient queryImageClient = ImageAnnotatorClient.create()) {
 
       // Get the full path of the product set.
-      String productSetPath = ProductName.format(projectId, computeRegion, productSetId);
+      String productSetPath = ProductSetName.format(projectId, computeRegion, productSetId);
 
       // Read the image as a stream of bytes.
       File imgPath = new File(filePath);
