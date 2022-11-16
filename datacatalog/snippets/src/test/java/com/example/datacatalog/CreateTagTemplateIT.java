@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google Inc.
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,15 @@ package com.example.datacatalog;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.datacatalog.v1.FieldType;
+import com.google.cloud.datacatalog.v1.LocationName;
+import com.google.cloud.datacatalog.v1.TagTemplate;
+import com.google.cloud.datacatalog.v1.TagTemplateField;
+import com.google.cloud.datacatalog.v1.TagTemplateName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -29,9 +35,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class SearchAssetsIT {
+public class CreateTagTemplateIT {
 
+  private static final String ID = UUID.randomUUID().toString().substring(0, 8);
+  private static final String LOCATION = "us-central1";
   private final Logger log = Logger.getLogger(this.getClass().getName());
+  private String tagTemplateId;
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -52,7 +61,8 @@ public class SearchAssetsIT {
   }
 
   @Before
-  public void setUp() {
+  public void setUp() throws IOException {
+    tagTemplateId = "create_tag_template_test_" + ID;
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     originalPrintStream = System.out;
@@ -60,7 +70,10 @@ public class SearchAssetsIT {
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws IOException {
+    // Clean up
+    TagTemplateName name = TagTemplateName.of(PROJECT_ID, LOCATION, tagTemplateId);
+    DeleteTagTemplate.deleteTagTemplate(name);
     // restores print statements in the original method
     System.out.flush();
     System.setOut(originalPrintStream);
@@ -68,20 +81,20 @@ public class SearchAssetsIT {
   }
 
   @Test
-  public void testSearchAssets() throws IOException {
-    int counter = 0;
-    while (counter < 5){
-      try {
-        // check for StatusRuntimeException that is thrown when 
-        // the quota limit has exceeded
-        SearchAssets.searchCatalog(PROJECT_ID, "type=dataset");
-        assertThat(bout.toString()).contains("Search results:");
-        break;
-      } catch (StatusRuntimeException e){
-        // sleep for 1 minute
-        Thread.sleep(60000);
-      }
-      counter++;
-    }
+  public void testCreateTagTemplate() throws IOException {
+    LocationName locationName = LocationName.of(PROJECT_ID, LOCATION);
+    TagTemplateField sourceField =
+        TagTemplateField.newBuilder()
+            .setDisplayName("Your display name")
+            .setType(
+                FieldType.newBuilder().setPrimitiveType(FieldType.PrimitiveType.STRING).build())
+            .build();
+    TagTemplate tagTemplate =
+        TagTemplate.newBuilder()
+            .setDisplayName("Your display name")
+            .putFields("sourceField", sourceField)
+            .build();
+    CreateTagTemplate.createTagTemplate(locationName, tagTemplateId, tagTemplate);
+    assertThat(bout.toString()).contains("Tag template created successfully");
   }
 }

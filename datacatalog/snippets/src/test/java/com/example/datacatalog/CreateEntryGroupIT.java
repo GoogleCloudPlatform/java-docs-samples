@@ -19,9 +19,13 @@ package com.example.datacatalog;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.datacatalog.v1.DataCatalogClient;
+import com.google.cloud.datacatalog.v1.DeleteEntryGroupRequest;
+import com.google.cloud.datacatalog.v1.EntryGroupName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -29,9 +33,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class SearchAssetsIT {
+public class CreateEntryGroupIT {
 
+  private static final String ID = UUID.randomUUID().toString().substring(0, 8);
+  private static final String LOCATION = "us-central1";
   private final Logger log = Logger.getLogger(this.getClass().getName());
+  private String entryGroup;
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -53,6 +60,7 @@ public class SearchAssetsIT {
 
   @Before
   public void setUp() {
+    entryGroup = "CREATE_ENTRY_GROUP_TEST_" + ID;
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     originalPrintStream = System.out;
@@ -60,7 +68,14 @@ public class SearchAssetsIT {
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws IOException {
+    // Clean up
+    try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
+      EntryGroupName name = EntryGroupName.of(PROJECT_ID, LOCATION, entryGroup);
+      DeleteEntryGroupRequest request =
+          DeleteEntryGroupRequest.newBuilder().setName(name.toString()).build();
+      dataCatalogClient.deleteEntryGroup(request);
+    }
     // restores print statements in the original method
     System.out.flush();
     System.setOut(originalPrintStream);
@@ -68,20 +83,8 @@ public class SearchAssetsIT {
   }
 
   @Test
-  public void testSearchAssets() throws IOException {
-    int counter = 0;
-    while (counter < 5){
-      try {
-        // check for StatusRuntimeException that is thrown when 
-        // the quota limit has exceeded
-        SearchAssets.searchCatalog(PROJECT_ID, "type=dataset");
-        assertThat(bout.toString()).contains("Search results:");
-        break;
-      } catch (StatusRuntimeException e){
-        // sleep for 1 minute
-        Thread.sleep(60000);
-      }
-      counter++;
-    }
+  public void testCreateEntryGroup() throws IOException {
+    CreateEntryGroup.createEntryGroup(PROJECT_ID, LOCATION, entryGroup);
+    assertThat(bout.toString()).contains("Entry Group created");
   }
 }
