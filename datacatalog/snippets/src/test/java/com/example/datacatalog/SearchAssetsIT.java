@@ -24,11 +24,11 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import io.grpc.StatusRuntimeException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import io.grpc.StatusRuntimeException;
 
 public class SearchAssetsIT {
 
@@ -80,7 +80,11 @@ public class SearchAssetsIT {
         break;
       } catch (StatusRuntimeException e) {
         // sleep for 1 minute
-        Thread.sleep(60000);
+        try {
+          Thread.sleep(60000);
+        } catch (InterruptedException ie) {
+          // stop sleep earlier
+        }
       }
       counter++;
     }
