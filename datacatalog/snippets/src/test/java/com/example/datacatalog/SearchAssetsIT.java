@@ -70,14 +70,14 @@ public class SearchAssetsIT {
   @Test
   public void testSearchAssets() throws IOException {
     int counter = 0;
-    while (counter < 5){
+    while (counter < 5) {
       try {
         // check for StatusRuntimeException that is thrown when 
         // the quota limit has exceeded
         SearchAssets.searchCatalog(PROJECT_ID, "type=dataset");
         assertThat(bout.toString()).contains("Search results:");
         break;
-      } catch (StatusRuntimeException e){
+      } catch (StatusRuntimeException e) {
         // sleep for 1 minute
         Thread.sleep(60000);
       }
