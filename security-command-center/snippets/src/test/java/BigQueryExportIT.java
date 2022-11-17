@@ -105,6 +105,9 @@ public class BigQueryExportIT {
       String newDatasetName = newDataset.getDatasetId().getDataset();
       System.out.println(newDatasetName + " created successfully");
     } catch (BigQueryException e) {
+      if (e.toString().contains("Already Exists: Dataset")) {
+        return;
+      }
       Assert.fail("Dataset was not created. \n" + e);
     }
   }
