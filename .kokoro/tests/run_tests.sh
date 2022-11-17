@@ -75,7 +75,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     "java-firestore-samples-secrets.txt" \
     "java-cts-v4-samples-secrets.txt" \
     "java-cloud-sql-samples-secrets.txt" \
-    "java-iam-samples-secrets")
+    "java-iam-samples-secrets" \
+    "java-scc-samples-secrets.txt")
 
     # create secret dir
     mkdir -p "${KOKORO_GFILE_DIR}/secrets"
