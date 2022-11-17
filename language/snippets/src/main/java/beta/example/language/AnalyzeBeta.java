@@ -61,7 +61,7 @@ public class AnalyzeBeta {
 
   /** Detects sentiments from the string {@code text}. */
   public static Sentiment analyzeSentimentText(String text, String lang) throws Exception {
-    // [START beta_sentiment_text]
+    // [START language_beta_sentiment_text]
     // Instantiate a beta client : com.google.cloud.language.v1beta2.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // NL auto-detects the language, if not provided
@@ -87,12 +87,12 @@ public class AnalyzeBeta {
       }
       return sentiment;
     }
-    // [END beta_sentiment_text]
+    // [END language_beta_sentiment_text]
   }
 
   /** Detects categories in text using the Language Beta API. */
   public static void classifyText(String text) throws Exception {
-    // [START classify_text]
+    // [START language_classify_text]
     // Instantiate a beta client : com.google.cloud.language.v1beta2.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set content to the text string
@@ -107,12 +107,12 @@ public class AnalyzeBeta {
             category.getName(), category.getConfidence());
       }
     }
-    // [END classify_text]
+    // [END language_classify_text]
   }
 
   /** Detects categories in a GCS hosted file using the Language Beta API. */
   public static void classifyFile(String gcsUri) throws Exception {
-    // [START classify_file]
+    // [START language_classify_file]
     // Instantiate a beta client : com.google.cloud.language.v1beta2.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // set the GCS content URI path
@@ -128,6 +128,6 @@ public class AnalyzeBeta {
             category.getName(), category.getConfidence());
       }
     }
-    // [END classify_file]
+    // [END language_classify_file]
   }
 }
