@@ -282,7 +282,9 @@ public class Analyze {
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // Set content to the text string
       Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
-      V2Model v2Model = V2Model.setContentCategoriesVersion(ContentCategoriesVersion.V2).build();
+      V2Model v2Model = V2Model.newBuilder()
+          .setContentCategoriesVersion(ContentCategoriesVersion.V2)
+          .build();
       ClassificationModelOptions options =
           ClassificationModelOptions.newBuilder().setV2Model(v2Model).build();
       ClassifyTextRequest request =
