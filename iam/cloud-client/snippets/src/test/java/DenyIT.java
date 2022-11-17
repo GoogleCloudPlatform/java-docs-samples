@@ -36,9 +36,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class DenyIT {
 
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_ID = System.getenv("IAM_PROJECT_ID");
   private static final String GOOGLE_APPLICATION_CREDENTIALS =
-      System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
+      System.getenv("IAM_CREDENTIALS");
   private static String POLICY_ID;
 
   private ByteArrayOutputStream stdOut;
@@ -56,7 +56,7 @@ public class DenyIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    // requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     POLICY_ID = "limit-project-deletion" + UUID.randomUUID();
