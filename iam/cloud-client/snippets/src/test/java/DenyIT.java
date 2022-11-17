@@ -56,8 +56,8 @@ public class DenyIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    // requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("IAM_CREDENTIALS");
+    requireEnvVar("IAM_PROJECT_ID");
 
     POLICY_ID = "limit-project-deletion" + UUID.randomUUID();
 

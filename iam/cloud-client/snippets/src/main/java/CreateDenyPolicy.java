@@ -150,7 +150,7 @@ public class CreateDenyPolicy {
               .get(3, TimeUnit.MINUTES);
 
       // Wait for the operation to complete.
-      if (!operation.getDone() || operation.hasError()) {
+      if (operation.hasError()) {
         System.out.println("Error in creating the policy " + operation.getError());
         return;
       }

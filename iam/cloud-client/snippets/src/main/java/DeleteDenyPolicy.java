@@ -75,7 +75,7 @@ public class DeleteDenyPolicy {
               .futureCall(deletePolicyRequest)
               .get(3, TimeUnit.MINUTES);
 
-      if (!operation.getDone() || operation.hasError()) {
+      if (operation.hasError()) {
         System.out.println("Error in deleting the policy " + operation.getError());
         return;
       }

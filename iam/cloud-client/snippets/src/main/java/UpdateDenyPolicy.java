@@ -148,7 +148,7 @@ public class UpdateDenyPolicy {
               .futureCall(updatePolicyRequest)
               .get(3, TimeUnit.MINUTES);
 
-      if (!operation.getDone() || operation.hasError()) {
+      if (operation.hasError()) {
         System.out.println("Error in updating the policy " + operation.getError());
         return;
       }
