@@ -133,13 +133,11 @@ public class SnippetsIT {
           client.updateCryptoKey(keyWithoutRotation, fieldMask);
         }
 
-        ListCryptoKeyVersionsRequest listVersionsRequest =
-            ListCryptoKeyVersionsRequest.newBuilder()
-                .setParent(key.getName())
-                .setFilter("state != DESTROYED AND state != DESTROY_SCHEDULED")
-                .build();
-        for (CryptoKeyVersion version :
-            client.listCryptoKeyVersions(listVersionsRequest).iterateAll()) {
+        ListCryptoKeyVersionsRequest listVersionsRequest = ListCryptoKeyVersionsRequest.newBuilder()
+            .setParent(key.getName())
+            .setFilter("state != DESTROYED AND state != DESTROY_SCHEDULED")
+            .build();
+        for (CryptoKeyVersion version : client.listCryptoKeyVersions(listVersionsRequest).iterateAll()) {
           client.destroyCryptoKeyVersion(version.getName());
         }
       }
@@ -169,16 +167,15 @@ public class SnippetsIT {
 
   private static CryptoKey createAsymmetricDecryptKey(String keyId) throws IOException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      CryptoKey key =
-          CryptoKey.newBuilder()
-              .setPurpose(CryptoKeyPurpose.ASYMMETRIC_DECRYPT)
-              .setVersionTemplate(
-                  CryptoKeyVersionTemplate.newBuilder()
-                      .setAlgorithm(CryptoKeyVersionAlgorithm.RSA_DECRYPT_OAEP_2048_SHA256)
-                      .build())
-              .putLabels("foo", "bar")
-              .putLabels("zip", "zap")
-              .build();
+      CryptoKey key = CryptoKey.newBuilder()
+          .setPurpose(CryptoKeyPurpose.ASYMMETRIC_DECRYPT)
+          .setVersionTemplate(
+              CryptoKeyVersionTemplate.newBuilder()
+                  .setAlgorithm(CryptoKeyVersionAlgorithm.RSA_DECRYPT_OAEP_2048_SHA256)
+                  .build())
+          .putLabels("foo", "bar")
+          .putLabels("zip", "zap")
+          .build();
       CryptoKey createdKey = client.createCryptoKey(getKeyRingName(), keyId, key);
       return createdKey;
     }
@@ -186,16 +183,15 @@ public class SnippetsIT {
 
   private static CryptoKey createAsymmetricSignEcKey(String keyId) throws IOException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      CryptoKey key =
-          CryptoKey.newBuilder()
-              .setPurpose(CryptoKeyPurpose.ASYMMETRIC_SIGN)
-              .setVersionTemplate(
-                  CryptoKeyVersionTemplate.newBuilder()
-                      .setAlgorithm(CryptoKeyVersionAlgorithm.EC_SIGN_P256_SHA256)
-                      .build())
-              .putLabels("foo", "bar")
-              .putLabels("zip", "zap")
-              .build();
+      CryptoKey key = CryptoKey.newBuilder()
+          .setPurpose(CryptoKeyPurpose.ASYMMETRIC_SIGN)
+          .setVersionTemplate(
+              CryptoKeyVersionTemplate.newBuilder()
+                  .setAlgorithm(CryptoKeyVersionAlgorithm.EC_SIGN_P256_SHA256)
+                  .build())
+          .putLabels("foo", "bar")
+          .putLabels("zip", "zap")
+          .build();
       CryptoKey createdKey = client.createCryptoKey(getKeyRingName(), keyId, key);
       return createdKey;
     }
@@ -203,16 +199,15 @@ public class SnippetsIT {
 
   private static CryptoKey createAsymmetricSignRsaKey(String keyId) throws IOException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      CryptoKey key =
-          CryptoKey.newBuilder()
-              .setPurpose(CryptoKeyPurpose.ASYMMETRIC_SIGN)
-              .setVersionTemplate(
-                  CryptoKeyVersionTemplate.newBuilder()
-                      .setAlgorithm(CryptoKeyVersionAlgorithm.RSA_SIGN_PSS_2048_SHA256)
-                      .build())
-              .putLabels("foo", "bar")
-              .putLabels("zip", "zap")
-              .build();
+      CryptoKey key = CryptoKey.newBuilder()
+          .setPurpose(CryptoKeyPurpose.ASYMMETRIC_SIGN)
+          .setVersionTemplate(
+              CryptoKeyVersionTemplate.newBuilder()
+                  .setAlgorithm(CryptoKeyVersionAlgorithm.RSA_SIGN_PSS_2048_SHA256)
+                  .build())
+          .putLabels("foo", "bar")
+          .putLabels("zip", "zap")
+          .build();
       CryptoKey createdKey = client.createCryptoKey(getKeyRingName(), keyId, key);
       return createdKey;
     }
@@ -220,17 +215,16 @@ public class SnippetsIT {
 
   private static CryptoKey createHsmKey(String keyId) throws IOException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      CryptoKey key =
-          CryptoKey.newBuilder()
-              .setPurpose(CryptoKeyPurpose.ENCRYPT_DECRYPT)
-              .setVersionTemplate(
-                  CryptoKeyVersionTemplate.newBuilder()
-                      .setAlgorithm(CryptoKeyVersionAlgorithm.GOOGLE_SYMMETRIC_ENCRYPTION)
-                      .setProtectionLevel(ProtectionLevel.HSM)
-                      .build())
-              .putLabels("foo", "bar")
-              .putLabels("zip", "zap")
-              .build();
+      CryptoKey key = CryptoKey.newBuilder()
+          .setPurpose(CryptoKeyPurpose.ENCRYPT_DECRYPT)
+          .setVersionTemplate(
+              CryptoKeyVersionTemplate.newBuilder()
+                  .setAlgorithm(CryptoKeyVersionAlgorithm.GOOGLE_SYMMETRIC_ENCRYPTION)
+                  .setProtectionLevel(ProtectionLevel.HSM)
+                  .build())
+          .putLabels("foo", "bar")
+          .putLabels("zip", "zap")
+          .build();
       CryptoKey createdKey = client.createCryptoKey(getKeyRingName(), keyId, key);
       return createdKey;
     }
@@ -238,17 +232,16 @@ public class SnippetsIT {
 
   private static CryptoKey createMacKey(String keyId) throws IOException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      CryptoKey key =
-          CryptoKey.newBuilder()
-              .setPurpose(CryptoKeyPurpose.MAC)
-              .setVersionTemplate(
-                  CryptoKeyVersionTemplate.newBuilder()
-                      .setAlgorithm(CryptoKeyVersionAlgorithm.HMAC_SHA256)
-                      .setProtectionLevel(ProtectionLevel.HSM)
-                      .build())
-              .putLabels("foo", "bar")
-              .putLabels("zip", "zap")
-              .build();
+      CryptoKey key = CryptoKey.newBuilder()
+          .setPurpose(CryptoKeyPurpose.MAC)
+          .setVersionTemplate(
+              CryptoKeyVersionTemplate.newBuilder()
+                  .setAlgorithm(CryptoKeyVersionAlgorithm.HMAC_SHA256)
+                  .setProtectionLevel(ProtectionLevel.HSM)
+                  .build())
+          .putLabels("foo", "bar")
+          .putLabels("zip", "zap")
+          .build();
       CryptoKey createdKey = client.createCryptoKey(getKeyRingName(), keyId, key);
       return createdKey;
     }
@@ -256,16 +249,15 @@ public class SnippetsIT {
 
   private static CryptoKey createSymmetricKey(String keyId) throws IOException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      CryptoKey key =
-          CryptoKey.newBuilder()
-              .setPurpose(CryptoKeyPurpose.ENCRYPT_DECRYPT)
-              .setVersionTemplate(
-                  CryptoKeyVersionTemplate.newBuilder()
-                      .setAlgorithm(CryptoKeyVersionAlgorithm.GOOGLE_SYMMETRIC_ENCRYPTION)
-                      .build())
-              .putLabels("foo", "bar")
-              .putLabels("zip", "zap")
-              .build();
+      CryptoKey key = CryptoKey.newBuilder()
+          .setPurpose(CryptoKeyPurpose.ENCRYPT_DECRYPT)
+          .setVersionTemplate(
+              CryptoKeyVersionTemplate.newBuilder()
+                  .setAlgorithm(CryptoKeyVersionAlgorithm.GOOGLE_SYMMETRIC_ENCRYPTION)
+                  .build())
+          .putLabels("foo", "bar")
+          .putLabels("zip", "zap")
+          .build();
       CryptoKey createdKey = client.createCryptoKey(getKeyRingName(), keyId, key);
       return createdKey;
     }
@@ -293,11 +285,10 @@ public class SnippetsIT {
 
   private static byte[] convertPemToDer(String pem) {
     BufferedReader bufferedReader = new BufferedReader(new StringReader(pem));
-    String encoded =
-        bufferedReader
-            .lines()
-            .filter(line -> !line.startsWith("-----BEGIN") && !line.startsWith("-----END"))
-            .collect(Collectors.joining());
+    String encoded = bufferedReader
+        .lines()
+        .filter(line -> !line.startsWith("-----BEGIN") && !line.startsWith("-----END"))
+        .collect(Collectors.joining());
     return Base64.getDecoder().decode(encoded);
   }
 
@@ -371,9 +362,8 @@ public class SnippetsIT {
     byte[] ciphertext;
 
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      CryptoKeyVersionName keyVersionName =
-          CryptoKeyVersionName.of(
-              PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, "1");
+      CryptoKeyVersionName keyVersionName = CryptoKeyVersionName.of(
+          PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, "1");
       PublicKey publicKey = client.getPublicKey(keyVersionName);
 
       byte[] derKey = convertPemToDer(publicKey.getPem());
@@ -381,9 +371,8 @@ public class SnippetsIT {
       java.security.PublicKey rsaKey = KeyFactory.getInstance("RSA").generatePublic(keySpec);
 
       Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
-      OAEPParameterSpec oaepParams =
-          new OAEPParameterSpec(
-              "SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT);
+      OAEPParameterSpec oaepParams = new OAEPParameterSpec(
+          "SHA-256", "MGF1", MGF1ParameterSpec.SHA256, PSource.PSpecified.DEFAULT);
       cipher.init(Cipher.ENCRYPT_MODE, rsaKey, oaepParams);
       ciphertext = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
     }
@@ -400,8 +389,7 @@ public class SnippetsIT {
     byte[] ciphertext;
 
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      CryptoKeyName keyName =
-          CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID);
+      CryptoKeyName keyName = CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID);
       EncryptResponse result = client.encrypt(keyName, ByteString.copyFromUtf8(plaintext));
       ciphertext = result.getCiphertext().toByteArray();
     }
@@ -564,9 +552,8 @@ public class SnippetsIT {
     byte[] signature;
 
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      CryptoKeyVersionName versionName =
-          CryptoKeyVersionName.of(
-              PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_SIGN_EC_KEY_ID, "1");
+      CryptoKeyVersionName versionName = CryptoKeyVersionName.of(
+          PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_SIGN_EC_KEY_ID, "1");
 
       MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
       byte[] hash = sha256.digest(message.getBytes(StandardCharsets.UTF_8));
@@ -593,9 +580,8 @@ public class SnippetsIT {
     byte[] signature;
 
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      CryptoKeyVersionName versionName =
-          CryptoKeyVersionName.of(
-              PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_SIGN_RSA_KEY_ID, "1");
+      CryptoKeyVersionName versionName = CryptoKeyVersionName.of(
+          PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_SIGN_RSA_KEY_ID, "1");
 
       MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
       byte[] hash = sha256.digest(message.getBytes(StandardCharsets.UTF_8));
@@ -621,8 +607,7 @@ public class SnippetsIT {
     String data = "my data";
 
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      CryptoKeyVersionName versionName =
-          CryptoKeyVersionName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, MAC_KEY_ID, "1");
+      CryptoKeyVersionName versionName = CryptoKeyVersionName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, MAC_KEY_ID, "1");
 
       MacSignResponse response = client.macSign(versionName, ByteString.copyFromUtf8(data));
 
@@ -636,6 +621,27 @@ public class SnippetsIT {
               data,
               response.getMac().toByteArray());
       assertThat(stdOut.toString()).contains("Success: true");
+    }
+  }
+
+  @Test
+  public void testKeyImportEndToEnd() throws IOException, GeneralSecurityException, InterruptedException {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      final String importedKeyId = getRandomId();
+      final String importJobId = getRandomId();
+
+      new CreateKeyForImport().createKeyForImport(PROJECT_ID, LOCATION_ID, KEY_RING_ID, importedKeyId);
+      new CreateImportJob().createImportJob(PROJECT_ID, LOCATION_ID, KEY_RING_ID, importJobId);
+
+      while (!stdOut.toString().contains("ACTIVE")) {
+        Thread.sleep(1000);
+        new CheckStateImportJob().checkStateImportJob(PROJECT_ID, LOCATION_ID, KEY_RING_ID, importJobId);
+      }
+
+      new ImportManuallyWrappedKey().importManuallyWrappedKey(PROJECT_ID, LOCATION_ID, KEY_RING_ID, importedKeyId,
+          importJobId);
+
+      new CheckStateImportedKey().checkStateImportedKey(PROJECT_ID, LOCATION_ID, KEY_RING_ID, importedKeyId, "1");
     }
   }
 }
