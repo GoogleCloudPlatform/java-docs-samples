@@ -80,7 +80,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
 
     # create secret dir
     mkdir -p "${KOKORO_GFILE_DIR}/secrets"
-    chmod +x "${KOKORO_GFILE_DIR}/secrets"
+    chmod u+x "${KOKORO_GFILE_DIR}/secrets"
 
     for SECRET in "${SECRET_FILES[@]}"; do
       # grab latest version of secret
