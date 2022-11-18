@@ -86,7 +86,6 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
       gcloud secrets versions access latest --secret="${SECRET%.*}" > "${KOKORO_GFILE_DIR}/secrets/$SECRET"
       # execute secret file contents
       if [[ "$SECRET" != *json ]]; then
-        chmod u+x "${KOKORO_GFILE_DIR}/secrets/$SECRET"
         source "${KOKORO_GFILE_DIR}/secrets/$SECRET"
       fi
     done
