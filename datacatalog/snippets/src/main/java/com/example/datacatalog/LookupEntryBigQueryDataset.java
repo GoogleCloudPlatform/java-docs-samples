@@ -16,7 +16,7 @@
 
 package com.example.datacatalog;
 
-// [START datacatalog_bigquery_lookup_dataset]
+// [START data_catalog_bigquery_lookup_dataset]
 import com.google.cloud.datacatalog.v1.DataCatalogClient;
 import com.google.cloud.datacatalog.v1.Entry;
 import com.google.cloud.datacatalog.v1.LookupEntryRequest;

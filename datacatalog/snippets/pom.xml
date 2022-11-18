@@ -24,7 +24,7 @@
   </properties>
 
 
-  <!-- [START datacatalog_install_with_bom] -->
+  <!-- [START data_catalog_install_with_bom] -->
   <dependencyManagement>
     <dependencies>
       <dependency>
