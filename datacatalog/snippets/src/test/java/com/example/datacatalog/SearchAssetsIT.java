@@ -19,7 +19,6 @@ package com.example.datacatalog;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
-import io.grpc.StatusRuntimeException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -70,23 +69,7 @@ public class SearchAssetsIT {
 
   @Test
   public void testSearchAssets() throws IOException {
-    int counter = 0;
-    while (counter < 5) {
-      try {
-        // check for StatusRuntimeException that is thrown when 
-        // the quota limit has exceeded
-        SearchAssets.searchCatalog(PROJECT_ID, "type=dataset");
-        assertThat(bout.toString()).contains("Search results:");
-        break;
-      } catch (StatusRuntimeException e) {
-        // sleep for 1 minute
-        try {
-          Thread.sleep(80000);
-        } catch (InterruptedException ie) {
-          // stop sleep earlier
-        }
-      }
-      counter++;
-    }
+    SearchAssets.searchCatalog(PROJECT_ID, "type=dataset");
+    assertThat(bout.toString()).contains("Search results:");
   }
 }
