@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package main.java.com.example.translate;
+package com.example.translate;
 
 // [START translate_v3_translate_text]
 // [START translate_v3_translate_text_0]

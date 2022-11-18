@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package main.java.com.example.translate;
+package com.example.translate;
 
 // [START translate_v3_translate_text_with_model]
 import com.google.cloud.translate.v3.LocationName;

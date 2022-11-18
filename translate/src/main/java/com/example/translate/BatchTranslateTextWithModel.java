@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package main.java.com.example.translate;
+package com.example.translate;
 
 // [START translate_v3_batch_translate_text_with_model]
 import com.google.api.gax.longrunning.OperationFuture;
