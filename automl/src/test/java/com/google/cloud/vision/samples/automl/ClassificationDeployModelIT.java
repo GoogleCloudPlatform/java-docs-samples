@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.vision;
+package com.google.cloud.vision.samples.automl;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -26,35 +26,45 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class ClassificationDeployModelIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String MODEL_ID = "ICN0000000000000000000";
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private PrintStream originalPrintStream;
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
-    originalPrintStream = System.out;
     System.setOut(out);
   }
 
   @After
   public void tearDown() {
-    System.out.flush();
-    System.setOut(originalPrintStream);
+    System.setOut(null);
   }
 
   @Test
-  public void testClassificationUndeployModelApi() {
+  public void testClassificationDeployModelApi() {
     // As model deployment can take a long time, instead try to deploy a
     // nonexistent model and confirm that the model was not found, but other
     // elements of the request were valid.
     try {
-      ClassificationUndeployModel.classificationUndeployModel(PROJECT_ID, MODEL_ID);
+      ClassificationDeployModel.classificationDeployModel(PROJECT_ID, MODEL_ID);
+      String got = bout.toString();
+      assertThat(got).contains("The model does not exist");
+    } catch (IOException | ExecutionException | InterruptedException e) {
+      assertThat(e.getMessage()).contains("The model does not exist");
+    }
+  }
+
+  @Test
+  public void testClassificationDeployModelNodeCountApi() {
+    // As model deployment can take a long time, instead try to deploy a
+    // nonexistent model and confirm that the model was not found, but other
+    // elements of the request were valid.
+    try {
+      ClassificationDeployModelNodeCount.classificationDeployModelNodeCount(PROJECT_ID, MODEL_ID);
       String got = bout.toString();
       assertThat(got).contains("The model does not exist");
     } catch (IOException | ExecutionException | InterruptedException e) {
