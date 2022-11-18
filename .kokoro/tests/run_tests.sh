@@ -80,13 +80,13 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
 
     # create secret dir
     mkdir -p "${KOKORO_GFILE_DIR}/secrets"
-    chmod u+x "${KOKORO_GFILE_DIR}/secrets"
 
     for SECRET in "${SECRET_FILES[@]}"; do
       # grab latest version of secret
       gcloud secrets versions access latest --secret="${SECRET%.*}" > "${KOKORO_GFILE_DIR}/secrets/$SECRET"
       # execute secret file contents
       if [[ "$SECRET" != *json ]]; then
+        chmod u+x "${KOKORO_GFILE_DIR}/secrets/$SECRET"
         source "${KOKORO_GFILE_DIR}/secrets/$SECRET"
       fi
     done
