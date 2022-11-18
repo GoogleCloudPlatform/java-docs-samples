@@ -1,0 +1,81 @@
+<!--/*-->
+<!--* Copyright 2022 Google LLC-->
+<!--*-->
+<!--* Licensed under the Apache License, Version 2.0 (the "License");-->
+<!--* you may not use this file except in compliance with the License.-->
+<!--* You may obtain a copy of the License at-->
+<!--*-->
+<!--* http://www.apache.org/licenses/LICENSE-2.0-->
+<!--*-->
+<!--* Unless required by applicable law or agreed to in writing, software-->
+<!--* distributed under the License is distributed on an "AS IS" BASIS,-->
+<!--* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.-->
+<!--* See the License for the specific language governing permissions and-->
+<!--* limitations under the License.-->
+<!--*/-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>reCAPTCHA-Enterprise</title>
+  <link rel="stylesheet" type="text/css" href="home.css"/>
+  <script th:src="@{https://www.google.com/recaptcha/enterprise.js(render=${site_key})}" async
+          defer></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript" src="assessment.js"></script>
+  <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col s12 col m8 push-m2  col l6 push-l3">
+      <div class="card-panel white z-depth-5">
+        <img id="user-img" src="recaptcha.png" alt="reCAPTCHA logo">
+        <h3>Score Key: Demo</h3>
+        <div class="row">
+          <form class="col s12" id="recaptcha_form">
+            <div class="row">
+              <div class="input-field col s12">
+                <input id="email-id" type="text" class="validate" length="100" required>
+                <label for="email-id">Email</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <input id="password" type="password" class="validate" length="32" required>
+                <label for="password">Password</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s12">
+                <button id="submitBtn" class="btn waves-effect waves-light g-recaptcha"
+                        type="submit" name="action" data-action="login"
+                        th:data-sitekey="${site_key}" onclick="assessRecaptcha(this, event)">Log In
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <a href="/signup">Don't have an account yet?</a>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col s12 col m8 push-m2  col l6 push-l3">
+      <div class="card-panel white z-depth-5">
+        <div class="row">
+          <div class="input-field col s12">
+            <label for="scoreButton">reCAPTCHA score</label>
+            <output class="waves-effect waves-light" id="scoreButton"></output>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
