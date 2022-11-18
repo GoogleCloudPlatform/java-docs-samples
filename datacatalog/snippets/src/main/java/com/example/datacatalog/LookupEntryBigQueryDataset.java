@@ -55,4 +55,4 @@ public class LookupEntryBigQueryDataset {
     }
   }
 }
-// [END datacatalog_bigquery_lookup_dataset]
+// [END data_catalog_bigquery_lookup_dataset]
