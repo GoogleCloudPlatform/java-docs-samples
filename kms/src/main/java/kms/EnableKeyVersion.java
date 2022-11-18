@@ -61,7 +61,7 @@ public class EnableKeyVersion {
       // Create a field mask of updated values.
       FieldMask fieldMask = FieldMaskUtil.fromString("state");
 
-      // Enable the key version.
+      // Destroy the key version.
       CryptoKeyVersion response = client.updateCryptoKeyVersion(keyVersion, fieldMask);
       System.out.printf("Enabled key version: %s%n", response.getName());
     }
