@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package main.java.com.example.translate;
+package com.example.translate;
 
 // [START translate_v3_detect_language]
 import com.google.cloud.translate.v3.DetectLanguageRequest;

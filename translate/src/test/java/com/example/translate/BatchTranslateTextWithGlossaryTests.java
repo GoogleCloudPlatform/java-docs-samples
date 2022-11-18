@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package test.java.com.example.translate;
+package com.example.translate;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;

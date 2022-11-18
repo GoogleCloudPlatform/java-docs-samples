@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package main.java.com.example.translate;
+package com.example.translate;
 
 // [START translate_v3_list_glossary]
 import com.google.cloud.translate.v3.Glossary;
@@ -49,6 +49,7 @@ public class ListGlossaries {
         System.out.printf("Entry count: %s\n", responseItem.getEntryCount());
         System.out.printf(
             "Input URI: %s\n", responseItem.getInputConfig().getGcsSource().getInputUri());
+      }
     }
   }
 }
