@@ -17,6 +17,9 @@
 package functions.eventpojos;
 
 // [START functions_helloworld_pubsub_message]
+// This POJO is based on the `PubsubMessage` object described here:
+// https://github.com/googleapis/googleapis/blob/master/google/pubsub/v1/pubsub.proto`
+
 import java.util.Map;
 
 public class PubSubMessage {
