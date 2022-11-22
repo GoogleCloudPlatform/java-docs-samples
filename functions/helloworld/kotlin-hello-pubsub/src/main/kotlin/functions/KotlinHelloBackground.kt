@@ -18,14 +18,14 @@ package functions
 // [START functions_helloworld_pubsub]
 import com.google.cloud.functions.BackgroundFunction
 import com.google.cloud.functions.Context
-import functions.eventpojos.PubSubMessage
+import functions.eventpojos.PubsubMessage
 import java.nio.charset.StandardCharsets
 import java.util.Base64
 import java.util.logging.Logger
 
 
-class KotlinHelloPubSub : BackgroundFunction<PubSubMessage> {
-    override fun accept(message: PubSubMessage, context: Context) {
+class KotlinHelloPubSub : BackgroundFunction<PubsubMessage> {
+    override fun accept(message: PubsubMessage, context: Context) {
         // name's default value is "world"
         var name = "world"
         if (message?.data != null) {

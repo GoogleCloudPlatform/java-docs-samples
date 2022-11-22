@@ -16,15 +16,17 @@
 
 package functions.eventpojos
 
-// [START functions_helloworld_pubsub_message]
-class PubSubMessage { // Cloud Functions uses GSON to populate this object.
+class PubsubMessage {
+  // This object is based on:
+  // https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
+
+  // Cloud Functions uses Gson to deserialize JSON into a Scala object.
   // Field types/names are specified by Cloud Functions
   // Changing them may break your code!
   private var data : String = null
   private var attributes : Map[String, String] = null
   private var messageId : String = null
   private var publishTime : String = null
-  // [END functions_helloworld_pubsub_message]
 
   // Manually-defined getters and setters are required for
   // inter-operation with Java files, but are not necessary
@@ -34,6 +36,4 @@ class PubSubMessage { // Cloud Functions uses GSON to populate this object.
   def setData(data: String): Unit = {
     this.data = data : String;
   }
-  // [START functions_helloworld_pubsub_message]
 }
-// [END functions_helloworld_pubsub_message]

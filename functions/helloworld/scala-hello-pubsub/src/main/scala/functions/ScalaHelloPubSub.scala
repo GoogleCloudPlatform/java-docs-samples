@@ -22,13 +22,13 @@ import java.util.Base64
 import java.util.logging.Logger
 
 import com.google.cloud.functions.{BackgroundFunction, Context}
-import functions.eventpojos.PubSubMessage
+import functions.eventpojos.PubsubMessage
 
-class ScalaHelloPubSub extends BackgroundFunction[PubSubMessage] {
+class ScalaHelloPubSub extends BackgroundFunction[PubsubMessage] {
 
   val LOGGER = Logger.getLogger(this.getClass.getName)
 
-  override def accept(message: PubSubMessage, context: Context): Unit = {
+  override def accept(message: PubsubMessage, context: Context): Unit = {
     // name's default value is "world"
     var name = "world"
     if (message != null && message.getData != null) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package functions.eventpojos
 
-// [START functions_helloworld_pubsub_message]
-class PubSubMessage {
+class PubsubMessage {
     // Cloud Functions uses GSON to populate this object.
     // Field types/names are specified by Cloud Functions
     // Changing them may break your code!
@@ -25,7 +24,6 @@ class PubSubMessage {
     private Map<String, String> attributes;
     private String messageId;
     private String publishTime;
-    // [END functions_helloworld_pubsub_message]
 
     // Manually-defined getters and setters are required for
     // inter-operation with Java files, but are not necessary
@@ -61,6 +59,4 @@ class PubSubMessage {
     def setPublishTime = { String publishTime ->
         this.publishTime = publishTime;
     }
-    // [START functions_helloworld_pubsub_message]
 }
-// [END functions_helloworld_pubsub_message]

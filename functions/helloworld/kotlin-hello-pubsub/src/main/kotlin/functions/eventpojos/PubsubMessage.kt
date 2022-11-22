@@ -16,9 +16,11 @@
 
 package functions.eventpojos
 
-// [START functions_helloworld_pubsub_message]
-class PubSubMessage {
-    // Cloud Functions uses GSON to populate this object.
+class PubsubMessage {
+    // This object is based on:
+    // https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
+
+    // Cloud Functions uses Gson to deserialize JSON into a Kotlin object.
     // Field types/names are specified by Cloud Functions
     // Changing them may break your code!
     var data: String? = null
@@ -26,4 +28,3 @@ class PubSubMessage {
     var messageId: String? = null
     var publishTime: String? = null
 }
-// [END functions_helloworld_pubsub_message]
