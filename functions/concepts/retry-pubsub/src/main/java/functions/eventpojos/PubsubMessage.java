@@ -16,7 +16,6 @@
 
 package functions.eventpojos;
 
-// [START functions_helloworld_pubsub_message]
 // This POJO is based on the `PubsubMessage` object described here:
 // https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
 
@@ -63,4 +62,3 @@ public class PubsubMessage {
     this.publishTime = publishTime;
   }
 }
-// [END functions_helloworld_pubsub_message]
