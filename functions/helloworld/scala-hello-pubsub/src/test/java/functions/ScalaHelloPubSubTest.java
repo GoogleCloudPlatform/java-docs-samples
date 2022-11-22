@@ -20,7 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
 import functions.eventpojos.MockContext;
-import functions.eventpojos.PubSubMessage;
+import functions.eventpojos.PubsubMessage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -54,7 +54,7 @@ public class ScalaHelloPubSubTest {
 
   @Test
   public void scalaHelloPubSub_printsName() throws Exception {
-    PubSubMessage message = new PubSubMessage();
+    PubsubMessage message = new PubsubMessage();
     message.setData(Base64.getEncoder().encodeToString(
         "John".getBytes(StandardCharsets.UTF_8)));
 
@@ -67,7 +67,7 @@ public class ScalaHelloPubSubTest {
 
   @Test
   public void scalaHelloPubSub_printsHelloWorld() throws Exception {
-    new ScalaHelloPubSub().accept(new PubSubMessage(), new MockContext());
+    new ScalaHelloPubSub().accept(new PubsubMessage(), new MockContext());
 
     assertThat("Hello world!").isEqualTo(
         LOG_HANDLER.getStoredLogRecords().get(0).getMessage()

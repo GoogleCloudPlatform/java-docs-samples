@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@ package functions.eventpojos;
 
 // [START functions_helloworld_pubsub_message]
 // This POJO is based on the `PubsubMessage` object described here:
-// https://github.com/googleapis/googleapis/blob/master/google/pubsub/v1/pubsub.proto
+// https://cloud.google.com/pubsub/docs/reference/rest/v1/PubsubMessage
 
 import java.util.Map;
 
-public class PubSubMessage {
-  // Cloud Functions uses GSON to populate this object.
+public class PubsubMessage {
+  // Cloud Functions uses Gson to deserialize JSON into a Java object.
   // Field types/names are specified by Cloud Functions
   // Changing them may break your code!
   private String data;

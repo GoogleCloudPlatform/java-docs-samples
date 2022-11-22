@@ -25,7 +25,7 @@ import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import functions.eventpojos.PubSubMessage;
+import functions.eventpojos.PubsubMessage;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
@@ -67,7 +67,7 @@ public class OcrSaveResultTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void functionsOcrSave_shouldValidateParams() throws IOException {
-    PubSubMessage message = new PubSubMessage();
+    PubsubMessage message = new PubsubMessage();
     message.setData(new String(Base64.getEncoder().encode("{}".getBytes())));
 
     new OcrSaveResult().accept(message, null);
@@ -84,7 +84,7 @@ public class OcrSaveResultTest {
     dataJson.addProperty("filename", filename);
     dataJson.addProperty("lang", lang);
 
-    PubSubMessage message = new PubSubMessage();
+    PubsubMessage message = new PubsubMessage();
     message.setData(new String(Base64.getEncoder().encode(gson.toJson(dataJson).getBytes())));
 
     new OcrSaveResult().accept(message, null);

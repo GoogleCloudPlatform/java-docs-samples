@@ -20,17 +20,17 @@ package functions;
 
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-import functions.eventpojos.PubSubMessage;
+import functions.eventpojos.PubsubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class HelloPubSub implements BackgroundFunction<PubSubMessage> {
+public class HelloPubSub implements BackgroundFunction<PubsubMessage> {
   private static final Logger logger = Logger.getLogger(HelloPubSub.class.getName());
 
   @Override
-  public void accept(PubSubMessage message, Context context) {
+  public void accept(PubsubMessage message, Context context) {
     String name = "world";
     if (message != null && message.getData() != null) {
       name = new String(

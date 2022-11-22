@@ -20,7 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
 import functions.eventpojos.MockContext;
-import functions.eventpojos.PubSubMessage;
+import functions.eventpojos.PubsubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
@@ -48,7 +48,7 @@ public class KotlinHelloPubSubTest {
 
   @Test
   public void functionsHelloworldPubSubKotlin_shouldPrintName() throws Exception {
-    PubSubMessage pubSubMessage = new PubSubMessage();
+    PubsubMessage pubSubMessage = new PubsubMessage();
     pubSubMessage.setData(Base64.getEncoder().encodeToString(
         "John".getBytes(StandardCharsets.UTF_8)));
 
@@ -60,7 +60,7 @@ public class KotlinHelloPubSubTest {
 
   @Test
   public void functionsHelloworldPubSubKotlin_shouldPrintHelloWorld() throws Exception {
-    new KotlinHelloPubSub().accept(new PubSubMessage(), new MockContext());
+    new KotlinHelloPubSub().accept(new PubsubMessage(), new MockContext());
 
     String message = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello world!").isEqualTo(message);

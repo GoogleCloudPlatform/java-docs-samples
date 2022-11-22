@@ -21,7 +21,7 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
-import functions.eventpojos.PubSubMessage;
+import functions.eventpojos.PubsubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
@@ -50,7 +50,7 @@ public class HelloPubSubTest {
 
   @Test
   public void helloPubSub_shouldPrintName() {
-    PubSubMessage pubSubMessage = new PubSubMessage();
+    PubsubMessage pubSubMessage = new PubsubMessage();
     pubSubMessage.setData(Base64.getEncoder().encodeToString(
         "John".getBytes(StandardCharsets.UTF_8)));
     sampleUnderTest.accept(pubSubMessage, null);
@@ -61,7 +61,7 @@ public class HelloPubSubTest {
 
   @Test
   public void helloPubSub_shouldPrintHelloWorld() {
-    PubSubMessage pubSubMessage = new PubSubMessage();
+    PubsubMessage pubSubMessage = new PubsubMessage();
     sampleUnderTest.accept(pubSubMessage, null);
 
     String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();

@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.functions.Context;
 import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
-import functions.eventpojos.PubSubMessage;
+import functions.eventpojos.PubsubMessage;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -68,7 +68,7 @@ public class RetryTimeoutTest {
     Context mockContext = mock(Context.class);
     when(mockContext.timestamp()).thenReturn(timestamp.toString());
 
-    PubSubMessage pubsubMessage = new PubSubMessage();
+    PubsubMessage pubsubMessage = new PubsubMessage();
 
     new RetryTimeout().accept(pubsubMessage, mockContext);
 
@@ -82,7 +82,7 @@ public class RetryTimeoutTest {
     Context mockContext = mock(Context.class);
     when(mockContext.timestamp()).thenReturn(timestamp.toString());
 
-    PubSubMessage pubsubMessage = new PubSubMessage();
+    PubsubMessage pubsubMessage = new PubsubMessage();
 
     new RetryTimeout().accept(pubsubMessage, mockContext);
 

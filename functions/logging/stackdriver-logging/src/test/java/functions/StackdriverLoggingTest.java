@@ -20,7 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
-import functions.eventpojos.PubSubMessage;
+import functions.eventpojos.PubsubMessage;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -51,7 +51,7 @@ public class StackdriverLoggingTest {
         "data", "ZGF0YQ==",
         "messageId", "id"
     ));
-    PubSubMessage pubsubMessage = gson.fromJson(messageJson, PubSubMessage.class);
+    PubsubMessage pubsubMessage = gson.fromJson(messageJson, PubsubMessage.class);
     new StackdriverLogging().accept(pubsubMessage, null);
 
     String logMessage = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();

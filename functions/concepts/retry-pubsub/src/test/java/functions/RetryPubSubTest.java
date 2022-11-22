@@ -20,7 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
 import com.google.gson.Gson;
-import functions.eventpojos.PubSubMessage;
+import functions.eventpojos.PubsubMessage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -58,7 +58,7 @@ public class RetryPubSubTest {
     String encodedData = new String(
         Base64.getEncoder().encode(data.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 
-    PubSubMessage pubsubMessage = new PubSubMessage();
+    PubsubMessage pubsubMessage = new PubsubMessage();
     pubsubMessage.setData(encodedData);
 
     new RetryPubSub().accept(pubsubMessage, null);
@@ -70,7 +70,7 @@ public class RetryPubSubTest {
     String encodedData = new String(
         Base64.getEncoder().encode(data.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 
-    PubSubMessage pubsubMessage = new PubSubMessage();
+    PubsubMessage pubsubMessage = new PubsubMessage();
     pubsubMessage.setData(encodedData);
 
     new RetryPubSub().accept(pubsubMessage, null);
@@ -81,7 +81,7 @@ public class RetryPubSubTest {
 
   @Test
   public void retryPubsub_handlesEmptyMsg() throws IOException {
-    PubSubMessage pubsubMessage = new PubSubMessage();
+    PubsubMessage pubsubMessage = new PubsubMessage();
     pubsubMessage.setData("");
 
     new RetryPubSub().accept(pubsubMessage, null);
