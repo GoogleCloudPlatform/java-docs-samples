@@ -57,6 +57,7 @@ public class PublishMessage implements HttpFunction {
     logger.info("Publishing message to topic: " + topicName);
 
     // Create the PubsubMessage object
+    // (This is different than the PubSubMessage POJO used in Pub/Sub-triggered functions)
     ByteString byteStr = ByteString.copyFrom(maybeMessage.get(), StandardCharsets.UTF_8);
     PubsubMessage pubsubApiMessage = PubsubMessage.newBuilder().setData(byteStr).build();
 

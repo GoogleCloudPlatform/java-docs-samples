@@ -24,11 +24,11 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import com.google.events.cloud.pubsub.v1.Message;
+import functions.eventpojos.PubSubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
-public class OcrSaveResult implements BackgroundFunction<Message> {
+public class OcrSaveResult implements BackgroundFunction<PubSubMessage> {
   // TODO<developer> set this environment variable
   private static final String RESULT_BUCKET = System.getenv("RESULT_BUCKET");
 
@@ -36,9 +36,9 @@ public class OcrSaveResult implements BackgroundFunction<Message> {
   private static final Logger logger = Logger.getLogger(OcrSaveResult.class.getName());
 
   @Override
-  public void accept(Message message, Context context) {
+  public void accept(PubSubMessage pubSubMessage, Context context) {
     OcrTranslateApiMessage ocrMessage = OcrTranslateApiMessage.fromPubsubData(
-        message.getData().getBytes(StandardCharsets.UTF_8));
+        pubSubMessage.getData().getBytes(StandardCharsets.UTF_8));
 
     logger.info("Received request to save file " +  ocrMessage.getFilename());
 
