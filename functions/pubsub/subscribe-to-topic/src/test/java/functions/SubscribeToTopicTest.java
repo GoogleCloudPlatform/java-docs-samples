@@ -19,7 +19,7 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
-import com.google.events.cloud.pubsub.v1.Message;
+import functions.eventpojos.PubsubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
@@ -43,7 +43,7 @@ public class SubscribeToTopicTest {
     String encodedData = Base64.getEncoder().encodeToString(
         "hello".getBytes(StandardCharsets.UTF_8));
 
-    Message message = new Message();
+    PubsubMessage message = new PubsubMessage();
     message.setData(encodedData);
 
     new SubscribeToTopic().accept(message, null);
