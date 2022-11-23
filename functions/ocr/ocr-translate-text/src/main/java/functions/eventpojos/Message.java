@@ -21,7 +21,7 @@ package functions.eventpojos;
 
 import java.util.Map;
 
-public class PubsubMessage {
+public class Message {
   // Cloud Functions uses Gson to deserialize JSON into a Java object.
   // Field types/names are specified by Cloud Functions
   // Changing them may break your code!

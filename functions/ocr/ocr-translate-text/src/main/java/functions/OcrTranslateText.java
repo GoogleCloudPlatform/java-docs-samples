@@ -28,14 +28,14 @@ import com.google.cloud.translate.v3.TranslationServiceClient;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
-import functions.eventpojos.PubsubMessage;
+import functions.eventpojos.Message;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class OcrTranslateText implements BackgroundFunction<PubsubMessage> {
+public class OcrTranslateText implements BackgroundFunction<Message> {
   private static final Logger logger = Logger.getLogger(OcrTranslateText.class.getName());
 
   // TODO<developer> set these environment variables
@@ -51,7 +51,7 @@ public class OcrTranslateText implements BackgroundFunction<PubsubMessage> {
   }
 
   @Override
-  public void accept(PubsubMessage pubSubMessage, Context context) {
+  public void accept(Message pubSubMessage, Context context) {
     OcrTranslateApiMessage ocrMessage = OcrTranslateApiMessage.fromPubsubData(
         pubSubMessage.getData().getBytes(StandardCharsets.UTF_8));
 
