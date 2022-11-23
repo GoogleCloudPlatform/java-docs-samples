@@ -25,10 +25,10 @@ import com.google.cloud.translate.v3.LocationName;
 import com.google.cloud.translate.v3.TranslateTextRequest;
 import com.google.cloud.translate.v3.TranslateTextResponse;
 import com.google.cloud.translate.v3.TranslationServiceClient;
-import com.google.events.cloud.pubsub.v1.Message;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
+import functions.eventpojos.Message;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
@@ -51,9 +51,9 @@ public class OcrTranslateText implements BackgroundFunction<Message> {
   }
 
   @Override
-  public void accept(Message message, Context context) {
+  public void accept(Message pubSubMessage, Context context) {
     OcrTranslateApiMessage ocrMessage = OcrTranslateApiMessage.fromPubsubData(
-        message.getData().getBytes(StandardCharsets.UTF_8));
+        pubSubMessage.getData().getBytes(StandardCharsets.UTF_8));
 
     String targetLang = ocrMessage.getLang();
     logger.info("Translating text into " + targetLang);
