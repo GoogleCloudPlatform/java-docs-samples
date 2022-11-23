@@ -59,7 +59,6 @@ public final class GeneralSearchSample {
       JobServiceQuickstart.getTalentSolutionClient();
 
   // [START job_discovery_basic_keyword_search]
-  // [START basic_keyword_search]
 
   /** Simple search jobs with keyword. */
   public static void basicSearcJobs(String companyName, String query)
@@ -95,11 +94,9 @@ public final class GeneralSearchSample {
     Thread.sleep(1000);
     System.out.printf("Simple search jobs results: %s\n", searchJobsResponse);
   }
-  // [END basic_keyword_search]
   // [END job_discovery_basic_keyword_search]
   
   // [START job_discovery_category_filter_search]
-  // [START category_filter]
 
   /** Search on category filter. */
   public static void categoryFilterSearch(String companyName, List<String> categories)
@@ -135,11 +132,9 @@ public final class GeneralSearchSample {
 
     System.out.printf("Category search jobs results: %s\n", searchJobsResponse);
   }
-  // [END category_filter]
   // [END job_discovery_category_filter_search]
 
   // [START job_discovery_employment_types_filter_search]
-  // [START employment_types_filter]
 
   /** Search on employment types. */
   public static void employmentTypesSearch(String companyName, List<String> employmentTypes)
@@ -175,11 +170,9 @@ public final class GeneralSearchSample {
 
     System.out.printf("Employee type search jobs results: %s\n", searchJobsResponse);
   }
-  // [END employment_types_filter]
   // [END job_discovery_employment_types_filter_search]
 
   // [START job_discovery_date_range_filter_search]
-  // [START date_range_filter]
 
   /**
    * Search on date range. In JSON format, the Timestamp type is encoded as a string in the [RFC
@@ -224,11 +217,9 @@ public final class GeneralSearchSample {
 
     System.out.printf("Search results on jobs with a date range: %s\n", searchJobsResponse);
   }
-  // [END date_range_filter]
   // [END job_discovery_date_range_filter_search]
 
   // [START job_discovery_language_code_filter_search]
-  // [START language_code_filter]
 
   /** Search on language codes. */
   public static void languageCodeSearch(String companyName, List<String> languageCodes)
@@ -264,11 +255,9 @@ public final class GeneralSearchSample {
 
     System.out.printf("Search results on jobs with a language code: %s\n", searchJobsResponse);
   }
-  // [END language_code_filter]
   // [END job_discovery_language_code_filter_search]
 
   // [START job_discovery_company_display_name_search]
-  // [START company_display_name_filter]
 
   /** Search on company display name. */
   public static void companyDisplayNameSearch(String companyName, List<String> companyDisplayNames)
@@ -304,11 +293,9 @@ public final class GeneralSearchSample {
 
     System.out.printf("Search results by display name of company: %s\n", searchJobsResponse);
   }
-  // [END company_display_name_filter]
   // [END job_discovery_company_display_name_search]
   
   // [START job_discovery_compensation_search]
-  // [START compensation_filter]
 
   /** Search on compensation. */
   public static void compensationSearch(String companyName)
@@ -358,7 +345,6 @@ public final class GeneralSearchSample {
 
     System.out.printf("Search results by compensation: %s\n", searchJobsResponse);
   }
-  // [END compensation_filter]
   // [END job_discovery_compensation_search]
 
   public static void main(String... args) throws Exception {
