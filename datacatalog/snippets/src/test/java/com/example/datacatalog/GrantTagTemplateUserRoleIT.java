@@ -1,17 +1,17 @@
 /*
  * Copyright 2020 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.example.datacatalog;
@@ -27,6 +27,7 @@ import com.google.cloud.datacatalog.v1.LocationName;
 import com.google.cloud.datacatalog.v1.TagTemplate;
 import com.google.cloud.datacatalog.v1.TagTemplateField;
 import com.google.cloud.datacatalog.v1.TagTemplateName;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -36,9 +37,12 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class GrantTagTemplateUserRoleIT {
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String ID = UUID.randomUUID().toString().substring(0, 8);
   private static final String LOCATION = "us-central1";
@@ -52,8 +56,7 @@ public class GrantTagTemplateUserRoleIT {
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
-    assertNotNull(
-        "Environment variable " + varName + " is required to perform these tests.",
+    assertNotNull("Environment variable " + varName + " is required to perform these tests.",
         System.getenv(varName));
     return value;
   }
@@ -73,22 +76,15 @@ public class GrantTagTemplateUserRoleIT {
     try (DataCatalogClient dataCatalogClient = DataCatalogClient.create()) {
       LocationName parent = LocationName.of(PROJECT_ID, LOCATION);
       TagTemplateField sourceField =
-          TagTemplateField.newBuilder()
-              .setDisplayName("Source of data asset")
+          TagTemplateField.newBuilder().setDisplayName("Source of data asset")
               .setType(
                   FieldType.newBuilder().setPrimitiveType(FieldType.PrimitiveType.STRING).build())
               .build();
-      TagTemplate tagTemplate =
-          TagTemplate.newBuilder()
-              .setDisplayName("Demo Tag Template")
-              .putFields("source", sourceField)
-              .build();
+      TagTemplate tagTemplate = TagTemplate.newBuilder().setDisplayName("Demo Tag Template")
+          .putFields("source", sourceField).build();
       CreateTagTemplateRequest request =
-          CreateTagTemplateRequest.newBuilder()
-              .setParent(parent.toString())
-              .setTagTemplateId(tagTemplateId)
-              .setTagTemplate(tagTemplate)
-              .build();
+          CreateTagTemplateRequest.newBuilder().setParent(parent.toString())
+              .setTagTemplateId(tagTemplateId).setTagTemplate(tagTemplate).build();
       dataCatalogClient.createTagTemplate(request);
     }
   }

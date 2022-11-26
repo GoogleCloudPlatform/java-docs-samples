@@ -1,17 +1,17 @@
 /*
  * Copyright 2020 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.example.datacatalog;
@@ -24,6 +24,7 @@ import com.google.cloud.datacatalog.v1.Entry;
 import com.google.cloud.datacatalog.v1.EntryGroupName;
 import com.google.cloud.datacatalog.v1.EntryName;
 import com.google.cloud.datacatalog.v1.Schema;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -33,9 +34,12 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class DeleteEntryIT {
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String ID = UUID.randomUUID().toString().substring(0, 8);
   private static final String LOCATION = "us-central1";
@@ -50,8 +54,7 @@ public class DeleteEntryIT {
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
-    assertNotNull(
-        "Environment variable " + varName + " is required to perform these tests.",
+    assertNotNull("Environment variable " + varName + " is required to perform these tests.",
         System.getenv(varName));
     return value;
   }
@@ -72,31 +75,19 @@ public class DeleteEntryIT {
     // create a temporary entry group and entry
     CreateEntryGroup.createEntryGroup(PROJECT_ID, LOCATION, entryGroupId);
     EntryGroupName entryGroupName = EntryGroupName.of(PROJECT_ID, LOCATION, entryGroupId);
-    Entry entry =
-        Entry.newBuilder()
-            .setUserSpecifiedSystem("onprem_data_system")
-            .setUserSpecifiedType("onprem_data_asset")
-            .setDisplayName("My awesome data asset")
-            .setDescription("This data asset is managed by an external system.")
-            .setLinkedResource("//my-onprem-server.com/dataAssets/my-awesome-data-asset")
-            .setSchema(
-                Schema.newBuilder()
-                    .addColumns(
-                        ColumnSchema.newBuilder()
-                            .setColumn("first_column")
-                            .setDescription("This columns consists of ....")
-                            .setMode("NULLABLE")
-                            .setType("DOUBLE")
-                            .build())
-                    .addColumns(
-                        ColumnSchema.newBuilder()
-                            .setColumn("second_column")
-                            .setDescription("This columns consists of ....")
-                            .setMode("REQUIRED")
-                            .setType("STRING")
-                            .build())
-                    .build())
-            .build();
+    Entry entry = Entry.newBuilder().setUserSpecifiedSystem("onprem_data_system")
+        .setUserSpecifiedType("onprem_data_asset").setDisplayName("My awesome data asset")
+        .setDescription("This data asset is managed by an external system.")
+        .setLinkedResource("//my-onprem-server.com/dataAssets/my-awesome-data-asset")
+        .setSchema(Schema.newBuilder()
+            .addColumns(ColumnSchema.newBuilder().setColumn("first_column")
+                .setDescription("This columns consists of ....").setMode("NULLABLE")
+                .setType("DOUBLE").build())
+            .addColumns(ColumnSchema.newBuilder().setColumn("second_column")
+                .setDescription("This columns consists of ....").setMode("REQUIRED")
+                .setType("STRING").build())
+            .build())
+        .build();
     CreateEntry.createEntry(entryGroupName, entryId, entry);
   }
 
