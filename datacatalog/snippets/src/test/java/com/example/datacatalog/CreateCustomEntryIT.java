@@ -41,7 +41,6 @@ public class CreateCustomEntryIT {
   @Rule
   public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
-
   private static final String ID = UUID.randomUUID().toString().substring(0, 8);
   private static final String LOCATION = "us-central1";
   private final Logger log = Logger.getLogger(this.getClass().getName());
