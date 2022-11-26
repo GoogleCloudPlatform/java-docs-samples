@@ -60,6 +60,9 @@ public class FhirResourceTests {
   private static final String REGION_ID = "us-central1";
   private static final Gson gson = new Gson();
 
+  private static String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
+  private static String fhirStoreId = "fhir-" + UUID.randomUUID().toString().replaceAll("-", "_");
+  
   private static String fhirStoreName;
   private static String datasetName;
 
@@ -86,15 +89,19 @@ public class FhirResourceTests {
 
   @BeforeClass
   public static void setUp() throws IOException {
+<<<<<<< HEAD
     String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
     datasetName = String.format(
         "projects/%s/locations/%s/datasets/%s",
         PROJECT_ID,
         REGION_ID,
         datasetId);
+=======
+    datasetName =
+        String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
+>>>>>>> 4b14c420b (address review comments)
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
 
-    String fhirStoreId = "fhir-" + UUID.randomUUID().toString().replaceAll("-", "_");
     fhirStoreName = String.format("%s/fhirStores/%s", datasetName, fhirStoreId);
     resourcePath = String.format("%s/fhir/%s", fhirStoreName, resourceType);
     FhirStoreCreate.fhirStoreCreate(datasetName, fhirStoreId);
@@ -250,6 +257,53 @@ public class FhirResourceTests {
   }
 
   @Test
+<<<<<<< HEAD
+=======
+  public void test_FhirResourceValidateProfileUrl() throws Exception {
+    // Create a StructureDefinition resource that only exists in the FHIR store
+    // to ensure that the fhirResourceValidateProfileUrl method fails, because the
+    // validation does not adhere to the constraints in the StructureDefinition.
+    FhirCreateStructureDefinition.fhirCreateStructureDefinition(
+        PROJECT_ID, REGION_ID, datasetId, fhirStoreId, structureDefinitionProfileUrlFilePath);
+    FhirResourceValidateProfileUrl.fhirResourceValidateProfileUrl(
+        resourcePath, resourceType, profileUrl);
+
+    String output = bout.toString();
+    // Should fail because the FHIR resource we are validating does not
+    // adhere to the constraints in the StructureDefinition defined in
+    // structureDefinitionProfileUrlFilePath.
+    assertThat(output, containsString("\"severity\": \"error\""));
+  }
+
+  @Test
+  public void test_FhirCreateStructureDefinition() throws Exception {
+    FhirCreateStructureDefinition.fhirCreateStructureDefinition(
+      PROJECT_ID, REGION_ID, datasetId, fhirStoreId, structureDefinitionFilePath);
+
+    String output = bout.toString();
+    assertThat(output, containsString("FHIR StructureDefinition resource created:"));
+  }
+
+  @Test
+  public void test_FhirCreateImplementationGuide() throws Exception {
+    FhirCreateImplementationGuide.fhirCreateImplementationGuide(
+        PROJECT_ID, REGION_ID, datasetId, fhirStoreId, implementationGuideFilePath);
+
+    String output = bout.toString();
+    assertThat(output, containsString("FHIR ImplementationGuide resource created:"));
+  }
+
+  @Test
+  public void test_FhirEnableImplementationGuide() throws Exception {
+    FhirEnableImplementationGuide.fhirEnableImplementationGuide(
+        PROJECT_ID, REGION_ID, datasetId, fhirStoreId, implementationGuideUrl);
+
+    String output = bout.toString();
+    assertThat(output, containsString("ImplementationGuide enabled:"));
+  }
+
+  @Test
+>>>>>>> 4b14c420b (address review comments)
   public void test_FhirResourceDelete() throws Exception {
     FhirResourceDelete.fhirResourceDelete(fhirResourceName);
 
