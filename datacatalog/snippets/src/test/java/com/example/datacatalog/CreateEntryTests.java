@@ -22,6 +22,7 @@ import static org.junit.Assert.fail;
 import com.google.cloud.datacatalog.v1.DataCatalogClient;
 import com.google.cloud.datacatalog.v1.EntryGroupName;
 import com.google.cloud.datacatalog.v1.EntryName;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -32,13 +33,19 @@ import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Integration (system) tests for {@link CreateFilesetEntry} and {@link CreateEntryGroup}. */
+/**
+ * Integration (system) tests for {@link CreateFilesetEntry} and
+ * {@link CreateEntryGroup}.
+ */
 @RunWith(JUnit4.class)
 public class CreateEntryTests {
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private ByteArrayOutputStream bout;
 
@@ -100,8 +107,8 @@ public class CreateEntryTests {
     String output = bout.toString();
 
     String entryTemplate = "Entry created with name: %s";
-    assertThat(
-        output, CoreMatchers.containsString(String.format(entryTemplate, expectedEntryName)));
+    assertThat(output,
+        CoreMatchers.containsString(String.format(entryTemplate, expectedEntryName)));
   }
 
   @Test
@@ -118,8 +125,7 @@ public class CreateEntryTests {
     String output = bout.toString();
 
     String entryGroupTemplate = "Entry Group created successfully";
-    assertThat(
-        output,
+    assertThat(output,
         CoreMatchers.containsString(String.format(entryGroupTemplate, expectedEntryGroupName)));
   }
 

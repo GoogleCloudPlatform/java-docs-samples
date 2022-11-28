@@ -24,6 +24,7 @@ import com.google.cloud.datacatalog.v1.LocationName;
 import com.google.cloud.datacatalog.v1.TagTemplate;
 import com.google.cloud.datacatalog.v1.TagTemplateField;
 import com.google.cloud.datacatalog.v1.TagTemplateName;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -33,9 +34,12 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class GetTagTemplateIT {
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String ID = UUID.randomUUID().toString().substring(0, 8);
   private static final String LOCATION = "us-central1";
@@ -49,8 +53,7 @@ public class GetTagTemplateIT {
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
-    assertNotNull(
-        "Environment variable " + varName + " is required to perform these tests.",
+    assertNotNull("Environment variable " + varName + " is required to perform these tests.",
         System.getenv(varName));
     return value;
   }
@@ -69,17 +72,11 @@ public class GetTagTemplateIT {
     System.setOut(out);
     // create a tempory tag template
     LocationName locationName = LocationName.of(PROJECT_ID, LOCATION);
-    TagTemplateField sourceField =
-        TagTemplateField.newBuilder()
-            .setDisplayName("Your display name")
-            .setType(
-                FieldType.newBuilder().setPrimitiveType(FieldType.PrimitiveType.STRING).build())
-            .build();
-    TagTemplate tagTemplate =
-        TagTemplate.newBuilder()
-            .setDisplayName("Your display name")
-            .putFields("sourceField", sourceField)
-            .build();
+    TagTemplateField sourceField = TagTemplateField.newBuilder().setDisplayName("Your display name")
+        .setType(FieldType.newBuilder().setPrimitiveType(FieldType.PrimitiveType.STRING).build())
+        .build();
+    TagTemplate tagTemplate = TagTemplate.newBuilder().setDisplayName("Your display name")
+        .putFields("sourceField", sourceField).build();
     CreateTagTemplate.createTagTemplate(locationName, tagTemplateId, tagTemplate);
   }
 

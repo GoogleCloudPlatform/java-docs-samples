@@ -19,6 +19,7 @@ package com.example.datacatalog;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -27,9 +28,12 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class SearchAssetsIT {
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private final Logger log = Logger.getLogger(this.getClass().getName());
   private ByteArrayOutputStream bout;
@@ -40,8 +44,7 @@ public class SearchAssetsIT {
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
-    assertNotNull(
-        "Environment variable " + varName + " is required to perform these tests.",
+    assertNotNull("Environment variable " + varName + " is required to perform these tests.",
         System.getenv(varName));
     return value;
   }
@@ -69,7 +72,7 @@ public class SearchAssetsIT {
 
   @Test
   public void testSearchAssets() throws IOException {
-    SearchAssets.searchCatalog(PROJECT_ID, "type=dataset");
+    SearchAssets.searchCatalog(PROJECT_ID, "type=lake");
     assertThat(bout.toString()).contains("Search results:");
   }
 }
