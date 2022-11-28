@@ -20,12 +20,10 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.asset.v1.ContentType;
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -34,9 +32,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ListAssets {
-  @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
-
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;

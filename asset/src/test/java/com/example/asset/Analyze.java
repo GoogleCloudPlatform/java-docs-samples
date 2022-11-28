@@ -29,13 +29,11 @@ import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BlobListOption;
 import com.google.cloud.storage.StorageOptions;
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -44,8 +42,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class Analyze {
-  @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String scope = "projects/" + projectId;
@@ -58,8 +54,14 @@ public class Analyze {
 
   private static final void deleteObjects(String bucketName, String objectName) {
     Storage storage = StorageOptions.getDefaultInstance().getService();
-    Iterable<Blob> blobs = storage.list(bucketName, BlobListOption.versions(true),
-        BlobListOption.currentDirectory(), BlobListOption.prefix(objectName)).getValues();
+    Iterable<Blob> blobs =
+        storage
+            .list(
+                bucketName,
+                BlobListOption.versions(true),
+                BlobListOption.currentDirectory(),
+                BlobListOption.prefix(objectName))
+            .getValues();
     for (BlobInfo info : blobs) {
       storage.delete(info.getBlobId());
     }
@@ -97,8 +99,8 @@ public class Analyze {
 
     String dataset = "projects/" + projectId + "/datasets/" + datasetName;
     String tablePrefix = "client_library_table";
-    AnalyzeIamPolicyLongrunningBigqueryExample.analyzeIamPolicyLongrunning(scope, fullResourceName,
-        dataset, tablePrefix);
+    AnalyzeIamPolicyLongrunningBigqueryExample.analyzeIamPolicyLongrunning(
+        scope, fullResourceName, dataset, tablePrefix);
     String got = bout.toString();
     assertThat(got).contains("output_config");
 
@@ -108,8 +110,7 @@ public class Analyze {
 
   @Test
   public void testAnalyzeIamPolicyLongrunningGcsExample() throws Exception {
-    // The developer needs to have bucket create permission or use an exsiting
-    // bucket.
+    // The developer needs to have bucket create permission or use an exsiting bucket.
     String bucketName = "java-docs-samples-testing";
     String objectName = UUID.randomUUID().toString();
 
