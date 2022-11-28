@@ -19,13 +19,12 @@ package kms;
 // [START kms_create_key_for_import]
 import com.google.cloud.kms.v1.CreateCryptoKeyRequest;
 import com.google.cloud.kms.v1.CryptoKey;
+import com.google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose;
+import com.google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionAlgorithm;
 import com.google.cloud.kms.v1.CryptoKeyVersionTemplate;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
 import com.google.cloud.kms.v1.KeyRingName;
 import com.google.cloud.kms.v1.ProtectionLevel;
-import com.google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose;
-import com.google.cloud.kms.v1.CryptoKeyVersion.CryptoKeyVersionAlgorithm;
-
 import java.io.IOException;
 
 public class CreateKeyForImport {
@@ -40,8 +39,7 @@ public class CreateKeyForImport {
   }
 
   // Create a new crypto key to hold imported key versions.
-  public void createKeyForImport(String projectId, String locationId,
-      String keyRingId, String id)
+  public void createKeyForImport(String projectId, String locationId, String keyRingId, String id)
       throws IOException {
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
@@ -52,24 +50,26 @@ public class CreateKeyForImport {
       KeyRingName keyRingName = KeyRingName.of(projectId, locationId, keyRingId);
 
       // Create the crypto key.
-      CryptoKey createdKey = client.createCryptoKey(
-          CreateCryptoKeyRequest.newBuilder()
-              .setParent(keyRingName.toString())
-              .setCryptoKeyId(id)
-              .setCryptoKey(CryptoKey.newBuilder()
-                  .setPurpose(CryptoKeyPurpose.ASYMMETRIC_SIGN)
-                  .setVersionTemplate(
-                      CryptoKeyVersionTemplate.newBuilder()
-                          .setProtectionLevel(ProtectionLevel.HSM)
-                          .setAlgorithm(CryptoKeyVersionAlgorithm.EC_SIGN_P256_SHA256))
-                  // Ensure that only imported versions may be
-                  // added to this key.
-                  .setImportOnly(true))
-              .setSkipInitialVersionCreation(true)
-              .build());
+      CryptoKey createdKey =
+          client.createCryptoKey(
+              CreateCryptoKeyRequest.newBuilder()
+                  .setParent(keyRingName.toString())
+                  .setCryptoKeyId(id)
+                  .setCryptoKey(
+                      CryptoKey.newBuilder()
+                          .setPurpose(CryptoKeyPurpose.ASYMMETRIC_SIGN)
+                          .setVersionTemplate(
+                              CryptoKeyVersionTemplate.newBuilder()
+                                  .setProtectionLevel(ProtectionLevel.HSM)
+                                  .setAlgorithm(CryptoKeyVersionAlgorithm.EC_SIGN_P256_SHA256))
+                          // Ensure that only imported versions may be
+                          // added to this key.
+                          .setImportOnly(true))
+                  .setSkipInitialVersionCreation(true)
+                  .build());
 
       System.out.printf("Created crypto key %s%n", createdKey.getName());
     }
   }
 }
-// [END kms_create_crypto_key]
+// [END kms_create_key_for_import]
