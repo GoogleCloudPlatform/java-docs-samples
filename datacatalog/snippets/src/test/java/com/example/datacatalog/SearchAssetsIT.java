@@ -72,7 +72,7 @@ public class SearchAssetsIT {
 
   @Test
   public void testSearchAssets() throws IOException {
-    SearchAssets.searchCatalog(PROJECT_ID, "type=dataset");
+    SearchAssets.searchCatalog(PROJECT_ID, "type=lake");
     assertThat(bout.toString()).contains("Search results:");
   }
 }
