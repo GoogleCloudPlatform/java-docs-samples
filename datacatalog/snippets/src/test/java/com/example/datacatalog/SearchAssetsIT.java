@@ -33,7 +33,7 @@ import org.junit.Test;
 
 public class SearchAssetsIT {
   @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3, 15000);
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3, 60000);
 
   private final Logger log = Logger.getLogger(this.getClass().getName());
   private ByteArrayOutputStream bout;
