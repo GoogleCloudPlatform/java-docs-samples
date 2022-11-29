@@ -23,11 +23,15 @@ import com.google.cloud.asset.v1.UpdateSavedQueryRequest;
 import com.google.protobuf.FieldMask;
 
 public class UpdateSavedQueryExample {
+  public static void main(String[] args) throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+    String savedQueryName = "SAVED_QUERY_NAME";
+    String description = "SOME_DESCRIPTION";
+    updateSavedQuery(savedQueryName, description);
+  }
 
   // Update a savedQuery
   public static void updateSavedQuery(String savedQueryName, String description) throws Exception {
-    // String savedQueryName = "SAVED_QUERY_NAME"
-    // String description = "SOME_DESCRIPTION"
     SavedQuery savedQuery =
         SavedQuery.newBuilder()
             .setName(savedQueryName)
@@ -44,12 +48,9 @@ public class UpdateSavedQueryExample {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (AssetServiceClient client = AssetServiceClient.create()) {
-      SavedQuery response = client.updateSavedQuery(request);
-      System.out.println("SavedQuery updated successfully: " + response.getName());
-    } catch (Exception e) {
-      System.out.println("Error during UpdateSavedQuery: \n" + e.toString());
-    }
+    AssetServiceClient client = AssetServiceClient.create();
+    SavedQuery response = client.updateSavedQuery(request);
+    System.out.println("SavedQuery updated successfully: " + response.getName());
   }
 }
 // [END asset_quickstart_update_saved_query]

@@ -20,20 +20,21 @@ package com.example.asset;
 import com.google.cloud.asset.v1.AssetServiceClient;
 
 public class DeleteSavedQueryExample {
+  public static void main(String[] args) throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+    String savedQueryName = "SAVED_QUERY_NAME";
+    deleteSavedQuery(savedQueryName);
+  }
 
   // Delete a savedQuery with full savedQuery name
   public static void deleteSavedQuery(String savedQueryName) throws Exception {
-    // String savedQueryName = "SAVED_QUERY_NAME"
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (AssetServiceClient client = AssetServiceClient.create()) {
-      client.deleteSavedQuery(savedQueryName);
-      System.out.println("SavedQuery deleted");
-    } catch (Exception e) {
-      System.out.println("Error during DeleteSavedQuery: \n" + e.toString());
-    }
+    AssetServiceClient client = AssetServiceClient.create();
+    client.deleteSavedQuery(savedQueryName);
+    System.out.println("SavedQuery deleted");
   }
 }
 // [END asset_quickstart_delete_saved_query]
