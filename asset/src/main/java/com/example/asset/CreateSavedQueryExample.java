@@ -27,13 +27,18 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class CreateSavedQueryExample {
+  public static void main(String[] args) throws IOException, IllegalArgumentException {
+    // TODO(developer): Replace these variables before running the sample.
+    String savedQueryId = "MY_SAVED_QUERY_ID";
+    String description = "SOME_DESCRIPTION";
+    String projectId = "MY_PROJECT_ID";
+    createSavedQuery(savedQueryId, description, projectId);
+  }
+
   // Create a savedQuery
   public static void createSavedQuery(
       String savedQueryId, String description, String projectId)
       throws IOException, IllegalArgumentException {
-    // String SavedQueryId = "MY_SAVED_QUERY_ID"
-    // String description = "SOME_DESCRIPTION"
-    // String projectID = "MY_PROJECT_ID"
     String parent = String.format(ProjectName.of(projectId).toString());
     SavedQuery savedQuery =
         SavedQuery.newBuilder()
@@ -60,12 +65,9 @@ public class CreateSavedQueryExample {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (AssetServiceClient client = AssetServiceClient.create()) {
-      SavedQuery response = client.createSavedQuery(request);
-      System.out.println("SavedQuery created successfully: " + response.getName());
-    } catch (IOException | IllegalArgumentException e) {
-      System.out.println("Error during CreateSavedQuery: \n" + e.toString());
-    }
+    AssetServiceClient client = AssetServiceClient.create();
+    SavedQuery response = client.createSavedQuery(request);
+    System.out.println("SavedQuery created successfully: " + response.getName());
   }
 }
 // [END asset_quickstart_create_saved_query]

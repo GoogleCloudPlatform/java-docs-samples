@@ -25,9 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,12 +36,12 @@ import org.junit.runners.MethodSorters;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class SavedQuery {
+public class SavedQueryIT {
   private static final String savedQueryId = UUID.randomUUID().toString();
   private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private final String projectNumber = getProjectNumber(projectId);
-  private final String savedQueryName = String.format("projects/%s/savedQueries/%s",
-      projectNumber, savedQueryId);
+  private final String savedQueryName =
+      String.format("projects/%s/savedQueries/%s", projectNumber, savedQueryId);
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -71,8 +69,7 @@ public class SavedQuery {
 
   @Test
   public void test1CreateSavedQueryExample() throws Exception {
-    CreateSavedQueryExample.createSavedQuery(
-        savedQueryId, "saved_query_foo", projectId);
+    CreateSavedQueryExample.createSavedQuery(savedQueryId, "saved_query_foo", projectId);
     String got = bout.toString();
     assertThat(got).contains("SavedQuery created successfully: " + savedQueryName);
   }
