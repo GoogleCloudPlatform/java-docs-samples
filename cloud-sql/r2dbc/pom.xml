@@ -44,6 +44,7 @@
     <dependency>
       <groupId>dev.miku</groupId>
       <artifactId>r2dbc-mysql</artifactId>
+      <version>0.8.2.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
@@ -56,6 +57,7 @@
     <dependency>
       <groupId>io.r2dbc</groupId>
       <artifactId>r2dbc-postgresql</artifactId>
+      <version>0.8.13.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
