@@ -31,29 +31,31 @@ public class CheckStateImportedKey {
     String keyRingId = "my-key-ring";
     String cryptoKeyId = "my-crypto-key";
     String cryptoKeyVersionId = "1";
-    checkStateImportedKey(projectId, locationId, keyRingId, cryptoKeyId,
-                          cryptoKeyVersionId);
+    checkStateImportedKey(projectId, locationId, keyRingId, cryptoKeyId, cryptoKeyVersionId);
   }
 
   // Check the state of an imported key in Cloud KMS.
-  public void checkStateImportedKey(String projectId, String locationId,
-                                    String keyRingId, String cryptoKeyId,
-                                    String cryptoKeyVersionId)
+  public void checkStateImportedKey(
+      String projectId,
+      String locationId,
+      String keyRingId,
+      String cryptoKeyId,
+      String cryptoKeyVersionId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
-    try (KeyManagementServiceClient client =
-             KeyManagementServiceClient.create()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       // Build the version name from its path components.
-      CryptoKeyVersionName versionName = CryptoKeyVersionName.of(
-          projectId, locationId, keyRingId, cryptoKeyId, cryptoKeyVersionId);
+      CryptoKeyVersionName versionName =
+          CryptoKeyVersionName.of(
+              projectId, locationId, keyRingId, cryptoKeyId, cryptoKeyVersionId);
 
       // Retrieve the state of an existing version.
       CryptoKeyVersion version = client.getCryptoKeyVersion(versionName);
-      System.out.printf("Current state of crypto key version %s: %s%n",
-                        version.getName(), version.getState());
+      System.out.printf(
+          "Current state of crypto key version %s: %s%n", version.getName(), version.getState());
     }
   }
 }
