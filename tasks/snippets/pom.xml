@@ -5,7 +5,6 @@
   <artifactId>cloudtasks-snippets</artifactId>
   <packaging>jar</packaging>
   <name>Google Cloud Tasks Snippets</name>
-  <url>https://github.com/googleapis/java-tasks</url>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
