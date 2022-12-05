@@ -34,23 +34,21 @@ public class CheckStateImportJob {
   }
 
   // Check the state of an import job in Cloud KMS.
-  public void checkStateImportJob(String projectId, String locationId,
-                                  String keyRingId, String importJobId)
+  public void checkStateImportJob(
+      String projectId, String locationId, String keyRingId, String importJobId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
-    try (KeyManagementServiceClient client =
-             KeyManagementServiceClient.create()) {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
       // Build the parent name from the project, location, and key ring.
-      ImportJobName importJobName =
-          ImportJobName.of(projectId, locationId, keyRingId, importJobId);
+      ImportJobName importJobName = ImportJobName.of(projectId, locationId, keyRingId, importJobId);
 
       // Retrieve the state of an existing import job.
       ImportJob importJob = client.getImportJob(importJobName);
-      System.out.printf("Current state of import job %s: %s%n",
-                        importJob.getName(), importJob.getState());
+      System.out.printf(
+          "Current state of import job %s: %s%n", importJob.getName(), importJob.getState());
     }
   }
 }
