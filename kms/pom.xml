@@ -42,6 +42,11 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-kms</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.crypto.tink</groupId>
+      <artifactId>tink</artifactId>
+      <version>1.7.0</version>
+    </dependency>
     <!-- [START_EXCLUDE] -->
     <dependency>
       <groupId>com.google.protobuf</groupId>
