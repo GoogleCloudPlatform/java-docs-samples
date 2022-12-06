@@ -18,11 +18,10 @@ package kms;
 
 // [START kms_create_import_job]
 import com.google.cloud.kms.v1.ImportJob;
+import com.google.cloud.kms.v1.ImportJob.ImportMethod;
 import com.google.cloud.kms.v1.KeyManagementServiceClient;
 import com.google.cloud.kms.v1.KeyRingName;
 import com.google.cloud.kms.v1.ProtectionLevel;
-import com.google.cloud.kms.v1.ImportJob.ImportMethod;
-
 import java.io.IOException;
 
 public class CreateImportJob {
@@ -37,8 +36,8 @@ public class CreateImportJob {
   }
 
   // Create a new import job.
-  public void createImportJob(String projectId, String locationId,
-      String keyRingId, String id) throws IOException {
+  public void createImportJob(String projectId, String locationId, String keyRingId, String id)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
     // completing all of your requests, call the "close" method on the client to
@@ -48,15 +47,15 @@ public class CreateImportJob {
       KeyRingName keyRingName = KeyRingName.of(projectId, locationId, keyRingId);
 
       // Build the import job to create, with parameters.
-      ImportJob importJob = ImportJob
-          .newBuilder()
-          // See allowed values and their descriptions at
-          // https://cloud.google.com/kms/docs/algorithms#protection_levels
-          .setProtectionLevel(ProtectionLevel.HSM)
-          // See allowed values and their descriptions at
-          // https://cloud.google.com/kms/docs/key-wrapping#import_methods
-          .setImportMethod(ImportMethod.RSA_OAEP_3072_SHA1_AES_256)
-          .build();
+      ImportJob importJob =
+          ImportJob.newBuilder()
+              // See allowed values and their descriptions at
+              // https://cloud.google.com/kms/docs/algorithms#protection_levels
+              .setProtectionLevel(ProtectionLevel.HSM)
+              // See allowed values and their descriptions at
+              // https://cloud.google.com/kms/docs/key-wrapping#import_methods
+              .setImportMethod(ImportMethod.RSA_OAEP_3072_SHA1_AES_256)
+              .build();
 
       // Create the import job.
       ImportJob createdImportJob = client.createImportJob(keyRingName, id, importJob);
