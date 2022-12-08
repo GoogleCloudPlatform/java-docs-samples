@@ -5,7 +5,6 @@
   <artifactId>recaptcha-enterprise-snippets</artifactId>
   <packaging>jar</packaging>
   <name>Google reCAPTCHA Enterprise Snippets</name>
-  <url>https://github.com/googleapis/java-recaptchaenterprise</url>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.

@@ -2,7 +2,7 @@
 [//]: # "To regenerate it, use `python -m synthtool`."
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# [Cloud Media Translation: Java Samples](https://github.com/googleapis/java-mediatranslation)
+# [Cloud Media Translation: Java Samples](https://github.com/GoogleCloudPlatform/java-docs-samples/mediatranslation)
 
 [![Open in Cloud Shell][shell_img]][shell_link]
 
@@ -46,5 +46,5 @@ mvn clean verify
 ```
 
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
-[shell_link]: https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-mediatranslation&page=editor&open_in_editor=samples/snippets/README.md
+[shell_link]: https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=mediatranslation/README.md
 [product-docs]: https://cloud.google.com/mediatranslation/docs/
