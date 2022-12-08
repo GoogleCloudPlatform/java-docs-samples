@@ -70,14 +70,13 @@ public class HibernateSampleApplication {
     person.addPayment(payment1);
     person.addPayment(payment2);
 
-    session.save(person);
+    session.persist(person);
     session.getTransaction().commit();
 
     List<Person> personsInTable =
         session.createQuery("from Person", Person.class).list();
 
-    System.out.println(
-        String.format("There are %d persons saved in the table:", personsInTable.size()));
+    System.out.printf("There are %d persons saved in the table:%n", personsInTable.size());
 
     for (Person personInTable : personsInTable) {
       System.out.println(personInTable);
