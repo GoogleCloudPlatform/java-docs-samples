@@ -41,7 +41,7 @@ public class CreateDocumentForArticleSuggestionTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "global";
   private static String KNOWLEDGE_DISPLAY_NAME = "sample knowledge base for article suggestion";
-  private static String DOCUMENT_DISPLAY_NAME = "sample knowledge base for article suggestion";
+  private static String DOCUMENT_DISPLAY_NAME = "sample document for article suggestion";
   private String knowledgeBaseName;
   private ByteArrayOutputStream bout;
   private PrintStream newOutputStream;
