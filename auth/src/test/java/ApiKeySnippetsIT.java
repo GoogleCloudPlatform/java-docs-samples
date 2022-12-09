@@ -68,13 +68,17 @@ public class ApiKeySnippetsIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    String apiKeyId = API_KEY.getName().split("/")[5];
+    String apiKeyId = getApiKeyId(API_KEY);
     DeleteApiKey.deleteApiKey(PROJECT_ID, apiKeyId);
     assertThat(stdOut.toString()).contains(
         String.format("Successfully deleted the API key: %s", API_KEY.getName()));
 
     stdOut.close();
     System.setOut(out);
+  }
+
+  private static String getApiKeyId(Key apiKey) {
+    return apiKey.getName().split("/")[5];
   }
 
   @Before
@@ -99,7 +103,7 @@ public class ApiKeySnippetsIT {
   @Test
   public void testRestrictApiKeyAndroid()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    RestrictApiKeyAndroid.restrictApiKeyAndroid(PROJECT_ID, API_KEY.getName());
+    RestrictApiKeyAndroid.restrictApiKeyAndroid(PROJECT_ID, getApiKeyId(API_KEY));
     assertThat(stdOut.toString()).contains(
         String.format("Successfully updated the API key: %s", API_KEY.getName()));
   }
@@ -107,7 +111,7 @@ public class ApiKeySnippetsIT {
   @Test
   public void testRestrictApiKeyApi()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    RestrictApiKeyApi.restrictApiKeyApi(PROJECT_ID, API_KEY.getName());
+    RestrictApiKeyApi.restrictApiKeyApi(PROJECT_ID, getApiKeyId(API_KEY));
     assertThat(stdOut.toString()).contains(
         String.format("Successfully updated the API key: %s", API_KEY.getName()));
   }
@@ -115,7 +119,7 @@ public class ApiKeySnippetsIT {
   @Test
   public void testRestrictApiKeyHttp()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    RestrictApiKeyHttp.restrictApiKeyHttp(PROJECT_ID, API_KEY.getName());
+    RestrictApiKeyHttp.restrictApiKeyHttp(PROJECT_ID, getApiKeyId(API_KEY));
     assertThat(stdOut.toString()).contains(
         String.format("Successfully updated the API key: %s", API_KEY.getName()));
   }
@@ -123,7 +127,7 @@ public class ApiKeySnippetsIT {
   @Test
   public void testRestrictApiKeyIos()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    RestrictApiKeyIos.restrictApiKeyIos(PROJECT_ID, API_KEY.getName());
+    RestrictApiKeyIos.restrictApiKeyIos(PROJECT_ID, getApiKeyId(API_KEY));
     assertThat(stdOut.toString()).contains(
         String.format("Successfully updated the API key: %s", API_KEY.getName()));
   }
@@ -131,7 +135,7 @@ public class ApiKeySnippetsIT {
   @Test
   public void testRestrictApiKeyServer()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    RestrictApiKeyServer.restrictApiKeyServer(PROJECT_ID, API_KEY.getName());
+    RestrictApiKeyServer.restrictApiKeyServer(PROJECT_ID, getApiKeyId(API_KEY));
     assertThat(stdOut.toString()).contains(
         String.format("Successfully updated the API key: %s", API_KEY.getName()));
   }
