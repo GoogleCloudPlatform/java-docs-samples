@@ -51,7 +51,7 @@ public class DeleteApiKey {
 
       // Initialize the delete request and set the argument.
       DeleteKeyRequest deleteKeyRequest = DeleteKeyRequest.newBuilder()
-          .setName(String.format("project/%s/locations/global/keys/%s", projectId, apiKeyId))
+          .setName(String.format("projects/%s/locations/global/keys/%s", projectId, apiKeyId))
           .build();
 
       // Make the request and wait for the operation to complete.
