@@ -36,8 +36,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class LanguageTextClassificationCreateModelTest {
-  @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private static final String DATASET_ID = "TCN00000000000000000000";
