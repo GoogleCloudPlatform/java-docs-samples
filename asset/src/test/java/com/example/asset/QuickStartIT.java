@@ -34,8 +34,8 @@ import com.google.cloud.storage.StorageOptions;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.concurrent.TimeUnit;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -49,7 +49,7 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickStartIT {
   @Rule public final Timeout testTimeout = new Timeout(10, TimeUnit.MINUTES);
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(1);
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
   
   private static final String bucketName = "java-docs-samples-testing";
   private static final String path = UUID.randomUUID().toString();
