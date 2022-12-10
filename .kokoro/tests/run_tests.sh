@@ -102,13 +102,13 @@ if [[ ",$JAVA_VERSION," =~ "11" ]]; then
   cd ../../
 fi
 
-build_files="pom.xml build.gradle *.sbt"
+BUILD_FILE_PATTERNS="pom.xml build.gradle *.sbt"
 
-for build_file in build_files; do
+for pattern in $BUILD_FILE_PATTERNS; do
   btlr_args=(
       "run"
       "--max-cmd-duration=40m"
-      "**/${build_file}"
+      "**/${pattern}"
   )
 
   if [ -n "$GIT_DIFF" ]; then

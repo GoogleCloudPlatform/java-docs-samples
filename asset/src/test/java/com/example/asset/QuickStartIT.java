@@ -79,8 +79,6 @@ public class QuickStartIT {
     System.setOut(out);
   }
 
-
-
   @After
   public void tearDown() {
     // restores print statements in the original method
