@@ -17,7 +17,6 @@
 package com.example.asset;
 
 import static com.google.common.truth.Truth.assertThat;
-
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.asset.v1.ContentType;
 import com.google.cloud.bigquery.BigQuery;
@@ -31,11 +30,13 @@ import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BlobListOption;
 import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -44,6 +45,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickStartIT {
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+  
   private static final String bucketName = "java-docs-samples-testing";
   private static final String path = UUID.randomUUID().toString();
   private static final String datasetName = RemoteBigQueryHelper.generateDatasetName();
