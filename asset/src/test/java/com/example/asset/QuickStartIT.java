@@ -47,7 +47,7 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickStartIT {
   @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(1);
   
   private static final String bucketName = "java-docs-samples-testing";
   private static final String path = UUID.randomUUID().toString();
