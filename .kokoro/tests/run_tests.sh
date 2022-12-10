@@ -102,26 +102,30 @@ if [[ ",$JAVA_VERSION," =~ "11" ]]; then
   cd ../../
 fi
 
-btlr_args=(
-    "run"
-    "--max-cmd-duration=40m"
-    "**/{pom.xml,build.gradle,*.sbt}"
-)
+build_files="pom.xml build.gradle *.sbt"
 
-if [ -n "$GIT_DIFF" ]; then
-  btlr_args+=(
-    "--git-diff"
-    "$GIT_DIFF"
+for build_file in build_files; do
+  btlr_args=(
+      "run"
+      "--max-cmd-duration=40m"
+      "**/${build_file}"
   )
-fi
 
-echo -e "\n******************** TESTING PROJECTS ********************"
-test_prog="$PWD/.kokoro/tests/run_test_java.sh"
+  if [ -n "$GIT_DIFF" ]; then
+    btlr_args+=(
+      "--git-diff"
+      "$GIT_DIFF"
+    )
+  fi
 
-git config --global --add safe.directory $PWD
+  echo -e "\n******************** TESTING PROJECTS ********************"
+  test_prog="$PWD/.kokoro/tests/run_test_java.sh"
 
-# Use btlr to run all the tests in each folder 
-echo "btlr" "${btlr_args[@]}" -- "${test_prog}"
-btlr "${btlr_args[@]}" -- "${test_prog}"
+  git config --global --add safe.directory $PWD
+
+  # Use btlr to run all the tests in each folder 
+  echo "btlr" "${btlr_args[@]}" -- "${test_prog}"
+  btlr "${btlr_args[@]}" -- "${test_prog}"
+done
 
 exit $RTN
