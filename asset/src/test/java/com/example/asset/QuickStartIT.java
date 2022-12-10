@@ -17,6 +17,7 @@
 package com.example.asset;
 
 import static com.google.common.truth.Truth.assertThat;
+
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.asset.v1.ContentType;
 import com.google.cloud.bigquery.BigQuery;
