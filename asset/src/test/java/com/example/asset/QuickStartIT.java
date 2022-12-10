@@ -22,8 +22,8 @@ import com.google.cloud.ServiceOptions;
 import com.google.cloud.asset.v1.ContentType;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
+import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
-import com.google.cloud.bigquery.Dataset;
 import com.google.cloud.bigquery.DatasetId;
 import com.google.cloud.bigquery.DatasetInfo;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
@@ -76,16 +76,11 @@ public class QuickStartIT {
   @Before
   public void setUp() {
     bigquery = BigQueryOptions.getDefaultInstance().getService();
-    if (bigquery.getDataset(datasetName) == null) {
-      Dataset dataset = bigquery.create(DatasetInfo.newBuilder(datasetName).build());
-    }
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
   }
-
-
 
   @After
   public void tearDown() {
@@ -107,8 +102,7 @@ public class QuickStartIT {
 
   @Test
   public void testExportAssetBigqueryPerTypeExample() throws Exception {
-    String dataset =
-        String.format("projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
+    String dataset = getDataset();
     String table = "java_test_per_type";
     ExportAssetsBigqueryExample.exportBigQuery(
         dataset, table, ContentType.RESOURCE, /*perType*/ true);
@@ -118,8 +112,7 @@ public class QuickStartIT {
 
   @Test
   public void testExportAssetBigqueryExample() throws Exception {
-    String dataset =
-        String.format("projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
+    String dataset = getDataset();
     String table = "java_test";
     ExportAssetsBigqueryExample.exportBigQuery(
         dataset, table, ContentType.RESOURCE, /*perType*/ false);
@@ -135,5 +128,14 @@ public class QuickStartIT {
     if (!got.isEmpty()) {
       assertThat(got).contains(bucketAssetName);
     }
+  }
+
+  protected String getDataset() throws BigQueryException {
+    if (bigquery.getDataset(datasetName) == null) {
+      bigquery.create(DatasetInfo.newBuilder(datasetName).build());
+    }
+    return String.format(
+      "projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
+
   }
 }
