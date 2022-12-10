@@ -105,7 +105,7 @@ fi
 btlr_args=(
     "run"
     "--max-cmd-duration=40m"
-    "**/pom.xml"
+    "**/{pom.xml,build.gradle,*.sbt}"
 )
 
 if [ -n "$GIT_DIFF" ]; then
