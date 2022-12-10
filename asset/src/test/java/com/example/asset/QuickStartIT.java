@@ -44,7 +44,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickStartIT {
-  
   private static final String bucketName = "java-docs-samples-testing";
   private static final String path = UUID.randomUUID().toString();
   private static final String datasetName = RemoteBigQueryHelper.generateDatasetName();
