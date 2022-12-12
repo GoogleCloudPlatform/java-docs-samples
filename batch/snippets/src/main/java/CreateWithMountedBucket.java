@@ -74,7 +74,8 @@ public class CreateWithMountedBucket {
               .setScript(
                   Script.newBuilder()
                       .setText(
-                          "echo Hello world from task ${BATCH_TASK_INDEX}. >> /mnt/share/output_task_${BATCH_TASK_INDEX}.txt")
+                          "echo Hello world from task ${BATCH_TASK_INDEX}. >> "
+                              + "/mnt/share/output_task_${BATCH_TASK_INDEX}.txt")
                       // You can also run a script from a file. Just remember, that needs to be a
                       // script that's already on the VM that will be running the job.
                       // Using setText() and setPath() is mutually exclusive.
