@@ -46,7 +46,7 @@ public class RestrictApiKeyAndroid {
 
   // Restricts an API key based on android applications.
   // Specifies the Android application that can use the key.
-  public static Key restrictApiKeyAndroid(String projectId, String keyId)
+  public static void restrictApiKeyAndroid(String projectId, String keyId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -84,7 +84,6 @@ public class RestrictApiKeyAndroid {
 
       // For authenticating with the API key, use the value in "result.getKeyString()".
       System.out.printf("Successfully updated the API key: %s", result.getName());
-      return result;
     }
   }
 }

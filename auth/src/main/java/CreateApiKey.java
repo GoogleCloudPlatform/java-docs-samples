@@ -41,7 +41,7 @@ public class CreateApiKey {
   }
 
   // Creates an API key.
-  public static Key createApiKey(String projectId)
+  public static void createApiKey(String projectId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -78,7 +78,6 @@ public class CreateApiKey {
       // For authenticating with the API key, use the value in "result.getKeyString()".
       // To restrict the usage of this API key, use the value in "result.getName()".
       System.out.printf("Successfully created an API key: %s", result.getName());
-      return result;
     }
   }
 }

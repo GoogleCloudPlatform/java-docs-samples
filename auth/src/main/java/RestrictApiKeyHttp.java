@@ -45,7 +45,7 @@ public class RestrictApiKeyHttp {
 
   // Restricts an API key. To restrict the websites that can use your API key,
   // you add one or more HTTP referrer restrictions.
-  public static Key restrictApiKeyHttp(String projectId, String keyId)
+  public static void restrictApiKeyHttp(String projectId, String keyId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -80,7 +80,6 @@ public class RestrictApiKeyHttp {
 
       // For authenticating with the API key, use the value in "result.getKeyString()".
       System.out.printf("Successfully updated the API key: %s", result.getName());
-      return result;
     }
   }
 }
