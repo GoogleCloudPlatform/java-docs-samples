@@ -50,7 +50,8 @@ public class CreateWithTemplate {
 
     // A link to an existing Instance Template. Acceptable formats:
     //   * "projects/{projectId}/global/instanceTemplates/{templateName}"
-    //   * "{templateName}" - if the template is defined in the same project as used to create the Job.
+    //   * "{templateName}" - if the template is defined in the same project
+    //   as used to create the Job.
     String templateLink = "TEMPLATE_LINK";
 
     createWithTemplate(projectId, region, jobName, templateLink);
