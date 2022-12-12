@@ -26,11 +26,11 @@ import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.ProjectsClient;
 import com.google.cloud.compute.v1.Scheduling;
 import com.google.cloud.compute.v1.Scheduling.OnHostMaintenance;
 import com.google.cloud.compute.v1.Scheduling.ProvisioningModel;
 import com.google.cloud.compute.v1.ServiceAccount;
+import com.google.cloud.resourcemanager.v3.ProjectsClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -75,7 +75,7 @@ public class BatchTemplateIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     // Get project number from project id.
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
-      PROJECT_NUMBER = projectsClient.get(String.format("projects/%s", PROJECT_ID)).getName()
+      PROJECT_NUMBER = projectsClient.getProject(String.format("projects/%s", PROJECT_ID)).getName()
           .split("/")[1];
     }
 
@@ -156,7 +156,7 @@ public class BatchTemplateIT {
           .addServiceAccounts(serviceAccount)
           .build();
 
-      String templateName = String.valueOf(UUID.randomUUID());
+      String templateName = "template-name-" + UUID.randomUUID();
       InsertInstanceTemplateRequest insertInstanceTemplateRequest = InsertInstanceTemplateRequest
           .newBuilder()
           .setProject(PROJECT_ID)
