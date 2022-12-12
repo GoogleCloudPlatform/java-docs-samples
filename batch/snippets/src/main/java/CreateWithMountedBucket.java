@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START batch_create_script_job]
+// [START batch_create_script_job_with_bucket]
 
 import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.AllocationPolicy.InstancePolicy;
@@ -20,6 +20,7 @@ import com.google.cloud.batch.v1.AllocationPolicy.InstancePolicyOrTemplate;
 import com.google.cloud.batch.v1.BatchServiceClient;
 import com.google.cloud.batch.v1.ComputeResource;
 import com.google.cloud.batch.v1.CreateJobRequest;
+import com.google.cloud.batch.v1.GCS;
 import com.google.cloud.batch.v1.Job;
 import com.google.cloud.batch.v1.LogsPolicy;
 import com.google.cloud.batch.v1.LogsPolicy.Destination;
@@ -27,13 +28,14 @@ import com.google.cloud.batch.v1.Runnable;
 import com.google.cloud.batch.v1.Runnable.Script;
 import com.google.cloud.batch.v1.TaskGroup;
 import com.google.cloud.batch.v1.TaskSpec;
+import com.google.cloud.batch.v1.Volume;
 import com.google.protobuf.Duration;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateWithScriptNoMounting {
+public class CreateWithMountedBucket {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -49,12 +51,16 @@ public class CreateWithScriptNoMounting {
     // It needs to be unique for each project and region pair.
     String jobName = "JOB_NAME";
 
-    createScriptJob(projectId, region, jobName);
+    // Name of the bucket to be mounted for your Job.
+    String bucketName = "BUCKET_NAME";
+
+    createScriptJobWithBucket(projectId, region, jobName, bucketName);
   }
 
   // This method shows how to create a sample Batch Job that will run
   // a simple command on Cloud Compute instances.
-  public static void createScriptJob(String projectId, String region, String jobName)
+  public static void createScriptJobWithBucket(String projectId, String region, String jobName,
+      String bucketName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -77,11 +83,18 @@ public class CreateWithScriptNoMounting {
                       .build())
               .build();
 
+      Volume volume = Volume.newBuilder()
+          .setGcs(GCS.newBuilder()
+              .setRemotePath(bucketName)
+              .build())
+          .setMountPath("/mnt/share")
+          .build();
+
       // We can specify what resources are requested by each task.
       ComputeResource computeResource =
           ComputeResource.newBuilder()
-              // In milliseconds per cpu-second. This means the task requires 2 whole CPUs.
-              .setCpuMilli(2000)
+              // In milliseconds per cpu-second. This means the task requires 50% of a single CPUs.
+              .setCpuMilli(500)
               // In MiB.
               .setMemoryMib(16)
               .build();
@@ -90,6 +103,7 @@ public class CreateWithScriptNoMounting {
           TaskSpec.newBuilder()
               // Jobs can be divided into tasks. In this case, we have only one task.
               .addRunnables(runnable)
+              .addVolumes(volume)
               .setComputeResource(computeResource)
               .setMaxRetryCount(2)
               .setMaxRunDuration(Duration.newBuilder().setSeconds(3600).build())
@@ -116,6 +130,7 @@ public class CreateWithScriptNoMounting {
               .setAllocationPolicy(allocationPolicy)
               .putLabels("env", "testing")
               .putLabels("type", "script")
+              .putLabels("mount", "bucket")
               // We use Cloud Logging as it's an out of the box available option.
               .setLogsPolicy(
                   LogsPolicy.newBuilder().setDestination(Destination.CLOUD_LOGGING).build())
@@ -139,4 +154,4 @@ public class CreateWithScriptNoMounting {
     }
   }
 }
-// [END batch_create_script_job]
+// [END batch_create_script_job_with_bucket]
