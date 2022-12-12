@@ -22,8 +22,8 @@ import com.google.cloud.ServiceOptions;
 import com.google.cloud.asset.v1.ContentType;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
+import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
-import com.google.cloud.bigquery.Dataset;
 import com.google.cloud.bigquery.DatasetId;
 import com.google.cloud.bigquery.DatasetInfo;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
@@ -31,12 +31,16 @@ import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BlobListOption;
 import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -44,6 +48,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickStartIT {
+  @Rule public final Timeout testTimeout = new Timeout(10, TimeUnit.MINUTES);
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+  
   private static final String bucketName = "java-docs-samples-testing";
   private static final String path = UUID.randomUUID().toString();
   private static final String datasetName = RemoteBigQueryHelper.generateDatasetName();
@@ -69,9 +76,6 @@ public class QuickStartIT {
   @Before
   public void setUp() {
     bigquery = BigQueryOptions.getDefaultInstance().getService();
-    if (bigquery.getDataset(datasetName) == null) {
-      Dataset dataset = bigquery.create(DatasetInfo.newBuilder(datasetName).build());
-    }
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     originalPrintStream = System.out;
@@ -98,8 +102,7 @@ public class QuickStartIT {
 
   @Test
   public void testExportAssetBigqueryPerTypeExample() throws Exception {
-    String dataset =
-        String.format("projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
+    String dataset = getDataset();
     String table = "java_test_per_type";
     ExportAssetsBigqueryExample.exportBigQuery(
         dataset, table, ContentType.RESOURCE, /*perType*/ true);
@@ -109,8 +112,7 @@ public class QuickStartIT {
 
   @Test
   public void testExportAssetBigqueryExample() throws Exception {
-    String dataset =
-        String.format("projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
+    String dataset = getDataset();
     String table = "java_test";
     ExportAssetsBigqueryExample.exportBigQuery(
         dataset, table, ContentType.RESOURCE, /*perType*/ false);
@@ -126,5 +128,14 @@ public class QuickStartIT {
     if (!got.isEmpty()) {
       assertThat(got).contains(bucketAssetName);
     }
+  }
+
+  protected String getDataset() throws BigQueryException {
+    if (bigquery.getDataset(datasetName) == null) {
+      bigquery.create(DatasetInfo.newBuilder(datasetName).build());
+    }
+    return String.format(
+      "projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
+
   }
 }
