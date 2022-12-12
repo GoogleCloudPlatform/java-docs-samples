@@ -17,6 +17,7 @@
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.api.apikeys.v2.ApiKeysClient;
 import com.google.api.apikeys.v2.Key;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,6 +38,7 @@ public class ApiKeySnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String CREDENTIALS = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
   private static Key API_KEY;
+  private static String API_KEY_STRING;
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
@@ -55,7 +57,14 @@ public class ApiKeySnippetsIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    API_KEY = CreateApiKey.createApiKey(PROJECT_ID);
+    CreateApiKey.createApiKey(PROJECT_ID);
+    String goal = "Successfully created an API key: ";
+    assertThat(stdOut.toString()).contains(goal);
+    String apiKeyName = stdOut.toString().split(":")[1].trim();
+    try (ApiKeysClient apiKeysClient = ApiKeysClient.create()) {
+      API_KEY = apiKeysClient.getKey(apiKeyName);
+      API_KEY_STRING = apiKeysClient.getKeyString(apiKeyName).getKeyString();
+    }
 
     stdOut.close();
     System.setOut(out);
@@ -70,8 +79,8 @@ public class ApiKeySnippetsIT {
 
     String apiKeyId = getApiKeyId(API_KEY);
     DeleteApiKey.deleteApiKey(PROJECT_ID, apiKeyId);
-    assertThat(stdOut.toString()).contains(
-        String.format("Successfully deleted the API key: %s", API_KEY.getName()));
+    String goal = String.format("Successfully deleted the API key: %s", API_KEY.getName());
+    assertThat(stdOut.toString()).contains(goal);
 
     stdOut.close();
     System.setOut(out);
@@ -95,48 +104,48 @@ public class ApiKeySnippetsIT {
 
   @Test
   public void testLookupApiKey() throws IOException {
-    LookupApiKey.lookupApiKey(API_KEY.getKeyString());
-    assertThat(stdOut.toString()).contains(
-        String.format("Successfully retrieved the API key name: %s", API_KEY.getName()));
+    LookupApiKey.lookupApiKey(API_KEY_STRING);
+    String goal = String.format("Successfully retrieved the API key name: %s", API_KEY.getName());
+    assertThat(stdOut.toString()).contains(goal);
   }
 
   @Test
   public void testRestrictApiKeyAndroid()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     RestrictApiKeyAndroid.restrictApiKeyAndroid(PROJECT_ID, getApiKeyId(API_KEY));
-    assertThat(stdOut.toString()).contains(
-        String.format("Successfully updated the API key: %s", API_KEY.getName()));
+    String goal = String.format("Successfully updated the API key: %s", API_KEY.getName());
+    assertThat(stdOut.toString()).contains(goal);
   }
 
   @Test
   public void testRestrictApiKeyApi()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     RestrictApiKeyApi.restrictApiKeyApi(PROJECT_ID, getApiKeyId(API_KEY));
-    assertThat(stdOut.toString()).contains(
-        String.format("Successfully updated the API key: %s", API_KEY.getName()));
+    String goal = String.format("Successfully updated the API key: %s", API_KEY.getName());
+    assertThat(stdOut.toString()).contains(goal);
   }
 
   @Test
   public void testRestrictApiKeyHttp()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     RestrictApiKeyHttp.restrictApiKeyHttp(PROJECT_ID, getApiKeyId(API_KEY));
-    assertThat(stdOut.toString()).contains(
-        String.format("Successfully updated the API key: %s", API_KEY.getName()));
+    String goal = String.format("Successfully updated the API key: %s", API_KEY.getName());
+    assertThat(stdOut.toString()).contains(goal);
   }
 
   @Test
   public void testRestrictApiKeyIos()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     RestrictApiKeyIos.restrictApiKeyIos(PROJECT_ID, getApiKeyId(API_KEY));
-    assertThat(stdOut.toString()).contains(
-        String.format("Successfully updated the API key: %s", API_KEY.getName()));
+    String goal = String.format("Successfully updated the API key: %s", API_KEY.getName());
+    assertThat(stdOut.toString()).contains(goal);
   }
 
   @Test
   public void testRestrictApiKeyServer()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     RestrictApiKeyServer.restrictApiKeyServer(PROJECT_ID, getApiKeyId(API_KEY));
-    assertThat(stdOut.toString()).contains(
-        String.format("Successfully updated the API key: %s", API_KEY.getName()));
+    String goal = String.format("Successfully updated the API key: %s", API_KEY.getName());
+    assertThat(stdOut.toString()).contains(goal);
   }
 }

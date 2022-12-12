@@ -46,7 +46,7 @@ public class RestrictApiKeyIos {
 
   // Restricts an API key. You can restrict usage of an API key to specific iOS apps
   // by providing the bundle ID of each app.
-  public static Key restrictApiKeyIos(String projectId, String keyId)
+  public static void restrictApiKeyIos(String projectId, String keyId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -81,7 +81,6 @@ public class RestrictApiKeyIos {
 
       // For authenticating with the API key, use the value in "result.getKeyString()".
       System.out.printf("Successfully updated the API key: %s", result.getName());
-      return result;
     }
   }
 }

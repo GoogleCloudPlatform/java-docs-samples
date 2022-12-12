@@ -46,7 +46,7 @@ public class RestrictApiKeyServer {
 
   // Restricts the API key based on IP addresses. You can specify one or more IP addresses
   // of the callers, for example web servers or cron jobs, that are allowed to use your API key.
-  public static Key restrictApiKeyServer(String projectId, String keyId)
+  public static void restrictApiKeyServer(String projectId, String keyId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -81,7 +81,6 @@ public class RestrictApiKeyServer {
 
       // For authenticating with the API key, use the value in "result.getKeyString()".
       System.out.printf("Successfully updated the API key: %s", result.getName());
-      return result;
     }
   }
 }

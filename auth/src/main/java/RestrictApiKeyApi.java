@@ -44,7 +44,7 @@ public class RestrictApiKeyApi {
   }
 
   // Restricts an API key. Restrictions specify which APIs can be called using the API key.
-  public static Key restrictApiKeyApi(String projectId, String keyId)
+  public static void restrictApiKeyApi(String projectId, String keyId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -80,7 +80,6 @@ public class RestrictApiKeyApi {
 
       // For authenticating with the API key, use the value in "result.getKeyString()".
       System.out.printf("Successfully updated the API key: %s", result.getName());
-      return result;
     }
   }
 }
