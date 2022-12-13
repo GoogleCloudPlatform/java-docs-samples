@@ -73,14 +73,27 @@ public class BatchTemplateIT {
     System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
     // Get project number from project id.
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
       PROJECT_NUMBER = projectsClient.getProject(String.format("projects/%s", PROJECT_ID)).getName()
           .split("/")[1];
     }
-
     String uuid = String.valueOf(UUID.randomUUID());
     SCRIPT_JOB_NAME = "test-job-template-" + uuid;
+
+    // Delete stale instance templates.
+    Util.cleanUpExistingInstanceTemplates("test-job-template-", PROJECT_ID);
+    // Delete existing stale jobs if any.
+    try {
+      DeleteJob.deleteJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
+    } catch (ExecutionException e) {
+      if (!e.getMessage().contains("NOT_FOUND")) {
+        throw e;
+      }
+      // System.out.println("Do nothing");
+    }
+
     INSTANCE_TEMPLATE = createInstanceTemplate();
     TimeUnit.SECONDS.sleep(10);
 
