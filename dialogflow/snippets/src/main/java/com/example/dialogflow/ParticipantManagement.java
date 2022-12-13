@@ -51,7 +51,7 @@ public class ParticipantManagement {
     createParticipant(projectId, location, conversationId, role);
   }
 
-  // Create a participant with given role.
+  // Create a participant with given role
   public static void createParticipant(
       String projectId, String location, String conversationId, Role role)
       throws ApiException, IOException {
@@ -68,7 +68,7 @@ public class ParticipantManagement {
     }
   }
 
-  // Process suggestion results embedded in the response of an analyze content request.
+  // Process suggestion results embedded in the response of an analyze content request
   public static void processSuggestionResults(List<SuggestionResult> suggestionResults) {
     for (SuggestionResult suggestionResult : suggestionResults) {
       if (suggestionResult.hasError()) {
@@ -97,16 +97,19 @@ public class ParticipantManagement {
           }
           break;
         case SUGGESTIONRESPONSE_NOT_SET:
-          System.out.println("Suggestion Responses are not set.");
+          System.out.println("Suggestion Response is not set.");
           break;
         case ERROR:
           System.out.format("Error: %s\n", suggestionResult.getError().getMessage());
+          break;
+        default:
+          System.out.println("Suggestion Response is not supported.");
           break;
       }
     }
   }
 
-  // Analyze text message content from a participant.
+  // Send a conversation message content
   public static void analyzeContent(
       String projectId,
       String location,
