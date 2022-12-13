@@ -51,7 +51,7 @@ public class ParticipantManagement {
     createParticipant(projectId, location, conversationId, role);
   }
 
-  // Create a participant with given role
+  // Create a participant with given role.
   public static void createParticipant(
       String projectId, String location, String conversationId, Role role)
       throws ApiException, IOException {
@@ -68,7 +68,7 @@ public class ParticipantManagement {
     }
   }
 
-  // Process suggestion results embedded in the response of an analyze content request
+  // Process suggestion results embedded in the response of an analyze content request.
   public static void processSuggestionResults(List<SuggestionResult> suggestionResults) {
     for (SuggestionResult suggestionResult : suggestionResults) {
       if (suggestionResult.hasError()) {
@@ -109,7 +109,7 @@ public class ParticipantManagement {
     }
   }
 
-  // Send a conversation message content
+  // Analyze text message content from a participant.
   public static void analyzeContent(
       String projectId,
       String location,
