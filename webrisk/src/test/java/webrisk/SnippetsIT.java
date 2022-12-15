@@ -80,12 +80,14 @@ public class SnippetsIT {
 
   @Test
   public void testSearchHash() throws IOException, NoSuchAlgorithmException {
+    String uri = "http://example.com";
+    String encodedUri = Base64.getUrlEncoder().encodeToString(uri.getBytes(StandardCharsets.UTF_8));
     MessageDigest digest = MessageDigest.getInstance("SHA-256");
-    byte[] hash = digest.digest("http://example.com".getBytes(StandardCharsets.UTF_8));
-    String encodedHashPrefix = Base64.getUrlEncoder().encodeToString(hash).substring(0, 32);
+    byte[] hash = digest.digest(encodedUri.getBytes(StandardCharsets.UTF_8));
+
     List<ThreatType> threatTypes = Arrays.asList(ThreatType.MALWARE, ThreatType.SOCIAL_ENGINEERING);
 
-    SearchHashes.searchHash(ByteString.copyFrom(encodedHashPrefix.getBytes(StandardCharsets.UTF_8)),
+    SearchHashes.searchHash(ByteString.copyFrom(hash),
         threatTypes);
     assertThat(stdOut.toString()).contains("Completed searching threat hashes.");
   }
