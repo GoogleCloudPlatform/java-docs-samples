@@ -56,25 +56,8 @@ public class SnippetsIT {
 
   @BeforeClass
   public static void setUp() throws IOException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    stdOut.close();
-    System.setOut(out);
-  }
-
-  @AfterClass
-  public static void cleanup() throws IOException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-
-    stdOut.close();
-    System.setOut(out);
   }
 
   @Before
@@ -86,7 +69,6 @@ public class SnippetsIT {
   @After
   public void afterEach() {
     stdOut = null;
-    System.setOut(null);
   }
 
   @Test
