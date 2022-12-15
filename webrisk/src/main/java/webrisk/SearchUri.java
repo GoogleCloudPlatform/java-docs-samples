@@ -16,38 +16,53 @@
 
 package webrisk;
 
+// [START webrisk_search_uri]
+
 import com.google.cloud.webrisk.v1.WebRiskServiceClient;
 import com.google.webrisk.v1.SearchUrisRequest;
 import com.google.webrisk.v1.SearchUrisResponse;
 import com.google.webrisk.v1.ThreatType;
 import java.io.IOException;
 
-public class SearchUriExample {
+public class SearchUri {
 
-  public static void searchUriExample() throws IOException {
-    // The URL to be searched
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    // The URI to be checked for matches.
     String uri = "http://testsafebrowsing.appspot.com/s/malware.html";
-    SearchUrisResponse response = searchUriExample(uri);
+
+    // The ThreatLists to search in. Multiple ThreatLists may be specified.
+    ThreatType threatType = ThreatType.MALWARE;
+
+    searchUri(uri, threatType);
   }
 
-  // [START webrisk_search_uri]
-  public static SearchUrisResponse searchUriExample(String uri) throws IOException {
-    // create-webrisk-client
+  // This method is used to check whether a URI is on a given threatList. Multiple threatLists may
+  // be searched in a single query.
+  // The response will list all requested threatLists the URI was found to match. If the URI is not
+  // found on any of the requested ThreatList an empty response will be returned.
+  public static void searchUri(String uri, ThreatType threatType) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `webRiskServiceClient.close()` method on the client to safely
+    // clean up any remaining background resources.
     try (WebRiskServiceClient webRiskServiceClient = WebRiskServiceClient.create()) {
-      // Query the url for a specific threat type
+
       SearchUrisRequest searchUrisRequest =
-          SearchUrisRequest.newBuilder().addThreatTypes(ThreatType.MALWARE).setUri(uri).build();
+          SearchUrisRequest.newBuilder()
+              .addThreatTypes(threatType)
+              .setUri(uri)
+              .build();
+
       SearchUrisResponse searchUrisResponse = webRiskServiceClient.searchUris(searchUrisRequest);
-      webRiskServiceClient.shutdownNow();
+
       if (!searchUrisResponse.getThreat().getThreatTypesList().isEmpty()) {
         System.out.println("The URL has the following threat : ");
         System.out.println(searchUrisResponse);
       } else {
         System.out.println("The URL is safe!");
       }
-
-      return searchUrisResponse;
     }
   }
-  // [END webrisk_search_uri]
 }
+// [END webrisk_search_uri]
