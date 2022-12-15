@@ -41,11 +41,14 @@ public class SearchHashes {
     // by a URI, it must be encoded using the web safe base64 variant (RFC 4648).
     MessageDigest digest = MessageDigest.getInstance("SHA-256");
     byte[] hash = digest.digest("https://example.com".getBytes(StandardCharsets.UTF_8));
-    byte[] encodedHashPrefix = Base64.getUrlEncoder().encode(hash);
+    // Get the most significant 32 bytes.
+    String hashPrefix = Base64.getUrlEncoder().encodeToString(hash).substring(0, 32);
+    ByteString encodedHashPrefix = ByteString.copyFrom(hashPrefix.getBytes(StandardCharsets.UTF_8));
 
     // The ThreatLists to search in. Multiple ThreatLists may be specified.
     // For the list on threat types, see: https://cloud.google.com/web-risk/docs/reference/rpc/google.cloud.webrisk.v1#threattype
     List<ThreatType> threatTypes = Arrays.asList(ThreatType.MALWARE, ThreatType.SOCIAL_ENGINEERING);
+
     searchHash(encodedHashPrefix, threatTypes);
   }
 
@@ -53,7 +56,7 @@ public class SearchHashes {
   // This is used after a hash prefix is looked up in a threatList and there is a match.
   // The client side threatList only holds partial hashes so the client must query this method
   // to determine if there is a full hash match of a threat.
-  public static void searchHash(byte[] encodedHashPrefix, List<ThreatType> threatTypes)
+  public static void searchHash(ByteString encodedHashPrefix, List<ThreatType> threatTypes)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -64,7 +67,7 @@ public class SearchHashes {
       // Set the hashPrefix and the threat types to search in.
       SearchHashesResponse response = webRiskServiceClient.searchHashes(
           SearchHashesRequest.newBuilder()
-              .setHashPrefix(ByteString.copyFrom(encodedHashPrefix))
+              .setHashPrefix(encodedHashPrefix)
               .addAllThreatTypes(threatTypes)
               .build());
 
