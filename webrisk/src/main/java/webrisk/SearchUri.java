@@ -57,7 +57,7 @@ public class SearchUri {
       SearchUrisResponse searchUrisResponse = webRiskServiceClient.searchUris(searchUrisRequest);
 
       if (!searchUrisResponse.getThreat().getThreatTypesList().isEmpty()) {
-        System.out.println("The URL has the following threat : ");
+        System.out.println("The URL has the following threat: ");
         System.out.println(searchUrisResponse);
       } else {
         System.out.println("The URL is safe!");
