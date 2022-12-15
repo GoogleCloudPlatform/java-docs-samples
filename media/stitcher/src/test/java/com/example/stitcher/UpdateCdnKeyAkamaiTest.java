@@ -32,21 +32,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class GetCdnKeyTest {
+public class UpdateCdnKeyAkamaiTest {
 
   private static final String LOCATION = "us-central1";
-  private static final String CLOUD_CDN_KEY_ID = TestUtils.getCdnKeyId("my-test-cloud");
-  private static final String MEDIA_CDN_KEY_ID = TestUtils.getCdnKeyId("my-test-media");
   private static final String AKAMAI_KEY_ID = TestUtils.getCdnKeyId("my-test-akamai");
   private static final String HOSTNAME = "cdn.example.com";
-  private static final String KEYNAME = "my-key"; // field in the key
-  private static final String CLOUD_CDN_PRIVATE_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
-  private static final String MEDIA_CDN_PRIVATE_KEY =
-      "MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxzg5MDEyMzQ1Njc4OTAxMjM0NTY3DkwMTIzNA";
+  private static final String UPDATED_HOSTNAME = "updated.example.com";
   private static final String AKAMAI_TOKEN_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
+  private static final String UPDATED_AKAMAI_TOKEN_KEY =
+      "VGhpcyBpcyBhbiB1cGRhdGVkIHRlc3Qgc3RyaW5nLg==";
   private static String PROJECT_ID;
-  private static String CLOUD_CDN_KEY_NAME; // resource name for the Cloud CDN key
-  private static String MEDIA_CDN_KEY_NAME; // resource name for the Media CDN key
   private static String AKAMAI_KEY_NAME; // resource name for the Akamai CDN key
   private static PrintStream originalOut;
   private ByteArrayOutputStream bout;
@@ -71,27 +66,6 @@ public class GetCdnKeyTest {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    // Cloud CDN key
-    CLOUD_CDN_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", LOCATION, CLOUD_CDN_KEY_ID);
-    try {
-      DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID);
-    } catch (NotFoundException e) {
-      // Don't worry if the key doesn't already exist.
-    }
-    CreateCdnKey.createCdnKey(
-        PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID, HOSTNAME, KEYNAME, CLOUD_CDN_PRIVATE_KEY, false);
-
-    // Media CDN key
-    MEDIA_CDN_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", LOCATION, MEDIA_CDN_KEY_ID);
-    try {
-      DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID);
-    } catch (NotFoundException e) {
-      // Don't worry if the key doesn't already exist.
-    }
-    CreateCdnKey.createCdnKey(
-        PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID, HOSTNAME, KEYNAME, MEDIA_CDN_PRIVATE_KEY, true);
-
-    // Akamai CDN key
     AKAMAI_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", LOCATION, AKAMAI_KEY_ID);
     try {
       DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, AKAMAI_KEY_ID);
@@ -105,33 +79,16 @@ public class GetCdnKeyTest {
   }
 
   @Test
-  public void test_GetCdnKey() throws IOException {
-    // Cloud CDN key
-    GetCdnKey.getCdnKey(PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID);
+  public void test_UpdateCdnKeyAkamai() throws IOException {
+    UpdateCdnKeyAkamai.updateCdnKeyAkamai(
+        PROJECT_ID, LOCATION, AKAMAI_KEY_ID, UPDATED_HOSTNAME, UPDATED_AKAMAI_TOKEN_KEY);
     String output = bout.toString();
-    assertThat(output, containsString(CLOUD_CDN_KEY_NAME));
-    bout.reset();
-
-    // Media CDN key
-    GetCdnKey.getCdnKey(PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID);
-    output = bout.toString();
-    assertThat(output, containsString(MEDIA_CDN_KEY_NAME));
-    bout.reset();
-
-    // Akamai CDN key
-    GetCdnKey.getCdnKey(PROJECT_ID, LOCATION, AKAMAI_KEY_ID);
-    output = bout.toString();
     assertThat(output, containsString(AKAMAI_KEY_NAME));
     bout.reset();
   }
 
   @After
   public void tearDown() throws IOException {
-    // Cloud CDN key
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID);
-    // Media CDN key
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID);
-    // Akamai CDN key
     DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, AKAMAI_KEY_ID);
     System.setOut(originalOut);
     bout.reset();
