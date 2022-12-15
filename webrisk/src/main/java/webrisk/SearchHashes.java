@@ -39,17 +39,16 @@ public class SearchHashes {
     // A hash prefix, consisting of the most significant 4-32 bytes of a SHA256 hash.
     // For JSON requests, this field is base64-encoded. Note that if this parameter is provided
     // by a URI, it must be encoded using the web safe base64 variant (RFC 4648).
+    String uri = "http://example.com";
+    String encodedUri = Base64.getUrlEncoder().encodeToString(uri.getBytes(StandardCharsets.UTF_8));
     MessageDigest digest = MessageDigest.getInstance("SHA-256");
-    byte[] hash = digest.digest("https://example.com".getBytes(StandardCharsets.UTF_8));
-    // Get the most significant 32 bytes.
-    String hashPrefix = Base64.getUrlEncoder().encodeToString(hash).substring(0, 32);
-    ByteString encodedHashPrefix = ByteString.copyFrom(hashPrefix.getBytes(StandardCharsets.UTF_8));
+    byte[] encodedHashPrefix = digest.digest(encodedUri.getBytes(StandardCharsets.UTF_8));
 
     // The ThreatLists to search in. Multiple ThreatLists may be specified.
     // For the list on threat types, see: https://cloud.google.com/web-risk/docs/reference/rpc/google.cloud.webrisk.v1#threattype
     List<ThreatType> threatTypes = Arrays.asList(ThreatType.MALWARE, ThreatType.SOCIAL_ENGINEERING);
 
-    searchHash(encodedHashPrefix, threatTypes);
+    searchHash(ByteString.copyFrom(encodedHashPrefix), threatTypes);
   }
 
   // Gets the full hashes that match the requested hash prefix.
