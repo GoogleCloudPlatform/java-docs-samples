@@ -35,7 +35,7 @@ import org.junit.runners.JUnit4;
 public class UpdateCdnKeyAkamaiTest {
 
   private static final String LOCATION = "us-central1";
-  private static final String AKAMAI_KEY_ID = TestUtils.getCdnKeyId("my-test-akamai");
+  private static final String AKAMAI_KEY_ID = TestUtils.getCdnKeyId();
   private static final String HOSTNAME = "cdn.example.com";
   private static final String UPDATED_HOSTNAME = "updated.example.com";
   private static final String AKAMAI_TOKEN_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
