@@ -135,6 +135,7 @@ public class TestUtils {
   public static String getSlateId() {
     return SLATE_ID_PREFIX + Instant.now().getEpochSecond();
   }
+
   // Get a CDN key ID that includes a creation timestamp.
   public static String getCdnKeyId(String prefix) {
     return prefix + CDN_KEY_ID_PREFIX + Instant.now().getEpochSecond();
