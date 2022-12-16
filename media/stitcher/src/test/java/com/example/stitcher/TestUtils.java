@@ -29,13 +29,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Instant;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TestUtils {
 
-  public static final String SLATE_ID_PREFIX = "my-slate-";
-  public static final String CDN_KEY_ID_PREFIX = "-cdn-key-";
+  public static final String SLATE_ID_PREFIX = "slate-";
+  public static final String CDN_KEY_ID_PREFIX = "cdn-key-";
   private static final int DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS = 10800; // 3 hours
 
   // Clean up old test slates.
@@ -131,13 +132,23 @@ public class TestUtils {
     connection.getInputStream();
   }
 
-  // Get a slate ID that includes a creation timestamp.
+  // Get a slate ID that includes a creation timestamp. Add some randomness in case tests are run
+  // in parallel.
   public static String getSlateId() {
-    return SLATE_ID_PREFIX + Instant.now().getEpochSecond();
+    return String.format(
+        "test-%s-%s%s",
+        UUID.randomUUID().toString().substring(0, 15),
+        SLATE_ID_PREFIX,
+        Instant.now().getEpochSecond());
   }
 
-  // Get a CDN key ID that includes a creation timestamp.
-  public static String getCdnKeyId(String prefix) {
-    return prefix + CDN_KEY_ID_PREFIX + Instant.now().getEpochSecond();
+  // Get a CDN key ID that includes a creation timestamp. Add some randomness in case tests are run
+  // in parallel.
+  public static String getCdnKeyId() {
+    return String.format(
+        "test-%s-%s%s",
+        UUID.randomUUID().toString().substring(0, 15),
+        CDN_KEY_ID_PREFIX,
+        Instant.now().getEpochSecond());
   }
 }

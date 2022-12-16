@@ -35,8 +35,8 @@ import org.junit.runners.JUnit4;
 public class CreateCdnKeyTest {
 
   private static final String LOCATION = "us-central1";
-  private static final String CLOUD_CDN_KEY_ID = TestUtils.getCdnKeyId("my-test-cloud");
-  private static final String MEDIA_CDN_KEY_ID = TestUtils.getCdnKeyId("my-test-media");
+  private static final String CLOUD_CDN_KEY_ID = TestUtils.getCdnKeyId();
+  private static final String MEDIA_CDN_KEY_ID = TestUtils.getCdnKeyId();
   private static final String HOSTNAME = "cdn.example.com";
   private static final String KEYNAME = "my-key"; // field in the key
   private static final String CLOUD_CDN_PRIVATE_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
