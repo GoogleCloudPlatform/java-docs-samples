@@ -18,13 +18,11 @@ package com.example.asset;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.asset.v1.ContentType;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
-import com.google.cloud.bigquery.Dataset;
 import com.google.cloud.bigquery.DatasetId;
 import com.google.cloud.bigquery.DatasetInfo;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
@@ -135,7 +133,7 @@ public class QuickStartIT {
     bigquery.create(DatasetInfo.newBuilder(datasetName).build());
 
     return String.format(
-      "projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
+      "projects/%s/datasets/%s", bigquery.getOptions().getProjectId(), datasetName);
   }
 
   protected void deleteDataset() {
