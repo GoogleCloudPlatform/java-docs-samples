@@ -24,6 +24,7 @@ import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.Dataset;
 import com.google.cloud.bigquery.DatasetId;
 import com.google.cloud.bigquery.DatasetInfo;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
@@ -88,8 +89,7 @@ public class QuickStartIT {
     System.out.flush();
     System.setOut(originalPrintStream);
     deleteObjects();
-    DatasetId datasetId = DatasetId.of(bigquery.getOptions().getProjectId(), datasetName);
-    bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
+    deleteDataset();
   }
 
   @Test
@@ -131,7 +131,17 @@ public class QuickStartIT {
   }
 
   protected String getDataset() throws BigQueryException {
+    deleteDataset();
     bigquery.create(DatasetInfo.newBuilder(datasetName).build());
-    return String.format("projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
+
+    return String.format(
+      "projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
   }
+
+  protected void deleteDataset() {
+    DatasetId datasetId = DatasetId.of(bigquery.getOptions().getProjectId(), datasetName);
+    bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
+  }
+
+
 }
