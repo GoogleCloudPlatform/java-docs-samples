@@ -22,6 +22,7 @@ import com.google.cloud.ServiceOptions;
 import com.google.cloud.asset.v1.ContentType;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
+import com.google.cloud.bigquery.DatasetInfo.Builder;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.DatasetId;
@@ -131,13 +132,7 @@ public class QuickStartIT {
   }
 
   protected String getDataset() throws BigQueryException {
-    if (bigquery.getDataset(datasetName) == null) {
-      bigquery.create(DatasetInfo.newBuilder(datasetName).build());
-    }
-    String dataset = String.format(
-      "projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
-    System.out.println(dataset);
-    return dataset;
-
+    bigquery.create(DatasetInfo.newBuilder(datasetName).build());
+    return String.format("projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
   }
 }
