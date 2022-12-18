@@ -134,8 +134,10 @@ public class QuickStartIT {
     if (bigquery.getDataset(datasetName) == null) {
       bigquery.create(DatasetInfo.newBuilder(datasetName).build());
     }
-    return String.format(
+    String dataset = String.format(
       "projects/%s/datasets/%s", ServiceOptions.getDefaultProjectId(), datasetName);
+    System.out.println(dataset);
+    return dataset;
 
   }
 }
