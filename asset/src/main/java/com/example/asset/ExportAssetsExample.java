@@ -29,8 +29,8 @@ import com.google.cloud.asset.v1.GcsDestination;
 import com.google.cloud.asset.v1.OutputConfig;
 import com.google.cloud.asset.v1.ProjectName;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 public class ExportAssetsExample {
 
@@ -39,7 +39,7 @@ public class ExportAssetsExample {
 
   /**
    * Export assets for a project.
-   * 
+
    * @param exportPath where the results will be exported to
    * @param contentType determines the schema for the table
    * @param assetTypes a list of asset types to export. if empty, export all.

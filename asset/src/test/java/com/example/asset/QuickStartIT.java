@@ -96,8 +96,7 @@ public class QuickStartIT {
       ExportAssetsExample.exportAssets(assetDumpPath, ContentType.RESOURCE, assetTypes);
       String got = bout.toString();
       assertThat(got).contains(String.format("uri: \"%s\"", assetDumpPath));
-    }
-    finally {
+    } finally {
       deleteObjects(path); 
     }
   }

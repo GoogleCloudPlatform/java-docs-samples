@@ -30,8 +30,8 @@ import com.google.cloud.asset.v1.OutputConfig;
 import com.google.cloud.asset.v1.PartitionSpec;
 import com.google.cloud.asset.v1.ProjectName;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 public class ExportAssetsBigqueryExample {
 
@@ -40,15 +40,15 @@ public class ExportAssetsBigqueryExample {
 
   /** 
    * Export assets to BigQuery for a project.
-   * 
+
    * @param bigqueryDataset which dataset the results will be exported to
    * @param bigqueryTable which table the results will be exported to
    * @param contentType determines the schema for the table
    * @param assetTypes a list of asset types to export. if empty, export all.
    * @param isPerType separate BigQuery tables for each resource type
    */
-  public static void exportBigQuery(
-      String bigqueryDataset, String bigqueryTable, ContentType contentType, String[] assetTypes, boolean isPerType)
+  public static void exportBigQuery(String bigqueryDataset, String bigqueryTable,
+      ContentType contentType, String[] assetTypes, boolean isPerType)
       throws IOException, IllegalArgumentException, InterruptedException, ExecutionException {
     try (AssetServiceClient client = AssetServiceClient.create()) {
       ProjectName parent = ProjectName.of(projectId);
