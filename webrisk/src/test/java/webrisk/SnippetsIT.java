@@ -45,6 +45,9 @@ import org.junit.runners.JUnit4;
 public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static ByteArrayOutputStream originalOut = new ByteArrayOutputStream();
+  private static PrintStream printStream = new PrintStream(originalOut);
+
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
@@ -56,6 +59,7 @@ public class SnippetsIT {
 
   @BeforeClass
   public static void setUp() throws IOException {
+    printStream.println(System.out);
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
@@ -68,7 +72,7 @@ public class SnippetsIT {
 
   @After
   public void afterEach() {
-    stdOut = null;
+    stdOut = originalOut;
   }
 
   @Test
