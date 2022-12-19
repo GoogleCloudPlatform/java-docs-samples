@@ -51,6 +51,8 @@ public class QuickStartIT {
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
   
   private static final String bucketName = "java-docs-samples-testing";
+  private static final String[] assetTypes = { "compute.googleapis.com/Disk" };
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -91,7 +93,7 @@ public class QuickStartIT {
     String path = UUID.randomUUID().toString();
     try {
       String assetDumpPath = String.format("gs://%s/%s/my-assets-dump.txt", bucketName, path);
-      ExportAssetsExample.exportAssets(assetDumpPath, ContentType.RESOURCE);
+      ExportAssetsExample.exportAssets(assetDumpPath, ContentType.RESOURCE, assetTypes);
       String got = bout.toString();
       assertThat(got).contains(String.format("uri: \"%s\"", assetDumpPath));
     }
@@ -106,7 +108,7 @@ public class QuickStartIT {
     try {
       String dataset = getDataset(datasetName);
       String table = "java_test_per_type";
-      ExportAssetsBigqueryExample.exportBigQuery(dataset, table, ContentType.RESOURCE,
+      ExportAssetsBigqueryExample.exportBigQuery(dataset, table, ContentType.RESOURCE, assetTypes,
           /*perType*/ true);
       String got = bout.toString();
       assertThat(got).contains(String.format("dataset: \"%s\"", dataset));
@@ -119,12 +121,13 @@ public class QuickStartIT {
   public void testExportAssetBigqueryExample() throws Exception {
     String datasetName = RemoteBigQueryHelper.generateDatasetName();    
     try {
-    String dataset = getDataset(datasetName);
-    String table = "java_test";
-    ExportAssetsBigqueryExample.exportBigQuery(
-        dataset, table, ContentType.RESOURCE, /*perType*/ false);
-    String got = bout.toString();
-    assertThat(got).contains(String.format("dataset: \"%s\"", dataset));
+      String dataset = getDataset(datasetName);
+      String table = "java_test";
+      String[] assetTypes = { "compute.googleapis.com/Disk" };
+      ExportAssetsBigqueryExample.exportBigQuery(
+          dataset, table, ContentType.RESOURCE, assetTypes, /*perType*/ false);
+      String got = bout.toString();
+      assertThat(got).contains(String.format("dataset: \"%s\"", dataset));
     } finally {
       deleteDataset(datasetName);
     }
