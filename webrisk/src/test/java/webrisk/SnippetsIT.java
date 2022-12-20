@@ -73,6 +73,7 @@ public class SnippetsIT {
   @After
   public void afterEach() {
     stdOut = originalOut;
+    System.setOut(printStream);
   }
 
   @Test
