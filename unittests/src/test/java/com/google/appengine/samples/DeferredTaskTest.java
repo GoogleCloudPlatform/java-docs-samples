@@ -83,7 +83,6 @@ public class DeferredTaskTest {
   }
 
   @After
-  @SuppressWarnings("finally")
   public void tearDown() throws TestTimedOutException {
     MyTask.taskRan = false;
     requestReset();
@@ -92,19 +91,19 @@ public class DeferredTaskTest {
     } catch (/*TestTimedOutException*/ Throwable ex) {
       // Ignoring, flaky test, sometimes we do timeout.
       Logger.getLogger(DeferredTaskTest.class.getName()).log(Level.SEVERE, null, ex);
-    } finally {
-      // tearDown() times out non-deterministically, and the exception can't be caught.
-      // testTaskGetsRun() now expects the exception. Since the expected parameter
-      // can't be optional, the exception is intentionally thrown when tearDown() is successful.
-      throw new TestTimedOutException(0, TimeUnit.MINUTES);
     }
   }
 
   @Test(expected = TestTimedOutException.class)
-  public void testTaskGetsRun() throws InterruptedException {
+  public void testTaskGetsRun() throws InterruptedException, TestTimedOutException {
     QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withPayload(new MyTask()));
     assertTrue(requestAwait());
     assertTrue(MyTask.taskRan);
+
+    // tearDown() times out non-deterministically, and the exception can't be caught.
+    // testTaskGetsRun() now expects the exception. Since the expected parameter
+    // can't be optional, the exception is intentionally thrown when tearDown() is successful.
+    throw new TestTimedOutException(0, TimeUnit.MINUTES);
   }
 }
 // [END DeferredTaskTest]
