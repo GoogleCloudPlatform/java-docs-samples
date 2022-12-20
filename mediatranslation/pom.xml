@@ -5,7 +5,6 @@
   <artifactId>mediatranslation-snippets</artifactId>
   <packaging>jar</packaging>
   <name>Google Media Translation API Snippets</name>
-  <url>https://github.com/googleapis/java-mediatranslation</url>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.

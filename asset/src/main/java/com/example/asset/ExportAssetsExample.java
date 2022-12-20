@@ -23,11 +23,13 @@ import com.google.cloud.ServiceOptions;
 import com.google.cloud.asset.v1.AssetServiceClient;
 import com.google.cloud.asset.v1.ContentType;
 import com.google.cloud.asset.v1.ExportAssetsRequest;
+import com.google.cloud.asset.v1.ExportAssetsRequest.Builder;
 import com.google.cloud.asset.v1.ExportAssetsResponse;
 import com.google.cloud.asset.v1.GcsDestination;
 import com.google.cloud.asset.v1.OutputConfig;
 import com.google.cloud.asset.v1.ProjectName;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class ExportAssetsExample {
@@ -35,9 +37,14 @@ public class ExportAssetsExample {
   // Use the default project Id.
   private static final String projectId = ServiceOptions.getDefaultProjectId();
 
-  // Export assets for a project.
-  // @param exportPath where the results will be exported to.
-  public static void exportAssets(String exportPath, ContentType contentType)
+  /**
+   * Export assets for a project.
+
+   * @param exportPath where the results will be exported to
+   * @param contentType determines the schema for the table
+   * @param assetTypes a list of asset types to export. if empty, export all.
+   */
+  public static void exportAssets(String exportPath, ContentType contentType, String[] assetTypes)
       throws IOException, IllegalArgumentException, InterruptedException, ExecutionException {
     try (AssetServiceClient client = AssetServiceClient.create()) {
       ProjectName parent = ProjectName.of(projectId);
@@ -45,12 +52,12 @@ public class ExportAssetsExample {
           OutputConfig.newBuilder()
               .setGcsDestination(GcsDestination.newBuilder().setUri(exportPath).build())
               .build();
-      ExportAssetsRequest request =
-          ExportAssetsRequest.newBuilder()
-              .setParent(parent.toString())
-              .setOutputConfig(outputConfig)
-              .setContentType(contentType)
-              .build();
+      Builder exportAssetsRequestBuilder = ExportAssetsRequest.newBuilder()
+          .setParent(parent.toString()).setContentType(contentType).setOutputConfig(outputConfig);
+      if (assetTypes.length > 0) {
+        exportAssetsRequestBuilder.addAllAssetTypes(Arrays.asList(assetTypes));
+      }
+      ExportAssetsRequest request = exportAssetsRequestBuilder.build();              
       ExportAssetsResponse response = client.exportAssetsAsync(request).get();
       System.out.println(response);
     }

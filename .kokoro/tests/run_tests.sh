@@ -67,14 +67,15 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     export FILESTORE_IP_ADDRESS=$(gcloud secrets versions access latest --secret fs-app)
     
     SECRET_FILES=("java-docs-samples-service-account.json" \
-    "java-aws-samples-secrets.txt" \
-    "java-dlp-samples-secrets.txt" \
-    "java-bigtable-samples-secrets.txt" \
+    "java-aiplatform-samples-secrets.txt" \
     "java-automl-samples-secrets.txt" \
+    "java-aws-samples-secrets.txt" \
+    "java-bigtable-samples-secrets.txt" \
+    "java-cloud-sql-samples-secrets.txt" \
+    "java-cts-v4-samples-secrets.txt" \
+    "java-dlp-samples-secrets.txt" \
     "java-functions-samples-secrets.txt" \
     "java-firestore-samples-secrets.txt" \
-    "java-cts-v4-samples-secrets.txt" \
-    "java-cloud-sql-samples-secrets.txt" \
     "java-scc-samples-secrets.txt")
 
     # create secret dir

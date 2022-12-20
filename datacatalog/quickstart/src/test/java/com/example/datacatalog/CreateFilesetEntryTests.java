@@ -16,21 +16,23 @@
 
 package com.example.datacatalog;
 
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import com.google.cloud.datacatalog.v1.DataCatalogClient;
 import com.google.cloud.datacatalog.v1.EntryGroupName;
 import com.google.cloud.datacatalog.v1.EntryName;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -38,6 +40,8 @@ import org.junit.runners.JUnit4;
 /** Integration (system) tests for {@link CreateFilesetEntry}. */
 @RunWith(JUnit4.class)
 public class CreateFilesetEntryTests {
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private ByteArrayOutputStream bout;
 
@@ -98,11 +102,10 @@ public class CreateFilesetEntryTests {
 
     String entryTemplate = "Entry created with name: %s";
     String entryGroupTemplate = "Entry Group created with name: %s";
-    assertThat(
-        output,
+    MatcherAssert.assertThat(output,
         CoreMatchers.containsString(String.format(entryGroupTemplate, expectedEntryGroupName)));
-    assertThat(
-        output, CoreMatchers.containsString(String.format(entryTemplate, expectedEntryName)));
+    MatcherAssert.assertThat(output,
+        CoreMatchers.containsString(String.format(entryTemplate, expectedEntryName)));
   }
 
   private String getUuid8Chars() {

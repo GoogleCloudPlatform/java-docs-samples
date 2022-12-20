@@ -17,6 +17,8 @@
 package com.example.stitcher;
 
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.video.stitcher.v1.CdnKey;
+import com.google.cloud.video.stitcher.v1.ListCdnKeysRequest;
 import com.google.cloud.video.stitcher.v1.ListSlatesRequest;
 import com.google.cloud.video.stitcher.v1.LocationName;
 import com.google.cloud.video.stitcher.v1.Slate;
@@ -27,12 +29,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Instant;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TestUtils {
 
-  public static final String SLATE_ID_PREFIX = "my-slate-";
+  public static final String SLATE_ID_PREFIX = "slate-";
+  public static final String CDN_KEY_ID_PREFIX = "cdn-key-";
   private static final int DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS = 10800; // 3 hours
 
   // Clean up old test slates.
@@ -55,6 +59,34 @@ public class TestUtils {
           if (createEpochSec
               < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
             videoStitcherServiceClient.deleteSlate(slate.getName());
+          }
+        }
+      }
+    } catch (IOException | NotFoundException e) {
+      e.printStackTrace();
+    }
+  }
+
+  // Clean up old test CDN keys.
+  public static void cleanStaleCdnKeys(String projectId, String location) throws IOException {
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
+      ListCdnKeysRequest listCdnKeysRequest =
+          ListCdnKeysRequest.newBuilder()
+              .setParent(LocationName.of(projectId, location).toString())
+              .build();
+
+      VideoStitcherServiceClient.ListCdnKeysPagedResponse response =
+          videoStitcherServiceClient.listCdnKeys(listCdnKeysRequest);
+
+      for (CdnKey cdnKey : response.iterateAll()) {
+        Matcher matcher = Pattern.compile(CDN_KEY_ID_PREFIX).matcher(cdnKey.getName());
+        if (matcher.find()) {
+          String createTime = cdnKey.getName().substring(matcher.end()).trim();
+          long createEpochSec = Long.parseLong(createTime);
+          if (createEpochSec
+              < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
+            videoStitcherServiceClient.deleteCdnKey(cdnKey.getName());
           }
         }
       }
@@ -100,8 +132,23 @@ public class TestUtils {
     connection.getInputStream();
   }
 
-  // Get a slate ID that includes a creation timestamp.
+  // Get a slate ID that includes a creation timestamp. Add some randomness in case tests are run
+  // in parallel.
   public static String getSlateId() {
-    return SLATE_ID_PREFIX + Instant.now().getEpochSecond();
+    return String.format(
+        "test-%s-%s%s",
+        UUID.randomUUID().toString().substring(0, 15),
+        SLATE_ID_PREFIX,
+        Instant.now().getEpochSecond());
+  }
+
+  // Get a CDN key ID that includes a creation timestamp. Add some randomness in case tests are run
+  // in parallel.
+  public static String getCdnKeyId() {
+    return String.format(
+        "test-%s-%s%s",
+        UUID.randomUUID().toString().substring(0, 15),
+        CDN_KEY_ID_PREFIX,
+        Instant.now().getEpochSecond());
   }
 }

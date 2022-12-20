@@ -18,11 +18,11 @@ package com.example.stitcher;
 
 // [START videostitcher_create_cdn_key]
 
-import com.google.cloud.video.stitcher.v1.AkamaiCdnKey;
 import com.google.cloud.video.stitcher.v1.CdnKey;
 import com.google.cloud.video.stitcher.v1.CreateCdnKeyRequest;
 import com.google.cloud.video.stitcher.v1.GoogleCdnKey;
 import com.google.cloud.video.stitcher.v1.LocationName;
+import com.google.cloud.video.stitcher.v1.MediaCdnKey;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
@@ -35,25 +35,25 @@ public class CreateCdnKey {
     String location = "us-central1";
     String cdnKeyId = "my-cdn-key-id";
     String hostname = "cdn.example.com";
-    String gcdnKeyname = "my-gcdn-key";
-    String gcdnPrivateKey = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg"; // will be converted to a byte string
-    String akamaiTokenKey = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg"; // will be converted to a byte string
+    String keyName = "my-key";
+    // To create a privateKey value for Media CDN, see
+    // https://cloud.google.com/video-stitcher/docs/how-to/managing-cdn-keys#create-private-key-media-cdn.
+    String privateKey = "my-private-key"; // will be converted to a byte string
+    Boolean isMediaCdn = true;
 
-    createCdnKey(
-        projectId, location, cdnKeyId, hostname, gcdnKeyname, gcdnPrivateKey, akamaiTokenKey);
+    createCdnKey(projectId, location, cdnKeyId, hostname, keyName, privateKey, isMediaCdn);
   }
 
-  // createCdnKey creates an Akamai or Cloud CDN key. If akamaiTokenKey is
-  // provided, then create an Akamai key. If akamaiTokenKey is not provided (""),
-  // then create a Cloud CDN key.
+  // createCdnKey creates a Media CDN key or a Cloud CDN key. A CDN key is used to retrieve
+  // protected media.
   public static void createCdnKey(
       String projectId,
       String location,
       String cdnKeyId,
       String hostname,
-      String gcdnKeyname,
-      String gcdnPrivateKey,
-      String akamaiTokenKey)
+      String keyName,
+      String privateKey,
+      Boolean isMediaCdn)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -61,13 +61,14 @@ public class CreateCdnKey {
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       CdnKey cdnKey;
-      if (akamaiTokenKey != "") {
+      if (isMediaCdn) {
         cdnKey =
             CdnKey.newBuilder()
                 .setHostname(hostname)
-                .setAkamaiCdnKey(
-                    AkamaiCdnKey.newBuilder()
-                        .setTokenKey(ByteString.copyFromUtf8(akamaiTokenKey))
+                .setMediaCdnKey(
+                    MediaCdnKey.newBuilder()
+                        .setKeyName(keyName)
+                        .setPrivateKey(ByteString.copyFromUtf8(privateKey))
                         .build())
                 .build();
       } else {
@@ -76,8 +77,8 @@ public class CreateCdnKey {
                 .setHostname(hostname)
                 .setGoogleCdnKey(
                     GoogleCdnKey.newBuilder()
-                        .setKeyName(gcdnKeyname)
-                        .setPrivateKey(ByteString.copyFromUtf8(gcdnPrivateKey))
+                        .setKeyName(keyName)
+                        .setPrivateKey(ByteString.copyFromUtf8(privateKey))
                         .build())
                 .build();
       }

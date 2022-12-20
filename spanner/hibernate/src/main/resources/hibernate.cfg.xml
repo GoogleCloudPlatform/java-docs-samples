@@ -8,7 +8,7 @@
 
     <!-- [START spanner_hibernate_config] -->
     <!-- Connection settings -->
-    <property name="hibernate.dialect">com.google.cloud.spanner.hibernate.SpannerDialect</property>
+    <property name="hibernate.dialect">org.hibernate.dialect.SpannerDialect</property>
     <property name="hibernate.connection.driver_class">com.google.cloud.spanner.jdbc.JdbcDriver</property>
     <property name="hibernate.connection.url">jdbc:cloudspanner:/projects/{YOUR_PROJECT_ID}/instances/{YOUR_INSTANCE_ID}/databases/{YOUR_DATABASE_ID}</property>
     <!-- [END spanner_hibernate_config] -->
