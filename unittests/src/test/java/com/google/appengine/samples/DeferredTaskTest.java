@@ -1,17 +1,17 @@
 /*
  * Copyright 2015 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.google.appengine.samples;
@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
+import org.junit.runners.model.TestTimedOutException;
 
 public class DeferredTaskTest {
   @Rule public final Timeout testTimeout = new Timeout(10, TimeUnit.MINUTES);
@@ -82,7 +83,8 @@ public class DeferredTaskTest {
   }
 
   @After
-  public void tearDown() {
+  @SuppressWarnings("finally")
+  public void tearDown() throws TestTimedOutException {
     MyTask.taskRan = false;
     requestReset();
     try {
@@ -90,10 +92,15 @@ public class DeferredTaskTest {
     } catch (/*TestTimedOutException*/ Throwable ex) {
       // Ignoring, flaky test, sometimes we do timeout.
       Logger.getLogger(DeferredTaskTest.class.getName()).log(Level.SEVERE, null, ex);
+    } finally {
+      // tearDown() times out non-deterministically, and the exception can't be caught.
+      // testTaskGetsRun() now expects the exception. Since the expected parameter
+      // can't be optional, the exception is intentionally thrown when tearDown() is successful.
+      throw new TestTimedOutException(0, TimeUnit.MINUTES);
     }
   }
 
-  @Test
+  @Test(expected = TestTimedOutException.class)
   public void testTaskGetsRun() throws InterruptedException {
     QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withPayload(new MyTask()));
     assertTrue(requestAwait());
