@@ -24,6 +24,9 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.BlobServiceClient;
+import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.google.api.services.storagetransfer.v1.Storagetransfer;
 import com.google.api.services.storagetransfer.v1.model.Date;
 import com.google.api.services.storagetransfer.v1.model.GcsData;
@@ -48,6 +51,7 @@ import com.google.cloud.storage.storagetransfer.samples.DownloadToPosix;
 import com.google.cloud.storage.storagetransfer.samples.QuickstartSample;
 import com.google.cloud.storage.storagetransfer.samples.TransferBetweenPosix;
 import com.google.cloud.storage.storagetransfer.samples.TransferFromAws;
+import com.google.cloud.storage.storagetransfer.samples.TransferFromAzure;
 import com.google.cloud.storage.storagetransfer.samples.TransferFromPosix;
 import com.google.cloud.storage.storagetransfer.samples.TransferFromS3CompatibleSource;
 import com.google.cloud.storage.storagetransfer.samples.TransferToNearline;
@@ -60,17 +64,22 @@ import com.google.cloud.storage.storagetransfer.samples.test.util.TransferJobUti
 import com.google.cloud.storage.testing.RemoteStorageHelper;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.cloud.testing.junit4.StdOutCaptureRule;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.Gson;
 import com.google.storagetransfer.v1.proto.StorageTransferServiceClient;
 import com.google.storagetransfer.v1.proto.TransferProto;
 import com.google.storagetransfer.v1.proto.TransferProto.GetGoogleServiceAccountRequest;
 import com.google.storagetransfer.v1.proto.TransferTypes;
+import java.io.Reader;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -87,8 +96,14 @@ public class ITStoragetransferSamplesTest {
   private static final String SINK_GCS_BUCKET = "sts-test-bucket-sink" + UUID.randomUUID();
   private static final String SOURCE_GCS_BUCKET = "sts-test-bucket-source" + UUID.randomUUID();
   private static final String AMAZON_BUCKET = "sts-amazon-bucket" + UUID.randomUUID();
+  private static final String AZURE_BUCKET = "sts-azure-bucket" + UUID.randomUUID();
+  private static String AZURE_CONNECTION_STRING = System.getenv("AZURE_CONNECTION_STRING");
+  private static String AZURE_STORAGE_ACCOUNT = System.getenv("AZURE_STORAGE_ACCOUNT");
+  private static String AZURE_SAS_TOKEN = System.getenv("AZURE_SAS_TOKEN");
   private static Storage storage;
   private static AmazonS3 s3;
+  private static BlobServiceClient blobServiceClient;
+  private static BlobContainerClient blobContainerClient;
   private static StorageTransferServiceClient sts;
 
   @Rule public MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
@@ -131,6 +146,12 @@ public class ITStoragetransferSamplesTest {
     s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_WEST_1).build();
 
     s3.createBucket(AMAZON_BUCKET);
+
+    blobServiceClient = new BlobServiceClientBuilder()
+        .connectionString(AZURE_CONNECTION_STRING)
+        .sasToken(AZURE_SAS_TOKEN)
+        .buildClient();
+    blobContainerClient = blobServiceClient.createBlobContainer(AZURE_BUCKET);
   }
 
   private static void grantBucketsStsPermissions(String serviceAccount, String bucket)
@@ -213,9 +234,8 @@ public class ITStoragetransferSamplesTest {
       RemoteStorageHelper.forceDelete(storage, SINK_GCS_BUCKET, 1, TimeUnit.MINUTES);
       RemoteStorageHelper.forceDelete(storage, SOURCE_GCS_BUCKET, 1, TimeUnit.MINUTES);
     }
-
+    blobContainerClient.delete();
     cleanAmazonBucket();
-
     sts.shutdownNow();
   }
 
@@ -470,6 +490,14 @@ public class ITStoragetransferSamplesTest {
         SINK_GCS_BUCKET,
         gcsPath);
 
+    String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
+    assertThat(sampleOutput).contains("transferJobs/");
+    deleteTransferJob(sampleOutput);
+  }
+
+  @Test
+  public void testTransferFromAzure() throws Exception {
+    TransferFromAzure.transferFromAzureBlobStorage(PROJECT_ID, AZURE_STORAGE_ACCOUNT, AZURE_BUCKET, SINK_GCS_BUCKET);
     String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
     assertThat(sampleOutput).contains("transferJobs/");
     deleteTransferJob(sampleOutput);
