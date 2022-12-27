@@ -90,12 +90,12 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     done
 
     export STS_AWS_SECRET=`gcloud secrets versions access latest --project cloud-devrel-kokoro-resources --secret=java-storagetransfer-aws`
-    export AWS_ACCESS_KEY_ID=`S="$STS_AWS_SECRET" node -p "JSON.parse(process.env.S).AccessKeyId"`
-    export AWS_SECRET_ACCESS_KEY=`S="$STS_AWS_SECRET" node -p "JSON.parse(process.env.S).SecretAccessKey"`
+    export AWS_ACCESS_KEY_ID=`cat $STS_AWS_SECRET | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["AccessKeyId"];'`
+    export AWS_SECRET_ACCESS_KEY=`cat $STS_AWS_SECRET | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["SecretAccessKey"];'`
     export STS_AZURE_SECRET=`gcloud secrets versions access latest --project cloud-devrel-kokoro-resources --secret=java-storagetransfer-azure`
-    export AZURE_STORAGE_ACCOUNT=`S="$STS_AZURE_SECRET" node -p "JSON.parse(process.env.S).StorageAccount"`
-    export AZURE_CONNECTION_STRING=`S="$STS_AZURE_SECRET" node -p "JSON.parse(process.env.S).ConnectionString"`
-    export AZURE_SAS_TOKEN=`S="$STS_AZURE_SECRET" node -p "JSON.parse(process.env.S).SAS"`
+    export AZURE_STORAGE_ACCOUNT=`cat $STS_AZURE_SECRET | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["StorageAccount"];'`
+    export AZURE_CONNECTION_STRING=`cat $STS_AZURE_SECRET | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["ConnectionString"];'`
+    export AZURE_SAS_TOKEN=`cat $STS_AZURE_SECRET | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["SAS"];'`
   
     # Activate service account
     gcloud auth activate-service-account \
