@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.cloud.storage.storagetransfer.samples;
 
 // [START storagetransfer_transfer_from_azure]
@@ -32,7 +33,6 @@ public class TransferFromAzure {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
-
     // Your Google Cloud Project ID
     String projectId = "my-project-id";
 
@@ -45,14 +45,16 @@ public class TransferFromAzure {
     // The GCS bucket to transfer data to
     String gcsSinkBukcet = "my-sink-bucket";
 
-    transferFromAzureBlobStorage(projectId, azureStorageAccountName, azureSourceContainer, gcsSinkBukcet);
+    transferFromAzureBlobStorage(
+        projectId, azureStorageAccountName, azureSourceContainer, gcsSinkBukcet);
   }
 
-  public static void transferFromAzureBlobStorage(String projectId, String azureStorageAccountName, String azureSourceContainer, String gcsSinkBucket)
+  public static void transferFromAzureBlobStorage(String projectId, String azureStorageAccountName,
+      String azureSourceContainer, String gcsSinkBucket)
       throws IOException, ExecutionException, InterruptedException {
 
     // Your Azure SAS token, should be accessed via environment variable
-    String azureSASToken = System.getenv("AZURE_SAS_TOKEN");
+    String azureSasToken = System.getenv("AZURE_SAS_TOKEN");
 
     TransferJob transferJob =
         TransferJob.newBuilder()
@@ -63,7 +65,7 @@ public class TransferFromAzure {
                     .setAzureBlobStorageDataSource(
                         AzureBlobStorageData.newBuilder()
                             .setAzureCredentials(AzureCredentials.newBuilder()
-                            .setSasToken(azureSASToken).build())
+                            .setSasToken(azureSasToken).build())
                             .setContainer(azureSourceContainer)
                             .setStorageAccount(azureStorageAccountName))
                     .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket).build())

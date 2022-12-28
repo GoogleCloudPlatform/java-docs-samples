@@ -497,7 +497,8 @@ public class ITStoragetransferSamplesTest {
 
   @Test
   public void testTransferFromAzure() throws Exception {
-    TransferFromAzure.transferFromAzureBlobStorage(PROJECT_ID, AZURE_STORAGE_ACCOUNT, AZURE_BUCKET, SINK_GCS_BUCKET);
+    TransferFromAzure.transferFromAzureBlobStorage(
+        PROJECT_ID, AZURE_STORAGE_ACCOUNT, AZURE_BUCKET, SINK_GCS_BUCKET);
     String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
     assertThat(sampleOutput).contains("transferJobs/");
     deleteTransferJob(sampleOutput);
