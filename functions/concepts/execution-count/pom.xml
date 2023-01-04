@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.cloud.functions</groupId>
-  <artifactId>functions-concepts-env-vars</artifactId>
+  <artifactId>functions-concepts-execution-count</artifactId>
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -89,7 +89,7 @@
         <artifactId>function-maven-plugin</artifactId>
         <version>0.10.1</version>
         <configuration>
-          <functionTarget>functions.EnvVars</functionTarget>
+          <functionTarget>functions.ExecutionCount</functionTarget>
         </configuration>
       </plugin>
       <plugin>
