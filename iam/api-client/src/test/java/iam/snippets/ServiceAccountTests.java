@@ -44,7 +44,7 @@ public class ServiceAccountTests {
   private ByteArrayOutputStream bout;
   private final PrintStream originalOut = System.out;
 
-  @Rule MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+  @Rule public MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
