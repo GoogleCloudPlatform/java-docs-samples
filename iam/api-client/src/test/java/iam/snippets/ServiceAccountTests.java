@@ -19,6 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
@@ -26,6 +27,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -41,6 +43,8 @@ public class ServiceAccountTests {
   private static String SERVICE_ACCOUNT_KEY;
   private ByteArrayOutputStream bout;
   private final PrintStream originalOut = System.out;
+
+  @Rule MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
