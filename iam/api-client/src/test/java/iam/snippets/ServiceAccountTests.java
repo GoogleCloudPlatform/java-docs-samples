@@ -40,6 +40,7 @@ public class ServiceAccountTests {
       "service-account-" + UUID.randomUUID().toString().substring(0, 8);
   private static String SERVICE_ACCOUNT_KEY;
   private ByteArrayOutputStream bout;
+  private final PrintStream originalOut = System.out;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
@@ -61,7 +62,7 @@ public class ServiceAccountTests {
 
   @After
   public void tearDown() {
-    System.setOut(null);
+    System.setOut(originalOut);
     bout.reset();
   }
 
@@ -119,7 +120,7 @@ public class ServiceAccountTests {
 
   @Test
   public void stage3_testServiceAccountKeyDelete() {
-    DeleteServiceAccountKey.deleteKey(PROJECT_ID, SERVICE_ACCOUNT);
+    DeleteServiceAccountKey.deleteKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
     String got = bout.toString();
     assertThat(got, containsString("Deleted key:"));
   }
