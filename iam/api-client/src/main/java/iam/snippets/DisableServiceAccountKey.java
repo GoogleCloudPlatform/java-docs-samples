@@ -52,6 +52,9 @@ public class DisableServiceAccountKey {
       return;
     }
 
+    // Construct the service account email.
+    // You can modify the ".iam.gserviceaccount.com" to match the service account name in which
+    // you want to disable the key.
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
 
     try {
