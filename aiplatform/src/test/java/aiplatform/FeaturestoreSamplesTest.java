@@ -19,6 +19,7 @@ package aiplatform;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -28,12 +29,15 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+
 @RunWith(JUnit4.class)
 public class FeaturestoreSamplesTest {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String PROJECT_ID = System.getenv("UCAIP_PROJECT_ID");
   private static final int MIN_NODE_COUNT = 1;
@@ -76,7 +80,7 @@ public class FeaturestoreSamplesTest {
 
     // Delete the featurestore
     DeleteFeaturestoreSample.deleteFeaturestoreSample(
-        PROJECT_ID, featurestoreId, USE_FORCE, LOCATION, ENDPOINT, 60);
+        PROJECT_ID, featurestoreId, USE_FORCE, LOCATION, ENDPOINT, TIMEOUT);
 
     // Assert
     String deleteFeaturestoreResponse = bout.toString();
@@ -92,7 +96,7 @@ public class FeaturestoreSamplesTest {
     String tempUuid = UUID.randomUUID().toString().replaceAll("-", "_").substring(0, 25);
     String id = String.format("temp_featurestore_samples_test_%s", tempUuid);
     CreateFeaturestoreFixedNodesSample.createFeaturestoreFixedNodesSample(
-        PROJECT_ID, id, FIXED_NODE_COUNT, LOCATION, ENDPOINT, 900);
+        PROJECT_ID, id, FIXED_NODE_COUNT, LOCATION, ENDPOINT, TIMEOUT);
 
     // Assert
     String createFeaturestoreResponse = bout.toString();

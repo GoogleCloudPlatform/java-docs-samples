@@ -27,6 +27,7 @@ import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Dataset;
 import com.google.cloud.bigquery.DatasetId;
 import com.google.cloud.bigquery.DatasetInfo;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -40,12 +41,15 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+
 @RunWith(JUnit4.class)
 public class FeatureValuesSamplesTest {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String PROJECT_ID = System.getenv("UCAIP_PROJECT_ID");
   private static final int MIN_NODE_COUNT = 1;
@@ -150,7 +154,7 @@ public class FeatureValuesSamplesTest {
 
     // Delete the featurestore
     DeleteFeaturestoreSample.deleteFeaturestoreSample(
-        PROJECT_ID, featurestoreId, USE_FORCE, LOCATION, ENDPOINT, 300);
+        PROJECT_ID, featurestoreId, USE_FORCE, LOCATION, ENDPOINT, TIMEOUT);
 
     // Assert
     String deleteFeaturestoreResponse = bout.toString();
@@ -174,7 +178,7 @@ public class FeatureValuesSamplesTest {
     String tempUuid = UUID.randomUUID().toString().replaceAll("-", "_").substring(0, 23);
     String id = String.format("temp_feature_values_samples_test_%s", tempUuid);
     CreateFeaturestoreSample.createFeaturestoreSample(
-        PROJECT_ID, id, MIN_NODE_COUNT, MAX_NODE_COUNT, LOCATION, ENDPOINT, 900);
+        PROJECT_ID, id, MIN_NODE_COUNT, MAX_NODE_COUNT, LOCATION, ENDPOINT, TIMEOUT);
 
     // Assert
     String createFeaturestoreResponse = bout.toString();
@@ -186,7 +190,7 @@ public class FeatureValuesSamplesTest {
     // Create the entity type
     String entityTypeId = "movies";
     CreateEntityTypeSample.createEntityTypeSample(
-        PROJECT_ID, featurestoreId, entityTypeId, DESCRIPTION, LOCATION, ENDPOINT, 900);
+        PROJECT_ID, featurestoreId, entityTypeId, DESCRIPTION, LOCATION, ENDPOINT, TIMEOUT);
 
     // Assert
     String createEntityTypeResponse = bout.toString();
@@ -204,7 +208,7 @@ public class FeatureValuesSamplesTest {
         VALUE_TYPE,
         LOCATION,
         ENDPOINT,
-        900);
+        TIMEOUT);
 
     // Assert
     String createFeatureResponse = bout.toString();
@@ -250,7 +254,7 @@ public class FeatureValuesSamplesTest {
 
     // Delete the feature
     DeleteFeatureSample.deleteFeatureSample(
-        PROJECT_ID, featurestoreId, entityTypeId, featureId, LOCATION, ENDPOINT, 300);
+        PROJECT_ID, featurestoreId, entityTypeId, featureId, LOCATION, ENDPOINT, TIMEOUT);
 
     // Assert
     String deleteFeatureResponse = bout.toString();
