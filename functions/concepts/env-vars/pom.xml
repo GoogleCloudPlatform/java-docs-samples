@@ -90,6 +90,9 @@
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
         <version>0.10.1</version>
+        <configuration>
+          <functionTarget>functions.EnvVars</functionTarget>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
