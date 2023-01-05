@@ -37,39 +37,44 @@ public class TransferFromAzure {
     String projectId = "my-project-id";
 
     // Your Azure Storage Account name
-    String azureStorageAccountName = "myAzureAccountName";
+    String azureStorageAccount = "myAzureAccoun";
 
     // The Azure source container to transfer data from
     String azureSourceContainer = "my-source-container";
 
     // The GCS bucket to transfer data to
-    String gcsSinkBukcet = "my-sink-bucket";
+    String gcsSinkBucket = "my-sink-bucket";
 
     transferFromAzureBlobStorage(
-        projectId, azureStorageAccountName, azureSourceContainer, gcsSinkBukcet);
+        projectId, azureStorageAccount, azureSourceContainer, gcsSinkBucket);
   }
 
-  public static void transferFromAzureBlobStorage(String projectId, String azureStorageAccountName,
+  /**
+   * Creates and runs a transfer job to transfer all data from an Azure container to a GCS bucket.
+   */
+  public static void transferFromAzureBlobStorage(String projectId, String azureStorageAccount,
       String azureSourceContainer, String gcsSinkBucket)
       throws IOException, ExecutionException, InterruptedException {
 
     // Your Azure SAS token, should be accessed via environment variable
     String azureSasToken = System.getenv("AZURE_SAS_TOKEN");
 
+    TransferSpec transferSpec = TransferSpec.newBuilder()
+        .setAzureBlobStorageDataSource(
+            AzureBlobStorageData.newBuilder()
+                .setAzureCredentials(AzureCredentials.newBuilder()
+                    .setSasToken(azureSasToken)
+                    .build())
+                .setContainer(azureSourceContainer)
+                .setStorageAccount(azureStorageAccount))
+        .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket).build())
+        .build();
+
     TransferJob transferJob =
         TransferJob.newBuilder()
             .setProjectId(projectId)
             .setStatus(Status.ENABLED)
-            .setTransferSpec(
-                TransferSpec.newBuilder()
-                    .setAzureBlobStorageDataSource(
-                        AzureBlobStorageData.newBuilder()
-                            .setAzureCredentials(AzureCredentials.newBuilder()
-                            .setSasToken(azureSasToken).build())
-                            .setContainer(azureSourceContainer)
-                            .setStorageAccount(azureStorageAccountName))
-                    .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket).build())
-                    .build())
+            .setTransferSpec(transferSpec)
             .build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -79,8 +84,7 @@ public class TransferFromAzure {
     try (StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create()) {
       // Create the transfer job
       TransferJob response =
-          storageTransfer.createTransferJob(
-              TransferProto.CreateTransferJobRequest.newBuilder()
+          storageTransfer.createTransferJob(TransferProto.CreateTransferJobRequest.newBuilder()
                   .setTransferJob(transferJob)
                   .build());
 
@@ -92,6 +96,7 @@ public class TransferFromAzure {
                   .setJobName(response.getName())
                   .build())
           .get();
+
       System.out.println(
           "Created and ran a transfer job from "
               + azureSourceContainer
@@ -103,5 +108,5 @@ public class TransferFromAzure {
     }
 
   }
-  // [END storagetransfer_transfer_from_azure]
 }
+// [END storagetransfer_transfer_from_azure]
