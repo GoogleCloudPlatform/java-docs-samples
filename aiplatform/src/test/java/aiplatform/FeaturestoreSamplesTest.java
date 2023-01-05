@@ -80,7 +80,7 @@ public class FeaturestoreSamplesTest {
 
     // Delete the featurestore
     DeleteFeaturestoreSample.deleteFeaturestoreSample(
-        PROJECT_ID, featurestoreId, USE_FORCE, LOCATION, ENDPOINT, 60);
+        PROJECT_ID, featurestoreId, USE_FORCE, LOCATION, ENDPOINT, 600);
 
     // Assert
     String deleteFeaturestoreResponse = bout.toString();
