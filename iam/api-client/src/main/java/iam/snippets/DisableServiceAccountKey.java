@@ -55,6 +55,7 @@ public class DisableServiceAccountKey {
     // Construct the service account email.
     // You can modify the ".iam.gserviceaccount.com" to match the service account name in which
     // you want to disable the key.
+    // See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#disabling
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
 
     try {

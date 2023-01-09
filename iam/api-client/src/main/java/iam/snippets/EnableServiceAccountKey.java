@@ -55,6 +55,7 @@ public class EnableServiceAccountKey {
     // Construct the service account email.
     // You can modify the ".iam.gserviceaccount.com" to match the service account name in which
     // you want to enable the key.
+    // See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#enabling
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
 
     try {
