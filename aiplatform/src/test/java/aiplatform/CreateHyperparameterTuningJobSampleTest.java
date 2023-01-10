@@ -21,6 +21,7 @@ import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.aiplatform.v1beta1.JobServiceClient;
 import com.google.cloud.aiplatform.v1beta1.JobServiceSettings;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -31,9 +32,12 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class CreateHyperparameterTuningJobSampleTest {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
   private static final String CONTAINER_IMAGE_URI =
       "gcr.io/ucaip-sample-tests/ucaip-training-test:latest";
