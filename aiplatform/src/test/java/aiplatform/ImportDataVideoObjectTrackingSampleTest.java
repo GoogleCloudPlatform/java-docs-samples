@@ -27,6 +27,7 @@ import com.google.cloud.aiplatform.v1beta1.DatasetServiceClient;
 import com.google.cloud.aiplatform.v1beta1.DatasetServiceSettings;
 import com.google.cloud.aiplatform.v1beta1.DeleteOperationMetadata;
 import com.google.cloud.aiplatform.v1beta1.LocationName;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.protobuf.Empty;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,9 +38,11 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class ImportDataVideoObjectTrackingSampleTest {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
   private static final String LOCATION = "us-central1";
