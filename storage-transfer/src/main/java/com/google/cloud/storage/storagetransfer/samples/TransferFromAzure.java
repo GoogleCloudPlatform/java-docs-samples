@@ -37,7 +37,7 @@ public class TransferFromAzure {
     String projectId = "my-project-id";
 
     // Your Azure Storage Account name
-    String azureStorageAccount = "myAzureAccoun";
+    String azureStorageAccount = "my-azure-account";
 
     // The Azure source container to transfer data from
     String azureSourceContainer = "my-source-container";
