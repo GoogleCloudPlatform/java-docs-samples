@@ -49,7 +49,7 @@ public class BigQueryExportIT {
   // TODO(Developer): Replace the below variables.
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String BQ_DATASET_NAME =
-      "sampledataset-" + UUID.randomUUID().toString().split("_")[0];
+      "sampledataset_" + UUID.randomUUID().toString().split("-")[0];
   private static final String BQ_EXPORT_ID =
       "default-" + UUID.randomUUID().toString().split("-")[0];
 
