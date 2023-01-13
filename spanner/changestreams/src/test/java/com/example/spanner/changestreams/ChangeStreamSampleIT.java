@@ -34,6 +34,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,11 +54,18 @@ public class ChangeStreamSampleIT {
   private static DatabaseAdminClient dbClient;
 
   private ByteArrayOutputStream bout;
-  private final PrintStream stdOut = System.out;
+  private PrintStream stdOut;
   private PrintStream out;
 
   static String formatForTest(String name) {
     return name + "-" + UUID.randomUUID().toString().substring(0, 20);
+  }
+
+  @BeforeClass
+  public static void checkRequirements() {
+    assertThat(instanceId).isNotNull();
+    assertThat(databaseId).isNotNull();
+    assertThat(prefix).isNotNull();
   }
 
   @Before
@@ -84,6 +92,7 @@ public class ChangeStreamSampleIT {
 
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
+    stdOut = System.out;
     System.setOut(out);
   }
 
@@ -103,13 +112,9 @@ public class ChangeStreamSampleIT {
 
   @Test
   public void testChangeStreamSample() {
-    assertThat(instanceId).isNotNull();
-    assertThat(databaseId).isNotNull();
-    assertThat(prefix).isNotNull();
     ChangeStreamSample.run(instanceId, databaseId, prefix);
 
     String got = bout.toString();
-    System.setOut(stdOut);
     assertThat(got).contains("Received a ChildPartitionsRecord");
     assertThat(got).contains("Received a DataChangeRecord");
     assertThat(got).contains(
