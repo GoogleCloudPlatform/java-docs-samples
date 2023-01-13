@@ -13,15 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.speech;
 
-import com.google.protobuf.ByteString;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
+package com.example.speech;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.speech.v2.AutoDetectDecodingConfig;
@@ -34,10 +27,18 @@ import com.google.cloud.speech.v2.Recognizer;
 import com.google.cloud.speech.v2.SpeechClient;
 import com.google.cloud.speech.v2.SpeechRecognitionAlternative;
 import com.google.cloud.speech.v2.SpeechRecognitionResult;
+import com.google.protobuf.ByteString;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class QuickstartSampleV2 {
   
-  public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+  public static void main(String[] args) throws IOException, ExecutionException,
+      InterruptedException {
     String projectId = "my-project-id";
     String filePath = "path/to/audioFile.raw";
     String recognizerId = "my-recognizer-id";
@@ -45,7 +46,7 @@ public class QuickstartSampleV2 {
   }
 
   public static void quickstartSampleV2(String projectId, String filePath, String recognizerId)
-    throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     // Instantiate a client
     try (SpeechClient speechClient = SpeechClient.create()) {
       Path path = Paths.get(filePath);
