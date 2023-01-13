@@ -61,13 +61,6 @@ public class ChangeStreamSampleIT {
     return name + "-" + UUID.randomUUID().toString().substring(0, 20);
   }
 
-  @BeforeClass
-  public static void checkRequirements() {
-    assertThat(instanceId).isNotNull();
-    assertThat(databaseId).isNotNull();
-    assertThat(prefix).isNotNull();
-  }
-
   @Before
   public void setUp() {
     SpannerOptions options = SpannerOptions.newBuilder().build();
@@ -90,6 +83,10 @@ public class ChangeStreamSampleIT {
       e.printStackTrace();
     }
 
+    assertThat(instanceId).isNotNull();
+    assertThat(databaseId).isNotNull();
+    assertThat(prefix).isNotNull();
+    
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     stdOut = System.out;
