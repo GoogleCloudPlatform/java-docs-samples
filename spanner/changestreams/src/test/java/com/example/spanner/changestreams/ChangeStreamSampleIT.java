@@ -116,9 +116,10 @@ public class ChangeStreamSampleIT {
     Assert.assertTrue(
         got,
         got.contains(
-            "mods=[Mod{keysJson={\"SingerId\":\"1\"}, oldValuesJson='', "
-                + "newValuesJson='{\"FirstName\":\"singer_1_first_name\",\"LastName\":\"singer_1_last_name\"}'},"
+            "mods=[Mod{keysJson={\"SingerId\":\"1\"}, oldValuesJson='', newValuesJson="
+                + "'{\"FirstName\":\"singer_1_first_name\",\"LastName\":\"singer_1_last_name\"}'},"
                 + " Mod{keysJson={\"SingerId\":\"2\"}, oldValuesJson='', newValuesJson="
-                + "'{\"FirstName\":\"singer_2_first_name\",\"LastName\":\"singer_2_last_name\"}'}]"));
+                + "'{\"FirstName\":\"singer_2_first_name\",\"LastName\":\"singer_2_last_name\"}'}"
+                + "]"));
   }
 }
