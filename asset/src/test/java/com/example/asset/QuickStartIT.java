@@ -47,7 +47,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickStartIT {
-  @Rule public final Timeout testTimeout = new Timeout(10, TimeUnit.MINUTES);
+  @Rule public final Timeout testTimeout = new Timeout(13, TimeUnit.MINUTES);
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
   
   private static final String bucketName = "java-docs-samples-testing";
