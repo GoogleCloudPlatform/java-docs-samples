@@ -24,6 +24,8 @@ import com.google.cloud.spanner.Instance;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.connection.ConnectionOptions;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -34,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -45,9 +47,11 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ChangeStreamSampleIT {
+  @Rule
+  public MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+
   private static String instanceId = System.getProperty("spanner.test.instance");
-  private static final String databaseId =
-      formatForTest(System.getProperty("spanner.sample.database", "cssample"));
+  private static final String databaseId = formatForTest(System.getProperty("spanner.sample.database", "cssample"));
   private static final String prefix = "prefix";
   private static DatabaseId dbId;
   private static DatabaseAdminClient dbClient;
@@ -66,8 +70,7 @@ public class ChangeStreamSampleIT {
     Spanner spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
     if (instanceId == null) {
-      Iterator<Instance> iterator =
-          spanner.getInstanceAdminClient().listInstances().iterateAll().iterator();
+      Iterator<Instance> iterator = spanner.getInstanceAdminClient().listInstances().iterateAll().iterator();
       if (iterator.hasNext()) {
         instanceId = iterator.next().getId().getInstance();
       }
@@ -100,7 +103,6 @@ public class ChangeStreamSampleIT {
     System.setOut(stdOut);
   }
 
-  @Ignore
   @Test
   public void testChangeStreamSample() {
     assertNotNull(instanceId);
