@@ -16,7 +16,7 @@
 
 package com.example.spanner.changestreams;
 
-import static org.junit.Assert.assertNotNull;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -104,22 +103,20 @@ public class ChangeStreamSampleIT {
 
   @Test
   public void testChangeStreamSample() {
-    assertNotNull(instanceId);
-    assertNotNull(databaseId);
-    assertNotNull(prefix);
+    assertThat(instanceId).isNotNull();
+    assertThat(databaseId).isNotNull();
+    assertThat(prefix).isNotNull();
     ChangeStreamSample.run(instanceId, databaseId, prefix);
 
     String got = bout.toString();
     System.setOut(stdOut);
-    Assert.assertTrue(got, got.contains("Received a ChildPartitionsRecord"));
-    Assert.assertTrue(got, got.contains("Received a DataChangeRecord"));
-    Assert.assertTrue(
-        got,
-        got.contains(
-            "mods=[Mod{keysJson={\"SingerId\":\"1\"}, oldValuesJson='', newValuesJson="
+    assertThat(got).contains("Received a ChildPartitionsRecord");
+    assertThat(got).contains("Received a DataChangeRecord");
+    assertThat(got).contains(
+            "mods=[Mod{keysJson={\"SingerId\":\"1\"}, oldValuesJson='{}', newValuesJson="
                 + "'{\"FirstName\":\"singer_1_first_name\",\"LastName\":\"singer_1_last_name\"}'},"
-                + " Mod{keysJson={\"SingerId\":\"2\"}, oldValuesJson='', newValuesJson="
+                + " Mod{keysJson={\"SingerId\":\"2\"}, oldValuesJson='{}', newValuesJson="
                 + "'{\"FirstName\":\"singer_2_first_name\",\"LastName\":\"singer_2_last_name\"}'}"
-                + "]"));
+                + "]");
   }
 }
