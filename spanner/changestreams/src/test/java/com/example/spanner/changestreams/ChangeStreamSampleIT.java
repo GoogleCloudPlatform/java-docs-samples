@@ -25,7 +25,6 @@ import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.connection.ConnectionOptions;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -41,17 +40,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * Tests for ChangeStreamSample.
- */
+/** Tests for ChangeStreamSample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ChangeStreamSampleIT {
-  @Rule
-  public MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+  @Rule public MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
   private static String instanceId = System.getProperty("spanner.test.instance");
-  private static final String databaseId = formatForTest(System.getProperty("spanner.sample.database", "cssample"));
+  private static final String databaseId =
+      formatForTest(System.getProperty("spanner.sample.database", "cssample"));
   private static final String prefix = "prefix";
   private static DatabaseId dbId;
   private static DatabaseAdminClient dbClient;
@@ -70,7 +67,8 @@ public class ChangeStreamSampleIT {
     Spanner spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
     if (instanceId == null) {
-      Iterator<Instance> iterator = spanner.getInstanceAdminClient().listInstances().iterateAll().iterator();
+      Iterator<Instance> iterator =
+          spanner.getInstanceAdminClient().listInstances().iterateAll().iterator();
       if (iterator.hasNext()) {
         instanceId = iterator.next().getId().getInstance();
       }
@@ -78,7 +76,8 @@ public class ChangeStreamSampleIT {
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
     try {
-      dbClient.createDatabase(instanceId, databaseId, Collections.emptyList())
+      dbClient
+          .createDatabase(instanceId, databaseId, Collections.emptyList())
           .get(10, TimeUnit.MINUTES);
     } catch (Exception e) {
       e.printStackTrace();
@@ -114,13 +113,12 @@ public class ChangeStreamSampleIT {
     System.setOut(stdOut);
     Assert.assertTrue(got, got.contains("Received a ChildPartitionsRecord"));
     Assert.assertTrue(got, got.contains("Received a DataChangeRecord"));
-    Assert.assertTrue(got, got.contains("mods=[Mod{keysJson={\"SingerId\":\"1\"}, "
-        + "oldValuesJson='', "
-        + "newValuesJson="
-        + "'{\"FirstName\":\"singer_1_first_name\",\"LastName\":\"singer_1_last_name\"}'}, "
-        + "Mod{keysJson={\"SingerId\":\"2\"}, "
-        + "oldValuesJson='', "
-        + "newValuesJson="
-        + "'{\"FirstName\":\"singer_2_first_name\",\"LastName\":\"singer_2_last_name\"}'}]"));
+    Assert.assertTrue(
+        got,
+        got.contains(
+            "mods=[Mod{keysJson={\"SingerId\":\"1\"}, oldValuesJson='', "
+                + "newValuesJson='{\"FirstName\":\"singer_1_first_name\",\"LastName\":\"singer_1_last_name\"}'},"
+                + " Mod{keysJson={\"SingerId\":\"2\"}, oldValuesJson='', newValuesJson="
+                + "'{\"FirstName\":\"singer_2_first_name\",\"LastName\":\"singer_2_last_name\"}'}]"));
   }
 }
