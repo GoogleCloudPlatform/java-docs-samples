@@ -23,6 +23,7 @@ import com.google.cloud.aiplatform.v1.PipelineServiceClient;
 import com.google.cloud.aiplatform.v1.PipelineServiceSettings;
 import com.google.cloud.aiplatform.v1.TrainingPipeline;
 import com.google.cloud.aiplatform.v1.TrainingPipelineName;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -33,9 +34,11 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class CreateTrainingPipelineTabularClassificationSampleTest {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
   private static final String DATASET_ID =
