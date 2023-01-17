@@ -19,8 +19,10 @@ package privateca;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.security.privateca.v1.CaPool;
+import com.google.cloud.security.privateca.v1.CaPool.IssuancePolicy;
 import com.google.cloud.security.privateca.v1.CaPool.Tier;
 import com.google.cloud.security.privateca.v1.CertificateAuthorityServiceClient;
+import com.google.cloud.security.privateca.v1.CertificateIdentityConstraints;
 import com.google.cloud.security.privateca.v1.CreateCaPoolRequest;
 import com.google.cloud.security.privateca.v1.LocationName;
 import com.google.longrunning.Operation;
@@ -52,6 +54,13 @@ public class CreateCaPool {
     try (CertificateAuthorityServiceClient certificateAuthorityServiceClient =
         CertificateAuthorityServiceClient.create()) {
 
+      IssuancePolicy issuancePolicy = IssuancePolicy.newBuilder()
+          .setIdentityConstraints(CertificateIdentityConstraints.newBuilder()
+              .setAllowSubjectPassthrough(true)
+              .setAllowSubjectAltNamesPassthrough(true)
+              .build())
+          .build();
+
       /* Create the pool request
         Set Parent which denotes the project id and location.
         Set the Tier (see: https://cloud.google.com/certificate-authority-service/docs/tiers).
@@ -60,7 +69,11 @@ public class CreateCaPool {
           CreateCaPoolRequest.newBuilder()
               .setParent(LocationName.of(project, location).toString())
               .setCaPoolId(pool_Id)
-              .setCaPool(CaPool.newBuilder().setTier(Tier.ENTERPRISE).build())
+              .setCaPool(
+                  CaPool.newBuilder()
+                      .setIssuancePolicy(issuancePolicy)
+                      .setTier(Tier.ENTERPRISE)
+                      .build())
               .build();
 
       // Create the CA pool.

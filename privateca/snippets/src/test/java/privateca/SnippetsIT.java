@@ -284,7 +284,7 @@ public class SnippetsIT {
       String actualExpression =
           issuancePolicy.getIdentityConstraints().getCelExpression().getExpression();
       String expectedExpression =
-          "subject_alt_names.all(san, san.type == DNS && (san.value == \"us.google.org\" || san.value.endsWith(\".google.com\")) )";
+          "subject_alt_names.all(san, san.type == DNS && (san.value == \"dns.example.com\" || san.value.endsWith(\".example.com\")) )";
       assertThat(actualExpression).contains(expectedExpression);
     }
   }
