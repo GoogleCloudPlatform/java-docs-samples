@@ -65,7 +65,7 @@ public class CreateSubordinateCa {
         CertificateAuthorityServiceClient.create()) {
 
       String commonName = "commonname";
-      String orgName = "csrorgname";
+      String orgName = "csr-org-name";
       String domainName = "dns.example.com";
       int caDuration = 100000; // Validity of this CA in seconds.
 

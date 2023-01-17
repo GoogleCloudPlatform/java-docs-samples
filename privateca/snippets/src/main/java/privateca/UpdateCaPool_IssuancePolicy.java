@@ -62,8 +62,8 @@ public class UpdateCaPool_IssuancePolicy {
       This particular issuance policy allows only SANs that
       have DNS Names as "us.google.org" or ending in ".google.com". */
       String expr =
-          "subject_alt_names.all(san, san.type == DNS && (san.value == \"us.google.org\""
-              + " || san.value.endsWith(\".google.com\")) )";
+          "subject_alt_names.all(san, san.type == DNS && (san.value == \"dns.example.com\""
+              + " || san.value.endsWith(\".example.com\")) )";
 
       CaPool.IssuancePolicy issuancePolicy =
           IssuancePolicy.newBuilder()
