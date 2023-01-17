@@ -19,7 +19,6 @@ package com.example.speech;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.speech.v2.DeleteRecognizerRequest;
 import com.google.cloud.speech.v2.OperationMetadata;
 import com.google.cloud.speech.v2.Recognizer;
@@ -35,12 +34,15 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-
+@RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class CreateRecognizerV2Test {
   private String recognizerId = String.format("rec-%s", UUID.randomUUID());
   private String recognizerName;
-  private String projectId;
+  private String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -50,7 +52,6 @@ public class CreateRecognizerV2Test {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    projectId = ServiceOptions.getDefaultProjectId();
 
     recognizerName = RecognizerName.format(projectId, "global", recognizerId);
   }
@@ -58,7 +59,7 @@ public class CreateRecognizerV2Test {
   @After
   public void tearDown() throws IOException, ExecutionException, InterruptedException,
       TimeoutException {
-    System.setOut(null);
+    System.setOut(out);
 
     DeleteRecognizerRequest deleteRequest = DeleteRecognizerRequest.newBuilder()
         .setName(recognizerName)

@@ -18,10 +18,20 @@ package com.example.speech;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.ServiceOptions;
+import com.google.cloud.speech.v2.DeleteRecognizerRequest;
+import com.google.cloud.speech.v2.OperationMetadata;
+import com.google.cloud.speech.v2.Recognizer;
+import com.google.cloud.speech.v2.RecognizerName;
+import com.google.cloud.speech.v2.SpeechClient;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +44,7 @@ import org.junit.runners.JUnit4;
 public class QuickstartSampleV2Test {
   private String recognitionAudioFile = "./resources/commercial_mono.wav";
   private String recognizerId = String.format("rec-%s", UUID.randomUUID());
-  private String projectId;
+  private String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -43,12 +53,24 @@ public class QuickstartSampleV2Test {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    projectId = ServiceOptions.getDefaultProjectId();
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws IOException, InterruptedException, ExecutionException,
+      TimeoutException {
     System.setOut(null);
+
+    String recognizerName = RecognizerName.format(projectId, "global", recognizerId);
+
+    DeleteRecognizerRequest deleteRequest = DeleteRecognizerRequest.newBuilder()
+        .setName(recognizerName)
+        .build();
+
+    try (SpeechClient speechClient = SpeechClient.create()) {
+      OperationFuture<Recognizer, OperationMetadata> op =
+          speechClient.deleteRecognizerAsync(deleteRequest);
+      op.get(180, TimeUnit.SECONDS);
+    }
   }
 
   @Test

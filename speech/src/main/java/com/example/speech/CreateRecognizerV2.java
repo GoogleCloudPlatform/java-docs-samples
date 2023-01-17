@@ -41,7 +41,6 @@ public class CreateRecognizerV2 {
     try (SpeechClient speechClient = SpeechClient.create()) {
       String parent = String.format("projects/%s/locations/global", projectId);
 
-      // First, create a recognizer
       Recognizer recognizer = Recognizer.newBuilder()
           .setModel("latest_long")
           .addLanguageCodes("en-US")

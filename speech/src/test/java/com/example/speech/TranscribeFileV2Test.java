@@ -35,13 +35,16 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-
+@RunWith(JUnit4.class)
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class TranscribeFileV2Test {
   private String recognitionAudioFile = "./resources/commercial_mono.wav";
   private String recognizerId = String.format("rec-%s", UUID.randomUUID());
   private String recognizerName;
-  private String projectId;
+  private String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -51,7 +54,6 @@ public class TranscribeFileV2Test {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    projectId = ServiceOptions.getDefaultProjectId();
 
     // Create a recognizer for this test.
     try (SpeechClient speechClient = SpeechClient.create()) {
