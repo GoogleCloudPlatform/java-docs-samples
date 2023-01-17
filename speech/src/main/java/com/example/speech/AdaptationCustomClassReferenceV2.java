@@ -21,18 +21,18 @@ import com.google.cloud.speech.v2.AutoDetectDecodingConfig;
 import com.google.cloud.speech.v2.CreateCustomClassRequest;
 import com.google.cloud.speech.v2.CreatePhraseSetRequest;
 import com.google.cloud.speech.v2.CustomClass;
+import com.google.cloud.speech.v2.CustomClass.ClassItem;
 import com.google.cloud.speech.v2.OperationMetadata;
 import com.google.cloud.speech.v2.PhraseSet;
+import com.google.cloud.speech.v2.PhraseSet.Phrase;
 import com.google.cloud.speech.v2.RecognitionConfig;
 import com.google.cloud.speech.v2.RecognizeRequest;
 import com.google.cloud.speech.v2.RecognizeResponse;
 import com.google.cloud.speech.v2.SpeechAdaptation;
+import com.google.cloud.speech.v2.SpeechAdaptation.AdaptationPhraseSet;
 import com.google.cloud.speech.v2.SpeechClient;
 import com.google.cloud.speech.v2.SpeechRecognitionAlternative;
 import com.google.cloud.speech.v2.SpeechRecognitionResult;
-import com.google.cloud.speech.v2.CustomClass.ClassItem;
-import com.google.cloud.speech.v2.PhraseSet.Phrase;
-import com.google.cloud.speech.v2.SpeechAdaptation.AdaptationPhraseSet;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -55,8 +55,8 @@ public class AdaptationCustomClassReferenceV2 {
   }
 
   public static void createCustomClassV2(String projectId, String recognizerName,
-      String customClassId, String phraseSetId, String audioFilePath) throws IOException,
-      InterruptedException, ExecutionException {
+      String customClassId, String phraseSetId, String audioFilePath) throws
+      IOException, InterruptedException, ExecutionException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -66,16 +66,16 @@ public class AdaptationCustomClassReferenceV2 {
 
       // Create a persistent CustomClass to reference in phrases.
       ClassItem.Builder classItem = ClassItem.newBuilder()
-        .setValue("Brooklyn");
+          .setValue("Chromecast");
 
       CustomClass.Builder customClassBuilder = CustomClass.newBuilder()
-        .addItems(classItem);
+          .addItems(classItem);
       
       CreateCustomClassRequest createCustomClassRequest = CreateCustomClassRequest.newBuilder()
-        .setParent(parent)
-        .setCustomClassId(customClassId)
-        .setCustomClass(customClassBuilder)
-        .build();
+          .setParent(parent)
+          .setCustomClassId(customClassId)
+          .setCustomClass(customClassBuilder)
+          .build();
 
       OperationFuture<CustomClass, OperationMetadata> classOperation =
           speechClient.createCustomClassAsync(createCustomClassRequest);
@@ -83,17 +83,17 @@ public class AdaptationCustomClassReferenceV2 {
       
       // Create a persistent PhraseSet to reference in a recognition request
       Phrase.Builder phrase = Phrase.newBuilder()
-        .setValue(String.format("${%s}", customClass.getName()))
-        .setBoost(20);
+          .setValue(String.format("${%s}", customClass.getName()))
+          .setBoost(20);
 
       PhraseSet.Builder phraseSetBuilder = PhraseSet.newBuilder()
-        .addPhrases(phrase);
+          .addPhrases(phrase);
 
       CreatePhraseSetRequest createPhraseSetRequest = CreatePhraseSetRequest.newBuilder()
-        .setParent(parent)
-        .setPhraseSetId(phraseSetId)
-        .setPhraseSet(phraseSetBuilder)
-        .build();
+          .setParent(parent)
+          .setPhraseSetId(phraseSetId)
+          .setPhraseSet(phraseSetBuilder)
+          .build();
 
       OperationFuture<PhraseSet, OperationMetadata> phraseOperation =
           speechClient.createPhraseSetAsync(createPhraseSetRequest);
@@ -109,21 +109,21 @@ public class AdaptationCustomClassReferenceV2 {
 
       // Add a reference to the PhraseSet into the recognition request
       AdaptationPhraseSet.Builder adaptationPhraseSet = AdaptationPhraseSet.newBuilder()
-        .setPhraseSet(phraseSet.getName());
+          .setPhraseSet(phraseSet.getName());
 
       SpeechAdaptation.Builder adaptation = SpeechAdaptation.newBuilder()
-        .addPhraseSets(adaptationPhraseSet);
+          .addPhraseSets(adaptationPhraseSet);
 
       RecognitionConfig recognitionConfig = RecognitionConfig.newBuilder()
-        .setAutoDecodingConfig(AutoDetectDecodingConfig.newBuilder().build())
-        .setAdaptation(adaptation)
-        .build();
-      
+          .setAutoDecodingConfig(AutoDetectDecodingConfig.newBuilder().build())
+          .setAdaptation(adaptation)
+          .build();
+        
       RecognizeRequest request = RecognizeRequest.newBuilder()
-        .setConfig(recognitionConfig)
-        .setRecognizer(recognizerName)
-        .setContent(audioBytes)
-        .build();
+          .setConfig(recognitionConfig)
+          .setRecognizer(recognizerName)
+          .setContent(audioBytes)
+          .build();
 
       RecognizeResponse response = speechClient.recognize(request);
       List<SpeechRecognitionResult> results = response.getResultsList();
