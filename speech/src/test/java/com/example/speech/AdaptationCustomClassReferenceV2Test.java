@@ -66,7 +66,7 @@ public class AdaptationCustomClassReferenceV2Test {
 
       // First, create a recognizer
       Recognizer recognizer = Recognizer.newBuilder()
-          .setModel("latest_long")
+          .setModel("latest_short")
           .addLanguageCodes("en-US")
           .build();
 
