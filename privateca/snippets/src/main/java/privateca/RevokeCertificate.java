@@ -34,19 +34,19 @@ public class RevokeCertificate {
     // TODO(developer): Replace these variables before running the sample.
     // location: For a list of locations, see:
     // https://cloud.google.com/certificate-authority-service/docs/locations
-    // pool_Id: Id for the CA pool which contains the certificate.
+    // poolId: Id for the CA pool which contains the certificate.
     // certificateName: Name of the certificate to be revoked.
     String project = "your-project-id";
     String location = "ca-location";
-    String pool_Id = "ca-pool-id";
+    String poolId = "ca-pool-id";
     String certificateName = "certificate-name";
-    revokeCertificate(project, location, pool_Id, certificateName);
+    revokeCertificate(project, location, poolId, certificateName);
   }
 
   // Revoke an issued certificate. Once revoked, the certificate will become invalid and will expire
   // post its lifetime.
   public static void revokeCertificate(
-      String project, String location, String pool_Id, String certificateName)
+      String project, String location, String poolId, String certificateName)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -60,7 +60,7 @@ public class RevokeCertificate {
           CertificateName.newBuilder()
               .setProject(project)
               .setLocation(location)
-              .setCaPool(pool_Id)
+              .setCaPool(poolId)
               .setCertificate(certificateName)
               .build();
 

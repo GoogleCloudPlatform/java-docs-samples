@@ -34,18 +34,18 @@ public class DisableCertificateAuthority {
     // TODO(developer): Replace these variables before running the sample.
     // location: For a list of locations, see:
     // https://cloud.google.com/certificate-authority-service/docs/locations
-    // pool_Id: The id of the CA pool under which the CA is present.
+    // poolId: The id of the CA pool under which the CA is present.
     // certificateAuthorityName: The name of the CA to be disabled.
     String project = "your-project-id";
     String location = "ca-location";
-    String pool_Id = "ca-pool-id";
+    String poolId = "ca-pool-id";
     String certificateAuthorityName = "certificate-authority-name";
-    disableCertificateAuthority(project, location, pool_Id, certificateAuthorityName);
+    disableCertificateAuthority(project, location, poolId, certificateAuthorityName);
   }
 
   // Disable a Certificate Authority which is present in the given CA pool.
   public static void disableCertificateAuthority(
-      String project, String location, String pool_Id, String certificateAuthorityName)
+      String project, String location, String poolId, String certificateAuthorityName)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -59,7 +59,7 @@ public class DisableCertificateAuthority {
           CertificateAuthorityName.newBuilder()
               .setProject(project)
               .setLocation(location)
-              .setCaPool(pool_Id)
+              .setCaPool(poolId)
               .setCertificateAuthority(certificateAuthorityName)
               .build();
 

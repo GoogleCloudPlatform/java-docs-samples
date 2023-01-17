@@ -36,14 +36,14 @@ public class ActivateSubordinateCa {
 
     // location: For a list of locations, see:
     // https://cloud.google.com/certificate-authority-service/docs/locations
-    // pool_Id: Set a unique id for the CA pool.
+    // poolId: Set a unique id for the CA pool.
     // subordinateCaName: The CA to be activated.
-    // pemCACertificate: The signed certificate, obtained by signing the CSR.
+    // pemCaCertificate: The signed certificate, obtained by signing the CSR.
     String project = "your-project-id";
     String location = "ca-location";
-    String pool_Id = "ca-pool-id";
+    String poolId = "ca-pool-id";
     String subordinateCaName = "subordinate-certificate-authority-name";
-    String pemCACertificate =
+    String pemCaCertificate =
         "-----BEGIN CERTIFICATE-----\n" + "sample-pem-certificate\n" + "-----END CERTIFICATE-----";
 
     // certificateAuthorityName: The name of the certificate authority which signed the CSR.
@@ -51,21 +51,21 @@ public class ActivateSubordinateCa {
     // then use the CA's issuerCertificateChain.
     String certificateAuthorityName = "certificate-authority-name";
 
-    activateSubordinateCA(
-        project, location, pool_Id, certificateAuthorityName, subordinateCaName, pemCACertificate);
+    activateSubordinateCa(
+        project, location, poolId, certificateAuthorityName, subordinateCaName, pemCaCertificate);
   }
 
   // Activate a subordinate CA.
   // *Prerequisite*: Get the CSR of the subordinate CA signed by another CA. Pass in the signed
   // certificate and (issuer CA's name or the issuer CA's Certificate chain).
   // *Post*: After activating the subordinate CA, it should be enabled before issuing certificates.
-  public static void activateSubordinateCA(
+  public static void activateSubordinateCa(
       String project,
       String location,
-      String pool_Id,
+      String poolId,
       String certificateAuthorityName,
       String subordinateCaName,
-      String pemCACertificate)
+      String pemCaCertificate)
       throws ExecutionException, InterruptedException, IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -75,14 +75,14 @@ public class ActivateSubordinateCa {
         CertificateAuthorityServiceClient.create()) {
       // Subordinate CA parent.
       String subordinateCaParent =
-          CertificateAuthorityName.of(project, location, pool_Id, subordinateCaName).toString();
+          CertificateAuthorityName.of(project, location, poolId, subordinateCaName).toString();
 
       // Construct the "Activate CA Request".
       ActivateCertificateAuthorityRequest activateCertificateAuthorityRequest =
           ActivateCertificateAuthorityRequest.newBuilder()
               .setName(subordinateCaParent)
               // The signed certificate.
-              .setPemCaCertificate(pemCACertificate)
+              .setPemCaCertificate(pemCaCertificate)
               .setSubordinateConfig(
                   SubordinateConfig.newBuilder()
                       // Follow one of the below methods:
@@ -91,7 +91,7 @@ public class ActivateSubordinateCa {
                       // Name.
                       .setCertificateAuthority(
                           CertificateAuthorityName.of(
-                                  project, location, pool_Id, certificateAuthorityName)
+                                  project, location, poolId, certificateAuthorityName)
                               .toString())
 
                       // Method 2: If issuer CA is external to Google Cloud, set the issuer's

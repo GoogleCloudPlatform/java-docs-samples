@@ -37,19 +37,19 @@ public class UpdateCertificateAuthority {
     // TODO(developer): Replace these variables before running the sample.
     // location: For a list of locations, see:
     // https://cloud.google.com/certificate-authority-service/docs/locations
-    // pool_Id: Set it to the CA Pool under which the CA should be created.
+    // poolId: Set it to the CA Pool under which the CA should be created.
     // certificateAuthorityName: Unique name for the CA.
     String project = "your-project-id";
     String location = "ca-location";
-    String pool_Id = "ca-pool-id";
+    String poolId = "ca-pool-id";
     String certificateAuthorityName = "certificate-authority-name";
 
-    updateCaLabel(project, location, pool_Id, certificateAuthorityName);
+    updateCaLabel(project, location, poolId, certificateAuthorityName);
   }
 
   // Updates the labels in a certificate authority.
   public static void updateCaLabel(
-      String project, String location, String pool_Id, String certificateAuthorityName)
+      String project, String location, String poolId, String certificateAuthorityName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     /* Initialize client that will be used to send requests. This client only needs to be created
     once, and can be reused for multiple requests. After completing all of your requests, call
@@ -60,7 +60,7 @@ public class UpdateCertificateAuthority {
 
       // Set the parent path and the new labels.
       String certificateAuthorityParent =
-          CertificateAuthorityName.of(project, location, pool_Id, certificateAuthorityName)
+          CertificateAuthorityName.of(project, location, poolId, certificateAuthorityName)
               .toString();
       CertificateAuthority certificateAuthority =
           CertificateAuthority.newBuilder()

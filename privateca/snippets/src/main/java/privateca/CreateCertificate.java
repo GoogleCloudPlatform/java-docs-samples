@@ -48,18 +48,18 @@ public class CreateCertificate {
     // publicKeyBytes: Public key used in signing the certificates.
     // location: For a list of locations, see:
     // https://cloud.google.com/certificate-authority-service/docs/locations
-    // pool_Id: Set a unique id for the CA pool.
+    // poolId: Set a unique id for the CA pool.
     // certificateAuthorityName: The name of the certificate authority which issues the certificate.
     // certificateName: Set a unique name for the certificate.
     String project = "your-project-id";
     ByteString publicKeyBytes = ByteString.copyFrom(new byte[]{});
     String location = "ca-location";
-    String pool_Id = "ca-pool_Id";
+    String poolId = "ca-poolId";
     String certificateAuthorityName = "certificate-authority-name";
     String certificateName = "certificate-name";
 
     createCertificate(
-        project, location, pool_Id, certificateAuthorityName, certificateName, publicKeyBytes);
+        project, location, poolId, certificateAuthorityName, certificateName, publicKeyBytes);
   }
 
   // Create a Certificate which is issued by the Certificate Authority present in the CA Pool.
@@ -68,7 +68,7 @@ public class CreateCertificate {
   public static void createCertificate(
       String project,
       String location,
-      String pool_Id,
+      String poolId,
       String certificateAuthorityName,
       String certificateName,
       ByteString publicKeyBytes)
@@ -134,7 +134,7 @@ public class CreateCertificate {
       // Create the Certificate Request.
       CreateCertificateRequest certificateRequest =
           CreateCertificateRequest.newBuilder()
-              .setParent(CaPoolName.of(project, location, pool_Id).toString())
+              .setParent(CaPoolName.of(project, location, poolId).toString())
               .setCertificateId(certificateName)
               .setCertificate(certificate)
               .setIssuingCertificateAuthorityId(certificateAuthorityName)

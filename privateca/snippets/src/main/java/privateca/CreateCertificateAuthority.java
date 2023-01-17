@@ -44,18 +44,18 @@ public class CreateCertificateAuthority {
     // TODO(developer): Replace these variables before running the sample.
     // location: For a list of locations, see:
     // https://cloud.google.com/certificate-authority-service/docs/locations
-    // pool_Id: Set it to the CA Pool under which the CA should be created.
+    // poolId: Set it to the CA Pool under which the CA should be created.
     // certificateAuthorityName: Unique name for the CA.
     String project = "your-project-id";
     String location = "ca-location";
-    String pool_Id = "ca-pool-id";
+    String poolId = "ca-pool-id";
     String certificateAuthorityName = "certificate-authority-name";
-    createCertificateAuthority(project, location, pool_Id, certificateAuthorityName);
+    createCertificateAuthority(project, location, poolId, certificateAuthorityName);
   }
 
   // Create Certificate Authority which is the root CA in the given CA Pool.
   public static void createCertificateAuthority(
-      String project, String location, String pool_Id, String certificateAuthorityName)
+      String project, String location, String poolId, String certificateAuthorityName)
       throws InterruptedException, ExecutionException, IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -108,7 +108,7 @@ public class CreateCertificateAuthority {
       // Create the CertificateAuthorityRequest.
       CreateCertificateAuthorityRequest certificateAuthorityRequest =
           CreateCertificateAuthorityRequest.newBuilder()
-              .setParent(CaPoolName.of(project, location, pool_Id).toString())
+              .setParent(CaPoolName.of(project, location, poolId).toString())
               .setCertificateAuthorityId(certificateAuthorityName)
               .setCertificateAuthority(certificateAuthority)
               .build();
