@@ -29,14 +29,17 @@ import com.google.recaptchaenterprise.v1.RiskAnalysis.ClassificationReason;
 import com.google.recaptchaenterprise.v1.TokenProperties;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 public class AccountDefenderAssessment {
 
-  public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+  public static void main(String[] args)
+      throws IOException, NoSuchAlgorithmException, InvalidKeyException {
     // TODO(developer): Replace these variables before running the sample.
     // projectId: Google Cloud Project ID
     String projectId = "project-id";
@@ -56,9 +59,16 @@ public class AccountDefenderAssessment {
     // Unique ID of the customer, such as email, customer ID, etc.
     String userIdentifier = "default" + UUID.randomUUID().toString().split("-")[0];
 
-    // Hash the unique customer ID using HMAC SHA-256.
-    MessageDigest digest = MessageDigest.getInstance("SHA-256");
-    byte[] hashBytes = digest.digest(userIdentifier.getBytes(StandardCharsets.UTF_8));
+    // Change this to a secret not shared with Google.
+    String HMAC_KEY = "SOME_INTERNAL_UNSHARED_KEY";
+
+    // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
+    // secret key.
+    Mac mac = Mac.getInstance("HmacSHA256");
+    SecretKeySpec secretKeySpec = new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
+        "HmacSHA256");
+    mac.init(secretKeySpec);
+    byte[] hashBytes = mac.doFinal(userIdentifier.getBytes(StandardCharsets.UTF_8));
     ByteString hashedAccountId = ByteString.copyFrom(hashBytes);
 
     accountDefenderAssessment(projectId, recaptchaSiteKey, token, recaptchaAction, hashedAccountId);
