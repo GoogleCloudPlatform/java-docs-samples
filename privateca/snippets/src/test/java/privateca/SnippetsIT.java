@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package privateca;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -82,7 +83,7 @@ public class SnippetsIT {
   @BeforeClass
   public static void setUp()
       throws IOException, ExecutionException, NoSuchProviderException, NoSuchAlgorithmException,
-          InterruptedException, TimeoutException {
+      InterruptedException, TimeoutException {
     reqEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     reqEnvVar("GOOGLE_CLOUD_PROJECT");
 
@@ -284,7 +285,8 @@ public class SnippetsIT {
       String actualExpression =
           issuancePolicy.getIdentityConstraints().getCelExpression().getExpression();
       String expectedExpression =
-          "subject_alt_names.all(san, san.type == DNS && (san.value == \"dns.example.com\" || san.value.endsWith(\".example.com\")) )";
+          "subject_alt_names.all(san, san.type == DNS && (san.value == \"dns.example.com\" || "
+              + "san.value.endsWith(\".example.com\")) )";
       assertThat(actualExpression).contains(expectedExpression);
     }
   }
