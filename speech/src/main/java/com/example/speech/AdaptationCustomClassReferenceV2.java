@@ -16,12 +16,6 @@
 
 package com.example.speech;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.speech.v2.AutoDetectDecodingConfig;
 import com.google.cloud.speech.v2.CreateCustomClassRequest;
@@ -40,6 +34,12 @@ import com.google.cloud.speech.v2.CustomClass.ClassItem;
 import com.google.cloud.speech.v2.PhraseSet.Phrase;
 import com.google.cloud.speech.v2.SpeechAdaptation.AdaptationPhraseSet;
 import com.google.protobuf.ByteString;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class AdaptationCustomClassReferenceV2 {
   public static void main(String[] args) throws IOException, InterruptedException,

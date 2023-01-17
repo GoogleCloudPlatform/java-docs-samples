@@ -16,22 +16,7 @@
 
 package com.example.speech;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.speech.v1.DeleteCustomClassRequest;
-import com.google.cloud.speech.v1.DeletePhraseSetRequest;
 import com.google.cloud.speech.v2.CreateRecognizerRequest;
 import com.google.cloud.speech.v2.CustomClass;
 import com.google.cloud.speech.v2.CustomClassName;
@@ -41,6 +26,17 @@ import com.google.cloud.speech.v2.PhraseSet;
 import com.google.cloud.speech.v2.PhraseSetName;
 import com.google.cloud.speech.v2.Recognizer;
 import com.google.cloud.speech.v2.SpeechClient;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
