@@ -60,14 +60,13 @@ public class AccountDefenderAssessment {
     String userIdentifier = "default" + UUID.randomUUID().toString().split("-")[0];
 
     // Change this to a secret not shared with Google.
-    String HMAC_KEY = "SOME_INTERNAL_UNSHARED_KEY";
+    final String HMAC_KEY = "SOME_INTERNAL_UNSHARED_KEY";
 
     // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
     // secret key.
     Mac mac = Mac.getInstance("HmacSHA256");
-    SecretKeySpec secretKeySpec = new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
-        "HmacSHA256");
-    mac.init(secretKeySpec);
+    mac.init(new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
+        "HmacSHA256"));
     byte[] hashBytes = mac.doFinal(userIdentifier.getBytes(StandardCharsets.UTF_8));
     ByteString hashedAccountId = ByteString.copyFrom(hashBytes);
 
