@@ -30,16 +30,16 @@ public class FilterCertificates {
     // TODO(developer): Replace these variables before running the sample.
     // location: For a list of locations, see:
     // https://cloud.google.com/certificate-authority-service/docs/locations
-    // pool_Id: Id of the CA pool which contains the certificates to be listed.
+    // poolId: Id of the CA pool which contains the certificates to be listed.
     String project = "your-project-id";
     String location = "ca-location";
-    String pool_Id = "ca-pool-id";
+    String poolId = "ca-pool-id";
 
-    filterCertificates(project, location, pool_Id);
+    filterCertificates(project, location, poolId);
   }
 
   // Filter certificates based on a condition and list them.
-  public static void filterCertificates(String project, String location, String pool_Id)
+  public static void filterCertificates(String project, String location, String poolId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -52,7 +52,7 @@ public class FilterCertificates {
           CaPoolName.newBuilder()
               .setProject(project)
               .setLocation(location)
-              .setCaPool(pool_Id)
+              .setCaPool(poolId)
               .build();
 
       // Create the certificate request and set the filter condition.
@@ -64,7 +64,8 @@ public class FilterCertificates {
               see:
               https://cloud.google.com/certificate-authority-service/docs/sorting-filtering-certificates#filtering_support
               Few examples for constructing conditions:
-              certificate_description.subject_description.not_after_time=timestamp(com.google.protobuf)
+              certificate_description.subject_description.not_after_time=
+                  timestamp(com.google.protobuf)
               certificate_description.subject_description.subject_alt_name.dns_names:my-dns
               Here, we are filtering certificates which has organization name = csr-org-name */
               .setFilter(

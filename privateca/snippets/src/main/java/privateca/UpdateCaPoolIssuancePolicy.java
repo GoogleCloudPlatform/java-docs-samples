@@ -33,24 +33,24 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class UpdateCaPool_IssuancePolicy {
+public class UpdateCaPoolIssuancePolicy {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // location: For a list of locations, see:
     // https://cloud.google.com/certificate-authority-service/docs/locations
-    // pool_Id: The CA pool for which the issuance policy is to be updated.
+    // poolId: The CA pool for which the issuance policy is to be updated.
     String project = "your-project-id";
     String location = "ca-location";
-    String pool_Id = "ca-pool-id";
+    String poolId = "ca-pool-id";
 
-    updateCaPoolIssuancePolicy(project, location, pool_Id);
+    updateCaPoolIssuancePolicy(project, location, poolId);
   }
 
   /* Update the Issuance policy for a CA Pool. All certificates issued from this CA Pool should
   meet the issuance policy. */
-  public static void updateCaPoolIssuancePolicy(String project, String location, String pool_Id)
+  public static void updateCaPoolIssuancePolicy(String project, String location, String poolId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     /* Initialize client that will be used to send requests. This client only needs to be created
     once, and can be reused for multiple requests. After completing all of your requests, call
@@ -78,7 +78,7 @@ public class UpdateCaPool_IssuancePolicy {
 
       CaPool caPool =
           CaPool.newBuilder()
-              .setName(CaPoolName.of(project, location, pool_Id).toString())
+              .setName(CaPoolName.of(project, location, poolId).toString())
               .setIssuancePolicy(issuancePolicy)
               .build();
 
@@ -97,7 +97,8 @@ public class UpdateCaPool_IssuancePolicy {
                           .addPaths(
                               "issuance_policy.identity_constraints.allow_subject_passthrough")
                           .addPaths(
-                              "issuance_policy.identity_constraints.allow_subject_alt_names_passthrough")
+                              "issuance_policy.identity_constraints."
+                                  + "allow_subject_alt_names_passthrough")
                           .addPaths("issuance_policy.identity_constraints.cel_expression")
                           .build()))
               .build();
@@ -117,7 +118,7 @@ public class UpdateCaPool_IssuancePolicy {
       // Get the CA Pool's issuance policy and verify if the fields have been successfully updated.
       IssuancePolicy response =
           certificateAuthorityServiceClient
-              .getCaPool(CaPoolName.of(project, location, pool_Id).toString())
+              .getCaPool(CaPoolName.of(project, location, poolId).toString())
               .getIssuancePolicy();
 
       // Similarly, you can check for other modified fields as well.

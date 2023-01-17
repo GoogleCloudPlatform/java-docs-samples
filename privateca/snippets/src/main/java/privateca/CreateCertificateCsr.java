@@ -27,7 +27,7 @@ import com.google.protobuf.Duration;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-public class CreateCertificate_CSR {
+public class CreateCertificateCsr {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
@@ -35,33 +35,33 @@ public class CreateCertificate_CSR {
 
     // location: For a list of locations, see:
     // https://cloud.google.com/certificate-authority-service/docs/locations
-    // pool_Id: Set a unique id for the CA pool.
+    // poolId: Set a unique id for the CA pool.
     // certificateAuthorityName: The name of the certificate authority to sign the CSR.
     // certificateName: Set a unique name for the certificate.
-    // pemCSR: Set the Certificate Issuing Request in the pem encoded format.
+    // pemCsr: Set the Certificate Issuing Request in the pem encoded format.
     String project = "your-project-id";
     String location = "ca-location";
-    String pool_Id = "ca-pool-id";
+    String poolId = "ca-pool-id";
     String certificateAuthorityName = "certificate-authority-name";
     String certificateName = "certificate-name";
-    String pemCSR =
+    String pemCsr =
         "-----BEGIN CERTIFICATE REQUEST-----\n"
             + "sample-pem-csr-format\n"
             + "-----END CERTIFICATE REQUEST-----";
 
-    createCertificateWithCSR(
-        project, location, pool_Id, certificateAuthorityName, certificateName, pemCSR);
+    createCertificateWithCsr(
+        project, location, poolId, certificateAuthorityName, certificateName, pemCsr);
   }
 
   // Create a Certificate which is issued by the specified Certificate Authority.
   // The certificate details and the public key is provided as a CSR (Certificate Signing Request).
-  public static void createCertificateWithCSR(
+  public static void createCertificateWithCsr(
       String project,
       String location,
-      String pool_Id,
+      String poolId,
       String certificateAuthorityName,
       String certificateName,
-      String pemCSR)
+      String pemCsr)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -76,7 +76,7 @@ public class CreateCertificate_CSR {
       // The pemCSR contains the public key and the domain details required.
       Certificate certificate =
           Certificate.newBuilder()
-              .setPemCsr(pemCSR)
+              .setPemCsr(pemCsr)
               .setLifetime(Duration.newBuilder().setSeconds(certificateLifetime).build())
               .build();
 
@@ -84,7 +84,7 @@ public class CreateCertificate_CSR {
       // Set the CA which is responsible for creating the certificate with the provided CSR.
       CreateCertificateRequest certificateRequest =
           CreateCertificateRequest.newBuilder()
-              .setParent(CaPoolName.of(project, location, pool_Id).toString())
+              .setParent(CaPoolName.of(project, location, poolId).toString())
               .setIssuingCertificateAuthorityId(certificateAuthorityName)
               .setCertificateId(certificateName)
               .setCertificate(certificate)

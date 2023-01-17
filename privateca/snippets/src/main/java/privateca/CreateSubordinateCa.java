@@ -45,18 +45,18 @@ public class CreateSubordinateCa {
     // TODO(developer): Replace these variables before running the sample.
     // location: For a list of locations, see:
     // https://cloud.google.com/certificate-authority-service/docs/locations
-    // pool_Id: Set it to the CA Pool under which the CA should be created.
+    // poolId: Set it to the CA Pool under which the CA should be created.
     // subordinateCaName: Unique name for the Subordinate CA.
     String project = "your-project-id";
     String location = "ca-location";
-    String pool_Id = "ca-pool-id";
+    String poolId = "ca-pool-id";
     String subordinateCaName = "subordinate-certificate-authority-name";
 
-    createSubordinateCertificateAuthority(project, location, pool_Id, subordinateCaName);
+    createSubordinateCertificateAuthority(project, location, poolId, subordinateCaName);
   }
 
   public static void createSubordinateCertificateAuthority(
-      String project, String location, String pool_Id, String subordinateCaName)
+      String project, String location, String poolId, String subordinateCaName)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -111,7 +111,7 @@ public class CreateSubordinateCa {
       // Create the CertificateAuthorityRequest.
       CreateCertificateAuthorityRequest subCertificateAuthorityRequest =
           CreateCertificateAuthorityRequest.newBuilder()
-              .setParent(CaPoolName.of(project, location, pool_Id).toString())
+              .setParent(CaPoolName.of(project, location, poolId).toString())
               .setCertificateAuthorityId(subordinateCaName)
               .setCertificateAuthority(subCertificateAuthority)
               .build();
