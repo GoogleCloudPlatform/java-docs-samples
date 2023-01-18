@@ -42,7 +42,7 @@ import org.junit.runners.JUnit4;
 public class AdaptationInlinePhraseSetV2Test {
   private String recognitionAudioFile = "./resources/commercial_mono.wav";
   private String recognizerId = String.format("rec-%s", UUID.randomUUID());
-  private String projectId = "video-erschmid"; //System.getenv("GOOGLE_CLOUD_PROJECT");
+  private String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private String recognizerName;
   private ByteArrayOutputStream bout;
   private PrintStream out;
