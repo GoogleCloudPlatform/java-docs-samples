@@ -15,7 +15,7 @@
 
 package com.example.gettingstarted.actions;
 
-// [START session_handling_servlet]
+// [START cloudrun_session_handling_servlet]
 
 import java.io.IOException;
 import java.util.Random;
@@ -58,4 +58,4 @@ public class HelloWorldServlet extends HttpServlet {
     resp.getWriter().write(String.format("%d views for %s", views, greeting));
   }
 }
-// [END session_handling_servlet]
+// [END cloudrun_session_handling_servlet]
