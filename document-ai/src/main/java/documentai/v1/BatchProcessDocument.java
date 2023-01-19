@@ -73,7 +73,7 @@ public class BatchProcessDocument {
     // requests, call
     // the "close" method on the client to safely clean up any remaining background
     // resources.
-    String endpoint = String.format("%s-documentai.googleapis.com", location);
+    String endpoint = String.format("%s-documentai.googleapis.com:443", location);
     DocumentProcessorServiceSettings settings =
         DocumentProcessorServiceSettings.newBuilder().setEndpoint(endpoint).build();
     try (DocumentProcessorServiceClient client = DocumentProcessorServiceClient.create(settings)) {
