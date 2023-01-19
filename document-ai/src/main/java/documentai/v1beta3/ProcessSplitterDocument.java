@@ -48,7 +48,10 @@ public class ProcessSplitterDocument {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (DocumentProcessorServiceClient client = DocumentProcessorServiceClient.create()) {
+    String endpoint = String.format("%s-documentai.googleapis.com", location);
+    DocumentProcessorServiceSettings settings =
+        DocumentProcessorServiceSettings.newBuilder().setEndpoint(endpoint).build();
+    try (DocumentProcessorServiceClient client = DocumentProcessorServiceClient.create(settings)) {
       // The full resource name of the processor, e.g.:
       // projects/project-id/locations/location/processor/processor-id
       // You must create new processors in the Cloud Console first
