@@ -16,6 +16,7 @@
 
 package com.example.speech;
 
+// [START speech_adaptation_v2_inline_custom_class]
 import com.google.cloud.speech.v2.AutoDetectDecodingConfig;
 import com.google.cloud.speech.v2.CustomClass;
 import com.google.cloud.speech.v2.PhraseSet;
@@ -104,3 +105,4 @@ public class AdaptationInlineCustomClassV2 {
     }
   }
 }
+// [END speech_adaptation_v2_inline_custom_class]

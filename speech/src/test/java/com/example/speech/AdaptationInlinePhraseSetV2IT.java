@@ -39,7 +39,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class AdaptationInlineCustomClassV2Test {
+public class AdaptationInlinePhraseSetV2IT {
   private String recognitionAudioFile = "./resources/commercial_mono.wav";
   private String recognizerId = String.format("rec-%s", UUID.randomUUID());
   private String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -94,8 +94,8 @@ public class AdaptationInlineCustomClassV2Test {
   }
 
   @Test
-  public void testBuildInlineCustomClassV2() throws IOException {
-    AdaptationInlineCustomClassV2.buildInlineCustomClassV2(recognizerName, recognitionAudioFile);
+  public void testbuildInlinePhraseSetV2() throws IOException {
+    AdaptationInlinePhraseSetV2.buildInlinePhraseSetV2(recognizerName, recognitionAudioFile);
     String got = bout.toString();
     assertThat(got).contains("Chromecast");
   }

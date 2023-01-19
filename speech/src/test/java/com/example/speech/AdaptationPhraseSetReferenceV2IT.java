@@ -20,8 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.speech.v2.CreateRecognizerRequest;
-import com.google.cloud.speech.v2.CustomClass;
-import com.google.cloud.speech.v2.CustomClassName;
 import com.google.cloud.speech.v2.DeleteRecognizerRequest;
 import com.google.cloud.speech.v2.OperationMetadata;
 import com.google.cloud.speech.v2.PhraseSet;
@@ -43,10 +41,9 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class AdaptationCustomClassReferenceV2Test {
+public class AdaptationPhraseSetReferenceV2IT {
   private String recognitionAudioFile = "./resources/commercial_mono.wav";
   private String recognizerId = String.format("rec-%s", UUID.randomUUID());
-  private String customClassId = String.format("cls-%s", UUID.randomUUID());
   private String phraseSetId = String.format("phrase-%s", UUID.randomUUID());
   private String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private String recognizerName;
@@ -101,25 +98,16 @@ public class AdaptationCustomClassReferenceV2Test {
           speechClient.deletePhraseSetAsync(PhraseSetName.format(projectId, 
           "global", phraseSetId));
       deletePhraseOp.get(180, TimeUnit.SECONDS);
-      
-      OperationFuture<CustomClass, OperationMetadata> deleteClassOp =
-          speechClient.deleteCustomClassAsync(CustomClassName.format(projectId, 
-          "global", customClassId));
-      deleteClassOp.get(180, TimeUnit.SECONDS);      
-
     }
   }
 
   @Test
-  public void testCreateCustomClassV2() throws IOException, InterruptedException,
-      ExecutionException {
-    AdaptationCustomClassReferenceV2.createCustomClassV2(projectId, recognizerName,
-        customClassId, phraseSetId, recognitionAudioFile);
-
+  public void testCreatePersistentPhraseSetV2() throws IOException,
+      InterruptedException, ExecutionException {
+    AdaptationPhraseSetReferenceV2.createPersistentPhraseSetV2(projectId,
+        recognizerName, phraseSetId, recognitionAudioFile);
     String got = bout.toString();
-    assertThat(got).contains(customClassId);
     assertThat(got).contains(phraseSetId);
     assertThat(got).contains("Chromecast");
   }
-
 }

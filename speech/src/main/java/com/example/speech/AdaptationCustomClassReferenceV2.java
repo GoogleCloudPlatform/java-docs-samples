@@ -16,6 +16,7 @@
 
 package com.example.speech;
 
+// [START speech_adaptation_v2_custom_class_reference]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.speech.v2.AutoDetectDecodingConfig;
 import com.google.cloud.speech.v2.CreateCustomClassRequest;
@@ -137,3 +138,4 @@ public class AdaptationCustomClassReferenceV2 {
     }
   }
 }
+// [END speech_adaptation_v2_custom_class_reference]

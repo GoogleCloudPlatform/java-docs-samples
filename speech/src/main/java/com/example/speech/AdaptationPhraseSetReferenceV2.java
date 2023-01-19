@@ -16,6 +16,7 @@
 
 package com.example.speech;
 
+// [START speech_adaptation_v2_phrase_set_reference]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.speech.v2.AutoDetectDecodingConfig;
 import com.google.cloud.speech.v2.CreatePhraseSetRequest;
@@ -113,3 +114,4 @@ public class AdaptationPhraseSetReferenceV2 {
     }
   }
 }
+// [END speech_adaptation_v2_phrase_set_reference]
