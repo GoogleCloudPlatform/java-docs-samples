@@ -47,6 +47,10 @@ public class AdaptationInlineCustomClassV2 {
 
   public static void buildInlineCustomClassV2(String recognizerName, String audioFilePath)
       throws IOException {
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (SpeechClient speechClient = SpeechClient.create()) {
       
       // Create an inline phrase set to produce a more accurate transcript.

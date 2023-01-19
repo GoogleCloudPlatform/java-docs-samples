@@ -53,6 +53,7 @@ public class AdaptationPhraseSetReferenceV2 {
   public static void createPersistentPhraseSetV2(String projectId, String recognizerName,
       String phraseSetId, String audioFilePath) throws IOException, InterruptedException,
       ExecutionException {
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.

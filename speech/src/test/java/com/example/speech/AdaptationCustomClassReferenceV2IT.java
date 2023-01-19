@@ -52,12 +52,14 @@ public class AdaptationCustomClassReferenceV2IT {
   private String recognizerName;
   private ByteArrayOutputStream bout;
   private PrintStream out;
+  private PrintStream origPrintStream;
 
   @Before
   public void setUp() throws InterruptedException, ExecutionException,
       TimeoutException, IOException {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
+    origPrintStream = System.out;
     System.setOut(out);
 
     // Create a recognizer for this test.
@@ -86,7 +88,7 @@ public class AdaptationCustomClassReferenceV2IT {
   @After
   public void tearDown() throws IOException, ExecutionException, InterruptedException,
       TimeoutException {
-    System.setOut(out);
+    System.setOut(origPrintStream);
 
     DeleteRecognizerRequest deleteRequest = DeleteRecognizerRequest.newBuilder()
         .setName(recognizerName)
