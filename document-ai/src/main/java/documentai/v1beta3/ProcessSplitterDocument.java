@@ -20,6 +20,7 @@ package documentai.v1beta3;
 
 import com.google.cloud.documentai.v1beta3.Document;
 import com.google.cloud.documentai.v1beta3.DocumentProcessorServiceClient;
+import com.google.cloud.documentai.v1beta3.DocumentProcessorServiceSettings;
 import com.google.cloud.documentai.v1beta3.ProcessRequest;
 import com.google.cloud.documentai.v1beta3.ProcessResponse;
 import com.google.cloud.documentai.v1beta3.RawDocument;
@@ -45,18 +46,20 @@ public class ProcessSplitterDocument {
   public static void processSplitterDocument(
       String projectId, String location, String processorId, String filePath)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // Initialize client that will be used to send requests. This client only needs
+    // to be created
+    // once, and can be reused for multiple requests. After completing all of your
+    // requests, call
+    // the "close" method on the client to safely clean up any remaining background
+    // resources.
     String endpoint = String.format("%s-documentai.googleapis.com", location);
-    DocumentProcessorServiceSettings settings =
-        DocumentProcessorServiceSettings.newBuilder().setEndpoint(endpoint).build();
+    DocumentProcessorServiceSettings settings = DocumentProcessorServiceSettings.newBuilder().setEndpoint(endpoint)
+        .build();
     try (DocumentProcessorServiceClient client = DocumentProcessorServiceClient.create(settings)) {
       // The full resource name of the processor, e.g.:
       // projects/project-id/locations/location/processor/processor-id
       // You must create new processors in the Cloud Console first
-      String name =
-          String.format("projects/%s/locations/%s/processors/%s", projectId, location, processorId);
+      String name = String.format("projects/%s/locations/%s/processors/%s", projectId, location, processorId);
 
       // Read the file.
       byte[] imageFileData = Files.readAllBytes(Paths.get(filePath));
@@ -64,12 +67,10 @@ public class ProcessSplitterDocument {
       // Convert the image data to a Buffer and base64 encode it.
       ByteString content = ByteString.copyFrom(imageFileData);
 
-      RawDocument document =
-          RawDocument.newBuilder().setContent(content).setMimeType("application/pdf").build();
+      RawDocument document = RawDocument.newBuilder().setContent(content).setMimeType("application/pdf").build();
 
       // Configure the process request.
-      ProcessRequest request =
-          ProcessRequest.newBuilder().setName(name).setRawDocument(document).build();
+      ProcessRequest request = ProcessRequest.newBuilder().setName(name).setRawDocument(document).build();
 
       // Recognizes text entities in the PDF document
       ProcessResponse result = client.processDocument(request);
