@@ -19,11 +19,10 @@ package com.example.speech;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.ServiceOptions;
+import com.google.cloud.speech.v2.CreateRecognizerRequest;
 import com.google.cloud.speech.v2.DeleteRecognizerRequest;
 import com.google.cloud.speech.v2.OperationMetadata;
 import com.google.cloud.speech.v2.Recognizer;
-import com.google.cloud.speech.v2.RecognizerName;
 import com.google.cloud.speech.v2.SpeechClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,29 +37,52 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for quickstart sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class QuickstartSampleV2Test {
+public class TranscribeFileV2IT {
   private String recognitionAudioFile = "./resources/commercial_mono.wav";
   private String recognizerId = String.format("rec-%s", UUID.randomUUID());
+  private String recognizerName;
   private String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private ByteArrayOutputStream bout;
   private PrintStream out;
+  private PrintStream originalPrintStream;
 
   @Before
-  public void setUp() {
+  public void setUp() throws IOException, ExecutionException, InterruptedException,
+      TimeoutException {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
+    originalPrintStream = System.out;
     System.setOut(out);
+
+    // Create a recognizer for this test.
+    try (SpeechClient speechClient = SpeechClient.create()) {
+      String parent = String.format("projects/%s/locations/global", projectId);
+
+      // First, create a recognizer
+      Recognizer recognizer = Recognizer.newBuilder()
+          .setModel("latest_long")
+          .addLanguageCodes("en-US")
+          .build();
+
+      CreateRecognizerRequest createRecognizerRequest = CreateRecognizerRequest.newBuilder()
+          .setParent(parent)
+          .setRecognizerId(recognizerId)
+          .setRecognizer(recognizer)
+          .build();
+
+      OperationFuture<Recognizer, OperationMetadata> op =
+          speechClient.createRecognizerAsync(createRecognizerRequest);
+      recognizer = op.get(180, TimeUnit.SECONDS);
+      recognizerName = recognizer.getName();
+    }
   }
 
   @After
-  public void tearDown() throws IOException, InterruptedException, ExecutionException,
+  public void tearDown() throws IOException, ExecutionException, InterruptedException,
       TimeoutException {
-    System.setOut(null);
-
-    String recognizerName = RecognizerName.format(projectId, "global", recognizerId);
+    System.setOut(originalPrintStream);
 
     DeleteRecognizerRequest deleteRequest = DeleteRecognizerRequest.newBuilder()
         .setName(recognizerName)
@@ -76,7 +98,7 @@ public class QuickstartSampleV2Test {
   @Test
   public void testQuickstart() throws Exception {
     // Act
-    QuickstartSampleV2.quickstartSampleV2(projectId, recognitionAudioFile, recognizerId);
+    TranscribeFileV2.transcribeFileV2(recognizerName, recognitionAudioFile);
 
     // Assert
     String got = bout.toString();

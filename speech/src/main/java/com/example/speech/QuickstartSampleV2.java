@@ -47,7 +47,10 @@ public class QuickstartSampleV2 {
 
   public static void quickstartSampleV2(String projectId, String filePath, String recognizerId)
       throws IOException, ExecutionException, InterruptedException {
-    // Instantiate a client
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (SpeechClient speechClient = SpeechClient.create()) {
       Path path = Paths.get(filePath);
       byte[] data = Files.readAllBytes(path);

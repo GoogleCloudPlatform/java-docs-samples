@@ -39,18 +39,20 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class CreateRecognizerV2Test {
+public class CreateRecognizerV2IT {
   private String recognizerId = String.format("rec-%s", UUID.randomUUID());
   private String recognizerName;
   private String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private ByteArrayOutputStream bout;
   private PrintStream out;
+  private PrintStream origPrintStream;
 
   @Before
   public void setUp() throws IOException, ExecutionException, InterruptedException,
       TimeoutException {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
+    origPrintStream = System.out;
     System.setOut(out);
 
     recognizerName = RecognizerName.format(projectId, "global", recognizerId);
@@ -59,7 +61,7 @@ public class CreateRecognizerV2Test {
   @After
   public void tearDown() throws IOException, ExecutionException, InterruptedException,
       TimeoutException {
-    System.setOut(out);
+    System.setOut(origPrintStream);
 
     DeleteRecognizerRequest deleteRequest = DeleteRecognizerRequest.newBuilder()
         .setName(recognizerName)
