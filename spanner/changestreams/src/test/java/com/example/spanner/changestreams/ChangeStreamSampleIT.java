@@ -44,7 +44,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ChangeStreamSampleIT {
-  @Rule public MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+  @Rule public MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static String instanceId = System.getProperty("spanner.test.instance");
   private static final String databaseId =
@@ -87,9 +87,9 @@ public class ChangeStreamSampleIT {
     assertThat(databaseId).isNotNull();
     assertThat(prefix).isNotNull();
     
+    stdOut = System.out;
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
-    stdOut = System.out;
     System.setOut(out);
   }
 
@@ -111,7 +111,9 @@ public class ChangeStreamSampleIT {
   public void testChangeStreamSample() {
     ChangeStreamSample.run(instanceId, databaseId, prefix);
 
+    System.out.flush();
     String got = bout.toString();
+
     assertThat(got).contains("Received a ChildPartitionsRecord");
     assertThat(got).contains("Received a DataChangeRecord");
     assertThat(got).contains(
