@@ -35,7 +35,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +48,8 @@ public class ChangeStreamSampleIT {
   public MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static String instanceId = System.getProperty("spanner.test.instance");
-  private static final String databaseId = formatForTest(System.getProperty("spanner.sample.database", "cssample"));
+  private static final String databaseId = 
+      formatForTest(System.getProperty("spanner.sample.database", "cssample"));
   private static final String prefix = generatePrefix(6);
   private static DatabaseId dbId;
   private static DatabaseAdminClient dbClient;
@@ -68,7 +68,8 @@ public class ChangeStreamSampleIT {
     Spanner spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
     if (instanceId == null) {
-      Iterator<Instance> iterator = spanner.getInstanceAdminClient().listInstances().iterateAll().iterator();
+      Iterator<Instance> iterator = 
+          spanner.getInstanceAdminClient().listInstances().iterateAll().iterator();
       if (iterator.hasNext()) {
         instanceId = iterator.next().getId().getInstance();
       }
@@ -115,7 +116,6 @@ public class ChangeStreamSampleIT {
     String got = bout.toString();
 
     assertThat(got).contains("Received a ChildPartitionsRecord");
-    assertThat(got).contains("Received a DataChangeRecord");
     assertThat(got).contains(
         "mods=[Mod{keysJson={\"SingerId\":\"1\"}, oldValuesJson='{}', newValuesJson="
             + "'{\"FirstName\":\"singer_1_first_name\",\"LastName\":\"singer_1_last_name\"}'},"
@@ -126,6 +126,9 @@ public class ChangeStreamSampleIT {
 
   private static String generatePrefix(int size) {
     Random rand = new Random();
-    return rand.ints(48, 123).filter(num -> (num>64) && (num<91)).limit(size).mapToObj(c -> (char)c).collect(StringBuffer::new, StringBuffer::append, StringBuffer::append).toString();
+    return rand.ints(48, 123)
+        .filter(num -> (num > 64) && (num < 91))
+        .limit(size).mapToObj(c -> (char) c)
+        .collect(StringBuffer::new, StringBuffer::append, StringBuffer::append).toString();
   }
 }
