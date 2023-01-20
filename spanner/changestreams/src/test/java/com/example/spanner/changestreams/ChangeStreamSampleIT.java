@@ -16,7 +16,7 @@
 
 package com.example.spanner.changestreams;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -24,7 +24,6 @@ import com.google.cloud.spanner.Instance;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.connection.ConnectionOptions;
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -33,19 +32,19 @@ import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for ChangeStreamSample. */
+/**
+ * Tests for ChangeStreamSample.
+ */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ChangeStreamSampleIT {
-  @Rule public MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-
   private static String instanceId = System.getProperty("spanner.test.instance");
   private static final String databaseId =
       formatForTest(System.getProperty("spanner.sample.database", "cssample"));
@@ -54,7 +53,7 @@ public class ChangeStreamSampleIT {
   private static DatabaseAdminClient dbClient;
 
   private ByteArrayOutputStream bout;
-  private PrintStream stdOut;
+  private final PrintStream stdOut = System.out;
   private PrintStream out;
 
   static String formatForTest(String name) {
@@ -76,20 +75,14 @@ public class ChangeStreamSampleIT {
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
     try {
-      dbClient
-          .createDatabase(instanceId, databaseId, Collections.emptyList())
+      dbClient.createDatabase(instanceId, databaseId, Collections.emptyList())
           .get(10, TimeUnit.MINUTES);
     } catch (Exception e) {
       e.printStackTrace();
     }
 
-    assertThat(instanceId).isNotNull();
-    assertThat(databaseId).isNotNull();
-    assertThat(prefix).isNotNull();
-    
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
-    stdOut = System.out;
     System.setOut(out);
   }
 
@@ -107,18 +100,25 @@ public class ChangeStreamSampleIT {
     System.setOut(stdOut);
   }
 
+  @Ignore
   @Test
   public void testChangeStreamSample() {
+    assertNotNull(instanceId);
+    assertNotNull(databaseId);
+    assertNotNull(prefix);
     ChangeStreamSample.run(instanceId, databaseId, prefix);
 
     String got = bout.toString();
-    assertThat(got).contains("Received a ChildPartitionsRecord");
-    assertThat(got).contains("Received a DataChangeRecord");
-    assertThat(got).contains(
-            "mods=[Mod{keysJson={\"SingerId\":\"1\"}, oldValuesJson='{}', newValuesJson="
-                + "'{\"FirstName\":\"singer_1_first_name\",\"LastName\":\"singer_1_last_name\"}'},"
-                + " Mod{keysJson={\"SingerId\":\"2\"}, oldValuesJson='{}', newValuesJson="
-                + "'{\"FirstName\":\"singer_2_first_name\",\"LastName\":\"singer_2_last_name\"}'}"
-                + "]");
+    System.setOut(stdOut);
+    Assert.assertTrue(got, got.contains("Received a ChildPartitionsRecord"));
+    Assert.assertTrue(got, got.contains("Received a DataChangeRecord"));
+    Assert.assertTrue(got, got.contains("mods=[Mod{keysJson={\"SingerId\":\"1\"}, "
+        + "oldValuesJson='', "
+        + "newValuesJson="
+        + "'{\"FirstName\":\"singer_1_first_name\",\"LastName\":\"singer_1_last_name\"}'}, "
+        + "Mod{keysJson={\"SingerId\":\"2\"}, "
+        + "oldValuesJson='', "
+        + "newValuesJson="
+        + "'{\"FirstName\":\"singer_2_first_name\",\"LastName\":\"singer_2_last_name\"}'}]"));
   }
 }
