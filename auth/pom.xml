@@ -70,7 +70,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-apikeys</artifactId>
-      <version>0.1.0</version>
+      <version>0.6.0</version>
     </dependency>
     <!-- END dependencies -->
     <dependency>
