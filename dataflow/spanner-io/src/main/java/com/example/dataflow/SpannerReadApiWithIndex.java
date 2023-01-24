@@ -104,7 +104,7 @@ public class SpannerReadApiWithIndex {
   static PCollection<Struct> googleSqlRead(
       String instanceId, String databaseId, Pipeline pipeline) {
     // [START spanner_dataflow_readapi_withindex]
-    // Query for all the columns and rows in the specified Spanner table
+    // Read the indexed columns from all rows in the specified index.
     PCollection<Struct> records =
         pipeline.apply(
             SpannerIO.read()
@@ -126,7 +126,7 @@ public class SpannerReadApiWithIndex {
   static PCollection<Struct> postgreSqlRead(
       String instanceId, String databaseId, Pipeline pipeline) {
     // [START spanner_pg_dataflow_readapi_withindex]
-    // Query for all the columns and rows in the specified Spanner table
+    // // Read the indexed columns from all rows in the specified index.
     PCollection<Struct> records =
         pipeline.apply(
             SpannerIO.read()
