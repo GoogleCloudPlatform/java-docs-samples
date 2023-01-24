@@ -15,7 +15,7 @@
 # This file is only used for packaging and deployment purposes.
 FROM maven:3-openjdk-11-slim as builder
 
-ENV PORT 8000
+ENV PORT 8080
 
 ARG GOOGLE_CLOUD_PROJECT
 ENV GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
