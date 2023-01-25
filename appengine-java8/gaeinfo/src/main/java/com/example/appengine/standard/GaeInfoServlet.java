@@ -39,7 +39,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
+import org.thymeleaf.web.servlet.JavaxServletWebApplication;
 
 // [START example]
 @SuppressWarnings({"serial"})
@@ -73,6 +74,7 @@ public class GaeInfoServlet extends HttpServlet {
   private final String metadata = "http://metadata.google.internal";
 
   private TemplateEngine templateEngine;
+  private JavaxServletWebApplication application;
 
   // Use OkHttp from Square as it's quite easy to use for simple fetches.
   private final OkHttpClient ok =
@@ -83,7 +85,6 @@ public class GaeInfoServlet extends HttpServlet {
 
   // Setup to pretty print returned json
   private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-  private final JsonParser jp = new JsonParser();
 
   // Fetch Metadata
   String fetchMetadata(String key) throws IOException {
@@ -109,14 +110,15 @@ public class GaeInfoServlet extends HttpServlet {
     Response response = ok.newCall(request).execute();
 
     // Convert json to prety json
-    return gson.toJson(jp.parse(response.body().string()));
+    return gson.toJson(JsonParser.parseString(response.body().string()));
   }
 
   @Override
   public void init() {
     // Setup ThymeLeaf
-    ServletContextTemplateResolver templateResolver =
-        new ServletContextTemplateResolver(this.getServletContext());
+    application = JavaxServletWebApplication.buildApplication(this.getServletContext());
+    WebApplicationTemplateResolver templateResolver =
+        new WebApplicationTemplateResolver(application);
 
     templateResolver.setPrefix("/WEB-INF/templates/");
     templateResolver.setSuffix(".html");
@@ -134,7 +136,8 @@ public class GaeInfoServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String key = "";
     final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
-    WebContext ctx = new WebContext(req, resp, getServletContext(), req.getLocale());
+    WebContext ctx = new WebContext(application.buildExchange(req, resp));
+    ctx.setLocale(req.getLocale());
 
     resp.setContentType("text/html");
 
@@ -183,7 +186,7 @@ public class GaeInfoServlet extends HttpServlet {
 
     Properties properties = System.getProperties();
     m = new TreeMap<>();
-    for (Enumeration e = properties.propertyNames(); e.hasMoreElements(); ) {
+    for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements(); ) {
       key = (String) e.nextElement();
       m.put(key, (String) properties.get(key));
     }
@@ -210,11 +213,11 @@ public class GaeInfoServlet extends HttpServlet {
       }
       ctx.setVariable("sam", m.descendingMap());
 
-      // Recursivly get all info about service accounts -- Note tokens are leftout by default.
+      // Recursively get all info about service accounts -- Note tokens are leftout by default.
       ctx.setVariable(
           "rsa",
           fetchJsonMetadata("/computeMetadata/v1/instance/service-accounts/?recursive=true"));
-      // Recursivly get all data on Metadata server.
+      // Recursively get all data on Metadata server.
       ctx.setVariable("ram", fetchJsonMetadata("/?recursive=true"));
     }
 
