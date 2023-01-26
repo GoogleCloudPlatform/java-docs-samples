@@ -21,7 +21,6 @@ import com.google.cloud.compute.v1.GetInstanceRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.InstancesSetLabelsRequest;
-import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.SetLabelsInstanceRequest;
 import com.google.cloud.functions.CloudEventsFunction;
 import com.google.gson.Gson;
