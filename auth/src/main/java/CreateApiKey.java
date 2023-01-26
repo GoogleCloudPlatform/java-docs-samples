@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// [START auth_cloud_create_api_key]
+// [START apikeys_create_api_key]
 
 import com.google.api.apikeys.v2.ApiKeysClient;
 import com.google.api.apikeys.v2.ApiTarget;
@@ -81,4 +81,4 @@ public class CreateApiKey {
     }
   }
 }
-// [END auth_cloud_create_api_key]
+// [END apikeys_create_api_key]

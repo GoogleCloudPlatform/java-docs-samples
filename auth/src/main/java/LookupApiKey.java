@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// [START auth_cloud_lookup_api_key]
+// [START apikeys_lookup_api_key]
 
 import com.google.api.apikeys.v2.ApiKeysClient;
 import com.google.api.apikeys.v2.LookupKeyRequest;
@@ -54,4 +54,4 @@ public class LookupApiKey {
     }
   }
 }
-// [END auth_cloud_lookup_api_key]
+// [END apikeys_lookup_api_key]
