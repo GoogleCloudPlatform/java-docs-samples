@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// [START auth_cloud_restrict_api_key_android]
+// [START apikeys_restrict_api_key_android]
 
 import com.google.api.apikeys.v2.AndroidApplication;
 import com.google.api.apikeys.v2.AndroidKeyRestrictions;
@@ -87,4 +87,4 @@ public class RestrictApiKeyAndroid {
     }
   }
 }
-// [END auth_cloud_restrict_api_key_android]
+// [END apikeys_restrict_api_key_android]
