@@ -18,8 +18,8 @@ package com.example.monitoring;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.monitoring.v3.UptimeCheckConfig;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+import com.google.monitoring.v3.UptimeCheckConfig;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
