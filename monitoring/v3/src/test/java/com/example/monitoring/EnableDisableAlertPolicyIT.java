@@ -19,6 +19,7 @@ package com.example.monitoring;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -26,10 +27,13 @@ import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 /** Tests for enable disable an alert policy sample. */
 public class EnableDisableAlertPolicyIT {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+
   private static final String PROJECT_ID = requireEnvVar("GOOGLE_CLOUD_PROJECT");
   private static final String suffix = UUID.randomUUID().toString().substring(0, 8);
   private ByteArrayOutputStream bout;

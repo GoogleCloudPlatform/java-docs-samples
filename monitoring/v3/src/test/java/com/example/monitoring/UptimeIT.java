@@ -19,12 +19,14 @@ package com.example.monitoring;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.monitoring.v3.UptimeCheckConfig;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -35,6 +37,7 @@ import org.junit.runners.MethodSorters;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UptimeIT {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
