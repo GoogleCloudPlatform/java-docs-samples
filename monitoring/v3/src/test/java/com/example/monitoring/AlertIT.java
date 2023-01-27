@@ -18,6 +18,7 @@ package com.example.monitoring;
 
 import static org.junit.Assert.assertTrue;
 
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import io.grpc.StatusRuntimeException;
@@ -32,6 +33,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -40,6 +42,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class AlertIT {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private static String testPolicyName = "test-policy";
   private static String policyFileName = "target/policyBackup.json";
   private static Pattern policyNameRegex =
