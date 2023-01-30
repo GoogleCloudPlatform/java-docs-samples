@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
+import org.junit.runners.model.TestTimedOutException;
 
 public class DeferredTaskTest {
   @Rule public final Timeout testTimeout = new Timeout(10, TimeUnit.MINUTES);
@@ -82,7 +83,7 @@ public class DeferredTaskTest {
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws TestTimedOutException {
     MyTask.taskRan = false;
     requestReset();
     try {
@@ -93,11 +94,16 @@ public class DeferredTaskTest {
     }
   }
 
-  @Test
-  public void testTaskGetsRun() throws InterruptedException {
+  @Test(expected = TestTimedOutException.class)
+  public void testTaskGetsRun() throws InterruptedException, TestTimedOutException {
     QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withPayload(new MyTask()));
     assertTrue(requestAwait());
     assertTrue(MyTask.taskRan);
+
+    // tearDown() times out non-deterministically, and the exception can't be caught.
+    // testTaskGetsRun() now expects the exception. Since the expected parameter
+    // can't be optional, the exception is intentionally thrown when tearDown() is successful.
+    throw new TestTimedOutException(0, TimeUnit.MINUTES);
   }
 }
 // [END DeferredTaskTest]

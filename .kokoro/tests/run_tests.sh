@@ -67,10 +67,12 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     export FILESTORE_IP_ADDRESS=$(gcloud secrets versions access latest --secret fs-app)
     
     SECRET_FILES=("java-docs-samples-service-account.json" \
-    "java-aws-samples-secrets.txt" \
-    "java-dlp-samples-secrets.txt" \
-    "java-bigtable-samples-secrets.txt" \
+    "java-aiplatform-samples-secrets.txt" \
     "java-automl-samples-secrets.txt" \
+    "java-bigtable-samples-secrets.txt" \
+    "java-cloud-sql-samples-secrets.txt" \
+    "java-cts-v4-samples-secrets.txt" \
+    "java-dlp-samples-secrets.txt" \
     "java-functions-samples-secrets.txt" \
     "java-firestore-samples-secrets.txt" \
     "java-cts-v4-samples-secrets.txt" \
@@ -80,7 +82,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
 
     # create secret dir
     mkdir -p "${KOKORO_GFILE_DIR}/secrets"
-
+    
     for SECRET in "${SECRET_FILES[@]}"; do
       # grab latest version of secret
       gcloud secrets versions access latest --secret="${SECRET%.*}" > "${KOKORO_GFILE_DIR}/secrets/$SECRET"
@@ -89,7 +91,15 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
         source "${KOKORO_GFILE_DIR}/secrets/$SECRET"
       fi
     done
-  
+
+    export STS_AWS_SECRET=`gcloud secrets versions access latest --project cloud-devrel-kokoro-resources --secret=java-storagetransfer-aws`
+    export AWS_ACCESS_KEY_ID=`S="$STS_AWS_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["AccessKeyId"]);'`
+    export AWS_SECRET_ACCESS_KEY=`S="$STS_AWS_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["SecretAccessKey"]);'`
+    export STS_AZURE_SECRET=`gcloud secrets versions access latest --project cloud-devrel-kokoro-resources --secret=java-storagetransfer-azure`
+    export AZURE_STORAGE_ACCOUNT=`S="$STS_AZURE_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["StorageAccount"]);'`
+    export AZURE_CONNECTION_STRING=`S="$STS_AZURE_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["ConnectionString"]);'`
+    export AZURE_SAS_TOKEN=`S="$STS_AZURE_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["SAS"]);'`
+
     # Activate service account
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \

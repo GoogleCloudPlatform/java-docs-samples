@@ -45,6 +45,10 @@ public class CreateServiceAccountKey {
       return null;
     }
 
+    // Construct the service account email.
+    // You can modify the ".iam.gserviceaccount.com" to match the service account name in which
+    // you want to create the key.
+    // See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#creating
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
     try {
       ServiceAccountKey key =

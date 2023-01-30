@@ -638,4 +638,30 @@ public class SnippetsIT {
       assertThat(stdOut.toString()).contains("Success: true");
     }
   }
+
+  @Test
+  public void testKeyImportEndToEnd()
+      throws IOException, GeneralSecurityException, InterruptedException {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      final String importedKeyId = getRandomId();
+      final String importJobId = getRandomId();
+
+      new CreateKeyForImport()
+          .createKeyForImport(PROJECT_ID, LOCATION_ID, KEY_RING_ID, importedKeyId);
+      new CreateImportJob().createImportJob(PROJECT_ID, LOCATION_ID, KEY_RING_ID, importJobId);
+
+      while (!stdOut.toString().contains("ACTIVE")) {
+        Thread.sleep(1000);
+        new CheckStateImportJob()
+            .checkStateImportJob(PROJECT_ID, LOCATION_ID, KEY_RING_ID, importJobId);
+      }
+
+      new ImportManuallyWrappedKey()
+          .importManuallyWrappedKey(
+              PROJECT_ID, LOCATION_ID, KEY_RING_ID, importedKeyId, importJobId);
+
+      new CheckStateImportedKey()
+          .checkStateImportedKey(PROJECT_ID, LOCATION_ID, KEY_RING_ID, importedKeyId, "1");
+    }
+  }
 }

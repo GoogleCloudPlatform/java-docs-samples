@@ -18,9 +18,9 @@ package functions;
 
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
-import com.google.events.cloud.pubsub.v1.Message;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import functions.eventpojos.Message;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;

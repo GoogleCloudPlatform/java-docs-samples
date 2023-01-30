@@ -19,6 +19,7 @@ package com.example.monitoring;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.monitoring.v3.NotificationChannelServiceClient;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.monitoring.v3.NotificationChannel;
 import com.google.monitoring.v3.ProjectName;
 import java.io.ByteArrayOutputStream;
@@ -27,6 +28,7 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -35,6 +37,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class DeleteNotificationChannelIT {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private static final String LEGACY_PROJECT_ENV_NAME = "GCLOUD_PROJECT";

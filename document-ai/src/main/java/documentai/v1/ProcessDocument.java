@@ -20,6 +20,7 @@ package documentai.v1;
 
 import com.google.cloud.documentai.v1.Document;
 import com.google.cloud.documentai.v1.DocumentProcessorServiceClient;
+import com.google.cloud.documentai.v1.DocumentProcessorServiceSettings;
 import com.google.cloud.documentai.v1.ProcessRequest;
 import com.google.cloud.documentai.v1.ProcessResponse;
 import com.google.cloud.documentai.v1.RawDocument;
@@ -45,10 +46,16 @@ public class ProcessDocument {
   public static void processDocument(
       String projectId, String location, String processorId, String filePath)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    try (DocumentProcessorServiceClient client = DocumentProcessorServiceClient.create()) {
+    // Initialize client that will be used to send requests. This client only needs
+    // to be created
+    // once, and can be reused for multiple requests. After completing all of your
+    // requests, call
+    // the "close" method on the client to safely clean up any remaining background
+    // resources.
+    String endpoint = String.format("%s-documentai.googleapis.com:443", location);
+    DocumentProcessorServiceSettings settings =
+        DocumentProcessorServiceSettings.newBuilder().setEndpoint(endpoint).build();
+    try (DocumentProcessorServiceClient client = DocumentProcessorServiceClient.create(settings)) {
       // The full resource name of the processor, e.g.:
       // projects/project-id/locations/location/processor/processor-id
       // You must create new processors in the Cloud Console first
@@ -86,7 +93,7 @@ public class ProcessDocument {
       }
 
       // Form parsing provides additional output about
-      // form-formatted PDFs. You  must create a form
+      // form-formatted PDFs. You must create a form
       // processor in the Cloud Console to see full field details.
       System.out.println("The following form key/value pairs were detected:");
 

@@ -26,42 +26,54 @@ import com.google.storagetransfer.v1.proto.TransferTypes.TransferSpec;
 
 public class QuickstartSample {
   /** Quickstart sample using transfer service to transfer from one GCS bucket to another. */
-  public static void quickStartSample(
-      String projectId, String gcsSourceBucket, String gcsSinkBucket) throws Exception {
+  public static void main(String[] args) throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+
     // Your Google Cloud Project ID
-    // String projectId = "your-project-id";
+    String projectId = "your-project-id";
 
     // The name of the source GCS bucket to transfer objects from
-    // String gcsSourceBucket = "your-source-gcs-source-bucket";
+    String gcsSourceBucket = "your-source-gcs-source-bucket";
 
     // The name of the  GCS bucket to transfer  objects to
-    // String gcsSinkBucket = "your-sink-gcs-bucket";
+    String gcsSinkBucket = "your-sink-gcs-bucket";
 
-    StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
+    quickStartSample(projectId, gcsSourceBucket, gcsSinkBucket);
+  }
 
-    TransferJob transferJob =
-        TransferJob.newBuilder()
-            .setProjectId(projectId)
-            .setTransferSpec(
-                TransferSpec.newBuilder()
-                    .setGcsDataSource(GcsData.newBuilder().setBucketName(gcsSourceBucket))
-                    .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket)))
-            .setStatus(TransferJob.Status.ENABLED)
-            .build();
+  public static void quickStartSample(
+      String projectId, String gcsSourceBucket, String gcsSinkBucket) throws Exception {
 
-    TransferJob response =
-        storageTransfer.createTransferJob(
-            CreateTransferJobRequest.newBuilder().setTransferJob(transferJob).build());
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources,
+    // or use "try-with-close" statement to do this automatically.
+    try (StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create()) {
 
-    storageTransfer
-        .runTransferJobAsync(
-            RunTransferJobRequest.newBuilder()
-                .setProjectId(projectId)
-                .setJobName(response.getName())
-                .build())
-        .get();
-    System.out.println(
-        "Created and ran transfer job between two GCS buckets with name " + response.getName());
+      TransferJob transferJob =
+          TransferJob.newBuilder()
+              .setProjectId(projectId)
+              .setTransferSpec(
+                  TransferSpec.newBuilder()
+                      .setGcsDataSource(GcsData.newBuilder().setBucketName(gcsSourceBucket))
+                      .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket)))
+              .setStatus(TransferJob.Status.ENABLED)
+              .build();
+
+      TransferJob response =
+          storageTransfer.createTransferJob(
+              CreateTransferJobRequest.newBuilder().setTransferJob(transferJob).build());
+
+      storageTransfer
+          .runTransferJobAsync(
+              RunTransferJobRequest.newBuilder()
+                  .setProjectId(projectId)
+                  .setJobName(response.getName())
+                  .build())
+          .get();
+      System.out.println(
+          "Created and ran transfer job between two GCS buckets with name " + response.getName());
+    }
   }
 }
 // [END storagetransfer_quickstart]

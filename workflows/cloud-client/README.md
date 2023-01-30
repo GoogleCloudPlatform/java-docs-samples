@@ -1,5 +1,7 @@
 # Cloud Workflows Quickstart
-<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-dlp&page=editor&open_in_editor=samples/snippets/README.md">
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=workflows/cloud-client
+/
+README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 The [Workflows API](https://cloud.google.com/workflows/docs/) provides programmatic access to execute serverless workflows that link series of serverless tasks together in an order you define.

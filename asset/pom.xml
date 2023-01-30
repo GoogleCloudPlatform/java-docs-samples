@@ -5,7 +5,6 @@
   <artifactId>cloudasset-snippets</artifactId>
   <packaging>jar</packaging>
   <name>Google Cloud Asset Inventory Snippets</name>
-  <url>https://github.com/googleapis/java-asset</url>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.

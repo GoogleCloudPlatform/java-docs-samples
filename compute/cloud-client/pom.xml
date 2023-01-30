@@ -23,7 +23,7 @@
     <dependency>
       <artifactId>google-cloud-compute</artifactId>
       <groupId>com.google.cloud</groupId>
-      <version>1.8.1</version>
+      <version>1.18.0</version>
     </dependency>
     <dependency>
       <artifactId>google-cloud-storage</artifactId>
@@ -36,12 +36,12 @@
     <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>gax</artifactId>
-      <version>2.12.2</version>
+      <version>2.21.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>gax-httpjson</artifactId>
-      <version>0.99.0</version>
+      <version>0.106.0</version>
     </dependency>
 
 
@@ -86,7 +86,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.1.4</version>
+        <version>26.3.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -132,7 +132,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M6</version>
+        <version>3.0.0-M7</version>
         <configuration>
           <skip>true</skip>
         </configuration>

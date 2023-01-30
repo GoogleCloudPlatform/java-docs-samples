@@ -61,12 +61,12 @@
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>2.0.1</version>
+      <version>2.1.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-servlet</artifactId>
-      <version>2.0.1</version>
+      <version>2.1.1</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -79,7 +79,7 @@
     <dependency>                        <!-- http://dev.mysql.com/doc/connector-j/en/ -->
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.29</version>
+      <version>8.0.31</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
@@ -108,7 +108,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.4.2</version>
+        <version>2.4.4</version>
         <configuration>
           <projectId>GCLOUD_CONFIG</projectId>
           <version>GCLOUD_CONFIG</version>

@@ -52,8 +52,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class SpannerReadIT {
 
-  @Parameter
-  public Dialect dialect;
+  @Parameter public Dialect dialect;
 
   @Parameters(name = "dialect = {0}")
   public static List<Object[]> data() {
@@ -104,7 +103,11 @@ public class SpannerReadIT {
                       + "(singer_id bigint NOT NULL primary key, first_name varchar NOT NULL, "
                       + "last_name varchar NOT NULL)",
                   "CREATE TABLE Albums (singer_id bigint NOT NULL, album_id bigint NOT NULL, "
-                      + "album_title varchar NOT NULL, PRIMARY KEY (singer_id, album_id))"),
+                      + "album_title varchar NOT NULL, PRIMARY KEY (singer_id, album_id))",
+                  "CREATE TABLE Songs (singer_id bigint NOT NULL, album_id bigint NOT NULL, "
+                      + "track_id bigint NOT NULL, song_name varchar, Duration bigint, "
+                      + "song_genre varchar, PRIMARY KEY(singer_id, album_id, track_id))",
+                  "CREATE INDEX SongsBySongName ON Songs(song_name)"),
               null)
           .get();
     } else {
@@ -117,7 +120,11 @@ public class SpannerReadIT {
                       + "(SingerId INT64 NOT NULL, FirstName STRING(MAX) NOT NULL, "
                       + "LastName STRING(MAX) NOT NULL,) PRIMARY KEY (SingerId)",
                   "CREATE TABLE Albums (SingerId INT64 NOT NULL, AlbumId INT64 NOT NULL, "
-                      + "AlbumTitle STRING(MAX) NOT NULL,) PRIMARY KEY (SingerId, AlbumId)"))
+                      + "AlbumTitle STRING(MAX) NOT NULL,) PRIMARY KEY (SingerId, AlbumId)",
+                  "CREATE TABLE Songs (SingerId  INT64 NOT NULL, AlbumId INT64 NOT NULL, "
+                      + "TrackId INT64 NOT NULL, SongName  STRING(MAX), Duration  INT64, "
+                      + "SongGenre STRING(25)) PRIMARY KEY(SingerId, AlbumId, TrackId)",
+                  "CREATE INDEX SongsBySongName ON Songs(SongName)"))
           .get();
     }
 
@@ -163,6 +170,20 @@ public class SpannerReadIT {
                 .set(formatColumnName("AlbumTitle", dialect))
                 .to("Imagine")
                 .build(),
+            Mutation.newInsertBuilder("Songs")
+                .set(formatColumnName("SingerId", dialect))
+                .to(1L)
+                .set(formatColumnName("AlbumId", dialect))
+                .to(1L)
+                .set(formatColumnName("TrackId", dialect))
+                .to(1L)
+                .set(formatColumnName("SongName", dialect))
+                .to("Imagine")
+                .set(formatColumnName("Duration", dialect))
+                .to(181L)
+                .set(formatColumnName("SongGenre", dialect))
+                .to("Rock/Pop")
+                .build(),
             Mutation.newInsertBuilder("Albums")
                 .set(formatColumnName("SingerId", dialect))
                 .to(2L)
@@ -170,6 +191,20 @@ public class SpannerReadIT {
                 .to(1L)
                 .set(formatColumnName("AlbumTitle", dialect))
                 .to("Pipes of Peace")
+                .build(),
+            Mutation.newInsertBuilder("Songs")
+                .set(formatColumnName("SingerId", dialect))
+                .to(2L)
+                .set(formatColumnName("AlbumId", dialect))
+                .to(1L)
+                .set(formatColumnName("TrackId", dialect))
+                .to(1L)
+                .set(formatColumnName("SongName", dialect))
+                .to("Pipes of Peace")
+                .set(formatColumnName("Duration", dialect))
+                .to(236L)
+                .set(formatColumnName("SongGenre", dialect))
+                .to("Rock/Pop")
                 .build());
 
     DatabaseClient dbClient = getDbClient();
@@ -222,7 +257,7 @@ public class SpannerReadIT {
 
     String content = Files.readAllLines(outPath).stream().collect(Collectors.joining("\n"));
 
-    assertEquals("132", content);
+    assertEquals("233", content);
   }
 
   @Test
@@ -257,6 +292,23 @@ public class SpannerReadIT {
     String content = Files.readAllLines(outPath).stream().collect(Collectors.joining("\n"));
 
     assertEquals("79", content);
+  }
+
+  @Test
+  public void readApiWithIndexEndToEnd() throws Exception {
+    Path outPath = Files.createTempFile("out", "txt");
+    SpannerReadApiWithIndex.main(
+        new String[] {
+          "--instanceId=" + instanceId,
+          "--databaseId=" + databaseId,
+          "--output=" + outPath,
+          "--runner=DirectRunner",
+          "--dialect=" + dialect
+        });
+
+    String content = Files.readAllLines(outPath).stream().collect(Collectors.joining("\n"));
+
+    assertEquals("69", content);
   }
 
   @Test

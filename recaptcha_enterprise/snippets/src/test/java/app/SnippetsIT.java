@@ -31,13 +31,15 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -177,15 +179,21 @@ public class SnippetsIT {
   @Test
   public void testCreateAnnotateAccountDefender()
       throws JSONException, IOException, InterruptedException, NoSuchAlgorithmException,
-          ExecutionException {
+      ExecutionException, InvalidKeyException {
 
     String testURL = "http://localhost:" + randomServerPort + "/";
-    // Create a random SHA-256 Hashed account id.
-    MessageDigest digest = MessageDigest.getInstance("SHA-256");
-    byte[] hashBytes =
-        digest.digest(
-            ("default-" + UUID.randomUUID().toString().split("-")[0])
-                .getBytes(StandardCharsets.UTF_8));
+
+    // Secret not shared with Google.
+    String HMAC_KEY = "123456789";
+    // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
+    // secret key.
+    Mac mac = Mac.getInstance("HmacSHA256");
+    SecretKeySpec secretKeySpec = new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
+        "HmacSHA256");
+    mac.init(secretKeySpec);
+    byte[] hashBytes = mac.doFinal(
+        ("default-" + UUID.randomUUID().toString().split("-")[0])
+            .getBytes(StandardCharsets.UTF_8));
     ByteString hashedAccountId = ByteString.copyFrom(hashBytes);
 
     // Create the assessment.
