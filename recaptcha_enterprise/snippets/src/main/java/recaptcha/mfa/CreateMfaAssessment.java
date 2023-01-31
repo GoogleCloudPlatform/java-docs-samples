@@ -16,6 +16,8 @@
 
 package recaptcha.mfa;
 
+// [START recaptcha_enterprise_mfa_assessment]
+
 import com.google.cloud.recaptchaenterprise.v1.RecaptchaEnterpriseServiceClient;
 import com.google.protobuf.ByteString;
 import com.google.recaptchaenterprise.v1.AccountVerificationInfo;
@@ -27,38 +29,53 @@ import com.google.recaptchaenterprise.v1.Event;
 import com.google.recaptchaenterprise.v1.ProjectName;
 import com.google.recaptchaenterprise.v1.TokenProperties;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 public class CreateMfaAssessment {
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args)
+      throws IOException, NoSuchAlgorithmException, InvalidKeyException {
     // TODO(developer): Replace these variables before running the sample.
+    // Google Cloud Project ID.
     String projectID = "PROJECT_ID";
+    // Site key obtained by registering a domain/app to use recaptcha services.
     String recaptchaSiteKey = "SITE_KEY";
+    // The token obtained from the client on passing the recaptchaSiteKey.
+    // To get the token, integrate the recaptchaSiteKey with frontend. See,
+    // https://cloud.google.com/recaptcha-enterprise/docs/instrument-web-pages#frontend_integration_score
     String token = "TOKEN";
+    // The action name corresponding to the token.
     String recaptchaAction = "ACTION";
-    String hashedAccountId = "BP3ptt00D9W7UMzFmsPdEjNH3Chpi8bo40R6YW2b";
+    // Email id of the user to trigger the MFA challenge.
     String emailId = "foo@bar.com";
+    // Phone number of the user to trigger the MFA challenge.
     String phoneNumber = "+11111111111";
+
+    // Create hashedAccountId from user identifier.
+    String userIdentifier = "Alice Bob";
+    // Change this to a secret not shared with Google.
+    final String HMAC_KEY = "SOME_INTERNAL_UNSHARED_KEY";
+    // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
+    // secret key.
+    Mac mac = Mac.getInstance("HmacSHA256");
+    mac.init(new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
+        "HmacSHA256"));
+    byte[] hashBytes = mac.doFinal(userIdentifier.getBytes(StandardCharsets.UTF_8));
+    ByteString hashedAccountId = ByteString.copyFrom(hashBytes);
 
     createMfaAssessment(projectID, recaptchaSiteKey, token, recaptchaAction, hashedAccountId,
         emailId, phoneNumber);
   }
 
-  // MFA contains a series of workflow steps to be completed.
-  // 1. Trigger the usual recaptcha challenge in the UI and get the token. In addition to the token,
-  // supply the hashedAccountId, email and/or phone number of the user.
-  // 2. Based on the recommended action, choose if you should trigger the MFA challenge.
-  // 3. If you decide to trigger MFA, send the requestToken back to the UI.
-  // 4. In the UI, call "grecaptcha.enterprise.challengeAccount" and pass the sitekey, request token,
-  // and container id to render the challenge.
-  // 5. The result from this promise is sent to another call "verificationHandle.verifyAccount(pin)"
-  // This call verifies if the pin has been entered correct.
-  // 6. The result from this call is sent to the backend to create a MFA assessment again.
-  // The result of this assessment will tell if the MFA challenge has been successful.
-  public static void createMfaAssessment(
+  // Creates an assessment to obtain Multi-Factor Authentication result.
+  // If the result is unspecified, sends the request token to the caller to initiate MFA challenge.
+  public static String createMfaAssessment(
       String projectID, String recaptchaSiteKey, String token, String recaptchaAction,
-      String hashedAccountId,
-      String emailId, String phoneNumber)
+      ByteString hashedAccountId, String emailId, String phoneNumber)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -70,9 +87,10 @@ public class CreateMfaAssessment {
       Event event = Event.newBuilder()
           .setSiteKey(recaptchaSiteKey)
           .setToken(token)
-          .setHashedAccountId(ByteString.fromHex(hashedAccountId))
+          .setHashedAccountId(hashedAccountId)
           .build();
 
+      // Set the email address and the phone number to trigger/ verify the MFA challenge.
       AccountVerificationInfo accountVerificationInfo = AccountVerificationInfo.newBuilder()
           .addEndpoints(EndpointVerificationInfo.newBuilder()
               .setEmailAddress(emailId)
@@ -92,24 +110,22 @@ public class CreateMfaAssessment {
 
       Assessment response = client.createAssessment(createAssessmentRequest);
 
-      System.out.println(response);
-
       // Check integrity of the response.
       if (!checkResponseIntegrity(response.getTokenProperties(), recaptchaAction)) {
-        return;
+        throw new Error("Failed to verify token integrity.");
       }
 
-      // Check if the recommended action was set in account defender.
-      // If set, send the request token.
-      Result result = response.getAccountVerification().getLatestVerificationResult();
-      if (result == Result.RESULT_UNSPECIFIED && response.getAccountDefenderAssessment()
-          .isInitialized()) {
-        // Send the request token for assessment.
-        response.getAccountVerification().getEndpoints(0).getRequestToken();
-        return;
+      // If the result is unspecified, send the request token to trigger MFA in the client.
+      // You can choose to send both the email and phone number's request token.
+      if (response.getAccountVerification().getLatestVerificationResult()
+          == Result.RESULT_UNSPECIFIED) {
+        // Send the request token for assessment. The token is valid for 15 minutes.
+        return response.getAccountVerification().getEndpoints(0).getRequestToken();
       }
 
-      System.out.println("MFA result:" + result);
+      // If the result is not unspecified, return the result.
+      return (String.format("MFA result: %s",
+          response.getAccountVerification().getLatestVerificationResult()));
     }
   }
 
@@ -134,3 +150,4 @@ public class CreateMfaAssessment {
     return true;
   }
 }
+// [END recaptcha_enterprise_mfa_assessment]

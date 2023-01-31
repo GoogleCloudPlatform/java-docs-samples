@@ -63,6 +63,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.util.UriComponentsBuilder;
 import recaptcha.AnnotateAssessment;
 import recaptcha.GetMetrics;
+import recaptcha.mfa.CreateMfaAssessment;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @EnableAutoConfiguration
@@ -74,25 +75,9 @@ public class SnippetsIT {
   private static String RECAPTCHA_SITE_KEY_1 = "recaptcha-site-key1";
   private static String RECAPTCHA_SITE_KEY_2 = "recaptcha-site-key2";
   private static WebDriver browser;
-  @LocalServerPort private int randomServerPort;
+  @LocalServerPort
+  private int randomServerPort;
   private ByteArrayOutputStream stdOut;
-
-  @Test
-  public void testCreateAnnotateAssessment()
-      throws JSONException, IOException, InterruptedException, NoSuchAlgorithmException,
-          ExecutionException {
-    // Create an assessment.
-    String testURL = "http://localhost:" + randomServerPort + "/";
-    JSONObject createAssessmentResult =
-        createAssessment(testURL, ByteString.EMPTY, AssessmentType.ASSESSMENT);
-    String assessmentName = createAssessmentResult.getString("assessmentName");
-    // Verify that the assessment name has been modified post the assessment creation.
-    assertThat(assessmentName).isNotEmpty();
-
-    // Annotate the assessment.
-    AnnotateAssessment.annotateAssessment(PROJECT_ID, assessmentName);
-    assertThat(stdOut.toString()).contains("Annotated response sent successfully ! ");
-  }
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -129,6 +114,23 @@ public class SnippetsIT {
 
     stdOut.close();
     System.setOut(null);
+  }
+
+  @Test
+  public void testCreateAnnotateAssessment()
+      throws JSONException, IOException, InterruptedException, NoSuchAlgorithmException,
+      ExecutionException {
+    // Create an assessment.
+    String testURL = "http://localhost:" + randomServerPort + "/";
+    JSONObject createAssessmentResult =
+        createAssessment(testURL, ByteString.EMPTY, AssessmentType.ASSESSMENT);
+    String assessmentName = createAssessmentResult.getString("assessmentName");
+    // Verify that the assessment name has been modified post the assessment creation.
+    assertThat(assessmentName).isNotEmpty();
+
+    // Annotate the assessment.
+    AnnotateAssessment.annotateAssessment(PROJECT_ID, assessmentName);
+    assertThat(stdOut.toString()).contains("Annotated response sent successfully ! ");
   }
 
   @Before
@@ -246,6 +248,25 @@ public class SnippetsIT {
     assertThat(stdOut.toString()).contains("Is Credential leaked: ");
   }
 
+  @Test
+  public void testMultiFactorAuthenticationAssessment()
+      throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+    String userIdentifier = "Alice Bob";
+    // Change this to a secret not shared with Google.
+    final String HMAC_KEY = "SOME_INTERNAL_UNSHARED_KEY";
+    // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
+    // secret key.
+    Mac mac = Mac.getInstance("HmacSHA256");
+    mac.init(new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
+        "HmacSHA256"));
+    byte[] hashBytes = mac.doFinal(userIdentifier.getBytes(StandardCharsets.UTF_8));
+    ByteString hashedAccountId = ByteString.copyFrom(hashBytes);
+
+    CreateMfaAssessment.createMfaAssessment(PROJECT_ID, RECAPTCHA_SITE_KEY_1,
+        "fwdgk0kcg1W0mbpetYlgTZKyrp4IHKzjgRkb6vLNZeBQhWdR3a", "login", hashedAccountId,
+        "foo@bar.com", "+11111111111");
+  }
+
   public JSONObject createAssessment(
       String testURL, ByteString hashedAccountId, AssessmentType assessmentType)
       throws IOException, JSONException, InterruptedException, ExecutionException {
@@ -255,34 +276,31 @@ public class SnippetsIT {
 
     // Send the token for analysis. The analysis score ranges from 0.0 to 1.0
     switch (assessmentType) {
-      case ACCOUNT_DEFENDER:
-        {
-          AccountDefenderAssessment.accountDefenderAssessment(
-              PROJECT_ID,
-              RECAPTCHA_SITE_KEY_1,
-              tokenActionPair.getString("token"),
-              tokenActionPair.getString("action"),
-              hashedAccountId);
-          break;
-        }
-      case ASSESSMENT:
-        {
-          recaptcha.CreateAssessment.createAssessment(
-              PROJECT_ID,
-              RECAPTCHA_SITE_KEY_1,
-              tokenActionPair.getString("token"),
-              tokenActionPair.getString("action"));
-          break;
-        }
-      case PASSWORD_LEAK:
-        {
-          passwordleak.CreatePasswordLeakAssessment.checkPasswordLeak(
-              PROJECT_ID,
-              RECAPTCHA_SITE_KEY_1,
-              tokenActionPair.getString("token"),
-              tokenActionPair.getString("action"));
-          break;
-        }
+      case ACCOUNT_DEFENDER: {
+        AccountDefenderAssessment.accountDefenderAssessment(
+            PROJECT_ID,
+            RECAPTCHA_SITE_KEY_1,
+            tokenActionPair.getString("token"),
+            tokenActionPair.getString("action"),
+            hashedAccountId);
+        break;
+      }
+      case ASSESSMENT: {
+        recaptcha.CreateAssessment.createAssessment(
+            PROJECT_ID,
+            RECAPTCHA_SITE_KEY_1,
+            tokenActionPair.getString("token"),
+            tokenActionPair.getString("action"));
+        break;
+      }
+      case PASSWORD_LEAK: {
+        passwordleak.CreatePasswordLeakAssessment.checkPasswordLeak(
+            PROJECT_ID,
+            RECAPTCHA_SITE_KEY_1,
+            tokenActionPair.getString("token"),
+            tokenActionPair.getString("action"));
+        break;
+      }
     }
 
     // Assert the response.
@@ -309,14 +327,6 @@ public class SnippetsIT {
     return new JSONObject()
         .put("recaptchaScore", recaptchaScore)
         .put("assessmentName", assessmentName);
-  }
-
-  enum AssessmentType {
-    ASSESSMENT,
-    ACCOUNT_DEFENDER,
-    PASSWORD_LEAK;
-
-    AssessmentType() {}
   }
 
   public JSONObject initiateBrowserTest(String testURL)
@@ -355,5 +365,14 @@ public class SnippetsIT {
 
   public String substr(String line) {
     return line.substring((line.lastIndexOf(":") + 1)).trim();
+  }
+
+  enum AssessmentType {
+    ASSESSMENT,
+    ACCOUNT_DEFENDER,
+    PASSWORD_LEAK;
+
+    AssessmentType() {
+    }
   }
 }
