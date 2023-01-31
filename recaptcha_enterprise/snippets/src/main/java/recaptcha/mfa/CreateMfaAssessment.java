@@ -56,6 +56,7 @@ public class CreateMfaAssessment {
     String phoneNumber = "+11111111111";
 
     // Create hashedAccountId from user identifier.
+    // It's a one-way hash of the user identifier: HMAC SHA256 + salt.
     String userIdentifier = "Alice Bob";
     // Change this to a secret not shared with Google.
     final String HMAC_KEY = "SOME_INTERNAL_UNSHARED_KEY";
