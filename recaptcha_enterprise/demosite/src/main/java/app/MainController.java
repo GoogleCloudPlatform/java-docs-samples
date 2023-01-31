@@ -36,26 +36,51 @@ import recaptcha.Recaptcha;
 @RequestMapping
 public class MainController {
 
+  private static final ModelMap context = new ModelAndView().getModelMap();
+
+  static {
+    context.put("project_id", System.getenv("GOOGLE_CLOUD_PROJECT"));
+    context.put("site_key", System.getenv("SITE_KEY"));
+  }
+
   @GetMapping(value = "/")
+  public static ModelAndView home() {
+    return new ModelAndView("home", context);
+  }
+
+  @GetMapping(value = "/store")
+  public static ModelAndView store() {
+    return new ModelAndView("store", context);
+  }
+
+  @GetMapping(value = "/login")
   public static ModelAndView login() {
-    ModelMap map = new ModelAndView().getModelMap();
-    map.put("site_key", System.getenv("SITE_KEY"));
-    return new ModelAndView("login", map);
+    return new ModelAndView("login", context);
+  }
+
+  @GetMapping(value = "/comment")
+  public static ModelAndView comment() {
+    return new ModelAndView("comment", context);
   }
 
   @GetMapping(value = "/signup")
   public static ModelAndView signup() {
-    ModelMap context = new ModelAndView().getModelMap();
-    context.put("checkbox_site_key", System.getenv("CHECKBOX_SITE_KEY"));
     return new ModelAndView("signup", context);
+  }
+
+  @GetMapping(value = "/game")
+  public static ModelAndView game() {
+    return new ModelAndView("game", context);
   }
 
   @PostMapping(value = "/create_assessment", produces = "application/json")
   public static @ResponseBody
   ResponseEntity<String> createAssessment(@RequestBody String json) {
     JSONObject jsonObject = new JSONObject(new JSONTokener(json));
-    String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
-    JSONObject result = Recaptcha.execute(projectId, jsonObject);
+    // Create Assessment call.
+    JSONObject result = Recaptcha.executeCreateAssessment(System.getenv("GOOGLE_CLOUD_PROJECT"),
+        jsonObject);
+
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     return new ResponseEntity<>(result.toString(), httpHeaders, HttpStatus.OK);

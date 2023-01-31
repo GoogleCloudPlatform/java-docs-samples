@@ -22,37 +22,33 @@ import com.google.recaptchaenterprise.v1.CreateAssessmentRequest;
 import com.google.recaptchaenterprise.v1.Event;
 import com.google.recaptchaenterprise.v1.ProjectName;
 import com.google.recaptchaenterprise.v1.RiskAnalysis.ClassificationReason;
-import com.google.recaptchaenterprise.v1.TokenProperties;
 import java.io.IOException;
 import java.util.List;
 
 public class CreateAssessment {
 
-  class AssessmentResponse {
-    List<ClassificationReason> reason;
-    double recaptchaScore;
-    String token;
+  static class AssessmentResponse {
 
-    public AssessmentResponse(List<ClassificationReason> reason, double recaptchaScore, String token) {
-      this.reason = reason;
+    double recaptchaScore;
+    List<ClassificationReason> reason;
+
+    public AssessmentResponse(double recaptchaScore, List<ClassificationReason> reason) {
       this.recaptchaScore = recaptchaScore;
-      this.token = token;
+      this.reason = reason;
     }
   }
 
-
   /**
-   * Create an assessment to analyze the risk of an UI action. Assessment approach is the same for
-   * both 'score' and 'checkbox' type recaptcha site keys.
-   *  @param projectID : GCloud Project ID
+   * Create an assessment to analyze the risk of an UI action.
+   *
+   * @param projectID : GCloud Project ID
    * @param recaptchaSiteKey : Site key obtained by registering a domain/app to use recaptcha
-   *     services. (score/ checkbox type)
-   * @param token : The token obtained from the client on passing the recaptchaSiteKey.
+   * services. (score/ checkbox type)
    * @param recaptchaAction : Action name corresponding to the token.
-   * @return
+   * @param token : The token obtained from the client on passing the recaptchaSiteKey.
    */
-  public AssessmentResponse createAssessment(
-      String projectID, String recaptchaSiteKey, String token, String recaptchaAction)
+  public static AssessmentResponse createAssessment(
+      String projectID, String recaptchaSiteKey, String recaptchaAction, String token)
       throws IOException {
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
 
@@ -68,34 +64,23 @@ public class CreateAssessment {
 
       Assessment response = client.createAssessment(createAssessmentRequest);
 
-      // Check integrity of the response token.
-      if (!checkTokenIntegrity(response.getTokenProperties(), recaptchaAction)) {
-        return null;
+      // Check if the token is valid.
+      if (!response.getTokenProperties().getValid()) {
+        throw new Error(
+            "The Create Assessment call failed because the token was invalid for the following reasons: "
+                + response.getTokenProperties().getInvalidReason().name());
       }
 
-      return new AssessmentResponse(response.getRiskAnalysis().getReasonsList(), response.getRiskAnalysis().getScore(), token);
+      // Check if the expected action was executed.
+      if (!recaptchaAction.isEmpty() && !response.getTokenProperties().getAction()
+          .equals(recaptchaAction)) {
+        throw new Error(
+            "The action attribute in your reCAPTCHA tag does not match the action you are expecting to score. Please check your action attribute !");
+      }
+
+      // Return the risk score and the reason(s).
+      return new AssessmentResponse(response.getRiskAnalysis().getScore(),
+          response.getRiskAnalysis().getReasonsList());
     }
   }
-
-  private static boolean checkTokenIntegrity(
-      TokenProperties tokenProperties, String recaptchaAction) {
-    // Check if the token is valid.
-    if (!tokenProperties.getValid()) {
-      System.out.println(
-          "The Create Assessment call failed because the token was: "
-              + tokenProperties.getInvalidReason().name());
-      return false;
-    }
-
-    // Check if the expected action was executed.
-    if (!recaptchaAction.isEmpty() && !tokenProperties.getAction().equals(recaptchaAction)) {
-      System.out.printf(
-          "The action attribute in the reCAPTCHA tag '%s' does not match "
-              + "the action '%s' you are expecting to score",
-          tokenProperties.getAction(), recaptchaAction);
-      return false;
-    }
-    return true;
-  }
-
 }

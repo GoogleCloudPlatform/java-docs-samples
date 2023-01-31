@@ -16,13 +16,13 @@
 
 package recaptcha;
 
-import java.io.IOException;
 import org.json.JSONObject;
 import recaptcha.CreateAssessment.AssessmentResponse;
 
 public class Recaptcha {
 
-  public static JSONObject execute(String projectId, JSONObject jsonObject) {
+  // Wrapper method for create assessment calls.
+  public static JSONObject executeCreateAssessment(String projectId, JSONObject jsonObject) {
     double sampleThresholdScore = 0.50;
     String verdict = "";
 
@@ -31,18 +31,13 @@ public class Recaptcha {
     String recaptchaToken = jsonObject.getJSONObject("recaptcha_cred").getString("token");
 
     try {
-      AssessmentResponse response = new CreateAssessment().createAssessment(projectId, recaptchaSiteKey, recaptchaToken, recaptchaAction);
-
-      if (response == null) {
-        return new JSONObject()
-            .put("error_msg", "Something happened! Please try again")
-            .put("success", "false");
-      }
+      AssessmentResponse response = CreateAssessment.createAssessment(projectId, recaptchaSiteKey,
+          recaptchaAction, recaptchaToken);
 
       if (response.recaptchaScore < sampleThresholdScore) {
         verdict = "Not a human";
       } else {
-        verdict = "human";
+        verdict = "Human";
       }
 
       JSONObject result = new JSONObject()
@@ -51,12 +46,10 @@ public class Recaptcha {
 
       return new JSONObject().put("data", result).put("success", "true");
 
-    } catch (IOException e) {
+    } catch (Exception | Error e) {
       return new JSONObject()
-          .put("error_msg", "Something happened! Please try again")
+          .put("error_msg", e)
           .put("success", "false");
     }
-
   }
-
 }
