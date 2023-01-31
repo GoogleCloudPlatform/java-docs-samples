@@ -30,7 +30,7 @@
   </parent>
 
   <properties>
-    <project.http.version>1.41.8</project.http.version>
+    <project.http.version>1.42.3</project.http.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <codehaus-exec-maven-plugin>1.6.0</codehaus-exec-maven-plugin>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -42,7 +42,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <executions>
           <execution>
             <goals>

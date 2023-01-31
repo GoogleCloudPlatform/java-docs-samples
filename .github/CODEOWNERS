@@ -21,3 +21,4 @@
 /asset/                         @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 /errorreporting/                @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 /monitoring/                    @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/retail/                        @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver

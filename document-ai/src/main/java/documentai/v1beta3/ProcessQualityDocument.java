@@ -20,6 +20,7 @@ package documentai.v1beta3;
 
 import com.google.cloud.documentai.v1beta3.Document;
 import com.google.cloud.documentai.v1beta3.DocumentProcessorServiceClient;
+import com.google.cloud.documentai.v1beta3.DocumentProcessorServiceSettings;
 import com.google.cloud.documentai.v1beta3.ProcessRequest;
 import com.google.cloud.documentai.v1beta3.ProcessResponse;
 import com.google.cloud.documentai.v1beta3.RawDocument;
@@ -45,10 +46,16 @@ public class ProcessQualityDocument {
   public static void processQualityDocument(
       String projectId, String location, String processorId, String filePath)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    try (DocumentProcessorServiceClient client = DocumentProcessorServiceClient.create()) {
+    // Initialize client that will be used to send requests. This client only needs
+    // to be created
+    // once, and can be reused for multiple requests. After completing all of your
+    // requests, call
+    // the "close" method on the client to safely clean up any remaining background
+    // resources.
+    String endpoint = String.format("%s-documentai.googleapis.com:443", location);
+    DocumentProcessorServiceSettings settings =
+        DocumentProcessorServiceSettings.newBuilder().setEndpoint(endpoint).build();
+    try (DocumentProcessorServiceClient client = DocumentProcessorServiceClient.create(settings)) {
       // The full resource name of the processor, e.g.:
       // projects/project-id/locations/location/processor/processor-id
       // You must create new processors in the Cloud Console first

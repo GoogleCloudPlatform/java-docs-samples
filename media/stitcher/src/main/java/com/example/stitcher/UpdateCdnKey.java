@@ -18,10 +18,10 @@ package com.example.stitcher;
 
 // [START videostitcher_update_cdn_key]
 
-import com.google.cloud.video.stitcher.v1.AkamaiCdnKey;
 import com.google.cloud.video.stitcher.v1.CdnKey;
 import com.google.cloud.video.stitcher.v1.CdnKeyName;
 import com.google.cloud.video.stitcher.v1.GoogleCdnKey;
+import com.google.cloud.video.stitcher.v1.MediaCdnKey;
 import com.google.cloud.video.stitcher.v1.UpdateCdnKeyRequest;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
 import com.google.protobuf.ByteString;
@@ -34,27 +34,27 @@ public class UpdateCdnKey {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
-    String cdnKeyId = "my-cdn-key-id2";
+    String cdnKeyId = "my-updated-cdn-key-id";
     String hostname = "updated.example.com";
-    String gcdnKeyname = "my-gcdn-key";
-    String gcdnPrivateKey = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg"; // will be converted to a byte string
-    String akamaiTokenKey = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg"; // will be converted to a byte string
+    String keyName = "my-key";
+    // To create a privateKey value for Media CDN, see
+    // https://cloud.google.com/video-stitcher/docs/how-to/managing-cdn-keys#create-private-key-media-cdn.
+    String privateKey = "my-updated-private-key"; // will be converted to a byte string
+    Boolean isMediaCdn = true;
 
-    updateCdnKey(
-        projectId, location, cdnKeyId, hostname, gcdnKeyname, gcdnPrivateKey, akamaiTokenKey);
+    updateCdnKey(projectId, location, cdnKeyId, hostname, keyName, privateKey, isMediaCdn);
   }
 
-  // updateCdnKey updates the hostname and key fields for an existing CDN key. If akamaiTokenKey is
-  // provided, then update the existing Akamai key fields. If akamaiTokenKey is not provided (""),
-  // then update the existing Cloud CDN key fields. Update hostname regardless of key type.
+  // updateCdnKey updates the hostname and key fields for an existing Media CDN key or Cloud
+  // CDN key.
   public static void updateCdnKey(
       String projectId,
       String location,
       String cdnKeyId,
       String hostname,
-      String gcdnKeyname,
-      String gcdnPrivateKey,
-      String akamaiTokenKey)
+      String keyName,
+      String privateKey,
+      Boolean isMediaCdn)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -63,15 +63,16 @@ public class UpdateCdnKey {
         VideoStitcherServiceClient.create()) {
       CdnKey cdnKey;
       String path;
-      if (akamaiTokenKey != "") {
-        path = "akamai_cdn_key";
+      if (isMediaCdn) {
+        path = "media_cdn_key";
         cdnKey =
             CdnKey.newBuilder()
                 .setName(CdnKeyName.of(projectId, location, cdnKeyId).toString())
                 .setHostname(hostname)
-                .setAkamaiCdnKey(
-                    AkamaiCdnKey.newBuilder()
-                        .setTokenKey(ByteString.copyFromUtf8(akamaiTokenKey))
+                .setMediaCdnKey(
+                    MediaCdnKey.newBuilder()
+                        .setKeyName(keyName)
+                        .setPrivateKey(ByteString.copyFromUtf8(privateKey))
                         .build())
                 .build();
       } else {
@@ -82,8 +83,8 @@ public class UpdateCdnKey {
                 .setHostname(hostname)
                 .setGoogleCdnKey(
                     GoogleCdnKey.newBuilder()
-                        .setKeyName(gcdnKeyname)
-                        .setPrivateKey(ByteString.copyFromUtf8(gcdnPrivateKey))
+                        .setKeyName(keyName)
+                        .setPrivateKey(ByteString.copyFromUtf8(privateKey))
                         .build())
                 .build();
       }
@@ -91,8 +92,8 @@ public class UpdateCdnKey {
       UpdateCdnKeyRequest updateCdnKeyRequest =
           UpdateCdnKeyRequest.newBuilder()
               .setCdnKey(cdnKey)
-              // Update the hostname field and the fields for the specific key type (Cloud CDN
-              // or Akamai). You must set the mask to the fields you want to update.
+              // Update the hostname field and the fields for the specific key type (Media CDN
+              // or Cloud CDN). You must set the mask to the fields you want to update.
               .setUpdateMask(FieldMask.newBuilder().addPaths("hostname").addPaths(path).build())
               .build();
 

@@ -128,11 +128,13 @@ public class ApplicationTests {
         "services",
         "delete",
         service,
+        "--quiet",
         "--region=us-central1",
         "--project=" + project);
 
     System.out.println("Deleting Cloud Run service: " + service);
-    delete.start();
+    Process p = delete.start();
+    p.waitFor(5, TimeUnit.MINUTES);
   }
 
   public Response authenticatedRequest(String url) throws IOException {

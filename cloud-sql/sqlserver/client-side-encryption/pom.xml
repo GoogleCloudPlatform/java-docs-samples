@@ -62,12 +62,12 @@
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.41.8</version>
+      <version>1.42.3</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>cloud-sql-connector-jdbc-sqlserver</artifactId>
-      <version>1.7.1</version>
+      <version>1.8.3</version>
     </dependency>
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>

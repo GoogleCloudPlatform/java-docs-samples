@@ -24,7 +24,6 @@ import com.google.api.gax.rpc.NotFoundException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -36,17 +35,16 @@ import org.junit.runners.JUnit4;
 public class CreateCdnKeyTest {
 
   private static final String LOCATION = "us-central1";
-  private static final String GCDN_KEY_ID =
-      "my-test-google-cdn-key-" + UUID.randomUUID().toString().substring(0, 25);
-  private static final String AKAMAI_KEY_ID =
-      "my-test-akamai-cdn-key-" + UUID.randomUUID().toString().substring(0, 25);
+  private static final String CLOUD_CDN_KEY_ID = TestUtils.getCdnKeyId();
+  private static final String MEDIA_CDN_KEY_ID = TestUtils.getCdnKeyId();
   private static final String HOSTNAME = "cdn.example.com";
-  private static final String GCDN_KEYNAME = "gcdn-key"; // field in the GCDN key
-  private static final String GCDN_PRIVATE_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
-  private static final String AKAMAI_TOKEN_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
+  private static final String KEYNAME = "my-key"; // field in the key
+  private static final String CLOUD_CDN_PRIVATE_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
+  private static final String MEDIA_CDN_PRIVATE_KEY =
+      "MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxzg5MDEyMzQ1Njc4OTAxMjM0NTY3DkwMTIzNA";
   private static String PROJECT_ID;
-  private static String GCDN_KEY_NAME; // resource name for the Google CDN key
-  private static String AKAMAI_KEY_NAME; // resource name for the Akamai CDN key
+  private static String CLOUD_CDN_KEY_NAME; // resource name for the Cloud CDN key
+  private static String MEDIA_CDN_KEY_NAME; // resource name for the Media CDN key
   private static PrintStream originalOut;
   private ByteArrayOutputStream bout;
 
@@ -65,20 +63,21 @@ public class CreateCdnKeyTest {
 
   @Before
   public void beforeTest() throws IOException {
+    TestUtils.cleanStaleCdnKeys(PROJECT_ID, LOCATION);
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
-    // Google CDN key
-    GCDN_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", LOCATION, GCDN_KEY_ID);
+    // Cloud CDN key
+    CLOUD_CDN_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", LOCATION, CLOUD_CDN_KEY_ID);
     try {
-      DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, GCDN_KEY_ID);
+      DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID);
     } catch (NotFoundException e) {
       // Don't worry if the key doesn't already exist.
     }
-    // Akamai CDN key
-    AKAMAI_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", LOCATION, AKAMAI_KEY_ID);
+    // Media CDN key
+    MEDIA_CDN_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", LOCATION, MEDIA_CDN_KEY_ID);
     try {
-      DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, AKAMAI_KEY_ID);
+      DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID);
     } catch (NotFoundException e) {
       // Don't worry if the key doesn't already exist.
     }
@@ -87,27 +86,27 @@ public class CreateCdnKeyTest {
 
   @Test
   public void test_CreateCdnKey() throws IOException {
-    // Google CDN key
+    // Cloud CDN key
     CreateCdnKey.createCdnKey(
-        PROJECT_ID, LOCATION, GCDN_KEY_ID, HOSTNAME, GCDN_KEYNAME, GCDN_PRIVATE_KEY, "");
+        PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID, HOSTNAME, KEYNAME, CLOUD_CDN_PRIVATE_KEY, false);
     String output = bout.toString();
-    assertThat(output, containsString(GCDN_KEY_NAME));
+    assertThat(output, containsString(CLOUD_CDN_KEY_NAME));
     bout.reset();
 
-    // Akamai CDN key
+    // Media CDN key
     CreateCdnKey.createCdnKey(
-        PROJECT_ID, LOCATION, AKAMAI_KEY_ID, HOSTNAME, "", "", AKAMAI_TOKEN_KEY);
+        PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID, HOSTNAME, KEYNAME, MEDIA_CDN_PRIVATE_KEY, true);
     output = bout.toString();
-    assertThat(output, containsString(AKAMAI_KEY_NAME));
+    assertThat(output, containsString(MEDIA_CDN_KEY_NAME));
     bout.reset();
   }
 
   @After
   public void tearDown() throws IOException {
-    // Google CDN key
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, GCDN_KEY_ID);
-    // Akamai CDN key
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, AKAMAI_KEY_ID);
+    // Cloud CDN key
+    DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID);
+    // Media CDN key
+    DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID);
     System.setOut(originalOut);
     bout.reset();
   }

@@ -37,7 +37,7 @@ limitations under the License.
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <executions>
           <execution>
             <goals>
@@ -76,7 +76,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.41.8</version>
+      <version>1.42.3</version>
     </dependency>        
   </dependencies>
 </project>

@@ -44,31 +44,36 @@ public class QuickstartSample {
   public static void quickStartSample(
       String projectId, String gcsSourceBucket, String gcsSinkBucket) throws Exception {
 
-    StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create();
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources,
+    // or use "try-with-close" statement to do this automatically.
+    try (StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create()) {
 
-    TransferJob transferJob =
-        TransferJob.newBuilder()
-            .setProjectId(projectId)
-            .setTransferSpec(
-                TransferSpec.newBuilder()
-                    .setGcsDataSource(GcsData.newBuilder().setBucketName(gcsSourceBucket))
-                    .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket)))
-            .setStatus(TransferJob.Status.ENABLED)
-            .build();
+      TransferJob transferJob =
+          TransferJob.newBuilder()
+              .setProjectId(projectId)
+              .setTransferSpec(
+                  TransferSpec.newBuilder()
+                      .setGcsDataSource(GcsData.newBuilder().setBucketName(gcsSourceBucket))
+                      .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket)))
+              .setStatus(TransferJob.Status.ENABLED)
+              .build();
 
-    TransferJob response =
-        storageTransfer.createTransferJob(
-            CreateTransferJobRequest.newBuilder().setTransferJob(transferJob).build());
+      TransferJob response =
+          storageTransfer.createTransferJob(
+              CreateTransferJobRequest.newBuilder().setTransferJob(transferJob).build());
 
-    storageTransfer
-        .runTransferJobAsync(
-            RunTransferJobRequest.newBuilder()
-                .setProjectId(projectId)
-                .setJobName(response.getName())
-                .build())
-        .get();
-    System.out.println(
-        "Created and ran transfer job between two GCS buckets with name " + response.getName());
+      storageTransfer
+          .runTransferJobAsync(
+              RunTransferJobRequest.newBuilder()
+                  .setProjectId(projectId)
+                  .setJobName(response.getName())
+                  .build())
+          .get();
+      System.out.println(
+          "Created and ran transfer job between two GCS buckets with name " + response.getName());
+    }
   }
 }
 // [END storagetransfer_quickstart]

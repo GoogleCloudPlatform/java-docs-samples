@@ -103,7 +103,7 @@ public class AutoLabelInstance implements CloudEventsFunction {
                         .build())
                 .build();
 
-        instancesClient.setLabels(setLabelRequest);
+        instancesClient.setLabelsAsync(setLabelRequest);
         logger.info(
             String.format(
                 "Adding label, \"{'creator': '%s'}\", to instance, \"%s\".",
