@@ -34,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -265,6 +266,7 @@ public class SnippetsIT {
     CreateMfaAssessment.createMfaAssessment(PROJECT_ID, RECAPTCHA_SITE_KEY_1,
         "fwdgk0kcg1W0mbpetYlgTZKyrp4IHKzjgRkb6vLNZeBQhWdR3a", "login", hashedAccountId,
         "foo@bar.com", "+11111111111");
+    assertThat(stdOut.toString()).isIn(List.of("Result unspecified", "MFA result"));
   }
 
   public JSONObject createAssessment(

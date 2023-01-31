@@ -73,7 +73,7 @@ public class CreateMfaAssessment {
 
   // Creates an assessment to obtain Multi-Factor Authentication result.
   // If the result is unspecified, sends the request token to the caller to initiate MFA challenge.
-  public static String createMfaAssessment(
+  public static void createMfaAssessment(
       String projectID, String recaptchaSiteKey, String token, String recaptchaAction,
       ByteString hashedAccountId, String emailId, String phoneNumber)
       throws IOException {
@@ -120,12 +120,13 @@ public class CreateMfaAssessment {
       if (response.getAccountVerification().getLatestVerificationResult()
           == Result.RESULT_UNSPECIFIED) {
         // Send the request token for assessment. The token is valid for 15 minutes.
-        return response.getAccountVerification().getEndpoints(0).getRequestToken();
+        System.out.println("Result unspecified. Triggering MFA challenge.");
+        // System.out.println(response.getAccountVerification().getEndpoints(0).getRequestToken());
       }
 
       // If the result is not unspecified, return the result.
-      return (String.format("MFA result: %s",
-          response.getAccountVerification().getLatestVerificationResult()));
+      System.out.printf("MFA result: %s%n",
+          response.getAccountVerification().getLatestVerificationResult());
     }
   }
 
