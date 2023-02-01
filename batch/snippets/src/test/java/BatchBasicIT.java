@@ -77,8 +77,8 @@ public class BatchBasicIT {
                 "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, SCRIPT_JOB_NAME));
     TimeUnit.SECONDS.sleep(10);
 
-    Util.waitForJobCompletion(Util.getJob(CONTAINER_JOB_NAME, PROJECT_ID, REGION));
-    Util.waitForJobCompletion(Util.getJob(SCRIPT_JOB_NAME, PROJECT_ID, REGION));
+    Util.waitForJobCompletion(Util.getJob(PROJECT_ID, REGION, CONTAINER_JOB_NAME));
+    Util.waitForJobCompletion(Util.getJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME));
 
     stdOut.close();
     System.setOut(out);
