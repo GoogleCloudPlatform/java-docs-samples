@@ -218,6 +218,6 @@ public class BatchTemplateIT {
     CreateWithTemplate.createWithTemplate(PROJECT_ID, REGION, SCRIPT_JOB_NAME,
         INSTANCE_TEMPLATE.getSelfLink());
     assertThat(stdOut.toString()).contains("Successfully created the job: ");
+    Util.waitForJobCompletion(Util.getJob(SCRIPT_JOB_NAME, PROJECT_ID, REGION));
   }
-
 }

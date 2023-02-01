@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import static com.google.common.truth.Truth.assertThat;
+
+import com.google.cloud.batch.v1.BatchServiceClient;
+import com.google.cloud.batch.v1.Job;
+import com.google.cloud.batch.v1.JobName;
+import com.google.cloud.batch.v1.JobStatus.State;
 import com.google.cloud.compute.v1.DeleteInstanceTemplateRequest;
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
@@ -21,6 +27,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -28,6 +35,8 @@ import java.util.concurrent.TimeoutException;
 public class Util {
 
   private static final int DELETION_THRESHOLD_TIME_HOURS = 24;
+  private static final List<State> WAIT_STATES = List.of(State.STATE_UNSPECIFIED, State.QUEUED,
+      State.RUNNING, State.SCHEDULED);
 
   // Delete templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
@@ -77,5 +86,32 @@ public class Util {
       instanceTemplatesClient.deleteAsync(deleteInstanceTemplateRequest)
           .get(3, TimeUnit.MINUTES);
     }
+  }
+
+  public static Job getJob(String projectId, String region, String jobName) throws IOException {
+    try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {
+      return
+          batchServiceClient.getJob(
+              JobName.newBuilder()
+                  .setProject(projectId)
+                  .setLocation(region)
+                  .setJob(jobName)
+                  .build());
+    }
+  }
+
+  public static void waitForJobCompletion(Job job)
+      throws IOException, InterruptedException {
+    String[] jobName = job.getName().split("/");
+    Instant startTime = Instant.now();
+    while (WAIT_STATES.contains(job.getStatus().getState())) {
+      if (Instant.now().getEpochSecond() - startTime.getEpochSecond() > 300) {
+        throw new Error("Timed out waiting for operation to complete.");
+      }
+      job = getJob(jobName[1], jobName[3], jobName[5]);
+      TimeUnit.SECONDS.sleep(5);
+    }
+    job = getJob(jobName[1], jobName[3], job.getName().split("/")[5]);
+    assertThat(job.getStatus().getState() == State.SUCCEEDED);
   }
 }
