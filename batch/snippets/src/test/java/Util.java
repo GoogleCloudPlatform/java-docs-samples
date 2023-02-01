@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -35,8 +37,8 @@ import java.util.concurrent.TimeoutException;
 public class Util {
 
   private static final int DELETION_THRESHOLD_TIME_HOURS = 24;
-  private static final List<State> WAIT_STATES = List.of(State.STATE_UNSPECIFIED, State.QUEUED,
-      State.RUNNING, State.SCHEDULED);
+  private static final List<State> WAIT_STATES = new ArrayList<>(
+      Arrays.asList(State.STATE_UNSPECIFIED, State.QUEUED, State.RUNNING, State.SCHEDULED));
 
   // Delete templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
