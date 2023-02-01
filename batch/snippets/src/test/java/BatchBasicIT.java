@@ -68,14 +68,17 @@ public class BatchBasicIT {
         .contains(
             "Successfully created the job: "
                 + String.format(
-                    "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, CONTAINER_JOB_NAME));
+                "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, CONTAINER_JOB_NAME));
     CreateWithScriptNoMounting.createScriptJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
     assertThat(stdOut.toString())
         .contains(
             "Successfully created the job: "
                 + String.format(
-                    "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, SCRIPT_JOB_NAME));
+                "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, SCRIPT_JOB_NAME));
     TimeUnit.SECONDS.sleep(10);
+
+    Util.waitForJobCompletion(Util.getJob(CONTAINER_JOB_NAME, PROJECT_ID, REGION));
+    Util.waitForJobCompletion(Util.getJob(SCRIPT_JOB_NAME, PROJECT_ID, REGION));
 
     stdOut.close();
     System.setOut(out);

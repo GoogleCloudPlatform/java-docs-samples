@@ -15,16 +15,17 @@
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.batch.v1.Job;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageClass;
 import com.google.cloud.storage.StorageOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.Base64;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +45,6 @@ public class BatchBucketIT {
   private static final String REGION = "europe-north1";
   private static String SCRIPT_JOB_NAME;
   private static String BUCKET_NAME;
-
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
@@ -81,6 +81,16 @@ public class BatchBucketIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
+    // Delete bucket.
+    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
+    Bucket bucket = storage.get(BUCKET_NAME);
+    for (Blob blob : storage.list(bucket.getName()).iterateAll()) {
+      storage.delete(blob.getBlobId());
+    }
+    storage.delete(bucket.getName());
+    System.out.println("Bucket " + bucket.getName() + " was deleted");
+
+    // Delete job.
     DeleteJob.deleteJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
 
     stdOut.close();
@@ -88,8 +98,14 @@ public class BatchBucketIT {
   }
 
   private static void createBucket(String bucketName) {
-    Storage storage = StorageOptions.getDefaultInstance().getService();
-    storage.create(BucketInfo.of(bucketName));
+    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
+    StorageClass storageClass = StorageClass.COLDLINE;
+    String location = "US";
+    storage.create(
+        BucketInfo.newBuilder(bucketName)
+            .setStorageClass(storageClass)
+            .setLocation(location)
+            .build());
   }
 
   @Before
@@ -109,19 +125,22 @@ public class BatchBucketIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateWithMountedBucket.createScriptJobWithBucket(PROJECT_ID, REGION, SCRIPT_JOB_NAME,
         BUCKET_NAME);
+    Job job = Util.getJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
+    Util.waitForJobCompletion(job);
     assertThat(stdOut.toString()).contains("Successfully created the job");
     testBucketContent();
   }
 
   public void testBucketContent() {
     String fileNameTemplate = "output_task_%s.txt";
-    String fileContentTemplate = "Hello world from task {task_number}.\n";
+    String fileContentTemplate;
 
     Storage storage = StorageOptions.getDefaultInstance().getService();
     Bucket bucket = storage.get(BUCKET_NAME);
     for (int i = 0; i < 4; i++) {
+      fileContentTemplate = String.format("Hello world from task %s.\n", i);
       Blob blob = bucket.get(String.format(fileNameTemplate, i));
-      String content = Arrays.toString(Base64.getDecoder().decode(blob.getContent()));
+      String content = new String(blob.getContent(), StandardCharsets.UTF_8);
       assertThat(fileContentTemplate).matches(content);
     }
   }
