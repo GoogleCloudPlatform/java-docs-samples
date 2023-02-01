@@ -136,7 +136,8 @@ public class BatchBasicIT {
                   .build());
     }
     ReadJobLogs.readJobLogs(PROJECT_ID, job);
-    assertThat(stdOut.toString()).contains("STDOUT");
+    assertThat(stdOut.toString()).contains(
+        "Hello world! This is task 1. This job has a total of 4 tasks.");
   }
 
   @Test
