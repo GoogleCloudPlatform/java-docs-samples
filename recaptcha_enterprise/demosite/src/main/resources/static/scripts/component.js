@@ -385,10 +385,10 @@ class RecaptchaDemo extends LitElement {
         --content-bottom: calc(100vh - var(--castle-bottom));
         --land-content-bottom: calc(100vh - var(--land-bottom));
         background: 
-          /* castle */ url("../static/images/castle-alternate-unoptimized.svg")
+          /* castle */ url("/images/castle-alternate-unoptimized.svg")
             center var(--content-bottom) / auto var(--castle-bottom) no-repeat
             fixed,
-          /* land */ url("../static/images/land-unoptimized.svg") center
+          /* land */ url("/images/land-unoptimized.svg") center
             var(--land-content-bottom) / auto var(--land-bottom) no-repeat fixed,
           /* pink */
             radial-gradient(
@@ -1346,7 +1346,7 @@ class RecaptchaDemo extends LitElement {
                 <dt>
                   <img
                     alt="Demo Product Hydrant"
-                    src="../static/images/item-hydrant-unoptimized.svg"
+                    src="/images/item-hydrant-unoptimized.svg"
                   />
                 </dt>
                 <dd>Hydrant</dd>
@@ -1361,7 +1361,7 @@ class RecaptchaDemo extends LitElement {
                 <dt>
                   <img
                     alt="Demo Product Stoplight"
-                    src="../static/images/item-stoplight-unoptimized.svg"
+                    src="/images/item-stoplight-unoptimized.svg"
                   />
                 </dt>
                 <dd>Stoplight</dd>
@@ -1517,7 +1517,7 @@ class RecaptchaDemo extends LitElement {
     return html`
       <div id="verdict">
         <div id="score">
-          <img alt="Human" src="../static/images/human-color-unoptimized.svg" />
+          <img alt="Human" src="/images/human-color-unoptimized.svg" />
           <dl class="unstyled">
             <dt>Score</dt>
             <dd class="score">
