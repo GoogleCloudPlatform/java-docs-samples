@@ -21,39 +21,33 @@ import com.google.recaptchaenterprise.v1.Assessment;
 import com.google.recaptchaenterprise.v1.CreateAssessmentRequest;
 import com.google.recaptchaenterprise.v1.Event;
 import com.google.recaptchaenterprise.v1.ProjectName;
-import com.google.recaptchaenterprise.v1.RiskAnalysis.ClassificationReason;
 import java.io.IOException;
-import java.util.List;
+import org.json.JSONObject;
 
 public class CreateAssessment {
 
-  static class AssessmentResponse {
-
-    double recaptchaScore;
-    List<ClassificationReason> reason;
-
-    public AssessmentResponse(double recaptchaScore, List<ClassificationReason> reason) {
-      this.recaptchaScore = recaptchaScore;
-      this.reason = reason;
-    }
-  }
-
   /**
-   * Create an assessment to analyze the risk of an UI action.
+   * Create an assessment to analyze the risk of a UI action.
    *
    * @param projectID : GCloud Project ID
    * @param recaptchaSiteKey : Site key obtained by registering a domain/app to use recaptcha
    * services. (score/ checkbox type)
-   * @param recaptchaAction : Action name corresponding to the token.
    * @param token : The token obtained from the client on passing the recaptchaSiteKey.
+   * @param recaptchaAction : Action name corresponding to the token.
    */
-  public static AssessmentResponse createAssessment(
-      String projectID, String recaptchaSiteKey, String recaptchaAction, String token)
+  public static JSONObject createAssessment(
+      String projectID, String recaptchaSiteKey, String token, String recaptchaAction)
       throws IOException {
-    try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
+    double sampleThresholdScore = 0.50;
+    String verdict = "";
 
+    // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Starts -->
+    try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
       // Set the properties of the event to be tracked.
-      Event event = Event.newBuilder().setSiteKey(recaptchaSiteKey).setToken(token).build();
+      Event event = Event.newBuilder()
+          .setSiteKey(recaptchaSiteKey)
+          .setToken(token)
+          .build();
 
       // Build the assessment request.
       CreateAssessmentRequest createAssessmentRequest =
@@ -75,12 +69,19 @@ public class CreateAssessment {
       if (!recaptchaAction.isEmpty() && !response.getTokenProperties().getAction()
           .equals(recaptchaAction)) {
         throw new Error(
-            "The action attribute in your reCAPTCHA tag does not match the action you are expecting to score. Please check your action attribute !");
+            "The action attribute in your reCAPTCHA tag does not match the action you are expecting"
+                + " to score. Please check your action attribute !");
       }
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Ends -->
 
-      // Return the risk score and the reason(s).
-      return new AssessmentResponse(response.getRiskAnalysis().getScore(),
-          response.getRiskAnalysis().getReasonsList());
+      // Return the result to client.
+      verdict =
+          response.getRiskAnalysis().getScore() < sampleThresholdScore ? "Not a human" : "Human";
+      JSONObject result = new JSONObject()
+          .put("score", response.getRiskAnalysis().getScore())
+          .put("verdict", verdict);
+
+      return new JSONObject().put("data", result).put("success", "true");
     }
   }
 }
