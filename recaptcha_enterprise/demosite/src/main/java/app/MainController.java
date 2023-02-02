@@ -22,7 +22,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import recaptcha.Recaptcha;
+import recaptcha.CreateAssessment;
 
 @RestController
 @RequestMapping
@@ -77,10 +76,23 @@ public class MainController {
   @PostMapping(value = "/create_assessment", produces = "application/json")
   public static @ResponseBody
   ResponseEntity<String> createAssessment(@RequestBody String json) {
+    String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
     JSONObject jsonObject = new JSONObject(new JSONTokener(json));
-    // Create Assessment call.
-    JSONObject result = Recaptcha.executeCreateAssessment(System.getenv("GOOGLE_CLOUD_PROJECT"),
-        jsonObject);
+    JSONObject credentials = jsonObject.getJSONObject("recaptcha_cred");
+    JSONObject result;
+
+    try {
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
+      result = CreateAssessment.createAssessment(projectId,
+          credentials.getString("sitekey"),
+          credentials.getString("token"),
+          credentials.getString("action"));
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
+    } catch (Exception | Error e) {
+      result = new JSONObject()
+          .put("error_msg", e)
+          .put("success", "false");
+    }
 
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
