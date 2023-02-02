@@ -24,23 +24,16 @@ import account_defender.AnnotateAccountDefenderAssessment;
 import account_defender.ListRelatedAccountGroupMemberships;
 import account_defender.ListRelatedAccountGroups;
 import account_defender.SearchRelatedAccountGroupMemberships;
+import app.Util;
 import com.google.protobuf.ByteString;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.Duration;
-import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -50,18 +43,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.util.UriComponentsBuilder;
 import recaptcha.AnnotateAssessment;
 import recaptcha.GetMetrics;
 import recaptcha.mfa.CreateMfaAssessment;
@@ -75,7 +61,6 @@ public class SnippetsIT {
   private static final String DOMAIN_NAME = "localhost";
   private static String RECAPTCHA_SITE_KEY_1 = "recaptcha-site-key1";
   private static String RECAPTCHA_SITE_KEY_2 = "recaptcha-site-key2";
-  private static WebDriver browser;
   @LocalServerPort
   private int randomServerPort;
   private ByteArrayOutputStream stdOut;
@@ -96,10 +81,6 @@ public class SnippetsIT {
     RECAPTCHA_SITE_KEY_1 = recaptcha.CreateSiteKey.createSiteKey(PROJECT_ID, DOMAIN_NAME);
     RECAPTCHA_SITE_KEY_2 = recaptcha.CreateSiteKey.createSiteKey(PROJECT_ID, DOMAIN_NAME);
     TimeUnit.SECONDS.sleep(5);
-
-    // Set Selenium Driver to Chrome.
-    WebDriverManager.chromedriver().setup();
-    browser = new ChromeDriver();
   }
 
   @AfterClass
@@ -111,27 +92,8 @@ public class SnippetsIT {
     recaptcha.DeleteSiteKey.deleteSiteKey(PROJECT_ID, RECAPTCHA_SITE_KEY_1);
     assertThat(stdOut.toString()).contains("reCAPTCHA Site key successfully deleted !");
 
-    browser.quit();
-
     stdOut.close();
     System.setOut(null);
-  }
-
-  @Test
-  public void testCreateAnnotateAssessment()
-      throws JSONException, IOException, InterruptedException, NoSuchAlgorithmException,
-      ExecutionException {
-    // Create an assessment.
-    String testURL = "http://localhost:" + randomServerPort + "/";
-    JSONObject createAssessmentResult =
-        createAssessment(testURL, ByteString.EMPTY, AssessmentType.ASSESSMENT);
-    String assessmentName = createAssessmentResult.getString("assessmentName");
-    // Verify that the assessment name has been modified post the assessment creation.
-    assertThat(assessmentName).isNotEmpty();
-
-    // Annotate the assessment.
-    AnnotateAssessment.annotateAssessment(PROJECT_ID, assessmentName);
-    assertThat(stdOut.toString()).contains("Annotated response sent successfully ! ");
   }
 
   @Before
@@ -180,42 +142,60 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testGetMetrics() throws IOException {
+    GetMetrics.getMetrics(PROJECT_ID, RECAPTCHA_SITE_KEY_1);
+    assertThat(stdOut.toString())
+        .contains("Retrieved the bucket count for score based key: " + RECAPTCHA_SITE_KEY_1);
+  }
+
+  @Test
+  public void testCreateAnnotateAssessment()
+      throws JSONException, IOException, InterruptedException {
+    String testURL = "http://localhost:" + randomServerPort + "/";
+    JSONObject tokenActionPair = Util.initiateBrowserTest(testURL, RECAPTCHA_SITE_KEY_1);
+
+    recaptcha.CreateAssessment.createAssessment(
+        PROJECT_ID,
+        RECAPTCHA_SITE_KEY_1,
+        tokenActionPair.getString("token"),
+        tokenActionPair.getString("action"));
+
+    assertThat(stdOut.toString()).contains("Assessment name: ");
+    assertThat(stdOut.toString()).contains("The reCAPTCHA score is: ");
+    String assessmentName = Util.getAssessmentName(stdOut.toString());
+    assertThat(assessmentName).isNotEmpty();
+
+    // Annotate the assessment.
+    AnnotateAssessment.annotateAssessment(PROJECT_ID, assessmentName);
+    assertThat(stdOut.toString()).contains("Annotated response sent successfully ! ");
+  }
+
+  @Test
   public void testCreateAnnotateAccountDefender()
-      throws JSONException, IOException, InterruptedException, NoSuchAlgorithmException,
-      ExecutionException, InvalidKeyException {
+      throws JSONException, IOException, NoSuchAlgorithmException, InvalidKeyException, InterruptedException {
 
     String testURL = "http://localhost:" + randomServerPort + "/";
-
-    // Secret not shared with Google.
-    String HMAC_KEY = "123456789";
-    // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
-    // secret key.
-    Mac mac = Mac.getInstance("HmacSHA256");
-    SecretKeySpec secretKeySpec = new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
-        "HmacSHA256");
-    mac.init(secretKeySpec);
-    byte[] hashBytes = mac.doFinal(
-        ("default-" + UUID.randomUUID().toString().split("-")[0])
-            .getBytes(StandardCharsets.UTF_8));
-    ByteString hashedAccountId = ByteString.copyFrom(hashBytes);
+    ByteString hashedAccountId = Util.createHashedAccountId();
 
     // Create the assessment.
-    JSONObject createAssessmentResult =
-        createAssessment(testURL, hashedAccountId, AssessmentType.ACCOUNT_DEFENDER);
-    String assessmentName = createAssessmentResult.getString("assessmentName");
-    // Verify that the assessment name has been modified post the assessment creation.
+    JSONObject tokenActionPair = Util.initiateBrowserTest(testURL, RECAPTCHA_SITE_KEY_1);
+    AccountDefenderAssessment.accountDefenderAssessment(
+        PROJECT_ID,
+        RECAPTCHA_SITE_KEY_1,
+        tokenActionPair.getString("token"),
+        tokenActionPair.getString("action"),
+        hashedAccountId);
+    String response = stdOut.toString();
+    assertThat(response).contains("Assessment name: ");
+    assertThat(response).contains("The reCAPTCHA score is: ");
+    assertThat(response).contains("Account Defender Assessment Result: ");
+    String assessmentName = Util.getAssessmentName(response);
     assertThat(assessmentName).isNotEmpty();
 
     // Annotate the assessment.
     AnnotateAccountDefenderAssessment.annotateAssessment(
         PROJECT_ID, assessmentName, hashedAccountId);
     assertThat(stdOut.toString()).contains("Annotated response sent successfully ! ");
-
-    // NOTE: The below assert statements have no significant effect,
-    // since reCAPTCHA doesn't generate response.
-    // To generate response, reCAPTCHA needs a threshold number of unique userIdentifier points
-    // to cluster results.
-    // Hence, re-running the test 'n' times is currently out of scope.
 
     // List related account groups in the project.
     ListRelatedAccountGroups.listRelatedAccountGroups(PROJECT_ID);
@@ -235,146 +215,31 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testGetMetrics() throws IOException {
-    GetMetrics.getMetrics(PROJECT_ID, RECAPTCHA_SITE_KEY_1);
-    assertThat(stdOut.toString())
-        .contains("Retrieved the bucket count for score based key: " + RECAPTCHA_SITE_KEY_1);
-  }
-
-  @Test
   public void testPasswordLeakAssessment()
       throws JSONException, IOException, ExecutionException, InterruptedException {
     String testURL = "http://localhost:" + randomServerPort + "/";
-    createAssessment(testURL, ByteString.EMPTY, AssessmentType.PASSWORD_LEAK);
-    assertThat(stdOut.toString()).contains("Is Credential leaked: ");
+    JSONObject tokenActionPair = Util.initiateBrowserTest(testURL, RECAPTCHA_SITE_KEY_1);
+
+    passwordleak.CreatePasswordLeakAssessment.checkPasswordLeak(
+        PROJECT_ID,
+        RECAPTCHA_SITE_KEY_1,
+        tokenActionPair.getString("token"),
+        tokenActionPair.getString("action"));
+
+    assertThat(stdOut.toString()).contains("Assessment name: ");
+    assertThat(stdOut.toString()).contains("The reCAPTCHA score is: ");
   }
 
   @Test
   public void testMultiFactorAuthenticationAssessment()
-      throws NoSuchAlgorithmException, InvalidKeyException, IOException {
-    String userIdentifier = "Alice Bob";
-    // Change this to a secret not shared with Google.
-    final String HMAC_KEY = "SOME_INTERNAL_UNSHARED_KEY";
-    // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
-    // secret key.
-    Mac mac = Mac.getInstance("HmacSHA256");
-    mac.init(new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
-        "HmacSHA256"));
-    byte[] hashBytes = mac.doFinal(userIdentifier.getBytes(StandardCharsets.UTF_8));
-    ByteString hashedAccountId = ByteString.copyFrom(hashBytes);
+      throws IOException, JSONException, NoSuchAlgorithmException, InvalidKeyException, InterruptedException {
+    ByteString hashedAccountId = Util.createHashedAccountId();
+    String testURL = "http://localhost:" + randomServerPort + "/";
+    JSONObject tokenActionPair = Util.initiateBrowserTest(testURL, RECAPTCHA_SITE_KEY_1);
 
     CreateMfaAssessment.createMfaAssessment(PROJECT_ID, RECAPTCHA_SITE_KEY_1,
-        "fwdgk0kcg1W0mbpetYlgTZKyrp4IHKzjgRkb6vLNZeBQhWdR3a", "login", hashedAccountId,
-        "foo@bar.com", "+11111111111");
-    assertThat(stdOut.toString()).isIn(List.of("Result unspecified", "MFA result"));
-  }
-
-  public JSONObject createAssessment(
-      String testURL, ByteString hashedAccountId, AssessmentType assessmentType)
-      throws IOException, JSONException, InterruptedException, ExecutionException {
-
-    // Setup the automated browser test and retrieve the token and action.
-    JSONObject tokenActionPair = initiateBrowserTest(testURL);
-
-    // Send the token for analysis. The analysis score ranges from 0.0 to 1.0
-    switch (assessmentType) {
-      case ACCOUNT_DEFENDER: {
-        AccountDefenderAssessment.accountDefenderAssessment(
-            PROJECT_ID,
-            RECAPTCHA_SITE_KEY_1,
-            tokenActionPair.getString("token"),
-            tokenActionPair.getString("action"),
-            hashedAccountId);
-        break;
-      }
-      case ASSESSMENT: {
-        recaptcha.CreateAssessment.createAssessment(
-            PROJECT_ID,
-            RECAPTCHA_SITE_KEY_1,
-            tokenActionPair.getString("token"),
-            tokenActionPair.getString("action"));
-        break;
-      }
-      case PASSWORD_LEAK: {
-        passwordleak.CreatePasswordLeakAssessment.checkPasswordLeak(
-            PROJECT_ID,
-            RECAPTCHA_SITE_KEY_1,
-            tokenActionPair.getString("token"),
-            tokenActionPair.getString("action"));
-        break;
-      }
-    }
-
-    // Assert the response.
-    String response = stdOut.toString();
-    assertThat(response).contains("Assessment name: ");
-    assertThat(response).contains("The reCAPTCHA score is: ");
-    if (!hashedAccountId.isEmpty()) {
-      assertThat(response).contains("Account Defender Assessment Result: ");
-    }
-
-    // Retrieve the results.
-    float recaptchaScore = 0;
-    String assessmentName = "";
-    for (String line : response.split("\n")) {
-      if (line.contains("The reCAPTCHA score is: ")) {
-        recaptchaScore = Float.parseFloat(substr(line));
-      } else if (line.contains("Assessment name: ")) {
-        assessmentName = substr(line);
-      }
-    }
-
-    // Set the score.
-    browser.findElement(By.cssSelector("#assessment")).sendKeys(String.valueOf(recaptchaScore));
-    return new JSONObject()
-        .put("recaptchaScore", recaptchaScore)
-        .put("assessmentName", assessmentName);
-  }
-
-  public JSONObject initiateBrowserTest(String testURL)
-      throws IOException, JSONException, InterruptedException {
-    // Construct the URL to call for validating the assessment.
-    URI url =
-        UriComponentsBuilder.fromUriString(testURL)
-            .queryParam("recaptchaSiteKey", RECAPTCHA_SITE_KEY_1)
-            .build()
-            .encode()
-            .toUri();
-
-    browser.get(url.toURL().toString());
-
-    // Wait until the page is loaded.
-    JavascriptExecutor js = (JavascriptExecutor) browser;
-    new WebDriverWait(browser, Duration.ofSeconds(10))
-        .until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
-
-    // Pass the values to be entered.
-    browser.findElement(By.id("username")).sendKeys("username");
-    browser.findElement(By.id("password")).sendKeys("password");
-
-    // On clicking the button, the request params will be sent to reCAPTCHA.
-    browser.findElement(By.id("recaptchabutton")).click();
-
-    TimeUnit.SECONDS.sleep(1);
-
-    // Retrieve the reCAPTCHA token response.
-    WebElement element = browser.findElement(By.cssSelector("#assessment"));
-    String token = element.getAttribute("data-token");
-    String action = element.getAttribute("data-action");
-
-    return new JSONObject().put("token", token).put("action", action);
-  }
-
-  public String substr(String line) {
-    return line.substring((line.lastIndexOf(":") + 1)).trim();
-  }
-
-  enum AssessmentType {
-    ASSESSMENT,
-    ACCOUNT_DEFENDER,
-    PASSWORD_LEAK;
-
-    AssessmentType() {
-    }
+        tokenActionPair.getString("token"), tokenActionPair.getString("action"),
+        hashedAccountId, "foo@bar.com", "+11111111111");
+    assertThat(stdOut.toString()).contains("Result unspecified");
   }
 }
