@@ -27,7 +27,7 @@ buildscript {
   }
 }
 
-def grpcVersion = '1.42.1'
+def grpcVersion = '1.52.1'
 
 dependencies {
   repositories {
