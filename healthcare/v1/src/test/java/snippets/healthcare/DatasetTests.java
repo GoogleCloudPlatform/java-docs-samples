@@ -27,6 +27,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -47,6 +48,7 @@ public class DatasetTests {
   private static final String REGION_ID = "us-central1";
 
   private static String datasetName;
+  private static String destinationDatasetName;
 
   private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream bout;
@@ -63,6 +65,11 @@ public class DatasetTests {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
+  @AfterClass
+  public static void deleteTempItems() throws IOException {
+    DatasetDelete.datasetDelete(destinationDatasetName);
+  }
+
   @Before
   public void beforeTest() throws IOException {
     bout = new ByteArrayOutputStream();
@@ -71,7 +78,6 @@ public class DatasetTests {
     String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
     String parentName = String.format("projects/%s/locations/%s", PROJECT_ID, REGION_ID);
     datasetName = String.format("%s/datasets/%s", parentName, datasetId);
-
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
 
     bout = new ByteArrayOutputStream();
@@ -136,7 +142,8 @@ public class DatasetTests {
 
   @Test
   public void test_DatasetDeidentify() throws IOException {
-    DatasetDeIdentify.datasetDeIdentify(datasetName, datasetName + "-died");
+    destinationDatasetName = String.format(datasetName + "deid");
+    DatasetDeIdentify.datasetDeIdentify(datasetName, destinationDatasetName);
 
     String output = bout.toString();
     assertThat(output, containsString("De-identified Dataset created."));
