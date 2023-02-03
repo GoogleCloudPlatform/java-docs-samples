@@ -20,6 +20,7 @@ path:
     container-registry: "containeranalysis"
     datacatalog: "datacatalog"
     datalabeling: "datalabeling"
+    dataflow: "dataflow"
     dataproc: "dataproc"
     dialogflow: "dialogflow"
     dialogflow-cx: "dialogflow"
