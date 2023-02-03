@@ -67,7 +67,11 @@ public class DatasetTests {
 
   @AfterClass
   public static void deleteTempItems() throws IOException {
-    DatasetDelete.datasetDelete(destinationDatasetName);
+    try {
+      DatasetDelete.datasetDelete(destinationDatasetName);
+    } catch (GoogleJsonResponseException ex) {
+      // Destination dataset already deleted, continue.
+    }
   }
 
   @Before
