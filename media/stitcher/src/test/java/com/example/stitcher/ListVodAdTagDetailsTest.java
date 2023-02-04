@@ -20,12 +20,14 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -33,6 +35,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ListVodAdTagDetailsTest {
 
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private static final String LOCATION = "us-central1";
   private static final String VOD_URI =
       "https://storage.googleapis.com/cloud-samples-data/media/hls-vod/manifest.m3u8";

@@ -29,6 +29,7 @@ import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageClass;
 import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -40,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -47,6 +49,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CreateJobWithAnimatedOverlayTest {
 
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private static final String LOCATION = "us-central1";
   private static final String BUCKET_NAME =
       "java-samples-transcoder-test-" + UUID.randomUUID().toString().substring(0, 25);
