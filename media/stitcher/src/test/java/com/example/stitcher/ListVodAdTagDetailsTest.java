@@ -35,8 +35,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ListVodAdTagDetailsTest {
 
-  @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private static final String LOCATION = "us-central1";
   private static final String VOD_URI =
       "https://storage.googleapis.com/cloud-samples-data/media/hls-vod/manifest.m3u8";
