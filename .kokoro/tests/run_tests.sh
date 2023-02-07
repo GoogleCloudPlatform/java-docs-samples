@@ -75,6 +75,9 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     "java-dlp-samples-secrets.txt" \
     "java-functions-samples-secrets.txt" \
     "java-firestore-samples-secrets.txt" \
+    "java-cts-v4-samples-secrets.txt" \
+    "java-cloud-sql-samples-secrets.txt" \
+    "java-iam-samples-secrets.txt" \
     "java-scc-samples-secrets.txt")
 
     # create secret dir
@@ -96,7 +99,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     export AZURE_STORAGE_ACCOUNT=`S="$STS_AZURE_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["StorageAccount"]);'`
     export AZURE_CONNECTION_STRING=`S="$STS_AZURE_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["ConnectionString"]);'`
     export AZURE_SAS_TOKEN=`S="$STS_AZURE_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["SAS"]);'`
-  
+
     # Activate service account
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
