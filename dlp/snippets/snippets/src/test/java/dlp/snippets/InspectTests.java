@@ -31,8 +31,8 @@ import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.TopicName;
 import java.util.Arrays;
 import java.util.UUID;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -45,10 +45,10 @@ public class InspectTests extends TestBase {
   private static final String datastoreKind = "dlp";
   private static final String DOCUMENT_INPUT_FILE = "src/test/resources/sensitive-data-image.jpg";
 
-  private UUID testRunUuid = UUID.randomUUID();
-  private TopicName topicName =
-      TopicName.of(PROJECT_ID, String.format("%s-%s", TOPIC_ID, testRunUuid.toString()));
-  private ProjectSubscriptionName subscriptionName =
+  private static final UUID testRunUuid = UUID.randomUUID();
+  private static final TopicName topicName =
+      TopicName.of(PROJECT_ID, String.format("%s-%s", TOPIC_ID, testRunUuid));
+  private static final ProjectSubscriptionName subscriptionName =
       ProjectSubscriptionName.of(
           PROJECT_ID, String.format("%s-%s", SUBSCRIPTION_ID, testRunUuid.toString()));
 
@@ -64,8 +64,8 @@ public class InspectTests extends TestBase {
         "BIGQUERY_TABLE");
   }
 
-  @Before
-  public void before() throws Exception {
+  @BeforeClass
+  public static void before() throws Exception {
     // Create a new topic
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       topicAdminClient.createTopic(topicName);
@@ -78,8 +78,8 @@ public class InspectTests extends TestBase {
     }
   }
 
-  @After
-  public void after() throws Exception {
+  @AfterClass
+  public static void after() throws Exception {
     // Delete the test topic
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       topicAdminClient.deleteTopic(topicName);
@@ -98,6 +98,7 @@ public class InspectTests extends TestBase {
       // Keep trying to clean up
     }
   }
+
 
   @Test
   public void testInspectPhoneNumber() throws Exception {

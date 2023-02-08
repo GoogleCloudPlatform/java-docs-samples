@@ -41,6 +41,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-dlp</artifactId>
+      <version>3.12.0</version>
     </dependency>
     <!-- [START_EXCLUDE] -->
     <dependency>

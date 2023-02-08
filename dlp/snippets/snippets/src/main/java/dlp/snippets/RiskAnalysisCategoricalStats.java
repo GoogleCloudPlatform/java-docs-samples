@@ -158,6 +158,8 @@ class RiskAnalysisCategoricalStats {
               valueFrequency.getValue().toString(), valueFrequency.getCount());
         }
       }
+      // Delete DLP job.
+      dlpServiceClient.deleteDlpJob(dlpJob.getName());
     }
   }
 

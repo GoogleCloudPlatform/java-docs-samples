@@ -158,6 +158,8 @@ public class InspectDatastoreEntity {
         System.out.print("\tInfo type: " + infoTypeStat.getInfoType().getName());
         System.out.println("\tCount: " + infoTypeStat.getCount());
       }
+      // Delete DLP job.
+      dlp.deleteDlpJob(dlpJob.getName());
     }
   }
 

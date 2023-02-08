@@ -197,6 +197,8 @@ class RiskAnalysisKMap {
               "\tEstimated k-map anonymity: %d\n", valueBucket.getEstimatedAnonymity());
         }
       }
+      // Delete DLP job.
+      dlpServiceClient.deleteDlpJob(dlpJob.getName());
     }
   }
 

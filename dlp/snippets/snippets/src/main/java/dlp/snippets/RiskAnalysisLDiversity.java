@@ -190,6 +190,8 @@ class RiskAnalysisLDiversity {
           }
         }
       }
+      // Delete DLP job.
+      dlpServiceClient.deleteDlpJob(dlpJob.getName());
     }
   }
 

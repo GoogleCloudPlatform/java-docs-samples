@@ -155,6 +155,8 @@ class RiskAnalysisNumericalStats {
         }
         lastValue = currentValue;
       }
+      // Delete DLP job.
+      dlpServiceClient.deleteDlpJob(dlpJob.getName());
     }
   }
 

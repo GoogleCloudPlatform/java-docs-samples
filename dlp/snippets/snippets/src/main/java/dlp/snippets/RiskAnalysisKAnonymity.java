@@ -167,6 +167,8 @@ class RiskAnalysisKAnonymity {
           System.out.println("\tClass size: " + bucket.getEquivalenceClassSize());
         }
       }
+      // Delete DLP job.
+      dlpServiceClient.deleteDlpJob(dlpJob.getName());
     }
   }
 
