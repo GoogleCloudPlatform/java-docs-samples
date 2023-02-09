@@ -60,8 +60,12 @@ public class CustomMachineTypeIT {
 
   private ByteArrayOutputStream stdOut;
   private static InstancesClient instancesClient;
-  
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+
+  int maxAttemptCount = 3;
+  int initialBackoffMillis = 300000; // 5 minutes
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(maxAttemptCount,
+      initialBackoffMillis);
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
