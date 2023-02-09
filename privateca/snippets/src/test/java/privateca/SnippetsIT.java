@@ -28,6 +28,7 @@ import com.google.cloud.security.privateca.v1.CertificateAuthorityServiceClient;
 import com.google.cloud.security.privateca.v1.CertificateName;
 import com.google.cloud.security.privateca.v1.CertificateTemplateName;
 import com.google.cloud.security.privateca.v1.FetchCertificateAuthorityCsrResponse;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.protobuf.ByteString;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -52,6 +53,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -72,6 +74,12 @@ public class SnippetsIT {
   private static int KEY_SIZE;
 
   private ByteArrayOutputStream stdOut;
+
+  int maxAttemptCount = 3;
+  int initialBackoffMillis = 300000; // 5 minutes
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(maxAttemptCount,
+      initialBackoffMillis);
 
   // Check if the required environment variables are set.
   public static void reqEnvVar(String envVarName) {
