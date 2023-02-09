@@ -23,7 +23,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,41 +36,41 @@ import recaptcha.CreateAssessment;
 @RequestMapping
 public class MainController {
 
-  private static final LinkedHashMap<String, String> context = new LinkedHashMap<>();
+  private static final LinkedHashMap<String, String> CONTEXT = new LinkedHashMap<>();
 
   static {
-    context.put("project_id", System.getenv("GOOGLE_CLOUD_PROJECT"));
-    context.put("site_key", System.getenv("SITE_KEY"));
+    CONTEXT.put("project_id", System.getenv("GOOGLE_CLOUD_PROJECT"));
+    CONTEXT.put("site_key", System.getenv("SITE_KEY"));
   }
 
   @GetMapping(value = "/")
   public static ModelAndView home() {
-    return new ModelAndView("home", context);
+    return new ModelAndView("home", CONTEXT);
   }
 
   @GetMapping(value = "/store")
   public static ModelAndView store() {
-    return new ModelAndView("store", context);
+    return new ModelAndView("store", CONTEXT);
   }
 
   @GetMapping(value = "/login")
   public static ModelAndView login() {
-    return new ModelAndView("login", context);
+    return new ModelAndView("login", CONTEXT);
   }
 
   @GetMapping(value = "/comment")
   public static ModelAndView comment() {
-    return new ModelAndView("comment", context);
+    return new ModelAndView("comment", CONTEXT);
   }
 
   @GetMapping(value = "/signup")
   public static ModelAndView signup() {
-    return new ModelAndView("signup", context);
+    return new ModelAndView("signup", CONTEXT);
   }
 
   @GetMapping(value = "/game")
   public static ModelAndView game() {
-    return new ModelAndView("game", context);
+    return new ModelAndView("game", CONTEXT);
   }
 
   @PostMapping(value = "/create_assessment", produces = "application/json")
@@ -85,7 +84,7 @@ public class MainController {
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
       result = CreateAssessment.createAssessment(projectId,
-          context.get("site_key"),
+          CONTEXT.get("site_key"),
           credentials.getString("token"),
           credentials.getString("action"));
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
