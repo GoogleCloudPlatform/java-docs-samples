@@ -64,7 +64,8 @@ public class CustomMachineTypeIT {
   private final int MAX_ATTEMPT_COUNT = 3;
   private final int INITIAL_BACKOFF_MILLIS = 300000; // 5 minutes
   @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(MAX_ATTEMPT_COUNT,
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
+      MAX_ATTEMPT_COUNT,
       INITIAL_BACKOFF_MILLIS);
 
   // Check if the required environment variables are set.
