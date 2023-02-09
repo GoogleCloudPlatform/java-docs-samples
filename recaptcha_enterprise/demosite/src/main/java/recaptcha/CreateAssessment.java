@@ -34,6 +34,8 @@ public class CreateAssessment {
    * services. (score/ checkbox type)
    * @param token : The token obtained from the client on passing the recaptchaSiteKey.
    * @param recaptchaAction : Action name corresponding to the token.
+   * @return JSONObject that contains a risk score and verdict if the action was executed by a
+   * human.
    */
   public static JSONObject createAssessment(
       String projectID, String recaptchaSiteKey, String token, String recaptchaAction)
