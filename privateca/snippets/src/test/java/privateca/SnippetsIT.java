@@ -75,8 +75,8 @@ public class SnippetsIT {
 
   private ByteArrayOutputStream stdOut;
 
-  private final int MAX_ATTEMPT_COUNT = 3;
-  private final int INITIAL_BACKOFF_MILLIS = 300000; // 5 minutes
+  private static final int MAX_ATTEMPT_COUNT = 3;
+  private static final int INITIAL_BACKOFF_MILLIS = 300000; // 5 minutes
   @Rule
   public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
       MAX_ATTEMPT_COUNT,
