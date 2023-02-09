@@ -16,6 +16,7 @@
 
 package app;
 
+import java.util.LinkedHashMap;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.springframework.http.HttpHeaders;
@@ -36,7 +37,7 @@ import recaptcha.CreateAssessment;
 @RequestMapping
 public class MainController {
 
-  private static final ModelMap context = new ModelAndView().getModelMap();
+  private static final LinkedHashMap<String, String> context = new LinkedHashMap<>();
 
   static {
     context.put("project_id", System.getenv("GOOGLE_CLOUD_PROJECT"));
@@ -84,7 +85,7 @@ public class MainController {
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
       result = CreateAssessment.createAssessment(projectId,
-          credentials.getString("sitekey"),
+          context.get("site_key"),
           credentials.getString("token"),
           credentials.getString("action"));
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
