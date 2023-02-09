@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import compute.DeleteInstance;
 import compute.Util;
 import java.io.ByteArrayOutputStream;
@@ -30,6 +31,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -58,6 +60,8 @@ public class CustomMachineTypeIT {
 
   private ByteArrayOutputStream stdOut;
   private static InstancesClient instancesClient;
+  
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
