@@ -46,7 +46,7 @@ limitations under the License.
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web</artifactId>
-      <version>4.3.0</version>
+      <version>4.3.8</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
