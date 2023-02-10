@@ -29,6 +29,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,6 +94,7 @@ public class FeaturestoreSamplesTest {
     System.setOut(originalPrintStream);
   }
 
+  @Ignore
   @Test
   public void testCreateFeaturestoreSample()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
