@@ -21,7 +21,6 @@ import com.google.recaptchaenterprise.v1.Assessment;
 import com.google.recaptchaenterprise.v1.CreateAssessmentRequest;
 import com.google.recaptchaenterprise.v1.Event;
 import com.google.recaptchaenterprise.v1.ProjectName;
-import java.io.IOException;
 import org.json.JSONObject;
 
 public class CreateAssessment {
@@ -39,7 +38,7 @@ public class CreateAssessment {
    */
   public static JSONObject createAssessment(
       String projectID, String recaptchaSiteKey, String token, String recaptchaAction)
-      throws IOException {
+      throws Exception {
     double sampleThresholdScore = 0.50;
     String verdict = "";
 
@@ -62,7 +61,7 @@ public class CreateAssessment {
 
       // Check if the token is valid.
       if (!response.getTokenProperties().getValid()) {
-        throw new Error(
+        throw new Exception(
             "The Create Assessment call failed because the token was invalid for the following reasons: "
                 + response.getTokenProperties().getInvalidReason().name());
       }
@@ -70,7 +69,7 @@ public class CreateAssessment {
       // Check if the expected action was executed.
       if (!recaptchaAction.isEmpty() && !response.getTokenProperties().getAction()
           .equals(recaptchaAction)) {
-        throw new Error(
+        throw new Exception(
             "The action attribute in your reCAPTCHA tag does not match the action you are expecting"
                 + " to score. Please check your action attribute !");
       }
