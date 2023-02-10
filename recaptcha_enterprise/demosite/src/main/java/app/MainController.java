@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ public class MainController {
           credentials.getString("token"),
           credentials.getString("action"));
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
-    } catch (Exception | Error e) {
+    } catch (Exception e) {
       result = new JSONObject()
           .put("error_msg", e)
           .put("success", "false");
