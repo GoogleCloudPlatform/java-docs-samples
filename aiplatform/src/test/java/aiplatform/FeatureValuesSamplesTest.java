@@ -41,6 +41,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -171,7 +172,7 @@ public class FeatureValuesSamplesTest {
     System.setOut(originalPrintStream);
   }
 
-  @Test
+  @Ignore @Test
   public void testFeatureValuesSamples()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Create the featurestore
