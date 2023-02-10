@@ -79,11 +79,11 @@ public class FeaturestoreSamplesTest {
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
 
     try {
-        // Delete the featurestore
-        DeleteFeaturestoreSample.deleteFeaturestoreSample(PROJECT_ID, featurestoreId, USE_FORCE,
-            LOCATION, ENDPOINT, TIMEOUT);
+      // Delete the featurestore
+      DeleteFeaturestoreSample.deleteFeaturestoreSample(PROJECT_ID, featurestoreId, USE_FORCE,
+        LOCATION, ENDPOINT, TIMEOUT);
     } catch (NullPointerException npe) {
-        return;
+      return;
     }
 
     // Assert
