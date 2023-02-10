@@ -81,7 +81,7 @@ public class FeaturestoreSamplesTest {
     try {
       // Delete the featurestore
       DeleteFeaturestoreSample.deleteFeaturestoreSample(PROJECT_ID, featurestoreId, USE_FORCE,
-        LOCATION, ENDPOINT, TIMEOUT);
+          LOCATION, ENDPOINT, TIMEOUT);
     } catch (NullPointerException npe) {
       return;
     }
