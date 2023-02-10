@@ -172,7 +172,8 @@ public class FeatureValuesSamplesTest {
     System.setOut(originalPrintStream);
   }
 
-  @Ignore @Test
+  @Ignore 
+  @Test
   public void testFeatureValuesSamples()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Create the featurestore

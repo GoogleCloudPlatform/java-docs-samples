@@ -78,13 +78,13 @@ public class FeaturestoreSamplesTest {
   public void tearDown()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
 
-    try {
-    // Delete the featurestore
-    DeleteFeaturestoreSample.deleteFeaturestoreSample(
-        PROJECT_ID, featurestoreId, USE_FORCE, LOCATION, ENDPOINT, TIMEOUT);
-    } catch (NullPointerException npe) {
-        return;
-    }
+      try {
+          // Delete the featurestore
+          DeleteFeaturestoreSample.deleteFeaturestoreSample(PROJECT_ID, featurestoreId, USE_FORCE,
+                  LOCATION, ENDPOINT, TIMEOUT);
+      } catch (NullPointerException npe) {
+          return;
+      }
 
     // Assert
     String deleteFeaturestoreResponse = bout.toString();
