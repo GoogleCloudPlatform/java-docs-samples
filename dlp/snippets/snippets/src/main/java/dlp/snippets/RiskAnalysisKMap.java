@@ -173,6 +173,7 @@ class RiskAnalysisKMap {
       // Retrieve completed job status
       DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
       System.out.println("Job status: " + completedJob.getState());
+      System.out.println("Job name: " + dlpJob.getName());
 
       // Get the result and parse through and process the information
       KMapEstimationResult kmapResult = completedJob.getRiskDetails().getKMapEstimationResult();
@@ -197,8 +198,6 @@ class RiskAnalysisKMap {
               "\tEstimated k-map anonymity: %d\n", valueBucket.getEstimatedAnonymity());
         }
       }
-      // Delete DLP job.
-      dlpServiceClient.deleteDlpJob(dlpJob.getName());
     }
   }
 

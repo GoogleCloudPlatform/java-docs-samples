@@ -138,6 +138,7 @@ class RiskAnalysisNumericalStats {
       // Retrieve completed job status
       DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
       System.out.println("Job status: " + completedJob.getState());
+      System.out.println("Job name: " + dlpJob.getName());
 
       // Get the result and parse through and process the information
       NumericalStatsResult result = completedJob.getRiskDetails().getNumericalStatsResult();
@@ -155,8 +156,6 @@ class RiskAnalysisNumericalStats {
         }
         lastValue = currentValue;
       }
-      // Delete DLP job.
-      dlpServiceClient.deleteDlpJob(dlpJob.getName());
     }
   }
 

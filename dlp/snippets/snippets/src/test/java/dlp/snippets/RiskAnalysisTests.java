@@ -19,12 +19,14 @@ package dlp.snippets;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.gax.rpc.ApiException;
+import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.collect.ImmutableList;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.TopicName;
+import java.util.Arrays;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
@@ -94,6 +96,14 @@ public class RiskAnalysisTests extends TestBase {
         PROJECT_ID, DATASET_ID, TABLE_ID, topicName.getTopic(), subscriptionName.getSubscription());
     String output = bout.toString();
     assertThat(output).contains("Value at ");
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
+    jobName = jobName.split(":")[1].trim();
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      dlp.deleteDlpJob(jobName);
+    }
   }
 
   @Test
@@ -105,6 +115,14 @@ public class RiskAnalysisTests extends TestBase {
 
     assertThat(output).containsMatch("Most common value occurs \\d time");
     assertThat(output).containsMatch("Least common value occurs \\d time");
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
+    jobName = jobName.split(":")[1].trim();
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      dlp.deleteDlpJob(jobName);
+    }
   }
 
   @Test
@@ -115,6 +133,14 @@ public class RiskAnalysisTests extends TestBase {
     assertThat(output).containsMatch("Bucket size range: \\[\\d, \\d\\]");
     assertThat(output).contains("Quasi-ID values: integer_value: 19");
     assertThat(output).contains("Class size: 1");
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
+    jobName = jobName.split(":")[1].trim();
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      dlp.deleteDlpJob(jobName);
+    }
   }
 
   @Test
@@ -125,6 +151,14 @@ public class RiskAnalysisTests extends TestBase {
     assertThat(output).contains("Quasi-ID values: integer_value: 19");
     assertThat(output).contains("Class size: 1");
     assertThat(output).contains("Sensitive value string_value: \"James\"");
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
+    jobName = jobName.split(":")[1].trim();
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      dlp.deleteDlpJob(jobName);
+    }
   }
 
   @Test
@@ -137,5 +171,13 @@ public class RiskAnalysisTests extends TestBase {
     assertThat(output).containsMatch("Anonymity range: \\[\\d, \\d]");
     assertThat(output).containsMatch("Size: \\d");
     assertThat(output).containsMatch("Values: \\{\\d{2}, \"Female\"\\}");
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
+    jobName = jobName.split(":")[1].trim();
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      dlp.deleteDlpJob(jobName);
+    }
   }
 }

@@ -139,14 +139,13 @@ public class InspectGcsFile {
 
       // Parse the response and process results.
       System.out.println("Job status: " + completedJob.getState());
+      System.out.println("Job name: " + dlpJob.getName());
       InspectDataSourceDetails.Result result = completedJob.getInspectDetails().getResult();
       System.out.println("Findings: ");
       for (InfoTypeStats infoTypeStat : result.getInfoTypeStatsList()) {
         System.out.print("\tInfo type: " + infoTypeStat.getInfoType().getName());
         System.out.println("\tCount: " + infoTypeStat.getCount());
       }
-      // Delete DLP job.
-      dlp.deleteDlpJob(dlpJob.getName());
     }
   }
 

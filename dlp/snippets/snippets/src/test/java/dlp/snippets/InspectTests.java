@@ -19,6 +19,7 @@ package dlp.snippets;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.gax.rpc.ApiException;
+import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.collect.ImmutableList;
@@ -312,6 +313,14 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
+    jobName = jobName.split(":")[1].trim();
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      dlp.deleteDlpJob(jobName);
+    }
   }
 
   @Test
@@ -321,6 +330,14 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
+    jobName = jobName.split(":")[1].trim();
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      dlp.deleteDlpJob(jobName);
+    }
   }
 
   @Test
@@ -334,6 +351,14 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
+    jobName = jobName.split(":")[1].trim();
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      dlp.deleteDlpJob(jobName);
+    }
   }
 
   @Test
@@ -343,6 +368,14 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
+    jobName = jobName.split(":")[1].trim();
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      dlp.deleteDlpJob(jobName);
+    }
   }
 
   @Test
@@ -352,6 +385,14 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
+    jobName = jobName.split(":")[1].trim();
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      dlp.deleteDlpJob(jobName);
+    }
   }
 
   @Test

@@ -147,6 +147,7 @@ class RiskAnalysisKAnonymity {
       // Retrieve completed job status
       DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
       System.out.println("Job status: " + completedJob.getState());
+      System.out.println("Job name: " + dlpJob.getName());
 
       // Get the result and parse through and process the information
       KAnonymityResult kanonymityResult = completedJob.getRiskDetails().getKAnonymityResult();
@@ -167,8 +168,6 @@ class RiskAnalysisKAnonymity {
           System.out.println("\tClass size: " + bucket.getEquivalenceClassSize());
         }
       }
-      // Delete DLP job.
-      dlpServiceClient.deleteDlpJob(dlpJob.getName());
     }
   }
 

@@ -139,6 +139,7 @@ class RiskAnalysisCategoricalStats {
       // Retrieve completed job status
       DlpJob completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
       System.out.println("Job status: " + completedJob.getState());
+      System.out.println("Job name: " + dlpJob.getName());
 
       // Get the result and parse through and process the information
       CategoricalStatsResult result = completedJob.getRiskDetails().getCategoricalStatsResult();
@@ -158,8 +159,6 @@ class RiskAnalysisCategoricalStats {
               valueFrequency.getValue().toString(), valueFrequency.getCount());
         }
       }
-      // Delete DLP job.
-      dlpServiceClient.deleteDlpJob(dlpJob.getName());
     }
   }
 
