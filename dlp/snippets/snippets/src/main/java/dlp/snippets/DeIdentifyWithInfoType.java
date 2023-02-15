@@ -92,4 +92,4 @@ public class DeIdentifyWithInfoType {
     }
   }
 }
-// [END dlp_deidentify_replace]
+// [END dlp_deidentify_infotype]
