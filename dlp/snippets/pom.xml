@@ -23,7 +23,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-
+<!-- [START dlp_install_with_bom] -->
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
