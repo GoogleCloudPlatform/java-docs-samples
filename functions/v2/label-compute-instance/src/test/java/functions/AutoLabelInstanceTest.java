@@ -58,7 +58,11 @@ public class AutoLabelInstanceTest {
   public static void beforeClass()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     assertThat(PROJECT_ID).isNotNull();
-    createInstance(PROJECT_ID, ZONE, INSTANCE);
+    try {
+      createInstance(PROJECT_ID, ZONE, INSTANCE);
+    } catch (Exception e) {
+      System.out.println("VM already exists: " + e);
+    }
     logger.addHandler(logHandler);
   }
 
