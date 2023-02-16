@@ -109,6 +109,7 @@ public class SnippetsIT {
 
     // Delete stale resources
     Util.cleanUpCaPool(PROJECT_ID, LOCATION);
+    TimeUnit.SECONDS.sleep(30);
 
     // <--- START CA POOL --->
     // Create CA Pool.

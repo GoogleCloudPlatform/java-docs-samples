@@ -26,12 +26,17 @@ import com.google.cloud.security.privateca.v1.DeleteCertificateAuthorityRequest;
 import com.google.cloud.security.privateca.v1.DisableCertificateAuthorityRequest;
 import com.google.cloud.security.privateca.v1.ListCaPoolsRequest;
 import com.google.cloud.security.privateca.v1.LocationName;
+import com.google.protobuf.Timestamp;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class Util {
+
+  private static final int DELETION_THRESHOLD_TIME_HOURS = 24;
 
   // Delete Ca pools which starts with the given prefixToDelete.
   public static void cleanUpCaPool(String projectId,
@@ -74,6 +79,11 @@ public class Util {
         CertificateAuthorityServiceClient.create()) {
       for (CertificateAuthority certificateAuthority :
           certificateAuthorityServiceClient.listCertificateAuthorities(caPoolName).iterateAll()) {
+        // Check if the CA was created before the threshold time.
+        if (!isCreatedBeforeThresholdTime(certificateAuthority.getCreateTime())) {
+          continue;
+        }
+
         // Check if the CA is enabled.
         State caState =
             certificateAuthorityServiceClient
@@ -111,5 +121,11 @@ public class Util {
           .futureCall(disableCertificateAuthorityRequest)
           .get(5, TimeUnit.MINUTES);
     }
+  }
+
+  public static boolean isCreatedBeforeThresholdTime(Timestamp timestamp) {
+    Instant instant = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+    return instant
+        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.HOURS));
   }
 }
