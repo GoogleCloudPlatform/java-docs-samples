@@ -32,14 +32,14 @@ import java.util.concurrent.TimeoutException;
 public class Util {
 
   // Delete Ca pools which starts with the given prefixToDelete.
-  public static void cleanUpCaPool(String prefixToDelete, String projectId,
+  public static void cleanUpCaPool(String projectId,
       String location)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     try (CertificateAuthorityServiceClient client = CertificateAuthorityServiceClient.create()) {
 
-      // Filter CA pools with the prefix
-      for (CaPool caPool : filterCaPools(prefixToDelete, projectId, location).iterateAll()) {
+      // List Ca pools
+      for (CaPool caPool : listCaPools(projectId, location).iterateAll()) {
         deleteCertificateAuthority(caPool.getName());
         DeleteCaPoolRequest deleteCaPoolRequest =
             DeleteCaPoolRequest.newBuilder().setName(caPool.getName()).build();
@@ -49,7 +49,7 @@ public class Util {
     }
   }
 
-  public static ListCaPoolsPagedResponse filterCaPools(String prefixToDelete, String project,
+  public static ListCaPoolsPagedResponse listCaPools(String project,
       String location) throws IOException {
     try (CertificateAuthorityServiceClient certificateAuthorityServiceClient =
         CertificateAuthorityServiceClient.create()) {
@@ -59,7 +59,6 @@ public class Util {
 
       ListCaPoolsRequest request = ListCaPoolsRequest.newBuilder()
           .setParent(locationName.toString())
-          .setFilter(String.format("name:%s", prefixToDelete))
           .build();
 
       return
