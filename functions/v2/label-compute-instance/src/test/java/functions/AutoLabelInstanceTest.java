@@ -35,6 +35,7 @@ import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import java.io.IOException;
 import java.net.URI;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -52,7 +53,7 @@ public class AutoLabelInstanceTest {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
-  private static final String INSTANCE = "lite1";
+  private static final String INSTANCE = "gcf-test" + UUID.randomUUID().toString();
 
   @BeforeClass
   public static void beforeClass()
