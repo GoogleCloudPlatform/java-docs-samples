@@ -18,18 +18,6 @@ package functions;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.common.testing.TestLogHandler;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import io.cloudevents.CloudEvent;
-import io.cloudevents.core.builder.CloudEventBuilder;
-import java.net.URI;
-import java.util.logging.Logger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDisk.Type;
@@ -40,11 +28,22 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
+import com.google.common.testing.TestLogHandler;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import io.cloudevents.CloudEvent;
+import io.cloudevents.core.builder.CloudEventBuilder;
 import java.io.IOException;
+import java.net.URI;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
+import java.util.logging.Logger;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class AutoLabelInstanceTest {
@@ -56,12 +55,12 @@ public class AutoLabelInstanceTest {
   private static final String INSTANCE = "lite1";
 
   @BeforeClass
-  public static void beforeClass() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public static void beforeClass()
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     assertThat(PROJECT_ID).isNotNull();
     createInstance(PROJECT_ID, ZONE, INSTANCE);
     logger.addHandler(logHandler);
   }
-
 
   @AfterClass
   public static void cleanup() throws Exception {
@@ -106,12 +105,11 @@ public class AutoLabelInstanceTest {
         .isEqualTo(logHandler.getStoredLogRecords().get(0).getMessage());
   }
 
-
   public static void createInstance(String project, String zone, String instanceName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
-    String sourceImage = String
-        .format("projects/debian-cloud/global/images/family/%s", "debian-11");
+    String sourceImage =
+        String.format("projects/debian-cloud/global/images/family/%s", "debian-11");
     long diskSizeGb = 10L;
     String networkName = "default";
 
@@ -131,9 +129,8 @@ public class AutoLabelInstanceTest {
               .build();
 
       // Use the network interface provided in the networkName argument.
-      NetworkInterface networkInterface = NetworkInterface.newBuilder()
-          .setName(networkName)
-          .build();
+      NetworkInterface networkInterface =
+          NetworkInterface.newBuilder().setName(networkName).build();
 
       // Bind `instanceName`, `machineType`, `disk`, and `networkInterface` to an instance.
       Instance instanceResource =
@@ -147,14 +144,15 @@ public class AutoLabelInstanceTest {
       System.out.printf("Creating instance: %s at %s %n", instanceName, zone);
 
       // Insert the instance in the specified project and zone.
-      InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
-          .setProject(project)
-          .setZone(zone)
-          .setInstanceResource(instanceResource)
-          .build();
+      InsertInstanceRequest insertInstanceRequest =
+          InsertInstanceRequest.newBuilder()
+              .setProject(project)
+              .setZone(zone)
+              .setInstanceResource(instanceResource)
+              .build();
 
-      OperationFuture<Operation, Operation> operation = instancesClient.insertAsync(
-          insertInstanceRequest);
+      OperationFuture<Operation, Operation> operation =
+          instancesClient.insertAsync(insertInstanceRequest);
 
       // Wait for the operation to complete.
       Operation response = operation.get(3, TimeUnit.MINUTES);
@@ -174,13 +172,15 @@ public class AutoLabelInstanceTest {
       System.out.printf("Deleting instance: %s ", instanceName);
 
       // Describe which instance is to be deleted.
-      DeleteInstanceRequest deleteInstanceRequest = DeleteInstanceRequest.newBuilder()
-          .setProject(project)
-          .setZone(zone)
-          .setInstance(instanceName).build();
+      DeleteInstanceRequest deleteInstanceRequest =
+          DeleteInstanceRequest.newBuilder()
+              .setProject(project)
+              .setZone(zone)
+              .setInstance(instanceName)
+              .build();
 
-      OperationFuture<Operation, Operation> operation = instancesClient.deleteAsync(
-          deleteInstanceRequest);
+      OperationFuture<Operation, Operation> operation =
+          instancesClient.deleteAsync(deleteInstanceRequest);
       // Wait for the operation to complete.
       Operation response = operation.get(3, TimeUnit.MINUTES);
 
