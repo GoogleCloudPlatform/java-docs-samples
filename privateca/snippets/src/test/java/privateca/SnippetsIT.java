@@ -98,6 +98,9 @@ public class SnippetsIT {
     CSR_CERTIFICATE_NAME = "csr-certificate-name-" + UUID.randomUUID();
     KEY_SIZE = 2048; // Default key size
 
+    // Delete stale resources
+    Util.cleanUpCaPool("ca-pool", PROJECT_ID, LOCATION);
+
     // <--- START CA POOL --->
     // Create CA Pool.
     privateca.CreateCaPool.createCaPool(PROJECT_ID, LOCATION, CA_poolId);
