@@ -18,10 +18,12 @@ package privateca;
 
 import com.google.cloud.security.privateca.v1.CaPool;
 import com.google.cloud.security.privateca.v1.CertificateAuthority;
+import com.google.cloud.security.privateca.v1.CertificateAuthority.State;
 import com.google.cloud.security.privateca.v1.CertificateAuthorityServiceClient;
 import com.google.cloud.security.privateca.v1.CertificateAuthorityServiceClient.ListCaPoolsPagedResponse;
 import com.google.cloud.security.privateca.v1.DeleteCaPoolRequest;
 import com.google.cloud.security.privateca.v1.DeleteCertificateAuthorityRequest;
+import com.google.cloud.security.privateca.v1.DisableCertificateAuthorityRequest;
 import com.google.cloud.security.privateca.v1.ListCaPoolsRequest;
 import com.google.cloud.security.privateca.v1.LocationName;
 import java.io.IOException;
@@ -72,17 +74,42 @@ public class Util {
         CertificateAuthorityServiceClient.create()) {
       for (CertificateAuthority certificateAuthority :
           certificateAuthorityServiceClient.listCertificateAuthorities(caPoolName).iterateAll()) {
+        // Check if the CA is enabled.
+        State caState =
+            certificateAuthorityServiceClient
+                .getCertificateAuthority(certificateAuthority.getName())
+                .getState();
+        if (caState == State.ENABLED) {
+          disableCertificateAuthority(certificateAuthority.getName());
+        }
 
         DeleteCertificateAuthorityRequest deleteCertificateAuthorityRequest =
             DeleteCertificateAuthorityRequest.newBuilder()
                 .setName(certificateAuthority.getName())
-                .setIgnoreActiveCertificates(false)
+                .setIgnoreActiveCertificates(true)
+                .setSkipGracePeriod(true)
                 .build();
 
         certificateAuthorityServiceClient
             .deleteCertificateAuthorityCallable()
             .futureCall(deleteCertificateAuthorityRequest).get(5, TimeUnit.MINUTES);
       }
+    }
+  }
+
+  public static void disableCertificateAuthority(String caName)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (CertificateAuthorityServiceClient client = CertificateAuthorityServiceClient.create()) {
+      DisableCertificateAuthorityRequest disableCertificateAuthorityRequest =
+          DisableCertificateAuthorityRequest.newBuilder()
+              .setName(caName)
+              .build();
+
+      // Disable the Certificate Authority.
+      client
+          .disableCertificateAuthorityCallable()
+          .futureCall(disableCertificateAuthorityRequest)
+          .get(5, TimeUnit.MINUTES);
     }
   }
 }
