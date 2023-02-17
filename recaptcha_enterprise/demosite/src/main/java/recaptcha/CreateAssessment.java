@@ -77,7 +77,7 @@ public class CreateAssessment {
 
       // Return the result to client.
       verdict =
-          response.getRiskAnalysis().getScore() < sampleThresholdScore ? "Not a human" : "Human";
+          response.getRiskAnalysis().getScore() < sampleThresholdScore ? "Bad" : "Not Bad";
       JSONObject result = new JSONObject()
           .put("score", response.getRiskAnalysis().getScore())
           .put("verdict", verdict);
