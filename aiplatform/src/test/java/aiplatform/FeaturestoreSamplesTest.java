@@ -90,7 +90,6 @@ public class FeaturestoreSamplesTest {
     System.setOut(originalPrintStream);
   }
 
-  @Ignore
   @Test
   public void testCreateFeaturestoreSample()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
