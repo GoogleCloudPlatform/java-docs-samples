@@ -84,7 +84,9 @@ public class JobsIntegrationTests {
         "--project=" + project,
         String.format("--substitutions _SERVICE=%s,_VERSION=%s", service, suffix));
 
-    cleanup.start();
+    System.out.println("Deleting Cloud Run job: " + service);
+    Process p = cleanup.start();
+    p.waitFor(5, TimeUnit.MINUTES);
   }
 
   @Test
