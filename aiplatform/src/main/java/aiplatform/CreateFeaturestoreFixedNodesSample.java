@@ -64,26 +64,30 @@ public class CreateFeaturestoreFixedNodesSample {
       int timeout)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
-    OperationTimedPollAlgorithm operationTimedPollAlgorithm = OperationTimedPollAlgorithm.create(
-        RetrySettings.newBuilder()
-            .setInitialRetryDelay(Duration.ofMillis(5000L))
-            .setRetryDelayMultiplier(1.5)
-            .setMaxRetryDelay(Duration.ofMillis(45000L))
-            .setInitialRpcTimeout(Duration.ZERO)
-            .setRpcTimeoutMultiplier(1.0)
-            .setMaxRpcTimeout(Duration.ZERO)
-            .setTotalTimeout(Duration.ofSeconds(timeout))
-            .build());
+    OperationTimedPollAlgorithm operationTimedPollAlgorithm =
+        OperationTimedPollAlgorithm.create(
+            RetrySettings.newBuilder()
+                .setInitialRetryDelay(Duration.ofMillis(5000L))
+                .setRetryDelayMultiplier(1.5)
+                .setMaxRetryDelay(Duration.ofMillis(45000L))
+                .setInitialRpcTimeout(Duration.ZERO)
+                .setRpcTimeoutMultiplier(1.0)
+                .setMaxRpcTimeout(Duration.ZERO)
+                .setTotalTimeout(Duration.ofSeconds(timeout))
+                .build());
 
-    FeaturestoreServiceStubSettings.Builder featurestoreServiceStubSettingsBuilder = FeaturestoreServiceStubSettings.newBuilder();
+    FeaturestoreServiceStubSettings.Builder featurestoreServiceStubSettingsBuilder =
+        FeaturestoreServiceStubSettings.newBuilder();
 
-    featurestoreServiceStubSettingsBuilder.createFeaturestoreOperationSettings()
+    featurestoreServiceStubSettingsBuilder
+        .createFeaturestoreOperationSettings()
         .setPollingAlgorithm(operationTimedPollAlgorithm);
-    FeaturestoreServiceStubSettings featureStoreStubSettings = featurestoreServiceStubSettingsBuilder.build();
-    FeaturestoreServiceSettings featurestoreServiceSettings = FeaturestoreServiceSettings.create(
-        featureStoreStubSettings);
-    featurestoreServiceSettings = featurestoreServiceSettings.toBuilder().setEndpoint(endpoint)
-        .build();
+    FeaturestoreServiceStubSettings featureStoreStubSettings =
+        featurestoreServiceStubSettingsBuilder.build();
+    FeaturestoreServiceSettings featurestoreServiceSettings =
+        FeaturestoreServiceSettings.create(featureStoreStubSettings);
+    featurestoreServiceSettings =
+        featurestoreServiceSettings.toBuilder().setEndpoint(endpoint).build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
