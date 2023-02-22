@@ -60,14 +60,15 @@ public class ChangeInstanceMachineType {
       Instance instance = instancesClient.get(projectId, zone, instanceName);
       if (!instance.getStatus().equals(Status.TERMINATED.name())) {
         throw new Error(String.format(
-            "Only machines in TERMINATED state can have their machine type changed. %s is in %s state.",
-            instance.getName(), instance.getStatus()));
+            "Only machines in TERMINATED state can have their machine type changed. "
+                + "%s is in %s state.", instance.getName(), instance.getStatus()));
       }
 
-      InstancesSetMachineTypeRequest machineTypeRequest = InstancesSetMachineTypeRequest.newBuilder()
-          .setMachineType(String.format("projects/%s/zones/%s/machineTypes/%s",
-              projectId, zone, newMachineType))
-          .build();
+      InstancesSetMachineTypeRequest machineTypeRequest =
+          InstancesSetMachineTypeRequest.newBuilder()
+              .setMachineType(String.format("projects/%s/zones/%s/machineTypes/%s",
+                  projectId, zone, newMachineType))
+              .build();
 
       Operation response = instancesClient
           .setMachineTypeAsync(projectId, zone, instanceName, machineTypeRequest)
