@@ -22,6 +22,7 @@ import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -65,14 +66,14 @@ public class RegionalCreateFromSource {
     String snapshotLink = String.format("projects/%s/global/snapshots/%s", "PROJECT_NAME",
         "SNAPSHOT_NAME");
 
-    createRegionalDisk(project, region, replicaZones, diskName, diskType, diskSizeGb, diskLink,
-        snapshotLink);
+    createRegionalDisk(project, region, replicaZones, diskName, diskType, diskSizeGb,
+        Optional.ofNullable(diskLink), Optional.ofNullable(snapshotLink));
   }
 
   // Creates a regional disk from an existing zonal disk in a given project.
   public static void createRegionalDisk(
       String project, String region, List<String> replicaZones, String diskName, String diskType,
-      int diskSizeGb, String diskLink, String snapshotLink)
+      int diskSizeGb, Optional<String> diskLink, Optional<String> snapshotLink)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -88,13 +89,13 @@ public class RegionalCreateFromSource {
           .setRegion(region);
 
       // Set source disk if diskLink is not empty.
-      if (!diskLink.isEmpty()) {
-        diskBuilder.setSourceDisk(diskLink);
+      if (diskLink.isPresent()) {
+        diskBuilder.setSourceDisk(String.valueOf(diskLink));
       }
 
       // Set source snapshot if the snapshot link is not empty.
-      if (!snapshotLink.isEmpty()) {
-        diskBuilder.setSourceSnapshot(snapshotLink);
+      if (snapshotLink.isPresent()) {
+        diskBuilder.setSourceSnapshot(String.valueOf(snapshotLink));
       }
 
       // Wait for the operation to complete.
