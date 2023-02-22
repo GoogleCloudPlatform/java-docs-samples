@@ -54,6 +54,7 @@ public class AutoLabelInstanceTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
   private static final String INSTANCE = "gcf-test" + UUID.randomUUID().toString();
+  private static final int TIMEOUT = 3;
 
   @BeforeClass
   public static void beforeClass()
@@ -113,8 +114,7 @@ public class AutoLabelInstanceTest {
   public static void createInstance(String project, String zone, String instanceName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
-    String sourceImage =
-        String.format("projects/debian-cloud/global/images/family/%s", "debian-11");
+    String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
     long diskSizeGb = 10L;
     String networkName = "default";
 
@@ -160,7 +160,7 @@ public class AutoLabelInstanceTest {
           instancesClient.insertAsync(insertInstanceRequest);
 
       // Wait for the operation to complete.
-      Operation response = operation.get(3, TimeUnit.MINUTES);
+      Operation response = operation.get(TIMEOUT, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);
@@ -187,7 +187,7 @@ public class AutoLabelInstanceTest {
       OperationFuture<Operation, Operation> operation =
           instancesClient.deleteAsync(deleteInstanceRequest);
       // Wait for the operation to complete.
-      Operation response = operation.get(3, TimeUnit.MINUTES);
+      Operation response = operation.get(TIMEOUT, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Instance deletion failed ! ! " + response);
