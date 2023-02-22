@@ -47,7 +47,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      <version>3.7.8</version>
+      <version>3.8.1</version>
     </dependency>
 
     <dependency>
