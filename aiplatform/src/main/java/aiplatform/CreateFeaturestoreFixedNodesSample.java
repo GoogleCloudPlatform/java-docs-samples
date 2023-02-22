@@ -24,6 +24,8 @@ package aiplatform;
 // [START aiplatform_create_featurestore_fixed_nodes_sample]
 
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.aiplatform.v1beta1.CreateFeaturestoreOperationMetadata;
 import com.google.cloud.aiplatform.v1beta1.CreateFeaturestoreRequest;
 import com.google.cloud.aiplatform.v1beta1.Featurestore;
@@ -31,10 +33,12 @@ import com.google.cloud.aiplatform.v1beta1.Featurestore.OnlineServingConfig;
 import com.google.cloud.aiplatform.v1beta1.FeaturestoreServiceClient;
 import com.google.cloud.aiplatform.v1beta1.FeaturestoreServiceSettings;
 import com.google.cloud.aiplatform.v1beta1.LocationName;
+import com.google.cloud.aiplatform.v1beta1.stub.FeaturestoreServiceStubSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.threeten.bp.Duration;
 
 public class CreateFeaturestoreFixedNodesSample {
 
@@ -60,8 +64,26 @@ public class CreateFeaturestoreFixedNodesSample {
       int timeout)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
-    FeaturestoreServiceSettings featurestoreServiceSettings =
-        FeaturestoreServiceSettings.newBuilder().setEndpoint(endpoint).build();
+    OperationTimedPollAlgorithm operationTimedPollAlgorithm = OperationTimedPollAlgorithm.create(
+        RetrySettings.newBuilder()
+            .setInitialRetryDelay(Duration.ofMillis(5000L))
+            .setRetryDelayMultiplier(1.5)
+            .setMaxRetryDelay(Duration.ofMillis(45000L))
+            .setInitialRpcTimeout(Duration.ZERO)
+            .setRpcTimeoutMultiplier(1.0)
+            .setMaxRpcTimeout(Duration.ZERO)
+            .setTotalTimeout(Duration.ofSeconds(timeout))
+            .build());
+
+    FeaturestoreServiceStubSettings.Builder featurestoreServiceStubSettingsBuilder = FeaturestoreServiceStubSettings.newBuilder();
+
+    featurestoreServiceStubSettingsBuilder.createFeaturestoreOperationSettings()
+        .setPollingAlgorithm(operationTimedPollAlgorithm);
+    FeaturestoreServiceStubSettings featureStoreStubSettings = featurestoreServiceStubSettingsBuilder.build();
+    FeaturestoreServiceSettings featurestoreServiceSettings = FeaturestoreServiceSettings.create(
+        featureStoreStubSettings);
+    featurestoreServiceSettings = featurestoreServiceSettings.toBuilder().setEndpoint(endpoint)
+        .build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
