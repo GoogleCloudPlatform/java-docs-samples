@@ -89,14 +89,10 @@ public class RegionalCreateFromSource {
           .setRegion(region);
 
       // Set source disk if diskLink is not empty.
-      if (diskLink.isPresent()) {
-        diskBuilder.setSourceDisk(String.valueOf(diskLink));
-      }
+      diskLink.ifPresent(diskBuilder::setSourceDisk);
 
       // Set source snapshot if the snapshot link is not empty.
-      if (snapshotLink.isPresent()) {
-        diskBuilder.setSourceSnapshot(String.valueOf(snapshotLink));
-      }
+      snapshotLink.ifPresent(diskBuilder::setSourceSnapshot);
 
       // Wait for the operation to complete.
       Operation operation = regionDisksClient.insertAsync(project, region, diskBuilder.build())
