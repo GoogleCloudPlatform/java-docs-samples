@@ -77,13 +77,6 @@
       <groupId>org.slf4j</groupId>
       <version>${slf4j.version}</version>
     </dependency>
-    <!-- test - do not merge-->
-    <dependency>
-      <groupId>ch.qos.reload4j</groupId>
-      <artifactId>reload4j</artifactId>
-      <version>1.2.24</version>
-      <scope>runtime</scope>
-    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>
