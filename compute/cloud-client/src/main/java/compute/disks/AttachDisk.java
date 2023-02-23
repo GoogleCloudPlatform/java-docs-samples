@@ -42,9 +42,9 @@ public class AttachDisk {
     // Name of the compute instance you want to attach a disk to.
     String instanceName = "instance-name";
 
-    // Full or partial URL to a persistent disk that you want to attach. This can be either
-    // regional or zonal disk.
-    // Expected formats:
+    // Full or partial URL of a persistent disk that you want to attach. This can be either
+    // be a regional or zonal disk.
+    // Valid formats:
     //     * https://www.googleapis.com/compute/v1/projects/{project}/zones/{zone}/disks/{disk_name}
     //     * /projects/{project}/zones/{zone}/disks/{disk_name}
     //     * /projects/{project}/regions/{region}/disks/{disk_name}

@@ -37,9 +37,8 @@ public class ResizeDisk {
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "your-project-id";
 
-    // A link to the disk you want to resize.
+    // Full or partial URL of the disk that you want to resize.
     // This value uses the following format:
-    //   * https://www.googleapis.com/compute/v1/projects/{project_name}/zones/{zone}/disks/{disk_name}
     //   * projects/{project_name}/zones/{zone}/disks/{disk_name}
     String diskLink = String.format("projects/%s/zones/%s/disks/%s",
         "project", "zone", "disk");

@@ -37,7 +37,7 @@ public class ResizeRegionalDisk {
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "your-project-id";
 
-    // A link to the disk you want to resize.
+    // Full or partial URL of the disk that you want to resize.
     // This value uses the following format:
     //     * projects/{project_name}/regions/{region}/disks/{disk_name}
     String diskLink = String.format("projects/%s/regions/%s/disks/%s",
