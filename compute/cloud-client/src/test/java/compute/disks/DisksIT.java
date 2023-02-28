@@ -292,8 +292,9 @@ public class DisksIT {
     assertThat(instance.getDisksCount() == 3);
 
     // Test Disk resize.
-    ResizeDisk.resizeDisk(PROJECT_ID, zonalDisk.getZone(), zonalDisk.getName(), 22);
-    ResizeRegionalDisk.resizeRegionalDisk(PROJECT_ID, regionalDisk.getRegion(),
+    ResizeDisk.resizeDisk(PROJECT_ID, zonalDisk.getZone().split("zones/")[1], zonalDisk.getName(),
+        22);
+    ResizeRegionalDisk.resizeRegionalDisk(PROJECT_ID, regionalDisk.getRegion().split("regions/")[1],
         regionalDisk.getName(), 23);
 
     Assert.assertEquals(22, Util.getDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK).getSizeGb());
