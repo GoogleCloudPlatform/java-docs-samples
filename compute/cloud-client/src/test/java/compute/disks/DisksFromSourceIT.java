@@ -38,6 +38,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -129,8 +130,8 @@ public class DisksFromSourceIT {
     createDiskSnapshot(PROJECT_ID, ZONE, DISK_FROM_IMAGE, SNAPSHOT_NAME_REGIONAL);
     TimeUnit.SECONDS.sleep(10);
     RegionalCreateFromSource.createRegionalDisk(PROJECT_ID, REGION, replicaZones,
-        DISK_NAME_REGIONAL, String.format("regions/%s/diskTypes/pd-balanced", REGION), 25, "",
-        getSnapshot(SNAPSHOT_NAME_REGIONAL).getSelfLink());
+        DISK_NAME_REGIONAL, String.format("regions/%s/diskTypes/pd-balanced", REGION), 25,
+        Optional.empty(), Optional.of(getSnapshot(SNAPSHOT_NAME_REGIONAL).getSelfLink()));
     assertThat(stdOut.toString()).contains("Regional disk created.");
 
     stdOut.close();
