@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ResizeRegionalDisk {
 
@@ -37,21 +35,22 @@ public class ResizeRegionalDisk {
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "your-project-id";
 
-    // Full or partial URL of the disk that you want to resize.
-    // This value uses the following format:
-    //     * projects/{project_name}/regions/{region}/disks/{disk_name}
-    String diskLink = String.format("projects/%s/regions/%s/disks/%s",
-        "project", "region", "diskName");
+    // Region of the disk to be resized.
+    String diskRegion = "us-central1";
+
+    // Name of the disk that you want to resize.
+    String diskName = "DISK_NAME";
 
     // The new size you want to set for the disk in gigabytes.
     int newSizeGb = 23;
 
-    resizeRegionalDisk(projectId, diskLink, newSizeGb);
+    resizeRegionalDisk(projectId, diskRegion, diskName, newSizeGb);
   }
 
   // Resizes a regional persistent disk to a specified size in GB. After you resize the disk, you
   // must also resize the file system so that the operating system can access the additional space.
-  public static void resizeRegionalDisk(String projectId, String diskLink, int newSizeGb)
+  public static void resizeRegionalDisk(String projectId, String diskRegion, String diskName,
+      int newSizeGb)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -59,20 +58,12 @@ public class ResizeRegionalDisk {
     // clean up any remaining background resources.
     try (RegionDisksClient regionDisksClient = RegionDisksClient.create()) {
 
-      Matcher matcher = Pattern.compile("projects/[\\w_-]+/regions/[\\w_-]+/disks/[\\w_-]+")
-          .matcher(diskLink);
-
-      String[] match = new String[0];
-      while (matcher.find()) {
-        match = matcher.group().split("/");
-      }
-
       ResizeRegionDiskRequest resizeRegionDiskRequest = ResizeRegionDiskRequest.newBuilder()
-          .setRegion(match[3])
+          .setRegion(diskRegion)
           .setRegionDisksResizeRequestResource(RegionDisksResizeRequest.newBuilder()
               .setSizeGb(newSizeGb)
               .build())
-          .setDisk(match[5])
+          .setDisk(diskName)
           .setProject(projectId)
           .build();
 
