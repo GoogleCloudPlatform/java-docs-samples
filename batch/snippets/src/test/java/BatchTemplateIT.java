@@ -44,6 +44,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -58,6 +59,7 @@ public class BatchTemplateIT {
   private static String PROJECT_NUMBER;
   private static String SCRIPT_JOB_NAME;
   private static InstanceTemplate INSTANCE_TEMPLATE;
+
   @Rule
   private final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
       MAX_ATTEMPT_COUNT,
