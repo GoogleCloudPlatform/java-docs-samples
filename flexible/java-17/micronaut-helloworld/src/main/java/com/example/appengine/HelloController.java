@@ -26,6 +26,6 @@ public class HelloController {
   @Get("/")
   @Produces(MediaType.TEXT_PLAIN)
   public String index() {
-    return "Hello World! "+Runtime.version().major();
+    return "Hello World!";
   }
 }
