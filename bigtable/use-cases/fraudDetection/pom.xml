@@ -10,29 +10,28 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.apache.beam</groupId>
       <artifactId>beam-runners-direct-java</artifactId>
-      <groupId>org.apache.beam</groupId>
       <version>${apache_beam.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.beam</groupId>
       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
-      <groupId>org.apache.beam</groupId>
       <version>${apache_beam.version}</version>
     </dependency>
     <dependency>
-      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core
-      </artifactId>
       <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core</artifactId>
       <version>${apache_beam.version}</version>
     </dependency>
     <dependency>
-      <artifactId>bigtable-hbase-beam</artifactId>
       <groupId>com.google.cloud.bigtable</groupId>
-      <version>2.7.1</version>
+      <artifactId>bigtable-hbase-beam</artifactId>
+      <version>2.7.2</version>
     </dependency>
     <dependency>
-      <artifactId>google-cloud-aiplatform</artifactId>
       <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-aiplatform</artifactId>
       <version>2.9.8</version>
     </dependency>
     <dependency>
@@ -40,49 +39,49 @@
       <groupId>com.google.cloud</groupId>
     </dependency>
     <dependency>
-      <artifactId>google-api-client</artifactId>
       <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client</artifactId>
       <version>1.35.2</version>
     </dependency>
     <dependency>
-      <artifactId>junit</artifactId>
       <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
       <version>4.13.2</version>
     </dependency>
     <dependency>
+      <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <exclusions>
         <exclusion>
-          <artifactId>guava</artifactId>
           <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
         </exclusion>
       </exclusions>
-      <groupId>com.google.truth</groupId>
       <scope>test</scope>
       <version>1.1.3</version>
     </dependency>
     <dependency>
-      <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
       <version>31.1-jre</version>
     </dependency>
     <dependency>
-      <artifactId>slf4j-api</artifactId>
       <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
     <dependency>
-      <artifactId>slf4j-simple</artifactId>
       <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <artifactId>libraries-bom</artifactId>
         <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
         <scope>import</scope>
         <type>pom</type>
         <version>26.1.4</version>
