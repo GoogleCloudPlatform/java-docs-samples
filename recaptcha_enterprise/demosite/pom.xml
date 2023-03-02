@@ -43,6 +43,31 @@
     </dependency>
 
 
+    <!-- [Start_Selenium_dependencies] -->
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <version>4.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-chrome-driver</artifactId>
+      <version>4.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.1-jre</version>
+    </dependency>
+    <!-- Removes the dependency of driver binary file -->
+    <dependency>
+      <groupId>io.github.bonigarcia</groupId>
+      <artifactId>webdrivermanager</artifactId>
+      <version>5.3.0</version>
+    </dependency>
+    <!-- [End_Selenium_dependencies] -->
+
+
     <!-- [Start_test_dependencies] -->
     <dependency>
       <groupId>junit</groupId>
