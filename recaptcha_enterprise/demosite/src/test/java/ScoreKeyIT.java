@@ -19,6 +19,7 @@ package app;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.recaptchaenterprise.v1.WebKeySettings.IntegrationType;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.ByteArrayOutputStream;
@@ -115,12 +116,12 @@ public class ScoreKeyIT {
     System.setOut(null);
   }
 
+  // Construct the page URL with necessary context parameters.
   public static String makeRequest(String url, String siteKey) throws MalformedURLException {
-    // Construct the URL to call for validating the assessment.
     return
         UriComponentsBuilder.fromUriString(url)
-            // .queryParam("project_id", PROJECT_ID)
-            // .queryParam("site_key", siteKey)
+            .queryParam("project_id", PROJECT_ID)
+            .queryParam("site_key", siteKey)
             .build()
             .encode()
             .toUri()
@@ -128,8 +129,10 @@ public class ScoreKeyIT {
             .toString();
   }
 
-  public String browserTest(String pageUrl, String buttonXPath, String resultXPath,
-      boolean testUrlRedirect)
+  // Retrieve page and click the button specified by the element to obtain
+  // response and redirect URL.
+  public ImmutableMap<String, String> browserTest(String pageUrl, String buttonXPath, String resultXPath,
+      boolean scoreOnPageLoad)
       throws JSONException, InterruptedException {
     browser.get(pageUrl);
 
@@ -138,87 +141,114 @@ public class ScoreKeyIT {
     new WebDriverWait(browser, Duration.ofSeconds(10))
         .until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
 
-    if (!buttonXPath.isEmpty()) {
+    // If score is not available on page load, then click button to get score.
+    if (!scoreOnPageLoad) {
       browser.findElement(By.xpath(buttonXPath)).click();
       TimeUnit.SECONDS.sleep(1);
     }
+    // Get the result.
+    String result = browser.findElement(By.xpath(resultXPath)).getText();
 
-    if (!testUrlRedirect) {
-      // Retrieve the reCAPTCHA token response.
-      return browser.findElement(By.xpath(resultXPath)).getText();
-    }
-    return browser.getCurrentUrl();
+    // Click the button (again) to navigate to the next page.
+    browser.findElement(By.xpath(buttonXPath)).click();
+    TimeUnit.SECONDS.sleep(1);
+    String redirectedUrl = browser.getCurrentUrl();
+
+    return ImmutableMap.of("result", result, "redirectedUrl", redirectedUrl);
   }
 
   @Test
   public void testHomePage() throws MalformedURLException, InterruptedException {
-    // Verify assessment.
+    // Home page URL.
     String testUrl = "http://localhost:" + randomServerPort + "/";
     String pageUrl = makeRequest(testUrl, RECAPTCHA_SITE_KEY);
-    String resultXPath = "//*[@id=\"result\"]/section/div/code/pre";
-    String result = browserTest(pageUrl, "", RESULT_XPATH, false);
+
+    ImmutableMap<String, String> response =
+        browserTest(pageUrl, HOME_BUTTON_XPATH, RESULT_XPATH, true);
+
+    // Verify response contains expected action and a floating point score.
+    String result = response.get("result");
     assertThat(result).contains("\"expectedAction\": \"home\"");
     assertThat(result).containsMatch(Pattern.compile("\"score\": \"(\\d*[.])?\\d+\""));
 
     // Verify redirection to signup.
-    String redirectUrl = browserTest(pageUrl, HOME_BUTTON_XPATH, resultXPath, true);
+    String redirectUrl = response.get("redirectedUrl");
     Assert.assertEquals(redirectUrl, testUrl.concat("signup"));
   }
 
   @Test
   public void testSignupPage() throws MalformedURLException, InterruptedException {
-    // Verify assessment.
+    // Signup page URL.
     String testUrl = "http://localhost:" + randomServerPort + "/";
     String pageUrl = makeRequest(testUrl.concat("signup"), RECAPTCHA_SITE_KEY);
 
-    String result = browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, false);
+    ImmutableMap<String, String> response =
+        browserTest(pageUrl, HOME_BUTTON_XPATH, RESULT_XPATH, false);
+
+    // Verify response contains expected action and a floating point score.
+    String result = response.get("result");
     assertThat(result).contains("\"expectedAction\": \"sign_up\"");
     assertThat(result).containsMatch(Pattern.compile("\"score\": \"(\\d*[.])?\\d+\""));
 
     // Verify redirection to login.
-    String redirectUrl = browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, true);
+    String redirectUrl = response.get("redirectedUrl");
     Assert.assertEquals(redirectUrl, testUrl.concat("login"));
   }
 
   @Test
   public void testLoginPage() throws IOException, InterruptedException {
-    // Verify assessment.
+    // Login page URL.
     String testUrl = "http://localhost:" + randomServerPort + "/";
     String pageUrl = makeRequest(testUrl.concat("login"), RECAPTCHA_SITE_KEY);
-    String result = browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, false);
+
+    ImmutableMap<String, String> response =
+        browserTest(pageUrl, HOME_BUTTON_XPATH, RESULT_XPATH, false);
+
+    // Verify response contains expected action and a floating point score.
+    String result = response.get("result");
     assertThat(result).contains("\"expectedAction\": \"log_in\"");
     assertThat(result).containsMatch(Pattern.compile("\"score\": \"(\\d*[.])?\\d+\""));
 
     // Verify redirection to store.
-    String redirectUrl = browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, true);
+    String redirectUrl = response.get("redirectedUrl");
     Assert.assertEquals(redirectUrl, testUrl.concat("store"));
   }
 
   @Test
   public void testStorePage() throws MalformedURLException, InterruptedException {
-    // Verify assessment.
+    // Store page URL.
     String testUrl = "http://localhost:" + randomServerPort + "/";
     String pageUrl = makeRequest(testUrl.concat("store"), RECAPTCHA_SITE_KEY);
-    String result = browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, false);
+
+    ImmutableMap<String, String> response =
+        browserTest(pageUrl, HOME_BUTTON_XPATH, RESULT_XPATH, false);
+
+    // Verify response contains expected action and a floating point score.
+    String result = response.get("result");
     assertThat(result).contains("\"expectedAction\": \"check_out\"");
     assertThat(result).containsMatch(Pattern.compile("\"score\": \"(\\d*[.])?\\d+\""));
 
     // Verify redirection to comment.
-    String redirectUrl = browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, true);
+    String redirectUrl = response.get("redirectedUrl");
     Assert.assertEquals(redirectUrl, testUrl.concat("comment"));
   }
 
   @Test
   public void testCommentPage() throws MalformedURLException, InterruptedException {
-    // Verify assessment.
+    // Comment page URL.
     String testUrl = "http://localhost:" + randomServerPort + "/";
     String pageUrl = makeRequest(testUrl.concat("comment"), RECAPTCHA_SITE_KEY);
-    String result = browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, false);
+
+    ImmutableMap<String, String> response =
+        browserTest(pageUrl, HOME_BUTTON_XPATH, RESULT_XPATH, false);
+
+    // Verify response contains expected action and a floating point score.
+    String result = response.get("result");
     assertThat(result).contains("\"expectedAction\": \"send_comment\"");
     assertThat(result).containsMatch(Pattern.compile("\"score\": \"(\\d*[.])?\\d+\""));
 
     // Verify redirection to game.
-    String redirectUrl = browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, true);
+    String redirectUrl = response.get("redirectedUrl");
     Assert.assertEquals(redirectUrl, testUrl.concat("game"));
   }
 
