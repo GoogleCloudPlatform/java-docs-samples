@@ -31,6 +31,7 @@ import com.google.cloud.compute.v1.Scheduling.OnHostMaintenance;
 import com.google.cloud.compute.v1.Scheduling.ProvisioningModel;
 import com.google.cloud.compute.v1.ServiceAccount;
 import com.google.cloud.resourcemanager.v3.ProjectsClient;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -43,6 +44,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -52,10 +54,16 @@ public class BatchTemplateIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "europe-north1";
+  private static final int MAX_ATTEMPT_COUNT = 3;
+  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static String PROJECT_NUMBER;
   private static String SCRIPT_JOB_NAME;
   private static InstanceTemplate INSTANCE_TEMPLATE;
 
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
+      MAX_ATTEMPT_COUNT,
+      INITIAL_BACKOFF_MILLIS);
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
