@@ -53,7 +53,7 @@ public class WindowsOsImageIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
   private static final int MAX_ATTEMPT_COUNT = 3;
-  private static final int INITIAL_BACKOFF_MILLIS = 300000; // 5 minutes
+  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static String INSTANCE_NAME;
   private static String DISK_NAME;
   private static String IMAGE_NAME;
