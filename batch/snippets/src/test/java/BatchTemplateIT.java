@@ -61,7 +61,7 @@ public class BatchTemplateIT {
   private static InstanceTemplate INSTANCE_TEMPLATE;
 
   @Rule
-  private final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
       MAX_ATTEMPT_COUNT,
       INITIAL_BACKOFF_MILLIS);
   private ByteArrayOutputStream stdOut;
