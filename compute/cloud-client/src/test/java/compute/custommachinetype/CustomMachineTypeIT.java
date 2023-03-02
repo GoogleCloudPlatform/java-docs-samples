@@ -89,7 +89,7 @@ public class CustomMachineTypeIT {
     Util.cleanUpExistingInstances("cmt-test-", PROJECT_ID, ZONE);
 
     String randomUUID = UUID.randomUUID().toString().split("-")[0];
-    CUSTOM_MACHINE_TYPE_INSTANCE = "cmt-test" + randomUUID;
+    CUSTOM_MACHINE_TYPE_INSTANCE = "cmt-test-" + randomUUID;
     CUSTOM_MACHINE_TYPE_INSTANCE_WITH_HELPER = "cmt-test-with-helper" + randomUUID;
     CUSTOM_MACHINE_TYPE_INSTANCE_WITH_SHARED_CORE = "cmt-test-shared-core" + randomUUID;
     CUSTOM_MACHINE_TYPE_INSTANCE_WITHOUT_HELPER = "cmt-test-without-helper" + randomUUID;
