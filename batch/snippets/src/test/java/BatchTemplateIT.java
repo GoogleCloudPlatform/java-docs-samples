@@ -54,7 +54,7 @@ public class BatchTemplateIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "europe-north1";
   private static final int MAX_ATTEMPT_COUNT = 3;
-  private static final int INITIAL_BACKOFF_MILLIS = 300000; // 5 minutes
+  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static String PROJECT_NUMBER;
   private static String SCRIPT_JOB_NAME;
   private static InstanceTemplate INSTANCE_TEMPLATE;
