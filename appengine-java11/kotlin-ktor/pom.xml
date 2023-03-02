@@ -33,7 +33,7 @@ limitations under the License.
   <properties>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
-    <ktor_version>2.0.2-eap-389</ktor_version>
+    <ktor_version>2.3.0-eap-614</ktor_version>
     <kotlin.code.style>official</kotlin.code.style>
     <kotlin_version>1.6.21</kotlin_version>
     <logback_version>1.4.5</logback_version>
