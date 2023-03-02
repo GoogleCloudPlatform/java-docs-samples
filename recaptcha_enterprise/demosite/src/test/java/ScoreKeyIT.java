@@ -183,7 +183,7 @@ public class ScoreKeyIT {
     String pageUrl = makeRequest(testUrl.concat("signup"), RECAPTCHA_SITE_KEY);
 
     ImmutableMap<String, String> response =
-        browserTest(pageUrl, HOME_BUTTON_XPATH, RESULT_XPATH, false);
+        browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, false);
 
     // Verify response contains expected action and a floating point score.
     String result = response.get("result");
@@ -202,7 +202,7 @@ public class ScoreKeyIT {
     String pageUrl = makeRequest(testUrl.concat("login"), RECAPTCHA_SITE_KEY);
 
     ImmutableMap<String, String> response =
-        browserTest(pageUrl, HOME_BUTTON_XPATH, RESULT_XPATH, false);
+        browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, false);
 
     // Verify response contains expected action and a floating point score.
     String result = response.get("result");
@@ -221,7 +221,7 @@ public class ScoreKeyIT {
     String pageUrl = makeRequest(testUrl.concat("store"), RECAPTCHA_SITE_KEY);
 
     ImmutableMap<String, String> response =
-        browserTest(pageUrl, HOME_BUTTON_XPATH, RESULT_XPATH, false);
+        browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, false);
 
     // Verify response contains expected action and a floating point score.
     String result = response.get("result");
@@ -240,7 +240,7 @@ public class ScoreKeyIT {
     String pageUrl = makeRequest(testUrl.concat("comment"), RECAPTCHA_SITE_KEY);
 
     ImmutableMap<String, String> response =
-        browserTest(pageUrl, HOME_BUTTON_XPATH, RESULT_XPATH, false);
+        browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, false);
 
     // Verify response contains expected action and a floating point score.
     String result = response.get("result");
@@ -251,5 +251,4 @@ public class ScoreKeyIT {
     String redirectUrl = response.get("redirectedUrl");
     Assert.assertEquals(redirectUrl, testUrl.concat("game"));
   }
-
 }
