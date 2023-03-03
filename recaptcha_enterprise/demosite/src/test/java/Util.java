@@ -34,7 +34,7 @@ public class Util {
   /**
    * Create reCAPTCHA Site key which binds a domain name to a unique key.
    *
-   * @param projectID : GCloud Project ID.
+   * @param projectID : Google Cloud Project ID.
    * @param domainName : Specify the domain name in which the reCAPTCHA should be activated.
    */
   public static String createSiteKey(String projectID, String domainName, IntegrationType keyType) throws IOException {

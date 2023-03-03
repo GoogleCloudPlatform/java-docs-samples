@@ -14,6 +14,7 @@
   limitations under the License.
 -->
 
+<!-- This is a frontend file to provide favicon support on Windows OSes. -->
 <browserconfig>
     <msapplication>
         <tile>
