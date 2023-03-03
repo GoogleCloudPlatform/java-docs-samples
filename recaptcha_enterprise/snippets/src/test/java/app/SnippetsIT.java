@@ -19,11 +19,6 @@ package app;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import account_defender.AccountDefenderAssessment;
-import account_defender.AnnotateAccountDefenderAssessment;
-import account_defender.ListRelatedAccountGroupMemberships;
-import account_defender.ListRelatedAccountGroups;
-import account_defender.SearchRelatedAccountGroupMemberships;
 import com.google.protobuf.ByteString;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.ByteArrayOutputStream;
@@ -63,6 +58,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.util.UriComponentsBuilder;
 import recaptcha.AnnotateAssessment;
 import recaptcha.GetMetrics;
+import recaptcha.accountdefender.AccountDefenderAssessment;
+import recaptcha.accountdefender.AnnotateAccountDefenderAssessment;
+import recaptcha.accountdefender.ListRelatedAccountGroupMemberships;
+import recaptcha.accountdefender.ListRelatedAccountGroups;
+import recaptcha.accountdefender.SearchRelatedAccountGroupMemberships;
+import recaptcha.passwordleak.CreatePasswordLeakAssessment;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @EnableAutoConfiguration
@@ -74,13 +75,14 @@ public class SnippetsIT {
   private static String RECAPTCHA_SITE_KEY_1 = "recaptcha-site-key1";
   private static String RECAPTCHA_SITE_KEY_2 = "recaptcha-site-key2";
   private static WebDriver browser;
-  @LocalServerPort private int randomServerPort;
+  @LocalServerPort
+  private int randomServerPort;
   private ByteArrayOutputStream stdOut;
 
   @Test
   public void testCreateAnnotateAssessment()
       throws JSONException, IOException, InterruptedException, NoSuchAlgorithmException,
-          ExecutionException {
+      ExecutionException {
     // Create an assessment.
     String testURL = "http://localhost:" + randomServerPort + "/";
     JSONObject createAssessmentResult =
@@ -184,11 +186,11 @@ public class SnippetsIT {
     String testURL = "http://localhost:" + randomServerPort + "/";
 
     // Secret not shared with Google.
-    String HMAC_KEY = "123456789";
+    String hmacKey = "123456789";
     // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
     // secret key.
     Mac mac = Mac.getInstance("HmacSHA256");
-    SecretKeySpec secretKeySpec = new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
+    SecretKeySpec secretKeySpec = new SecretKeySpec(hmacKey.getBytes(StandardCharsets.UTF_8),
         "HmacSHA256");
     mac.init(secretKeySpec);
     byte[] hashBytes = mac.doFinal(
@@ -255,34 +257,33 @@ public class SnippetsIT {
 
     // Send the token for analysis. The analysis score ranges from 0.0 to 1.0
     switch (assessmentType) {
-      case ACCOUNT_DEFENDER:
-        {
-          AccountDefenderAssessment.accountDefenderAssessment(
-              PROJECT_ID,
-              RECAPTCHA_SITE_KEY_1,
-              tokenActionPair.getString("token"),
-              tokenActionPair.getString("action"),
-              hashedAccountId);
-          break;
-        }
-      case ASSESSMENT:
-        {
-          recaptcha.CreateAssessment.createAssessment(
-              PROJECT_ID,
-              RECAPTCHA_SITE_KEY_1,
-              tokenActionPair.getString("token"),
-              tokenActionPair.getString("action"));
-          break;
-        }
-      case PASSWORD_LEAK:
-        {
-          passwordleak.CreatePasswordLeakAssessment.checkPasswordLeak(
-              PROJECT_ID,
-              RECAPTCHA_SITE_KEY_1,
-              tokenActionPair.getString("token"),
-              tokenActionPair.getString("action"));
-          break;
-        }
+      case ACCOUNT_DEFENDER: {
+        AccountDefenderAssessment.accountDefenderAssessment(
+            PROJECT_ID,
+            RECAPTCHA_SITE_KEY_1,
+            tokenActionPair.getString("token"),
+            tokenActionPair.getString("action"),
+            hashedAccountId);
+        break;
+      }
+      case ASSESSMENT: {
+        recaptcha.CreateAssessment.createAssessment(
+            PROJECT_ID,
+            RECAPTCHA_SITE_KEY_1,
+            tokenActionPair.getString("token"),
+            tokenActionPair.getString("action"));
+        break;
+      }
+      case PASSWORD_LEAK: {
+        CreatePasswordLeakAssessment.checkPasswordLeak(
+            PROJECT_ID,
+            RECAPTCHA_SITE_KEY_1,
+            tokenActionPair.getString("token"),
+            tokenActionPair.getString("action"));
+        break;
+      }
+      default:
+        throw new Error("Invalid Assessment type");
     }
 
     // Assert the response.
@@ -316,7 +317,8 @@ public class SnippetsIT {
     ACCOUNT_DEFENDER,
     PASSWORD_LEAK;
 
-    AssessmentType() {}
+    AssessmentType() {
+    }
   }
 
   public JSONObject initiateBrowserTest(String testURL)

@@ -30,26 +30,26 @@ public class CreateAssessment {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectID = "project-id";
+    String projectId = "project-id";
     String recaptchaSiteKey = "recaptcha-site-key";
     String token = "action-token";
     String recaptchaAction = "action-name";
 
-    createAssessment(projectID, recaptchaSiteKey, token, recaptchaAction);
+    createAssessment(projectId, recaptchaSiteKey, token, recaptchaAction);
   }
 
   /**
    * Create an assessment to analyze the risk of an UI action. Assessment approach is the same for
    * both 'score' and 'checkbox' type recaptcha site keys.
    *
-   * @param projectID : GCloud Project ID
+   * @param projectId : GCloud Project ID
    * @param recaptchaSiteKey : Site key obtained by registering a domain/app to use recaptcha
    *     services. (score/ checkbox type)
    * @param token : The token obtained from the client on passing the recaptchaSiteKey.
    * @param recaptchaAction : Action name corresponding to the token.
    */
   public static void createAssessment(
-      String projectID, String recaptchaSiteKey, String token, String recaptchaAction)
+      String projectId, String recaptchaSiteKey, String token, String recaptchaAction)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -63,7 +63,7 @@ public class CreateAssessment {
       // Build the assessment request.
       CreateAssessmentRequest createAssessmentRequest =
           CreateAssessmentRequest.newBuilder()
-              .setParent(ProjectName.of(projectID).toString())
+              .setParent(ProjectName.of(projectId).toString())
               .setAssessment(Assessment.newBuilder().setEvent(event).build())
               .build();
 

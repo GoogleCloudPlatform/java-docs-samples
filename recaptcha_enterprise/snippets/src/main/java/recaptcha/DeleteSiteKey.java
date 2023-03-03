@@ -31,19 +31,19 @@ public class DeleteSiteKey {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectID = "your-project-id";
+    String projectId = "your-project-id";
     String recaptchaSiteKey = "recaptcha-site-key";
 
-    deleteSiteKey(projectID, recaptchaSiteKey);
+    deleteSiteKey(projectId, recaptchaSiteKey);
   }
 
   /**
    * Delete the given reCAPTCHA site key present under the project ID.
    *
-   * @param projectID: GCloud Project ID.
-   * @param recaptchaSiteKey: Specify the site key to be deleted.
+   * @param projectId : Google Cloud Project ID.
+   * @param recaptchaSiteKey : Specify the site key to be deleted.
    */
-  public static void deleteSiteKey(String projectID, String recaptchaSiteKey)
+  public static void deleteSiteKey(String projectId, String recaptchaSiteKey)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -54,7 +54,7 @@ public class DeleteSiteKey {
       // Set the project ID and reCAPTCHA site key.
       DeleteKeyRequest deleteKeyRequest =
           DeleteKeyRequest.newBuilder()
-              .setName(KeyName.of(projectID, recaptchaSiteKey).toString())
+              .setName(KeyName.of(projectId, recaptchaSiteKey).toString())
               .build();
 
       client.deleteKeyCallable().futureCall(deleteKeyRequest).get(5, TimeUnit.SECONDS);

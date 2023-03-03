@@ -30,19 +30,19 @@ public class CreateSiteKey {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectID = "your-project-id";
+    String projectId = "your-project-id";
     String domainName = "domain-name";
 
-    createSiteKey(projectID, domainName);
+    createSiteKey(projectId, domainName);
   }
 
   /**
    * Create reCAPTCHA Site key which binds a domain name to a unique key.
    *
-   * @param projectID : GCloud Project ID.
+   * @param projectId : Google Cloud Project ID.
    * @param domainName : Specify the domain name in which the reCAPTCHA should be activated.
    */
-  public static String createSiteKey(String projectID, String domainName) throws IOException {
+  public static String createSiteKey(String projectId, String domainName) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `client.close()` method on the client to safely
@@ -64,7 +64,7 @@ public class CreateSiteKey {
 
       CreateKeyRequest createKeyRequest =
           CreateKeyRequest.newBuilder()
-              .setParent(ProjectName.of(projectID).toString())
+              .setParent(ProjectName.of(projectId).toString())
               .setKey(scoreKey)
               .build();
 

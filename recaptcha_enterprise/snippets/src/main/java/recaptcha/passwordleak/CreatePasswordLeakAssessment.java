@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package passwordleak;
+package recaptcha.passwordleak;
 
 // [START recaptcha_enterprise_password_leak_verification]
 
@@ -39,7 +39,7 @@ public class CreatePasswordLeakAssessment {
       throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // GCloud Project ID.
-    String projectID = "project-id";
+    String projectId = "project-id";
 
     // Site key obtained by registering a domain/app to use recaptcha Enterprise.
     String recaptchaSiteKey = "recaptcha-site-key";
@@ -52,40 +52,41 @@ public class CreatePasswordLeakAssessment {
     // Action name corresponding to the token.
     String recaptchaAction = "recaptcha-action";
 
-    checkPasswordLeak(projectID, recaptchaSiteKey, token, recaptchaAction);
+    checkPasswordLeak(projectId, recaptchaSiteKey, token, recaptchaAction);
   }
 
   /*
-  * Detect password leaks and breached credentials to prevent account takeovers (ATOs)
-  * and credential stuffing attacks.
-  * For more information, see: https://cloud.google.com/recaptcha-enterprise/docs/getting-started
-  * and https://security.googleblog.com/2019/02/protect-your-accounts-from-data.html
+   * Detect password leaks and breached credentials to prevent account takeovers (ATOs)
+   * and credential stuffing attacks.
+   * For more information, see: https://cloud.google.com/recaptcha-enterprise/docs/getting-started
+   * and https://security.googleblog.com/2019/02/protect-your-accounts-from-data.html
 
-  * Steps:
-  * 1. Use the 'createVerification' method to hash and Encrypt the hashed username and password.
-  * 2. Send the hash prefix (2-byte) and the encrypted credentials to create the assessment.
-  * (Hash prefix is used to partition the database.)
-  * 3. Password leak assessment returns a database whose prefix matches the sent hash prefix.
-  * Create Assessment also sends back re-encrypted credentials.
-  * 4. The re-encrypted credential is then locally verified to see if there is a
-  * match in the database.
-  *
-  * To perform hashing, encryption and verification (steps 1, 2 and 4),
-  * reCAPTCHA Enterprise provides a helper library in Java.
-  * See, https://github.com/GoogleCloudPlatform/java-recaptcha-password-check-helpers
+   * Steps:
+   * 1. Use the 'createVerification' method to hash and Encrypt the hashed username and password.
+   * 2. Send the hash prefix (2-byte) and the encrypted credentials to create the assessment.
+   * (Hash prefix is used to partition the database.)
+   * 3. Password leak assessment returns a database whose prefix matches the sent hash prefix.
+   * Create Assessment also sends back re-encrypted credentials.
+   * 4. The re-encrypted credential is then locally verified to see if there is a
+   * match in the database.
+   *
+   * To perform hashing, encryption and verification (steps 1, 2 and 4),
+   * reCAPTCHA Enterprise provides a helper library in Java.
+   * See, https://github.com/GoogleCloudPlatform/java-recaptcha-password-check-helpers
 
-  * If you want to extend this behavior to your own implementation/ languages,
-  * make sure to perform the following steps:
-  * 1. Hash the credentials (First 2 bytes of the result is the 'lookupHashPrefix')
-  * 2. Encrypt the hash (result = 'encryptedUserCredentialsHash')
-  * 3. Get back the PasswordLeak information from reCAPTCHA Enterprise Create Assessment.
-  * 4. Decrypt the obtained 'credentials.getReencryptedUserCredentialsHash()'
-  * with the same key you used for encryption.
-  * 5. Check if the decrypted credentials are present in 'credentials.getEncryptedLeakMatchPrefixesList()'.
-  * 6. If there is a match, that indicates a credential breach.
-  */
+   * If you want to extend this behavior to your own implementation/ languages,
+   * make sure to perform the following steps:
+   * 1. Hash the credentials (First 2 bytes of the result is the 'lookupHashPrefix')
+   * 2. Encrypt the hash (result = 'encryptedUserCredentialsHash')
+   * 3. Get back the PasswordLeak information from reCAPTCHA Enterprise Create Assessment.
+   * 4. Decrypt the obtained 'credentials.getReencryptedUserCredentialsHash()'
+   * with the same key you used for encryption.
+   * 5. Check if the decrypted credentials are present in
+   * 'credentials.getEncryptedLeakMatchPrefixesList()'.
+   * 6. If there is a match, that indicates a credential breach.
+   */
   public static void checkPasswordLeak(
-      String projectID, String recaptchaSiteKey, String token, String recaptchaAction)
+      String projectId, String recaptchaSiteKey, String token, String recaptchaAction)
       throws ExecutionException, InterruptedException, IOException {
     // Set the username and password to be checked.
     String username = "username";
@@ -105,7 +106,7 @@ public class CreatePasswordLeakAssessment {
     // the matching database entry for the hash prefix.
     PrivatePasswordLeakVerification credentials =
         createPasswordLeakAssessment(
-            projectID,
+            projectId,
             recaptchaSiteKey,
             token,
             recaptchaAction,
@@ -137,7 +138,7 @@ public class CreatePasswordLeakAssessment {
   // reencryptedUserCredentialsHash and credential breach database
   // whose prefix matches the lookupHashPrefix.
   private static PrivatePasswordLeakVerification createPasswordLeakAssessment(
-      String projectID,
+      String projectId,
       String recaptchaSiteKey,
       String token,
       String recaptchaAction,
@@ -160,7 +161,7 @@ public class CreatePasswordLeakAssessment {
       // Build the assessment request.
       CreateAssessmentRequest createAssessmentRequest =
           CreateAssessmentRequest.newBuilder()
-              .setParent(String.format("projects/%s", projectID))
+              .setParent(String.format("projects/%s", projectId))
               .setAssessment(
                   Assessment.newBuilder()
                       .setEvent(event)

@@ -33,19 +33,19 @@ public class GetSiteKey {
   public static void main(String[] args)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectID = "your-project-id";
+    String projectId = "your-project-id";
     String recaptchaSiteKey = "recaptcha-site-key";
 
-    getSiteKey(projectID, recaptchaSiteKey);
+    getSiteKey(projectId, recaptchaSiteKey);
   }
 
   /**
    * Get the reCAPTCHA site key present under the project ID.
    *
-   * @param projectID: GCloud Project ID.
-   * @param recaptchaSiteKey: Specify the site key to get the details.
+   * @param projectId : GCloud Project ID.
+   * @param recaptchaSiteKey : Specify the site key to get the details.
    */
-  public static void getSiteKey(String projectID, String recaptchaSiteKey)
+  public static void getSiteKey(String projectId, String recaptchaSiteKey)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -56,7 +56,7 @@ public class GetSiteKey {
       // Construct the "GetSiteKey" request.
       GetKeyRequest getKeyRequest =
           GetKeyRequest.newBuilder()
-              .setName(KeyName.of(projectID, recaptchaSiteKey).toString())
+              .setName(KeyName.of(projectId, recaptchaSiteKey).toString())
               .build();
 
       // Wait for the operation to complete.
