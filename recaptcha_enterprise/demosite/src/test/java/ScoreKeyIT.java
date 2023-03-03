@@ -59,12 +59,18 @@ public class ScoreKeyIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String DOMAIN_NAME = "localhost";
   private static String RECAPTCHA_SITE_KEY = "recaptcha-site-key";
-  private static String HOME_BUTTON_XPATH = "//*[@id=\"example\"]/button";
-  private static String BUTTON_XPATH = "/html/body/recaptcha-demo/button";
-  private static String RESULT_XPATH = "//*[@id=\"result\"]/section/div/code/pre";
+
+  // XPath of reCAPTCHA button in /home page. Used to execute Javascript actions.
+  private static String HOME_BUTTON_XPATH = "#example > button";
+
+  // XPath of reCAPTCHA button in all pages, except /home. Used to execute Javascript actions.
+  private static String BUTTON_XPATH = "body > recaptcha-demo > button";
+
+  // XPath of reCAPTCHA result in page. Used to execute Javascript actions.
+  private static String RESULT_XPATH = "#result > section > div > code > pre";
   private static WebDriver browser;
   @LocalServerPort
-  private static int randomServerPort;
+  private int randomServerPort;
 
   private ByteArrayOutputStream stdOut;
 
@@ -143,14 +149,14 @@ public class ScoreKeyIT {
 
     // If score is not available on page load, then click button to get score.
     if (!scoreOnPageLoad) {
-      browser.findElement(By.xpath(buttonXPath)).click();
+      browser.findElement(By.cssSelector(buttonXPath)).click();
       TimeUnit.SECONDS.sleep(1);
     }
     // Get the result.
-    String result = browser.findElement(By.xpath(resultXPath)).getText();
+    String result = browser.findElement(By.cssSelector(resultXPath)).getText();
 
     // Click the button (again) to navigate to the next page.
-    browser.findElement(By.xpath(buttonXPath)).click();
+    browser.findElement(By.cssSelector(buttonXPath)).click();
     TimeUnit.SECONDS.sleep(1);
     String redirectedUrl = browser.getCurrentUrl();
 

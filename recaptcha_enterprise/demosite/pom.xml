@@ -8,6 +8,16 @@
   <name>demosite</name>
   <version>0.0.1-SNAPSHOT</version>
 
+  <!--
+  The parent pom defines common style checks and testing strategies for our samples.
+  Removing or replacing it should not affect the execution of the samples in anyway.
+-->
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.2.0</version>
+  </parent>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -43,32 +53,36 @@
     </dependency>
 
 
-    <!-- [Start_Selenium_dependencies] -->
+    <!-- start_Selenium_dependencies -->
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
       <version>4.5.0</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-chrome-driver</artifactId>
       <version>4.5.0</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>31.1-jre</version>
+      <scope>test</scope>
     </dependency>
     <!-- Removes the dependency of driver binary file -->
     <dependency>
       <groupId>io.github.bonigarcia</groupId>
       <artifactId>webdrivermanager</artifactId>
       <version>5.3.0</version>
+      <scope>test</scope>
     </dependency>
-    <!-- [End_Selenium_dependencies] -->
+    <!-- end_Selenium_dependencies -->
 
 
-    <!-- [Start_test_dependencies] -->
+    <!-- start_test_dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -81,10 +95,10 @@
       <version>1.1.3</version>
       <scope>test</scope>
     </dependency>
-    <!-- [End_test_dependencies] -->
+    <!-- end_test_dependencies -->
 
 
-    <!-- [Start_Spring_dependencies] -->
+    <!-- start_Spring_dependencies -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -112,12 +126,11 @@
       <version>2.7.0</version>
       <scope>compile</scope>
     </dependency>
-    <!-- [End_Spring_dependencies] -->
+    <!-- end_Spring_dependencies -->
 
   </dependencies>
 
   <build>
-    <!--    <finalName>demosite</finalName>-->
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
