@@ -29,6 +29,7 @@ kms @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @
 orgpolicy @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 privateca @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 recaptcha_enterprise @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+recaptcha_enterprise/demosite @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/recaptcha-customer-obsession-reviewers
 secretmanager @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 security-command-center @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 servicedirectory @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
