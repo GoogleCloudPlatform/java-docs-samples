@@ -26,6 +26,10 @@ assign_issues_by:
   - 'api: spanner'
   to:
   - ansh0l
+- labels:
+  - 'api: dlp'
+  to:
+  - GoogleCloudPlatform/googleapis-dlp
   
 assign_prs:
   - GoogleCloudPlatform/java-samples-reviewers
@@ -51,5 +55,7 @@ assign_prs_by:
   - 'api: cloudsql'
   to:
   - GoogleCloudPlatform/infra-db-dpes
-
-
+- labels:
+  - 'api: dlp'
+  to:
+  - GoogleCloudPlatform/googleapis-dlp
