@@ -30,29 +30,29 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-    <version>${jetty.version}</version>
+      <version>${jetty.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
-    <version>${jetty.version}</version>
+      <version>${jetty.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-    <version>${jetty.version}</version>
+      <version>${jetty.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-annotations</artifactId>
-    <version>${jetty.version}</version>
+      <version>${jetty.version}</version>
     </dependency>
     <!-- extra explicit dependency needed because there is a JSP in the sample-->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>apache-jsp</artifactId>
-    <version>${jetty.version}</version>
+      <version>${jetty.version}</version>
     </dependency>
   </dependencies>
   <!-- [END gae_java11_server_dependencies] -->
