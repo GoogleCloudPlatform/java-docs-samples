@@ -140,6 +140,9 @@
           <mainClass>${app.mainclass}</mainClass>
         </configuration>
       </plugin>
+      <!-- The checkstyle plugin is skipped to avoid Javadoc errors thrown in
+      the files. Adding the Javadoc comments in the Controller file is against
+      the best interest of Demosite project of simpler& straight code access -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

@@ -25,6 +25,7 @@ import com.google.recaptchaenterprise.v1.ProjectName;
 import com.google.recaptchaenterprise.v1.WebKeySettings;
 import com.google.recaptchaenterprise.v1.WebKeySettings.IntegrationType;
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -37,14 +38,16 @@ public class Util {
    * @param projectID : Google Cloud Project ID.
    * @param domainName : Specify the domain name in which the reCAPTCHA should be activated.
    */
-  public static String createSiteKey(String projectID, String domainName, IntegrationType keyType) throws IOException {
+  public static String createSiteKey(String projectID, String domainName, IntegrationType keyType)
+      throws IOException {
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
 
       // Set the type of reCAPTCHA to be displayed.
       // For different types, see: https://cloud.google.com/recaptcha-enterprise/docs/keys
       Key scoreKey =
           Key.newBuilder()
-              .setDisplayName("recaptcha_demosite_test_key")
+              .setDisplayName("test-key-recaptcha-demosite-" +
+                  UUID.randomUUID().toString().split("-")[0])
               .setWebSettings(
                   WebKeySettings.newBuilder()
                       .addAllowedDomains(domainName)

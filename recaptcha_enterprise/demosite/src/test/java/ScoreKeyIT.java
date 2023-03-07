@@ -58,7 +58,7 @@ public class ScoreKeyIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String DOMAIN_NAME = "localhost";
-  private static String RECAPTCHA_SITE_KEY = "recaptcha-site-key";
+  private static String RECAPTCHA_SITE_KEY;
 
   // XPath of reCAPTCHA button in /home page. Used to execute Javascript actions.
   private static String HOME_BUTTON_XPATH = "#example > button";

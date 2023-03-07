@@ -28,7 +28,7 @@ public class CreateAssessment {
   /**
    * Create an assessment to analyze the risk of a UI action.
    *
-   * @param projectID : GCloud Project ID
+   * @param projectID : Google Cloud Project ID
    * @param recaptchaSiteKey : Site key obtained by registering a domain/app to use recaptcha
    * services. (score/ checkbox type)
    * @param token : The token obtained from the client on passing the recaptchaSiteKey.
@@ -39,7 +39,11 @@ public class CreateAssessment {
   public static JSONObject createAssessment(
       String projectID, String recaptchaSiteKey, String token, String recaptchaAction)
       throws Exception {
+    // Sample threshold score for classification of bad / not bad action. The threshold score
+    // can be used to trigger secondary actions like MFA.
     double sampleThresholdScore = 0.50;
+
+    // Classify the action as bad / not bad according to the set threshold score.
     String verdict = "";
 
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Starts -->
