@@ -42,18 +42,18 @@ function fetchDemoAssessment({ action, token }) {
     method: "POST",
     headers: new Headers({'content-type': 'application/json'}),
   })
-    .then((response) => {
-      const { ok, body: { data = {} } = {} } = response;
-      if (ok) {
-        return response.json();
-      }
-    })
-    .then((data) => {
-      return data;
-    })
-    .catch((error) => {
-      throw new Error(error);
-    });
+  .then((response) => {
+    const { ok, body: { data = {} } = {} } = response;
+    if (ok) {
+      return response.json();
+    }
+  })
+  .then((data) => {
+    return data;
+  })
+  .catch((error) => {
+    throw new Error(error);
+  });
 }
 
 function showAssessmentInDemo(score) {

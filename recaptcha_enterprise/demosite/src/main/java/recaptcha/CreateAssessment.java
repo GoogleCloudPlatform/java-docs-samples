@@ -21,7 +21,7 @@ import com.google.recaptchaenterprise.v1.Assessment;
 import com.google.recaptchaenterprise.v1.CreateAssessmentRequest;
 import com.google.recaptchaenterprise.v1.Event;
 import com.google.recaptchaenterprise.v1.ProjectName;
-import org.json.JSONObject;
+import java.util.HashMap;
 
 public class CreateAssessment {
 
@@ -30,21 +30,18 @@ public class CreateAssessment {
    *
    * @param projectID : Google Cloud Project ID
    * @param recaptchaSiteKey : Site key obtained by registering a domain/app to use recaptcha
-   * services. (score/ checkbox type)
+   *     services. (score/ checkbox type)
    * @param token : The token obtained from the client on passing the recaptchaSiteKey.
    * @param recaptchaAction : Action name corresponding to the token.
    * @return JSONObject that contains a risk score and verdict if the action was executed by a
-   * human.
+   *     human.
    */
-  public static JSONObject createAssessment(
+  public static HashMap<String, HashMap<String, String>> createAssessment(
       String projectID, String recaptchaSiteKey, String token, String recaptchaAction)
       throws Exception {
     // Sample threshold score for classification of bad / not bad action. The threshold score
     // can be used to trigger secondary actions like MFA.
     double sampleThresholdScore = 0.50;
-
-    // Classify the action as bad / not bad according to the set threshold score.
-    String verdict = "";
 
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Starts -->
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
@@ -79,14 +76,18 @@ public class CreateAssessment {
       }
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Ends -->
 
-      // Return the result to client.
-      verdict =
+      // Classify the action as bad / not bad according to the set threshold score.
+      String verdict =
           response.getRiskAnalysis().getScore() < sampleThresholdScore ? "Bad" : "Not Bad";
-      JSONObject result = new JSONObject()
-          .put("score", response.getRiskAnalysis().getScore())
-          .put("verdict", verdict);
 
-      return new JSONObject().put("data", result).put("success", "true");
+      // Return the result to client.
+      HashMap<String, String> result = new HashMap<>() {{
+        put("score", String.valueOf(response.getRiskAnalysis().getScore()));
+        put("verdict", verdict);
+      }};
+      return new HashMap<>() {{
+        put("data", result);
+      }};
     }
   }
 }

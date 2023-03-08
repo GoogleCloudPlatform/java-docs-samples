@@ -19,7 +19,6 @@ package app;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -76,12 +75,12 @@ public class MainController {
 
   @PostMapping(value = "/create_assessment", produces = "application/json")
   public static @ResponseBody
-  ResponseEntity<String> createAssessment(
+  ResponseEntity<HashMap<String, HashMap<String, String>>> createAssessment(
       @RequestBody Map<String, HashMap<String, String>> credentials) {
     String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-    JSONObject result;
+    HashMap<String, HashMap<String, String>> result;
 
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
@@ -91,12 +90,14 @@ public class MainController {
           credentials.get("recaptcha_cred").get("action"));
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
     } catch (Exception e) {
-      result = new JSONObject()
-          .put("error_msg", e)
-          .put("success", "false");
-      return new ResponseEntity<>(result.toString(), httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+      result = new HashMap<>() {{
+        put("data", new HashMap<>() {{
+          put("error_msg", e.toString());
+        }});
+      }};
+      return new ResponseEntity<>(result, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    return new ResponseEntity<>(result.toString(), httpHeaders, HttpStatus.OK);
+    return new ResponseEntity<>(result, httpHeaders, HttpStatus.OK);
   }
 }
