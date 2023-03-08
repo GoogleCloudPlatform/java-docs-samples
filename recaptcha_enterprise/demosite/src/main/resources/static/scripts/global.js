@@ -40,6 +40,7 @@ function fetchDemoAssessment({ action, token }) {
   return fetch("/create_assessment", {
     body,
     method: "POST",
+    headers: new Headers({'content-type': 'application/json'}),
   })
     .then((response) => {
       const { ok, body: { data = {} } = {} } = response;
