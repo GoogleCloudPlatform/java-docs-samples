@@ -41,7 +41,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -147,16 +149,22 @@ public class ScoreKeyIT {
     new WebDriverWait(browser, Duration.ofSeconds(10))
         .until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
 
+    // Get the shadow root and its content.
+    WebElement shadowHost = browser.findElement(By.cssSelector("#shadow_root"));
+    String script = "return arguments[0].shadowRoot";
+    SearchContext shadowRoot = (SearchContext) js.executeScript(script, shadowHost);
+    WebElement shadowContent = shadowRoot.findElement(By.cssSelector("#shadow_content"));
+
     // If score is not available on page load, then click button to get score.
     if (!scoreOnPageLoad) {
-      browser.findElement(By.cssSelector(buttonXPath)).click();
+      shadowContent.findElement(By.cssSelector(buttonXPath)).click();
       TimeUnit.SECONDS.sleep(1);
     }
     // Get the result.
-    String result = browser.findElement(By.cssSelector(resultXPath)).getText();
+    String result = shadowContent.findElement(By.cssSelector(resultXPath)).getText();
 
     // Click the button (again) to navigate to the next page.
-    browser.findElement(By.cssSelector(buttonXPath)).click();
+    shadowContent.findElement(By.cssSelector(buttonXPath)).click();
     TimeUnit.SECONDS.sleep(1);
     String redirectedUrl = browser.getCurrentUrl();
 
