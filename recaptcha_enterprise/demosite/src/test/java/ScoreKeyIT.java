@@ -62,14 +62,16 @@ public class ScoreKeyIT {
   private static final String DOMAIN_NAME = "localhost";
   private static String RECAPTCHA_SITE_KEY;
 
-  // XPath of reCAPTCHA button in /home page. Used to execute Javascript actions.
-  private static String HOME_BUTTON_XPATH = "#example > button";
+  // CSS selector of reCAPTCHA button in /home page. Used to execute Javascript actions.
+  private static final String HOME_BUTTON_SELECTOR = "#example > button";
 
-  // XPath of reCAPTCHA button in all pages, except /home. Used to execute Javascript actions.
-  private static String BUTTON_XPATH = "body > recaptcha-demo > button";
+  // CSS selector of reCAPTCHA button in all pages, except /home. Used to execute Javascript actions.
+  private static final String BUTTON_SELECTOR = "button";
 
-  // XPath of reCAPTCHA result in page. Used to execute Javascript actions.
-  private static String RESULT_XPATH = "#result > section > div > code > pre";
+  // CSS selector of reCAPTCHA result in page. Used to execute Javascript actions.
+  private static final String RESULT_SELECTOR = "#result pre";
+
+  private static final String SHADOW_HOST_SELECTOR = "recaptcha-demo";
   private static WebDriver browser;
   @LocalServerPort
   private int randomServerPort;
@@ -139,7 +141,8 @@ public class ScoreKeyIT {
 
   // Retrieve page and click the button specified by the element to obtain
   // response and redirect URL.
-  public ImmutableMap<String, String> browserTest(String pageUrl, String buttonXPath, String resultXPath,
+  public ImmutableMap<String, String> browserTest(String pageUrl, String buttonXPath,
+      String resultXPath,
       boolean scoreOnPageLoad)
       throws JSONException, InterruptedException {
     browser.get(pageUrl);
@@ -150,21 +153,29 @@ public class ScoreKeyIT {
         .until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
 
     // Get the shadow root and its content.
-    WebElement shadowHost = browser.findElement(By.cssSelector("#shadow_root"));
-    String script = "return arguments[0].shadowRoot";
-    SearchContext shadowRoot = (SearchContext) js.executeScript(script, shadowHost);
-    WebElement shadowContent = shadowRoot.findElement(By.cssSelector("#shadow_content"));
+    WebElement shadowHost = browser.findElement(By.cssSelector(SHADOW_HOST_SELECTOR));
+    SearchContext shadowRoot = shadowHost.getShadowRoot();
 
     // If score is not available on page load, then click button to get score.
     if (!scoreOnPageLoad) {
-      shadowContent.findElement(By.cssSelector(buttonXPath)).click();
+      shadowHost.findElement(By.cssSelector(buttonXPath)).click();
       TimeUnit.SECONDS.sleep(1);
     }
-    // Get the result.
-    String result = shadowContent.findElement(By.cssSelector(resultXPath)).getText();
 
-    // Click the button (again) to navigate to the next page.
-    shadowContent.findElement(By.cssSelector(buttonXPath)).click();
+    // Get the result. Sleep so that Selenium can get the updated text from the element.
+    TimeUnit.SECONDS.sleep(1);
+    WebElement response = shadowRoot.findElement(By.cssSelector(resultXPath));
+    TimeUnit.SECONDS.sleep(1);
+    String result = response.getText();
+
+    // Click the button (again) to navigate to the next page. Based on the page, the button will
+    // be located in either shadowRoot (home page) or shadowHost (all other pages).
+    if (!scoreOnPageLoad) {
+      shadowHost.findElement(By.cssSelector(buttonXPath)).click();
+    } else {
+      shadowRoot.findElement(By.cssSelector(buttonXPath)).click();
+    }
+
     TimeUnit.SECONDS.sleep(1);
     String redirectedUrl = browser.getCurrentUrl();
 
@@ -178,7 +189,7 @@ public class ScoreKeyIT {
     String pageUrl = makeRequest(testUrl, RECAPTCHA_SITE_KEY);
 
     ImmutableMap<String, String> response =
-        browserTest(pageUrl, HOME_BUTTON_XPATH, RESULT_XPATH, true);
+        browserTest(pageUrl, HOME_BUTTON_SELECTOR, RESULT_SELECTOR, true);
 
     // Verify response contains expected action and a floating point score.
     String result = response.get("result");
@@ -197,7 +208,7 @@ public class ScoreKeyIT {
     String pageUrl = makeRequest(testUrl.concat("signup"), RECAPTCHA_SITE_KEY);
 
     ImmutableMap<String, String> response =
-        browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, false);
+        browserTest(pageUrl, BUTTON_SELECTOR, RESULT_SELECTOR, false);
 
     // Verify response contains expected action and a floating point score.
     String result = response.get("result");
@@ -216,7 +227,7 @@ public class ScoreKeyIT {
     String pageUrl = makeRequest(testUrl.concat("login"), RECAPTCHA_SITE_KEY);
 
     ImmutableMap<String, String> response =
-        browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, false);
+        browserTest(pageUrl, BUTTON_SELECTOR, RESULT_SELECTOR, false);
 
     // Verify response contains expected action and a floating point score.
     String result = response.get("result");
@@ -235,7 +246,7 @@ public class ScoreKeyIT {
     String pageUrl = makeRequest(testUrl.concat("store"), RECAPTCHA_SITE_KEY);
 
     ImmutableMap<String, String> response =
-        browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, false);
+        browserTest(pageUrl, BUTTON_SELECTOR, RESULT_SELECTOR, false);
 
     // Verify response contains expected action and a floating point score.
     String result = response.get("result");
@@ -254,7 +265,7 @@ public class ScoreKeyIT {
     String pageUrl = makeRequest(testUrl.concat("comment"), RECAPTCHA_SITE_KEY);
 
     ImmutableMap<String, String> response =
-        browserTest(pageUrl, BUTTON_XPATH, RESULT_XPATH, false);
+        browserTest(pageUrl, BUTTON_SELECTOR, RESULT_SELECTOR, false);
 
     // Verify response contains expected action and a floating point score.
     String result = response.get("result");
