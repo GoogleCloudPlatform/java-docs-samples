@@ -106,6 +106,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
         --project="$GOOGLE_CLOUD_PROJECT"
 fi
 
+
 # Package local jetty dependency for Java11 samples
 if [[ ",$JAVA_VERSION," =~ "11" ]]; then
   cd appengine-java11/appengine-simple-jetty-main/
