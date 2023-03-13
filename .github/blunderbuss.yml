@@ -67,4 +67,5 @@ assign_prs_by:
 - labels:
   - 'api: datacatalog'
   - 'api: dataplex'
+  to:
   - GoogleCloudPlatform/googleapi-dataplex
