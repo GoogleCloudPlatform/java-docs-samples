@@ -87,3 +87,5 @@ media @GoogleCloudPlatform/cloud-media-team @GoogleCloudPlatform/java-samples-re
 pubsub @GoogleCloudPlatform/api-pubsub-and-pubsublite @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 pubsublite @GoogleCloudPlatform/api-pubsub-and-pubsublite @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 retail @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+datacatalog @GoogleCloudPlatform/googleapi-dataplex @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+dataplex @GoogleCloudPlatform/googleapi-dataplex @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver

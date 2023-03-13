@@ -30,6 +30,11 @@ assign_issues_by:
   - 'api: dlp'
   to:
   - GoogleCloudPlatform/googleapis-dlp
+- labels:
+  - 'api: datacatalog'
+  - 'api: dataplex'
+  to:
+  - GoogleCloudPlatform/googleapi-dataplex
   
 assign_prs:
   - GoogleCloudPlatform/java-samples-reviewers
@@ -59,3 +64,7 @@ assign_prs_by:
   - 'api: dlp'
   to:
   - GoogleCloudPlatform/googleapis-dlp
+- labels:
+  - 'api: datacatalog'
+  - 'api: dataplex'
+  - GoogleCloudPlatform/googleapi-dataplex
