@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<!--
+
+ Copyright 2017 Google Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>GAE standard Metadata</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h3>AppIdentity</h3>
+<table>
+  <tr><td>ServiceAccountName</td><td th:utext="${ServiceAccountName}"></td></tr>
+  <tr><td>GCS Bucket</td><td th:utext="${gcs}"></td></tr>
+</table>
+<h3>SystemProperties</h3>
+<table>
+  <tr><td>appId</td><td th:utext="${appId}"></td></tr>
+  <tr><td>appVer</td><td th:utext="${appVer}"></td></tr>
+  <tr><td>version</td><td th:utext="${version}"></td></tr>
+  <tr><td>environment</td><td th:utext="${environment}"></td></tr>
+</table>
+<h3>Environment Attributes</h3>
+<table>
+  <tr th:each="a : ${attribs}">
+    <td th:utext="${a.getKey()}"></td>
+    <td th:utext="${a.getValue()}"></td>
+  </tr>
+</table>
+<h3>Headers</h3>
+<table>
+  <tr th:each="a : ${headers}">
+    <td th:utext="${a.getKey()}"></td>
+    <td th:utext="${a.getValue()}"></td>
+  </tr>
+
+</table>
+<h3>Cookies</h3>
+<table>
+  <tr th:each="a : ${cookies}">
+    <td th:utext="${a.getKey()}"></td>
+    <td th:utext="${a.getValue()}"></td>
+  </tr>
+
+</table>
+<h3>Java SystemProperties</h3>
+<table>
+  <tr th:each="a : ${systemprops}">
+    <td th:utext="${a.getKey()}"></td>
+    <td th:utext="${a.getValue()}"></td>
+  </tr>
+
+</table>
+<h3>Envirionment Variables</h3>
+<table>
+  <tr th:each="a : ${envvar}">
+    <td th:utext="${a.getKey()}"></td>
+    <td th:utext="${a.getValue()}"></td>
+  </tr>
+</table>
+<div th:switch="${production}" >
+  <div th:case="Production">
+    <h3>Metadata</h3>
+    <table>
+      <tr th:each="m : ${Metadata}">
+        <td th:utext="${m.getKey()}"></td>
+        <td th:utext="${m.getValue()}"></td>
+      </tr>
+    </table>
+    <h3>ServiceAccount Metadata</h3>
+    <table>
+      <tr th:each="m : ${sam}">
+        <td th:utext="${m.getKey()}"></td>
+        <td th:utext="${m.getValue()}"></td>
+      </tr>
+    </table>
+    <h3>Recursive service-accounts</h3>
+    <pre><code th:utext="${rsa}"></code></pre>
+    <h3>Recursive all metadata</h3>
+    <pre><code th:utext="${ram}"></code></pre>
+  </div>
+  <div th:case="*">No Local Metadata Server</div>
+</div>
+</body>
+</html>

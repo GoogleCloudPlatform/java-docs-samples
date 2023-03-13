@@ -1,0 +1,11 @@
+runtime: java
+env: flex
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+
+# [START config]
+beta_settings:
+    use_memcache_proxy: true
+# [END config]

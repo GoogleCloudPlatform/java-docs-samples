@@ -1,0 +1,13 @@
+runtime: java
+env: flex
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+
+# [START gae_flex_twilio_env]
+env_variables:
+  TWILIO_ACCOUNT_SID: YOUR-TWILIO-ACCOUNT-SID
+  TWILIO_AUTH_TOKEN: YOUR-TWILIO-AUTH-TOKEN
+  TWILIO_NUMBER: YOUR-TWILIO-NUMBER
+# [END gae_flex_twilio_env]

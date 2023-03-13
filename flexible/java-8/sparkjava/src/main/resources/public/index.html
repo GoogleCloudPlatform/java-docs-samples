@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container" role="main">
+  <div class="jumbotron">
+     <h1>User Database</h1>
+     <p>Using App Engine Flexible, Google Cloud Datastore, and SparkJava.</p>
+  </div>
+  <div class="page-header">
+    <h1>All users</h1>
+    <button class="btn btn-primary datastore-add" data-action="add"
+        data-toggle="modal" data-target="#datastoreModal" pull-right>
+      <span class="glyphicon glyphicon-plus"></span> Add a new user
+    </button>
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+        <tbody id="content">
+        </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $(function () {
+    load();
+    initModal();
+  });
+
+  $.ajaxSetup({
+      error: function(xhr, status, error) {
+        alert(JSON.parse(xhr.responseText).message);
+      }
+    });
+
+  function create(name, email) {
+    $.post("/api/users",
+        {name: name, email: email},
+        function(data) {
+          load();
+        });
+  }
+
+  function remove(id) {
+    $.ajax({
+      type: "delete",
+      url: "/api/users/" + id
+    }).done(function () {
+      load();
+    });
+  }
+
+  function update(id, name, email) {
+    $.ajax({
+      type: "put",
+      url: "/api/users/" + id,
+      dataType: "json",
+      data: {name: name, email: email},
+      success: function (response) {
+        load();
+      }
+    });
+  }
+
+  function load() {
+    $("#content").children().remove();
+    $.getJSON("/api/users", function (data) {
+      $.each(data, function (key, val) {
+        $("<tr><td>" + val.id + "</td><td>" + val.name + "</td><td>"
+            + val.email + "</td><td>"
+            + "<button data-action='edit' "
+            + "class='btn btn-primary btn-sm datastore-edit' "
+            + "data-toggle='modal' "
+            + "data-target='#datastoreModal' "
+            + "data-name='" + val.name + "' "
+            + "data-email='" + val.email + "' "
+            + "data-id='" + val.id + "'>"
+            + "<span class='glyphicon glyphicon-pencil'></span>"
+            + "</button>&nbsp;"
+            + "<button data-action='delete' "
+            + "class='btn btn-danger btn-sm datastore-delete' "
+            + "data-id='" + val.id + "'>"
+            + "<span class='glyphicon glyphicon-minus'></span>"
+            + "</button></td></tr>").appendTo("#content");
+      });
+      initCallbacks();
+    });
+  }
+
+  function initCallbacks() {
+    $(".datastore-delete").unbind().click(function() {
+      remove($(this).data("id"));
+    });
+  }
+
+  function initModal() {
+    $("#datastoreModal").on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      var action = button.data('action');
+      var id = button.data('id');
+      var datastoreAction = $("#datastoreAction");
+      datastoreAction.unbind();
+      var modal = $(this);
+      if (action === "add") {
+        modal.find('.modal-title').text("Add a user");
+        modal.find('#name').val("");
+        modal.find('#email').val("");
+        datastoreAction.click(function () {
+          create($("#name").val(), $("#email").val());
+          $('#datastoreModal').modal('toggle');
+        });
+      } else if (action === "edit") {
+        modal.find('.modal-title').text("Edit a user");
+        modal.find('#name').val(button.data("name"));
+        modal.find('#email').val(button.data("email"));
+        datastoreAction.click(function () {
+          update(id, $("#name").val(), $("#email").val());
+          $('#datastoreModal').modal('toggle');
+        });
+      }
+    });
+  }
+</script>
+<div class="modal fade" id="datastoreModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title" id="datastoreModalTitle">Add a user</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="name" class="control-label">Name:</label>
+            <input type="text" class="form-control" id="name">
+          </div>
+          <div class="form-group">
+            <label for="email" class="control-label">Email:</label>
+            <input type="text" class="form-control" id="email">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          Cancel
+        </button>
+        <button type="button" id="datastoreAction" class="btn btn-primary">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
