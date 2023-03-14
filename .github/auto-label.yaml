@@ -19,6 +19,7 @@ path:
     container: "container"
     container-registry: "containeranalysis"
     datacatalog: "datacatalog"
+    dataplex: "dataplex"
     datalabeling: "datalabeling"
     dataflow: "dataflow"
     dataproc: "dataproc"
@@ -69,3 +70,4 @@ path:
     vision: "vision"
     webrisk: "webrisk"
     workflows: "workflows"
+    dlp: "dlp"
