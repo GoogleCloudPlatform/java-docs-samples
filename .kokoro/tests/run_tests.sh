@@ -117,7 +117,7 @@ fi
 # Install Chrome and chrome driver for recaptcha tests
 if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
 
-  apt install libnss3
+  apt install libnss3-dev libgdk-pixbuf2.0-dev libgtk-3-dev libxss-dev
 
   # Install Chrome.
   curl https://dl-ssl.google.com/linux/linux_signing_key.pub -o /tmp/google.pub \
