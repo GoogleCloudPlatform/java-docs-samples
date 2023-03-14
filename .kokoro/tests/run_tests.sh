@@ -118,7 +118,10 @@ fi
 if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
 
   # Based on this content: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
-  apt install libgconf-2-4 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnss3-dev libxss-dev
+  # https://github.com/alixaxel/chrome-aws-lambda/issues/164
+  apt-get install
+  apt install libnss
+  apt install libnss3-dev libgdk-pixbuf2.0-dev libgtk-3-dev libxss-dev
 
   # Install Chrome.
   curl https://dl-ssl.google.com/linux/linux_signing_key.pub -o /tmp/google.pub \
