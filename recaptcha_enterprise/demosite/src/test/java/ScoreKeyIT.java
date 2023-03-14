@@ -95,8 +95,7 @@ public class ScoreKeyIT {
     TimeUnit.SECONDS.sleep(5);
 
     // Set Selenium Driver to Chrome.
-    WebDriverManager.chromedriver().setup();
-    browser = new ChromeDriver();
+    browser = WebDriverManager.chromedriver().browserInDocker().create();
   }
 
   @AfterClass
