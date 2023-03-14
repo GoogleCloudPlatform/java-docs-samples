@@ -57,13 +57,13 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>4.5.0</version>
+      <version>4.7.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-chrome-driver</artifactId>
-      <version>4.5.0</version>
+      <version>4.7.0</version>
       <scope>test</scope>
     </dependency>
     <!-- Removes the dependency of driver binary file -->
