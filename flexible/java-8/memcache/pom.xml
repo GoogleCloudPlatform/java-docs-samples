@@ -49,13 +49,11 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    <!-- [START dependencies] -->
     <dependency>
       <groupId>com.googlecode.xmemcached</groupId>
       <artifactId>xmemcached</artifactId>
       <version>2.4.7</version>
     </dependency>
-    <!-- [END dependencies] -->
   </dependencies>
   <build>
     <!-- for hot reload of the web application -->

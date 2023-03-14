@@ -11,7 +11,7 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// [START gradle]
+// [START gae_flex_gradle]
 buildscript {      // Configuration for building
   repositories {
     jcenter()      // Bintray's repository - a fast Maven Central mirror & more
@@ -40,24 +40,24 @@ dependencies {
 
 }
 
-// [START gretty]
+// [START gae_flex_gretty]
 gretty {
     servletContainer = 'jetty9'  // What App Engine Flexible uses
 }
-// [END gretty]
+// [END gae_flex_gretty]
 
-// [START model]
+// [START gae_flex_model]
   appengine {
     deploy {   // deploy configuration
       stopPreviousVersion = true  // default - stop the current version
       promote = true              // default - & make this the current version
     }
   }
-// [END model]
+// [END gae_flex_model]
 
 group = 'com.example.appengine'   // Generated output GroupId
 version = '1.0-SNAPSHOT'          // Version in generated output
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-// [END gradle]
+// [END gae_flex_gradle]

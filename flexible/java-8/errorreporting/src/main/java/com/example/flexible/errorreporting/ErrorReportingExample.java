@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START flex_error_reporting]
 // [START error_reporting_setup_java_appengine_flex]
 @WebServlet(name = "Error reporting", value = "/error")
 public class ErrorReportingExample extends HttpServlet {
@@ -81,4 +80,3 @@ public class ErrorReportingExample extends HttpServlet {
   }
 }
 // [END error_reporting_setup_java_appengine_flex]
-// [END flex_error_reporting]

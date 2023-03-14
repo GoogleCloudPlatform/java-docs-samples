@@ -29,7 +29,6 @@ import net.rubyeye.xmemcached.XMemcachedClientBuilder;
 import net.rubyeye.xmemcached.exception.MemcachedException;
 import net.rubyeye.xmemcached.utils.AddrUtil;
 
-// [START example]
 @SuppressWarnings("serial")
 @WebServlet(name = "memcache", value = "")
 public class MemcacheServlet extends HttpServlet {
@@ -57,4 +56,3 @@ public class MemcacheServlet extends HttpServlet {
     resp.getWriter().print("Value is " + count + "\n");
   }
 }
-// [END example]
