@@ -43,7 +43,7 @@ public class DeIdentifyWithFpe {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String textToDeIdentify = "I'm Gary and my email is gary@example.com";
+    String textToDeIdentify = "I'm Gary and my SSN is 552096781";
     String kmsKeyName =
         "projects/YOUR_PROJECT/"
             + "locations/YOUR_KEYRING_REGION/"
