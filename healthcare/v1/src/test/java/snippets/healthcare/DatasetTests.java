@@ -67,10 +67,17 @@ public class DatasetTests {
 
   @AfterClass
   public static void deleteTempItems() throws IOException {
+    // Delete the destination dataset created during de-identification.
     try {
       DatasetDelete.datasetDelete(destinationDatasetName);
     } catch (GoogleJsonResponseException ex) {
-      // Destination dataset already deleted, continue.
+      if (ex.getStatusCode() == 404) {
+        System.out.println("Destination dataset already deleted, continue.");
+      } else {
+        System.out.println(
+            "Error during deleteTempItems while deleting de-identified destination dataset: \n"
+                + ex.toString());
+      }
     }
   }
 
@@ -94,7 +101,11 @@ public class DatasetTests {
     try {
       DatasetDelete.datasetDelete(datasetName);
     } catch (GoogleJsonResponseException ex) {
-      // Dataset already deleted, continue.
+      if (ex.getStatusCode() == 404) {
+        System.out.println("Dataset already deleted, continue.");
+      } else {
+        System.out.println("Error during tearDown while deleting dataset: \n" + ex.toString());
+      }
     }
     bout.reset();
   }
@@ -102,8 +113,8 @@ public class DatasetTests {
   @Test
   public void test_DatasetCreateDelete() throws IOException {
     String newName = "new-dataset";
-    String newFullName =
-        String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, newName);
+    String newFullName = String.format(
+        "projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, newName);
     try {
       DatasetDelete.datasetDelete(newFullName);
     } catch (GoogleJsonResponseException gjre) {
