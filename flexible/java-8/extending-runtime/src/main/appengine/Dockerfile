@@ -1,26 +1,19 @@
-# Copyright 2023 Google LLC
+# Copyright 2023 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#       http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# [START gae_flex_java11_yaml]
-runtime: java
-env: flex
-runtime_config:
-  operating_system: ubuntu18
-  runtime_version: 11
-handlers:
-- url: /.*
-  script: this field is required, but ignored
+#
 
-manual_scaling:
-  instances: 1
-# [END gae_flex_java11_yaml]
+FROM gcr.io/google_appengine/jetty9
+
+RUN apt-get update && apt-get install -y fortunes
+ADD extendingruntime-1.0-SNAPSHOT.war $JETTY_BASE/webapps/root.war

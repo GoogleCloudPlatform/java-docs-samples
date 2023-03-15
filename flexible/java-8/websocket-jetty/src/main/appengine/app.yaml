@@ -1,4 +1,4 @@
-# Copyright 2023 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,16 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# [START gae_flex_java11_yaml]
+
 runtime: java
 env: flex
-runtime_config:
-  operating_system: ubuntu18
-  runtime_version: 11
+manual_scaling:
+  instances: 1
+
 handlers:
 - url: /.*
   script: this field is required, but ignored
 
-manual_scaling:
-  instances: 1
-# [END gae_flex_java11_yaml]
+env_variables:
+  JETTY_MODULES_ENABLE: websocket
+
+
+# For applications which can take advantage of session affinity
+# (where the load balancer will attempt to route multiple connections from
+# the same user to the same App Engine instance), uncomment the folowing:
+
+# network:
+#   session_affinity: true
