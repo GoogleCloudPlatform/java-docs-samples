@@ -66,13 +66,6 @@
       <version>4.7.0</version>
       <scope>test</scope>
     </dependency>
-    <!-- Removes the dependency of driver binary file -->
-    <dependency>
-      <groupId>io.github.bonigarcia</groupId>
-      <artifactId>webdrivermanager</artifactId>
-      <version>5.3.0</version>
-      <scope>test</scope>
-    </dependency>
     <!-- end_Selenium_dependencies -->
 
 

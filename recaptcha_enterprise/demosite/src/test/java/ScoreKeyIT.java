@@ -21,7 +21,6 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.recaptchaenterprise.v1.WebKeySettings.IntegrationType;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -59,6 +58,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class ScoreKeyIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+
+  private static final String CHROME_DRIVER_PATH = System.getenv("CHROME_DRIVER_PATH");
   private static final String DOMAIN_NAME = "localhost";
   private static String RECAPTCHA_SITE_KEY;
 
@@ -95,7 +96,9 @@ public class ScoreKeyIT {
     TimeUnit.SECONDS.sleep(5);
 
     // Set Selenium Driver to Chrome.
-    browser = WebDriverManager.chromedriver().browserInDocker().create();
+    System.setProperty("webdriver.chrome.driver", CHROME_DRIVER_PATH);
+    browser = new ChromeDriver();
+    TimeUnit.SECONDS.sleep(5);
   }
 
   @AfterClass
