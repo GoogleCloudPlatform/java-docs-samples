@@ -140,6 +140,7 @@ if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
     && cd /opt/selenium; unzip /opt/selenium/chromedriver_linux64.zip; rm -rf chromedriver_linux64.zip; ln -fs /opt/selenium/chromedriver /usr/local/bin/chromedriver;
 
   export CHROME_DRIVER_PATH="$PWD/chromedriver"
+  echo "Installing chrome and driver. Path to installation: $CHROME_DRIVER_PATH"
 fi
 
 btlr_args=(
