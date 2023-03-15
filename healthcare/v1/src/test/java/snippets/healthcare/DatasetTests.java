@@ -71,12 +71,9 @@ public class DatasetTests {
     try {
       DatasetDelete.datasetDelete(destinationDatasetName);
     } catch (GoogleJsonResponseException ex) {
-      if (ex.getStatusCode() == 404) {
-        System.out.println("Destination dataset already deleted, continue.");
-      } else {
-        System.out.println(
-            "Error during deleteTempItems while deleting de-identified destination dataset: \n"
-                + ex.toString());
+      // If 404, dataset was already deleted.
+      if (ex.getStatusCode() != 404) {
+        throw ex;
       }
     }
   }
@@ -101,10 +98,9 @@ public class DatasetTests {
     try {
       DatasetDelete.datasetDelete(datasetName);
     } catch (GoogleJsonResponseException ex) {
-      if (ex.getStatusCode() == 404) {
-        System.out.println("Dataset already deleted, continue.");
-      } else {
-        System.out.println("Error during tearDown while deleting dataset: \n" + ex.toString());
+      // If 404, dataset was already deleted.
+      if (ex.getStatusCode() != 404) {
+        throw ex;
       }
     }
     bout.reset();
