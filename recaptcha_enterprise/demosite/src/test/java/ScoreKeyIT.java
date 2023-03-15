@@ -44,6 +44,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -96,8 +97,8 @@ public class ScoreKeyIT {
     TimeUnit.SECONDS.sleep(5);
 
     // Set Selenium Driver to Chrome.
-    System.setProperty("webdriver.chrome.driver", CHROME_DRIVER_PATH);
-    browser = new ChromeDriver();
+    ChromeOptions chromeOptions = new ChromeOptions().setBinary(CHROME_DRIVER_PATH);
+    browser = new ChromeDriver(chromeOptions);
     TimeUnit.SECONDS.sleep(5);
   }
 
