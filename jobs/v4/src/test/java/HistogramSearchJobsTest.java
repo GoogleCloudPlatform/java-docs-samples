@@ -16,8 +16,8 @@
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.example.jobs.HistogramSearchJobs;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
