@@ -29,7 +29,7 @@ import org.junit.Rule;
 /** Common base class for DLP snippet tests */
 abstract class TestBase {
   /** Retry with exponential backoff, so tests are resilient to any service interruptions.
-      There is no guideline on the number of attempts, and 3 has been chosen as an initial setting. **/
+      3 has been chosen as an initial setting, that can be increased as necessary. **/
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   protected static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
