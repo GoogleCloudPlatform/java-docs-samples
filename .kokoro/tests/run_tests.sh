@@ -19,6 +19,7 @@ set -eo pipefail
 # Enables `**` to include files nested inside sub-folders
 shopt -s globstar
 
+file="$(pwd)"
 # `--script-debug` can be added make local testing of this script easier
 if [[ $* == *--script-debug* ]]; then
     SCRIPT_DEBUG="true"
@@ -109,6 +110,22 @@ if [[ ",$JAVA_VERSION," =~ "11" ]]; then
   mvn install --quiet
   cd ../../
 fi
+
+# Install Chrome and chrome driver for recaptcha tests
+if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
+  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  sudo apt install wget
+  sudo dpkg -i google-chrome-stable_current_amd64.deb
+  sudo apt-get install -f
+  google-chrome --version
+
+  wget https://chromedriver.storage.googleapis.com/92.0.4515.107/chromedriver_linux64.zip
+  unzip chromedriver_linux64.zip
+  sudo mv chromedriver /usr/bin/chromedriver
+  sudo chown root:root /usr/bin/chromedriver
+  sudo chmod +x /usr/bin/chromedriver
+fi
+
 
 btlr_args=(
     "run"
