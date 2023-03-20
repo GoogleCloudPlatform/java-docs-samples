@@ -115,7 +115,7 @@ if [[ ",$JAVA_VERSION," =~ "11" ]]; then
 fi
 
 # Install Chrome and chrome driver for recaptcha tests
-if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
+#if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
   wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   sudo apt install wget
   sudo dpkg -i google-chrome-stable_current_amd64.deb
@@ -130,7 +130,7 @@ if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
 
   export CHROME_DRIVER_PATH="/usr/bin/chromedriver"
   echo "Installing chrome and driver. Path to installation: $CHROME_DRIVER_PATH"
-fi
+#fi
 
 btlr_args=(
     "run"
