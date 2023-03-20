@@ -24,13 +24,15 @@ import account_defender.AnnotateAccountDefenderAssessment;
 import account_defender.ListRelatedAccountGroupMemberships;
 import account_defender.ListRelatedAccountGroups;
 import account_defender.SearchRelatedAccountGroupMemberships;
-import app.Util;
 import com.google.protobuf.ByteString;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URI;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -43,11 +45,18 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.util.UriComponentsBuilder;
 import recaptcha.AnnotateAssessment;
 import recaptcha.GetMetrics;
 import recaptcha.mfa.CreateMfaAssessment;
@@ -65,6 +74,8 @@ public class SnippetsIT {
   private int randomServerPort;
   private ByteArrayOutputStream stdOut;
 
+  private static WebDriver BROWSER;
+
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
@@ -81,6 +92,10 @@ public class SnippetsIT {
     RECAPTCHA_SITE_KEY_1 = recaptcha.CreateSiteKey.createSiteKey(PROJECT_ID, DOMAIN_NAME);
     RECAPTCHA_SITE_KEY_2 = recaptcha.CreateSiteKey.createSiteKey(PROJECT_ID, DOMAIN_NAME);
     TimeUnit.SECONDS.sleep(5);
+
+    // Set Selenium Driver to Chrome.
+    WebDriverManager.chromedriver().setup();
+    BROWSER = new ChromeDriver();
   }
 
   @AfterClass
@@ -91,6 +106,8 @@ public class SnippetsIT {
 
     recaptcha.DeleteSiteKey.deleteSiteKey(PROJECT_ID, RECAPTCHA_SITE_KEY_1);
     assertThat(stdOut.toString()).contains("reCAPTCHA Site key successfully deleted !");
+
+    BROWSER.quit();
 
     stdOut.close();
     System.setOut(null);
@@ -106,6 +123,40 @@ public class SnippetsIT {
   public void afterEach() {
     stdOut = null;
     System.setOut(null);
+  }
+
+  public static JSONObject initiateBrowserTest(String testURL, String recaptchaKey)
+      throws IOException, JSONException, InterruptedException {
+    // Construct the URL to call for validating the assessment.
+    URI url =
+        UriComponentsBuilder.fromUriString(testURL)
+            .queryParam("recaptchaSiteKey", recaptchaKey)
+            .build()
+            .encode()
+            .toUri();
+
+    BROWSER.get(url.toURL().toString());
+
+    // Wait until the page is loaded.
+    JavascriptExecutor js = (JavascriptExecutor) BROWSER;
+    new WebDriverWait(BROWSER, Duration.ofSeconds(10))
+        .until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
+
+    // Pass the values to be entered.
+    BROWSER.findElement(By.id("username")).sendKeys("username");
+    BROWSER.findElement(By.id("password")).sendKeys("password");
+
+    // On clicking the button, the request params will be sent to reCAPTCHA.
+    BROWSER.findElement(By.id("recaptchabutton")).click();
+
+    TimeUnit.SECONDS.sleep(1);
+
+    // Retrieve the reCAPTCHA token response.
+    WebElement element = BROWSER.findElement(By.cssSelector("#assessment"));
+    String token = element.getAttribute("data-token");
+    String action = element.getAttribute("data-action");
+
+    return new JSONObject().put("token", token).put("action", action);
   }
 
   @Test
@@ -152,7 +203,7 @@ public class SnippetsIT {
   public void testCreateAnnotateAssessment()
       throws JSONException, IOException, InterruptedException {
     String testURL = "http://localhost:" + randomServerPort + "/";
-    JSONObject tokenActionPair = Util.initiateBrowserTest(testURL, RECAPTCHA_SITE_KEY_1);
+    JSONObject tokenActionPair = initiateBrowserTest(testURL, RECAPTCHA_SITE_KEY_1);
 
     recaptcha.CreateAssessment.createAssessment(
         PROJECT_ID,
@@ -178,7 +229,7 @@ public class SnippetsIT {
     ByteString hashedAccountId = Util.createHashedAccountId();
 
     // Create the assessment.
-    JSONObject tokenActionPair = Util.initiateBrowserTest(testURL, RECAPTCHA_SITE_KEY_1);
+    JSONObject tokenActionPair = initiateBrowserTest(testURL, RECAPTCHA_SITE_KEY_1);
     AccountDefenderAssessment.accountDefenderAssessment(
         PROJECT_ID,
         RECAPTCHA_SITE_KEY_1,
@@ -218,7 +269,7 @@ public class SnippetsIT {
   public void testPasswordLeakAssessment()
       throws JSONException, IOException, ExecutionException, InterruptedException {
     String testURL = "http://localhost:" + randomServerPort + "/";
-    JSONObject tokenActionPair = Util.initiateBrowserTest(testURL, RECAPTCHA_SITE_KEY_1);
+    JSONObject tokenActionPair = initiateBrowserTest(testURL, RECAPTCHA_SITE_KEY_1);
 
     passwordleak.CreatePasswordLeakAssessment.checkPasswordLeak(
         PROJECT_ID,
@@ -235,7 +286,7 @@ public class SnippetsIT {
       throws IOException, JSONException, NoSuchAlgorithmException, InvalidKeyException, InterruptedException {
     ByteString hashedAccountId = Util.createHashedAccountId();
     String testURL = "http://localhost:" + randomServerPort + "/";
-    JSONObject tokenActionPair = Util.initiateBrowserTest(testURL, RECAPTCHA_SITE_KEY_1);
+    JSONObject tokenActionPair = initiateBrowserTest(testURL, RECAPTCHA_SITE_KEY_1);
 
     CreateMfaAssessment.createMfaAssessment(PROJECT_ID, RECAPTCHA_SITE_KEY_1,
         tokenActionPair.getString("token"), tokenActionPair.getString("action"),
