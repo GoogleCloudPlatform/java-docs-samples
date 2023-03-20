@@ -22,6 +22,7 @@ import com.google.cloud.aiplatform.v1.EndpointName;
 import com.google.cloud.aiplatform.v1.PredictResponse;
 import com.google.cloud.aiplatform.v1.PredictionServiceClient;
 import com.google.cloud.aiplatform.v1.PredictionServiceSettings;
+import com.google.gson.JsonObject;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
@@ -52,13 +53,16 @@ public class PredictTextSentimentAnalysisSample {
     try (PredictionServiceClient predictionServiceClient =
         PredictionServiceClient.create(predictionServiceSettings)) {
       String location = "us-central1";
-      String jsonString = "{\"content\": \"" + content + "\"}";
+
+      // Use JsonObject to ensure safe serialization of the content; handles characters like `"`.
+      JsonObject contentJsonObject = new JsonObject();
+      contentJsonObject.addProperty("content", content);
 
       EndpointName endpointName = EndpointName.of(project, location, endpointId);
 
       Value parameter = Value.newBuilder().setNumberValue(0).setNumberValue(5).build();
       Value.Builder instance = Value.newBuilder();
-      JsonFormat.parser().merge(jsonString, instance);
+      JsonFormat.parser().merge(contentJsonObject.toString(), instance);
 
       List<Value> instances = new ArrayList<>();
       instances.add(instance.build());

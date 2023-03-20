@@ -111,7 +111,7 @@ public class CreateImage {
           .setImageResource(image)
           .build();
 
-      Operation response = imagesClient.insertAsync(insertImageRequest).get(3, TimeUnit.MINUTES);
+      Operation response = imagesClient.insertAsync(insertImageRequest).get(5, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Image creation failed ! ! " + response);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// [START auth_cloud_delete_api_key]
+// [START apikeys_delete_api_key]
 
 import com.google.api.apikeys.v2.ApiKeysClient;
 import com.google.api.apikeys.v2.DeleteKeyRequest;
@@ -62,4 +62,4 @@ public class DeleteApiKey {
     }
   }
 }
-// [END auth_cloud_delete_api_key]
+// [END apikeys_delete_api_key]

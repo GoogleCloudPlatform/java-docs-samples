@@ -31,6 +31,26 @@
       <artifactId>google-cloud-batch</artifactId>
       <version>0.8.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-logging</artifactId>
+      <version>3.11.5</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-compute</artifactId>
+      <version>1.12.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-resourcemanager</artifactId>
+      <version>1.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-storage</artifactId>
+      <version>2.18.0</version>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>

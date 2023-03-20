@@ -29,6 +29,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +49,7 @@ public class FeaturestoreSamplesTest {
   private static final boolean USE_FORCE = true;
   private static final String LOCATION = "us-central1";
   private static final String ENDPOINT = "us-central1-aiplatform.googleapis.com:443";
-  private static final int TIMEOUT = 900;
+  private static final int TIMEOUT = 1800;
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -79,8 +80,8 @@ public class FeaturestoreSamplesTest {
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
 
     // Delete the featurestore
-    DeleteFeaturestoreSample.deleteFeaturestoreSample(
-        PROJECT_ID, featurestoreId, USE_FORCE, LOCATION, ENDPOINT, TIMEOUT);
+    DeleteFeaturestoreSample.deleteFeaturestoreSample(PROJECT_ID, featurestoreId, USE_FORCE,
+        LOCATION, ENDPOINT, TIMEOUT);
 
     // Assert
     String deleteFeaturestoreResponse = bout.toString();

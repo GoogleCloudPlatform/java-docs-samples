@@ -21,6 +21,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
+    <jetty.version>9.4.50.v20221201</jetty.version>
   </properties>
 
   <!-- [START gae_java11_server_dependencies] -->
@@ -29,30 +30,29 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>9.4.44.v20210927</version>
+      <version>${jetty.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
-      <version>9.4.44.v20210927</version>
+      <version>${jetty.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>9.4.44.v20210927</version>
+      <version>${jetty.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-annotations</artifactId>
-      <version>9.4.43.v20210629</version>
-      <type>jar</type>
+      <version>${jetty.version}</version>
     </dependency>
     <!-- extra explicit dependency needed because there is a JSP in the sample-->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>apache-jsp</artifactId>
-      <version>9.4.44.v20210927</version>
+      <version>${jetty.version}</version>
     </dependency>
   </dependencies>
   <!-- [END gae_java11_server_dependencies] -->

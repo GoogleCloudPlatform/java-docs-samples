@@ -108,6 +108,12 @@ public class InstanceOperationsIT {
     System.setOut(out);
   }
 
+  private static Instance getInstance(String machineName) throws IOException {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+      return instancesClient.get(PROJECT_ID, ZONE, machineName);
+    }
+  }
+
   @BeforeEach
   public void beforeEach() {
     stdOut = new ByteArrayOutputStream();
@@ -118,12 +124,6 @@ public class InstanceOperationsIT {
   public void afterEach() {
     stdOut = null;
     System.setOut(null);
-  }
-
-  private static Instance getInstance(String machineName) throws IOException {
-    try (InstancesClient instancesClient = InstancesClient.create()) {
-      return instancesClient.get(PROJECT_ID, ZONE, machineName);
-    }
   }
 
   @Test
@@ -143,6 +143,11 @@ public class InstanceOperationsIT {
     }
     Assert.assertEquals(Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME),
         Status.TERMINATED.toString());
+
+    // Change machine type.
+    Assert.assertFalse(getInstance(MACHINE_NAME).getMachineType().endsWith("e2-standard-2"));
+    ChangeInstanceMachineType.changeMachineType(PROJECT_ID, ZONE, MACHINE_NAME, "e2-standard-2");
+    Assert.assertTrue(getInstance(MACHINE_NAME).getMachineType().endsWith("e2-standard-2"));
 
     // Starting the instance.
     StartInstance.startInstance(PROJECT_ID, ZONE, MACHINE_NAME);
