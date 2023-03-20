@@ -124,6 +124,9 @@ if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
   sudo mv chromedriver /usr/bin/chromedriver
   sudo chown root:root /usr/bin/chromedriver
   sudo chmod +x /usr/bin/chromedriver
+
+  export CHROME_DRIVER_PATH="/usr/bin/chromedriver"
+  echo "Installing chrome and driver. Path to installation: $CHROME_DRIVER_PATH"
 fi
 
 
