@@ -25,7 +25,6 @@ import account_defender.ListRelatedAccountGroupMemberships;
 import account_defender.ListRelatedAccountGroups;
 import account_defender.SearchRelatedAccountGroupMemberships;
 import com.google.protobuf.ByteString;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -50,11 +49,12 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.util.UriComponentsBuilder;
 import recaptcha.AnnotateAssessment;
@@ -67,6 +67,7 @@ import recaptcha.mfa.CreateMfaAssessment;
 public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String CHROME_DRIVER_PATH = System.getenv("CHROME_DRIVER_PATH");
   private static final String DOMAIN_NAME = "localhost";
   private static String RECAPTCHA_SITE_KEY_1 = "recaptcha-site-key1";
   private static String RECAPTCHA_SITE_KEY_2 = "recaptcha-site-key2";
@@ -94,8 +95,9 @@ public class SnippetsIT {
     TimeUnit.SECONDS.sleep(5);
 
     // Set Selenium Driver to Chrome.
-    WebDriverManager.chromedriver().setup();
-    BROWSER = new ChromeDriver();
+    ChromeOptions chromeOptions = new ChromeOptions().setBinary(CHROME_DRIVER_PATH);
+    BROWSER = new ChromeDriver(chromeOptions);
+    TimeUnit.SECONDS.sleep(5);
   }
 
   @AfterClass
