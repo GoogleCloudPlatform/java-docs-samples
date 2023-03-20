@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ public class CreateMfaAssessment {
     // Google Cloud Project ID.
     String projectID = "PROJECT_ID";
     // Site key obtained by registering a domain/app to use recaptcha services.
+    // See, https://cloud.google.com/recaptcha-enterprise/docs/instrument-web-pages
     String recaptchaSiteKey = "SITE_KEY";
     // The token obtained from the client on passing the recaptchaSiteKey.
     // To get the token, integrate the recaptchaSiteKey with frontend. See,
@@ -74,6 +75,7 @@ public class CreateMfaAssessment {
 
   // Creates an assessment to obtain Multi-Factor Authentication result.
   // If the result is unspecified, sends the request token to the caller to initiate MFA challenge.
+  // See, https://cloud.google.com/recaptcha-enterprise/docs/integrate-account-verification#understanding_the_configuration_process_of_mfa
   public static void createMfaAssessment(
       String projectID, String recaptchaSiteKey, String token, String recaptchaAction,
       ByteString hashedAccountId, String emailId, String phoneNumber)
@@ -120,8 +122,8 @@ public class CreateMfaAssessment {
       // You can choose to send both the email and phone number's request token.
       if (response.getAccountVerification().getLatestVerificationResult()
           == Result.RESULT_UNSPECIFIED) {
-        // Send the request token for assessment. The token is valid for 15 minutes.
         System.out.println("Result unspecified. Triggering MFA challenge.");
+        // Send the request token to the client. The token is valid for 15 minutes.
         // System.out.println(response.getAccountVerification().getEndpoints(0).getRequestToken());
       }
 
