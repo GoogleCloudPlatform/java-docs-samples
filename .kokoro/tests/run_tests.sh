@@ -117,16 +117,16 @@ fi
 # Install Chrome and chrome driver for recaptcha tests
 #if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
   wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  sudo apt install wget
-  sudo dpkg -i google-chrome-stable_current_amd64.deb
-  sudo apt-get install -f
+  apt install wget
+  dpkg -i google-chrome-stable_current_amd64.deb
+  apt-get install -f
   google-chrome --version
 
   wget https://chromedriver.storage.googleapis.com/92.0.4515.107/chromedriver_linux64.zip
   unzip chromedriver_linux64.zip
-  sudo mv chromedriver /usr/bin/chromedriver
-  sudo chown root:root /usr/bin/chromedriver
-  sudo chmod +x /usr/bin/chromedriver
+  mv chromedriver /usr/bin/chromedriver
+  chown root:root /usr/bin/chromedriver
+  chmod +x /usr/bin/chromedriver
 
   export CHROME_DRIVER_PATH="/usr/bin/chromedriver"
   echo "Installing chrome and driver. Path to installation: $CHROME_DRIVER_PATH"
