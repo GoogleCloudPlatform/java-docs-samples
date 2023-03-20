@@ -116,19 +116,25 @@ fi
 
 # Install Chrome and chrome driver for recaptcha tests
 #if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
-  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  apt install wget
-  dpkg -i google-chrome-stable_current_amd64.deb
-  apt-get install -f
-  google-chrome --version
+  # Install Chrome.
+  curl https://dl-ssl.google.com/linux/linux_signing_key.pub -o /tmp/google.pub \
+    && cat /tmp/google.pub | apt-key add -; rm /tmp/google.pub \
+    && echo 'deb http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google.list \
+    && mkdir -p /usr/share/desktop-directories \
+    && apt-get -y update && apt-get install -y google-chrome-stable
 
-  wget https://chromedriver.storage.googleapis.com/92.0.4515.107/chromedriver_linux64.zip
-  unzip chromedriver_linux64.zip
-  mv chromedriver /usr/bin/chromedriver
-  chown root:root /usr/bin/chromedriver
-  chmod +x /usr/bin/chromedriver
+  # Disable the SUID sandbox so that Chrome can launch without being in a privileged container.
+  dpkg-divert --add --rename --divert /opt/google/chrome/google-chrome.real /opt/google/chrome/google-chrome \
+    && echo "#!/bin/bash\nexec /opt/google/chrome/google-chrome.real --no-sandbox --disable-setuid-sandbox \"\$@\"" > /opt/google/chrome/google-chrome \
+    && chmod 755 /opt/google/chrome/google-chrome
 
-  export CHROME_DRIVER_PATH="/usr/bin/chromedriver"
+  # Install chrome driver.
+  mkdir -p /opt/selenium \
+    && curl http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip -o /opt/selenium/chromedriver_linux64.zip \
+    && cd /opt/selenium; unzip /opt/selenium/chromedriver_linux64.zip; rm -rf chromedriver_linux64.zip; ln -fs /opt/selenium/chromedriver /usr/local/bin/chromedriver;
+
+
+  export CHROME_DRIVER_PATH="/usr/local/bin/chromedriver"
   echo "Installing chrome and driver. Path to installation: $CHROME_DRIVER_PATH"
 #fi
 
