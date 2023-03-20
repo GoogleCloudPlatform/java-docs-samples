@@ -28,6 +28,7 @@ import com.google.cloud.security.privateca.v1.CertificateAuthorityServiceClient;
 import com.google.cloud.security.privateca.v1.CertificateName;
 import com.google.cloud.security.privateca.v1.CertificateTemplateName;
 import com.google.cloud.security.privateca.v1.FetchCertificateAuthorityCsrResponse;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.protobuf.ByteString;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -52,6 +53,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -72,6 +74,13 @@ public class SnippetsIT {
   private static int KEY_SIZE;
 
   private ByteArrayOutputStream stdOut;
+
+  private static final int MAX_ATTEMPT_COUNT = 3;
+  private static final int INITIAL_BACKOFF_MILLIS = 300000; // 5 minutes
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
+      MAX_ATTEMPT_COUNT,
+      INITIAL_BACKOFF_MILLIS);
 
   // Check if the required environment variables are set.
   public static void reqEnvVar(String envVarName) {
@@ -97,6 +106,10 @@ public class SnippetsIT {
     CERTIFICATE_NAME = "certificate-name-" + UUID.randomUUID();
     CSR_CERTIFICATE_NAME = "csr-certificate-name-" + UUID.randomUUID();
     KEY_SIZE = 2048; // Default key size
+
+    // Delete stale resources
+    Util.cleanUpCaPool(PROJECT_ID, LOCATION);
+    TimeUnit.SECONDS.sleep(30);
 
     // <--- START CA POOL --->
     // Create CA Pool.

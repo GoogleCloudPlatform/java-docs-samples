@@ -15,6 +15,9 @@
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.batch.v1.BatchServiceClient;
+import com.google.cloud.batch.v1.Job;
+import com.google.cloud.batch.v1.JobName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -65,14 +68,17 @@ public class BatchBasicIT {
         .contains(
             "Successfully created the job: "
                 + String.format(
-                    "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, CONTAINER_JOB_NAME));
+                "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, CONTAINER_JOB_NAME));
     CreateWithScriptNoMounting.createScriptJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
     assertThat(stdOut.toString())
         .contains(
             "Successfully created the job: "
                 + String.format(
-                    "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, SCRIPT_JOB_NAME));
+                "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, SCRIPT_JOB_NAME));
     TimeUnit.SECONDS.sleep(10);
+
+    Util.waitForJobCompletion(Util.getJob(PROJECT_ID, REGION, CONTAINER_JOB_NAME));
+    Util.waitForJobCompletion(Util.getJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME));
 
     stdOut.close();
     System.setOut(out);
@@ -116,4 +122,34 @@ public class BatchBasicIT {
     assertThat(stdOut.toString()).contains(CONTAINER_JOB_NAME);
     assertThat(stdOut.toString()).contains(SCRIPT_JOB_NAME);
   }
+
+  @Test
+  public void testReadJobLogs() throws IOException {
+    Job job = null;
+    try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {
+      job =
+          batchServiceClient.getJob(
+              JobName.newBuilder()
+                  .setProject(PROJECT_ID)
+                  .setLocation(REGION)
+                  .setJob(CONTAINER_JOB_NAME)
+                  .build());
+    }
+    ReadJobLogs.readJobLogs(PROJECT_ID, job);
+    assertThat(stdOut.toString()).contains(
+        "Hello world! This is task 1. This job has a total of 4 tasks.");
+  }
+
+  @Test
+  public void testTasks() throws IOException {
+    ListTasks.listTasks(PROJECT_ID, REGION, CONTAINER_JOB_NAME, "group0");
+    assertThat(stdOut.toString().length() == 4);
+    for (int i = 0; i < 4; i++) {
+      GetTask.getTask(PROJECT_ID, REGION, CONTAINER_JOB_NAME, "group0", i);
+      String goal = String.format("locations/%s/jobs/%s/taskGroups/%s/tasks/%s",
+          REGION, CONTAINER_JOB_NAME, "group0", i);
+      assertThat(stdOut.toString()).contains(goal);
+    }
+  }
+
 }

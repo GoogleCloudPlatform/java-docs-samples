@@ -96,6 +96,7 @@ public class CreateWithScriptNoMounting {
               .build();
 
       // Tasks are grouped inside a job using TaskGroups.
+      // Currently, it's possible to have only one task group.
       TaskGroup taskGroup = TaskGroup.newBuilder().setTaskCount(4).setTaskSpec(task).build();
 
       // Policies are used to define on what kind of virtual machines the tasks will run on.

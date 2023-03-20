@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// [START auth_cloud_restrict_api_key_ios]
+// [START apikeys_restrict_api_key_ios]
 
 import com.google.api.apikeys.v2.ApiKeysClient;
 import com.google.api.apikeys.v2.IosKeyRestrictions;
@@ -84,4 +84,4 @@ public class RestrictApiKeyIos {
     }
   }
 }
-// [END auth_cloud_restrict_api_key_ios]
+// [END apikeys_restrict_api_key_ios]

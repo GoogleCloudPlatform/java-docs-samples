@@ -27,7 +27,7 @@ configurations {
 dependencies {
   // Every function needs this dependency to get the Functions Framework API.
   implementation 'com.google.cloud.functions:functions-framework-api:1.0.4'
-  invoker 'com.google.cloud.functions.invoker:java-function-invoker:1.1.0'
+  invoker 'com.google.cloud.functions.invoker:java-function-invoker:1.2.0'
 
   // Function implementations can have additional dependencies like this.
   implementation 'com.google.code.gson:gson:2.10'
