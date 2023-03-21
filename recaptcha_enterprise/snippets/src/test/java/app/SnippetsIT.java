@@ -25,6 +25,7 @@ import account_defender.ListRelatedAccountGroupMemberships;
 import account_defender.ListRelatedAccountGroups;
 import account_defender.SearchRelatedAccountGroupMemberships;
 import com.google.protobuf.ByteString;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -95,11 +96,8 @@ public class SnippetsIT {
     TimeUnit.SECONDS.sleep(5);
 
     // Set Selenium Driver to Chrome.
-    ChromeOptions chromeOptions = new ChromeOptions().setBinary(CHROME_DRIVER_PATH);
-    chromeOptions.addArguments("--no-sandbox");
-    chromeOptions.addArguments("--headless");
-    chromeOptions.addArguments("--disable-gpu");
-    BROWSER = new ChromeDriver(chromeOptions);
+    WebDriverManager.chromedriver().setup();
+    BROWSER = new ChromeDriver();
     TimeUnit.SECONDS.sleep(5);
   }
 

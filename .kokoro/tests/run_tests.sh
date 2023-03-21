@@ -116,7 +116,7 @@ fi
 
 # Install Chrome and chrome driver for recaptcha tests.
 current_dir="$PWD"
-pkill chrome
+ps aux | awk '/chrome/ { print $2 } ' | xargs kill -9
 # Install Chrome.
 curl https://dl-ssl.google.com/linux/linux_signing_key.pub -o /tmp/google.pub \
   && cat /tmp/google.pub | apt-key add -; rm /tmp/google.pub \
