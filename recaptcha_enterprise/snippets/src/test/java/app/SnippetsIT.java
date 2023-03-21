@@ -96,6 +96,9 @@ public class SnippetsIT {
 
     // Set Selenium Driver to Chrome.
     ChromeOptions chromeOptions = new ChromeOptions().setBinary(CHROME_DRIVER_PATH);
+    chromeOptions.addArguments("--no-sandbox");
+    chromeOptions.addArguments("--headless");
+    chromeOptions.addArguments("--disable-gpu");
     BROWSER = new ChromeDriver(chromeOptions);
     TimeUnit.SECONDS.sleep(5);
   }
