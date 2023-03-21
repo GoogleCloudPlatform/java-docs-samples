@@ -96,6 +96,7 @@ public class SnippetsIT {
     TimeUnit.SECONDS.sleep(5);
 
     // Set Selenium Driver to Chrome.
+    System.setProperty("webdriver.http.factory", "jdk-http-client");
     ChromeOptions options = new ChromeOptions();
     options.addArguments("--headless");
     options.addArguments("--no-sandbox");
