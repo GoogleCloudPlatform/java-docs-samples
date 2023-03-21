@@ -100,6 +100,7 @@ public class SnippetsIT {
     options.addArguments("--headless");
     options.addArguments("--no-sandbox'");
     options.addArguments("--disable-gpu");
+    options.addArguments("--disable-dev-shm-usage");
     BROWSER = WebDriverManager.chromedriver().capabilities(options).create();
     TimeUnit.SECONDS.sleep(5);
   }
