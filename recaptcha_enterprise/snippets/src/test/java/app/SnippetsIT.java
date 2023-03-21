@@ -101,6 +101,8 @@ public class SnippetsIT {
     options.addArguments("--no-sandbox");
     options.addArguments("--disable-gpu");
     options.addArguments("--disable-dev-shm-usage");
+    options.addArguments("--remote-debugging-port=9222");
+    options.addArguments("--remote-allow-origins=*");
     BROWSER = WebDriverManager.chromedriver().capabilities(options).create();
     TimeUnit.SECONDS.sleep(5);
   }
