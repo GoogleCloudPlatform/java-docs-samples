@@ -36,7 +36,7 @@ public class CreateAssessment {
    * @return JSONObject that contains a risk score and verdict if the action was executed by a
    *     human.
    */
-  public static HashMap<String, HashMap<String, String>> createAssessment(
+  public static Assessment createAssessment(
       String projectID, String recaptchaSiteKey, String token, String recaptchaAction)
       throws Exception {
     // Sample threshold score for classification of bad / not bad action. The threshold score
@@ -59,35 +59,9 @@ public class CreateAssessment {
               .build();
 
       Assessment response = client.createAssessment(createAssessmentRequest);
-
-      // Check if the token is valid.
-      if (!response.getTokenProperties().getValid()) {
-        throw new Exception(
-            "The Create Assessment call failed because the token was invalid for the following reasons: "
-                + response.getTokenProperties().getInvalidReason().name());
-      }
-
-      // Check if the expected action was executed.
-      if (!recaptchaAction.isEmpty() && !response.getTokenProperties().getAction()
-          .equals(recaptchaAction)) {
-        throw new Exception(
-            "The action attribute in your reCAPTCHA tag does not match the action you are expecting"
-                + " to score. Please check your action attribute !");
-      }
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Ends -->
 
-      // Classify the action as bad / not bad according to the set threshold score.
-      String verdict =
-          response.getRiskAnalysis().getScore() < sampleThresholdScore ? "Bad" : "Not Bad";
-
-      // Return the result to client.
-      HashMap<String, String> result = new HashMap<>() {{
-        put("score", String.valueOf(response.getRiskAnalysis().getScore()));
-        put("verdict", verdict);
-      }};
-      return new HashMap<>() {{
-        put("data", result);
-      }};
+      return response;
     }
   }
 }

@@ -16,9 +16,12 @@
 
 package app;
 
+import com.google.recaptchaenterprise.v1.Assessment;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,16 +39,87 @@ import recaptcha.CreateAssessment;
 @RequestMapping
 public class MainController {
 
+  // Sample threshold score for classification of bad / not bad action. The threshold score
+  // can be used to trigger secondary actions like MFA.
+  private static final double SAMPLE_THRESHOLD_SCORE;
   private static final LinkedHashMap<String, String> CONTEXT = new LinkedHashMap<>();
+  private static final Properties PROPERTIES = new Properties();
 
   static {
+    SAMPLE_THRESHOLD_SCORE = 0.50;
+
     CONTEXT.put("project_id", System.getenv("GOOGLE_CLOUD_PROJECT"));
     CONTEXT.put("site_key", System.getenv("SITE_KEY"));
+
+    // Parse property file and read available reCAPTCHA actions. All reCAPTCHA actions registered
+    // in the client should be mapped in the config file. This will be used to verify if the token
+    // obtained during assessment corresponds to the claimed action.
+    try (InputStream input = MainController.class.getClassLoader()
+        .getResourceAsStream("config.properties")) {
+      PROPERTIES.load(input);
+    } catch (Exception e) {
+      System.out.println("Exception while loading property file...");
+    }
   }
 
+  // Return homepage template.
   @GetMapping(value = "/")
   public static ModelAndView home() {
     return new ModelAndView("home", CONTEXT);
+  }
+
+  // On homepage load, execute reCAPTCHA Enterprise assessment and take action according to the score.
+  @PostMapping(value = "/on_homepage_load", produces = "application/json")
+  public static @ResponseBody ResponseEntity<HashMap<String, HashMap<String, String>>> onHomepageLoad(
+      @RequestBody Map<String, HashMap<String, String>> credentials) {
+    final HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.home");
+    HashMap<String, HashMap<String, String>> data = new HashMap<>();
+    Assessment assessmentResponse;
+    String verdict = "";
+
+    try {
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
+      assessmentResponse = CreateAssessment.createAssessment(
+          CONTEXT.get("project_id"),
+          CONTEXT.get("site_key"),
+          credentials.get("recaptcha_cred").get("token"),
+          recaptchaAction);
+
+      // Check if the token is valid, score is above threshold score and the action equals expected.
+      if (assessmentResponse.getTokenProperties().getValid() &&
+          assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
+          assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
+        // Load the home page.
+        // Business logic.
+        // Classify the action as not bad.
+        verdict = "Not Bad";
+      } else {
+        // If any of the above condition fails, trigger email/ phone verification flow.
+        // Classify the action as bad.
+        verdict = "Bad";
+      }
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
+
+      // Return the risk score.
+      HashMap<String, String> result = new HashMap<>() {{
+        put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
+        put("verdict", verdict);
+      }};
+      data = new HashMap<>() {{
+        put("data", result);
+      }};
+
+    } catch (Exception e) {
+      data = new HashMap<>() {{
+        put("data", new HashMap<>() {{
+          put("error_msg", e.toString());
+        }});
+      }};
+      return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
   }
 
   @GetMapping(value = "/store")
