@@ -26,7 +26,6 @@ import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.ProjectTopicName;
 import io.grafeas.v1.DiscoveryNote;
@@ -60,7 +59,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SamplesTest {
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String subId = "CA-Occurrences-" + (new Date()).getTime();
