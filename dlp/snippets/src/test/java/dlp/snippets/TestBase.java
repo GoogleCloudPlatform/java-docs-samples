@@ -18,14 +18,19 @@ package dlp.snippets;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 
 /** Common base class for DLP snippet tests */
 abstract class TestBase {
+  /** Retry with exponential backoff, so tests are resilient to any service interruptions.
+      3 has been chosen as an initial setting that can be increased as needed. **/
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   protected static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   protected static final String GCS_PATH = System.getenv("GCS_PATH");
