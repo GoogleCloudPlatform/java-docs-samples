@@ -29,6 +29,7 @@ kms @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @
 orgpolicy @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 privateca @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 recaptcha_enterprise @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+recaptcha_enterprise/demosite @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/recaptcha-customer-obsession-reviewers
 secretmanager @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 security-command-center @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 servicedirectory @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
@@ -79,9 +80,12 @@ video @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/java-samples-reviewe
 vision @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 
 # Self-service
+dlp @GoogleCloudPlatform/googleapis-dlp @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 healthcare @noerog @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 iot @GoogleCloudPlatform/api-iot @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 media @GoogleCloudPlatform/cloud-media-team @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 pubsub @GoogleCloudPlatform/api-pubsub-and-pubsublite @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 pubsublite @GoogleCloudPlatform/api-pubsub-and-pubsublite @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 retail @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+datacatalog @GoogleCloudPlatform/googleapi-dataplex @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+dataplex @GoogleCloudPlatform/googleapi-dataplex @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver

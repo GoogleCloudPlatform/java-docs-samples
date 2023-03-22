@@ -17,6 +17,8 @@
 package compute;
 
 import com.google.cloud.compute.v1.AggregatedListInstancesRequest;
+import com.google.cloud.compute.v1.Disk;
+import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
 import com.google.cloud.compute.v1.InstanceTemplate;
@@ -26,6 +28,7 @@ import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
 import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
+import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -133,6 +136,26 @@ public class Util {
     try (InstancesClient instancesClient = InstancesClient.create()) {
       Instance response = instancesClient.get(project, zone, instanceName);
       return response.getStatus();
+    }
+  }
+
+  public static Instance getInstance(String projectId, String zone, String machineName)
+      throws IOException {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+      return instancesClient.get(projectId, zone, machineName);
+    }
+  }
+
+  public static Disk getDisk(String projectId, String zone, String diskName) throws IOException {
+    try (DisksClient disksClient = DisksClient.create()) {
+      return disksClient.get(projectId, zone, diskName);
+    }
+  }
+
+  public static Disk getRegionalDisk(String projectId, String region, String diskName)
+      throws IOException {
+    try (RegionDisksClient regionDisksClient = RegionDisksClient.create()) {
+      return regionDisksClient.get(projectId, region, diskName);
     }
   }
 

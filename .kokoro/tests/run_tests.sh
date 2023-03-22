@@ -19,6 +19,7 @@ set -eo pipefail
 # Enables `**` to include files nested inside sub-folders
 shopt -s globstar
 
+file="$(pwd)"
 # `--script-debug` can be added make local testing of this script easier
 if [[ $* == *--script-debug* ]]; then
     SCRIPT_DEBUG="true"
@@ -111,6 +112,35 @@ if [[ ",$JAVA_VERSION," =~ "11" ]]; then
   cd appengine-java11/appengine-simple-jetty-main/
   mvn install --quiet
   cd ../../
+fi
+
+# Install Chrome and chrome driver for recaptcha tests
+if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
+
+  # Based on this content: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
+  # https://github.com/alixaxel/chrome-aws-lambda/issues/164
+  apt install libnss3
+  apt install libnss3-dev libgdk-pixbuf2.0-dev libgtk-3-dev libxss-dev libgconf-2-4
+
+  # Install Chrome.
+  curl https://dl-ssl.google.com/linux/linux_signing_key.pub -o /tmp/google.pub \
+    && cat /tmp/google.pub | apt-key add -; rm /tmp/google.pub \
+    && echo 'deb http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google.list \
+    && mkdir -p /usr/share/desktop-directories \
+    && apt-get -y update && apt-get install -y google-chrome-stable
+
+  # Disable the SUID sandbox so that Chrome can launch without being in a privileged container.
+  dpkg-divert --add --rename --divert /opt/google/chrome/google-chrome.real /opt/google/chrome/google-chrome \
+    && echo "#!/bin/bash\nexec /opt/google/chrome/google-chrome.real --no-sandbox --disable-setuid-sandbox \"\$@\"" > /opt/google/chrome/google-chrome \
+    && chmod 755 /opt/google/chrome/google-chrome
+
+  # Install chrome driver.
+  mkdir -p /opt/selenium \
+    && curl http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip -o /opt/selenium/chromedriver_linux64.zip \
+    && cd /opt/selenium; unzip /opt/selenium/chromedriver_linux64.zip; rm -rf chromedriver_linux64.zip; ln -fs /opt/selenium/chromedriver /usr/local/bin/chromedriver;
+
+  export CHROME_DRIVER_PATH="$PWD/chromedriver"
+  echo "Installing chrome and driver. Path to installation: $CHROME_DRIVER_PATH"
 fi
 
 btlr_args=(
