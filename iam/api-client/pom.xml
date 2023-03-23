@@ -71,7 +71,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-policy-troubleshooter</artifactId>
-      <version>1.7.0</version>
+      <version>1.12.0</version>
     </dependency>
 <!-- [END troubleshooter_java_dependency]-->
     <dependency>
