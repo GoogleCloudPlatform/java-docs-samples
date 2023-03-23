@@ -34,7 +34,6 @@ import org.junit.Test;
 
 public class ChangeStreamsHelloWorldTest {
 
-  private static final String INSTANCE_ENV = "BIGTABLE_TESTING_INSTANCE";
   private static final String TABLE_ID = "change-stream-hello-world-test";
   private static final String COLUMN_FAMILY_NAME_1 = "cf1";
   private static final String COLUMN_FAMILY_NAME_2 = "cf2";
@@ -55,7 +54,7 @@ public class ChangeStreamsHelloWorldTest {
   @BeforeClass
   public static void beforeClass() {
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
-    instanceId = requireEnv(INSTANCE_ENV);
+    instanceId = requireEnv("BIGTABLE_TESTING_INSTANCE");
   }
 
   @Before
