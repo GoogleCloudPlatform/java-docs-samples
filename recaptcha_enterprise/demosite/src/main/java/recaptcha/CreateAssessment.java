@@ -32,16 +32,11 @@ public class CreateAssessment {
    * @param recaptchaSiteKey : Site key obtained by registering a domain/app to use recaptcha
    *     services. (score/ checkbox type)
    * @param token : The token obtained from the client on passing the recaptchaSiteKey.
-   * @param recaptchaAction : Action name corresponding to the token.
-   * @return JSONObject that contains a risk score and verdict if the action was executed by a
-   *     human.
+   * @return Assessment response.
    */
   public static Assessment createAssessment(
-      String projectID, String recaptchaSiteKey, String token, String recaptchaAction)
+      String projectID, String recaptchaSiteKey, String token)
       throws Exception {
-    // Sample threshold score for classification of bad / not bad action. The threshold score
-    // can be used to trigger secondary actions like MFA.
-    double sampleThresholdScore = 0.50;
 
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Starts -->
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
