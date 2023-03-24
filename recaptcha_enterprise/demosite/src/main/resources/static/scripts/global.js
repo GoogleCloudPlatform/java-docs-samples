@@ -36,10 +36,10 @@ async function homepage({token}) {
 }
 
 async function signup({token}) {
+  // Do not pass plain text credentials here. Always encrypt and follow security standards.
   const json_body = JSON.stringify({
     recaptcha_cred: {
       token: token,
-      // Do not pass plain text credentials here. Always encrypt and follow security standards.
       username: "",
       password: "",
     },
@@ -53,10 +53,10 @@ async function signup({token}) {
 }
 
 async function login({token}) {
+  // Do not pass plain text credentials here. Always encrypt and follow security standards.
   const json_body = JSON.stringify({
     recaptcha_cred: {
       token: token,
-      // Do not pass plain text credentials here. Always encrypt and follow security standards.
       username: "",
       password: "",
     },
