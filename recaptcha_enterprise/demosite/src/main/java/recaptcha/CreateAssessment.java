@@ -21,7 +21,6 @@ import com.google.recaptchaenterprise.v1.Assessment;
 import com.google.recaptchaenterprise.v1.CreateAssessmentRequest;
 import com.google.recaptchaenterprise.v1.Event;
 import com.google.recaptchaenterprise.v1.ProjectName;
-import java.util.HashMap;
 
 public class CreateAssessment {
 
