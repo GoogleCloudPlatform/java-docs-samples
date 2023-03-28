@@ -21,7 +21,7 @@ const SUBMIT_URLS = {
   game: undefined,
 };
 
-async function homepage({token}) {
+async function home({token}) {
   const json_body = JSON.stringify({
     recaptcha_cred: {
       token: token,
@@ -108,25 +108,26 @@ async function comment({token}) {
 function fetchDemoAssessment({ url, json_body}) {
   // Code for fetching the assessment from backend goes here.
   // Refer to demo app backend code for more information.
-  // See if using a library or framework, can use event handlers its usual way.
+  // If you already use a library or framework for event handlers, check if this
+  // call can be accommodated the usual way.
   // See: https://cloud.google.com/recaptcha-enterprise/docs/create-assessment
   return fetch(`/${url}`, {
     body: json_body,
     method: "POST",
     headers: new Headers({'content-type': 'application/json'}),
   })
-      .then((response) => {
-        const { ok, body: { data = {} } = {} } = response;
-        if (ok) {
-          return response.json();
-        }
-      })
-      .then((data) => {
-        return data;
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+  .then((response) => {
+    const { ok, body: { data = {} } = {} } = response;
+    if (ok) {
+      return response.json();
+    }
+  })
+  .then((data) => {
+    return data;
+  })
+  .catch((error) => {
+    throw new Error(error);
+  });
 }
 
 function useAssessment(score) {

@@ -80,7 +80,7 @@ public class MainController {
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.home");
-    HashMap<String, HashMap<String, String>> data;
+    HashMap<String, HashMap<String, String>> data = new HashMap<>();
     Assessment assessmentResponse;
     String verdict;
 
@@ -107,20 +107,15 @@ public class MainController {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
       // Return the risk score.
-      HashMap<String, String> result = new HashMap<>() {{
-        put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
-        put("verdict", verdict);
-      }};
-      data = new HashMap<>() {{
-        put("data", result);
-      }};
+      HashMap<String, String> result = new HashMap<>();
+      result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
+      result.put("verdict", verdict);
+      data.put("data", result);
+
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
-      data = new HashMap<>() {{
-        put("data", new HashMap<>() {{
-          put("error_msg", e.toString());
-        }});
-      }};
+      data.computeIfAbsent("data",
+          x -> new HashMap<>()).put("error_msg", e.toString());
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -143,7 +138,7 @@ public class MainController {
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.signup");
-    HashMap<String, HashMap<String, String>> data;
+    HashMap<String, HashMap<String, String>> data = new HashMap<>();
     Assessment assessmentResponse;
     String verdict;
 
@@ -172,20 +167,15 @@ public class MainController {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
       // Return the risk score.
-      HashMap<String, String> result = new HashMap<>() {{
-        put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
-        put("verdict", verdict);
-      }};
-      data = new HashMap<>() {{
-        put("data", result);
-      }};
+      HashMap<String, String> result = new HashMap<>();
+      result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
+      result.put("verdict", verdict);
+      data.put("data", result);
+
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
-      data = new HashMap<>() {{
-        put("data", new HashMap<>() {{
-          put("error_msg", e.toString());
-        }});
-      }};
+      data.computeIfAbsent("data",
+          x -> new HashMap<>()).put("error_msg", e.toString());
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -208,7 +198,7 @@ public class MainController {
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.login");
-    HashMap<String, HashMap<String, String>> data;
+    HashMap<String, HashMap<String, String>> data = new HashMap<>();
     Assessment assessmentResponse;
     String verdict;
 
@@ -237,20 +227,15 @@ public class MainController {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
       // Return the risk score.
-      HashMap<String, String> result = new HashMap<>() {{
-        put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
-        put("verdict", verdict);
-      }};
-      data = new HashMap<>() {{
-        put("data", result);
-      }};
+      HashMap<String, String> result = new HashMap<>();
+      result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
+      result.put("verdict", verdict);
+      data.put("data", result);
+
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
-      data = new HashMap<>() {{
-        put("data", new HashMap<>() {{
-          put("error_msg", e.toString());
-        }});
-      }};
+      data.computeIfAbsent("data",
+          x -> new HashMap<>()).put("error_msg", e.toString());
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -273,7 +258,7 @@ public class MainController {
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.store");
-    HashMap<String, HashMap<String, String>> data;
+    HashMap<String, HashMap<String, String>> data = new HashMap<>();
     Assessment assessmentResponse;
     String verdict;
 
@@ -301,20 +286,15 @@ public class MainController {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
       // Return the risk score.
-      HashMap<String, String> result = new HashMap<>() {{
-        put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
-        put("verdict", verdict);
-      }};
-      data = new HashMap<>() {{
-        put("data", result);
-      }};
+      HashMap<String, String> result = new HashMap<>();
+      result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
+      result.put("verdict", verdict);
+      data.put("data", result);
+
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
-      data = new HashMap<>() {{
-        put("data", new HashMap<>() {{
-          put("error_msg", e.toString());
-        }});
-      }};
+      data.computeIfAbsent("data",
+          x -> new HashMap<>()).put("error_msg", e.toString());
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -337,7 +317,7 @@ public class MainController {
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.comment");
-    HashMap<String, HashMap<String, String>> data;
+    HashMap<String, HashMap<String, String>> data = new HashMap<>();
     Assessment assessmentResponse;
     String verdict;
 
@@ -365,20 +345,15 @@ public class MainController {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
       // Return the risk score.
-      HashMap<String, String> result = new HashMap<>() {{
-        put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
-        put("verdict", verdict);
-      }};
-      data = new HashMap<>() {{
-        put("data", result);
-      }};
+      HashMap<String, String> result = new HashMap<>();
+      result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
+      result.put("verdict", verdict);
+      data.put("data", result);
+
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
-      data = new HashMap<>() {{
-        put("data", new HashMap<>() {{
-          put("error_msg", e.toString());
-        }});
-      }};
+      data.computeIfAbsent("data",
+          x -> new HashMap<>()).put("error_msg", e.toString());
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
