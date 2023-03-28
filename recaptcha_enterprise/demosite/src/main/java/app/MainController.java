@@ -114,8 +114,8 @@ public class MainController {
 
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
-      data.computeIfAbsent("data",
-          x -> new HashMap<>()).put("error_msg", e.toString());
+      HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
+      dataMap.put("error_msg", e.toString());
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -174,8 +174,8 @@ public class MainController {
 
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
-      data.computeIfAbsent("data",
-          x -> new HashMap<>()).put("error_msg", e.toString());
+      HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
+      dataMap.put("error_msg", e.toString());
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -234,8 +234,8 @@ public class MainController {
 
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
-      data.computeIfAbsent("data",
-          x -> new HashMap<>()).put("error_msg", e.toString());
+      HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
+      dataMap.put("error_msg", e.toString());
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -293,8 +293,8 @@ public class MainController {
 
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
-      data.computeIfAbsent("data",
-          x -> new HashMap<>()).put("error_msg", e.toString());
+      HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
+      dataMap.put("error_msg", e.toString());
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -352,8 +352,8 @@ public class MainController {
 
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
-      data.computeIfAbsent("data",
-          x -> new HashMap<>()).put("error_msg", e.toString());
+      HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
+      dataMap.put("error_msg", e.toString());
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
