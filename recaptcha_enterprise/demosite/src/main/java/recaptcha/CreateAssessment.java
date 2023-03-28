@@ -21,7 +21,6 @@ import com.google.recaptchaenterprise.v1.Assessment;
 import com.google.recaptchaenterprise.v1.CreateAssessmentRequest;
 import com.google.recaptchaenterprise.v1.Event;
 import com.google.recaptchaenterprise.v1.ProjectName;
-import java.util.HashMap;
 
 public class CreateAssessment {
 
@@ -32,16 +31,11 @@ public class CreateAssessment {
    * @param recaptchaSiteKey : Site key obtained by registering a domain/app to use recaptcha
    *     services. (score/ checkbox type)
    * @param token : The token obtained from the client on passing the recaptchaSiteKey.
-   * @param recaptchaAction : Action name corresponding to the token.
-   * @return JSONObject that contains a risk score and verdict if the action was executed by a
-   *     human.
+   * @return Assessment response.
    */
-  public static HashMap<String, HashMap<String, String>> createAssessment(
-      String projectID, String recaptchaSiteKey, String token, String recaptchaAction)
+  public static Assessment createAssessment(
+      String projectID, String recaptchaSiteKey, String token)
       throws Exception {
-    // Sample threshold score for classification of bad / not bad action. The threshold score
-    // can be used to trigger secondary actions like MFA.
-    double sampleThresholdScore = 0.50;
 
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Starts -->
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
@@ -59,35 +53,9 @@ public class CreateAssessment {
               .build();
 
       Assessment response = client.createAssessment(createAssessmentRequest);
-
-      // Check if the token is valid.
-      if (!response.getTokenProperties().getValid()) {
-        throw new Exception(
-            "The Create Assessment call failed because the token was invalid for the following reasons: "
-                + response.getTokenProperties().getInvalidReason().name());
-      }
-
-      // Check if the expected action was executed.
-      if (!recaptchaAction.isEmpty() && !response.getTokenProperties().getAction()
-          .equals(recaptchaAction)) {
-        throw new Exception(
-            "The action attribute in your reCAPTCHA tag does not match the action you are expecting"
-                + " to score. Please check your action attribute !");
-      }
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Ends -->
 
-      // Classify the action as bad / not bad according to the set threshold score.
-      String verdict =
-          response.getRiskAnalysis().getScore() < sampleThresholdScore ? "Bad" : "Not Bad";
-
-      // Return the result to client.
-      HashMap<String, String> result = new HashMap<>() {{
-        put("score", String.valueOf(response.getRiskAnalysis().getScore()));
-        put("verdict", verdict);
-      }};
-      return new HashMap<>() {{
-        put("data", result);
-      }};
+      return response;
     }
   }
 }

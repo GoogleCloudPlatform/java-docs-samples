@@ -16,9 +16,12 @@
 
 package app;
 
+import com.google.recaptchaenterprise.v1.Assessment;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,68 +39,331 @@ import recaptcha.CreateAssessment;
 @RequestMapping
 public class MainController {
 
+  // Sample threshold score for classification of bad / not bad action. The threshold score
+  // can be used to trigger secondary actions like MFA.
+  private static final double SAMPLE_THRESHOLD_SCORE;
   private static final LinkedHashMap<String, String> CONTEXT = new LinkedHashMap<>();
+  private static final Properties PROPERTIES = new Properties();
 
   static {
+    SAMPLE_THRESHOLD_SCORE = 0.50;
+
     CONTEXT.put("project_id", System.getenv("GOOGLE_CLOUD_PROJECT"));
     CONTEXT.put("site_key", System.getenv("SITE_KEY"));
+
+    // Parse property file and read available reCAPTCHA actions. All reCAPTCHA actions registered
+    // in the client should be mapped in the config file. This will be used to verify if the token
+    // obtained during assessment corresponds to the claimed action.
+    try (InputStream input = MainController.class.getClassLoader()
+        .getResourceAsStream("config.properties")) {
+      PROPERTIES.load(input);
+    } catch (Exception e) {
+      System.out.println("Exception while loading property file...");
+    }
   }
 
+  /**
+   * Return homepage template.
+   */
   @GetMapping(value = "/")
   public static ModelAndView home() {
     return new ModelAndView("home", CONTEXT);
   }
 
-  @GetMapping(value = "/store")
-  public static ModelAndView store() {
-    return new ModelAndView("store", CONTEXT);
+  /**
+   * On homepage load, execute reCAPTCHA Enterprise assessment and take action according to the
+   * score.
+   */
+  @PostMapping(value = "/on_homepage_load", produces = "application/json")
+  public static @ResponseBody ResponseEntity<HashMap<String, HashMap<String, String>>> onHomepageLoad(
+      @RequestBody Map<String, HashMap<String, String>> jsonData) {
+    final HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.home");
+    HashMap<String, HashMap<String, String>> data = new HashMap<>();
+    Assessment assessmentResponse;
+    String verdict;
+
+    try {
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
+      assessmentResponse = CreateAssessment.createAssessment(
+          CONTEXT.get("project_id"),
+          CONTEXT.get("site_key"),
+          jsonData.get("recaptcha_cred").get("token"));
+
+      // Check if the token is valid, score is above threshold score and the action equals expected.
+      if (assessmentResponse.getTokenProperties().getValid() &&
+          assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
+          assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
+        // Load the home page.
+        // Business logic.
+        // Classify the action as not bad.
+        verdict = "Not Bad";
+      } else {
+        // If any of the above condition fails, trigger email/ phone verification flow.
+        // Classify the action as bad.
+        verdict = "Bad";
+      }
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
+
+      // Return the risk score.
+      HashMap<String, String> result = new HashMap<>();
+      result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
+      result.put("verdict", verdict);
+      data.put("data", result);
+
+      return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
+    } catch (Exception e) {
+      HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
+      dataMap.put("error_msg", e.toString());
+      return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
-  @GetMapping(value = "/login")
-  public static ModelAndView login() {
-    return new ModelAndView("login", CONTEXT);
-  }
-
-  @GetMapping(value = "/comment")
-  public static ModelAndView comment() {
-    return new ModelAndView("comment", CONTEXT);
-  }
-
+  /**
+   * Return signup template.
+   */
   @GetMapping(value = "/signup")
   public static ModelAndView signup() {
     return new ModelAndView("signup", CONTEXT);
   }
 
+  /**
+   * On signup button click, execute reCAPTCHA Enterprise assessment and take action according to
+   * the score.
+   */
+  @PostMapping(value = "/on_signup", produces = "application/json")
+  public static @ResponseBody ResponseEntity<HashMap<String, HashMap<String, String>>> onSignup(
+      @RequestBody Map<String, HashMap<String, String>> jsonData) {
+    final HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.signup");
+    HashMap<String, HashMap<String, String>> data = new HashMap<>();
+    Assessment assessmentResponse;
+    String verdict;
+
+    try {
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
+      assessmentResponse = CreateAssessment.createAssessment(
+          CONTEXT.get("project_id"),
+          CONTEXT.get("site_key"),
+          jsonData.get("recaptcha_cred").get("token"));
+
+      // Check if the token is valid, score is above threshold score and the action equals expected.
+      if (assessmentResponse.getTokenProperties().getValid() &&
+          assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
+          assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
+        // Write new username and password to users database.
+        // String username = jsonData.get("recaptcha_cred").get("username");
+        // String password = jsonData.get("recaptcha_cred").get("password");
+        // Business logic.
+        // Classify the action as not bad.
+        verdict = "Not Bad";
+      } else {
+        // If any of the above condition fails, trigger email/ phone verification flow.
+        // Classify the action as bad.
+        verdict = "Bad";
+      }
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
+
+      // Return the risk score.
+      HashMap<String, String> result = new HashMap<>();
+      result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
+      result.put("verdict", verdict);
+      data.put("data", result);
+
+      return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
+    } catch (Exception e) {
+      HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
+      dataMap.put("error_msg", e.toString());
+      return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * Return login template.
+   */
+  @GetMapping(value = "/login")
+  public static ModelAndView login() {
+    return new ModelAndView("login", CONTEXT);
+  }
+
+  /**
+   * On login button click, execute reCAPTCHA Enterprise assessment and take action according to the
+   * score.
+   */
+  @PostMapping(value = "/on_login", produces = "application/json")
+  public static @ResponseBody ResponseEntity<HashMap<String, HashMap<String, String>>> onLogin(
+      @RequestBody Map<String, HashMap<String, String>> jsonData) {
+    final HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.login");
+    HashMap<String, HashMap<String, String>> data = new HashMap<>();
+    Assessment assessmentResponse;
+    String verdict;
+
+    try {
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
+      assessmentResponse = CreateAssessment.createAssessment(
+          CONTEXT.get("project_id"),
+          CONTEXT.get("site_key"),
+          jsonData.get("recaptcha_cred").get("token"));
+
+      // Check if the token is valid, score is above threshold score and the action equals expected.
+      if (assessmentResponse.getTokenProperties().getValid() &&
+          assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
+          assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
+        // Check if the login credentials exist and match.
+        // String username = jsonData.get("recaptcha_cred").get("username");
+        // String password = jsonData.get("recaptcha_cred").get("password");
+        // Business logic.
+        // Classify the action as not bad.
+        verdict = "Not Bad";
+      } else {
+        // If any of the above condition fails, trigger email/ phone verification flow.
+        // Classify the action as bad.
+        verdict = "Bad";
+      }
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
+
+      // Return the risk score.
+      HashMap<String, String> result = new HashMap<>();
+      result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
+      result.put("verdict", verdict);
+      data.put("data", result);
+
+      return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
+    } catch (Exception e) {
+      HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
+      dataMap.put("error_msg", e.toString());
+      return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * Return store template.
+   */
+  @GetMapping(value = "/store")
+  public static ModelAndView store() {
+    return new ModelAndView("store", CONTEXT);
+  }
+
+  /**
+   * On checkout button click in store page, execute reCAPTCHA Enterprise assessment and take action
+   * according to the score.
+   */
+  @PostMapping(value = "/on_store_checkout", produces = "application/json")
+  public static @ResponseBody ResponseEntity<HashMap<String, HashMap<String, String>>> onStoreCheckout(
+      @RequestBody Map<String, HashMap<String, String>> jsonData) {
+    final HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.store");
+    HashMap<String, HashMap<String, String>> data = new HashMap<>();
+    Assessment assessmentResponse;
+    String verdict;
+
+    try {
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
+      assessmentResponse = CreateAssessment.createAssessment(
+          CONTEXT.get("project_id"),
+          CONTEXT.get("site_key"),
+          jsonData.get("recaptcha_cred").get("token"));
+
+      // Check if the token is valid, score is above threshold score and the action equals expected.
+      if (assessmentResponse.getTokenProperties().getValid() &&
+          assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
+          assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
+        // Check if the cart contains items and proceed to checkout and payment.
+        // items = jsonData.get("recaptcha_cred").get("items");
+        // Business logic.
+        // Classify the action as not bad.
+        verdict = "Not Bad";
+      } else {
+        // If any of the above condition fails, trigger email/ phone verification flow.
+        // Classify the action as bad.
+        verdict = "Bad";
+      }
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
+
+      // Return the risk score.
+      HashMap<String, String> result = new HashMap<>();
+      result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
+      result.put("verdict", verdict);
+      data.put("data", result);
+
+      return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
+    } catch (Exception e) {
+      HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
+      dataMap.put("error_msg", e.toString());
+      return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * Return comment template.
+   */
+  @GetMapping(value = "/comment")
+  public static ModelAndView comment() {
+    return new ModelAndView("comment", CONTEXT);
+  }
+
+  /**
+   * On comment submit, execute reCAPTCHA Enterprise assessment and take action according to the
+   * score.
+   */
+  @PostMapping(value = "/on_comment_submit", produces = "application/json")
+  public static @ResponseBody ResponseEntity<HashMap<String, HashMap<String, String>>> onCommentSubmit(
+      @RequestBody Map<String, HashMap<String, String>> jsonData) {
+    final HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+    String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.comment");
+    HashMap<String, HashMap<String, String>> data = new HashMap<>();
+    Assessment assessmentResponse;
+    String verdict;
+
+    try {
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
+      assessmentResponse = CreateAssessment.createAssessment(
+          CONTEXT.get("project_id"),
+          CONTEXT.get("site_key"),
+          jsonData.get("recaptcha_cred").get("token"));
+
+      // Check if the token is valid, score is above threshold score and the action equals expected.
+      if (assessmentResponse.getTokenProperties().getValid() &&
+          assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
+          assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
+        // Check if comment has safe language and proceed to store in database.
+        // String comment = jsonData.get("recaptcha_cred").get("comment");
+        // Business logic.
+        // Classify the action as not bad.
+        verdict = "Not Bad";
+      } else {
+        // If any of the above condition fails, trigger email/ phone verification flow.
+        // Classify the action as bad.
+        verdict = "Bad";
+      }
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
+
+      // Return the risk score.
+      HashMap<String, String> result = new HashMap<>();
+      result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
+      result.put("verdict", verdict);
+      data.put("data", result);
+
+      return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
+    } catch (Exception e) {
+      HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
+      dataMap.put("error_msg", e.toString());
+      return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * Return game template.
+   */
   @GetMapping(value = "/game")
   public static ModelAndView game() {
     return new ModelAndView("game", CONTEXT);
   }
 
-  @PostMapping(value = "/create_assessment", produces = "application/json")
-  public static @ResponseBody
-  ResponseEntity<HashMap<String, HashMap<String, String>>> createAssessment(
-      @RequestBody Map<String, HashMap<String, String>> credentials) {
-    String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
-    final HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-    HashMap<String, HashMap<String, String>> result;
-
-    try {
-      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
-      result = CreateAssessment.createAssessment(projectId,
-          CONTEXT.get("site_key"),
-          credentials.get("recaptcha_cred").get("token"),
-          credentials.get("recaptcha_cred").get("action"));
-      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
-    } catch (Exception e) {
-      result = new HashMap<>() {{
-        put("data", new HashMap<>() {{
-          put("error_msg", e.toString());
-        }});
-      }};
-      return new ResponseEntity<>(result, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    return new ResponseEntity<>(result, httpHeaders, HttpStatus.OK);
-  }
 }
