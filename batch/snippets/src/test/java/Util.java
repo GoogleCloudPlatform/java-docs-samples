@@ -111,9 +111,10 @@ public class Util {
         throw new Error("Timed out waiting for operation to complete.");
       }
       job = getJob(jobName[1], jobName[3], jobName[5]);
-      TimeUnit.SECONDS.sleep(5);
+      TimeUnit.SECONDS.sleep(10);
     }
     job = getJob(jobName[1], jobName[3], job.getName().split("/")[5]);
     assertThat(job.getStatus().getState() == State.SUCCEEDED);
+    System.out.println("Job completed.");
   }
 }
