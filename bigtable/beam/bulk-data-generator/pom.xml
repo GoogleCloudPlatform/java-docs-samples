@@ -25,7 +25,7 @@
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.target>8</maven.compiler.target>
     <apache_beam.version>2.40.0</apache_beam.version>
   </properties>
 
