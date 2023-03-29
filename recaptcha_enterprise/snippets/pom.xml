@@ -104,18 +104,18 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>2.7.6</version>
+      <version>2.7.10</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <version>2.7.6</version>
+      <version>2.7.10</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
-      <version>2.7.6</version>
+      <version>2.7.10</version>
     </dependency>
     <dependency>
       <groupId>com.google.api</groupId>
@@ -131,7 +131,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>2.7.4</version>
+        <version>2.7.10</version>
       </plugin>
       <!-- The checkstyle plugin is skipped to avoid Javadoc errors thrown in
       the files. Adding the Javadoc comments in the Controller file is against
