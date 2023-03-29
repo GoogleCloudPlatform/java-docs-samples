@@ -135,7 +135,7 @@ public class BatchBucketIT {
     String fileNameTemplate = "output_task_%s.txt";
     String fileContentTemplate;
 
-    Storage storage = StorageOptions.getDefaultInstance().getService();
+    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
     Bucket bucket = storage.get(BUCKET_NAME);
     for (int i = 0; i < 4; i++) {
       fileContentTemplate = String.format("Hello world from task %s.\n", i);
