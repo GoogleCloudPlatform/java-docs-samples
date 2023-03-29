@@ -29,9 +29,9 @@ public class BigQueryReadFromQuery {
   public static void main(String[] args) {
     // The SQL query to run inside BigQuery.
     final String queryString =
-        "SELECT repo_name as repo, COUNT(*) as count " +
-            "FROM `bigquery-public-data.github_repos.sample_commits` " +
-            "GROUP BY repo_name";
+        "SELECT repo_name as repo, COUNT(*) as count "
+            + "FROM `bigquery-public-data.github_repos.sample_commits` "
+            + "GROUP BY repo_name";
 
     PipelineOptionsFactory.register(BigQueryReadOptions.class);
     var options = PipelineOptionsFactory.fromArgs(args)

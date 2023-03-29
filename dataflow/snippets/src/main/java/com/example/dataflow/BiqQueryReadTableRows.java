@@ -19,11 +19,11 @@ package com.example.dataflow;
 // [START dataflow_bigquery_read_tablerows]
 import com.google.api.services.bigquery.model.TableRow;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.TypedRead.Method;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.values.TypeDescriptor;
-import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
-import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.TypedRead.Method;
 
 public class BiqQueryReadTableRows {
   public static void main(String[] args) {

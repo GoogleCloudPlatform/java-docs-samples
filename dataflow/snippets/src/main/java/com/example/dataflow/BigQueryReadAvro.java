@@ -38,7 +38,8 @@ public class BigQueryReadAvro {
     public Long age;
 
     // Function to convert Avro records to MyData instances.
-    public static class FromSchemaAndRecord implements SerializableFunction<SchemaAndRecord, MyData> {
+    public static class FromSchemaAndRecord
+            implements SerializableFunction<SchemaAndRecord, MyData> {
       @Override public MyData apply(SchemaAndRecord elem) {
         var data = new MyData();
         var record = elem.getRecord();

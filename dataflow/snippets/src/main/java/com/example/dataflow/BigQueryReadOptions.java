@@ -22,13 +22,16 @@ import org.apache.beam.sdk.options.PipelineOptions;
 public interface BigQueryReadOptions extends PipelineOptions {
   @Description("Project ID for the BigQuery table")
   String getProjectId();
+
   void setProjectId(String input);
 
   @Description("Dataset for the BigQuery table")
   String getDatasetName();
+
   void setDatasetName(String output);
 
   @Description("BigQuery table name")
   String getTableName();
+
   void setTableName(String output);
 }
