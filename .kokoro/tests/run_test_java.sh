@@ -21,7 +21,7 @@ POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)
 ALLOWED_VERSIONS=("1.8" "11" "17")
 # shellcheck disable=SC2199
 # shellcheck disable=SC2076
-if [[ "$POM_JAVA" = "" ]] || [[ ! "${ALLOWED_VERSIONS[*]}" =~ "${POM_JAVA}" ]]; then
+if [[ "$POM_JAVA" = "" ]] || [[ ! " ${ALLOWED_VERSIONS[*]} " =~ " ${POM_JAVA} " ]]; then
     RTN=1
     echo -e "\n Testing failed: Unable to determine Java version. Please set in pom:"
     echo -e "\n<properties>"
