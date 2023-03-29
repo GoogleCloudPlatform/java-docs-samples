@@ -114,9 +114,11 @@ if [[ ",$JAVA_VERSION," =~ "11" ]]; then
   cd ../../
 fi
 
-# Install Chrome and chrome driver for recaptcha tests.
+### Install Google chrome and chrome Driver for recaptcha tests ###
+echo "******* CHROME SETUP INFO ********"
 current_dir="$PWD"
 # Install Chrome.
+echo "ChromeSetUp: Install Chrome"
 curl https://dl-ssl.google.com/linux/linux_signing_key.pub -o /tmp/google.pub \
   && cat /tmp/google.pub | apt-key add -; rm /tmp/google.pub \
   && echo 'deb http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google.list \
@@ -124,18 +126,23 @@ curl https://dl-ssl.google.com/linux/linux_signing_key.pub -o /tmp/google.pub \
   && apt-get -y update && apt-get install -y google-chrome-stable
 
 # Disable the SUID sandbox so that Chrome can launch without being in a privileged container.
+echo "ChromeSetUp: Disable the SUID sandbox"
 dpkg-divert --add --rename --divert /opt/google/chrome/google-chrome.real /opt/google/chrome/google-chrome \
   && echo "#!/bin/bash\nexec /opt/google/chrome/google-chrome.real --no-sandbox --disable-setuid-sandbox \"\$@\"" > /opt/google/chrome/google-chrome \
   && chmod 755 /opt/google/chrome/google-chrome
 
 # Install chrome driver.
+export CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`
+echo "ChromeSetUp: Installing latest chrome version $CHROME_DRIVER_VERSION"
 mkdir -p /opt/selenium \
-  && curl http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip -o /opt/selenium/chromedriver_linux64.zip \
-  && cd /opt/selenium; unzip /opt/selenium/chromedriver_linux64.zip; rm -rf chromedriver_linux64.zip; ln -fs /opt/selenium/chromedriver /usr/local/bin/chromedriver;
+  && curl http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip -o /opt/selenium/chromedriver_linux64.zip \
+  && cd /opt/selenium && unzip chromedriver_linux64.zip && rm chromedriver_linux64.zip \
+  && ln -fs /opt/selenium/chromedriver /usr/local/bin/chromedriver;
 
 # Export the path and cd back to test directory.
 export CHROME_DRIVER_PATH="/usr/local/bin/chromedriver"
-echo "Installing chrome and driver. Path to installation: $CHROME_DRIVER_PATH"
+echo "ChromeSetUp: Installing chrome and driver. Path to installation: $CHROME_DRIVER_PATH"
+
 cd "${current_dir}"
 
 btlr_args=(
