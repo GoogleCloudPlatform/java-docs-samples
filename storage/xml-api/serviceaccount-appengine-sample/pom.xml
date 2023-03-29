@@ -46,56 +46,52 @@
     <finalName>war</finalName>
     <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
-    <configuration>
-      <lifecycleMappingMetadata>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-war-plugin</artifactId>
-              <version>${maven-war-plugin-version}</version>
-              <executions>
-                <execution>
-                  <phase>compile</phase>
-                  <goals>
-                    <goal>exploded</goal>
-                  </goals>
-                </execution>
-              </executions>
-              <configuration>
-                <webappDirectory>${webappDirectory}</webappDirectory>
-              </configuration>
-            </plugin>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>${maven-war-plugin-version}</version>
+          <executions>
+            <execution>
+              <phase>compile</phase>
+              <goals>
+                <goal>exploded</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <webappDirectory>${webappDirectory}</webappDirectory>
+          </configuration>
+        </plugin>
 
-            <!--
+        <!--
         The actual appengine-maven-plugin. Type "mvn appengine:run" to run project,
         "mvn appengine:update" to upload to GAE.
       -->
-            <plugin>
-              <groupId>com.google.cloud.tools</groupId>
-              <artifactId>appengine-maven-plugin</artifactId>
-              <version>2.4.4</version>
-              <configuration>
-                <projectId>GCLOUD_CONFIG</projectId>
-                <version>gaeinfo</version>
-                <port>8888</port>
-              </configuration>
-            </plugin>
+        <plugin>
+          <groupId>com.google.cloud.tools</groupId>
+          <artifactId>appengine-maven-plugin</artifactId>
+          <version>2.4.4</version>
+          <configuration>
+            <projectId>GCLOUD_CONFIG</projectId>
+            <version>gaeinfo</version>
+            <port>8888</port>
+          </configuration>
+        </plugin>
 
-            <!--
+        <!--
         Upload application to the appspot automatically, during
         release:perform
       -->
-            <plugin>
-              <artifactId>maven-release-plugin</artifactId>
-              <configuration>
-                <goals>gae:deploy</goals>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </lifecycleMappingMetadata>
-    </configuration>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <goals>gae:deploy</goals>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
   <dependencies>
 
