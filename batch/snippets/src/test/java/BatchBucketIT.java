@@ -131,6 +131,7 @@ public class BatchBucketIT {
     testBucketContent();
   }
 
+  @Test
   public void testBucketContent() {
     String fileNameTemplate = "output_task_%s.txt";
     String fileContentTemplate;
