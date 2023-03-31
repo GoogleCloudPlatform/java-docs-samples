@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
-
 // Sample to create a custom connector. A production-ready connector does the following:
 // 1. Fetches metadata from a source system (for example, from an RDBMS).
 // 2. Creates Dataplex metadata objects (Entries, Tags) based on the fetched data.
@@ -62,7 +61,6 @@ public class CreateCustomConnector {
     // Storage project can be the same as projectId where metadata will be stored;
     // but does not have to be.
     String storageProjectId = "my-storage-project";
-
 
     // Use any available Dataplex Catalog region.
     String location = "us-central1";
@@ -104,7 +102,6 @@ public class CreateCustomConnector {
 
     String mySqlUrl = getArg("mysql_url", args);
     String mySqlUsername = getArg("mysql_username", args);
-
     // Don't really pass password as and argument,
     // use [Secret Manager](https://cloud.google.com/secret-manager) to keep the password safe.
     String mySqlPassword = getArg("mysql_password", args);
@@ -185,6 +182,7 @@ public class CreateCustomConnector {
         .build();
   }
 
+
   private static String writeMetadataToGscBucket(DumpItem dumpItem, String storageProjectId,
       String gcsBucketName)
       throws IOException {
@@ -221,7 +219,6 @@ public class CreateCustomConnector {
 
     return gcsPath;
   }
-
 
   private static void importEntriesToCatalog(String projectId, String location,
       String entryGroupName, String gcsBucketName)
@@ -262,8 +259,6 @@ public class CreateCustomConnector {
 
       System.out.println("Long-running operation is created with name: " + operationName);
       System.out.printf("Long-running operation metadata details: " +  importEntriesMetadata);
-
-
     }
   }
 }
