@@ -42,7 +42,7 @@ import org.threeten.bp.Duration;
 public class GetImportEntriesState {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String longRunningOperationName =
         "projects/my-project/locations/us-central1/operations/import_entries_abc";

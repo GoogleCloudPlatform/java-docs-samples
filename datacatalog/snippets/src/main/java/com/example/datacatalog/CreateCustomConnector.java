@@ -247,8 +247,8 @@ public class CreateCustomConnector {
       ImportEntriesMetadata importEntriesMetadata = ImportEntriesMetadata.parseFrom(
           longRunningOperation.getMetadata().getValue());
 
-      System.out.printf("Long-running operation is created with name: %s \n", operationName);
-      System.out.printf("Long-running operation metadata details: %s", importEntriesMetadata);
+      System.out.println("Long-running operation is created with name: " + operationName);
+      System.out.printf("Long-running operation metadata details: " +  importEntriesMetadata);
 
     }
   }
