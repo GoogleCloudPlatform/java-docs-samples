@@ -17,17 +17,12 @@
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.cloud.bigtable.hbase.BigtableConfiguration;
+import com.google.cloud.bigtable.data.v2.BigtableDataClient;
+import com.google.cloud.bigtable.data.v2.models.RowMutation;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
-import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.Delete;
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.client.Table;
-import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -66,9 +61,9 @@ public class ChangeStreamsHelloWorldTest {
   @Test
   public void testChangeStreamsHelloWorld() throws IOException, InterruptedException {
     String[] args = {
-      "--bigtableProjectId=" + projectId,
-      "--bigtableInstanceId=" + instanceId,
-      "--bigtableTableId=" + TABLE_ID
+        "--bigtableProjectId=" + projectId,
+        "--bigtableInstanceId=" + instanceId,
+        "--bigtableTableId=" + TABLE_ID
     };
 
     new Thread(() -> ChangeStreamsHelloWorld.main(args)).start();
@@ -76,24 +71,15 @@ public class ChangeStreamsHelloWorldTest {
     // Pause for job to start.
     Thread.sleep(10 * 1000);
 
-    Connection connection = BigtableConfiguration.connect(projectId, instanceId);
-    Table table = connection.getTable(TableName.valueOf(Bytes.toBytes(TABLE_ID)));
+    BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId);
     String rowKey = UUID.randomUUID().toString().substring(0, 20);
+    dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey)
+        .setCell(COLUMN_FAMILY_NAME_1, "col a", "a"));
 
-    Put put = new Put(Bytes.toBytes(rowKey));
-    put.addColumn(Bytes.toBytes(COLUMN_FAMILY_NAME_1), Bytes.toBytes("col a"), Bytes.toBytes("a"));
-    table.put(put);
+    dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey)
+        .deleteCells(COLUMN_FAMILY_NAME_1, "col a"));
 
-    Delete deleteCol =
-        new Delete(Bytes.toBytes(rowKey))
-            .addColumns(Bytes.toBytes(COLUMN_FAMILY_NAME_1), Bytes.toBytes("col a"));
-    table.delete(deleteCol);
-
-    Delete deleteRow =
-        new Delete(Bytes.toBytes(rowKey))
-            .addFamily(Bytes.toBytes(COLUMN_FAMILY_NAME_1))
-            .addFamily(Bytes.toBytes(COLUMN_FAMILY_NAME_2));
-    table.delete(deleteRow);
+    dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey).deleteRow());
 
     // Wait for change to be captured.
     Thread.sleep(15 * 1000);

@@ -90,14 +90,6 @@
       <version>${apache_beam.version}</version>
     </dependency>
 
-    <!-- [START bigtable_beam_connector_dependency] -->
-    <dependency>
-      <groupId>com.google.cloud.bigtable</groupId>
-      <artifactId>bigtable-hbase-beam</artifactId>
-      <version>2.6.3</version>
-    </dependency>
-    <!-- [END bigtable_beam_connector_dependency] -->
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

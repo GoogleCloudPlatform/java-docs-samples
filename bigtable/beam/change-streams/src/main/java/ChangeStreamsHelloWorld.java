@@ -54,7 +54,7 @@ public class ChangeStreamsHelloWorld {
                 .withProjectId(options.getBigtableProjectId())
                 .withInstanceId(options.getBigtableInstanceId())
                 .withTableId(options.getBigtableTableId())
-                .withAppProfileId("default")
+                .withAppProfileId(options.getBigtableAppProfile())
                 .withStartTime(startTime)
                 .withEndTime(endTime))
         .apply(
@@ -143,5 +143,11 @@ public class ChangeStreamsHelloWorld {
     String getBigtableTableId();
 
     void setBigtableTableId(String bigtableTableId);
+
+    @Description("The Bigtable application profile in the instance.")
+    @Default.String("default")
+    String getBigtableAppProfile();
+
+    void setBigtableAppProfile(String bigtableAppProfile);
   }
 }
