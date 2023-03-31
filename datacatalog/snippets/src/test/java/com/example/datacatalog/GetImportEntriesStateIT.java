@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.datacatalog;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -12,12 +28,12 @@ import com.google.cloud.datacatalog.v1.ImportEntriesMetadata;
 import com.google.cloud.datacatalog.v1.ImportEntriesRequest;
 import com.google.cloud.datacatalog.v1.ImportEntriesResponse;
 import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageClass;
 import com.google.cloud.storage.StorageOptions;
-import com.google.cloud.storage.BlobId;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,22 +49,21 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class GetImportEntriesStateIT {
-  @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String ID = UUID.randomUUID().toString().substring(0, 8);
   private static final String LOCATION = "us-central1";
-  private final Logger log = Logger.getLogger(this.getClass().getName());
   private static final String ENTRY_GROUP = "ENTRY_GROUP_TEST_" + ID;
-
   private static final String GCS_BUCKET_NAME = "bucket_test_" + ID;
+  private static final String PROJECT_ID = requireEnvVar("GOOGLE_CLOUD_PROJECT");
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+  private final Logger log = Logger.getLogger(this.getClass().getName());
+  private final Storage storageService = StorageOptions.newBuilder().setProjectId(PROJECT_ID)
+      .build().getService();
   private String operationName;
-  private final Storage storageService = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
-
-  private static final String PROJECT_ID = requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
@@ -111,7 +126,7 @@ public class GetImportEntriesStateIT {
             .build());
   }
 
-  private void deleteTemporaryGcsBucket () {
+  private void deleteTemporaryGcsBucket() {
     Page<Blob> blobs = storageService.list(GCS_BUCKET_NAME);
     for (Blob blob : blobs.iterateAll()) {
       BlobId blobId = BlobId.of(GCS_BUCKET_NAME, blob.getName());

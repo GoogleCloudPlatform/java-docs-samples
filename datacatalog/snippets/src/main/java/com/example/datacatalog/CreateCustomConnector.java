@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.datacatalog;
 
 // [START data_catalog_custom_connector]
@@ -15,20 +31,19 @@ import com.google.cloud.datacatalog.v1.Schema;
 import com.google.cloud.datacatalog.v1.SystemTimestamps;
 import com.google.cloud.datacatalog.v1.Tag;
 import com.google.cloud.datacatalog.v1.TagField;
+import com.google.cloud.datacatalog.v1.TaggedEntry;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import com.google.cloud.datacatalog.v1.TaggedEntry;
 import com.google.common.collect.ImmutableList;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import com.google.protobuf.util.Timestamps;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.Date;
-
+import java.util.concurrent.ExecutionException;
 
 // Sample to create a custom connector. A production-ready connector does the following:
 // 1. Fetches metadata from a source system (for example, from an RDBMS).
@@ -44,8 +59,9 @@ public class CreateCustomConnector {
     String projectId = "my-project";
     String entryGroupId = "onprem_entry_group";
     String gcsBucketName = "my_gcs_bucket";
-    String storageProjectId = "my-storage-project"; // can be the same as projectId where metadata will be stored; but does not have to be.
-
+    // Storage project can be the same as projectId where metadata will be stored;
+    // but does not have to be.
+    String storageProjectId = "my-storage-project";
 
     // Use any available Dataplex Catalog region.
     String location = "us-central1";
@@ -57,15 +73,18 @@ public class CreateCustomConnector {
     ctx.stop();
     */
 
-    importEntriesViaCustomConnector(location, projectId, entryGroupId, storageProjectId, gcsBucketName);
+    importEntriesViaCustomConnector(location, projectId, entryGroupId, storageProjectId,
+        gcsBucketName);
 
 
   }
 
-  public static void importEntriesViaCustomConnector(String location, String projectId, String entryGroupId, String storageProjectId, String gcsBucketName)
+  public static void importEntriesViaCustomConnector(String location, String projectId,
+      String entryGroupId, String storageProjectId, String gcsBucketName)
       throws IOException, ExecutionException, InterruptedException {
 
-    // Showing how to fetch metadata from a source system is out of the scope of this sample. Comments in the method below provide some hints though.
+    // Showing how to fetch metadata from a source system is out of the scope of this sample.
+    // Comments in the method below provide some hints though.
     fetchMetadataFromSourceSystem();
 
     // Translate fetched metadata into Dataplex Entry format.
@@ -84,7 +103,9 @@ public class CreateCustomConnector {
 
     String mySqlUrl = getArg("mysql_url", args);
     String mySqlUsername = getArg("mysql_username", args);
-    String mySqlPassword = getArg("mysql_password", args); // don't really do this, use [Secret Manager](https://cloud.google.com/secret-manager) to keep the password safe
+    // Don't really pass password as and argument,
+    // use [Secret Manager](https://cloud.google.com/secret-manager) to keep the password safe.
+    String mySqlPassword = getArg("mysql_password", args);
 
     Class.forName ("com.mysql.jdbc.Driver").newInstance ();
     Connection conn = DriverManager.getConnection (mySqlUrl, mySqlUsername, mySqlPassword);
@@ -153,17 +174,24 @@ public class CreateCustomConnector {
         .build();
   }
 
-  private static void writeMetadataToGscBucket(DumpItem dumpItem, String storageProjectId, String gcsBucketName)
+  private static void writeMetadataToGscBucket(DumpItem dumpItem, String storageProjectId,
+      String gcsBucketName)
       throws IOException {
     // Use Google Cloud Storage API to write metadata dump.
-    // When you write real production load, you would want to shard the dump into multiple files for faster processing.
+    // When you write real production load,
+    // you would want to shard the dump into multiple files for faster processing.
     // Contents of all the files within specified bucket will be ingested.
-    Storage storage = StorageOptions.newBuilder().setProjectId(storageProjectId).build().getService();
+    Storage storage = StorageOptions.newBuilder().setProjectId(storageProjectId).build()
+        .getService();
 
     /* Dump files should use standard protobuf binary wire format to store Entries in file.
 
-    Alternatively, the entire byte[] containing the wire encoding of delimited DumpItems in a single dump file can be Mime Base64 encoded. To indicate files where that is the case, please change the extension of the file from .wire to .txt.
-    Note, that whole file needs to be encoded at once, instead of each DumpItem being encoded separately, and concatenated.
+    Alternatively, the entire byte[] containing the wire encoding of delimited DumpItems
+    in a single dump file can be Mime Base64 encoded.
+    To indicate files where that is the case,
+    please change the extension of the file from .wire to .txt.
+    Note, that whole file needs to be encoded at once, instead of each DumpItem
+    being encoded separately, and concatenated.
     For example:
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -183,10 +211,9 @@ public class CreateCustomConnector {
     storage.create(blobInfo, encodedEntries.toByteArray());
   }
 
-  private static void importEntriesToCatalog(String projectId, String location, String entryGroupName, String gcsBucketName)
+  private static void importEntriesToCatalog(String projectId, String location,
+      String entryGroupName, String gcsBucketName)
       throws ExecutionException, InterruptedException, IOException {
-
-
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -200,7 +227,9 @@ public class CreateCustomConnector {
       // Specify valid path to the dump stored in Google Cloud Storage
       String pathToDump = "gs://" + gcsBucketName + "/";
 
-      // Send ImportEntries request to the Dataplex Catalog. ImportEntries is an async procedure, and it returns a long-running operation that a client can query.
+      // Send ImportEntries request to the Dataplex Catalog.
+      // ImportEntries is an async procedure,
+      // and it returns a long-running operation that a client can query.
       OperationFuture<ImportEntriesResponse, ImportEntriesMetadata> importEntriesFuture =
           dataCatalogClient.importEntriesAsync(ImportEntriesRequest.newBuilder()
               .setParent(parent)
@@ -215,7 +244,8 @@ public class CreateCustomConnector {
 
       // Query an operation to learn about the state of import.
       Operation longRunningOperation = operationsClient.getOperation(operationName);
-      ImportEntriesMetadata importEntriesMetadata = ImportEntriesMetadata.parseFrom(longRunningOperation.getMetadata().getValue());
+      ImportEntriesMetadata importEntriesMetadata = ImportEntriesMetadata.parseFrom(
+          longRunningOperation.getMetadata().getValue());
 
       System.out.printf("Long-running operation is created with name: %s \n", operationName);
       System.out.printf("Long-running operation metadata details: %s", importEntriesMetadata);
