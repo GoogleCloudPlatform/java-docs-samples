@@ -21,7 +21,6 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.common.testing.TestLogHandler;
 import com.google.events.cloud.firestore.v1.Document;
 import com.google.events.cloud.firestore.v1.DocumentEventData;
-import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
@@ -66,17 +65,13 @@ public class FirebaseFirestoreTest {
         .setValue(newValue)
         .setOldValue(oldValue)
         .build();
-    Any anyPayload = Any.newBuilder()
-        .setTypeUrl("type.googleapis.com/" + firestorePayload.getDescriptorForType().getFullName())
-        .setValue(firestorePayload.toByteString())
-        .build();
 
     CloudEvent event = CloudEventBuilder.v1()
         .withId("0")
         .withSubject("test subject")
         .withSource(URI.create("https://example.com"))
         .withType("google.cloud.firestore.document.v1.written")
-        .withData(anyPayload.toByteArray())
+        .withData(firestorePayload.toByteArray())
         .build();
 
     new FirebaseFirestore().accept(event);

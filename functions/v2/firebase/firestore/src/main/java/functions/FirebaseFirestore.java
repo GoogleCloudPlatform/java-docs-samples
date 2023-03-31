@@ -19,7 +19,6 @@ package functions;
 // [START functions_cloudevent_firebase_firestore]
 import com.google.cloud.functions.CloudEventsFunction;
 import com.google.events.cloud.firestore.v1.DocumentEventData;
-import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.cloudevents.CloudEvent;
 import java.util.logging.Logger;
@@ -29,9 +28,7 @@ public class FirebaseFirestore implements CloudEventsFunction {
 
   @Override
   public void accept(CloudEvent event) throws InvalidProtocolBufferException {
-    Any anyPayload = Any.parseFrom(event.getData().toBytes());
-    DocumentEventData firestorEventData = anyPayload
-        .unpack(DocumentEventData.class);
+    DocumentEventData firestorEventData = DocumentEventData.parseFrom(event.getData().toBytes());
 
     logger.info("Function triggered by event on: " + event.getSource());
     logger.info("Event type: " + event.getType());
