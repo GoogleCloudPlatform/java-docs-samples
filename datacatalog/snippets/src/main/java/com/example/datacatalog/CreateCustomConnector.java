@@ -23,7 +23,6 @@ import com.google.cloud.datacatalog.v1.ColumnSchema;
 import com.google.cloud.datacatalog.v1.DataCatalogClient;
 import com.google.cloud.datacatalog.v1.DumpItem;
 import com.google.cloud.datacatalog.v1.Entry;
-import com.google.cloud.datacatalog.v1.EntryType;
 import com.google.cloud.datacatalog.v1.ImportEntriesMetadata;
 import com.google.cloud.datacatalog.v1.ImportEntriesRequest;
 import com.google.cloud.datacatalog.v1.ImportEntriesResponse;
@@ -91,10 +90,10 @@ public class CreateCustomConnector {
     DumpItem dumpItem = prepareDumpItem();
 
     // Write metadata in Dataplex format to an existing Google Cloud Storage bucket.
-    writeMetadataToGscBucket(dumpItem, storageProjectId, gcsBucketName);
+    String pathToDump = writeMetadataToGscBucket(dumpItem, storageProjectId, gcsBucketName);
 
     // Call DataplexCatalog ImportEntries() API to import the dump.
-    importEntriesToCatalog(projectId, location, entryGroupId, gcsBucketName);
+    importEntriesToCatalog(projectId, location, entryGroupId, pathToDump);
 
   }
 
@@ -103,6 +102,7 @@ public class CreateCustomConnector {
 
     String mySqlUrl = getArg("mysql_url", args);
     String mySqlUsername = getArg("mysql_username", args);
+
     // Don't really pass password as and argument,
     // use [Secret Manager](https://cloud.google.com/secret-manager) to keep the password safe.
     String mySqlPassword = getArg("mysql_password", args);
@@ -130,26 +130,27 @@ public class CreateCustomConnector {
         .addColumns(ColumnSchema.newBuilder().setColumn("ID").setType("LONGINT"))
         .addColumns(ColumnSchema.newBuilder().setColumn("NAME").setType("VARCHAR(20)"))
         .build();
+
     Date tableCreateTime = new Date(10);
     Date tableUpdateTime = new Date(11);
-    // SystemTimestamps refer to lifecycle of the asset in the source system - e.g. time
-    // when a table was created or updated in the database.
-    // Never set SystemTimestamps to random time, or to now(), as it might trigger
-    // unnecessary updates in the Dataplex Catalog.
-    SystemTimestamps timestamps = SystemTimestamps.newBuilder()
-        .setCreateTime(Timestamps.fromDate(tableCreateTime))
-        .setUpdateTime(Timestamps.fromDate(tableUpdateTime))
-        .build();
-    Entry entry = Entry.newBuilder()
-        .setFullyQualifiedName("my_system:my_db.my_table")
-        .setUserSpecifiedSystem("My database system")
-        .setType(EntryType.TABLE)
-        // Do not set sourceSystemTimestamps if they are not readily available
-        // from the source system.
-        .setSourceSystemTimestamps(timestamps)
-        .setDisplayName("My database table")
-        .setSchema(schema)
-        .build();
+      // SystemTimestamps refer to lifecycle of the asset in the source system - e.g. time
+      // when a table was created or updated in the database.
+      // Never set SystemTimestamps to random time, or to now(), as it might trigger
+      // unnecessary updates in the Dataplex Catalog.
+      SystemTimestamps timestamps = SystemTimestamps.newBuilder()
+          .setCreateTime(Timestamps.fromDate(tableCreateTime))
+          .setUpdateTime(Timestamps.fromDate(tableUpdateTime))
+          .build();
+      Entry entry = Entry.newBuilder()
+          .setFullyQualifiedName("my_system:my_db.my_table")
+          .setUserSpecifiedSystem("My_system")
+          .setUserSpecifiedType("special_table_type")
+          // Do not set sourceSystemTimestamps if they are not readily available
+          // from the source system.
+          .setSourceSystemTimestamps(timestamps)
+          .setDisplayName("My database table")
+          .setSchema(schema)
+          .build();
 
     // If some metadata is not easily modelled by Dataplex Entries, use Tags to ingest it.
     Tag tag1 = Tag.newBuilder()
@@ -182,7 +183,7 @@ public class CreateCustomConnector {
         .build();
   }
 
-  private static void writeMetadataToGscBucket(DumpItem dumpItem, String storageProjectId,
+  private static String writeMetadataToGscBucket(DumpItem dumpItem, String storageProjectId,
       String gcsBucketName)
       throws IOException {
     // Use Google Cloud Storage API to write metadata dump.
@@ -193,7 +194,6 @@ public class CreateCustomConnector {
         .getService();
 
     /* Dump files should use standard protobuf binary wire format to store Entries in file.
-
     Alternatively, the entire byte[] containing the wire encoding of delimited DumpItems
     in a single dump file can be Mime Base64 encoded.
     To indicate files where that is the case,
@@ -201,15 +201,14 @@ public class CreateCustomConnector {
     Note, that whole file needs to be encoded at once, instead of each DumpItem
     being encoded separately, and concatenated.
     For example:
-
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     dumpItem1.writeDelimitedTo(baos);
     dumpItem2.writeDelimitedTo(baos);
     byte[] protobufWireFormatBytes = baos.toByteArray();
     String base64EncodedStr = Base64.getMimeEncoder().encodeToString(protobufWireFormatBytes);
      */
-    String gcsPath = "gs://" + gcsBucketName + "/output/" + "output_0001.wire";
-    BlobId blobId = BlobId.fromGsUtilUri(gcsPath);
+    String gcsPath = "gs://" + gcsBucketName + "/output/";
+    BlobId blobId = BlobId.fromGsUtilUri(gcsPath + "entries.wire");
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
     ByteArrayOutputStream encodedEntries = new ByteArrayOutputStream();
@@ -217,7 +216,10 @@ public class CreateCustomConnector {
     // For instance, in java you can use the writeDelimitedTo method.
     dumpItem.writeDelimitedTo(encodedEntries);
     storage.create(blobInfo, encodedEntries.toByteArray());
+
+    return gcsPath;
   }
+
 
   private static void importEntriesToCatalog(String projectId, String location,
       String entryGroupName, String gcsBucketName)
@@ -238,6 +240,7 @@ public class CreateCustomConnector {
       // Send ImportEntries request to the Dataplex Catalog.
       // ImportEntries is an async procedure,
       // and it returns a long-running operation that a client can query.
+
       OperationFuture<ImportEntriesResponse, ImportEntriesMetadata> importEntriesFuture =
           dataCatalogClient.importEntriesAsync(ImportEntriesRequest.newBuilder()
               .setParent(parent)
@@ -258,8 +261,10 @@ public class CreateCustomConnector {
       System.out.println("Long-running operation is created with name: " + operationName);
       System.out.printf("Long-running operation metadata details: " +  importEntriesMetadata);
 
+
     }
   }
 }
 
 // [END data_catalog_custom_connector]
+
