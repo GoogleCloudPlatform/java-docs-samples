@@ -1,5 +1,7 @@
 package com.example.datacatalog;
 
+// [START data_catalog_query_import_entries_operation]
+
 import static org.awaitility.Awaitility.with;
 import static org.awaitility.pollinterval.FibonacciPollInterval.fibonacci;
 
@@ -13,10 +15,7 @@ import com.google.cloud.datacatalog.v1.ImportEntriesResponse;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.rpc.Status;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.core.EvaluatedCondition;
@@ -31,6 +30,8 @@ public class GetImportEntriesState {
       throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String longRunningOperationName = "projects/my-project/locations/us-central1/operations/import_entries_abc";
+    // When ImportEntries() method of Dataplex Catalog is called, it returns a name of a long-running operation.
+    // This operation can be queried to find out the state of the import.
     queryImportEntriesState(longRunningOperationName);
   }
 
@@ -105,3 +106,5 @@ public class GetImportEntriesState {
   }
 
 }
+
+// [END data_catalog_query_import_entries_operation]

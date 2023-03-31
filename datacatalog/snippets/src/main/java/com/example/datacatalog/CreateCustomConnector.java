@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
+
 // Sample to create a custom connector. A production-ready connector does the following:
 // 1. Fetches metadata from a source system (for example, from an RDBMS).
 // 2. Creates Dataplex metadata objects (Entries, Tags) based on the fetched data.
@@ -61,6 +62,7 @@ public class CreateCustomConnector {
     // Storage project can be the same as projectId where metadata will be stored;
     // but does not have to be.
     String storageProjectId = "my-storage-project";
+
 
     // Use any available Dataplex Catalog region.
     String location = "us-central1";
