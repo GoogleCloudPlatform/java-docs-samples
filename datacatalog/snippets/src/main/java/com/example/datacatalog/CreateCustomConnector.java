@@ -1,5 +1,7 @@
 package com.example.datacatalog;
 
+// [START data_catalog_custom_connector]
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.datacatalog.v1.ColumnSchema;
 import com.google.cloud.datacatalog.v1.DataCatalogClient;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.Date;
 
+
 // Sample to create a custom connector. A production-ready connector does the following:
 // 1. Fetches metadata from a source system (for example, from an RDBMS).
 // 2. Creates Dataplex metadata objects (Entries, Tags) based on the fetched data.
@@ -38,15 +41,11 @@ public class CreateCustomConnector {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
-    // String projectId = "my-project";
-    // String entryGroupId = "onprem_entry_group";
-    // String gcsBucketName = "my_gcs_bucket";
-    // String storageProjectId = "my-storage-project"; // can be the same as projectId where metadata will be stored; but does not have to be.
+    String projectId = "my-project";
+    String entryGroupId = "onprem_entry_group";
+    String gcsBucketName = "my_gcs_bucket";
+    String storageProjectId = "my-storage-project"; // can be the same as projectId where metadata will be stored; but does not have to be.
 
-    String projectId = "qc-cloudsql-connector-devproj";
-    String entryGroupId = "github_sample_eg";
-    String gcsBucketName = "qc_public_sample_test";
-    String storageProjectId = "qc-cloudsql-connector-devproj";
 
     // Use any available Dataplex Catalog region.
     String location = "us-central1";
@@ -224,3 +223,5 @@ public class CreateCustomConnector {
     }
   }
 }
+
+// [END data_catalog_custom_connector]
