@@ -23,14 +23,9 @@ import com.google.cloud.discoveryengine.v1beta.SearchResponse;
 import com.google.cloud.discoveryengine.v1beta.SearchServiceClient;
 import com.google.cloud.discoveryengine.v1beta.ServingConfigName;
 import com.google.protobuf.Value;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 public class Search {
-  public static void search() throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public static void search() throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "PROJECT_ID";
     String location = "global";
@@ -42,16 +37,16 @@ public class Search {
   }
 
   public static void search(
-      String projectId, String location, String collectionId, String searchEngineId, String servingConfigId, String searchQuery)
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+      String projectId, String location, String collectionId, String searchEngineId, String servingConfigId,
+      String searchQuery)
+      throws Exception {
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {
-      SearchRequest request =
-          SearchRequest.newBuilder()
-              .setServingConfig(
-                  ServingConfigName.of(projectId, location, collectionId, searchEngineId, servingConfigId).toString())
-              .setQuery(searchQuery)
-              .setPageSize(10)
-              .build();
+      SearchRequest request = SearchRequest.newBuilder()
+          .setServingConfig(
+              ServingConfigName.of(projectId, location, collectionId, searchEngineId, servingConfigId).toString())
+          .setQuery(searchQuery)
+          .setPageSize(10)
+          .build();
       SearchResponse response = searchClient.search(request).getPage().getResponse();
       for (SearchResponse.SearchResult element : response.getResultList()) {
         System.out.println("Response content: " + element);

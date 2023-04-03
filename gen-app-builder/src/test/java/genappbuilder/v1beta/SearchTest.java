@@ -20,59 +20,56 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class SearchTest {
-    private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-    private static final String LOCATION = "global";
-    private static final String COLLECTION_ID = "default_collection";
-    private static final String SEARCH_ENGINE_ID = "test-search-engine";
-    private static final String SERVING_CONFIG_ID = "default_search";
-    private static final String SEARCH_QUERY = "Google";
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String LOCATION = "global";
+  private static final String COLLECTION_ID = "default_collection";
+  private static final String SEARCH_ENGINE_ID = "test-search-engine";
+  private static final String SERVING_CONFIG_ID = "default_search";
+  private static final String SEARCH_QUERY = "Google";
 
-    private ByteArrayOutputStream bout;
-    private PrintStream out;
-    private PrintStream originalPrintStream;
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
+  private PrintStream originalPrintStream;
 
-    private static void requireEnvVar(String varName) {
-        assertNotNull(
-                String.format("Environment variable '%s' must be set to perform these tests.", varName),
-                System.getenv(varName));
-    }
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
+        String.format("Environment variable '%s' must be set to perform these tests.", varName),
+        System.getenv(varName));
+  }
 
-    @Before
-    public void checkRequirements() {
-        requireEnvVar("GOOGLE_CLOUD_PROJECT");
-        requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    }
+  @Before
+  public void checkRequirements() {
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+  }
 
-    @Before
-    public void setUp() {
-        bout = new ByteArrayOutputStream();
-        out = new PrintStream(bout);
-        originalPrintStream = System.out;
-        System.setOut(out);
-    }
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    originalPrintStream = System.out;
+    System.setOut(out);
+  }
 
-    @Test
-    public void testSearch()
-            throws InterruptedException, ExecutionException, IOException, TimeoutException {
-        Search.search(PROJECT_ID, LOCATION, COLLECTION_ID, SEARCH_ENGINE_ID, SERVING_CONFIG_ID, SEARCH_QUERY);
-        String got = bout.toString();
+  @Test
+  public void testSearch() throws Exception {
+    Search.search(PROJECT_ID, LOCATION, COLLECTION_ID, SEARCH_ENGINE_ID, SERVING_CONFIG_ID, SEARCH_QUERY);
+    String got = bout.toString();
 
-        assertThat(got).contains("Response content:");
-        assertThat(got).contains("Google");
-    }
+    assertThat(got).contains("Response content:");
+    assertThat(got).contains("Google");
+  }
 
-    @After
-    public void tearDown() {
-        System.out.flush();
-        System.setOut(originalPrintStream);
-    }
+  @After
+  public void tearDown() {
+    System.out.flush();
+    System.setOut(originalPrintStream);
+  }
 }
