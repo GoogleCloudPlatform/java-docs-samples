@@ -37,7 +37,7 @@ public class Search {
     String collectionId = "default_collection";
     String searchEngineId = "DATA_STORE_ID";
     String servingConfigId = "default_search";
-    String searchQuery = "Google"
+    String searchQuery = "Google";
     search();
   }
 
