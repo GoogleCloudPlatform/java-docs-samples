@@ -31,6 +31,8 @@ import com.google.cloud.asset.v1.ProjectName;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class ExportAssetsExample {
 
@@ -43,9 +45,10 @@ public class ExportAssetsExample {
    * @param exportPath where the results will be exported to
    * @param contentType determines the schema for the table
    * @param assetTypes a list of asset types to export. if empty, export all.
+   * @throws TimeoutException
    */
   public static void exportAssets(String exportPath, ContentType contentType, String[] assetTypes)
-      throws IOException, IllegalArgumentException, InterruptedException, ExecutionException {
+      throws IOException, IllegalArgumentException, InterruptedException, ExecutionException, TimeoutException {
     try (AssetServiceClient client = AssetServiceClient.create()) {
       ProjectName parent = ProjectName.of(projectId);
       OutputConfig outputConfig =
@@ -58,7 +61,7 @@ public class ExportAssetsExample {
         exportAssetsRequestBuilder.addAllAssetTypes(Arrays.asList(assetTypes));
       }
       ExportAssetsRequest request = exportAssetsRequestBuilder.build();              
-      ExportAssetsResponse response = client.exportAssetsAsync(request).get();
+      ExportAssetsResponse response = client.exportAssetsAsync(request).get(5, TimeUnit.MINUTES);
       System.out.println(response);
     }
   }
