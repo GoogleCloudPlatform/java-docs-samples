@@ -41,26 +41,32 @@ public class ExportAssetsExample {
 
   /**
    * Export assets for a project.
-
+   *
    * @param exportPath where the results will be exported to
    * @param contentType determines the schema for the table
    * @param assetTypes a list of asset types to export. if empty, export all.
-   * @throws TimeoutException
    */
   public static void exportAssets(String exportPath, ContentType contentType, String[] assetTypes)
-      throws IOException, IllegalArgumentException, InterruptedException, ExecutionException, TimeoutException {
+      throws IOException,
+          IllegalArgumentException,
+          InterruptedException,
+          ExecutionException,
+          TimeoutException {
     try (AssetServiceClient client = AssetServiceClient.create()) {
       ProjectName parent = ProjectName.of(projectId);
       OutputConfig outputConfig =
           OutputConfig.newBuilder()
               .setGcsDestination(GcsDestination.newBuilder().setUri(exportPath).build())
               .build();
-      Builder exportAssetsRequestBuilder = ExportAssetsRequest.newBuilder()
-          .setParent(parent.toString()).setContentType(contentType).setOutputConfig(outputConfig);
+      Builder exportAssetsRequestBuilder =
+          ExportAssetsRequest.newBuilder()
+              .setParent(parent.toString())
+              .setContentType(contentType)
+              .setOutputConfig(outputConfig);
       if (assetTypes.length > 0) {
         exportAssetsRequestBuilder.addAllAssetTypes(Arrays.asList(assetTypes));
       }
-      ExportAssetsRequest request = exportAssetsRequestBuilder.build();              
+      ExportAssetsRequest request = exportAssetsRequestBuilder.build();
       ExportAssetsResponse response = client.exportAssetsAsync(request).get(5, TimeUnit.MINUTES);
       System.out.println(response);
     }
