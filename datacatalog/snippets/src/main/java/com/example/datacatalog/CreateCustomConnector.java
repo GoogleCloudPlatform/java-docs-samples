@@ -130,14 +130,22 @@ public class CreateCustomConnector {
         .addColumns(ColumnSchema.newBuilder().setColumn("ID").setType("LONGINT"))
         .addColumns(ColumnSchema.newBuilder().setColumn("NAME").setType("VARCHAR(20)"))
         .build();
+    Date tableCreateTime = new Date(10);
+    Date tableUpdateTime = new Date(11);
+    // SystemTimestamps refer to lifecycle of the asset in the source system - e.g. time
+    // when a table was created or updated in the database.
+    // Never set SystemTimestamps to random time, or to now(), as it might trigger
+    // unnecessary updates in the Dataplex Catalog.
     SystemTimestamps timestamps = SystemTimestamps.newBuilder()
-        .setCreateTime(Timestamps.fromDate(new Date()))
-        .setUpdateTime(Timestamps.fromDate(new Date()))
+        .setCreateTime(Timestamps.fromDate(tableCreateTime))
+        .setUpdateTime(Timestamps.fromDate(tableUpdateTime))
         .build();
     Entry entry = Entry.newBuilder()
         .setFullyQualifiedName("my_system:my_db.my_table")
         .setUserSpecifiedSystem("My database system")
         .setType(EntryType.TABLE)
+        // Do not set sourceSystemTimestamps if they are not readily available
+        // from the source system.
         .setSourceSystemTimestamps(timestamps)
         .setDisplayName("My database table")
         .setSchema(schema)

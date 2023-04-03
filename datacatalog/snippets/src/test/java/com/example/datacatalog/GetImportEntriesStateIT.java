@@ -111,7 +111,7 @@ public class GetImportEntriesStateIT {
 
   @Test
   public void testGetImportEntriesState() throws IOException {
-    GetImportEntriesState.queryImportEntriesState(operationName);
+    WaitForImportEntries.queryImportEntriesState(operationName);
     assertThat(bout.toString()).contains("Import Entries state");
   }
 

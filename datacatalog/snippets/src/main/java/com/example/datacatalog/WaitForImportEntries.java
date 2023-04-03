@@ -32,14 +32,13 @@ import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.core.EvaluatedCondition;
 import org.threeten.bp.Duration;
 
 // Sample to poll long-running operation for the state of entries import.
 
-public class GetImportEntriesState {
+public class WaitForImportEntries {
 
   public static void main(String[] args)
       throws IOException {
@@ -54,13 +53,14 @@ public class GetImportEntriesState {
 
   public static void queryImportEntriesState(String longRunningOperationName) throws IOException {
 
-    try (DataCatalogClient dataCatalogClient = createDataCatalogClient()) {
-      OperationsClient operationsClient = dataCatalogClient.getOperationsClient();
+    try (DataCatalogClient dataCatalogClient = createDataCatalogClient();
+        OperationsClient operationsClient = dataCatalogClient.getOperationsClient()
+    ) {
 
       // Periodically poll long-running operation to check state of the metadata import.
       Operation result = with().pollInterval(fibonacci(TimeUnit.MINUTES)).await()
           .atMost(java.time.Duration.ofHours(1))
-          .conditionEvaluationListener(GetImportEntriesState::printCondition)
+          .conditionEvaluationListener(WaitForImportEntries::printCondition)
           .until(() -> operationsClient.getOperation(longRunningOperationName), Operation::getDone);
 
       // Interpret operation result.
