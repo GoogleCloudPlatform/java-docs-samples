@@ -8,11 +8,9 @@
 container-registry @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 endpoints @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 eventarc @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
-flexible @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/functions-framework-google @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 run @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 scheduler @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 tasks @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
-unittests @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 workflows @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 
 # Infrastructure
@@ -89,4 +87,6 @@ datacatalog @GoogleCloudPlatform/googleapi-dataplex @GoogleCloudPlatform/java-sa
 dataplex @GoogleCloudPlatform/googleapi-dataplex @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 appengine @GoogleCloudPlatform/serverless-runtimes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 functions @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/functions-framework-google @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+flexible @GoogleCloudPlatform/serverless-runtimes @GoogleCloudPlatform/functions-framework-google @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+unittests @GoogleCloudPlatform/serverless-runtimes @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
 
