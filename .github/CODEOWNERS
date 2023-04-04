@@ -24,7 +24,6 @@ endpoints                       @GoogleCloudPlatform/java-samples-reviewers @yos
 eventarc                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/torus-dpe
 run                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/torus-dpe
 tasks                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/torus-dpe
-unittests                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/torus-dpe
 workflows                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/torus-dpe
 
 # Infrastructure
@@ -85,14 +84,15 @@ vision                          @GoogleCloudPlatform/java-samples-reviewers @yos
 # Self-service
 # ---* Shared with DEE Teams
 datacatalog                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/googleapi-dataplex
-flexible                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/functions-framework-google
 functions                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/functions-framework-google
 # ---* Fully Eng Owned
 appengine-*                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes
 dlp                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/googleapis-dlp
+flexible                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes @GoogleCloudPlatform/functions-framework-google
 healthcare                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @noerog
 iot                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-iot
 media                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-media-team
 pubsub                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-pubsub-and-pubsublite
 pubsublite                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-pubsub-and-pubsublite
 retail                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-retail-team
+unittests                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes
