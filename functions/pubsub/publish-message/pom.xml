@@ -41,7 +41,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>25.0.0</version>
+        <version>26.1.4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -77,13 +77,13 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
-      <version>31.0-jre</version>
+      <version>31.1-jre</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>4.5.1</version>
+      <version>4.11.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -102,7 +102,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.10.0</version>
+        <version>0.10.1</version>
         <configuration>
           <functionTarget>functions.PublishMessage</functionTarget>
         </configuration>
@@ -112,7 +112,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version 3.0.0-M4 does not load JUnit5 correctly -->
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
-        <version>3.0.0-M5</version>
+        <version>3.0.0-M7</version>
         <configuration>
           <includes>
             <include>**/*Test.java</include>

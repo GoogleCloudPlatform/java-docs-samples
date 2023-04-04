@@ -28,12 +28,12 @@ requireEnv "FUNCTIONS_BUCKET"
 
 # We must explicitly specify function names for event-based functions
 
-# Version is in the format <PR#>-<GIT COMMIT SHA>.
+# Version is in the format <PR#>-<GIT COMMIT SHA>-<DATE>.
 # Ensures PR-based triggers of the same branch don't collide if Kokoro attempts
 # to run them concurrently.
 export SAMPLE_VERSION="${KOKORO_GIT_COMMIT:-latest}"
 # Builds not triggered by a PR will fall back to the commit hash then "latest".
-SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}
+SUFFIX=${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-${SAMPLE_VERSION:0:12}}-$(date +%s%N)
 
 export FUNCTIONS_HTTP_FN_NAME="http-${SUFFIX}"
 export FUNCTIONS_PUBSUB_FN_NAME="pubsub-${SUFFIX}"
@@ -41,6 +41,17 @@ export FUNCTIONS_GCS_FN_NAME="gcs-${SUFFIX}"
 
 # Set identity token (required for functions without --allow-unauthenticated)
 export FUNCTIONS_IDENTITY_TOKEN=$(gcloud auth print-identity-token)
+
+# Identify function language
+# (Currently only applicable for Pub/Sub functions)
+export LANGUAGE="" # Java = empty string
+if [[ "$file" == *"scala"* ]]; then
+  export LANGUAGE="Scala"
+elif [[ "$file" == *"groovy"* ]]; then
+  export LANGUAGE="Groovy"
+elif [[ "$file" == *"kotlin"* ]]; then
+  export LANGUAGE="Kotlin"
+fi
 
 # Deploy functions
 set -x
@@ -57,7 +68,7 @@ elif [[ "$file" == *"hello-pubsub"* ]]; then
   gcloud functions deploy $FUNCTIONS_PUBSUB_FN_NAME \
     --region $FUNCTIONS_REGION \
     --runtime $FUNCTIONS_JAVA_RUNTIME \
-    --entry-point "functions.HelloPubSub" \
+    --entry-point "functions.${LANGUAGE}HelloPubSub" \
     --trigger-topic $FUNCTIONS_SYSTEM_TEST_TOPIC
 elif [[ "$file" == *"hello-gcs"* ]]; then
   echo "Deploying function HelloGcs to: ${FUNCTIONS_GCS_FN_NAME}"

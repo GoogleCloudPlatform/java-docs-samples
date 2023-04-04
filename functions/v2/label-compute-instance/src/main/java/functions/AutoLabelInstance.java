@@ -16,6 +16,7 @@
 
 package functions;
 
+// [START functions_label_gce_instance]
 import com.google.cloud.compute.v1.GetInstanceRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
@@ -102,7 +103,7 @@ public class AutoLabelInstance implements CloudEventsFunction {
                         .build())
                 .build();
 
-        instancesClient.setLabels(setLabelRequest);
+        instancesClient.setLabelsAsync(setLabelRequest);
         logger.info(
             String.format(
                 "Adding label, \"{'creator': '%s'}\", to instance, \"%s\".",
@@ -115,3 +116,4 @@ public class AutoLabelInstance implements CloudEventsFunction {
     }
   }
 }
+// [END functions_label_gce_instance]

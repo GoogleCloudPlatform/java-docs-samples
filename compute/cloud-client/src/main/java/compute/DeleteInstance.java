@@ -24,11 +24,13 @@ import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class DeleteInstance {
 
   public static void main(String[] args)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     String project = "your-project-id";
     String zone = "zone-name";
@@ -39,7 +41,7 @@ public class DeleteInstance {
   // Delete the instance specified by `instanceName`
   // if it's present in the given project and zone.
   public static void deleteInstance(String project, String zone, String instanceName)
-      throws IOException, InterruptedException, ExecutionException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `instancesClient.close()` method on the client to safely
@@ -57,7 +59,7 @@ public class DeleteInstance {
       OperationFuture<Operation, Operation> operation = instancesClient.deleteAsync(
           deleteInstanceRequest);
       // Wait for the operation to complete.
-      Operation response = operation.get();
+      Operation response = operation.get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Instance deletion failed ! ! " + response);

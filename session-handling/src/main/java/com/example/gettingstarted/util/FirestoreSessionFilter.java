@@ -55,7 +55,7 @@ public class FirestoreSessionFilter implements Filter {
   private static Firestore firestore;
   private static CollectionReference sessions;
 
-  // [START sessions_handling_init]
+  // [START firestore_sessions_handling_init]
   @Override
   public void init(FilterConfig config) throws ServletException {
     // Initialize local copy of datastore session variables.
@@ -77,9 +77,9 @@ public class FirestoreSessionFilter implements Filter {
       throw new ServletException("Exception initializing FirestoreSessionFilter.", e);
     }
   }
-  // [END sessions_handling_init]
+  // [END firestore_sessions_handling_init]
 
-  // [START sessions_handling_filter]
+  // [START firestore_sessions_handling_filter]
   @Override
   public void doFilter(ServletRequest servletReq, ServletResponse servletResp, FilterChain chain)
       throws IOException, ServletException {
@@ -129,7 +129,7 @@ public class FirestoreSessionFilter implements Filter {
     logger.info("Saving data to " + sessionId + " with views: " + session.getAttribute("views"));
     firestore.runTransaction((ob) -> sessions.document(sessionId).set(sessionMap));
   }
-  // [END sessions_handling_filter]
+  // [END firestore_sessions_handling_filter]
 
   private String getCookieValue(HttpServletRequest req, String cookieName) {
     Cookie[] cookies = req.getCookies();
@@ -143,7 +143,7 @@ public class FirestoreSessionFilter implements Filter {
     return "";
   }
 
-  // [START sessions_load_session_variables]
+  // [START firestore_sessions_load_session_variables]
 
   /**
    * Take an HttpServletRequest, and copy all of the current session variables over to it
@@ -171,5 +171,5 @@ public class FirestoreSessionFilter implements Filter {
             })
         .get();
   }
-  // [END sessions_load_session_variables]
+  // [END firestore_sessions_load_session_variables]
 }

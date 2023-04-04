@@ -31,12 +31,12 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>2.0.4</version>
+      <version>2.0.5</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>31.0.1-jre</version>
+      <version>31.1-jre</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>2.0.4</version>
+      <version>2.0.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -83,9 +83,14 @@
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version>
+      </plugin>
+      <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.4.2</version>
+        <version>2.4.4</version>
         <configuration>
           <projectId>GCLOUD_CONFIG</projectId>
           <version>GCLOUD_CONFIG</version>

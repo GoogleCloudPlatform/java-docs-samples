@@ -1,0 +1,28 @@
+<!--Define the projectID, instanceID, and appProfileID by using system properties
+e.g. -Dbigtable.projectID=test-project -Dbigtable.instanceID=test-instance
+-->
+<!--[START bigtable_hbase_site_xml]-->
+<configuration>
+  <property>
+    <name>hbase.client.connection.impl</name>
+    <value>com.google.cloud.bigtable.hbase1_x.BigtableConnection</value>
+  </property>
+  <property>
+    <name>google.bigtable.project.id</name>
+    <value>${bigtable.projectID}</value>
+  </property>
+  <property>
+    <name>google.bigtable.instance.id</name>
+    <value>${bigtable.instanceID}</value>
+  </property>
+  <!--
+    Include the following property if you are using app profiles.
+    If you do not include the following property, the connection uses the
+    default app profile.
+  -->
+  <property>
+    <name>google.bigtable.app.profile.id</name>
+    <value>${bigtable.appProfileID || "default"}</value>
+  </property>
+</configuration>
+  <!--[END bigtable_hbase_site_xml]-->

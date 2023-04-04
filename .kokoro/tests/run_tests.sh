@@ -19,6 +19,7 @@ set -eo pipefail
 # Enables `**` to include files nested inside sub-folders
 shopt -s globstar
 
+file="$(pwd)"
 # `--script-debug` can be added make local testing of this script easier
 if [[ $* == *--script-debug* ]]; then
     SCRIPT_DEBUG="true"
@@ -45,6 +46,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Update `gcloud` and log versioning for debugging
     apt update && apt -y upgrade google-cloud-sdk
     
+    echo "********** GIT INFO ***********"
+    git version
     echo "********** GCLOUD INFO ***********"
     gcloud -v
     echo "********** MAVEN INFO  ***********"
@@ -65,14 +68,18 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     export FILESTORE_IP_ADDRESS=$(gcloud secrets versions access latest --secret fs-app)
     
     SECRET_FILES=("java-docs-samples-service-account.json" \
-    "java-aws-samples-secrets.txt" \
-    "java-dlp-samples-secrets.txt" \
-    "java-bigtable-samples-secrets.txt" \
+    "java-aiplatform-samples-secrets.txt" \
     "java-automl-samples-secrets.txt" \
+    "java-bigtable-samples-secrets.txt" \
+    "java-cloud-sql-samples-secrets.txt" \
+    "java-cts-v4-samples-secrets.txt" \
+    "java-dlp-samples-secrets.txt" \
     "java-functions-samples-secrets.txt" \
     "java-firestore-samples-secrets.txt" \
     "java-cts-v4-samples-secrets.txt" \
-    "java-cloud-sql-samples-secrets.txt")
+    "java-cloud-sql-samples-secrets.txt" \
+    "java-iam-samples-secrets.txt" \
+    "java-scc-samples-secrets.txt")
 
     # create secret dir
     mkdir -p "${KOKORO_GFILE_DIR}/secrets"
@@ -85,7 +92,15 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
         source "${KOKORO_GFILE_DIR}/secrets/$SECRET"
       fi
     done
-  
+
+    export STS_AWS_SECRET=`gcloud secrets versions access latest --project cloud-devrel-kokoro-resources --secret=java-storagetransfer-aws`
+    export AWS_ACCESS_KEY_ID=`S="$STS_AWS_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["AccessKeyId"]);'`
+    export AWS_SECRET_ACCESS_KEY=`S="$STS_AWS_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["SecretAccessKey"]);'`
+    export STS_AZURE_SECRET=`gcloud secrets versions access latest --project cloud-devrel-kokoro-resources --secret=java-storagetransfer-azure`
+    export AZURE_STORAGE_ACCOUNT=`S="$STS_AZURE_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["StorageAccount"]);'`
+    export AZURE_CONNECTION_STRING=`S="$STS_AZURE_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["ConnectionString"]);'`
+    export AZURE_SAS_TOKEN=`S="$STS_AZURE_SECRET" python3 -c 'import json,sys,os;obj=json.loads(os.getenv("S"));print (obj["SAS"]);'`
+
     # Activate service account
     gcloud auth activate-service-account \
         --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
@@ -97,6 +112,35 @@ if [[ ",$JAVA_VERSION," =~ "11" ]]; then
   cd appengine-java11/appengine-simple-jetty-main/
   mvn install --quiet
   cd ../../
+fi
+
+# Install Chrome and chrome driver for recaptcha tests
+if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
+
+  # Based on this content: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
+  # https://github.com/alixaxel/chrome-aws-lambda/issues/164
+  apt install libnss3
+  apt install libnss3-dev libgdk-pixbuf2.0-dev libgtk-3-dev libxss-dev libgconf-2-4
+
+  # Install Chrome.
+  curl https://dl-ssl.google.com/linux/linux_signing_key.pub -o /tmp/google.pub \
+    && cat /tmp/google.pub | apt-key add -; rm /tmp/google.pub \
+    && echo 'deb http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google.list \
+    && mkdir -p /usr/share/desktop-directories \
+    && apt-get -y update && apt-get install -y google-chrome-stable
+
+  # Disable the SUID sandbox so that Chrome can launch without being in a privileged container.
+  dpkg-divert --add --rename --divert /opt/google/chrome/google-chrome.real /opt/google/chrome/google-chrome \
+    && echo "#!/bin/bash\nexec /opt/google/chrome/google-chrome.real --no-sandbox --disable-setuid-sandbox \"\$@\"" > /opt/google/chrome/google-chrome \
+    && chmod 755 /opt/google/chrome/google-chrome
+
+  # Install chrome driver.
+  mkdir -p /opt/selenium \
+    && curl http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip -o /opt/selenium/chromedriver_linux64.zip \
+    && cd /opt/selenium; unzip /opt/selenium/chromedriver_linux64.zip; rm -rf chromedriver_linux64.zip; ln -fs /opt/selenium/chromedriver /usr/local/bin/chromedriver;
+
+  export CHROME_DRIVER_PATH="$PWD/chromedriver"
+  echo "Installing chrome and driver. Path to installation: $CHROME_DRIVER_PATH"
 fi
 
 btlr_args=(
@@ -114,6 +158,8 @@ fi
 
 echo -e "\n******************** TESTING PROJECTS ********************"
 test_prog="$PWD/.kokoro/tests/run_test_java.sh"
+
+git config --global --add safe.directory $PWD
 
 # Use btlr to run all the tests in each folder 
 echo "btlr" "${btlr_args[@]}" -- "${test_prog}"

@@ -20,3 +20,8 @@ env_variables:
   CLIENT_ID: '<YOUR_CLIENT_ID>'
   CLIENT_SECRET: '<YOUR_CLIENT_SECRET>'
 # [END gae_java11_oauth2_yaml]
+handlers:
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto

@@ -16,15 +16,30 @@
 
 package compute;
 
+import com.google.cloud.compute.v1.AggregatedListInstancesRequest;
+import com.google.cloud.compute.v1.Disk;
+import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Instance;
+import com.google.cloud.compute.v1.Instance.Status;
 import com.google.cloud.compute.v1.InstanceTemplate;
+import com.google.cloud.compute.v1.InstanceTemplatesClient;
+import com.google.cloud.compute.v1.InstanceTemplatesClient.ListPagedResponse;
+import com.google.cloud.compute.v1.InstancesClient;
+import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
+import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
+import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.IntStream;
 
 public class Util {
   // Cleans existing test resources if any.
@@ -36,14 +51,15 @@ public class Util {
   // Delete templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
   public static void cleanUpExistingInstanceTemplates(String prefixToDelete, String projectId)
-      throws IOException, ExecutionException, InterruptedException {
-    for (InstanceTemplate template : ListInstanceTemplates.listInstanceTemplates(projectId)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    for (InstanceTemplate template : listFilteredInstanceTemplates(projectId, prefixToDelete)
         .iterateAll()) {
       if (!template.hasCreationTimestamp()) {
         continue;
       }
       if (template.getName().contains(prefixToDelete)
-          && isCreatedBeforeThresholdTime(template.getCreationTimestamp())) {
+          && isCreatedBeforeThresholdTime(template.getCreationTimestamp())
+          && template.isInitialized()) {
         DeleteInstanceTemplate.deleteInstanceTemplate(projectId, template.getName());
       }
     }
@@ -54,15 +70,16 @@ public class Util {
   // has creation timestamp >24 hours.
   public static void cleanUpExistingInstances(String prefixToDelete, String projectId,
       String instanceZone)
-      throws IOException, ExecutionException, InterruptedException {
-    for (Entry<String, InstancesScopedList> instanceGroup : ListAllInstances.listAllInstances(
-        projectId).iterateAll()) {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    for (Entry<String, InstancesScopedList> instanceGroup : listFilteredInstances(
+        projectId, prefixToDelete).iterateAll()) {
       for (Instance instance : instanceGroup.getValue().getInstancesList()) {
         if (!instance.hasCreationTimestamp()) {
           continue;
         }
         if (instance.getName().contains(prefixToDelete)
-            && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
+            && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())
+            && instance.getStatus().equalsIgnoreCase(Status.RUNNING.toString())) {
           DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
         }
       }
@@ -72,6 +89,74 @@ public class Util {
   public static boolean isCreatedBeforeThresholdTime(String timestamp) {
     return OffsetDateTime.parse(timestamp).toInstant()
         .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.HOURS));
+  }
+
+  public static AggregatedListPagedResponse listFilteredInstances(String project,
+      String instanceNamePrefix) throws IOException {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+
+      AggregatedListInstancesRequest aggregatedListInstancesRequest = AggregatedListInstancesRequest
+          .newBuilder()
+          .setProject(project)
+          .setFilter(String.format("name:%s", instanceNamePrefix))
+          .build();
+
+      return instancesClient
+          .aggregatedList(aggregatedListInstancesRequest);
+    }
+  }
+
+  public static ListPagedResponse listFilteredInstanceTemplates(String projectId,
+      String instanceTemplatePrefix) throws IOException {
+    try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
+      ListInstanceTemplatesRequest listInstanceTemplatesRequest =
+          ListInstanceTemplatesRequest.newBuilder()
+              .setProject(projectId)
+              .setFilter(String.format("name:%s", instanceTemplatePrefix))
+              .build();
+
+      return instanceTemplatesClient.list(listInstanceTemplatesRequest);
+    }
+  }
+
+  public static String getBase64EncodedKey() {
+    String sampleSpace = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    StringBuilder stringBuilder = new StringBuilder();
+    SecureRandom random = new SecureRandom();
+    IntStream.range(0, 32)
+        .forEach(
+            x -> stringBuilder.append(sampleSpace.charAt(random.nextInt(sampleSpace.length()))));
+
+    return Base64.getEncoder()
+        .encodeToString(stringBuilder.toString().getBytes(StandardCharsets.US_ASCII));
+  }
+
+  public static String getInstanceStatus(String project, String zone, String instanceName)
+      throws IOException {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+      Instance response = instancesClient.get(project, zone, instanceName);
+      return response.getStatus();
+    }
+  }
+
+  public static Instance getInstance(String projectId, String zone, String machineName)
+      throws IOException {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+      return instancesClient.get(projectId, zone, machineName);
+    }
+  }
+
+  public static Disk getDisk(String projectId, String zone, String diskName) throws IOException {
+    try (DisksClient disksClient = DisksClient.create()) {
+      return disksClient.get(projectId, zone, diskName);
+    }
+  }
+
+  public static Disk getRegionalDisk(String projectId, String region, String diskName)
+      throws IOException {
+    try (RegionDisksClient regionDisksClient = RegionDisksClient.create()) {
+      return regionDisksClient.get(projectId, region, diskName);
+    }
   }
 
 }

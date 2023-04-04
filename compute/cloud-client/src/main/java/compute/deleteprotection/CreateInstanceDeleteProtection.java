@@ -27,11 +27,13 @@ import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreateInstanceDeleteProtection {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // project: project ID or project number of the Cloud project you want to use.
     // zone: name of the zone you want to use. For example: “us-west3-b”
@@ -48,7 +50,7 @@ public class CreateInstanceDeleteProtection {
   // Send an instance creation request to the Compute Engine API and wait for it to complete.
   public static void createInstanceDeleteProtection(String projectId, String zone,
       String instanceName, boolean deleteProtection)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     String machineType = String.format("zones/%s/machineTypes/e2-small", zone);
     String sourceImage = String
@@ -98,7 +100,9 @@ public class CreateInstanceDeleteProtection {
           .build();
 
       // Wait for the create operation to complete.
-      Operation response = instancesClient.insertAsync(insertInstanceRequest).get();
+      Operation response = instancesClient.insertAsync(insertInstanceRequest)
+          .get(3, TimeUnit.MINUTES);
+      ;
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);

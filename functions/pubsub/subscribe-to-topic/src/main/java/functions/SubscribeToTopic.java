@@ -20,16 +20,16 @@ package functions;
 
 import com.google.cloud.functions.BackgroundFunction;
 import com.google.cloud.functions.Context;
-import com.google.events.cloud.pubsub.v1.Message;
+import functions.eventpojos.PubsubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 
-public class SubscribeToTopic implements BackgroundFunction<Message> {
+public class SubscribeToTopic implements BackgroundFunction<PubsubMessage> {
   private static final Logger logger = Logger.getLogger(SubscribeToTopic.class.getName());
 
   @Override
-  public void accept(Message message, Context context) {
+  public void accept(PubsubMessage message, Context context) {
     if (message.getData() == null) {
       logger.info("No message provided");
       return;

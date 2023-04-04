@@ -19,13 +19,13 @@ package functions.eventpojos;
 import java.util.Map;
 
 public class PubSubBody {
-  private PubSubMessage message;
+  private PubsubMessage message;
 
-  public PubSubMessage getMessage() {
+  public PubsubMessage getMessage() {
     return message;
   }
 
-  public class PubSubMessage {
+  public class PubsubMessage {
     private String data;
     private Map<String, String> attributes;
     private String messageId;

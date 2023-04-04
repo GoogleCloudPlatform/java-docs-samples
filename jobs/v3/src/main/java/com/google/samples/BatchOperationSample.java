@@ -52,7 +52,7 @@ public final class BatchOperationSample {
   private static CloudTalentSolution talentSolutionClient =
       JobServiceQuickstart.getTalentSolutionClient();
 
-  // [START batch_job_create]
+  // [START job_discovery_batch_create_job]
   public static List<Job> batchCreateJobs(String companyName) throws IOException {
     List<Job> createdJobs = new ArrayList<>();
 
@@ -111,9 +111,9 @@ public final class BatchOperationSample {
     batchCreate.execute();
     return createdJobs;
   }
-  // [END batch_job_create]
+  // [END job_discovery_batch_create_job]
 
-  // [START batch_job_update]
+  // [START job_discovery_batch_update_job]
   public static List<Job> batchJobUpdate(List<Job> jobsToBeUpdate) throws IOException {
     List<Job> updatedJobs = new ArrayList<>();
 
@@ -159,9 +159,9 @@ public final class BatchOperationSample {
     return updatedJobs;
   }
 
-  // [END batch_job_update]
+  // [END job_discovery_batch_update_job]
 
-  // [START batch_job_delete]
+  // [START job_discovery_batch_delete_job]
   public static void batchDeleteJobs(List<Job> jobsToBeDeleted) throws IOException {
     BatchRequest batchDelete = talentSolutionClient.batch();
     for (Job job : jobsToBeDeleted) {
@@ -185,7 +185,7 @@ public final class BatchOperationSample {
       batchDelete.execute();
     }
   }
-  // [END batch_job_delete]
+  // [END job_discovery_batch_delete_job]
 
   public static void main(String... args) throws Exception {
     Company company = BasicCompanySample.createCompany(BasicCompanySample.generateCompany());

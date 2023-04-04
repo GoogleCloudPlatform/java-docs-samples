@@ -55,12 +55,23 @@ limitations under the License.
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M7</version>
+        <configuration>
+          <!-- Needed only for Java 17 -->
+          <forkCount>0</forkCount>
+          <argLine>-Xmx1024m</argLine>
+          <argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
+        </configuration>
+      </plugin>
       <!-- [START cloudrun_system_package_jib] -->
       <!-- [START run_system_package_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.2.1</version>
+        <version>3.3.1</version>
         <configuration>
           <from>
             <image>gcr.io/PROJECT_ID/graphviz-base</image>

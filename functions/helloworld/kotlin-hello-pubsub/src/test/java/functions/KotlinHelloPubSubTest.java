@@ -19,8 +19,8 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
-import com.google.events.cloud.pubsub.v1.Message;
 import functions.eventpojos.MockContext;
+import functions.eventpojos.PubsubMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
@@ -33,7 +33,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class KotlinHelloPubSubTest {
   private static final Logger logger = Logger.getLogger(
-      HelloPubSub.class.getName());
+      KotlinHelloPubSub.class.getName());
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
   @BeforeClass
@@ -48,11 +48,11 @@ public class KotlinHelloPubSubTest {
 
   @Test
   public void functionsHelloworldPubSubKotlin_shouldPrintName() throws Exception {
-    Message pubSubMessage = new Message();
+    PubsubMessage pubSubMessage = new PubsubMessage();
     pubSubMessage.setData(Base64.getEncoder().encodeToString(
         "John".getBytes(StandardCharsets.UTF_8)));
 
-    new HelloPubSub().accept(pubSubMessage, new MockContext());
+    new KotlinHelloPubSub().accept(pubSubMessage, new MockContext());
 
     String message = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello John!").isEqualTo(message);
@@ -60,7 +60,7 @@ public class KotlinHelloPubSubTest {
 
   @Test
   public void functionsHelloworldPubSubKotlin_shouldPrintHelloWorld() throws Exception {
-    new HelloPubSub().accept(new Message(), new MockContext());
+    new KotlinHelloPubSub().accept(new PubsubMessage(), new MockContext());
 
     String message = LOG_HANDLER.getStoredLogRecords().get(0).getMessage();
     assertThat("Hello world!").isEqualTo(message);

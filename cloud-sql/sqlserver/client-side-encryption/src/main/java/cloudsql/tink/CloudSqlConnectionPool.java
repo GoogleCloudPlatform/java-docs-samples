@@ -35,6 +35,10 @@ public class CloudSqlConnectionPool {
     config.setPassword(dbPass); // e.g. "my-password"
     config.addDataSourceProperty("databaseName", dbName);
 
+    // The Cloud SQL Java Connector provides SSL encryption so 
+    // it should be disabled at the driver level
+    config.addDataSourceProperty("encrypt", "false");
+
     config.addDataSourceProperty("socketFactoryClass",
         "com.google.cloud.sql.sqlserver.SocketFactory");
     config.addDataSourceProperty("socketFactoryConstructorArg", instanceConnectionName);

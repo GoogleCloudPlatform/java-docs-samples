@@ -49,7 +49,7 @@ public class AccessSecretVersion {
 
       // Verify checksum. The used library is available in Java 9+.
       // If using Java 8, you may use the following:
-      // https://cloud.google.com/appengine/docs/standard/java/javadoc/com/google/appengine/api/files/Crc32c
+      // https://github.com/google/guava/blob/e62d6a0456420d295089a9c319b7593a3eae4a83/guava/src/com/google/common/hash/Hashing.java#L395
       byte[] data = response.getPayload().getData().toByteArray();
       Checksum checksum = new CRC32C();
       checksum.update(data, 0, data.length);

@@ -42,7 +42,7 @@ limitations under the License.
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>25.0.0</version>
+        <version>26.1.4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -58,7 +58,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>31.0.1-jre</version>
+      <version>31.1-jre</version>
     </dependency>
 
     <!-- Test Dependencies -->
@@ -93,7 +93,7 @@ limitations under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M6</version>
+        <version>3.0.0-M7</version>
         <executions>
           <execution>
             <goals>

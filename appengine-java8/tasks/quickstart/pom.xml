@@ -52,7 +52,7 @@ Copyright 2018 Google LLC
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-tasks</artifactId>
-      <version>2.1.11</version>
+      <version>2.13.0</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
@@ -81,9 +81,14 @@ Copyright 2018 Google LLC
     </outputDirectory>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version>
+      </plugin>
+      <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.4.2</version>
+        <version>2.4.4</version>
         <configuration>
           <projectId>GCLOUD_CONFIG</projectId>
           <version>GCLOUD_CONFIG</version>
@@ -101,7 +106,7 @@ Copyright 2018 Google LLC
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <configuration>
           <mainClass>com.example.task.CreateTask</mainClass>
           <cleanupDaemonThreads>false</cleanupDaemonThreads>

@@ -44,7 +44,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      <version>3.0.9</version>
+      <version>3.9.2</version>
     </dependency>
 
     <!-- Required for Function primitives -->
@@ -71,14 +71,19 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>4.5.1</version>
+      <version>4.11.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
-      <version>31.0-jre</version>
+      <version>31.1-jre</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.10.1</version>
     </dependency>
   </dependencies>
   
@@ -96,7 +101,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.10.0</version>
+        <version>0.10.1</version>
         <configuration>
           <functionTarget>functions.FirebaseFirestoreReactive</functionTarget>
         </configuration>
@@ -106,7 +111,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version 3.0.0-M4 does not load JUnit5 correctly -->
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
-        <version>3.0.0-M5</version>  
+        <version>3.0.0-M7</version>  
         <!-- [END functions_java_example_pom] -->
         <configuration>
           <includes>
@@ -121,6 +126,7 @@
       <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
         <executions>
           <execution>
             <id>compile</id>

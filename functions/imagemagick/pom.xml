@@ -41,7 +41,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>25.0.0</version>
+        <version>26.1.4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -56,13 +56,6 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-vision</artifactId>
-    </dependency>
-
-    <!-- Required for Google Cloud-specific POJOs -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloudevent-types</artifactId>
-      <version>0.3.0</version>
     </dependency>
 
     <!-- Required for Function primitives -->
@@ -87,7 +80,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
-      <version>31.0-jre</version>
+      <version>31.1-jre</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -106,7 +99,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.10.0</version>
+        <version>0.10.1</version>
         <configuration>
           <functionTarget>functions.ImageMagick</functionTarget>
         </configuration>
@@ -114,7 +107,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M5</version>
+        <version>3.0.0-M7</version>
         <configuration>
           <skipTests>${skipTests}</skipTests>
           <reportNameSuffix>sponge_log</reportNameSuffix>

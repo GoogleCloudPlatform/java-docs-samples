@@ -16,7 +16,7 @@
 -->
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
   <threadsafe>true</threadsafe>
-  <runtime>java8</runtime>
+  <runtime>java17</runtime>
   <env-variables>
     <env-var name="INSTANCE_CONNECTION_NAME" value="my-project:region:instance" />
     <env-var name="DB_USER" value="my-db-user" />

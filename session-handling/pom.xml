@@ -47,7 +47,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      <version>3.0.9</version>
+      <version>3.9.2</version>
     </dependency>
 
     <dependency>
@@ -59,14 +59,14 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>31.0.1-jre</version>
+      <version>31.1-jre</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-contrib-http-util</artifactId>
-      <version>0.31.0</version>
+      <version>0.31.1</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -97,6 +97,11 @@ Copyright 2019 Google LLC
     </outputDirectory>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version>
+      </plugin>
+      <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty.version}</version>
@@ -104,7 +109,7 @@ Copyright 2019 Google LLC
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.2.1</version>
+        <version>3.3.1</version>
         <configuration>
           <to>
             <image>gcr.io/${gcloud.appId}/session-handling</image>

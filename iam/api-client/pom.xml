@@ -45,18 +45,18 @@
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>1.4.0</version>
+      <version>1.15.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.41.7</version>
+      <version>1.42.3</version>
     </dependency>
 <!-- [START iam_java_dependency] -->
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-iam</artifactId>
-      <version>v1-rev20220421-1.32.1</version>
+      <version>v1-rev20221013-2.0.0</version>
     </dependency>
 <!-- [END iam_java_dependency] -->
 <!-- [END iam_java_quickstart_dependency] -->
@@ -64,14 +64,14 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-iamcredentials</artifactId>
-      <version>v1-rev20211203-1.32.1</version>
+      <version>v1-rev20211203-2.0.0</version>
     </dependency>
 <!-- [END iamcredentials_java_dependency]-->
 <!-- [START troubleshooter_java_dependency]-->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-policy-troubleshooter</artifactId>
-      <version>1.0.4</version>
+      <version>1.12.0</version>
     </dependency>
 <!-- [END troubleshooter_java_dependency]-->
     <dependency>
@@ -106,7 +106,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <configuration>
           <mainClass>iam.snippets.Quickstart</mainClass>
         </configuration>

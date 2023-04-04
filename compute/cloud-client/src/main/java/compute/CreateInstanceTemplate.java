@@ -30,11 +30,13 @@ import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreateInstanceTemplate {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // projectId: project ID or project number of the Cloud project you use.
     // templateName: name of the new template to create.
@@ -48,7 +50,7 @@ public class CreateInstanceTemplate {
     instance configuration.
    */
   public static void createInstanceTemplate(String projectId, String templateName)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
 
       String machineType = "e2-standard-4";
@@ -59,6 +61,7 @@ public class CreateInstanceTemplate {
       AttachedDisk attachedDisk = AttachedDisk.newBuilder()
           .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
               .setSourceImage(sourceImage)
+              .setDiskType("pd-balanced")
               .setDiskSizeGb(250).build())
           .setAutoDelete(true)
           .setBoot(true).build();
@@ -86,7 +89,8 @@ public class CreateInstanceTemplate {
               .setProperties(instanceProperties).build()).build();
 
       // Create the Instance Template.
-      Operation response = instanceTemplatesClient.insertAsync(insertInstanceTemplateRequest).get();
+      Operation response = instanceTemplatesClient.insertAsync(insertInstanceTemplateRequest)
+          .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Instance Template creation failed ! ! " + response);
@@ -98,13 +102,14 @@ public class CreateInstanceTemplate {
   }
 
   public static void createInstanceTemplateWithDiskType(String projectId, String templateName)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create();
         GlobalOperationsClient globalOperationsClient = GlobalOperationsClient.create()) {
 
       AttachedDisk disk = AttachedDisk.newBuilder()
           .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
               .setDiskSizeGb(10)
+              .setDiskType("pd-balanced")
               .setSourceImage("projects/debian-cloud/global/images/family/debian-10").build())
           .setAutoDelete(true)
           .setBoot(true)
@@ -123,7 +128,8 @@ public class CreateInstanceTemplate {
           .setProject(projectId)
           .setInstanceTemplateResource(instanceTemplate).build();
 
-      Operation response = instanceTemplatesClient.insertAsync(insertInstanceTemplateRequest).get();
+      Operation response = instanceTemplatesClient.insertAsync(insertInstanceTemplateRequest)
+          .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Instance Template creation failed ! ! " + response);

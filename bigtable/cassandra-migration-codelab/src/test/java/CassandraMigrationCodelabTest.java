@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminClient;
@@ -23,7 +23,6 @@ import com.google.cloud.bigtable.admin.v2.models.CreateTableRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 public class CassandraMigrationCodelabTest {
@@ -66,7 +65,7 @@ public class CassandraMigrationCodelabTest {
     cassandraMigrationCodelab.run();
 
     String output = bout.toString();
-    assertThat(output, CoreMatchers.not(CoreMatchers.containsString("Error during")));
+    assertThat(output).doesNotContainMatch("Error during");
 
     adminClient.deleteTable(TABLE_ID);
   }

@@ -25,11 +25,13 @@ import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.StopInstanceRequest;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class StopInstance {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     /* project: project ID or project number of the Cloud project your instance belongs to.
        zone: name of the zone your instance belongs to.
@@ -44,7 +46,7 @@ public class StopInstance {
 
   // Stops a started Google Compute Engine instance.
   public static void stopInstance(String project, String zone, String instanceName)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     /* Initialize client that will be used to send requests. This client only needs to be created
        once, and can be reused for multiple requests. After completing all of your requests, call
        the `instancesClient.close()` method on the client to safely
@@ -59,7 +61,7 @@ public class StopInstance {
 
       OperationFuture<Operation, Operation> operation = instancesClient.stopAsync(
           stopInstanceRequest);
-      Operation response = operation.get();
+      Operation response = operation.get(3, TimeUnit.MINUTES);
 
       if (response.getStatus() == Status.DONE) {
         System.out.println("Instance stopped successfully ! ");

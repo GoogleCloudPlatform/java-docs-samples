@@ -16,6 +16,8 @@
 
 package com.example.dataflow;
 
+import com.google.cloud.Tuple;
+import com.google.cloud.spanner.Dialect;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TimestampBound;
 import com.google.common.base.Joiner;
@@ -26,6 +28,8 @@ import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerConfig;
 import org.apache.beam.sdk.io.gcp.spanner.SpannerIO;
 import org.apache.beam.sdk.io.gcp.spanner.Transaction;
+import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.options.Default.Enum;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
@@ -52,6 +56,13 @@ public class TransactionalRead {
     String getDatabaseId();
 
     void setDatabaseId(String value);
+
+    @Description("Dialect of the database that is used")
+    @Default
+    @Enum("GOOGLE_STANDARD_SQL")
+    Dialect getDialect();
+
+    void setDialect(Dialect dialect);
 
     @Description("Singers output filename in the format: singer_id\tfirst_name\tlast_name")
     String getSingersFilename();
@@ -101,27 +112,20 @@ public class TransactionalRead {
 
   public static void main(String[] args) {
     Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
-    Pipeline p = Pipeline.create(options);
+    Pipeline pipeline = Pipeline.create(options);
 
     String instanceId = options.getInstanceId();
     String databaseId = options.getDatabaseId();
+    Dialect dialect = options.getDialect();
 
-    // [START spanner_dataflow_txread]
-    SpannerConfig spannerConfig = SpannerConfig.create()
-        .withInstanceId(instanceId)
-        .withDatabaseId(databaseId);
-    PCollectionView<Transaction> tx = p.apply(
-        SpannerIO.createTransaction()
-            .withSpannerConfig(spannerConfig)
-            .withTimestampBound(TimestampBound.strong()));
-    PCollection<Struct> singers = p.apply(SpannerIO.read()
-        .withSpannerConfig(spannerConfig)
-        .withQuery("SELECT SingerID, FirstName, LastName FROM Singers")
-        .withTransaction(tx));
-    PCollection<Struct> albums = p.apply(SpannerIO.read().withSpannerConfig(spannerConfig)
-        .withQuery("SELECT SingerId, AlbumId, AlbumTitle FROM Albums")
-        .withTransaction(tx));
-    // [END spanner_dataflow_txread]
+    Tuple<PCollection<Struct>, PCollection<Struct>> records;
+    if (dialect == Dialect.POSTGRESQL) {
+      records = postgreSqlRead(instanceId, databaseId, pipeline);
+    } else {
+      records = googleSqlRead(instanceId, databaseId, pipeline);
+    }
+    PCollection<Struct> singers = records.x();
+    PCollection<Struct> albums = records.y();
 
     singers.apply(MapElements.via(new SimpleFunction<Struct, String>() {
 
@@ -139,8 +143,69 @@ public class TransactionalRead {
       }
     })).apply(TextIO.write().to(options.getAlbumsFilename()).withoutSharding());
 
-    p.run().waitUntilFinish();
+    pipeline.run().waitUntilFinish();
 
   }
 
+  /**
+   * GoogleSQL databases retain the casing of table and column names. It is therefore common to use
+   * CamelCase for identifiers.
+   */
+  static Tuple<PCollection<Struct>, PCollection<Struct>> googleSqlRead(
+      String instanceId, String databaseId, Pipeline pipeline) {
+    // [START spanner_dataflow_txread]
+    SpannerConfig spannerConfig =
+        SpannerConfig.create().withInstanceId(instanceId).withDatabaseId(databaseId);
+    PCollectionView<Transaction> tx =
+        pipeline.apply(
+            SpannerIO.createTransaction()
+                .withSpannerConfig(spannerConfig)
+                .withTimestampBound(TimestampBound.strong()));
+    PCollection<Struct> singers =
+        pipeline.apply(
+            SpannerIO.read()
+                .withSpannerConfig(spannerConfig)
+                .withQuery("SELECT SingerID, FirstName, LastName FROM Singers")
+                .withTransaction(tx));
+    PCollection<Struct> albums =
+        pipeline.apply(
+            SpannerIO.read()
+                .withSpannerConfig(spannerConfig)
+                .withQuery("SELECT SingerId, AlbumId, AlbumTitle FROM Albums")
+                .withTransaction(tx));
+    // [END spanner_dataflow_txread]
+
+    return Tuple.of(singers, albums);
+  }
+
+  /**
+   * PostgreSQL databases automatically fold identifiers to lower case. It is therefore common to
+   * use all lower case identifiers with underscores to separate multiple words in an identifier.
+   */
+  static Tuple<PCollection<Struct>, PCollection<Struct>> postgreSqlRead(
+      String instanceId, String databaseId, Pipeline pipeline) {
+    // [START spanner_pg_dataflow_txread]
+    SpannerConfig spannerConfig =
+        SpannerConfig.create().withInstanceId(instanceId).withDatabaseId(databaseId);
+    PCollectionView<Transaction> tx =
+        pipeline.apply(
+            SpannerIO.createTransaction()
+                .withSpannerConfig(spannerConfig)
+                .withTimestampBound(TimestampBound.strong()));
+    PCollection<Struct> singers =
+        pipeline.apply(
+            SpannerIO.read()
+                .withSpannerConfig(spannerConfig)
+                .withQuery("SELECT singer_id, first_name, last_name FROM singers")
+                .withTransaction(tx));
+    PCollection<Struct> albums =
+        pipeline.apply(
+            SpannerIO.read()
+                .withSpannerConfig(spannerConfig)
+                .withQuery("SELECT singer_id, album_id, album_title FROM albums")
+                .withTransaction(tx));
+    // [END spanner_pg_dataflow_txread]
+
+    return Tuple.of(singers, albums);
+  }
 }

@@ -45,13 +45,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Required for Google Cloud-specific POJOs -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloudevent-types</artifactId>
-      <version>0.3.0</version>
-    </dependency>
-
     <!-- The following dependencies are only required for testing -->
     <dependency>
       <groupId>com.google.truth</groupId>
@@ -62,7 +55,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
-      <version>31.0-jre</version>
+      <version>31.1-jre</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -81,7 +74,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.10.0</version>
+        <version>0.10.1</version>
         <configuration>
           <functionTarget>functions.SubscribeToTopic</functionTarget>
         </configuration>
@@ -91,7 +84,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version 3.0.0-M4 does not load JUnit5 correctly -->
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
-        <version>3.0.0-M5</version>
+        <version>3.0.0-M7</version>
         <configuration>
           <includes>
             <include>**/*Test.java</include>

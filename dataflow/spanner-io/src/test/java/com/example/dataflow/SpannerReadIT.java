@@ -18,20 +18,22 @@ package com.example.dataflow;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.spanner.Database;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
+import com.google.cloud.spanner.Dialect;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.cloud.spanner.TransactionRunner;
-import com.google.spanner.admin.database.v1.CreateDatabaseMetadata;
+import com.google.common.base.CaseFormat;
+import com.google.common.collect.ImmutableList;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -41,9 +43,25 @@ import javax.annotation.Nullable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
+@RunWith(Parameterized.class)
 public class SpannerReadIT {
+
+  @Parameter public Dialect dialect;
+
+  @Parameters(name = "dialect = {0}")
+  public static List<Object[]> data() {
+    List<Object[]> parameters = new ArrayList<>();
+    for (Dialect dialect : Dialect.values()) {
+      parameters.add(new Object[] {dialect});
+    }
+    return parameters;
+  }
 
   private final Random random = new Random();
   private String instanceId;
@@ -68,68 +86,125 @@ public class SpannerReadIT {
       // Does not exist, ignore.
     }
 
-    OperationFuture<Database, CreateDatabaseMetadata> op =
-        adminClient.createDatabase(
-            instanceId,
-            databaseId,
-            Arrays.asList(
-                "CREATE TABLE Singers "
-                    + "(singerId INT64 NOT NULL, firstName STRING(MAX) NOT NULL, "
-                    + "lastName STRING(MAX) NOT NULL,) PRIMARY KEY (singerId)",
-                "CREATE TABLE Albums (singerId INT64 NOT NULL, albumId INT64 NOT NULL, "
-                    + "albumTitle STRING(MAX) NOT NULL,) PRIMARY KEY (singerId, albumId)"));
-
-    op.get();
+    if (dialect == Dialect.POSTGRESQL) {
+      Database database =
+          adminClient
+              .newDatabaseBuilder(
+                  DatabaseId.of(spannerOptions.getProjectId(), instanceId, databaseId))
+              .setDialect(Dialect.POSTGRESQL)
+              .build();
+      adminClient.createDatabase(database, ImmutableList.of()).get();
+      adminClient
+          .updateDatabaseDdl(
+              instanceId,
+              databaseId,
+              Arrays.asList(
+                  "CREATE TABLE Singers "
+                      + "(singer_id bigint NOT NULL primary key, first_name varchar NOT NULL, "
+                      + "last_name varchar NOT NULL)",
+                  "CREATE TABLE Albums (singer_id bigint NOT NULL, album_id bigint NOT NULL, "
+                      + "album_title varchar NOT NULL, PRIMARY KEY (singer_id, album_id))",
+                  "CREATE TABLE Songs (singer_id bigint NOT NULL, album_id bigint NOT NULL, "
+                      + "track_id bigint NOT NULL, song_name varchar, Duration bigint, "
+                      + "song_genre varchar, PRIMARY KEY(singer_id, album_id, track_id))",
+                  "CREATE INDEX SongsBySongName ON Songs(song_name)"),
+              null)
+          .get();
+    } else {
+      adminClient
+          .createDatabase(
+              instanceId,
+              databaseId,
+              Arrays.asList(
+                  "CREATE TABLE Singers "
+                      + "(SingerId INT64 NOT NULL, FirstName STRING(MAX) NOT NULL, "
+                      + "LastName STRING(MAX) NOT NULL,) PRIMARY KEY (SingerId)",
+                  "CREATE TABLE Albums (SingerId INT64 NOT NULL, AlbumId INT64 NOT NULL, "
+                      + "AlbumTitle STRING(MAX) NOT NULL,) PRIMARY KEY (SingerId, AlbumId)",
+                  "CREATE TABLE Songs (SingerId  INT64 NOT NULL, AlbumId INT64 NOT NULL, "
+                      + "TrackId INT64 NOT NULL, SongName  STRING(MAX), Duration  INT64, "
+                      + "SongGenre STRING(25)) PRIMARY KEY(SingerId, AlbumId, TrackId)",
+                  "CREATE INDEX SongsBySongName ON Songs(SongName)"))
+          .get();
+    }
 
     List<Mutation> mutations =
         Arrays.asList(
-            Mutation.newInsertBuilder("singers")
-                .set("singerId")
+            Mutation.newInsertBuilder("Singers")
+                .set(formatColumnName("SingerId", dialect))
                 .to(1L)
-                .set("firstName")
+                .set(formatColumnName("FirstName", dialect))
                 .to("John")
-                .set("lastName")
+                .set(formatColumnName("LastName", dialect))
                 .to("Lennon")
                 .build(),
-            Mutation.newInsertBuilder("singers")
-                .set("singerId")
+            Mutation.newInsertBuilder("Singers")
+                .set(formatColumnName("SingerId", dialect))
                 .to(2L)
-                .set("firstName")
+                .set(formatColumnName("FirstName", dialect))
                 .to("Paul")
-                .set("lastName")
+                .set(formatColumnName("LastName", dialect))
                 .to("Mccartney")
                 .build(),
-            Mutation.newInsertBuilder("singers")
-                .set("singerId")
+            Mutation.newInsertBuilder("Singers")
+                .set(formatColumnName("SingerId", dialect))
                 .to(3L)
-                .set("firstName")
+                .set(formatColumnName("FirstName", dialect))
                 .to("George")
-                .set("lastName")
+                .set(formatColumnName("LastName", dialect))
                 .to("Harrison")
                 .build(),
-            Mutation.newInsertBuilder("singers")
-                .set("singerId")
+            Mutation.newInsertBuilder("Singers")
+                .set(formatColumnName("SingerId", dialect))
                 .to(4L)
-                .set("firstName")
+                .set(formatColumnName("FirstName", dialect))
                 .to("Ringo")
-                .set("lastName")
+                .set(formatColumnName("LastName", dialect))
                 .to("Starr")
                 .build(),
-            Mutation.newInsertBuilder("albums")
-                .set("singerId")
+            Mutation.newInsertBuilder("Albums")
+                .set(formatColumnName("SingerId", dialect))
                 .to(1L)
-                .set("albumId")
+                .set(formatColumnName("AlbumId", dialect))
                 .to(1L)
-                .set("albumTitle")
+                .set(formatColumnName("AlbumTitle", dialect))
                 .to("Imagine")
                 .build(),
-            Mutation.newInsertBuilder("albums")
-                .set("singerId")
-                .to(2L)
-                .set("albumId")
+            Mutation.newInsertBuilder("Songs")
+                .set(formatColumnName("SingerId", dialect))
                 .to(1L)
-                .set("albumTitle")
+                .set(formatColumnName("AlbumId", dialect))
+                .to(1L)
+                .set(formatColumnName("TrackId", dialect))
+                .to(1L)
+                .set(formatColumnName("SongName", dialect))
+                .to("Imagine")
+                .set(formatColumnName("Duration", dialect))
+                .to(181L)
+                .set(formatColumnName("SongGenre", dialect))
+                .to("Rock/Pop")
+                .build(),
+            Mutation.newInsertBuilder("Albums")
+                .set(formatColumnName("SingerId", dialect))
+                .to(2L)
+                .set(formatColumnName("AlbumId", dialect))
+                .to(1L)
+                .set(formatColumnName("AlbumTitle", dialect))
                 .to("Pipes of Peace")
+                .build(),
+            Mutation.newInsertBuilder("Songs")
+                .set(formatColumnName("SingerId", dialect))
+                .to(2L)
+                .set(formatColumnName("AlbumId", dialect))
+                .to(1L)
+                .set(formatColumnName("TrackId", dialect))
+                .to(1L)
+                .set(formatColumnName("SongName", dialect))
+                .to("Pipes of Peace")
+                .set(formatColumnName("Duration", dialect))
+                .to(236L)
+                .set(formatColumnName("SongGenre", dialect))
+                .to("Rock/Pop")
                 .build());
 
     DatabaseClient dbClient = getDbClient();
@@ -144,6 +219,16 @@ public class SpannerReadIT {
             return null;
           }
         });
+  }
+
+  /**
+   * Format the column name to use the idiomatic form for the given dialect. That is; Camel-case for
+   * GoogleSQL and lower_underscore for PostgreSQL.
+   */
+  static String formatColumnName(String column, Dialect dialect) {
+    return dialect == Dialect.POSTGRESQL
+        ? CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, column)
+        : column;
   }
 
   @After
@@ -166,12 +251,13 @@ public class SpannerReadIT {
           "--instanceId=" + instanceId,
           "--databaseId=" + databaseId,
           "--output=" + outPath,
-          "--runner=DirectRunner"
+          "--runner=DirectRunner",
+          "--dialect=" + dialect
         });
 
     String content = Files.readAllLines(outPath).stream().collect(Collectors.joining("\n"));
 
-    assertEquals("132", content);
+    assertEquals("233", content);
   }
 
   @Test
@@ -199,7 +285,8 @@ public class SpannerReadIT {
           "--instanceId=" + instanceId,
           "--databaseId=" + databaseId,
           "--output=" + outPath,
-          "--runner=DirectRunner"
+          "--runner=DirectRunner",
+          "--dialect=" + dialect
         });
 
     String content = Files.readAllLines(outPath).stream().collect(Collectors.joining("\n"));
@@ -208,7 +295,24 @@ public class SpannerReadIT {
   }
 
   @Test
-  public void reaTransactionalReadEndToEnd() throws Exception {
+  public void readApiWithIndexEndToEnd() throws Exception {
+    Path outPath = Files.createTempFile("out", "txt");
+    SpannerReadApiWithIndex.main(
+        new String[] {
+          "--instanceId=" + instanceId,
+          "--databaseId=" + databaseId,
+          "--output=" + outPath,
+          "--runner=DirectRunner",
+          "--dialect=" + dialect
+        });
+
+    String content = Files.readAllLines(outPath).stream().collect(Collectors.joining("\n"));
+
+    assertEquals("69", content);
+  }
+
+  @Test
+  public void readTransactionalReadEndToEnd() throws Exception {
     Path singersPath = Files.createTempFile("singers", "txt");
     Path albumsPath = Files.createTempFile("albums", "txt");
     TransactionalRead.main(
@@ -217,7 +321,8 @@ public class SpannerReadIT {
           "--databaseId=" + databaseId,
           "--singersFilename=" + singersPath,
           "--albumsFilename=" + albumsPath,
-          "--runner=DirectRunner"
+          "--runner=DirectRunner",
+          "--dialect=" + dialect
         });
 
     assertEquals(4, Files.readAllLines(singersPath).size());
