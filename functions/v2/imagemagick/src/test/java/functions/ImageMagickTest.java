@@ -19,8 +19,9 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
-import com.google.gson.Gson;
-import functions.eventpojos.GcsEvent;
+import com.google.events.cloud.storage.v1.StorageObjectData;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import java.net.URI;
@@ -40,7 +41,8 @@ public class ImageMagickTest {
   private static String BLURRED_BUCKET_NAME = System.getenv("BLURRED_BUCKET_NAME");
 
   // Loggers + handlers for various tested classes
-  // (Must be declared at class-level, or LoggingHandler won't detect log records!)
+  // (Must be declared at class-level, or LoggingHandler won't detect log
+  // records!)
   private static final Logger logger = Logger.getLogger(ImageMagick.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
@@ -56,44 +58,48 @@ public class ImageMagickTest {
   }
 
   @Test
-  public void functionsImagemagickAnalyze_shouldBlurOffensiveImages() {
+  public void functionsImagemagickAnalyze_shouldBlurOffensiveImages()
+      throws InvalidProtocolBufferException {
     String imageName = "zombie.jpg";
-    GcsEvent gcsEvent = new GcsEvent();
-    gcsEvent.setBucket(BUCKET_NAME);
-    gcsEvent.setName(imageName);
-    Gson gson = new Gson();
-    CloudEvent event =
-        CloudEventBuilder.v1()
-            .withId("0")
-            .withType("gcs.event")
-            .withSource(URI.create("https://example.com"))
-            .withData(gson.toJson(gcsEvent).getBytes())
-            .build();
+    StorageObjectData gcsEvent = StorageObjectData
+        .newBuilder()
+        .setBucket(BUCKET_NAME)
+        .setName(imageName)
+        .build();
+    String jsonData = JsonFormat.printer().print(gcsEvent);
+
+    CloudEvent event = CloudEventBuilder.v1()
+        .withId("0")
+        .withType("gcs.event")
+        .withSource(URI.create("https://example.com"))
+        .withData(jsonData.getBytes())
+        .build();
 
     assertThat(BLURRED_BUCKET_NAME).isNotNull();
     new ImageMagick().accept(event);
 
     List<LogRecord> logs = LOG_HANDLER.getStoredLogRecords();
 
-    String uploadedMessage =
-        String.format("Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, imageName);
+    String uploadedMessage = String
+        .format("Blurred image uploaded to: gs://%s/%s", BLURRED_BUCKET_NAME, imageName);
     assertThat(logs.get(2).getMessage()).isEqualTo(uploadedMessage);
   }
 
   @Test
-  public void functionsImagemagickAnalyze_shouldHandleSafeImages() {
+  public void functionsImagemagickAnalyze_shouldHandleSafeImages()
+      throws InvalidProtocolBufferException {
     String imageName = "wakeupcat.jpg";
-    GcsEvent gcsEvent = new GcsEvent();
-    gcsEvent.setBucket(BUCKET_NAME);
-    gcsEvent.setName(imageName);
-    Gson gson = new Gson();
-    CloudEvent event =
-        CloudEventBuilder.v1()
-            .withId("0")
-            .withType("gcs.event")
-            .withSource(URI.create("https://example.com"))
-            .withData(gson.toJson(gcsEvent).getBytes())
-            .build();
+    StorageObjectData gcsEvent = StorageObjectData.newBuilder()
+        .setBucket(BUCKET_NAME)
+        .setName(imageName)
+        .build();
+    String jsonData = JsonFormat.printer().print(gcsEvent);
+    CloudEvent event = CloudEventBuilder.v1()
+        .withId("0")
+        .withType("gcs.event")
+        .withSource(URI.create("https://example.com"))
+        .withData(jsonData.getBytes())
+        .build();
 
     new ImageMagick().accept(event);
 
@@ -102,19 +108,20 @@ public class ImageMagickTest {
   }
 
   @Test
-  public void functionsImagemagickAnalyze_shouldHandleMissingImages() {
+  public void functionsImagemagickAnalyze_shouldHandleMissingImages()
+      throws InvalidProtocolBufferException {
     String imageName = "missing.jpg";
-    GcsEvent gcsEvent = new GcsEvent();
-    gcsEvent.setBucket(BUCKET_NAME);
-    gcsEvent.setName(imageName);
-    Gson gson = new Gson();
-    CloudEvent event =
-        CloudEventBuilder.v1()
-            .withId("0")
-            .withType("gcs.event")
-            .withSource(URI.create("https://example.com"))
-            .withData(gson.toJson(gcsEvent).getBytes())
-            .build();
+    StorageObjectData gcsEvent = StorageObjectData.newBuilder()
+        .setBucket(BUCKET_NAME)
+        .setName(imageName)
+        .build();
+    String jsonData = JsonFormat.printer().print(gcsEvent);
+    CloudEvent event = CloudEventBuilder.v1()
+        .withId("0")
+        .withType("gcs.event")
+        .withSource(URI.create("https://example.com"))
+        .withData(jsonData.getBytes())
+        .build();
 
     new ImageMagick().accept(event);
 
