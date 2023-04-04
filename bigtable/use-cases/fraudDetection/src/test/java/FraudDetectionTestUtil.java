@@ -30,6 +30,8 @@ import com.google.pubsub.v1.ReceivedMessage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import org.apache.hadoop.hbase.shaded.org.apache.commons.io.IOUtils;
 
 public class FraudDetectionTestUtil {
 
@@ -75,8 +77,12 @@ public class FraudDetectionTestUtil {
   public static int runCommand(String command) throws IOException, InterruptedException {
     Process process = new ProcessBuilder(command.split(" ")).start();
     parseTerraformOutput(process);
-    // Wait for the process to finish running and return the exit code.
-    return process.waitFor();
+
+    int processResult = process.waitFor();
+    if (processResult != 0) {
+      System.err.println(IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8));
+    }
+    return processResult;
   }
 
   // Returns all transactions in a file inside a GCS bucket.

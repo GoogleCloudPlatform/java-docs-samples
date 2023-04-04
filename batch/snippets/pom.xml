@@ -29,12 +29,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-batch</artifactId>
-      <version>0.8.0</version>
+      <version>0.13.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-logging</artifactId>
-      <version>3.11.5</version>
+      <version>3.14.7</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -44,7 +44,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-resourcemanager</artifactId>
-      <version>1.2.2</version>
+      <version>1.15.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>

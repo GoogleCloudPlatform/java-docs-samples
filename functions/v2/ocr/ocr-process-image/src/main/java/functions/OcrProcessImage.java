@@ -30,21 +30,15 @@ import com.google.cloud.vision.v1.Feature;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageSource;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
+import com.google.events.cloud.storage.v1.StorageObjectData;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
-import functions.eventpojos.StorageObjectData;
 import io.cloudevents.CloudEvent;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -58,7 +52,8 @@ public class OcrProcessImage implements CloudEventsFunction {
   // TODO<developer> set these environment variables
   private static final String PROJECT_ID = System.getenv("GCP_PROJECT");
   private static final String TRANSLATE_TOPIC_NAME = System.getenv("TRANSLATE_TOPIC");
-  private static final String[] TO_LANGS = System.getenv("TO_LANG").split(",");
+  private static final String[] TO_LANGS = System.getenv("TO_LANG") == null ? new String[] { "es" }
+      : System.getenv("TO_LANG").split(",");
 
   private static final Logger logger = Logger.getLogger(OcrProcessImage.class.getName());
   private static final String LOCATION_NAME = LocationName.of(PROJECT_ID, "global").toString();
@@ -68,33 +63,23 @@ public class OcrProcessImage implements CloudEventsFunction {
     publisher = Publisher.newBuilder(ProjectTopicName.of(PROJECT_ID, TRANSLATE_TOPIC_NAME)).build();
   }
 
-  // Create custom deserializer to handle timestamps in event data
-  class DateDeserializer implements JsonDeserializer<OffsetDateTime> {
-    @Override
-    public OffsetDateTime deserialize(
-        JsonElement json, Type typeOfT, JsonDeserializationContext context)
-        throws JsonParseException {
-      return OffsetDateTime.parse(json.getAsString());
-    }
-  }
-
-  Gson gson =
-      new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new DateDeserializer()).create();
   // [END functions_ocr_setup]
 
   // [START functions_ocr_process]
   @Override
-  public void accept(CloudEvent event) {
+  public void accept(CloudEvent event) throws InvalidProtocolBufferException {
     // Unmarshal data from CloudEvent
-    StorageObjectData gcsEvent =
-        gson.fromJson(
-            new String(event.getData().toBytes(), StandardCharsets.UTF_8), StorageObjectData.class);
+    String cloudEventData = new String(event.getData().toBytes(), StandardCharsets.UTF_8);
+    StorageObjectData.Builder builder = StorageObjectData.newBuilder();
+    JsonFormat.parser().merge(cloudEventData, builder);
+    StorageObjectData gcsEvent = builder.build();
+
     String bucket = gcsEvent.getBucket();
-    if (bucket == null) {
+    if (bucket.isEmpty()) {
       throw new IllegalArgumentException("Missing bucket parameter");
     }
     String filename = gcsEvent.getName();
-    if (filename == null) {
+    if (filename.isEmpty()) {
       throw new IllegalArgumentException("Missing name parameter");
     }
 
@@ -113,8 +98,9 @@ public class OcrProcessImage implements CloudEventsFunction {
     Image img = Image.newBuilder().setSource(imgSource).build();
 
     Feature textFeature = Feature.newBuilder().setType(Feature.Type.TEXT_DETECTION).build();
-    AnnotateImageRequest visionRequest =
-        AnnotateImageRequest.newBuilder().addFeatures(textFeature).setImage(img).build();
+    AnnotateImageRequest visionRequest = AnnotateImageRequest.newBuilder()
+        .addFeatures(textFeature).setImage(img)
+        .build();
     visionRequests.add(visionRequest);
 
     // Detect text in an image using the Cloud Vision API
@@ -142,12 +128,11 @@ public class OcrProcessImage implements CloudEventsFunction {
     logger.info("Extracted text from image: " + text);
 
     // Detect language using the Cloud Translation API
-    DetectLanguageRequest languageRequest =
-        DetectLanguageRequest.newBuilder()
-            .setParent(LOCATION_NAME)
-            .setMimeType("text/plain")
-            .setContent(text)
-            .build();
+    DetectLanguageRequest languageRequest = DetectLanguageRequest.newBuilder()
+        .setParent(LOCATION_NAME)
+        .setMimeType("text/plain")
+        .setContent(text)
+        .build();
     DetectLanguageResponse languageResponse;
     try (TranslationServiceClient client = TranslationServiceClient.create()) {
       languageResponse = client.detectLanguage(languageRequest);
@@ -165,7 +150,8 @@ public class OcrProcessImage implements CloudEventsFunction {
     String languageCode = languageResponse.getLanguages(0).getLanguageCode();
     logger.info(String.format("Detected language %s for file %s", languageCode, filename));
 
-    // Send a Pub/Sub translation request for every language we're going to translate to
+    // Send a Pub/Sub translation request for every language we're going to
+    // translate to
     for (String targetLanguage : TO_LANGS) {
       logger.info("Sending translation request for language " + targetLanguage);
       OcrTranslateApiMessage message = new OcrTranslateApiMessage(text, filename, targetLanguage);

@@ -102,8 +102,14 @@ public class BatchTemplateIT {
       // System.out.println("Do nothing");
     }
 
+    // Create instance templates.
     INSTANCE_TEMPLATE = createInstanceTemplate();
     TimeUnit.SECONDS.sleep(10);
+
+    // Create job with template.
+    CreateWithTemplate.createWithTemplate(PROJECT_ID, REGION, SCRIPT_JOB_NAME,
+        INSTANCE_TEMPLATE.getSelfLink());
+    assertThat(stdOut.toString()).contains("Successfully created the job: ");
 
     stdOut.close();
     System.setOut(out);
@@ -222,10 +228,8 @@ public class BatchTemplateIT {
 
   @Test
   public void testCreateWithTemplate()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateWithTemplate.createWithTemplate(PROJECT_ID, REGION, SCRIPT_JOB_NAME,
-        INSTANCE_TEMPLATE.getSelfLink());
-    assertThat(stdOut.toString()).contains("Successfully created the job: ");
+      throws IOException, InterruptedException {
     Util.waitForJobCompletion(Util.getJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME));
+    assertThat(stdOut.toString()).contains("Job completed");
   }
 }
