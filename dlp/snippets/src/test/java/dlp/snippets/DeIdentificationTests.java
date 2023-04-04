@@ -41,7 +41,8 @@ public class DeIdentificationTests extends TestBase {
         "GOOGLE_APPLICATION_CREDENTIALS",
         "GOOGLE_CLOUD_PROJECT",
         "DLP_DEID_WRAPPED_KEY",
-        "DLP_DEID_KEY_NAME");
+        "DLP_DEID_KEY_NAME",
+        "DLP_DEID_UNWRAPPED_KEY");
   }
 
   @Test
@@ -541,4 +542,10 @@ public class DeIdentificationTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Text after replace with infotype config: ");
   }
+
+  @Test
+  public void testDeIdentifyWithFpeSurrogate() throws IOException {
+    DeidentifyFreeTextWithFpeUsingSurrogate.deIdentifyWithFpeSurrogate(PROJECT_ID,"My phone number is 4359916732", unwrappedKey);
+    String output = bout.toString();
+    assertThat(output).contains("Text after de-identification: ");  }
 }
