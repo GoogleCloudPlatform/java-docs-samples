@@ -45,7 +45,7 @@ public class QuickStart {
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     String projectNumber = "your-project-number";
-    String location = "us"; // Format is "us" or "eu".
+    String location = "your-region"; // Format is "us" or "eu".
     String userId = "your-user-id"; // Format is user:<user-id>
     quickStart(projectNumber, location, userId);
   }
@@ -75,20 +75,22 @@ public class QuickStart {
         .setIsSearchable(true)
         .setTextTypeOptions(TextTypeOptions.newBuilder().build())
         .build()).build();
-    
+
+    // Define Document Schema request
     CreateDocumentSchemaRequest createDocumentSchemaRequest = CreateDocumentSchemaRequest.newBuilder()
       .setParent(parent)
       .setDocumentSchema(documentSchema).build();
 
-    // Define Document Schema Request and Create Document Schema
+    // Create Document Schema
     DocumentSchema documentSchemaResponse = documentSchemaServiceClient.createDocumentSchema(createDocumentSchemaRequest); 
     
 
-    //Create Document Service Client Settings
+    // Create Document Service Client Settings
     DocumentServiceSettings documentServiceSettings = 
           DocumentServiceSettings.newBuilder().setEndpoint(endpoint).build();
     TextArray textArray = TextArray.newBuilder().addValues("GOOG").build();
 
+    // Create Document Service Client and Document with relevant properties 
       try(DocumentServiceClient documentServiceClient = DocumentServiceClient.create(documentServiceSettings)){
         Document document = Document.newBuilder()
           .setDisplayName("My Test Document")
@@ -99,18 +101,20 @@ public class QuickStart {
             .setName(documentSchema.getPropertyDefinitions(0).getName())
             .setTextValues(textArray)).build();
 
+        // Define Request Metadata for enforcing access control
         RequestMetadata requestMetadata = RequestMetadata.newBuilder()
         .setUserInfo(
           UserInfo.newBuilder()
             .setId(userId).build()).build();
-
+        
+        // Define Create Document Request 
         CreateDocumentRequest createDocumentRequest = CreateDocumentRequest.newBuilder()
           .setParent(parent)
           .setDocument(document)
           .setRequestMetadata(requestMetadata)
           .build();
       
-        // //Define Document Creation Request and Create Document
+        // Create Document
         CreateDocumentResponse createDocumentResponse = documentServiceClient.createDocument(createDocumentRequest);
         
         System.out.println(createDocumentResponse.getDocument().getName());
