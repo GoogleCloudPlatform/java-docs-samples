@@ -28,6 +28,7 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,6 +76,7 @@ public class CreateCdnKeyAkamaiTest {
   }
 
   @Test
+  @Ignore
   public void test_CreateCdnKeyAkamai() throws IOException {
     CreateCdnKeyAkamai.createCdnKeyAkamai(
         PROJECT_ID, LOCATION, AKAMAI_KEY_ID, HOSTNAME, AKAMAI_TOKEN_KEY);

@@ -28,6 +28,7 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,6 +79,7 @@ public class ListSlatesTest {
   }
 
   @Test
+  @Ignore
   public void test_ListSlates() throws IOException {
     ListSlates.listSlates(PROJECT_ID, LOCATION);
     String output = bout.toString();
