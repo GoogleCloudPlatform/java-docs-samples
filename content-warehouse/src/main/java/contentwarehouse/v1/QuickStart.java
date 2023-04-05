@@ -14,18 +14,33 @@
  * limitations under the License.
  */
 
-package documentai.v1;
+package contentwarehouse.v1;
 
 // [START contentwarehouse_quickstart]
 
+import com.google.cloud.contentwarehouse.v1.DocumentSchemaServiceClient;
+import com.google.cloud.contentwarehouse.v1.DocumentSchemaServiceSettings;
+import com.google.cloud.contentwarehouse.v1.DocumentServiceClient;
+import com.google.cloud.contentwarehouse.v1.DocumentServiceSettings;
+import com.google.cloud.contentwarehouse.v1.LocationName;
+import com.google.cloud.contentwarehouse.v1.DocumentSchemaName;
+import com.google.cloud.contentwarehouse.v1.Property;
+import com.google.cloud.contentwarehouse.v1.CreateDocumentResponse;
+import com.google.cloud.contentwarehouse.v1.CreateDocumentSchemaRequest;
+import com.google.cloud.contentwarehouse.v1.CreateDocumentSchemaRequestOrBuilder;
+import com.google.cloud.contentwarehouse.v1.DateTimeTypeOptions;
+import com.google.cloud.contentwarehouse.v1.Document;
+import com.google.cloud.contentwarehouse.v1.DocumentSchema;
+import com.google.cloud.contentwarehouse.v1.DocumentSchemaServiceClient;
+import com.google.cloud.contentwarehouse.v1.FloatTypeOptions;
+import com.google.cloud.contentwarehouse.v1.LocationName;
+import com.google.cloud.contentwarehouse.v1.PropertyDefinition;
+import com.google.cloud.contentwarehouse.v1.RuleEngineOutput;
+import com.google.cloud.contentwarehouse.v1.TextArray;
+import com.google.cloud.contentwarehouse.v1.TextTypeOptions;
 
-import com.google.cloud.documentai.v1.Document;
-import com.google.cloud.documentai.v1.DocumentProcessorServiceClient;
-import com.google.cloud.documentai.v1.DocumentProcessorServiceSettings;
-import com.google.cloud.documentai.v1.ProcessRequest;
-import com.google.cloud.documentai.v1.ProcessResponse;
-import com.google.cloud.documentai.v1.RawDocument;
-import com.google.protobuf.ByteString;
+import javafx.scene.text.Text;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,75 +49,66 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 public class QuickStart {
+  
   public static void main(String[] args)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "your-project-id";
-    String location = "your-project-location"; // Format is "us" or "eu".
-    String processorId = "your-processor-id";
-    String filePath = "path/to/input/file.pdf";
-    quickStart(projectId, location, processorId, filePath);
+    String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
+    String location = "us"; // Format is "us" or "eu".
+    quickStart(projectId, location);
   }
 
-  public static void quickStart(
-      String projectId, String location, String processorId, String filePath)
+  public static void quickStart(String projectId, String location)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    // Initialize client that will be used to send requests. This client only needs
-    // to be created
-    // once, and can be reused for multiple requests. After completing all of your
-    // requests, call
-    // the "close" method on the client to safely clean up any remaining background
-    // resources.
-    String endpoint = String.format("%s-documentai.googleapis.com:443", location);
-    DocumentProcessorServiceSettings settings =
-        DocumentProcessorServiceSettings.newBuilder().setEndpoint(endpoint).build();
-    try (DocumentProcessorServiceClient client = DocumentProcessorServiceClient.create(settings)) {
-      // The full resource name of the processor, e.g.:
-      // projects/project-id/locations/location/processor/processor-id
-      // You must create new processors in the Cloud Console first
-      String name =
-          String.format("projects/%s/locations/%s/processors/%s", projectId, location, processorId);
 
-      // Read the file.
-      byte[] imageFileData = Files.readAllBytes(Paths.get(filePath));
+    String endpoint = String.format("%s-contentwarehouse.googleapis.com:443", location);
+    DocumentSchemaServiceSettings documentSchemaServiceSettings = 
+         DocumentSchemaServiceSettings.newBuilder().setEndpoint(endpoint).build(); 
+  
+  // Create a Schema Service client
+  try(DocumentSchemaServiceClient documentSchemaServiceClient = DocumentSchemaServiceClient.create(documentSchemaServiceSettings)){
 
-      // Convert the image data to a Buffer and base64 encode it.
-      ByteString content = ByteString.copyFrom(imageFileData);
+    /*  The full resource name of the location, e.g.:
+    projects/{project_number}/locations/{location} */
+    String parent = LocationName.format(projectId, location);
 
-      RawDocument document =
-          RawDocument.newBuilder().setContent(content).setMimeType("application/pdf").build();
+    // Create Document Schema with Text Type Property
+    DocumentSchema documentSchema = DocumentSchema.newBuilder()
+      .setDisplayName("My Test Schema")
+      .setDescription("My Test Schema's Description")
+      .addPropertyDefinitions(
+        PropertyDefinition.newBuilder()
+        .setName("stock_symbol")
+        .setDisplayName("Searchable text")
+        .setIsSearchable(true)
+        .setTextTypeOptions(TextTypeOptions.newBuilder().build())
+        .build()).build();
 
-      // Configure the process request.
-      ProcessRequest request =
-          ProcessRequest.newBuilder().setName(name).setRawDocument(document).build();
 
-      // Recognizes text entities in the PDF document
-      ProcessResponse result = client.processDocument(request);
-      Document documentResponse = result.getDocument();
+    // Define Document Schema Request and Create Document Schema
+    DocumentSchema documentSchemaResponse = documentSchemaServiceClient.createDocumentSchema(parent, documentSchema); 
+    
 
-      // Get all of the document text as one big string
-      String text = documentResponse.getText();
-
-      // Read the text recognition output from the processor
-      System.out.println("The document contains the following paragraphs:");
-      Document.Page firstPage = documentResponse.getPages(0);
-      List<Document.Page.Paragraph> paragraphs = firstPage.getParagraphsList();
-
-      for (Document.Page.Paragraph paragraph : paragraphs) {
-        String paragraphText = getText(paragraph.getLayout().getTextAnchor(), text);
-        System.out.printf("Paragraph text:\n%s\n", paragraphText);
+    //Create Document Service Client Settings
+    DocumentServiceSettings documentServiceSettings = 
+          DocumentServiceSettings.newBuilder().setEndpoint(endpoint).build();
+      TextArray textArray = TextArray.newBuilder().addValues("GOOG").build();
+      try(DocumentServiceClient documentServiceClient = DocumentServiceClient.create(documentServiceSettings)){
+        Document document = Document.newBuilder()
+          .setDisplayName("My Test Document")
+          .setDocumentSchemaName(documentSchemaResponse.getName())
+          .setPlainText("This is a sample of a document's text.")
+          .addProperties(
+            Property.newBuilder()
+            .setName(documentSchema.getPropertyDefinitions(0).getName())
+            .setTextValues(textArray)).build();
+      
+        //Define Document Creation Request and Create Document
+        CreateDocumentResponse createDocumentResponse = documentServiceClient.createDocument(parent, document);
+        
+      //   System.out.println(createDocumentResponse.getDocument().getName());
       }
     }
   }
-
-  // Extract shards from the text field
-  private static String getText(Document.TextAnchor textAnchor, String text) {
-    if (textAnchor.getTextSegmentsList().size() > 0) {
-      int startIdx = (int) textAnchor.getTextSegments(0).getStartIndex();
-      int endIdx = (int) textAnchor.getTextSegments(0).getEndIndex();
-      return text.substring(startIdx, endIdx);
-    }
-    return "[NO TEXT]";
-  }
 }
-// [END documentai_quickstart]
+// [END contentwarehouse_quickstart]

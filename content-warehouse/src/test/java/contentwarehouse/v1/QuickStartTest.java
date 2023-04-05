@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package documentai.v1;
+package contentwarehouse.v1;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -30,8 +30,6 @@ import org.junit.Test;
 
 public class QuickStartTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String PROCESSOR_ID = "88541adc6eeec481";
-  private static final String FILE_PATH = "resources/invoice.pdf";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -61,7 +59,7 @@ public class QuickStartTest {
   public void testQuickStart()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
     // parse the GCS invoice as a form.
-    QuickStart.quickStart(PROJECT_ID, "us", PROCESSOR_ID, FILE_PATH);
+    QuickStart.quickStart(PROJECT_ID, "us");
     String got = bout.toString();
 
     assertThat(got).contains("Paragraph text:");
