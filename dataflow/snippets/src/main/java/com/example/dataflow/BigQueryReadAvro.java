@@ -17,6 +17,7 @@
 package com.example.dataflow;
 
 // [START dataflow_bigquery_read_avro]
+import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.util.Utf8;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.coders.AvroCoder;
@@ -41,8 +42,8 @@ public class BigQueryReadAvro {
     public static class FromSchemaAndRecord
             implements SerializableFunction<SchemaAndRecord, MyData> {
       @Override public MyData apply(SchemaAndRecord elem) {
-        var data = new MyData();
-        var record = elem.getRecord();
+        MyData data = new MyData();
+        GenericRecord record = elem.getRecord();
         data.name = ((Utf8) record.get("user_name")).toString();
         data.age = (Long) record.get("age");
         return data;
@@ -51,12 +52,13 @@ public class BigQueryReadAvro {
   }
 
   public static void main(String[] args) {
+    // Parse the pipeline options passed into the application.
     PipelineOptionsFactory.register(BigQueryReadOptions.class);
-    var options = PipelineOptionsFactory.fromArgs(args)
+    BigQueryReadOptions options = PipelineOptionsFactory.fromArgs(args)
         .withValidation()
         .as(BigQueryReadOptions.class);
 
-    var pipeline = Pipeline.create(options);
+    Pipeline pipeline = Pipeline.create(options);
     pipeline
         // Read table data into Avro records, using an application-defined parsing function.
         .apply(BigQueryIO.read(new MyData.FromSchemaAndRecord())

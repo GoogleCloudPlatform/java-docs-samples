@@ -28,12 +28,13 @@ import org.apache.beam.sdk.values.TypeDescriptor;
 
 public class BigQueryReadWithProjectionAndFiltering {
   public static void main(String[] args) {
+    // Parse the pipeline options passed into the application.
     PipelineOptionsFactory.register(BigQueryReadOptions.class);
-    var options = PipelineOptionsFactory.fromArgs(args)
+    BigQueryReadOptions options = PipelineOptionsFactory.fromArgs(args)
         .withValidation()
         .as(BigQueryReadOptions.class);
 
-    var pipeline = Pipeline.create(options);
+    Pipeline pipeline = Pipeline.create(options);
     pipeline
         .apply(BigQueryIO.readTableRows()
             // Read rows from a specified table.
