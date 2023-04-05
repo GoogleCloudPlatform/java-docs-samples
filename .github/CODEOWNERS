@@ -90,6 +90,7 @@ appengine-*                     @GoogleCloudPlatform/java-samples-reviewers @yos
 dlp                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/googleapis-dlp
 flexible                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes @GoogleCloudPlatform/functions-framework-google
 healthcare                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/healthcare-life-sciences
+iot                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-iot
 media                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-media-team
 pubsub                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-pubsub-and-pubsublite
 pubsublite                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-pubsub-and-pubsublite
