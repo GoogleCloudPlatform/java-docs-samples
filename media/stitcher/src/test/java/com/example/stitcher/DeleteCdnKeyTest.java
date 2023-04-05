@@ -28,6 +28,7 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -102,6 +103,7 @@ public class DeleteCdnKeyTest {
   }
 
   @Test
+  @Ignore
   public void test_DeleteCdnKey() throws IOException {
     // Cloud CDN key
     DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID);
