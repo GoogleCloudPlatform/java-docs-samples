@@ -19,6 +19,9 @@ package com.example.dataflow;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 
+/**
+ * Extends PipelineOptions and adds custom pipeline options for this sample.
+ */
 public interface BigQueryReadOptions extends PipelineOptions {
   @Description("Project ID for the BigQuery table")
   String getProjectId();

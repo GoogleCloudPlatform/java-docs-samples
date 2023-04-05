@@ -21,6 +21,7 @@ import com.google.api.services.bigquery.model.TableRow;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.TypedRead;
+import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.values.TypeDescriptor;
@@ -33,12 +34,11 @@ public class BigQueryReadFromQuery {
             + "FROM `bigquery-public-data.github_repos.sample_commits` "
             + "GROUP BY repo_name";
 
-    PipelineOptionsFactory.register(BigQueryReadOptions.class);
-    var options = PipelineOptionsFactory.fromArgs(args)
-        .withValidation()
-        .as(BigQueryReadOptions.class);
+    // Parse the pipeline options passed into the application.
+    PipelineOptions options = PipelineOptionsFactory.fromArgs(args)
+        .withValidation().create();
 
-    var pipeline = Pipeline.create(options);
+    Pipeline pipeline = Pipeline.create(options);
     pipeline
         // Read the query results into TableRow objects.
         .apply(BigQueryIO.readTableRows()
