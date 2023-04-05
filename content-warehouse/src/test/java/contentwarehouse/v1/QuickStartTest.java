@@ -29,7 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class QuickStartTest {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_NUMBER = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -59,10 +59,10 @@ public class QuickStartTest {
   public void testQuickStart()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
     // parse the GCS invoice as a form.
-    QuickStart.quickStart(PROJECT_ID, "us");
+    QuickStart.quickStart(PROJECT_NUMBER, "us", "user:your-user-id");
     String got = bout.toString();
 
-    assertThat(got).contains("Paragraph text:");
+    assertThat(got).contains("documentSchemas");
   }
 
   @After

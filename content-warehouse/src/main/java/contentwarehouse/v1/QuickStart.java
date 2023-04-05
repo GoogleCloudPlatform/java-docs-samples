@@ -23,28 +23,19 @@ import com.google.cloud.contentwarehouse.v1.DocumentSchemaServiceSettings;
 import com.google.cloud.contentwarehouse.v1.DocumentServiceClient;
 import com.google.cloud.contentwarehouse.v1.DocumentServiceSettings;
 import com.google.cloud.contentwarehouse.v1.LocationName;
-import com.google.cloud.contentwarehouse.v1.DocumentSchemaName;
 import com.google.cloud.contentwarehouse.v1.Property;
+import com.google.cloud.contentwarehouse.v1.CreateDocumentRequest;
 import com.google.cloud.contentwarehouse.v1.CreateDocumentResponse;
 import com.google.cloud.contentwarehouse.v1.CreateDocumentSchemaRequest;
-import com.google.cloud.contentwarehouse.v1.CreateDocumentSchemaRequestOrBuilder;
-import com.google.cloud.contentwarehouse.v1.DateTimeTypeOptions;
 import com.google.cloud.contentwarehouse.v1.Document;
 import com.google.cloud.contentwarehouse.v1.DocumentSchema;
-import com.google.cloud.contentwarehouse.v1.DocumentSchemaServiceClient;
-import com.google.cloud.contentwarehouse.v1.FloatTypeOptions;
-import com.google.cloud.contentwarehouse.v1.LocationName;
 import com.google.cloud.contentwarehouse.v1.PropertyDefinition;
-import com.google.cloud.contentwarehouse.v1.RuleEngineOutput;
+import com.google.cloud.contentwarehouse.v1.RequestMetadata;
 import com.google.cloud.contentwarehouse.v1.TextArray;
 import com.google.cloud.contentwarehouse.v1.TextTypeOptions;
-
-import javafx.scene.text.Text;
+import com.google.cloud.contentwarehouse.v1.UserInfo;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -53,12 +44,13 @@ public class QuickStart {
   public static void main(String[] args)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
+    String projectNumber = "your-project-number";
     String location = "us"; // Format is "us" or "eu".
-    quickStart(projectId, location);
+    String userId = "your-user-id"; // Format is user:<user-id>
+    quickStart(projectNumber, location, userId);
   }
 
-  public static void quickStart(String projectId, String location)
+  public static void quickStart(String projectId, String location, String userId)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
     String endpoint = String.format("%s-contentwarehouse.googleapis.com:443", location);
@@ -83,16 +75,20 @@ public class QuickStart {
         .setIsSearchable(true)
         .setTextTypeOptions(TextTypeOptions.newBuilder().build())
         .build()).build();
-
+    
+    CreateDocumentSchemaRequest createDocumentSchemaRequest = CreateDocumentSchemaRequest.newBuilder()
+      .setParent(parent)
+      .setDocumentSchema(documentSchema).build();
 
     // Define Document Schema Request and Create Document Schema
-    DocumentSchema documentSchemaResponse = documentSchemaServiceClient.createDocumentSchema(parent, documentSchema); 
+    DocumentSchema documentSchemaResponse = documentSchemaServiceClient.createDocumentSchema(createDocumentSchemaRequest); 
     
 
     //Create Document Service Client Settings
     DocumentServiceSettings documentServiceSettings = 
           DocumentServiceSettings.newBuilder().setEndpoint(endpoint).build();
-      TextArray textArray = TextArray.newBuilder().addValues("GOOG").build();
+    TextArray textArray = TextArray.newBuilder().addValues("GOOG").build();
+
       try(DocumentServiceClient documentServiceClient = DocumentServiceClient.create(documentServiceSettings)){
         Document document = Document.newBuilder()
           .setDisplayName("My Test Document")
@@ -102,11 +98,23 @@ public class QuickStart {
             Property.newBuilder()
             .setName(documentSchema.getPropertyDefinitions(0).getName())
             .setTextValues(textArray)).build();
+
+        RequestMetadata requestMetadata = RequestMetadata.newBuilder()
+        .setUserInfo(
+          UserInfo.newBuilder()
+            .setId(userId).build()).build();
+
+        CreateDocumentRequest createDocumentRequest = CreateDocumentRequest.newBuilder()
+          .setParent(parent)
+          .setDocument(document)
+          .setRequestMetadata(requestMetadata)
+          .build();
       
-        //Define Document Creation Request and Create Document
-        CreateDocumentResponse createDocumentResponse = documentServiceClient.createDocument(parent, document);
+        // //Define Document Creation Request and Create Document
+        CreateDocumentResponse createDocumentResponse = documentServiceClient.createDocument(createDocumentRequest);
         
-      //   System.out.println(createDocumentResponse.getDocument().getName());
+        System.out.println(createDocumentResponse.getDocument().getName());
+        System.out.println(documentSchemaResponse.getName());
       }
     }
   }
