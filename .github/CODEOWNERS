@@ -88,7 +88,7 @@ functions                       @GoogleCloudPlatform/java-samples-reviewers @yos
 # ---* Fully Eng Owned
 appengine-*                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes
 dlp                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/googleapis-dlp
-flexible                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes @GoogleCloudPlatform/functions-framework-google
+flexible                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes
 healthcare                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/healthcare-life-sciences
 iot                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-iot
 media                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-media-team
