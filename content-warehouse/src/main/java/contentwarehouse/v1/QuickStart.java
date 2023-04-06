@@ -64,7 +64,9 @@ public class QuickStart {
       projects/{project_number}/locations/{location} */
       String parent = LocationName.format(projectId, location);
 
-      // Create Document Schema with Text Type Property
+      /* Create Document Schema with Text Type Property Definition
+       * More detail on managing Document Schemas: 
+       * https://cloud.google.com/document-warehouse/docs/manage-document-schemas */
       DocumentSchema documentSchema = DocumentSchema.newBuilder()
           .setDisplayName("My Test Schema")
           .setDescription("My Test Schema's Description")
