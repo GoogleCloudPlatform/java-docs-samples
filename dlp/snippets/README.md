@@ -31,6 +31,7 @@ mvn exec:java -Dexec.mainClass="dlp.snippets.<CLASS_NAME>"
 - Ensure that `GOOGLE_APPLICATION_CREDENTIALS` points to authorized service account credentials file.
 - Set the `DLP_DEID_WRAPPED_KEY` environment variable to an AES-256 key encrypted ('wrapped') [with a Cloud Key Management Service (KMS) key](https://cloud.google.com/kms/docs/encrypt-decrypt).
 - Set the `DLP_DEID_KEY_NAME` environment variable to the path-name of the Cloud KMS key you wrapped `DLP_DEID_WRAPPED_KEY` with.
+- Set the `DLP_DEID_UNWRAPPED_KEY` environment variable to an AES-256 unwrapped key.
 - [Create a Google Cloud Storage bucket](https://console.cloud.google.com/storage) and upload [test.txt](src/test/resources/test.txt).
     - Set the `GCS_PATH` environment variable to point to the path for the bucket.
 - Copy and paste the data below into a CSV file and [create a BigQuery table](https://cloud.google.com/bigquery/docs/loading-data-local) from the file:

@@ -542,10 +542,12 @@ public class DeIdentificationTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Text after replace with infotype config: ");
   }
-  @Test
-  public void testReIdentifyWithFpeSurrogate() throws IOException{
-    ReidentifyFreeTextWithFpeUsingSurrogate.reIdentifyWithFpeSurrogate(PROJECT_ID,"My phone number is PHONE_TOKEN(10):9617256398", unwrappedKey );
-    String output = bout.toString();
-    assertThat(output).contains("Text after re-identification: ");  }
 
+  @Test
+  public void testReIdentifyWithFpeSurrogate() throws IOException {
+    ReidentifyFreeTextWithFpeUsingSurrogate.reIdentifyWithFpeSurrogate(
+        PROJECT_ID, "My phone number is PHONE_TOKEN(10):9617256398", UNWRAPPED_KEY);
+    String output = bout.toString();
+    assertThat(output).contains("Text after re-identification: ");
+  }
 }

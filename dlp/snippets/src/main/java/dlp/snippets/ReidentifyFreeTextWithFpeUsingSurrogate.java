@@ -56,9 +56,9 @@ public class ReidentifyFreeTextWithFpeUsingSurrogate {
       CustomInfoType.SurrogateType surrogateType =
           CustomInfoType.SurrogateType.newBuilder().build();
 
-      // Specify the type of info the inspection will look for.
-      // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
+      // Specify the type to be re-identified
       InfoType surrogateInfoType = InfoType.newBuilder().setName("PHONE_TOKEN").build();
+
       CustomInfoType customInfoType =
           CustomInfoType.newBuilder()
               .setInfoType(surrogateInfoType)
@@ -83,14 +83,17 @@ public class ReidentifyFreeTextWithFpeUsingSurrogate {
               .setCommonAlphabet(CryptoReplaceFfxFpeConfig.FfxCommonNativeAlphabet.NUMERIC)
               .setSurrogateInfoType(surrogateInfoType)
               .build();
+
       PrimitiveTransformation primitiveTransformation =
           PrimitiveTransformation.newBuilder()
               .setCryptoReplaceFfxFpeConfig(cryptoReplaceFfxFpeConfig)
               .build();
+
       InfoTypeTransformations.InfoTypeTransformation infoTypeTransformation =
           InfoTypeTransformations.InfoTypeTransformation.newBuilder()
               .setPrimitiveTransformation(primitiveTransformation)
               .build();
+
       InfoTypeTransformations transformations =
           InfoTypeTransformations.newBuilder().addTransformations(infoTypeTransformation).build();
 
