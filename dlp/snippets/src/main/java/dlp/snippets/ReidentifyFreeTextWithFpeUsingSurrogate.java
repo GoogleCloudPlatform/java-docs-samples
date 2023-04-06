@@ -56,7 +56,7 @@ public class ReidentifyFreeTextWithFpeUsingSurrogate {
       CustomInfoType.SurrogateType surrogateType =
           CustomInfoType.SurrogateType.newBuilder().build();
 
-      // Specify the type to be re-identified
+      // Specify the surrogate type used at time of de-identification
       InfoType surrogateInfoType = InfoType.newBuilder().setName("PHONE_TOKEN").build();
 
       CustomInfoType customInfoType =
