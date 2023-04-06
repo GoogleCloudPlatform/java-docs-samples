@@ -35,9 +35,11 @@ public class BigQueryReadFromQuery {
             + "GROUP BY repo_name";
 
     // Parse the pipeline options passed into the application.
+    // For more information, see https://beam.apache.org/documentation/programming-guide/#configuring-pipeline-options
     PipelineOptions options = PipelineOptionsFactory.fromArgs(args)
         .withValidation().create();
 
+    // Create a pipeline and apply transforms.
     Pipeline pipeline = Pipeline.create(options);
     pipeline
         // Read the query results into TableRow objects.
