@@ -74,8 +74,6 @@ public class CreateCustomConnector {
 
     importEntriesViaCustomConnector(location, projectId, entryGroupId, storageProjectId,
         gcsBucketName);
-
-
   }
 
   public static void importEntriesViaCustomConnector(String location, String projectId,
@@ -265,5 +263,4 @@ public class CreateCustomConnector {
   }
 }
 
-<<<<<<< HEAD
 // [END data_catalog_custom_connector]
