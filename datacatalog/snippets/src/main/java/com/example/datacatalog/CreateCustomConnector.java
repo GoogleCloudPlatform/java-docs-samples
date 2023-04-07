@@ -23,7 +23,6 @@ import com.google.cloud.datacatalog.v1.ColumnSchema;
 import com.google.cloud.datacatalog.v1.DataCatalogClient;
 import com.google.cloud.datacatalog.v1.DumpItem;
 import com.google.cloud.datacatalog.v1.Entry;
-import com.google.cloud.datacatalog.v1.EntryType;
 import com.google.cloud.datacatalog.v1.ImportEntriesMetadata;
 import com.google.cloud.datacatalog.v1.ImportEntriesRequest;
 import com.google.cloud.datacatalog.v1.ImportEntriesResponse;
@@ -91,10 +90,10 @@ public class CreateCustomConnector {
     DumpItem dumpItem = prepareDumpItem();
 
     // Write metadata in Dataplex format to an existing Google Cloud Storage bucket.
-    writeMetadataToGscBucket(dumpItem, storageProjectId, gcsBucketName);
+    String pathToDump = writeMetadataToGscBucket(dumpItem, storageProjectId, gcsBucketName);
 
     // Call DataplexCatalog ImportEntries() API to import the dump.
-    importEntriesToCatalog(projectId, location, entryGroupId, gcsBucketName);
+    importEntriesToCatalog(projectId, location, entryGroupId, pathToDump);
 
   }
 
@@ -142,8 +141,8 @@ public class CreateCustomConnector {
         .build();
     Entry entry = Entry.newBuilder()
         .setFullyQualifiedName("my_system:my_db.my_table")
-        .setUserSpecifiedSystem("My database system")
-        .setType(EntryType.TABLE)
+        .setUserSpecifiedSystem("My_system")
+        .setUserSpecifiedType("special_table_type")
         // Do not set sourceSystemTimestamps if they are not readily available
         // from the source system.
         .setSourceSystemTimestamps(timestamps)
@@ -182,7 +181,7 @@ public class CreateCustomConnector {
         .build();
   }
 
-  private static void writeMetadataToGscBucket(DumpItem dumpItem, String storageProjectId,
+  private static String writeMetadataToGscBucket(DumpItem dumpItem, String storageProjectId,
       String gcsBucketName)
       throws IOException {
     // Use Google Cloud Storage API to write metadata dump.
@@ -208,8 +207,8 @@ public class CreateCustomConnector {
     byte[] protobufWireFormatBytes = baos.toByteArray();
     String base64EncodedStr = Base64.getMimeEncoder().encodeToString(protobufWireFormatBytes);
      */
-    String gcsPath = "gs://" + gcsBucketName + "/output/" + "output_0001.wire";
-    BlobId blobId = BlobId.fromGsUtilUri(gcsPath);
+    String gcsPath = "gs://" + gcsBucketName + "/output/";
+    BlobId blobId = BlobId.fromGsUtilUri(gcsPath + "entries.wire");
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
     ByteArrayOutputStream encodedEntries = new ByteArrayOutputStream();
@@ -217,10 +216,12 @@ public class CreateCustomConnector {
     // For instance, in java you can use the writeDelimitedTo method.
     dumpItem.writeDelimitedTo(encodedEntries);
     storage.create(blobInfo, encodedEntries.toByteArray());
+
+    return gcsPath;
   }
 
   private static void importEntriesToCatalog(String projectId, String location,
-      String entryGroupName, String gcsBucketName)
+      String entryGroupName, String pathToDump)
       throws ExecutionException, InterruptedException, IOException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -232,15 +233,17 @@ public class CreateCustomConnector {
       String parent = String.format(
           "projects/%s/locations/%s/entryGroups/%s", projectId, location, entryGroupName);
 
-      // Specify valid path to the dump stored in Google Cloud Storage
-      String pathToDump = "gs://" + gcsBucketName + "/";
-
       // Send ImportEntries request to the Dataplex Catalog.
       // ImportEntries is an async procedure,
       // and it returns a long-running operation that a client can query.
       OperationFuture<ImportEntriesResponse, ImportEntriesMetadata> importEntriesFuture =
           dataCatalogClient.importEntriesAsync(ImportEntriesRequest.newBuilder()
               .setParent(parent)
+              /* Specify valid path to the dump stored in Google Cloud Storage.
+               Path should point directly to the place with dump files.
+               For example given a structure `bucket/a/b.wire`, "gcsBucketPath" should be set to
+               `bucket/a/`
+               */
               .setGcsBucketPath(pathToDump)
               .build());
 
