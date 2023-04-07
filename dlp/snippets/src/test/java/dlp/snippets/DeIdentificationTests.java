@@ -541,4 +541,12 @@ public class DeIdentificationTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Text after replace with infotype config: ");
   }
+
+  @Test
+  public void testDeIdentifyDataReplaceWithDictionary() throws IOException {
+    DeIdentifyDataReplaceWithDictionary.deidentifyDataReplaceWithDictionary(
+        PROJECT_ID, "My name is Alicia Abernathy, and my email address is aabernathy@example.com.");
+    String output = bout.toString();
+    assertThat(output).contains("Text after de-identification:");
+  }
 }
