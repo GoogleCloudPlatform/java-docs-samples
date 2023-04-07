@@ -132,24 +132,24 @@ public class CreateCustomConnector {
 
     Date tableCreateTime = new Date(10);
     Date tableUpdateTime = new Date(11);
-      // SystemTimestamps refer to lifecycle of the asset in the source system - e.g. time
-      // when a table was created or updated in the database.
-      // Never set SystemTimestamps to random time, or to now(), as it might trigger
-      // unnecessary updates in the Dataplex Catalog.
-      SystemTimestamps timestamps = SystemTimestamps.newBuilder()
-          .setCreateTime(Timestamps.fromDate(tableCreateTime))
-          .setUpdateTime(Timestamps.fromDate(tableUpdateTime))
-          .build();
-      Entry entry = Entry.newBuilder()
-          .setFullyQualifiedName("my_system:my_db.my_table")
-          .setUserSpecifiedSystem("My_system")
-          .setUserSpecifiedType("special_table_type")
-          // Do not set sourceSystemTimestamps if they are not readily available
-          // from the source system.
-          .setSourceSystemTimestamps(timestamps)
-          .setDisplayName("My database table")
-          .setSchema(schema)
-          .build();
+    // SystemTimestamps refer to lifecycle of the asset in the source system - e.g. time
+    // when a table was created or updated in the database.
+    // Never set SystemTimestamps to random time, or to now(), as it might trigger
+    // unnecessary updates in the Dataplex Catalog.
+    SystemTimestamps timestamps = SystemTimestamps.newBuilder()
+        .setCreateTime(Timestamps.fromDate(tableCreateTime))
+        .setUpdateTime(Timestamps.fromDate(tableUpdateTime))
+        .build();
+    Entry entry = Entry.newBuilder()
+        .setFullyQualifiedName("my_system:my_db.my_table")
+        .setUserSpecifiedSystem("My_system")
+        .setUserSpecifiedType("special_table_type")
+        // Do not set sourceSystemTimestamps if they are not readily available
+        // from the source system.
+        .setSourceSystemTimestamps(timestamps)
+        .setDisplayName("My database table")
+        .setSchema(schema)
+        .build();
 
     // If some metadata is not easily modelled by Dataplex Entries, use Tags to ingest it.
     Tag tag1 = Tag.newBuilder()
@@ -181,7 +181,6 @@ public class CreateCustomConnector {
                 .build())
         .build();
   }
-
 
   private static String writeMetadataToGscBucket(DumpItem dumpItem, String storageProjectId,
       String gcsBucketName)
@@ -221,7 +220,7 @@ public class CreateCustomConnector {
   }
 
   private static void importEntriesToCatalog(String projectId, String location,
-      String entryGroupName, String gcsBucketName)
+      String entryGroupName, String pathToDump)
       throws ExecutionException, InterruptedException, IOException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -233,9 +232,6 @@ public class CreateCustomConnector {
       String parent = String.format(
           "projects/%s/locations/%s/entryGroups/%s", projectId, location, entryGroupName);
 
-      // Specify valid path to the dump stored in Google Cloud Storage
-      String pathToDump = "gs://" + gcsBucketName + "/";
-
       // Send ImportEntries request to the Dataplex Catalog.
       // ImportEntries is an async procedure,
       // and it returns a long-running operation that a client can query.
@@ -243,6 +239,11 @@ public class CreateCustomConnector {
       OperationFuture<ImportEntriesResponse, ImportEntriesMetadata> importEntriesFuture =
           dataCatalogClient.importEntriesAsync(ImportEntriesRequest.newBuilder()
               .setParent(parent)
+              /* Specify valid path to the dump stored in Google Cloud Storage.
+               Path should point directly to the place with dump files.
+               For example given a structure `bucket/a/b.wire`, "gcsBucketPath" should be set to
+               `bucket/a/`
+               */
               .setGcsBucketPath(pathToDump)
               .build());
 
