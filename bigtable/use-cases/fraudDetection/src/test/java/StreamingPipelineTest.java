@@ -169,7 +169,7 @@ public class StreamingPipelineTest {
     double fraudDetectionAccuracy =
         fraudulentTransactionsDetected / totalTransactionsTested;
     System.out.println("fraudDetectionAccuracy = " + fraudDetectionAccuracy);
-    assertThat(fraudDetectionAccuracy >= MODEL_ACCURACY_THRESHOLD).isTrue();
+    assertThat(fraudDetectionAccuracy).isAtLeast(MODEL_ACCURACY_THRESHOLD);
   }
 
 }

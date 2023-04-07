@@ -83,7 +83,6 @@ public class FraudDetectionTestUtil {
     int processResult = process.waitFor();
     if (processResult != 0) {
       String errorString = IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8);
-      System.err.println(errorString);
       assertThat(errorString).isEmpty();
     }
     return processResult;
