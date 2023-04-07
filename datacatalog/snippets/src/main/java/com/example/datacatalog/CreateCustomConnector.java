@@ -129,7 +129,6 @@ public class CreateCustomConnector {
         .addColumns(ColumnSchema.newBuilder().setColumn("ID").setType("LONGINT"))
         .addColumns(ColumnSchema.newBuilder().setColumn("NAME").setType("VARCHAR(20)"))
         .build();
-
     Date tableCreateTime = new Date(10);
     Date tableUpdateTime = new Date(11);
     // SystemTimestamps refer to lifecycle of the asset in the source system - e.g. time
@@ -193,6 +192,7 @@ public class CreateCustomConnector {
         .getService();
 
     /* Dump files should use standard protobuf binary wire format to store Entries in file.
+
     Alternatively, the entire byte[] containing the wire encoding of delimited DumpItems
     in a single dump file can be Mime Base64 encoded.
     To indicate files where that is the case,
@@ -200,6 +200,7 @@ public class CreateCustomConnector {
     Note, that whole file needs to be encoded at once, instead of each DumpItem
     being encoded separately, and concatenated.
     For example:
+
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     dumpItem1.writeDelimitedTo(baos);
     dumpItem2.writeDelimitedTo(baos);
@@ -235,7 +236,6 @@ public class CreateCustomConnector {
       // Send ImportEntries request to the Dataplex Catalog.
       // ImportEntries is an async procedure,
       // and it returns a long-running operation that a client can query.
-
       OperationFuture<ImportEntriesResponse, ImportEntriesMetadata> importEntriesFuture =
           dataCatalogClient.importEntriesAsync(ImportEntriesRequest.newBuilder()
               .setParent(parent)
@@ -260,9 +260,10 @@ public class CreateCustomConnector {
 
       System.out.println("Long-running operation is created with name: " + operationName);
       System.out.printf("Long-running operation metadata details: " +  importEntriesMetadata);
+
     }
   }
 }
 
+<<<<<<< HEAD
 // [END data_catalog_custom_connector]
-
