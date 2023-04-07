@@ -42,9 +42,10 @@ public class WaitForImportEntries {
 
   public static void main(String[] args)
       throws IOException {
-    // TODO(developer): Replace these variables before running the sample.
+    // TODO(developer): Replace this variable before running the sample.
     String longRunningOperationName =
         "projects/my-project/locations/us-central1/operations/import_entries_abc";
+
     // When ImportEntries() method of Dataplex Catalog is called,
     // it returns a name of a long-running operation.
     // This operation can be queried to find out the state of the import.
