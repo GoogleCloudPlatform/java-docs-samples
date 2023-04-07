@@ -53,9 +53,7 @@ public class BigQueryReadAvro {
 
   public static void main(String[] args) {
     // Parse the pipeline options passed into the application. Example:
-    //   --projectId=$PROJECT_ID
-    //   --datasetName=$DATASET_NAME
-    //   --tableName=$TABLE_NAME
+    //   --projectId=$PROJECT_ID --datasetName=$DATASET_NAME --tableName=$TABLE_NAME
     // For more information, see https://beam.apache.org/documentation/programming-guide/#configuring-pipeline-options
     PipelineOptionsFactory.register(BigQueryReadOptions.class);
     BigQueryReadOptions options = PipelineOptionsFactory.fromArgs(args)
