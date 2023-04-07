@@ -541,4 +541,34 @@ public class DeIdentificationTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Text after replace with infotype config: ");
   }
+
+  @Test
+  public void testDeIdentifyWithTimeExtraction() throws IOException {
+
+    Table expectedTable =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("Name").build())
+            .addHeaders(FieldId.newBuilder().setName("Birth Date").build())
+            .addHeaders(FieldId.newBuilder().setName("Credit Card").build())
+            .addHeaders(FieldId.newBuilder().setName("Register Date").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("Ann").build())
+                    .addValues(Value.newBuilder().setStringValue("1970").build())
+                    .addValues(Value.newBuilder().setStringValue("4532908762519852").build())
+                    .addValues(Value.newBuilder().setStringValue("1996").build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("James").build())
+                    .addValues(Value.newBuilder().setStringValue("1988").build())
+                    .addValues(Value.newBuilder().setStringValue("4301261899725540").build())
+                    .addValues(Value.newBuilder().setStringValue("2001").build())
+                    .build())
+            .build();
+    Table actualTable = DeIdentifyWithTimeExtraction.deIdentifyWithDateShift(PROJECT_ID);
+    String output = bout.toString();
+    assertThat(output).contains("Table after de-identification:");
+    assertThat(actualTable).isEqualTo(expectedTable);
+  }
 }
