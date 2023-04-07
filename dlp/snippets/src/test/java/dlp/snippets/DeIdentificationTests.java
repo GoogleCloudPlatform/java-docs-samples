@@ -541,4 +541,15 @@ public class DeIdentificationTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Text after replace with infotype config: ");
   }
+
+  @Test
+  public void testReIdentifyWithDeterminsiticEncryption() throws IOException {
+    ReidentifyWithDeterministicEncryption.reIdentifyWithDeterminsiticEncryption(
+        PROJECT_ID,
+        "My SSN is SSN_TOKEN(36):AaFA0hAWtdXqTGbYdl/qdKCHr3UG/cU7fMw=",
+        wrappedKey,
+        kmsKeyName);
+    String output = bout.toString();
+    assertThat(output).contains("Text after re-identification: ");
+  }
 }
