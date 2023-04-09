@@ -187,7 +187,8 @@ public class WorkloadGeneratorTest {
       startRequestCount = ts.getPoints(0).getValue().getInt64Value();
       endRequestCount = ts.getPoints(ts.getPointsCount() - 1).getValue().getInt64Value();
     }
-    MatcherAssert.assertThat("rate", endRequestCount - startRequestCount, Matchers.greaterThan(Long.valueOf(rate)));
+    MatcherAssert.assertThat("rate", endRequestCount - startRequestCount,
+        Matchers.greaterThan(Long.valueOf(rate)));
 
     // Ensure the job is stopped after duration.
     String jobId = ((DataflowPipelineJob) pipelineResult).getJobId();
@@ -203,15 +204,15 @@ public class WorkloadGeneratorTest {
         FlexTemplatesServiceClient.create();
     LaunchFlexTemplateRequest request =
         LaunchFlexTemplateRequest.newBuilder()
-            .setProjectId(projectId)
-            .setLaunchParameter(
-                LaunchFlexTemplateParameter.newBuilder()
-                    .setContainerSpecGcsPath(
-                        "gs://cloud-bigtable-dataflow-templates/generate-workload.json")
-                    .setJobName("generate-workload" + UUID.randomUUID().toString().substring(0, 20))
-                    .putParameters("bigtableInstanceId", instanceId)
-                    .putParameters("bigtableTableId", TABLE_ID)
-                    .build())
+          .setProjectId(projectId)
+          .setLaunchParameter(
+            LaunchFlexTemplateParameter.newBuilder()
+                .setContainerSpecGcsPath(
+                    "gs://cloud-bigtable-dataflow-templates/generate-workload.json")
+                .setJobName("generate-workload" + UUID.randomUUID().toString().substring(0, 20))
+                .putParameters("bigtableInstanceId", instanceId)
+                .putParameters("bigtableTableId", TABLE_ID)
+                .build())
             .build();
 
     LaunchFlexTemplateResponse response = flexTemplatesServiceClient.launchFlexTemplate(request);
