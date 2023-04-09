@@ -55,6 +55,8 @@ import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -185,7 +187,7 @@ public class WorkloadGeneratorTest {
       startRequestCount = ts.getPoints(0).getValue().getInt64Value();
       endRequestCount = ts.getPoints(ts.getPointsCount() - 1).getValue().getInt64Value();
     }
-    assertThat(endRequestCount - startRequestCount > rate).isTrue();
+    MatcherAssert.assertThat("rate", endRequestCount - startRequestCount, Matchers.greaterThan(Long.valueOf(rate)));
 
     // Ensure the job is stopped after duration.
     String jobId = ((DataflowPipelineJob) pipelineResult).getJobId();
