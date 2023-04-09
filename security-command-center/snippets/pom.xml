@@ -42,8 +42,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-securitycenter</artifactId>
-      <version>2.21.0</version>
-    </dependency>
+      </dependency>
 
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -59,8 +58,7 @@
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java-util</artifactId>
-      <version>3.21.7</version>
-    </dependency>
+      </dependency>
 
     <dependency>
       <groupId>junit</groupId>

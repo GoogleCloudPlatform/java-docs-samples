@@ -62,7 +62,6 @@ limitations under the License.
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>2.7.10</version>
       <exclusions>
         <!-- Exclude the Tomcat dependency -->
         <exclusion>
@@ -74,8 +73,7 @@ limitations under the License.
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jetty</artifactId>
-      <version>2.7.10</version>
-    </dependency>
+      </dependency>
 
   </dependencies>
 
