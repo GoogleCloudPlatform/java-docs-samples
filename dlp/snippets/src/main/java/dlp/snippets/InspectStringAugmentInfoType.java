@@ -40,6 +40,7 @@ public class InspectStringAugmentInfoType {
     String projectId = "your-project-id";
     // The string to de-identify.
     String textToInspect = "The patient's name is quasimodo";
+    // The string to be additionally matched
     String textToAugment = "quasimodo";
     inspectStringAugmentInfoType(projectId, textToInspect, textToAugment);
   }
@@ -75,7 +76,6 @@ public class InspectStringAugmentInfoType {
           InspectConfig.newBuilder()
               .addCustomInfoTypes(customInfoType)
               .setIncludeQuote(true)
-              .addInfoTypes(infoType)
               .build();
 
       // Construct the Inspect request to be sent by the client.
