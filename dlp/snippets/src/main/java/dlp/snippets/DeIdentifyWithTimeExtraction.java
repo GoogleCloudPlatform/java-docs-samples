@@ -16,6 +16,8 @@
 
 package dlp.snippets;
 
+// [START dlp_deidentify_time_extract]
+
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ContentItem;
 import com.google.privacy.dlp.v2.DeidentifyConfig;
@@ -113,3 +115,5 @@ public class DeIdentifyWithTimeExtraction {
     }
   }
 }
+
+// [END dlp_deidentify_time_extract]
