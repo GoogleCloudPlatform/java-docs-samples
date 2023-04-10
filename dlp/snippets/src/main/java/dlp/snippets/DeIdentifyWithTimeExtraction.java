@@ -39,36 +39,37 @@ public class DeIdentifyWithTimeExtraction {
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
-    deIdentifyWithDateShift(projectId);
+    Table tableToDeIdentify =
+            Table.newBuilder()
+                    .addHeaders(FieldId.newBuilder().setName("Name").build())
+                    .addHeaders(FieldId.newBuilder().setName("Birth Date").build())
+                    .addHeaders(FieldId.newBuilder().setName("Credit Card").build())
+                    .addHeaders(FieldId.newBuilder().setName("Register Date").build())
+                    .addRows(
+                            Table.Row.newBuilder()
+                                    .addValues(Value.newBuilder().setStringValue("Ann").build())
+                                    .addValues(Value.newBuilder().setStringValue("01/01/1970").build())
+                                    .addValues(Value.newBuilder().setStringValue("4532908762519852").build())
+                                    .addValues(Value.newBuilder().setStringValue("07/21/1996").build())
+                                    .build())
+                    .addRows(
+                            Table.Row.newBuilder()
+                                    .addValues(Value.newBuilder().setStringValue("James").build())
+                                    .addValues(Value.newBuilder().setStringValue("03/06/1988").build())
+                                    .addValues(Value.newBuilder().setStringValue("4301261899725540").build())
+                                    .addValues(Value.newBuilder().setStringValue("04/09/2001").build())
+                                    .build())
+                    .build();
+    deIdentifyWithDateShift(projectId, tableToDeIdentify);
   }
 
-  public static Table deIdentifyWithDateShift(String projectId) throws IOException {
+  public static Table deIdentifyWithDateShift(String projectId, Table tableToDeIdentify) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       // Read the contents of the Table
-      Table tableToDeIdentify =
-          Table.newBuilder()
-              .addHeaders(FieldId.newBuilder().setName("Name").build())
-              .addHeaders(FieldId.newBuilder().setName("Birth Date").build())
-              .addHeaders(FieldId.newBuilder().setName("Credit Card").build())
-              .addHeaders(FieldId.newBuilder().setName("Register Date").build())
-              .addRows(
-                  Table.Row.newBuilder()
-                      .addValues(Value.newBuilder().setStringValue("Ann").build())
-                      .addValues(Value.newBuilder().setStringValue("01/01/1970").build())
-                      .addValues(Value.newBuilder().setStringValue("4532908762519852").build())
-                      .addValues(Value.newBuilder().setStringValue("07/21/1996").build())
-                      .build())
-              .addRows(
-                  Table.Row.newBuilder()
-                      .addValues(Value.newBuilder().setStringValue("James").build())
-                      .addValues(Value.newBuilder().setStringValue("03/06/1988").build())
-                      .addValues(Value.newBuilder().setStringValue("4301261899725540").build())
-                      .addValues(Value.newBuilder().setStringValue("04/09/2001").build())
-                      .build())
-              .build();
+
       ContentItem item = ContentItem.newBuilder().setTable(tableToDeIdentify).build();
 
       // Specify the time part to extract
