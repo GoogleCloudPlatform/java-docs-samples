@@ -56,7 +56,7 @@
            <groupId>com.google.http-client</groupId>
            <artifactId>google-http-client-jackson2</artifactId>
            <version>1.42.3</version>
-           </dependency>    
+        </dependency>    
         <!-- [END jobs_java_dependencies_beta] -->
 
         <!-- Test dependencies -->
