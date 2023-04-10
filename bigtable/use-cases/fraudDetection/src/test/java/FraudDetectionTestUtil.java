@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
@@ -33,19 +32,22 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import org.apache.hadoop.hbase.shaded.org.apache.commons.io.IOUtils;
 
+import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
+
+
 public class FraudDetectionTestUtil {
 
   // Make sure that the variable is set from running Terraform.
   public static void requireVar(String varName) {
-    assertNotNull(varName);
+    assertThat(varName).isNotNull();
   }
 
   // Make sure that the required environment variables are set before running the tests.
   public static String requireEnv(String varName) {
     String value = System.getenv(varName);
-    assertNotNull(
-        String.format("Environment variable '%s' is required to perform these tests.", varName),
-        value);
+    assertWithMessage(String.format("Environment variable '%s' is required to perform these tests.",
+        varName)).that(value).isNotNull();
     return value;
   }
 
@@ -80,7 +82,8 @@ public class FraudDetectionTestUtil {
 
     int processResult = process.waitFor();
     if (processResult != 0) {
-      System.err.println(IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8));
+      String errorString = IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8);
+      assertThat(errorString).isEmpty();
     }
     return processResult;
   }
