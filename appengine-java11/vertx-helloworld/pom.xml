@@ -42,7 +42,7 @@ limitations under the License.
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-dependencies</artifactId>
-        <version>4.3.8</version>
+        <version>4.4.1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -74,7 +74,7 @@ limitations under the License.
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-unit</artifactId>
-      <version>4.3.0</version>
+      <version>4.4.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
