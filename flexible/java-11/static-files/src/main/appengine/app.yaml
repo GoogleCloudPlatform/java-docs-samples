@@ -1,0 +1,7 @@
+runtime: java
+env: flex
+runtime_config:
+  operating_system: ubuntu18
+handlers:
+- url: /.*
+  script: this field is required, but ignored
