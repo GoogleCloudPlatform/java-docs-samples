@@ -39,12 +39,13 @@ public class InspectStringAugmentInfoType {
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
     // The string to de-identify.
-    String textToInspect = "patient: quasimodo";
-    inspectStringAugmentInfoType(projectId, textToInspect);
+    String textToInspect = "The patient's name is quasimodo";
+    String textToAugment = "quasimodo";
+    inspectStringAugmentInfoType(projectId, textToInspect, textToAugment);
   }
 
   // Inspects the provided text.
-  public static void inspectStringAugmentInfoType(String projectId, String textToInspect)
+  public static void inspectStringAugmentInfoType(String projectId, String textToInspect, String textToAugment)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -62,11 +63,11 @@ public class InspectStringAugmentInfoType {
       CustomInfoType.Dictionary wordList =
           CustomInfoType.Dictionary.newBuilder()
               .setWordList(
-                  CustomInfoType.Dictionary.WordList.newBuilder().addWords("quasimodo").build())
+                  CustomInfoType.Dictionary.WordList.newBuilder().addWords(textToAugment).build())
               .build();
 
       InfoType infoType = InfoType.newBuilder().setName("PERSON_NAME").build();
-      // Construct the custom infotype detector associated with the word list.
+      //  Construct a custom infotype detector by augmenting the PERSON_NAME detector with a word list
       CustomInfoType customInfoType =
           CustomInfoType.newBuilder().setInfoType(infoType).setDictionary(wordList).build();
 
