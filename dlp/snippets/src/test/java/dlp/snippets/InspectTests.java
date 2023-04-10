@@ -407,4 +407,13 @@ public class InspectTests extends TestBase {
     assertThat(output).contains("Findings: 2");
     assertThat(output).contains("Info type: C_MRN");
   }
+
+  @Test
+  public void testInspectStringAugmentInfoType() throws Exception {
+    InspectStringAugmentInfoType.inspectStringAugmentInfoType(
+        "bdp-2059-is-31084", "patient: quasimodo");
+    String output = bout.toString();
+    assertThat(output).contains("Findings: 1");
+    assertThat(output).contains("Info type: PERSON_NAME");
+  }
 }
