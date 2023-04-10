@@ -42,7 +42,7 @@
     <dependency>
       <artifactId>google-api-client</artifactId>
       <groupId>com.google.api-client</groupId>
-      <version>1.35.2</version>
+      <version>2.2.0</version>
     </dependency>
     <dependency>
       <artifactId>junit</artifactId>
@@ -85,12 +85,12 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.1.4</version>
+        <version>26.11.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
   <properties>
-    <apache_beam.version>2.40.0</apache_beam.version>
+    <apache_beam.version>2.46.0</apache_beam.version>
     <exec.cleanupDaemonThreads>false</exec.cleanupDaemonThreads>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
