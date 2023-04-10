@@ -112,7 +112,7 @@
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-pubsub</artifactId>
+      <artifactId>google-cloud-bigquery</artifactId>
     </dependency>
 
     <!-- Misc -->
