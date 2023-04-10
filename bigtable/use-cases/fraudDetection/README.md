@@ -176,9 +176,9 @@ The ML model is located in the path: **terraform/model**
    
 4. Enable the required APIs:
    ```
-   gcloud services enable aiplatform.googleapis.com bigtable.googleapis.com
-   bigtableadmin.googleapis.com compute.googleapis.com dataflow.googleapis.com
-   pubsub.googleapis.com storage-api.googleapis.com
+   gcloud services enable aiplatform.googleapis.com bigtable.googleapis.com \
+   bigtableadmin.googleapis.com compute.googleapis.com dataflow.googleapis.com \
+   pubsub.googleapis.com storage-api.googleapis.com \
    storage-component.googleapis.com
    ```
 
