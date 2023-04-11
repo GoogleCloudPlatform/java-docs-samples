@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import static junit.framework.TestCase.assertNotNull;
+import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -56,7 +57,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.apache.beam.sdk.testing.TestPipeline;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -121,9 +121,9 @@ public class PubsubliteToGcsIT {
       AdminClientSettings.newBuilder().setRegion(CloudRegion.of(cloudRegion)).build();
 
   private static void requireEnvVar(String varName) {
-    assertNotNull(
-        "Environment variable " + varName + " is required to perform these tests.",
-        System.getenv(varName));
+    assertWithMessage("Environment variable " + varName + " is required to perform these tests.")
+    .that(System.getenv(varName))
+    .isNotNull();
   }
 
   @BeforeClass
@@ -244,12 +244,12 @@ public class PubsubliteToGcsIT {
     for (Blob blob : blobs.iterateAll()) {
       String content = new String(blob.getContent(), StandardCharsets.UTF_8);
       System.out.println("Has content: " + content);
-      Assert.assertTrue(content.contains("message-"));
+      assertThat(content).contains("message-");
       // Increment the count if the file has the desired content.
       numFiles += 1;
     }
 
     // Expect at least one file of desired output.
-    Assert.assertTrue(numFiles > 0);
+    assertThat(numFiles).isGreaterThan(0);
   }
 }
