@@ -545,6 +545,14 @@ public class DeIdentificationTests extends TestBase {
   }
 
   @Test
+  public void testDeIdentifyWithDeterministicEncryption() throws IOException {
+    DeIdenitfyWithDeterministicEncryption.deIdentifyWithDeterministicEncryption(
+        PROJECT_ID, "My SSN is 372819127", wrappedKey, kmsKeyName);
+    String output = bout.toString();
+    assertThat(output).contains("Text after de-identification:");
+  }
+
+  @Test
   public void testDeIdentifyWithFpeSurrogate() throws IOException {
     DeidentifyFreeTextWithFpeUsingSurrogate.deIdentifyWithFpeSurrogate(
         PROJECT_ID, "My phone number is 4359916732", UNWRAPPED_KEY);
