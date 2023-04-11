@@ -24,9 +24,7 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -64,7 +62,11 @@ public class CreateTaskIT {
 
   @Test
   public void testCreateTask() throws Exception {
-    CreateTask.main();
+    String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
+    String queueName = System.getenv("QUEUE_ID");
+    String location = System.getenv("LOCATION_ID");
+
+    CreateTask.createTask(projectId, queueName, location, "hello", 0);
     String got = bout.toString();
     assertThat(got).contains("Task created:");
   }

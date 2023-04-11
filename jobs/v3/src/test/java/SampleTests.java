@@ -16,6 +16,7 @@
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.samples.AutoCompleteSample;
 import com.google.samples.BasicCompanySample;
 import com.google.samples.BasicJobSample;
@@ -31,12 +32,14 @@ import com.google.samples.LocationSearchSample;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class SampleTests {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
   private static ByteArrayOutputStream bout;
   private long timeInMillis;

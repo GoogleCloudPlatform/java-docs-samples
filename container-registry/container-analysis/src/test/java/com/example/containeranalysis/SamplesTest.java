@@ -59,7 +59,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SamplesTest {
-
+  
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String subId = "CA-Occurrences-" + (new Date()).getTime();
   private String noteId;
@@ -272,7 +272,7 @@ public class SamplesTest {
     Occurrence result = client.createOccurrence(ProjectName.format(PROJECT_ID), newOcc);
 
     // poll again
-    int maxAttempts = 5;
+    int maxAttempts = 6;
     int attempt = 1;
     Occurrence found = null;
     if (found == null && attempt <= maxAttempts) {
@@ -285,7 +285,7 @@ public class SamplesTest {
             "Attempt %d/%d failed with a TimeoutException. Retrying.", attempt, maxAttempts);
       }
       attempt += 1;
-      sleep(3000);
+      sleep(3 * SLEEP_TIME * Math.round((Math.pow(2, attempt - 1))));
     }
     AnalysisStatus foundStatus = found.getDiscovery().getAnalysisStatus();
     assertEquals(foundStatus, AnalysisStatus.FINISHED_SUCCESS);

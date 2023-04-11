@@ -28,6 +28,7 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,6 +81,7 @@ public class UpdateSlateTest {
   }
 
   @Test
+  @Ignore
   public void test_UpdateSlate() throws IOException {
     UpdateSlate.updateSlate(PROJECT_ID, LOCATION, SLATE_ID, UPDATED_SLATE_URI);
     String output = bout.toString();

@@ -44,7 +44,7 @@ dependencies {
     implementation "org.slf4j:slf4j-jdk14:${slf4jVersion}"
     runtimeOnly "org.apache.beam:beam-runners-direct-java:${beamVersion}"
     runtimeOnly "org.apache.beam:beam-runners-google-cloud-dataflow-java:${beamVersion}"
-    testImplementation 'com.google.cloud:google-cloud-core:2.3.2'
+    testImplementation 'com.google.cloud:google-cloud-core:2.12.0'
 }
 
 group = 'com.example'

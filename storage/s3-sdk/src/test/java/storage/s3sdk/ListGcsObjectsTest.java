@@ -16,12 +16,11 @@
 
 package storage.s3sdk;
 
-import static org.junit.Assert.assertThat;
-
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.cloud.testing.junit4.StdOutCaptureRule;
 import java.util.Optional;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,6 +46,6 @@ public class ListGcsObjectsTest {
         hmacKey.getAccessSecretKey(),
         Optional.ofNullable(BUCKET).orElse(hmacKey.getProjectId()));
     String output = stdOut.getCapturedOutputAsUtf8String();
-    assertThat(output, CoreMatchers.containsString("Objects:"));
+    MatcherAssert.assertThat(output, CoreMatchers.containsString("Objects:"));
   }
 }
