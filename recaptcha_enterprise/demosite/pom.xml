@@ -49,7 +49,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20220320</version>
+      <version>20230227</version>
     </dependency>
 
 
@@ -112,6 +112,11 @@
       <artifactId>spring-boot</artifactId>
       <version>2.7.10</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <optional>true</optional>
     </dependency>
     <!-- end_Spring_dependencies -->
 
