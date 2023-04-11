@@ -48,6 +48,7 @@ import org.junit.Test;
 
 public class KeyVizArtTest {
 
+  private static final String INSTANCE_ENV = "BIGTABLE_TESTING_INSTANCE";
   private static final String TABLE_ID =
       "key-viz-" + UUID.randomUUID().toString().substring(0, 20);
   private static final String COLUMN_FAMILY_NAME = "cf";
@@ -69,7 +70,7 @@ public class KeyVizArtTest {
   @BeforeClass
   public static void beforeClass() {
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
-    instanceId = requireEnv("BIGTABLE_TESTING_INSTANCE");
+    instanceId = requireEnv(INSTANCE_ENV);
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Admin admin = connection.getAdmin();
       HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(TABLE_ID));
