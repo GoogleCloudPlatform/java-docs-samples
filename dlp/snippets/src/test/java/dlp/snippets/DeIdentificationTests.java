@@ -547,7 +547,7 @@ public class DeIdentificationTests extends TestBase {
   @Test
   public void testDeIdentifyWithDeterministicEncryption() throws IOException {
     DeIdenitfyWithDeterministicEncryption.deIdentifyWithDeterministicEncryption(
-        PROJECT_ID, "My SSN is 372819127", wrappedKey, kmsKeyName);
+        PROJECT_ID, "My SSN is 372819127", WRAPPED_KEY, KMS_KEY_NAME);
     String output = bout.toString();
     assertThat(output).contains("Text after de-identification:");
   }
