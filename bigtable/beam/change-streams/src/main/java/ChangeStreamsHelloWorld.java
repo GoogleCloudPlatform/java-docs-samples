@@ -73,10 +73,10 @@ public class ChangeStreamsHelloWorld {
     p.run();
   }
 
-  static List<String> mutationEntriesToString(KV<ByteString, ChangeStreamMutation> mutationKV) {
+  static List<String> mutationEntriesToString(KV<ByteString, ChangeStreamMutation> mutationPair) {
     List<String> mutations = new ArrayList<>();
-    String rowKey = mutationKV.getKey().toStringUtf8();
-    ChangeStreamMutation mutation = mutationKV.getValue();
+    String rowKey = mutationPair.getKey().toStringUtf8();
+    ChangeStreamMutation mutation = mutationPair.getValue();
     MutationType mutationType = mutation.getType();
     for (Entry entry : mutation.getEntries()) {
       if (entry instanceof SetCell) {
