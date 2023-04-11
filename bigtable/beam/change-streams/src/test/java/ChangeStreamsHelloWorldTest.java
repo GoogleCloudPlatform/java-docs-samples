@@ -29,6 +29,9 @@ import org.junit.Test;
 
 public class ChangeStreamsHelloWorldTest {
 
+  // This table needs to be created manually before running the test since there is no API to create
+  // change-stream enabled tables yet. For java-docs-samples, the table should already be created,
+  // but if deleted, run the create table command in the README.
   private static final String TABLE_ID = "change-stream-hello-world-test";
   private static final String COLUMN_FAMILY_NAME_1 = "cf1";
   private static final String COLUMN_FAMILY_NAME_2 = "cf2";
@@ -82,7 +85,7 @@ public class ChangeStreamsHelloWorldTest {
     dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey).deleteRow());
 
     // Wait for change to be captured.
-    Thread.sleep(15 * 1000);
+    Thread.sleep(30 * 1000);
 
     String output = bout.toString();
     assertThat(output).contains("USER,SetCell,cf1,col a,a");
