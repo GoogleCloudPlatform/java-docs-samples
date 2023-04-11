@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpStatus;
 
 // [START gae_flex_pubsub_publish]
-//@WebServlet(name = "Publish with PubSub", value = "/pubsub/publish")
+@WebServlet(name = "Publish with PubSub", value = "/pubsub/publish")
 public class PubSubPublish extends HttpServlet {
 
   @Override

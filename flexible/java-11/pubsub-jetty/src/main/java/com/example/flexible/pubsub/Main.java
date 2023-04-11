@@ -15,18 +15,17 @@
  */
 
 package com.example.flexible.pubsub;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import org.eclipse.jetty.webapp.Configuration.ClassList;
 import org.apache.tomcat.util.scan.StandardJarScanFilter;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
 import org.eclipse.jetty.jsp.JettyJspServlet;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.component.AbstractLifeCycle;
@@ -35,8 +34,8 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebInfConfiguration;
 
 /**
- * Starts up the server, including a DefaultServlet that handles static files,
- * and any servlet classes annotated with the @WebServlet annotation.
+ * Starts up the server, including a DefaultServlet that handles static files, and any servlet
+ * classes annotated with the @WebServlet annotation.
  */
 public class Main {
 
@@ -48,39 +47,24 @@ public class Main {
     server.setHandler(webAppContext);
 
     // Load static content from inside the jar file.
-    URL webAppDir =
-        Main.class.getClassLoader().getResource("WEB-INF/");
+    URL webAppDir = Main.class.getClassLoader().getResource("WEB-INF/");
     webAppContext.setResourceBase(webAppDir.toURI().toString());
 
     // Enable annotations so the server sees classes annotated with @WebServlet.
-    webAppContext.setConfigurations(new Configuration[]{ 
-      new AnnotationConfiguration(),
-      new WebInfConfiguration(), 
-    });
+    webAppContext.setConfigurations(
+        new Configuration[] {
+          new AnnotationConfiguration(), new WebInfConfiguration(),
+        });
 
-    // Look for annotations in the classes directory (dev server) and in the
-    // jar file (live server)
-    //webAppContext.setAttribute(
-    //    "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*/");
     webAppContext.setAttribute(
-        "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", 
+        "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
         ".*/target/classes/|.*\\.jar");
     enableEmbeddedJspSupport(webAppContext);
 
-
-    PubSubPush servlet = new PubSubPush();
-    webAppContext.addServlet(new ServletHolder(servlet), "/pubsub/push");
-    PubSubPublish pubsubservlet = new PubSubPublish();
-    webAppContext.addServlet(new ServletHolder(pubsubservlet), "/pubsub/publish");
-    // Handle static resources, e.g. html files.
-
     ServletHolder holderAltMapping = new ServletHolder();
-        holderAltMapping.setName("index.jsp");
-        holderAltMapping.setForcedPath("/index.jsp");
-        webAppContext.addServlet(holderAltMapping, "/");
-    
-    //webAppContext.addServlet(DefaultServlet.class, "/");
-
+    holderAltMapping.setName("index.jsp");
+    holderAltMapping.setForcedPath("/index.jsp");
+    webAppContext.addServlet(holderAltMapping, "/");
     // Start the server! 🚀
     server.start();
     System.out.println("Server started!");
@@ -89,16 +73,14 @@ public class Main {
     server.join();
   }
 
-private static void enableEmbeddedJspSupport(ServletContextHandler servletContextHandler) throws IOException
-  {
+  private static void enableEmbeddedJspSupport(ServletContextHandler servletContextHandler)
+      throws IOException {
     // Establish Scratch directory for the servlet context (used by JSP compilation)
     File tempDir = new File(System.getProperty("java.io.tmpdir"));
     File scratchDir = new File(tempDir.toString(), "embedded-jetty-jsp");
 
-    if (!scratchDir.exists())
-    {
-      if (!scratchDir.mkdirs())
-      {
+    if (!scratchDir.exists()) {
+      if (!scratchDir.mkdirs()) {
         throw new IOException("Unable to create scratch directory: " + scratchDir);
       }
     }
@@ -129,44 +111,37 @@ private static void enableEmbeddedJspSupport(ServletContextHandler servletContex
   /**
    * JspStarter for embedded ServletContextHandlers
    *
-   * This is added as a bean that is a jetty LifeCycle on the ServletContextHandler.
-   * This bean's doStart method will be called as the ServletContextHandler starts,
-   * and will call the ServletContainerInitializer for the jsp engine.
-   *
+   * <p>This is added as a bean that is a jetty LifeCycle on the ServletContextHandler. This bean's
+   * doStart method will be called as the ServletContextHandler starts, and will call the
+   * ServletContainerInitializer for the jsp engine.
    */
-  public static class JspStarter extends AbstractLifeCycle implements ServletContextHandler.ServletContainerInitializerCaller
-  {
+  public static class JspStarter extends AbstractLifeCycle
+      implements ServletContextHandler.ServletContainerInitializerCaller {
     JettyJasperInitializer sci;
     ServletContextHandler context;
 
-    public JspStarter (ServletContextHandler context)
-    {
+    public JspStarter(ServletContextHandler context) {
       this.sci = new JettyJasperInitializer();
       this.context = context;
-      //this.context.setAttribute("org.apache.tomcat.JarScanner", new StandardJarScanner());
       StandardJarScanner jarScanner = new StandardJarScanner();
-        StandardJarScanFilter jarScanFilter = new StandardJarScanFilter();
-        //jarScanFilter.setTldScan("taglibs-standard-impl-*");
-        jarScanFilter.setTldSkip("apache-*,ecj-*,jetty-*,asm-*,javax.servlet-*,javax.annotation-*,taglibs-standard-spec-*,*.jar");
-        jarScanner.setJarScanFilter(jarScanFilter);
-        this.context.setAttribute("org.apache.tomcat.JarScanner", jarScanner);
+      StandardJarScanFilter jarScanFilter = new StandardJarScanFilter();
+      String skip = "apache-*,ecj-*,jetty-*,asm-*,javax.servlet-*"
+          + ",javax.annotation-*,taglibs-standard-spec-*,*.jar";
+      jarScanFilter.setTldSkip(skip);
+      jarScanner.setJarScanFilter(jarScanFilter);
+      this.context.setAttribute("org.apache.tomcat.JarScanner", jarScanner);
     }
 
     @Override
-    protected void doStart() throws Exception
-    {
+    protected void doStart() throws Exception {
       ClassLoader old = Thread.currentThread().getContextClassLoader();
       Thread.currentThread().setContextClassLoader(context.getClassLoader());
-      try
-      {
+      try {
         sci.onStartup(null, context.getServletContext());
         super.doStart();
-      }
-      finally
-      {
+      } finally {
         Thread.currentThread().setContextClassLoader(old);
       }
     }
   }
-
 }

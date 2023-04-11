@@ -15,16 +15,17 @@
  */
 
 package com.example.cloudstorage;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @SpringBootApplication
 @ServletComponentScan("com.example.cloudstorage")
 public class Main {
-    public static void main(String[] args) throws Exception {
-        SpringApplication.run(Main.class, args);
-    }
+  public static void main(String[] args) throws Exception {
+    SpringApplication.run(Main.class, args);
+  }
 }

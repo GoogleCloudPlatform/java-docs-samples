@@ -23,14 +23,14 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.stream.Collectors;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // [START gae_flex_pubsub_push]
-//@WebServlet(value = "/pubsub/push")
+@WebServlet(value = "/pubsub/push")
 @MultipartConfig()
 public class PubSubPush extends HttpServlet {
 
