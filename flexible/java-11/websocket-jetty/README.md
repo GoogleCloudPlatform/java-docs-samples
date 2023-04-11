@@ -24,28 +24,6 @@ The sample also provides a Javascript [client](src/main/webapp/js_client.jsp)(`/
     gcloud appengine create
   ```
 
-## Local testing
-
-Run using the [Jetty Maven plugin](http://www.eclipse.org/jetty/documentation/9.4.x/jetty-maven-plugin.html).
-```
-mvn jetty:run
-```
-You can then direct your browser to `http://localhost:8080/`
-
-To test the Javascript client, access `http://localhost:8080/js_client.jsp`
-
-## App Engine Flex Deployment
-
-#### `app.yaml` Configuration
-
-App Engine Flex deployment configuration is provided in [app.yaml](src/main/appengine/app.yaml).
-
-Set the environment variable `JETTY_MODULES_ENABLE:websocket` to enable the Jetty websocket module on the Jetty server.
-
-Manual scaling is set to a single instance as we are using an in-memory cache of messages for this sample application.
-
-For more details on configuring your `app.yaml`, please refer to [this resource](https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml).
-
 #### Deploy
 
 The sample application is packaged as a war, and hence will be automatically run using the [Java 8/Jetty 9 with Servlet 3.1 Runtime](https://cloud.google.com/appengine/docs/flexible/java/dev-jetty9).

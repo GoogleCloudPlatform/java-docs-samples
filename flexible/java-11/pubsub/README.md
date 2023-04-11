@@ -31,24 +31,6 @@ gcloud pubsub subscriptions create <your-subscription-name> \
   https://<your-project-id>.appspot.com/pubsub/push?token=<your-verification-token> \
   --ack-deadline 30
 ```
-## Run
-
-Set the following environment variables and run using shown Maven command. You can then
-direct your browser to `http://localhost:8080/`
-
-```
-export PUBSUB_TOPIC=<your-topic-name>
-export PUBSUB_VERIFICATION_TOKEN=<your-verification-token>
-mvn jetty:run
-```
-
-
-### Send fake subscription push messages with:
-
-```
-curl -H "Content-Type: application/json" -i --data @sample_message.json
-"localhost:8080/pubsub/push?token=<your-token>"
-```
 
 ## Deploy
 

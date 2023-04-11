@@ -22,8 +22,6 @@ handlers:
 - url: /.*
   script: this field is required, but ignored
 
-env_variables:
-  JETTY_MODULES_ENABLE: websocket
 
 
 # For applications which can take advantage of session affinity
