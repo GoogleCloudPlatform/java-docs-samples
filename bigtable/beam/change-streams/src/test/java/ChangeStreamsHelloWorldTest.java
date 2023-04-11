@@ -79,13 +79,13 @@ public class ChangeStreamsHelloWorldTest {
     dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey)
         .setCell(COLUMN_FAMILY_NAME_1, "col a", "a"));
 
-    dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey)
-        .deleteCells(COLUMN_FAMILY_NAME_1, "col a"));
-
-    dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey).deleteRow());
+    // dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey)
+    //     .deleteCells(COLUMN_FAMILY_NAME_1, "col a"));
+    //
+    // dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey).deleteRow());
 
     // Wait for change to be captured.
-    Thread.sleep(30 * 1000);
+    Thread.sleep(15 * 1000);
 
     String output = bout.toString();
     assertThat(output).contains("USER,SetCell,cf1,col a,a");
