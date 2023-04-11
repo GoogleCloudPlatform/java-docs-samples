@@ -31,7 +31,6 @@ import java.io.IOException;
 
 // [START dlp_inspect_augment_infotypes]
 
-
 public class InspectStringAugmentInfoType {
 
   public static void main(String[] args) throws Exception {
@@ -46,8 +45,8 @@ public class InspectStringAugmentInfoType {
   }
 
   // Inspects the provided text.
-  public static void inspectStringAugmentInfoType(String projectId, String textToInspect, String textToAugment)
-      throws IOException {
+  public static void inspectStringAugmentInfoType(
+      String projectId, String textToInspect, String textToAugment) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -68,7 +67,8 @@ public class InspectStringAugmentInfoType {
               .build();
 
       InfoType infoType = InfoType.newBuilder().setName("PERSON_NAME").build();
-      //  Construct a custom infotype detector by augmenting the PERSON_NAME detector with a word list
+      //  Construct a custom infotype detector by augmenting the PERSON_NAME detector with a word
+      // list
       CustomInfoType customInfoType =
           CustomInfoType.newBuilder().setInfoType(infoType).setDictionary(wordList).build();
 
@@ -101,4 +101,3 @@ public class InspectStringAugmentInfoType {
 }
 
 // [END dlp_inspect_augment_infotypes]
-
