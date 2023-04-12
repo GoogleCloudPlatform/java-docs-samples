@@ -40,7 +40,7 @@ public class DeIdentifyTableWithBucketingConfig {
 
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
-    String projectId = "bdp-2059-is-31084";
+    String projectId = "your-project-id";
     // Specify the table to be considered for de-identification.
     Table tableToDeIdentify =
         Table.newBuilder()
