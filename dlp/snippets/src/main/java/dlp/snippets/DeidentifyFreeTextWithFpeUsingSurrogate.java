@@ -53,12 +53,12 @@ public class DeidentifyFreeTextWithFpeUsingSurrogate {
   }
 
   /**
-   * Uses the Data Loss Prevention API to deidentify sensitive data in a string using
-   * Format Preserving Encryption (FPE).The encryption is performed with an unwrapped key.
-   * @param projectId: The Google Cloud project id to use as a parent resource.
-   * @param textToDeIdentify: The string to deidentify.
-   * @param unwrappedKey: The base64-encoded AES-256 key to use.
-   * @throws IOException
+   * Uses the Data Loss Prevention API to deidentify sensitive data in a string using Format
+   * Preserving Encryption (FPE).The encryption is performed with an unwrapped key.
+   *
+   * @param projectId The Google Cloud project id to use as a parent resource.
+   * @param textToDeIdentify The string to deidentify.
+   * @param unwrappedKey The base64-encoded AES-256 key to use.
    */
   public static void deIdentifyWithFpeSurrogate(
       String projectId, String textToDeIdentify, String unwrappedKey) throws IOException {
