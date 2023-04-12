@@ -62,17 +62,19 @@ public class FraudDetectionTestUtil {
     String line;
     while ((line = reader.readLine()) != null) {
       System.out.println(line);
-      if (line.contains("pubsub_input_topic = ") && !line.contains(UNKNOWN_VALUE)) {
+      if (line.contains(UNKNOWN_VALUE)) {
+        continue;
+      } else if (line.contains("pubsub_input_topic = ")) {
         StreamingPipelineTest.pubsubInputTopic = line.split("\"")[1];
-      } else if (line.contains("pubsub_output_topic = ") && !line.contains(UNKNOWN_VALUE)) {
+      } else if (line.contains("pubsub_output_topic = ")) {
         StreamingPipelineTest.pubsubOutputTopic = line.split("\"")[1];
-      } else if (line.contains("pubsub_output_subscription = ") && !line.contains(UNKNOWN_VALUE)) {
+      } else if (line.contains("pubsub_output_subscription = ")) {
         StreamingPipelineTest.pubsubOutputSubscription = line.split("\"")[1];
-      } else if (line.contains("gcs_bucket = ") && !line.contains(UNKNOWN_VALUE)) {
+      } else if (line.contains("gcs_bucket = ")) {
         StreamingPipelineTest.gcsBucket = line.split("\"")[1];
-      } else if (line.contains("cbt_instance = ") && !line.contains(UNKNOWN_VALUE)) {
+      } else if (line.contains("cbt_instance = ")) {
         StreamingPipelineTest.cbtInstanceID = line.split("\"")[1];
-      } else if (line.contains("cbt_table = ") && !line.contains(UNKNOWN_VALUE)) {
+      } else if (line.contains("cbt_table = ")) {
         StreamingPipelineTest.cbtTableID = line.split("\"")[1];
       }
     }
