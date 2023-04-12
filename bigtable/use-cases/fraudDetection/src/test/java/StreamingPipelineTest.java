@@ -58,7 +58,7 @@ public class StreamingPipelineTest {
     assertThat(
         FraudDetectionTestUtil.runCommand(
             "terraform -chdir=terraform/ init")).isEqualTo(0);
-    assertThat(
+          assertThat(
         FraudDetectionTestUtil.runCommand(
             "terraform -chdir=terraform/ apply -auto-approve -var=project_id="
                 + projectID)).isEqualTo(0);
@@ -88,6 +88,7 @@ public class StreamingPipelineTest {
 
   // Check if Cloud Bigtable was populated with the simulated data.
   @Test
+  @SuppressWarnings("unused")
   public void testCBT() {
     System.out.println("Running testCBT");
 
