@@ -7,11 +7,11 @@
 # - Add new entry in alphabatical order under the team name
 # - Add common Github team owners first followed by specific ones
 # - Always add Github teams as owners instead of individual usernames
-# - Ensure that go/jds-codeowners file is up to date
+# - Ensure that go/dee-codeowners file is up to date
 ########################################################################
 
 ########################################################################
-# Use go/jds-codeowners and lookup by samples folder name to find who
+# Use go/dee-codeowners and lookup by samples folder name to find who
 # to reach out regarding a certain sample
 ########################################################################
 
