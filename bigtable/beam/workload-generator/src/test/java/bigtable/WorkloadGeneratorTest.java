@@ -184,11 +184,7 @@ public class WorkloadGeneratorTest {
       startRequestCount = ts.getPoints(0).getValue().getInt64Value();
       endRequestCount = ts.getPoints(ts.getPointsCount() - 1).getValue().getInt64Value();
     }
-    String out = "start request count = "+ startRequestCount;
-    out += "\n";
-    out += "end request count = " + endRequestCount;
 
-    assertThat(out).isNull();
     assertThat(endRequestCount - startRequestCount > rate).isTrue();
 
     // Ensure the job is stopped after duration.
