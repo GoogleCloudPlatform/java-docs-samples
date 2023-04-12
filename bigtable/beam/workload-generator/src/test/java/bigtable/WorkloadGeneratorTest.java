@@ -189,7 +189,12 @@ public class WorkloadGeneratorTest {
     if (!gotMoreRequesst) {
       String out = "start request count = " + startRequestCount;
       out += "\n";
+      out += "start time = " + Timestamps.fromMillis(startMillis);
+      out += "\n";
       out += "end request count = " + endRequestCount;
+      out += "\n";
+      out += "end time = " + Timestamps.fromMillis(System.currentTimeMillis());
+      out += "\n";
       out += "gotMoreRequesst = " + gotMoreRequesst;
       assertThat(out).isNull();
     }
