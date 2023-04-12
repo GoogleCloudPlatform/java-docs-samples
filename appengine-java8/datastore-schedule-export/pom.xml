@@ -31,7 +31,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>2.0.5</version>
+      <version>2.0.12</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -48,14 +48,14 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20220320</version>
+      <version>20230227</version>
     </dependency>
 
     <!-- Test Dependencies -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>2.0.5</version>
+      <version>2.0.12</version>
       <scope>test</scope>
     </dependency>
     <dependency>

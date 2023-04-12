@@ -24,22 +24,28 @@ import com.google.cloud.tasks.v2.QueueName;
 import com.google.cloud.tasks.v2.Task;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Timestamp;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Clock;
 import java.time.Instant;
 
 public class CreateTask {
-  public static void main(String... args) throws Exception {
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String queue = "my-appengine-queue";
+    String location = "us-central1";
+    String payload = "hello";
+    int seconds = 0; // Scheduled delay for the task in seconds
+    createTask(projectId, queue, location, payload, seconds);
+  }
+
+  // This is an example snippet for showing best practices.
+  public static void createTask(
+      String projectId, String queueName, String location, String payload, int seconds)
+      throws IOException {
     // Instantiates a client.
     try (CloudTasksClient client = CloudTasksClient.create()) {
-      // Variables provided by system variables.
-      String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
-      String queueName = System.getenv("QUEUE_ID");
-      String location = System.getenv("LOCATION_ID");
-      // Optional variables.
-      String payload = "hello";
-      int seconds = 0; // Scheduled delay for the task in seconds
-
       // Construct the fully qualified queue name.
       String queuePath = QueueName.of(projectId, location, queueName).toString();
 

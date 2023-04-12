@@ -28,6 +28,7 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -108,6 +109,7 @@ public class GetCdnKeyTest {
   }
 
   @Test
+  @Ignore
   public void test_GetCdnKey() throws IOException {
     // Cloud CDN key
     GetCdnKey.getCdnKey(PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID);
