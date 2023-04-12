@@ -184,8 +184,14 @@ public class WorkloadGeneratorTest {
       startRequestCount = ts.getPoints(0).getValue().getInt64Value();
       endRequestCount = ts.getPoints(ts.getPointsCount() - 1).getValue().getInt64Value();
     }
+    String out = "start request count = "+ startRequestCount;
+    out += "\n";
+    out += "end request count = " + endRequestCount;
+    boolean gotMoreRequesst = endRequestCount - startRequestCount > rate;
+    out += "gotMoreRequesst = "+ gotMoreRequesst;
 
-    assertThat(endRequestCount - startRequestCount > rate).isTrue();
+    assertThat(out).isNull();
+    assertThat(gotMoreRequesst).isTrue();
 
     // Ensure the job is stopped after duration.
     String jobId = ((DataflowPipelineJob) pipelineResult).getJobId();
