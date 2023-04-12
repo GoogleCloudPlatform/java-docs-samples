@@ -142,7 +142,7 @@ public class WorkloadGeneratorTest {
   public void testPipeline() throws IOException, InterruptedException {
     String workloadJobName = "bigtable-workload-generator-test-" + new Date().getTime();
     final int WORKLOAD_DURATION = 10;
-    final int WAIT_DURATION = WORKLOAD_DURATION * 60 * 1000;
+    final int WAIT_DURATION = (WORKLOAD_DURATION - 1) * 60 * 1000;
     int rate = 1000;
 
     BigtableWorkloadOptions options = PipelineOptionsFactory.create()
@@ -180,14 +180,19 @@ public class WorkloadGeneratorTest {
 
     long startRequestCount = 0;
     long endRequestCount = 0;
+    String timeseries = "timeseries";
     for (TimeSeries ts : response.iterateAll()) {
       startRequestCount = ts.getPoints(0).getValue().getInt64Value();
       endRequestCount = ts.getPoints(ts.getPointsCount() - 1).getValue().getInt64Value();
+      timeseries += "\nstart request count " + startRequestCount;
+      timeseries += "\nend request count " + endRequestCount;
     }
     boolean gotMoreRequesst = endRequestCount - startRequestCount > rate;
 
     if (!gotMoreRequesst) {
-      String out = "start request count = " + startRequestCount;
+      String out = "";
+
+      out += "start request count = " + startRequestCount;
       out += "\n";
       out += "start time = " + Timestamps.fromMillis(startMillis);
       out += "\n";
@@ -196,6 +201,9 @@ public class WorkloadGeneratorTest {
       out += "end time = " + Timestamps.fromMillis(System.currentTimeMillis());
       out += "\n";
       out += "gotMoreRequesst = " + gotMoreRequesst;
+      out += "\n";
+      out += timeseries;
+
       assertThat(out).isNull();
     }
 
