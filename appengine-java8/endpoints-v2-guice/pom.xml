@@ -115,7 +115,7 @@
           <!-- plugin configuration -->
           <hostname>${endpoints.project.id}.appspot.com</hostname>
           <serviceClasses>
-            <serviceClass>com.example.appengine-java8.Echo</serviceClass>
+            <serviceClass>com.example.echo.Echo</serviceClass>
           </serviceClasses>
         </configuration>
       </plugin>
