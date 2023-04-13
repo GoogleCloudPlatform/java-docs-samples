@@ -50,13 +50,13 @@ version. Change this field to specify a specific version name.
 
     mvn package appengine:run
 
-To use vist: http://localhost:8080/
+To use visit: http://localhost:8080/
 
 ### Deploying
 
     mvn package appengine:deploy
 
-To use vist:  https://YOUR-PROJECT-ID.appspot.com
+To use visit:  https://YOUR-PROJECT-ID.appspot.com
 
 ## Gradle
 ### Running locally
@@ -65,7 +65,7 @@ To use vist:  https://YOUR-PROJECT-ID.appspot.com
 
 If you do not have gradle installed, you can run using `./gradlew appengineRun`.
 
-To use vist: http://localhost:8080/
+To use visit: http://localhost:8080/
 
 ### Deploying
 
@@ -73,7 +73,7 @@ To use vist: http://localhost:8080/
 
 If you do not have gradle installed, you can deploy using `./gradlew appengineDeploy`.
 
-To use vist:  https://YOUR-PROJECT-ID.appspot.com
+To use visit:  https://YOUR-PROJECT-ID.appspot.com
 
 ## Testing
 

@@ -48,13 +48,13 @@ version. Change this field to specify a specific version name.
 
 `mvn package appengine:run`
 
-To use vist: http://localhost:8080/
+To use visit: http://localhost:8080/
 
 ### Deploying
 
 `mvn package appengine:deploy`
 
-To use vist:  https://YOUR-PROJECT-ID.appspot.com
+To use visit:  https://YOUR-PROJECT-ID.appspot.com
 
 ## Testing
 

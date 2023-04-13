@@ -5,7 +5,7 @@
 
 ## Oauth2 Sample
 
-This sample demonstrates using the Oauth2 apis to create an authenticaion filter.
+This sample demonstrates using the Oauth2 apis to create an authentication filter.
 
 See the [Google App Engine standard environment documentation][ae-docs] for more
 detailed instructions.
@@ -13,7 +13,7 @@ detailed instructions.
 
 ## Setup
 1. In the [Cloud Developers Console](https://cloud.google.com/console) > API Manager > Credentials,
-create a Oauth Client ID for a Web Application.  You will need to provide an authroized JavaScript
+create a Oauth Client ID for a Web Application.  You will need to provide an authorized JavaScript
 origin.  Typically, https://projectID.appspot.com.
 1. Edit `src/main/webapp/index.html` and change `YOUR_CLIENT_ID_HERE.apps.googleusercontent.com` to
 Client ID from the prior step.

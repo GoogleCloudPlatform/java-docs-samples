@@ -17,7 +17,7 @@ using the [Remote API](https://cloud.google.com/appengine/docs/java/tools/remote
 1. Package the app as a jar
    `mvn clean package`
 1. Navigate to the target directory
-1. Excute the jar file with the server connection string as the first argument
+1. Execute the jar file with the server connection string as the first argument
    1. If you deployed the app, it should be "YOUR-APP-ID.appspot.com"
    1. If you are running on the development server, it should be "localhost:8080"
    java -jar appengine-remote-client-1.0-SNAPSHOT-jar-with-dependencies.jar "YOUR-APP-NAME"

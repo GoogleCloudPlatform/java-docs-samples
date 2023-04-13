@@ -6,7 +6,7 @@
 This sample demonstrates how to use [Mailjet](https://www.mailjet.com/) on
 [Google Compute Engine](https://cloud.google.com/compute/)
 
-See the [sample application documentaion][sample-docs] for more detailed
+See the [sample application documentation][sample-docs] for more detailed
 instructions.
 
 For more information about Mailjet, see their

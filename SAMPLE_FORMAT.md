@@ -152,7 +152,7 @@ mind when setting up tests.
   in your PR.
 
 * **IAM**
-  Some API's require that the service account have some additional capibilities. These should also
+  Some API's require that the service account have some additional capabilities. These should also
   be mentioned in both the PR and the README.
 
 * **Cloud resources**  
@@ -378,7 +378,7 @@ public static void exampleSnippet(String projectId, String filePath) {
 ### Exception Handling
 Samples should include examples and details of how to catch and handle common `Exceptions` that are
 the result of improper interactions with the client or service. Lower level exceptions that are 
-the result of environment or hardware errors (such as `IOException`, `InteruptedException`, or 
+the result of environment or hardware errors (such as `IOException`, `InterruptedException`, or 
 `FileNotFoundException`) should be allowed to bubble up to the next level.
 
 If there is no solution (or if the solution is too verbose to resolve in a sample) to resolving the

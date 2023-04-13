@@ -6,7 +6,7 @@
 This sample demonstrates how to use [SendGrid](https://www.sendgrid.com) on
 [Google Compute Engine](https://cloud.google.com/compute/)
 
-See the [sample application documentaion][sample-docs] for more detailed
+See the [sample application documentation][sample-docs] for more detailed
 instructions.
 
 For more information about SendGrid, see their

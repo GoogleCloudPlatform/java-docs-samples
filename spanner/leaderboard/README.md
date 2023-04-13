@@ -24,7 +24,7 @@ If you only want to run the complete sample refer to the application in the `com
     [Click here](https://console.cloud.google.com/flows/enableapi?apiid=spanner.googleapis.com&showconfirmation=true)
     to visit Cloud Platform Console and enable the Google Cloud Spanner API.
 
-3.  Create a Cloud Spanner instance via the Cloud Plaform Console's
+3.  Create a Cloud Spanner instance via the Cloud Platform Console's
     [Cloud Spanner section](http://console.cloud.google.com/spanner).
 
 4.  In a terminal shell, change directory to the version of the application you want to run:

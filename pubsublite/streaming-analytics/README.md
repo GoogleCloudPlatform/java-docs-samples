@@ -29,7 +29,7 @@ Resources needed for this example:
    - `roles/pubsublite.subscriber`
    - `roles/logging.viewer`
 
-   Then [create](https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-gcloud) a service account key and point  `GOOGLE_APPLICATION_CREDNETIALS` to your downloaded key file.
+   Then [create](https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-gcloud) a service account key and point  `GOOGLE_APPLICATION_CREDENTIALS` to your downloaded key file.
 ```sh
 export GOOGLE_APPLICATION_CREDENTIALS=path/to/your/key/file
 ```
