@@ -37,6 +37,6 @@ fi
 
 git config --global --add safe.directory $PWD
 
-git diff-tree --no-commit-id --name-only -r pull_branch
+btlr "${opts[@]}" run "**/pom.xml" -- echo $(pwd)
 
 btlr "${opts[@]}" run "**/pom.xml" -- mvn -P lint --quiet --batch-mode checkstyle:check
