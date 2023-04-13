@@ -16,8 +16,7 @@
 -->
 <!-- [START opencensus_pom] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
   <groupId>com.example.opencensus</groupId>
@@ -41,7 +40,7 @@
     <opencensus.version>0.31.1</opencensus.version>
   </properties>
 
- <!--  Using libraries-bom to manage versions.
+  <!--  Using libraries-bom to manage versions.
   See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
   <dependencyManagement>
     <dependencies>
