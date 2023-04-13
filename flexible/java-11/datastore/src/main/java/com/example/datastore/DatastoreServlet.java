@@ -57,8 +57,9 @@ public class DatastoreServlet extends HttpServlet {
     }
 
     Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
-    KeyFactory keyFactory = datastore.newKeyFactory().setKind("visit");
-    IncompleteKey key = keyFactory.setKind("visit").newKey();
+    KeyFactory keyFactory = datastore.newKeyFactory();
+    keyFactory.setKind("visit");
+    IncompleteKey key = keyFactory.newKey();
 
     // Record a visit to the datastore, storing the IP and timestamp.
     FullEntity<IncompleteKey> curVisit =
