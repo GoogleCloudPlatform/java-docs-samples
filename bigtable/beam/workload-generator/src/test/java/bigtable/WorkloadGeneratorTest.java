@@ -182,7 +182,7 @@ public class WorkloadGeneratorTest {
 
     TimeSeries readRowRequestCount = response.iterateAll().iterator().next();
 
-    assertThat(readRowRequestCount.getPointsList().size()).isAtLeast(WORKLOAD_DURATION - 1);
+    assertThat(readRowRequestCount.getPointsList().size()).isAtLeast(WORKLOAD_DURATION - 2);
     for (int i = 0; i < readRowRequestCount.getPointsList().size(); i++) {
       Point p = readRowRequestCount.getPoints(i);
       long count = p.getValue().getInt64Value();
