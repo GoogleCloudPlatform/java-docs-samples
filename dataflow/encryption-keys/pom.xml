@@ -25,7 +25,7 @@
     <version>1.2.0</version>
   </parent>
 
-  <groupId>com.example</groupId>
+  <groupId>com.example.dataflow</groupId>
   <artifactId>dataflow-bigquery-kms-key</artifactId>
   <version>1.0</version>
 
@@ -74,7 +74,7 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
-              <mainClass>com.example.dataflow.templates.WordCount</mainClass>
+              <mainClass>com.example.dataflow.dataflow.templates.WordCount</mainClass>
             </manifest>
           </archive>
         </configuration>
