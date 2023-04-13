@@ -21,9 +21,6 @@ Before you can run or deploy the sample, you will need to do the following:
   ```
 4. Update the bucket name in `src/main/appengine/app.yaml`. This makes the bucket name an environment variable in deployment. You still need to set the environment variable when running locally, as shown below.
 
-## Running locally
-    $ export BUCKET_NAME=[your-bucket-name]
-    $ mvn clean jetty:run
 
 ## Deploying
     $ mvn clean package appengine:deploy
