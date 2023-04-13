@@ -17,6 +17,8 @@
 # `-o pipefail` sets the exit code to the rightmost comment to exit with a non-zero
 set -eo pipefail
 
+set -x
+
 # If on kokoro, add btlr to the path and cd into repo root
 if [ -n "$KOKORO_GFILE_DIR" ]; then
   bltr_dir="$KOKORO_GFILE_DIR/v0.0.2/"
