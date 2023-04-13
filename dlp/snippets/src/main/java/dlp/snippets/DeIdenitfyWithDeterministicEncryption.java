@@ -51,7 +51,7 @@ public class DeIdenitfyWithDeterministicEncryption {
     String wrappedKey = "YOUR_ENCRYPTED_AES_256_KEY";
     // The name of the Cloud KMS key used to encrypt ('wrap') the AES-256 key.
     String kmsKeyName =
-        "projects/YOUR_PROJECT/"
+                        "projects/YOUR_PROJECT/"
             + "locations/YOUR_KEYRING_REGION/"
             + "keyRings/YOUR_KEYRING_NAME/"
             + "cryptoKeys/YOUR_KEY_NAME";

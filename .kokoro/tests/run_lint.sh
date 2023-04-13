@@ -35,4 +35,6 @@ if [ -n "$GIT_DIFF" ]; then
   )
 fi
 
+git diff-tree --no-commit-id --name-only -r pull_branch
+
 btlr "${opts[@]}" run "**/pom.xml" -- mvn -P lint --quiet --batch-mode checkstyle:check
