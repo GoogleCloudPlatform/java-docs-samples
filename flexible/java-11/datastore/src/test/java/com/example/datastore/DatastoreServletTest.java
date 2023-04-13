@@ -16,21 +16,16 @@
 
 package com.example.managedvms.datastore;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.eq;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.io.BufferedReader;
-import java.io.*;
 
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import org.junit.jupiter.api.Test;
-import static org.junit.Assert.assertTrue;
-//import org.junit.Test;
 
 public class DatastoreServletTest {
 
@@ -39,13 +34,13 @@ public class DatastoreServletTest {
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);
     StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
-        when(response.getWriter()).thenReturn(writer);
-    
+    PrintWriter writer = new PrintWriter(stringWriter);
+    when(response.getWriter()).thenReturn(writer);
+
     BufferedReader reader = mock(BufferedReader.class);
-    when (request.getReader()).thenReturn(reader);
-    when (request.getRemoteAddr()).thenReturn("9.9.9.9");
-    
+    when(request.getReader()).thenReturn(reader);
+    when(request.getRemoteAddr()).thenReturn("9.9.9.9");
+
     DatastoreServlet servlet = new DatastoreServlet();
     servlet.doGet(request, response);
     assertTrue(stringWriter.toString().contains("Addr: 9.9."));

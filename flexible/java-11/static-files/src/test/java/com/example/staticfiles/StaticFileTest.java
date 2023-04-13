@@ -16,11 +16,9 @@
 
 package com.example.staticfiles;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +34,6 @@ public class StaticFileTest {
 
   @Test
   public void testHelloWorld() throws Exception {
-    this.mockMvc
-        .perform(get("/"))
-        .andExpect(status().isOk())
-        .andExpect(forwardedUrl("index.html"));
-        //.andExpect(content().string(containsString("Hello world!")));
+    this.mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(forwardedUrl("index.html"));
   }
 }
