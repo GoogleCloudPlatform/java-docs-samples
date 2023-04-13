@@ -25,6 +25,7 @@ import com.google.api.services.dataflow.model.Job;
 import com.google.bigtable.repackaged.com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.bigtable.repackaged.com.google.cloud.monitoring.v3.MetricServiceClient.ListTimeSeriesPagedResponse;
 import com.google.bigtable.repackaged.com.google.monitoring.v3.ListTimeSeriesRequest;
+import com.google.bigtable.repackaged.com.google.monitoring.v3.Point;
 import com.google.bigtable.repackaged.com.google.monitoring.v3.ProjectName;
 import com.google.bigtable.repackaged.com.google.monitoring.v3.TimeInterval;
 import com.google.bigtable.repackaged.com.google.monitoring.v3.TimeSeries;
@@ -141,7 +142,7 @@ public class WorkloadGeneratorTest {
   @Test
   public void testPipeline() throws IOException, InterruptedException {
     String workloadJobName = "bigtable-workload-generator-test-" + new Date().getTime();
-    final int WORKLOAD_DURATION = 10;
+    final int WORKLOAD_DURATION = 5;
     final int WAIT_DURATION = (WORKLOAD_DURATION) * 60 * 1000;
     int rate = 1000;
 
@@ -180,12 +181,38 @@ public class WorkloadGeneratorTest {
     ListTimeSeriesPagedResponse response = metricServiceClient.listTimeSeries(request);
 
     TimeSeries readRowRequestCount = response.iterateAll().iterator().next();
-    long startRequestCount = readRowRequestCount.getPoints(0).getValue().getInt64Value();
-    long endRequestCount = readRowRequestCount.getPoints(readRowRequestCount.getPointsCount() - 1)
-        .getValue().getInt64Value();
 
-    boolean gotMoreRequests = endRequestCount - startRequestCount > rate;
-    assertThat(gotMoreRequests).isTrue();
+    assertThat(readRowRequestCount.getPointsList().size()).isAtLeast(WORKLOAD_DURATION - 1);
+    for (int i = 0; i < readRowRequestCount.getPointsList().size(); i++) {
+      Point p = readRowRequestCount.getPoints(i);
+      long count = p.getValue().getInt64Value();
+      long duration =
+          p.getInterval().getEndTime().getSeconds() - p.getInterval().getStartTime().getSeconds();
+
+      // Ensure request is at above 90% of desired rate
+      System.out.println("readcount is " + count);
+      assertThat(count).isGreaterThan((int) (.9 * rate * duration));
+    }
+
+    // long startRequestCount = readRowRequestCount.getPoints(0).getValue().getInt64Value();
+    // long endRequestCount = readRowRequestCount.getPoints(readRowRequestCount.getPointsCount() - 1)
+    //     .getValue().getInt64Value();
+    //
+    // boolean gotMoreRequests = endRequestCount - startRequestCount > rate;
+    // if (!gotMoreRequests) {
+    //   String out = "";
+    //   out += "start request count = " + startRequestCount;
+    //   out += "\n";
+    //   out += "start time = " + Timestamps.fromMillis(startMillis);
+    //   out += "\n";
+    //   out += "end request count = " + endRequestCount;
+    //   out += "\n";
+    //   out += "end time = " + Timestamps.fromMillis(System.currentTimeMillis());
+    //   out += "\n";
+    //   out += readRowRequestCount.toString();
+    //   assertThat(out).isNotNull();
+    // }
+    // assertThat(gotMoreRequests).isTrue();
 
     // Ensure the job is stopped after duration.
     String jobId = ((DataflowPipelineJob) pipelineResult).getJobId();
