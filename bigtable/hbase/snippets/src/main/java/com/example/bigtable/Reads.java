@@ -237,6 +237,37 @@ public class Reads {
   }
   // [END bigtable_reads_prefix_hbase]
 
+  // [START bigtable_reverse_scan_hbase]
+  public static void readRowsReversed() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    readPrefix(projectId, instanceId, tableId);
+  }
+
+  public static void readRowsReversed(String projectId, String instanceId, String tableId) {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      Table table = connection.getTable(TableName.valueOf(tableId));
+      Scan prefixScan = new Scan()
+          .setReversed(true)
+          .setLimit(2)
+          .setRowPrefixFilter(Bytes.toBytes("phone#4c410523"))
+      ResultScanner rows = table.getScanner(prefixScan);
+
+      for (Result row : rows) {
+        printRow(row);
+      }
+    } catch (IOException e) {
+      System.out.println(
+          "Unable to initialize service client, as a network error occurred: \n" + e.toString());
+    }
+  }
+  // [END bigtable_reverse_scan_hbase]
+
   // [START bigtable_reads_filter_hbase]
   public static void readFilter() {
     // TODO(developer): Replace these variables before running the sample.
