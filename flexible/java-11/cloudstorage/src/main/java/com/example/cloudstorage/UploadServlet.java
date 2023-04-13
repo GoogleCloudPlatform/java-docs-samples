@@ -41,8 +41,7 @@ public class UploadServlet extends HttpServlet {
   private static final String BUCKET_NAME = System.getenv("BUCKET_NAME");
   private static Storage storage = null;
 
-  @Override
-  public void init() {
+  public UploadServlet() {
     storage = StorageOptions.getDefaultInstance().getService();
   }
 
@@ -51,7 +50,6 @@ public class UploadServlet extends HttpServlet {
       throws IOException, ServletException {
     final Part filePart = req.getPart("file");
     final String fileName = filePart.getSubmittedFileName();
-
     // Modify access list to allow all users with link to read file
     List<Acl> acls = new ArrayList<>();
     acls.add(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
