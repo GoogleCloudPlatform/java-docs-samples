@@ -29,7 +29,9 @@ import java.util.List;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 /**
  * Copyright 2023 Google Inc.
@@ -48,6 +50,7 @@ import org.junit.Test;
 public class PubSubPushTest {
 
   @Test
+  @SetEnvironmentVariable(key = "PUBSUB_VERIFICATION_TOKEN", value = "token")
   public void messageReceivedOverPushEndPointIsSaved() throws Exception {
     MessageRepository messageRepository = mock(MessageRepository.class);
     List<Message> messages = new ArrayList<>();
@@ -57,9 +60,8 @@ public class PubSubPushTest {
       }
     ).when(messageRepository).save(any(Message.class));
     HttpServletRequest request = mock(HttpServletRequest.class);
-    assertNotNull(System.getenv("PUBSUB_VERIFICATION_TOKEN"));
     when(request.getParameter("token"))
-        .thenReturn(System.getenv("PUBSUB_VERIFICATION_TOKEN"));
+        .thenReturn("token");
 
     HttpServletResponse response = mock(HttpServletResponse.class);
     BufferedReader reader = mock(BufferedReader.class);
