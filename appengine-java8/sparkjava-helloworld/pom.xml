@@ -19,8 +19,8 @@ limitations under the License.
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>sparkjava-hello-world</groupId>
-  <artifactId>sparkjava-hello-world-java8-war-standard</artifactId>
+  <groupId>com.example.appengine</groupId>
+  <artifactId>sparkjava-java8-war-standard</artifactId>
   <version>1.0</version>
   <packaging>war</packaging>
 

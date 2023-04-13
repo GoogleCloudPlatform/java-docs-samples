@@ -19,7 +19,7 @@ Copyright 2019 Google LLC
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <version>1.0-SNAPSHOT</version>
-  <groupId>com.example.task</groupId>
+  <groupId>com.example.appengine</groupId>
   <artifactId>cloud-tasks-snippets</artifactId>
 
   <!--

@@ -20,7 +20,7 @@ limitations under the License.
   <packaging>war</packaging>
   <version>0.1-SNAPSHOT</version>
 
-  <groupId>com.example.google.cloud.bigtable</groupId>
+  <groupId>com.example.appengine</groupId>
   <artifactId>bigtable-hello-j8</artifactId>
 
   <!--

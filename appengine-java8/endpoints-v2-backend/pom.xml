@@ -20,7 +20,7 @@
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
 
-  <groupId>com.example.echo</groupId>
+  <groupId>com.example.appengine</groupId>
   <artifactId>echo-j8</artifactId>
 
   <!--
