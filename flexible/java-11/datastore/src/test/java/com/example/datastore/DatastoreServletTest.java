@@ -16,31 +16,26 @@
 
 package com.example.managedvms.datastore;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.cloud.datastore.Datastore;
+import com.google.cloud.datastore.DatastoreOptions;
+import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.FullEntity;
+import com.google.cloud.datastore.IncompleteKey;
+import com.google.cloud.datastore.KeyFactory;
+import com.google.cloud.datastore.Query;
+import com.google.cloud.datastore.QueryResults;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import com.google.cloud.datastore.Datastore;
-import com.google.cloud.datastore.DatastoreOptions;
-import com.google.cloud.datastore.IncompleteKey;
-import com.google.cloud.datastore.KeyFactory;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
-
-import com.google.cloud.datastore.QueryResults;
-
-import com.google.cloud.datastore.Query;
 import org.mockito.MockedStatic;
-
-import com.google.cloud.datastore.Entity;
-import com.google.cloud.datastore.FullEntity;
 import org.mockito.Mockito;
 
 public class DatastoreServletTest {
@@ -62,7 +57,7 @@ public class DatastoreServletTest {
     when(mockdatastore.newKeyFactory()).thenReturn(mockKeyFactory);
 
     IncompleteKey mockKey = Mockito.mock(IncompleteKey.class);
-    when (mockKeyFactory.newKey()).thenReturn(mockKey);
+    when(mockKeyFactory.newKey()).thenReturn(mockKey);
     QueryResults<Entity> results = mock(QueryResults.class);
     when(results.hasNext()).thenReturn(false);
     when(mockdatastore.run(any(Query.class))).thenReturn(results);
@@ -70,7 +65,7 @@ public class DatastoreServletTest {
     MockedStatic<DatastoreOptions> datastoreOptionsMock =
         Mockito.mockStatic(DatastoreOptions.class, Mockito.RETURNS_DEEP_STUBS);
 
-        datastoreOptionsMock
+    datastoreOptionsMock
         .when(() -> DatastoreOptions.getDefaultInstance().getService())
         .thenReturn(mockdatastore);
     DatastoreServlet servlet = new DatastoreServlet();
