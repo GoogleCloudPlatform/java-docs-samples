@@ -32,7 +32,6 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class SignedUrls {
 
-  // [START signUrl]
   // [START cloudcdn_sign_url]
   /**
    * Creates a signed URL for a Cloud CDN endpoint with the given key
@@ -75,7 +74,6 @@ public class SignedUrls {
     return  Base64.getUrlEncoder().encodeToString(mac.doFinal(input.getBytes()));
   }
   // [END cloudcdn_sign_url]
-  // [END signUrl]
 
   public static void main(String[] args) throws Exception {
     Calendar cal = Calendar.getInstance();

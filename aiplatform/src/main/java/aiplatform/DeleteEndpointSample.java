@@ -54,6 +54,8 @@ public class DeleteEndpointSample {
       String location = "us-central1";
       EndpointName endpointName = EndpointName.of(project, location, endpointId);
 
+      // NOTE: Be sure to undeploy any models deployed to the endpoint
+      // before attempting to delete the endpoint.
       OperationFuture<Empty, DeleteOperationMetadata> operationFuture =
           endpointServiceClient.deleteEndpointAsync(endpointName);
       System.out.format("Operation name: %s\n", operationFuture.getInitialFuture().get().getName());

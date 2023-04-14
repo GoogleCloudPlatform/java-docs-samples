@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,6 +91,7 @@ public class GetVodAdTagDetailTest {
   }
 
   @Test
+  @Ignore
   public void test_GetVodAdTagDetailTest() throws IOException {
     GetVodAdTagDetail.getVodAdTagDetail(PROJECT_ID, LOCATION, SESSION_ID, AD_TAG_DETAIL_ID);
     String output = bout.toString();

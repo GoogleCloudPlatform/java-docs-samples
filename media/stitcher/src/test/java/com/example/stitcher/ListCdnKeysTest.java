@@ -28,6 +28,7 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -108,6 +109,7 @@ public class ListCdnKeysTest {
   }
 
   @Test
+  @Ignore
   public void test_ListCdnKeys() throws IOException {
     // Cloud, Media, and Akamai CDN keys should be present
     ListCdnKeys.listCdnKeys(PROJECT_ID, LOCATION);

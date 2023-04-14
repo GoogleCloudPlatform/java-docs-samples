@@ -13,7 +13,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
@@ -39,7 +40,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>2.0.5</version>
+      <version>2.0.12</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -52,12 +53,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigquery</artifactId>
-      <version>2.20.2</version>
+      <version>2.24.3</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-monitoring</artifactId>
-      <version>3.9.0</version>
+      <version>3.14.0</version>
     </dependency>
 
     <dependency>
@@ -75,13 +76,13 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>2.0.5</version>
+      <version>2.0.12</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>2.0.5</version>
+      <version>2.0.12</version>
       <scope>test</scope>
     </dependency>
 
@@ -100,7 +101,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>2.0.5</version>
+      <version>2.0.12</version>
       <scope>test</scope>
     </dependency>
     <dependency>

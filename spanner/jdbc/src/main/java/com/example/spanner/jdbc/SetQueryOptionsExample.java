@@ -42,6 +42,7 @@ class SetQueryOptionsExample {
     try (Connection connection = DriverManager.getConnection(connectionUrl);
         Statement statement = connection.createStatement()) {
       // Instruct the JDBC connection to use version '1' of the query optimizer.
+      // NOTE: Use `SET SPANNER.OPTIMIZER_VERSION='1`` when connected to a PostgreSQL database.
       statement.execute("SET OPTIMIZER_VERSION='1'");
       // Execute a query using the latest optimizer version.
       try (ResultSet rs =
@@ -51,6 +52,7 @@ class SetQueryOptionsExample {
           System.out.printf("%d %s %s%n", rs.getLong(1), rs.getString(2), rs.getString(3));
         }
       }
+      // NOTE: Use `SHOW SPANNER.OPTIMIZER_VERSION` when connected to a PostgreSQL database.
       try (ResultSet rs = statement.executeQuery("SHOW VARIABLE OPTIMIZER_VERSION")) {
         while (rs.next()) {
           System.out.printf("Optimizer version: %s%n", rs.getString(1));
