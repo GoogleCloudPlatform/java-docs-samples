@@ -17,6 +17,7 @@
 package bigtable;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
 
 import bigtable.WorkloadGenerator.BigtableWorkloadOptions;
@@ -182,7 +183,7 @@ public class WorkloadGeneratorTest {
 
     TimeSeries readRowRequestCount = response.iterateAll().iterator().next();
 
-    assertThat(readRowRequestCount.getPointsList().size()).isAtLeast(WORKLOAD_DURATION - 2);
+    assertWithMessage(readRowRequestCount.toString()).that(readRowRequestCount.getPointsList().size()).isAtLeast(WORKLOAD_DURATION - 2);
     for (int i = 0; i < readRowRequestCount.getPointsList().size(); i++) {
       Point p = readRowRequestCount.getPoints(i);
       long count = p.getValue().getInt64Value();
@@ -191,7 +192,8 @@ public class WorkloadGeneratorTest {
 
       // Ensure request is at above 90% of desired rate
       System.out.println("readcount is " + count);
-      assertThat(count).isGreaterThan((int) (.9 * rate * duration));
+      assertWithMessage("Failed on count for i = "+ i + "\n" + readRowRequestCount.toString()).that(count).isGreaterThan((int) (.9 * rate * duration));
+      // assertThat(count).isGreaterThan((int) (.9 * rate * duration));
     }
 
     // long startRequestCount = readRowRequestCount.getPoints(0).getValue().getInt64Value();
