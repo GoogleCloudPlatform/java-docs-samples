@@ -33,8 +33,9 @@ import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageSource;
 import com.google.cloud.vision.v1.SafeSearchAnnotation;
-import com.google.gson.Gson;
-import functions.eventpojos.GcsEvent;
+import com.google.events.cloud.storage.v1.StorageObjectData;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
 import io.cloudevents.CloudEvent;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -55,11 +56,11 @@ public class ImageMagick implements CloudEventsFunction {
   // [START functions_imagemagick_analyze]
   @Override
   // Blurs uploaded images that are flagged as Adult or Violence.
-  public void accept(CloudEvent event) {
+  public void accept(CloudEvent event) throws InvalidProtocolBufferException {
     // Extract the GCS Event data from the CloudEvent's data payload.
-    GcsEvent data = getEventData(event);
+    StorageObjectData data = getEventData(event);
     // Validate parameters
-    if (data.getBucket() == null || data.getName() == null) {
+    if (data == null) {
       logger.severe("Error: Malformed GCS event.");
       return;
     }
@@ -74,8 +75,11 @@ public class ImageMagick implements CloudEventsFunction {
     ImageSource imgSource = ImageSource.newBuilder().setImageUri(gcsPath).build();
     Image img = Image.newBuilder().setSource(imgSource).build();
     Feature feature = Feature.newBuilder().setType(Type.SAFE_SEARCH_DETECTION).build();
-    AnnotateImageRequest request =
-        AnnotateImageRequest.newBuilder().addFeatures(feature).setImage(img).build();
+    AnnotateImageRequest request = AnnotateImageRequest
+        .newBuilder()
+        .addFeatures(feature)
+        .setImage(img)
+        .build();
     List<AnnotateImageRequest> requests = List.of(request);
 
     // Send request to the Vision API.
@@ -127,8 +131,10 @@ public class ImageMagick implements CloudEventsFunction {
 
     // Upload image to blurred bucket.
     BlobId blurredBlobId = BlobId.of(BLURRED_BUCKET_NAME, fileName);
-    BlobInfo blurredBlobInfo =
-        BlobInfo.newBuilder(blurredBlobId).setContentType(blob.getContentType()).build();
+    BlobInfo blurredBlobInfo = BlobInfo
+        .newBuilder(blurredBlobId)
+        .setContentType(blob.getContentType())
+        .build();
 
     byte[] blurredFile = Files.readAllBytes(upload);
     storage.create(blurredBlobInfo, blurredFile);
@@ -141,15 +147,17 @@ public class ImageMagick implements CloudEventsFunction {
   }
   // [END functions_imagemagick_blur]
 
-  // Converts CloudEvent data payload to a GcsEvent
-  private static GcsEvent getEventData(CloudEvent event) {
-    if (event.getData() != null) {
-      // Extract Cloud Event data and convert to GcsEvent
-      String cloudEventData = new String(event.getData().toBytes(), StandardCharsets.UTF_8);
-      Gson gson = new Gson();
-      return gson.fromJson(cloudEventData, GcsEvent.class);
+  // Converts CloudEvent data payload to a StorageObjectData
+  private static StorageObjectData getEventData(CloudEvent event)
+      throws InvalidProtocolBufferException {
+    if (event.getData() == null) {
+      return null;
     }
-    return new GcsEvent();
+    // Extract Cloud Event data and convert to StorageObjectData
+    String cloudEventData = new String(event.getData().toBytes(), StandardCharsets.UTF_8);
+    StorageObjectData.Builder builder = StorageObjectData.newBuilder();
+    JsonFormat.parser().merge(cloudEventData, builder);
+    return builder.build();
   }
   // [START functions_imagemagick_setup]
 }

@@ -18,26 +18,29 @@ package functions;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.testing.TestLogHandler;
-import com.google.gson.Gson;
-import functions.eventpojos.GcsEvent;
+import com.google.events.cloud.storage.v1.StorageObjectData;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.JsonFormat;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import java.net.URI;
-import java.util.Date;
 import java.util.logging.Logger;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /** Unit tests for main.java.com.example.functions.helloworld.HelloGcs. */
+@RunWith(JUnit4.class)
 public class HelloGcsTest {
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
   private static final Logger logger = Logger.getLogger(HelloGcs.class.getName());
 
-  @Before
-  public void beforeTest() throws Exception {
+  @BeforeClass
+  public static void beforeClass() throws Exception {
     logger.addHandler(LOG_HANDLER);
   }
 
@@ -47,30 +50,36 @@ public class HelloGcsTest {
   }
 
   @Test
-  public void helloGcs_shouldPrintFileName() throws JsonProcessingException {
+  public void helloGcs_shouldPrintFileName() throws InvalidProtocolBufferException {
     // Create event data
     String file = "foo.txt";
     String bucket = "gs://test-bucket";
 
-    GcsEvent gcsEvent = new GcsEvent();
-    gcsEvent.setName(file);
-    gcsEvent.setBucket(bucket);
-    gcsEvent.setMetageneration("metageneration-data");
-    gcsEvent.setTimeCreated(new Date());
-    gcsEvent.setUpdated(new Date());
+    // Get the current time in milliseconds
+    long millis = System.currentTimeMillis();
 
-    // Convert event data to a JSON string
-    Gson gson = new Gson();
-    String jsonData = gson.toJson(gcsEvent);
+    // Create a Timestamp object
+    Timestamp timestamp = Timestamp.newBuilder()
+        .setSeconds(millis / 1000)
+        .setNanos((int) ((millis % 1000) * 1000000))
+        .build();
+
+    StorageObjectData.Builder dataBuilder = StorageObjectData.newBuilder()
+        .setName(file)
+        .setBucket(bucket)
+        .setMetageneration(10)
+        .setTimeCreated(timestamp)
+        .setUpdated(timestamp);
+
+    String jsonData = JsonFormat.printer().print(dataBuilder);
 
     // Construct a CloudEvent
-    CloudEvent event =
-        CloudEventBuilder.v1()
-            .withId("0")
-            .withType("google.storage.object.finalize")
-            .withSource(URI.create("https://example.com"))
-            .withData("application/json", jsonData.getBytes())
-            .build();
+    CloudEvent event = CloudEventBuilder.v1()
+        .withId("0")
+        .withType("google.storage.object.finalize")
+        .withSource(URI.create("https://example.com"))
+        .withData("application/json", jsonData.getBytes())
+        .build();
 
     new HelloGcs().accept(event);
 
@@ -78,5 +87,20 @@ public class HelloGcsTest {
     String actualFile = LOG_HANDLER.getStoredLogRecords().get(3).getMessage();
     assertThat(actualFile).contains("File: " + file);
     assertThat(actualBucket).contains("Bucket: " + bucket);
+  }
+
+  @Test
+  public void helloGcs_shouldPrintNotifyIfDataIsNull() throws InvalidProtocolBufferException {
+    // Construct a CloudEvent
+    CloudEvent event = CloudEventBuilder.v1()
+        .withId("0")
+        .withType("google.storage.object.finalize")
+        .withSource(URI.create("https://example.com"))
+        .build();
+
+    new HelloGcs().accept(event);
+
+    String logMessage = LOG_HANDLER.getStoredLogRecords().get(2).getMessage();
+    assertThat(logMessage).isEqualTo("No data found in cloud event payload!");
   }
 }

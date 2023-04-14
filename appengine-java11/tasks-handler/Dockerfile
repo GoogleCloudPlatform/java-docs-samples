@@ -14,7 +14,7 @@ RUN mvn package -DskipTests
 # Use the Official OpenJDK image for a lean production stage of our multi-stage build.
 # https://hub.docker.com/_/openjdk
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM openjdk:11-jre-slim
+FROM openjdk:11.0.16-jre-slim
 
 # Copy the jar to the production image from the builder stage.
 COPY --from=builder /app/target/task-handler-j11-*.jar /task-handler-j11.jar

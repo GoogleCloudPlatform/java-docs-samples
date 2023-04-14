@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStub;
@@ -30,20 +29,27 @@ import com.google.pubsub.v1.ReceivedMessage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import org.apache.hadoop.hbase.shaded.org.apache.commons.io.IOUtils;
+
+import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 public class FraudDetectionTestUtil {
 
+  // Some IDs aren't known until the apply step. Do not parse these.
+  protected static final String UNKNOWN_VALUE = "known after apply";
+
   // Make sure that the variable is set from running Terraform.
   public static void requireVar(String varName) {
-    assertNotNull(varName);
+    assertThat(varName).isNotNull();
   }
 
   // Make sure that the required environment variables are set before running the tests.
   public static String requireEnv(String varName) {
     String value = System.getenv(varName);
-    assertNotNull(
-        String.format("Environment variable '%s' is required to perform these tests.", varName),
-        value);
+    assertWithMessage(String.format("Environment variable '%s' is required to perform these tests.",
+        varName)).that(value).isNotNull();
     return value;
   }
 
@@ -56,7 +62,9 @@ public class FraudDetectionTestUtil {
     String line;
     while ((line = reader.readLine()) != null) {
       System.out.println(line);
-      if (line.contains("pubsub_input_topic = ")) {
+      if (line.contains(UNKNOWN_VALUE)) {
+        continue;
+      } else if (line.contains("pubsub_input_topic = ")) {
         StreamingPipelineTest.pubsubInputTopic = line.split("\"")[1];
       } else if (line.contains("pubsub_output_topic = ")) {
         StreamingPipelineTest.pubsubOutputTopic = line.split("\"")[1];
@@ -74,9 +82,16 @@ public class FraudDetectionTestUtil {
 
   public static int runCommand(String command) throws IOException, InterruptedException {
     Process process = new ProcessBuilder(command.split(" ")).start();
-    parseTerraformOutput(process);
-    // Wait for the process to finish running and return the exit code.
-    return process.waitFor();
+    if (command.contains("apply")) {
+      parseTerraformOutput(process);
+    }
+
+    int processResult = process.waitFor();
+    if (processResult != 0) {
+      String errorString = IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8);
+      assertThat(errorString).isEmpty();
+    }
+    return processResult;
   }
 
   // Returns all transactions in a file inside a GCS bucket.
