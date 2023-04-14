@@ -36,6 +36,18 @@
     <maven.compiler.source>11</maven.compiler.source>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>libraries-bom</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>26.12.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
   <dependencies>
     <dependency>
       <groupId>com.google.appengine</groupId>
@@ -61,8 +73,7 @@
     <dependency>
       <groupId>com.google.auto.value</groupId>
       <artifactId>auto-value-annotations</artifactId>
-      <version>1.10.1</version>
-    </dependency>
+      </dependency>
 
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
@@ -73,8 +84,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>31.1-jre</version>
-    </dependency>
+      </dependency>
 
     <dependency>
       <groupId>joda-time</groupId>
