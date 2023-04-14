@@ -144,7 +144,8 @@ public class WorkloadGeneratorTest {
   public void testPipeline() throws IOException, InterruptedException {
     String workloadJobName = "bigtable-workload-generator-test-" + new Date().getTime();
     final int WORKLOAD_DURATION = 5;
-    final int WAIT_DURATION = (WORKLOAD_DURATION+3) * 60 * 1000;
+    final int WAIT_DURATION = (WORKLOAD_DURATION) * 60 * 1000;
+    final int METRIC_DELAY = 4 * 60 * 1000;
     int rate = 1000;
 
     BigtableWorkloadOptions options = PipelineOptionsFactory.create()
@@ -159,17 +160,26 @@ public class WorkloadGeneratorTest {
 
     final PipelineResult pipelineResult = WorkloadGenerator.generateWorkload(options);
 
+    // todo: wait until job actually starts because it can be queued
+
     MetricServiceClient metricServiceClient = MetricServiceClient.create();
     ProjectName name = ProjectName.of(projectId);
 
+    // Check if job is finished running
+    String jobId = ((DataflowPipelineJob) pipelineResult).getJobId();
+    DataflowClient client = DataflowClient.create(options);
+    Job job = client.getJob(jobId);
+
     // Wait X minutes and then get metrics for the X minute period.
     long startMillis = System.currentTimeMillis();
-    Thread.sleep(WAIT_DURATION);
+    Thread.sleep(WAIT_DURATION+METRIC_DELAY);
+
+    job = client.getJob(jobId);
 
     TimeInterval interval =
         TimeInterval.newBuilder()
             .setStartTime(Timestamps.fromMillis(startMillis))
-            .setEndTime(Timestamps.fromMillis(System.currentTimeMillis()))
+            .setEndTime(Timestamps.fromMillis(System.currentTimeMillis()-METRIC_DELAY))
             .build();
 
     ListTimeSeriesRequest request =
@@ -183,7 +193,8 @@ public class WorkloadGeneratorTest {
 
     TimeSeries readRowRequestCount = response.iterateAll().iterator().next();
 
-    assertWithMessage(readRowRequestCount.toString()).that(readRowRequestCount.getPointsList().size()).isAtLeast(WORKLOAD_DURATION - 2);
+    assertWithMessage(readRowRequestCount.toString()).that(
+        readRowRequestCount.getPointsList().size()).isAtLeast(WORKLOAD_DURATION - 2);
     for (int i = 0; i < readRowRequestCount.getPointsList().size(); i++) {
       Point p = readRowRequestCount.getPoints(i);
       long count = p.getValue().getInt64Value();
@@ -192,7 +203,9 @@ public class WorkloadGeneratorTest {
 
       // Ensure request is at above 90% of desired rate
       System.out.println("readcount is " + count);
-      assertWithMessage("Failed on count for i = "+ i + "\n" + readRowRequestCount.toString()).that(count).isGreaterThan((int) (.9 * rate * duration));
+      assertWithMessage(
+          "Failed on count for i = " + i + "\n" + readRowRequestCount.toString()).that(count)
+          .isGreaterThan((int) (.9 * rate * duration));
       // assertThat(count).isGreaterThan((int) (.9 * rate * duration));
     }
 
@@ -217,10 +230,6 @@ public class WorkloadGeneratorTest {
     // assertThat(gotMoreRequests).isTrue();
 
     // Ensure the job is stopped after duration.
-    String jobId = ((DataflowPipelineJob) pipelineResult).getJobId();
-    DataflowClient client = DataflowClient.create(options);
-    Job job = client.getJob(jobId);
-
     assertThat(job.getCurrentState()).matches("JOB_STATE_CANCELLED");
   }
 
