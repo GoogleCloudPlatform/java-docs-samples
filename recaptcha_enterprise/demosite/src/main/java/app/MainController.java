@@ -358,12 +358,4 @@ public class MainController {
     }
   }
 
-  /**
-   * Return game template.
-   */
-  @GetMapping(value = "/game")
-  public static ModelAndView game() {
-    return new ModelAndView("game", CONTEXT);
-  }
-
 }
