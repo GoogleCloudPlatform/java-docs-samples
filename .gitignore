@@ -62,3 +62,8 @@ out/
 
 # OSX
 .DS_Store
+
+# Terraform
+terraform.tfstate*
+.terraform*
+*.output
