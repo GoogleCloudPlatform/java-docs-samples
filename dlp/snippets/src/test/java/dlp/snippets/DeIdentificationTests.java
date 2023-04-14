@@ -555,6 +555,12 @@ public class DeIdentificationTests extends TestBase {
     DeIdentifyDataReplaceWithDictionary.deidentifyDataReplaceWithDictionary(
         PROJECT_ID, "My name is Alicia Abernathy, and my email address is aabernathy@example.com.");
     String output = bout.toString();
-    assertThat(output).contains("Text after de-identification:");
+    assertThat(
+            ImmutableList.of(
+                "Text after de-identification: My name is Alicia Abernathy, "
+                        + "and my email address is izumi@example.com.\r\n",
+                "Text after de-identification: My name is Alicia Abernathy, "
+                        + "and my email address is alex@example.com.\r\n"))
+        .contains(output);
   }
 }

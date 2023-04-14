@@ -58,14 +58,15 @@ public class DeIdentifyDataReplaceWithDictionary {
       InfoType infoType = InfoType.newBuilder().setName("EMAIL_ADDRESS").build();
       InspectConfig inspectConfig = InspectConfig.newBuilder().addInfoTypes(infoType).build();
 
+      // Specify list of value which will randomly replace identified email addresses.
       WordList wordList =
           WordList.newBuilder().addWords("izumi@example.com").addWords("alex@example.com").build();
 
-      // Specify replacement string to be used for the finding.
+      // Specify the Dictionary to use for selecting replacement values for the finding.
       ReplaceDictionaryConfig replaceDictionaryConfig =
           ReplaceDictionaryConfig.newBuilder().setWordList(wordList).build();
 
-      // Define type of de-identification as replacement with info type.
+      // Define type of de-identification as replacement with items from dictionary.
       PrimitiveTransformation primitiveTransformation =
           PrimitiveTransformation.newBuilder()
               .setReplaceDictionaryConfig(replaceDictionaryConfig)
