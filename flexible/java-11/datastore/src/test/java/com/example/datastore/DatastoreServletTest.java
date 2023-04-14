@@ -48,8 +48,6 @@ public class DatastoreServletTest {
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
 
-    BufferedReader reader = mock(BufferedReader.class);
-    when(request.getReader()).thenReturn(reader);
     when(request.getRemoteAddr()).thenReturn("9.9.9.9");
 
     Datastore mockdatastore = Mockito.mock(Datastore.class);
