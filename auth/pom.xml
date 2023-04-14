@@ -69,8 +69,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-apikeys</artifactId>
-      <version>0.10.0</version>
-    </dependency>
+      </dependency>
     <!-- END dependencies -->
     <dependency>
       <groupId>commons-io</groupId>
