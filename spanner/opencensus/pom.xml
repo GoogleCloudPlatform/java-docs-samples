@@ -30,7 +30,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.1.4</version>
+        <version>26.12.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -42,8 +42,7 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-census</artifactId>
-      <version>1.50.2</version>
-    </dependency>
+      </dependency>
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-impl</artifactId>
@@ -53,8 +52,7 @@
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
-      <version>3.21.12</version>
-    </dependency>
+      </dependency>
     <dependency>
       <groupId>io.opencensus</groupId>
       <artifactId>opencensus-exporter-stats-stackdriver</artifactId>
@@ -82,7 +80,6 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
-      <version>6.35.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
