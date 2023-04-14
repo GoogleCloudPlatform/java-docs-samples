@@ -169,13 +169,14 @@ public class WorkloadGeneratorTest {
     Job job = client.getJob(jobId);
 
     // Wait until job actually starts because it can be queued if too many jobs are running.
-    final int QUEUE_WAIT_MINS = 8;
+    final int QUEUE_WAIT_MINS = 5;
     final int QUEUE_WAIT_INTERVAL = 10;
     for (int i = 0; i < QUEUE_WAIT_MINS * 60 / QUEUE_WAIT_INTERVAL; i++) {
       job = client.getJob(jobId);
       if (job.getCurrentState().equals("JOB_STATE_RUNNING")) {
         break;
       }
+      Thread.sleep(QUEUE_WAIT_INTERVAL);
     }
 
     assertWithMessage("Job took too long queueing up for test").that(job.getCurrentState())
