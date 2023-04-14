@@ -72,8 +72,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>31.1-jre</version>
-    </dependency>
+      </dependency>
     <!-- Removes the dependency of driver binary file -->
     <dependency>
       <groupId>io.github.bonigarcia</groupId>

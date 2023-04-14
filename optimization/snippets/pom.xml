@@ -43,8 +43,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-optimization</artifactId>
-      <version>1.11.0</version>
-    </dependency>
+      </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>

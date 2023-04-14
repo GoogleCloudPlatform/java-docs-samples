@@ -61,13 +61,11 @@ limitations under the License.
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-appengine</artifactId>
-      <version>1.15.0</version>
-    </dependency>
+      </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>1.15.0</version>
-    </dependency>
+      </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-apikeys</artifactId>
