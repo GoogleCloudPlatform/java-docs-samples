@@ -160,8 +160,6 @@ public class WorkloadGeneratorTest {
 
     final PipelineResult pipelineResult = WorkloadGenerator.generateWorkload(options);
 
-    // todo: wait until job actually starts because it can be queued
-
     MetricServiceClient metricServiceClient = MetricServiceClient.create();
     ProjectName name = ProjectName.of(projectId);
 
@@ -170,16 +168,29 @@ public class WorkloadGeneratorTest {
     DataflowClient client = DataflowClient.create(options);
     Job job = client.getJob(jobId);
 
+    // Wait until job actually starts because it can be queued if too many jobs are running.
+    final int QUEUE_WAIT_MINS = 3;
+    final int QUEUE_WAIT_INTERVAL = 10;
+    for (int i = 0; i < QUEUE_WAIT_MINS * 60 / QUEUE_WAIT_INTERVAL; i++) {
+      job = client.getJob(jobId);
+      if (job.getCurrentState().equals("JOB_STATE_RUNNING")) {
+        break;
+      }
+    }
+
+    assertWithMessage("Job took too long queueing up for test").that(job.getCurrentState())
+        .isEqualTo("JOB_STATE_RUNNING");
+
     // Wait X minutes and then get metrics for the X minute period.
     long startMillis = System.currentTimeMillis();
-    Thread.sleep(WAIT_DURATION+METRIC_DELAY);
+    Thread.sleep(WAIT_DURATION + METRIC_DELAY);
 
     job = client.getJob(jobId);
 
     TimeInterval interval =
         TimeInterval.newBuilder()
             .setStartTime(Timestamps.fromMillis(startMillis))
-            .setEndTime(Timestamps.fromMillis(System.currentTimeMillis()-METRIC_DELAY))
+            .setEndTime(Timestamps.fromMillis(System.currentTimeMillis() - METRIC_DELAY))
             .build();
 
     ListTimeSeriesRequest request =
