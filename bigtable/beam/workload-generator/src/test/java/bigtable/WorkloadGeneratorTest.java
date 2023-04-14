@@ -143,7 +143,7 @@ public class WorkloadGeneratorTest {
   @Test
   public void testPipeline() throws IOException, InterruptedException {
     String workloadJobName = "bigtable-workload-generator-test-" + new Date().getTime();
-    final int WORKLOAD_DURATION = 5;
+    final int WORKLOAD_DURATION = 10;
     final int WAIT_DURATION = (WORKLOAD_DURATION) * 60 * 1000;
     int rate = 1000;
 
