@@ -35,8 +35,10 @@ import org.apache.hadoop.hbase.shaded.org.apache.commons.io.IOUtils;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
-
 public class FraudDetectionTestUtil {
+
+  // Some IDs aren't known until the apply step. Do not parse these.
+  protected static final String UNKNOWN_VALUE = "known after apply";
 
   // Make sure that the variable is set from running Terraform.
   public static void requireVar(String varName) {
@@ -60,7 +62,9 @@ public class FraudDetectionTestUtil {
     String line;
     while ((line = reader.readLine()) != null) {
       System.out.println(line);
-      if (line.contains("pubsub_input_topic = ")) {
+      if (line.contains(UNKNOWN_VALUE)) {
+        continue;
+      } else if (line.contains("pubsub_input_topic = ")) {
         StreamingPipelineTest.pubsubInputTopic = line.split("\"")[1];
       } else if (line.contains("pubsub_output_topic = ")) {
         StreamingPipelineTest.pubsubOutputTopic = line.split("\"")[1];
@@ -78,7 +82,9 @@ public class FraudDetectionTestUtil {
 
   public static int runCommand(String command) throws IOException, InterruptedException {
     Process process = new ProcessBuilder(command.split(" ")).start();
-    parseTerraformOutput(process);
+    if (command.contains("apply")) {
+      parseTerraformOutput(process);
+    }
 
     int processResult = process.waitFor();
     if (processResult != 0) {

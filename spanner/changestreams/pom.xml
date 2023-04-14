@@ -43,7 +43,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.1.4</version>
+        <version>26.12.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -54,8 +54,7 @@
       <dependency>
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
-          <version>31.1-jre</version>
-      </dependency>
+          </dependency>
       <dependency>
           <groupId>org.apache.avro</groupId>
           <artifactId>avro</artifactId>

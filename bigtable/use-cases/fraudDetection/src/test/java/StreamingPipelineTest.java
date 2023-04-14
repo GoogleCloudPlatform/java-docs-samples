@@ -55,13 +55,12 @@ public class StreamingPipelineTest {
     System.out.println("Project id = " + projectID);
     // Run terraform and populate all variables necessary for testing and assert
     // that the exit code is 0 (no errors).
-    assertThat(
-        FraudDetectionTestUtil.runCommand(
-            "terraform -chdir=terraform/ init")).isEqualTo(0);
-    assertThat(
-        FraudDetectionTestUtil.runCommand(
-            "terraform -chdir=terraform/ apply -auto-approve -var=project_id="
-                + projectID)).isEqualTo(0);
+    assertThat(FraudDetectionTestUtil.runCommand(
+      "terraform -chdir=terraform/ init"))
+      .isEqualTo(0);
+    assertThat(FraudDetectionTestUtil.runCommand(
+      "terraform -chdir=terraform/ apply -auto-approve -var=project_id=" + projectID))
+      .isEqualTo(0);
   }
 
   @AfterClass
@@ -88,6 +87,7 @@ public class StreamingPipelineTest {
 
   // Check if Cloud Bigtable was populated with the simulated data.
   @Test
+  @SuppressWarnings("unused")
   public void testCBT() {
     System.out.println("Running testCBT");
 
