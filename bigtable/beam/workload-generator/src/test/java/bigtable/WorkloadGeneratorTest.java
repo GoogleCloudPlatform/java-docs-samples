@@ -176,7 +176,7 @@ public class WorkloadGeneratorTest {
       if (job.getCurrentState().equals("JOB_STATE_RUNNING")) {
         break;
       }
-      Thread.sleep(QUEUE_WAIT_INTERVAL);
+      Thread.sleep(QUEUE_WAIT_INTERVAL*1000);
     }
 
     assertWithMessage("Job took too long queueing up for test").that(job.getCurrentState())
