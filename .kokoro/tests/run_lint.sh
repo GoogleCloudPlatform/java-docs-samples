@@ -37,6 +37,4 @@ fi
 
 git config --global --add safe.directory $PWD
 
-btlr "${opts[@]}" run "**/pom.xml" -- echo $(pwd)
-
 btlr "${opts[@]}" run "**/pom.xml" -- mvn -P lint --quiet --batch-mode checkstyle:check
