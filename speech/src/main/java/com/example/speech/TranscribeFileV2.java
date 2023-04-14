@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.example.speech;
 
 import com.google.cloud.speech.v2.AutoDetectDecodingConfig;
@@ -30,7 +29,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-
 
 public class TranscribeFileV2 {
   public static void main(String[] args) throws IOException {
@@ -52,24 +50,28 @@ public class TranscribeFileV2 {
       ByteString audioBytes = ByteString.copyFrom(data);
 
       // Create the recognition request
-      RecognitionConfig recognitionConfig = RecognitionConfig.newBuilder()
-          .setAutoDecodingConfig(AutoDetectDecodingConfig.newBuilder().build())
-          .build();
-  
-      RecognizeRequest request = RecognizeRequest.newBuilder()
-          .setConfig(recognitionConfig)
-          .setRecognizer(recognizerName)
-          .setContent(audioBytes)
-          .build();
-  
+      RecognitionConfig recognitionConfig =
+          RecognitionConfig.newBuilder()
+              .setAutoDecodingConfig(AutoDetectDecodingConfig.newBuilder().build())
+              .build();
+
+      RecognizeRequest request =
+          RecognizeRequest.newBuilder()
+              .setConfig(recognitionConfig)
+              .setRecognizer(recognizerName)
+              .setContent(audioBytes)
+              .build();
+
       RecognizeResponse response = speechClient.recognize(request);
       List<SpeechRecognitionResult> results = response.getResultsList();
 
       for (SpeechRecognitionResult result : results) {
         // There can be several alternative transcripts for a given chunk of speech. Just use the
         // first (most likely) one here.
-        SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-        System.out.printf("Transcription: %s%n", alternative.getTranscript());
+        if (result.getAlternativesCount() > 0) {
+          SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+          System.out.printf("Transcription: %s%n", alternative.getTranscript());
+        }
       }
     }
   }
