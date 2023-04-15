@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.flexible</groupId>
@@ -49,7 +50,7 @@ limitations under the License.
       </dependency>
     </dependencies>
   </dependencyManagement>
-    
+
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -58,7 +59,8 @@ limitations under the License.
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    <!--Jetty JSR-356 Websocket client side dependency-->
+    <!--Jetty
+    JSR-356 Websocket client side dependency-->
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>javax-websocket-client-impl</artifactId>
@@ -69,11 +71,12 @@ limitations under the License.
       <artifactId>javaee-api</artifactId>
       <version>8.0.1</version>
     </dependency>
-    <!--Optional dependency for SettableFuture, see com.example.flexible.websocket.jsr356.ServerSocket -->
+    <!--Optional
+    dependency for SettableFuture, see com.example.flexible.websocket.jsr356.ServerSocket -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      </dependency>
+    </dependency>
   </dependencies>
 
   <build>

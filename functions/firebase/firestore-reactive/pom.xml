@@ -18,13 +18,13 @@
 
 <!-- [START functions_java_example_pom] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.cloud.functions</groupId>
   <artifactId>functions-firebase-firestore-reactive</artifactId>
-  
+
   <!-- [END functions_java_example_pom] -->
 
   <parent>
@@ -56,7 +56,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      </dependency>
+    </dependency>
 
     <!-- Required for Function primitives -->
     <dependency>
@@ -93,9 +93,9 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      </dependency>
+    </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -120,7 +120,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version 3.0.0-M4 does not load JUnit5 correctly -->
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
-        <version>3.0.0-M7</version>  
+        <version>3.0.0-M7</version>
         <!-- [END functions_java_example_pom] -->
         <configuration>
           <includes>
