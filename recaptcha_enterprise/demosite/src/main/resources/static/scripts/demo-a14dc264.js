@@ -3594,6 +3594,7 @@ function initializeGame() {
 var stoplight = "../demoasset/item-stoplight-53247b633eed5a85.svg";
 
 // Copyright 2023 Google LLC
+//
 
 const STEPS = ["home", "signup", "login", "store", "comment", "game"];
 
