@@ -77,18 +77,6 @@
     </plugins>
   </build>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <artifactId>libraries-bom</artifactId>
-        <groupId>com.google.cloud</groupId>
-        <scope>import</scope>
-        <type>pom</type>
-        <version>26.12.0</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.beam</groupId>
@@ -116,7 +104,8 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      </dependency>
+      <version>31.1-jre</version>
+    </dependency>
 
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
