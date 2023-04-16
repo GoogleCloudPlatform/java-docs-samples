@@ -47,7 +47,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-
 @RunWith(JUnit4.class)
 public class FeatureValuesSamplesTest {
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
@@ -172,7 +171,7 @@ public class FeatureValuesSamplesTest {
     System.setOut(originalPrintStream);
   }
 
-  @Ignore 
+  @Ignore
   @Test
   public void testFeatureValuesSamples()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
@@ -288,7 +287,8 @@ public class FeatureValuesSamplesTest {
     assertThat(importFeatureValuesResponse).contains("Import Feature Values Response");
 
     // Read feature values
-    ReadFeatureValuesSample.readFeatureValuesSample(PROJECT_ID,
+    ReadFeatureValuesSample.readFeatureValuesSample(
+        PROJECT_ID,
         featurestoreId,
         entityTypeId,
         "alice",

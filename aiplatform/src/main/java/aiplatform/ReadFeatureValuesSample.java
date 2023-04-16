@@ -30,7 +30,6 @@ import com.google.cloud.aiplatform.v1.FeaturestoreOnlineServingServiceSettings;
 import com.google.cloud.aiplatform.v1.IdMatcher;
 import com.google.cloud.aiplatform.v1.ReadFeatureValuesRequest;
 import com.google.cloud.aiplatform.v1.ReadFeatureValuesResponse;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -61,37 +60,40 @@ public class ReadFeatureValuesSample {
         timeout);
   }
 
-    static void readFeatureValuesSample(
-            String project,
-            String featurestoreId,
-            String entityTypeId,
-            String entityId,
-            List<String> featureSelectorIds,
-            String location,
-            String endpoint,
-            int timeout)
-            throws IOException, InterruptedException, ExecutionException, TimeoutException {
-        FeaturestoreOnlineServingServiceSettings featurestoreOnlineServiceSettings = FeaturestoreOnlineServingServiceSettings
-                .newBuilder().setEndpoint(endpoint).build();
+  static void readFeatureValuesSample(
+      String project,
+      String featurestoreId,
+      String entityTypeId,
+      String entityId,
+      List<String> featureSelectorIds,
+      String location,
+      String endpoint,
+      int timeout)
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    FeaturestoreOnlineServingServiceSettings featurestoreOnlineServiceSettings =
+        FeaturestoreOnlineServingServiceSettings.newBuilder().setEndpoint(endpoint).build();
 
-        // Initialize client that will be used to send requests. This client only needs to be created
-        // once, and can be reused for multiple requests. After completing all of your requests, call
-        // the "close" method on the client to safely clean up any remaining background resources.
-        try (FeaturestoreOnlineServingServiceClient featurestoreOnlineServiceClient = FeaturestoreOnlineServingServiceClient
-                .create(featurestoreOnlineServiceSettings)) {
-            ReadFeatureValuesRequest readFeatureValuesRequest = ReadFeatureValuesRequest.newBuilder()
-                    .setEntityType(EntityTypeName.of(project, location, featurestoreId, entityTypeId).toString())
-                    .setEntityId(entityId)
-                    .setFeatureSelector(FeatureSelector.newBuilder()
-                            .setIdMatcher(IdMatcher.newBuilder().addAllIds(featureSelectorIds)))
-                    .build();
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (FeaturestoreOnlineServingServiceClient featurestoreOnlineServiceClient =
+        FeaturestoreOnlineServingServiceClient.create(featurestoreOnlineServiceSettings)) {
+      ReadFeatureValuesRequest readFeatureValuesRequest =
+          ReadFeatureValuesRequest.newBuilder()
+              .setEntityType(
+                  EntityTypeName.of(project, location, featurestoreId, entityTypeId).toString())
+              .setEntityId(entityId)
+              .setFeatureSelector(
+                  FeatureSelector.newBuilder()
+                      .setIdMatcher(IdMatcher.newBuilder().addAllIds(featureSelectorIds)))
+              .build();
 
-            ReadFeatureValuesResponse readFeatureValuesResponse = featurestoreOnlineServiceClient
-                    .readFeatureValues(readFeatureValuesRequest);
-            System.out.println("Read Feature Values Response");
-            System.out.println(readFeatureValuesResponse);
-            featurestoreOnlineServiceClient.close();
-        }
+      ReadFeatureValuesResponse readFeatureValuesResponse =
+          featurestoreOnlineServiceClient.readFeatureValues(readFeatureValuesRequest);
+      System.out.println("Read Feature Values Response");
+      System.out.println(readFeatureValuesResponse);
+      featurestoreOnlineServiceClient.close();
     }
+  }
 }
 // [END aiplatform_read_feature_values_sample]
