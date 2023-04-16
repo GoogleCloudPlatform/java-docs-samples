@@ -287,6 +287,19 @@ public class FeatureValuesSamplesTest {
     String importFeatureValuesResponse = bout.toString();
     assertThat(importFeatureValuesResponse).contains("Import Feature Values Response");
 
+    // Read feature values
+    ReadFeatureValuesSample.readFeatureValuesSample(PROJECT_ID,
+        featurestoreId,
+        entityTypeId,
+        "alice",
+        FEATURE_SELECTOR_IDS,
+        LOCATION,
+        ENDPOINT,
+        TIMEOUT);
+    // Assert
+    String readFeatureValuesResponse = bout.toString();
+    assertThat(readFeatureValuesResponse).contains("Read Feature Values Response");
+
     // Create the big query dataset
     createBigQueryDataset(PROJECT_ID, datasetName, LOCATION);
     destinationTableUri =
