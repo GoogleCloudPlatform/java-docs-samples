@@ -36,6 +36,18 @@ Copyright 2019 Google LLC
     <maven.compiler.source>11</maven.compiler.source>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>libraries-bom</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>26.12.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <!-- All dependencies are scoped as provided.
     Dependent-jars are created and added to
     ${project.build.directory}/appengine-staging -->
@@ -67,7 +79,6 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.10.1</version>
       <scope>provided</scope>
     </dependency>
 

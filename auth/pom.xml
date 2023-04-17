@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.auth</groupId>
   <artifactId>auth</artifactId>
@@ -40,7 +41,8 @@ limitations under the License.
 
   <!-- START dependencies -->
   <!--  Using libraries-bom to manage versions.
-  See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
+  See
+  https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -61,15 +63,14 @@ limitations under the License.
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-appengine</artifactId>
-      </dependency>
+    </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      </dependency>
+    </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-apikeys</artifactId>
-      <version>0.10.0</version>
     </dependency>
     <!-- END dependencies -->
     <dependency>
@@ -110,7 +111,7 @@ limitations under the License.
           <executable>java</executable>
           <arguments>
             <argument>-classpath</argument>
-            <classpath/>
+            <classpath />
             <argument>com.google.cloud.auth.samples.DownscopingExample</argument>
           </arguments>
         </configuration>

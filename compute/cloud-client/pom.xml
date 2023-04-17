@@ -41,7 +41,6 @@
     <dependency>
       <artifactId>google-cloud-compute</artifactId>
       <groupId>com.google.cloud</groupId>
-      <version>1.18.0</version>
       </dependency>
     <dependency>
       <artifactId>google-cloud-storage</artifactId>
