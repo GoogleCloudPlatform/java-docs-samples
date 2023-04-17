@@ -218,11 +218,10 @@ public class WorkloadGeneratorTest {
     // Ensure at least one interval got above the rate.
     assertThat(passedRate).isTrue();
 
-    // Ensure the job is stopped after duration.
-    if (!job.getCurrentState().equals("JOB_STATE_CANCELLED")) {
-      job.setRequestedState("JOB_STATE_CANCELLED");
-      dataflowClient.updateJob(jobId, job);
-    }
+    // Ensure the job is stopped after duration. Needs a bit of a wait to guarantee cancellation
+    // state is entered.
+    wait(2 * 60 * 1000);
+    assertThat(job.getCurrentState()).matches("JOB_STATE_CANCELLED");
   }
 
   @Test
