@@ -40,7 +40,6 @@ import com.google.dataflow.v1beta3.LaunchFlexTemplateResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Date;
 import java.util.UUID;
 import org.apache.beam.runners.dataflow.DataflowClient;
 import org.apache.beam.runners.dataflow.DataflowPipelineJob;
@@ -176,7 +175,7 @@ public class WorkloadGeneratorTest {
       if (job.getCurrentState().equals("JOB_STATE_RUNNING")) {
         break;
       }
-      Thread.sleep(QUEUE_WAIT_INTERVAL*1000);
+      Thread.sleep(QUEUE_WAIT_INTERVAL * 1000);
     }
 
     assertWithMessage("Job took too long queueing up for test").that(job.getCurrentState())
@@ -220,34 +219,9 @@ public class WorkloadGeneratorTest {
         passedRate = true;
         break;
       }
-      // System.out.println("readcount is " + count);
-      // assertWithMessage(
-      //     "Failed on count for i = " + i + "\n" + readRowRequestCount.toString()).that(count)
-      //     .isGreaterThan((int) (.9 * rate * duration));
-      // assertThat(count).isGreaterThan((int) (.9 * rate * duration));
     }
     // Ensure at least one interval got above the rate.
     assertThat(passedRate).isTrue();
-
-    // long startRequestCount = readRowRequestCount.getPoints(0).getValue().getInt64Value();
-    // long endRequestCount = readRowRequestCount.getPoints(readRowRequestCount.getPointsCount() - 1)
-    //     .getValue().getInt64Value();
-    //
-    // boolean gotMoreRequests = endRequestCount - startRequestCount > rate;
-    // if (!gotMoreRequests) {
-    //   String out = "";
-    //   out += "start request count = " + startRequestCount;
-    //   out += "\n";
-    //   out += "start time = " + Timestamps.fromMillis(startMillis);
-    //   out += "\n";
-    //   out += "end request count = " + endRequestCount;
-    //   out += "\n";
-    //   out += "end time = " + Timestamps.fromMillis(System.currentTimeMillis());
-    //   out += "\n";
-    //   out += readRowRequestCount.toString();
-    //   assertThat(out).isNotNull();
-    // }
-    // assertThat(gotMoreRequests).isTrue();
 
     // Ensure the job is stopped after duration.
     assertThat(job.getCurrentState()).matches("JOB_STATE_CANCELLED");
