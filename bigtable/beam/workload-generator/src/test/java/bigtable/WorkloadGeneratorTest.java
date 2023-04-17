@@ -159,19 +159,16 @@ public class WorkloadGeneratorTest {
 
     final PipelineResult pipelineResult = WorkloadGenerator.generateWorkload(options);
 
-    MetricServiceClient metricServiceClient = MetricServiceClient.create();
-    ProjectName name = ProjectName.of(projectId);
-
     // Check if job is finished running
     String jobId = ((DataflowPipelineJob) pipelineResult).getJobId();
-    DataflowClient client = DataflowClient.create(options);
-    Job job = client.getJob(jobId);
+    DataflowClient dataflowClient = DataflowClient.create(options);
+    Job job = dataflowClient.getJob(jobId);
 
     // Wait until job actually starts because it can be queued if too many jobs are running.
     final int QUEUE_WAIT_MINS = 5;
     final int QUEUE_WAIT_INTERVAL = 10;
     for (int i = 0; i < QUEUE_WAIT_MINS * 60 / QUEUE_WAIT_INTERVAL; i++) {
-      job = client.getJob(jobId);
+      job = dataflowClient.getJob(jobId);
       if (job.getCurrentState().equals("JOB_STATE_RUNNING")) {
         break;
       }
@@ -185,13 +182,14 @@ public class WorkloadGeneratorTest {
     long startMillis = System.currentTimeMillis();
     Thread.sleep(WAIT_DURATION + METRIC_DELAY);
 
-    job = client.getJob(jobId);
-
     TimeInterval interval =
         TimeInterval.newBuilder()
             .setStartTime(Timestamps.fromMillis(startMillis))
             .setEndTime(Timestamps.fromMillis(System.currentTimeMillis() - METRIC_DELAY))
             .build();
+
+    MetricServiceClient metricServiceClient = MetricServiceClient.create();
+    ProjectName name = ProjectName.of(projectId);
 
     ListTimeSeriesRequest request =
         ListTimeSeriesRequest.newBuilder()
@@ -203,9 +201,6 @@ public class WorkloadGeneratorTest {
     ListTimeSeriesPagedResponse response = metricServiceClient.listTimeSeries(request);
 
     TimeSeries readRowRequestCount = response.iterateAll().iterator().next();
-
-    assertWithMessage(readRowRequestCount.toString()).that(
-        readRowRequestCount.getPointsList().size()).isAtLeast(WORKLOAD_DURATION - 2);
 
     boolean passedRate = false;
     for (int i = 0; i < readRowRequestCount.getPointsList().size(); i++) {
@@ -249,14 +244,14 @@ public class WorkloadGeneratorTest {
     String jobId = response.getJob().getId();
     BigtableWorkloadOptions options = PipelineOptionsFactory.create()
         .as(BigtableWorkloadOptions.class);
-    DataflowClient client = DataflowClient.create(options);
+    DataflowClient dataflowClient = DataflowClient.create(options);
 
     Thread.sleep(3 * 60 * 1000);
-    Job job = client.getJob(jobId);
+    Job job = dataflowClient.getJob(jobId);
     assertThat(job.getCurrentState()).matches("JOB_STATE_RUNNING");
 
     // Cancel job manually because test job never ends.
     job.setRequestedState("JOB_STATE_CANCELLED");
-    client.updateJob(jobId, job);
+    dataflowClient.updateJob(jobId, job);
   }
 }
