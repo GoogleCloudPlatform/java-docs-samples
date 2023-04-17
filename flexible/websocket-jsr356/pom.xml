@@ -59,8 +59,7 @@ limitations under the License.
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    <!--Jetty
-    JSR-356 Websocket client side dependency-->
+    <!--Jetty JSR-356 Websocket client side dependency-->
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>javax-websocket-client-impl</artifactId>
@@ -71,8 +70,7 @@ limitations under the License.
       <artifactId>javaee-api</artifactId>
       <version>8.0.1</version>
     </dependency>
-    <!--Optional
-    dependency for SettableFuture, see com.example.flexible.websocket.jsr356.ServerSocket -->
+    <!--Optional dependency for SettableFuture, see com.example.flexible.websocket.jsr356.ServerSocket -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
