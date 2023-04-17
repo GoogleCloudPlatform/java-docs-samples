@@ -220,7 +220,7 @@ public class WorkloadGeneratorTest {
 
     // Ensure the job is stopped after duration. Needs a bit of a wait to guarantee cancellation
     // state is entered.
-    wait(2 * 60 * 1000);
+    Thread.sleep(2 * 60 * 1000);
     assertThat(job.getCurrentState()).matches("JOB_STATE_CANCELLED");
   }
 
