@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -24,13 +24,24 @@
   <artifactId>cloud-spanner-hibernate</artifactId>
   <name>Cloud Spanner with Hibernate Code Sample</name>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>libraries-bom</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>26.12.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <!-- [START spanner_hibernate_dependencies] -->
   <dependencies>
     <!-- The Spanner JDBC driver dependency -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner-jdbc</artifactId>
-      <version>2.9.2</version>
     </dependency>
 
     <!-- Hibernate core dependency -->
@@ -68,8 +79,12 @@
     <repository>
       <id>snapshots-repo</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <releases><enabled>false</enabled></releases>
-      <snapshots><enabled>true</enabled></snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
   </repositories>
   <!-- [END spanner_hibernate_snapshot_repo] -->
