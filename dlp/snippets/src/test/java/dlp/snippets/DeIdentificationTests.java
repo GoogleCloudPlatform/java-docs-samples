@@ -552,11 +552,11 @@ public class DeIdentificationTests extends TestBase {
 
   @Test
   public void testReIdentifyWithDeterminsiticEncryption() throws IOException {
+    String textToReIdentify =
+        DeIdenitfyWithDeterministicEncryption.deIdentifyWithDeterministicEncryption(
+            PROJECT_ID, "My SSN is 372819127", wrappedKey, kmsKeyName);
     ReidentifyWithDeterministicEncryption.reIdentifyWithDeterminsiticEncryption(
-        PROJECT_ID,
-        "My SSN is SSN_TOKEN(36):AaFA0hAWtdXqTGbYdl/qdKCHr3UG/cU7fMw=",
-        wrappedKey,
-        kmsKeyName);
+        PROJECT_ID, textToReIdentify, wrappedKey, kmsKeyName);
     String output = bout.toString();
     assertThat(output).contains("Text after re-identification: ");
   }

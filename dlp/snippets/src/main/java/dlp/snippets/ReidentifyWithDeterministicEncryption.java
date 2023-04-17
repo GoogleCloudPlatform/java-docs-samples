@@ -44,8 +44,8 @@ public class ReidentifyWithDeterministicEncryption {
 
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
-    // The string to re-identify
-    String textToReIdentify = "My SSN is SSN_TOKEN(36):Abmg1/Wql5D6stA1s467OQsGyegFrV0Qe/E=";
+    // The string to de-identify.
+    String textToIdentify = "My SSN is 372819127";
     // The encrypted ('wrapped') AES-256 key to use.
     // This key should be encrypted using the Cloud KMS key specified by key_name.
     String wrappedKey = "YOUR_ENCRYPTED_AES_256_KEY";
@@ -55,6 +55,10 @@ public class ReidentifyWithDeterministicEncryption {
             + "locations/YOUR_KEYRING_REGION/"
             + "keyRings/YOUR_KEYRING_NAME/"
             + "cryptoKeys/YOUR_KEY_NAME";
+    // The string to re-identify.
+    String textToReIdentify =
+        DeIdenitfyWithDeterministicEncryption.deIdentifyWithDeterministicEncryption(
+            projectId, textToIdentify, wrappedKey, kmsKeyName);
     reIdentifyWithDeterminsiticEncryption(projectId, textToReIdentify, wrappedKey, kmsKeyName);
   }
 
