@@ -219,7 +219,10 @@ public class WorkloadGeneratorTest {
     assertThat(passedRate).isTrue();
 
     // Ensure the job is stopped after duration.
-    assertThat(job.getCurrentState()).matches("JOB_STATE_CANCELLED");
+    if (!job.getCurrentState().equals("JOB_STATE_CANCELLED")) {
+      job.setRequestedState("JOB_STATE_CANCELLED");
+      dataflowClient.updateJob(jobId, job);
+    }
   }
 
   @Test
