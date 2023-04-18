@@ -37,6 +37,8 @@
     <appengine.maven.plugin>2.4.3</appengine.maven.plugin>
     <jetty>9.4.44.v20210927</jetty>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
+
+    <spring.boot.version>2.7.10</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -44,7 +46,7 @@
        <dependency>
            <groupId>org.springframework.boot</groupId>
            <artifactId>spring-boot-dependencies</artifactId>
-           <version>2.7.10</version>
+           <version>${spring.boot.version}</version>
            <type>pom</type>
            <scope>import</scope>
        </dependency>
@@ -124,6 +126,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring.boot.version}</version>
         <executions>
           <execution>
             <goals>
