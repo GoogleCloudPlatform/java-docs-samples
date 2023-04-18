@@ -29,7 +29,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>${spring.boot.version}</version>      
       <!-- Exclude Tomcat so that it doesn't conflict w/ Jetty server -->
       <exclusions>
         <exclusion>
@@ -56,7 +55,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <version>${spring.boot.version}</version>      
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -84,7 +82,6 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring.boot.version}</version>
       </plugin>
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
