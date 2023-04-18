@@ -3,7 +3,7 @@
 This sample demonstrates how to use [JavaMail][javamail-api] on [Google App Engine
 standard environment][ae-docs].
 
-See the [sample application documentaion][sample-docs] for more detailed
+See the [sample application documentation][sample-docs] for more detailed
 instructions.
 
 [ae-docs]: https://cloud.google.com/appengine/docs/java/

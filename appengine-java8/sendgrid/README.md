@@ -6,7 +6,7 @@
 This sample demonstrates how to use [SendGrid](http://sendgrid.com/partner/google) on
 [Google App Engine standard environment][ae-docs].
 
-See the [sample application documentaion][sample-docs] for more detailed
+See the [sample application documentation][sample-docs] for more detailed
 instructions.
 
 For more information about SendGrid, see their
