@@ -49,7 +49,6 @@ public class FiltersTest {
   private static final String COLUMN_FAMILY_NAME_DATA = "cell_plan";
   private static final Instant CURRENT_TIME = Instant.now();
   private static final long TIMESTAMP = CURRENT_TIME.toEpochMilli();
-  private static final long TIMESTAMP_NANO = TIMESTAMP * 1000;
   private static final long TIMESTAMP_MINUS_HR =
       CURRENT_TIME.minus(1, ChronoUnit.HOURS).toEpochMilli();
   private static final long TIMESTAMP_MINUS_HR_NANO = TIMESTAMP_MINUS_HR * 1000;
@@ -76,69 +75,133 @@ public class FiltersTest {
         admin.createTable(
             new HTableDescriptor(TableName.valueOf(TABLE_ID))
                 .addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME_STATS))
-                .addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME_DATA))
+                .addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME_DATA)));
 
-        );
-
-        try (BufferedMutator batcher = connection.getBufferedMutator(
-            TableName.valueOf(TABLE_ID))) {
+        try (BufferedMutator batcher = connection.getBufferedMutator(TableName.valueOf(TABLE_ID))) {
 
           batcher.mutate(
-              new Put("phone#4c410523#20190501".getBytes())
-                  .addColumn(COLUMN_FAMILY_NAME_STATS.getBytes(), "connected_cell".getBytes(),
-                      TIMESTAMP, Bytes.toBytes(1L))
-                  .addColumn(COLUMN_FAMILY_NAME_STATS.getBytes(), "connected_wifi".getBytes(),
-                      TIMESTAMP, Bytes.toBytes(1L))
-                  .addColumn(COLUMN_FAMILY_NAME_STATS.getBytes(), "os_build".getBytes(), TIMESTAMP,
+              new Put(Bytes.toBytes("phone#4c410523#20190501"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_cell"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_wifi"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("os_build"),
+                      TIMESTAMP,
                       Bytes.toBytes("PQ2A.190405.003"))
-                  .addColumn(COLUMN_FAMILY_NAME_DATA.getBytes(), "data_plan_01gb".getBytes(),
-                      TIMESTAMP_MINUS_HR, Bytes.toBytes("true"))
-                  .addColumn(COLUMN_FAMILY_NAME_DATA.getBytes(), "data_plan_01gb".getBytes(),
-                      TIMESTAMP, Bytes.toBytes("false"))
-                  .addColumn(COLUMN_FAMILY_NAME_DATA.getBytes(), "data_plan_05gb".getBytes(),
-                      TIMESTAMP, Bytes.toBytes("true"))
-          );
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_01gb"),
+                      TIMESTAMP_MINUS_HR,
+                      Bytes.toBytes("true"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_01gb"),
+                      TIMESTAMP,
+                      Bytes.toBytes("false"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_05gb"),
+                      TIMESTAMP,
+                      Bytes.toBytes("true")));
+
           batcher.mutate(
-              new Put("phone#4c410523#20190502".getBytes())
-                  .addColumn(COLUMN_FAMILY_NAME_STATS.getBytes(), Bytes.toBytes("connected_cell"),
-                      TIMESTAMP, Bytes.toBytes(1L))
-                  .addColumn(COLUMN_FAMILY_NAME_STATS.getBytes(), Bytes.toBytes("connected_wifi"),
-                      TIMESTAMP, Bytes.toBytes(1L))
-                  .addColumn(COLUMN_FAMILY_NAME_STATS.getBytes(), Bytes.toBytes("os_build"),
-                      TIMESTAMP, Bytes.toBytes("PQ2A.190405.004"))
-                  .addColumn(COLUMN_FAMILY_NAME_DATA.getBytes(), Bytes.toBytes("data_plan_05gb"),
-                      TIMESTAMP, Bytes.toBytes("true")));
+              new Put(Bytes.toBytes("phone#4c410523#20190502"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_cell"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_wifi"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("os_build"),
+                      TIMESTAMP,
+                      Bytes.toBytes("PQ2A.190405.004"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_05gb"),
+                      TIMESTAMP,
+                      Bytes.toBytes("true")));
           batcher.mutate(
               new Put(Bytes.toBytes("phone#4c410523#20190505"))
-                  .addColumn(Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
-                      Bytes.toBytes("connected_cell"), TIMESTAMP, Bytes.toBytes(0L))
-                  .addColumn(Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
-                      Bytes.toBytes("connected_wifi"), TIMESTAMP, Bytes.toBytes(1))
-                  .addColumn(Bytes.toBytes(COLUMN_FAMILY_NAME_STATS), Bytes.toBytes("os_build"),
-                      TIMESTAMP, Bytes.toBytes("PQ2A.190406.000"))
-                  .addColumn(Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
-                      Bytes.toBytes("data_plan_05gb"), TIMESTAMP, Bytes.toBytes("true")));
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_cell"),
+                      TIMESTAMP,
+                      Bytes.toBytes(0L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_wifi"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("os_build"),
+                      TIMESTAMP,
+                      Bytes.toBytes("PQ2A.190406.000"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_05gb"),
+                      TIMESTAMP,
+                      Bytes.toBytes("true")));
+
           batcher.mutate(
               new Put(Bytes.toBytes("phone#5c10102#20190501"))
-                  .addColumn(Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
-                      Bytes.toBytes("connected_cell"), TIMESTAMP, Bytes.toBytes(1L))
-                  .addColumn(Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
-                      Bytes.toBytes("connected_wifi"), TIMESTAMP, Bytes.toBytes(1L))
-                  .addColumn(Bytes.toBytes(COLUMN_FAMILY_NAME_STATS), Bytes.toBytes("os_build"),
-                      TIMESTAMP, Bytes.toBytes("PQ2A.190401.002"))
-                  .addColumn(Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
-                      Bytes.toBytes("data_plan_10gb"), TIMESTAMP, Bytes.toBytes("true")));
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_cell"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_wifi"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("os_build"),
+                      TIMESTAMP,
+                      Bytes.toBytes("PQ2A.190401.002"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_10gb"),
+                      TIMESTAMP,
+                      Bytes.toBytes("true")));
+
           batcher.mutate(
               new Put(Bytes.toBytes("phone#5c10102#20190502"))
-                  .addColumn(Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
-                      Bytes.toBytes("connected_cell"), TIMESTAMP, Bytes.toBytes(1L))
-                  .addColumn(Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
-                      Bytes.toBytes("connected_wifi"), TIMESTAMP, Bytes.toBytes(0L))
-                  .addColumn(Bytes.toBytes(COLUMN_FAMILY_NAME_STATS), Bytes.toBytes("os_build"),
-                      TIMESTAMP, Bytes.toBytes("PQ2A.190406.000"))
                   .addColumn(
-                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA), Bytes.toBytes("data_plan_10gb"),
-                      TIMESTAMP, Bytes.toBytes("true")));
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_cell"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_wifi"),
+                      TIMESTAMP,
+                      Bytes.toBytes(0L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("os_build"),
+                      TIMESTAMP,
+                      Bytes.toBytes("PQ2A.190406.000"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_10gb"),
+                      TIMESTAMP,
+                      Bytes.toBytes("true")));
         }
       }
     } catch (Exception e) {
