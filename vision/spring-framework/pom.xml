@@ -83,6 +83,7 @@ limitations under the License.
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring.version}</version>
         <configuration>
           <mainClass>com.example.vision.Application</mainClass>
         </configuration>
