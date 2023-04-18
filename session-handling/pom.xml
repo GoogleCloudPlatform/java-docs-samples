@@ -15,7 +15,8 @@ Copyright 2019 Google LLC
  limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
 
@@ -43,12 +44,23 @@ Copyright 2019 Google LLC
     <jetty.version>9.4.44.v20210927</jetty.version>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>libraries-bom</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>26.12.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-firestore -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      <version>3.9.2</version>
     </dependency>
 
     <dependency>
@@ -60,7 +72,6 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>31.1-jre</version>
       <scope>compile</scope>
     </dependency>
 
