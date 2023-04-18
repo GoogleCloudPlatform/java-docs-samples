@@ -20,7 +20,7 @@
  import com.google.cloud.kms.v1.CryptoKeyVersionName;
  import com.google.cloud.kms.v1.KeyManagementServiceClient;
  import com.google.cloud.kms.v1.PublicKey;
- // NOTE: The library nimbusds is NOT endoresed for anything beyond conversion to JWK.
+ // NOTE: The library nimbusds is NOT endorsed for anything beyond conversion to JWK.
  import com.nimbusds.jose.JOSEException;
  import com.nimbusds.jose.jwk.JWK;
  import java.io.IOException;
