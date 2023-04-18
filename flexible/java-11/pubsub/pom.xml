@@ -39,7 +39,7 @@
     <appengine.maven.plugin>2.4.3</appengine.maven.plugin>
     <jetty>9.4.50.v20221201</jetty>
 
-    <spring.boot.version>2.7.10</spring.boot.version>
+    <spring.boot.version>2.7.6</spring.boot.version>
   </properties>
 
   <dependencyManagement>
