@@ -51,7 +51,6 @@ public class FiltersTest {
   private static final long TIMESTAMP = CURRENT_TIME.toEpochMilli();
   private static final long TIMESTAMP_MINUS_HR =
       CURRENT_TIME.minus(1, ChronoUnit.HOURS).toEpochMilli();
-  private static final long TIMESTAMP_MINUS_HR_NANO = TIMESTAMP_MINUS_HR * 1000;
 
   private static String projectId;
   private static String instanceId;
