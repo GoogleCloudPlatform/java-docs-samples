@@ -23,8 +23,7 @@
     <dependency>
       <artifactId>google-cloud-compute</artifactId>
       <groupId>com.google.cloud</groupId>
-      <version>1.18.0</version>
-    </dependency>
+      </dependency>
     <dependency>
       <artifactId>google-cloud-storage</artifactId>
       <groupId>com.google.cloud</groupId>
@@ -36,13 +35,11 @@
     <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>gax</artifactId>
-      <version>2.23.0</version>
-    </dependency>
+      </dependency>
     <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>gax-httpjson</artifactId>
-      <version>0.108.1</version>
-    </dependency>
+      </dependency>
 
 
     <!-- Test dependencies -->

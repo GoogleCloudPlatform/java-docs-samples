@@ -36,6 +36,18 @@ Copyright 2017 Google Inc.
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>libraries-bom</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>26.12.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>com.google.appengine</groupId>
@@ -54,14 +66,13 @@ Copyright 2017 Google Inc.
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>4.9.3</version>
+      <version>4.10.0</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.10.1</version>
-    </dependency>
+      </dependency>
 
     <dependency>
       <groupId>org.thymeleaf</groupId>
