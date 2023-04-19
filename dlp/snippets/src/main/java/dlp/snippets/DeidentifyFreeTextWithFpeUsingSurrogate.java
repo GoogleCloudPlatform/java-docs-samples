@@ -35,7 +35,10 @@ import com.google.privacy.dlp.v2.PrimitiveTransformation;
 import com.google.privacy.dlp.v2.UnwrappedCryptoKey;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Collections;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 
 public class DeidentifyFreeTextWithFpeUsingSurrogate {
 
@@ -46,8 +49,15 @@ public class DeidentifyFreeTextWithFpeUsingSurrogate {
     String projectId = "your-project-id";
     // The string to deidentify
     String textToDeIdentify = "My phone number is 4359916732";
-    //The base64-encoded AES-256 key to use.
-    String unwrappedKey = "YOUR_UNWRAPPED_KEY";
+
+    // Generate the random 128-bit key.
+    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+    keyGenerator.init(128);
+    SecretKey secretKey = keyGenerator.generateKey();
+
+    // Convert key to Base64 encoded string
+    byte[] keyBytes = secretKey.getEncoded();
+    String unwrappedKey = Base64.getEncoder().encodeToString(keyBytes);
 
     deIdentifyWithFpeSurrogate(projectId, textToDeIdentify, unwrappedKey);
   }

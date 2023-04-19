@@ -41,8 +41,6 @@ abstract class TestBase {
   protected static final String WRAPPED_KEY = System.getenv("DLP_DEID_WRAPPED_KEY");
   protected static final String KMS_KEY_NAME = System.getenv("DLP_DEID_KEY_NAME");
 
-  protected static final String UNWRAPPED_KEY = System.getenv("DLP_DEID_UNWRAPPED_KEY");
-
   protected ByteArrayOutputStream bout;
   private PrintStream originalOut = System.out;
 
