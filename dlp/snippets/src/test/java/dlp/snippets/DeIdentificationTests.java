@@ -603,7 +603,8 @@ public class DeIdentificationTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Table after de-identification:");
     assertThat(table).isEqualTo(expectedTable);
-    
+  }
+  
   @Test
   public void testReIdentifyWithFpeSurrogate() throws IOException, NoSuchAlgorithmException {
 
