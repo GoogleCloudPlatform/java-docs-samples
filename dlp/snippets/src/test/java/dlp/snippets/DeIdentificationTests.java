@@ -28,6 +28,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -552,9 +556,19 @@ public class DeIdentificationTests extends TestBase {
   }
 
   @Test
-  public void testDeIdentifyWithFpeSurrogate() throws IOException {
+  public void testDeIdentifyWithFpeSurrogate() throws IOException, NoSuchAlgorithmException {
+
+    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+    keyGenerator.init(128);
+    SecretKey secretKey = keyGenerator.generateKey();
+
+    // Convert key to Base64 encoded string
+    byte[] keyBytes = secretKey.getEncoded();
+    String unwrappedKey = Base64.getEncoder().encodeToString(keyBytes);
+
+
     DeidentifyFreeTextWithFpeUsingSurrogate.deIdentifyWithFpeSurrogate(
-        PROJECT_ID, "My phone number is 4359916732", "YWJjZGVmZ2hpamtsbW5vcA==");
+        PROJECT_ID, "My phone number is 4359916732", unwrappedKey);
     String output = bout.toString();
     assertThat(output).contains("Text after de-identification: ");
   }
