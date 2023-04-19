@@ -66,13 +66,13 @@ public class ReidentifyFreeTextWithFpeUsingSurrogate {
   }
 
   public static void reIdentifyWithFpeSurrogate(
-      String projectId, String textToDeIdentify, String unwrappedKey) throws IOException {
+      String projectId, String textToReIdentify, String unwrappedKey) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       // Specify what content you want the service to ReIdentify
-      ContentItem contentItem = ContentItem.newBuilder().setValue(textToDeIdentify).build();
+      ContentItem contentItem = ContentItem.newBuilder().setValue(textToReIdentify).build();
       CustomInfoType.SurrogateType surrogateType =
           CustomInfoType.SurrogateType.newBuilder().build();
 
