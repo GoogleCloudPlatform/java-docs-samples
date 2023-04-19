@@ -133,7 +133,7 @@ public class QuickStart {
     }
   }
 
-  private static String getProjectNumber(String projectId){ 
+  private static String getProjectNumber(String projectId) { 
     ResourceManager resourceManager = ResourceManagerOptions.getDefaultInstance().getService();
     ProjectInfo project = resourceManager.get(projectId);
     return Long.toString(project.getProjectNumber());
