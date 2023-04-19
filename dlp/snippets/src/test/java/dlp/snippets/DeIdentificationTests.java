@@ -558,4 +558,64 @@ public class DeIdentificationTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Text after de-identification: ");
   }
+
+  @Test
+  public void testDeIdentifyWithBucketingConfig() throws IOException {
+
+    Table tableToDeIdentify =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("AGE").build())
+            .addHeaders(FieldId.newBuilder().setName("PATIENT").build())
+            .addHeaders(FieldId.newBuilder().setName("HAPPINESS SCORE").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("101").build())
+                    .addValues(Value.newBuilder().setStringValue("Charles Dickens").build())
+                    .addValues(Value.newBuilder().setIntegerValue(95).build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("22").build())
+                    .addValues(Value.newBuilder().setStringValue("Jane Austen").build())
+                    .addValues(Value.newBuilder().setIntegerValue(21).build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("55").build())
+                    .addValues(Value.newBuilder().setStringValue("Mark Twain").build())
+                    .addValues(Value.newBuilder().setIntegerValue(75).build())
+                    .build())
+            .build();
+
+    Table expectedTable =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("AGE").build())
+            .addHeaders(FieldId.newBuilder().setName("PATIENT").build())
+            .addHeaders(FieldId.newBuilder().setName("HAPPINESS SCORE").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("101").build())
+                    .addValues(Value.newBuilder().setStringValue("Charles Dickens").build())
+                    .addValues(Value.newBuilder().setStringValue("High").build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("22").build())
+                    .addValues(Value.newBuilder().setStringValue("Jane Austen").build())
+                    .addValues(Value.newBuilder().setStringValue("low").build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("55").build())
+                    .addValues(Value.newBuilder().setStringValue("Mark Twain").build())
+                    .addValues(Value.newBuilder().setStringValue("High").build())
+                    .build())
+            .build();
+
+    Table actualTable =
+        DeIdentifyTableWithBucketingConfig.deIdentifyTableBucketing(PROJECT_ID, tableToDeIdentify);
+    String output = bout.toString();
+    assertThat(actualTable).isEqualTo(expectedTable);
+    assertThat(output).contains("Table after de-identification: ");
+  }
 }
