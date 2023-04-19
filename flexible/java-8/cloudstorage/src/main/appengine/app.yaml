@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+# [START gae_flex_cloudstorage_yaml]
 runtime: java
 env: flex
 
@@ -21,3 +22,4 @@ handlers:
 
 env_variables:
   BUCKET_NAME: YOUR-BUCKET-NAME
+# [END gae_flex_cloudstorage_yaml]
