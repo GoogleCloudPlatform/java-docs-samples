@@ -16,85 +16,89 @@
 
 package dlp.snippets;
 
-// [START dlp_reidentify_free_text_with_fpe_using_surrogate]
+// [START dlp_deidentify_free_text_with_fpe_using_surrogate]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.common.io.BaseEncoding;
 import com.google.privacy.dlp.v2.ContentItem;
 import com.google.privacy.dlp.v2.CryptoKey;
 import com.google.privacy.dlp.v2.CryptoReplaceFfxFpeConfig;
-import com.google.privacy.dlp.v2.CustomInfoType;
 import com.google.privacy.dlp.v2.DeidentifyConfig;
+import com.google.privacy.dlp.v2.DeidentifyContentRequest;
+import com.google.privacy.dlp.v2.DeidentifyContentResponse;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InfoTypeTransformations;
+import com.google.privacy.dlp.v2.InfoTypeTransformations.InfoTypeTransformation;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.PrimitiveTransformation;
-import com.google.privacy.dlp.v2.ReidentifyContentRequest;
-import com.google.privacy.dlp.v2.ReidentifyContentResponse;
 import com.google.privacy.dlp.v2.UnwrappedCryptoKey;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Collections;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
-public class ReidentifyFreeTextWithFpeUsingSurrogate {
+public class DeidentifyFreeTextWithFpeUsingSurrogate {
+
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
 
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
-    // The string to de-identify.
-    String textToDeIdentify = "My phone number is 4359916731";
+    // The string to deidentify
+    String textToDeIdentify = "My phone number is 4359916732";
 
     // Generate the random 128-bit key.
     KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
     keyGenerator.init(128);
     SecretKey secretKey = keyGenerator.generateKey();
 
-    // Convert key to Base64 encoded string.
+    // Convert key to Base64 encoded string
     byte[] keyBytes = secretKey.getEncoded();
     String unwrappedKey = Base64.getEncoder().encodeToString(keyBytes);
 
-    // Obtain the de-identified text.
-    String textToReidentify =
-        DeidentifyFreeTextWithFpeUsingSurrogate.deIdentifyWithFpeSurrogate(
-            projectId, textToDeIdentify, unwrappedKey);
-
-    reIdentifyWithFpeSurrogate(projectId, textToReidentify, unwrappedKey);
+    deIdentifyWithFpeSurrogate(projectId, textToDeIdentify, unwrappedKey);
   }
 
-  public static void reIdentifyWithFpeSurrogate(
+  /**
+   * Uses the Data Loss Prevention API to deidentify sensitive data in a string using Format
+   * Preserving Encryption (FPE).The encryption is performed with an unwrapped key.
+   *
+   * @param projectId The Google Cloud project id to use as a parent resource.
+   * @param textToDeIdentify The string to deidentify.
+   * @param unwrappedKey The base64-encoded AES-256 key to use.
+   */
+  public static String deIdentifyWithFpeSurrogate(
       String projectId, String textToDeIdentify, String unwrappedKey) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Specify what content you want the service to ReIdentify
+      // Set the text to be deidentified.
       ContentItem contentItem = ContentItem.newBuilder().setValue(textToDeIdentify).build();
-      CustomInfoType.SurrogateType surrogateType =
-          CustomInfoType.SurrogateType.newBuilder().build();
 
-      // Specify the surrogate type used at time of de-identification
-      InfoType surrogateInfoType = InfoType.newBuilder().setName("PHONE_TOKEN").build();
+      // Specify the InfoType the inspection will look for.
+      // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
+      InfoType infoType = InfoType.newBuilder()
+              .setName("PHONE_NUMBER").build();
 
-      CustomInfoType customInfoType =
-          CustomInfoType.newBuilder()
-              .setInfoType(surrogateInfoType)
-              .setSurrogateType(surrogateType)
-              .build();
       InspectConfig inspectConfig =
-          InspectConfig.newBuilder().addCustomInfoTypes(customInfoType).build();
+          InspectConfig.newBuilder()
+                  .addAllInfoTypes(Collections.singletonList(infoType)).build();
 
-      // Specify an unwrapped crypto key
+      // Specify an unwrapped crypto key.
       UnwrappedCryptoKey unwrappedCryptoKey =
           UnwrappedCryptoKey.newBuilder()
               .setKey(ByteString.copyFrom(BaseEncoding.base64().decode(unwrappedKey)))
               .build();
+
       CryptoKey cryptoKey = CryptoKey.newBuilder().setUnwrapped(unwrappedCryptoKey).build();
 
-      // Specify how to un-encrypt the previously de-identified information
+      InfoType surrogateInfoType = InfoType.newBuilder().setName("PHONE_TOKEN").build();
+
+      // Specify how to decrypt the previously de-identified information.
       CryptoReplaceFfxFpeConfig cryptoReplaceFfxFpeConfig =
           CryptoReplaceFfxFpeConfig.newBuilder()
               .setCryptoKey(cryptoKey)
@@ -109,31 +113,37 @@ public class ReidentifyFreeTextWithFpeUsingSurrogate {
               .setCryptoReplaceFfxFpeConfig(cryptoReplaceFfxFpeConfig)
               .build();
 
-      InfoTypeTransformations.InfoTypeTransformation infoTypeTransformation =
-          InfoTypeTransformations.InfoTypeTransformation.newBuilder()
+      InfoTypeTransformation infoTypeTransformation =
+          InfoTypeTransformation.newBuilder()
               .setPrimitiveTransformation(primitiveTransformation)
               .build();
 
       InfoTypeTransformations transformations =
-          InfoTypeTransformations.newBuilder().addTransformations(infoTypeTransformation).build();
+          InfoTypeTransformations.newBuilder()
+                  .addTransformations(infoTypeTransformation).build();
 
-      DeidentifyConfig reidentifyConfig =
-          DeidentifyConfig.newBuilder().setInfoTypeTransformations(transformations).build();
+      DeidentifyConfig deidentifyConfig =
+          DeidentifyConfig.newBuilder()
+                  .setInfoTypeTransformations(transformations).build();
 
       // Combine configurations into a request for the service.
-      ReidentifyContentRequest request =
-          ReidentifyContentRequest.newBuilder()
+      DeidentifyContentRequest request =
+          DeidentifyContentRequest.newBuilder()
               .setParent(LocationName.of(projectId, "global").toString())
               .setItem(contentItem)
               .setInspectConfig(inspectConfig)
-              .setReidentifyConfig(reidentifyConfig)
+              .setDeidentifyConfig(deidentifyConfig)
               .build();
-      // Send the request and receive response from the service
-      ReidentifyContentResponse response = dlp.reidentifyContent(request);
 
-      // Print the results
-      System.out.println("Text after re-identification: " + response.getItem().getValue());
+      // Send the request and receive response from the service.
+      DeidentifyContentResponse response = dlp.deidentifyContent(request);
+
+      // Print the results.
+      System.out.println("Text after de-identification: " + response.getItem().getValue());
+
+      return response.getItem().getValue();
     }
   }
 }
-// [END dlp_reidentify_free_text_with_fpe_using_surrogate]
+
+// [END dlp_deidentify_free_text_with_fpe_using_surrogate]

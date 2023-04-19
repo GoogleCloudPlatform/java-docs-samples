@@ -41,8 +41,7 @@ public class DeIdentificationTests extends TestBase {
         "GOOGLE_APPLICATION_CREDENTIALS",
         "GOOGLE_CLOUD_PROJECT",
         "DLP_DEID_WRAPPED_KEY",
-        "DLP_DEID_KEY_NAME",
-        "DLP_DEID_UNWRAPPED_KEY");
+        "DLP_DEID_KEY_NAME");
   }
 
   @Test
@@ -554,7 +553,7 @@ public class DeIdentificationTests extends TestBase {
   @Test
   public void testReIdentifyWithFpeSurrogate() throws IOException {
     ReidentifyFreeTextWithFpeUsingSurrogate.reIdentifyWithFpeSurrogate(
-        PROJECT_ID, "My phone number is PHONE_TOKEN(10):9617256398", UNWRAPPED_KEY);
+        PROJECT_ID, "My phone number is PHONE_TOKEN(10):9617256398", "YWJjZGVmZ2hpamtsbW5vcA==");
     String output = bout.toString();
     assertThat(output).contains("Text after re-identification: ");
   }

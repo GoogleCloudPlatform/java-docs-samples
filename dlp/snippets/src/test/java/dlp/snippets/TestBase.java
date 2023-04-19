@@ -40,7 +40,6 @@ abstract class TestBase {
   protected static final String TABLE_ID = System.getenv("BIGQUERY_TABLE");
   protected static final String wrappedKey = System.getenv("DLP_DEID_WRAPPED_KEY");
   protected static final String kmsKeyName = System.getenv("DLP_DEID_KEY_NAME");
-  protected static final String UNWRAPPED_KEY = System.getenv("DLP_DEID_UNWRAPPED_KEY");
 
   protected ByteArrayOutputStream bout;
   private PrintStream originalOut = System.out;
