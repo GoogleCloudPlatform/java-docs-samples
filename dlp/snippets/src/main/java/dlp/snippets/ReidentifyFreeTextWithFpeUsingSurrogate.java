@@ -47,22 +47,15 @@ public class ReidentifyFreeTextWithFpeUsingSurrogate {
     String projectId = "your-project-id";
     // The string to de-identify.
     String textToDeIdentify = "My phone number is 4359916731";
-
-    // Generate the random 128-bit key.
-    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-    keyGenerator.init(128);
-    SecretKey secretKey = keyGenerator.generateKey();
-
-    // Convert key to Base64 encoded string.
-    byte[] keyBytes = secretKey.getEncoded();
-    String unwrappedKey = Base64.getEncoder().encodeToString(keyBytes);
+    // The base64-encoded AES-256 key to use.
+    String base64EncodedKey = "your-base64-encoded-key";
 
     // Obtain the de-identified text.
-    String textToReidentify =
+    String textToReIdentify =
         DeidentifyFreeTextWithFpeUsingSurrogate.deIdentifyWithFpeSurrogate(
-            projectId, textToDeIdentify, unwrappedKey);
+            projectId, textToDeIdentify, base64EncodedKey);
 
-    reIdentifyWithFpeSurrogate(projectId, textToReidentify, unwrappedKey);
+    reIdentifyWithFpeSurrogate(projectId, textToReIdentify, base64EncodedKey);
   }
 
   public static void reIdentifyWithFpeSurrogate(

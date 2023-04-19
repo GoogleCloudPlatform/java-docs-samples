@@ -47,19 +47,12 @@ public class DeidentifyFreeTextWithFpeUsingSurrogate {
 
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
-    // The string to deidentify
+    // The string to de-identify.
     String textToDeIdentify = "My phone number is 4359916732";
+    // The base64-encoded AES-256 key to use.
+    String base64EncodedKey = "your-base64-encoded-key";
 
-    // Generate the random 128-bit key.
-    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-    keyGenerator.init(128);
-    SecretKey secretKey = keyGenerator.generateKey();
-
-    // Convert key to Base64 encoded string
-    byte[] keyBytes = secretKey.getEncoded();
-    String unwrappedKey = Base64.getEncoder().encodeToString(keyBytes);
-
-    deIdentifyWithFpeSurrogate(projectId, textToDeIdentify, unwrappedKey);
+    deIdentifyWithFpeSurrogate(projectId, textToDeIdentify, base64EncodedKey);
   }
 
   /**
