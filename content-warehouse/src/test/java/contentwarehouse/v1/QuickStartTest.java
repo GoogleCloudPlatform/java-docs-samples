@@ -59,7 +59,7 @@ public class QuickStartTest {
   public void testQuickStart()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
     // parse the GCS invoice as a form.
-    QuickStart.quickStart(PROJECT_ID, "us", "user:your-user-id");
+    QuickStart.quickStart(PROJECT_ID, "us", "user:andrewchasin@google.com");
     String got = bout.toString();
 
     assertThat(got).contains("documentSchemas");

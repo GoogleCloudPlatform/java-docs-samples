@@ -35,6 +35,9 @@ import com.google.cloud.contentwarehouse.v1.RequestMetadata;
 import com.google.cloud.contentwarehouse.v1.TextArray;
 import com.google.cloud.contentwarehouse.v1.TextTypeOptions;
 import com.google.cloud.contentwarehouse.v1.UserInfo;
+import com.google.cloud.resourcemanager.ProjectInfo;
+import com.google.cloud.resourcemanager.ResourceManager;
+import com.google.cloud.resourcemanager.ResourceManagerOptions;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -44,14 +47,15 @@ public class QuickStart {
   public static void main(String[] args)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectNumber = "your-project-number";
+    String projectId = "your-project-id";
     String location = "your-region"; // Format is "us" or "eu".
     String userId = "your-user-id"; // Format is user:<user-id>
-    quickStart(projectNumber, location, userId);
+    quickStart(projectId, location, userId);
   }
 
   public static void quickStart(String projectId, String location, String userId)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    String projectNumber = getProjectNumber(projectId);
 
     String endpoint = String.format("%s-contentwarehouse.googleapis.com:443", location);
     DocumentSchemaServiceSettings documentSchemaServiceSettings = 
@@ -62,7 +66,7 @@ public class QuickStart {
         DocumentSchemaServiceClient.create(documentSchemaServiceSettings)) {
       /*  The full resource name of the location, e.g.:
       projects/{project_number}/locations/{location} */
-      String parent = LocationName.format(projectId, location);
+      String parent = LocationName.format(projectNumber, location);
 
       /* Create Document Schema with Text Type Property Definition
        * More detail on managing Document Schemas: 
@@ -127,6 +131,12 @@ public class QuickStart {
         System.out.println(documentSchemaResponse.getName());
       }
     }
+  }
+
+  private static String getProjectNumber(String projectId){ 
+    ResourceManager resourceManager = ResourceManagerOptions.getDefaultInstance().getService();
+    ProjectInfo project = resourceManager.get(projectId);
+    return Long.toString(project.getProjectNumber());
   }
 }
 // [END contentwarehouse_quickstart]
