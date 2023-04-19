@@ -50,7 +50,7 @@ public class DeidentifyFreeTextWithFpeUsingSurrogate {
     // The string to deidentify
     String textToDeIdentify = "My phone number is 4359916732";
     // The base64-encoded key to use.
-    String base64EncodedKey="your-base64-encoded-key";
+    String base64EncodedKey = "your-base64-encoded-key";
 
     deIdentifyWithFpeSurrogate(projectId, textToDeIdentify, base64EncodedKey);
   }
