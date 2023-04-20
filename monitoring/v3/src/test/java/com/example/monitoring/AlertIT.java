@@ -43,7 +43,7 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class AlertIT {
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-  private static String testPolicyName = "test-policy";
+  private static String testPolicyName = "My Uptime Check Policy";
   private static String policyFileName = "target/policyBackup.json";
   private static Pattern policyNameRegex =
       Pattern.compile(
@@ -66,7 +66,7 @@ public class AlertIT {
   @Test
   public void testListPolicies() throws IOException {
     AlertSample.main(new String[] {"list"});
-    assertTrue(bout.toString().contains(testPolicyName));
+    assertTrue(bout.toString().contains("My Uptime Check Policy"));
   }
 
   @Test
@@ -75,7 +75,7 @@ public class AlertIT {
     File backupFile = new File(policyFileName);
     assertTrue(backupFile.exists());
     String fileContents = String.join("\n", Files.readLines(backupFile, StandardCharsets.UTF_8));
-    assertTrue(fileContents.contains("test-policy"));
+    assertTrue(fileContents.contains("My Uptime Check Policy"));
   }
 
   // TODO(b/78293034): Complete restore backup test when parse/unparse issue is figured out.
@@ -99,7 +99,7 @@ public class AlertIT {
 
   @Test
   public void testDisableEnablePolicies() throws IOException, InterruptedException {
-    AlertSample.main(new String[] {"enable", "-d", "display_name='test-policy'"});
+    AlertSample.main(new String[] {"enable", "-d", "display_name=\""+testPolicyName+"\""});
 
     // check the current state of policy to make sure
     // not to enable the policy that is already enabled.
@@ -111,16 +111,16 @@ public class AlertIT {
     while (retry) {
       try {
         if (isEnabled) {
-          AlertSample.main(new String[] {"disable", "-d", "display_name='test-policy'"});
+          AlertSample.main(new String[] {"disable", "-d", "display_name=\""+testPolicyName+"\""});
           assertTrue(bout.toString().contains("disabled"));
 
-          AlertSample.main(new String[] {"enable", "-d", "display_name='test-policy'"});
+          AlertSample.main(new String[] {"enable", "-d", "display_name=\""+testPolicyName+"\""});
           assertTrue(bout.toString().contains("enabled"));
         } else {
-          AlertSample.main(new String[] {"enable", "-d", "display_name='test-policy'"});
+          AlertSample.main(new String[] {"enable", "-d", "display_name=\""+testPolicyName+"\""});
           assertTrue(bout.toString().contains("enabled"));
 
-          AlertSample.main(new String[] {"disable", "-d", "display_name='test-policy'"});
+          AlertSample.main(new String[] {"disable", "-d", "display_name=\""+testPolicyName+"\""});
           assertTrue(bout.toString().contains("disabled"));
         }
         retry = false;
