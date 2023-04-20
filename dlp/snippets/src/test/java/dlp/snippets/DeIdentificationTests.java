@@ -58,7 +58,8 @@ public class DeIdentificationTests extends TestBase {
 
   @Test
   public void testDeIdentifyWithFpe() throws IOException {
-    DeIdentifyWithFpe.deIdentifyWithFpe(PROJECT_ID, "My SSN is 372819127", kmsKeyName, wrappedKey);
+    DeIdentifyWithFpe.deIdentifyWithFpe(
+        PROJECT_ID, "My SSN is 372819127", KMS_KEY_NAME, WRAPPED_KEY);
 
     String output = bout.toString();
     assertThat(output).contains("Text after format-preserving encryption:");
@@ -67,7 +68,7 @@ public class DeIdentificationTests extends TestBase {
   @Test
   public void testReIdentifyWithFpe() throws IOException {
     ReIdentifyWithFpe.reIdentifyWithFpe(
-        PROJECT_ID, "My SSN is SSN_TOKEN(9):731997681", kmsKeyName, wrappedKey);
+        PROJECT_ID, "My SSN is SSN_TOKEN(9):731997681", KMS_KEY_NAME, WRAPPED_KEY);
 
     String output = bout.toString();
     assertThat(output).contains("Text after re-identification:");
@@ -76,7 +77,7 @@ public class DeIdentificationTests extends TestBase {
   @Test
   public void testDeIdentifyTextWithFpe() throws IOException {
     DeIdentifyTextWithFpe.deIdentifyTextWithFpe(
-        PROJECT_ID, "My phone number is 4359916732", kmsKeyName, wrappedKey);
+        PROJECT_ID, "My phone number is 4359916732", KMS_KEY_NAME, WRAPPED_KEY);
 
     String output = bout.toString();
     assertThat(output).contains("Text after format-preserving encryption: ");
@@ -85,7 +86,7 @@ public class DeIdentificationTests extends TestBase {
   @Test
   public void testReIdentifyTextWithFpe() throws IOException {
     ReIdentifyTextWithFpe.reIdentifyTextWithFpe(
-        PROJECT_ID, "My phone number is PHONE_TOKEN(10):9617256398", kmsKeyName, wrappedKey);
+        PROJECT_ID, "My phone number is PHONE_TOKEN(10):9617256398", KMS_KEY_NAME, WRAPPED_KEY);
 
     String output = bout.toString();
     assertThat(output).contains("Text after re-identification: ");
@@ -119,7 +120,7 @@ public class DeIdentificationTests extends TestBase {
             .build();
 
     DeIdentifyTableWithFpe.deIdentifyTableWithFpe(
-        PROJECT_ID, tableToDeIdentify, kmsKeyName, wrappedKey);
+        PROJECT_ID, tableToDeIdentify, KMS_KEY_NAME, WRAPPED_KEY);
 
     String output = bout.toString();
     assertThat(output).contains("Table after format-preserving encryption:");
@@ -137,7 +138,7 @@ public class DeIdentificationTests extends TestBase {
             .build();
 
     ReIdentifyTableWithFpe.reIdentifyTableWithFpe(
-        PROJECT_ID, tableToReIdentify, kmsKeyName, wrappedKey);
+        PROJECT_ID, tableToReIdentify, KMS_KEY_NAME, WRAPPED_KEY);
 
     String output = bout.toString();
     assertThat(output).contains("Table after re-identification:");
@@ -549,7 +550,7 @@ public class DeIdentificationTests extends TestBase {
   @Test
   public void testDeIdentifyWithDeterministicEncryption() throws IOException {
     DeIdenitfyWithDeterministicEncryption.deIdentifyWithDeterministicEncryption(
-        PROJECT_ID, "My SSN is 372819127", wrappedKey, kmsKeyName);
+        PROJECT_ID, "My SSN is 372819127", WRAPPED_KEY, KMS_KEY_NAME);
     String output = bout.toString();
     assertThat(output).contains("Text after de-identification:");
   }
@@ -565,6 +566,24 @@ public class DeIdentificationTests extends TestBase {
     assertThat(output).contains("Text after re-identification: ");
   }
   
+  @Test
+  public void testDeIdentifyWithFpeSurrogate() throws IOException, NoSuchAlgorithmException {
+
+    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+    keyGenerator.init(128);
+    SecretKey secretKey = keyGenerator.generateKey();
+
+    // Convert key to Base64 encoded string
+    byte[] keyBytes = secretKey.getEncoded();
+    String unwrappedKey = Base64.getEncoder().encodeToString(keyBytes);
+
+
+    DeidentifyFreeTextWithFpeUsingSurrogate.deIdentifyWithFpeSurrogate(
+        PROJECT_ID, "My phone number is 4359916732", unwrappedKey);
+    String output = bout.toString();
+    assertThat(output).contains("Text after de-identification: ");
+  }
+
   @Test
   public void testReIdentifyWithFpeSurrogate() throws IOException, NoSuchAlgorithmException {
 
