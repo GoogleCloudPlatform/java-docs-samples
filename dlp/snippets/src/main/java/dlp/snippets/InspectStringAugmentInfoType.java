@@ -16,6 +16,8 @@
 
 package dlp.snippets;
 
+// [START dlp_inspect_augment_infotypes]
+
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ByteContentItem;
 import com.google.privacy.dlp.v2.ContentItem;
@@ -29,8 +31,6 @@ import com.google.privacy.dlp.v2.LocationName;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 
-// [START dlp_inspect_augment_infotypes]
-
 public class InspectStringAugmentInfoType {
 
   public static void main(String[] args) throws Exception {
@@ -39,12 +39,12 @@ public class InspectStringAugmentInfoType {
     String projectId = "your-project-id";
     // The string to de-identify.
     String textToInspect = "The patient's name is quasimodo";
-    // The string to be additionally matched
+    // The string to be additionally matched.
     String textToAugment = "quasimodo";
     inspectStringAugmentInfoType(projectId, textToInspect, textToAugment);
   }
 
-  // Inspects the provided text.
+  // Inspects the text using new custom words added to the dictionary.
   public static void inspectStringAugmentInfoType(
       String projectId, String textToInspect, String textToAugment) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -67,8 +67,8 @@ public class InspectStringAugmentInfoType {
               .build();
 
       InfoType infoType = InfoType.newBuilder().setName("PERSON_NAME").build();
-      //  Construct a custom infotype detector by augmenting the PERSON_NAME detector with a word
-      // list
+      // Construct a custom infotype detector by augmenting the PERSON_NAME detector with a word
+      // list.
       CustomInfoType customInfoType =
           CustomInfoType.newBuilder().setInfoType(infoType).setDictionary(wordList).build();
 
