@@ -489,7 +489,8 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testConvertPublicKeyToJwk() throws IOException, GeneralSecurityException, JOSEException {
+  public void testConvertPublicKeyToJwk()
+      throws IOException, GeneralSecurityException, JOSEException {
     new ConvertPublicKeyToJwk()
         .convertPublicKey(PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, "1");
     assertThat(stdOut.toString()).contains("kty");
