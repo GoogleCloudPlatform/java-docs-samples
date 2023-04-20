@@ -61,7 +61,7 @@ public class ReadFeatureValuesSample {
         timeout);
   }
 
-  static void readFeatureValuesSample(
+  public static void readFeatureValuesSample(
       String project,
       String featurestoreId,
       String entityTypeId,
@@ -91,8 +91,7 @@ public class ReadFeatureValuesSample {
 
       ReadFeatureValuesResponse readFeatureValuesResponse =
           featurestoreOnlineServiceClient.readFeatureValues(readFeatureValuesRequest);
-      System.out.println("Read Feature Values Response");
-      System.out.println(readFeatureValuesResponse);
+      System.out.println("Read Feature Values Response" + readFeatureValuesResponse);
     }
     finally {
       featurestoreOnlineServiceClient.close();
