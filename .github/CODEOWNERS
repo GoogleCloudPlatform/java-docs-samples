@@ -43,11 +43,11 @@
 /servicedirectory                @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra
 /webrisk                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra
 
-# DEE Platform Ops (DEEPO) - Observability
-/errorreporting                  @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-observability @GoogleCloudPlatform/dee-platform-ops
-/monitoring                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-observability @GoogleCloudPlatform/dee-platform-ops
-/opencensus                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-observability @GoogleCloudPlatform/dee-platform-ops
-/trace                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-observability @GoogleCloudPlatform/dee-platform-ops
+# DEE Platform Ops (DEEPO)
+/errorreporting                  @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-platform-ops
+/monitoring                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-platform-ops
+/opencensus                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-platform-ops
+/trace                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-platform-ops
 
 # Cloud SDK Databases & Data Analytics teams
 # ---* Cloud Native DB
