@@ -13,7 +13,7 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.privateca</groupId>
+  <groupId>com.google.cloud</groupId>
   <artifactId>security-private-ca-snippets</artifactId>
   <packaging>jar</packaging>
   <name>Google Certificate Authority Service Snippets</name>
