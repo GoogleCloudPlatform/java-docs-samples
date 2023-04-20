@@ -13,7 +13,8 @@ Copyright 2019 Google LLC
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
@@ -35,13 +36,25 @@ Copyright 2019 Google LLC
     <maven.compiler.source>11</maven.compiler.source>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>libraries-bom</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>26.12.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <!-- All dependencies are scoped as provided.
     Dependent-jars are created and added to
     ${project.build.directory}/appengine-staging -->
   <dependencies>
     <!-- Dependency needs to be locally install from directory -->
-		<!-- `java-docs-samples/appengine-java11/appengine-simple-jetty-main' -->
-		<!-- See the README for more information -->
+    <!-- `java-docs-samples/appengine-java11/appengine-simple-jetty-main' -->
+    <!-- See the README for more information -->
     <dependency>
       <groupId>com.example.appengine.demo</groupId>
       <artifactId>simple-jetty-main</artifactId>
@@ -59,14 +72,13 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>4.9.3</version>
+      <version>4.10.0</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.10</version>
       <scope>provided</scope>
     </dependency>
 

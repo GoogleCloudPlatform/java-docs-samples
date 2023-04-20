@@ -34,9 +34,9 @@ description = 'Spring Cloud GCP Pub/Sub Code Sample'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-    implementation 'com.github.spotbugs:spotbugs-annotations:4.7.0'
+    implementation 'com.github.spotbugs:spotbugs-annotations:4.7.3'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.7.10'
-    implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub:3.4.2'
+    implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub:3.4.7'
     implementation 'org.springframework.integration:spring-integration-core:6.0.0'
     implementation 'com.google.cloud:spring-cloud-gcp-pubsub-stream-binder:3.4.7'
     testImplementation 'junit:junit:4.13.2'

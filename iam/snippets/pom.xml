@@ -26,22 +26,19 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudresourcemanager</artifactId>
-      <version>v3-rev20221016-2.0.0</version>
+      <version>v3-rev20230403-2.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>1.15.0</version>
-    </dependency>
+      </dependency>
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
-      <version>1.42.3</version>
-    </dependency>
+      </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-iam-policy</artifactId>
-      <version>1.10.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -73,7 +70,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.1.4</version>
+        <version>26.12.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

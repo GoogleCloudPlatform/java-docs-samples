@@ -18,21 +18,13 @@ package functions;
 
 import com.google.common.testing.TestLogHandler;
 import com.google.common.truth.Truth;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import functions.eventpojos.StorageObjectData;
+import com.google.events.cloud.storage.v1.StorageObjectData;
+import com.google.protobuf.util.JsonFormat;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -46,19 +38,6 @@ public class OcrProcessImageTest {
   private static final Logger logger = Logger.getLogger(OcrProcessImage.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
-  
-  // Create custom serializer to handle timestamps in event data
-  class DateSerializer implements JsonSerializer<OffsetDateTime> {
-    @Override
-    public JsonElement serialize(
-        OffsetDateTime time, Type typeOfSrc, JsonSerializationContext context)
-        throws JsonParseException {
-      return new JsonPrimitive(time.toString());
-    }
-  }
-
-  private final Gson gson =
-      new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new DateSerializer()).create();
 
   private static OcrProcessImage sampleUnderTest;
 
@@ -78,30 +57,28 @@ public class OcrProcessImageTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void functionsOcrProcess_shouldValidateParams() throws IOException, URISyntaxException {
-    StorageObjectData data = new StorageObjectData();
-    CloudEvent event =
-        CloudEventBuilder.v1()
-            .withId("000")
-            .withType("google.cloud.storage.object.v1.finalized")
-            .withSource(new URI("curl-command"))
-            .withData("application/json", gson.toJson(data).getBytes())
-            .build();
+    StorageObjectData.Builder builder = StorageObjectData.newBuilder();
+    CloudEvent event = CloudEventBuilder.v1()
+        .withId("000")
+        .withType("google.cloud.storage.object.v1.finalized")
+        .withSource(new URI("curl-command"))
+        .withData("application/json", JsonFormat.printer().print(builder).getBytes())
+        .build();
 
     sampleUnderTest.accept(event);
   }
 
   @Test
   public void functionsOcrProcess_shouldDetectText() throws IOException, URISyntaxException {
-    StorageObjectData data = new StorageObjectData();
-    data.setBucket(FUNCTIONS_BUCKET);
-    data.setName("wakeupcat.jpg");
-    CloudEvent event =
-        CloudEventBuilder.v1()
-            .withId("000")
-            .withType("google.cloud.storage.object.v1.finalized")
-            .withSource(new URI("curl-command"))
-            .withData("application/json", gson.toJson(data).getBytes())
-            .build();
+    StorageObjectData.Builder builder = StorageObjectData.newBuilder()
+        .setBucket(FUNCTIONS_BUCKET)
+        .setName("wakeupcat.jpg");
+    CloudEvent event = CloudEventBuilder.v1()
+        .withId("000")
+        .withType("google.cloud.storage.object.v1.finalized")
+        .withSource(new URI("curl-command"))
+        .withData("application/json", JsonFormat.printer().print(builder).getBytes())
+        .build();
 
     sampleUnderTest.accept(event);
 

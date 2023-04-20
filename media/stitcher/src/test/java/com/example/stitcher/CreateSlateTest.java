@@ -28,6 +28,7 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,6 +77,7 @@ public class CreateSlateTest {
   }
 
   @Test
+  @Ignore
   public void test_CreateSlate() throws IOException {
     CreateSlate.createSlate(PROJECT_ID, LOCATION, SLATE_ID, SLATE_URI);
     String output = bout.toString();

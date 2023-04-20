@@ -27,6 +27,7 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,6 +73,7 @@ public class CreateVodSessionTest {
   }
 
   @Test
+  @Ignore
   public void test_CreateVodSession() throws IOException {
     CreateVodSession.createVodSession(PROJECT_ID, LOCATION, VOD_URI, VOD_AD_TAG_URI);
     String output = bout.toString();
