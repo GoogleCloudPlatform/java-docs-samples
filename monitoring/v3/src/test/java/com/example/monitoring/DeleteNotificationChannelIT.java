@@ -56,13 +56,13 @@ public class DeleteNotificationChannelIT {
   public static void setupClass() throws IOException {
     try (NotificationChannelServiceClient client = NotificationChannelServiceClient.create()) {
       String projectId = getProjectId();
-      NotificationChannel NOTIFICATION_CHANNEL =
+      NotificationChannel notificationChannel =
           NotificationChannel.newBuilder()
               .setType("email")
               .putLabels("email_address", "java-docs-samples-testing@google.com")
               .build();
       NotificationChannel channel =
-          client.createNotificationChannel(ProjectName.of(projectId), NOTIFICATION_CHANNEL);
+          client.createNotificationChannel(ProjectName.of(projectId), notificationChannel);
       NOTIFICATION_CHANNEL_NAME = channel.getName();
     }
   }
