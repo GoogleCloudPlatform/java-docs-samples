@@ -47,7 +47,7 @@ public class DeidentifyFreeTextWithFpeUsingSurrogate {
 
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
-    // The string to deidentify
+    // The string to de-identify.
     String textToDeIdentify = "My phone number is 4359916732";
     // The base64-encoded key to use.
     String base64EncodedKey = "your-base64-encoded-key";
@@ -69,7 +69,7 @@ public class DeidentifyFreeTextWithFpeUsingSurrogate {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Set the text to be deidentified.
+      // Set the text to be de-identified.
       ContentItem contentItem = ContentItem.newBuilder().setValue(textToDeIdentify).build();
 
       // Specify the InfoType the inspection will look for.
