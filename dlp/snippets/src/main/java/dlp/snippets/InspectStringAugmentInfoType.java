@@ -30,6 +30,8 @@ import com.google.privacy.dlp.v2.InspectContentResponse;
 import com.google.privacy.dlp.v2.LocationName;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class InspectStringAugmentInfoType {
 
@@ -40,13 +42,13 @@ public class InspectStringAugmentInfoType {
     // The string to de-identify.
     String textToInspect = "The patient's name is quasimodo";
     // The string to be additionally matched.
-    String textToAugment = "quasimodo";
-    inspectStringAugmentInfoType(projectId, textToInspect, textToAugment);
+    List<String> wordList = Arrays.asList("quasimodo");
+    inspectStringAugmentInfoType(projectId, textToInspect, wordList);
   }
 
   // Inspects the text using new custom words added to the dictionary.
   public static void inspectStringAugmentInfoType(
-      String projectId, String textToInspect, String textToAugment) throws IOException {
+      String projectId, String textToInspect, List<String> wordList) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -60,17 +62,17 @@ public class InspectStringAugmentInfoType {
       ContentItem item = ContentItem.newBuilder().setByteItem(byteItem).build();
 
       // Construct the custom word list to be detected.
-      CustomInfoType.Dictionary wordList =
+      CustomInfoType.Dictionary dictionary =
           CustomInfoType.Dictionary.newBuilder()
               .setWordList(
-                  CustomInfoType.Dictionary.WordList.newBuilder().addWords(textToAugment).build())
+                  CustomInfoType.Dictionary.WordList.newBuilder().addAllWords(wordList).build())
               .build();
 
       InfoType infoType = InfoType.newBuilder().setName("PERSON_NAME").build();
       // Construct a custom infotype detector by augmenting the PERSON_NAME detector with a word
       // list.
       CustomInfoType customInfoType =
-          CustomInfoType.newBuilder().setInfoType(infoType).setDictionary(wordList).build();
+          CustomInfoType.newBuilder().setInfoType(infoType).setDictionary(dictionary).build();
 
       InspectConfig inspectConfig =
           InspectConfig.newBuilder()
