@@ -47,7 +47,6 @@ import org.junit.runners.JUnit4;
 public class AlertIT {
   private static String alertPolicyName;
   private static String alertPolicyId;
-  private static String notificationChannelName;
   private static String notificationChannelId;
   private static final String suffix = UUID.randomUUID().toString().substring(0, 8);
   private static final String testPolicyName = "test-policy" + suffix;
@@ -76,7 +75,7 @@ public class AlertIT {
               .build();
       NotificationChannel channel =
           client.createNotificationChannel(ProjectName.of(projectId), notificationChannel);
-      notificationChannelName = channel.getName();
+      String notificationChannelName = channel.getName();
       notificationChannelId =
           notificationChannelName.substring(notificationChannelName.lastIndexOf("/") + 1);
     }
@@ -128,14 +127,14 @@ public class AlertIT {
   @Test
   public void testReplaceChannels() throws IOException {
     AlertSample.main(
-        new String[] {"replace-channels", "-a", alertPolicyId, "-c", notificationChannelId});
+        "replace-channels", "-a", alertPolicyId, "-c", notificationChannelId);
     Pattern resultPattern = Pattern.compile("(?s).*Updated .*" + alertPolicyId);
     assertTrue(resultPattern.matcher(bout.toString()).find());
   }
 
   @Test
   public void testDisableEnablePolicies() throws IOException, InterruptedException {
-    AlertSample.main(new String[] {"enable", "-d", "display_name=\"" + testPolicyName + "\""});
+    AlertSample.main("enable", "-d", "display_name=\"" + testPolicyName + "\"");
 
     // check the current state of policy to make sure
     // not to enable the policy that is already enabled.
@@ -143,31 +142,31 @@ public class AlertIT {
     int maxAttempts = 10;
     int attempt = 0;
     int factor = 1;
-    Boolean retry = true;
+    boolean retry = true;
     while (retry) {
       try {
         if (isEnabled) {
           AlertSample.main(
-              new String[] {"disable", "-d", "display_name=\"" + testPolicyName + "\""});
+              "disable", "-d", "display_name=\"" + testPolicyName + "\"");
           assertTrue(bout.toString().contains("disabled"));
 
           AlertSample.main(
-              new String[] {"enable", "-d", "display_name=\"" + testPolicyName + "\""});
+              "enable", "-d", "display_name=\"" + testPolicyName + "\"");
           assertTrue(bout.toString().contains("enabled"));
         } else {
           AlertSample.main(
-              new String[] {"enable", "-d", "display_name=\"" + testPolicyName + "\""});
+              "enable", "-d", "display_name=\"" + testPolicyName + "\"");
           assertTrue(bout.toString().contains("enabled"));
 
           AlertSample.main(
-              new String[] {"disable", "-d", "display_name=\"" + testPolicyName + "\""});
+              "disable", "-d", "display_name=\"" + testPolicyName + "\"");
           assertTrue(bout.toString().contains("disabled"));
         }
         retry = false;
       } catch (StatusRuntimeException e) {
-        System.out.println("Error: " + e.toString());
+        System.out.println("Error: " + e);
         System.out.println("Retrying...");
-        Thread.sleep(2300 * factor);
+        Thread.sleep(2300L * factor);
         attempt += 1;
         factor += 1;
         if (attempt >= maxAttempts) {
