@@ -39,7 +39,7 @@
     <appengine.maven.plugin>2.4.3</appengine.maven.plugin>
     <jetty>9.4.44.v20210927</jetty>
 
-    <spring.boot.version>2.7.6</spring.boot.version>
+    <spring.boot.version>2.7.10</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -67,9 +67,8 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.0.1</version>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-runner</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -77,12 +76,6 @@
       <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
       <version>4.12.3</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.toolchain</groupId>

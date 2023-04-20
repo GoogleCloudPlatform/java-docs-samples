@@ -39,7 +39,7 @@
     <appengine.maven.plugin>2.4.3</appengine.maven.plugin>
     <jetty>9.4.50.v20221201</jetty>
 
-    <spring.boot.version>2.7.6</spring.boot.version>
+    <spring.boot.version>2.7.10</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -74,11 +74,6 @@
       <artifactId>gax</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.junit-pioneer</groupId>
-      <artifactId>junit-pioneer</artifactId>
-      <version>0.6.0</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>api-common</artifactId>
     </dependency>
@@ -104,7 +99,6 @@
       <version>2.0.13</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.eclipse.jetty.toolchain</groupId>
       <artifactId>jetty-test-helper</artifactId>
@@ -112,16 +106,20 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.0.1</version>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-runner</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
+      <version>4.12.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit-pioneer</groupId>
+      <artifactId>junit-pioneer</artifactId>
+      <version>0.9.2</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
@@ -136,8 +134,6 @@
       <type>jar</type>
       <classifier>nolog</classifier>
     </dependency>
-
-
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>apache-jstl</artifactId>
@@ -164,12 +160,6 @@
       <artifactId>jetty-webapp</artifactId>
       <version>${jetty}</version>
       <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <scope>test</scope>
-      <version>4.12.3</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

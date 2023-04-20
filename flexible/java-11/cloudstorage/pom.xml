@@ -39,10 +39,10 @@
     <appengine.maven.plugin>2.4.3</appengine.maven.plugin>
     <jetty>9.4.44.v20210927</jetty>
 
-    <spring.boot.version>2.7.6</spring.boot.version>
+    <spring.boot.version>2.7.10</spring.boot.version>
   </properties>
 
- <!-- [START gae_flex_storage_dependencies] -->
+  <!-- [START gae_flex_storage_dependencies] -->
   <!--  Using libraries-bom to manage versions.
   See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
   <dependencyManagement>
@@ -54,15 +54,15 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-       <dependency>
+      <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring.boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
-       </dependency>
-   </dependencies>
- </dependencyManagement>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -81,22 +81,15 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.0.1</version>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-runner</artifactId>
       <scope>test</scope>
-  </dependency>
+    </dependency>
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
       <version>4.12.3</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.toolchain</groupId>
@@ -107,25 +100,25 @@
     <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
-      <version>0.6.0</version>
+      <version>0.9.2</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-inline</artifactId>
-      <version>3.6.28</version>
+      <version>3.12.4</version>
       <scope>test</scope>
-  </dependency>
-  <dependency>
-    <groupId>org.mockito</groupId>
-    <artifactId>mockito-junit-jupiter</artifactId>
-    <version>4.3.1</version>
-    <scope>test</scope>
-  </dependency>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>4.11.0</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-  </dependency>
-    
+    </dependency>
+
   </dependencies>
   <!-- [END gae_flex_storage_dependencies] -->
   <build>
@@ -164,9 +157,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-            <includes>
-                <include>**/*Test*.java</include>
-            </includes>
+          <includes>
+            <include>**/*Test*.java</include>
+          </includes>
         </configuration>
       </plugin>
     </plugins>
