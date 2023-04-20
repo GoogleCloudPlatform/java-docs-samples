@@ -76,7 +76,7 @@ public class MainController {
    */
   @PostMapping(value = "/on_homepage_load", produces = "application/json")
   public static @ResponseBody ResponseEntity<HashMap<String, HashMap<String, String>>> onHomepageLoad(
-      @RequestBody Map<String, HashMap<String, String>> jsonData) {
+      @RequestBody Map<String, String> jsonData) {
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.home");
@@ -89,7 +89,7 @@ public class MainController {
       assessmentResponse = CreateAssessment.createAssessment(
           CONTEXT.get("project_id"),
           CONTEXT.get("site_key"),
-          jsonData.get("recaptcha_cred").get("token"));
+          jsonData.get("token"));
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
       if (assessmentResponse.getTokenProperties().getValid() &&
@@ -134,7 +134,7 @@ public class MainController {
    */
   @PostMapping(value = "/on_signup", produces = "application/json")
   public static @ResponseBody ResponseEntity<HashMap<String, HashMap<String, String>>> onSignup(
-      @RequestBody Map<String, HashMap<String, String>> jsonData) {
+      @RequestBody Map<String, ?> jsonData) {
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.signup");
@@ -147,15 +147,15 @@ public class MainController {
       assessmentResponse = CreateAssessment.createAssessment(
           CONTEXT.get("project_id"),
           CONTEXT.get("site_key"),
-          jsonData.get("recaptcha_cred").get("token"));
+          jsonData.get("token").toString());
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
       if (assessmentResponse.getTokenProperties().getValid() &&
           assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
           assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
         // Write new username and password to users database.
-        // String username = jsonData.get("recaptcha_cred").get("username");
-        // String password = jsonData.get("recaptcha_cred").get("password");
+        // String username = jsonData.get("username");
+        // String password = jsonData.get("password");
         // Business logic.
         // Classify the action as not bad.
         verdict = "Not Bad";
@@ -194,7 +194,7 @@ public class MainController {
    */
   @PostMapping(value = "/on_login", produces = "application/json")
   public static @ResponseBody ResponseEntity<HashMap<String, HashMap<String, String>>> onLogin(
-      @RequestBody Map<String, HashMap<String, String>> jsonData) {
+      @RequestBody Map<String, String> jsonData) {
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.login");
@@ -207,15 +207,15 @@ public class MainController {
       assessmentResponse = CreateAssessment.createAssessment(
           CONTEXT.get("project_id"),
           CONTEXT.get("site_key"),
-          jsonData.get("recaptcha_cred").get("token"));
+          jsonData.get("token"));
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
       if (assessmentResponse.getTokenProperties().getValid() &&
           assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
           assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
         // Check if the login credentials exist and match.
-        // String username = jsonData.get("recaptcha_cred").get("username");
-        // String password = jsonData.get("recaptcha_cred").get("password");
+        // String username = jsonData.get("username");
+        // String password = jsonData.get("password");
         // Business logic.
         // Classify the action as not bad.
         verdict = "Not Bad";
@@ -254,7 +254,7 @@ public class MainController {
    */
   @PostMapping(value = "/on_store_checkout", produces = "application/json")
   public static @ResponseBody ResponseEntity<HashMap<String, HashMap<String, String>>> onStoreCheckout(
-      @RequestBody Map<String, HashMap<String, String>> jsonData) {
+      @RequestBody Map<String, ?> jsonData) {
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.store");
@@ -267,14 +267,14 @@ public class MainController {
       assessmentResponse = CreateAssessment.createAssessment(
           CONTEXT.get("project_id"),
           CONTEXT.get("site_key"),
-          jsonData.get("recaptcha_cred").get("token"));
+          jsonData.get("token").toString());
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
       if (assessmentResponse.getTokenProperties().getValid() &&
           assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
           assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
         // Check if the cart contains items and proceed to checkout and payment.
-        // items = jsonData.get("recaptcha_cred").get("items");
+        // items = jsonData.get("items");
         // Business logic.
         // Classify the action as not bad.
         verdict = "Not Bad";
@@ -313,7 +313,7 @@ public class MainController {
    */
   @PostMapping(value = "/on_comment_submit", produces = "application/json")
   public static @ResponseBody ResponseEntity<HashMap<String, HashMap<String, String>>> onCommentSubmit(
-      @RequestBody Map<String, HashMap<String, String>> jsonData) {
+      @RequestBody Map<String, String> jsonData) {
     final HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.comment");
@@ -326,14 +326,14 @@ public class MainController {
       assessmentResponse = CreateAssessment.createAssessment(
           CONTEXT.get("project_id"),
           CONTEXT.get("site_key"),
-          jsonData.get("recaptcha_cred").get("token"));
+          jsonData.get("token"));
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
       if (assessmentResponse.getTokenProperties().getValid() &&
           assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
           assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
         // Check if comment has safe language and proceed to store in database.
-        // String comment = jsonData.get("recaptcha_cred").get("comment");
+        // String comment = jsonData.get("comment");
         // Business logic.
         // Classify the action as not bad.
         verdict = "Not Bad";
@@ -356,14 +356,6 @@ public class MainController {
       dataMap.put("error_msg", e.toString());
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
-
-  /**
-   * Return game template.
-   */
-  @GetMapping(value = "/game")
-  public static ModelAndView game() {
-    return new ModelAndView("game", CONTEXT);
   }
 
 }
