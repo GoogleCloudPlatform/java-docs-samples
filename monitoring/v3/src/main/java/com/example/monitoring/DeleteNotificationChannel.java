@@ -31,7 +31,7 @@ public class DeleteNotificationChannel {
     String projectId = System.getProperty("projectId");
     try (NotificationChannelServiceClient client = NotificationChannelServiceClient.create()) {
       NotificationChannelName name = NotificationChannelName.of(projectId, channelName);
-      client.deleteNotificationChannel(channelName, false);
+      client.deleteNotificationChannel(name, false);
       System.out.println("Deleted notification channel " + channelName);
     }
   }
