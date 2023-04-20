@@ -38,6 +38,8 @@
 
     <appengine.maven.plugin>2.4.3</appengine.maven.plugin>
     <jetty>9.4.44.v20210927</jetty>
+
+    <spring.boot.version>2.7.10</spring.boot.version>
   </properties>
 
   <!-- [START gae_flex_datastore_config] -->
@@ -48,7 +50,14 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.1.4</version>
+        <version>26.12.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -72,25 +81,17 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>2.7.6</version>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.0.1</version>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-runner</artifactId>
       <scope>test</scope>
-  </dependency>
+    </dependency>
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
       <version>4.12.3</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.toolchain</groupId>
@@ -101,14 +102,13 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-inline</artifactId>
-      <version>3.6.28</version>
+      <version>3.12.4</version>
       <scope>test</scope>
-  </dependency>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <version>2.7.6</version>
-  </dependency>
+    </dependency>
   </dependencies>
   <!-- [END gae_flex_datastore_config] -->
   <build>
@@ -138,7 +138,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>2.7.6</version>
+        <version>${spring.boot.version}</version>
         <executions>
           <execution>
             <goals>
@@ -151,9 +151,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-            <includes>
-                <include>**/*Test*.java</include>
-            </includes>
+          <includes>
+            <include>**/*Test*.java</include>
+          </includes>
         </configuration>
       </plugin>
     </plugins>
