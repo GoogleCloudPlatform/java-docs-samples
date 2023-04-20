@@ -126,8 +126,7 @@ public class AlertIT {
 
   @Test
   public void testReplaceChannels() throws IOException {
-    AlertSample.main(
-        "replace-channels", "-a", alertPolicyId, "-c", notificationChannelId);
+    AlertSample.main("replace-channels", "-a", alertPolicyId, "-c", notificationChannelId);
     Pattern resultPattern = Pattern.compile("(?s).*Updated .*" + alertPolicyId);
     assertTrue(resultPattern.matcher(bout.toString()).find());
   }
@@ -146,20 +145,16 @@ public class AlertIT {
     while (retry) {
       try {
         if (isEnabled) {
-          AlertSample.main(
-              "disable", "-d", "display_name=\"" + testPolicyName + "\"");
+          AlertSample.main("disable", "-d", "display_name=\"" + testPolicyName + "\"");
           assertTrue(bout.toString().contains("disabled"));
 
-          AlertSample.main(
-              "enable", "-d", "display_name=\"" + testPolicyName + "\"");
+          AlertSample.main("enable", "-d", "display_name=\"" + testPolicyName + "\"");
           assertTrue(bout.toString().contains("enabled"));
         } else {
-          AlertSample.main(
-              "enable", "-d", "display_name=\"" + testPolicyName + "\"");
+          AlertSample.main("enable", "-d", "display_name=\"" + testPolicyName + "\"");
           assertTrue(bout.toString().contains("enabled"));
 
-          AlertSample.main(
-              "disable", "-d", "display_name=\"" + testPolicyName + "\"");
+          AlertSample.main("disable", "-d", "display_name=\"" + testPolicyName + "\"");
           assertTrue(bout.toString().contains("disabled"));
         }
         retry = false;
