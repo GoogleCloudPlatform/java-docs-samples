@@ -574,6 +574,20 @@ public class DeIdentificationTests extends TestBase {
   }
 
   @Test
+  public void testDeIdentifyDataReplaceWithDictionary() throws IOException {
+    DeIdentifyDataReplaceWithDictionary.deidentifyDataReplaceWithDictionary(
+        PROJECT_ID, "My name is Alicia Abernathy, and my email address is aabernathy@example.com.");
+    String output = bout.toString();
+    assertThat(
+            ImmutableList.of(
+                "Text after de-identification: My name is Alicia Abernathy, "
+                        + "and my email address is izumi@example.com.",
+                "Text after de-identification: My name is Alicia Abernathy, "
+                        + "and my email address is alex@example.com."))
+        .contains(output);
+  }
+
+  @Test
   public void testReIdentifyWithFpeSurrogate() throws IOException, NoSuchAlgorithmException {
 
     KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
