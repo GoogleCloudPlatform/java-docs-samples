@@ -562,9 +562,9 @@ public class DeIdentificationTests extends TestBase {
     assertThat(
             ImmutableList.of(
                 "Text after de-identification: My name is Alicia Abernathy, "
-                        + "and my email address is izumi@example.com.\r\n",
+                        + "and my email address is izumi@example.com.",
                 "Text after de-identification: My name is Alicia Abernathy, "
-                        + "and my email address is alex@example.com.\r\n"))
+                        + "and my email address is alex@example.com."))
         .contains(output);
   }
   

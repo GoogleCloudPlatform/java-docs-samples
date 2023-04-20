@@ -97,7 +97,7 @@ public class DeIdentifyDataReplaceWithDictionary {
       DeidentifyContentResponse response = dlp.deidentifyContent(request);
 
       // Parse the response and process results
-      System.out.println("Text after de-identification: " + response.getItem().getValue());
+      System.out.print("Text after de-identification: " + response.getItem().getValue());
     }
   }
 }
