@@ -13,10 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *
- * Reads Feature values of a specific entity of an EntityType. See
- * https://cloud.google.com/vertex-ai/docs/featurestore/setup before running
- * the code snippet
  */
 
 package aiplatform;
@@ -36,6 +32,10 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+/*
+ * Reads Feature values of a specific entity of an EntityType.
+ * See: https://cloud.google.com/vertex-ai/docs/featurestore/serving-online
+ */
 public class ReadFeatureValuesSample {
 
   public static void main(String[] args)
@@ -49,6 +49,7 @@ public class ReadFeatureValuesSample {
     String location = "us-central1";
     String endpoint = "us-central1-aiplatform.googleapis.com:443";
     int timeout = 300;
+
     readFeatureValuesSample(
         project,
         featurestoreId,
@@ -92,6 +93,8 @@ public class ReadFeatureValuesSample {
           featurestoreOnlineServiceClient.readFeatureValues(readFeatureValuesRequest);
       System.out.println("Read Feature Values Response");
       System.out.println(readFeatureValuesResponse);
+    }
+    finally {
       featurestoreOnlineServiceClient.close();
     }
   }
