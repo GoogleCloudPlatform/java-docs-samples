@@ -42,7 +42,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudresourcemanager</artifactId>
-      <version>v3-rev20221016-2.0.0</version>
+      <version>v3-rev20230403-2.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
@@ -55,7 +55,6 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-iam-policy</artifactId>
-      <version>1.10.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

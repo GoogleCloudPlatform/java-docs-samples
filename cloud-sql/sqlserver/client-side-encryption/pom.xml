@@ -46,11 +46,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>com.google.api-client</groupId>
-        <artifactId>google-api-client</artifactId>
-        <version>2.2.0</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -58,7 +53,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudkms</artifactId>
-      <version>v1-rev20221028-2.0.0</version>
+      <version>v1-rev20230407-2.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.http-client</groupId>
