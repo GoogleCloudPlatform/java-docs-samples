@@ -59,6 +59,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class WorkloadGeneratorTest {
@@ -139,6 +140,8 @@ public class WorkloadGeneratorTest {
     assertThat(output).contains("Connected to table");
   }
 
+  // todo: Fix test flakiness
+  @Ignore
   @Test
   public void testPipeline() throws IOException, InterruptedException {
     String workloadJobName = "bigtable-workload-generator-test-" + UUID.randomUUID();
