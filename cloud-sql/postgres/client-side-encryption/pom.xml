@@ -46,11 +46,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>com.google.api-client</groupId>
-        <artifactId>google-api-client</artifactId>
-        <version>2.2.0</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
