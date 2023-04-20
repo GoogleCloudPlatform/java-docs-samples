@@ -411,7 +411,7 @@ public class InspectTests extends TestBase {
   @Test
   public void testInspectStringAugmentInfoType() throws Exception {
     InspectStringAugmentInfoType.inspectStringAugmentInfoType(
-        PROJECT_ID, "The patient's name is Quasimodo", "Quasimodo");
+        PROJECT_ID, "The patient's name is Quasimodo", Arrays.asList("quasimodo"));
     String output = bout.toString();
     assertThat(output).contains("Findings: 1");
     assertThat(output).contains("Info type: PERSON_NAME");
