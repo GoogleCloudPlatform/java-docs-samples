@@ -574,6 +574,28 @@ public class DeIdentificationTests extends TestBase {
   }
 
   @Test
+  public void testReIdentifyWithFpeSurrogate() throws IOException, NoSuchAlgorithmException {
+
+    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+    keyGenerator.init(128);
+    SecretKey secretKey = keyGenerator.generateKey();
+    byte[] keyBytes = secretKey.getEncoded();
+
+    String unwrappedKey = Base64.getEncoder().encodeToString(keyBytes);
+    String textToDeIdentify = "My phone number is 4359916731";
+
+    String textToReIdentify =
+        DeidentifyFreeTextWithFpeUsingSurrogate.deIdentifyWithFpeSurrogate(
+            PROJECT_ID, textToDeIdentify, unwrappedKey);
+
+    ReidentifyFreeTextWithFpeUsingSurrogate.reIdentifyWithFpeSurrogate(
+        PROJECT_ID, textToReIdentify, unwrappedKey);
+
+    String output = bout.toString();
+    assertThat(output).contains("Text after re-identification: ");
+  }
+
+  @Test
   public void testDeIdentifyWithBucketingConfig() throws IOException {
 
     Table tableToDeIdentify =
