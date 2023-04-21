@@ -113,4 +113,4 @@ public class InspectGcsFileSendToScc {
   }
 }
 
-// [START dlp_inspect_gcs_send_to_scc]
+// [END dlp_inspect_gcs_send_to_scc]
