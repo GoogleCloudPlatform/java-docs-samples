@@ -556,12 +556,12 @@ public class DeIdentificationTests extends TestBase {
   }
 
   @Test
-  public void testReIdentifyWithDeterminsiticEncryption() throws IOException {
+  public void testReIdentifyWithDeterministicEncryption() throws IOException {
     String textToReIdentify =
         DeIdenitfyWithDeterministicEncryption.deIdentifyWithDeterministicEncryption(
-            PROJECT_ID, "My SSN is 372819127", wrappedKey, kmsKeyName);
+            PROJECT_ID, "My SSN is 372819127", WRAPPED_KEY, KMS_KEY_NAME);
     ReidentifyWithDeterministicEncryption.reIdentifyWithDeterminsiticEncryption(
-        PROJECT_ID, textToReIdentify, wrappedKey, kmsKeyName);
+        PROJECT_ID, textToReIdentify, WRAPPED_KEY, KMS_KEY_NAME);
     String output = bout.toString();
     assertThat(output).contains("Text after re-identification: ");
   }
