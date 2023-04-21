@@ -125,4 +125,13 @@ public class JobsTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Job deleted successfully.");
   }
+
+  @Test
+  public void testInspectBigQuerySendToScc()
+          throws Exception {
+    InspectBigQuerySendToScc.inspectBigQuerySendToScc(PROJECT_ID, DATASET_ID, TABLE_ID);
+
+    String output = bout.toString();
+    assertThat(output).contains("Job created successfully");
+  }
 }
