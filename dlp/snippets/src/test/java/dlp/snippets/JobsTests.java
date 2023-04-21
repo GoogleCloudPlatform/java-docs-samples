@@ -125,4 +125,13 @@ public class JobsTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Job deleted successfully.");
   }
+
+  @Test
+  public void testCreateDatastoreJobWithScc() throws Exception {
+    InspectDatastoreSendToScc.inspectDatastoreSendToScc(
+        PROJECT_ID, DATASTORE_NAMESPACE, DATASTORE_KIND);
+
+    String output = bout.toString();
+    assertThat(output).contains("Job created successfully");
+  }
 }
