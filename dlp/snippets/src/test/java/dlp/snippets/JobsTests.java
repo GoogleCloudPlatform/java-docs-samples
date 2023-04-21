@@ -133,5 +133,11 @@ public class JobsTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job created successfully");
+    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+    DeleteDlpJobRequest deleteDlpJobRequest =
+            DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
+    try (DlpServiceClient client = DlpServiceClient.create()) {
+      client.deleteDlpJob(deleteDlpJobRequest);
+    }
   }
 }
