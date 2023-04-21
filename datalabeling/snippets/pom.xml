@@ -1,13 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.kms</groupId>
-  <artifactId>cloudkms-snippets</artifactId>
+  <groupId>com.example.datalabeling</groupId>
+  <artifactId>datalabeling-snippets</artifactId>
   <packaging>jar</packaging>
-  <name>Google Cloud Key Management Service Snippets</name>
-  <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/kms</url>
+  <name>Google Data Labeling Snippets</name>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
@@ -25,7 +22,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <!-- [START kms_install_with_bom] -->
+
+  <!-- [START datalabeling_install_with_bom] -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -41,18 +39,10 @@
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-kms</artifactId>
+      <artifactId>google-cloud-datalabeling</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.crypto.tink</groupId>
-      <artifactId>tink</artifactId>
-      <version>1.7.0</version>
-    </dependency>
-    <!-- [START_EXCLUDE] -->
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java-util</artifactId>
-    </dependency>
+    <!-- [END datalabeling_install_with_bom] -->
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -65,17 +55,5 @@
       <version>1.1.3</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.nimbusds</groupId>
-      <artifactId>nimbus-jose-jwt</artifactId>
-      <version>9.31</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcpkix-jdk15on</artifactId>
-      <version>1.70</version>
-    </dependency>
-    <!-- [END_EXCLUDE] -->
   </dependencies>
-  <!-- [END kms_install_with_bom] -->
 </project>
