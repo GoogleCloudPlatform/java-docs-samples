@@ -52,6 +52,7 @@ public class InspectBigQuerySendToScc {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
+
       // Specify the BigQuery table to be inspected.
       BigQueryTable tableReference =
           BigQueryTable.newBuilder()
@@ -100,6 +101,7 @@ public class InspectBigQuerySendToScc {
               .setStorageConfig(storageConfig)
               .addActions(action)
               .build();
+
       // Construct the job creation request to be sent by the client.
       CreateDlpJobRequest createDlpJobRequest =
           CreateDlpJobRequest.newBuilder()
