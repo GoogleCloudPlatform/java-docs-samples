@@ -51,25 +51,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-cloudkms</artifactId>
-      <version>v1-rev20221028-2.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.http-client</groupId>
-      <artifactId>google-http-client-jackson2</artifactId>
-      </dependency>
-    <dependency>
-      <groupId>com.google.cloud.sql</groupId>
-      <artifactId>postgres-socket-factory</artifactId>
-      <version>1.8.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.4.1</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.crypto.tink</groupId>
       <artifactId>tink</artifactId>
       <version>1.7.0</version>

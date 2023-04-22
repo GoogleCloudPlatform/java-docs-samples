@@ -87,18 +87,6 @@
       </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-runners-direct-java</artifactId>
-      <version>${apache_beam.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
-      <version>${apache_beam.version}</version>
-    </dependency>
-
     <!-- Misc -->
     <dependency>
       <groupId>org.slf4j</groupId>
