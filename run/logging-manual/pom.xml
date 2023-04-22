@@ -46,6 +46,11 @@ limitations under the License.
       <artifactId>logstash-logback-encoder</artifactId>
       <version>7.3</version>
     </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.4.6</version>
+    </dependency>    
     <!-- [END run_manual_logging_dep] -->
     <!-- [END cloudrun_manual_logging_dep] -->
     <dependency>

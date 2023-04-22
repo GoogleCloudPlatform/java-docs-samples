@@ -56,6 +56,11 @@
       <version>10.2.1.jre8</version>
     </dependency>
     <dependency>
+      <groupId>com.google.cloud.sql</groupId>
+      <artifactId>cloud-sql-connector-jdbc-sqlserver</artifactId>
+      <version>1.8.3</version>
+    </dependency>
+    <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
       <version>5.0.1</version>
