@@ -97,7 +97,7 @@
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
       <version>${apache_beam.version}</version>
-    </dependency>    
+    </dependency>
 
     <!-- Misc -->
     <dependency>

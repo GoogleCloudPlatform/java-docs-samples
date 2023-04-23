@@ -64,7 +64,7 @@
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>42.4.1</version>
-    </dependency>  
+    </dependency>
     <dependency>
       <groupId>com.google.crypto.tink</groupId>
       <artifactId>tink</artifactId>
