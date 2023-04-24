@@ -19,6 +19,7 @@ package dlp.snippets;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.collect.ImmutableList;
+import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -37,5 +38,13 @@ public class InfoTypesTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Name");
     assertThat(output).contains("Display name");
+  }
+
+  @Test
+  public void testCreateStoredInfoType() throws IOException {
+    String outputPath = "gs://dlp-crest-test/java-custom-dictionary";
+    CreateStoredInfoType.createStoredInfoType(PROJECT_ID, GCS_PATH, outputPath);
+    String output = bout.toString();
+    assertThat(output).contains("Created Stored InfoType: ");
   }
 }
