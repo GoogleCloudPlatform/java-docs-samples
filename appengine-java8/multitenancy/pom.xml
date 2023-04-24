@@ -75,10 +75,6 @@
 
     <!-- [START Objectify_Dependencies] -->
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.googlecode.objectify</groupId>
       <artifactId>objectify</artifactId>
       <version>6.0.7</version>
