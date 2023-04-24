@@ -19,7 +19,23 @@ package dlp.snippets;
 // [START dlp_deidentify_table_with_multiple_crypto_hash]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
-import com.google.privacy.dlp.v2.*;
+import com.google.privacy.dlp.v2.ContentItem;
+import com.google.privacy.dlp.v2.CryptoHashConfig;
+import com.google.privacy.dlp.v2.CryptoKey;
+import com.google.privacy.dlp.v2.DeidentifyConfig;
+import com.google.privacy.dlp.v2.DeidentifyContentRequest;
+import com.google.privacy.dlp.v2.DeidentifyContentResponse;
+import com.google.privacy.dlp.v2.FieldId;
+import com.google.privacy.dlp.v2.FieldTransformation;
+import com.google.privacy.dlp.v2.InfoType;
+import com.google.privacy.dlp.v2.InfoTypeTransformations;
+import com.google.privacy.dlp.v2.InspectConfig;
+import com.google.privacy.dlp.v2.LocationName;
+import com.google.privacy.dlp.v2.PrimitiveTransformation;
+import com.google.privacy.dlp.v2.RecordTransformations;
+import com.google.privacy.dlp.v2.Table;
+import com.google.privacy.dlp.v2.TransientCryptoKey;
+import com.google.privacy.dlp.v2.Value;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,11 +87,13 @@ public class DeIdentifyTableWithMultipleCryptoHash {
     String transientCryptoKey = "YOUR_TRANSIENT_CRYPTO_KEY";
     String transientCryptoKey2 = "YOUR_TRANSIENT_CRYPTO_KEY_2";
 
-    deIdentifyWithCryptHashTransformation(projectId, tableToDeIdentify, transientCryptoKey, transientCryptoKey2);
+    deIdentifyWithCryptHashTransformation(
+        projectId, tableToDeIdentify, transientCryptoKey, transientCryptoKey2);
   }
 
   public static void deIdentifyWithCryptHashTransformation(
-      String projectId, Table tableToDeIdentify, String transientKey, String transientKey2) throws IOException {
+      String projectId, Table tableToDeIdentify, String transientKey, String transientKey2)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -98,7 +116,6 @@ public class DeIdentifyTableWithMultipleCryptoHash {
       TransientCryptoKey transientCryptoKey = TransientCryptoKey.newBuilder()
               .setName(transientKey)
               .build();
-
       TransientCryptoKey transientCryptoKey2 = TransientCryptoKey.newBuilder()
               .setName(transientKey2)
               .build();
@@ -111,7 +128,6 @@ public class DeIdentifyTableWithMultipleCryptoHash {
               .setTransient(transientCryptoKey2)
               .build();
 
-      // Specify how the info from the inspection should be encrypted.
       CryptoHashConfig cryptoHashConfig = CryptoHashConfig.newBuilder()
                   .setCryptoKey(cryptoKey)
                   .build();
@@ -161,13 +177,12 @@ public class DeIdentifyTableWithMultipleCryptoHash {
               .setInfoTypeTransformations(transformations)
               .build());
 
-      RecordTransformations recordTransformations =
-          RecordTransformations.newBuilder()
+      RecordTransformations recordTransformations = RecordTransformations.newBuilder()
               .addAllFieldTransformations(fieldTransformations)
               .build();
+
       // Specify the config for the de-identify request
-      DeidentifyConfig deidentifyConfig =
-          DeidentifyConfig.newBuilder()
+      DeidentifyConfig deidentifyConfig = DeidentifyConfig.newBuilder()
               .setRecordTransformations(recordTransformations)
               .build();
 

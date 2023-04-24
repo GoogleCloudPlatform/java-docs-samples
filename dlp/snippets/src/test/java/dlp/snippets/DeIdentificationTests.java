@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.UUID;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import org.junit.Test;
@@ -717,6 +718,34 @@ public class DeIdentificationTests extends TestBase {
         DeIdentifyTableWithBucketingConfig.deIdentifyTableBucketing(PROJECT_ID, tableToDeIdentify);
     String output = bout.toString();
     assertThat(actualTable).isEqualTo(expectedTable);
+    assertThat(output).contains("Table after de-identification: ");
+  }
+
+  @Test
+  public void testDeIdentifyTableWithMultipleCryptoHash() throws IOException {
+
+    Table tableToDeIdentify =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("userid").build())
+            .addHeaders(FieldId.newBuilder().setName("comments").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("user1@example.org").build())
+                    .addValues(
+                        Value.newBuilder()
+                            .setStringValue(
+                                "my email is user1@example.org and phone is 858-555-0222")
+                            .build())
+                    .build())
+            .build();
+
+    // Generate a random string to use it as Transient CryptoKey.
+    String randomString = UUID.randomUUID().toString().replace("-", "");
+    String randomString2 = UUID.randomUUID().toString().replace("-", "");
+
+    DeIdentifyTableWithMultipleCryptoHash.deIdentifyWithCryptHashTransformation(
+        PROJECT_ID, tableToDeIdentify, randomString, randomString2);
+    String output = bout.toString();
     assertThat(output).contains("Table after de-identification: ");
   }
 }
