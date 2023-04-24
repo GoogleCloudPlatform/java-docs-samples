@@ -28,9 +28,7 @@ steps:
   args:
   - '-c'
   - |
-    gcloud components update --quiet
-    
-    ./src/test/java/com/example/resources/retry.sh "gcloud alpha run jobs create ${_SERVICE} \
+    ./src/test/java/com/example/resources/retry.sh "gcloud run jobs create ${_SERVICE} \
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --region ${_REGION} \
       --tasks 5 \
