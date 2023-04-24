@@ -563,7 +563,7 @@ public class DeIdentificationTests extends TestBase {
     ReidentifyWithDeterministicEncryption.reIdentifyWithDeterminsiticEncryption(
         PROJECT_ID, textToReIdentify, WRAPPED_KEY, KMS_KEY_NAME);
     String output = bout.toString();
-    assertThat(output).contains("Text after re-identification: ");
+    assertThat(output).contains("Text after re-identification: My SSN is 372819127");
   }
   
   @Test
