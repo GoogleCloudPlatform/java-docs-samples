@@ -23,7 +23,6 @@
     <dependency>
       <artifactId>google-cloud-compute</artifactId>
       <groupId>com.google.cloud</groupId>
-      <version>1.18.0</version>
       </dependency>
     <dependency>
       <artifactId>google-cloud-storage</artifactId>
@@ -130,7 +129,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M7</version>
+        <version>3.0.0</version>
         <configuration>
           <skip>true</skip>
         </configuration>
