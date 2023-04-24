@@ -556,6 +556,17 @@ public class DeIdentificationTests extends TestBase {
   }
 
   @Test
+  public void testReIdentifyWithDeterministicEncryption() throws IOException {
+    String textToReIdentify =
+        DeIdenitfyWithDeterministicEncryption.deIdentifyWithDeterministicEncryption(
+            PROJECT_ID, "My SSN is 372819127", WRAPPED_KEY, KMS_KEY_NAME);
+    ReidentifyWithDeterministicEncryption.reIdentifyWithDeterminsiticEncryption(
+        PROJECT_ID, textToReIdentify, WRAPPED_KEY, KMS_KEY_NAME);
+    String output = bout.toString();
+    assertThat(output).contains("Text after re-identification: My SSN is 372819127");
+  }
+  
+  @Test
   public void testDeIdentifyWithFpeSurrogate() throws IOException, NoSuchAlgorithmException {
 
     KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
