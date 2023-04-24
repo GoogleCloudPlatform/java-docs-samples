@@ -41,7 +41,7 @@ public class InspectGcsFileSendToScc {
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
     // The name of the file in the bucket
-    String gcsPath = "gs://dlp-crest-test/dlp_sample.csv";
+    String gcsPath = "gs://" + "your-bucket-name" + "path/to/file.txt";
     createJobSendToScc(projectId, gcsPath);
   }
 
