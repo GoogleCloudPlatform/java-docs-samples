@@ -93,9 +93,6 @@ public class ReadFeatureValuesSample {
           featurestoreOnlineServiceClient.readFeatureValues(readFeatureValuesRequest);
       System.out.println("Read Feature Values Response" + readFeatureValuesResponse);
     }
-    finally {
-      featurestoreOnlineServiceClient.close();
-    }
   }
 }
 // [END aiplatform_read_feature_values_sample]
