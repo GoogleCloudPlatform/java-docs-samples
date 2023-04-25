@@ -38,7 +38,9 @@ public class InspectBigQuerySendToScc {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
+    // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
+    // The BigQuery dataset id to be used and the reference table name to be inspected.
     String bigQueryDatasetId = "your-project-bigquery-dataset";
     String bigQueryTableId = "your-project-bigquery_table";
     inspectBigQuerySendToScc(projectId, bigQueryDatasetId, bigQueryTableId);
