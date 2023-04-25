@@ -19,16 +19,15 @@ package com.example.monitoring;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.monitoring.v3.NotificationChannelServiceClient;
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.monitoring.v3.NotificationChannel;
 import com.google.monitoring.v3.ProjectName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -37,14 +36,11 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class DeleteNotificationChannelIT {
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-
   private ByteArrayOutputStream bout;
-  private PrintStream out;
   private static final String LEGACY_PROJECT_ENV_NAME = "GCLOUD_PROJECT";
   private static final String PROJECT_ENV_NAME = "GOOGLE_CLOUD_PROJECT";
-  private static String NOTIFICATION_CHANNEL_NAME = "channelname";
-  private static NotificationChannel NOTIFICATION_CHANNEL;
+  private static final String suffix = UUID.randomUUID().toString().substring(0, 8);
+  private static String NOTIFICATION_CHANNEL_NAME = "channelname" + suffix;
   private PrintStream originalPrintStream;
 
   private static String getProjectId() {
@@ -60,13 +56,13 @@ public class DeleteNotificationChannelIT {
   public static void setupClass() throws IOException {
     try (NotificationChannelServiceClient client = NotificationChannelServiceClient.create()) {
       String projectId = getProjectId();
-      NOTIFICATION_CHANNEL =
+      NotificationChannel notificationChannel =
           NotificationChannel.newBuilder()
               .setType("email")
               .putLabels("email_address", "java-docs-samples-testing@google.com")
               .build();
       NotificationChannel channel =
-          client.createNotificationChannel(ProjectName.of(projectId), NOTIFICATION_CHANNEL);
+          client.createNotificationChannel(ProjectName.of(projectId), notificationChannel);
       NOTIFICATION_CHANNEL_NAME = channel.getName();
     }
   }
@@ -74,7 +70,7 @@ public class DeleteNotificationChannelIT {
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
     System.setProperty("projectId", DeleteNotificationChannelIT.getProjectId());

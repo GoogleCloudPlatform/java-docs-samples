@@ -556,6 +556,17 @@ public class DeIdentificationTests extends TestBase {
   }
 
   @Test
+  public void testReIdentifyWithDeterministicEncryption() throws IOException {
+    String textToReIdentify =
+        DeIdenitfyWithDeterministicEncryption.deIdentifyWithDeterministicEncryption(
+            PROJECT_ID, "My SSN is 372819127", WRAPPED_KEY, KMS_KEY_NAME);
+    ReidentifyWithDeterministicEncryption.reIdentifyWithDeterminsiticEncryption(
+        PROJECT_ID, textToReIdentify, WRAPPED_KEY, KMS_KEY_NAME);
+    String output = bout.toString();
+    assertThat(output).contains("Text after re-identification: My SSN is 372819127");
+  }
+  
+  @Test
   public void testDeIdentifyWithFpeSurrogate() throws IOException, NoSuchAlgorithmException {
 
     KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
@@ -571,6 +582,57 @@ public class DeIdentificationTests extends TestBase {
         PROJECT_ID, "My phone number is 4359916732", unwrappedKey);
     String output = bout.toString();
     assertThat(output).contains("Text after de-identification: ");
+  }
+
+  @Test
+  public void testDeIdentifyWithTimeExtraction() throws IOException {
+    Table tableToDeIdentify =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("Name").build())
+            .addHeaders(FieldId.newBuilder().setName("Birth Date").build())
+            .addHeaders(FieldId.newBuilder().setName("Credit Card").build())
+            .addHeaders(FieldId.newBuilder().setName("Register Date").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("Ann").build())
+                    .addValues(Value.newBuilder().setStringValue("01/01/1970").build())
+                    .addValues(Value.newBuilder().setStringValue("4532908762519852").build())
+                    .addValues(Value.newBuilder().setStringValue("07/21/1996").build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("James").build())
+                    .addValues(Value.newBuilder().setStringValue("03/06/1988").build())
+                    .addValues(Value.newBuilder().setStringValue("4301261899725540").build())
+                    .addValues(Value.newBuilder().setStringValue("04/09/2001").build())
+                    .build())
+            .build();
+    Table expectedTable =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("Name").build())
+            .addHeaders(FieldId.newBuilder().setName("Birth Date").build())
+            .addHeaders(FieldId.newBuilder().setName("Credit Card").build())
+            .addHeaders(FieldId.newBuilder().setName("Register Date").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("Ann").build())
+                    .addValues(Value.newBuilder().setStringValue("1970").build())
+                    .addValues(Value.newBuilder().setStringValue("4532908762519852").build())
+                    .addValues(Value.newBuilder().setStringValue("1996").build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("James").build())
+                    .addValues(Value.newBuilder().setStringValue("1988").build())
+                    .addValues(Value.newBuilder().setStringValue("4301261899725540").build())
+                    .addValues(Value.newBuilder().setStringValue("2001").build())
+                    .build())
+            .build();
+    Table table =
+        DeIdentifyWithTimeExtraction.deIdentifyWithDateShift(PROJECT_ID, tableToDeIdentify);
+    String output = bout.toString();
+    assertThat(output).contains("Table after de-identification:");
+    assertThat(table).isEqualTo(expectedTable);
   }
 
   @Test

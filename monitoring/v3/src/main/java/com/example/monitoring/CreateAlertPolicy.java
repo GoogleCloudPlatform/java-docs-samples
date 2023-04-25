@@ -36,7 +36,7 @@ public class CreateAlertPolicy {
     createAlertPolicy(projectId, alertPolicyName);
   }
 
-  public static void createAlertPolicy(String projectId, String alertPolicyName)
+  public static AlertPolicy createAlertPolicy(String projectId, String alertPolicyName)
       throws ApiException, IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -95,6 +95,7 @@ public class CreateAlertPolicy {
       // Create an alert policy
       AlertPolicy actualAlertPolicy = alertPolicyServiceClient.createAlertPolicy(name, alertPolicy);
       System.out.format("alert policy created:%s", actualAlertPolicy.getName());
+      return actualAlertPolicy;
     }
   }
 }

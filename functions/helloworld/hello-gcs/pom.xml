@@ -93,7 +93,8 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      </dependency>
+      <scope>test</scope>
+    </dependency>
 
     <!-- Used in ExampleSystemTest AND ExampleIntegrationTest -->
     <dependency>

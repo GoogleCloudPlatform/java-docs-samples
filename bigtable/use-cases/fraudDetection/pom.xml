@@ -10,18 +10,7 @@
 
   <dependencies>
     <dependency>
-      <artifactId>beam-runners-direct-java</artifactId>
-      <groupId>org.apache.beam</groupId>
-      <version>${apache_beam.version}</version>
-    </dependency>
-    <dependency>
       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
-      <groupId>org.apache.beam</groupId>
-      <version>${apache_beam.version}</version>
-    </dependency>
-    <dependency>
-      <artifactId>beam-sdks-java-extensions-google-cloud-platform-core
-      </artifactId>
       <groupId>org.apache.beam</groupId>
       <version>${apache_beam.version}</version>
     </dependency>
@@ -37,10 +26,6 @@
     <dependency>
       <artifactId>google-cloud-storage</artifactId>
       <groupId>com.google.cloud</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>google-api-client</artifactId>
-      <groupId>com.google.api-client</groupId>
     </dependency>
     <dependency>
       <artifactId>junit</artifactId>
