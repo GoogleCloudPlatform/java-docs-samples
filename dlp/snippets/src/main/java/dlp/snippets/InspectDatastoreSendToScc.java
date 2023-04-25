@@ -40,8 +40,11 @@ public class InspectDatastoreSendToScc {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
+    // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
+    // The namespace specifier to be used for the partition entity.
     String datastoreNamespace = "your-datastore-namespace";
+    // The datastore kind defining a data set.
     String datastoreKind = "your-datastore-kind";
     inspectDatastoreSendToScc(projectId, datastoreNamespace, datastoreKind);
   }
