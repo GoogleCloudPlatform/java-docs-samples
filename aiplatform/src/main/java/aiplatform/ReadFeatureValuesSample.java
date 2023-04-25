@@ -32,10 +32,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-/*
- * Reads Feature values of a specific entity of an EntityType.
- * See: https://cloud.google.com/vertex-ai/docs/featurestore/serving-online
- */
 public class ReadFeatureValuesSample {
 
   public static void main(String[] args)
@@ -61,6 +57,10 @@ public class ReadFeatureValuesSample {
         timeout);
   }
 
+  /*
+   * Reads Feature values of a specific entity of an EntityType.
+   * See: https://cloud.google.com/vertex-ai/docs/featurestore/serving-online
+   */
   public static void readFeatureValuesSample(
       String project,
       String featurestoreId,
