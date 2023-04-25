@@ -38,9 +38,13 @@ public class ReadFeatureValuesSample {
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     String project = "YOUR_PROJECT_ID";
+    // Feature Store ID
     String featurestoreId = "YOUR_FEATURESTORE_ID";
+    // Entity Type ID
     String entityTypeId = "YOUR_ENTITY_TYPE_ID";
+    // Entity ID
     String entityId = "YOUR_ENTITY_ID";
+    // Features to read with batch or online serving.
     List<String> featureSelectorIds = Arrays.asList("title", "genres", "average_rating");
     String location = "us-central1";
     String endpoint = "us-central1-aiplatform.googleapis.com:443";
