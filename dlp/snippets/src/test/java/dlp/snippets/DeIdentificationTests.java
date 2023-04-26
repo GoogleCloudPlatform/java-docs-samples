@@ -747,5 +747,7 @@ public class DeIdentificationTests extends TestBase {
         PROJECT_ID, tableToDeIdentify, randomString);
     String output = bout.toString();
     assertThat(output).contains("Table after de-identification: ");
+    assertThat(output).doesNotContain("user1@example.org");
+    assertThat(output).doesNotContain("858-555-0222");
   }
 }
