@@ -36,7 +36,7 @@ import java.io.IOException;
 
 public class DeIdentifyTableBucketing {
 
-  public static void main (String[] args) throws IOException {
+  public static void main(String[] args) throws IOException {
     deIdentifyTableBucketing();
   }
 
