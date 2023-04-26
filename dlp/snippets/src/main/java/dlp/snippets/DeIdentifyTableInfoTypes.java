@@ -42,6 +42,10 @@ import java.util.stream.Stream;
 
 public class DeIdentifyTableInfoTypes {
 
+  public static void main (String[] args) throws IOException {
+    deIdentifyTableInfoTypes();
+  }
+
   public static void deIdentifyTableInfoTypes() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";

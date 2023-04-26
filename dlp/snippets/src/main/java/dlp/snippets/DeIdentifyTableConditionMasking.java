@@ -41,6 +41,10 @@ import java.io.IOException;
 
 public class DeIdentifyTableConditionMasking {
 
+  public static void main (String[] args) throws IOException {
+    deIdentifyTableConditionMasking();
+  }
+
   public static void deIdentifyTableConditionMasking() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
