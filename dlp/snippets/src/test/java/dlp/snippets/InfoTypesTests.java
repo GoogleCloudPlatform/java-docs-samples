@@ -38,4 +38,12 @@ public class InfoTypesTests extends TestBase {
     assertThat(output).contains("Name");
     assertThat(output).contains("Display name");
   }
+
+  @Test
+  public void testUpdateStoredInfoType() throws Exception {
+    UpdateStoredInfoType.updateStoredInfoType(
+            PROJECT_ID, GCS_PATH, FILE_SET_URL, INFO_TYPE_ID);
+    String output = bout.toString();
+    assertThat(output).contains("InfoType stored successfully at");
+  }
 }
