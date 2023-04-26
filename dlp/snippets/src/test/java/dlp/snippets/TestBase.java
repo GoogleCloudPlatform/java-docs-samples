@@ -41,6 +41,12 @@ abstract class TestBase {
   protected static final String WRAPPED_KEY = System.getenv("DLP_DEID_WRAPPED_KEY");
   protected static final String KMS_KEY_NAME = System.getenv("DLP_DEID_KEY_NAME");
 
+  protected static final String OUTPUT_DIRECTORY = System.getenv("OUTPUT_DIRECTORY");
+  protected static final String DEIDENTIFY_TEMPLATE_ID = System.getenv("DEIDENTIFY_TEMPLATE_ID");
+  protected static final String STRUCTURED_DEIDENTIFY_TEMPLATE
+          = System.getenv("STRUCTURED_DEIDENTIFY_TEMPLATE");
+  protected static final String IMAGE_REDACT_TEMPLATE = System.getenv("IMAGE_REDACT_TEMPLATE");
+
   protected ByteArrayOutputStream bout;
   private PrintStream originalOut = System.out;
 

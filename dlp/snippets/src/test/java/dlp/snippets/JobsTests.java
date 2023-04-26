@@ -125,4 +125,28 @@ public class JobsTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Job deleted successfully.");
   }
+
+  @Test
+  public void testDeidentifyStorage() throws Exception {
+    DeidentifyCloudStorage.deidentifyCloudStorage(
+            PROJECT_ID,
+            GCS_PATH,
+            TABLE_ID,
+            DATASET_ID,
+            OUTPUT_DIRECTORY,
+            DEIDENTIFY_TEMPLATE_ID,
+            STRUCTURED_DEIDENTIFY_TEMPLATE,
+            IMAGE_REDACT_TEMPLATE);
+    String output = bout.toString();
+    assertThat(output).contains("Job created successfully");
+
+    // Delete the created Dlp Job
+    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+    System.out.println(dlpJobName);
+    DeleteDlpJobRequest deleteDlpJobRequest =
+            DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
+    try (DlpServiceClient client = DlpServiceClient.create()) {
+      client.deleteDlpJob(deleteDlpJobRequest);
+    }
+  }
 }
