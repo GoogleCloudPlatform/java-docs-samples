@@ -30,6 +30,7 @@ import com.google.privacy.dlp.v2.InfoTypeTransformations.InfoTypeTransformation;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.PrimitiveTransformation;
+import com.google.privacy.dlp.v2.ReplaceWithInfoTypeConfig;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -66,7 +67,7 @@ public class DeIdentifyWithMasking {
               .build();
       PrimitiveTransformation primitiveTransformation =
           PrimitiveTransformation.newBuilder()
-              .setCharacterMaskConfig(characterMaskConfig)
+              .setReplaceWithInfoTypeConfig(ReplaceWithInfoTypeConfig.getDefaultInstance())
               .build();
       InfoTypeTransformation infoTypeTransformation =
           InfoTypeTransformation.newBuilder()
