@@ -416,4 +416,13 @@ public class InspectTests extends TestBase {
     assertThat(output).contains("Findings: 1");
     assertThat(output).contains("Info type: PERSON_NAME");
   }
+
+  @Test
+  public void testInspectWithStoredInfotype() throws Exception {
+    String textToDeidentify =
+            "My phone number is (223) 456-7890 and my email address is gary@example.com.";
+    InspectWithStoredInfotype.inspectWithStoredInfotype(PROJECT_ID, INFO_TYPE_ID, textToDeidentify);
+    String output = bout.toString();
+    assertThat(output).contains("Info type: EMAIL_ADDRESS");
+  }
 }
