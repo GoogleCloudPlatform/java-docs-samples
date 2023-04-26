@@ -49,7 +49,7 @@ public class DeidentifyFreeTextWithFpeUsingSurrogate {
     String projectId = "your-project-id";
     // The string to de-identify.
     String textToDeIdentify = "My phone number is 4359916732";
-    // The base64-encoded AES-256 key to use.
+    // The base64-encoded key to use.
     String base64EncodedKey = "your-base64-encoded-key";
 
     deIdentifyWithFpeSurrogate(projectId, textToDeIdentify, base64EncodedKey);
@@ -69,7 +69,7 @@ public class DeidentifyFreeTextWithFpeUsingSurrogate {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Set the text to be deidentified.
+      // Set the text to be de-identified.
       ContentItem contentItem = ContentItem.newBuilder().setValue(textToDeIdentify).build();
 
       // Specify the InfoType the inspection will look for.

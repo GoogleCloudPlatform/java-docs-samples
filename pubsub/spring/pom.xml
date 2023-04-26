@@ -27,6 +27,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
+    <spring.boot.version>2.7.10</spring.boot.version>
   </properties>
 
   <!--
@@ -47,7 +48,7 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.7.10</version>
+        <version>${spring.boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -109,7 +110,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>2.7.10</version>
+        <version>${spring.boot.version}</version>
         <configuration>
           <mainClass>demo.PubSubApplication</mainClass>
         </configuration>
