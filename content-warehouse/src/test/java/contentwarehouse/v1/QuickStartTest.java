@@ -16,10 +16,8 @@
 
 package contentwarehouse.v1;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,17 +27,28 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 public class QuickStartTest {
-  private static final String PROJECT_ID = "your-project-id";
-  private static final String LOCATION = "us"; // Format is 'us' or 'eu'
-  private static final String USER_ID = "user:xx@example.com"; // Format is 'user:xx@example.com'
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String LOCATION = "us"; 
+  private static final String USER_ID = "user:andrewchasin@google.com"; 
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
-  
+
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
+        String.format("Environment variable '%s' must be set to perform these tests.", varName),
+        System.getenv(varName));
+  }
+
+  @Before
+  public void checkRequirements() {
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+  }
+
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
@@ -51,12 +60,10 @@ public class QuickStartTest {
   @Test
   public void testQuickStart()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
-    QuickStart quickStartMock = mock(QuickStart.class);
-
-    assertThrows(Exception.class, () -> 
-        Mockito.doThrow(new Exception())
-        .when(quickStartMock)
-        .quickStart(anyString(), anyString(), anyString()));
+    // parse the GCS invoice as a form.
+    QuickStart.quickStart(PROJECT_ID, LOCATION, USER_ID);
+    String got = bout.toString();
+    assertThat(got).contains("document");
   }
 
   @After
