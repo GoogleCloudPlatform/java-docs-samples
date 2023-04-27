@@ -40,12 +40,13 @@ public class InspectGcsFileSendToScc {
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
-    // The name of the file in the bucket
+    // The name of the file in the Google Cloud Storage bucket.
     String gcsPath = "gs://" + "your-bucket-name" + "path/to/file.txt";
     createJobSendToScc(projectId, gcsPath);
   }
 
-  // Creates a DLP Job
+  // Creates a DLP Job to scan the sample data stored in a Cloud Storage and save its scan results
+  // to Security Command Center.
   public static void createJobSendToScc(String projectId, String gcsPath) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -70,7 +71,7 @@ public class InspectGcsFileSendToScc {
               .map(it -> InfoType.newBuilder().setName(it).build())
               .collect(Collectors.toList());
 
-      // The minimum likelihood required before returning a match:
+      // The minimum likelihood required before returning a match.
       // See: https://cloud.google.com/dlp/docs/likelihood
       Likelihood minLikelihood = Likelihood.UNLIKELY;
 

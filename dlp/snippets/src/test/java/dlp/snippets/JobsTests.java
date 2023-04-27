@@ -31,6 +31,7 @@ import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import java.io.IOException;
 import java.util.UUID;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -38,13 +39,21 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class JobsTests extends TestBase {
 
+  private static DlpServiceClient dlpServiceClient;
+
   @Override
   protected ImmutableList<String> requiredEnvVars() {
     return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT", "GCS_PATH");
   }
 
+  @BeforeClass
+  public static void setUp() throws Exception {
+    // Initialize the Dlp Service Client.
+    dlpServiceClient = DlpServiceClient.create();
+  }
+
   private static DlpJob createJob(String jobId) throws IOException {
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+
       FileSet fileSet = FileSet.newBuilder().setUrl(GCS_PATH).build();
       CloudStorageOptions cloudStorageOptions =
           CloudStorageOptions.newBuilder().setFileSet(fileSet).build();
@@ -64,8 +73,8 @@ public class JobsTests extends TestBase {
               .setJobId(jobId)
               .build();
 
-      return dlp.createDlpJob(createDlpJobRequest);
-    }
+      return dlpServiceClient.createDlpJob(createDlpJobRequest);
+
   }
 
   @Test
@@ -79,9 +88,9 @@ public class JobsTests extends TestBase {
     String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
-    try (DlpServiceClient client = DlpServiceClient.create()) {
-      client.deleteDlpJob(deleteDlpJobRequest);
-    }
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+
   }
 
   @Test
@@ -99,9 +108,9 @@ public class JobsTests extends TestBase {
     String dlpJobName = createdDlpJob.getName();
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
-    try (DlpServiceClient client = DlpServiceClient.create()) {
-      client.deleteDlpJob(deleteDlpJobRequest);
-    }
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+
   }
 
   @Test
@@ -137,8 +146,7 @@ public class JobsTests extends TestBase {
     String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
-    try (DlpServiceClient client = DlpServiceClient.create()) {
-      client.deleteDlpJob(deleteDlpJobRequest);
-    }
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
   }
 }
