@@ -75,7 +75,7 @@ public class InspectBigQuerySendToScc {
               .map(it -> InfoType.newBuilder().setName(it).build())
               .collect(Collectors.toList());
 
-      // The minimum likelihood required before returning a match:
+      // The minimum likelihood required before returning a match.
       Likelihood minLikelihood = Likelihood.UNLIKELY;
 
       // The maximum number of findings to report (0 = server maximum)
