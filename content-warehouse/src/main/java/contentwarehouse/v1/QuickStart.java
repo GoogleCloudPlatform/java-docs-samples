@@ -16,9 +16,6 @@
 
 package contentwarehouse.v1;
 
-// [START contentwarehouse_quickstart]
-
-
 import com.google.cloud.contentwarehouse.v1.CreateDocumentRequest;
 import com.google.cloud.contentwarehouse.v1.CreateDocumentResponse;
 import com.google.cloud.contentwarehouse.v1.CreateDocumentSchemaRequest;
@@ -42,6 +39,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+// [START contentwarehouse_quickstart]
 public class QuickStart {
   
   public static void main(String[] args)
@@ -76,11 +74,11 @@ public class QuickStart {
           .setDescription("My Test Schema's Description")
           .addPropertyDefinitions(
             PropertyDefinition.newBuilder()
-            .setName("stock_symbol")
-            .setDisplayName("Searchable text")
-            .setIsSearchable(true)
-            .setTextTypeOptions(TextTypeOptions.newBuilder().build())
-            .build()).build();
+              .setName("test_symbol")
+              .setDisplayName("Searchable text")
+              .setIsSearchable(true)
+              .setTextTypeOptions(TextTypeOptions.newBuilder().build())
+              .build()).build();
 
       // Define Document Schema request
       CreateDocumentSchemaRequest createDocumentSchemaRequest =
@@ -96,11 +94,11 @@ public class QuickStart {
       // Create Document Service Client Settings
       DocumentServiceSettings documentServiceSettings = 
           DocumentServiceSettings.newBuilder().setEndpoint(endpoint).build();
-      TextArray textArray = TextArray.newBuilder().addValues("GOOG").build();
 
       // Create Document Service Client and Document with relevant properties 
       try (DocumentServiceClient documentServiceClient =
           DocumentServiceClient.create(documentServiceSettings)) {
+        TextArray textArray = TextArray.newBuilder().addValues("Test").build();
         Document document = Document.newBuilder()
               .setDisplayName("My Test Document")
               .setDocumentSchemaName(documentSchemaResponse.getName())
