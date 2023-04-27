@@ -8,10 +8,14 @@
   <name>demosite</name>
   <version>0.0.1-SNAPSHOT</version>
 
+  <!-- Kindly reach out to @GoogleCloudPlatform/dee-infra or 
+  @GoogleCloudPlatform/recaptcha-customer-obsession-reviewers before making a 
+  change to this file. -->
+
   <!--
   The parent pom defines common style checks and testing strategies for our samples.
   Removing or replacing it should not affect the execution of the samples in anyway.
--->
+  -->
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
@@ -107,6 +111,16 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
       <scope>compile</scope>
+    </dependency>
+    <!-- The following dependencies are mandatory and needed for the live-reload
+    functionality of the application. -->
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>api-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
     </dependency>
     <!-- end_Spring_dependencies -->
 
