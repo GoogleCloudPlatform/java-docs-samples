@@ -32,9 +32,9 @@ import com.google.cloud.contentwarehouse.v1.RequestMetadata;
 import com.google.cloud.contentwarehouse.v1.TextArray;
 import com.google.cloud.contentwarehouse.v1.TextTypeOptions;
 import com.google.cloud.contentwarehouse.v1.UserInfo;
-import com.google.cloud.resourcemanager.ProjectInfo;
-import com.google.cloud.resourcemanager.ResourceManager;
-import com.google.cloud.resourcemanager.ResourceManagerOptions;
+import com.google.cloud.resourcemanager.v3.Project;
+import com.google.cloud.resourcemanager.v3.ProjectName;
+import com.google.cloud.resourcemanager.v3.ProjectsClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -131,10 +131,13 @@ public class QuickStart {
     }
   }
 
-  private static String getProjectNumber(String projectId) { 
-    ResourceManager resourceManager = ResourceManagerOptions.getDefaultInstance().getService();
-    ProjectInfo project = resourceManager.get(projectId);
-    return Long.toString(project.getProjectNumber());
+  private static String getProjectNumber(String projectId) throws IOException { 
+    try (ProjectsClient projectsClient = ProjectsClient.create()) { 
+      ProjectName projectName = ProjectName.of(projectId); 
+      Project project = projectsClient.getProject(projectName);
+      String projectNumber = project.getName(); // Format returned is projects/xxxxxx
+      return projectNumber.substring(projectNumber.lastIndexOf("/") + 1);
+    } 
   }
 }
 // [END contentwarehouse_quickstart]
