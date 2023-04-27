@@ -22,30 +22,11 @@
   <version>1.0-SNAPSHOT</version>
 
   <dependencies>
-
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-cloudresourcemanager</artifactId>
-      <version>v3-rev20221016-2.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.auth</groupId>
-      <artifactId>google-auth-library-oauth2-http</artifactId>
-      </dependency>
-    <dependency>
-      <groupId>com.google.http-client</groupId>
-      <artifactId>google-http-client-jackson2</artifactId>
-      </dependency>
+  
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-iam-policy</artifactId>
-      <version>1.10.0</version>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-iamcredentials</artifactId>
-      <version>v1-rev20211203-2.0.0</version>
     </dependency>
 
     <!-- Test dependencies -->

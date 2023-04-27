@@ -47,7 +47,7 @@ limitations under the License.
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>3.4.7</version>
+        <version>3.4.9</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -89,12 +89,7 @@ limitations under the License.
     <dependency>
       <groupId>net.logstash.logback</groupId>
       <artifactId>logstash-logback-encoder</artifactId>
-      <version>7.2</version>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback.contrib</groupId>
-      <artifactId>logback-json-classic</artifactId>
-      <version>0.1.5</version>
+      <version>7.3</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback.contrib</groupId>
@@ -142,6 +137,7 @@ limitations under the License.
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>3.0.6</version>
       </plugin>
       <!-- [START cloudrun_user_auth_jib] -->
       <plugin>

@@ -23,26 +23,25 @@
     <dependency>
       <artifactId>google-cloud-compute</artifactId>
       <groupId>com.google.cloud</groupId>
-      </dependency>
-    <dependency>
-      <artifactId>google-cloud-storage</artifactId>
-      <groupId>com.google.cloud</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>google-cloud-kms</artifactId>
-      <groupId>com.google.cloud</groupId>
     </dependency>
     <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>gax</artifactId>
-      </dependency>
-    <dependency>
-      <groupId>com.google.api</groupId>
-      <artifactId>gax-httpjson</artifactId>
-      </dependency>
+    </dependency>
 
 
     <!-- Test dependencies -->
+    <dependency>
+      <artifactId>google-cloud-storage</artifactId>
+      <groupId>com.google.cloud</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <artifactId>google-cloud-kms</artifactId>
+      <groupId>com.google.cloud</groupId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <artifactId>truth</artifactId>
       <groupId>com.google.truth</groupId>
@@ -62,12 +61,6 @@
     Without these, mvn surefire skips these methods and leads to concurrency
     issues.
     -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>5.8.2</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
@@ -129,7 +122,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M7</version>
+        <version>3.0.0</version>
         <configuration>
           <skip>true</skip>
         </configuration>

@@ -58,7 +58,7 @@ public class DeIdenitfyWithDeterministicEncryption {
     deIdentifyWithDeterministicEncryption(projectId, textToDeIdentify, wrappedKey, kmsKeyName);
   }
 
-  public static void deIdentifyWithDeterministicEncryption(
+  public static String deIdentifyWithDeterministicEncryption(
       String projectId, String textToDeIdentify, String wrappedKey, String key) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -131,6 +131,9 @@ public class DeIdenitfyWithDeterministicEncryption {
       // Print the results.
       System.out.println(
           "Text after de-identification: " + response.getItem().getValue());
+
+      return response.getItem().getValue();
+
     }
   }
 }

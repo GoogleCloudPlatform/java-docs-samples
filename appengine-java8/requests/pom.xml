@@ -59,16 +59,6 @@ limitations under the License.
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.json</groupId>
-      <artifactId>json</artifactId>
-      <version>20230227</version>
-    </dependency>
     <!-- Test Dependencies -->
     <dependency>
       <groupId>junit</groupId>
