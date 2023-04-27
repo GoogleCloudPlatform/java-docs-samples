@@ -416,4 +416,15 @@ public class InspectTests extends TestBase {
     assertThat(output).contains("Findings: 1");
     assertThat(output).contains("Info type: PERSON_NAME");
   }
+
+  @Test
+  public void testInspectDataToHybridJob() throws Exception {
+    String projectId = "your-project-id";
+    String jobId = "your-job-id";
+    String jobTriggerId = "your-job-trigger-id";
+    String textToDeIdentify = "My email is test@example.org";
+    InspectDataToHybridJob.inspectDataToHybridJob(textToDeIdentify, projectId, jobId, jobTriggerId);
+    String output = bout.toString();
+    assertThat(output).isEmpty();
+  }
 }
