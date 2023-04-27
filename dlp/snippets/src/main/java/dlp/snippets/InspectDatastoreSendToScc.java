@@ -49,10 +49,10 @@ public class InspectDatastoreSendToScc {
     inspectDatastoreSendToScc(projectId, datastoreNamespace, datastoreKind);
   }
 
-  // Inspects a Datastore Table
+  // Creates a DLP Job to scan the sample data stored in a DataStore table and save its scan results
+  // to Security Command Center.
   public static void inspectDatastoreSendToScc(
-      String projectId, String datastoreNamespace, String datastoreKind)
-      throws IOException {
+      String projectId, String datastoreNamespace, String datastoreKind) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
