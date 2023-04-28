@@ -60,7 +60,6 @@ public class QuickStartTest {
   @Test
   public void testQuickStart()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
-    // parse the GCS invoice as a form.
     QuickStart.quickStart(PROJECT_ID, LOCATION, USER_ID);
     String got = bout.toString();
     assertThat(got).contains("document");
