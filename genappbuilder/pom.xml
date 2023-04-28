@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.gen-app-builder</groupId>
-  <artifactId>gen-app-builder-snippets</artifactId>
+  <groupId>com.example.genappbuilder</groupId>
+  <artifactId>genappbuilder-snippets</artifactId>
   <packaging>jar</packaging>
   <name>Generative AI App Builder Snippets</name>
-  <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/gen-app-builder</url>
+  <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/genappbuilder</url>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
@@ -30,7 +30,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.6.0</version>
+        <version>26.13.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

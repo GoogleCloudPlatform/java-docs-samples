@@ -18,10 +18,14 @@ package genappbuilder.v1beta;
 
 // [START genappbuilder_search]
 
+import com.google.cloud.discoveryengine.v1beta.BranchName;
 import com.google.cloud.discoveryengine.v1beta.SearchRequest;
 import com.google.cloud.discoveryengine.v1beta.SearchResponse;
 import com.google.cloud.discoveryengine.v1beta.SearchServiceClient;
 import com.google.cloud.discoveryengine.v1beta.ServingConfigName;
+import com.google.protobuf.Value;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Search {
   public static void search() throws Exception {
