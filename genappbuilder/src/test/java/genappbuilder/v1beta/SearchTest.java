@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +59,8 @@ public class SearchTest {
 
   @Test
   public void testSearch() throws Exception {
-    Search.search(PROJECT_ID, LOCATION, COLLECTION_ID, SEARCH_ENGINE_ID, SERVING_CONFIG_ID, SEARCH_QUERY);
+    Search.search(
+        PROJECT_ID, LOCATION, COLLECTION_ID, SEARCH_ENGINE_ID, SERVING_CONFIG_ID, SEARCH_QUERY);
     String got = bout.toString();
 
     assertThat(got).contains("Response content:");

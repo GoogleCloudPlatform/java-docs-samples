@@ -17,12 +17,11 @@
 package genappbuilder.v1beta;
 
 // [START genappbuilder_search]
-import com.google.cloud.discoveryengine.v1beta.BranchName;
+
 import com.google.cloud.discoveryengine.v1beta.SearchRequest;
 import com.google.cloud.discoveryengine.v1beta.SearchResponse;
 import com.google.cloud.discoveryengine.v1beta.SearchServiceClient;
 import com.google.cloud.discoveryengine.v1beta.ServingConfigName;
-import com.google.protobuf.Value;
 
 public class Search {
   public static void search() throws Exception {
@@ -37,16 +36,23 @@ public class Search {
   }
 
   public static void search(
-      String projectId, String location, String collectionId, String searchEngineId, String servingConfigId,
+      String projectId,
+      String location,
+      String collectionId,
+      String searchEngineId,
+      String servingConfigId,
       String searchQuery)
       throws Exception {
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {
-      SearchRequest request = SearchRequest.newBuilder()
-          .setServingConfig(
-              ServingConfigName.of(projectId, location, collectionId, searchEngineId, servingConfigId).toString())
-          .setQuery(searchQuery)
-          .setPageSize(10)
-          .build();
+      SearchRequest request =
+          SearchRequest.newBuilder()
+              .setServingConfig(
+                  ServingConfigName.of(
+                          projectId, location, collectionId, searchEngineId, servingConfigId)
+                      .toString())
+              .setQuery(searchQuery)
+              .setPageSize(10)
+              .build();
       SearchResponse response = searchClient.search(request).getPage().getResponse();
       for (SearchResponse.SearchResult element : response.getResultList()) {
         System.out.println("Response content: " + element);
