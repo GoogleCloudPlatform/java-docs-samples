@@ -54,27 +54,26 @@ public class JobsTests extends TestBase {
 
   private static DlpJob createJob(String jobId) throws IOException {
 
-      FileSet fileSet = FileSet.newBuilder().setUrl(GCS_PATH).build();
-      CloudStorageOptions cloudStorageOptions =
-          CloudStorageOptions.newBuilder().setFileSet(fileSet).build();
-      StorageConfig storageConfig =
-          StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
+    FileSet fileSet = FileSet.newBuilder().setUrl(GCS_PATH).build();
+    CloudStorageOptions cloudStorageOptions =
+        CloudStorageOptions.newBuilder().setFileSet(fileSet).build();
+    StorageConfig storageConfig =
+        StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
 
-      InspectJobConfig inspectJobConfig =
-          InspectJobConfig.newBuilder()
-              .setStorageConfig(storageConfig)
-              .setInspectConfig(InspectConfig.newBuilder().build())
-              .build();
+    InspectJobConfig inspectJobConfig =
+        InspectJobConfig.newBuilder()
+            .setStorageConfig(storageConfig)
+            .setInspectConfig(InspectConfig.newBuilder().build())
+            .build();
 
-      CreateDlpJobRequest createDlpJobRequest =
-          CreateDlpJobRequest.newBuilder()
-              .setParent(LocationName.of(PROJECT_ID, "global").toString())
-              .setInspectJob(inspectJobConfig)
-              .setJobId(jobId)
-              .build();
+    CreateDlpJobRequest createDlpJobRequest =
+        CreateDlpJobRequest.newBuilder()
+            .setParent(LocationName.of(PROJECT_ID, "global").toString())
+            .setInspectJob(inspectJobConfig)
+            .setJobId(jobId)
+            .build();
 
-      return dlpServiceClient.createDlpJob(createDlpJobRequest);
-
+    return dlpServiceClient.createDlpJob(createDlpJobRequest);
   }
 
   @Test
