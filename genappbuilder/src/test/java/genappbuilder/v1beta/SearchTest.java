@@ -28,7 +28,6 @@ import org.junit.Test;
 public class SearchTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "global";
-  private static final String COLLECTION_ID = "default_collection";
   private static final String SEARCH_ENGINE_ID = "test-search-engine";
   private static final String SERVING_CONFIG_ID = "default_search";
   private static final String SEARCH_QUERY = "Google";
@@ -60,7 +59,7 @@ public class SearchTest {
   @Test
   public void testSearch() throws Exception {
     Search.search(
-        PROJECT_ID, LOCATION, COLLECTION_ID, SEARCH_ENGINE_ID, SERVING_CONFIG_ID, SEARCH_QUERY);
+        PROJECT_ID, LOCATION, SEARCH_ENGINE_ID, SERVING_CONFIG_ID, SEARCH_QUERY);
     String got = bout.toString();
 
     assertThat(got).contains("Response content:");

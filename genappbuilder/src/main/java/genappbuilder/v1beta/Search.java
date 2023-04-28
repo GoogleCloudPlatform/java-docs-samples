@@ -18,31 +18,25 @@ package genappbuilder.v1beta;
 
 // [START genappbuilder_search]
 
-import com.google.cloud.discoveryengine.v1beta.BranchName;
 import com.google.cloud.discoveryengine.v1beta.SearchRequest;
 import com.google.cloud.discoveryengine.v1beta.SearchResponse;
 import com.google.cloud.discoveryengine.v1beta.SearchServiceClient;
 import com.google.cloud.discoveryengine.v1beta.ServingConfigName;
-import com.google.protobuf.Value;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Search {
   public static void search() throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "PROJECT_ID";
     String location = "global";
-    String collectionId = "default_collection";
     String searchEngineId = "DATA_STORE_ID";
     String servingConfigId = "default_search";
     String searchQuery = "Google";
-    search();
+    search(projectId, location, searchEngineId, servingConfigId, searchQuery);
   }
 
   public static void search(
       String projectId,
       String location,
-      String collectionId,
       String searchEngineId,
       String servingConfigId,
       String searchQuery)
@@ -51,8 +45,8 @@ public class Search {
       SearchRequest request =
           SearchRequest.newBuilder()
               .setServingConfig(
-                  ServingConfigName.of(
-                          projectId, location, collectionId, searchEngineId, servingConfigId)
+                      ServingConfigName.ofProjectLocationDataStoreServingConfigName(
+                          projectId, location, searchEngineId, servingConfigId)
                       .toString())
               .setQuery(searchQuery)
               .setPageSize(10)
