@@ -142,7 +142,7 @@ public class JobsTests extends TestBase {
     assertThat(output).contains("Job created successfully:");
 
     // Delete the created Dlp Job
-    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+    String dlpJobName = output.split("Job created successfully: ")[1];
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
 
