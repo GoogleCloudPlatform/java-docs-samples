@@ -52,8 +52,8 @@
 # Cloud SDK Databases & Data Analytics teams
 # ---* Cloud Native DB
 /bigtable                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-native-db-dpes
-/memorystore                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-native-db-dpes
-/spanner                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-native-db-dpes
+/memorystore                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/spanner                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-spanner-java
 # ---* Cloud Storage
 /storage                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-storage-dpes
 /storage-transfer                @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-storage-dpes
