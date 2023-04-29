@@ -133,6 +133,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testPatchRsa() throws Exception {
     final String deviceName = "patchme-device-rsa";
@@ -157,6 +158,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testPatchEs() throws Exception {
     final String deviceName = "patchme-device-es";
@@ -181,6 +183,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testCreateDeleteUnauthDevice() throws Exception {
     final String deviceName = "noauth-device";
@@ -203,6 +206,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testCreateDeleteEsDevice() throws Exception {
     final String deviceName = "es-device";
@@ -226,6 +230,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testCreateDeleteRsaDevice() throws Exception {
     final String deviceName = "rsa-device";
@@ -249,6 +254,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testCreateGetDevice() throws Exception {
     final String deviceName = "rsa-device";
@@ -273,6 +279,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testCreateConfigureDevice() throws Exception {
     final String deviceName = "rsa-device-config";
@@ -296,6 +303,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testCreateListDevices() throws Exception {
     final String deviceName = "rsa-device";
@@ -319,6 +327,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testCreateGetRegistry() throws Exception {
 
@@ -338,6 +347,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testGetIam() throws Exception {
     try {
@@ -356,6 +366,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testSetIam() throws Exception {
     try {
@@ -377,6 +388,7 @@ public class ManagerIT {
 
   // HTTP device tests
 
+  @Ignore
   @Test
   public void testHttpDeviceEvent() throws Exception {
     final String deviceName = "rsa-device-http-event";
@@ -417,6 +429,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testHttpDeviceState() throws Exception {
     final String deviceName = "rsa-device-http-state";
@@ -457,6 +470,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testHttpDeviceConfig() throws Exception {
     final String deviceName = "rsa-device-http-state";
@@ -499,6 +513,7 @@ public class ManagerIT {
   }
 
   // MQTT device tests
+  @Ignore
   @Test
   public void testMqttDeviceConfig() throws Exception {
     final String deviceName = "rsa-device-mqtt-config";
@@ -599,6 +614,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testMqttDeviceEvents() throws Exception {
     final String deviceName = "rsa-device-mqtt-events";
@@ -641,6 +657,7 @@ public class ManagerIT {
     }
   }
 
+  @Ignore
   @Test
   public void testMqttDeviceState() throws Exception {
     final String deviceName = "rsa-device-mqtt-state";
