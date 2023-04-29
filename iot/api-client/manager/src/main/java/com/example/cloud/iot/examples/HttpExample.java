@@ -155,7 +155,8 @@ public class HttpExample {
     System.out.println(res.getStatusMessage());
     InputStream in = res.getContent();
 
-    System.out.println(CharStreams.toString(new InputStreamReader(in, StandardCharsets.UTF_8.name())));
+    System.out
+        .println(CharStreams.toString(new InputStreamReader(in, StandardCharsets.UTF_8.name())));
   }
   // [END iot_http_getconfig]
 

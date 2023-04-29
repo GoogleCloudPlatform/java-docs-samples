@@ -41,7 +41,7 @@ public class MailjetServlet extends HttpServlet {
   private static final String MAILJET_API_KEY = System.getenv("MAILJET_API_KEY");
   private static final String MAILJET_SECRET_KEY = System.getenv("MAILJET_SECRET_KEY");
   ClientOptions options =
-    ClientOptions.builder().apiKey(MAILJET_API_KEY).apiSecretKey(MAILJET_SECRET_KEY).build();
+      ClientOptions.builder().apiKey(MAILJET_API_KEY).apiSecretKey(MAILJET_SECRET_KEY).build();
   private MailjetClient client = new MailjetClient(options);
 
   @Override
