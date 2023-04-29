@@ -66,7 +66,7 @@ mvn --quiet --batch-mode --fail-at-end clean verify \
     -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
     -Dmaven.test.redirectTestOutputToFile=true \
     -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
-    -Dbigtable.instanceID=instance
+    -Dbigtable.instanceID=instance -X
 EXIT=$?
 
 # Tear down (deployed) Cloud Functions after deployment tests are run
