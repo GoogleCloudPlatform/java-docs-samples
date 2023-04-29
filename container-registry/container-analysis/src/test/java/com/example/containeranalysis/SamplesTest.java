@@ -26,6 +26,7 @@ import com.google.cloud.devtools.containeranalysis.v1.ContainerAnalysisClient;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.TopicName;
 import io.grafeas.v1.DiscoveryNote;
