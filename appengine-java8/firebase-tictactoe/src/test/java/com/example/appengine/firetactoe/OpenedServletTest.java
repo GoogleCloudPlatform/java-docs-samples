@@ -47,7 +47,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -147,6 +147,6 @@ public class OpenedServletTest {
     servletUnderTest.doPost(mockRequest, mockResponse);
 
     verify(mockHttpTransport, times(2))
-        .buildRequest(eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
+        .buildRequest(eq("PATCH"), ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
   }
 }
