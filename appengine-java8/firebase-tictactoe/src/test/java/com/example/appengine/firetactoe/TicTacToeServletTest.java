@@ -141,8 +141,8 @@ public class TicTacToeServletTest {
     Game game = ofy.load().type(Game.class).first().safe();
     assertThat(game.userX).isEqualTo(USER_ID);
 
-    verify(mockHttpTransport, times(1))
-        .buildRequest(eq("PATCH"), ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
+    verify(mockHttpTransport, times(1)).buildRequest(eq("PATCH"),
+        ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
     verify(requestDispatcher).forward(mockRequest, mockResponse);
     verify(mockRequest).setAttribute(eq("token"), anyString());
     verify(mockRequest).setAttribute("game_key", game.id);
