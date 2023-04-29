@@ -26,8 +26,8 @@ import com.google.api.services.cloudiot.v1.model.DeviceRegistry;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
-import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.Topic;
+import com.google.pubsub.v1.TopicName;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -154,7 +154,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -179,7 +179,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -202,7 +202,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -226,7 +226,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -250,7 +250,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -275,7 +275,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -299,7 +299,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -323,7 +323,7 @@ public class ManagerIT {
       DeviceRegistryExample.deleteRegistry(CLOUD_REGION, PROJECT_ID, REGISTRY_ID);
     }
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -343,7 +343,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -362,7 +362,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -382,7 +382,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -425,7 +425,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -466,7 +466,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -508,7 +508,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -550,7 +550,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -610,7 +610,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -653,7 +653,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -694,7 +694,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -752,7 +752,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -805,7 +805,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 
@@ -865,7 +865,7 @@ public class ManagerIT {
     }
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(ProjectTopicName.of(PROJECT_ID, TOPIC_ID));
+      topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, TOPIC_ID));
     }
   }
 }

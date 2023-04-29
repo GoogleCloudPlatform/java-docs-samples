@@ -23,7 +23,7 @@ import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.cloud.resourcemanager.ProjectInfo;
 import com.google.cloud.resourcemanager.ResourceManager;
 import com.google.cloud.resourcemanager.ResourceManagerOptions;
-import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.TopicName;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
@@ -48,7 +48,7 @@ public class RealTimeFeed {
   private final String projectNumber = getProjectNumber(projectId);
   private final String feedName = String.format("projects/%s/feeds/%s", projectNumber, feedId);
   private final String[] assetNames = {UUID.randomUUID().toString()};
-  private static final ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
+  private static final TopicName topicName = TopicName.of(projectId, topicId);
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;

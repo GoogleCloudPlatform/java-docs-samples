@@ -46,8 +46,8 @@ import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.io.Files;
 import com.google.iam.v1.Binding;
-import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.Topic;
+import com.google.pubsub.v1.TopicName;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -96,7 +96,7 @@ public class DeviceRegistryExample {
   /** Creates a topic and grants the IoT service account access. */
   protected static Topic createIotTopic(String projectId, String topicId) throws Exception {
     // Create a new topic
-    final ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
+    final TopicName topicName = TopicName.of(projectId, topicId);
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       final Topic topic = topicAdminClient.createTopic(topicName);
