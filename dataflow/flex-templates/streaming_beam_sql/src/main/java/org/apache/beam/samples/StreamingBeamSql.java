@@ -22,7 +22,7 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import java.util.Arrays;
 import org.apache.avro.reflect.Nullable;
 import org.apache.beam.sdk.Pipeline;
-import org.apache.beam.sdk.coders.AvroCoder;
+import org.apache.beam.sdk.extensions.avro.coders.AvroCoder;
 import org.apache.beam.sdk.coders.DefaultCoder;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.extensions.sql.SqlTransform;

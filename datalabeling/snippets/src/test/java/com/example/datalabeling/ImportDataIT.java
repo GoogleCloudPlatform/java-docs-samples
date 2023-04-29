@@ -16,7 +16,7 @@
 
 package com.example.datalabeling;
 
-import static org.junit.Assert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient.ListDatasetsPagedResponse;
@@ -26,7 +26,6 @@ import com.google.cloud.datalabeling.v1beta1.ProjectName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -103,6 +102,6 @@ public class ImportDataIT {
 
     String output = bout.toString();
 
-    assertThat(output, CoreMatchers.containsString("Imported items: 3"));
+    assertThat(output).contains("Imported items: 3");
   }
 }
