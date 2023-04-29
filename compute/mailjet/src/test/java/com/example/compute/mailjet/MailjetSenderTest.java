@@ -39,7 +39,7 @@ public class MailjetSenderTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     Mockito.when(mockClient.post(Matchers.anyObject())).thenReturn(mockResponse);
     sender = new MailjetSender();

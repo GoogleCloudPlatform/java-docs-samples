@@ -42,7 +42,7 @@ public class CorsEnabledAuthTest {
 
   @Before
   public void beforeTest() throws IOException {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     responseOut = new StringWriter();
     writerOut = new BufferedWriter(responseOut);

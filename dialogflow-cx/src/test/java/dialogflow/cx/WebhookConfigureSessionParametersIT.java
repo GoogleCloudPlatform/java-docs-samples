@@ -48,7 +48,7 @@ public class WebhookConfigureSessionParametersIT {
 
   @Before
   public void beforeTest() throws IOException {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     stringReader = new StringReader("{'fulfillmentInfo': {'tag': 'configure-session-parameter'}}");
     jsonReader = new BufferedReader(stringReader);

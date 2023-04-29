@@ -55,7 +55,7 @@ public class LoggingServletTest {
     //  Capture stderr to examine messages written to it
     System.setErr(new PrintStream(stderr));
 
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
