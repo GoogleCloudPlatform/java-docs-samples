@@ -327,7 +327,8 @@ public class DeviceRegistryExample {
             "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
-    final String key = Files.asCharSource(new File(publicKeyFilePath), StandardCharsets.UTF_8).read();
+    final String key =
+        Files.asCharSource(new File(publicKeyFilePath), StandardCharsets.UTF_8).read();
     publicKeyCredential.setKey(key);
     publicKeyCredential.setFormat("ES256_PEM");
 
