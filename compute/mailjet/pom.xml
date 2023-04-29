@@ -33,7 +33,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <mailjet.version>5.2.0</mailjet.version>
+    <mailjet.version>5.2.2</mailjet.version>
   </properties>
 
   <dependencies>
@@ -46,7 +46,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.2.0</version>
+      <version>5.3.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
