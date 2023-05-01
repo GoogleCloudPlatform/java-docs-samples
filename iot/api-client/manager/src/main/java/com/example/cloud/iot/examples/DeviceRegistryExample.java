@@ -20,7 +20,6 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.Charsets;
 import com.google.api.services.cloudiot.v1.CloudIot;
 import com.google.api.services.cloudiot.v1.CloudIotScopes;
 import com.google.api.services.cloudiot.v1.model.BindDeviceToGatewayRequest;
@@ -47,8 +46,8 @@ import com.google.cloud.Role;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.io.Files;
 import com.google.iam.v1.Binding;
-import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.Topic;
+import com.google.pubsub.v1.TopicName;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -97,7 +96,7 @@ public class DeviceRegistryExample {
   /** Creates a topic and grants the IoT service account access. */
   protected static Topic createIotTopic(String projectId, String topicId) throws Exception {
     // Create a new topic
-    final ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
+    final TopicName topicName = TopicName.of(projectId, topicId);
 
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       final Topic topic = topicAdminClient.createTopic(topicName);
@@ -328,7 +327,8 @@ public class DeviceRegistryExample {
             "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
-    final String key = Files.toString(new File(publicKeyFilePath), Charsets.UTF_8);
+    final String key =
+        Files.asCharSource(new File(publicKeyFilePath), StandardCharsets.UTF_8).read();
     publicKeyCredential.setKey(key);
     publicKeyCredential.setFormat("ES256_PEM");
 
@@ -376,7 +376,7 @@ public class DeviceRegistryExample {
             "projects/%s/locations/%s/registries/%s", projectId, cloudRegion, registryName);
 
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
-    String key = Files.toString(new File(certificateFilePath), Charsets.UTF_8);
+    String key = Files.asCharSource(new File(certificateFilePath), StandardCharsets.UTF_8).read();
     publicKeyCredential.setKey(key);
     publicKeyCredential.setFormat("RSA_X509_PEM");
 
@@ -640,7 +640,7 @@ public class DeviceRegistryExample {
             projectId, cloudRegion, registryName, deviceId);
 
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
-    String key = Files.toString(new File(publicKeyFilePath), Charsets.UTF_8);
+    String key = Files.asCharSource(new File(publicKeyFilePath), StandardCharsets.UTF_8).read();
     publicKeyCredential.setKey(key);
     publicKeyCredential.setFormat("ES256_PEM");
 
@@ -688,7 +688,7 @@ public class DeviceRegistryExample {
             projectId, cloudRegion, registryName, deviceId);
 
     PublicKeyCredential publicKeyCredential = new PublicKeyCredential();
-    String key = Files.toString(new File(publicKeyFilePath), Charsets.UTF_8);
+    String key = Files.asCharSource(new File(publicKeyFilePath), StandardCharsets.UTF_8).read();
     publicKeyCredential.setKey(key);
     publicKeyCredential.setFormat("RSA_X509_PEM");
 
