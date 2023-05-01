@@ -16,7 +16,7 @@
 
 package com.example.datalabeling;
 
-import static org.junit.Assert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.datalabeling.v1beta1.AnnotationSpecSet;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
@@ -26,7 +26,6 @@ import com.google.cloud.datalabeling.v1beta1.ProjectName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -80,9 +79,8 @@ public class CreateAnnotationSpecSetIT {
 
     String output = bout.toString();
 
-    assertThat(
-        output, CoreMatchers.containsString("DisplayName: YOUR_ANNOTATION_SPEC_SET_DISPLAY_NAME"));
-    assertThat(output, CoreMatchers.containsString("Description: YOUR_DESCRIPTION"));
-    assertThat(output, CoreMatchers.containsString("Annotation Count: 2"));
+    assertThat(output).contains("DisplayName: YOUR_ANNOTATION_SPEC_SET_DISPLAY_NAME");
+    assertThat(output).contains("Description: YOUR_DESCRIPTION");
+    assertThat(output).contains("Annotation Count: 2");
   }
 }

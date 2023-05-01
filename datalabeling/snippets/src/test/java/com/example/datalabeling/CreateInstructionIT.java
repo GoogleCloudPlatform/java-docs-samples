@@ -16,7 +16,7 @@
 
 package com.example.datalabeling;
 
-import static org.junit.Assert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient.ListInstructionsPagedResponse;
@@ -82,9 +82,8 @@ public class CreateInstructionIT {
 
     String output = bout.toString();
 
-    assertThat(output, CoreMatchers.containsString("DisplayName: YOUR_INSTRUCTION_DISPLAY_NAME"));
-    assertThat(output, CoreMatchers.containsString("Description: YOUR_DESCRIPTION"));
-    assertThat(
-        output, CoreMatchers.containsString(String.format("GCS SOURCE URI: %s", GCS_SOURCE_URI)));
+    assertThat(output).contains("DisplayName: YOUR_INSTRUCTION_DISPLAY_NAME");
+    assertThat(output).contains("Description: YOUR_DESCRIPTION");
+    assertThat(output).contains(String.format("GCS SOURCE URI: %s", GCS_SOURCE_URI));
   }
 }

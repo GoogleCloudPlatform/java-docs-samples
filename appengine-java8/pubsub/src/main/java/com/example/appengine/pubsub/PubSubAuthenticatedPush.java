@@ -48,7 +48,6 @@ public class PubSubAuthenticatedPush extends HttpServlet {
           .setAudience(Collections.singletonList("example.com"))
           .build();
   private final Gson gson = new Gson();
-  private final JsonParser jsonParser = new JsonParser();
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -101,7 +100,7 @@ public class PubSubAuthenticatedPush extends HttpServlet {
 
   private Message getMessage(HttpServletRequest request) throws IOException {
     String requestBody = request.getReader().lines().collect(Collectors.joining("\n"));
-    JsonElement jsonRoot = jsonParser.parse(requestBody);
+    JsonElement jsonRoot = JsonParser.parseString(requestBody).getAsJsonObject();
     String messageStr = jsonRoot.getAsJsonObject().get("message").toString();
     Message message = gson.fromJson(messageStr, Message.class);
     // decode from base64
