@@ -57,7 +57,7 @@ public class ServicesCreate {
 
       // Process the response.
       System.out.println("Created Service: " + createdService.getName());
-      System.out.println("Annotations: " + createdService.getAnnotations());
+      System.out.println("Annotations: " + createdService.getAnnotationsMap());
     }
   }
 }
