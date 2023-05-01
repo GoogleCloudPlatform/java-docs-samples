@@ -51,8 +51,8 @@ public class Search {
               .setQuery(searchQuery)
               .setPageSize(10)
               .build();
-      SearchResponse response = searchClient.search(request).getPage().getResponse();
-      for (SearchResponse.SearchResult element : response.getResultList()) {
+      SearchResponse response = searchServiceClient.search(request).getPage().getResponse();
+      for (SearchResponse.SearchResult element : response.getResultsList()) {
         System.out.println("Response content: " + element);
       }
     }
