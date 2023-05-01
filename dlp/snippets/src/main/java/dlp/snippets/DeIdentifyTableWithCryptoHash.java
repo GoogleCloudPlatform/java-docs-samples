@@ -81,10 +81,12 @@ public class DeIdentifyTableWithCryptoHash {
                     .build())
             .build();
 
+    // The randomly generated crypto key to encrypt the data.
     String transientKeyName = "YOUR_TRANSIENT_CRYPTO_KEY";
     deIdentifyWithCryptHashTransformation(projectId, tableToDeIdentify, transientKeyName);
   }
 
+  // Transforms findings using a cryptographic hash transformation.
   public static void deIdentifyWithCryptHashTransformation(
       String projectId, Table tableToDeIdentify, String transientKeyName) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
