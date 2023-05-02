@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package genappbuilder.v1beta;
+package discoveryengine.v1beta;
 
 // [START genappbuilder_search]
 
