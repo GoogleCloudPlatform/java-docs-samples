@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.genappbuilder</groupId>
+  <groupId>com.example.discoveryengine</groupId>
   <artifactId>genappbuilder-snippets</artifactId>
   <packaging>jar</packaging>
   <name>Generative AI App Builder Snippets</name>
-  <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/genappbuilder</url>
+  <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/discoveryengine</url>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
@@ -41,6 +41,11 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-discoveryengine</artifactId>
+      <version>0.12.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-cloud-discoveryengine-v1beta</artifactId>
       <version>0.12.0</version>
     </dependency>
     <!-- [END genappbuilder_install_with_bom] -->
