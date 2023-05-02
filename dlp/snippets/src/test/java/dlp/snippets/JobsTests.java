@@ -23,13 +23,22 @@ import com.google.common.collect.ImmutableList;
 import com.google.privacy.dlp.v2.CloudStorageOptions;
 import com.google.privacy.dlp.v2.CloudStorageOptions.FileSet;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
+import com.google.privacy.dlp.v2.CreateJobTriggerRequest;
 import com.google.privacy.dlp.v2.DeleteDlpJobRequest;
+import com.google.privacy.dlp.v2.DeleteJobTriggerRequest;
 import com.google.privacy.dlp.v2.DlpJob;
+import com.google.privacy.dlp.v2.HybridOptions;
+import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectJobConfig;
+import com.google.privacy.dlp.v2.JobTrigger;
+import com.google.privacy.dlp.v2.JobTriggerName;
 import com.google.privacy.dlp.v2.LocationName;
+import com.google.privacy.dlp.v2.Manual;
 import com.google.privacy.dlp.v2.StorageConfig;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,11 +46,6 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class JobsTests extends TestBase {
-
-  @Override
-  protected ImmutableList<String> requiredEnvVars() {
-    return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT", "GCS_PATH");
-  }
 
   private static DlpJob createJob(String jobId) throws IOException {
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
@@ -66,6 +70,64 @@ public class JobsTests extends TestBase {
 
       return dlp.createDlpJob(createDlpJobRequest);
     }
+  }
+
+  private static void createHybridJobTrigger(String jobTriggerId) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      // Set hybrid options for content outside GCP.
+      HybridOptions hybridOptions =
+          HybridOptions.newBuilder()
+              .addRequiredFindingLabelKeys("appointment-bookings-comments")
+              .putLabels("env", "prod")
+              .build();
+
+      // Set storage config indicating the type of cloud storage.
+      StorageConfig storageConfig =
+          StorageConfig.newBuilder().setHybridOptions(hybridOptions).build();
+
+      // Specify the type of info the inspection will look for.
+      List<InfoType> infoTypes = new ArrayList<>();
+      // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
+      for (String typeName : new String[] {"PERSON_NAME", "EMAIL_ADDRESS"}) {
+        infoTypes.add(InfoType.newBuilder().setName(typeName).build());
+      }
+
+      // Specify how the content should be inspected.
+      InspectConfig inspectConfig =
+          InspectConfig.newBuilder().addAllInfoTypes(infoTypes).setIncludeQuote(true).build();
+      // Configure the inspection job we want the service to perform.
+      InspectJobConfig inspectJobConfig =
+          InspectJobConfig.newBuilder()
+              .setInspectConfig(inspectConfig)
+              .setStorageConfig(storageConfig)
+              .build();
+
+      // Configure the hybrid job trigger to be created.
+      JobTrigger.Trigger trigger =
+          JobTrigger.Trigger.newBuilder().setManual(Manual.newBuilder().build()).build();
+
+      JobTrigger jobTrigger =
+          JobTrigger.newBuilder().addTriggers(trigger).setInspectJob(inspectJobConfig).build();
+
+      // Construct the job trigger creation request.
+      CreateJobTriggerRequest createDlpJobRequest =
+          CreateJobTriggerRequest.newBuilder()
+              .setParent(LocationName.of(PROJECT_ID, "global").toString())
+              .setJobTrigger(jobTrigger)
+              .setTriggerId(jobTriggerId)
+              .build();
+
+      // Send the job creation request and process the response.
+      dlp.createJobTrigger(createDlpJobRequest);
+    }
+  }
+
+  @Override
+  protected ImmutableList<String> requiredEnvVars() {
+    return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT", "GCS_PATH");
   }
 
   @Test
@@ -124,5 +186,27 @@ public class JobsTests extends TestBase {
     JobsDelete.deleteJobs(PROJECT_ID, "i-" + jobId);
     String output = bout.toString();
     assertThat(output).contains("Job deleted successfully.");
+  }
+
+  @Test
+  public void testInspectDataToHybridJobTrigger() throws Exception {
+    // Create a job trigger with a unique UUID.
+    String jobTriggerId = UUID.randomUUID().toString();
+    createHybridJobTrigger(jobTriggerId);
+
+    String textToDeIdentify = "My email is test@example.org";
+    InspectDataToHybridJobTrigger.inspectDataToHybridJobTrigger(
+        textToDeIdentify, PROJECT_ID, jobTriggerId);
+    String output = bout.toString();
+    assertThat(output).isEmpty();
+
+    // Delete the specific job trigger.
+    DeleteJobTriggerRequest deleteJobTriggerRequest =
+        DeleteJobTriggerRequest.newBuilder()
+            .setName(JobTriggerName.of(PROJECT_ID, jobTriggerId).toString())
+            .build();
+    try (DlpServiceClient client = DlpServiceClient.create()) {
+      client.deleteJobTrigger(deleteJobTriggerRequest);
+    }
   }
 }

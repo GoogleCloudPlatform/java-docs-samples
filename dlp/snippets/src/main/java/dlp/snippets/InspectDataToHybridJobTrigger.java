@@ -16,40 +16,39 @@
 
 package dlp.snippets;
 
-// [Start dlp_inspect_data_to_hybrid_job]
+// [Start dlp_inspect_data_to_hybrid_job_trigger]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ActivateJobTriggerRequest;
 import com.google.privacy.dlp.v2.Container;
 import com.google.privacy.dlp.v2.ContentItem;
-import com.google.privacy.dlp.v2.DlpJobName;
 import com.google.privacy.dlp.v2.HybridContentItem;
 import com.google.privacy.dlp.v2.HybridFindingDetails;
-import com.google.privacy.dlp.v2.HybridInspectDlpJobRequest;
+import com.google.privacy.dlp.v2.HybridInspectJobTriggerRequest;
 import com.google.privacy.dlp.v2.HybridInspectResponse;
 import com.google.privacy.dlp.v2.JobTriggerName;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InspectDataToHybridJob {
+public class InspectDataToHybridJobTrigger {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
-    // The Job id and Job trigger id used to for processing a hybrid job trigger.
-    String jobId = "your-job-id";
+    // The job trigger id used to for processing a hybrid job trigger.
     String jobTriggerId = "your-job-trigger-id";
     // The string to de-identify.
     String textToDeIdentify = "My email is test@example.org";
-    inspectDataToHybridJob(textToDeIdentify, projectId, jobId, jobTriggerId);
+    inspectDataToHybridJobTrigger(textToDeIdentify, projectId, jobTriggerId);
   }
 
-  // HybridInspect request sent to Cloud DLP for processing by a hybrid job trigger.
-  public static void inspectDataToHybridJob(
-      String textToDeIdentify, String projectId, String jobId, String jobTriggerId)
-      throws Exception {
-    // create a DlpServiceClient instance
+  // Inspects data using a hybrid job trigger.
+  public static void inspectDataToHybridJobTrigger(
+      String textToDeIdentify, String projectId, String jobTriggerId) throws Exception {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlpClient = DlpServiceClient.create()) {
       // Specify the content to be inspected.
       ContentItem contentItem = ContentItem.newBuilder().setValue(textToDeIdentify).build();
@@ -64,6 +63,7 @@ public class InspectDataToHybridJob {
               .setVersion("1.2")
               .build();
 
+      // Set the required label.
       Map<String, String> labels = new HashMap<>();
       labels.put("env", "prod");
       labels.put("appointment-bookings-comments", "");
@@ -74,7 +74,6 @@ public class InspectDataToHybridJob {
               .putAllLabels(labels)
               .build();
 
-      // Build the hybrid content item.
       HybridContentItem hybridContentItem =
           HybridContentItem.newBuilder()
               .setItem(contentItem)
@@ -89,18 +88,18 @@ public class InspectDataToHybridJob {
       dlpClient.activateJobTrigger(activateJobTriggerRequest);
 
       // Build the hybrid inspect request.
-      HybridInspectDlpJobRequest request =
-          HybridInspectDlpJobRequest.newBuilder()
-              .setName(DlpJobName.of(projectId, jobId).toString())
+      HybridInspectJobTriggerRequest request =
+          HybridInspectJobTriggerRequest.newBuilder()
+              .setName(JobTriggerName.of(projectId, jobTriggerId).toString())
               .setHybridItem(hybridContentItem)
               .build();
 
       // Send the hybrid inspect request.
-      HybridInspectResponse response = dlpClient.hybridInspectDlpJob(request);
+      HybridInspectResponse response = dlpClient.hybridInspectJobTrigger(request);
 
       // Print the result.
       System.out.print(response);
     }
   }
 }
-// [END dlp_inspect_data_to_hybrid_job]
+// [END dlp_inspect_data_to_hybrid_job_trigger]
