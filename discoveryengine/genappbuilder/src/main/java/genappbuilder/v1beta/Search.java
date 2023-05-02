@@ -43,13 +43,6 @@ public class Search {
 
   /**
    * Performs a search on a given datastore/search engine.
-   * 
-   * @param projectId
-   * @param location
-   * @param searchEngineId
-   * @param servingConfigId
-   * @param searchQuery
-   * @throws IOException
    */
   public static void search(
       String projectId, String location, String searchEngineId,
