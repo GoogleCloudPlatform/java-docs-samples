@@ -17,7 +17,7 @@ package iam.snippets;
 
 // [START iam_get_policy]
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.cloudresourcemanager.v3.CloudResourceManager;
 import com.google.api.services.cloudresourcemanager.v3.model.GetIamPolicyRequest;
 import com.google.api.services.cloudresourcemanager.v3.model.Policy;
@@ -66,7 +66,7 @@ public class GetPolicy {
     CloudResourceManager service =
         new CloudResourceManager.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
+                GsonFactory.getDefaultInstance(),
                 new HttpCredentialsAdapter(credential))
             .setApplicationName("service-accounts")
             .build();

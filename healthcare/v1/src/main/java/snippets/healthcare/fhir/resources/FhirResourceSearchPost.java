@@ -20,7 +20,7 @@ package snippets.healthcare.fhir.resources;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
 import com.google.auth.http.HttpCredentialsAdapter;
@@ -43,7 +43,7 @@ public class FhirResourceSearchPost {
       "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s";
   // The endpoint URL for the Healthcare API. Required for HttpClient.
   private static final String API_ENDPOINT = "https://healthcare.googleapis.com";
-  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  private static final JsonFactory JSON_FACTORY = new GsonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
   public static void fhirResourceSearchPost(String resourceName)

@@ -23,8 +23,8 @@ import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.collect.ImmutableList;
-import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PushConfig;
+import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.TopicName;
 import java.util.Arrays;
 import java.util.UUID;
@@ -41,8 +41,8 @@ public class RiskAnalysisTests extends TestBase {
   private UUID testRunUuid = UUID.randomUUID();
   private TopicName topicName =
       TopicName.of(PROJECT_ID, String.format("%s-%s", TOPIC_ID, testRunUuid.toString()));
-  private ProjectSubscriptionName subscriptionName =
-      ProjectSubscriptionName.of(
+  private SubscriptionName subscriptionName =
+      SubscriptionName.of(
           PROJECT_ID, String.format("%s-%s", SUBSCRIPTION_ID, testRunUuid.toString()));
 
   @Override
