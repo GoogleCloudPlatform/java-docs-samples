@@ -32,6 +32,8 @@ public class Search {
     String projectId = "PROJECT_ID";
     // Location of the search engine. Options: "global"
     String location = "global";
+    // Collection containing the datastore.
+    String collectionId = "default_collection";
     // Datastore/Search Engine ID.
     String searchEngineId = "DATA_STORE_ID";
     // Serving configuration. Options: "default_search"
@@ -41,12 +43,15 @@ public class Search {
     search(projectId, location, searchEngineId, servingConfigId, searchQuery);
   }
 
-  /**
-   * Performs a search on a given datastore/search engine.
-   */
+  /** Performs a search on a given datastore/search engine. */
   public static void search(
-      String projectId, String location, String searchEngineId,
-      String servingConfigId, String searchQuery) throws IOException, ExecutionException {
+      String projectId,
+      String location,
+      String collectionId,
+      String searchEngineId,
+      String servingConfigId,
+      String searchQuery)
+      throws IOException, ExecutionException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `searchServiceClient.close()` method on the client to safely
@@ -55,8 +60,8 @@ public class Search {
       SearchRequest request =
           SearchRequest.newBuilder()
               .setServingConfig(
-                      ServingConfigName.ofProjectLocationDataStoreServingConfigName(
-                          projectId, location, searchEngineId, servingConfigId)
+                  ServingConfigName.of(
+                          projectId, location, collectionId, searchEngineId, servingConfigId)
                       .toString())
               .setQuery(searchQuery)
               .setPageSize(10)
