@@ -40,7 +40,7 @@ public class Search {
     String servingConfigId = "default_search";
     // Search Query for the search engine.
     String searchQuery = "Google";
-    search(projectId, location, searchEngineId, servingConfigId, searchQuery);
+    search(projectId, location, collectionId, searchEngineId, servingConfigId, searchQuery);
   }
 
   /** Performs a search on a given datastore/search engine. */
@@ -60,9 +60,8 @@ public class Search {
       SearchRequest request =
           SearchRequest.newBuilder()
               .setServingConfig(
-                  ServingConfigName.ofProjectLocationCollectionDataStoreServingConfigName(
-                          projectId, location, collectionId, searchEngineId, servingConfigId)
-                      .toString())
+                  ServingConfigName.formatProjectLocationCollectionDataStoreServingConfigName(
+                      projectId, location, collectionId, searchEngineId, servingConfigId))
               .setQuery(searchQuery)
               .setPageSize(10)
               .build();
