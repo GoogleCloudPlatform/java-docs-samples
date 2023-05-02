@@ -60,7 +60,7 @@ public class Search {
       SearchRequest request =
           SearchRequest.newBuilder()
               .setServingConfig(
-                  ServingConfigName.of(
+                  ServingConfigName.ofProjectLocationCollectionDataStoreServingConfigName(
                           projectId, location, collectionId, searchEngineId, servingConfigId)
                       .toString())
               .setQuery(searchQuery)
