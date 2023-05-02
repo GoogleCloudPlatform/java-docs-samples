@@ -22,25 +22,42 @@ import com.google.cloud.discoveryengine.v1beta.SearchRequest;
 import com.google.cloud.discoveryengine.v1beta.SearchResponse;
 import com.google.cloud.discoveryengine.v1beta.SearchServiceClient;
 import com.google.cloud.discoveryengine.v1beta.ServingConfigName;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class Search {
-  public static void search() throws Exception {
+  public static void main() throws IOException, ExecutionException {
     // TODO(developer): Replace these variables before running the sample.
+    // Project ID or project number of the Cloud project you want to use.
     String projectId = "PROJECT_ID";
+    // Location of the search engine. Options: "global"
     String location = "global";
+    // Datastore/Search Engine ID.
     String searchEngineId = "DATA_STORE_ID";
+    // Serving configuration. Options: "default_search"
     String servingConfigId = "default_search";
+    // Search Query for the search engine.
     String searchQuery = "Google";
     search(projectId, location, searchEngineId, servingConfigId, searchQuery);
   }
 
+  /**
+   * Performs a search on a given datastore/search engine.
+   * 
+   * @param projectId
+   * @param location
+   * @param searchEngineId
+   * @param servingConfigId
+   * @param searchQuery
+   * @throws IOException
+   */
   public static void search(
-      String projectId,
-      String location,
-      String searchEngineId,
-      String servingConfigId,
-      String searchQuery)
-      throws Exception {
+      String projectId, String location, String searchEngineId,
+      String servingConfigId, String searchQuery) throws IOException, ExecutionException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `searchServiceClient.close()` method on the client to safely
+    // clean up any remaining background resources.
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {
       SearchRequest request =
           SearchRequest.newBuilder()

@@ -39,6 +39,7 @@
 
   <dependencies>
     <dependency>
+      <!-- TODO: version must be removed once the libraries-bom updates to new version -->
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-discoveryengine</artifactId>
       <version>0.12.0</version>
