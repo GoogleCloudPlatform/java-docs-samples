@@ -367,24 +367,25 @@ public class MainController {
   }
 
   // Classify the action as BAD/ NOT_BAD based on conditions specified.
-  public static HashMap<String, String> checkForBadAction(Assessment assessmentResponse, String recaptchaAction) {
+  public static HashMap<String, String> checkForBadAction(Assessment assessmentResponse,
+      String recaptchaAction) {
     String reason = "";
     String label = Label.NOT_BAD.getLabel();
     HashMap<String, String> result = new HashMap<>();
 
-    // Check if the token obtained from client is valid.
+    // Classify the action as BAD if the token obtained from client is not valid.
     if (!assessmentResponse.getTokenProperties().getValid()) {
       reason = Error.INVALID_TOKEN.getErrorMessage();
       label = Label.BAD.getLabel();
     }
 
-    // Check if the returned recaptcha action matches the expected.
+    // Classify the action as BAD if the returned recaptcha action doesn't match the expected.
     if (!assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
       reason = Error.ACTION_MISMATCH.getErrorMessage();
       label = Label.BAD.getLabel();
     }
 
-    // Check if the returned score is greater less than or equal to the threshold set.
+    // Classify the action as BAD if the returned score is less than or equal to the threshold set.
     if (assessmentResponse.getRiskAnalysis().getScore() <= SAMPLE_THRESHOLD_SCORE) {
       reason = Error.SCORE_LESS_THAN_THRESHOLD.getErrorMessage();
       label = Label.BAD.getLabel();
