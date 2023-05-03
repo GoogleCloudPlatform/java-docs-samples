@@ -38,7 +38,7 @@
     <jetty>9.4.44.v20210927</jetty>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
-    <spring.boot.version>2.7.10</spring.boot.version>
+    <spring.boot.version>2.7.11</spring.boot.version>
   </properties>
 
   <dependencyManagement>
