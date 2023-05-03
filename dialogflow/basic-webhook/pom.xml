@@ -46,10 +46,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-dialogflow-cx</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
     </dependency>

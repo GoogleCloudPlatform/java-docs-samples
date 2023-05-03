@@ -66,6 +66,7 @@ public class WorkflowsQuickstartTest {
     // Run the workflow we deployed
     workflowsQuickstart(PROJECT_ID, LOCATION_ID, WORKFLOW_ID);
     assertThat(stdOut.toString()).contains("Execution results:");
+    assertThat(stdOut.toString()).contains("Execution finished with state: SUCCEEDED");
   }
 
   private static void deployWorkflow(String projectId, String location, String workflowId)

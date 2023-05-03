@@ -21,7 +21,7 @@ package snippets.healthcare.fhir.resources;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
 import com.google.auth.http.HttpCredentialsAdapter;
@@ -42,7 +42,7 @@ import org.apache.http.impl.client.HttpClients;
 public class FhirResourceUpdate {
   private static final String FHIR_NAME =
       "projects/%s/locations/%s/datasets/%s/fhirStores/%s/fhir/%s/%s";
-  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  private static final JsonFactory JSON_FACTORY = new GsonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
   public static void fhirResourceUpdate(String resourceName, String data)

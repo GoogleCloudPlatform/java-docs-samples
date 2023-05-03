@@ -27,8 +27,8 @@ import com.google.privacy.dlp.v2.FieldId;
 import com.google.privacy.dlp.v2.Table;
 import com.google.privacy.dlp.v2.Table.Row;
 import com.google.privacy.dlp.v2.Value;
-import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PushConfig;
+import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.TopicName;
 import java.util.Arrays;
 import java.util.UUID;
@@ -49,8 +49,8 @@ public class InspectTests extends TestBase {
   private static final UUID testRunUuid = UUID.randomUUID();
   private static final TopicName topicName =
       TopicName.of(PROJECT_ID, String.format("%s-%s", TOPIC_ID, testRunUuid));
-  private static final ProjectSubscriptionName subscriptionName =
-      ProjectSubscriptionName.of(
+  private static final SubscriptionName subscriptionName =
+      SubscriptionName.of(
           PROJECT_ID, String.format("%s-%s", SUBSCRIPTION_ID, testRunUuid.toString()));
 
   @Override

@@ -20,7 +20,7 @@ package snippets.healthcare.hl7v2;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
 import com.google.api.services.healthcare.v1.CloudHealthcare.Projects.Locations.Datasets.Hl7V2Stores;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
@@ -35,7 +35,7 @@ import java.util.List;
 
 public class Hl7v2StorePatch {
   private static final String HL7v2_NAME = "projects/%s/locations/%s/datasets/%s/hl7V2Stores/%s";
-  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  private static final JsonFactory JSON_FACTORY = new GsonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
   public static void patchHl7v2Store(String hl7v2StoreName, String pubsubTopic) throws IOException {

@@ -56,10 +56,6 @@ limitations under the License.
       <artifactId>google-cloud-language</artifactId>
     </dependency>
     <!-- [END language_java_dependencies] -->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      </dependency>
 
     <!-- Test Dependencies -->
     <dependency>
@@ -106,7 +102,7 @@ limitations under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.11.0</version>
       </plugin>
     </plugins>
   </build>

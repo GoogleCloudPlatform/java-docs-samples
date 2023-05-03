@@ -85,13 +85,14 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      </dependency>
+      <scope>test</scope>
+    </dependency>
 
     <!-- Used in ExampleIntegrationTest (to make POST requests -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.5.13</version>
+      <version>4.5.14</version>
       <scope>test</scope>
     </dependency>
 
