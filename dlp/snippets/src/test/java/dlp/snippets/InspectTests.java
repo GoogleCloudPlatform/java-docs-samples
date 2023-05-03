@@ -416,4 +416,25 @@ public class InspectTests extends TestBase {
     assertThat(output).contains("Findings: 1");
     assertThat(output).contains("Info type: PERSON_NAME");
   }
+
+  @Test
+  public void testInspectTableWithCustomHotword() throws Exception {
+    Table tableToDeIdentify =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("Fake Social Security Number").build())
+            .addHeaders(FieldId.newBuilder().setName("Real Social Security Number").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("111-11-1111").build())
+                    .addValues(Value.newBuilder().setStringValue("222-22-2222").build())
+                    .build())
+            .build();
+    InspectTableWithCustomHotword.inspectWithCustomHotwords(
+        PROJECT_ID, tableToDeIdentify, "(Fake Social Security Number)");
+
+    String output = bout.toString();
+    assertThat(output).contains("Findings: 1");
+    assertThat(output).contains("Info type: US_SOCIAL_SECURITY_NUMBER");
+    assertThat(output).contains("Likelihood: VERY_LIKELY");
+  }
 }
