@@ -126,8 +126,19 @@ public class TriggersTests extends TestBase {
 
     JobTrigger trigger = createTrigger();
     String triggerName = trigger.getName();
-    TriggersPatch.patchTrigger(PROJECT_ID, triggerName);
+    String triggerId;
+
+    Matcher matcher = Pattern.compile("jobTriggers/").matcher(triggerName);
+    if (matcher.find()) {
+      triggerId = triggerName.substring(matcher.end());
+    } else {
+      throw new Exception("Could not extract triggerID");
+    }
+    TriggersPatch.patchTrigger(PROJECT_ID, triggerId);
     String output = bout.toString();
-    assertThat(output).contains("Updated Trigger:");
+    assertThat(output).contains("Job Trigger Name: abcd");
+    assertThat(output).contains("InfoType updated");
+    assertThat(output).contains("Likelihood updated");
+    TriggersDelete.deleteTrigger(PROJECT_ID, triggerId);
   }
 }

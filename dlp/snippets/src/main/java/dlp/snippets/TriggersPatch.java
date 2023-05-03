@@ -36,6 +36,7 @@ public class TriggersPatch {
 
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
+    // The name of the job trigger to be updated.
     String jobTriggerName = "your-job-trigger-name";
     patchTrigger(projectId, jobTriggerName);
   }
@@ -79,7 +80,13 @@ public class TriggersPatch {
       // Send the scan request and process the response
       JobTrigger updatedJobTrigger = dlpServiceClient.updateJobTrigger(updateJobTriggerRequest);
 
-      System.out.println("Updated Trigger: " + updatedJobTrigger);
+      System.out.println("Job Trigger Name: " + updatedJobTrigger.getName());
+      System.out.println(
+          "InfoType updated: "
+              + updatedJobTrigger.getInspectJob().getInspectConfig().getInfoTypes(0).getName());
+      System.out.println(
+          "Likelihood updated: "
+              + updatedJobTrigger.getInspectJob().getInspectConfig().getMinLikelihood());
     }
   }
 }
