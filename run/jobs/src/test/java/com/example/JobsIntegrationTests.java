@@ -27,7 +27,6 @@ import com.google.cloud.logging.Payload;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.channels.InterruptedByTimeoutException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -78,15 +77,21 @@ public class JobsIntegrationTests {
         "gcloud",
         "builds",
         "submit",
-        "--config",
-        "./src/test/java/com/example/resources/e2e_test_cleanup.yaml",
-        "--region=us-central1",
         "--project=" + project,
-        String.format("--substitutions _SERVICE=%s,_VERSION=%s", service, suffix));
+        "--config=./src/test/java/com/example/resources/e2e_test_cleanup.yaml",
+        String.format("--substitutions=_SERVICE=%s,_VERSION=%s", service, suffix));
 
+    cleanup.redirectErrorStream(true);
     System.out.println("Deleting Cloud Run job: " + service);
     Process p = cleanup.start();
-    p.waitFor(5, TimeUnit.MINUTES);
+
+    BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = in.readLine()) != null) {
+      System.out.println(line);
+    }
+    in.close();
+    System.out.println("Cloud Build completed.");
   }
 
   @Test
@@ -105,7 +110,7 @@ public class JobsIntegrationTests {
               + rfc3339.format(calendar.getTime())
               + "\" -protoPayload.serviceName=\"run.googleapis.com\"";
 
-      System.out.println(logFilter);
+      System.out.println("Log Filter: " + logFilter);
       Boolean found = false;
       // Retry up to 5 times
       for (int i = 1; i <= 5; i++) {
@@ -113,7 +118,7 @@ public class JobsIntegrationTests {
         for (LogEntry logEntry : entries.iterateAll()) {
           if (!logEntry.getLogName().contains("cloudaudit")) {
             Payload<String> payload = logEntry.getPayload();
-            if (payload.getData().contains("Task")) { 
+            if (payload.getData().contains("Task")) {
               found = true;
               break;
             }

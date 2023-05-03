@@ -55,7 +55,7 @@ public class PubSubPush extends HttpServlet {
 
   private Message getMessage(HttpServletRequest request) throws IOException {
     String requestBody = request.getReader().lines().collect(Collectors.joining("\n"));
-    JsonElement jsonRoot = jsonParser.parse(requestBody);
+    JsonElement jsonRoot = JsonParser.parseString(requestBody).getAsJsonObject();
     String messageStr = jsonRoot.getAsJsonObject().get("message").toString();
     Message message = gson.fromJson(messageStr, Message.class);
     // decode from base64
@@ -69,7 +69,6 @@ public class PubSubPush extends HttpServlet {
   }
 
   private final Gson gson = new Gson();
-  private final JsonParser jsonParser = new JsonParser();
   private MessageRepository messageRepository;
 
   PubSubPush(MessageRepository messageRepository) {

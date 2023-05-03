@@ -18,6 +18,7 @@
 
 package com.example.appengine.mailjet;
 
+import com.mailjet.client.ClientOptions;
 import com.mailjet.client.MailjetClient;
 import com.mailjet.client.MailjetRequest;
 import com.mailjet.client.MailjetResponse;
@@ -39,7 +40,9 @@ public class MailjetServlet extends HttpServlet {
 
   private static final String MAILJET_API_KEY = System.getenv("MAILJET_API_KEY");
   private static final String MAILJET_SECRET_KEY = System.getenv("MAILJET_SECRET_KEY");
-  private MailjetClient client = new MailjetClient(MAILJET_API_KEY, MAILJET_SECRET_KEY);
+  ClientOptions options =
+      ClientOptions.builder().apiKey(MAILJET_API_KEY).apiSecretKey(MAILJET_SECRET_KEY).build();
+  private MailjetClient client = new MailjetClient(options);
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp)

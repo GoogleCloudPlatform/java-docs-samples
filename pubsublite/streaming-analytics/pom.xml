@@ -128,17 +128,6 @@
       <version>${beam.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.google.api-client</groupId>
-      <artifactId>google-api-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-dataflow</artifactId>
-      <version>v1b3-rev20220920-2.0.0</version>
-    </dependency>
-
     <!-- Test dependencies -->
     <dependency>
       <groupId>org.hamcrest</groupId>
