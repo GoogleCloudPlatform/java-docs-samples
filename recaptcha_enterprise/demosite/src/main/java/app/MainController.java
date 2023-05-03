@@ -115,8 +115,6 @@ public class MainController {
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.home");
     HashMap<String, HashMap<String, String>> data = new HashMap<>();
     Assessment assessmentResponse;
-    String reason = "";
-    String label;
 
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
@@ -126,37 +124,22 @@ public class MainController {
           jsonData.get("token"));
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
-      if (assessmentResponse.getTokenProperties().getValid() &&
-          assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
-          assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
-        // Load the home page.
-        // Business logic.
-        // Classify the action as not bad.
-        label = Label.NOT_BAD.getLabel();
-      } else {
-        // If any of the above condition fails, trigger email/ phone verification flow.
-        // Classify the action as bad.
-        label = Label.BAD.getLabel();
-        // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
+      // Take action based on the result (BAD / NOT_BAD).
+      //
+      // If result.get("label") is NOT_BAD:
+      // Load the home page.
+      // Business logic.
+      //
+      // If result.get("label") is BAD:
+      // Trigger email/ phone verification flow.
+      HashMap<String, String> result = checkForBadAction(assessmentResponse, recaptchaAction);
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
-        // Below code is only used to send response to the client for demo purposes.
-        // DO NOT send scores or other assessment response to the client.
-        if (!assessmentResponse.getTokenProperties().getValid()) {
-          reason = Error.INVALID_TOKEN.getErrorMessage();
-        } else if (!assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
-          reason = Error.ACTION_MISMATCH.getErrorMessage();
-        } else if (assessmentResponse.getRiskAnalysis().getScore() < SAMPLE_THRESHOLD_SCORE) {
-          reason = Error.SCORE_LESS_THAN_THRESHOLD.getErrorMessage();
-        }
-      }
-
+      // Below code is only used to send response to the client for demo purposes.
+      // DO NOT send scores or other assessment response to the client.
       // Return the response.
-      HashMap<String, String> result = new HashMap<>();
       result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
-      result.put("label", label);
-      result.put("reason", reason);
       data.put("data", result);
-
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
       HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
@@ -185,8 +168,6 @@ public class MainController {
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.signup");
     HashMap<String, HashMap<String, String>> data = new HashMap<>();
     Assessment assessmentResponse;
-    String reason = "";
-    String label;
 
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
@@ -196,39 +177,24 @@ public class MainController {
           jsonData.get("token").toString());
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
-      if (assessmentResponse.getTokenProperties().getValid() &&
-          assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
-          assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
-        // Write new username and password to users database.
-        // String username = jsonData.get("username");
-        // String password = jsonData.get("password");
-        // Business logic.
-        // Classify the action as not bad.
-        label = Label.NOT_BAD.getLabel();
-      } else {
-        // If any of the above condition fails, trigger email/ phone verification flow.
-        // Classify the action as bad.
-        label = Label.BAD.getLabel();
-        // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
+      // Take action based on the result (BAD / NOT_BAD).
+      //
+      // If result.get("label") is NOT_BAD:
+      // Write new username and password to users database.
+      // String username = jsonData.get("username");
+      // String password = jsonData.get("password");
+      // Business logic.
+      //
+      // If result.get("label") is BAD:
+      // Trigger email/ phone verification flow.
+      HashMap<String, String> result = checkForBadAction(assessmentResponse, recaptchaAction);
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
-        // Below code is only used to send response to the client for demo purposes.
-        // DO NOT send scores or other assessment response to the client.
-        if (!assessmentResponse.getTokenProperties().getValid()) {
-          reason = Error.INVALID_TOKEN.getErrorMessage();
-        } else if (!assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
-          reason = Error.ACTION_MISMATCH.getErrorMessage();
-        } else if (assessmentResponse.getRiskAnalysis().getScore() < SAMPLE_THRESHOLD_SCORE) {
-          reason = Error.SCORE_LESS_THAN_THRESHOLD.getErrorMessage();
-        }
-      }
-
+      // Below code is only used to send response to the client for demo purposes.
+      // DO NOT send scores or other assessment response to the client.
       // Return the response.
-      HashMap<String, String> result = new HashMap<>();
       result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
-      result.put("label", label);
-      result.put("reason", reason);
       data.put("data", result);
-
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
       HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
@@ -257,8 +223,6 @@ public class MainController {
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.login");
     HashMap<String, HashMap<String, String>> data = new HashMap<>();
     Assessment assessmentResponse;
-    String reason = "";
-    String label;
 
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
@@ -268,39 +232,24 @@ public class MainController {
           jsonData.get("token"));
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
-      if (assessmentResponse.getTokenProperties().getValid() &&
-          assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
-          assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
-        // Check if the login credentials exist and match.
-        // String username = jsonData.get("username");
-        // String password = jsonData.get("password");
-        // Business logic.
-        // Classify the action as not bad.
-        label = Label.NOT_BAD.getLabel();
-      } else {
-        // If any of the above condition fails, trigger email/ phone verification flow.
-        // Classify the action as bad.
-        label = Label.BAD.getLabel();
-        // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
+      // Take action based on the result (BAD / NOT_BAD).
+      //
+      // If result.get("label") is NOT_BAD:
+      // Check if the login credentials exist and match.
+      // String username = jsonData.get("username");
+      // String password = jsonData.get("password");
+      // Business logic.
+      //
+      // If result.get("label") is BAD:
+      // Trigger email/ phone verification flow.
+      HashMap<String, String> result = checkForBadAction(assessmentResponse, recaptchaAction);
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
-        // Below code is only used to send response to the client for demo purposes.
-        // DO NOT send scores or other assessment response to the client.
-        if (!assessmentResponse.getTokenProperties().getValid()) {
-          reason = Error.INVALID_TOKEN.getErrorMessage();
-        } else if (!assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
-          reason = Error.ACTION_MISMATCH.getErrorMessage();
-        } else if (assessmentResponse.getRiskAnalysis().getScore() < SAMPLE_THRESHOLD_SCORE) {
-          reason = Error.SCORE_LESS_THAN_THRESHOLD.getErrorMessage();
-        }
-      }
-
+      // Below code is only used to send response to the client for demo purposes.
+      // DO NOT send scores or other assessment response to the client.
       // Return the response.
-      HashMap<String, String> result = new HashMap<>();
       result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
-      result.put("label", label);
-      result.put("reason", reason);
       data.put("data", result);
-
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
       HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
@@ -329,8 +278,6 @@ public class MainController {
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.store");
     HashMap<String, HashMap<String, String>> data = new HashMap<>();
     Assessment assessmentResponse;
-    String reason = "";
-    String label;
 
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
@@ -340,38 +287,23 @@ public class MainController {
           jsonData.get("token").toString());
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
-      if (assessmentResponse.getTokenProperties().getValid() &&
-          assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
-          assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
-        // Check if the cart contains items and proceed to checkout and payment.
-        // items = jsonData.get("items");
-        // Business logic.
-        // Classify the action as not bad.
-        label = Label.NOT_BAD.getLabel();
-      } else {
-        // If any of the above condition fails, trigger email/ phone verification flow.
-        // Classify the action as bad.
-        label = Label.BAD.getLabel();
-        // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
+      // Take action based on the result (BAD / NOT_BAD).
+      //
+      // If result.get("label") is NOT_BAD:
+      // Check if the cart contains items and proceed to checkout and payment.
+      // items = jsonData.get("items");
+      // Business logic.
+      //
+      // If result.get("label") is BAD:
+      // Trigger email/ phone verification flow.
+      HashMap<String, String> result = checkForBadAction(assessmentResponse, recaptchaAction);
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
-        // Below code is only used to send response to the client for demo purposes.
-        // DO NOT send scores or other assessment response to the client.
-        if (!assessmentResponse.getTokenProperties().getValid()) {
-          reason = Error.INVALID_TOKEN.getErrorMessage();
-        } else if (!assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
-          reason = Error.ACTION_MISMATCH.getErrorMessage();
-        } else if (assessmentResponse.getRiskAnalysis().getScore() < SAMPLE_THRESHOLD_SCORE) {
-          reason = Error.SCORE_LESS_THAN_THRESHOLD.getErrorMessage();
-        }
-      }
-
+      // Below code is only used to send response to the client for demo purposes.
+      // DO NOT send scores or other assessment response to the client.
       // Return the response.
-      HashMap<String, String> result = new HashMap<>();
       result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
-      result.put("label", label);
-      result.put("reason", reason);
       data.put("data", result);
-
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
       HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
@@ -400,8 +332,6 @@ public class MainController {
     String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.comment");
     HashMap<String, HashMap<String, String>> data = new HashMap<>();
     Assessment assessmentResponse;
-    String reason = "";
-    String label;
 
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
@@ -411,44 +341,58 @@ public class MainController {
           jsonData.get("token"));
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
-      if (assessmentResponse.getTokenProperties().getValid() &&
-          assessmentResponse.getRiskAnalysis().getScore() > SAMPLE_THRESHOLD_SCORE &&
-          assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
-        // Check if comment has safe language and proceed to store in database.
-        // String comment = jsonData.get("comment");
-        // Business logic.
-        // Classify the action as not bad.
-        label = Label.NOT_BAD.getLabel();
-      } else {
-        // If any of the above condition fails, trigger email/ phone verification flow.
-        // Classify the action as bad.
-        label = Label.BAD.getLabel();
-        // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
+      // Take action based on the result (BAD / NOT_BAD).
+      //
+      // If result.get("label") is NOT_BAD:
+      // Check if comment has safe language and proceed to store in database.
+      // String comment = jsonData.get("comment");
+      // Business logic.
+      //
+      // If result.get("label") is BAD:
+      // Trigger email/ phone verification flow.
+      HashMap<String, String> result = checkForBadAction(assessmentResponse, recaptchaAction);
+      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
-        // Below code is only used to send response to the client for demo purposes.
-        // DO NOT send scores or other assessment response to the client.
-        if (!assessmentResponse.getTokenProperties().getValid()) {
-          reason = Error.INVALID_TOKEN.getErrorMessage();
-        } else if (!assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
-          reason = Error.ACTION_MISMATCH.getErrorMessage();
-        } else if (assessmentResponse.getRiskAnalysis().getScore() < SAMPLE_THRESHOLD_SCORE) {
-          reason = Error.SCORE_LESS_THAN_THRESHOLD.getErrorMessage();
-        }
-      }
-
+      // Below code is only used to send response to the client for demo purposes.
+      // DO NOT send scores or other assessment response to the client.
       // Return the response.
-      HashMap<String, String> result = new HashMap<>();
       result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
-      result.put("label", label);
-      result.put("reason", reason);
       data.put("data", result);
-
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
     } catch (Exception e) {
       HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
       dataMap.put("error_msg", e.toString());
       return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  // Classify the action as BAD/ NOT_BAD based on conditions specified.
+  public static HashMap<String, String> checkForBadAction(Assessment assessmentResponse, String recaptchaAction) {
+    String reason = "";
+    String label = Label.NOT_BAD.getLabel();
+    HashMap<String, String> result = new HashMap<>();
+
+    // Check if the token obtained from client is valid.
+    if (!assessmentResponse.getTokenProperties().getValid()) {
+      reason = Error.INVALID_TOKEN.getErrorMessage();
+      label = Label.BAD.getLabel();
+    }
+
+    // Check if the returned recaptcha action matches the expected.
+    if (!assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
+      reason = Error.ACTION_MISMATCH.getErrorMessage();
+      label = Label.BAD.getLabel();
+    }
+
+    // Check if the returned score is greater less than or equal to the threshold set.
+    if (assessmentResponse.getRiskAnalysis().getScore() <= SAMPLE_THRESHOLD_SCORE) {
+      reason = Error.SCORE_LESS_THAN_THRESHOLD.getErrorMessage();
+      label = Label.BAD.getLabel();
+    }
+
+    result.put("label", label);
+    result.put("reason", reason);
+    return result;
   }
 
 }
