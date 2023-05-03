@@ -21,7 +21,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <jetty.version>9.4.50.v20221201</jetty.version>
+    <jetty.version>9.4.51.v20230217</jetty.version>
   </properties>
 
   <!-- [START gae_java11_server_dependencies] -->
