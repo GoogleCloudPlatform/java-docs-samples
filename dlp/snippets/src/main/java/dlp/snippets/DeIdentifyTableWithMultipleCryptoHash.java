@@ -84,15 +84,17 @@ public class DeIdentifyTableWithMultipleCryptoHash {
                     .build())
             .build();
 
-    String transientCryptoKey = "YOUR_TRANSIENT_CRYPTO_KEY";
-    String transientCryptoKey2 = "YOUR_TRANSIENT_CRYPTO_KEY_2";
+    // The randomly generated crypto key to encrypt the data.
+    String transientKeyName = "YOUR_TRANSIENT_CRYPTO_KEY";
+    String transientKeyName2 = "YOUR_TRANSIENT_CRYPTO_KEY_2";
 
     deIdentifyWithCryptHashTransformation(
-        projectId, tableToDeIdentify, transientCryptoKey, transientCryptoKey2);
+        projectId, tableToDeIdentify, transientKeyName, transientKeyName2);
   }
 
+  // Transforms findings using two separate cryptographic hash transformations.
   public static void deIdentifyWithCryptHashTransformation(
-      String projectId, Table tableToDeIdentify, String transientKey, String transientKey2)
+      String projectId, Table tableToDeIdentify, String transientKeyName, String transientKeyName2)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -114,10 +116,10 @@ public class DeIdentifyTableWithMultipleCryptoHash {
 
       // Specify the transient key which will encrypt the data.
       TransientCryptoKey transientCryptoKey = TransientCryptoKey.newBuilder()
-              .setName(transientKey)
+              .setName(transientKeyName)
               .build();
       TransientCryptoKey transientCryptoKey2 = TransientCryptoKey.newBuilder()
-              .setName(transientKey2)
+              .setName(transientKeyName2)
               .build();
 
       CryptoKey cryptoKey = CryptoKey.newBuilder()
@@ -195,10 +197,10 @@ public class DeIdentifyTableWithMultipleCryptoHash {
               .setDeidentifyConfig(deidentifyConfig)
               .build();
 
-      // Send the request and receive response from the service
+      // Send the request and receive response from the service.
       DeidentifyContentResponse response = dlp.deidentifyContent(request);
 
-      // Print the results
+      // Print the results.
       System.out.println("Table after de-identification: " + response.getItem().getTable());
     }
   }
