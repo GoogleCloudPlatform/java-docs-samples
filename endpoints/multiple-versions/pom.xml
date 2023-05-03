@@ -39,7 +39,7 @@
 
     <maven.war.plugin>2.6</maven.war.plugin>
 
-    <appengine.maven.plugin>2.4.2</appengine.maven.plugin>
+    <appengine.maven.plugin>2.4.4</appengine.maven.plugin>
     <jetty.maven.plugin>9.4.44.v20210927</jetty.maven.plugin>
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
@@ -74,7 +74,7 @@
     <dependency>
       <groupId>com.google.collections</groupId>
       <artifactId>google-collections</artifactId>
-      <version>1.0-rc2</version>
+      <version>1.0</version>
     </dependency>
   </dependencies>
 

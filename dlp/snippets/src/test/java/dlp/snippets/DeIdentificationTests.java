@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.UUID;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import org.junit.Test;
@@ -556,6 +557,17 @@ public class DeIdentificationTests extends TestBase {
   }
 
   @Test
+  public void testReIdentifyWithDeterministicEncryption() throws IOException {
+    String textToReIdentify =
+        DeIdenitfyWithDeterministicEncryption.deIdentifyWithDeterministicEncryption(
+            PROJECT_ID, "My SSN is 372819127", WRAPPED_KEY, KMS_KEY_NAME);
+    ReidentifyWithDeterministicEncryption.reIdentifyWithDeterminsiticEncryption(
+        PROJECT_ID, textToReIdentify, WRAPPED_KEY, KMS_KEY_NAME);
+    String output = bout.toString();
+    assertThat(output).contains("Text after re-identification: My SSN is 372819127");
+  }
+  
+  @Test
   public void testDeIdentifyWithFpeSurrogate() throws IOException, NoSuchAlgorithmException {
 
     KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
@@ -718,5 +730,35 @@ public class DeIdentificationTests extends TestBase {
     String output = bout.toString();
     assertThat(actualTable).isEqualTo(expectedTable);
     assertThat(output).contains("Table after de-identification: ");
+  }
+
+  @Test
+  public void testDeIdentifyTableWithCryptoHash() throws IOException {
+
+    Table tableToDeIdentify =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("userid").build())
+            .addHeaders(FieldId.newBuilder().setName("comments").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("user1@example.org").build())
+                    .addValues(
+                        Value.newBuilder()
+                            .setStringValue(
+                                "my email is user1@example.org and phone is 858-555-0222")
+                            .build())
+                    .build())
+            .build();
+
+    // Generate a random string to use it as Transient CryptoKey.
+    UUID uuid = UUID.randomUUID();
+    String randomString = uuid.toString().replace("-", "");
+
+    DeIdentifyTableWithCryptoHash.deIdentifyWithCryptHashTransformation(
+        PROJECT_ID, tableToDeIdentify, randomString);
+    String output = bout.toString();
+    assertThat(output).contains("Table after de-identification: ");
+    assertThat(output).doesNotContain("user1@example.org");
+    assertThat(output).doesNotContain("858-555-0222");
   }
 }

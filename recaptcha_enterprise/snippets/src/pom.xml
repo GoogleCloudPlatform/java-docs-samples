@@ -49,6 +49,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>3.0.6</version>
       </plugin>
     </plugins>
   </build>
@@ -59,23 +60,15 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-recaptchaenterprise</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>recaptcha-password-check-helpers</artifactId>
-      <version>1.0.1</version>
-    </dependency>
-
 
     <!-- [Start_Selenium_dependencies] -->
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>4.7.0</version>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-chrome-driver</artifactId>
-      <version>4.5.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -85,7 +78,7 @@
     <dependency>
       <groupId>io.github.bonigarcia</groupId>
       <artifactId>webdrivermanager</artifactId>
-      <version>5.3.0</version>
+      <version>5.3.2</version>
     </dependency>
     <!-- [End_Selenium_dependencies] -->
 
@@ -95,7 +88,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -121,10 +113,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api</groupId>
-      <artifactId>api-common</artifactId>
     </dependency>
     <!-- [End_Spring_dependencies] -->
 
