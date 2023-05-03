@@ -136,9 +136,9 @@ public class TriggersTests extends TestBase {
     }
     TriggersPatch.patchTrigger(PROJECT_ID, triggerId);
     String output = bout.toString();
-    assertThat(output).contains("Job Trigger Name: abcd");
-    assertThat(output).contains("InfoType updated");
-    assertThat(output).contains("Likelihood updated");
+    assertThat(output).contains("Job Trigger Name:");
+    assertThat(output).contains("InfoType updated:");
+    assertThat(output).contains("Likelihood updated:");
     TriggersDelete.deleteTrigger(PROJECT_ID, triggerId);
   }
 }
