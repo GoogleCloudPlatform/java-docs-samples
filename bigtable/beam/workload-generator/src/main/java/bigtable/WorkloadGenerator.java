@@ -63,7 +63,6 @@ public class WorkloadGenerator {
     System.out.println("Beginning to generate read workload.");
     PipelineResult pipelineResult = p.run();
 
-
     // Cancel the workload after the scheduled time.
     ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
     exec.schedule(() -> {

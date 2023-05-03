@@ -20,17 +20,21 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminClient;
-import com.google.cloud.bigtable.admin.v2.models.CreateTableRequest;
-import com.google.cloud.bigtable.data.v2.BigtableDataClient;
-import com.google.cloud.bigtable.data.v2.models.BulkMutation;
-import com.google.cloud.bigtable.data.v2.models.Mutation;
-import com.google.protobuf.ByteString;
+import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.BufferedMutator;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -45,10 +49,8 @@ public class FiltersTest {
   private static final String COLUMN_FAMILY_NAME_DATA = "cell_plan";
   private static final Instant CURRENT_TIME = Instant.now();
   private static final long TIMESTAMP = CURRENT_TIME.toEpochMilli();
-  private static final long TIMESTAMP_NANO = TIMESTAMP * 1000;
   private static final long TIMESTAMP_MINUS_HR =
       CURRENT_TIME.minus(1, ChronoUnit.HOURS).toEpochMilli();
-  private static final long TIMESTAMP_MINUS_HR_NANO = TIMESTAMP_MINUS_HR * 1000;
 
   private static String projectId;
   private static String instanceId;
@@ -67,109 +69,142 @@ public class FiltersTest {
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
     instanceId = requireEnv(INSTANCE_ENV);
 
-    try (BigtableTableAdminClient adminClient =
-        BigtableTableAdminClient.create(projectId, instanceId)) {
-      CreateTableRequest createTableRequest =
-          CreateTableRequest.of(TABLE_ID)
-              .addFamily(COLUMN_FAMILY_NAME_STATS)
-              .addFamily(COLUMN_FAMILY_NAME_DATA);
-      adminClient.createTable(createTableRequest);
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      try (Admin admin = connection.getAdmin()) {
+        admin.createTable(
+            new HTableDescriptor(TableName.valueOf(TABLE_ID))
+                .addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME_STATS))
+                .addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME_DATA)));
 
-      try (BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId)) {
-        BulkMutation bulkMutation =
-            BulkMutation.create(TABLE_ID)
-                .add(
-                    "phone#4c410523#20190501",
-                    Mutation.create()
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS,
-                            ByteString.copyFrom("connected_cell".getBytes()),
-                            TIMESTAMP_NANO,
-                            1)
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS,
-                            ByteString.copyFrom("connected_wifi".getBytes()),
-                            TIMESTAMP_NANO,
-                            1)
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS, "os_build", TIMESTAMP_NANO, "PQ2A.190405.003")
-                        .setCell(
-                            COLUMN_FAMILY_NAME_DATA,
-                            "data_plan_01gb",
-                            TIMESTAMP_MINUS_HR_NANO,
-                            "true")
-                        .setCell(COLUMN_FAMILY_NAME_DATA, "data_plan_01gb", TIMESTAMP_NANO, "false")
-                        .setCell(COLUMN_FAMILY_NAME_DATA, "data_plan_05gb", TIMESTAMP_NANO, "true"))
-                .add(
-                    "phone#4c410523#20190502",
-                    Mutation.create()
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS,
-                            ByteString.copyFrom("connected_cell".getBytes()),
-                            TIMESTAMP_NANO,
-                            1)
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS,
-                            ByteString.copyFrom("connected_wifi".getBytes()),
-                            TIMESTAMP_NANO,
-                            1)
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS, "os_build", TIMESTAMP_NANO, "PQ2A.190405.004")
-                        .setCell(COLUMN_FAMILY_NAME_DATA, "data_plan_05gb", TIMESTAMP_NANO, "true"))
-                .add(
-                    "phone#4c410523#20190505",
-                    Mutation.create()
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS,
-                            ByteString.copyFrom("connected_cell".getBytes()),
-                            TIMESTAMP_NANO,
-                            0)
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS,
-                            ByteString.copyFrom("connected_wifi".getBytes()),
-                            TIMESTAMP_NANO,
-                            1)
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS, "os_build", TIMESTAMP_NANO, "PQ2A.190406.000")
-                        .setCell(COLUMN_FAMILY_NAME_DATA, "data_plan_05gb", TIMESTAMP_NANO, "true"))
-                .add(
-                    "phone#5c10102#20190501",
-                    Mutation.create()
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS,
-                            ByteString.copyFrom("connected_cell".getBytes()),
-                            TIMESTAMP_NANO,
-                            1)
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS,
-                            ByteString.copyFrom("connected_wifi".getBytes()),
-                            TIMESTAMP_NANO,
-                            1)
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS, "os_build", TIMESTAMP_NANO, "PQ2A.190401.002")
-                        .setCell(COLUMN_FAMILY_NAME_DATA, "data_plan_10gb", TIMESTAMP_NANO, "true"))
-                .add(
-                    "phone#5c10102#20190502",
-                    Mutation.create()
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS,
-                            ByteString.copyFrom("connected_cell".getBytes()),
-                            TIMESTAMP_NANO,
-                            1)
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS,
-                            ByteString.copyFrom("connected_wifi".getBytes()),
-                            TIMESTAMP_NANO,
-                            0)
-                        .setCell(
-                            COLUMN_FAMILY_NAME_STATS, "os_build", TIMESTAMP_NANO, "PQ2A.190406.000")
-                        .setCell(
-                            COLUMN_FAMILY_NAME_DATA, "data_plan_10gb", TIMESTAMP_NANO, "true"));
+        try (BufferedMutator batcher = connection.getBufferedMutator(TableName.valueOf(TABLE_ID))) {
 
-        dataClient.bulkMutateRows(bulkMutation);
+          batcher.mutate(
+              new Put(Bytes.toBytes("phone#4c410523#20190501"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_cell"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_wifi"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("os_build"),
+                      TIMESTAMP,
+                      Bytes.toBytes("PQ2A.190405.003"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_01gb"),
+                      TIMESTAMP_MINUS_HR,
+                      Bytes.toBytes("true"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_01gb"),
+                      TIMESTAMP,
+                      Bytes.toBytes("false"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_05gb"),
+                      TIMESTAMP,
+                      Bytes.toBytes("true")));
+
+          batcher.mutate(
+              new Put(Bytes.toBytes("phone#4c410523#20190502"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_cell"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_wifi"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("os_build"),
+                      TIMESTAMP,
+                      Bytes.toBytes("PQ2A.190405.004"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_05gb"),
+                      TIMESTAMP,
+                      Bytes.toBytes("true")));
+          batcher.mutate(
+              new Put(Bytes.toBytes("phone#4c410523#20190505"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_cell"),
+                      TIMESTAMP,
+                      Bytes.toBytes(0L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_wifi"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("os_build"),
+                      TIMESTAMP,
+                      Bytes.toBytes("PQ2A.190406.000"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_05gb"),
+                      TIMESTAMP,
+                      Bytes.toBytes("true")));
+
+          batcher.mutate(
+              new Put(Bytes.toBytes("phone#5c10102#20190501"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_cell"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_wifi"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("os_build"),
+                      TIMESTAMP,
+                      Bytes.toBytes("PQ2A.190401.002"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_10gb"),
+                      TIMESTAMP,
+                      Bytes.toBytes("true")));
+
+          batcher.mutate(
+              new Put(Bytes.toBytes("phone#5c10102#20190502"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_cell"),
+                      TIMESTAMP,
+                      Bytes.toBytes(1L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("connected_wifi"),
+                      TIMESTAMP,
+                      Bytes.toBytes(0L))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_STATS),
+                      Bytes.toBytes("os_build"),
+                      TIMESTAMP,
+                      Bytes.toBytes("PQ2A.190406.000"))
+                  .addColumn(
+                      Bytes.toBytes(COLUMN_FAMILY_NAME_DATA),
+                      Bytes.toBytes("data_plan_10gb"),
+                      TIMESTAMP,
+                      Bytes.toBytes("true")));
+        }
       }
     } catch (Exception e) {
-      System.out.println("Error during beforeClass: \n" + e.toString());
+      System.out.println("Error during beforeClass: \n" + e);
       throw (e);
     }
   }

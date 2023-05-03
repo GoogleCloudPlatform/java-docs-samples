@@ -41,7 +41,7 @@ Copyright 2019 Google LLC
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
     <maven.compiler.failOnWarning>false</maven.compiler.failOnWarning>
     <maven.war.filteringDeploymentDescriptors>false</maven.war.filteringDeploymentDescriptors>
-    <jetty.version>9.4.44.v20210927</jetty.version>
+    <jetty.version>9.4.51.v20230217</jetty.version>
   </properties>
 
   <dependencyManagement>
@@ -67,18 +67,6 @@ Copyright 2019 Google LLC
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>4.0.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.opencensus</groupId>
-      <artifactId>opencensus-contrib-http-util</artifactId>
-      <version>0.31.1</version>
     </dependency>
 
     <!-- Test dependencies -->

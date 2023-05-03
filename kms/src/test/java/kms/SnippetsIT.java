@@ -40,6 +40,7 @@ import com.google.common.base.Strings;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.util.FieldMaskUtil;
+import com.nimbusds.jose.JOSEException;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -485,6 +486,14 @@ public class SnippetsIT {
     new GetPublicKey()
         .getPublicKey(PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, "1");
     assertThat(stdOut.toString()).contains("Public key");
+  }
+
+  @Test
+  public void testConvertPublicKeyToJwk()
+      throws IOException, GeneralSecurityException, JOSEException {
+    new ConvertPublicKeyToJwk()
+        .convertPublicKey(PROJECT_ID, LOCATION_ID, KEY_RING_ID, ASYMMETRIC_DECRYPT_KEY_ID, "1");
+    assertThat(stdOut.toString()).contains("kty");
   }
 
   @Test

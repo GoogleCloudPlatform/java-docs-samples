@@ -38,7 +38,6 @@ import java.io.BufferedWriter;
 public class BasicWebhook implements HttpFunction {
   @Override
   public void service(HttpRequest request, HttpResponse response) throws Exception {
-    JsonParser parser = new JsonParser();
     Gson gson = new GsonBuilder().create();
     JsonObject parsedRequest = gson.fromJson(request.getReader(), JsonObject.class);
 
@@ -61,8 +60,8 @@ public class BasicWebhook implements HttpFunction {
 
     // Constructing the response jsonObject 
     responseObject =
-        parser
-            .parse(
+        JsonParser
+            .parseString(
                 "{ \"fulfillment_response\": { \"messages\": [ { \"text\": { \"text\": ["
                     + responseText
                     + "] } } ] } }")
