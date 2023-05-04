@@ -50,6 +50,8 @@ mvn exec:java -Dexec.mainClass="dlp.snippets.<CLASS_NAME>"
   - `property1` : john@doe.com
   - `property2` : 343-343-3435
 -  Update the Datastore kind in [InspectTests.java](src/test/java/dlp/snippets/InspectTests.java).
+- [Create a Google Cloud Datastore](https://console.cloud.google.com/datastore) entity and provide namespace and kind values.
+    - Set the environment variables `DLP_NAMESPACE_ID` and `DLP_DATASTORE_KIND` with the values provided in above step.
 
 
 ### Run

@@ -140,7 +140,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.1</version> <!-- Needed for JDK17.-->
+        <version>3.3.2</version> <!-- Needed for JDK17.-->
         <executions>
           <execution>
             <id>default-war</id>
@@ -180,7 +180,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.44.v20210927</version>
+        <version>9.4.51.v20230217</version>
       </plugin>
     </plugins>
   </build>
