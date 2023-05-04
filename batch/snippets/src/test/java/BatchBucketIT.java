@@ -22,6 +22,7 @@ import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageClass;
 import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -35,6 +36,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -45,8 +47,15 @@ public class BatchBucketIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "europe-north1";
   private static String SCRIPT_JOB_NAME;
+  private static final int MAX_ATTEMPT_COUNT = 3;
+  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static String BUCKET_NAME;
   private ByteArrayOutputStream stdOut;
+
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
+      MAX_ATTEMPT_COUNT,
+      INITIAL_BACKOFF_MILLIS);
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
