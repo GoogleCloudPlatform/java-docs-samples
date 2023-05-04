@@ -42,7 +42,7 @@ public class DocumentServletTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     helper.setUp();
 
     // Set up a fake HTTP response.

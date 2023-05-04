@@ -35,7 +35,7 @@
     <maven.compiler.source>11</maven.compiler.source>
 
     <appengine.maven.plugin>2.4.4</appengine.maven.plugin>
-    <jetty>9.4.44.v20210927</jetty>
+    <jetty>9.4.51.v20230217</jetty>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
     <spring.boot.version>2.7.10</spring.boot.version>
@@ -89,8 +89,8 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.10.19</version>
+      <artifactId>mockito-core</artifactId>
+      <version>5.3.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>

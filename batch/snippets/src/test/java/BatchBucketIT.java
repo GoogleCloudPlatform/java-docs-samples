@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.MissingResourceException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -121,8 +122,8 @@ public class BatchBucketIT {
   }
 
   @Test
-  public void testBucketJob()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public void testBucketJob() throws IOException, ExecutionException, InterruptedException,
+      MissingResourceException, TimeoutException {
     CreateWithMountedBucket.createScriptJobWithBucket(PROJECT_ID, REGION, SCRIPT_JOB_NAME,
         BUCKET_NAME);
     Job job = Util.getJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
@@ -140,7 +141,12 @@ public class BatchBucketIT {
     Bucket bucket = storage.get(BUCKET_NAME);
     for (int i = 0; i < 4; i++) {
       fileContentTemplate = String.format("Hello world from task %s.\n", i);
-      Blob blob = bucket.get(String.format(fileNameTemplate, i));
+      String fileName = String.format(fileNameTemplate, i);
+      Blob blob = bucket.get(fileName);
+      if (blob == null) {
+        throw new MissingResourceException("Cannot find file in bucket.", Blob.class.getName(),
+            fileName);
+      }
       String content = new String(blob.getContent(), StandardCharsets.UTF_8);
       assertThat(fileContentTemplate).matches(content);
     }
