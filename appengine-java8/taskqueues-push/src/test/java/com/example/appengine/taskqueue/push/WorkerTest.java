@@ -53,7 +53,7 @@ public class WorkerTest {
     //  Capture stderr to examine messages written to it
     System.setErr(new PrintStream(stderr));
 
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     when(mockRequest.getParameter("key")).thenReturn(FAKE_KEY_VALUE);
 

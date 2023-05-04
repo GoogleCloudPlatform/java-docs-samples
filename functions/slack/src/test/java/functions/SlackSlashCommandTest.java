@@ -57,7 +57,7 @@ public class SlackSlashCommandTest {
 
   @Before
   public void beforeTest() throws IOException {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader("")));
 

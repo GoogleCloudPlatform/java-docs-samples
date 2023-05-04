@@ -47,7 +47,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -72,10 +72,8 @@ public class OpenedServletTest {
           new LocalURLFetchServiceTestConfig())
           .setEnvEmail(USER_EMAIL)
           .setEnvAuthDomain("gmail.com")
-          .setEnvAttributes(
-              new HashMap(
-                  ImmutableMap.of(
-                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+              .setEnvAttributes(new HashMap<String, Object>(ImmutableMap
+                  .of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
   @Mock
   private HttpServletRequest mockRequest;
@@ -97,7 +95,7 @@ public class OpenedServletTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     helper.setUp();
     dbSession = ObjectifyService.begin();
 
@@ -146,7 +144,7 @@ public class OpenedServletTest {
 
     servletUnderTest.doPost(mockRequest, mockResponse);
 
-    verify(mockHttpTransport, times(2))
-        .buildRequest(eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
+    verify(mockHttpTransport, times(2)).buildRequest(eq("PATCH"),
+        ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
   }
 }
