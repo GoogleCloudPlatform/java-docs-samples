@@ -146,13 +146,13 @@ public class FirewallIT {
       compute.PatchFirewallRule.patchFirewallPriority(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
       TimeUnit.SECONDS.sleep(5);
       Assert.assertEquals(500, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
-    }
-    /* (**INTERNAL snippet**)
-    Firewall rule is auto-deleted by GCE Enforcer within a few minutes.
-    Catching exceptions will prevent test failure if the firewall rule was auto-deleted
-    by GCE Enforcer.
-    (Feel free to remove this method if not running on a Google-owned project.)
-    */ catch (NotFoundException e) {
+    } catch (NotFoundException e) {
+      /* (**INTERNAL snippet**)
+      Firewall rule is auto-deleted by GCE Enforcer within a few minutes.
+      Catching exceptions will prevent test failure if the firewall rule was auto-deleted
+      by GCE Enforcer.
+      (Feel free to remove this method if not running on a Google-owned project.)
+      */
       System.out.println("Rule already deleted! ");
     } catch (ExecutionException | InvalidArgumentException | NullPointerException e) {
       System.out.println("Rule is not ready (probably being deleted).");
