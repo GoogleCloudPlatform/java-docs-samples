@@ -26,11 +26,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.MissingResourceException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.MissingResourceException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -142,9 +142,10 @@ public class BatchBucketIT {
       fileContentTemplate = String.format("Hello world from task %s.\n", i);
       String fileName = String.format(fileNameTemplate, i);
       Blob blob = bucket.get(fileName);
-      if (blob == null)
+      if (blob == null) {
         throw new MissingResourceException("Cannot find file in bucket.", Blob.class.getName(),
             fileName);
+      }
       String content = new String(blob.getContent(), StandardCharsets.UTF_8);
       assertThat(fileContentTemplate).matches(content);
     }
