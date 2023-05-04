@@ -44,7 +44,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class FirewallIT {
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String FIREWALL_RULE_CREATE;
@@ -150,8 +152,7 @@ public class FirewallIT {
     Catching exceptions will prevent test failure if the firewall rule was auto-deleted
     by GCE Enforcer.
     (Feel free to remove this method if not running on a Google-owned project.)
-    */
-    catch (NotFoundException e) {
+    */ catch (NotFoundException e) {
       System.out.println("Rule already deleted! ");
     } catch (ExecutionException | InvalidArgumentException | NullPointerException e) {
       System.out.println("Rule is not ready (probably being deleted).");
