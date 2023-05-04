@@ -132,8 +132,7 @@ public class BatchBucketIT {
     testBucketContent();
   }
 
-  // This method is called from testcase: `testBucketJob`
-  // This is not a standalone testcase.
+  @Test
   public void testBucketContent() {
     String fileNameTemplate = "output_task_%s.txt";
     String fileContentTemplate;
