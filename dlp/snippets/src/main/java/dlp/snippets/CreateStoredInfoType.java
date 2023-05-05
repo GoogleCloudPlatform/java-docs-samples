@@ -19,9 +19,11 @@ package dlp.snippets;
 // [START dlp_create_stored_infotype]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
-import com.google.privacy.dlp.v2.CloudStorageFileSet;
+import com.google.privacy.dlp.v2.BigQueryField;
+import com.google.privacy.dlp.v2.BigQueryTable;
 import com.google.privacy.dlp.v2.CloudStoragePath;
 import com.google.privacy.dlp.v2.CreateStoredInfoTypeRequest;
+import com.google.privacy.dlp.v2.FieldId;
 import com.google.privacy.dlp.v2.LargeCustomDictionaryConfig;
 import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.StoredInfoType;
@@ -34,20 +36,18 @@ public class CreateStoredInfoType {
     // TODO(developer): Replace these variables before running the sample.
 
     //The Google Cloud project id to use as a parent resource.
-    String projectId = "bdp-2059-is-31084";
-    // Specify the file in GCS bucket to be used as a term list.
-    String gcsPath = "gs://" + "your-bucket-name" + "path/to/file.txt";
+    String projectId = "your-project-id";
     // The path to the location in a GCS bucket to store the created dictionary.
     String outputPath = "gs://" + "your-bucket-name" + "path/to/directory";
-    createStoredInfoType(projectId, gcsPath, outputPath);
+    createStoredInfoType(projectId, outputPath);
   }
 
-  public static void createStoredInfoType(String projectId, String gcsPath, String outputPath)
+  public static void createStoredInfoType(String projectId, String outputPath)
       throws IOException {
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
 
       // Optionally set a display name and a description.
-      String displayName = "Java Test";
+      String displayName = "GitHub usernames";
       String description = "Dictionary of GitHub usernames used in commits";
 
       CloudStoragePath cloudStoragePath =
@@ -55,14 +55,21 @@ public class CreateStoredInfoType {
               .setPath(outputPath)
               .build();
 
-      CloudStorageFileSet cloudStorageFileSet = CloudStorageFileSet.newBuilder()
-              .setUrl(gcsPath)
+      BigQueryTable table = BigQueryTable.newBuilder()
+              .setProjectId("bigquery-public-data")
+              .setTableId("github_nested")
+              .setDatasetId("samples")
+              .build();
+
+      BigQueryField bigQueryField = BigQueryField.newBuilder()
+              .setTable(table)
+              .setField(FieldId.newBuilder().setName("actor").build())
               .build();
 
       LargeCustomDictionaryConfig largeCustomDictionaryConfig =
           LargeCustomDictionaryConfig.newBuilder()
               .setOutputPath(cloudStoragePath)
-              .setCloudStorageFileSet(cloudStorageFileSet)
+              .setBigQueryField(bigQueryField)
               .build();
 
       StoredInfoTypeConfig storedInfoTypeConfig = StoredInfoTypeConfig.newBuilder()
@@ -75,14 +82,14 @@ public class CreateStoredInfoType {
       CreateStoredInfoTypeRequest createStoredInfoType = CreateStoredInfoTypeRequest.newBuilder()
               .setParent(LocationName.of(projectId, "global").toString())
               .setConfig(storedInfoTypeConfig)
-              .setStoredInfoTypeId("test-new")
+              .setStoredInfoTypeId("github-usernames")
               .build();
 
       // Send the request and receive response from the service.
       StoredInfoType response = dlp.createStoredInfoType(createStoredInfoType);
 
       // Print the results.
-      System.out.println("Created Stored InfoType: " + response);
+      System.out.println("Created Stored InfoType: " + response.getName());
     }
   }
 }

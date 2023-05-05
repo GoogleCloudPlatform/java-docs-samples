@@ -18,6 +18,7 @@ package dlp.snippets;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import org.junit.Test;
@@ -42,9 +43,13 @@ public class InfoTypesTests extends TestBase {
 
   @Test
   public void testCreateStoredInfoType() throws IOException {
-    String outputPath = "gs://dlp-crest-test/java-custom-dictionary";
-    CreateStoredInfoType.createStoredInfoType(PROJECT_ID, GCS_PATH, outputPath);
+    CreateStoredInfoType.createStoredInfoType(PROJECT_ID, GCS_PATH);
     String output = bout.toString();
+    String storedInfoTypeId = output.split("Created Stored InfoType: ")[1].split("\n")[0];
     assertThat(output).contains("Created Stored InfoType: ");
+    assertThat(output).contains("storedInfoTypes");
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      dlp.deleteStoredInfoType(storedInfoTypeId);
+    }
   }
 }
