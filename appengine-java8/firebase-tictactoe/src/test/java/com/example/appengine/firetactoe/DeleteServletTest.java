@@ -49,7 +49,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -70,10 +70,8 @@ public class DeleteServletTest {
               new LocalURLFetchServiceTestConfig())
           .setEnvEmail(USER_EMAIL)
           .setEnvAuthDomain("gmail.com")
-          .setEnvAttributes(
-              new HashMap(
-                  ImmutableMap.of(
-                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+              .setEnvAttributes(new HashMap<String, Object>(ImmutableMap
+                  .of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -93,7 +91,7 @@ public class DeleteServletTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     helper.setUp();
     dbSession = ObjectifyService.begin();
 
@@ -151,7 +149,7 @@ public class DeleteServletTest {
 
     servletUnderTest.doPost(mockRequest, mockResponse);
 
-    verify(mockHttpTransport, times(1))
-        .buildRequest(eq("DELETE"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
+    verify(mockHttpTransport, times(1)).buildRequest(eq("DELETE"),
+        ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
   }
 }

@@ -38,7 +38,7 @@
     <jetty>9.4.51.v20230217</jetty>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
-    <spring.boot.version>2.7.10</spring.boot.version>
+    <spring.boot.version>2.7.11</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -89,8 +89,8 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.10.19</version>
+      <artifactId>mockito-core</artifactId>
+      <version>5.3.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.example.datastore;
+package com.example.datastore;
 
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;

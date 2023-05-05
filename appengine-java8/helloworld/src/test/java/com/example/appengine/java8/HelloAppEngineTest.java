@@ -48,7 +48,7 @@ public class HelloAppEngineTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     helper.setUp();
 
     //  Set up some fake HTTP requests

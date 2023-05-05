@@ -58,7 +58,7 @@ public class FirebaseFirestoreReactiveTest {
 
   @Before
   public void beforeTest() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     when(referenceMock.set(any())).thenReturn(null);
 
