@@ -105,10 +105,9 @@ public String generateResults(Queue<Map<String, Object>> results) {
       Object[] photos = (Object[]) map.get("photos");
       if (photos != null && photos.length > 0) {
         resultCount++;
-        thumbs.append(
-            "<img class='thumb' border='1px' height='40px' "
-                + "src='" + getPhotoUrl((String) (((Map<String, String>) photos[0]).get("photo_reference"))) + "' "
-                + "title='" + name + "' />");
+        thumbs.append("<img class='thumb' border='1px' height='40px' " + "src='"
+            + getPhotoUrl((String) (((Map<String, String>) photos[0]).get("photo_reference")))
+            + "' " + "title='" + name + "' />");
         thumbs.append("</a>&nbsp;");
       }
     }

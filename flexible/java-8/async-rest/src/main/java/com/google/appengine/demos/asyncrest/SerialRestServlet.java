@@ -72,8 +72,8 @@ public class SerialRestServlet extends AbstractRestServlet {
       BufferedReader reader =
           new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-      Map<String, Object[]> query =
-          (Map<String, Object[]>) JSON.parse(new BufferedReader(new InputStreamReader(connection.getInputStream())));
+      Map<String, Object[]> query = (Map<String, Object[]>) JSON
+          .parse(new BufferedReader(new InputStreamReader(connection.getInputStream())));
       Object[] tmp = query.get("results");
       if (tmp != null) {
         for (Object o : tmp) {

@@ -23,7 +23,6 @@ import com.google.cloud.vision.v1.LocationName;
 import com.google.cloud.vision.v1.ProductSearchClient;
 import com.google.cloud.vision.v1.PurgeProductsRequest;
 import com.google.protobuf.Empty;
-
 import java.util.concurrent.TimeUnit;
 
 public class PurgeProducts {

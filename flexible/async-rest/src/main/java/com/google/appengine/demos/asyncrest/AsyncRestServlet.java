@@ -200,7 +200,7 @@ public class AsyncRestServlet extends AbstractRestServlet {
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public void onComplete(Result result) {
       // Extract results.
       Map<String, Object> data = (Map<String, Object>) JSON.parse(utf8Content.toString());
