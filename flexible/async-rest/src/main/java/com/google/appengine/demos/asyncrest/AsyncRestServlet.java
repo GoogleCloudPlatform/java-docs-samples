@@ -68,6 +68,7 @@ public class AsyncRestServlet extends AbstractRestServlet {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
@@ -198,7 +199,8 @@ public class AsyncRestServlet extends AbstractRestServlet {
       utf8Content.append(bytes, 0, bytes.length);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void onComplete(Result result) {
       // Extract results.
       Map<String, Object> data = (Map<String, Object>) JSON.parse(utf8Content.toString());

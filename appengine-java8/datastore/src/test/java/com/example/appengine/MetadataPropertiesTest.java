@@ -199,6 +199,7 @@ public class MetadataPropertiesTest {
     assertThat(properties).containsExactly("beta", "charlie", "delta");
   }
 
+  @SuppressWarnings("unchecked")
   // [START property_representation_query_example]
   Collection<String> representationsOfProperty(DatastoreService ds, String kind, String property) {
 

@@ -48,7 +48,7 @@ public class FirebaseChannel {
 
   private static final String FIREBASE_SNIPPET_PATH = "WEB-INF/view/firebase_config.jspf";
   static InputStream firebaseConfigStream = null;
-  private static final Collection FIREBASE_SCOPES =
+  private static final Collection<String> FIREBASE_SCOPES =
       Arrays.asList(
           "https://www.googleapis.com/auth/firebase.database",
           "https://www.googleapis.com/auth/userinfo.email");

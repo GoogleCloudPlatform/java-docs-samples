@@ -43,6 +43,7 @@ import org.eclipse.jetty.util.ajax.JSON;
 public class SerialRestServlet extends AbstractRestServlet {
 
   // CHECKSTYLE.OFF: VariableDeclarationUsageDistance
+  @SuppressWarnings("unchecked")
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
@@ -71,12 +72,12 @@ public class SerialRestServlet extends AbstractRestServlet {
       BufferedReader reader =
           new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-      Map query =
-          (Map) JSON.parse(new BufferedReader(new InputStreamReader(connection.getInputStream())));
-      Object[] tmp = (Object[]) query.get("results");
+      Map<String, Object[]> query =
+          (Map<String, Object[]>) JSON.parse(new BufferedReader(new InputStreamReader(connection.getInputStream())));
+      Object[] tmp = query.get("results");
       if (tmp != null) {
         for (Object o : tmp) {
-          Map map = (Map) o;
+          Map<String, Object> map = (Map<String, Object>) o;
           results.add(map);
         }
       }

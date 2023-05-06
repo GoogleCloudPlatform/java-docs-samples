@@ -104,7 +104,7 @@ public class MetadataNamespacesTest {
 
     // Start with unrestricted namespace query
     Query q = new Query(Entities.NAMESPACE_METADATA_KIND);
-    List<Filter> subFilters = new ArrayList();
+    List<Filter> subFilters = new ArrayList<Filter>();
     // Limit to specified range, if any
     if (start != null) {
       subFilters.add(

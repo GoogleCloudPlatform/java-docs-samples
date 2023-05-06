@@ -59,7 +59,8 @@ public class OcrTranslateApiMessage {
     return lang;
   }
 
-  public static OcrTranslateApiMessage fromPubsubData(byte[] data) {
+  @SuppressWarnings("unchecked")
+public static OcrTranslateApiMessage fromPubsubData(byte[] data) {
     String jsonStr = new String(Base64.getDecoder().decode(data), StandardCharsets.UTF_8);
     Map<String, String> jsonMap = gson.fromJson(jsonStr, Map.class);
 
