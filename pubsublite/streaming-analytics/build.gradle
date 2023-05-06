@@ -48,12 +48,12 @@ dependencies {
     testImplementation 'com.google.cloud:google-cloud-storage'
 }
 
-group = 'com.example'
+group = 'com.example.pubsublite'
 version = '1.0.0-SNAPSHOT'
 description = 'pubsublite-streaming'
 
 task execute (type:JavaExec) {
-    mainClass = 'com.example.pubsublite.streaming.PubsubliteToGcs'
+    mainClass = 'examples.PubsubliteToGcs'
     description('Run the Beam pipeline with gradle execute -Dexec.args=...')
     classpath = sourceSets.main.runtimeClasspath
     systemProperties System.getProperties()

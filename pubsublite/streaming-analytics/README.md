@@ -16,7 +16,7 @@ function, and writes them to [Cloud Storage].
 Resources needed for this example:
 
 1. A pair of Pub/Sub Lite topic and subscription.
-2. A Cloud Storage bucket.
+1. A Cloud Storage bucket.
 
 ### Setting up
 
@@ -24,11 +24,11 @@ Resources needed for this example:
    APIs](https://console.cloud.google.com/flows/enableapi?apiid=dataflow,compute_component,logging,storage_api,pubsublite.googleapis.com):
    Cloud Dataflow, Compute Engine, Cloud Logging, Cloud Storage, Pub/Sub Lite.
 
-  > _When you enable Cloud Dataflow, which uses Compute Engine, a default
-  > Compute Engine service account with the Editor role (`roles/editor`) is
-  > created._
+      > _When you enable Cloud Dataflow, which uses Compute Engine, a default
+      > Compute Engine service account with the Editor role (`roles/editor`) is
+      > created._
 
-2. You can skip this step if you are trying this example in a Google Cloud
+1. You can skip this step if you are trying this example in a Google Cloud
    environment like Cloud Shell.
 
    Otherwise,
@@ -45,42 +45,42 @@ Resources needed for this example:
    a service account key and point  `GOOGLE_APPLICATION_CREDNETIALS` to your
    downloaded key file.
 
-```sh
-export GOOGLE_APPLICATION_CREDENTIALS=path/to/your/key/file
-```
+   ```sh
+   export GOOGLE_APPLICATION_CREDENTIALS=path/to/your/key/file
+   ```
 
-3. Create a Cloud Storage bucket. Your bucket name needs to be globally unique.
+1. Create a Cloud Storage bucket. Your bucket name needs to be globally unique.
 
-```sh
-export PROJECT_ID=$(gcloud config get-value project)
-export BUCKET=your-gcs-bucket
+   ```sh
+   export PROJECT_ID=$(gcloud config get-value project)
+   export BUCKET=your-gcs-bucket
 
-gsutil mb gs://$BUCKET
-```
+   gsutil mb gs://$BUCKET
+   ```
 
-4. Create a Pub/Sub Lite topic and subscription. Set `LITE_LOCATION` to a
+1. Create a Pub/Sub Lite topic and subscription. Set `LITE_LOCATION` to a
    [Pub/Sub Lite location].
 
-```sh
-export TOPIC=your-lite-topic
-export SUBSCRIPTION=your-lite-subscription
-export LITE_LOCATION=your-lite-location
+   ```sh
+   export TOPIC=your-lite-topic
+   export SUBSCRIPTION=your-lite-subscription
+   export LITE_LOCATION=your-lite-location
 
-gcloud pubsub lite-topics create $TOPIC \
-    --zone=$LITE_LOCATION \
-    --partitions=1 \
-    --per-partition-bytes=30GiB
-gcloud pubsub lite-subscriptions create $SUBSCRIPTION \
-    --zone=$LITE_LOCATION \
-    --topic=$TOPIC
-```
+   gcloud pubsub lite-topics create $TOPIC \
+      --zone=$LITE_LOCATION \
+      --partitions=1 \
+      --per-partition-bytes=30GiB
+   gcloud pubsub lite-subscriptions create $SUBSCRIPTION \
+      --zone=$LITE_LOCATION \
+      --topic=$TOPIC
+   ```
 
-5. Set `DATAFLOW_REGION` to a [Dataflow region] close to your Pub/Sub Lite
+1. Set `DATAFLOW_REGION` to a [Dataflow region] close to your Pub/Sub Lite
    location.
 
-```sh
-export DATAFLOW_REGION=your-dateflow-region
-```
+   ```sh
+   export DATAFLOW_REGION=your-dateflow-region
+   ```
 
 ### Running the example
 
@@ -142,46 +142,46 @@ input parameters.
 1. Create a fat JAR. You should see
    `target/pubsublite-streaming-bundled-1.0.jar` as an output.
 
-```sh
-mvn clean package -DskipTests=true
-ls -lh
-```
+   ```sh
+   mvn clean package -DskipTests=true
+   ls -lh
+   ```
 
-2. Provide names and locations for your template file and template container
+1. Provide names and locations for your template file and template container
    image.
 
-```sh
-export TEMPLATE_PATH="gs://$BUCKET/samples/pubsublite-to-gcs.json"
-export TEMPLATE_IMAGE="gcr.io/$PROJECT_ID/pubsublite-to-gcs:latest"
-```
+   ```sh
+   export TEMPLATE_PATH="gs://$BUCKET/samples/pubsublite-to-gcs.json"
+   export TEMPLATE_IMAGE="gcr.io/$PROJECT_ID/pubsublite-to-gcs:latest"
+   ```
 
-3. Build a custom Flex template.
+1. Build a custom Flex template.
 
-```sh
-gcloud dataflow flex-template build $TEMPLATE_PATH \
-  --image-gcr-path "$TEMPLATE_IMAGE" \
-  --sdk-language "JAVA" \
-  --flex-template-base-image JAVA11 \
-  --metadata-file "metadata.json" \
-  --jar "target/pubsublite-streaming-bundled-1.0.jar" \
-  --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="examples.PubsubliteToGcs"
-```
+   ```sh
+   gcloud dataflow flex-template build $TEMPLATE_PATH \
+   --image-gcr-path "$TEMPLATE_IMAGE" \
+   --sdk-language "JAVA" \
+   --flex-template-base-image JAVA11 \
+   --metadata-file "metadata.json" \
+   --jar "target/pubsublite-streaming-bundled-1.0.jar" \
+   --env FLEX_TEMPLATE_JAVA_MAIN_CLASS="examples.PubsubliteToGcs"
+   ```
 
-4. Run a job with the custom Flex template using `gcloud` or in Cloud Console.
+1. Run a job with the custom Flex template using `gcloud` or in Cloud Console.
 
-> Note: Pub/Sub Lite allows only one subscriber to pull messages from one
-> partition. If your Pub/Sub Lite topic has only one partition and you use a
-> subscription attached to that topic in more than one Dataflow jobs, only one
-> of them will get messages.
+   > Note: Pub/Sub Lite allows only one subscriber to pull messages from one
+   > partition. If your Pub/Sub Lite topic has only one partition and you use a
+   > subscription attached to that topic in more than one Dataflow jobs, only one
+   > of them will get messages.
 
-```sh
-gcloud dataflow flex-template run "pubsublite-to-gcs-`date +%Y%m%d`" \
-  --template-file-gcs-location "$TEMPLATE_PATH" \
-  --parameters subscription="projects/$PROJECT_ID/locations/$LITE_LOCATION/subscriptions/$SUBSCRIPTION" \
-  --parameters output="gs://$BUCKET/samples/template-output" \
-  --parameters windowSize=1 \
-  --region "$DATAFLOW_REGION" 
-```
+   ```sh
+   gcloud dataflow flex-template run "pubsublite-to-gcs-`date +%Y%m%d`" \
+   --template-file-gcs-location "$TEMPLATE_PATH" \
+   --parameters subscription="projects/$PROJECT_ID/locations/$LITE_LOCATION/subscriptions/$SUBSCRIPTION" \
+   --parameters output="gs://$BUCKET/samples/template-output" \
+   --parameters windowSize=1 \
+   --region "$DATAFLOW_REGION" 
+   ```
 
 ## Cleaning up
 
@@ -189,32 +189,32 @@ gcloud dataflow flex-template run "pubsublite-to-gcs-`date +%Y%m%d`" \
    `DataflowRunner`, [click](https://console.cloud.google.com/dataflow/jobs) on
    the job you want to stop, then choose "Cancel".
 
-2. Delete the Lite topic and subscription.
+1. Delete the Lite topic and subscription.
 
-```sh
-gcloud pubsub lite-topics delete $TOPIC
-gcloud pubsub lite-subscription delete $SUBSCRIPTION
-```
+   ```sh
+   gcloud pubsub lite-topics delete $TOPIC
+   gcloud pubsub lite-subscription delete $SUBSCRIPTION
+   ```
 
-3. Delete the Cloud Storage objects:
+1. Delete the Cloud Storage objects:
 
-```sh
-gsutil -m rm -rf "gs://$BUCKET/samples/output*"
-```
+   ```sh
+   gsutil -m rm -rf "gs://$BUCKET/samples/output*"
+   ```
 
-4. Delete the template image in Cloud Registry and delete the Flex template if
+1. Delete the template image in Cloud Registry and delete the Flex template if
    you have created them.
 
-```sh
-gcloud container images delete $TEMPLATE_IMAGE
-gsutil rm $TEMPLATE_PATH
-```
+   ```sh
+   gcloud container images delete $TEMPLATE_IMAGE
+   gsutil rm $TEMPLATE_PATH
+   ```
 
-5. Delete the Cloud Storage bucket:
+1. Delete the Cloud Storage bucket:
 
-```sh
-gsutil rb "gs://$BUCKET"
-```
+   ```sh
+   gsutil rb "gs://$BUCKET"
+   ```
 
 [Apache Beam]: https://beam.apache.org/
 [Pub/Sub Lite]: https://cloud.google.com/pubsub/lite/docs/
@@ -222,7 +222,5 @@ gsutil rb "gs://$BUCKET"
 [Cloud Storage]: https://cloud.google.com/storage/docs/
 [Publish]: https://cloud.google.com/pubsub/lite/docs/publishing/
 [Pub/Sub Lite location]: https://cloud.google.com/pubsub/lite/docs/locations/
-[Dataflow region]:
-    https://cloud.google.com/dataflow/docs/concepts/regional-endpoints/
-[Dataflow Flex template]:
-    https://cloud.google.com/dataflow/docs/guides/templates/using-flex-templates
+[Dataflow region]: https://cloud.google.com/dataflow/docs/concepts/regional-endpoints/
+[Dataflow Flex template]: https://cloud.google.com/dataflow/docs/guides/templates/using-flex-templates
