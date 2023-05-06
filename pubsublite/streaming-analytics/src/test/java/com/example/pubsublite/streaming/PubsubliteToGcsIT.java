@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package pubsublite.streaming;
+package com.example.pubsublite.streaming;
 
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
+import static junit.framework.TestCase.assertNotNull;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -51,7 +50,6 @@ import com.google.cloud.storage.StorageOptions;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.util.Durations;
 import com.google.pubsub.v1.PubsubMessage;
-import examples.PubsubliteToGcs;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -59,6 +57,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.apache.beam.sdk.testing.TestPipeline;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -123,9 +122,9 @@ public class PubsubliteToGcsIT {
       AdminClientSettings.newBuilder().setRegion(CloudRegion.of(cloudRegion)).build();
 
   private static void requireEnvVar(String varName) {
-    assertWithMessage("Environment variable " + varName + " is required to perform these tests.")
-    .that(System.getenv(varName))
-    .isNotNull();
+    assertNotNull(
+        "Environment variable " + varName + " is required to perform these tests.",
+        System.getenv(varName));
   }
 
   @BeforeClass
@@ -169,35 +168,30 @@ public class PubsubliteToGcsIT {
 
     Dataflow dataflow =
         new Dataflow.Builder(httpTransport, GsonFactory.getDefaultInstance(), requestInitializer)
-            .build();
+            .setApplicationName(this.getClass().getSimpleName()).build();
 
     // Match Dataflow job of the same job name and cancel it.
     ListJobsResponse jobs =
         dataflow.projects().locations().jobs().list(projectId, cloudRegion).execute();
 
     try {
-      jobs.getJobs()
-          .forEach(
-              job -> {
-                if (job.getName().equals(jobName)) {
-                  String jobId = job.getId();
-                  try {
-                    dataflow
-                        .projects()
-                        .locations()
-                        .jobs()
-                        .update(
-                            projectId,
-                            cloudRegion,
-                            jobId,
-                            new Job().setRequestedState("JOB_STATE_CANCELLED"))
-                        .execute();
-                    System.out.println("Cancelling Dataflow job: " + jobId);
-                  } catch (IOException e) {
-                    e.printStackTrace();
-                  }
-                }
-              });
+      jobs.getJobs().forEach(job -> {
+        if (jobName.equals(job.getName())) {
+          String jobId = job.getId();
+          try {
+            dataflow
+              .projects()
+              .locations()
+              .jobs()
+              .update(projectId, cloudRegion, jobId,
+                new Job().setRequestedState("JOB_STATE_CANCELLED"))
+              .execute();
+            System.out.println("Cancelling Dataflow job: " + jobId);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+      });
     } catch (NullPointerException e) {
       e.printStackTrace();
     }
@@ -246,12 +240,12 @@ public class PubsubliteToGcsIT {
     for (Blob blob : blobs.iterateAll()) {
       String content = new String(blob.getContent(), StandardCharsets.UTF_8);
       System.out.println("Has content: " + content);
-      assertThat(content).contains("message-");
+      Assert.assertTrue(content.contains("message-"));
       // Increment the count if the file has the desired content.
       numFiles += 1;
     }
 
     // Expect at least one file of desired output.
-    assertThat(numFiles).isGreaterThan(0);
+    Assert.assertTrue(numFiles > 0);
   }
 }

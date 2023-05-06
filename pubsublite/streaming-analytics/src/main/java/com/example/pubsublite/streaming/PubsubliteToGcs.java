@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package examples;
+package com.example.pubsublite.streaming;
 
 // [START pubsublite_to_gcs]
 
