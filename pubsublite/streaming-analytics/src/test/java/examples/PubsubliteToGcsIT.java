@@ -179,13 +179,8 @@ public class PubsubliteToGcsIT {
         if (jobName.equals(job.getName())) {
           String jobId = job.getId();
           try {
-            dataflow
-              .projects()
-              .locations()
-              .jobs()
-              .update(projectId, cloudRegion, jobId,
-                new Job().setRequestedState("JOB_STATE_CANCELLED"))
-              .execute();
+            dataflow.projects().locations().jobs().update(projectId, cloudRegion, jobId,
+                new Job().setRequestedState("JOB_STATE_CANCELLED")).execute();
             System.out.println("Cancelling Dataflow job: " + jobId);
           } catch (IOException e) {
             e.printStackTrace();
