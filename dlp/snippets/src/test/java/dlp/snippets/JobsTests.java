@@ -108,6 +108,7 @@ public class JobsTests extends TestBase {
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
 
     dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+
   }
 
   @Test
@@ -130,6 +131,21 @@ public class JobsTests extends TestBase {
     JobsDelete.deleteJobs(PROJECT_ID, "i-" + jobId);
     String output = bout.toString();
     assertThat(output).contains("Job deleted successfully.");
+  }
+
+  @Test
+  public void testInspectBigQuerySendToScc() throws Exception {
+    InspectBigQuerySendToScc.inspectBigQuerySendToScc(PROJECT_ID, DATASET_ID, TABLE_ID);
+
+    String output = bout.toString();
+    assertThat(output).contains("Job created successfully");
+    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+
+    // Delete the created Dlp Job
+    DeleteDlpJobRequest deleteDlpJobRequest =
+        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
   }
 
   @Test
