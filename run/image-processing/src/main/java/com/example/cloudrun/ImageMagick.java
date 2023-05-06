@@ -105,7 +105,7 @@ public class ImageMagick {
     blob.downloadTo(download);
 
     // Construct the command.
-    List<String> args = new ArrayList<String>();
+    List<String> args = new ArrayList<>();
     args.add("convert");
     args.add(download.toString());
     args.add("-blur");

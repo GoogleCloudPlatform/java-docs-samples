@@ -60,7 +60,7 @@ public class SerialRestServlet extends AbstractRestServlet {
     String radius = sanitize(request.getParameter(RADIUS_PARAM));
 
     String[] keywords = sanitize(request.getParameter(ITEMS_PARAM)).split(",");
-    Queue<Map<String, Object>> results = new LinkedList<Map<String, Object>>();
+    Queue<Map<String, Object>> results = new LinkedList<>();
 
     // Make all requests serially.
     for (String itemName : keywords) {

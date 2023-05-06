@@ -169,7 +169,7 @@ public class MetadataPropertiesTest {
     q.setAncestor(Entities.createKindKey(kind));
 
     // Initialize result list
-    ArrayList<String> results = new ArrayList<String>();
+    ArrayList<String> results = new ArrayList<>();
 
     //Build list of query results
     for (Entity e : ds.prepare(q).asIterable()) {
@@ -199,7 +199,6 @@ public class MetadataPropertiesTest {
     assertThat(properties).containsExactly("beta", "charlie", "delta");
   }
 
-  @SuppressWarnings("unchecked")
   // [START property_representation_query_example]
   Collection<String> representationsOfProperty(DatastoreService ds, String kind, String property) {
 

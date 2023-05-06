@@ -38,7 +38,7 @@ public class PubSubController {
     if (message == null) {
       String msg = "Bad Request: invalid Pub/Sub message format";
       System.out.println(msg);
-      return new ResponseEntity<String>(msg, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
     }
 
     String data = message.getData();
@@ -47,7 +47,7 @@ public class PubSubController {
     String msg = "Hello " + target + "!";
 
     System.out.println(msg);
-    return new ResponseEntity<String>(msg, HttpStatus.OK);
+    return new ResponseEntity<>(msg, HttpStatus.OK);
   }
 }
 // [END run_pubsub_handler]

@@ -167,7 +167,7 @@ public class FirebaseChannel {
     long epochTime = System.currentTimeMillis() / 1000;
     long expire = epochTime + 60 * 60; // an hour from now
 
-    Map<String, Object> claims = new HashMap<String, Object>();
+    Map<String, Object> claims = new HashMap<>();
     claims.put("iss", clientEmail);
     claims.put("sub", clientEmail);
     claims.put("aud", IDENTITY_ENDPOINT);

@@ -42,10 +42,10 @@ class RendererApplicationTests {
 
   @Test
   public void postMarkdown() throws Exception {
-    Map<String, String> markdown = new HashMap<String, String>();
+    Map<String, String> markdown = new HashMap<>();
     markdown.put("input", "**strong text**");
     markdown.put("want", "<p><strong>strong text</strong></p>\n");
-    Map<String, String> sanitize = new HashMap<String, String>();
+    Map<String, String> sanitize = new HashMap<>();
     sanitize.put("input", "<a onblur=\"alert(secret)\" href=\"http://www.google.com\">Google</a>");
     sanitize.put("want", "<p><a href=\"http://www.google.com\" rel=\"nofollow\">Google</a></p>");
 

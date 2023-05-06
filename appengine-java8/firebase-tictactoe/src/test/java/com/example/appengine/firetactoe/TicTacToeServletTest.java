@@ -71,7 +71,7 @@ public class TicTacToeServletTest {
               new LocalURLFetchServiceTestConfig())
           .setEnvEmail(USER_EMAIL)
           .setEnvAuthDomain("gmail.com")
-              .setEnvAttributes(new HashMap<String, Object>(ImmutableMap
+              .setEnvAttributes(new HashMap<>(ImmutableMap
                   .of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
   @Mock private HttpServletRequest mockRequest;

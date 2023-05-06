@@ -57,7 +57,7 @@ public class AccessTests {
     System.setOut(new PrintStream(bout));
 
     policyMock = new Policy();
-    List<String> members = new ArrayList<String>();
+    List<String> members = new ArrayList<>();
     members.add("user:member-to-remove@example.com");
     Binding binding = new Binding();
     binding.setRole("roles/existing-role");

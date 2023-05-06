@@ -65,7 +65,7 @@ public class App {
       throw new NullPointerException("syntax: no graphviz definition provided");
     }
     // Adds a watermark to the dot graphic.
-    List<String> args = new ArrayList<String>();
+    List<String> args = new ArrayList<>();
     args.add("/usr/bin/dot");
     args.add("-Glabel=\"Made on Cloud Run\"");
     args.add("-Gfontsize=10");

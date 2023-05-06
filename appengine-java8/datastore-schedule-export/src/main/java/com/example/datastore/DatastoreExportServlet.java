@@ -68,7 +68,7 @@ public class DatastoreExportServlet extends HttpServlet {
       connection.addRequestProperty("Content-Type", "application/json");
 
       // Get an access token to authorize export request
-      ArrayList<String> scopes = new ArrayList<String>();
+      ArrayList<String> scopes = new ArrayList<>();
       scopes.add("https://www.googleapis.com/auth/datastore");
       final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
       final AppIdentityService.GetAccessTokenResult accessToken =
