@@ -31,14 +31,14 @@ public class WorkflowsQuickstart {
 
   private static final String PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = System.getenv().getOrDefault("LOCATION", "us-central1");
-  private static final String WORKFLOW = System.getenv().getOrDefault("WORKFLOW",
-      "myFirstWorkflow");
+  private static final String WORKFLOW =
+      System.getenv().getOrDefault("WORKFLOW", "myFirstWorkflow");
 
   public static void main(String... args)
       throws IOException, InterruptedException, ExecutionException {
     if (PROJECT == null) {
       throw new IllegalArgumentException(
-        "Environment variable 'GOOGLE_CLOUD_PROJECT' is required to run this quickstart.");
+          "Environment variable 'GOOGLE_CLOUD_PROJECT' is required to run this quickstart.");
     }
     workflowsQuickstart(PROJECT, LOCATION, WORKFLOW);
   }
@@ -70,7 +70,7 @@ public class WorkflowsQuickstart {
       long backoffDelay = 1_000; // Start wait with delay of 1,000 ms
       final long backoffTimeout = 10 * 60 * 1_000; // Time out at 10 minutes
       System.out.println("Poll for results...");
-      
+
       // Wait for execution to finish, then print results.
       while (!finished && backoffTime < backoffTimeout) {
         Execution execution = executionsClient.getExecution(executionName);

@@ -13,9 +13,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.google.apis-samples</groupId>
+  <groupId>com.example.storage</groupId>
   <artifactId>storage-s3-interop-api</artifactId>
   <version>1</version>
 
@@ -34,7 +35,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.11.0</version>
+        <version>26.12.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -47,10 +48,10 @@
   </properties>
 
   <dependencies>
-   <dependency>
+    <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-s3</artifactId>
-      <version>1.12.435</version>
+      <version>1.12.461</version>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
@@ -62,7 +63,6 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
-      <version>2.20.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

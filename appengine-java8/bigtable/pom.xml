@@ -20,7 +20,7 @@ limitations under the License.
   <packaging>war</packaging>
   <version>0.1-SNAPSHOT</version>
 
-  <groupId>com.example.google.cloud.bigtable</groupId>
+  <groupId>com.example.appengine</groupId>
   <artifactId>bigtable-hello-j8</artifactId>
 
   <!--
@@ -81,8 +81,8 @@ limitations under the License.
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.10.19</version>
+      <artifactId>mockito-core</artifactId>
+      <version>4.11.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -95,7 +95,7 @@ limitations under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1</version>
         <configuration>
           <encoding>UTF-8</encoding>
           <delimiters>  <!-- Gradle Delimiter -->
@@ -126,7 +126,7 @@ limitations under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M7</version>
+        <version>3.0.0</version>
         <configuration>
           <systemPropertyVariables>
             <BIGTABLE_PROJECT>${bigtable.projectID}</BIGTABLE_PROJECT>
@@ -148,7 +148,7 @@ limitations under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.11.0</version>
       </plugin>
 
       <plugin>

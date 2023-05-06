@@ -13,7 +13,7 @@ limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.cloudrun</groupId>
+  <groupId>com.example.run</groupId>
   <artifactId>logging-manual</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <!--  The parent pom defines common style checks and testing strategies for our samples.  Removing or replacing it should not affect the execution of the samples in anyway.  -->
@@ -32,31 +32,31 @@ limitations under the License.
     <dependency>
       <groupId>com.sparkjava</groupId>
       <artifactId>spark-core</artifactId>
-      <version>2.9.3</version>
+      <version>2.9.4</version>
     </dependency>
     <!-- [START cloudrun_manual_logging_dep] -->
     <!-- [START run_manual_logging_dep] -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>2.0.6</version>
+      <version>2.0.7</version>
     </dependency>
     <dependency>
       <groupId>net.logstash.logback</groupId>
       <artifactId>logstash-logback-encoder</artifactId>
-      <version>7.2</version>
+      <version>7.3</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.4.5</version>
+      <version>1.4.6</version>
     </dependency>
     <!-- [END run_manual_logging_dep] -->
     <!-- [END cloudrun_manual_logging_dep] -->
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>4.9.3</version>
+      <version>5.0.0-alpha.11</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

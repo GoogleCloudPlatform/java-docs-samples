@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(value = "/pubsub/push")
 public class PubSubPush extends HttpServlet {
-  private final JsonParser jsonParser = new JsonParser();
   private final Gson gson = new Gson();
   private MessageRepository messageRepository;
 
@@ -65,7 +64,7 @@ public class PubSubPush extends HttpServlet {
 
   private Message getMessage(HttpServletRequest request) throws IOException {
     String requestBody = request.getReader().lines().collect(Collectors.joining("\n"));
-    JsonObject jsonRoot = jsonParser.parse(requestBody).getAsJsonObject();
+    JsonObject jsonRoot = JsonParser.parseString(requestBody).getAsJsonObject();
     JsonObject messageOb = jsonRoot.get("message").getAsJsonObject();
     Message message = gson.fromJson(jsonRoot.get("message").toString(), Message.class);
     JsonObject attributes = messageOb.get("attributes").getAsJsonObject();

@@ -38,6 +38,18 @@
       <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
+    <dependencyManagement>
+      <dependencies>
+        <dependency>
+          <artifactId>libraries-bom</artifactId>
+          <groupId>com.google.cloud</groupId>
+          <scope>import</scope>
+          <type>pom</type>
+          <version>26.12.0</version>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
+
     <!-- All dependencies are scoped as provided.
       Dependent-jars are created and added to
       ${project.build.directory}/appengine-staging -->
@@ -57,14 +69,12 @@
       <dependency>
         <groupId>com.google.oauth-client</groupId>
         <artifactId>google-oauth-client</artifactId>
-        <version>1.34.1</version>
         <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>com.google.oauth-client</groupId>
         <artifactId>google-oauth-client-servlet</artifactId>
-        <version>1.34.1</version>
         <scope>provided</scope>
       </dependency>
 
@@ -115,7 +125,7 @@
         <plugin>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
-          <version>9.4.44.v20210927</version>
+          <version>9.4.51.v20230217</version>
         </plugin>
 
         <plugin>

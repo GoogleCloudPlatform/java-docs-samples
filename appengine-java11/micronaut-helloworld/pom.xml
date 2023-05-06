@@ -33,7 +33,7 @@
     <exec.mainClass>com.example.appengine.Application</exec.mainClass>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
-    <micronaut.version>3.4.3</micronaut.version>
+    <micronaut.version>3.8.8</micronaut.version>
   </properties>
 
   <dependencies>
@@ -95,7 +95,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.4</version>
+        <version>3.4.1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -137,7 +137,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.11.0</version>
           <configuration>
             <encoding>UTF-8</encoding>
             <compilerArgs>

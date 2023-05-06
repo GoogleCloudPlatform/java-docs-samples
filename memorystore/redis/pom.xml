@@ -13,11 +13,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <groupId>com.example.redis</groupId>
+  <groupId>com.example.memorystore</groupId>
   <artifactId>visitcounter</artifactId>
 
   <!--
@@ -33,7 +34,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <jetty>9.4.44.v20210927</jetty>
+    <jetty>9.4.51.v20230217</jetty>
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
 
@@ -75,8 +76,8 @@
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.4.4</version>
-     </plugin>
-     <!-- [END memorystore_appengine_maven_plugin] -->
+      </plugin>
+      <!-- [END memorystore_appengine_maven_plugin] -->
     </plugins>
   </build>
 </project>

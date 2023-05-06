@@ -16,14 +16,12 @@
 
 package com.example.cloud.iot.examples;
 
-import com.google.pubsub.v1.Topic;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
@@ -39,7 +37,6 @@ import org.junit.runners.JUnit4;
 public class ManagerIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private MqttCommandsDemo app;
 
   @Before
   public void setUp() throws Exception {

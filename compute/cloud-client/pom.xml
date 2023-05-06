@@ -17,35 +17,49 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="http://maven.apache.org/POM/4.0.0"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example.compute</groupId>
   <artifactId>gce-diregapic-samples</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <!--
+   The parent pom defines common style checks and testing strategies for our samples.
+   Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
+  <parent>
+    <artifactId>shared-configuration</artifactId>
+    <groupId>com.google.cloud.samples</groupId>
+    <version>1.2.0</version>
+  </parent>
+
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
 
   <dependencies>
     <dependency>
       <artifactId>google-cloud-compute</artifactId>
       <groupId>com.google.cloud</groupId>
-      <version>1.18.0</version>
-    </dependency>
-    <dependency>
-      <artifactId>google-cloud-storage</artifactId>
-      <groupId>com.google.cloud</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>google-cloud-kms</artifactId>
-      <groupId>com.google.cloud</groupId>
     </dependency>
     <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>gax</artifactId>
-      <version>2.23.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api</groupId>
-      <artifactId>gax-httpjson</artifactId>
-      <version>0.108.1</version>
     </dependency>
 
 
     <!-- Test dependencies -->
+    <dependency>
+      <artifactId>google-cloud-storage</artifactId>
+      <groupId>com.google.cloud</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <artifactId>google-cloud-kms</artifactId>
+      <groupId>com.google.cloud</groupId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <artifactId>truth</artifactId>
       <groupId>com.google.truth</groupId>
@@ -67,12 +81,6 @@
     -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>5.8.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>5.8.2</version>
       <scope>test</scope>
@@ -91,25 +99,8 @@
     </dependencies>
   </dependencyManagement>
 
-  <groupId>gce-diregapic</groupId>
-  <modelVersion>4.0.0</modelVersion>
 
-  <!--
-   The parent pom defines common style checks and testing strategies for our samples.
-   Removing or replacing it should not affect the execution of the samples in anyway.
-  -->
-  <parent>
-    <artifactId>shared-configuration</artifactId>
-    <groupId>com.google.cloud.samples</groupId>
-    <version>1.2.0</version>
-  </parent>
 
-  <properties>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-  </properties>
-
-  <version>1.0-SNAPSHOT</version>
 
   <build>
     <plugins>
@@ -132,7 +123,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0-M7</version>
+        <version>3.0.0</version>
         <configuration>
           <skip>true</skip>
         </configuration>

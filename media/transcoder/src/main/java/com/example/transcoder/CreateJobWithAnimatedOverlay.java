@@ -44,7 +44,7 @@ public class CreateJobWithAnimatedOverlay {
     String projectId = "my-project-id";
     String location = "us-central1";
     String inputUri = "gs://my-bucket/my-video-file";
-    String overlayImageUri = "gs://my-bucket/my-overlay-image.jpg"; // Must be a JPEG
+    String overlayImageUri = "gs://my-bucket/my-overlay-image.jpg";
     String outputUri = "gs://my-bucket/my-output-folder/";
 
     createJobWithAnimatedOverlay(projectId, location, inputUri, overlayImageUri, outputUri);
@@ -71,9 +71,9 @@ public class CreateJobWithAnimatedOverlay {
       AudioStream audioStream0 =
           AudioStream.newBuilder().setCodec("aac").setBitrateBps(64000).build();
 
-      // Create the overlay image. Only JPEG is supported. Image resolution is based on output
-      // video resolution. This example uses the values x: 0 and y: 0 to maintain the original
-      // resolution of the overlay image.
+      // Create the overlay image. Image resolution is based on output video resolution.
+      // This example uses the values x: 0 and y: 0 to maintain the original resolution
+      // of the overlay image.
       Overlay.Image overlayImage =
           Overlay.Image.newBuilder()
               .setUri(overlayImageUri)

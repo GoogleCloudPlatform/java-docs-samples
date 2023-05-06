@@ -18,7 +18,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.eclipse.jetty.demo</groupId>
+  <groupId>com.example.appengine.flexible</groupId>
   <artifactId>native-jetty-websocket-example</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
@@ -27,18 +27,30 @@
    The parent pom defines common style checks and testing strategies for our samples.
    Removing or replacing it should not effect the execution of the samples in anyway.
  -->
- <parent>
-   <groupId>com.google.cloud.samples</groupId>
-   <artifactId>shared-configuration</artifactId>
-   <version>1.2.0</version>
- </parent>
+  <parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.2.0</version>
+  </parent>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
-    <jetty.version>9.4.46.v20220331</jetty.version>
+    <jetty.version>9.4.51.v20230217</jetty.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>libraries-bom</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>26.12.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -63,7 +75,6 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>31.1-jre</version>
     </dependency>
   </dependencies>
 
