@@ -119,7 +119,6 @@ public class InspectTableWithCustomHotword {
               .setInspectConfig(config)
               .build();
 
-      // Use the client to send the API request.
       InspectContentResponse response = dlp.inspectContent(request);
       // Parse the response and process results.
       System.out.println("Findings: " + response.getResult().getFindingsCount());
