@@ -84,7 +84,7 @@ public class DeIdentifyTableWithMultipleCryptoHash {
                     .build())
             .build();
 
-    // The randomly generated crypto key to encrypt the data.
+    // The names of the keys used to encrypt the data.
     String transientKeyName1 = "YOUR_TRANSIENT_CRYPTO_KEY";
     String transientKeyName2 = "YOUR_TRANSIENT_CRYPTO_KEY_2";
 
