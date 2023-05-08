@@ -41,10 +41,11 @@ public class TriggersPatch {
     patchTrigger(projectId, jobTriggerName);
   }
 
+  // Uses the Data Loss Prevention API to update an existing job trigger.
   public static void patchTrigger(String projectId, String jobTriggerName) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
-    //
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
       // Specify the type of info the inspection will look for.
@@ -56,7 +57,6 @@ public class TriggersPatch {
               .setMinLikelihood(Likelihood.LIKELY)
               .build();
 
-      // Configure the inspection job we want the service to perform.
       InspectJobConfig inspectJobConfig = InspectJobConfig.newBuilder()
               .setInspectConfig(inspectConfig)
               .build();
@@ -65,19 +65,21 @@ public class TriggersPatch {
               .setInspectJob(inspectJobConfig)
               .build();
 
+      // Specify fields of the jobTrigger resource to be updated when the job trigger is modified.
+      // Refer https://protobuf.dev/reference/protobuf/google.protobuf/#field-mask for constructing the field mask paths.
       FieldMask fieldMask = FieldMask.newBuilder()
               .addPaths("inspect_job.inspect_config.info_types")
               .addPaths("inspect_job.inspect_config.min_likelihood")
               .build();
 
-      // Combine configurations into a request for the service.
+      // Update the job trigger with the new configuration.
       UpdateJobTriggerRequest updateJobTriggerRequest = UpdateJobTriggerRequest.newBuilder()
               .setName(JobTriggerName.of(projectId, jobTriggerName).toString())
               .setJobTrigger(jobTrigger)
               .setUpdateMask(fieldMask)
               .build();
 
-      // Send the scan request and process the response
+      // Call the API to update the job trigger.
       JobTrigger updatedJobTrigger = dlpServiceClient.updateJobTrigger(updateJobTriggerRequest);
 
       System.out.println("Job Trigger Name: " + updatedJobTrigger.getName());

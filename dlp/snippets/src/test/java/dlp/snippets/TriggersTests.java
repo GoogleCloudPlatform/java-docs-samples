@@ -126,14 +126,9 @@ public class TriggersTests extends TestBase {
 
     JobTrigger trigger = createTrigger();
     String triggerName = trigger.getName();
-    String triggerId;
 
-    Matcher matcher = Pattern.compile("jobTriggers/").matcher(triggerName);
-    if (matcher.find()) {
-      triggerId = triggerName.substring(matcher.end());
-    } else {
-      throw new Exception("Could not extract triggerID");
-    }
+    String[] components = triggerName.split("/");
+    String triggerId = components[components.length - 1];
     TriggersPatch.patchTrigger(PROJECT_ID, triggerId);
     String output = bout.toString();
     assertThat(output).contains("Job Trigger Name:");
