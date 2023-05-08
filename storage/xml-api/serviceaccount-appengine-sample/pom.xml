@@ -28,7 +28,7 @@
     <version>1.2.0</version>
   </parent>
 
-  <groupId>com.google.apis-samples</groupId>
+  <groupId>com.example.storage</groupId>
   <artifactId>storage-xml-serviceaccounts-appengine-sample</artifactId>
   <version>1.0.0</version>
   <name>Example for Google Cloud Storage using OAuth 2.0 Service Accounts on Google App Engine</name>
