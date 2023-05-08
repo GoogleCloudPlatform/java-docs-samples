@@ -85,16 +85,16 @@ public class DeIdentifyTableWithMultipleCryptoHash {
             .build();
 
     // The randomly generated crypto key to encrypt the data.
-    String transientKeyName = "YOUR_TRANSIENT_CRYPTO_KEY";
+    String transientKeyName1 = "YOUR_TRANSIENT_CRYPTO_KEY";
     String transientKeyName2 = "YOUR_TRANSIENT_CRYPTO_KEY_2";
 
     deIdentifyWithCryptHashTransformation(
-        projectId, tableToDeIdentify, transientKeyName, transientKeyName2);
+        projectId, tableToDeIdentify, transientKeyName1, transientKeyName2);
   }
 
   // Transforms findings using two separate cryptographic hash transformations.
   public static void deIdentifyWithCryptHashTransformation(
-      String projectId, Table tableToDeIdentify, String transientKeyName, String transientKeyName2)
+      String projectId, Table tableToDeIdentify, String transientKeyName1, String transientKeyName2)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -116,7 +116,7 @@ public class DeIdentifyTableWithMultipleCryptoHash {
 
       // Specify the transient key which will encrypt the data.
       TransientCryptoKey transientCryptoKey = TransientCryptoKey.newBuilder()
-              .setName(transientKeyName)
+              .setName(transientKeyName1)
               .build();
       TransientCryptoKey transientCryptoKey2 = TransientCryptoKey.newBuilder()
               .setName(transientKeyName2)
