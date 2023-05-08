@@ -41,7 +41,6 @@ import java.util.stream.Stream;
 public class InspectTableWithCustomHotword {
 
   public static void main(String[] args) throws IOException {
-
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
