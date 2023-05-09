@@ -60,7 +60,8 @@ public class InspectTableWithCustomHotword {
     inspectWithCustomHotwords(projectId, tableToDeIdentify, hotwordRegexPattern);
   }
 
-  //  Inspects the provided table, excluding the findings of entire column matching regular expression.
+  //  Inspects the provided table, excluding the findings of entire column matching regular
+  // expression.
   public static void inspectWithCustomHotwords(
       String projectId, Table tableToDeIdentify, String hotwordRegexPattern) throws IOException {
 
