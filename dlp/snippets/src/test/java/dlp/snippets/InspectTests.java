@@ -159,18 +159,6 @@ public class InspectTests extends TestBase {
     }
   }
 
-  @Override
-  protected ImmutableList<String> requiredEnvVars() {
-    return ImmutableList.of(
-        "GOOGLE_APPLICATION_CREDENTIALS",
-        "GOOGLE_CLOUD_PROJECT",
-        "GCS_PATH",
-        "PUB_SUB_TOPIC",
-        "PUB_SUB_SUBSCRIPTION",
-        "BIGQUERY_DATASET",
-        "BIGQUERY_TABLE");
-  }
-
   @Test
   public void testInspectPhoneNumber() throws Exception {
     InspectString.inspectString(PROJECT_ID, "My phone number is (415) 555-0890");
