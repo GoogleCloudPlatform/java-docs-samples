@@ -42,6 +42,7 @@ public class CreateStoredInfoType {
     createStoredInfoType(projectId, outputPath);
   }
 
+  // Creates a custom stored info type that contains GitHub usernames used in commits.
   public static void createStoredInfoType(String projectId, String outputPath)
       throws IOException {
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
@@ -50,17 +51,20 @@ public class CreateStoredInfoType {
       String displayName = "GitHub usernames";
       String description = "Dictionary of GitHub usernames used in commits";
 
+      // The output path where the custom dictionary containing the GitHub usernames will be stored.
       CloudStoragePath cloudStoragePath =
           CloudStoragePath.newBuilder()
               .setPath(outputPath)
               .build();
 
+      // The reference to the table containing the GitHub usernames.
       BigQueryTable table = BigQueryTable.newBuilder()
               .setProjectId("bigquery-public-data")
               .setTableId("github_nested")
               .setDatasetId("samples")
               .build();
 
+      // The reference to the BigQuery field that contains the GitHub usernames.
       BigQueryField bigQueryField = BigQueryField.newBuilder()
               .setTable(table)
               .setField(FieldId.newBuilder().setName("actor").build())

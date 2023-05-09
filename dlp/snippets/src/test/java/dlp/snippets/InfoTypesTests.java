@@ -47,7 +47,8 @@ public class InfoTypesTests extends TestBase {
     String output = bout.toString();
     String storedInfoTypeId = output.split("Created Stored InfoType: ")[1].split("\n")[0];
     assertThat(output).contains("Created Stored InfoType: ");
-    assertThat(output).contains("storedInfoTypes");
+    assertThat(storedInfoTypeId)
+        .contains(String.format("projects/" + PROJECT_ID + "/locations/global/storedInfoTypes/"));
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       dlp.deleteStoredInfoType(storedInfoTypeId);
     }
