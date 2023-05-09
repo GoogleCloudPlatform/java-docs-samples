@@ -39,8 +39,8 @@
 
     <maven.war.plugin>2.6</maven.war.plugin>
 
-    <appengine.maven.plugin>2.4.2</appengine.maven.plugin>
-    <jetty.maven.plugin>9.4.44.v20210927</jetty.maven.plugin>
+    <appengine.maven.plugin>2.4.4</appengine.maven.plugin>
+    <jetty.maven.plugin>9.4.51.v20230217</jetty.maven.plugin>
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
   </properties>

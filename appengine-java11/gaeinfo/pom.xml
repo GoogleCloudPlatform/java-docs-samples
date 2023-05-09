@@ -17,9 +17,9 @@ Copyright 2019 Google LLC
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
   <groupId>com.example.appengine</groupId>
   <artifactId>appengine-gaeinfo-j11</artifactId>
+  <version>1.0-SNAPSHOT</version>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
@@ -56,7 +56,7 @@ Copyright 2019 Google LLC
     <!-- `java-docs-samples/appengine-java11/appengine-simple-jetty-main' -->
     <!-- See the README for more information -->
     <dependency>
-      <groupId>com.example.appengine.demo</groupId>
+      <groupId>com.example.appengine</groupId>
       <artifactId>simple-jetty-main</artifactId>
       <version>1</version>
       <scope>provided</scope>
@@ -130,7 +130,7 @@ Copyright 2019 Google LLC
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.44.v20210927</version>
+        <version>9.4.51.v20230217</version>
       </plugin>
     </plugins>
 

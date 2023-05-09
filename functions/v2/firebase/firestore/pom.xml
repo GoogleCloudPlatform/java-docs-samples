@@ -21,7 +21,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.example.cloud.functions</groupId>
+  <groupId>com.example.functions</groupId>
   <artifactId>functions-firebase-firestore</artifactId>
 
   <parent>
@@ -129,7 +129,7 @@
       <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.11.0</version>
         <executions>
           <execution>
             <id>compile</id>

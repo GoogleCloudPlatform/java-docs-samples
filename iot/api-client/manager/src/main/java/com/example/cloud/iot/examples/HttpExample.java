@@ -29,8 +29,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.Charsets;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.common.io.CharStreams;
 import io.jsonwebtoken.JwtBuilder;
@@ -64,7 +63,7 @@ import org.json.JSONObject;
  */
 public class HttpExample {
   static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-  static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  static final JsonFactory JSON_FACTORY = new GsonFactory();
   static final long MINUTES_PER_HOUR = 60;
 
   // [START iot_http_jwt]
@@ -156,7 +155,8 @@ public class HttpExample {
     System.out.println(res.getStatusMessage());
     InputStream in = res.getContent();
 
-    System.out.println(CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8.name())));
+    System.out
+        .println(CharStreams.toString(new InputStreamReader(in, StandardCharsets.UTF_8.name())));
   }
   // [END iot_http_getconfig]
 

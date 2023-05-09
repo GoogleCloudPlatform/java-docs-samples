@@ -45,11 +45,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -70,10 +69,8 @@ public class MoveServletTest {
               new LocalURLFetchServiceTestConfig())
           .setEnvEmail(USER_EMAIL)
           .setEnvAuthDomain("gmail.com")
-          .setEnvAttributes(
-              new HashMap(
-                  ImmutableMap.of(
-                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+              .setEnvAttributes(new HashMap<String, Object>(ImmutableMap
+                  .of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -93,7 +90,7 @@ public class MoveServletTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     helper.setUp();
     dbSession = ObjectifyService.begin();
 
@@ -146,8 +143,8 @@ public class MoveServletTest {
     game = ofy.load().type(Game.class).id(gameKey).safe();
     assertThat(game.board).isEqualTo(" X       ");
 
-    verify(mockHttpTransport, times(2))
-        .buildRequest(eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
+    verify(mockHttpTransport, times(2)).buildRequest(eq("PATCH"),
+        ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
   }
 
   @Test

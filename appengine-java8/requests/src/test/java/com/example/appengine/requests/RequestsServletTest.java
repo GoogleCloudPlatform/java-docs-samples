@@ -45,7 +45,7 @@ public class RequestsServletTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();

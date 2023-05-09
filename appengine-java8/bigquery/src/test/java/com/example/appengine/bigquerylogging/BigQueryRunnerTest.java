@@ -70,7 +70,7 @@ public class BigQueryRunnerTest {
 
   @Before
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
 

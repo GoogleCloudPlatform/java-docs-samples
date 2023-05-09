@@ -52,8 +52,8 @@
 # Cloud SDK Databases & Data Analytics teams
 # ---* Cloud Native DB
 /bigtable                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-native-db-dpes
-/memorystore                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-native-db-dpes
-/spanner                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-native-db-dpes
+/memorystore                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/spanner                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-spanner-java
 # ---* Cloud Storage
 /storage                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-storage-dpes
 /storage-transfer                @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-storage-dpes
@@ -69,6 +69,7 @@
 /dataproc                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
 /dialogflow                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
 /dialogflow-cx                   @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
+/discoveryengine                 @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
 /document-ai                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
 /jobs                            @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
 /language                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai

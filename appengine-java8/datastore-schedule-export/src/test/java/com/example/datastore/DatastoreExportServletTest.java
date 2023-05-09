@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.example.datastore;
+package com.example.datastore;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
@@ -48,7 +48,7 @@ public class DatastoreExportServletTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     helper.setUp();
 
     //  Set up some fake HTTP requests

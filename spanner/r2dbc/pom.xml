@@ -4,14 +4,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.example</groupId>
+  <groupId>com.example.spanner</groupId>
   <artifactId>cloud-spanner-r2dbc-sample</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <spring-boot.version>2.7.10</spring-boot.version>
+    <spring-boot.version>2.7.11</spring-boot.version>
   </properties>
 
   <!--

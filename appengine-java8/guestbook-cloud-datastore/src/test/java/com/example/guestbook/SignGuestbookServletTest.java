@@ -45,7 +45,7 @@ public class SignGuestbookServletTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     // Sets up the UserServiceFactory used in SignGuestbookServlet (but not in this test)
     helper.setUp();
 
