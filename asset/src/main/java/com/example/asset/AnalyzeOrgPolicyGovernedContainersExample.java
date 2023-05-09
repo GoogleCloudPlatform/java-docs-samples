@@ -26,8 +26,11 @@ import java.io.IOException;
 public class AnalyzeOrgPolicyGovernedContainersExample {
 
   public static void main(String[] args) {
-    // TODO(developer): Replace these variables before running the sample.
+    // TODO(developer): Replace the ORG_ID with your Google Cloud Organization ID
     String scope = "organizations/ORG_ID";
+    // TODO(developer): Replace the CONSTRAINT_NAME with the name of the constraint
+    // you want to analyze. Find more details at:
+    // https://cloud.google.com/policy-intelligence/docs/analyze-organization-policies
     String constraint = "constraints/CONSTRAINT_NAME";
     analyzeOrgPolicyGovernedContainers(scope, constraint);
   }
@@ -50,8 +53,10 @@ public class AnalyzeOrgPolicyGovernedContainersExample {
           "AnalyzeOrgPolicyGovernedContainers completed successfully:\n"
               + response.getPage().getValues());
     } catch (IOException e) {
+      e.printStackTrace();
       System.out.println("Failed to create client:\n" + e.toString());
     } catch (ApiException e) {
+      e.printStackTrace();
       System.out.println("Error during AnalyzeOrgPolicyGovernedContainers:\n" + e.toString());
     }
   }
