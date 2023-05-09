@@ -37,7 +37,7 @@ public class InspectWithStoredInfotype {
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
-    // The custom info-type id created and stored in the bucket.
+    // Specify the stored InfoType to use for inspecting the data.
     String infoTypeId = "your-info-type-id";
     // The string to de-identify.
     String textToDeidentify =
@@ -45,6 +45,7 @@ public class InspectWithStoredInfotype {
     inspectWithStoredInfotype(projectId, infoTypeId, textToDeidentify);
   }
 
+  //  Inspects the given text using the specified stored infoType detector.
   public static void inspectWithStoredInfotype(
       String projectId, String infoTypeId, String textToDeidentify) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -55,17 +56,16 @@ public class InspectWithStoredInfotype {
       // Specify the content to be inspected.
       ContentItem contentItem = ContentItem.newBuilder().setValue(textToDeidentify).build();
 
-      // Specify the info type the inspection will look for.
-      InfoType infoType = InfoType.newBuilder().setName("email-id").build();
+      InfoType infoType = InfoType.newBuilder().setName("GITHUB_LOGINS").build();
 
-      // Specify the stored info type the inspection will look for.
+      // Reference to the existing StoredInfoType to inspect the data.
       StoredType storedType = StoredType.newBuilder()
               .setName(ProjectStoredInfoTypeName.of(projectId, infoTypeId).toString()).build();
 
       CustomInfoType customInfoType =
           CustomInfoType.newBuilder().setInfoType(infoType).setStoredType(storedType).build();
 
-      // Specify how the content should be inspected.
+      // Construct the configuration for the Inspect request.
       InspectConfig inspectConfig =
           InspectConfig.newBuilder()
               .addCustomInfoTypes(customInfoType)

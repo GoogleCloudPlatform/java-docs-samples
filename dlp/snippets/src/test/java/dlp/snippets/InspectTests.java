@@ -481,20 +481,19 @@ public class InspectTests extends TestBase {
 
   @Test
   public void testInspectWithStoredInfotype() throws Exception {
-    // Create a new stored info-type.
+    // Create a new stored InfoType.
     String infoTypeId = UUID.randomUUID().toString();
-    String outputPath = "gs://dlp-crest-test/";
-    createStoredInfoType(PROJECT_ID, outputPath, infoTypeId);
-    // Wait for 10 seconds.
+    createStoredInfoType(PROJECT_ID, GCS_PATH, infoTypeId);
+
+    // Wait for the creation of Stored InfoType.
     Thread.sleep(10000);
-    // Perform the test.
+
     String textToDeidentify =
-        "My phone number is (223) 456-7890 and my email address is gary@example.com.";
+        "My email address is gary@example.com.";
     InspectWithStoredInfotype.inspectWithStoredInfotype(PROJECT_ID, infoTypeId, textToDeidentify);
     String output = bout.toString();
-    assertThat(output).contains("Findings: 5");
-    // Wait for 10 seconds.
-    Thread.sleep(10000);
+    assertThat(output).contains("Findings: 2");
+
     // Delete the specific info-type.
     DeleteStoredInfoTypeRequest deleteStoredInfoTypeRequest =
         DeleteStoredInfoTypeRequest.newBuilder()
