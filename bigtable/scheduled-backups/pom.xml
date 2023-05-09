@@ -24,7 +24,7 @@ limitations under the License.
     <version>1.2.0</version>
   </parent>
 
-  <groupId>com.google.example.schedule.backup</groupId>
+  <groupId>com.example.bigtable</groupId>
   <artifactId>scheduled-backups</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -90,7 +90,7 @@ limitations under the License.
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.5.13</version>
+      <version>4.5.14</version>
       <scope>test</scope>
     </dependency>
     <dependency>

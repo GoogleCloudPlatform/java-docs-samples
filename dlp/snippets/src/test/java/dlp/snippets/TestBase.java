@@ -38,6 +38,8 @@ abstract class TestBase {
   protected static final String SUBSCRIPTION_ID = System.getenv("PUB_SUB_SUBSCRIPTION");
   protected static final String DATASET_ID = System.getenv("BIGQUERY_DATASET");
   protected static final String TABLE_ID = System.getenv("BIGQUERY_TABLE");
+  protected static final String DATASTORE_NAMESPACE = System.getenv("DLP_NAMESPACE_ID");
+  protected static final String DATASTORE_KIND = System.getenv("DLP_DATASTORE_KIND");
   protected static final String WRAPPED_KEY = System.getenv("DLP_DEID_WRAPPED_KEY");
   protected static final String KMS_KEY_NAME = System.getenv("DLP_DEID_KEY_NAME");
   protected static final String INFO_TYPE_ID = System.getenv("INFO_TYPE_ID");

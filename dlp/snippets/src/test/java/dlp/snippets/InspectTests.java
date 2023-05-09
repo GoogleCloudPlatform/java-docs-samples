@@ -36,8 +36,8 @@ import com.google.privacy.dlp.v2.StoredInfoTypeConfig;
 import com.google.privacy.dlp.v2.Table;
 import com.google.privacy.dlp.v2.Table.Row;
 import com.google.privacy.dlp.v2.Value;
-import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PushConfig;
+import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.TopicName;
 import java.io.IOException;
 import java.util.Arrays;
@@ -60,8 +60,21 @@ public class InspectTests extends TestBase {
   private static final UUID testRunUuid = UUID.randomUUID();
   private static final TopicName topicName =
       TopicName.of(PROJECT_ID, String.format("%s-%s", TOPIC_ID, testRunUuid));
-  private static final ProjectSubscriptionName subscriptionName =
-      ProjectSubscriptionName.of(PROJECT_ID, String.format("%s-%s", SUBSCRIPTION_ID, testRunUuid));
+  private static final SubscriptionName subscriptionName =
+      SubscriptionName.of(
+          PROJECT_ID, String.format("%s-%s", SUBSCRIPTION_ID, testRunUuid.toString()));
+
+  @Override
+  protected ImmutableList<String> requiredEnvVars() {
+    return ImmutableList.of(
+        "GOOGLE_APPLICATION_CREDENTIALS",
+        "GOOGLE_CLOUD_PROJECT",
+        "GCS_PATH",
+        "PUB_SUB_TOPIC",
+        "PUB_SUB_SUBSCRIPTION",
+        "BIGQUERY_DATASET",
+        "BIGQUERY_TABLE");
+  }
 
   @BeforeClass
   public static void before() throws Exception {
@@ -188,7 +201,7 @@ public class InspectTests extends TestBase {
     InspectStringWithExclusionDict.inspectStringWithExclusionDict(
         PROJECT_ID,
         "Some email addresses: gary@example.com, example@example.com",
-        Collections.singletonList("example@example.com"));
+        Arrays.asList("example@example.com"));
 
     String output = bout.toString();
     assertThat(output).contains("gary@example.com");
@@ -200,7 +213,7 @@ public class InspectTests extends TestBase {
     InspectStringWithExclusionDictSubstring.inspectStringWithExclusionDictSubstring(
         PROJECT_ID,
         "Some email addresses: gary@example.com, TEST@example.com",
-        Collections.singletonList("TEST"));
+        Arrays.asList("TEST"));
 
     String output = bout.toString();
     assertThat(output).contains("gary@example.com");
@@ -223,7 +236,7 @@ public class InspectTests extends TestBase {
         PROJECT_ID,
         "Name: Doe, John. Name: Example, Jimmy",
         "[A-Z][a-z]{1,15}, [A-Z][a-z]{1,15}",
-        Collections.singletonList("Jimmy"));
+        Arrays.asList("Jimmy"));
 
     String output = bout.toString();
     assertThat(output).contains("Doe, John");
@@ -370,11 +383,10 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
-    String jobName =
-        Arrays.stream(output.split("\n"))
-            .filter(line -> line.contains("Job name:"))
-            .findFirst()
-            .get();
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
     jobName = jobName.split(":")[1].trim();
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       dlp.deleteDlpJob(jobName);
@@ -388,11 +400,10 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
-    String jobName =
-        Arrays.stream(output.split("\n"))
-            .filter(line -> line.contains("Job name:"))
-            .findFirst()
-            .get();
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
     jobName = jobName.split(":")[1].trim();
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       dlp.deleteDlpJob(jobName);
@@ -410,11 +421,10 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
-    String jobName =
-        Arrays.stream(output.split("\n"))
-            .filter(line -> line.contains("Job name:"))
-            .findFirst()
-            .get();
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
     jobName = jobName.split(":")[1].trim();
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       dlp.deleteDlpJob(jobName);
@@ -428,11 +438,10 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
-    String jobName =
-        Arrays.stream(output.split("\n"))
-            .filter(line -> line.contains("Job name:"))
-            .findFirst()
-            .get();
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
     jobName = jobName.split(":")[1].trim();
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       dlp.deleteDlpJob(jobName);
@@ -446,11 +455,10 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
-    String jobName =
-        Arrays.stream(output.split("\n"))
-            .filter(line -> line.contains("Job name:"))
-            .findFirst()
-            .get();
+    String jobName = Arrays.stream(output.split("\n"))
+        .filter(line -> line.contains("Job name:"))
+        .findFirst()
+        .get();
     jobName = jobName.split(":")[1].trim();
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       dlp.deleteDlpJob(jobName);
@@ -473,7 +481,7 @@ public class InspectTests extends TestBase {
   @Test
   public void testInspectStringAugmentInfoType() throws Exception {
     InspectStringAugmentInfoType.inspectStringAugmentInfoType(
-        PROJECT_ID, "The patient's name is Quasimodo", Collections.singletonList("quasimodo"));
+        PROJECT_ID, "The patient's name is Quasimodo", Arrays.asList("quasimodo"));
     String output = bout.toString();
     assertThat(output).contains("Findings: 1");
     assertThat(output).contains("Info type: PERSON_NAME");

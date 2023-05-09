@@ -17,7 +17,7 @@
 package functions;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.kgsearch.v1.Kgsearch;
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
@@ -63,7 +63,7 @@ public class SlackSlashCommand implements HttpFunction {
     this.verifier = verifier;
     this.apiKey = apiKey;
     this.kgClient = new Kgsearch.Builder(
-        GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(), null).build();
+        GoogleNetHttpTransport.newTrustedTransport(), new GsonFactory(), null).build();
   }
 
   // Avoid ungraceful deployment failures due to unset environment variables.

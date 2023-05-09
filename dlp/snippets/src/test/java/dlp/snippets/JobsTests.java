@@ -31,6 +31,7 @@ import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import java.io.IOException;
 import java.util.UUID;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -38,34 +39,41 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class JobsTests extends TestBase {
 
+  private static DlpServiceClient dlpServiceClient;
+
   @Override
   protected ImmutableList<String> requiredEnvVars() {
     return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT", "GCS_PATH");
   }
 
+  @BeforeClass
+  public static void setUp() throws Exception {
+    // Initialize the Dlp Service Client.
+    dlpServiceClient = DlpServiceClient.create();
+  }
+
   private static DlpJob createJob(String jobId) throws IOException {
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      FileSet fileSet = FileSet.newBuilder().setUrl(GCS_PATH).build();
-      CloudStorageOptions cloudStorageOptions =
-          CloudStorageOptions.newBuilder().setFileSet(fileSet).build();
-      StorageConfig storageConfig =
-          StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
 
-      InspectJobConfig inspectJobConfig =
-          InspectJobConfig.newBuilder()
-              .setStorageConfig(storageConfig)
-              .setInspectConfig(InspectConfig.newBuilder().build())
-              .build();
+    FileSet fileSet = FileSet.newBuilder().setUrl(GCS_PATH).build();
+    CloudStorageOptions cloudStorageOptions =
+        CloudStorageOptions.newBuilder().setFileSet(fileSet).build();
+    StorageConfig storageConfig =
+        StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
 
-      CreateDlpJobRequest createDlpJobRequest =
-          CreateDlpJobRequest.newBuilder()
-              .setParent(LocationName.of(PROJECT_ID, "global").toString())
-              .setInspectJob(inspectJobConfig)
-              .setJobId(jobId)
-              .build();
+    InspectJobConfig inspectJobConfig =
+        InspectJobConfig.newBuilder()
+            .setStorageConfig(storageConfig)
+            .setInspectConfig(InspectConfig.newBuilder().build())
+            .build();
 
-      return dlp.createDlpJob(createDlpJobRequest);
-    }
+    CreateDlpJobRequest createDlpJobRequest =
+        CreateDlpJobRequest.newBuilder()
+            .setParent(LocationName.of(PROJECT_ID, "global").toString())
+            .setInspectJob(inspectJobConfig)
+            .setJobId(jobId)
+            .build();
+
+    return dlpServiceClient.createDlpJob(createDlpJobRequest);
   }
 
   @Test
@@ -79,9 +87,8 @@ public class JobsTests extends TestBase {
     String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
-    try (DlpServiceClient client = DlpServiceClient.create()) {
-      client.deleteDlpJob(deleteDlpJobRequest);
-    }
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
   }
 
   @Test
@@ -99,9 +106,9 @@ public class JobsTests extends TestBase {
     String dlpJobName = createdDlpJob.getName();
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
-    try (DlpServiceClient client = DlpServiceClient.create()) {
-      client.deleteDlpJob(deleteDlpJobRequest);
-    }
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+
   }
 
   @Test
@@ -124,5 +131,51 @@ public class JobsTests extends TestBase {
     JobsDelete.deleteJobs(PROJECT_ID, "i-" + jobId);
     String output = bout.toString();
     assertThat(output).contains("Job deleted successfully.");
+  }
+
+  @Test
+  public void testInspectBigQuerySendToScc() throws Exception {
+    InspectBigQuerySendToScc.inspectBigQuerySendToScc(PROJECT_ID, DATASET_ID, TABLE_ID);
+
+    String output = bout.toString();
+    assertThat(output).contains("Job created successfully");
+    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+
+    // Delete the created Dlp Job
+    DeleteDlpJobRequest deleteDlpJobRequest =
+        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+  }
+
+  @Test
+  public void testCreateDatastoreJobWithScc() throws Exception {
+    InspectDatastoreSendToScc.inspectDatastoreSendToScc(
+        PROJECT_ID, DATASTORE_NAMESPACE, DATASTORE_KIND);
+
+    String output = bout.toString();
+    assertThat(output).contains("Job created successfully");
+    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+
+    // Delete the created Dlp Job
+    DeleteDlpJobRequest deleteDlpJobRequest =
+        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+  }
+
+  @Test
+  public void testCreateJobsSendScc() throws Exception {
+    // Call createJobs to create a Dlp job from project id and gcs path and send data to SCC.
+    InspectGcsFileSendToScc.createJobSendToScc(PROJECT_ID, GCS_PATH);
+    String output = bout.toString();
+    assertThat(output).contains("Job created successfully:");
+
+    // Delete the created Dlp Job
+    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+    DeleteDlpJobRequest deleteDlpJobRequest =
+        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
   }
 }

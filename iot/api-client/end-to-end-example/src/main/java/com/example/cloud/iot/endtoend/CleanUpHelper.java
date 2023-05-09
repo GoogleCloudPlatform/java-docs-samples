@@ -21,7 +21,7 @@ import static com.example.cloud.iot.endtoend.CloudiotPubsubExampleServer.APP_NAM
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.cloudiot.v1.CloudIot;
 import com.google.api.services.cloudiot.v1.CloudIotScopes;
 import com.google.api.services.cloudiot.v1.model.Device;
@@ -37,7 +37,7 @@ public class CleanUpHelper {
       throws IOException, GeneralSecurityException {
     GoogleCredentials credential =
         GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
     HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)
@@ -79,7 +79,7 @@ public class CleanUpHelper {
       throws GeneralSecurityException, IOException {
     GoogleCredentials credential =
         GoogleCredentials.getApplicationDefault().createScoped(CloudIotScopes.all());
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
     HttpRequestInitializer init = new HttpCredentialsAdapter(credential);
     final CloudIot service =
         new CloudIot.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, init)

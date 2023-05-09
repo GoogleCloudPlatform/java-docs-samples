@@ -19,7 +19,7 @@ package com.google.cloud.vision.samples.facedetect;
 // [START vision_face_detection_tutorial_imports]
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionScopes;
 import com.google.api.services.vision.v1.model.AnnotateImageRequest;
@@ -88,7 +88,7 @@ public class FaceDetectApp {
   public static Vision getVisionService() throws IOException, GeneralSecurityException {
     GoogleCredentials credential =
         GoogleCredentials.getApplicationDefault().createScoped(VisionScopes.all());
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
     return new Vision.Builder(
             GoogleNetHttpTransport.newTrustedTransport(),
             jsonFactory,
