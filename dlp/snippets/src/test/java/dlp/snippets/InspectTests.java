@@ -96,7 +96,7 @@ public class InspectTests extends TestBase {
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       topicAdminClient.deleteTopic(topicName);
     } catch (ApiException e) {
-      System.err.printf("Error deleting topic %s: %s%n", topicName.getTopic(), e);
+      System.err.println(String.format("Error deleting topic %s: %s", topicName.getTopic(), e));
       // Keep trying to clean up
     }
 
@@ -104,8 +104,9 @@ public class InspectTests extends TestBase {
     try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
       subscriptionAdminClient.deleteSubscription(subscriptionName);
     } catch (ApiException e) {
-      System.err.printf(
-          "Error deleting subscription %s: %s%n", subscriptionName.getSubscription(), e);
+      System.err.println(
+          String.format(
+              "Error deleting subscription %s: %s", subscriptionName.getSubscription(), e));
       // Keep trying to clean up
     }
   }
