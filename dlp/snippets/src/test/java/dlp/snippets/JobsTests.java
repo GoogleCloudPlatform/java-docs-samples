@@ -91,10 +91,7 @@ public class JobsTests extends TestBase {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       // Set hybrid options for content outside GCP.
-      HybridOptions hybridOptions =
-          HybridOptions.newBuilder()
-              .putLabels("env", "prod")
-              .build();
+      HybridOptions hybridOptions = HybridOptions.newBuilder().putLabels("env", "prod").build();
 
       // Set storage config indicating the type of cloud storage.
       StorageConfig storageConfig =
@@ -137,11 +134,6 @@ public class JobsTests extends TestBase {
     }
   }
 
-  @Override
-  protected ImmutableList<String> requiredEnvVars() {
-    return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT", "GCS_PATH");
-  }
-
   @Test
   public void testCreateJobs() throws Exception {
     // Call createJobs to create a Dlp job from project id and gcs path.
@@ -174,7 +166,6 @@ public class JobsTests extends TestBase {
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
 
     dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
-
   }
 
   @Test
