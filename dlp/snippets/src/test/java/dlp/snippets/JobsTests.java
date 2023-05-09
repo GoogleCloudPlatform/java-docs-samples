@@ -80,7 +80,6 @@ public class JobsTests extends TestBase {
       // Set hybrid options for content outside GCP.
       HybridOptions hybridOptions =
           HybridOptions.newBuilder()
-              .addRequiredFindingLabelKeys("appointment-bookings-comments")
               .putLabels("env", "prod")
               .build();
 
@@ -198,7 +197,7 @@ public class JobsTests extends TestBase {
     InspectDataToHybridJobTrigger.inspectDataToHybridJobTrigger(
         textToDeIdentify, PROJECT_ID, jobTriggerId);
     String output = bout.toString();
-    assertThat(output).isEmpty();
+    assertThat(output).contains("Successfully inspected data using a hybrid job trigger");
 
     // Delete the specific job trigger.
     DeleteJobTriggerRequest deleteJobTriggerRequest =

@@ -27,8 +27,6 @@ import com.google.privacy.dlp.v2.HybridFindingDetails;
 import com.google.privacy.dlp.v2.HybridInspectJobTriggerRequest;
 import com.google.privacy.dlp.v2.HybridInspectResponse;
 import com.google.privacy.dlp.v2.JobTriggerName;
-import java.util.HashMap;
-import java.util.Map;
 
 public class InspectDataToHybridJobTrigger {
 
@@ -63,16 +61,8 @@ public class InspectDataToHybridJobTrigger {
               .setVersion("1.2")
               .build();
 
-      // Set the required label.
-      Map<String, String> labels = new HashMap<>();
-      labels.put("env", "prod");
-      labels.put("appointment-bookings-comments", "");
-
       HybridFindingDetails hybridFindingDetails =
-          HybridFindingDetails.newBuilder()
-              .setContainerDetails(container)
-              .putAllLabels(labels)
-              .build();
+          HybridFindingDetails.newBuilder().setContainerDetails(container).build();
 
       HybridContentItem hybridContentItem =
           HybridContentItem.newBuilder()
@@ -98,7 +88,7 @@ public class InspectDataToHybridJobTrigger {
       HybridInspectResponse response = dlpClient.hybridInspectJobTrigger(request);
 
       // Print the result.
-      System.out.print(response);
+      System.out.print("Successfully inspected data using a hybrid job trigger.");
     }
   }
 }
