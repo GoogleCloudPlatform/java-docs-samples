@@ -16,7 +16,7 @@
 
 package dlp.snippets;
 
-// [Start dlp_inspect_data_to_hybrid_job_trigger]
+// [START dlp_inspect_data_to_hybrid_job_trigger]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ActivateJobTriggerRequest;
