@@ -27,6 +27,7 @@ import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectContentRequest;
 import com.google.privacy.dlp.v2.InspectContentResponse;
 import com.google.privacy.dlp.v2.LocationName;
+import com.google.privacy.dlp.v2.ProjectStoredInfoTypeName;
 import com.google.privacy.dlp.v2.StoredType;
 import java.io.IOException;
 
@@ -58,7 +59,8 @@ public class InspectWithStoredInfotype {
       InfoType infoType = InfoType.newBuilder().setName("email-id").build();
 
       // Specify the stored info type the inspection will look for.
-      StoredType storedType = StoredType.newBuilder().setName(infoTypeId).build();
+      StoredType storedType = StoredType.newBuilder()
+              .setName(ProjectStoredInfoTypeName.of(projectId, infoTypeId).toString()).build();
 
       CustomInfoType customInfoType =
           CustomInfoType.newBuilder().setInfoType(infoType).setStoredType(storedType).build();

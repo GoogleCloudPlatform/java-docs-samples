@@ -23,14 +23,25 @@ import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.collect.ImmutableList;
+import com.google.privacy.dlp.v2.BigQueryField;
+import com.google.privacy.dlp.v2.BigQueryTable;
+import com.google.privacy.dlp.v2.CloudStoragePath;
+import com.google.privacy.dlp.v2.CreateStoredInfoTypeRequest;
+import com.google.privacy.dlp.v2.DeleteStoredInfoTypeRequest;
 import com.google.privacy.dlp.v2.FieldId;
+import com.google.privacy.dlp.v2.LargeCustomDictionaryConfig;
+import com.google.privacy.dlp.v2.LocationName;
+import com.google.privacy.dlp.v2.ProjectStoredInfoTypeName;
+import com.google.privacy.dlp.v2.StoredInfoTypeConfig;
 import com.google.privacy.dlp.v2.Table;
 import com.google.privacy.dlp.v2.Table.Row;
 import com.google.privacy.dlp.v2.Value;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.TopicName;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -50,20 +61,7 @@ public class InspectTests extends TestBase {
   private static final TopicName topicName =
       TopicName.of(PROJECT_ID, String.format("%s-%s", TOPIC_ID, testRunUuid));
   private static final ProjectSubscriptionName subscriptionName =
-      ProjectSubscriptionName.of(
-          PROJECT_ID, String.format("%s-%s", SUBSCRIPTION_ID, testRunUuid.toString()));
-
-  @Override
-  protected ImmutableList<String> requiredEnvVars() {
-    return ImmutableList.of(
-        "GOOGLE_APPLICATION_CREDENTIALS",
-        "GOOGLE_CLOUD_PROJECT",
-        "GCS_PATH",
-        "PUB_SUB_TOPIC",
-        "PUB_SUB_SUBSCRIPTION",
-        "BIGQUERY_DATASET",
-        "BIGQUERY_TABLE");
-  }
+      ProjectSubscriptionName.of(PROJECT_ID, String.format("%s-%s", SUBSCRIPTION_ID, testRunUuid));
 
   @BeforeClass
   public static void before() throws Exception {
@@ -85,7 +83,7 @@ public class InspectTests extends TestBase {
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       topicAdminClient.deleteTopic(topicName);
     } catch (ApiException e) {
-      System.err.println(String.format("Error deleting topic %s: %s", topicName.getTopic(), e));
+      System.err.printf("Error deleting topic %s: %s%n", topicName.getTopic(), e);
       // Keep trying to clean up
     }
 
@@ -93,13 +91,72 @@ public class InspectTests extends TestBase {
     try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
       subscriptionAdminClient.deleteSubscription(subscriptionName);
     } catch (ApiException e) {
-      System.err.println(
-          String.format(
-              "Error deleting subscription %s: %s", subscriptionName.getSubscription(), e));
+      System.err.printf(
+          "Error deleting subscription %s: %s%n", subscriptionName.getSubscription(), e);
       // Keep trying to clean up
     }
   }
 
+  public static void createStoredInfoType(String projectId, String outputPath, String infoTypeId)
+      throws IOException {
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+
+      // Optionally set a display name and a description.
+      String displayName = "GitHub usernames";
+      String description = "Dictionary of GitHub usernames used in commits";
+
+      CloudStoragePath cloudStoragePath = CloudStoragePath.newBuilder().setPath(outputPath).build();
+
+      BigQueryTable table =
+          BigQueryTable.newBuilder()
+              .setProjectId("bigquery-public-data")
+              .setTableId("github_nested")
+              .setDatasetId("samples")
+              .build();
+
+      BigQueryField bigQueryField =
+          BigQueryField.newBuilder()
+              .setTable(table)
+              .setField(FieldId.newBuilder().setName("actor").build())
+              .build();
+
+      LargeCustomDictionaryConfig largeCustomDictionaryConfig =
+          LargeCustomDictionaryConfig.newBuilder()
+              .setOutputPath(cloudStoragePath)
+              .setBigQueryField(bigQueryField)
+              .build();
+
+      StoredInfoTypeConfig storedInfoTypeConfig =
+          StoredInfoTypeConfig.newBuilder()
+              .setDisplayName(displayName)
+              .setDescription(description)
+              .setLargeCustomDictionary(largeCustomDictionaryConfig)
+              .build();
+
+      // Combine configurations into a request for the service.
+      CreateStoredInfoTypeRequest createStoredInfoType =
+          CreateStoredInfoTypeRequest.newBuilder()
+              .setParent(LocationName.of(projectId, "global").toString())
+              .setConfig(storedInfoTypeConfig)
+              .setStoredInfoTypeId(infoTypeId)
+              .build();
+
+      // Send the request and receive response from the service.
+      dlp.createStoredInfoType(createStoredInfoType);
+    }
+  }
+
+  @Override
+  protected ImmutableList<String> requiredEnvVars() {
+    return ImmutableList.of(
+        "GOOGLE_APPLICATION_CREDENTIALS",
+        "GOOGLE_CLOUD_PROJECT",
+        "GCS_PATH",
+        "PUB_SUB_TOPIC",
+        "PUB_SUB_SUBSCRIPTION",
+        "BIGQUERY_DATASET",
+        "BIGQUERY_TABLE");
+  }
 
   @Test
   public void testInspectPhoneNumber() throws Exception {
@@ -131,7 +188,7 @@ public class InspectTests extends TestBase {
     InspectStringWithExclusionDict.inspectStringWithExclusionDict(
         PROJECT_ID,
         "Some email addresses: gary@example.com, example@example.com",
-        Arrays.asList("example@example.com"));
+        Collections.singletonList("example@example.com"));
 
     String output = bout.toString();
     assertThat(output).contains("gary@example.com");
@@ -143,7 +200,7 @@ public class InspectTests extends TestBase {
     InspectStringWithExclusionDictSubstring.inspectStringWithExclusionDictSubstring(
         PROJECT_ID,
         "Some email addresses: gary@example.com, TEST@example.com",
-        Arrays.asList("TEST"));
+        Collections.singletonList("TEST"));
 
     String output = bout.toString();
     assertThat(output).contains("gary@example.com");
@@ -166,7 +223,7 @@ public class InspectTests extends TestBase {
         PROJECT_ID,
         "Name: Doe, John. Name: Example, Jimmy",
         "[A-Z][a-z]{1,15}, [A-Z][a-z]{1,15}",
-        Arrays.asList("Jimmy"));
+        Collections.singletonList("Jimmy"));
 
     String output = bout.toString();
     assertThat(output).contains("Doe, John");
@@ -313,10 +370,11 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
+    String jobName =
+        Arrays.stream(output.split("\n"))
+            .filter(line -> line.contains("Job name:"))
+            .findFirst()
+            .get();
     jobName = jobName.split(":")[1].trim();
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       dlp.deleteDlpJob(jobName);
@@ -330,10 +388,11 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
+    String jobName =
+        Arrays.stream(output.split("\n"))
+            .filter(line -> line.contains("Job name:"))
+            .findFirst()
+            .get();
     jobName = jobName.split(":")[1].trim();
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       dlp.deleteDlpJob(jobName);
@@ -351,10 +410,11 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
+    String jobName =
+        Arrays.stream(output.split("\n"))
+            .filter(line -> line.contains("Job name:"))
+            .findFirst()
+            .get();
     jobName = jobName.split(":")[1].trim();
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       dlp.deleteDlpJob(jobName);
@@ -368,10 +428,11 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
+    String jobName =
+        Arrays.stream(output.split("\n"))
+            .filter(line -> line.contains("Job name:"))
+            .findFirst()
+            .get();
     jobName = jobName.split(":")[1].trim();
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       dlp.deleteDlpJob(jobName);
@@ -385,10 +446,11 @@ public class InspectTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Job status: DONE");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
+    String jobName =
+        Arrays.stream(output.split("\n"))
+            .filter(line -> line.contains("Job name:"))
+            .findFirst()
+            .get();
     jobName = jobName.split(":")[1].trim();
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       dlp.deleteDlpJob(jobName);
@@ -411,7 +473,7 @@ public class InspectTests extends TestBase {
   @Test
   public void testInspectStringAugmentInfoType() throws Exception {
     InspectStringAugmentInfoType.inspectStringAugmentInfoType(
-        PROJECT_ID, "The patient's name is Quasimodo", Arrays.asList("quasimodo"));
+        PROJECT_ID, "The patient's name is Quasimodo", Collections.singletonList("quasimodo"));
     String output = bout.toString();
     assertThat(output).contains("Findings: 1");
     assertThat(output).contains("Info type: PERSON_NAME");
@@ -419,10 +481,27 @@ public class InspectTests extends TestBase {
 
   @Test
   public void testInspectWithStoredInfotype() throws Exception {
+    // Create a new stored info-type.
+    String infoTypeId = UUID.randomUUID().toString();
+    String outputPath = "gs://dlp-crest-test/";
+    createStoredInfoType(PROJECT_ID, outputPath, infoTypeId);
+    // Wait for 10 seconds
+    Thread.sleep(10000);
+    // Perform the actual test
     String textToDeidentify =
-            "My phone number is (223) 456-7890 and my email address is gary@example.com.";
-    InspectWithStoredInfotype.inspectWithStoredInfotype(PROJECT_ID, INFO_TYPE_ID, textToDeidentify);
+        "My phone number is (223) 456-7890 and my email address is gary@example.com.";
+    InspectWithStoredInfotype.inspectWithStoredInfotype(PROJECT_ID, infoTypeId, textToDeidentify);
     String output = bout.toString();
-    assertThat(output).contains("Info type: EMAIL_ADDRESS");
+    assertThat(output).contains("Findings: 5");
+    // Wait for 10 seconds
+    Thread.sleep(10000);
+    // Delete the specific info-type.
+    DeleteStoredInfoTypeRequest deleteStoredInfoTypeRequest =
+        DeleteStoredInfoTypeRequest.newBuilder()
+            .setName(ProjectStoredInfoTypeName.of(PROJECT_ID, infoTypeId).toString())
+            .build();
+    try (DlpServiceClient client = DlpServiceClient.create()) {
+      client.deleteStoredInfoType(deleteStoredInfoTypeRequest);
+    }
   }
 }
