@@ -27,6 +27,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
@@ -37,44 +38,62 @@ public class DualToken {
 
   public static void main(String[] args) throws NoSuchAlgorithmException, InvalidKeyException {
     // TODO(developer): Replace these variables before running the sample.
+    // Secret key as a base64 encoded string.
     byte[] base64Key = new byte[]{};
+    // Algorithm can be either `SHA1` or `SHA256` or `Ed25519`.
     String signatureAlgorithm = "ed25519";
+    // (Optional) Start time as a UTC datetime object.
     DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+    Optional<Instant> startTime = Optional.empty();
+    // Expiration time as a UTC datetime object. If None, an expiration time 1 hour from now will be used.
     Instant expiresTime = Instant.from(formatter.parse("2022-09-13T12:00:00Z"));
-    String fullPath = "http://10.20.30.40/";
 
-    DualToken.signToken(base64Key,
+    // ONE OF (`urlPrefix`, `fullPath`, `pathGlobs`) must be included in each input.
+    // The URL prefix to sign, including protocol.
+    // For example: http://example.com/path/ for URLs under /path or http://example.com/path?param=1
+    Optional<String> urlPrefix = Optional.empty();
+    // A full path to sign, starting with the first '/'.
+    // For example: /path/to/content.mp4
+    Optional<String> fullPath = Optional.of("http://10.20.30.40/");
+    // A set of ','- or '!'-delimited path glob strings.
+    // For example: /tv/*!/film/* to sign paths starting with /tv/ or /film/ in any URL.
+    Optional<String> pathGlobs = Optional.empty();
+
+    // (Optional) A unique identifier for the session
+    Optional<String> sessionID = Optional.empty();
+    // (Optional) Data payload to include in the token
+    Optional<String> data = Optional.empty();
+    // (Optional) Header name and value to include in the signed token in name=value format.
+    // May be specified more than once.
+    // For example: [{'name': 'foo', 'value': 'bar'}, {'name': 'baz', 'value': 'qux'}]
+    Optional<List<Header>> headers = Optional.empty();
+    // (Optional) A list of comma separated ip ranges. Both IPv4 and IPv6 ranges are acceptable.
+    // For example: "203.0.113.0/24,2001:db8:4a7f:a732/64"
+    Optional<String> ipRanges = Optional.empty();
+
+    DualToken.signToken(
+        base64Key,
         signatureAlgorithm,
-        null,
+        startTime,
         expiresTime,
-        fullPath, "", "", "", "", new ArrayList<>(), "");
+        urlPrefix,
+        fullPath,
+        pathGlobs,
+        sessionID,
+        data,
+        headers,
+        ipRanges);
   }
 
-  // Gets the Signed URL Suffix string for the Media CDN' Short token URL requests.
-  // One of (`urlPrefix`, `fullPath`, `pathGlobs`) must be included in each input.
-  // Args:
-  //     base64Key: Secret key as a base64 encoded string.
-  //     signatureAlgorithm: Algorithm can be either `SHA1` or `SHA256` or `Ed25519`.
-  //     startTime: Start time as a UTC datetime object.
-  //     expirationTime: Expiration time as a UTC datetime object. If None, an expiration time 1 hour from now will be used.
-  //     urlPrefix: the URL prefix to sign, including protocol.
-  //                 For example: http://example.com/path/ for URLs under /path or http://example.com/path?param=1
-  //     fullPath:  A full path to sign, starting with the first '/'.
-  //                 For example: /path/to/content.mp4
-  //     pathGlobs: a set of ','- or '!'-delimited path glob strings.
-  //                 For example: /tv/*!/film/* to sign paths starting with /tv/ or /film/ in any URL.
-  //     sessionId: a unique identifier for the session
-  //     data: data payload to include in the token
-  //     headers: header name and value to include in the signed token in name=value format.  May be specified more than once.
-  //                 For example: [{'name': 'foo', 'value': 'bar'}, {'name': 'baz', 'value': 'qux'}]
-  //     ipRanges: A list of comma separated ip ranges. Both IPv4 and IPv6 ranges are acceptable.
-  //                 For example: "203.0.113.0/24,2001:db8:4a7f:a732/64"
+  // Gets the Signed URL Suffix string for the 'Media CDN' Short token URL requests.
   // Result:
   //     The Signed URL appended with the query parameters based on the
   //     specified URL prefix and configuration.
-  public static void signToken(byte[] base64Key, String signatureAlgorithm, Instant startTime,
-      Instant expirationTime, String urlPrefix, String fullPath,
-      String pathGlobs, String sessionId, String data, List<Header> headers, String ipRanges)
+  public static void signToken(
+      byte[] base64Key, String signatureAlgorithm, Optional<Instant> startTime,
+      Instant expirationTime, Optional<String> urlPrefix, Optional<String> fullPath,
+      Optional<String> pathGlobs, Optional<String> sessionId, Optional<String> data,
+      Optional<List<Header>> headers, Optional<String> ipRanges)
       throws NoSuchAlgorithmException, InvalidKeyException {
 
     String field = "";
@@ -85,22 +104,20 @@ public class DualToken {
     // are the same.  The FullPath and Headers use a different string for the
     // value to be signed compared to the token.  To illustrate this difference,
     // we'll keep the token and the value to be signed separate.
-
     List<String> tokens = new ArrayList<>();
     List<String> toSign = new ArrayList<>();
 
     // Check for `fullPath` or `pathGlobs` or `urlPrefix`.
-    if (!fullPath.isEmpty()) {
+    if (fullPath.isPresent()) {
       tokens.add("FullPath");
-      toSign.add(String.format("FullPath=%s", fullPath));
-    } else if (!pathGlobs.isEmpty()) {
-      pathGlobs = pathGlobs.trim();
-      field = String.format("PathGlobs=%s", pathGlobs);
+      toSign.add(String.format("FullPath=%s", fullPath.get()));
+    } else if (pathGlobs.isPresent()) {
+      field = String.format("PathGlobs=%s", pathGlobs.get().trim());
       tokens.add(field);
       toSign.add(field);
-    } else if (!urlPrefix.isEmpty()) {
+    } else if (urlPrefix.isPresent()) {
       field = String.format("URLPrefix=%s",
-          base64Encoder(urlPrefix.getBytes(StandardCharsets.UTF_8)));
+          base64Encoder(urlPrefix.get().getBytes(StandardCharsets.UTF_8)));
       tokens.add(field);
       toSign.add(field);
     } else {
@@ -110,8 +127,8 @@ public class DualToken {
 
     // Check & parse optional params.
     long epochDuration;
-    if (startTime != null) {
-      epochDuration = ChronoUnit.SECONDS.between(Instant.EPOCH, startTime);
+    if (startTime.isPresent()) {
+      epochDuration = ChronoUnit.SECONDS.between(Instant.EPOCH, startTime.get());
       field = String.format("Starts=%s", epochDuration);
       tokens.add(field);
       toSign.add(field);
@@ -125,23 +142,23 @@ public class DualToken {
     tokens.add(field);
     toSign.add(field);
 
-    if (!sessionId.isEmpty()) {
-      field = String.format("SessionID=%s", sessionId);
+    if (sessionId.isPresent()) {
+      field = String.format("SessionID=%s", sessionId.get());
       tokens.add(field);
       toSign.add(field);
     }
 
-    if (!data.isEmpty()) {
-      field = String.format("Data=%s", data);
+    if (data.isPresent()) {
+      field = String.format("Data=%s", data.get());
       tokens.add(field);
       toSign.add(field);
     }
 
-    if (!headers.isEmpty()) {
+    if (headers.isPresent()) {
       List<String> headerNames = new ArrayList<>();
       List<String> headerPairs = new ArrayList<>();
 
-      for (Header entry : headers) {
+      for (Header entry : headers.get()) {
         headerNames.add(entry.getName());
         headerPairs.add(String.format("%s=%s", entry.getName(), entry.getValue()));
       }
@@ -149,14 +166,14 @@ public class DualToken {
       toSign.add(String.format("Headers=%s", String.join(",", headerPairs)));
     }
 
-    if (!ipRanges.isEmpty()) {
+    if (ipRanges.isPresent()) {
       field = String.format("IPRanges=%s",
-          base64Encoder(ipRanges.getBytes(StandardCharsets.US_ASCII)));
+          base64Encoder(ipRanges.get().getBytes(StandardCharsets.US_ASCII)));
       tokens.add(field);
       toSign.add(field);
     }
 
-    // Generating token.
+    // Generate token.
     String toSignJoined = String.join("~", toSign);
     byte[] toSignBytes = toSignJoined.getBytes(StandardCharsets.UTF_8);
 
@@ -167,24 +184,21 @@ public class DualToken {
       signer.update(toSignBytes, 0, toSignBytes.length);
       byte[] signature = signer.generateSignature();
       tokens.add(String.format("Signature=%s", base64Encoder(signature)));
-    }
-    else if (algorithm.equalsIgnoreCase("sha256")) {
+    } else if (algorithm.equalsIgnoreCase("sha256")) {
       String sha256 = "HmacSHA256";
       Mac mac = Mac.getInstance(sha256);
       SecretKeySpec secretKeySpec = new SecretKeySpec(decodedKey, sha256);
       mac.init(secretKeySpec);
       byte[] signature = mac.doFinal(toSignBytes);
       tokens.add(String.format("hmac=%s", Hex.toHexString(signature)));
-    }
-    else if (algorithm.equalsIgnoreCase("sha1")) {
+    } else if (algorithm.equalsIgnoreCase("sha1")) {
       String sha1 = "HmacSHA1";
       Mac mac = Mac.getInstance(sha1);
       SecretKeySpec secretKeySpec = new SecretKeySpec(decodedKey, sha1);
       mac.init(secretKeySpec);
       byte[] signature = mac.doFinal(toSignBytes);
       tokens.add(String.format("hmac=%s", Hex.toHexString(signature)));
-    }
-    else {
+    } else {
       throw new Error(
           "Input Missing Error: `signatureAlgorithm` can only be one of `sha1`, `sha256` or `ed25519`");
     }

@@ -26,6 +26,7 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -35,7 +36,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import token.DualToken;
 import token.DualToken.Header;
 
 @RunWith(JUnit4.class)
@@ -47,6 +47,9 @@ public class DualTokenIT {
   private static String DATA;
   private static String IP_RANGES;
   private static List<Header> HEADERS;
+  private static final Optional<String> EMPTY_STR = Optional.empty();
+  private static final Optional<Instant> EMPTY_INSTANT = Optional.empty();
+  private static final Optional<List<Header>> EMPTY_HEADER = Optional.empty();
 
   private ByteArrayOutputStream stdOut;
   private static final PrintStream OUT = System.out;
@@ -117,15 +120,15 @@ public class DualTokenIT {
     DualToken.signToken(
         "DJUcnLguVFKmVCFnWGubG1MZg7fWAnxacMjKDhVZMGI=".getBytes(),
         "ed25519",
-        null,
+        EMPTY_INSTANT,
         EXPIRES_TIME,
-        "http://10.20.30.40/",
-        "",
-        "",
-        "",
-        "",
-        new ArrayList<>(),
-        ""
+        Optional.of("http://10.20.30.40/"),
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_HEADER,
+        EMPTY_STR
     );
     Assert.assertEquals(stdOut.toString().trim(), expected);
   }
@@ -138,15 +141,15 @@ public class DualTokenIT {
     DualToken.signToken(
         "DJUcnLguVFKmVCFnWGubG1MZg7fWAnxacMjKDhVZMGI=".getBytes(),
         "ed25519",
-        null,
+        EMPTY_INSTANT,
         EXPIRES_TIME,
-        "",
-        "",
-        "/*",
-        "",
-        "",
-        new ArrayList<>(),
-        ""
+        EMPTY_STR,
+        EMPTY_STR,
+        Optional.of("/*"),
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_HEADER,
+        EMPTY_STR
     );
     Assert.assertEquals(stdOut.toString().trim(), expected);
   }
@@ -158,15 +161,15 @@ public class DualTokenIT {
     DualToken.signToken(
         "DJUcnLguVFKmVCFnWGubG1MZg7fWAnxacMjKDhVZMGI=".getBytes(),
         "ed25519",
-        null,
+        EMPTY_INSTANT,
         EXPIRES_TIME,
-        "",
-        "/example.m3u8",
-        "",
-        "",
-        "",
-        new ArrayList<>(),
-        ""
+        EMPTY_STR,
+        Optional.of("/example.m3u8"),
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_HEADER,
+        EMPTY_STR
     );
     Assert.assertEquals(stdOut.toString().trim(), expected);
   }
@@ -179,15 +182,15 @@ public class DualTokenIT {
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha1",
-        null,
+        EMPTY_INSTANT,
         EXPIRES_TIME,
-        "http://10.20.30.40/",
-        "",
-        "",
-        "",
-        "",
-        new ArrayList<>(),
-        ""
+        Optional.of("http://10.20.30.40/"),
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_HEADER,
+        EMPTY_STR
     );
     Assert.assertEquals(stdOut.toString().trim(), expected);
   }
@@ -199,15 +202,15 @@ public class DualTokenIT {
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha1",
-        null,
+        EMPTY_INSTANT,
         EXPIRES_TIME,
-        "",
-        "",
-        "/*",
-        "",
-        "",
-        new ArrayList<>(),
-        ""
+        EMPTY_STR,
+        EMPTY_STR,
+        Optional.of("/*"),
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_HEADER,
+        EMPTY_STR
     );
     Assert.assertEquals(stdOut.toString().trim(), expected);
   }
@@ -219,15 +222,15 @@ public class DualTokenIT {
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha1",
-        null,
+        EMPTY_INSTANT,
         EXPIRES_TIME,
-        "",
-        "/example.m3u8",
-        "",
-        "",
-        "",
-        new ArrayList<>(),
-        ""
+        EMPTY_STR,
+        Optional.of("/example.m3u8"),
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_HEADER,
+        EMPTY_STR
     );
     Assert.assertEquals(stdOut.toString().trim(), expected);
   }
@@ -239,15 +242,15 @@ public class DualTokenIT {
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha256",
-        null,
+        EMPTY_INSTANT,
         EXPIRES_TIME,
-        "http://10.20.30.40/",
-        "",
-        "",
-        "",
-        "",
-        new ArrayList<>(),
-        ""
+        Optional.of("http://10.20.30.40/"),
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_HEADER,
+        EMPTY_STR
     );
     Assert.assertEquals(stdOut.toString().trim(), expected);
   }
@@ -259,15 +262,15 @@ public class DualTokenIT {
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha256",
-        null,
+        EMPTY_INSTANT,
         EXPIRES_TIME,
-        "",
-        "",
-        "/*",
-        "",
-        "",
-        new ArrayList<>(),
-        ""
+        EMPTY_STR,
+        EMPTY_STR,
+        Optional.of("/*"),
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_HEADER,
+        EMPTY_STR
     );
     Assert.assertEquals(stdOut.toString().trim(), expected);
   }
@@ -279,15 +282,15 @@ public class DualTokenIT {
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha256",
-        null,
+        EMPTY_INSTANT,
         EXPIRES_TIME,
-        "",
-        "/example.m3u8",
-        "",
-        "",
-        "",
-        new ArrayList<>(),
-        ""
+        EMPTY_STR,
+        Optional.of("/example.m3u8"),
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_STR,
+        EMPTY_HEADER,
+        EMPTY_STR
     );
     Assert.assertEquals(stdOut.toString().trim(), expected);
   }
@@ -299,15 +302,15 @@ public class DualTokenIT {
     DualToken.signToken(
         "DJUcnLguVFKmVCFnWGubG1MZg7fWAnxacMjKDhVZMGI=".getBytes(),
         "ed25519",
-        START_TIME,
+        Optional.of(START_TIME),
         EXPIRES_TIME,
-        "",
-        "",
-        "/*",
-        SESSION_ID,
-        DATA,
-        HEADERS,
-        IP_RANGES
+        EMPTY_STR,
+        EMPTY_STR,
+        Optional.of("/*"),
+        Optional.of(SESSION_ID),
+        Optional.of(DATA),
+        Optional.of(HEADERS),
+        Optional.of(IP_RANGES)
     );
     Assert.assertEquals(stdOut.toString().trim(), expected);
   }
@@ -319,15 +322,15 @@ public class DualTokenIT {
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha1",
-        START_TIME,
+        Optional.of(START_TIME),
         EXPIRES_TIME,
-        "",
-        "",
-        "/*",
-        SESSION_ID,
-        DATA,
-        HEADERS,
-        IP_RANGES
+        EMPTY_STR,
+        EMPTY_STR,
+        Optional.of("/*"),
+        Optional.of(SESSION_ID),
+        Optional.of(DATA),
+        Optional.of(HEADERS),
+        Optional.of(IP_RANGES)
     );
     Assert.assertEquals(stdOut.toString().trim(), expected);
   }
@@ -339,15 +342,15 @@ public class DualTokenIT {
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha256",
-        START_TIME,
+        Optional.of(START_TIME),
         EXPIRES_TIME,
-        "",
-        "",
-        "/*",
-        SESSION_ID,
-        DATA,
-        HEADERS,
-        IP_RANGES
+        EMPTY_STR,
+        EMPTY_STR,
+        Optional.of("/*"),
+        Optional.of(SESSION_ID),
+        Optional.of(DATA),
+        Optional.of(HEADERS),
+        Optional.of(IP_RANGES)
     );
     Assert.assertEquals(stdOut.toString().trim(), expected);
   }
