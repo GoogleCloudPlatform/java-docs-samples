@@ -60,9 +60,9 @@ public class DualToken {
     // For example: /tv/*!/film/* to sign paths starting with /tv/ or /film/ in any URL.
     Optional<String> pathGlobs = Optional.empty();
 
-    // (Optional) A unique identifier for the session
+    // (Optional) A unique identifier for the session.
     Optional<String> sessionId = Optional.empty();
-    // (Optional) Data payload to include in the token
+    // (Optional) Data payload to include in the token.
     Optional<String> data = Optional.empty();
     // (Optional) Header name and value to include in the signed token in name=value format.
     // May be specified more than once.
@@ -101,8 +101,8 @@ public class DualToken {
     byte[] decodedKey = Base64.getUrlDecoder().decode(base64Key);
 
     // For most fields, the value we put in the token and the value we must sign
-    // are the same.  The FullPath and Headers use a different string for the
-    // value to be signed compared to the token.  To illustrate this difference,
+    // are the same. The FullPath and Headers use a different string for the
+    // value to be signed compared to the token. To illustrate this difference,
     // we'll keep the token and the value to be signed separate.
     List<String> tokens = new ArrayList<>();
     List<String> toSign = new ArrayList<>();
