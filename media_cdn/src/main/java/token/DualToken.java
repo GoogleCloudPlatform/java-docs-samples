@@ -45,7 +45,8 @@ public class DualToken {
     // (Optional) Start time as a UTC datetime object.
     DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
     Optional<Instant> startTime = Optional.empty();
-    // Expiration time as a UTC datetime object. If None, an expiration time 1 hour from now will be used.
+    // Expiration time as a UTC datetime object.
+    // If None, an expiration time 1 hour from now will be used.
     Instant expiresTime = Instant.from(formatter.parse("2022-09-13T12:00:00Z"));
 
     // ONE OF (`urlPrefix`, `fullPath`, `pathGlobs`) must be included in each input.
@@ -60,7 +61,7 @@ public class DualToken {
     Optional<String> pathGlobs = Optional.empty();
 
     // (Optional) A unique identifier for the session
-    Optional<String> sessionID = Optional.empty();
+    Optional<String> sessionId = Optional.empty();
     // (Optional) Data payload to include in the token
     Optional<String> data = Optional.empty();
     // (Optional) Header name and value to include in the signed token in name=value format.
@@ -79,7 +80,7 @@ public class DualToken {
         urlPrefix,
         fullPath,
         pathGlobs,
-        sessionID,
+        sessionId,
         data,
         headers,
         ipRanges);
@@ -98,7 +99,6 @@ public class DualToken {
 
     String field = "";
     byte[] decodedKey = Base64.getUrlDecoder().decode(base64Key);
-    String algorithm = signatureAlgorithm.toLowerCase();
 
     // For most fields, the value we put in the token and the value we must sign
     // are the same.  The FullPath and Headers use a different string for the
@@ -176,6 +176,7 @@ public class DualToken {
     // Generate token.
     String toSignJoined = String.join("~", toSign);
     byte[] toSignBytes = toSignJoined.getBytes(StandardCharsets.UTF_8);
+    String algorithm = signatureAlgorithm.toLowerCase();
 
     if (algorithm.equalsIgnoreCase("ed25519")) {
       Ed25519PrivateKeyParameters privateKey = new Ed25519PrivateKeyParameters(decodedKey, 0);
@@ -200,7 +201,8 @@ public class DualToken {
       tokens.add(String.format("hmac=%s", Hex.toHexString(signature)));
     } else {
       throw new Error(
-          "Input Missing Error: `signatureAlgorithm` can only be one of `sha1`, `sha256` or `ed25519`");
+          "Input Missing Error: `signatureAlgorithm` can only be one of `sha1`, `sha256` or "
+              + "`ed25519`");
     }
     // The Signed URL appended with the query parameters based on the
     // specified URL prefix and configuration.
@@ -243,10 +245,10 @@ public class DualToken {
 
     @Override
     public String toString() {
-      return "Header{" +
-          "name='" + name + '\'' +
-          ", value='" + value + '\'' +
-          '}';
+      return "Header{"
+          + "name='" + name + '\''
+          + ", value='" + value + '\''
+          + '}';
     }
   }
 

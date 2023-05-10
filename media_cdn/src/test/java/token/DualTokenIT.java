@@ -83,11 +83,13 @@ public class DualTokenIT {
       byte[] byteArray = Hex.decode(exampleHexString);
       exampleKeyFos.write(byteArray);
 
-      String publicHexString = "9fb9f0be1cdaD750b44ae55d2d6e6e5a30d27f31fe0a9201817c6a233f9877d4";
+      String publicHexString =
+          "9fb9f0be1cdaD750b44ae55d2d6e6e5a30d27f31fe0a9201817c6a233f9877d4";
       byteArray = Hex.decode(publicHexString);
       publicKeyFos.write(byteArray);
 
-      String sharedSecretString = "83f4a53082e22162aab02e99d8bee0cb4b117833aab52ac9ac4ec25cdaef9365";
+      String sharedSecretString =
+          "83f4a53082e22162aab02e99d8bee0cb4b117833aab52ac9ac4ec25cdaef9365";
       byteArray = Hex.decode(sharedSecretString);
       sharedSecretFos.write(byteArray);
 
@@ -116,7 +118,8 @@ public class DualTokenIT {
   @Test
   public void testSignTokenForEd25519UrlPrefix()
       throws NoSuchAlgorithmException, InvalidKeyException {
-    String expected = "URLPrefix=aHR0cDovLzEwLjIwLjMwLjQwLw~Expires=1663070400~Signature=OQLXEjnApFGJaGZ_jvp2R7VY5q3ic-HT3igFpi9iPsJRXtQuvPF4cxZUT-rtCqzteXx3vSRhk09FxgDQauO_DA";
+    String expected = "URLPrefix=aHR0cDovLzEwLjIwLjMwLjQwLw~Expires=1663070400~Signature"
+        + "=OQLXEjnApFGJaGZ_jvp2R7VY5q3ic-HT3igFpi9iPsJRXtQuvPF4cxZUT-rtCqzteXx3vSRhk09FxgDQauO_DA";
     DualToken.signToken(
         "DJUcnLguVFKmVCFnWGubG1MZg7fWAnxacMjKDhVZMGI=".getBytes(),
         "ed25519",
@@ -137,7 +140,8 @@ public class DualTokenIT {
   @Test
   public void testSignTokenForEd25519PathGlob()
       throws NoSuchAlgorithmException, InvalidKeyException {
-    String expected = "PathGlobs=/*~Expires=1663070400~Signature=9pBdD_6O6LB-4V67HZ_SOc2G_jIkSZ_tMsKnVqElmPlwKB_xDiW7DKAnv8L8CmweeZquaLFlnLogbMcIV8bNCQ";
+    String expected = "PathGlobs=/*~Expires=1663070400~Signature=9pBdD_6O6LB-4V67HZ_SO"
+        + "c2G_jIkSZ_tMsKnVqElmPlwKB_xDiW7DKAnv8L8CmweeZquaLFlnLogbMcIV8bNCQ";
     DualToken.signToken(
         "DJUcnLguVFKmVCFnWGubG1MZg7fWAnxacMjKDhVZMGI=".getBytes(),
         "ed25519",
@@ -157,7 +161,8 @@ public class DualTokenIT {
   @Test
   public void testSignTokenForEd25519FullPath()
       throws NoSuchAlgorithmException, InvalidKeyException {
-    String expected = "FullPath~Expires=1663070400~Signature=X74OTNjtseIUmsab-YiOTZ8jyX_KG7v4YQWwcFpfFmjhzaX8NdweMc9Wglj8wxEsEW85g3_MBG3T9jzLZFQDCw";
+    String expected = "FullPath~Expires=1663070400~Signature=X74OTNjtseIUmsab-YiOTZ8jy"
+        + "X_KG7v4YQWwcFpfFmjhzaX8NdweMc9Wglj8wxEsEW85g3_MBG3T9jzLZFQDCw";
     DualToken.signToken(
         "DJUcnLguVFKmVCFnWGubG1MZg7fWAnxacMjKDhVZMGI=".getBytes(),
         "ed25519",
@@ -178,7 +183,8 @@ public class DualTokenIT {
   @Test
   public void testSignTokenForSha1UrlPrefix()
       throws NoSuchAlgorithmException, InvalidKeyException {
-    String expected = "URLPrefix=aHR0cDovLzEwLjIwLjMwLjQwLw~Expires=1663070400~hmac=6f5b4bb82536810d5ee111cba3e534d49c6ac3cb";
+    String expected = "URLPrefix=aHR0cDovLzEwLjIwLjMwLjQwLw~Expires=1663070400~hmac=6f"
+        + "5b4bb82536810d5ee111cba3e534d49c6ac3cb";
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha1",
@@ -198,7 +204,8 @@ public class DualTokenIT {
   @Test
   public void testSignTokenForSha1PathGlob()
       throws NoSuchAlgorithmException, InvalidKeyException {
-    String expected = "PathGlobs=/*~Expires=1663070400~hmac=c1c446eea24faa31392519f975fea7eefb945625";
+    String expected = "PathGlobs=/*~Expires=1663070400~hmac=c1c446eea24faa31392519f97"
+        + "5fea7eefb945625";
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha1",
@@ -218,7 +225,8 @@ public class DualTokenIT {
   @Test
   public void testSignTokenForSha1FullPath()
       throws NoSuchAlgorithmException, InvalidKeyException {
-    String expected = "FullPath~Expires=1663070400~hmac=7af78177d6bc001d5626eefe387b1774a4a99ca2";
+    String expected = "FullPath~Expires=1663070400~hmac=7af78177d6bc001d5626eefe387b"
+        + "1774a4a99ca2";
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha1",
@@ -238,7 +246,8 @@ public class DualTokenIT {
   @Test
   public void testSignTokenForSha256UrlPrefix()
       throws NoSuchAlgorithmException, InvalidKeyException {
-    String expected = "URLPrefix=aHR0cDovLzEwLjIwLjMwLjQwLw~Expires=1663070400~hmac=409722313cf6d987da44bb360e60dccc3d79764520fc5e3b57654e1d4d2c862e";
+    String expected = "URLPrefix=aHR0cDovLzEwLjIwLjMwLjQwLw~Expires=1663070400~hmac=40"
+        + "9722313cf6d987da44bb360e60dccc3d79764520fc5e3b57654e1d4d2c862e";
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha256",
@@ -258,7 +267,8 @@ public class DualTokenIT {
   @Test
   public void testSignTokenForSha256PathGlob()
       throws NoSuchAlgorithmException, InvalidKeyException {
-    String expected = "PathGlobs=/*~Expires=1663070400~hmac=9439ecdd5c4919f76f915dea72afa85a045579794e63d8cda664f5a1140c8d93";
+    String expected = "PathGlobs=/*~Expires=1663070400~hmac=9439ecdd5c4919f76f915dea72a"
+        + "fa85a045579794e63d8cda664f5a1140c8d93";
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha256",
@@ -278,7 +288,8 @@ public class DualTokenIT {
   @Test
   public void testSignTokenForSha256FullPath()
       throws NoSuchAlgorithmException, InvalidKeyException {
-    String expected = "FullPath~Expires=1663070400~hmac=365b41fd77297371d890fc9a56e4e3d3baa4c7afbd230a0e9a81c8e1bcab9420";
+    String expected = "FullPath~Expires=1663070400~hmac=365b41fd77297371d890fc9a56e4e3d3b"
+        + "aa4c7afbd230a0e9a81c8e1bcab9420";
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha256",
@@ -298,7 +309,10 @@ public class DualTokenIT {
   @Test
   public void testSignTokenForEd25519AllParams()
       throws NoSuchAlgorithmException, InvalidKeyException {
-    String expected = "PathGlobs=/*~Starts=1663027200~Expires=1663070400~SessionID=test-id~Data=test-data~Headers=Foo,BAZ~IPRanges=MjAzLjAuMTEzLjAvMjQsMjAwMTpkYjg6NGE3ZjphNzMyLzY0~Signature=A7u67hveGxGvP8KBWZlUuH0IsqhS4a2lcsXwy3uc4X3zaVuw7LY-2FQT1ZF8UxkSFAsDS3_0LYnXwXB2XdepDg";
+    String expected = "PathGlobs=/*~Starts=1663027200~Expires=1663070400~SessionID=test-id"
+        + "~Data=test-data~Headers=Foo,BAZ~IPRanges=MjAzLjAuMTEzLjAvMjQsMjAwMTpkYjg6NGE3Zj"
+        + "phNzMyLzY0~Signature=A7u67hveGxGvP8KBWZlUuH0IsqhS4a2lcsXwy3uc4X3zaVuw7LY-2FQT1Z"
+        + "F8UxkSFAsDS3_0LYnXwXB2XdepDg";
     DualToken.signToken(
         "DJUcnLguVFKmVCFnWGubG1MZg7fWAnxacMjKDhVZMGI=".getBytes(),
         "ed25519",
@@ -318,7 +332,9 @@ public class DualTokenIT {
   @Test
   public void testSignTokenForSha1AllParams()
       throws NoSuchAlgorithmException, InvalidKeyException {
-    String expected = "PathGlobs=/*~Starts=1663027200~Expires=1663070400~SessionID=test-id~Data=test-data~Headers=Foo,BAZ~IPRanges=MjAzLjAuMTEzLjAvMjQsMjAwMTpkYjg6NGE3ZjphNzMyLzY0~hmac=b8242e8b76cbfbbd61b3540ed0eb60a2ec2fdbdb";
+    String expected = "PathGlobs=/*~Starts=1663027200~Expires=1663070400~SessionID=test-id"
+        + "~Data=test-data~Headers=Foo,BAZ~IPRanges=MjAzLjAuMTEzLjAvMjQsMjAwMTpkYjg6NGE3Zj"
+        + "phNzMyLzY0~hmac=b8242e8b76cbfbbd61b3540ed0eb60a2ec2fdbdb";
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha1",
@@ -338,7 +354,9 @@ public class DualTokenIT {
   @Test
   public void testSignTokenForSha256AllParams()
       throws NoSuchAlgorithmException, InvalidKeyException {
-    String expected = "PathGlobs=/*~Starts=1663027200~Expires=1663070400~SessionID=test-id~Data=test-data~Headers=Foo,BAZ~IPRanges=MjAzLjAuMTEzLjAvMjQsMjAwMTpkYjg6NGE3ZjphNzMyLzY0~hmac=dda9c3d6f3b2e867a09fbb76209ea138dd81f8512210f970d1e92f90927bef4b";
+    String expected = "PathGlobs=/*~Starts=1663027200~Expires=1663070400~SessionID=test-id"
+        + "~Data=test-data~Headers=Foo,BAZ~IPRanges=MjAzLjAuMTEzLjAvMjQsMjAwMTpkYjg6NGE3Zj"
+        + "phNzMyLzY0~hmac=dda9c3d6f3b2e867a09fbb76209ea138dd81f8512210f970d1e92f90927bef4b";
     DualToken.signToken(
         "g_SlMILiIWKqsC6Z2L7gy0sReDOqtSrJrE7CXNr5Nl8=".getBytes(),
         "sha256",
