@@ -37,13 +37,9 @@ public class OrgPolicyAnalyzerIT {
   private PrintStream out;
   private PrintStream originalPrintStream;
 
-  private static String getOrganizationId() {
-    return "organizations/474566717491";
-  }
-
-  private static String getConstraintName() {
-    return "constraints/compute.requireOsLogin";
-  }
+  // Owner of the organization below: cloud-asset-analysis-team.
+  private static String SCOPE = "organizations/474566717491";
+  private static String CONSTRAINT_NAME = "constraints/compute.requireOsLogin";
 
   @Before
   public void setUp() {
@@ -62,24 +58,23 @@ public class OrgPolicyAnalyzerIT {
 
   @Test
   public void testAnalyzeOrgPolicies() throws Exception {
-    AnalyzeOrgPoliciesExample.analyzeOrgPolicies(getOrganizationId(), getConstraintName());
+    AnalyzeOrgPoliciesExample.analyzeOrgPolicies(SCOPE, CONSTRAINT_NAME);
     String got = bout.toString();
-    assertThat(got).contains(getOrganizationId());
+    assertThat(got).contains(SCOPE);
   }
 
   @Test
   public void testAnalyzeOrgPolicyGovernedAssets() throws Exception {
-    AnalyzeOrgPolicyGovernedAssetsExample.analyzeOrgPolicyGovernedAssets(
-        getOrganizationId(), getConstraintName());
+    AnalyzeOrgPolicyGovernedAssetsExample.analyzeOrgPolicyGovernedAssets(SCOPE, CONSTRAINT_NAME);
     String got = bout.toString();
-    assertThat(got).contains(getOrganizationId());
+    assertThat(got).contains(SCOPE);
   }
 
   @Test
   public void testAnalyzeOrgPolicyGovernedContainers() throws Exception {
     AnalyzeOrgPolicyGovernedContainersExample.analyzeOrgPolicyGovernedContainers(
-        getOrganizationId(), getConstraintName());
+        SCOPE, CONSTRAINT_NAME);
     String got = bout.toString();
-    assertThat(got).contains(getOrganizationId());
+    assertThat(got).contains(SCOPE);
   }
 }
