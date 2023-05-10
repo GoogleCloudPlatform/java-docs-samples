@@ -25,18 +25,19 @@ import java.io.IOException;
 
 public class AnalyzeOrgPolicyGovernedContainersExample {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     // TODO(developer): Replace the ORG_ID with your Google Cloud Organization ID
     String scope = "organizations/ORG_ID";
     // TODO(developer): Replace the CONSTRAINT_NAME with the name of the constraint
-    // you want to analyze. Find more details at:
-    // https://cloud.google.com/policy-intelligence/docs/analyze-organization-policies
+    // you want to analyze. Find more Organization Policy Constraints at:
+    // "http://cloud/resource-manager/docs/organization-policy/org-policy-constraints"
     String constraint = "constraints/CONSTRAINT_NAME";
     analyzeOrgPolicyGovernedContainers(scope, constraint);
   }
 
   // Analyzes containers governed by accessible Org policies that match a request.
-  public static void analyzeOrgPolicyGovernedContainers(String scope, String constraint) {
+  public static void analyzeOrgPolicyGovernedContainers(String scope, String constraint)
+      throws Exception {
     AnalyzeOrgPolicyGovernedContainersRequest request =
         AnalyzeOrgPolicyGovernedContainersRequest.newBuilder()
             .setScope(scope)
@@ -46,19 +47,12 @@ public class AnalyzeOrgPolicyGovernedContainersExample {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (AssetServiceClient client = AssetServiceClient.create()) {
-      AnalyzeOrgPolicyGovernedContainersPagedResponse response =
-          client.analyzeOrgPolicyGovernedContainers(request);
-      System.out.println(
-          "AnalyzeOrgPolicyGovernedContainers completed successfully:\n"
-              + response.getPage().getValues());
-    } catch (IOException e) {
-      e.printStackTrace();
-      System.out.println("Failed to create client:\n" + e.toString());
-    } catch (ApiException e) {
-      e.printStackTrace();
-      System.out.println("Error during AnalyzeOrgPolicyGovernedContainers:\n" + e.toString());
-    }
+    AssetServiceClient client = AssetServiceClient.create();
+    AnalyzeOrgPolicyGovernedContainersPagedResponse response =
+        client.analyzeOrgPolicyGovernedContainers(request);
+    System.out.println(
+        "AnalyzeOrgPolicyGovernedContainers completed successfully:\n"
+            + response.getPage().getValues());
   }
 }
 // [END asset_quickstart_analyze_org_policy_governed_containers]
