@@ -483,7 +483,7 @@ public class InspectTests extends TestBase {
     createStoredInfoType(PROJECT_ID, GCS_PATH, infoTypeId);
 
     // Wait for the creation of Stored InfoType.
-    Thread.sleep(10000);
+    Thread.sleep(30000);
 
     String textToDeidentify =
         "My email address is gary@example.com.";
