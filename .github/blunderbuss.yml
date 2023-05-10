@@ -3,6 +3,11 @@ assign_issues:
 
 assign_issues_by:
 - labels:
+  - "api: asset"
+  to:
+  - GoogleCloudPlatform/cloud-asset-analysis-team
+  - GoogleCloudPlatform/cloud-asset-platform-team
+- labels:
   - 'api: logging'
   - 'api: clouderrorreporting'
   to:
@@ -40,6 +45,11 @@ assign_prs:
   - GoogleCloudPlatform/java-samples-reviewers
 
 assign_prs_by:
+- labels:
+  - "api: asset"
+  to:
+  - GoogleCloudPlatform/cloud-asset-analysis-team
+  - GoogleCloudPlatform/cloud-asset-platform-team
 - labels:
   - 'api: logging'
   - 'api: clouderrorreporting'

@@ -27,7 +27,6 @@
 /workflows                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/torus-dpe
 
 # Infrastructure
-/asset                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra
 /auth                            @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/googleapis-auth
 /batch                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra
 /compute                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra
@@ -88,6 +87,7 @@
 /functions                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/functions-framework-google
 # ---* Fully Eng Owned
 /appengine-*                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes
+/asset                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-asset-analysis-team @GoogleCloudPlatform/cloud-asset-platform-team
 /dlp                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/googleapis-dlp
 /flexible                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes
 /healthcare                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/healthcare-life-sciences
