@@ -29,12 +29,10 @@ import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.KeyFactory;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
-import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -50,11 +48,11 @@ public class DatastoreServletTest {
 
     when(request.getRemoteAddr()).thenReturn("9.9.9.9");
 
-    Datastore mockdatastore = Mockito.mock(Datastore.class);
-    KeyFactory mockKeyFactory = Mockito.mock(KeyFactory.class);
+    Datastore mockdatastore = mock(Datastore.class);
+    KeyFactory mockKeyFactory = mock(KeyFactory.class);
     when(mockdatastore.newKeyFactory()).thenReturn(mockKeyFactory);
 
-    IncompleteKey mockKey = Mockito.mock(IncompleteKey.class);
+    IncompleteKey mockKey = mock(IncompleteKey.class);
     when(mockKeyFactory.newKey()).thenReturn(mockKey);
     QueryResults<Entity> results = mock(QueryResults.class);
     when(results.hasNext()).thenReturn(false);

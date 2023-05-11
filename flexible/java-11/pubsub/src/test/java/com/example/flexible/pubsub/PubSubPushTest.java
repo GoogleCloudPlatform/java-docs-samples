@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
 public class PubSubPushTest {
@@ -48,14 +48,15 @@ public class PubSubPushTest {
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getParameter("token")).thenReturn("token");
 
-    BufferedReader reader = mock(BufferedReader.class);
-    when(request.getReader()).thenReturn(reader);
-    Stream<String> requestBody =
-        Stream.of(
-            "{\"message\":{\"data\":\"dGVzdA==\",\"attributes\":{},"
-                + "\"messageId\":\"91010751788941\",\"publishTime\":"
-                + "\"2017-04-05T23:16:42.302Z\"}}");
-    when(reader.lines()).thenReturn(requestBody);
+    try (BufferedReader reader = mock(BufferedReader.class)) {
+      when(request.getReader()).thenReturn(reader);
+      Stream<String> requestBody =
+          Stream.of(
+              "{\"message\":{\"data\":\"dGVzdA==\",\"attributes\":{},"
+                  + "\"messageId\":\"91010751788941\",\"publishTime\":"
+                  + "\"2017-04-05T23:16:42.302Z\"}}");
+      when(reader.lines()).thenReturn(requestBody);
+    }
     HttpServletResponse response = mock(HttpServletResponse.class);
 
     PubSubPush servlet = new PubSubPush(messageRepository);
