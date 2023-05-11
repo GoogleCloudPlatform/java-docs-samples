@@ -94,7 +94,7 @@ public class AbstractRestServlet extends HttpServlet {
   }
 
   @SuppressWarnings("unchecked")
-public String generateResults(Queue<Map<String, Object>> results) {
+  public String generateResults(Queue<Map<String, Object>> results) {
     StringBuilder thumbs = new StringBuilder();
     int resultCount = 0;
     Iterator<Map<String, Object>> itor = results.iterator();
