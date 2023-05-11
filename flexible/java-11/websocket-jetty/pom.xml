@@ -34,8 +34,8 @@
   </parent>
 
   <properties>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
     <jetty.version>9.4.51.v20230217</jetty.version>
     <spring.boot.version>2.7.11</spring.boot.version>
@@ -47,13 +47,6 @@
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
         <version>26.12.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring.boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -119,6 +112,17 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>2.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -143,7 +147,7 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.4.4</version>
         <configuration>
-          <projectId>pratikshakapflex</projectId>
+          <projectId>GCLOUD_CONFIG</projectId>
           <version>GCLOUD_CONFIG</version>
         </configuration>
       </plugin>
