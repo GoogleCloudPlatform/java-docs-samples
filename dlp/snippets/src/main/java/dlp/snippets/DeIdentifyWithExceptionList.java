@@ -26,11 +26,15 @@ import com.google.privacy.dlp.v2.CustomInfoType.Dictionary.WordList;
 import com.google.privacy.dlp.v2.DeidentifyConfig;
 import com.google.privacy.dlp.v2.DeidentifyContentRequest;
 import com.google.privacy.dlp.v2.DeidentifyContentResponse;
+import com.google.privacy.dlp.v2.ExclusionRule;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InfoTypeTransformations;
 import com.google.privacy.dlp.v2.InfoTypeTransformations.InfoTypeTransformation;
 import com.google.privacy.dlp.v2.InspectConfig;
+import com.google.privacy.dlp.v2.InspectionRule;
+import com.google.privacy.dlp.v2.InspectionRuleSet;
 import com.google.privacy.dlp.v2.LocationName;
+import com.google.privacy.dlp.v2.MatchingType;
 import com.google.privacy.dlp.v2.PrimitiveTransformation;
 import com.google.privacy.dlp.v2.ReplaceWithInfoTypeConfig;
 import java.io.IOException;
@@ -69,12 +73,31 @@ public class DeIdentifyWithExceptionList {
       CustomInfoType customInfoType =
           CustomInfoType.newBuilder().setInfoType(developerEmail).setDictionary(wordList).build();
 
+      ExclusionRule exclusionRule =
+          ExclusionRule.newBuilder()
+              .setDictionary(wordList)
+              .setMatchingType(MatchingType.MATCHING_TYPE_FULL_MATCH)
+              .build();
+
+      InspectionRule inspectionRule =
+          InspectionRule.newBuilder()
+              .setExclusionRule(exclusionRule)
+              .build();
+
       // Specify the word list custom info type and build-in info type the inspection will look for.
       InfoType emailAddress = InfoType.newBuilder().setName("EMAIL_ADDRESS").build();
+
+      InspectionRuleSet inspectionRuleSet =
+          InspectionRuleSet.newBuilder()
+              .addInfoTypes(emailAddress)
+              .addRules(inspectionRule)
+              .build();
+
       InspectConfig inspectConfig =
           InspectConfig.newBuilder()
               .addInfoTypes(emailAddress)
               .addCustomInfoTypes(customInfoType)
+              .addRuleSet(inspectionRuleSet)
               .build();
 
       // Define type of deidentification as replacement.
