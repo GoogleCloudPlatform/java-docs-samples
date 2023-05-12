@@ -101,7 +101,7 @@ public class UptimeIT {
   }
 
   @Test
-  public void test3_DeleteUptimeCheck() throws Exception {
+  public void test3DeleteUptimeCheck() throws Exception {
     UptimeSample.main("delete", "-n", checkName);
   }
 }
