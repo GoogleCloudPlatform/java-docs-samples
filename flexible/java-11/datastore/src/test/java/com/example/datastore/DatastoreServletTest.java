@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.managedvms.datastore;
+package com.example.datastore;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -39,6 +39,7 @@ import org.mockito.Mockito;
 
 public class DatastoreServletTest {
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testget() throws Exception {
     HttpServletRequest request = mock(HttpServletRequest.class);
