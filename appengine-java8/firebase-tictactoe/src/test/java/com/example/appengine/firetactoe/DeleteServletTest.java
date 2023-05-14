@@ -35,7 +35,6 @@ import com.google.appengine.tools.development.testing.LocalURLFetchServiceTestCo
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
 import com.googlecode.objectify.Objectify;
-import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
 import java.io.ByteArrayInputStream;
@@ -82,7 +81,7 @@ public class DeleteServletTest {
   @BeforeClass
   public static void setUpBeforeClass() {
     // Reset the Factory so that all translators work properly.
-    ObjectifyService.setFactory(new ObjectifyFactory());
+    ObjectifyService.init();
     ObjectifyService.register(Game.class);
     // Mock out the firebase config
     FirebaseChannel.firebaseConfigStream =
@@ -109,7 +108,7 @@ public class DeleteServletTest {
   }
 
   @Test
-  public void doPost_noGameKey() throws Exception {
+  public void doPostNoGameKey() throws Exception {
     try {
       servletUnderTest.doPost(mockRequest, mockResponse);
       fail("Should not succeed with no gameKey specified.");
@@ -119,7 +118,7 @@ public class DeleteServletTest {
   }
 
   @Test
-  public void doPost_deleteGame() throws Exception {
+  public void doPostDeleteGame() throws Exception {
     // Insert a game
     Objectify ofy = ObjectifyService.ofy();
     Game game = new Game(USER_ID, "my-opponent", "         ", true);

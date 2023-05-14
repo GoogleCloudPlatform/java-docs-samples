@@ -46,7 +46,6 @@ import org.mockito.MockitoAnnotations;
 public class SignGuestbookServletTest {
 
   private static final String FAKE_URL = "fakey.org/sign";
-  private static final String FAKE_NAME = "Fake";
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -57,7 +56,7 @@ public class SignGuestbookServletTest {
           new LocalDatastoreServiceTestConfig()
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
-  private final String testPhrase = "Noew is the time";
+  private static final String testPhrase = "Noew is the time";
 
   @Mock
   private HttpServletRequest mockRequest;
@@ -104,7 +103,7 @@ public class SignGuestbookServletTest {
   }
 
   @Test
-  public void doPost_userNotLoggedIn() throws Exception {
+  public void doPostUserNotLoggedIn() throws Exception {
     servletUnderTest.doPost(mockRequest, mockResponse);
 
     Greeting greeting = ObjectifyService.ofy().load().type(Greeting.class)

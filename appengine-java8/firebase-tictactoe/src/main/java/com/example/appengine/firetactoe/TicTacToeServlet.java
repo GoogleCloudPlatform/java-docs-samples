@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletResponse;
  * game, and also creates the persistent game in the datastore, as well as the Firebase database to
  * serve as the communication channel to the clients.
  */
-@SuppressWarnings("serial")
 public class TicTacToeServlet extends HttpServlet {
 
   private String getGameUriWithGameParam(HttpServletRequest request, String gameKey) {
