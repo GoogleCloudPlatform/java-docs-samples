@@ -117,7 +117,7 @@ public class TicTacToeServletTest {
   /**
    * Compares game results before and after to find new game. Objectify v6 does
    * not guarantee new record is first.
-   * 
+   *
    * @param before query containing games before inserting
    * @param after query containing games after inserting
    * @return the game that was not in the original query
