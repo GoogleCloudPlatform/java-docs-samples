@@ -66,7 +66,7 @@ public final class FirebaseChannel {
    * FirebaseChannel is a singleton, since it's just utility functions. The class derives auth
    * information when first instantiated.
    */
-  public synchronized static FirebaseChannel getInstance() {
+  public static synchronized FirebaseChannel getInstance() {
     if (instance == null) {
       instance = new FirebaseChannel();
     }
