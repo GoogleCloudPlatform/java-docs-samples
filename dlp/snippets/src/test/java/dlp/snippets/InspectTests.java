@@ -36,12 +36,12 @@ import com.google.privacy.dlp.v2.StoredInfoTypeConfig;
 import com.google.privacy.dlp.v2.Table;
 import com.google.privacy.dlp.v2.Table.Row;
 import com.google.privacy.dlp.v2.Value;
+import com.google.privacy.dlp.v2.StoredInfoType;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.TopicName;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.UUID;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -112,7 +112,7 @@ public class InspectTests extends TestBase {
   }
 
   public static void createStoredInfoType(String projectId, String outputPath, String infoTypeId)
-      throws IOException {
+      throws IOException, InterruptedException {
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
 
       // Optionally set a display name and a description.
@@ -156,7 +156,19 @@ public class InspectTests extends TestBase {
               .build();
 
       // Send the request and receive response from the service.
-      dlp.createStoredInfoType(createStoredInfoType);
+      StoredInfoType response = dlp.createStoredInfoType(createStoredInfoType);
+
+      // Wait for the creation of Stored InfoType.
+      boolean isReady = false;
+      StoredInfoType storedInfoType = null;
+      while (!isReady) {
+        storedInfoType = dlp.getStoredInfoType(response.getName());
+        if (storedInfoType.getCurrentVersion().getState().toString().equals("READY")) {
+          isReady = true;
+        } else {
+          Thread.sleep(5000);
+        }
+      }
     }
   }
 
@@ -480,18 +492,18 @@ public class InspectTests extends TestBase {
   public void testInspectWithStoredInfotype() throws Exception {
     // Create a new stored InfoType.
     String infoTypeId = UUID.randomUUID().toString();
-    createStoredInfoType(PROJECT_ID, GCS_PATH, infoTypeId);
-
-    // Wait for the creation of Stored InfoType.
-    Thread.sleep(30000);
-
     String textToDeidentify =
-        "My email address is gary@example.com.";
-    InspectWithStoredInfotype.inspectWithStoredInfotype(PROJECT_ID, infoTypeId, textToDeidentify);
-    String output = bout.toString();
-    assertThat(output).contains("Findings: 2");
+            "Email address: gary@example.com";
 
-    // Delete the specific info-type.
+    createStoredInfoType(PROJECT_ID, GCS_PATH, infoTypeId);
+    InspectWithStoredInfotype.inspectWithStoredInfotype(PROJECT_ID, infoTypeId, textToDeidentify);
+
+    String output = bout.toString();
+    assertThat(output).contains("Findings: 1");
+    assertThat(output).contains("Quote: gary");
+    assertThat(output).contains("InfoType: GITHUB_LOGINS");
+
+    // Delete the specific stored InfoType.
     DeleteStoredInfoTypeRequest deleteStoredInfoTypeRequest =
         DeleteStoredInfoTypeRequest.newBuilder()
             .setName(ProjectStoredInfoTypeName.of(PROJECT_ID, infoTypeId).toString())

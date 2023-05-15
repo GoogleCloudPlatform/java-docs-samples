@@ -37,7 +37,8 @@ public class InspectWithStoredInfotype {
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
-    // Specify the stored InfoType to use for inspecting the data.
+    // The sample assumes that you have an existing stored infoType.
+    // Refer https://cloud.google.com/dlp/docs/creating-stored-infotypes#create-storedinfotye to create a stored InfoType.
     String infoTypeId = "your-info-type-id";
     // The string to de-identify.
     String textToDeidentify =
@@ -87,8 +88,8 @@ public class InspectWithStoredInfotype {
       System.out.println("Findings: " + "" + response.getResult().getFindingsCount());
       for (Finding f : response.getResult().getFindingsList()) {
         System.out.println("\tQuote: " + f.getQuote());
-        System.out.println("\tInfo type: " + f.getInfoType().getName());
-        System.out.println("\tLikelihood: " + f.getLikelihood());
+        System.out.println("\tInfoType: " + f.getInfoType().getName());
+        System.out.println("\tLikelihood: " + f.getLikelihood() + "\n");
       }
     }
   }
