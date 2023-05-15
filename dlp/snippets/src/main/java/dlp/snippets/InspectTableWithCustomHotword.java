@@ -47,7 +47,7 @@ public class InspectTableWithCustomHotword {
     // Specify the table to be considered for de-identification.
     Table tableToDeIdentify =
         Table.newBuilder()
-            .addHeaders(FieldId.newBuilder().setName("Fake Social Security Number").build())
+            .addHeaders(FieldId.newBuilder().setName("Some Social Security Number").build())
             .addHeaders(FieldId.newBuilder().setName("Real Social Security Number").build())
             .addRows(
                 Table.Row.newBuilder()
@@ -56,13 +56,14 @@ public class InspectTableWithCustomHotword {
                     .build())
             .build();
     // Specify the regex pattern to be detected.
-    String hotwordRegexPattern = "(Fake Social Security Number)";
-    inspectWithCustomHotwords(projectId, tableToDeIdentify, hotwordRegexPattern);
+    // Refer https://github.com/google/re2/wiki/Syntax for creating regular expression.
+    String hotwordRegexPattern = "Some Social Security Number";
+    inspectDemotingFindingsWithHotwords(projectId, tableToDeIdentify, hotwordRegexPattern);
   }
 
   //  Inspects the provided table, excluding the findings of entire column matching regular
   // expression.
-  public static void inspectWithCustomHotwords(
+  public static void inspectDemotingFindingsWithHotwords(
       String projectId, Table tableToDeIdentify, String hotwordRegexPattern) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs to be created
