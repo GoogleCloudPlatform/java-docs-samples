@@ -60,8 +60,8 @@ public class CreateStoredInfoType {
       // The reference to the table containing the GitHub usernames.
       BigQueryTable table = BigQueryTable.newBuilder()
               .setProjectId("bigquery-public-data")
-              .setTableId("github_nested")
               .setDatasetId("samples")
+              .setTableId("github_nested")
               .build();
 
       // The reference to the BigQuery field that contains the GitHub usernames.
