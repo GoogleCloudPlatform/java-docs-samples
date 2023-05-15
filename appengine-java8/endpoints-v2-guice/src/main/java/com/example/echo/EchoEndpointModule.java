@@ -36,7 +36,7 @@ public class EchoEndpointModule extends EndpointsModule {
     bind(ServiceManagementConfigFilter.class).in(Singleton.class);
     filter("/_ah/api/*").through(ServiceManagementConfigFilter.class);
 
-    Map<String, String> apiController = new HashMap<String, String>();
+    Map<String, String> apiController = new HashMap<>();
     apiController.put("endpoints.projectId", "YOUR-PROJECT-ID");
     apiController.put("endpoints.serviceName", "YOUR-PROJECT-ID.appspot.com");
 

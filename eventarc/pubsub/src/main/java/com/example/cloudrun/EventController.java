@@ -39,14 +39,14 @@ public class EventController {
     if (message == null) {
       String msg = "No Pub/Sub message received.";
       System.out.println(msg);
-      return new ResponseEntity<String>(msg, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
     }
 
     String data = message.getData();
     if (data == null || data.isEmpty()) {
       String msg = "Invalid Pub/Sub message format.";
       System.out.println(msg);
-      return new ResponseEntity<String>(msg, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
     }
 
     String name =
@@ -54,7 +54,7 @@ public class EventController {
     String ceId = headers.getOrDefault("ce-id", "");
     String msg = String.format("Hello, %s! ID: %s", name, ceId);
     System.out.println(msg);
-    return new ResponseEntity<String>(msg, HttpStatus.OK);
+    return new ResponseEntity<>(msg, HttpStatus.OK);
   }
 }
 // [END eventarc_pubsub_handler]

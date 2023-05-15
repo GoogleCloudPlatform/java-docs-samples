@@ -106,7 +106,7 @@ public class SpannerGroupWrite {
     PCollection<MutationGroup> mutations =
         suspiciousUserIds.apply(
             MapElements.via(
-                new SimpleFunction<String, MutationGroup>() {
+                new SimpleFunction<>() {
 
                   @Override
                   public MutationGroup apply(String userId) {
