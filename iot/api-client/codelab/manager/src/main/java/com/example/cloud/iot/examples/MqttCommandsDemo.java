@@ -38,6 +38,8 @@ import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Properties;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -46,7 +48,6 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,14 +61,14 @@ public class MqttCommandsDemo {
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given RSA key. */
   private static String createJwtRsa(String projectId, String privateKeyFile)
       throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-    DateTime now = new DateTime();
+    Instant now = Instant.now();
     // Create a JWT to authenticate this device. The device will be disconnected after the token
     // expires, and will have to reconnect with a new token. The audience field should always be set
     // to the GCP project id.
     JwtBuilder jwtBuilder =
         Jwts.builder()
-            .setIssuedAt(now.toDate())
-            .setExpiration(now.plusMinutes(20).toDate())
+            .setIssuedAt(Date.from(now))
+            .setExpiration(Date.from(now.plusSeconds(20 * 60)))
             .setAudience(projectId);
 
     byte[] keyBytes = Files.readAllBytes(Paths.get(privateKeyFile));
@@ -80,15 +81,15 @@ public class MqttCommandsDemo {
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given ES key. */
   private static String createJwtEs(String projectId, String privateKeyFile)
       throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-    DateTime now = new DateTime();
+    Instant now = Instant.now();
     // Create a JWT to authenticate this device. The device will be disconnected after the token
     // expires, and will have to reconnect with a new token. The audience field should always be set
     // to the GCP project id.
     JwtBuilder jwtBuilder =
         Jwts.builder()
-            .setIssuedAt(now.toDate())
-            .setExpiration(now.plusMinutes(20).toDate())
-            .setAudience(projectId);
+          .setIssuedAt(Date.from(now))
+          .setExpiration(Date.from(now.plusSeconds(20 * 60)))
+          .setAudience(projectId);
 
     byte[] keyBytes = Files.readAllBytes(Paths.get(privateKeyFile));
     PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
@@ -233,7 +234,6 @@ public class MqttCommandsDemo {
     // to authorize the device.
     connectOptions.setUserName("unused");
 
-    DateTime iat = new DateTime();
     if (algorithm.equals("RS256")) {
       connectOptions.setPassword(createJwtRsa(projectId, privateKeyFile).toCharArray());
     } else if (algorithm.equals("ES256")) {
