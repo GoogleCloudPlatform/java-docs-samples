@@ -16,12 +16,12 @@
 
 package com.example.time;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 /**
  * Provides the current value of "now." To preserve testability, avoid all other libraries that
  * access the system clock (whether {@linkplain System#currentTimeMillis directly} or {@linkplain
- * org.joda.time.DateTime#DateTime() indirectly}).
+ * java.time.Instant#now() indirectly}).
  *
  * <p>In production, use the {@link SystemClock} implementation to return the "real" system time. In
  * tests, either use {@link com.example.time.testing.FakeClock}, or get an instance from a mocking

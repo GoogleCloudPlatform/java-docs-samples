@@ -17,10 +17,9 @@
 package com.example.time.testing;
 
 import com.example.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.atomic.AtomicLong;
-import org.joda.time.Instant;
-import org.joda.time.ReadableDuration;
-import org.joda.time.ReadableInstant;
 
 /**
  * A Clock that returns a fixed Instant value as the current clock time. The fixed Instant is
@@ -35,7 +34,7 @@ import org.joda.time.ReadableInstant;
  */
 public class FakeClock implements Clock {
 
-  private static final Instant DEFAULT_TIME = new Instant(1000000000L);
+  private static final Instant DEFAULT_TIME = Instant.ofEpochMilli(1000000000L);
   private final long baseTimeMs;
   private final AtomicLong fakeNowMs;
   private volatile long autoIncrementStepMs;
@@ -50,8 +49,8 @@ public class FakeClock implements Clock {
   /**
    * Creates a FakeClock instance initialized to the given time.
    */
-  public FakeClock(ReadableInstant now) {
-    baseTimeMs = now.getMillis();
+  public FakeClock(Instant now) {
+    baseTimeMs = now.toEpochMilli();
     fakeNowMs = new AtomicLong(baseTimeMs);
   }
 
@@ -60,8 +59,8 @@ public class FakeClock implements Clock {
    *
    * @return this
    */
-  public FakeClock setNow(ReadableInstant now) {
-    fakeNowMs.set(now.getMillis());
+  public FakeClock setNow(Instant now) {
+    fakeNowMs.set(now.toEpochMilli());
     return this;
   }
 
@@ -75,7 +74,7 @@ public class FakeClock implements Clock {
    * behavior of {@link #now()} is the same as this method.
    */
   public Instant peek() {
-    return new Instant(fakeNowMs.get());
+    return Instant.ofEpochMilli(fakeNowMs.get());
   }
 
   /**
@@ -95,8 +94,8 @@ public class FakeClock implements Clock {
    * @param duration the duration to increment the clock time by
    * @return this
    */
-  public FakeClock incrementTime(ReadableDuration duration) {
-    incrementTime(duration.getMillis());
+  public FakeClock incrementTime(Duration duration) {
+    incrementTime(duration.toMillis());
     return this;
   }
 
@@ -117,8 +116,8 @@ public class FakeClock implements Clock {
    * @param duration the duration to decrement the clock time by
    * @return this
    */
-  public FakeClock decrementTime(ReadableDuration duration) {
-    incrementTime(-duration.getMillis());
+  public FakeClock decrementTime(Duration duration) {
+    incrementTime(-duration.toMillis());
     return this;
   }
 
@@ -140,8 +139,8 @@ public class FakeClock implements Clock {
    * @param autoIncrementStep the new auto increment duration
    * @return this
    */
-  public FakeClock setAutoIncrementStep(ReadableDuration autoIncrementStep) {
-    setAutoIncrementStep(autoIncrementStep.getMillis());
+  public FakeClock setAutoIncrementStep(Duration autoIncrementStep) {
+    setAutoIncrementStep(autoIncrementStep.toMillis());
     return this;
   }
 
@@ -165,7 +164,7 @@ public class FakeClock implements Clock {
    * @see AtomicLong#addAndGet
    */
   protected final Instant addAndGet(long durationMs) {
-    return new Instant(fakeNowMs.addAndGet(durationMs));
+    return Instant.ofEpochMilli(fakeNowMs.addAndGet(durationMs));
   }
 
   /**
@@ -176,6 +175,6 @@ public class FakeClock implements Clock {
    * @see AtomicLong#getAndAdd
    */
   protected final Instant getAndAdd(long durationMs) {
-    return new Instant(fakeNowMs.getAndAdd(durationMs));
+    return Instant.ofEpochMilli(fakeNowMs.getAndAdd(durationMs));
   }
 }
