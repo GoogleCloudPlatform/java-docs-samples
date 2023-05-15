@@ -102,10 +102,10 @@ public class MqttExample {
     // expires, and will have to reconnect with a new token. The audience field should always be set
     // to the GCP project id.
     JwtBuilder jwtBuilder =
-      Jwts.builder()
-        .setIssuedAt(Date.from(now))
-        .setExpiration(Date.from(now.plusSeconds(20 * 60)))
-        .setAudience(projectId);
+        Jwts.builder()
+            .setIssuedAt(Date.from(now))
+            .setExpiration(Date.from(now.plusSeconds(20 * 60)))
+            .setAudience(projectId);
 
     byte[] keyBytes = Files.readAllBytes(Paths.get(privateKeyFile));
     PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);

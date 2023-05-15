@@ -17,9 +17,9 @@
 package com.example.time.testing;
 
 import com.example.time.Clock;
-import java.util.concurrent.atomic.AtomicLong;
-import java.time.Instant;
 import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A Clock that returns a fixed Instant value as the current clock time. The fixed Instant is
