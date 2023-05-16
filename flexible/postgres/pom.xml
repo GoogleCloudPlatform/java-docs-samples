@@ -97,7 +97,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>postgres-socket-factory</artifactId>
-      <version>1.8.3</version>
+      <version>1.11.2</version>
     </dependency>
     <!-- [END gae_flex_postgres_dependencies] -->
   </dependencies>
