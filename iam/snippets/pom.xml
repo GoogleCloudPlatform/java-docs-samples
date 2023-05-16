@@ -38,10 +38,16 @@
   </properties>
 
   <dependencies>
-  
+
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-iam-policy</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-iam-admin</artifactId>
       <scope>compile</scope>
     </dependency>
 
