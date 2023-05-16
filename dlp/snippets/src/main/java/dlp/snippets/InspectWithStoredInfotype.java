@@ -38,7 +38,8 @@ public class InspectWithStoredInfotype {
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
     // The sample assumes that you have an existing stored infoType.
-    // Refer https://cloud.google.com/dlp/docs/creating-stored-infotypes#create-storedinfotye to create a stored InfoType.
+    // To create a stored InfoType refer:
+    // https://cloud.google.com/dlp/docs/creating-stored-infotypes#create-storedinfotye 
     String infoTypeId = "your-info-type-id";
     // The string to de-identify.
     String textToDeidentify =
