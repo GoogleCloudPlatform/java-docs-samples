@@ -36,7 +36,7 @@ import org.junit.rules.Timeout;
 public class RoleIT {
   private ByteArrayOutputStream bout;
 
-  private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String projectId = System.getenv("IAM_PROJECT_ID");
   private static final String _suffix = UUID.randomUUID().toString().substring(0, 6);
   private static final String roleId = "testRole" + _suffix;
   private static final String roleName = "projects/" + projectId + "/roles/" + roleId;
