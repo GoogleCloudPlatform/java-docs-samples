@@ -16,46 +16,45 @@
 
 package com.google;
 
+import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.BigQueryException;
+import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.QueryJobConfiguration;
+import com.google.cloud.bigquery.TableResult;
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-import com.google.cloud.bigquery.BigQuery;
-import com.google.cloud.bigquery.BigQueryException;
-import com.google.cloud.bigquery.BigQueryOptions;
-import com.google.cloud.bigquery.QueryJobConfiguration;
-import com.google.cloud.bigquery.TableResult;
-
 public class StreamBigQuery implements HttpFunction {
   @Override
-  public void service(HttpRequest request, HttpResponse response)
-      throws IOException {
+    public void service(HttpRequest request, HttpResponse response) 
+        throws IOException {
     BufferedWriter writer = response.getWriter();
-
+        
     String query =
         "SELECT abstract FROM `bigquery-public-data.breathe.bioasq` LIMIT 1000";
-
+    
     try {
-        // Initialize client that will be used to send requests. This client only needs to be created
-        // once, and can be reused for multiple requests.
-        BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
-        QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
-        TableResult results = bigquery.query(queryConfig);
+      // Initialize client that will be used to send requests. 
+      // This client only needs to be created once, 
+      // and can be reused for multiple requests.
+      BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
+      QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
+      TableResult results = bigquery.query(queryConfig);
 
-        results
-          .iterateAll()
-          .forEach(row -> row.forEach(val -> {
-            try {
+      results.iterateAll().forEach(
+            row -> row.forEach(val -> {
+              try {
                 writer.write(val.getValue().toString() + "\n");
                 writer.flush();
-            } catch (IOException | InterruptedException e) {
-                System.out.println("could not get rows \n" + e.toString());
-            }
-          }));
-      } catch (BigQueryException | InterruptedException e) { 
-        System.out.println("Query not performed \n" + e.toString());
-      } 
+              } catch (IOException e) {
+                System.out.println("Could not get rows: " + e.toString());
+              }
+            }));
+    } catch (BigQueryException | InterruptedException e) { 
+      System.out.println("Query not performed: " + e.toString());
+    } 
   }
 }
