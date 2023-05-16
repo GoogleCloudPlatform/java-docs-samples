@@ -35,23 +35,24 @@ public class UpdateStoredInfoType {
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
-    // The name of the file in the bucket.
-    String gcsUri = "gs://" + "your-bucket-name" + "/path/to/your/file.txt";
-    // The url of the file to be created in the bucket.
-    String fileSetUrl = "your-cloud-storage-file-set";
+    // The path to file in GCS bucket that holds a collection of words and phrases to be searched by
+    // the new infoType detector.
+    String filePath = "gs://" + "your-bucket-name" + "/path/to/your/file.txt";
+    // The path to the location in a GCS bucket to store the created dictionary.
+    String outputPath = "your-cloud-storage-file-set";
     // The name of the stored info-type which is to be updated.
     String infoTypeId = "your-stored-info-type-id";
-    updateStoredInfoType(projectId, gcsUri, fileSetUrl, infoTypeId);
+    updateStoredInfoType(projectId, filePath, outputPath, infoTypeId);
   }
 
   // Update the stored info type rebuilding the Custom dictionary.
   public static void updateStoredInfoType(
-      String projectId, String gcsUri, String fileSetUrl, String infoTypeId) throws IOException {
+      String projectId, String filePath, String outputPath, String infoTypeId) throws IOException {
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       // Set path in Cloud Storage.
-      CloudStoragePath cloudStoragePath = CloudStoragePath.newBuilder().setPath(gcsUri).build();
+      CloudStoragePath cloudStoragePath = CloudStoragePath.newBuilder().setPath(outputPath).build();
       CloudStorageFileSet cloudStorageFileSet =
-          CloudStorageFileSet.newBuilder().setUrl(fileSetUrl).build();
+          CloudStorageFileSet.newBuilder().setUrl(filePath).build();
 
       // Configuration for a custom dictionary created from a data source of any size
       LargeCustomDictionaryConfig largeCustomDictionaryConfig =
@@ -84,7 +85,7 @@ public class UpdateStoredInfoType {
       StoredInfoType response = dlp.updateStoredInfoType(updateStoredInfoTypeRequest);
 
       // Print the results.
-      System.out.println("InfoType stored successfully at " + response.getName());
+      System.out.println("Updated stored InfoType successfully: " + response.getName());
     }
   }
 }
