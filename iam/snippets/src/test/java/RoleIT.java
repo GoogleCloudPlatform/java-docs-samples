@@ -15,7 +15,7 @@
  */
 
 import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.TestCase.assertNotNull;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.iam.admin.v1.IAMClient;
@@ -37,21 +37,29 @@ public class RoleIT {
   private ByteArrayOutputStream bout;
 
   private static final String projectId = System.getenv("IAM_PROJECT_ID");
+  private static final String GOOGLE_APPLICATION_CREDENTIALS = System.getenv("IAM_CREDENTIALS");
   private static final String _suffix = UUID.randomUUID().toString().substring(0, 6);
   private static final String roleId = "testRole" + _suffix;
   private static final String roleName = "projects/" + projectId + "/roles/" + roleId;
 
-  private static void requireEnvVar() {
-    assertNotNull(
-        "Environment variable " + "GOOGLE_CLOUD_PROJECT" + " is required to perform these tests.",
-        System.getenv("GOOGLE_CLOUD_PROJECT"));
+  private static void requireEnvVar(String envVarName) {
+    assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
+        .that(System.getenv(envVarName))
+        .isNotEmpty();
   }
 
   @Rule public Timeout globalTimeout = Timeout.seconds(300); // 5 minute timeout
 
   @BeforeClass
-  public static void checkRequirements() {
-    requireEnvVar();
+  public static void checkRequirements() throws IOException {
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+
+    requireEnvVar("IAM_PROJECT_ID");
+    requireEnvVar("IAM_CREDENTIALS");
+
+    stdOut.close();
+    System.setOut(out);
   }
 
   @Before
