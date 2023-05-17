@@ -127,7 +127,8 @@ public class SignedUrls {
     Key key = new SecretKeySpec(privateKey, offset, privateKey.length, algorithm);
     Mac mac = Mac.getInstance(algorithm);
     mac.init(key);
-    return  Base64.getUrlEncoder().encodeToString(mac.doFinal(input.getBytes(StandardCharsets.UTF_8)));
+    return Base64.getUrlEncoder()
+        .encodeToString(mac.doFinal(input.getBytes(StandardCharsets.UTF_8)));
   }
   // [END cloudcdn_sign_url_prefix]
 
@@ -139,13 +140,15 @@ public class SignedUrls {
 
     //read the key as a base 64 url-safe encoded string, then convert to byte array
     final String keyPath = "/path/to/key";
-    String base64String = new String(Files.readAllBytes(Paths.get(keyPath)), StandardCharsets.UTF_8);
+    String base64String = new String(Files.readAllBytes(Paths.get(keyPath)),
+        StandardCharsets.UTF_8);
     byte[] keyBytes = Base64.getUrlDecoder().decode(base64String);
 
     String signUrlResult = signUrl("https://example.com/foo?", keyBytes, "YOUR-KEY-NAME", tomorrow);
     System.out.println(signUrlResult);
 
-    String signUrlWithPrefixResult = signUrlWithPrefix("https://media.example.com/videos/id/master.m3u8?userID=abc123&starting_profile=1",
+    String signUrlWithPrefixResult = signUrlWithPrefix(
+        "https://media.example.com/videos/id/master.m3u8?userID=abc123&starting_profile=1",
         "https://media.example.com/videos/", keyBytes, "YOUR-KEY-NAME", tomorrow);
     System.out.println(signUrlWithPrefixResult);
   }

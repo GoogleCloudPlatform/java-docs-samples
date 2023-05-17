@@ -75,10 +75,14 @@ public class SignedUrlsTest {
   }
 
   @Test
-  public void testUrlPathSignedWithPrefixInvalidPrefix()  throws Exception {
+  public void testUrlPathSignedWithPrefixInvalidPrefix() throws Exception {
     assertThrows(IllegalArgumentException.class,
-        () -> {signUrlWithPrefix(REQUEST_URL, INVALID_URL_PREFIX_1, KEY_BYTES, KEY_NAME, EXPIRATION);});
+        () -> {
+          signUrlWithPrefix(REQUEST_URL, INVALID_URL_PREFIX_1, KEY_BYTES, KEY_NAME, EXPIRATION);
+        });
     assertThrows(IllegalArgumentException.class,
-        () -> {signUrlWithPrefix(REQUEST_URL, INVALID_URL_PREFIX_2, KEY_BYTES, KEY_NAME, EXPIRATION);});
+        () -> {
+          signUrlWithPrefix(REQUEST_URL, INVALID_URL_PREFIX_2, KEY_BYTES, KEY_NAME, EXPIRATION);
+        });
   }
 }
