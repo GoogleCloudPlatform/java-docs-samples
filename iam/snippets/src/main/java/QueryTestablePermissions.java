@@ -15,6 +15,7 @@
  */
 
 // [START iam_query_testable_permissions]
+
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.cloud.iam.admin.v1.IAMClient.QueryTestablePermissionsPagedResponse;

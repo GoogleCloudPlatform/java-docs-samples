@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+// [START iam_undelete_role]
+
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.Role;
 import com.google.iam.admin.v1.UndeleteRoleRequest;
 import java.io.IOException;
 
-// [START iam_undelete_role]
 public class UndeleteRole {
 
   public static void main(String[] args) {

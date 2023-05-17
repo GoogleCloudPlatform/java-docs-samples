@@ -16,8 +16,6 @@
 
 // [START iam_list_roles]
 
-// [START iam_list_roles]
-
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.cloud.iam.admin.v1.IAMClient.ListRolesPagedResponse;
 import com.google.iam.admin.v1.ListRolesRequest;
