@@ -16,6 +16,7 @@
 
 package com.google.cdn;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
@@ -92,7 +93,7 @@ public class SignedUrls {
    * @throws NoSuchAlgorithmException when HmacSHA1 algorithm is not available in the environment
    * @throws IllegalArgumentException when urlPrefix string is malformed.
    */
-  public static String signUrlWithPrefix(String requestUrl,
+  static String signUrlWithPrefix(String requestUrl,
       String urlPrefix,
       byte[] key,
       String keyName,
@@ -108,7 +109,8 @@ public class SignedUrls {
     }
     final long unixTime = expirationTime.getTime() / 1000;
 
-    String encodedUrlPrefix = Base64.getUrlEncoder().encodeToString(urlPrefix.getBytes());
+    String encodedUrlPrefix = Base64.getUrlEncoder().encodeToString(urlPrefix.getBytes(
+        StandardCharsets.UTF_8));
     String urlToSign = "URLPrefix=" + encodedUrlPrefix
         + "&Expires=" + unixTime
         + "&KeyName=" + keyName;
@@ -117,7 +119,7 @@ public class SignedUrls {
     return requestUrl + "&" + urlToSign + "&Signature=" + encoded;
   }
 
-  public static String getSignatureForUrl(byte[] privateKey, String input)
+  private static String getSignatureForUrl(byte[] privateKey, String input)
       throws InvalidKeyException, NoSuchAlgorithmException {
 
     final String algorithm = "HmacSHA1";
@@ -125,7 +127,7 @@ public class SignedUrls {
     Key key = new SecretKeySpec(privateKey, offset, privateKey.length, algorithm);
     Mac mac = Mac.getInstance(algorithm);
     mac.init(key);
-    return  Base64.getUrlEncoder().encodeToString(mac.doFinal(input.getBytes()));
+    return  Base64.getUrlEncoder().encodeToString(mac.doFinal(input.getBytes(StandardCharsets.UTF_8)));
   }
   // [END cloudcdn_sign_url_prefix]
 
@@ -137,7 +139,7 @@ public class SignedUrls {
 
     //read the key as a base 64 url-safe encoded string, then convert to byte array
     final String keyPath = "/path/to/key";
-    String base64String = new String(Files.readAllBytes(Paths.get(keyPath)));
+    String base64String = new String(Files.readAllBytes(Paths.get(keyPath)), StandardCharsets.UTF_8);
     byte[] keyBytes = Base64.getUrlDecoder().decode(base64String);
 
     String signUrlResult = signUrl("https://example.com/foo?", keyBytes, "YOUR-KEY-NAME", tomorrow);
