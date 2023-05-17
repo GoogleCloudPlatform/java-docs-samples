@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// [START iam_create_role]
+
 import com.google.api.gax.rpc.AlreadyExistsException;
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.CreateRoleRequest;
@@ -22,15 +24,15 @@ import com.google.iam.admin.v1.Role.RoleLaunchStage;
 import java.io.IOException;
 import java.util.Arrays;
 
-// [START iam_create_role]
 public class CreateRole {
   public static void main(String[] args) {
     // TODO(developer): Replace the variables before running the sample.
     String projectId = "your-project-id";
-    String title = "Role Title";
-    String description = "A description";
-    Iterable<String> includedPermissions = Arrays.asList("roles/iam.roleViewer");
-    String roleId = "your-role-id";
+    String roleId = "a unique identifier (e.g. testViewer)";
+    String title = "a title for your role (e.g. IAM Role Viewer)";
+    String description = "a description of the role";
+    Iterable<String> includedPermissions =
+        Arrays.asList("roles/iam.roleViewer", "roles/logging.viewer");
 
     createRole(projectId, title, description, includedPermissions, roleId);
   }
@@ -55,6 +57,8 @@ public class CreateRole {
             .setRole(roleBuilder)
             .build();
 
+    // Initialize client for sending requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
       Role result = iamClient.createRole(createRoleRequest);
       System.out.println("Created role: " + result.getName());

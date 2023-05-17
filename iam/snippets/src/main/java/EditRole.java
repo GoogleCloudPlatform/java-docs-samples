@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// [START iam_edit_role]
+
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.Role;
 import com.google.iam.admin.v1.Role.RoleLaunchStage;
@@ -21,14 +23,13 @@ import com.google.iam.admin.v1.UpdateRoleRequest;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
 
-// [START iam_edit_role]
 public class EditRole {
 
   public static void main(String[] args) {
     // TODO(developer): Replace the variables before running the sample.
     // Role ID must point to an existing role.
     String projectId = "your-project-id";
-    String roleId = "your-role-id";
+    String roleId = "a unique identifier (e.g. testViewer)";
 
     editRole(projectId, roleId);
   }
@@ -48,6 +49,8 @@ public class EditRole {
             .setUpdateMask(fieldMask)
             .build();
 
+    // Initialize client for sending requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
       Role result = iamClient.updateRole(updateRoleRequest);
       System.out.println("Edited role:\n" + result);

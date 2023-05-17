@@ -26,18 +26,19 @@ public class UndeleteRole {
     // TODO(developer): Replace the variables before running the sample.
     // Role ID must point to a deleted role within 7 days.
     String projectId = "your-project-id";
-    String roleId = "your-role-id";
+    String roleId = "a unique identifier (e.g. testViewer)";
 
     undeleteRole(projectId, roleId);
   }
 
   public static void undeleteRole(String projectId, String roleId) {
+    String roleName = "projects/" + projectId + "/roles/" + roleId;
 
     UndeleteRoleRequest undeleteRoleRequest =
-        UndeleteRoleRequest.newBuilder()
-            .setName("projects/" + projectId + "/roles/" + roleId)
-            .build();
+        UndeleteRoleRequest.newBuilder().setName(roleName).build();
 
+    // Initialize client for sending requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
       Role result = iamClient.undeleteRole(undeleteRoleRequest);
       System.out.println("Undeleted role:\n" + result);

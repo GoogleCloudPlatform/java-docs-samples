@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
+// [START iam_get_role]
+
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.GetRoleRequest;
 import com.google.iam.admin.v1.Role;
 import java.io.IOException;
 
-// [START iam_get_role]
 public class GetRole {
 
   public static void main(String[] args) {
     // TODO(developer): Replace the variable before running the sample.
-    String roleId = "roles/iam.roleViewer";
+    String roleId = "a unique identifier (e.g. testViewer)";
 
     getRole(roleId);
   }
@@ -33,6 +34,8 @@ public class GetRole {
   public static void getRole(String roleId) {
     GetRoleRequest getRoleRequest = GetRoleRequest.newBuilder().setName(roleId).build();
 
+    // Initialize client for sending requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
       Role role = iamClient.getRole(getRoleRequest);
       role.getIncludedPermissionsList().forEach(permission -> System.out.println(permission));

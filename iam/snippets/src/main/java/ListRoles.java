@@ -16,6 +16,8 @@
 
 // [START iam_list_roles]
 
+// [START iam_list_roles]
+
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.cloud.iam.admin.v1.IAMClient.ListRolesPagedResponse;
 import com.google.iam.admin.v1.ListRolesRequest;
@@ -34,6 +36,8 @@ public class ListRoles {
     ListRolesRequest listRolesRequest =
         ListRolesRequest.newBuilder().setParent("projects/" + projectId).build();
 
+    // Initialize client for sending requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
       ListRolesPagedResponse listRolesResponse = iamClient.listRoles(listRolesRequest);
       listRolesResponse.iterateAll().forEach(role -> System.out.println(role));

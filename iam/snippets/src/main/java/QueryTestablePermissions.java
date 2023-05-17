@@ -30,10 +30,13 @@ public class QueryTestablePermissions {
   }
 
   public static void queryTestablePermissions(String projectId) {
+    // Full resource name can take one of the following forms:
+    // cloudresourcemanager.googleapis.com/projects/PROJECT_ID
+    // cloudresourcemanager.googleapis.com/organizations/NUMERIC_ID
+    String fullResourceName = "//cloudresourcemanager.googleapis.com/projects/" + projectId;
+
     QueryTestablePermissionsRequest queryTestablePermissionsRequest =
-        QueryTestablePermissionsRequest.newBuilder()
-            .setFullResourceName("//cloudresourcemanager.googleapis.com/projects/" + projectId)
-            .build();
+        QueryTestablePermissionsRequest.newBuilder().setFullResourceName(fullResourceName).build();
 
     try (IAMClient iamClient = IAMClient.create()) {
       QueryTestablePermissionsPagedResponse queryTestablePermissionsPagedResponse =

@@ -79,7 +79,7 @@ public class RoleIT {
     try (IAMClient iamClient = IAMClient.create()) {
       iamClient.deleteRole(DeleteRoleRequest.newBuilder().setName(roleName).build());
     } catch (NotFoundException e) {
-      System.out.println("Role no longer exists already.");
+      System.out.println("Role deleted already.");
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
