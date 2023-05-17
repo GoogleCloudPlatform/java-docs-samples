@@ -42,6 +42,8 @@ public class InspectDataToHybridJobTrigger {
   }
 
   // Inspects data using a hybrid job trigger.
+  // Hybrid jobs trigger allows to scan payloads of data sent from virtually any source for
+  // sensitive information and then store the findings in Google Cloud.
   public static void inspectDataToHybridJobTrigger(
       String textToDeIdentify, String projectId, String jobTriggerId) throws Exception {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -52,6 +54,7 @@ public class InspectDataToHybridJobTrigger {
       ContentItem contentItem = ContentItem.newBuilder().setValue(textToDeIdentify).build();
 
       // Contains metadata to associate with the content.
+      // Refer to https://cloud.google.com/dlp/docs/reference/rest/v2/Container for specifying the paths in container object.
       Container container =
           Container.newBuilder()
               .setFullPath("10.0.0.2:logs1:app1")

@@ -48,7 +48,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class JobsTests extends TestBase {
 
-  private static DlpServiceClient dlpServiceClient;
+  private static DlpServiceClient DLP_SERVICE_CLIENT;
 
   @Override
   protected ImmutableList<String> requiredEnvVars() {
@@ -58,7 +58,7 @@ public class JobsTests extends TestBase {
   @BeforeClass
   public static void setUp() throws Exception {
     // Initialize the Dlp Service Client.
-    dlpServiceClient = DlpServiceClient.create();
+    DLP_SERVICE_CLIENT = DlpServiceClient.create();
   }
 
   private static DlpJob createJob(String jobId) throws IOException {
@@ -82,56 +82,55 @@ public class JobsTests extends TestBase {
             .setJobId(jobId)
             .build();
 
-    return dlpServiceClient.createDlpJob(createDlpJobRequest);
+    return DLP_SERVICE_CLIENT.createDlpJob(createDlpJobRequest);
   }
 
   private static void createHybridJobTrigger(String jobTriggerId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Set hybrid options for content outside GCP.
-      HybridOptions hybridOptions = HybridOptions.newBuilder().putLabels("env", "prod").build();
 
-      // Set storage config indicating the type of cloud storage.
-      StorageConfig storageConfig =
-          StorageConfig.newBuilder().setHybridOptions(hybridOptions).build();
+    // Set hybrid options for content outside GCP.
+    HybridOptions hybridOptions = HybridOptions.newBuilder().putLabels("env", "prod").build();
 
-      // Specify the type of info the inspection will look for.
-      List<InfoType> infoTypes = new ArrayList<>();
-      // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
-      for (String typeName : new String[] {"PERSON_NAME", "EMAIL_ADDRESS"}) {
-        infoTypes.add(InfoType.newBuilder().setName(typeName).build());
-      }
+    // Set storage config indicating the type of cloud storage.
+    StorageConfig storageConfig =
+        StorageConfig.newBuilder().setHybridOptions(hybridOptions).build();
 
-      // Specify how the content should be inspected.
-      InspectConfig inspectConfig =
-          InspectConfig.newBuilder().addAllInfoTypes(infoTypes).setIncludeQuote(true).build();
-      // Configure the inspection job we want the service to perform.
-      InspectJobConfig inspectJobConfig =
-          InspectJobConfig.newBuilder()
-              .setInspectConfig(inspectConfig)
-              .setStorageConfig(storageConfig)
-              .build();
-
-      // Configure the hybrid job trigger to be created.
-      JobTrigger.Trigger trigger =
-          JobTrigger.Trigger.newBuilder().setManual(Manual.newBuilder().build()).build();
-
-      JobTrigger jobTrigger =
-          JobTrigger.newBuilder().addTriggers(trigger).setInspectJob(inspectJobConfig).build();
-
-      // Construct the job trigger creation request.
-      CreateJobTriggerRequest createDlpJobRequest =
-          CreateJobTriggerRequest.newBuilder()
-              .setParent(LocationName.of(PROJECT_ID, "global").toString())
-              .setJobTrigger(jobTrigger)
-              .setTriggerId(jobTriggerId)
-              .build();
-
-      // Send the job creation request and process the response.
-      dlp.createJobTrigger(createDlpJobRequest);
+    // Specify the type of info the inspection will look for.
+    // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
+    List<InfoType> infoTypes = new ArrayList<>();
+    for (String typeName : new String[] {"PERSON_NAME", "EMAIL_ADDRESS"}) {
+      infoTypes.add(InfoType.newBuilder().setName(typeName).build());
     }
+
+    // Specify how the content should be inspected.
+    InspectConfig inspectConfig =
+        InspectConfig.newBuilder().addAllInfoTypes(infoTypes).setIncludeQuote(true).build();
+    // Configure the inspection job we want the service to perform.
+    InspectJobConfig inspectJobConfig =
+        InspectJobConfig.newBuilder()
+            .setInspectConfig(inspectConfig)
+            .setStorageConfig(storageConfig)
+            .build();
+
+    // Configure the hybrid job trigger to be created.
+    JobTrigger.Trigger trigger =
+        JobTrigger.Trigger.newBuilder().setManual(Manual.newBuilder().build()).build();
+
+    JobTrigger jobTrigger =
+        JobTrigger.newBuilder().addTriggers(trigger).setInspectJob(inspectJobConfig).build();
+
+    // Construct the job trigger creation request.
+    CreateJobTriggerRequest createDlpJobRequest =
+        CreateJobTriggerRequest.newBuilder()
+            .setParent(LocationName.of(PROJECT_ID, "global").toString())
+            .setJobTrigger(jobTrigger)
+            .setTriggerId(jobTriggerId)
+            .build();
+
+    // Send the job creation request and process the response.
+    DLP_SERVICE_CLIENT.createJobTrigger(createDlpJobRequest);
   }
 
   @Test
@@ -146,7 +145,7 @@ public class JobsTests extends TestBase {
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
 
-    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+    DLP_SERVICE_CLIENT.deleteDlpJob(deleteDlpJobRequest);
   }
 
   @Test
@@ -165,7 +164,7 @@ public class JobsTests extends TestBase {
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
 
-    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+    DLP_SERVICE_CLIENT.deleteDlpJob(deleteDlpJobRequest);
   }
 
   @Test
@@ -202,7 +201,7 @@ public class JobsTests extends TestBase {
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
 
-    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+    DLP_SERVICE_CLIENT.deleteDlpJob(deleteDlpJobRequest);
   }
 
   @Test
@@ -218,7 +217,7 @@ public class JobsTests extends TestBase {
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
 
-    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+    DLP_SERVICE_CLIENT.deleteDlpJob(deleteDlpJobRequest);
   }
 
   @Test
@@ -233,7 +232,7 @@ public class JobsTests extends TestBase {
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
 
-    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+    DLP_SERVICE_CLIENT.deleteDlpJob(deleteDlpJobRequest);
   }
 
   @Test
