@@ -98,7 +98,7 @@
     <dependency>
       <groupId>org.eclipse.jetty.toolchain</groupId>
       <artifactId>jetty-test-helper</artifactId>
-      <version>6.0</version>
+      <version>6.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
