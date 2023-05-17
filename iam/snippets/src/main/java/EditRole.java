@@ -23,6 +23,7 @@ import com.google.iam.admin.v1.UpdateRoleRequest;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
 
+/** Edit role metadata. Specially, changing launch stage enum to GA. */
 public class EditRole {
 
   public static void main(String[] args) {

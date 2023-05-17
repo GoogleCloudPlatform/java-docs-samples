@@ -21,6 +21,10 @@ import com.google.iam.admin.v1.Role;
 import com.google.iam.admin.v1.UndeleteRoleRequest;
 import java.io.IOException;
 
+/**
+ * Undelete a role to return it to its previous state. Note that this only works on roles deleted
+ * within the past 7 days.
+ */
 public class UndeleteRole {
 
   public static void main(String[] args) {

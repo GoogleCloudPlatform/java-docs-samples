@@ -21,6 +21,7 @@ import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.DeleteRoleRequest;
 import java.io.IOException;
 
+/** Delete role. */
 public class DeleteRole {
 
   public static void main(String[] args) {

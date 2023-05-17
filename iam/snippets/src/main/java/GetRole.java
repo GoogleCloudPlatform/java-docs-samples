@@ -22,6 +22,7 @@ import com.google.iam.admin.v1.GetRoleRequest;
 import com.google.iam.admin.v1.Role;
 import java.io.IOException;
 
+/** Get role metadata. Specifically, printing out role permissions. */
 public class GetRole {
 
   public static void main(String[] args) {

@@ -24,6 +24,7 @@ import com.google.iam.admin.v1.Role.RoleLaunchStage;
 import java.io.IOException;
 import java.util.Arrays;
 
+/** Create role. */
 public class CreateRole {
   public static void main(String[] args) {
     // TODO(developer): Replace the variables before running the sample.
@@ -48,6 +49,8 @@ public class CreateRole {
             .setTitle(title)
             .setDescription(description)
             .addAllIncludedPermissions(includedPermissions)
+            // More available enums at
+            // https://cloud.google.com/iam/docs/reference/rpc/google.iam.admin.v1#rolelaunchstage
             .setStage(RoleLaunchStage.BETA);
 
     CreateRoleRequest createRoleRequest =

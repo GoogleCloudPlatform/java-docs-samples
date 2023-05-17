@@ -22,6 +22,7 @@ import com.google.cloud.iam.admin.v1.IAMClient.QueryTestablePermissionsPagedResp
 import com.google.iam.admin.v1.QueryTestablePermissionsRequest;
 import java.io.IOException;
 
+/** View available permissions in a project. */
 public class QueryTestablePermissions {
   public static void main(String[] args) {
     // TODO(developer): Replace the variable before running the sample.
@@ -33,6 +34,7 @@ public class QueryTestablePermissions {
   public static void queryTestablePermissions(String projectId) {
     // Full resource name can take one of the following forms:
     // cloudresourcemanager.googleapis.com/projects/PROJECT_ID
+    // To view available permissions in an organization, use:
     // cloudresourcemanager.googleapis.com/organizations/NUMERIC_ID
     String fullResourceName = "//cloudresourcemanager.googleapis.com/projects/" + projectId;
 
