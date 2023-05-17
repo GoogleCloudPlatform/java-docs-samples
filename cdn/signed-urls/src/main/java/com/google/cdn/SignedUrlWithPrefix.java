@@ -16,11 +16,15 @@
 
 package com.google.cdn;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -28,29 +32,46 @@ import javax.crypto.spec.SecretKeySpec;
 public class SignedUrlWithPrefix {
 
   // [START cloudcdn_sign_url_prefix]
+  public static void main(String[] args) throws Exception {
 
-  /**
-   * Creates a signed URL with a URL prefix for a Cloud CDN endpoint with the given key. Prefixes
-   * allow access to any URL with the same prefix, and can be useful for granting access broader
-   * content without signing multiple URLs.
-   *
-   * @param requestUrl URL of request
-   * @param urlPrefix URL prefix to sign as a string. urlPrefix must start with either http:// or
-   * https:// and should not include query parameters
-   * @param key url signing key uploaded to the backend service/bucket, as a 16-byte array
-   * @param keyName the name of the signing key added to the back end bucket or service
-   * @param expirationTime the date that the signed URL expires
-   * @return a properly formatted signed URL with URL prefix
-   * @throws InvalidKeyException when there is an error generating the signature for the input key
-   * @throws NoSuchAlgorithmException when HmacSHA1 algorithm is not available in the environment
-   * @throws IllegalArgumentException when urlPrefix string is malformed.
-   */
-  static String signUrlWithPrefix(String requestUrl,
-      String urlPrefix,
-      byte[] key,
-      String keyName,
+    // TODO(developer): Replace these variables before running the sample.
+
+    // The name of the signing key added to the back end bucket or service
+    String keyName = "YOUR-KEY-NAME";
+    // Path to the url signing key uploaded to the backend service/bucket, as a 16-byte array
+    String keyPath = "/path/to/key";
+    // The date that the signed URL expires
+    Date expirationTime = getTomorrow();
+    // URL of request
+    String requestUrl = "https://media.example.com/videos/id/main.m3u8?userID=abc123&starting_profile=1";
+    // URL prefix to sign as a string. urlPrefix must start with either http:// or
+    // https:// and should not include query parameters
+    String urlPrefix = "https://media.example.com/videos/";
+
+    //read the key as a base 64 url-safe encoded string, then convert to byte array
+    String base64String = new String(Files.readAllBytes(Paths.get(keyPath)),
+        StandardCharsets.UTF_8);
+    byte[] keyBytes = Base64.getUrlDecoder().decode(base64String);
+
+    // sign the url with prefix
+    String signUrlWithPrefixResult = signUrlWithPrefix(requestUrl,
+        urlPrefix, keyBytes, keyName, expirationTime);
+    System.out.println(signUrlWithPrefixResult);
+  }
+
+  private static Date getTomorrow() {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date());
+    cal.add(Calendar.DATE, 1);
+    return cal.getTime();
+  }
+
+  // Creates a signed URL with a URL prefix for a Cloud CDN endpoint with the given key. Prefixes
+  // allow access to any URL with the same prefix, and can be useful for granting access broader
+  // content without signing multiple URLs.
+  static String signUrlWithPrefix(String requestUrl, String urlPrefix, byte[] key, String keyName,
       Date expirationTime)
-      throws InvalidKeyException, NoSuchAlgorithmException, IllegalArgumentException {
+      throws InvalidKeyException, NoSuchAlgorithmException {
 
     if (urlPrefix.contains("?") || urlPrefix.contains("#")) {
       throw new IllegalArgumentException("urlPrefix must not include query params: " + urlPrefix);
