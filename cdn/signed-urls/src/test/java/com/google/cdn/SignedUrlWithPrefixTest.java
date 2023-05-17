@@ -30,7 +30,7 @@ public class SignedUrlWithPrefixTest {
   private static byte[] KEY_BYTES = Base64.getUrlDecoder().decode("aaaaaaaaaaaaaaaaaaaaaa==");
   private static String KEY_NAME = "my-key";
   private static String URL_PREFIX = "https://media.example.com/videos/";
-  private static String REQUEST_URL = "https://media.example.com/videos/id/master.m3u8?userID=abc123&starting_profile=1";
+  private static String REQUEST_URL = "https://media.example.com/videos/id/main.m3u8?userID=abc123&starting_profile=1";
 
   private static String INVALID_URL_PREFIX_1 = "www.media.example.com/videos/";
   private static String INVALID_URL_PREFIX_2 = "https://media.example.com/videos/?foo";
@@ -38,7 +38,7 @@ public class SignedUrlWithPrefixTest {
   @Test
   public void testUrlPathSignedWithPrefix() throws Exception {
     String result = signUrlWithPrefix(REQUEST_URL, URL_PREFIX, KEY_BYTES, KEY_NAME, EXPIRATION);
-    final String expected = "https://media.example.com/videos/id/master.m3u8?userID=abc123&starting_profile=1&URLPrefix=aHR0cHM6Ly9tZWRpYS5leGFtcGxlLmNvbS92aWRlb3Mv&Expires=1518135754&KeyName=my-key&Signature=SPov5sp5XKefUpuJaqUckinUO_4=";
+    final String expected = "https://media.example.com/videos/id/main.m3u8?userID=abc123&starting_profile=1&URLPrefix=aHR0cHM6Ly9tZWRpYS5leGFtcGxlLmNvbS92aWRlb3Mv&Expires=1518135754&KeyName=my-key&Signature=SPov5sp5XKefUpuJaqUckinUO_4=";
     assertEquals(result, expected);
   }
 
