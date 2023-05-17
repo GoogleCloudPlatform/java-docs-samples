@@ -18,6 +18,7 @@
 package com.google.cdn;
 
 import static com.google.cdn.SignedUrls.signUrl;
+import static com.google.cdn.SignedUrls.signUrlWithPrefix;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Base64;
@@ -37,6 +38,8 @@ public class SignedUrlsTest {
   private static byte[] KEY_BYTES = Base64.getUrlDecoder().decode("aaaaaaaaaaaaaaaaaaaaaa==");
   private static String KEY_NAME = "my-key";
   private static String BASE_URL = "https://www.example.com/";
+  private static String URL_PREFIX = "https://media.example.com/videos/";
+  private static String REQUEST_URL = "https://media.example.com/videos/id/master.m3u8?userID=abc123&starting_profile=1";
 
   @Test
   public void testUrlPath() throws Exception {
@@ -57,6 +60,13 @@ public class SignedUrlsTest {
   public void testStandard() throws Exception {
     String result = signUrl(BASE_URL, KEY_BYTES, KEY_NAME, EXPIRATION);
     final String expected = "https://www.example.com/?Expires=1518135754&KeyName=my-key&Signature=4D0AbT4y0O7ZCzCUcAtPOJDkl2g=";
+    assertEquals(result, expected);
+  }
+
+  @Test
+  public void testUrlPathSignedWithPrefix() throws Exception {
+    String result = signUrlWithPrefix(REQUEST_URL, URL_PREFIX, KEY_BYTES, KEY_NAME, EXPIRATION);
+    final String expected = "https://media.example.com/videos/id/master.m3u8?userID=abc123&starting_profile=1&URLPrefix=aHR0cHM6Ly9tZWRpYS5leGFtcGxlLmNvbS92aWRlb3Mv&Expires=1518135754&KeyName=my-key&Signature=SPov5sp5XKefUpuJaqUckinUO_4=";
     assertEquals(result, expected);
   }
 }
