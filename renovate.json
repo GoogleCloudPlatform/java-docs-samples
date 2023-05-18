@@ -57,6 +57,12 @@
       "groupName": "Jetty packages"
     },
     {
+      "packagePatterns": [
+        "^org.slf4j:"
+      ],
+      "groupName": "SLF4J packages"
+    },    
+    {
       "packageNames": [
         "javax.servlet:javax.servlet-api"
       ],
