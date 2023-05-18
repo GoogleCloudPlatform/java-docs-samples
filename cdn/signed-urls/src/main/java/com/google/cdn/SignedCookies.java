@@ -16,6 +16,7 @@
 
 package com.google.cdn;
 
+// [START cloudcdn_sign_cookie]
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -100,3 +101,4 @@ public class SignedCookies {
         .encodeToString(mac.doFinal(input.getBytes(StandardCharsets.UTF_8)));
   }
 }
+// [END cloudcdn_sign_cookie]
