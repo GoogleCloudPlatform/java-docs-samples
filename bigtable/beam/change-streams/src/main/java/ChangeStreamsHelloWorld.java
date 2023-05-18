@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import com.google.cloud.Timestamp;
 import com.google.cloud.bigtable.data.v2.models.ChangeStreamMutation;
 import com.google.cloud.bigtable.data.v2.models.ChangeStreamMutation.MutationType;
 import com.google.cloud.bigtable.data.v2.models.DeleteCells;
