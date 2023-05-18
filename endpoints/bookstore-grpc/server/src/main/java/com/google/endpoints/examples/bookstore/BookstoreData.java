@@ -48,7 +48,7 @@ final class BookstoreData {
   private final Map<Long, ShelfInfo> shelves;
   private long lastShelfId;
   private final Function<ShelfInfo, Shelf> shelfInfoToShelf =
-      new Function<ShelfInfo, Shelf>() {
+      new Function<>() {
         @Nullable
         @Override
         public Shelf apply(@Nullable ShelfInfo shelfInfo) {

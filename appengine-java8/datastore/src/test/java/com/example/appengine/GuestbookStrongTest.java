@@ -23,8 +23,8 @@ import com.example.time.testing.FakeClock;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import java.time.Instant;
 import java.util.List;
-import org.joda.time.Instant;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class GuestbookStrongTest {
 
-  private static final Instant FAKE_NOW = new Instant(1234567890L);
+  private static final Instant FAKE_NOW = Instant.ofEpochMilli(1234567890L);
   private static final String GUESTBOOK_ID = "my guestbook";
 
   // Set maximum eventual consistency.

@@ -78,7 +78,7 @@ public class R2dbcSampleApplicationIT {
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
     dbAdminClient = spanner.getDatabaseAdminClient();
-    dbAdminClient.createDatabase(instance, this.databaseName, Collections.EMPTY_LIST);
+    dbAdminClient.createDatabase(instance, this.databaseName, Collections.emptyList());
   }
 
   @After

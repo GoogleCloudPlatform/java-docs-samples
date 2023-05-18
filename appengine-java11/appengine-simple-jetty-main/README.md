@@ -26,7 +26,7 @@ Your project's `pom.xml` needs to be updated accordingly:
 
 ```
 <dependency>
-  <groupId>com.example.appengine.demo</groupId>
+  <groupId>com.example.appengine</groupId>
   <artifactId>simple-jetty-main</artifactId>
   <version>1</version>
   <scope>provided</scope>
@@ -64,7 +64,7 @@ entrypoint field will start the Jetty server and load your `WAR` file.
 
 ```
 runtime: java11
-entrypoint: 'java -cp "*" com.example.appengine.demo.jettymain.Main helloworld.war'
+entrypoint: 'java -cp "*" com.example.appengine.jetty.Main helloworld.war'
 ```
 
 ## Running locally

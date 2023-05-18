@@ -45,7 +45,7 @@ public class DicomStoreCreate {
     CloudHealthcare client = createClient();
 
     // Configure the dicomStore to be created.
-    Map<String, String> labels = new HashMap<String, String>();
+    Map<String, String> labels = new HashMap<>();
     labels.put("key1", "value1");
     labels.put("key2", "value2");
     DicomStore content = new DicomStore().setLabels(labels);

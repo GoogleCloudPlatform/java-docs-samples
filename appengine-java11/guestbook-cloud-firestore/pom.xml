@@ -63,7 +63,7 @@
     <!-- `java-docs-samples/appengine-java11/appengine-simple-jetty-main' -->
     <!-- See the README for more information -->
     <dependency>
-      <groupId>com.example.appengine.demo</groupId>
+      <groupId>com.example.appengine</groupId>
       <artifactId>simple-jetty-main</artifactId>
       <version>1</version>
       <scope>provided</scope>

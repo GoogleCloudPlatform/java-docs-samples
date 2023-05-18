@@ -5,12 +5,14 @@ application to Google App Engine Flex.
 
 ## Deploying
 
-```bash
+```sh
 gcloud app deploy
 ```
 
 To view your app, use command:
-```
+
+```sh
 gcloud app browse
 ```
+
 Or navigate to `https://<your-project-id>.appspot.com`.

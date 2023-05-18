@@ -185,8 +185,8 @@ public class BigQueryRunner {
     return TimeSeries.newBuilder().setMetric(metric).addAllPoints(pointList).build();
   }
 
-  public List<TimeSeriesSummary> getTimeSeriesValues() {
-    List<TimeSeriesSummary> summaries = Lists.newArrayList();
+  public List<TimeSeriesSummary<?>> getTimeSeriesValues() {
+    List<TimeSeriesSummary<?>> summaries = Lists.newArrayList();
     createMetricsIfNeeded();
     for (MetricDescriptor metric : REQUIRED_METRICS) {
       ListTimeSeriesRequest listTimeSeriesRequest =

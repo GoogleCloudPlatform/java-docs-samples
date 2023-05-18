@@ -39,7 +39,8 @@ public class PubSubPush extends HttpServlet {
       throws IOException, ServletException {
     String pubsubVerificationToken = System.getenv("PUBSUB_VERIFICATION_TOKEN");
     // Do not process message if request token does not match pubsubVerificationToken
-    if (req.getParameter("token").compareTo(pubsubVerificationToken) != 0) {
+    if (pubsubVerificationToken == null
+        || pubsubVerificationToken.compareTo(req.getParameter("token")) != 0) {
       resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }

@@ -92,6 +92,7 @@ public class IdpSqlApplication {
     }
   }
 
+  @SuppressWarnings("unchecked")
   // [START cloudrun_user_auth_secrets]
   /** Retrieve config from Secret Manager */
   public static HashMap<String, Object> getConfig() {

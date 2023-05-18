@@ -32,13 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PubSubController {
   @RequestMapping(value = "/", method = RequestMethod.POST)
-  public ResponseEntity receiveMessage(@RequestBody Body body) {
+  public ResponseEntity<String> receiveMessage(@RequestBody Body body) {
     // Get PubSub message from request body.
     Body.Message message = body.getMessage();
     if (message == null) {
       String msg = "Bad Request: invalid Pub/Sub message format";
       System.out.println(msg);
-      return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
     }
 
     String data = message.getData();
@@ -47,7 +47,7 @@ public class PubSubController {
     String msg = "Hello " + target + "!";
 
     System.out.println(msg);
-    return new ResponseEntity(msg, HttpStatus.OK);
+    return new ResponseEntity<>(msg, HttpStatus.OK);
   }
 }
 // [END run_pubsub_handler]

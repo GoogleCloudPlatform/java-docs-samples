@@ -55,7 +55,7 @@ public class EventController {
     json.put("headers", jsonHeaders);
     json.put("body", jsonBody);
 
-    return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
+    return new ResponseEntity<>(json.toString(), HttpStatus.OK);
   }
 }
 // [END eventarc_generic_handler]

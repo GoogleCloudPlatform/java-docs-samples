@@ -59,12 +59,13 @@ public class OcrTranslateApiMessage {
     return lang;
   }
 
+  @SuppressWarnings("unchecked")
   public static OcrTranslateApiMessage fromPubsubData(byte[] data) {
     String jsonStr = new String(Base64.getDecoder().decode(data), StandardCharsets.UTF_8);
     Map<String, String> jsonMap = gson.fromJson(jsonStr, Map.class);
 
-    return new OcrTranslateApiMessage(
-        jsonMap.get("text"), jsonMap.get("filename"), jsonMap.get("lang"));
+    return new OcrTranslateApiMessage(jsonMap.get("text"), jsonMap.get("filename"),
+        jsonMap.get("lang"));
   }
 
   public byte[] toPubsubData() {

@@ -209,7 +209,7 @@ public class EntitiesTest {
   public void repeatedProperties_storesList() throws Exception {
     // [START repeated_properties]
     Entity employee = new Entity("Employee");
-    ArrayList<String> favoriteFruit = new ArrayList<String>();
+    ArrayList<String> favoriteFruit = new ArrayList<>();
     favoriteFruit.add("Pear");
     favoriteFruit.add("Apple");
     employee.setProperty("favoriteFruit", favoriteFruit);

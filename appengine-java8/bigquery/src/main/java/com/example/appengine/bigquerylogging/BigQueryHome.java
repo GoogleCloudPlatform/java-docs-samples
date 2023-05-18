@@ -55,10 +55,10 @@ public class BigQueryHome {
     return sb.toString();
   }
 
-  private static String convertAveragesToHtmlTable(List<TimeSeriesSummary> values) {
+  private static String convertAveragesToHtmlTable(List<TimeSeriesSummary<?>> values) {
 
     StringBuilder sb = new StringBuilder();
-    for (TimeSeriesSummary metric : values) {
+    for (TimeSeriesSummary<?> metric : values) {
       sb.append("<tr>");
       addColumn(sb, metric.getName());
       addColumn(sb, metric.getValues().size());

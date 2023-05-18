@@ -21,7 +21,7 @@ The `pom.xml` has been updated accordingly:
 - Add the `appengine-simple-jetty-main` dependency:
 ```
 <dependency>
-  <groupId>com.example.appengine.demo</groupId>
+  <groupId>com.example.appengine</groupId>
   <artifactId>simple-jetty-main</artifactId>
   <version>1</version>
   <scope>provided</scope>
@@ -60,7 +60,7 @@ application settings:
 - The entrypoint field will start the Jetty server and load your `WAR` file.
 ```
 runtime: java11
-entrypoint: 'java -cp "*" com.example.appengine.demo.jettymain.Main helloworld.war'
+entrypoint: 'java -cp "*" com.example.appengine.jetty.Main helloworld.war'
 ```
 
 ## Running locally

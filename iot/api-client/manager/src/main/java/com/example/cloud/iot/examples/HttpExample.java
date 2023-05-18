@@ -43,8 +43,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.time.Instant;
 import java.util.Base64;
-import org.joda.time.DateTime;
+import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -69,14 +70,14 @@ public class HttpExample {
   // [START iot_http_jwt]
   /** Create a RSA-based JWT for the given project id, signed with the given private key. */
   private static String createJwtRsa(String projectId, String privateKeyFile) throws Exception {
-    DateTime now = new DateTime();
+    Instant now = Instant.now();
     // Create a JWT to authenticate this device. The device will be disconnected after the token
     // expires, and will have to reconnect with a new token. The audience field should always be set
     // to the GCP project id.
     JwtBuilder jwtBuilder =
         Jwts.builder()
-            .setIssuedAt(now.toDate())
-            .setExpiration(now.plusMinutes(20).toDate())
+            .setIssuedAt(Date.from(now))
+            .setExpiration(Date.from(now.plusSeconds(20 * 60)))
             .setAudience(projectId);
 
     byte[] keyBytes = Files.readAllBytes(Paths.get(privateKeyFile));
@@ -88,15 +89,15 @@ public class HttpExample {
 
   /** Create an ES-based JWT for the given project id, signed with the given private key. */
   private static String createJwtEs(String projectId, String privateKeyFile) throws Exception {
-    DateTime now = new DateTime();
+    Instant now = Instant.now();
     // Create a JWT to authenticate this device. The device will be disconnected after the token
     // expires, and will have to reconnect with a new token. The audience field should always be set
     // to the GCP project id.
     JwtBuilder jwtBuilder =
         Jwts.builder()
-            .setIssuedAt(now.toDate())
-            .setExpiration(now.plusMinutes(20).toDate())
-            .setAudience(projectId);
+          .setIssuedAt(Date.from(now))
+          .setExpiration(Date.from(now.plusSeconds(20 * 60)))
+          .setAudience(projectId);
 
     byte[] keyBytes = Files.readAllBytes(Paths.get(privateKeyFile));
     PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
@@ -153,10 +154,10 @@ public class HttpExample {
     HttpResponse res = req.execute();
     System.out.println(res.getStatusCode());
     System.out.println(res.getStatusMessage());
-    InputStream in = res.getContent();
-
-    System.out
-        .println(CharStreams.toString(new InputStreamReader(in, StandardCharsets.UTF_8.name())));
+    try (InputStream in = res.getContent()) {
+      System.out
+          .println(CharStreams.toString(new InputStreamReader(in, StandardCharsets.UTF_8.name())));
+    }
   }
   // [END iot_http_getconfig]
 
@@ -246,7 +247,7 @@ public class HttpExample {
 
     // Create the corresponding JWT depending on the selected algorithm.
     String token;
-    DateTime iat = new DateTime();
+    Instant iat = Instant.now();
     if ("RS256".equals(options.algorithm)) {
       token = createJwtRsa(options.projectId, options.privateKeyFile);
     } else if ("ES256".equals(options.algorithm)) {
@@ -277,10 +278,10 @@ public class HttpExample {
           options.messageType, i, options.numMessages, payload);
 
       // Refresh the authentication token if the token has expired.
-      long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
+      long secsSinceRefresh = (Instant.now().toEpochMilli() - iat.toEpochMilli()) / 1000;
       if (secsSinceRefresh > (options.tokenExpMins * MINUTES_PER_HOUR)) {
         System.out.format("\tRefreshing token after: %d seconds%n", secsSinceRefresh);
-        iat = new DateTime();
+        iat = Instant.now();
 
         if ("RS256".equals(options.algorithm)) {
           token = createJwtRsa(options.projectId, options.privateKeyFile);
