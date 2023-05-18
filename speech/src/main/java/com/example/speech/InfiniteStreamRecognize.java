@@ -50,7 +50,7 @@ public class InfiniteStreamRecognize {
   public static final String YELLOW = "\033[0;33m";
 
   // Creating shared object
-  private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue();
+  private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue<byte[]>();
   private static TargetDataLine targetDataLine;
   private static int BYTES_PER_BUFFER = 6400; // buffer size in bytes
 

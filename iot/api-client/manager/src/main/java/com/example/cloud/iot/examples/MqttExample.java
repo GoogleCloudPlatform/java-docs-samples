@@ -30,6 +30,8 @@ import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Properties;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -38,7 +40,6 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.joda.time.DateTime;
 
 // [END iot_mqtt_includes]
 
@@ -75,14 +76,14 @@ public class MqttExample {
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given RSA key. */
   private static String createJwtRsa(String projectId, String privateKeyFile)
       throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-    DateTime now = new DateTime();
+    Instant now = Instant.now();
     // Create a JWT to authenticate this device. The device will be disconnected after the token
     // expires, and will have to reconnect with a new token. The audience field should always be set
     // to the GCP project id.
     JwtBuilder jwtBuilder =
         Jwts.builder()
-            .setIssuedAt(now.toDate())
-            .setExpiration(now.plusMinutes(20).toDate())
+            .setIssuedAt(Date.from(now))
+            .setExpiration(Date.from(now.plusSeconds(20 * 60)))
             .setAudience(projectId);
 
     byte[] keyBytes = Files.readAllBytes(Paths.get(privateKeyFile));
@@ -96,14 +97,14 @@ public class MqttExample {
   /** Create a Cloud IoT Core JWT for the given project id, signed with the given ES key. */
   private static String createJwtEs(String projectId, String privateKeyFile)
       throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-    DateTime now = new DateTime();
+    Instant now = Instant.now();
     // Create a JWT to authenticate this device. The device will be disconnected after the token
     // expires, and will have to reconnect with a new token. The audience field should always be set
     // to the GCP project id.
     JwtBuilder jwtBuilder =
         Jwts.builder()
-            .setIssuedAt(now.toDate())
-            .setExpiration(now.plusMinutes(20).toDate())
+            .setIssuedAt(Date.from(now))
+            .setExpiration(Date.from(now.plusSeconds(20 * 60)))
             .setAudience(projectId);
 
     byte[] keyBytes = Files.readAllBytes(Paths.get(privateKeyFile));
@@ -167,52 +168,53 @@ public class MqttExample {
     System.out.println(String.format("%s", mqttClientId));
 
     // Create a client, and connect to the Google MQTT bridge.
-    MqttClient client = new MqttClient(mqttServerAddress, mqttClientId, new MemoryPersistence());
+    try (MqttClient client =
+        new MqttClient(mqttServerAddress, mqttClientId, new MemoryPersistence())) {
+      // Both connect and publish operations may fail. If they do, allow retries but with an
+      // exponential backoff time period.
+      long initialConnectIntervalMillis = 500L;
+      long maxConnectIntervalMillis = 6000L;
+      long maxConnectRetryTimeElapsedMillis = 900000L;
+      float intervalMultiplier = 1.5f;
 
-    // Both connect and publish operations may fail. If they do, allow retries but with an
-    // exponential backoff time period.
-    long initialConnectIntervalMillis = 500L;
-    long maxConnectIntervalMillis = 6000L;
-    long maxConnectRetryTimeElapsedMillis = 900000L;
-    float intervalMultiplier = 1.5f;
+      long retryIntervalMs = initialConnectIntervalMillis;
+      long totalRetryTimeMs = 0;
 
-    long retryIntervalMs = initialConnectIntervalMillis;
-    long totalRetryTimeMs = 0;
+      while (totalRetryTimeMs < maxConnectRetryTimeElapsedMillis && !client.isConnected()) {
+        try {
+          client.connect(connectOptions);
+        } catch (MqttException e) {
+          int reason = e.getReasonCode();
 
-    while ((totalRetryTimeMs < maxConnectRetryTimeElapsedMillis) && !client.isConnected()) {
-      try {
-        client.connect(connectOptions);
-      } catch (MqttException e) {
-        int reason = e.getReasonCode();
-
-        // If the connection is lost or if the server cannot be connected, allow retries, but with
-        // exponential backoff.
-        System.out.println("An error occurred: " + e.getMessage());
-        if (reason == MqttException.REASON_CODE_CONNECTION_LOST
-            || reason == MqttException.REASON_CODE_SERVER_CONNECT_ERROR) {
-          System.out.println("Retrying in " + retryIntervalMs / 1000.0 + " seconds.");
-          Thread.sleep(retryIntervalMs);
-          totalRetryTimeMs += retryIntervalMs;
-          retryIntervalMs *= intervalMultiplier;
-          if (retryIntervalMs > maxConnectIntervalMillis) {
-            retryIntervalMs = maxConnectIntervalMillis;
+          // If the connection is lost or if the server cannot be connected, allow retries, but with
+          // exponential backoff.
+          System.out.println("An error occurred: " + e.getMessage());
+          if (reason == MqttException.REASON_CODE_CONNECTION_LOST
+              || reason == MqttException.REASON_CODE_SERVER_CONNECT_ERROR) {
+            System.out.println("Retrying in " + retryIntervalMs / 1000.0 + " seconds.");
+            Thread.sleep(retryIntervalMs);
+            totalRetryTimeMs += retryIntervalMs;
+            retryIntervalMs *= intervalMultiplier;
+            if (retryIntervalMs > maxConnectIntervalMillis) {
+              retryIntervalMs = maxConnectIntervalMillis;
+            }
+          } else {
+            throw e;
           }
-        } else {
-          throw e;
         }
       }
+
+      attachCallback(client, gatewayId);
+
+      // The topic gateways receive error updates on. QoS must be 0.
+      String errorTopic = String.format("/devices/%s/errors", gatewayId);
+      System.out.println(String.format("Listening on %s", errorTopic));
+
+      client.subscribe(errorTopic, 0);
+
+      return client;
+      // [END iot_gateway_start_mqtt]
     }
-
-    attachCallback(client, gatewayId);
-
-    // The topic gateways receive error updates on. QoS must be 0.
-    String errorTopic = String.format("/devices/%s/errors", gatewayId);
-    System.out.println(String.format("Listening on %s", errorTopic));
-
-    client.subscribe(errorTopic, 0);
-
-    return client;
-    // [END iot_gateway_start_mqtt]
   }
 
   protected static void sendDataFromDevice(
@@ -349,7 +351,7 @@ public class MqttExample {
     // to authorize the device.
     connectOptions.setUserName("unused");
 
-    DateTime iat = new DateTime();
+    Instant iat = Instant.now();
     if ("RS256".equals(options.algorithm)) {
       connectOptions.setPassword(
           createJwtRsa(options.projectId, options.privateKeyFile).toCharArray());
@@ -375,7 +377,7 @@ public class MqttExample {
     long retryIntervalMs = initialConnectIntervalMillis;
     long totalRetryTimeMs = 0;
 
-    while ((totalRetryTimeMs < maxConnectRetryTimeElapsedMillis) && !client.isConnected()) {
+    while (totalRetryTimeMs < maxConnectRetryTimeElapsedMillis && !client.isConnected()) {
       try {
         client.connect(connectOptions);
       } catch (MqttException e) {
@@ -418,10 +420,10 @@ public class MqttExample {
 
       // Refresh the connection credentials before the JWT expires.
       // [START iot_mqtt_jwt_refresh]
-      long secsSinceRefresh = ((new DateTime()).getMillis() - iat.getMillis()) / 1000;
+      long secsSinceRefresh = (Instant.now().toEpochMilli() - iat.toEpochMilli()) / 1000;
       if (secsSinceRefresh > (options.tokenExpMins * MINUTES_PER_HOUR)) {
         System.out.format("\tRefreshing token after: %d seconds%n", secsSinceRefresh);
-        iat = new DateTime();
+        iat = Instant.now();
         if ("RS256".equals(options.algorithm)) {
           connectOptions.setPassword(
               createJwtRsa(options.projectId, options.privateKeyFile).toCharArray());

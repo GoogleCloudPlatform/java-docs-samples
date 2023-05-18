@@ -48,10 +48,8 @@ abstract class AbstractGuestbook {
    * Appends a new greeting to the guestbook and returns the {@link Entity} that was created.
    **/
   public Greeting appendGreeting(String content) {
-    Greeting greeting =
-        Greeting.create(
-            createGreeting(datastore, userService.getCurrentUser(), clock.now().toDate(), content));
-    return greeting;
+    return Greeting.create(
+        createGreeting(datastore, userService.getCurrentUser(), Date.from(clock.now()), content));
   }
 
   /**

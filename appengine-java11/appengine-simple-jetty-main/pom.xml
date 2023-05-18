@@ -73,7 +73,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>com.example.appengine.demo.jettymain.Main</mainClass>
+          <mainClass>com.example.appengine.jetty.Main</mainClass>
         </configuration>
       </plugin>
       <!-- [END gae_java11_exec_plugin] -->

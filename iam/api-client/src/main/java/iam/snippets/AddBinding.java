@@ -28,7 +28,7 @@ public class AddBinding {
     // policy = service.Projects.GetIAmPolicy(new GetIamPolicyRequest(), your-project-id).Execute();
 
     String role = "roles/role-to-add";
-    List<String> members = new ArrayList<String>();
+    List<String> members = new ArrayList<>();
     members.add("user:member-to-add@example.com");
 
     Binding binding = new Binding();

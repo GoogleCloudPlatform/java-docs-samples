@@ -39,7 +39,7 @@ class UrlShortener {
    * <p>Note: Error handling elided for simplicity.
    */
   public String createShortUrl(String longUrl) throws Exception {
-    ArrayList<String> scopes = new ArrayList<String>();
+    ArrayList<String> scopes = new ArrayList<>();
     scopes.add("https://www.googleapis.com/auth/urlshortener");
     final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
     final AppIdentityService.GetAccessTokenResult accessToken = appIdentity.getAccessToken(scopes);

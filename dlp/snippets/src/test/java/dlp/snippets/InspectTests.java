@@ -489,6 +489,28 @@ public class InspectTests extends TestBase {
   }
 
   @Test
+  public void testInspectTableWithCustomHotword() throws Exception {
+    Table tableToDeIdentify =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("Some Social Security Number").build())
+            .addHeaders(FieldId.newBuilder().setName("Real Social Security Number").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("111-11-1111").build())
+                    .addValues(Value.newBuilder().setStringValue("222-22-2222").build())
+                    .build())
+            .build();
+    InspectTableWithCustomHotword.inspectDemotingFindingsWithHotwords(
+        PROJECT_ID, tableToDeIdentify, "Some Social Security Number");
+
+    String output = bout.toString();
+    assertThat(output).contains("Findings: 1");
+    assertThat(output).contains("Info type: US_SOCIAL_SECURITY_NUMBER");
+    assertThat(output).contains("Likelihood: VERY_LIKELY");
+    assertThat(output).contains("Quote: 222-22-2222");
+  }
+
+  @Test
   public void testInspectWithStoredInfotype() throws Exception {
     // Create a new stored InfoType.
     String infoTypeId = UUID.randomUUID().toString();

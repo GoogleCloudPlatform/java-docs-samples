@@ -32,7 +32,7 @@ public abstract class TimeSeriesSummary<T> {
   T mostRecentValue;
   List<T> values;
 
-  public static TimeSeriesSummary fromTimeSeries(TimeSeries timeSeries) {
+  public static TimeSeriesSummary<?> fromTimeSeries(TimeSeries timeSeries) {
     switch (timeSeries.getValueType()) {
       case STRING:
         return new StringTimeSeriesSummary(timeSeries);
