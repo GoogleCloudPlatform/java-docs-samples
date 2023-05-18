@@ -41,9 +41,6 @@ public class StreamBigQuery implements HttpFunction {
       // This client only needs to be created once,
       // and can be reused for multiple requests.
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
-      // QueryJobConfiguration queryConfig =
-      // QueryJobConfiguration.newBuilder(query).build();
-      // TableResult results = bigquery.query(queryConfig);
       TableResult results = bigquery.query(QueryJobConfiguration.of(query));
 
       results.iterateAll().forEach(
