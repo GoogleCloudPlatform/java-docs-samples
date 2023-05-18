@@ -98,13 +98,14 @@ public class RoleIT {
         "Java Sample Custom Role",
         "Pass",
         Arrays.asList("iam.roles.get", "iam.roles.list"),
-        roleId);
+        roleId,
+        "BETA");
     assertThat(bout.toString().contains("javaSampleCustomRole"));
 
     bout.reset();
     // Test edit role.
-    EditRole.editRole(projectId, roleId);
-    assertThat(bout.toString().contains("stage: DISABLED"));
+    EditRole.editRole(projectId, roleId, "Updated description.", "GA");
+    assertThat(bout.toString().contains("stage: GA"));
 
     bout.reset();
     // Test list roles.
@@ -123,7 +124,8 @@ public class RoleIT {
 
     bout.reset();
     // Test query testable permissions.
-    QueryTestablePermissions.queryTestablePermissions(projectId);
+    QueryTestablePermissions.queryTestablePermissions(
+        "//cloudresourcemanager.googleapis.com/projects/" + projectId);
     assertThat(bout.toString().contains("iam.roles.get"));
   }
 }

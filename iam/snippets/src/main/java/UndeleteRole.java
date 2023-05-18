@@ -22,14 +22,14 @@ import com.google.iam.admin.v1.UndeleteRoleRequest;
 import java.io.IOException;
 
 /**
- * Undelete a role to return it to its previous state. Note that this only works on roles deleted
- * within the past 7 days.
+ * Undelete a role to return it to its previous state. Undeleting only works on roles that were
+ * deleted in the past 7 days.
  */
 public class UndeleteRole {
 
   public static void main(String[] args) {
     // TODO(developer): Replace the variables before running the sample.
-    // Role ID must point to a deleted role within 7 days.
+    // Role ID must point to a role that was deleted in the past 7 days.
     String projectId = "your-project-id";
     String roleId = "a unique identifier (e.g. testViewer)";
 

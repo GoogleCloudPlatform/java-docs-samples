@@ -26,17 +26,16 @@ import java.io.IOException;
 public class QueryTestablePermissions {
   public static void main(String[] args) {
     // TODO(developer): Replace the variable before running the sample.
-    String projectId = "your-project-id";
-
-    queryTestablePermissions(projectId);
-  }
-
-  public static void queryTestablePermissions(String projectId) {
-    // Full resource name can take one of the following forms:
+    // Full resource names can take one of the following forms:
     // cloudresourcemanager.googleapis.com/projects/PROJECT_ID
     // To view available permissions in an organization, use:
     // cloudresourcemanager.googleapis.com/organizations/NUMERIC_ID
-    String fullResourceName = "//cloudresourcemanager.googleapis.com/projects/" + projectId;
+    String fullResourceName = "your-full-resource-name";
+
+    queryTestablePermissions(fullResourceName);
+  }
+
+  public static void queryTestablePermissions(String fullResourceName) {
 
     QueryTestablePermissionsRequest queryTestablePermissionsRequest =
         QueryTestablePermissionsRequest.newBuilder().setFullResourceName(fullResourceName).build();

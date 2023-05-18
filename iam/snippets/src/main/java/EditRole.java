@@ -23,7 +23,7 @@ import com.google.iam.admin.v1.UpdateRoleRequest;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
 
-/** Edit role metadata. Specially, changing launch stage enum to GA. */
+/** Edit role metadata. Specifically, update description and launch stage. */
 public class EditRole {
 
   public static void main(String[] args) {
@@ -31,17 +31,28 @@ public class EditRole {
     // Role ID must point to an existing role.
     String projectId = "your-project-id";
     String roleId = "a unique identifier (e.g. testViewer)";
+    String description = "a new description of the role";
+    // See launch stage enums at
+    // https://cloud.google.com/iam/docs/reference/rpc/google.iam.admin.v1#rolelaunchstage
+    String launchStage = "GA";
 
-    editRole(projectId, roleId);
+    editRole(projectId, roleId, description, launchStage);
   }
 
-  public static void editRole(String projectId, String roleId) {
+  public static void editRole(
+      String projectId, String roleId, String description, String launchStage) {
 
     String roleName = "projects/" + projectId + "/roles/" + roleId;
 
-    Role.Builder roleBuilder = Role.newBuilder().setName(roleName).setStage(RoleLaunchStage.GA);
+    Role.Builder roleBuilder =
+        Role.newBuilder()
+            .setName(roleName)
+            .setDescription(description)
+            // Generally we don't recommend accessing RoleLaunchStage enums via strings.
+            // Instead, retrieve them using the dot notation (e.g. RoleLaunchStage.GA).
+            .setStage(RoleLaunchStage.valueOf(launchStage));
 
-    FieldMask fieldMask = FieldMask.newBuilder().addPaths("stage").build();
+    FieldMask fieldMask = FieldMask.newBuilder().addPaths("description").addPaths("stage").build();
 
     UpdateRoleRequest updateRoleRequest =
         UpdateRoleRequest.newBuilder()
