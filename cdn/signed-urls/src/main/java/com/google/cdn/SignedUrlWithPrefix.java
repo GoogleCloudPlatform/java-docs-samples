@@ -16,7 +16,7 @@
 
 package com.google.cdn;
 
-import java.io.IOException;
+// [START cloudcdn_sign_url_prefix]
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -31,9 +31,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class SignedUrlWithPrefix {
 
-  // [START cloudcdn_sign_url_prefix]
   public static void main(String[] args) throws Exception {
-
     // TODO(developer): Replace these variables before running the sample.
 
     // The name of the signing key added to the back end bucket or service
@@ -48,17 +46,18 @@ public class SignedUrlWithPrefix {
     // https:// and should not include query parameters
     String urlPrefix = "https://media.example.com/videos/";
 
-    //read the key as a base 64 url-safe encoded string, then convert to byte array
+    // Read the key as a base64 url-safe encoded string, then convert to byte array
     String base64String = new String(Files.readAllBytes(Paths.get(keyPath)),
         StandardCharsets.UTF_8);
     byte[] keyBytes = Base64.getUrlDecoder().decode(base64String);
 
-    // sign the url with prefix
+    // Sign the url with prefix
     String signUrlWithPrefixResult = signUrlWithPrefix(requestUrl,
         urlPrefix, keyBytes, keyName, expirationTime);
     System.out.println(signUrlWithPrefixResult);
   }
 
+  // Gets Date representation for tomorrow from Calendar
   private static Date getTomorrow() {
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
@@ -92,6 +91,7 @@ public class SignedUrlWithPrefix {
     return requestUrl + "&" + urlToSign + "&Signature=" + encoded;
   }
 
+  // Creates signature for input url with private key
   private static String getSignatureForUrl(byte[] privateKey, String input)
       throws InvalidKeyException, NoSuchAlgorithmException {
 
@@ -103,5 +103,5 @@ public class SignedUrlWithPrefix {
     return Base64.getUrlEncoder()
         .encodeToString(mac.doFinal(input.getBytes(StandardCharsets.UTF_8)));
   }
-  // [END cloudcdn_sign_url_prefix]
 }
+// [END cloudcdn_sign_url_prefix]
