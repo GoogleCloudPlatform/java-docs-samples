@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import org.apache.beam.sdk.PipelineResult;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
