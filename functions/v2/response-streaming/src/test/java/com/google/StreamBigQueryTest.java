@@ -14,22 +14,58 @@
 * limitations under the License.
 */
 
-package functions;
+package com.google;
 
 import static com.google.common.truth.Truth.assertThat;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import static org.mockito.Mockito.when;
 
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 
 @RunWith(JUnit4.class)
 public class StreamBigQueryTest {
+
+  @Mock private HttpRequest request;
+  @Mock private HttpResponse response;
+
+  private BufferedWriter writer;
+
+  private final Logger log = Logger.getLogger(this.getClass().getName());
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
+  private PrintStream originalPrintStream;
+
+  @Before
+  public void setUp() throws IOException {
+    MockitoAnnotations.initMocks(this);
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    originalPrintStream = System.out;
+    System.setOut(out);
+
+    writer = new BufferedWriter(new StringWriter());
+    when(response.getWriter()).thenReturn(writer);
+  }
+
   @Test
-  public void functionsStreamBiqQuery_shouldStreamResponse() throws Exception {
-    HttpResponse response = new StreamBigQuery.service(new HttpRequest());
-    System.out.println(response.data);
+  public void functionsStreamBiqQuery_shouldStreamResponse() {
+    String query = "SELECT abstract FROM `bigquery-public-data.breathe.bioasq` LIMIT 1000";
+    StreamBigQuery.streamQueryResult(query, response);
+    assertThat(bout.toString()).contains("Successfully flushed row");
   }
 }

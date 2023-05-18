@@ -29,30 +29,34 @@ import java.io.IOException;
 
 public class StreamBigQuery implements HttpFunction {
   @Override
-  public void service(HttpRequest request, HttpResponse response)
-      throws IOException {
-    BufferedWriter writer = response.getWriter();
-
+  public void service(HttpRequest request, HttpResponse response) {
     String query = "SELECT abstract FROM `bigquery-public-data.breathe.bioasq` LIMIT 1000";
+    streamQueryResult(query, response);
+  }
 
+  public static void streamQueryResult(String query, HttpResponse response) {
     try {
+      BufferedWriter writer = response.getWriter();
       // Initialize client that will be used to send requests.
       // This client only needs to be created once,
       // and can be reused for multiple requests.
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
-      QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(query).build();
-      TableResult results = bigquery.query(queryConfig);
+      // QueryJobConfiguration queryConfig =
+      // QueryJobConfiguration.newBuilder(query).build();
+      // TableResult results = bigquery.query(queryConfig);
+      TableResult results = bigquery.query(QueryJobConfiguration.of(query));
 
       results.iterateAll().forEach(
           row -> row.forEach(val -> {
             try {
               writer.write(val.getValue().toString() + "\n");
               writer.flush();
+              System.out.println("Successfully flushed row");
             } catch (IOException e) {
               System.out.println("Could not get rows: " + e.toString());
             }
           }));
-    } catch (BigQueryException | InterruptedException e) {
+    } catch (BigQueryException | InterruptedException | IOException e) {
       System.out.println("Query not performed: " + e.toString());
     }
   }
