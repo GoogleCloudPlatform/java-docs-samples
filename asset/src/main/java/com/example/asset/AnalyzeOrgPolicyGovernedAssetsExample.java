@@ -47,12 +47,13 @@ public class AnalyzeOrgPolicyGovernedAssetsExample {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    AssetServiceClient client = AssetServiceClient.create();
-    AnalyzeOrgPolicyGovernedAssetsPagedResponse response =
-        client.analyzeOrgPolicyGovernedAssets(request);
-    System.out.println(
-        "AnalyzeOrgPolicyGovernedAssets completed successfully:\n"
-            + response.getPage().getValues());
+    try (AssetServiceClient client = AssetServiceClient.create()) {
+      AnalyzeOrgPolicyGovernedAssetsPagedResponse response =
+          client.analyzeOrgPolicyGovernedAssets(request);
+      System.out.println(
+          "AnalyzeOrgPolicyGovernedAssets completed successfully:\n"
+              + response.getPage().getValues());
+    }
   }
 }
 // [END asset_quickstart_analyze_org_policy_governed_assets]
