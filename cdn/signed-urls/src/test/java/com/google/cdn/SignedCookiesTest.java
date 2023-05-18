@@ -17,7 +17,8 @@
 package com.google.cdn;
 
 import static com.google.cdn.SignedCookies.signCookie;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import java.util.Base64;
 import java.util.Date;
