@@ -60,14 +60,14 @@ public class OrgPolicyAnalyzerIT {
   public void testAnalyzeOrgPolicies() throws Exception {
     AnalyzeOrgPoliciesExample.analyzeOrgPolicies(SCOPE, CONSTRAINT_NAME);
     String got = bout.toString();
-    assertThat(got).contains(SCOPE);
+    assertThat(got).contains("consolidated_policy");
   }
 
   @Test
   public void testAnalyzeOrgPolicyGovernedAssets() throws Exception {
     AnalyzeOrgPolicyGovernedAssetsExample.analyzeOrgPolicyGovernedAssets(SCOPE, CONSTRAINT_NAME);
     String got = bout.toString();
-    assertThat(got).contains(SCOPE);
+    assertThat(got).contains("consolidated_policy");
   }
 
   @Test
@@ -75,6 +75,6 @@ public class OrgPolicyAnalyzerIT {
     AnalyzeOrgPolicyGovernedContainersExample.analyzeOrgPolicyGovernedContainers(
         SCOPE, CONSTRAINT_NAME);
     String got = bout.toString();
-    assertThat(got).contains(SCOPE);
+    assertThat(got).contains("consolidated_policy");
   }
 }
