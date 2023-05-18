@@ -62,7 +62,6 @@
       ],
       "groupName": "SLF4J packages"
     },    
-    
     {
       "packageNames": [
         "javax.servlet:javax.servlet-api"
