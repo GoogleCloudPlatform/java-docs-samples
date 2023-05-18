@@ -1,0 +1,102 @@
+/*
+ * Copyright 2023 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cdn;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+public class SignedCookies {
+
+  public static void main(String[] args) throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+
+    // The name of the signing key added to the back end bucket or service
+    String keyName = "YOUR-KEY-NAME";
+    // Path to the url signing key uploaded to the backend service/bucket, as a 16-byte array
+    String keyPath = "/path/to/key";
+    // The date that the signed URL expires
+    Date expirationTime = getTomorrow();
+    // URL of request
+    String requestUrl = "https://media.example.com/videos/id/main.m3u8?userID=abc123&starting_profile=1";
+    // URL prefix to sign as a string. urlPrefix must start with either http:// or
+    // https:// and should not include query parameters
+    String urlPrefix = "https://media.example.com/videos/";
+
+    // Read the key as a base64 url-safe encoded string, then convert to byte array
+    String base64String = new String(Files.readAllBytes(Paths.get(keyPath)),
+        StandardCharsets.UTF_8);
+    byte[] keyBytes = Base64.getUrlDecoder().decode(base64String);
+
+    // Create signed cookie from policy
+    String signedCookie = signCookie(
+        urlPrefix, keyBytes, keyName, expirationTime);
+    System.out.println(signedCookie);
+  }
+
+  // Gets Date representation for tomorrow from Calendar
+  private static Date getTomorrow() {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date());
+    cal.add(Calendar.DATE, 1);
+    return cal.getTime();
+  }
+
+  // Creates a signed cookie for the specified policy
+  static String signCookie(String urlPrefix, byte[] key, String keyName,
+      Date expirationTime)
+      throws InvalidKeyException, NoSuchAlgorithmException {
+
+    if (urlPrefix.contains("?") || urlPrefix.contains("#")) {
+      throw new IllegalArgumentException("urlPrefix must not include query params: " + urlPrefix);
+    }
+    if (!urlPrefix.startsWith("http://") && !urlPrefix.startsWith("https://")) {
+      throw new IllegalArgumentException(
+          "urlPrefix must start with either http:// or https://: " + urlPrefix);
+    }
+    final long unixTime = expirationTime.getTime() / 1000;
+
+    String encodedUrlPrefix = Base64.getUrlEncoder().encodeToString(urlPrefix.getBytes(
+        StandardCharsets.UTF_8));
+    String policyToSign = String.format("URLPrefix=%s:Expires=%d:KeyName=%s", encodedUrlPrefix,
+        unixTime, keyName);
+
+    String signature = getSignatureForUrl(key, policyToSign);
+    return String.format("Cloud-CDN-Cookie=%s:Signature=%s", policyToSign, signature);
+  }
+
+  // Creates signature for input string with private key
+  private static String getSignatureForUrl(byte[] privateKey, String input)
+      throws InvalidKeyException, NoSuchAlgorithmException {
+
+    final String algorithm = "HmacSHA1";
+    final int offset = 0;
+    Key key = new SecretKeySpec(privateKey, offset, privateKey.length, algorithm);
+    Mac mac = Mac.getInstance(algorithm);
+    mac.init(key);
+    return Base64.getUrlEncoder()
+        .encodeToString(mac.doFinal(input.getBytes(StandardCharsets.UTF_8)));
+  }
+}
