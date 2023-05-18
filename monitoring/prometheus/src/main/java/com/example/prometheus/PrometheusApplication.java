@@ -47,6 +47,7 @@ public class PrometheusApplication {
   static final Histogram responseLatency = Histogram.build()
       .name("java_response_latency").help("response latencies").register();
   // [END monitoring_sli_metrics_prometheus_create_metrics]
+
   @RestController
   static class PrometheusController {
     @Autowired
@@ -65,12 +66,14 @@ public class PrometheusApplication {
       if (random.nextDouble() >= 0.9) {
         failedRequestCount.inc();
         // [END monitoring_sli_metrics_prometheus_counts]
-        response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Intentional failure encountered!");
+        response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("Intentional failure encountered!");
       } else {
         long randomDelayMs = random.nextInt(1000);
         // delay for a bit to vary latency measurement
         Thread.sleep(randomDelayMs);
-        response = ResponseEntity.status(HttpStatus.OK).body("Succeeded after " + randomDelayMs + "ms.");
+        response = ResponseEntity.status(HttpStatus.OK)
+            .body("Succeeded after " + randomDelayMs + "ms.");
       }
       timer.observeDuration();
       // [END monitoring_sli_metrics_prometheus_latency]
