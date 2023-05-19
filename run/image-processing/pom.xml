@@ -63,6 +63,11 @@ limitations under the License.
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- [START cloudrun_imageproc_dep] -->
     <!-- [START run_imageproc_dep] -->
     <dependency>
