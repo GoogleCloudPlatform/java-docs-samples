@@ -40,23 +40,23 @@ public class DualToken {
     // TODO(developer): Replace these variables before running the sample.
     // Secret key as a base64 encoded string.
     byte[] base64Key = new byte[]{};
-    // Algorithm can be either `SHA1` or `SHA256` or `Ed25519`.
+    // Algorithm can be one of these: SHA1, SHA256, or Ed25519.
     String signatureAlgorithm = "ed25519";
     // (Optional) Start time as a UTC datetime object.
     DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
     Optional<Instant> startTime = Optional.empty();
     // Expiration time as a UTC datetime object.
-    // If None, an expiration time 1 hour from now will be used.
+    // If None, an expiration time that's an hour after the current time is used.
     Instant expiresTime = Instant.from(formatter.parse("2022-09-13T12:00:00Z"));
 
     // ONE OF (`urlPrefix`, `fullPath`, `pathGlobs`) must be included in each input.
-    // The URL prefix to sign, including protocol.
+    // The URL prefix and protocol to sign.
     // For example: http://example.com/path/ for URLs under /path or http://example.com/path?param=1
     Optional<String> urlPrefix = Optional.empty();
     // A full path to sign, starting with the first '/'.
     // For example: /path/to/content.mp4
     Optional<String> fullPath = Optional.of("http://10.20.30.40/");
-    // A set of ','- or '!'-delimited path glob strings.
+    // A set of path glob strings delimited by ',' or '!'.
     // For example: /tv/*!/film/* to sign paths starting with /tv/ or /film/ in any URL.
     Optional<String> pathGlobs = Optional.empty();
 
@@ -68,7 +68,7 @@ public class DualToken {
     // May be specified more than once.
     // For example: [{'name': 'foo', 'value': 'bar'}, {'name': 'baz', 'value': 'qux'}]
     Optional<List<Header>> headers = Optional.empty();
-    // (Optional) A list of comma separated ip ranges. Both IPv4 and IPv6 ranges are acceptable.
+    // (Optional) A list of comma-separated IP ranges. Both IPv4 and IPv6 ranges are acceptable.
     // For example: "203.0.113.0/24,2001:db8:4a7f:a732/64"
     Optional<String> ipRanges = Optional.empty();
 
@@ -86,10 +86,10 @@ public class DualToken {
         ipRanges);
   }
 
-  // Gets the Signed URL Suffix string for the 'Media CDN' Short token URL requests.
+  // Gets the signed URL suffix string for the Media CDN short token URL requests.
   // Result:
-  //     The Signed URL appended with the query parameters based on the
-  //     specified URL prefix and configuration.
+  //     The signed URL appended with the query parameters based on the
+  // specified URL prefix and configuration.
   public static void signToken(
       byte[] base64Key, String signatureAlgorithm, Optional<Instant> startTime,
       Instant expirationTime, Optional<String> urlPrefix, Optional<String> fullPath,
@@ -100,9 +100,9 @@ public class DualToken {
     String field = "";
     byte[] decodedKey = Base64.getUrlDecoder().decode(base64Key);
 
-    // For most fields, the value we put in the token and the value we must sign
-    // are the same. The FullPath and Headers use a different string for the
-    // value to be signed compared to the token. To illustrate this difference,
+    // For most fields, the value in the token and the value to sign
+    // are the same. Compared to the token, the FullPath and Headers
+    // use a different string for the value to sign. To illustrate this difference,
     // we'll keep the token and the value to be signed separate.
     List<String> tokens = new ArrayList<>();
     List<String> toSign = new ArrayList<>();
@@ -204,7 +204,7 @@ public class DualToken {
           "Input Missing Error: `signatureAlgorithm` can only be one of `sha1`, `sha256` or "
               + "`ed25519`");
     }
-    // The Signed URL appended with the query parameters based on the
+    // The signed URL appended with the query parameters based on the
     // specified URL prefix and configuration.
     System.out.println(String.join("~", tokens));
   }
