@@ -16,7 +16,6 @@
 
 // [START iam_delete_role]
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.DeleteRoleRequest;
 import java.io.IOException;
@@ -24,7 +23,7 @@ import java.io.IOException;
 /** Delete role. */
 public class DeleteRole {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace the variables before running the sample.
     // Role ID must point to an existing role.
     String projectId = "your-project-id";
@@ -33,9 +32,8 @@ public class DeleteRole {
     deleteRole(projectId, roleId);
   }
 
-  public static void deleteRole(String projectId, String roleId) {
+  public static void deleteRole(String projectId, String roleId) throws IOException {
     String roleName = "projects/" + projectId + "/roles/" + roleId;
-
     DeleteRoleRequest deleteRoleRequest = DeleteRoleRequest.newBuilder().setName(roleName).build();
 
     // Initialize client for sending requests. This client only needs to be created
@@ -43,8 +41,6 @@ public class DeleteRole {
     try (IAMClient iamClient = IAMClient.create()) {
       iamClient.deleteRole(deleteRoleRequest);
       System.out.println("Role deleted.");
-    } catch (NotFoundException | IOException e) {
-      throw new RuntimeException(e);
     }
   }
 }

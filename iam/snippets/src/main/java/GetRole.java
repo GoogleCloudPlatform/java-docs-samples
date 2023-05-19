@@ -16,7 +16,6 @@
 
 // [START iam_get_role]
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.GetRoleRequest;
 import com.google.iam.admin.v1.Role;
@@ -25,14 +24,14 @@ import java.io.IOException;
 /** Get role metadata. Specifically, printing out role permissions. */
 public class GetRole {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace the variable before running the sample.
     String roleId = "a unique identifier (e.g. testViewer)";
 
     getRole(roleId);
   }
 
-  public static void getRole(String roleId) {
+  public static void getRole(String roleId) throws IOException {
     GetRoleRequest getRoleRequest = GetRoleRequest.newBuilder().setName(roleId).build();
 
     // Initialize client for sending requests. This client only needs to be created
@@ -40,8 +39,6 @@ public class GetRole {
     try (IAMClient iamClient = IAMClient.create()) {
       Role role = iamClient.getRole(getRoleRequest);
       role.getIncludedPermissionsList().forEach(permission -> System.out.println(permission));
-    } catch (NotFoundException | IOException e) {
-      throw new RuntimeException(e);
     }
   }
 }

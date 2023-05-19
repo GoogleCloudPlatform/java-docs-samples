@@ -16,7 +16,6 @@
 
 // [START iam_create_role]
 
-import com.google.api.gax.rpc.AlreadyExistsException;
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.CreateRoleRequest;
 import com.google.iam.admin.v1.Role;
@@ -26,7 +25,7 @@ import java.util.Arrays;
 
 /** Create role. */
 public class CreateRole {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace the variables before running the sample.
     String projectId = "your-project-id";
     String roleId = "a unique identifier (e.g. testViewer)";
@@ -47,7 +46,8 @@ public class CreateRole {
       String description,
       Iterable<String> includedPermissions,
       String roleId,
-      String launchStage) {
+      String launchStage)
+      throws IOException {
     Role.Builder roleBuilder =
         Role.newBuilder()
             .setTitle(title)
@@ -56,7 +56,6 @@ public class CreateRole {
             // Generally we don't recommend accessing RoleLaunchStage enums via strings.
             // Instead, retrieve them using the dot notation (e.g. RoleLaunchStage.BETA).
             .setStage(RoleLaunchStage.valueOf(launchStage));
-
     CreateRoleRequest createRoleRequest =
         CreateRoleRequest.newBuilder()
             .setParent("projects/" + projectId)
@@ -69,8 +68,6 @@ public class CreateRole {
     try (IAMClient iamClient = IAMClient.create()) {
       Role result = iamClient.createRole(createRoleRequest);
       System.out.println("Created role: " + result.getName());
-    } catch (AlreadyExistsException | IOException e) {
-      throw new RuntimeException(e);
     }
   }
 }

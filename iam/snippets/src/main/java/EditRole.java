@@ -26,7 +26,7 @@ import java.io.IOException;
 /** Edit role metadata. Specifically, update description and launch stage. */
 public class EditRole {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace the variables before running the sample.
     // Role ID must point to an existing role.
     String projectId = "your-project-id";
@@ -40,10 +40,8 @@ public class EditRole {
   }
 
   public static void editRole(
-      String projectId, String roleId, String description, String launchStage) {
-
+      String projectId, String roleId, String description, String launchStage) throws IOException {
     String roleName = "projects/" + projectId + "/roles/" + roleId;
-
     Role.Builder roleBuilder =
         Role.newBuilder()
             .setName(roleName)
@@ -51,9 +49,7 @@ public class EditRole {
             // Generally we don't recommend accessing RoleLaunchStage enums via strings.
             // Instead, retrieve them using the dot notation (e.g. RoleLaunchStage.GA).
             .setStage(RoleLaunchStage.valueOf(launchStage));
-
     FieldMask fieldMask = FieldMask.newBuilder().addPaths("description").addPaths("stage").build();
-
     UpdateRoleRequest updateRoleRequest =
         UpdateRoleRequest.newBuilder()
             .setName(roleName)
@@ -66,8 +62,6 @@ public class EditRole {
     try (IAMClient iamClient = IAMClient.create()) {
       Role result = iamClient.updateRole(updateRoleRequest);
       System.out.println("Edited role:\n" + result);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
     }
   }
 }

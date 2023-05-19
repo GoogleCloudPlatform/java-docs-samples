@@ -24,14 +24,14 @@ import java.io.IOException;
 /** List roles in a project. */
 public class ListRoles {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace the variable before running the sample.
     String projectId = "your-project-id";
 
     listRoles(projectId);
   }
 
-  public static void listRoles(String projectId) {
+  public static void listRoles(String projectId) throws IOException {
     ListRolesRequest listRolesRequest =
         ListRolesRequest.newBuilder().setParent("projects/" + projectId).build();
 
@@ -40,8 +40,6 @@ public class ListRoles {
     try (IAMClient iamClient = IAMClient.create()) {
       ListRolesPagedResponse listRolesResponse = iamClient.listRoles(listRolesRequest);
       listRolesResponse.iterateAll().forEach(role -> System.out.println(role));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
     }
   }
 }

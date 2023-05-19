@@ -16,7 +16,6 @@
 
 // [START iam_query_testable_permissions]
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.cloud.iam.admin.v1.IAMClient.QueryTestablePermissionsPagedResponse;
 import com.google.iam.admin.v1.QueryTestablePermissionsRequest;
@@ -24,7 +23,7 @@ import java.io.IOException;
 
 /** View available permissions in a project. */
 public class QueryTestablePermissions {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace the variable before running the sample.
     // Full resource names can take one of the following forms:
     // cloudresourcemanager.googleapis.com/projects/PROJECT_ID
@@ -35,8 +34,7 @@ public class QueryTestablePermissions {
     queryTestablePermissions(fullResourceName);
   }
 
-  public static void queryTestablePermissions(String fullResourceName) {
-
+  public static void queryTestablePermissions(String fullResourceName) throws IOException {
     QueryTestablePermissionsRequest queryTestablePermissionsRequest =
         QueryTestablePermissionsRequest.newBuilder().setFullResourceName(fullResourceName).build();
 
@@ -46,8 +44,6 @@ public class QueryTestablePermissions {
       queryTestablePermissionsPagedResponse
           .iterateAll()
           .forEach(permission -> System.out.println(permission.getName()));
-    } catch (NotFoundException | IOException e) {
-      throw new RuntimeException(e);
     }
   }
 }

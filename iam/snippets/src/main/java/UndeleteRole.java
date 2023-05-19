@@ -27,7 +27,7 @@ import java.io.IOException;
  */
 public class UndeleteRole {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace the variables before running the sample.
     // Role ID must point to a role that was deleted in the past 7 days.
     String projectId = "your-project-id";
@@ -36,9 +36,8 @@ public class UndeleteRole {
     undeleteRole(projectId, roleId);
   }
 
-  public static void undeleteRole(String projectId, String roleId) {
+  public static void undeleteRole(String projectId, String roleId) throws IOException {
     String roleName = "projects/" + projectId + "/roles/" + roleId;
-
     UndeleteRoleRequest undeleteRoleRequest =
         UndeleteRoleRequest.newBuilder().setName(roleName).build();
 
@@ -47,8 +46,6 @@ public class UndeleteRole {
     try (IAMClient iamClient = IAMClient.create()) {
       Role result = iamClient.undeleteRole(undeleteRoleRequest);
       System.out.println("Undeleted role:\n" + result);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
     }
   }
 }

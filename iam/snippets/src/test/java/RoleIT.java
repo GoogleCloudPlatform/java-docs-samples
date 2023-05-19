@@ -86,7 +86,7 @@ public class RoleIT {
   }
 
   @Test
-  public void testRole() {
+  public void testRole() throws IOException {
     // Test get role.
     GetRole.getRole("roles/iam.roleViewer");
     assertThat(bout.toString().contains("iam.roles.get"));
