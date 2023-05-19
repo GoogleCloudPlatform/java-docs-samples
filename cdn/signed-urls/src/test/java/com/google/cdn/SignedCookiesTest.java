@@ -41,7 +41,10 @@ public class SignedCookiesTest {
   @Test
   public void testUrlPathSignedWithPrefix() throws Exception {
     String result = signCookie(URL_PREFIX, KEY_BYTES, KEY_NAME, EXPIRATION);
-    final String expected = "Cloud-CDN-Cookie=URLPrefix=aHR0cHM6Ly9tZWRpYS5leGFtcGxlLmNvbS92aWRlb3Mv:Expires=1518135754:KeyName=my-key:Signature=c2oZduDcTH36_bCbO-hEoaLc_5o=";
+    final String expected = "Cloud-CDN-Cookie="
+        + "URLPrefix=aHR0cHM6Ly9tZWRpYS5leGFtcGxlLmNvbS92aWRlb3Mv"
+        + ":Expires=1518135754:KeyName=my-key"
+        + ":Signature=c2oZduDcTH36_bCbO-hEoaLc_5o=";
     assertEquals(expected, result);
   }
 
