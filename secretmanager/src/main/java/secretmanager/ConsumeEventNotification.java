@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package secretmanager;
 
 // [START secretmanager_consume_event_notification]
@@ -82,12 +83,12 @@ public class ConsumeEventNotification {
 
     @Override
     public String toString() {
-      return "PubSubMessage{" +
-          "data='" + data + '\'' +
-          ", attributes=" + attributes +
-          ", messageId='" + messageId + '\'' +
-          ", publishTime='" + publishTime + '\'' +
-          '}';
+      return "PubSubMessage{"
+          + "data='" + data + '\''
+          + ", attributes=" + attributes
+          + ", messageId='" + messageId + '\''
+          + ", publishTime='" + publishTime + '\''
+          + '}';
     }
   }
 }
