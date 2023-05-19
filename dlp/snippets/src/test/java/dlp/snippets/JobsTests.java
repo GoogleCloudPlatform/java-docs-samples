@@ -38,6 +38,7 @@ import com.google.privacy.dlp.v2.Manual;
 import com.google.privacy.dlp.v2.StorageConfig;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import org.junit.BeforeClass;
@@ -85,11 +86,7 @@ public class JobsTests extends TestBase {
     return DLP_SERVICE_CLIENT.createDlpJob(createDlpJobRequest);
   }
 
-  private static void createHybridJobTrigger(String jobTriggerId) throws IOException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-
+  private static void createHybridJobTrigger(String jobTriggerId) {
     // Set hybrid options for content outside GCP.
     HybridOptions hybridOptions = HybridOptions.newBuilder().putLabels("env", "prod").build();
 
@@ -241,19 +238,28 @@ public class JobsTests extends TestBase {
     String jobTriggerId = UUID.randomUUID().toString();
     createHybridJobTrigger(jobTriggerId);
 
-    String textToDeIdentify = "My email is test@example.org";
+    String textToDeIdentify = "My email is test@example.org and my name is Gary.";
     InspectDataToHybridJobTrigger.inspectDataToHybridJobTrigger(
         textToDeIdentify, PROJECT_ID, jobTriggerId);
     String output = bout.toString();
-    assertThat(output).contains("Successfully inspected data using a hybrid job trigger");
+    assertThat(output).contains("Job status: ACTIVE");
+    assertThat(output).contains("InfoType: EMAIL_ADDRESS");
+    assertThat(output).contains("InfoType: PERSON_NAME");
+
+    // Delete the job.
+    String jobName = Arrays.stream(output.split("\n"))
+            .filter(line -> line.contains("Job name:"))
+            .findFirst()
+            .get();
+    jobName = jobName.split(":")[1].trim();
+    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
 
     // Delete the specific job trigger.
     DeleteJobTriggerRequest deleteJobTriggerRequest =
         DeleteJobTriggerRequest.newBuilder()
             .setName(JobTriggerName.of(PROJECT_ID, jobTriggerId).toString())
             .build();
-    try (DlpServiceClient client = DlpServiceClient.create()) {
-      client.deleteJobTrigger(deleteJobTriggerRequest);
-    }
+
+    DLP_SERVICE_CLIENT.deleteJobTrigger(deleteJobTriggerRequest);
   }
 }

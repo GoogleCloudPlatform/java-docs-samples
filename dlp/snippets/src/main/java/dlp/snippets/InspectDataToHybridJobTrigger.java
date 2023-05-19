@@ -22,10 +22,13 @@ import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ActivateJobTriggerRequest;
 import com.google.privacy.dlp.v2.Container;
 import com.google.privacy.dlp.v2.ContentItem;
+import com.google.privacy.dlp.v2.DlpJob;
+import com.google.privacy.dlp.v2.GetDlpJobRequest;
 import com.google.privacy.dlp.v2.HybridContentItem;
 import com.google.privacy.dlp.v2.HybridFindingDetails;
 import com.google.privacy.dlp.v2.HybridInspectJobTriggerRequest;
-import com.google.privacy.dlp.v2.HybridInspectResponse;
+import com.google.privacy.dlp.v2.InfoTypeStats;
+import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.JobTriggerName;
 
 public class InspectDataToHybridJobTrigger {
@@ -37,7 +40,7 @@ public class InspectDataToHybridJobTrigger {
     // The job trigger id used to for processing a hybrid job trigger.
     String jobTriggerId = "your-job-trigger-id";
     // The string to de-identify.
-    String textToDeIdentify = "My email is test@example.org";
+    String textToDeIdentify = "My email is test@example.org and my name is Gary.";
     inspectDataToHybridJobTrigger(textToDeIdentify, projectId, jobTriggerId);
   }
 
@@ -78,7 +81,7 @@ public class InspectDataToHybridJobTrigger {
           ActivateJobTriggerRequest.newBuilder()
               .setName(JobTriggerName.of(projectId, jobTriggerId).toString())
               .build();
-      dlpClient.activateJobTrigger(activateJobTriggerRequest);
+      DlpJob dlpJob = dlpClient.activateJobTrigger(activateJobTriggerRequest);
 
       // Build the hybrid inspect request.
       HybridInspectJobTriggerRequest request =
@@ -88,10 +91,28 @@ public class InspectDataToHybridJobTrigger {
               .build();
 
       // Send the hybrid inspect request.
-      HybridInspectResponse response = dlpClient.hybridInspectJobTrigger(request);
+      dlpClient.hybridInspectJobTrigger(request);
 
-      // Print the result.
-      System.out.print("Successfully inspected data using a hybrid job trigger.");
+      // Build a request to get the completed job
+      GetDlpJobRequest getDlpJobRequest = GetDlpJobRequest.newBuilder()
+              .setName(dlpJob.getName())
+              .build();
+      DlpJob result = null;
+      do {
+        result = dlpClient.getDlpJob(getDlpJobRequest);
+        Thread.sleep(5000);
+      } while (result.getInspectDetails().getResult().getProcessedBytes() <= 0);
+
+
+      System.out.println("Job status: " + result.getState());
+      System.out.println("Job name: " + result.getName());
+      // Parse the response and process results.
+      InspectDataSourceDetails.Result inspectionResult = result.getInspectDetails().getResult();
+      System.out.println("Findings: ");
+      for (InfoTypeStats infoTypeStat : inspectionResult.getInfoTypeStatsList()) {
+        System.out.println("\tInfoType: " + infoTypeStat.getInfoType().getName());
+        System.out.println("\tCount: " + infoTypeStat.getCount() + "\n");
+      }
     }
   }
 }
