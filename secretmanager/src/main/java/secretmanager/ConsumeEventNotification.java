@@ -22,16 +22,16 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.logging.Logger;
 
-// Demonstrates how to consume and process a Pub/Sub notification from Secret Manager.Triggered
-// from a message on a Cloud Pub/Sub topic.
-// Ideally the class should implement a background function that accepts a PubSub message.
+// Demonstrates how to consume and process a Pub/Sub notification from Secret Manager. Triggered
+// by a message on a Cloud Pub/Sub topic.
+// Ideally the class should implement a background function that accepts a Pub/Sub message.
 // public class ConsumeEventNotification implements BackgroundFunction<PubSubMessage> { }
 public class ConsumeEventNotification {
 
   // You can configure the logs to print the message in Cloud Logging.
   private static final Logger logger = Logger.getLogger(ConsumeEventNotification.class.getName());
 
-  // Accepts a message from a PubSub topic and writes it to logger.
+  // Accepts a message from a Pub/Sub topic and writes it to logger.
   public static String accept(PubSubMessage message) {
     String eventType = message.attributes.get("eventType");
     String secretId = message.attributes.get("secretId");
@@ -41,7 +41,7 @@ public class ConsumeEventNotification {
     return log;
   }
 
-  // Event payload. Mock of the actual PubSub message.
+  // Event payload. Mock of the actual Pub/Sub message.
   public static class PubSubMessage {
 
     byte[] data;
