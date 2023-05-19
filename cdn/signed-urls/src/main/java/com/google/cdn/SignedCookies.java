@@ -52,8 +52,7 @@ public class SignedCookies {
     byte[] keyBytes = Base64.getUrlDecoder().decode(base64String);
 
     // Create signed cookie from policy
-    String signedCookie = signCookie(
-        urlPrefix, keyBytes, keyName, expirationTime);
+    String signedCookie = signCookie(urlPrefix, keyBytes, keyName, expirationTime);
     System.out.println(signedCookie);
   }
 
@@ -66,7 +65,7 @@ public class SignedCookies {
   }
 
   // Creates a signed cookie for the specified policy
-  static String signCookie(String urlPrefix, byte[] key, String keyName,
+  public static String signCookie(String urlPrefix, byte[] key, String keyName,
       Date expirationTime)
       throws InvalidKeyException, NoSuchAlgorithmException {
 
@@ -77,8 +76,8 @@ public class SignedCookies {
       throw new IllegalArgumentException(
           "urlPrefix must start with either http:// or https://: " + urlPrefix);
     }
-    final long unixTime = expirationTime.getTime() / 1000;
 
+    final long unixTime = expirationTime.getTime() / 1000;
     String encodedUrlPrefix = Base64.getUrlEncoder().encodeToString(urlPrefix.getBytes(
         StandardCharsets.UTF_8));
     String policyToSign = String.format("URLPrefix=%s:Expires=%d:KeyName=%s", encodedUrlPrefix,
