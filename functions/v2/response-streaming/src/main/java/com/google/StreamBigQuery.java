@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+// [START functions_response_streaming]
 package com.google;
 
 import com.google.cloud.bigquery.BigQuery;
@@ -58,3 +58,5 @@ public class StreamBigQuery implements HttpFunction {
     }
   }
 }
+
+// [END functions_response_streaming]
