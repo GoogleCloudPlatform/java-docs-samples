@@ -21,6 +21,7 @@ package secretmanager;
 import java.util.Base64;
 import java.util.Map;
 import java.util.logging.Logger;
+import lombok.Data;
 
 // Demonstrates how to consume and process a Pub/Sub notification from Secret Manager.Triggered
 // from a message on a Cloud Pub/Sub topic.
@@ -42,54 +43,14 @@ public class ConsumeEventNotification {
   }
 
   // Event payload. Mock of the actual PubSub message.
+  @Data
   public static class PubSubMessage {
 
     byte[] data;
     Map<String, String> attributes;
     String messageId;
     String publishTime;
-
-    public byte[] getData() {
-      return data;
-    }
-
-    public void setData(byte[] data) {
-      this.data = data;
-    }
-
-    public Map<String, String> getAttributes() {
-      return attributes;
-    }
-
-    public void setAttributes(Map<String, String> attributes) {
-      this.attributes = attributes;
-    }
-
-    public String getMessageId() {
-      return messageId;
-    }
-
-    public void setMessageId(String messageId) {
-      this.messageId = messageId;
-    }
-
-    public String getPublishTime() {
-      return publishTime;
-    }
-
-    public void setPublishTime(String publishTime) {
-      this.publishTime = publishTime;
-    }
-
-    @Override
-    public String toString() {
-      return "PubSubMessage{"
-          + "data='" + data + '\''
-          + ", attributes=" + attributes
-          + ", messageId='" + messageId + '\''
-          + ", publishTime='" + publishTime + '\''
-          + '}';
-    }
+    String orderingKey;
   }
 }
 // [END secretmanager_consume_event_notification]
