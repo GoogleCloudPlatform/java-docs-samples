@@ -83,6 +83,8 @@ public class ChangeStreamsHelloWorld {
       } else if (entry instanceof DeleteFamily) {
         // Note: DeleteRow mutations are mapped into one DeleteFamily per-family
         mutations.add(deleteFamilyToString(rowKey, mutationType, (DeleteFamily) entry));
+      } else {
+        throw new RuntimeException("Entry type not supported.");
       }
     }
     return mutations;
