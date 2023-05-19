@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 // [START functions_response_streaming]
-package com.google;
+package com.example.functions;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryException;

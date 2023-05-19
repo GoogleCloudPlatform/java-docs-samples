@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.google;
+package com.example.functions;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
