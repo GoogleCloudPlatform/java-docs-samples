@@ -33,11 +33,8 @@ public class CreateRole {
     String description = "a description of the role";
     Iterable<String> includedPermissions =
         Arrays.asList("roles/iam.roleViewer", "roles/logging.viewer");
-    // See launch stage enums at
-    // https://cloud.google.com/iam/docs/reference/rpc/google.iam.admin.v1#rolelaunchstage
-    String launchStage = "BETA";
 
-    createRole(projectId, title, description, includedPermissions, roleId, launchStage);
+    createRole(projectId, title, description, includedPermissions, roleId);
   }
 
   public static void createRole(
@@ -45,17 +42,16 @@ public class CreateRole {
       String title,
       String description,
       Iterable<String> includedPermissions,
-      String roleId,
-      String launchStage)
+      String roleId)
       throws IOException {
     Role.Builder roleBuilder =
         Role.newBuilder()
             .setTitle(title)
             .setDescription(description)
             .addAllIncludedPermissions(includedPermissions)
-            // Generally we don't recommend accessing RoleLaunchStage enums via strings.
-            // Instead, retrieve them using the dot notation (e.g. RoleLaunchStage.BETA).
-            .setStage(RoleLaunchStage.valueOf(launchStage));
+            // See launch stage enums at
+            // https://cloud.google.com/iam/docs/reference/rpc/google.iam.admin.v1#rolelaunchstage
+            .setStage(RoleLaunchStage.BETA);
     CreateRoleRequest createRoleRequest =
         CreateRoleRequest.newBuilder()
             .setParent("projects/" + projectId)

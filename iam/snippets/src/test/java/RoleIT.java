@@ -98,13 +98,12 @@ public class RoleIT {
         "Java Sample Custom Role",
         "Pass",
         Arrays.asList("iam.roles.get", "iam.roles.list"),
-        roleId,
-        "BETA");
+        roleId);
     assertThat(bout.toString().contains("javaSampleCustomRole"));
 
     bout.reset();
     // Test edit role.
-    EditRole.editRole(projectId, roleId, "Updated description.", "GA");
+    EditRole.editRole(projectId, roleId, "Updated description.");
     assertThat(bout.toString().contains("stage: GA"));
 
     bout.reset();

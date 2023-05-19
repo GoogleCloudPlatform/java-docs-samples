@@ -27,7 +27,6 @@ public class QueryTestablePermissions {
     // TODO(developer): Replace the variable before running the sample.
     // Full resource names can take one of the following forms:
     // cloudresourcemanager.googleapis.com/projects/PROJECT_ID
-    // To view available permissions in an organization, use:
     // cloudresourcemanager.googleapis.com/organizations/NUMERIC_ID
     String fullResourceName = "your-full-resource-name";
 
