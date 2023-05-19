@@ -37,11 +37,28 @@
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>libraries-bom</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>26.12.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
-  
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-iam-policy</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-iam-admin</artifactId>
       <scope>compile</scope>
     </dependency>
 
@@ -58,18 +75,5 @@
       <scope>test</scope>
       <version>4.13.2</version>
     </dependency>
-
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <artifactId>libraries-bom</artifactId>
-        <groupId>com.google.cloud</groupId>
-        <scope>import</scope>
-        <type>pom</type>
-        <version>26.12.0</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 </project>
