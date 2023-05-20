@@ -17,6 +17,12 @@
       "groupName": "AppEngine packages"
     },
     {
+      "packagePatterns": [
+        "^com.google.cloud.bigtable:"
+      ],
+      "groupName": "Bigtable packages"
+    },    
+    {
       "matchPackagePrefixes": [ "com.google" ],
       "allowedVersions": "!/.+-sp\\.[0-9]+$/"
     },
