@@ -59,5 +59,4 @@ public class StreamBigQuery implements HttpFunction {
     }
   }
 }
-
 // [END functions_response_streaming]
