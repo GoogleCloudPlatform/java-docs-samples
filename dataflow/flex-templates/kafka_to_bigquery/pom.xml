@@ -39,7 +39,7 @@
     <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
     <maven-shade-plugin.version>3.4.1</maven-shade-plugin.version>
     <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
-    <slf4j.version>1.7.36</slf4j.version>
+    <slf4j.version>2.0.7</slf4j.version>
   </properties>
 
   <repositories>
