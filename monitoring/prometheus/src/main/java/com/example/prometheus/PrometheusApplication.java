@@ -63,7 +63,7 @@ public class PrometheusApplication {
       // [START monitoring_sli_metrics_prometheus_counts]
       requestCount.inc();
       // fail 10% of the time
-      if (random.nextDouble() >= 0.9) {
+      if (random.nextDouble() <= 0.1) {
         failedRequestCount.inc();
         // [END monitoring_sli_metrics_prometheus_counts]
         response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

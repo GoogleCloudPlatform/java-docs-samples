@@ -44,7 +44,7 @@ public class PrometheusApplicationTests {
 
   @Test
   public void testMetrics() throws Exception {
-    for (int time : Lists.list(847, 904, 978, 473)) {
+    for (int time : Lists.list(847, 904, 978, 473, 562, 262, 376, 99, 298, 302, 800)) {
       mockMvc
           .perform(get("/"))
           .andExpect(status().isOk())
@@ -57,10 +57,10 @@ public class PrometheusApplicationTests {
     mockMvc
         .perform(get("/metrics"))
         .andExpect(status().isOk())
-        .andExpect(content().string(containsString("java_request_count_total 5.0")))
+        .andExpect(content().string(containsString("java_request_count_total 12.0")))
         .andExpect(content().string(containsString("java_failed_request_count_total 1.0")))
         .andExpect(
-            content().string(containsString("java_response_latency_bucket{le=\"0.5\",} 2.0")));
+            content().string(containsString("java_response_latency_bucket{le=\"0.5\",} 7.0")));
 
   }
 
