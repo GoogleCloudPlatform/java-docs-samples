@@ -127,7 +127,7 @@ limitations under the License.
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.1.0</version>
         <configuration>
-          <reuseForks>false</reuseForks>
+          <forkCount>0</forkCount>
         </configuration>        
       </plugin>
     </plugins>
