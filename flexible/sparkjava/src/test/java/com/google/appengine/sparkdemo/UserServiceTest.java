@@ -33,6 +33,7 @@ import com.google.common.collect.Iterators;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,6 +42,7 @@ import org.threeten.bp.Duration;
 
 public class UserServiceTest {
 
+  private static final Logger LOG = Logger.getLogger(UserServiceTest.class.getSimpleName());
   private static final LocalDatastoreHelper HELPER = LocalDatastoreHelper.create(1.0);
   private static final DatastoreOptions DATASTORE_OPTIONS = HELPER.getOptions();
   private static final Datastore DATASTORE = DATASTORE_OPTIONS.getService();
@@ -73,7 +75,11 @@ public class UserServiceTest {
 
   @AfterClass
   public static void afterClass() throws IOException, InterruptedException, TimeoutException {
-    HELPER.stop(Duration.ofMinutes(1));
+    try {
+      HELPER.stop(Duration.ofMinutes(1));
+    } catch (IOException e) {
+      LOG.info(e.getMessage());
+    }
   }
 
   @Test
