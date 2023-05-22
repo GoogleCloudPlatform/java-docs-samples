@@ -78,7 +78,7 @@ public class SendServlet extends HttpServlet {
     HttpClient httpClient;
     if (System.getenv(GAE_INSTANCE_VAR) != null) {
       // If on HTTPS, create client with SSL Context
-      SslContextFactory sslContextFactory = new SslContextFactory();
+      SslContextFactory.Client sslContextFactory = new SslContextFactory.Client();
       httpClient = new HttpClient(sslContextFactory);
     } else {
       // local testing on HTTP

@@ -16,6 +16,7 @@ runtime: java
 env: flex
 runtime_config:
   operating_system: ubuntu18
+  runtime_version: 11
 manual_scaling:
   instances: 1
 handlers:

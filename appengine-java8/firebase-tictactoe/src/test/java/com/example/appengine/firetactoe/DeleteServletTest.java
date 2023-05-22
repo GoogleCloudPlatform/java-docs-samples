@@ -35,7 +35,6 @@ import com.google.appengine.tools.development.testing.LocalURLFetchServiceTestCo
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
 import com.googlecode.objectify.Objectify;
-import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
 import java.io.ByteArrayInputStream;
@@ -49,7 +48,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -70,10 +69,8 @@ public class DeleteServletTest {
               new LocalURLFetchServiceTestConfig())
           .setEnvEmail(USER_EMAIL)
           .setEnvAuthDomain("gmail.com")
-          .setEnvAttributes(
-              new HashMap(
-                  ImmutableMap.of(
-                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+              .setEnvAttributes(new HashMap<>(ImmutableMap
+                  .of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -84,7 +81,7 @@ public class DeleteServletTest {
   @BeforeClass
   public static void setUpBeforeClass() {
     // Reset the Factory so that all translators work properly.
-    ObjectifyService.setFactory(new ObjectifyFactory());
+    ObjectifyService.init();
     ObjectifyService.register(Game.class);
     // Mock out the firebase config
     FirebaseChannel.firebaseConfigStream =
@@ -93,7 +90,7 @@ public class DeleteServletTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     helper.setUp();
     dbSession = ObjectifyService.begin();
 
@@ -111,7 +108,7 @@ public class DeleteServletTest {
   }
 
   @Test
-  public void doPost_noGameKey() throws Exception {
+  public void doPostNoGameKey() throws Exception {
     try {
       servletUnderTest.doPost(mockRequest, mockResponse);
       fail("Should not succeed with no gameKey specified.");
@@ -121,7 +118,7 @@ public class DeleteServletTest {
   }
 
   @Test
-  public void doPost_deleteGame() throws Exception {
+  public void doPostDeleteGame() throws Exception {
     // Insert a game
     Objectify ofy = ObjectifyService.ofy();
     Game game = new Game(USER_ID, "my-opponent", "         ", true);
@@ -151,7 +148,7 @@ public class DeleteServletTest {
 
     servletUnderTest.doPost(mockRequest, mockResponse);
 
-    verify(mockHttpTransport, times(1))
-        .buildRequest(eq("DELETE"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
+    verify(mockHttpTransport, times(1)).buildRequest(eq("DELETE"),
+        ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
   }
 }

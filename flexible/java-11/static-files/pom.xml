@@ -36,10 +36,9 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
-    <appengine.maven.plugin>2.4.3</appengine.maven.plugin>
-    <jetty>9.4.44.v20210927</jetty>
+    <appengine.maven.plugin>2.4.4</appengine.maven.plugin>
 
-    <spring.boot.version>2.7.10</spring.boot.version>
+    <spring.boot.version>2.7.11</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -67,31 +66,15 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.junit.platform</groupId>
-      <artifactId>junit-platform-runner</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <scope>test</scope>
-      <version>4.12.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty.toolchain</groupId>
-      <artifactId>jetty-test-helper</artifactId>
-      <version>6.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.10.19</version>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
@@ -115,11 +98,6 @@
             <include>**/*Test*.java</include>
           </includes>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty}</version>
       </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>

@@ -93,21 +93,21 @@ public class AbstractRestServlet extends HttpServlet {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public String generateResults(Queue<Map<String, Object>> results) {
     StringBuilder thumbs = new StringBuilder();
     int resultCount = 0;
     Iterator<Map<String, Object>> itor = results.iterator();
 
     while (resultCount < MAX_RESULTS && itor.hasNext()) {
-      Map map = (Map) itor.next();
+      Map<String, Object> map = itor.next();
       String name = (String) map.get("name");
       Object[] photos = (Object[]) map.get("photos");
       if (photos != null && photos.length > 0) {
         resultCount++;
-        thumbs.append(
-            "<img class='thumb' border='1px' height='40px' "
-                + "src='" + getPhotoUrl((String) (((Map) photos[0]).get("photo_reference"))) + "' "
-                + "title='" + name + "' />");
+        thumbs.append("<img class='thumb' border='1px' height='40px' " + "src='"
+            + getPhotoUrl((String) (((Map<String, Object>) photos[0]).get("photo_reference")))
+            + "' " + "title='" + name + "' />");
         thumbs.append("</a>&nbsp;");
       }
     }

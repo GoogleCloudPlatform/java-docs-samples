@@ -20,6 +20,10 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.dlp.v2.DlpServiceClient;import com.google.common.collect.ImmutableList;
 import com.google.privacy.dlp.v2.*;import org.junit.Test;
+import com.google.cloud.dlp.v2.DlpServiceClient;
+import com.google.common.collect.ImmutableList;
+import java.io.IOException;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;import java.io.IOException;import java.util.UUID;
 
@@ -86,6 +90,19 @@ public class InfoTypesTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Name");
     assertThat(output).contains("Display name");
+  }
+
+  @Test
+  public void testCreateStoredInfoType() throws IOException {
+    CreateStoredInfoType.createStoredInfoType(PROJECT_ID, GCS_PATH);
+    String output = bout.toString();
+    assertThat(output).contains("Created Stored InfoType: ");
+    String storedInfoTypeId = output.split("Created Stored InfoType: ")[1].split("\n")[0];
+    assertThat(storedInfoTypeId)
+        .contains("projects/" + PROJECT_ID + "/locations/global/storedInfoTypes/github-usernames");
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+      dlp.deleteStoredInfoType(storedInfoTypeId);
+    }
   }
 
   @Test

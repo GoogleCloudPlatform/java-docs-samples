@@ -61,7 +61,7 @@ public class QuickstartSample {
       ProjectName name = ProjectName.of(projectId);
 
       // Prepares the metric descriptor
-      Map<String, String> metricLabels = new HashMap<String, String>();
+      Map<String, String> metricLabels = new HashMap<>();
       metricLabels.put("store_id", "Pittsburg");
       Metric metric =
           Metric.newBuilder()
@@ -70,7 +70,7 @@ public class QuickstartSample {
               .build();
 
       // Prepares the monitored resource descriptor
-      Map<String, String> resourceLabels = new HashMap<String, String>();
+      Map<String, String> resourceLabels = new HashMap<>();
       resourceLabels.put("project_id", projectId);
       MonitoredResource resource =
           MonitoredResource.newBuilder().setType("global").putAllLabels(resourceLabels).build();

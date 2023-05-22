@@ -47,7 +47,7 @@ public class MessagePurger extends Thread {
     this.firebase = firebase;
     this.purgeInterval = purgeInterval;
     this.purgeLogs = purgeLogs;
-    branches = new ConcurrentLinkedQueue<String>();
+    branches = new ConcurrentLinkedQueue<>();
   }
 
   public void registerBranch(String branchKey) {

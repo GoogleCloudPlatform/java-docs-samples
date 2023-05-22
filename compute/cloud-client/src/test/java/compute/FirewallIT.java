@@ -44,7 +44,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class FirewallIT {
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String FIREWALL_RULE_CREATE;
@@ -80,7 +82,7 @@ public class FirewallIT {
 
   @AfterAll
   public static void cleanup()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+      throws IOException, InterruptedException, TimeoutException {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
@@ -88,31 +90,16 @@ public class FirewallIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    if (!isFirewallRuleDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE)) {
+    try {
       DeleteFirewallRule.deleteFirewallRule(PROJECT_ID, FIREWALL_RULE_CREATE);
+    } catch (NotFoundException e) {
+      System.out.println("Rule already deleted! ");
+    } catch (InvalidArgumentException | NullPointerException | ExecutionException e) {
+      System.out.println("Rule is not ready (probably being deleted).");
     }
 
     stdOut.close();
     System.setOut(out);
-  }
-
-  public static boolean isFirewallRuleDeletedByGceEnforcer(
-      String projectId, String firewallRule)
-      throws IOException {
-    /* (**INTERNAL method**)
-      This method will prevent test failure if the firewall rule was auto-deleted by GCE Enforcer.
-      (Feel free to remove this method if not running on a Google-owned project.)
-     */
-    try {
-      GetFirewallRule.getFirewallRule(projectId, firewallRule);
-    } catch (NotFoundException e) {
-      System.out.println("Rule already deleted! ");
-      return true;
-    } catch (InvalidArgumentException | NullPointerException e) {
-      System.out.println("Rule is not ready (probably being deleted).");
-      return true;
-    }
-    return false;
   }
 
   @BeforeEach
@@ -129,13 +116,17 @@ public class FirewallIT {
 
   @Test
   public void testListFirewallRules()
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    if (!isFirewallRuleDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE)) {
+    try {
       compute.ListFirewallRules.listFirewallRules(PROJECT_ID);
       assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
+    } catch (NotFoundException e) {
+      System.out.println("Rule already deleted! ");
+    } catch (InvalidArgumentException | NullPointerException e) {
+      System.out.println("Rule is not ready (probably being deleted).");
     }
     // Clear system output to not affect other tests.
     // Refrain from setting out to null.
@@ -145,19 +136,28 @@ public class FirewallIT {
 
   @Test
   public void testPatchFirewallRule()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+      throws IOException, InterruptedException, TimeoutException {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    // Firewall rule is auto-deleted by GCE Enforcer within a few minutes.
-    if (!isFirewallRuleDeletedByGceEnforcer(PROJECT_ID, FIREWALL_RULE_CREATE)) {
-      try (FirewallsClient client = FirewallsClient.create()) {
-        Assert.assertEquals(1000, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
-        compute.PatchFirewallRule.patchFirewallPriority(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
-        TimeUnit.SECONDS.sleep(5);
-        Assert.assertEquals(500, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
-      }
+
+    try (FirewallsClient client = FirewallsClient.create()) {
+      Assert.assertEquals(1000, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
+      compute.PatchFirewallRule.patchFirewallPriority(PROJECT_ID, FIREWALL_RULE_CREATE, 500);
+      TimeUnit.SECONDS.sleep(5);
+      Assert.assertEquals(500, client.get(PROJECT_ID, FIREWALL_RULE_CREATE).getPriority());
+    } catch (NotFoundException e) {
+      /* (**INTERNAL snippet**)
+      Firewall rule is auto-deleted by GCE Enforcer within a few minutes.
+      Catching exceptions will prevent test failure if the firewall rule was auto-deleted
+      by GCE Enforcer.
+      (Feel free to remove this method if not running on a Google-owned project.)
+      */
+      System.out.println("Rule already deleted! ");
+    } catch (ExecutionException | InvalidArgumentException | NullPointerException e) {
+      System.out.println("Rule is not ready (probably being deleted).");
     }
+
     // Clear system output to not affect other tests.
     // Refrain from setting out to null as it will throw NullPointer in the subsequent tests.
     stdOut.close();

@@ -21,7 +21,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.example.cloud.functions</groupId>
+  <groupId>com.example.functions</groupId>
   <artifactId>functions-logging-stackdriver-logging</artifactId>
 
   <parent>
@@ -66,7 +66,7 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.8.2</version>
+      <version>5.9.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -106,7 +106,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version 3.0.0-M4 does not load JUnit5 correctly -->
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
-        <version>3.0.0-M7</version>
+        <version>3.1.0</version>
         <configuration>
           <!-- This is needed for Java 17 compatibility -->
           <argLine>--add-opens java.base/java.time=ALL-UNNAMED</argLine>

@@ -3,15 +3,19 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.demosite.app</groupId>
+  <groupId>com.example.recaptchaenterprise</groupId>
   <artifactId>demosite</artifactId>
   <name>demosite</name>
   <version>0.0.1-SNAPSHOT</version>
 
+  <!-- Kindly reach out to @GoogleCloudPlatform/dee-infra or 
+  @GoogleCloudPlatform/recaptcha-customer-obsession-reviewers before making a 
+  change to this file. -->
+
   <!--
   The parent pom defines common style checks and testing strategies for our samples.
   Removing or replacing it should not affect the execution of the samples in anyway.
--->
+  -->
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
@@ -42,7 +46,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <app.mainclass>app.SpringbootMain</app.mainclass>
-    <spring.boot.version>2.7.10</spring.boot.version>
+    <spring.boot.version>2.7.11</spring.boot.version>
   </properties>
 
   <dependencies>
@@ -108,6 +112,16 @@
       <artifactId>spring-boot</artifactId>
       <scope>compile</scope>
     </dependency>
+    <!-- The following dependencies are mandatory and needed for the live-reload
+    functionality of the application. -->
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>api-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+    </dependency>
     <!-- end_Spring_dependencies -->
 
   </dependencies>
@@ -136,7 +150,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M7</version>
+        <version>3.1.0</version>
         <configuration>
           <includes>
             <include>**/*IT.java</include>
@@ -147,7 +161,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <configuration>
           <skip>false</skip>
         </configuration>
@@ -155,7 +169,7 @@
           <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>5.8.2</version>
+            <version>5.9.3</version>
           </dependency>
         </dependencies>
       </plugin>

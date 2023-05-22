@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+package examples;
+
 import static junit.framework.TestCase.assertNotNull;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -48,7 +50,6 @@ import com.google.cloud.storage.StorageOptions;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.util.Durations;
 import com.google.pubsub.v1.PubsubMessage;
-import examples.PubsubliteToGcs;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -167,35 +168,25 @@ public class PubsubliteToGcsIT {
 
     Dataflow dataflow =
         new Dataflow.Builder(httpTransport, GsonFactory.getDefaultInstance(), requestInitializer)
-            .build();
+            .setApplicationName(this.getClass().getSimpleName()).build();
 
     // Match Dataflow job of the same job name and cancel it.
     ListJobsResponse jobs =
         dataflow.projects().locations().jobs().list(projectId, cloudRegion).execute();
 
     try {
-      jobs.getJobs()
-          .forEach(
-              job -> {
-                if (job.getName().equals(jobName)) {
-                  String jobId = job.getId();
-                  try {
-                    dataflow
-                        .projects()
-                        .locations()
-                        .jobs()
-                        .update(
-                            projectId,
-                            cloudRegion,
-                            jobId,
-                            new Job().setRequestedState("JOB_STATE_CANCELLED"))
-                        .execute();
-                    System.out.println("Cancelling Dataflow job: " + jobId);
-                  } catch (IOException e) {
-                    e.printStackTrace();
-                  }
-                }
-              });
+      jobs.getJobs().forEach(job -> {
+        if (jobName.equals(job.getName())) {
+          String jobId = job.getId();
+          try {
+            dataflow.projects().locations().jobs().update(projectId, cloudRegion, jobId,
+                new Job().setRequestedState("JOB_STATE_CANCELLED")).execute();
+            System.out.println("Cancelling Dataflow job: " + jobId);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+      });
     } catch (NullPointerException e) {
       e.printStackTrace();
     }

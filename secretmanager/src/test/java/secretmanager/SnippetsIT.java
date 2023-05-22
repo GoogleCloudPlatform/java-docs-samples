@@ -21,9 +21,7 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.cloud.secretmanager.v1.AddSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.CreateSecretRequest;
 import com.google.cloud.secretmanager.v1.DeleteSecretRequest;
-import com.google.cloud.secretmanager.v1.DestroySecretVersionRequest;
 import com.google.cloud.secretmanager.v1.DisableSecretVersionRequest;
-import com.google.cloud.secretmanager.v1.EnableSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Replication;
 import com.google.cloud.secretmanager.v1.Secret;
@@ -37,8 +35,12 @@ import com.google.protobuf.ByteString;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -48,11 +50,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import secretmanager.ConsumeEventNotification.PubSubMessage;
 
-/** Integration (system) tests for {@link Snippets}. */
+/**
+ * Integration (system) tests for {@link Snippets}.
+ */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class SnippetsIT {
+
   private static final String IAM_USER =
       "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -122,7 +128,7 @@ public class SnippetsIT {
 
   private static String randomSecretId() {
     Random random = new Random();
-    return "java-" + String.valueOf(random.nextLong());
+    return "java-" + random.nextLong();
   }
 
   private static Secret createSecret() throws IOException {
@@ -376,12 +382,29 @@ public class SnippetsIT {
 
     assertThat(stdOut.toString()).contains("Updated secret");
   }
-  
+
   @Test
   public void testUpdateSecretWithAlias() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET_WITH_VERSIONS.getName());
     UpdateSecretWithAlias.updateSecret(name.getProject(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("test");
+  }
+
+  @Test
+  public void testConsumeEventNotification() {
+    String message = "hello!";
+    byte[] base64Bytes = Base64.getEncoder().encode(message.getBytes(StandardCharsets.UTF_8));
+    Map<String, String> attributes = new HashMap<>();
+    attributes.put("eventType", "SECRET_UPDATE");
+    attributes.put("secretId", "projects/p/secrets/s");
+
+    PubSubMessage pubSubMessage = new PubSubMessage();
+    pubSubMessage.setData(base64Bytes);
+    pubSubMessage.setAttributes(attributes);
+
+    String log = ConsumeEventNotification.accept(pubSubMessage);
+    assertThat(log).isEqualTo(
+        "Received SECRET_UPDATE for projects/p/secrets/s. New metadata: hello!");
   }
 }

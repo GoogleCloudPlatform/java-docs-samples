@@ -17,7 +17,7 @@ limitations under the License.
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.google.cloud.samples</groupId>
+  <groupId>com.example.compute</groupId>
   <artifactId>compute-cmdline</artifactId>
   <version>1</version>
 
@@ -34,7 +34,7 @@ limitations under the License.
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <project.compute.version>v1-rev20211130-1.32.1</project.compute.version>
+    <project.compute.version>v1-rev20230509-2.0.0</project.compute.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 

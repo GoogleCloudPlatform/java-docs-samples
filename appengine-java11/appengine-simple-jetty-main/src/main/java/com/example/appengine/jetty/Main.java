@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.appengine.demo.jettymain;
+package com.example.appengine.jetty;
 
 // [START gae_java11_server]
 import org.eclipse.jetty.server.Server;

@@ -58,7 +58,7 @@
       <!-- `java-docs-samples/appengine-java11/appengine-simple-jetty-main' -->
       <!-- See the README for more information -->
       <dependency>
-        <groupId>com.example.appengine.demo</groupId>
+        <groupId>com.example.appengine</groupId>
         <artifactId>simple-jetty-main</artifactId>
         <version>1</version>
         <scope>provided</scope>
@@ -125,7 +125,7 @@
         <plugin>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
-          <version>9.4.44.v20210927</version>
+          <version>9.4.51.v20230217</version>
         </plugin>
 
         <plugin>

@@ -94,14 +94,15 @@ public class FilesystemApplicationTests {
   }
 
   /** Set Env Vars for testing purposes */
+  @SuppressWarnings("unchecked")
   private static Map<String, String> getModifiableEnvironment() throws Exception {
-    Class pe = Class.forName("java.lang.ProcessEnvironment");
+    Class<?> pe = Class.forName("java.lang.ProcessEnvironment");
     Method getenv = pe.getDeclaredMethod("getenv");
     getenv.setAccessible(true);
     Object unmodifiableEnvironment = getenv.invoke(null);
-    Class map = Class.forName("java.util.Collections$UnmodifiableMap");
+    Class<?> map = Class.forName("java.util.Collections$UnmodifiableMap");
     Field m = map.getDeclaredField("m");
     m.setAccessible(true);
-    return (Map) m.get(unmodifiableEnvironment);
+    return (Map<String, String>) m.get(unmodifiableEnvironment);
   }
 }

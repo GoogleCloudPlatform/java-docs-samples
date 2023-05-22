@@ -24,7 +24,6 @@ import org.apache.beam.sdk.io.gcp.pubsublite.PubsubLiteIO;
 import org.apache.beam.sdk.io.gcp.pubsublite.SubscriberOptions;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
-import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.StreamingOptions;
 import org.apache.beam.sdk.options.Validation.Required;
@@ -41,7 +40,7 @@ public class PubsubliteToGcs {
    * Define your own configuration options. Add your arguments to be processed
    * by the command-line parser.
    */
-  public interface PubsubliteToGcsOptions extends PipelineOptions, StreamingOptions {
+  public interface PubsubliteToGcsOptions extends StreamingOptions {
     @Description("Your Pub/Sub Lite subscription.")
     @Required
     String getSubscription();

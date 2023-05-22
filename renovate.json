@@ -17,6 +17,12 @@
       "groupName": "AppEngine packages"
     },
     {
+      "packagePatterns": [
+        "^com.google.cloud.bigtable:"
+      ],
+      "groupName": "Bigtable packages"
+    },    
+    {
       "matchPackagePrefixes": [ "com.google" ],
       "allowedVersions": "!/.+-sp\\.[0-9]+$/"
     },
@@ -56,6 +62,12 @@
       ],
       "groupName": "Jetty packages"
     },
+    {
+      "packagePatterns": [
+        "^org.slf4j:"
+      ],
+      "groupName": "SLF4J packages"
+    },    
     {
       "packageNames": [
         "javax.servlet:javax.servlet-api"

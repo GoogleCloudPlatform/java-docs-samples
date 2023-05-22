@@ -20,8 +20,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.google.storagetransfer.samples</groupId>
-  <artifactId>storage-transfersample</artifactId>
+  <groupId>com.example.storagetransfer</groupId>
+  <artifactId>storage-transfer-sample</artifactId>
   <version>0.1</version>
   <packaging>jar</packaging>
   <!--
@@ -56,7 +56,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storagetransfer</artifactId>
-      <version>v1-rev20230408-2.0.0</version>
+      <version>v1-rev20230516-2.0.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
@@ -94,8 +94,8 @@
 
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.10.19</version>
+      <artifactId>mockito-core</artifactId>
+      <version>5.3.1</version>
       <scope>test</scope>
     </dependency>
 
@@ -108,14 +108,14 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-s3</artifactId>
-      <version>1.12.449</version>
+      <version>1.12.472</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>com.azure</groupId>
       <artifactId>azure-storage-blob</artifactId>
-      <version>12.21.1</version>
+      <version>12.22.1</version>
     </dependency>
 
     <dependency>

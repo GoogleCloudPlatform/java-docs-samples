@@ -13,7 +13,7 @@ limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.cloudrun</groupId>
+  <groupId>com.example.run</groupId>
   <artifactId>logging-manual</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <!--  The parent pom defines common style checks and testing strategies for our samples.  Removing or replacing it should not affect the execution of the samples in anyway.  -->
@@ -49,7 +49,7 @@ limitations under the License.
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.4.6</version>
+      <version>1.4.7</version>
     </dependency>
     <!-- [END run_manual_logging_dep] -->
     <!-- [END cloudrun_manual_logging_dep] -->
@@ -73,7 +73,7 @@ limitations under the License.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.3.1</version>
+        <version>3.3.2</version>
         <configuration>
           <to>
             <image>gcr.io/PROJECT_ID/logging-manual</image>
