@@ -108,7 +108,7 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-s3</artifactId>
-      <version>1.12.472</version>
+      <version>1.12.473</version>
       <scope>test</scope>
     </dependency>
 
