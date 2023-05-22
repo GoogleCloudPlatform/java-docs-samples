@@ -40,8 +40,6 @@ public class SignedCookies {
     String keyPath = "/path/to/key";
     // The date that the signed URL expires
     Date expirationTime = getTomorrow();
-    // URL of request
-    String requestUrl = "https://media.example.com/videos/id/main.m3u8?userID=abc123&starting_profile=1";
     // URL prefix to sign as a string. urlPrefix must start with either http:// or
     // https:// and should not include query parameters
     String urlPrefix = "https://media.example.com/videos/";
