@@ -17,6 +17,8 @@
 package com.google.cdn;
 
 // [START cloudcdn_sign_cookie]
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -35,7 +37,7 @@ public class SignedCookies {
 
     // The name of the signing key added to the back end bucket or service
     String keyName = "YOUR-KEY-NAME";
-    // Path to the url signing key uploaded to the backend service/bucket
+    // Path to the URL signing key uploaded to the backend service/bucket
     String keyPath = "/path/to/key";
     // The Unix timestamp that the signed URL expires
     long expirationTime = ZonedDateTime.now().plusDays(1).toEpochSecond();
@@ -58,12 +60,19 @@ public class SignedCookies {
       long expirationTime)
       throws InvalidKeyException, NoSuchAlgorithmException {
 
-    if (urlPrefix.contains("?") || urlPrefix.contains("#")) {
-      throw new IllegalArgumentException("urlPrefix must not include query params: " + urlPrefix);
-    }
-    if (!urlPrefix.startsWith("http://") && !urlPrefix.startsWith("https://")) {
+    // Validate input URL prefix
+    try {
+      URL validatedUrlPrefix = new URL(urlPrefix);
+      if (!validatedUrlPrefix.getProtocol().startsWith("http")) {
+        throw new IllegalArgumentException(
+            "urlPrefix must start with either http:// or https://: " + urlPrefix);
+      }
+      if (validatedUrlPrefix.getQuery() != null) {
+        throw new IllegalArgumentException("urlPrefix must not include query params: " + urlPrefix);
+      }
+    } catch (MalformedURLException e) {
       throw new IllegalArgumentException(
-          "urlPrefix must start with either http:// or https://: " + urlPrefix);
+          "urlPrefix malformed: " + urlPrefix);
     }
 
     String encodedUrlPrefix = Base64.getUrlEncoder().encodeToString(urlPrefix.getBytes(
