@@ -36,7 +36,7 @@ public class SignedCookies {
 
     // The name of the signing key added to the back end bucket or service
     String keyName = "YOUR-KEY-NAME";
-    // Path to the url signing key uploaded to the backend service/bucket, as a 16-byte array
+    // Path to the url signing key uploaded to the backend service/bucket
     String keyPath = "/path/to/key";
     // The date that the signed URL expires
     Date expirationTime = getTomorrow();
@@ -89,7 +89,7 @@ public class SignedCookies {
   private static String getSignatureForUrl(byte[] privateKey, String input)
       throws InvalidKeyException, NoSuchAlgorithmException {
 
-    final String algorithm = "HmacSHA1";
+    final String algorithm = "HmacSHA256";
     final int offset = 0;
     Key key = new SecretKeySpec(privateKey, offset, privateKey.length, algorithm);
     Mac mac = Mac.getInstance(algorithm);
