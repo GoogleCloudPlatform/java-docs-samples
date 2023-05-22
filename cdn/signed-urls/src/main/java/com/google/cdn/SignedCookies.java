@@ -23,9 +23,8 @@ import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.time.ZonedDateTime;
 import java.util.Base64;
-import java.util.Calendar;
-import java.util.Date;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -38,8 +37,8 @@ public class SignedCookies {
     String keyName = "YOUR-KEY-NAME";
     // Path to the url signing key uploaded to the backend service/bucket
     String keyPath = "/path/to/key";
-    // The date that the signed URL expires
-    Date expirationTime = getTomorrow();
+    // The Unix timestamp that the signed URL expires
+    long expirationTime = ZonedDateTime.now().plusDays(1).toEpochSecond();
     // URL prefix to sign as a string. urlPrefix must start with either http:// or
     // https:// and should not include query parameters
     String urlPrefix = "https://media.example.com/videos/";
@@ -54,17 +53,9 @@ public class SignedCookies {
     System.out.println(signedCookie);
   }
 
-  // Gets Date representation for tomorrow from Calendar
-  private static Date getTomorrow() {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.add(Calendar.DATE, 1);
-    return cal.getTime();
-  }
-
   // Creates a signed cookie for the specified policy
   public static String signCookie(String urlPrefix, byte[] key, String keyName,
-      Date expirationTime)
+      long expirationTime)
       throws InvalidKeyException, NoSuchAlgorithmException {
 
     if (urlPrefix.contains("?") || urlPrefix.contains("#")) {
@@ -75,11 +66,10 @@ public class SignedCookies {
           "urlPrefix must start with either http:// or https://: " + urlPrefix);
     }
 
-    final long unixTime = expirationTime.getTime() / 1000;
     String encodedUrlPrefix = Base64.getUrlEncoder().encodeToString(urlPrefix.getBytes(
         StandardCharsets.UTF_8));
     String policyToSign = String.format("URLPrefix=%s:Expires=%d:KeyName=%s", encodedUrlPrefix,
-        unixTime, keyName);
+        expirationTime, keyName);
 
     String signature = getSignatureForUrl(key, policyToSign);
     return String.format("Cloud-CDN-Cookie=%s:Signature=%s", policyToSign, signature);
