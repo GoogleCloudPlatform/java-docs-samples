@@ -1,0 +1,179 @@
+/*
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package dlp.snippets;
+
+// [START dlp_k_anonymity_with_entity_id]
+
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.dlp.v2.DlpServiceClient;
+import com.google.cloud.dlp.v2.DlpServiceSettings;
+import com.google.privacy.dlp.v2.Action;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails;
+import com.google.privacy.dlp.v2.BigQueryTable;
+import com.google.privacy.dlp.v2.CreateDlpJobRequest;
+import com.google.privacy.dlp.v2.DlpJob;
+import com.google.privacy.dlp.v2.EntityId;
+import com.google.privacy.dlp.v2.FieldId;
+import com.google.privacy.dlp.v2.GetDlpJobRequest;
+import com.google.privacy.dlp.v2.LocationName;
+import com.google.privacy.dlp.v2.OutputStorageConfig;
+import com.google.privacy.dlp.v2.PrivacyMetric;
+import com.google.privacy.dlp.v2.RiskAnalysisJobConfig;
+import com.google.privacy.dlp.v2.Value;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+public class RiskAnalysisKAnonymityWithEntityId {
+
+  public static void main(String[] args) throws IOException {
+
+    // TODO(developer): Replace these variables before running the sample.
+    // The Google Cloud project id to use as a parent resource.
+    String projectId = "bdp-2059-is-31084";
+    // The BigQuery dataset id to be used and the reference table name to be inspected.
+    String datasetId = "dlp_crest_test_dataset";
+    String tableId = "test-kanony";
+    calculateKAnonymityWithEntityId(projectId, datasetId, tableId);
+  }
+
+  public static void calculateKAnonymityWithEntityId(
+      String projectId, String datasetId, String tableId) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    FileInputStream credentialsFile =
+        new FileInputStream(
+            "/Users/bhavika.dhanwani/Downloads/bdp-2059-is-31084-c1d4f0928c82.json");
+    GoogleCredentials credentials = GoogleCredentials.fromStream(credentialsFile);
+
+    // Configure DLP service settings with the credentials
+    DlpServiceSettings dlpSettings =
+        DlpServiceSettings.newBuilder()
+            .setCredentialsProvider(FixedCredentialsProvider.create(credentials))
+            .build();
+    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create(dlpSettings)) {
+
+      // Specify the BigQuery table to analyze
+      BigQueryTable bigQueryTable =
+          BigQueryTable.newBuilder()
+              .setProjectId(projectId)
+              .setDatasetId(datasetId)
+              .setTableId(tableId)
+              .build();
+
+      // These values represent the column names of quasi-identifiers to analyze
+      List<String> quasiIds = Arrays.asList("age", "title");
+
+      // Configure the privacy metric to compute for re-identification risk analysis.
+      List<FieldId> quasiIdFields =
+          quasiIds.stream()
+              .map(columnName -> FieldId.newBuilder().setName(columnName).build())
+              .collect(Collectors.toList());
+
+      // Specify the unique identifier in the source table for the k-anonymity analysis.
+      FieldId fieldId = FieldId.newBuilder().setName("user_id").build();
+      EntityId entityId = EntityId.newBuilder().setField(fieldId).build();
+      PrivacyMetric.KAnonymityConfig kanonymityConfig =
+          PrivacyMetric.KAnonymityConfig.newBuilder()
+              .addAllQuasiIds(quasiIdFields)
+              .setEntityId(entityId)
+              .build();
+
+      PrivacyMetric privacyMetric =
+          PrivacyMetric.newBuilder().setKAnonymityConfig(kanonymityConfig).build();
+
+      // Specify the bigquery table to store the findings.
+      BigQueryTable outputbigQueryTable =
+          BigQueryTable.newBuilder()
+              .setProjectId(projectId)
+              .setDatasetId(datasetId)
+              .setTableId("test_results")
+              .build();
+
+      // Create action to publish job status notifications to BigQuery table.
+      OutputStorageConfig outputStorageConfig =
+          OutputStorageConfig.newBuilder().setTable(outputbigQueryTable).build();
+      Action.SaveFindings findings =
+          Action.SaveFindings.newBuilder().setOutputConfig(outputStorageConfig).build();
+      Action action = Action.newBuilder().setSaveFindings(findings).build();
+
+      // Configure the risk analysis job to perform
+      RiskAnalysisJobConfig riskAnalysisJobConfig =
+          RiskAnalysisJobConfig.newBuilder()
+              .setSourceTable(bigQueryTable)
+              .setPrivacyMetric(privacyMetric)
+              .addActions(action)
+              .build();
+
+      // Build the request to be sent by the client
+      CreateDlpJobRequest createDlpJobRequest =
+          CreateDlpJobRequest.newBuilder()
+              .setParent(LocationName.of(projectId, "global").toString())
+              .setRiskJob(riskAnalysisJobConfig)
+              .build();
+
+      // Send the request to the API using the client
+      DlpJob dlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
+
+      // Build a request to get the completed job
+      GetDlpJobRequest getDlpJobRequest =
+          GetDlpJobRequest.newBuilder().setName(dlpJob.getName()).build();
+
+      DlpJob completedJob = null;
+      do {
+        completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
+        Thread.sleep(10000);
+      } while (completedJob.getState() != DlpJob.JobState.DONE);
+
+      // Retrieve completed job status
+      System.out.println("Job status: " + completedJob.getState());
+      System.out.println("Job name: " + dlpJob.getName());
+
+      // Get the result and parse through and process the information
+      AnalyzeDataSourceRiskDetails.KAnonymityResult kanonymityResult =
+          completedJob.getRiskDetails().getKAnonymityResult();
+      List<AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityHistogramBucket>
+          histogramBucketList = kanonymityResult.getEquivalenceClassHistogramBucketsList();
+      for (AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityHistogramBucket result :
+          histogramBucketList) {
+        System.out.printf(
+            "Bucket size range: [%d, %d]\n",
+            result.getEquivalenceClassSizeLowerBound(), result.getEquivalenceClassSizeUpperBound());
+
+        for (AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityEquivalenceClass bucket :
+            result.getBucketValuesList()) {
+          List<String> quasiIdValues =
+              bucket.getQuasiIdsValuesList().stream()
+                  .map(Value::toString)
+                  .collect(Collectors.toList());
+
+          System.out.println("\tQuasi-ID values: " + String.join(", ", quasiIdValues));
+          System.out.println("\tClass size: " + bucket.getEquivalenceClassSize());
+        }
+      }
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+  }
+}
+
+// [END dlp_k_anonymity_with_entity_id]

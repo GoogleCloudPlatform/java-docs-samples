@@ -38,6 +38,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class RiskAnalysisTests extends TestBase {
 
+  private static DlpServiceClient DLP_SERVICE_CLIENT;
+
   private UUID testRunUuid = UUID.randomUUID();
   private TopicName topicName =
       TopicName.of(PROJECT_ID, String.format("%s-%s", TOPIC_ID, testRunUuid.toString()));
@@ -58,6 +60,8 @@ public class RiskAnalysisTests extends TestBase {
 
   @Before
   public void before() throws Exception {
+
+    DLP_SERVICE_CLIENT = DlpServiceClient.create();
     // Create a new topic
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       topicAdminClient.createTopic(topicName);
@@ -101,9 +105,7 @@ public class RiskAnalysisTests extends TestBase {
         .findFirst()
         .get();
     jobName = jobName.split(":")[1].trim();
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteDlpJob(jobName);
-    }
+    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
   }
 
   @Test
@@ -120,9 +122,7 @@ public class RiskAnalysisTests extends TestBase {
         .findFirst()
         .get();
     jobName = jobName.split(":")[1].trim();
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteDlpJob(jobName);
-    }
+    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
   }
 
   @Test
@@ -138,9 +138,7 @@ public class RiskAnalysisTests extends TestBase {
         .findFirst()
         .get();
     jobName = jobName.split(":")[1].trim();
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteDlpJob(jobName);
-    }
+    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
   }
 
   @Test
@@ -156,9 +154,8 @@ public class RiskAnalysisTests extends TestBase {
         .findFirst()
         .get();
     jobName = jobName.split(":")[1].trim();
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteDlpJob(jobName);
-    }
+    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
+
   }
 
   @Test
@@ -176,8 +173,22 @@ public class RiskAnalysisTests extends TestBase {
         .findFirst()
         .get();
     jobName = jobName.split(":")[1].trim();
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteDlpJob(jobName);
-    }
+    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
+  }
+
+  @Test
+  public void testKAnonymityWithEntityId() throws Exception {
+    RiskAnalysisKAnonymityWithEntityId.calculateKAnonymityWithEntityId(
+            PROJECT_ID, DATASET_ID, TABLE_ID);
+    String output = bout.toString();
+    assertThat(output).containsMatch("Bucket size range: \\[\\d, \\d\\]");
+    assertThat(output).contains("Quasi-ID values");
+    assertThat(output).contains("Class size: 1");
+    String jobName = Arrays.stream(output.split("\n"))
+            .filter(line -> line.contains("Job name:"))
+            .findFirst()
+            .get();
+    jobName = jobName.split(":")[1].trim();
+    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
   }
 }
