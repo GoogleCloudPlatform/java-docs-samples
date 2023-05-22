@@ -18,7 +18,7 @@
 
 package dlp.snippets;
 
-// [Start dlp_update_stored_infotype]
+// [START dlp_update_stored_infotype]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.CloudStorageFileSet;
@@ -89,4 +89,4 @@ public class UpdateStoredInfoType {
     }
   }
 }
-// [End dlp_update_stored_infotype]
+// [END dlp_update_stored_infotype]
