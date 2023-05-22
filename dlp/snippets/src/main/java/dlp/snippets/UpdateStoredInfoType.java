@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-// [START dlp_update_stored_infotype]
-
 package dlp.snippets;
 
 // [START dlp_update_stored_infotype]
