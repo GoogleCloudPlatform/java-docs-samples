@@ -18,70 +18,84 @@ package dlp.snippets;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.dlp.v2.DlpServiceClient;import com.google.common.collect.ImmutableList;
-import com.google.privacy.dlp.v2.*;import org.junit.Test;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.common.collect.ImmutableList;
+import com.google.privacy.dlp.v2.BigQueryField;
+import com.google.privacy.dlp.v2.BigQueryTable;
+import com.google.privacy.dlp.v2.CloudStoragePath;
+import com.google.privacy.dlp.v2.CreateStoredInfoTypeRequest;
+import com.google.privacy.dlp.v2.DeleteStoredInfoTypeRequest;
+import com.google.privacy.dlp.v2.FieldId;
+import com.google.privacy.dlp.v2.LargeCustomDictionaryConfig;
+import com.google.privacy.dlp.v2.LocationName;
+import com.google.privacy.dlp.v2.ProjectStoredInfoTypeName;
+import com.google.privacy.dlp.v2.StoredInfoTypeConfig;
 import java.io.IOException;
+import java.util.UUID;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;import java.io.IOException;import java.util.UUID;
+import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class InfoTypesTests extends TestBase {
 
+  private static DlpServiceClient DLP_SERVICE_CLIENT;
+
+  @BeforeClass
+  public static void setUp() throws Exception {
+    // Initialize the Dlp Service Client.
+    DLP_SERVICE_CLIENT = DlpServiceClient.create();
+  }
+
+  public static void createStoredInfoType(String projectId, String outputPath, String infoTypeId) {
+    // Optionally set a display name and a description.
+    String displayName = "GitHub usernames";
+    String description = "Dictionary of GitHub usernames used in commits";
+
+    CloudStoragePath cloudStoragePath = CloudStoragePath.newBuilder().setPath(outputPath).build();
+
+    BigQueryTable table =
+        BigQueryTable.newBuilder()
+            .setProjectId("bigquery-public-data")
+            .setTableId("github_nested")
+            .setDatasetId("samples")
+            .build();
+
+    BigQueryField bigQueryField =
+        BigQueryField.newBuilder()
+            .setTable(table)
+            .setField(FieldId.newBuilder().setName("actor").build())
+            .build();
+
+    LargeCustomDictionaryConfig largeCustomDictionaryConfig =
+        LargeCustomDictionaryConfig.newBuilder()
+            .setOutputPath(cloudStoragePath)
+            .setBigQueryField(bigQueryField)
+            .build();
+
+    StoredInfoTypeConfig storedInfoTypeConfig =
+        StoredInfoTypeConfig.newBuilder()
+            .setDisplayName(displayName)
+            .setDescription(description)
+            .setLargeCustomDictionary(largeCustomDictionaryConfig)
+            .build();
+
+    // Combine configurations into a request for the service.
+    CreateStoredInfoTypeRequest createStoredInfoType =
+        CreateStoredInfoTypeRequest.newBuilder()
+            .setParent(LocationName.of(projectId, "global").toString())
+            .setConfig(storedInfoTypeConfig)
+            .setStoredInfoTypeId(infoTypeId)
+            .build();
+
+    // Send the request and receive response from the service.
+    DLP_SERVICE_CLIENT.createStoredInfoType(createStoredInfoType);
+  }
+
   @Override
   protected ImmutableList<String> requiredEnvVars() {
     return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT", "GCS_PATH");
-  }
-
-  public static void createStoredInfoType(String projectId, String outputPath, String infoTypeId)
-          throws IOException {
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-
-      // Optionally set a display name and a description.
-      String displayName = "GitHub usernames";
-      String description = "Dictionary of GitHub usernames used in commits";
-
-      CloudStoragePath cloudStoragePath = CloudStoragePath.newBuilder().setPath(outputPath).build();
-
-      BigQueryTable table =
-              BigQueryTable.newBuilder()
-                      .setProjectId("bigquery-public-data")
-                      .setTableId("github_nested")
-                      .setDatasetId("samples")
-                      .build();
-
-      BigQueryField bigQueryField =
-              BigQueryField.newBuilder()
-                      .setTable(table)
-                      .setField(FieldId.newBuilder().setName("actor").build())
-                      .build();
-
-      LargeCustomDictionaryConfig largeCustomDictionaryConfig =
-              LargeCustomDictionaryConfig.newBuilder()
-                      .setOutputPath(cloudStoragePath)
-                      .setBigQueryField(bigQueryField)
-                      .build();
-
-      StoredInfoTypeConfig storedInfoTypeConfig =
-              StoredInfoTypeConfig.newBuilder()
-                      .setDisplayName(displayName)
-                      .setDescription(description)
-                      .setLargeCustomDictionary(largeCustomDictionaryConfig)
-                      .build();
-
-      // Combine configurations into a request for the service.
-      CreateStoredInfoTypeRequest createStoredInfoType =
-              CreateStoredInfoTypeRequest.newBuilder()
-                      .setParent(LocationName.of(projectId, "global").toString())
-                      .setConfig(storedInfoTypeConfig)
-                      .setStoredInfoTypeId(infoTypeId)
-                      .build();
-
-      // Send the request and receive response from the service.
-      dlp.createStoredInfoType(createStoredInfoType);
-    }
   }
 
   @Test
@@ -100,9 +114,7 @@ public class InfoTypesTests extends TestBase {
     String storedInfoTypeId = output.split("Created Stored InfoType: ")[1].split("\n")[0];
     assertThat(storedInfoTypeId)
         .contains("projects/" + PROJECT_ID + "/locations/global/storedInfoTypes/github-usernames");
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteStoredInfoType(storedInfoTypeId);
-    }
+    DLP_SERVICE_CLIENT.deleteStoredInfoType(storedInfoTypeId);
   }
 
   @Test
@@ -110,7 +122,7 @@ public class InfoTypesTests extends TestBase {
     String infoTypeId = UUID.randomUUID().toString();
     createStoredInfoType(PROJECT_ID, GCS_PATH, infoTypeId);
     UpdateStoredInfoType.updateStoredInfoType(
-            PROJECT_ID, GCS_PATH+ "/test.txt", GCS_PATH, infoTypeId);
+        PROJECT_ID, GCS_PATH + "/test.txt", GCS_PATH, infoTypeId);
     String output = bout.toString();
     assertThat(output).contains("Updated stored InfoType successfully");
 
@@ -118,8 +130,7 @@ public class InfoTypesTests extends TestBase {
             DeleteStoredInfoTypeRequest.newBuilder()
                     .setName(ProjectStoredInfoTypeName.of(PROJECT_ID, infoTypeId).toString())
                     .build();
-    try (DlpServiceClient client = DlpServiceClient.create()) {
-      client.deleteStoredInfoType(deleteStoredInfoTypeRequest);
-    }
+
+    DLP_SERVICE_CLIENT.deleteStoredInfoType(deleteStoredInfoTypeRequest);
   }
 }

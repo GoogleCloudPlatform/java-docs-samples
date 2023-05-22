@@ -40,7 +40,7 @@ public class UpdateStoredInfoType {
     String filePath = "gs://" + "your-bucket-name" + "/path/to/your/file.txt";
     // The path to the location in a GCS bucket to store the created dictionary.
     String outputPath = "your-cloud-storage-file-set";
-    // The name of the stored info-type which is to be updated.
+    // The name of the stored InfoType which is to be updated.
     String infoTypeId = "your-stored-info-type-id";
     updateStoredInfoType(projectId, filePath, outputPath, infoTypeId);
   }
