@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ public class RiskAnalysisKAnonymityWithEntityId {
               .build();
 
       // These values represent the column names of quasi-identifiers to analyze
-      List<String> quasiIds = Arrays.asList("age", "title");
+      List<String> quasiIds = Arrays.asList("Age", "Mystery");
 
       // Configure the privacy metric to compute for re-identification risk analysis.
       List<FieldId> quasiIdFields =
@@ -90,7 +90,7 @@ public class RiskAnalysisKAnonymityWithEntityId {
               .collect(Collectors.toList());
 
       // Specify the unique identifier in the source table for the k-anonymity analysis.
-      FieldId fieldId = FieldId.newBuilder().setName("user_id").build();
+      FieldId fieldId = FieldId.newBuilder().setName("Name").build();
       EntityId entityId = EntityId.newBuilder().setField(fieldId).build();
       PrivacyMetric.KAnonymityConfig kanonymityConfig =
           PrivacyMetric.KAnonymityConfig.newBuilder()
