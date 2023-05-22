@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 import java.util.Base64;
-import java.util.Date;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -29,8 +28,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class SignedCookiesTest {
 
-  private static long TIMESTAMP = 1518135754;
-  private static Date EXPIRATION = new Date(TIMESTAMP * 1000);
+  private static long EXPIRATION = 1518135754;
   private static byte[] KEY_BYTES = Base64.getUrlDecoder().decode("aaaaaaaaaaaaaaaaaaaaaa==");
   private static String KEY_NAME = "my-key";
   private static String URL_PREFIX = "https://media.example.com/videos/";
