@@ -48,10 +48,10 @@ public class RiskAnalysisKAnonymityWithEntityId {
 
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
-    String projectId = "bdp-2059-is-31084";
+    String projectId = "your-project-id";
     // The BigQuery dataset id to be used and the reference table name to be inspected.
-    String datasetId = "dlp_crest_test_dataset";
-    String tableId = "test-kanony";
+    String datasetId = "your-bigquery-dataset-id";
+    String tableId = "your-bigquery-table-id";
     calculateKAnonymityWithEntityId(projectId, datasetId, tableId);
   }
 
@@ -60,17 +60,7 @@ public class RiskAnalysisKAnonymityWithEntityId {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    FileInputStream credentialsFile =
-        new FileInputStream(
-            "/Users/bhavika.dhanwani/Downloads/bdp-2059-is-31084-c1d4f0928c82.json");
-    GoogleCredentials credentials = GoogleCredentials.fromStream(credentialsFile);
-
-    // Configure DLP service settings with the credentials
-    DlpServiceSettings dlpSettings =
-        DlpServiceSettings.newBuilder()
-            .setCredentialsProvider(FixedCredentialsProvider.create(credentials))
-            .build();
-    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create(dlpSettings)) {
+    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
 
       // Specify the BigQuery table to analyze
       BigQueryTable bigQueryTable =
