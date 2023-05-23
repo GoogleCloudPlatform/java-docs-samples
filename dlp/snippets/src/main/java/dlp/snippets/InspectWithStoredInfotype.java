@@ -58,7 +58,7 @@ public class InspectWithStoredInfotype {
       // Specify the content to be inspected.
       ContentItem contentItem = ContentItem.newBuilder().setValue(textToDeidentify).build();
 
-      InfoType infoType = InfoType.newBuilder().setName("GITHUB_LOGINS").build();
+      InfoType infoType = InfoType.newBuilder().setName("STORED_TYPE").build();
 
       // Reference to the existing StoredInfoType to inspect the data.
       StoredType storedType = StoredType.newBuilder()

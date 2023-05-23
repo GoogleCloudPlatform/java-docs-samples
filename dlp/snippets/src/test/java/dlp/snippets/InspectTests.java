@@ -523,7 +523,7 @@ public class InspectTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Findings: 1");
     assertThat(output).contains("Quote: gary");
-    assertThat(output).contains("InfoType: GITHUB_LOGINS");
+    assertThat(output).contains("InfoType: STORED_TYPE");
 
     // Delete the specific stored InfoType.
     DeleteStoredInfoTypeRequest deleteStoredInfoTypeRequest =
