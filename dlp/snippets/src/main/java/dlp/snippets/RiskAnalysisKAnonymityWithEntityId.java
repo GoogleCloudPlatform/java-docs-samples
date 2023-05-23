@@ -80,8 +80,8 @@ public class RiskAnalysisKAnonymityWithEntityId {
               .collect(Collectors.toList());
 
       // Specify the unique identifier in the source table for the k-anonymity analysis.
-      FieldId fieldId = FieldId.newBuilder().setName("Name").build();
-      EntityId entityId = EntityId.newBuilder().setField(fieldId).build();
+      FieldId uniqueIdField = FieldId.newBuilder().setName("Name").build();
+      EntityId entityId = EntityId.newBuilder().setField(uniqueIdField).build();
       PrivacyMetric.KAnonymityConfig kanonymityConfig =
           PrivacyMetric.KAnonymityConfig.newBuilder()
               .addAllQuasiIds(quasiIdFields)
