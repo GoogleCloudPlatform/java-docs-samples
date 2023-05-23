@@ -25,7 +25,7 @@ export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 
 set -x
 
-if [[ "$file" == *"hello"* ]]; then
+if [[ "$file" == *"java-11/hello"* ]]; then
   echo "Deploying App Engine Flex project: ${file}"
   mvn clean package appengine:deploy 
 
