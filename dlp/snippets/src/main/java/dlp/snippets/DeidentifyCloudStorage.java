@@ -45,20 +45,23 @@ public class DeidentifyCloudStorage {
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
-    // The name of the file in the bucket
-    String gcsUri = "gs://" + "your-bucket-name" + "/path/to/your/file.txt";
-    // The dataset id to be used and the reference table name to be inspected.
-    String tableId = "your-bigquery-table-id";
+    // Specify the cloud storage directory that you want to inspect.
+    String gcsPath = "gs://" + "your-bucket-name" + "/path/to/your/file.txt";
+    // Specify the big query dataset id to store the transformation details.
     String datasetId = "your-bigquery-dataset-id";
-    // The output directory used to store the result in the cloud storage.
+    // Specify the big query table id to store the transformation details.
+    String tableId = "your-bigquery-table-id";
+    // Specify the cloud storage directory to store the de-identified files.
     String outputDirectory = "your-output-directory";
-    // The templates to be used for de-identification.
+    // Specify the de-identify template ID for unstructured files.
     String deidentifyTemplateId = "your-deidentify-template-id";
+    // Specify the de-identify template ID for structured files.
     String structuredDeidentifyTemplateId = "your-structured-deidentify-template-id";
+    // Specify the de-identify template ID for images.
     String imageRedactTemplateId = "your-image-redact-template-id";
     deidentifyCloudStorage(
         projectId,
-        gcsUri,
+        gcsPath,
         tableId,
         datasetId,
         outputDirectory,
@@ -69,7 +72,7 @@ public class DeidentifyCloudStorage {
 
   public static void deidentifyCloudStorage(
       String projectId,
-      String gcsUri,
+      String gcsPath,
       String tableId,
       String datasetId,
       String outputDirectory,
@@ -82,7 +85,7 @@ public class DeidentifyCloudStorage {
       // Set path in Cloud Storage.
       CloudStorageOptions cloudStorageOptions =
           CloudStorageOptions.newBuilder()
-              .setFileSet(CloudStorageOptions.FileSet.newBuilder().setUrl(gcsUri))
+              .setFileSet(CloudStorageOptions.FileSet.newBuilder().setUrl(gcsPath))
               .build();
 
       // Set storage config indicating the type of cloud storage.
