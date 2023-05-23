@@ -48,7 +48,7 @@ feature.
    BIGTABLE_TESTING_INSTANCE="instance-id"
    ```
 
-2. Run the command to create a test table with change streams enabled
+1. Run the command to create a test table with change streams enabled
 
    ```sh
    gcloud alpha bigtable instances tables create change-stream-hello-world-test \
@@ -56,7 +56,7 @@ feature.
    --instance=$BIGTABLE_TESTING_INSTANCE --project=$GOOGLE_CLOUD_PROJECT
    ```
 
-3. Run the test
+1. Run the test
 
    ```sh
    mvn clean test
