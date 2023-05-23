@@ -74,7 +74,7 @@
     <dependency>
       <groupId>com.googlecode.objectify</groupId>
       <artifactId>objectify</artifactId>
-      <version>5.1.25</version>
+      <version>6.0.9</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -84,7 +84,18 @@
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
     </dependency>
-
+    <dependency>
+      <artifactId>slf4j-api</artifactId>
+      <groupId>org.slf4j</groupId>
+      <version>2.0.7</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <artifactId>slf4j-simple</artifactId>
+      <groupId>org.slf4j</groupId>
+      <version>2.0.7</version>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Test Dependencies -->
     <dependency>
@@ -95,8 +106,8 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.10.19</version>
+      <artifactId>mockito-core</artifactId>
+      <version>4.11.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

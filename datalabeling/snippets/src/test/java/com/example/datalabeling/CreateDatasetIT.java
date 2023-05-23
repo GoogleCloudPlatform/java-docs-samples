@@ -16,7 +16,7 @@
 
 package com.example.datalabeling;
 
-import static org.junit.Assert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient;
 import com.google.cloud.datalabeling.v1beta1.DataLabelingServiceClient.ListDatasetsPagedResponse;
@@ -80,7 +80,7 @@ public class CreateDatasetIT {
 
     String output = bout.toString();
 
-    assertThat(output, CoreMatchers.containsString("DisplayName: CREATE_DATASET_NAME"));
-    assertThat(output, CoreMatchers.containsString("Description: YOUR_DESCRIPTION"));
+    assertThat(output).contains("DisplayName: CREATE_DATASET_NAME");
+    assertThat(output).contains("Description: YOUR_DESCRIPTION");
   }
 }

@@ -71,7 +71,7 @@ public class ExampleSystemIT {
 
     java.net.http.HttpRequest getRequest = getRequestBuilder.build();
 
-    HttpResponse response = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
+    HttpResponse<String> response = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
 
     assertThat(response.statusCode()).isEqualTo(HttpURLConnection.HTTP_OK);
     assertThat(response.body().toString()).isEqualTo("Hello world!");

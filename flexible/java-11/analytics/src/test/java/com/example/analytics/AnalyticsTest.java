@@ -17,7 +17,6 @@
 package com.example.analytics;
 
 import static org.junit.Assert.assertTrue;
-// import org.junit.Test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,22 +25,21 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class AnalyticsTest {
 
   @Test
   public void testget() throws Exception {
-    // assertNotNull(System.getenv("PUBSUB_TOPIC"));
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
 
-    BufferedReader reader = mock(BufferedReader.class);
-    when(request.getReader()).thenReturn(reader);
-
+    try (BufferedReader reader = mock(BufferedReader.class)) {
+      when(request.getReader()).thenReturn(reader);
+    }
     AnalyticsServlet servlet = new AnalyticsServlet();
     servlet.doGet(request, response);
     assertTrue(stringWriter.toString().contains("Event tracked."));

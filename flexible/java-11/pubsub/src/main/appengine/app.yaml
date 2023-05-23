@@ -19,6 +19,7 @@ handlers:
   script: this field is required, but ignored
 runtime_config:
   operating_system: ubuntu18
+  version: 11
 # [START gae_flex_pubsub_yaml]
 env_variables:
   PUBSUB_TOPIC: <your-topic-name>

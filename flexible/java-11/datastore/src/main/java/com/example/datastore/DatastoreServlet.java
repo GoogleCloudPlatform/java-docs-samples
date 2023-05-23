@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.managedvms.datastore;
+package com.example.datastore;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.Datastore;

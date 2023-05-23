@@ -19,7 +19,7 @@ package com.example.appengine.pubsub;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -39,7 +39,7 @@ public class PubSubAuthenticatedPush extends HttpServlet {
   private final String pubsubVerificationToken = System.getenv("PUBSUB_VERIFICATION_TOKEN");
   private final MessageRepository messageRepository;
   private final GoogleIdTokenVerifier verifier =
-      new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
+      new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
           /**
            * Please change example.com to match with value you are providing while creating
            * subscription as provided in @see <a
@@ -48,7 +48,6 @@ public class PubSubAuthenticatedPush extends HttpServlet {
           .setAudience(Collections.singletonList("example.com"))
           .build();
   private final Gson gson = new Gson();
-  private final JsonParser jsonParser = new JsonParser();
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -101,7 +100,7 @@ public class PubSubAuthenticatedPush extends HttpServlet {
 
   private Message getMessage(HttpServletRequest request) throws IOException {
     String requestBody = request.getReader().lines().collect(Collectors.joining("\n"));
-    JsonElement jsonRoot = jsonParser.parse(requestBody);
+    JsonElement jsonRoot = JsonParser.parseString(requestBody).getAsJsonObject();
     String messageStr = jsonRoot.getAsJsonObject().get("message").toString();
     Message message = gson.fromJson(messageStr, Message.class);
     // decode from base64

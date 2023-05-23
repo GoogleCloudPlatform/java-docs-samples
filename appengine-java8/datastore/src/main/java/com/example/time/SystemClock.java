@@ -16,7 +16,7 @@
 
 package com.example.time;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 /**
  * Clock implementation that returns the "real" system time.
@@ -34,6 +34,6 @@ public class SystemClock implements Clock {
 
   @Override
   public Instant now() {
-    return new Instant();
+    return Instant.now();
   }
 }

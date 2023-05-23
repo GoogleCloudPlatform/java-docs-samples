@@ -44,11 +44,11 @@ import java.util.Map;
  * this app, we use Firebase as a communication bus to push the state of the board to all clients -
  * that is, players of the game. This class contains the methods used to communicate with Firebase.
  */
-public class FirebaseChannel {
+public final class FirebaseChannel {
 
   private static final String FIREBASE_SNIPPET_PATH = "WEB-INF/view/firebase_config.jspf";
   static InputStream firebaseConfigStream = null;
-  private static final Collection FIREBASE_SCOPES =
+  private static final Collection<String> FIREBASE_SCOPES =
       Arrays.asList(
           "https://www.googleapis.com/auth/firebase.database",
           "https://www.googleapis.com/auth/userinfo.email");
@@ -66,7 +66,7 @@ public class FirebaseChannel {
    * FirebaseChannel is a singleton, since it's just utility functions. The class derives auth
    * information when first instantiated.
    */
-  public static FirebaseChannel getInstance() {
+  public static synchronized FirebaseChannel getInstance() {
     if (instance == null) {
       instance = new FirebaseChannel();
     }
@@ -167,7 +167,7 @@ public class FirebaseChannel {
     long epochTime = System.currentTimeMillis() / 1000;
     long expire = epochTime + 60 * 60; // an hour from now
 
-    Map<String, Object> claims = new HashMap<String, Object>();
+    Map<String, Object> claims = new HashMap<>();
     claims.put("iss", clientEmail);
     claims.put("sub", clientEmail);
     claims.put("aud", IDENTITY_ENDPOINT);

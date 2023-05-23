@@ -34,7 +34,6 @@ import com.google.appengine.tools.development.testing.LocalURLFetchServiceTestCo
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
 import com.googlecode.objectify.Objectify;
-import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
 import java.io.ByteArrayInputStream;
@@ -45,11 +44,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -70,10 +68,8 @@ public class MoveServletTest {
               new LocalURLFetchServiceTestConfig())
           .setEnvEmail(USER_EMAIL)
           .setEnvAuthDomain("gmail.com")
-          .setEnvAttributes(
-              new HashMap(
-                  ImmutableMap.of(
-                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+              .setEnvAttributes(new HashMap<>(ImmutableMap
+                  .of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -84,7 +80,7 @@ public class MoveServletTest {
   @BeforeClass
   public static void setUpBeforeClass() {
     // Reset the Factory so that all translators work properly.
-    ObjectifyService.setFactory(new ObjectifyFactory());
+    ObjectifyService.init();
     ObjectifyService.register(Game.class);
     // Mock out the firebase config
     FirebaseChannel.firebaseConfigStream =
@@ -93,7 +89,7 @@ public class MoveServletTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     helper.setUp();
     dbSession = ObjectifyService.begin();
 
@@ -111,7 +107,7 @@ public class MoveServletTest {
   }
 
   @Test
-  public void doPost_myTurn_move() throws Exception {
+  public void doPostMyTurnMove() throws Exception {
     // Insert a game
     Objectify ofy = ObjectifyService.ofy();
     Game game = new Game(USER_ID, "my-opponent", "         ", true);
@@ -146,12 +142,12 @@ public class MoveServletTest {
     game = ofy.load().type(Game.class).id(gameKey).safe();
     assertThat(game.board).isEqualTo(" X       ");
 
-    verify(mockHttpTransport, times(2))
-        .buildRequest(eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
+    verify(mockHttpTransport, times(2)).buildRequest(eq("PATCH"),
+        ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
   }
 
   @Test
-  public void doPost_notMyTurn_move() throws Exception {
+  public void doPostNotMyTurnMove() throws Exception {
     // Insert a game
     Objectify ofy = ObjectifyService.ofy();
     Game game = new Game(USER_ID, "my-opponent", "         ", false);

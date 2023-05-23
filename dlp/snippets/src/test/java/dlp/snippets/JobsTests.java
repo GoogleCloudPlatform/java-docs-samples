@@ -59,12 +59,12 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class JobsTests extends TestBase {
 
-  private static DlpServiceClient DLP_SERVICE_CLIENT;
+  private static DlpServiceClient dlpServiceClient;
 
   @BeforeClass
   public static void setUp() throws Exception {
     // Initialize the Dlp Service Client.
-    DLP_SERVICE_CLIENT = DlpServiceClient.create();
+    dlpServiceClient = DlpServiceClient.create();
   }
 
   private static DlpJob createJob(String jobId) throws IOException {
@@ -87,7 +87,7 @@ public class JobsTests extends TestBase {
             .setJobId(jobId)
             .build();
 
-    return DLP_SERVICE_CLIENT.createDlpJob(createDlpJobRequest);
+    return dlpServiceClient.createDlpJob(createDlpJobRequest);
   }
 
   private static void createBucket(String bucketName) {
@@ -120,7 +120,7 @@ public class JobsTests extends TestBase {
     bucket.delete();
   }
 
-  public static void createDeidentifyTemplate(String deidentifyTemplateId) {
+  private static void createDeidentifyTemplate(String deidentifyTemplateId) {
 
     // Specify that findings should be replaced with corresponding info type name.
     ReplaceWithInfoTypeConfig replaceWithInfoTypeConfig =
@@ -153,10 +153,10 @@ public class JobsTests extends TestBase {
             .build();
 
     // Call DLP API to create de-identify template.
-    DLP_SERVICE_CLIENT.createDeidentifyTemplate(createRequest);
+    dlpServiceClient.createDeidentifyTemplate(createRequest);
   }
 
-  public static void createStructuredDeidentifyTemplate(String deidentifyStructuredTemplateId) {
+  private static void createStructuredDeidentifyTemplate(String deidentifyStructuredTemplateId) {
 
     Value value = Value.newBuilder().setStringValue("Hello").build();
 
@@ -191,10 +191,10 @@ public class JobsTests extends TestBase {
             .build();
 
     // Call DLP API to create de-identify template.
-    DLP_SERVICE_CLIENT.createDeidentifyTemplate(createRequest);
+    dlpServiceClient.createDeidentifyTemplate(createRequest);
   }
 
-  public static void createRedactImageTemplate(String redactImageTemplateId) {
+  private static void createRedactImageTemplate(String redactImageTemplateId) {
 
     // Specify the color to use when redacting content from an image.
     ImageTransformations.ImageTransformation imageTransformation =
@@ -219,8 +219,8 @@ public class JobsTests extends TestBase {
             .setTemplateId(redactImageTemplateId)
             .build();
 
-    // Call the DLP API to create the de-identify template.
-    DLP_SERVICE_CLIENT.createDeidentifyTemplate(createRequest);
+    // Call DLP API to create de-identify template.
+    dlpServiceClient.createDeidentifyTemplate(createRequest);
   }
 
   @Override
@@ -239,7 +239,8 @@ public class JobsTests extends TestBase {
     String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
-    DLP_SERVICE_CLIENT.deleteDlpJob(deleteDlpJobRequest);
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
   }
 
   @Test
@@ -257,7 +258,8 @@ public class JobsTests extends TestBase {
     String dlpJobName = createdDlpJob.getName();
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
-    DLP_SERVICE_CLIENT.deleteDlpJob(deleteDlpJobRequest);
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
   }
 
   @Test
@@ -280,6 +282,52 @@ public class JobsTests extends TestBase {
     JobsDelete.deleteJobs(PROJECT_ID, "i-" + jobId);
     String output = bout.toString();
     assertThat(output).contains("Job deleted successfully.");
+  }
+
+  @Test
+  public void testInspectBigQuerySendToScc() throws Exception {
+    InspectBigQuerySendToScc.inspectBigQuerySendToScc(PROJECT_ID, DATASET_ID, TABLE_ID);
+
+    String output = bout.toString();
+    assertThat(output).contains("Job created successfully");
+    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+
+    // Delete the created Dlp Job
+    DeleteDlpJobRequest deleteDlpJobRequest =
+        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+  }
+
+  @Test
+  public void testCreateDatastoreJobWithScc() throws Exception {
+    InspectDatastoreSendToScc.inspectDatastoreSendToScc(
+        PROJECT_ID, DATASTORE_NAMESPACE, DATASTORE_KIND);
+
+    String output = bout.toString();
+    assertThat(output).contains("Job created successfully");
+    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+
+    // Delete the created Dlp Job
+    DeleteDlpJobRequest deleteDlpJobRequest =
+        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
+  }
+
+  @Test
+  public void testCreateJobsSendScc() throws Exception {
+    // Call createJobs to create a Dlp job from project id and gcs path and send data to SCC.
+    InspectGcsFileSendToScc.createJobSendToScc(PROJECT_ID, GCS_PATH);
+    String output = bout.toString();
+    assertThat(output).contains("Job created successfully:");
+
+    // Delete the created Dlp Job
+    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+    DeleteDlpJobRequest deleteDlpJobRequest =
+        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
+
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
   }
 
   @Test
@@ -328,14 +376,14 @@ public class JobsTests extends TestBase {
     DeleteDlpJobRequest deleteDlpJobRequest =
         DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
 
-    DLP_SERVICE_CLIENT.deleteDlpJob(deleteDlpJobRequest);
+    dlpServiceClient.deleteDlpJob(deleteDlpJobRequest);
 
     DeleteDeidentifyTemplateRequest deleteDeidentifyTemplateRequest =
         DeleteDeidentifyTemplateRequest.newBuilder()
             .setName(ProjectDeidentifyTemplateName.of(PROJECT_ID, deidentifyTemplateId).toString())
             .build();
 
-    DLP_SERVICE_CLIENT.deleteDeidentifyTemplate(deleteDeidentifyTemplateRequest);
+    dlpServiceClient.deleteDeidentifyTemplate(deleteDeidentifyTemplateRequest);
 
     DeleteDeidentifyTemplateRequest deleteDeidentifyStructuredTemplateRequest =
         DeleteDeidentifyTemplateRequest.newBuilder()
@@ -344,14 +392,14 @@ public class JobsTests extends TestBase {
                     .toString())
             .build();
 
-    DLP_SERVICE_CLIENT.deleteDeidentifyTemplate(deleteDeidentifyStructuredTemplateRequest);
+    dlpServiceClient.deleteDeidentifyTemplate(deleteDeidentifyStructuredTemplateRequest);
 
     DeleteDeidentifyTemplateRequest deleteImageRedactTemplateRequest =
         DeleteDeidentifyTemplateRequest.newBuilder()
             .setName(ProjectDeidentifyTemplateName.of(PROJECT_ID, imageRedactTemplateId).toString())
             .build();
 
-    DLP_SERVICE_CLIENT.deleteDeidentifyTemplate(deleteImageRedactTemplateRequest);
+    dlpServiceClient.deleteDeidentifyTemplate(deleteImageRedactTemplateRequest);
 
     deleteBucket(bucketName);
   }

@@ -49,7 +49,7 @@ public class WebhookValidateFormParameterIT {
 
   @Before
   public void beforeTest() throws IOException {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     stringReader = new StringReader("{'fulfillmentInfo': {'tag': 'validate-form-parameter'}}");
     jsonReader = new BufferedReader(stringReader);

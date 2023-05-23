@@ -180,7 +180,7 @@ public class CreateBackupTestIT {
     retriableFunc.run();
 
     // Check if backup exists
-    List<String> backups = new ArrayList<String>();
+    List<String> backups = new ArrayList<>();
     int maxAttempts = 5;
     for (int count = 0; count < maxAttempts; count++) {
       try (BigtableTableAdminClient tableAdmin =

@@ -47,7 +47,7 @@ import java.util.stream.Stream;
 
 public class DeIdentifyTableConditionInfoTypes {
 
-  public static void deIdentifyTableConditionInfoTypes() throws IOException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     Table tableToDeIdentify =

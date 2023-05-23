@@ -143,7 +143,7 @@ resource "google_storage_bucket_object" "ml_model" {
 # the ML model.
 module "vertexai" {
   source  = "terraform-google-modules/gcloud/google"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   platform = "linux"
 
@@ -157,7 +157,7 @@ module "vertexai" {
 # Run the fraud-detection streaming pipeline.
 module "dataflow_pipeline" {
   source  = "terraform-google-modules/gcloud/google"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   platform = "linux"
 
@@ -176,7 +176,7 @@ module "dataflow_pipeline" {
 
 module "load_dataset" {
   source  = "terraform-google-modules/gcloud/google"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   platform = "linux"
   module_depends_on = [module.dataflow_pipeline.wait]
