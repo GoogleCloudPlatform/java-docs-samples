@@ -58,6 +58,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class JobsTests extends TestBase {
+
   private static DlpServiceClient dlpServiceClient;
 
   @Override
@@ -72,6 +73,7 @@ public class JobsTests extends TestBase {
   }
 
   private static DlpJob createJob(String jobId) throws IOException {
+
     FileSet fileSet = FileSet.newBuilder().setUrl(GCS_PATH).build();
     CloudStorageOptions cloudStorageOptions =
         CloudStorageOptions.newBuilder().setFileSet(fileSet).build();
@@ -161,6 +163,7 @@ public class JobsTests extends TestBase {
   }
 
   private static void createStructuredDeidentifyTemplate(String deidentifyStructuredTemplateId) {
+
     Value value = Value.newBuilder().setStringValue("Hello").build();
 
     // Specify that findings should be replaced with corresponding value.
