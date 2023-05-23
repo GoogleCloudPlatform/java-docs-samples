@@ -27,8 +27,7 @@ set -x
 
 if [[ "$file" == *"hello"* ]]; then
   echo "Deploying App Engine Flex project: ${file}"
-  mvn clean package appengine:deploy \
-    --region $APP_REGION
+  mvn clean package appengine:deploy 
 
 fi
 set +x
