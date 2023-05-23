@@ -58,6 +58,10 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class JobsTests extends TestBase {
+  @Override
+  protected ImmutableList<String> requiredEnvVars() {
+    return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT", "GCS_PATH");
+  }
 
   private static DlpServiceClient dlpServiceClient;
 
@@ -221,11 +225,6 @@ public class JobsTests extends TestBase {
 
     // Call DLP API to create de-identify template.
     dlpServiceClient.createDeidentifyTemplate(createRequest);
-  }
-
-  @Override
-  protected ImmutableList<String> requiredEnvVars() {
-    return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT", "GCS_PATH");
   }
 
   @Test
