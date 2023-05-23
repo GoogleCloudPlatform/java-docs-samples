@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class DeidentifyCloudStorage {
   public static void main(String[] args) throws IOException, InterruptedException {
@@ -158,6 +159,12 @@ public class DeidentifyCloudStorage {
       // Send the job creation request.
       DlpJob response = dlp.createDlpJob(createDlpJobRequest);
 
+      // Set the timeout duration in minutes.
+      int timeoutMinutes = 15;
+
+      // Get the current time.
+      long startTime = System.currentTimeMillis();
+
       // Check if the job state is DONE.
       while (response.getState() != DlpJob.JobState.DONE) {
         // Sleep for 1 second.
@@ -165,6 +172,13 @@ public class DeidentifyCloudStorage {
 
         // Get the updated job status.
         response = dlp.getDlpJob(response.getName());
+
+        // Check if the timeout duration has exceeded.
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        if (TimeUnit.MILLISECONDS.toMinutes(elapsedTime) >= timeoutMinutes) {
+          System.out.println("Job did not complete within 15 minutes.");
+          break;
+        }
       }
       // Print the results.
       System.out.println("Job status: " + response.getState());
