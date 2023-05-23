@@ -26,9 +26,12 @@ import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.FileType;
 import com.google.privacy.dlp.v2.InfoType;
+import com.google.privacy.dlp.v2.InfoTypeStats;
 import com.google.privacy.dlp.v2.InspectConfig;
+import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.InspectJobConfig;
 import com.google.privacy.dlp.v2.LocationName;
+import com.google.privacy.dlp.v2.ProjectDeidentifyTemplateName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import com.google.privacy.dlp.v2.TransformationConfig;
 import com.google.privacy.dlp.v2.TransformationDetailsStorageConfig;
@@ -38,7 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DeidentifyCloudStorage {
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
@@ -73,7 +76,7 @@ public class DeidentifyCloudStorage {
       String deidentifyTemplateId,
       String structuredDeidentifyTemplateId,
       String imageRedactTemplateId)
-      throws IOException {
+      throws IOException, InterruptedException {
 
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       // Set path in Cloud Storage.
@@ -87,6 +90,7 @@ public class DeidentifyCloudStorage {
           StorageConfig.newBuilder().setCloudStorageOptions(cloudStorageOptions).build();
 
       // Specify the type of info the inspection will look for.
+      // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types
       List<InfoType> infoTypes = new ArrayList<>();
       for (String typeName : new String[] {"PERSON_NAME", "EMAIL_ADDRESS"}) {
         infoTypes.add(InfoType.newBuilder().setName(typeName).build());
@@ -100,7 +104,7 @@ public class DeidentifyCloudStorage {
           Arrays.asList(
               FileType.valueOf("IMAGE"), FileType.valueOf("CSV"), FileType.valueOf("TEXT_FILE"));
 
-      // Specify the BigQuery table to be inspected.
+      // Specify the big query table to store the transformation details.
       BigQueryTable table =
           BigQueryTable.newBuilder()
               .setProjectId(projectId)
@@ -111,14 +115,18 @@ public class DeidentifyCloudStorage {
       TransformationDetailsStorageConfig transformationDetailsStorageConfig =
           TransformationDetailsStorageConfig.newBuilder().setTable(table).build();
 
+      // Specify the de-identify template used for the transformation.
       TransformationConfig transformationConfig =
           TransformationConfig.newBuilder()
-              .setDeidentifyTemplate(deidentifyTemplateId)
-              .setImageRedactTemplate(imageRedactTemplateId)
-              .setStructuredDeidentifyTemplate(structuredDeidentifyTemplateId)
+              .setDeidentifyTemplate(
+                  ProjectDeidentifyTemplateName.of(projectId, deidentifyTemplateId).toString())
+              .setImageRedactTemplate(
+                  ProjectDeidentifyTemplateName.of(projectId, imageRedactTemplateId).toString())
+              .setStructuredDeidentifyTemplate(
+                  ProjectDeidentifyTemplateName.of(projectId, structuredDeidentifyTemplateId)
+                      .toString())
               .build();
 
-      // Action to execute on the completion of a job.
       Action.Deidentify deidentify =
           Action.Deidentify.newBuilder()
               .setCloudStorageOutput(outputDirectory)
@@ -129,7 +137,7 @@ public class DeidentifyCloudStorage {
 
       Action action = Action.newBuilder().setDeidentify(deidentify).build();
 
-      // Configure the inspection job we want the service to perform.
+      // Configure the long-running job we want the service to perform.
       InspectJobConfig inspectJobConfig =
           InspectJobConfig.newBuilder()
               .setInspectConfig(inspectConfig)
@@ -144,9 +152,26 @@ public class DeidentifyCloudStorage {
               .setInspectJob(inspectJobConfig)
               .build();
 
-      // Send the job creation request and process the response.
+      // Send the job creation request.
       DlpJob response = dlp.createDlpJob(createDlpJobRequest);
-      System.out.println("Job created successfully: " + response.getName());
+
+      // Check if the job state is DONE.
+      while (response.getState() != DlpJob.JobState.DONE) {
+        // Sleep for 1 second.
+        Thread.sleep(1000);
+
+        // Get the updated job status.
+        response = dlp.getDlpJob(response.getName());
+      }
+      // Print the results.
+      System.out.println("Job status: " + response.getState());
+      System.out.println("Job name: " + response.getName());
+      InspectDataSourceDetails.Result result = response.getInspectDetails().getResult();
+      System.out.println("Findings: ");
+      for (InfoTypeStats infoTypeStat : result.getInfoTypeStatsList()) {
+        System.out.print("\tInfo type: " + infoTypeStat.getInfoType().getName());
+        System.out.println("\tCount: " + infoTypeStat.getCount());
+      }
     }
   }
 }
