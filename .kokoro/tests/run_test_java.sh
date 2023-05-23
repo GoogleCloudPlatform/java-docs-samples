@@ -60,6 +60,23 @@ if [[ "$file" == *"functions/helloworld/"* ]]; then
     fi
 fi
 
+# Build and deploy Appengine flex samples
+if [[ "$file" == *"flexible/java-11/"* ]]; then
+    source "$SCRIPT_DIR"/build_appengine_flex.sh
+    EXIT=$?
+
+    if [[ $EXIT -ne 0 ]]; then
+        RTN=1
+        echo -e "\n Appengine Flex build/deploy failed: gcloud returned a non-zero exit code. \n"
+    else
+        echo -e "\n Appengine Flex build/deploy completed.\n"
+
+        # Wait for functions to warm up (and start detecting events)
+        sleep 1m
+    fi
+fi
+
+
 # Use maven to execute the tests for the project.
 mvn --quiet --batch-mode --fail-at-end clean verify \
     -Dfile.encoding="UTF-8" \
