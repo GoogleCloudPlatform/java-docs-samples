@@ -58,12 +58,12 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class JobsTests extends TestBase {
+  private static DlpServiceClient dlpServiceClient;
+
   @Override
   protected ImmutableList<String> requiredEnvVars() {
     return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT", "GCS_PATH");
   }
-
-  private static DlpServiceClient dlpServiceClient;
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -161,7 +161,6 @@ public class JobsTests extends TestBase {
   }
 
   private static void createStructuredDeidentifyTemplate(String deidentifyStructuredTemplateId) {
-
     Value value = Value.newBuilder().setStringValue("Hello").build();
 
     // Specify that findings should be replaced with corresponding value.
@@ -199,7 +198,6 @@ public class JobsTests extends TestBase {
   }
 
   private static void createRedactImageTemplate(String redactImageTemplateId) {
-
     // Specify the color to use when redacting content from an image.
     ImageTransformations.ImageTransformation imageTransformation =
         ImageTransformations.ImageTransformation.newBuilder()
