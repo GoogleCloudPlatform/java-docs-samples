@@ -23,9 +23,8 @@ import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.time.ZonedDateTime;
 import java.util.Base64;
-import java.util.Calendar;
-import java.util.Date;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -39,7 +38,7 @@ public class SignedUrlWithPrefix {
     // Path to the url signing key uploaded to the backend service/bucket, as a 16-byte array
     String keyPath = "/path/to/key";
     // The date that the signed URL expires
-    Date expirationTime = getTomorrow();
+    long expirationTime = ZonedDateTime.now().plusDays(1).toEpochSecond();
     // URL of request
     String requestUrl = "https://media.example.com/videos/id/main.m3u8?userID=abc123&starting_profile=1";
     // URL prefix to sign as a string. urlPrefix must start with either http:// or
@@ -57,19 +56,11 @@ public class SignedUrlWithPrefix {
     System.out.println(signUrlWithPrefixResult);
   }
 
-  // Gets Date representation for tomorrow from Calendar
-  private static Date getTomorrow() {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.add(Calendar.DATE, 1);
-    return cal.getTime();
-  }
-
   // Creates a signed URL with a URL prefix for a Cloud CDN endpoint with the given key. Prefixes
   // allow access to any URL with the same prefix, and can be useful for granting access broader
   // content without signing multiple URLs.
   static String signUrlWithPrefix(String requestUrl, String urlPrefix, byte[] key, String keyName,
-      Date expirationTime)
+      long expirationTime)
       throws InvalidKeyException, NoSuchAlgorithmException {
 
     if (urlPrefix.contains("?") || urlPrefix.contains("#")) {
@@ -79,12 +70,11 @@ public class SignedUrlWithPrefix {
       throw new IllegalArgumentException(
           "urlPrefix must start with either http:// or https://: " + urlPrefix);
     }
-    final long unixTime = expirationTime.getTime() / 1000;
 
     String encodedUrlPrefix = Base64.getUrlEncoder().encodeToString(urlPrefix.getBytes(
         StandardCharsets.UTF_8));
     String urlToSign = "URLPrefix=" + encodedUrlPrefix
-        + "&Expires=" + unixTime
+        + "&Expires=" + expirationTime
         + "&KeyName=" + keyName;
 
     String encoded = getSignatureForUrl(key, urlToSign);
