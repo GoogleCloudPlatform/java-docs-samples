@@ -27,6 +27,7 @@ set -x
 
 if [[ "$file" == *"java-11/hello"* ]]; then
   echo "Deploying App Engine Flex project: ${file}"
+  gcloud app update --split-health-checks
   mvn clean package appengine:deploy 
 
 fi
