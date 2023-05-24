@@ -19,8 +19,9 @@ package aiplatform;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
-import com.google.cloud.aiplatform.v1beta1.JobServiceClient;
-import com.google.cloud.aiplatform.v1beta1.JobServiceSettings;
+import com.google.cloud.aiplatform.v1.CustomJobName;
+import com.google.cloud.aiplatform.v1.JobServiceClient;
+import com.google.cloud.aiplatform.v1.JobServiceSettings;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -77,11 +78,11 @@ public class CreateCustomJobSampleTest {
 
     try (JobServiceClient client = JobServiceClient.create(settings)) {
       // Cancel custom job
-      String customJobName =
-          String.format("projects/%s/locations/us-central1/customJobs/%s", PROJECT, customJobId);
+      String location = "us-central1";
+      CustomJobName customJobName = CustomJobName.of(PROJECT, location, customJobId);
       client.cancelCustomJob(customJobName);
 
-      TimeUnit.MINUTES.sleep(1);
+      TimeUnit.MINUTES.sleep(2);
 
       // Delete the created job
       client.deleteCustomJobAsync(customJobName);
