@@ -11,8 +11,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.appengine.flexible</groupId>
   <artifactId>springboot-helloworld-j11</artifactId>
@@ -23,40 +24,35 @@
   Removing or replacing it should not affect the execution of the samples in anyway.
   -->
   <parent>
-      <groupId>com.google.cloud.samples</groupId>
-      <artifactId>shared-configuration</artifactId>
-      <version>1.2.0</version>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.2.0</version>
   </parent>
 
   <properties>
-      <maven.compiler.target>11</maven.compiler.target>
-      <maven.compiler.source>11</maven.compiler.source>
-      <spring.boot.version>2.7.11</spring.boot.version>
-    </properties>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <spring.boot.version>2.7.11</spring.boot.version>
+  </properties>
 
   <dependencyManagement>
-      <dependencies>
-          <dependency>
-              <!-- Import dependency management from Spring Boot -->
-              <groupId>org.springframework.boot</groupId>
-              <artifactId>spring-boot-dependencies</artifactId>
-              <version>${spring.boot.version}</version>
-              <type>pom</type>
-              <scope>import</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-              <groupId>org.springframework.cloud</groupId>
-              <artifactId>spring-cloud-dependencies</artifactId>
-              <version>2022.0.2</version>
-              <type>pom</type>
-              <scope>import</scope>
-          </dependency>
-      </dependencies>
+    <dependencies>
+      <dependency>
+        <!-- Import dependency management from Spring Boot -->
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>2022.0.2</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
   </dependencyManagement>
 
   <dependencies>
@@ -73,9 +69,9 @@
     </dependency>
 
     <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-jetty</artifactId>
-        </dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jetty</artifactId>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -84,31 +80,36 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-  </dependency>
-
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
       <plugin>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>${spring.boot.version}</version>
-          <executions>
-              <execution>
-                  <goals>
-                      <goal>repackage</goal>
-                  </goals>
-              </execution>
-          </executions>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring.boot.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-            <includes>
-                <include>**/*Test*.java</include>
-            </includes>
+          <includes>
+            <include>**/*Test*.java</include>
+          </includes>
         </configuration>
       </plugin>
       <plugin>
