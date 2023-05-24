@@ -122,7 +122,7 @@ public class InfoTypesTests extends TestBase {
     String infoTypeId = UUID.randomUUID().toString();
     createStoredInfoType(PROJECT_ID, GCS_PATH, infoTypeId);
     UpdateStoredInfoType.updateStoredInfoType(
-        PROJECT_ID, GCS_PATH + "/test.txt", GCS_PATH, infoTypeId);
+        PROJECT_ID, GCS_PATH, GCS_PATH, infoTypeId);
     String output = bout.toString();
     assertThat(output).contains("Updated stored InfoType successfully");
 
