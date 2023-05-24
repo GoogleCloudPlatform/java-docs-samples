@@ -38,7 +38,6 @@ public class SignedUrlWithPrefix {
     // The name of the signing key added to the back end bucket or service
     String keyName = "YOUR-KEY-NAME";
     // Path to the URL signing key uploaded to the backend service/bucket
-    // Key should be in raw form (not base64url-encoded).
     String keyPath = "/path/to/key";
     // The date that the signed URL expires
     long expirationTime = ZonedDateTime.now().plusDays(1).toEpochSecond();
@@ -49,6 +48,7 @@ public class SignedUrlWithPrefix {
     String urlPrefix = "https://media.example.com/videos/";
 
     // Read the key as a base64 url-safe encoded string, then convert to byte array
+    // Key used in signing should be in raw form (not base64url-encoded).
     String base64String = new String(Files.readAllBytes(Paths.get(keyPath)),
         StandardCharsets.UTF_8);
     byte[] keyBytes = Base64.getUrlDecoder().decode(base64String);
