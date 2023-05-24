@@ -35,20 +35,20 @@ public class SignedUrlWithPrefix {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
 
-    // The name of the signing key added to the back end bucket or service
+    // The name of the signing key must match a key added to the back end bucket or service.
     String keyName = "YOUR-KEY-NAME";
-    // Path to the URL signing key uploaded to the backend service/bucket
+    // Path to the URL signing key uploaded to the backend service/bucket.
     String keyPath = "/path/to/key";
-    // The date that the signed URL expires
+    // The date that the signed URL expires.
     long expirationTime = ZonedDateTime.now().plusDays(1).toEpochSecond();
     // URL of request
     String requestUrl = "https://media.example.com/videos/id/main.m3u8?userID=abc123&starting_profile=1";
-    // URL prefix to sign as a string. urlPrefix must start with either http:// or
-    // https:// and should not include query parameters
+    // URL prefix to sign as a string. URL prefix must start with either "http://" or "https://"
+    // and must not include query parameters.
     String urlPrefix = "https://media.example.com/videos/";
 
-    // Read the key as a base64 url-safe encoded string, then convert to byte array
-    // Key used in signing should be in raw form (not base64url-encoded).
+    // Read the key as a base64 url-safe encoded string, then convert to byte array.
+    // Key used in signing must be in raw form (not base64url-encoded).
     String base64String = new String(Files.readAllBytes(Paths.get(keyPath)),
         StandardCharsets.UTF_8);
     byte[] keyBytes = Base64.getUrlDecoder().decode(base64String);
@@ -66,7 +66,7 @@ public class SignedUrlWithPrefix {
       long expirationTime)
       throws InvalidKeyException, NoSuchAlgorithmException {
 
-    // Validate input URL prefix
+    // Validate input URL prefix.
     try {
       URL validatedUrlPrefix = new URL(urlPrefix);
       if (!validatedUrlPrefix.getProtocol().startsWith("http")) {
@@ -90,7 +90,7 @@ public class SignedUrlWithPrefix {
     return requestUrl + "&" + urlToSign + "&Signature=" + encoded;
   }
 
-  // Creates signature for input url with private key
+  // Creates signature for input url with private key.
   private static String getSignatureForUrl(byte[] privateKey, String input)
       throws InvalidKeyException, NoSuchAlgorithmException {
 
