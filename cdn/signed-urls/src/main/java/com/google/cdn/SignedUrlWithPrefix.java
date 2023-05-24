@@ -38,7 +38,7 @@ public class SignedUrlWithPrefix {
     // The name of the signing key added to the back end bucket or service
     String keyName = "YOUR-KEY-NAME";
     // Path to the URL signing key uploaded to the backend service/bucket
-    // Key should be in raw form (not base64url-encoded) which is 16-bytes long.
+    // Key should be in raw form (not base64url-encoded).
     String keyPath = "/path/to/key";
     // The date that the signed URL expires
     long expirationTime = ZonedDateTime.now().plusDays(1).toEpochSecond();
