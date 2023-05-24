@@ -62,6 +62,7 @@ fi
 
 # Build and deploy Appengine flex samples
 if [[ "$file" == *"flexible/java"* ]]; then
+    export SAMPLE_NAME=${file#"flexible/"}
     source "$SCRIPT_DIR"/build_appengine_flex.sh
     EXIT=$?
 

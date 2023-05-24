@@ -27,8 +27,7 @@ set -x
 
 if [[ "$file" == *"hello"* || "$file" == *"static"* ]]; then
   echo "Deploying App Engine Flex project: ${file}"
-  gcloud app update --split-health-checks
-  mvn clean package appengine:deploy 
+  mvn clean package appengine:deploy -Dapp.deploy.version=${SERVICE_NAME}
 
 fi
 set +x
