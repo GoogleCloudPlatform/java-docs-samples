@@ -25,7 +25,7 @@ export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 
 set -x
 
-if [[ "$file" == *"java-11/hello"* ]]; then
+if [[ "$file" == *"hello"* || "$file" == *"static"*]]; then
   echo "Deploying App Engine Flex project: ${file}"
   gcloud app update --split-health-checks
   mvn clean package appengine:deploy 

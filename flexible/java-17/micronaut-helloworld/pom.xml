@@ -27,7 +27,7 @@
       <artifactId>shared-configuration</artifactId>
       <version>1.2.0</version>
   </parent>
-
+<!-- delete this line-->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <exec.mainClass>com.example.appengine.Application</exec.mainClass>

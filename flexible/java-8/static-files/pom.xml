@@ -20,7 +20,7 @@
   <version>1.0-SNAPSHOT</version>
   <groupId>com.example.flexible</groupId>
   <artifactId>staticfiles</artifactId>
-
+<!-- delete this line-->
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
     Removing or replacing it should not affect the execution of the samples in anyway.

@@ -61,7 +61,7 @@ if [[ "$file" == *"functions/helloworld/"* ]]; then
 fi
 
 # Build and deploy Appengine flex samples
-if [[ "$file" == *"flexible/java-11/"* ]]; then
+if [[ "$file" == *"flexible/java"* ]]; then
     source "$SCRIPT_DIR"/build_appengine_flex.sh
     EXIT=$?
 

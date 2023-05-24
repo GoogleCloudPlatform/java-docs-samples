@@ -20,7 +20,7 @@
   <artifactId>helloworld-springboot</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>helloworld-springboot</name>
-
+<!-- delete this line-->
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
     Removing or replacing it should not affect the execution of the samples in anyway.
