@@ -30,17 +30,17 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@RunWith(SpringRunner.class)
 public class R2dbcSampleApplicationIT {
 
   @DynamicPropertySource
@@ -50,7 +50,8 @@ public class R2dbcSampleApplicationIT {
     String suffix = UUID.randomUUID().toString().substring(0, 23);
     registry.add("database", () -> "r2dbc-" + suffix);
 
-    assertNotNull("Please provide spanner.test.instance environment variable",
+    assertNotNull(
+        "Please provide spanner.test.instance environment variable",
         System.getProperty("spanner.test.instance"));
     registry.add("instance", () -> System.getProperty("spanner.test.instance"));
   }
@@ -61,11 +62,9 @@ public class R2dbcSampleApplicationIT {
   @Value("${instance}")
   String instance;
 
-  @Autowired
-  private WebTestClient webTestClient;
+  @Autowired private WebTestClient webTestClient;
 
-  @Autowired
-  DatabaseClient databaseClient;
+  @Autowired DatabaseClient databaseClient;
 
   DatabaseAdminClient dbAdminClient;
 
@@ -89,37 +88,64 @@ public class R2dbcSampleApplicationIT {
     // DDL takes time; extend timeout to avoid "Timeout on blocking read" exceptions.
     webTestClient = webTestClient.mutate().responseTimeout(Duration.ofSeconds(30)).build();
 
-    this.webTestClient.post().uri("/createTable").exchange()
-        .expectBody(String.class).isEqualTo("table NAMES created successfully");
+    this.webTestClient
+        .post()
+        .uri("/createTable")
+        .exchange()
+        .expectBody(String.class)
+        .isEqualTo("table NAMES created successfully");
 
     // initially empty table
-    this.webTestClient.get().uri("/listRows").exchange()
-        .expectBody(String[].class).isEqualTo(new String[0]);
+    this.webTestClient
+        .get()
+        .uri("/listRows")
+        .exchange()
+        .expectBody(String[].class)
+        .isEqualTo(new String[0]);
 
-    this.webTestClient.post().uri("/addRow").body(Mono.just("Bob"), String.class).exchange()
-        .expectBody(String.class).isEqualTo("row inserted successfully");
+    this.webTestClient
+        .post()
+        .uri("/addRow")
+        .body(Mono.just("Bob"), String.class)
+        .exchange()
+        .expectBody(String.class)
+        .isEqualTo("row inserted successfully");
 
     AtomicReference<String> uuid = new AtomicReference<>();
-    this.webTestClient.get().uri("/listRows").exchange()
+    this.webTestClient
+        .get()
+        .uri("/listRows")
+        .exchange()
         .expectBody(Name[].class)
-        .consumeWith(result -> {
-          Name[] names = result.getResponseBody();
-          assertEquals("1 row expected", 1, names.length);
-          assertEquals("where is Bob?", "Bob", names[0].getName());
-          uuid.set(names[0].getUuid());
-        });
+        .consumeWith(
+            result -> {
+              Name[] names = result.getResponseBody();
+              assertEquals("1 row expected", 1, names.length);
+              assertEquals("where is Bob?", "Bob", names[0].getName());
+              uuid.set(names[0].getUuid());
+            });
 
-    this.webTestClient.post().uri("/deleteRow").body(Mono.just(uuid.get()), String.class)
+    this.webTestClient
+        .post()
+        .uri("/deleteRow")
+        .body(Mono.just(uuid.get()), String.class)
         .exchange()
-        .expectBody(String.class).isEqualTo("row deleted successfully");
+        .expectBody(String.class)
+        .isEqualTo("row deleted successfully");
 
-    this.webTestClient.post().uri("/deleteRow").body(Mono.just("nonexistent"), String.class)
+    this.webTestClient
+        .post()
+        .uri("/deleteRow")
+        .body(Mono.just("nonexistent"), String.class)
         .exchange()
-        .expectBody(String.class).isEqualTo("row did not exist");
+        .expectBody(String.class)
+        .isEqualTo("row did not exist");
 
-    this.webTestClient.post().uri("/dropTable").exchange()
-        .expectBody(String.class).isEqualTo("table NAMES dropped successfully");
-
+    this.webTestClient
+        .post()
+        .uri("/dropTable")
+        .exchange()
+        .expectBody(String.class)
+        .isEqualTo("table NAMES dropped successfully");
   }
-
 }

@@ -33,14 +33,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import org.junit.Test;
-import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 
+@SpringBootTest
 public class UploadServletTest {
 
   @Test
-  @SetEnvironmentVariable(key = "BUCKET_NAME", value = "testbucket")
   public void testPost() throws Exception {
 
     HttpServletRequest request = mock(HttpServletRequest.class);
