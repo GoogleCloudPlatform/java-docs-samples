@@ -17,6 +17,7 @@
 package aiplatform;
 
 // [START aiplatform_create_custom_job_sample]
+
 import com.google.cloud.aiplatform.v1.AcceleratorType;
 import com.google.cloud.aiplatform.v1.ContainerSpec;
 import com.google.cloud.aiplatform.v1.CustomJob;
@@ -28,12 +29,18 @@ import com.google.cloud.aiplatform.v1.MachineSpec;
 import com.google.cloud.aiplatform.v1.WorkerPoolSpec;
 import java.io.IOException;
 
+// Create a custom job to run machine learning training code in Vertex AI
 public class CreateCustomJobSample {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String project = "PROJECT";
     String displayName = "DISPLAY_NAME";
+
+    // Vertex AI runs your training application in a Docker container image. A Docker container
+    // image is a self-contained software package that includes code and all dependencies. Learn
+    // more about preparing your training application at
+    // https://cloud.google.com/vertex-ai/docs/training/overview#prepare_your_training_application
     String containerImageUri = "CONTAINER_IMAGE_URI";
     createCustomJobSample(project, displayName, containerImageUri);
   }
@@ -47,8 +54,7 @@ public class CreateCustomJobSample {
     String location = "us-central1";
 
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (JobServiceClient client = JobServiceClient.create(settings)) {
       MachineSpec machineSpec =
           MachineSpec.newBuilder()
