@@ -24,6 +24,7 @@ import com.google.privacy.dlp.v2.CloudStoragePath;
 import com.google.privacy.dlp.v2.LargeCustomDictionaryConfig;
 import com.google.privacy.dlp.v2.StoredInfoType;
 import com.google.privacy.dlp.v2.StoredInfoTypeConfig;
+import com.google.privacy.dlp.v2.StoredInfoTypeName;
 import com.google.privacy.dlp.v2.UpdateStoredInfoTypeRequest;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
@@ -46,6 +47,9 @@ public class UpdateStoredInfoType {
   // Update the stored info type rebuilding the Custom dictionary.
   public static void updateStoredInfoType(
       String projectId, String filePath, String outputPath, String infoTypeId) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
       // Set path in Cloud Storage.
       CloudStoragePath cloudStoragePath = CloudStoragePath.newBuilder().setPath(outputPath).build();
@@ -66,6 +70,7 @@ public class UpdateStoredInfoType {
               .build();
 
       // Set mask to control which fields get updated.
+      // Refer https://protobuf.dev/reference/protobuf/google.protobuf/#field-mask for constructing the field mask paths.
       FieldMask fieldMask =
           FieldMask.newBuilder()
               .addPaths("large_custom_dictionary.cloud_storage_file_set.url")
@@ -74,7 +79,8 @@ public class UpdateStoredInfoType {
       // Construct the job creation request to be sent by the client.
       UpdateStoredInfoTypeRequest updateStoredInfoTypeRequest =
           UpdateStoredInfoTypeRequest.newBuilder()
-              .setName("projects/" + projectId + "/storedInfoTypes/" + infoTypeId)
+              .setName(
+                  StoredInfoTypeName.ofProjectStoredInfoTypeName(projectId, infoTypeId).toString())
               .setConfig(storedInfoTypeConfig)
               .setUpdateMask(fieldMask)
               .build();
