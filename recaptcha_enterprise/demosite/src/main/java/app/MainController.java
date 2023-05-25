@@ -380,13 +380,13 @@ public class MainController {
     }
 
     // Classify the action as BAD if the returned recaptcha action doesn't match the expected.
-    if (!assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
+    else if (!assessmentResponse.getTokenProperties().getAction().equals(recaptchaAction)) {
       reason = Error.ACTION_MISMATCH.getErrorMessage();
       label = Label.BAD.getLabel();
     }
 
     // Classify the action as BAD if the returned score is less than or equal to the threshold set.
-    if (assessmentResponse.getRiskAnalysis().getScore() <= SAMPLE_THRESHOLD_SCORE) {
+    else if (assessmentResponse.getRiskAnalysis().getScore() <= SAMPLE_THRESHOLD_SCORE) {
       reason = Error.SCORE_LESS_THAN_THRESHOLD.getErrorMessage();
       label = Label.BAD.getLabel();
     }
