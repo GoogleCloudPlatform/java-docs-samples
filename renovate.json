@@ -99,6 +99,15 @@
       "enabled": false
     },
     {
+      "packagePatterns": [
+        "^io.ktor:",
+        "^com.amazonaws:"
+      ],
+      "schedule": [
+        "before 3am on the first day of the month"
+      ]
+    },
+    {
       "matchPackageNames": [
         "com.google.apis:google-api-services-dataflow"
       ],
