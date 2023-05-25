@@ -16,7 +16,7 @@
 
 package dialogflow;
 
-// [START dialogflow_webhook]
+// [START dialogflow_es_webhook]
 
 // TODO: add GSON dependency to Pom file
 // (https://mvnrepository.com/artifact/com.google.code.gson/gson/2.8.5)
@@ -69,4 +69,4 @@ public class Example implements HttpFunction {
     writer.write(o.toString());
   }
 }
-// [END dialogflow_webhook]
+// [END dialogflow_es_webhook]
