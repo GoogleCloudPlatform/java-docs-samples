@@ -18,12 +18,12 @@ package dlp.snippets;
 
 // [START dlp_k_anonymity_with_entity_id]
 
-import com.google.api.gax.core.FixedCredentialsProvider;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.dlp.v2.DlpServiceClient;
-import com.google.cloud.dlp.v2.DlpServiceSettings;
 import com.google.privacy.dlp.v2.Action;
-import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails;
+import com.google.privacy.dlp.v2.Action.SaveFindings;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KAnonymityResult;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityEquivalenceClass;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityHistogramBucket;
 import com.google.privacy.dlp.v2.BigQueryTable;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
@@ -33,9 +33,9 @@ import com.google.privacy.dlp.v2.GetDlpJobRequest;
 import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.OutputStorageConfig;
 import com.google.privacy.dlp.v2.PrivacyMetric;
+import com.google.privacy.dlp.v2.PrivacyMetric.KAnonymityConfig;
 import com.google.privacy.dlp.v2.RiskAnalysisJobConfig;
 import com.google.privacy.dlp.v2.Value;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -44,8 +44,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class RiskAnalysisKAnonymityWithEntityId {
 
-  public static void main(String[] args) throws IOException {
-
+  public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
     String projectId = "your-project-id";
@@ -55,8 +54,10 @@ public class RiskAnalysisKAnonymityWithEntityId {
     calculateKAnonymityWithEntityId(projectId, datasetId, tableId);
   }
 
+  // Uses the Data Loss Prevention API to compute the k-anonymity of a column set in a Google
+  // BigQuery table.
   public static void calculateKAnonymityWithEntityId(
-      String projectId, String datasetId, String tableId) throws IOException {
+      String projectId, String datasetId, String tableId) throws IOException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -73,7 +74,7 @@ public class RiskAnalysisKAnonymityWithEntityId {
       // These values represent the column names of quasi-identifiers to analyze
       List<String> quasiIds = Arrays.asList("Age", "Mystery");
 
-      // Configure the privacy metric to compute for re-identification risk analysis.
+      // Create a list of FieldId objects based on the provided list of column names.
       List<FieldId> quasiIdFields =
           quasiIds.stream()
               .map(columnName -> FieldId.newBuilder().setName(columnName).build())
@@ -82,12 +83,12 @@ public class RiskAnalysisKAnonymityWithEntityId {
       // Specify the unique identifier in the source table for the k-anonymity analysis.
       FieldId uniqueIdField = FieldId.newBuilder().setName("Name").build();
       EntityId entityId = EntityId.newBuilder().setField(uniqueIdField).build();
-      PrivacyMetric.KAnonymityConfig kanonymityConfig =
-          PrivacyMetric.KAnonymityConfig.newBuilder()
+      KAnonymityConfig kanonymityConfig = KAnonymityConfig.newBuilder()
               .addAllQuasiIds(quasiIdFields)
               .setEntityId(entityId)
               .build();
 
+      // Configure the privacy metric to compute for re-identification risk analysis.
       PrivacyMetric privacyMetric =
           PrivacyMetric.newBuilder().setKAnonymityConfig(kanonymityConfig).build();
 
@@ -102,8 +103,8 @@ public class RiskAnalysisKAnonymityWithEntityId {
       // Create action to publish job status notifications to BigQuery table.
       OutputStorageConfig outputStorageConfig =
           OutputStorageConfig.newBuilder().setTable(outputbigQueryTable).build();
-      Action.SaveFindings findings =
-          Action.SaveFindings.newBuilder().setOutputConfig(outputStorageConfig).build();
+      SaveFindings findings =
+          SaveFindings.newBuilder().setOutputConfig(outputStorageConfig).build();
       Action action = Action.newBuilder().setSaveFindings(findings).build();
 
       // Configure the risk analysis job to perform
@@ -139,18 +140,14 @@ public class RiskAnalysisKAnonymityWithEntityId {
       System.out.println("Job name: " + dlpJob.getName());
 
       // Get the result and parse through and process the information
-      AnalyzeDataSourceRiskDetails.KAnonymityResult kanonymityResult =
-          completedJob.getRiskDetails().getKAnonymityResult();
-      List<AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityHistogramBucket>
-          histogramBucketList = kanonymityResult.getEquivalenceClassHistogramBucketsList();
-      for (AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityHistogramBucket result :
-          histogramBucketList) {
+      KAnonymityResult kanonymityResult = completedJob.getRiskDetails().getKAnonymityResult();
+      for (KAnonymityHistogramBucket result :
+          kanonymityResult.getEquivalenceClassHistogramBucketsList()) {
         System.out.printf(
             "Bucket size range: [%d, %d]\n",
             result.getEquivalenceClassSizeLowerBound(), result.getEquivalenceClassSizeUpperBound());
 
-        for (AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityEquivalenceClass bucket :
-            result.getBucketValuesList()) {
+        for (KAnonymityEquivalenceClass bucket : result.getBucketValuesList()) {
           List<String> quasiIdValues =
               bucket.getQuasiIdsValuesList().stream()
                   .map(Value::toString)
@@ -160,8 +157,6 @@ public class RiskAnalysisKAnonymityWithEntityId {
           System.out.println("\tClass size: " + bucket.getEquivalenceClassSize());
         }
       }
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
     }
   }
 }
