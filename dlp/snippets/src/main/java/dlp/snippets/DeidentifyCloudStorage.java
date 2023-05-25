@@ -160,7 +160,7 @@ public class DeidentifyCloudStorage {
       DlpJob response = dlp.createDlpJob(createDlpJobRequest);
 
       // Set the timeout duration in minutes.
-      int timeoutMinutes = 15;
+      int timeoutMinutes = 30;
 
       // Get the current time.
       long startTime = System.currentTimeMillis();
@@ -176,7 +176,7 @@ public class DeidentifyCloudStorage {
         // Check if the timeout duration has exceeded.
         long elapsedTime = System.currentTimeMillis() - startTime;
         if (TimeUnit.MILLISECONDS.toMinutes(elapsedTime) >= timeoutMinutes) {
-          System.out.println("Job did not complete within 15 minutes.");
+          System.out.println("Job did not complete within 30 minutes.");
           break;
         }
       }
