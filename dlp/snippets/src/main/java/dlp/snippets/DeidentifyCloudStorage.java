@@ -167,8 +167,8 @@ public class DeidentifyCloudStorage {
 
       // Check if the job state is DONE.
       while (response.getState() != DlpJob.JobState.DONE) {
-        // Sleep for 1 second.
-        Thread.sleep(1000);
+        // Sleep for 30 second.
+        Thread.sleep(30000);
 
         // Get the updated job status.
         response = dlp.getDlpJob(response.getName());
