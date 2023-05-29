@@ -93,6 +93,8 @@ public class RiskAnalysisKAnonymityWithEntityId {
           PrivacyMetric.newBuilder().setKAnonymityConfig(kanonymityConfig).build();
 
       // Specify the bigquery table to store the findings.
+      // The "test_results" table in the given BigQuery dataset will be created if it doesn't
+      // already exist.
       BigQueryTable outputbigQueryTable =
           BigQueryTable.newBuilder()
               .setProjectId(projectId)
