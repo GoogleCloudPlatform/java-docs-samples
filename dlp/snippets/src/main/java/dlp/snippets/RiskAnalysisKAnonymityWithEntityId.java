@@ -37,8 +37,10 @@ import com.google.privacy.dlp.v2.PrivacyMetric.KAnonymityConfig;
 import com.google.privacy.dlp.v2.RiskAnalysisJobConfig;
 import com.google.privacy.dlp.v2.Value;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
@@ -132,10 +134,18 @@ public class RiskAnalysisKAnonymityWithEntityId {
           GetDlpJobRequest.newBuilder().setName(dlpJob.getName()).build();
 
       DlpJob completedJob = null;
-      do {
-        completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
-        Thread.sleep(10000);
-      } while (completedJob.getState() != DlpJob.JobState.DONE);
+      // Wait for job completion
+      try {
+        Duration timeout = Duration.ofMinutes(15);
+        long startTime = System.currentTimeMillis();
+        do {
+          completedJob = dlpServiceClient.getDlpJob(getDlpJobRequest);
+          TimeUnit.SECONDS.sleep(30);
+        } while (completedJob.getState() != DlpJob.JobState.DONE
+            && System.currentTimeMillis() - startTime <= timeout.toMillis());
+      } catch (InterruptedException e) {
+        System.out.println("Job did not complete within 15 minutes.");
+      }
 
       // Retrieve completed job status
       System.out.println("Job status: " + completedJob.getState());
