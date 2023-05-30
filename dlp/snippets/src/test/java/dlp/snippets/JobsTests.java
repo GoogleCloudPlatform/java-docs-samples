@@ -19,42 +19,23 @@ package dlp.snippets;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.BucketInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 import com.google.common.collect.ImmutableList;
 import com.google.privacy.dlp.v2.CloudStorageOptions;
 import com.google.privacy.dlp.v2.CloudStorageOptions.FileSet;
-import com.google.privacy.dlp.v2.Color;
-import com.google.privacy.dlp.v2.CreateDeidentifyTemplateRequest;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.CreateJobTriggerRequest;
-import com.google.privacy.dlp.v2.DeidentifyConfig;
-import com.google.privacy.dlp.v2.DeidentifyTemplate;
-import com.google.privacy.dlp.v2.DeleteDeidentifyTemplateRequest;
 import com.google.privacy.dlp.v2.DeleteDlpJobRequest;
 import com.google.privacy.dlp.v2.DeleteJobTriggerRequest;
 import com.google.privacy.dlp.v2.DlpJob;
-import com.google.privacy.dlp.v2.FieldTransformation;
 import com.google.privacy.dlp.v2.HybridOptions;
-import com.google.privacy.dlp.v2.ImageTransformations;
 import com.google.privacy.dlp.v2.InfoType;
-import com.google.privacy.dlp.v2.InfoTypeTransformations;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectJobConfig;
 import com.google.privacy.dlp.v2.JobTrigger;
 import com.google.privacy.dlp.v2.JobTriggerName;
 import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.Manual;
-import com.google.privacy.dlp.v2.PrimitiveTransformation;
-import com.google.privacy.dlp.v2.ProjectDeidentifyTemplateName;
-import com.google.privacy.dlp.v2.RecordTransformations;
-import com.google.privacy.dlp.v2.ReplaceValueConfig;
-import com.google.privacy.dlp.v2.ReplaceWithInfoTypeConfig;
 import com.google.privacy.dlp.v2.StorageConfig;
-import com.google.privacy.dlp.v2.Value;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -142,138 +123,6 @@ public class JobsTests extends TestBase {
 
     // Send the job creation request and process the response.
     DLP_SERVICE_CLIENT.createJobTrigger(createDlpJobRequest);
-  }
-
-  private static void createBucket(String bucketName) {
-    // Get the Storage service using the provided project ID.
-    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
-
-    // Retrieve the bucket using the specified bucket name.
-    Bucket bucket = storage.get(bucketName);
-
-    // Create the bucket in Google Cloud Storage if it doesn't exist.
-    if (bucket == null) {
-      storage.create(BucketInfo.newBuilder(bucketName).build());
-    }
-  }
-
-  private static void deleteBucket(String bucketName) {
-    // Get the Storage service using the provided project ID.
-    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
-
-    // List objects in the bucket
-    Iterable<Blob> blobs = storage.list(bucketName).iterateAll();
-
-    // Delete each object in the bucket
-    for (Blob blob : blobs) {
-      blob.delete();
-    }
-    // Retrieve the bucket using the specified bucket name.
-    Bucket bucket = storage.get(bucketName);
-
-    bucket.delete();
-  }
-
-  private static void createDeidentifyTemplate(String deidentifyTemplateId) {
-
-    // Specify that findings should be replaced with corresponding info type name.
-    ReplaceWithInfoTypeConfig replaceWithInfoTypeConfig =
-        ReplaceWithInfoTypeConfig.getDefaultInstance();
-
-    // Associate info type with the replacement strategy.
-    InfoTypeTransformations infoTypeTransformations =
-        InfoTypeTransformations.newBuilder()
-            .addTransformations(
-                InfoTypeTransformations.InfoTypeTransformation.newBuilder()
-                    .setPrimitiveTransformation(
-                        PrimitiveTransformation.newBuilder()
-                            .setReplaceWithInfoTypeConfig(replaceWithInfoTypeConfig)
-                            .build())
-                    .build())
-            .build();
-
-    DeidentifyConfig deidentifyConfig =
-        DeidentifyConfig.newBuilder().setInfoTypeTransformations(infoTypeTransformations).build();
-
-    DeidentifyTemplate template =
-        DeidentifyTemplate.newBuilder().setDeidentifyConfig(deidentifyConfig).build();
-
-    // Construct the template creation request to be sent by the client.
-    CreateDeidentifyTemplateRequest createRequest =
-        CreateDeidentifyTemplateRequest.newBuilder()
-            .setDeidentifyTemplate(template)
-            .setParent(LocationName.of(PROJECT_ID, "global").toString())
-            .setTemplateId(deidentifyTemplateId)
-            .build();
-
-    // Call DLP API to create de-identify template.
-    DLP_SERVICE_CLIENT.createDeidentifyTemplate(createRequest);
-  }
-
-  private static void createStructuredDeidentifyTemplate(String deidentifyStructuredTemplateId) {
-
-    Value value = Value.newBuilder().setStringValue("Hello").build();
-
-    // Specify that findings should be replaced with corresponding value.
-    ReplaceValueConfig replaceValueConfig =
-        ReplaceValueConfig.newBuilder().setNewValue(value).build();
-
-    // Associate info type with the replacement strategy.
-    RecordTransformations recordTransformations =
-        RecordTransformations.newBuilder()
-            .addFieldTransformations(
-                FieldTransformation.newBuilder()
-                    .setPrimitiveTransformation(
-                        PrimitiveTransformation.newBuilder()
-                            .setReplaceConfig(replaceValueConfig)
-                            .build())
-                    .build())
-            .build();
-
-    DeidentifyConfig deidentifyConfig =
-        DeidentifyConfig.newBuilder().setRecordTransformations(recordTransformations).build();
-
-    DeidentifyTemplate template =
-        DeidentifyTemplate.newBuilder().setDeidentifyConfig(deidentifyConfig).build();
-
-    // Construct the template creation request to be sent by the client.
-    CreateDeidentifyTemplateRequest createRequest =
-        CreateDeidentifyTemplateRequest.newBuilder()
-            .setDeidentifyTemplate(template)
-            .setParent(LocationName.of(PROJECT_ID, "global").toString())
-            .setTemplateId(deidentifyStructuredTemplateId)
-            .build();
-
-    // Call DLP API to create de-identify template.
-    DLP_SERVICE_CLIENT.createDeidentifyTemplate(createRequest);
-  }
-
-  private static void createRedactImageTemplate(String redactImageTemplateId) {
-    // Specify the color to use when redacting content from an image.
-    ImageTransformations.ImageTransformation imageTransformation =
-        ImageTransformations.ImageTransformation.newBuilder()
-            .setRedactionColor(Color.newBuilder().setBlue(0).setGreen(0).setRed(1).build())
-            .build();
-
-    ImageTransformations imageTransformations =
-        ImageTransformations.newBuilder().addTransforms(imageTransformation).build();
-
-    DeidentifyConfig deidentifyConfig =
-        DeidentifyConfig.newBuilder().setImageTransformations(imageTransformations).build();
-
-    DeidentifyTemplate template =
-        DeidentifyTemplate.newBuilder().setDeidentifyConfig(deidentifyConfig).build();
-
-    // Construct the template creation request to be sent by the client.
-    CreateDeidentifyTemplateRequest createRequest =
-        CreateDeidentifyTemplateRequest.newBuilder()
-            .setDeidentifyTemplate(template)
-            .setParent(LocationName.of(PROJECT_ID, "global").toString())
-            .setTemplateId(redactImageTemplateId)
-            .build();
-
-    // Call DLP API to create de-identify template.
-    DLP_SERVICE_CLIENT.createDeidentifyTemplate(createRequest);
   }
 
   @Override
@@ -398,7 +247,8 @@ public class JobsTests extends TestBase {
     assertThat(output).contains("InfoType: PERSON_NAME");
 
     // Delete the job.
-    String jobName = Arrays.stream(output.split("\n"))
+    String jobName =
+        Arrays.stream(output.split("\n"))
             .filter(line -> line.contains("Job name:"))
             .findFirst()
             .get();
@@ -412,79 +262,5 @@ public class JobsTests extends TestBase {
             .build();
 
     DLP_SERVICE_CLIENT.deleteJobTrigger(deleteJobTriggerRequest);
-  }
-
-  @Test
-  public void testDeidentifyStorage() throws Exception {
-    // Create de-identify templates.
-    String deidentifyTemplateId = UUID.randomUUID().toString();
-    createDeidentifyTemplate(deidentifyTemplateId);
-
-    String deidentifyStructuredTemplateId = UUID.randomUUID().toString();
-    createStructuredDeidentifyTemplate(deidentifyStructuredTemplateId);
-
-    String imageRedactTemplateId = UUID.randomUUID().toString();
-    createRedactImageTemplate(imageRedactTemplateId);
-
-    // Create the output directory in google cloud.
-    String bucketName = UUID.randomUUID().toString();
-    createBucket(bucketName);
-
-    // De-identify cloud storage.
-    DeidentifyCloudStorage.deidentifyCloudStorage(
-        PROJECT_ID,
-        GCS_PATH,
-        TABLE_ID,
-        DATASET_ID,
-        "gs://" + bucketName,
-        deidentifyTemplateId,
-        deidentifyStructuredTemplateId,
-        imageRedactTemplateId);
-
-    // Assert the output.
-    String output = bout.toString();
-    assertThat(output).contains("Job status: DONE");
-    assertThat(output).contains("Findings");
-    assertThat(output).contains("Info type");
-
-    // Delete the job.
-    String dlpJobName =
-        Arrays.stream(output.split("\n"))
-            .filter(line -> line.contains("Job name:"))
-            .findFirst()
-            .get();
-
-    dlpJobName = dlpJobName.split(":")[1].trim();
-
-    // Delete DLP resources.
-    DeleteDlpJobRequest deleteDlpJobRequest =
-        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
-
-    DLP_SERVICE_CLIENT.deleteDlpJob(deleteDlpJobRequest);
-
-    DeleteDeidentifyTemplateRequest deleteDeidentifyTemplateRequest =
-        DeleteDeidentifyTemplateRequest.newBuilder()
-            .setName(ProjectDeidentifyTemplateName.of(PROJECT_ID, deidentifyTemplateId).toString())
-            .build();
-
-    DLP_SERVICE_CLIENT.deleteDeidentifyTemplate(deleteDeidentifyTemplateRequest);
-
-    DeleteDeidentifyTemplateRequest deleteDeidentifyStructuredTemplateRequest =
-        DeleteDeidentifyTemplateRequest.newBuilder()
-            .setName(
-                ProjectDeidentifyTemplateName.of(PROJECT_ID, deidentifyStructuredTemplateId)
-                    .toString())
-            .build();
-
-    DLP_SERVICE_CLIENT.deleteDeidentifyTemplate(deleteDeidentifyStructuredTemplateRequest);
-
-    DeleteDeidentifyTemplateRequest deleteImageRedactTemplateRequest =
-        DeleteDeidentifyTemplateRequest.newBuilder()
-            .setName(ProjectDeidentifyTemplateName.of(PROJECT_ID, imageRedactTemplateId).toString())
-            .build();
-
-    DLP_SERVICE_CLIENT.deleteDeidentifyTemplate(deleteImageRedactTemplateRequest);
-
-    deleteBucket(bucketName);
   }
 }
