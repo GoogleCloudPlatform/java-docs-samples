@@ -102,7 +102,7 @@ public class AnalyzeIT {
     AnalyzeIamPolicyLongrunningBigqueryExample.analyzeIamPolicyLongrunning(
         scope, fullResourceName, dataset, tablePrefix);
     String got = bout.toString();
-    assertThat(got).contains("output_config");
+    assertThat(got).contains("create_time");
 
     DatasetId datasetId = DatasetId.of(bigquery.getOptions().getProjectId(), datasetName);
     bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
@@ -117,7 +117,7 @@ public class AnalyzeIT {
     String uri = "gs://" + bucketName + "/" + objectName;
     AnalyzeIamPolicyLongrunningGcsExample.analyzeIamPolicyLongrunning(scope, fullResourceName, uri);
     String got = bout.toString();
-    assertThat(got).contains("output_config");
+    assertThat(got).contains("create_time");
 
     deleteObjects(bucketName, objectName);
   }
