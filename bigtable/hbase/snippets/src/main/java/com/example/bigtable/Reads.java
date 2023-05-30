@@ -243,7 +243,7 @@ public class Reads {
     String projectId = "my-project-id";
     String instanceId = "my-instance-id";
     String tableId = "mobile-time-series";
-    readPrefix(projectId, instanceId, tableId);
+    readRowsReversed(projectId, instanceId, tableId);
   }
 
   public static void readRowsReversed(String projectId, String instanceId, String tableId) {
