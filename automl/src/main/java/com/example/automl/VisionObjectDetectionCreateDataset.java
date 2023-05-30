@@ -30,7 +30,8 @@ import java.util.concurrent.TimeoutException;
 
 class VisionObjectDetectionCreateDataset {
 
-  static void createDataset() throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  static void createDataset()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String displayName = "YOUR_DATASET_NAME";
