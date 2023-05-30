@@ -25,10 +25,12 @@ import com.google.cloud.automl.v1.LocationName;
 import com.google.cloud.automl.v1.OperationMetadata;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 class VisionObjectDetectionCreateDataset {
 
-  static void createDataset() throws IOException, ExecutionException, InterruptedException {
+  static void createDataset() throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String displayName = "YOUR_DATASET_NAME";
@@ -37,7 +39,7 @@ class VisionObjectDetectionCreateDataset {
 
   // Create a dataset
   static void createDataset(String projectId, String displayName)
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -55,7 +57,7 @@ class VisionObjectDetectionCreateDataset {
       OperationFuture<Dataset, OperationMetadata> future =
           client.createDatasetAsync(projectLocation, dataset);
 
-      Dataset createdDataset = future.get();
+      Dataset createdDataset = future.get(180, TimeUnit.SECONDS);
 
       // Display the dataset information.
       System.out.format("Dataset name: %s\n", createdDataset.getName());
