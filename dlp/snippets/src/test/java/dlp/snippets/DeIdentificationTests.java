@@ -28,6 +28,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import java.util.UUID;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -54,7 +59,8 @@ public class DeIdentificationTests extends TestBase {
 
   @Test
   public void testDeIdentifyWithFpe() throws IOException {
-    DeIdentifyWithFpe.deIdentifyWithFpe(PROJECT_ID, "My SSN is 372819127", kmsKeyName, wrappedKey);
+    DeIdentifyWithFpe.deIdentifyWithFpe(
+        PROJECT_ID, "My SSN is 372819127", KMS_KEY_NAME, WRAPPED_KEY);
 
     String output = bout.toString();
     assertThat(output).contains("Text after format-preserving encryption:");
@@ -63,7 +69,7 @@ public class DeIdentificationTests extends TestBase {
   @Test
   public void testReIdentifyWithFpe() throws IOException {
     ReIdentifyWithFpe.reIdentifyWithFpe(
-        PROJECT_ID, "My SSN is SSN_TOKEN(9):731997681", kmsKeyName, wrappedKey);
+        PROJECT_ID, "My SSN is SSN_TOKEN(9):731997681", KMS_KEY_NAME, WRAPPED_KEY);
 
     String output = bout.toString();
     assertThat(output).contains("Text after re-identification:");
@@ -72,7 +78,7 @@ public class DeIdentificationTests extends TestBase {
   @Test
   public void testDeIdentifyTextWithFpe() throws IOException {
     DeIdentifyTextWithFpe.deIdentifyTextWithFpe(
-        PROJECT_ID, "My phone number is 4359916732", kmsKeyName, wrappedKey);
+        PROJECT_ID, "My phone number is 4359916732", KMS_KEY_NAME, WRAPPED_KEY);
 
     String output = bout.toString();
     assertThat(output).contains("Text after format-preserving encryption: ");
@@ -81,7 +87,7 @@ public class DeIdentificationTests extends TestBase {
   @Test
   public void testReIdentifyTextWithFpe() throws IOException {
     ReIdentifyTextWithFpe.reIdentifyTextWithFpe(
-        PROJECT_ID, "My phone number is PHONE_TOKEN(10):9617256398", kmsKeyName, wrappedKey);
+        PROJECT_ID, "My phone number is PHONE_TOKEN(10):9617256398", KMS_KEY_NAME, WRAPPED_KEY);
 
     String output = bout.toString();
     assertThat(output).contains("Text after re-identification: ");
@@ -115,7 +121,7 @@ public class DeIdentificationTests extends TestBase {
             .build();
 
     DeIdentifyTableWithFpe.deIdentifyTableWithFpe(
-        PROJECT_ID, tableToDeIdentify, kmsKeyName, wrappedKey);
+        PROJECT_ID, tableToDeIdentify, KMS_KEY_NAME, WRAPPED_KEY);
 
     String output = bout.toString();
     assertThat(output).contains("Table after format-preserving encryption:");
@@ -133,7 +139,7 @@ public class DeIdentificationTests extends TestBase {
             .build();
 
     ReIdentifyTableWithFpe.reIdentifyTableWithFpe(
-        PROJECT_ID, tableToReIdentify, kmsKeyName, wrappedKey);
+        PROJECT_ID, tableToReIdentify, KMS_KEY_NAME, WRAPPED_KEY);
 
     String output = bout.toString();
     assertThat(output).contains("Table after re-identification:");
@@ -540,5 +546,248 @@ public class DeIdentificationTests extends TestBase {
 
     String output = bout.toString();
     assertThat(output).contains("Text after replace with infotype config: ");
+  }
+
+  @Test
+  public void testDeIdentifyWithDeterministicEncryption() throws IOException {
+    DeIdenitfyWithDeterministicEncryption.deIdentifyWithDeterministicEncryption(
+        PROJECT_ID, "My SSN is 372819127", WRAPPED_KEY, KMS_KEY_NAME);
+    String output = bout.toString();
+    assertThat(output).contains("Text after de-identification:");
+  }
+
+  @Test
+  public void testReIdentifyWithDeterministicEncryption() throws IOException {
+    String textToReIdentify =
+        DeIdenitfyWithDeterministicEncryption.deIdentifyWithDeterministicEncryption(
+            PROJECT_ID, "My SSN is 372819127", WRAPPED_KEY, KMS_KEY_NAME);
+    ReidentifyWithDeterministicEncryption.reIdentifyWithDeterminsiticEncryption(
+        PROJECT_ID, textToReIdentify, WRAPPED_KEY, KMS_KEY_NAME);
+    String output = bout.toString();
+    assertThat(output).contains("Text after re-identification: My SSN is 372819127");
+  }
+
+  @Test
+  public void testDeIdentifyWithFpeSurrogate() throws IOException, NoSuchAlgorithmException {
+
+    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+    keyGenerator.init(128);
+    SecretKey secretKey = keyGenerator.generateKey();
+
+    // Convert key to Base64 encoded string
+    byte[] keyBytes = secretKey.getEncoded();
+    String unwrappedKey = Base64.getEncoder().encodeToString(keyBytes);
+
+
+    DeidentifyFreeTextWithFpeUsingSurrogate.deIdentifyWithFpeSurrogate(
+        PROJECT_ID, "My phone number is 4359916732", unwrappedKey);
+    String output = bout.toString();
+    assertThat(output).contains("Text after de-identification: ");
+  }
+
+  @Test
+  public void testDeIdentifyWithTimeExtraction() throws IOException {
+    Table tableToDeIdentify =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("Name").build())
+            .addHeaders(FieldId.newBuilder().setName("Birth Date").build())
+            .addHeaders(FieldId.newBuilder().setName("Credit Card").build())
+            .addHeaders(FieldId.newBuilder().setName("Register Date").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("Ann").build())
+                    .addValues(Value.newBuilder().setStringValue("01/01/1970").build())
+                    .addValues(Value.newBuilder().setStringValue("4532908762519852").build())
+                    .addValues(Value.newBuilder().setStringValue("07/21/1996").build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("James").build())
+                    .addValues(Value.newBuilder().setStringValue("03/06/1988").build())
+                    .addValues(Value.newBuilder().setStringValue("4301261899725540").build())
+                    .addValues(Value.newBuilder().setStringValue("04/09/2001").build())
+                    .build())
+            .build();
+    Table expectedTable =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("Name").build())
+            .addHeaders(FieldId.newBuilder().setName("Birth Date").build())
+            .addHeaders(FieldId.newBuilder().setName("Credit Card").build())
+            .addHeaders(FieldId.newBuilder().setName("Register Date").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("Ann").build())
+                    .addValues(Value.newBuilder().setStringValue("1970").build())
+                    .addValues(Value.newBuilder().setStringValue("4532908762519852").build())
+                    .addValues(Value.newBuilder().setStringValue("1996").build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("James").build())
+                    .addValues(Value.newBuilder().setStringValue("1988").build())
+                    .addValues(Value.newBuilder().setStringValue("4301261899725540").build())
+                    .addValues(Value.newBuilder().setStringValue("2001").build())
+                    .build())
+            .build();
+    Table table =
+        DeIdentifyWithTimeExtraction.deIdentifyWithDateShift(PROJECT_ID, tableToDeIdentify);
+    String output = bout.toString();
+    assertThat(output).contains("Table after de-identification:");
+    assertThat(table).isEqualTo(expectedTable);
+  }
+
+  @Test
+  public void testDeIdentifyDataReplaceWithDictionary() throws IOException {
+    DeIdentifyDataReplaceWithDictionary.deidentifyDataReplaceWithDictionary(
+        PROJECT_ID, "My name is Alicia Abernathy, and my email address is aabernathy@example.com.");
+    String output = bout.toString();
+    assertThat(
+            ImmutableList.of(
+                "Text after de-identification: My name is Alicia Abernathy, "
+                        + "and my email address is izumi@example.com.",
+                "Text after de-identification: My name is Alicia Abernathy, "
+                        + "and my email address is alex@example.com."))
+        .contains(output);
+  }
+
+  @Test
+  public void testReIdentifyWithFpeSurrogate() throws IOException, NoSuchAlgorithmException {
+
+    KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+    keyGenerator.init(128);
+    SecretKey secretKey = keyGenerator.generateKey();
+    byte[] keyBytes = secretKey.getEncoded();
+
+    String unwrappedKey = Base64.getEncoder().encodeToString(keyBytes);
+    String textToDeIdentify = "My phone number is 4359916731";
+
+    String textToReIdentify =
+        DeidentifyFreeTextWithFpeUsingSurrogate.deIdentifyWithFpeSurrogate(
+            PROJECT_ID, textToDeIdentify, unwrappedKey);
+
+    ReidentifyFreeTextWithFpeUsingSurrogate.reIdentifyWithFpeSurrogate(
+        PROJECT_ID, textToReIdentify, unwrappedKey);
+
+    String output = bout.toString();
+    assertThat(output).contains("Text after re-identification: ");
+  }
+
+  @Test
+  public void testDeIdentifyWithBucketingConfig() throws IOException {
+
+    Table tableToDeIdentify =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("AGE").build())
+            .addHeaders(FieldId.newBuilder().setName("PATIENT").build())
+            .addHeaders(FieldId.newBuilder().setName("HAPPINESS SCORE").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("101").build())
+                    .addValues(Value.newBuilder().setStringValue("Charles Dickens").build())
+                    .addValues(Value.newBuilder().setIntegerValue(95).build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("22").build())
+                    .addValues(Value.newBuilder().setStringValue("Jane Austen").build())
+                    .addValues(Value.newBuilder().setIntegerValue(21).build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("55").build())
+                    .addValues(Value.newBuilder().setStringValue("Mark Twain").build())
+                    .addValues(Value.newBuilder().setIntegerValue(75).build())
+                    .build())
+            .build();
+
+    Table expectedTable =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("AGE").build())
+            .addHeaders(FieldId.newBuilder().setName("PATIENT").build())
+            .addHeaders(FieldId.newBuilder().setName("HAPPINESS SCORE").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("101").build())
+                    .addValues(Value.newBuilder().setStringValue("Charles Dickens").build())
+                    .addValues(Value.newBuilder().setStringValue("High").build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("22").build())
+                    .addValues(Value.newBuilder().setStringValue("Jane Austen").build())
+                    .addValues(Value.newBuilder().setStringValue("low").build())
+                    .build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("55").build())
+                    .addValues(Value.newBuilder().setStringValue("Mark Twain").build())
+                    .addValues(Value.newBuilder().setStringValue("High").build())
+                    .build())
+            .build();
+
+    Table actualTable =
+        DeIdentifyTableWithBucketingConfig.deIdentifyTableBucketing(PROJECT_ID, tableToDeIdentify);
+    String output = bout.toString();
+    assertThat(actualTable).isEqualTo(expectedTable);
+    assertThat(output).contains("Table after de-identification: ");
+  }
+
+  @Test
+  public void testDeIdentifyTableWithMultipleCryptoHash() throws IOException {
+
+    Table tableToDeIdentify =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("userid").build())
+            .addHeaders(FieldId.newBuilder().setName("comments").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("user1@example.org").build())
+                    .addValues(
+                        Value.newBuilder()
+                            .setStringValue(
+                                "my email is user1@example.org and phone is 858-555-0222")
+                            .build())
+                    .build())
+            .build();
+
+    // Transient keys are generated by DLP API for each request and used for hashing the data.
+    String transientKeyName1 = "TransientKeyName1";
+    String transientKeyName2 = "TransientKeyName2";
+
+    DeIdentifyTableWithMultipleCryptoHash.deIdentifyWithCryptHashTransformation(
+        PROJECT_ID, tableToDeIdentify, transientKeyName1, transientKeyName2);
+    String output = bout.toString();
+    assertThat(output).contains("Table after de-identification: ");
+    assertThat(output).doesNotContain("user1@example.org");
+    assertThat(output).doesNotContain("858-555-0222");
+  }
+
+  @Test
+  public void testDeIdentifyTableWithCryptoHash() throws IOException {
+
+    Table tableToDeIdentify =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("userid").build())
+            .addHeaders(FieldId.newBuilder().setName("comments").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("user1@example.org").build())
+                    .addValues(
+                        Value.newBuilder()
+                            .setStringValue(
+                                "my email is user1@example.org and phone is 858-555-0222")
+                            .build())
+                    .build())
+            .build();
+
+    // Transient key is generated by DLP API for each request and used for hashing the data.
+    String transientKeyName = "TransientKeyName";
+
+    DeIdentifyTableWithCryptoHash.deIdentifyWithCryptHashTransformation(
+        PROJECT_ID, tableToDeIdentify, transientKeyName);
+    String output = bout.toString();
+    assertThat(output).contains("Table after de-identification: ");
+    assertThat(output).doesNotContain("user1@example.org");
+    assertThat(output).doesNotContain("858-555-0222");
   }
 }

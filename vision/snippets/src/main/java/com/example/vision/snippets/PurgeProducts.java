@@ -18,9 +18,11 @@ package com.example.vision.snippets;
 
 // [START vision_product_search_purge_orphan_products]
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.vision.v1.BatchOperationMetadata;
 import com.google.cloud.vision.v1.LocationName;
 import com.google.cloud.vision.v1.ProductSearchClient;
 import com.google.cloud.vision.v1.PurgeProductsRequest;
+import com.google.protobuf.Empty;
 import java.util.concurrent.TimeUnit;
 
 public class PurgeProducts {
@@ -47,7 +49,7 @@ public class PurgeProducts {
               .setParent(parent)
               .build();
 
-      OperationFuture response = client.purgeProductsAsync(request);
+      OperationFuture<Empty, BatchOperationMetadata> response = client.purgeProductsAsync(request);
       response.getPollingFuture().get(180, TimeUnit.SECONDS);
 
       System.out.println("Orphan products deleted.");

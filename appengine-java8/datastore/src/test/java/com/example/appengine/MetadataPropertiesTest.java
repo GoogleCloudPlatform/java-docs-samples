@@ -169,7 +169,7 @@ public class MetadataPropertiesTest {
     q.setAncestor(Entities.createKindKey(kind));
 
     // Initialize result list
-    ArrayList<String> results = new ArrayList<String>();
+    ArrayList<String> results = new ArrayList<>();
 
     //Build list of query results
     for (Entity e : ds.prepare(q).asIterable()) {

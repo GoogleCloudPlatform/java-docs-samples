@@ -18,7 +18,7 @@ package iam.snippets;
 // [START iam_create_key]
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
 import com.google.api.services.iam.v1.model.CreateServiceAccountKeyRequest;
@@ -86,7 +86,7 @@ public class CreateServiceAccountKey {
     Iam service =
         new Iam.Builder(
             GoogleNetHttpTransport.newTrustedTransport(),
-            JacksonFactory.getDefaultInstance(),
+            GsonFactory.getDefaultInstance(),
             new HttpCredentialsAdapter(credential))
             .setApplicationName("service-account-keys")
             .build();

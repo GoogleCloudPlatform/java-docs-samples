@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,10 +22,12 @@ import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageClass;
 import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.MissingResourceException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +36,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -44,8 +47,15 @@ public class BatchBucketIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "europe-north1";
   private static String SCRIPT_JOB_NAME;
+  private static final int MAX_ATTEMPT_COUNT = 3;
+  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static String BUCKET_NAME;
   private ByteArrayOutputStream stdOut;
+
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
+      MAX_ATTEMPT_COUNT,
+      INITIAL_BACKOFF_MILLIS);
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -121,8 +131,8 @@ public class BatchBucketIT {
   }
 
   @Test
-  public void testBucketJob()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public void testBucketJob() throws IOException, ExecutionException, InterruptedException,
+      MissingResourceException, TimeoutException {
     CreateWithMountedBucket.createScriptJobWithBucket(PROJECT_ID, REGION, SCRIPT_JOB_NAME,
         BUCKET_NAME);
     Job job = Util.getJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
@@ -131,15 +141,22 @@ public class BatchBucketIT {
     testBucketContent();
   }
 
+  // This method is called from testcase: `testBucketJob`
+  // This is not a standalone testcase.
   public void testBucketContent() {
     String fileNameTemplate = "output_task_%s.txt";
     String fileContentTemplate;
 
-    Storage storage = StorageOptions.getDefaultInstance().getService();
+    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
     Bucket bucket = storage.get(BUCKET_NAME);
     for (int i = 0; i < 4; i++) {
       fileContentTemplate = String.format("Hello world from task %s.\n", i);
-      Blob blob = bucket.get(String.format(fileNameTemplate, i));
+      String fileName = String.format(fileNameTemplate, i);
+      Blob blob = bucket.get(fileName);
+      if (blob == null) {
+        throw new MissingResourceException("Cannot find file in bucket.", Blob.class.getName(),
+            fileName);
+      }
       String content = new String(blob.getContent(), StandardCharsets.UTF_8);
       assertThat(fileContentTemplate).matches(content);
     }

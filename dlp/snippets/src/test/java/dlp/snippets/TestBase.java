@@ -18,14 +18,19 @@ package dlp.snippets;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 
 /** Common base class for DLP snippet tests */
 abstract class TestBase {
+  /** Retry with exponential backoff, so tests are resilient to any service interruptions.
+      3 has been chosen as an initial setting that can be increased as needed. **/
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   protected static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   protected static final String GCS_PATH = System.getenv("GCS_PATH");
@@ -33,8 +38,10 @@ abstract class TestBase {
   protected static final String SUBSCRIPTION_ID = System.getenv("PUB_SUB_SUBSCRIPTION");
   protected static final String DATASET_ID = System.getenv("BIGQUERY_DATASET");
   protected static final String TABLE_ID = System.getenv("BIGQUERY_TABLE");
-  protected static final String wrappedKey = System.getenv("DLP_DEID_WRAPPED_KEY");
-  protected static final String kmsKeyName = System.getenv("DLP_DEID_KEY_NAME");
+  protected static final String DATASTORE_NAMESPACE = System.getenv("DLP_NAMESPACE_ID");
+  protected static final String DATASTORE_KIND = System.getenv("DLP_DATASTORE_KIND");
+  protected static final String WRAPPED_KEY = System.getenv("DLP_DEID_WRAPPED_KEY");
+  protected static final String KMS_KEY_NAME = System.getenv("DLP_DEID_KEY_NAME");
 
   protected ByteArrayOutputStream bout;
   private PrintStream originalOut = System.out;

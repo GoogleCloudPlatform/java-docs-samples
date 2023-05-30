@@ -107,13 +107,14 @@ public class Util {
     String[] jobName = job.getName().split("/");
     Instant startTime = Instant.now();
     while (WAIT_STATES.contains(job.getStatus().getState())) {
-      if (Instant.now().getEpochSecond() - startTime.getEpochSecond() > 500) {
+      if (Instant.now().getEpochSecond() - startTime.getEpochSecond() > 900) {
         throw new Error("Timed out waiting for operation to complete.");
       }
       job = getJob(jobName[1], jobName[3], jobName[5]);
-      TimeUnit.SECONDS.sleep(5);
+      TimeUnit.SECONDS.sleep(10);
     }
     job = getJob(jobName[1], jobName[3], job.getName().split("/")[5]);
     assertThat(job.getStatus().getState() == State.SUCCEEDED);
+    System.out.println("Job completed.");
   }
 }

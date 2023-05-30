@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// [START bigtable_beam_helloworld_read]
-import com.google.cloud.Timestamp;
+
 import com.google.cloud.bigtable.data.v2.models.ChangeStreamMutation;
 import com.google.cloud.bigtable.data.v2.models.ChangeStreamMutation.MutationType;
 import com.google.cloud.bigtable.data.v2.models.DeleteCells;
@@ -36,18 +35,17 @@ import org.apache.beam.sdk.transforms.FlatMapElements;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.TypeDescriptors;
+import org.joda.time.Instant;
 
 public class ChangeStreamsHelloWorld {
+
   public static void main(String[] args) {
     BigtableOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableOptions.class);
     Pipeline p = Pipeline.create(options);
 
-    final Timestamp startTime = Timestamp.now();
-    final Timestamp endTime =
-        Timestamp.ofTimeSecondsAndNanos(
-            startTime.getSeconds() + 5 * 60, // Add 10 minutes
-            startTime.getNanos());
+    final Instant startTime = Instant.now();
+
     p.apply(
             "Read Change Stream",
             BigtableIO.readChangeStream()
@@ -55,8 +53,7 @@ public class ChangeStreamsHelloWorld {
                 .withInstanceId(options.getBigtableInstanceId())
                 .withTableId(options.getBigtableTableId())
                 .withAppProfileId(options.getBigtableAppProfile())
-                .withStartTime(startTime)
-                .withEndTime(endTime))
+                .withStartTime(startTime))
         .apply(
             "Flatten Mutation Entries",
             FlatMapElements.into(TypeDescriptors.strings())
@@ -86,6 +83,8 @@ public class ChangeStreamsHelloWorld {
       } else if (entry instanceof DeleteFamily) {
         // Note: DeleteRow mutations are mapped into one DeleteFamily per-family
         mutations.add(deleteFamilyToString(rowKey, mutationType, (DeleteFamily) entry));
+      } else {
+        throw new RuntimeException("Entry type not supported.");
       }
     }
     return mutations;
@@ -126,6 +125,7 @@ public class ChangeStreamsHelloWorld {
   }
 
   public interface BigtableOptions extends DataflowPipelineOptions {
+
     @Description("The Bigtable project ID, this can be different than your Dataflow project")
     @Default.String("bigtable-project")
     String getBigtableProjectId();

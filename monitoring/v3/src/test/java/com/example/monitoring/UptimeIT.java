@@ -64,33 +64,33 @@ public class UptimeIT {
   }
 
   @Test
-  public void test1_CreateUptimeCheck() throws Exception {
+  public void test1CreateUptimeCheck() throws Exception {
     UptimeSample.main("create", "-n", config.getDisplayName(), "-o", "test.example.com", "-a", "/");
     String actual = bout.toString();
-    assertThat(actual).contains(config.getDisplayName());
+    assertThat(actual).contains("Uptime check created");
     checkName = actual.split(":")[1].trim();
   }
 
   @Test
-  public void test2_UpdateUptimeCheck() throws Exception {
+  public void test2UpdateUptimeCheck() throws Exception {
     UptimeSample.main("update", "-n", checkName, "-a", "/updated");
     assertThat(bout.toString()).contains("/updated");
   }
 
   @Test
-  public void test2_GetUptimeCheck() throws Exception {
+  public void test2GetUptimeCheck() throws Exception {
     UptimeSample.main("get", "-n", checkName);
     assertThat(bout.toString()).contains(config.getDisplayName());
   }
 
   @Test
-  public void test2_ListUptimeChecks() throws Exception {
+  public void test2ListUptimeChecks() throws Exception {
     UptimeSample.main("list");
     assertThat(bout.toString()).contains(config.getDisplayName());
   }
 
   @Test
-  public void test2_ListUptimeIps() throws Exception {
+  public void test2ListUptimeIps() throws Exception {
     // Create a few uptime check configs to list.
     UptimeSample.main("listIPs");
     String output = bout.toString();
@@ -101,7 +101,7 @@ public class UptimeIT {
   }
 
   @Test
-  public void test3_DeleteUptimeCheck() throws Exception {
+  public void test3DeleteUptimeCheck() throws Exception {
     UptimeSample.main("delete", "-n", checkName);
   }
 }

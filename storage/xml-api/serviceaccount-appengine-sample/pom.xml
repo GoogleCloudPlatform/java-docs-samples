@@ -13,7 +13,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <!--
@@ -26,7 +28,7 @@
     <version>1.2.0</version>
   </parent>
 
-  <groupId>com.google.apis-samples</groupId>
+  <groupId>com.example.storage</groupId>
   <artifactId>storage-xml-serviceaccounts-appengine-sample</artifactId>
   <version>1.0.0</version>
   <name>Example for Google Cloud Storage using OAuth 2.0 Service Accounts on Google App Engine</name>
@@ -35,7 +37,6 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <google-api-client.version>2.1.1</google-api-client.version>
     <webappDirectory>${project.build.directory}/${project.build.finalName}
     </webappDirectory>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -46,64 +47,72 @@
     <finalName>war</finalName>
     <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>${maven-war-plugin-version}</version>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>exploded</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <webappDirectory>${webappDirectory}</webappDirectory>
-        </configuration>
-      </plugin>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>${maven-war-plugin-version}</version>
+          <executions>
+            <execution>
+              <phase>compile</phase>
+              <goals>
+                <goal>exploded</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <webappDirectory>${webappDirectory}</webappDirectory>
+          </configuration>
+        </plugin>
 
-      <!--
+        <!--
         The actual appengine-maven-plugin. Type "mvn appengine:run" to run project,
         "mvn appengine:update" to upload to GAE.
       -->
-      <plugin>
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.4.4</version>
-        <configuration>
-          <projectId>GCLOUD_CONFIG</projectId>
-          <version>gaeinfo</version>
-          <port>8888</port>
-        </configuration>
-      </plugin>
+        <plugin>
+          <groupId>com.google.cloud.tools</groupId>
+          <artifactId>appengine-maven-plugin</artifactId>
+          <version>2.4.4</version>
+          <configuration>
+            <projectId>GCLOUD_CONFIG</projectId>
+            <version>gaeinfo</version>
+            <port>8888</port>
+          </configuration>
+        </plugin>
 
-      <!--
+        <!--
         Upload application to the appspot automatically, during
         release:perform
       -->
-      <plugin>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <goals>gae:deploy</goals>
-        </configuration>
-      </plugin>
-    </plugins>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <goals>gae:deploy</goals>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>libraries-bom</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>26.12.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
 
     <!-- Google App Engine SDK -->
     <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>2.0.5</version>
-    </dependency>
-
-    <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client-appengine</artifactId>
-      <version>${google-api-client.version}</version>
     </dependency>
 
   </dependencies>

@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -39,15 +39,15 @@ public class MailjetSenderTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
-    Mockito.when(mockClient.post(Matchers.anyObject())).thenReturn(mockResponse);
+    Mockito.when(mockClient.post(ArgumentMatchers.any())).thenReturn(mockResponse);
     sender = new MailjetSender();
   }
 
   @Test
   public void doGet_defaultEnvironment_writesResponse() throws Exception {
     sender.sendMailjet("fake recipient", "fake sender", mockClient);
-    Mockito.verify(mockClient).post(Matchers.anyObject());
+    Mockito.verify(mockClient).post(ArgumentMatchers.any());
   }
 }

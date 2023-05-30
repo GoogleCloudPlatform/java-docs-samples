@@ -13,4 +13,4 @@
 # limitations under the License.
 
 runtime: java11
-entrypoint: 'java -cp "*" com.example.appengine.demo.jettymain.Main gaeinfo.war'
+entrypoint: 'java -cp "*" com.example.appengine.jetty.Main gaeinfo.war'

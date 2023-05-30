@@ -25,8 +25,8 @@ import io.opencensus.trace.Tracer;
 import io.opencensus.trace.Tracing;
 import io.opencensus.trace.samplers.Samplers;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Date;
-import org.joda.time.DateTime;
 
 public class TraceSample {
 
@@ -77,7 +77,7 @@ public class TraceSample {
 
   // [START trace_setup_java_create_and_register_with_token]
   public static void createAndRegisterWithToken(String accessToken) throws IOException {
-    Date expirationTime = DateTime.now().plusSeconds(60).toDate();
+    Date expirationTime = Date.from(Instant.now().plusSeconds(60));
 
     GoogleCredentials credentials =
         GoogleCredentials.create(new AccessToken(accessToken, expirationTime));

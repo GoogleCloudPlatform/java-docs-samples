@@ -21,7 +21,7 @@ POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)
 ALLOWED_VERSIONS=("1.8" "11" "17")
 # shellcheck disable=SC2199
 # shellcheck disable=SC2076
-if [[ "$POM_JAVA" = "" ]] || [[ !  "${ALLOWED_VERSIONS[@]}" =~ "${POM_JAVA}" ]]; then
+if [[ "$POM_JAVA" = "" ]] || [[ ! " ${ALLOWED_VERSIONS[*]} " =~ " ${POM_JAVA} " ]]; then
     RTN=1
     echo -e "\n Testing failed: Unable to determine Java version. Please set in pom:"
     echo -e "\n<properties>"
@@ -38,7 +38,7 @@ if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
     exit 0
 fi
 
-if [[ ",$JAVA_VERSION," =~ "17" && ( "$file" == *"run/hello-broken"* || "$file" == *"run/filesystem"* ) ]]; then
+if [[ ",$JAVA_VERSION," =~ "17" && ( "$file" == *"run/hello-broken"* || "$file" == *"run/filesystem"* || "$file" == *"flexible/java-11/pubsub"* || "$file" == *"flexible/java-11/cloudstorage"*|| "$file" == *"flexible/java-11/datastore"*) ]]; then
     echo -e "\n Skipping tests: Sample ($file) tests do not work with Java 17\n"
     exit 0
 fi

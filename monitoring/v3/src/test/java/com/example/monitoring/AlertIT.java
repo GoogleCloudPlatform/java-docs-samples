@@ -16,24 +16,27 @@
 
 package com.example.monitoring;
 
+import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
-import com.google.common.base.Strings;
+import com.google.cloud.monitoring.v3.NotificationChannelServiceClient;
 import com.google.common.io.Files;
+import com.google.monitoring.v3.AlertPolicy;
+import com.google.monitoring.v3.NotificationChannel;
+import com.google.monitoring.v3.ProjectName;
 import io.grpc.StatusRuntimeException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Matcher;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import org.junit.After;
-import org.junit.Assert;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -42,64 +45,95 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class AlertIT {
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-  private static String testPolicyName = "test-policy";
-  private static String policyFileName = "target/policyBackup.json";
-  private static Pattern policyNameRegex =
-      Pattern.compile(
-          "alertPolicies/(?<alertid>.*)(?s).*notificationChannels/(?<channel>[a-zA-Z0-9]*)");
+  private static String alertPolicyName;
+  private static String alertPolicyId;
+  private static String notificationChannelId;
+  private static final String suffix = UUID.randomUUID().toString().substring(0, 8);
+  private static final String testPolicyName = "test-policy" + suffix;
+  private static final String policyFileName = "target/policyBackup.json";
+  private static final String projectId = requireEnvVar();
   private ByteArrayOutputStream bout;
   private final PrintStream originalOut = System.out;
 
+  private static String requireEnvVar() {
+    String value = System.getenv("GOOGLE_CLOUD_PROJECT");
+    assertNotNull(
+        "Environment variable " + "GOOGLE_CLOUD_PROJECT" + " is required to perform these tests.",
+        System.getenv("GOOGLE_CLOUD_PROJECT"));
+    return value;
+  }
+
+  @BeforeClass
+  public static void setupClass() throws IOException {
+    // Create a test notification channel. Clean up not required because the channel
+    // gets removed in `testReplaceChannels()`.
+    try (NotificationChannelServiceClient client = NotificationChannelServiceClient.create()) {
+      NotificationChannel notificationChannel =
+          NotificationChannel.newBuilder()
+              .setType("email")
+              .putLabels("email_address", "java-docs-samples-testing@google.com")
+              .build();
+      NotificationChannel channel =
+          client.createNotificationChannel(ProjectName.of(projectId), notificationChannel);
+      String notificationChannelName = channel.getName();
+      notificationChannelId =
+          notificationChannelName.substring(notificationChannelName.lastIndexOf("/") + 1);
+    }
+
+    // Create a test alert policy.
+    AlertPolicy alertPolicy = CreateAlertPolicy.createAlertPolicy(projectId, testPolicyName);
+    alertPolicyName = alertPolicy.getName();
+    alertPolicyId = alertPolicyName.substring(alertPolicyName.lastIndexOf('/') + 1);
+  }
+
   @Before
-  public void setUp() {
+  public void setUp() throws IOException {
     bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
+    PrintStream out = new PrintStream(bout);
+    System.setOut(out);
   }
 
   @After
-  public void tearDown() {
+  public void tearDown() throws IOException {
     System.setOut(originalOut);
     bout.reset();
   }
 
+  @AfterClass
+  public static void tearDownClass() throws IOException {
+    DeleteAlertPolicy.deleteAlertPolicy(alertPolicyName);
+  }
+
   @Test
   public void testListPolicies() throws IOException {
-    AlertSample.main(new String[] {"list"});
+    AlertSample.main("list");
     assertTrue(bout.toString().contains(testPolicyName));
   }
 
   @Test
   public void testBackupPolicies() throws IOException {
-    AlertSample.main(new String[] {"backup", "-j", policyFileName});
+    AlertSample.main("backup", "-j", policyFileName);
     File backupFile = new File(policyFileName);
     assertTrue(backupFile.exists());
     String fileContents = String.join("\n", Files.readLines(backupFile, StandardCharsets.UTF_8));
-    assertTrue(fileContents.contains("test-policy"));
+    assertTrue(fileContents.contains(testPolicyName));
   }
 
   // TODO(b/78293034): Complete restore backup test when parse/unparse issue is figured out.
   @Test
   @Ignore
-  public void testRestoreBackup() throws IOException {}
+  public void testRestoreBackup() {}
 
   @Test
   public void testReplaceChannels() throws IOException {
-    // Get a test policy name for the project.
-    AlertSample.main(new String[] {"list"});
-    Matcher matcher = policyNameRegex.matcher(bout.toString());
-    assertTrue(matcher.find());
-    String alertId = matcher.group("alertid");
-    String channel = matcher.group("channel");
-    Assert.assertFalse(Strings.isNullOrEmpty(alertId));
-    AlertSample.main(new String[] {"replace-channels", "-a", alertId, "-c", channel});
-    Pattern resultPattern = Pattern.compile("(?s).*Updated .*/alertPolicies/" + alertId);
+    AlertSample.main("replace-channels", "-a", alertPolicyId, "-c", notificationChannelId);
+    Pattern resultPattern = Pattern.compile("(?s).*Updated .*" + alertPolicyId);
     assertTrue(resultPattern.matcher(bout.toString()).find());
   }
 
   @Test
   public void testDisableEnablePolicies() throws IOException, InterruptedException {
-    AlertSample.main(new String[] {"enable", "-d", "display_name='test-policy'"});
+    AlertSample.main("enable", "-d", "display_name=\"" + testPolicyName + "\"");
 
     // check the current state of policy to make sure
     // not to enable the policy that is already enabled.
@@ -107,27 +141,27 @@ public class AlertIT {
     int maxAttempts = 10;
     int attempt = 0;
     int factor = 1;
-    Boolean retry = true;
+    boolean retry = true;
     while (retry) {
       try {
         if (isEnabled) {
-          AlertSample.main(new String[] {"disable", "-d", "display_name='test-policy'"});
+          AlertSample.main("disable", "-d", "display_name=\"" + testPolicyName + "\"");
           assertTrue(bout.toString().contains("disabled"));
 
-          AlertSample.main(new String[] {"enable", "-d", "display_name='test-policy'"});
+          AlertSample.main("enable", "-d", "display_name=\"" + testPolicyName + "\"");
           assertTrue(bout.toString().contains("enabled"));
         } else {
-          AlertSample.main(new String[] {"enable", "-d", "display_name='test-policy'"});
+          AlertSample.main("enable", "-d", "display_name=\"" + testPolicyName + "\"");
           assertTrue(bout.toString().contains("enabled"));
 
-          AlertSample.main(new String[] {"disable", "-d", "display_name='test-policy'"});
+          AlertSample.main("disable", "-d", "display_name=\"" + testPolicyName + "\"");
           assertTrue(bout.toString().contains("disabled"));
         }
         retry = false;
       } catch (StatusRuntimeException e) {
-        System.out.println("Error: " + e.toString());
+        System.out.println("Error: " + e);
         System.out.println("Retrying...");
-        Thread.sleep(2300 * factor);
+        Thread.sleep(2300L * factor);
         attempt += 1;
         factor += 1;
         if (attempt >= maxAttempts) {
