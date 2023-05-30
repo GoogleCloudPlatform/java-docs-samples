@@ -41,7 +41,7 @@ import org.junit.runners.MethodSorters;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class RealTimeFeed {
+public class RealTimeFeedIT {
   private static final String topicId = "topicId";
   private static final String feedId = UUID.randomUUID().toString();
   private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");

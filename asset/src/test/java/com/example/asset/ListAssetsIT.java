@@ -31,7 +31,7 @@ import org.junit.runners.JUnit4;
 /** Tests for list assets sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class ListAssets {
+public class ListAssetsIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;

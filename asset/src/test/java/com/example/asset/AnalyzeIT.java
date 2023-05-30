@@ -41,7 +41,7 @@ import org.junit.runners.JUnit4;
 /** Tests for search samples. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class Analyze {
+public class AnalyzeIT {
 
   private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String scope = "projects/" + projectId;
