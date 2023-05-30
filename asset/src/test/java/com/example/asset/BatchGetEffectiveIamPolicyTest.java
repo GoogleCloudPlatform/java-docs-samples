@@ -29,7 +29,7 @@ import org.junit.runners.JUnit4;
 /** Tests for batch get effective iam policy sample. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class BatchGetEffectiveIamPolicy {
+public class BatchGetEffectiveIamPolicyTest {
 
   private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String scope = "projects/" + projectId;
