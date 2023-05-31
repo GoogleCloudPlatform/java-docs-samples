@@ -119,17 +119,19 @@ public class InfoTypesTests extends TestBase {
 
   @Test
   public void testUpdateStoredInfoType() throws Exception {
-    String infoTypeId = UUID.randomUUID().toString();
-    createStoredInfoType(PROJECT_ID, GCS_PATH, infoTypeId);
-    UpdateStoredInfoType.updateStoredInfoType(
-        PROJECT_ID, GCS_PATH, GCS_PATH, infoTypeId);
+    CreateStoredInfoType.createStoredInfoType(PROJECT_ID, GCS_PATH);
     String output = bout.toString();
-    assertThat(output).contains("Updated stored InfoType successfully");
+    String storedInfoType = output.split("Created Stored InfoType: ")[1].split("\n")[0];
+    String[] components = storedInfoType.split("/");
+    String storedInfoTypeId = components[components.length - 1];
+    UpdateStoredInfoType.updateStoredInfoType(PROJECT_ID, GCS_PATH, GCS_PATH, storedInfoTypeId);
+    String updateStoredInfoTypeOutput = bout.toString();
+    assertThat(updateStoredInfoTypeOutput).contains("Updated stored InfoType successfully");
 
     DeleteStoredInfoTypeRequest deleteStoredInfoTypeRequest =
-            DeleteStoredInfoTypeRequest.newBuilder()
-                    .setName(ProjectStoredInfoTypeName.of(PROJECT_ID, infoTypeId).toString())
-                    .build();
+        DeleteStoredInfoTypeRequest.newBuilder()
+            .setName(ProjectStoredInfoTypeName.of(PROJECT_ID, "github-usernames").toString())
+            .build();
 
     DLP_SERVICE_CLIENT.deleteStoredInfoType(deleteStoredInfoTypeRequest);
   }
