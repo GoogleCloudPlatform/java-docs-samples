@@ -12,6 +12,12 @@
   "packageRules": [
     {
       "packagePatterns": [
+        "^com.fasterxml.jackson.core:"
+      ],
+      "groupName": "Jackson core packages"
+    },    
+    {
+      "packagePatterns": [
         "^com.google.appengine:"
       ],
       "groupName": "AppEngine packages"
@@ -21,7 +27,7 @@
         "^com.google.cloud.bigtable:"
       ],
       "groupName": "Bigtable packages"
-    },    
+    },
     {
       "matchPackagePrefixes": [ "com.google" ],
       "allowedVersions": "!/.+-sp\\.[0-9]+$/"
