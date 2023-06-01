@@ -37,11 +37,15 @@ import com.google.cloud.resourcemanager.v3.ProjectName;
 import com.google.cloud.resourcemanager.v3.ProjectsClient;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
 
 // [START contentwarehouse_createruleset]
 public class CreateRuleSet {
 
-    public static void createRuleSet() throws IOException { 
+    public static void createRuleSet() throws IOException, 
+        InterruptedException, ExecutionException, TimeoutException { 
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String location = "your-region"; // Format is "us" or "eu".
@@ -49,7 +53,7 @@ public class CreateRuleSet {
     }
 
     public static void createRuleSet(String projectId, String location)
-        throws IOException {
+        throws IOException, InterruptedException, ExecutionException, TimeoutException {
         String projectNumber = getProjectNumber(projectId);
 
         

@@ -15,7 +15,61 @@
  */
 
 package contentwarehouse.v1;
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertNotNull;
+
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 public class CreateRuleSetTest {
-    
+    @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+
+    private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+    private static final String LOCATION = "us";
+  
+    private ByteArrayOutputStream bout;
+    private PrintStream out;
+    private PrintStream originalPrintStream;
+  
+    private static void requireEnvVar(String varName) {
+      assertNotNull(
+          String.format("Environment variable '%s' must be set to perform these tests.", varName),
+          System.getenv(varName));
+    }
+  
+    @Before
+    public void checkRequirements() {
+      requireEnvVar("GOOGLE_CLOUD_PROJECT");
+      requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    }
+  
+    @Before
+    public void setUp() {
+      bout = new ByteArrayOutputStream();
+      out = new PrintStream(bout);
+      originalPrintStream = System.out;
+      System.setOut(out);
+    }
+  
+    @Test
+    public void testCreateRuleSet()
+        throws InterruptedException, ExecutionException, IOException, TimeoutException {
+      CreateRuleSet.createRuleSet(PROJECT_ID, LOCATION);
+      String got = bout.toString();
+      assertThat(got).contains("rule");
+    }
+  
+    @After
+    public void tearDown() {
+      System.out.flush();
+      System.setOut(originalPrintStream);
+    }
 }
