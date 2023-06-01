@@ -55,7 +55,7 @@
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
       <scope>provided</scope>
-      <version>1.0.4</version>
+      <version>1.1.0</version>
     </dependency>
 
     <!-- Required for groovy samples -->
