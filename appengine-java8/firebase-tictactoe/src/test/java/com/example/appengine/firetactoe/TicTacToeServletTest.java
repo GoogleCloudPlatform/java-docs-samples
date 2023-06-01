@@ -34,6 +34,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalURLFetchServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.cloud.datastore.QueryResults;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.collect.ImmutableMap;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -49,6 +50,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -59,6 +61,8 @@ import org.mockito.MockitoAnnotations;
 /** Unit tests for {@link TicTacToeServlet}. */
 @RunWith(JUnit4.class)
 public class TicTacToeServletTest {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+
   private static final String USER_EMAIL = "whisky@tangofoxtr.ot";
   private static final String USER_ID = "whiskytangofoxtrot";
   private static final String FIREBASE_DB_URL = "http://firebase.com/dburl";

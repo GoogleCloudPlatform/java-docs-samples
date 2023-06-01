@@ -61,7 +61,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloudevent-types</artifactId>
-      <version>0.10.0</version>
+      <version>0.11.0</version>
     </dependency>
     <!-- The following dependencies are only required for testing -->
     <dependency>
