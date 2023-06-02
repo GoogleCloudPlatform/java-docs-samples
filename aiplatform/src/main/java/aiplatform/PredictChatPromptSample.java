@@ -78,7 +78,7 @@ public class PredictChatPromptSample {
     try (PredictionServiceClient predictionServiceClient =
         PredictionServiceClient.create(predictionServiceSettings)) {
       String location = "us-central1";
-      EndpointName endpointName =
+      final EndpointName endpointName =
           EndpointName.ofProjectLocationPublisherModelName(project, location, publisher, model);
 
       Value.Builder instanceValue = Value.newBuilder();
