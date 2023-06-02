@@ -16,7 +16,7 @@
 
 package aiplatform;
 
-// [START aiplatform_list_model_evaluation_slice_sample]
+// [START aiplatform_list_model_evaluation_slices_sample]
 
 import com.google.cloud.aiplatform.v1.ModelEvaluationName;
 import com.google.cloud.aiplatform.v1.ModelEvaluationSlice;
@@ -77,4 +77,4 @@ public class ListModelEvaluationSliceSample {
     }
   }
 }
-// [END aiplatform_list_model_evaluation_slice_sample]
+// [END aiplatform_list_model_evaluation_slices_sample]

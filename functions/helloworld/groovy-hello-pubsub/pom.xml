@@ -55,7 +55,7 @@
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
       <scope>provided</scope>
-      <version>1.0.4</version>
+      <version>1.1.0</version>
     </dependency>
 
     <!-- Required for groovy samples -->
@@ -108,7 +108,7 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>2.1.0</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <id>groovy-compile</id>

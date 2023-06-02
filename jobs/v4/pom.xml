@@ -50,7 +50,7 @@
         <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-jobs</artifactId>
-            <version>v4-rev20210830-1.32.1</version>
+            <version>v4-rev20221219-2.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.http-client</groupId>
