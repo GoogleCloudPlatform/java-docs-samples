@@ -70,11 +70,11 @@ public class CreateRuleSet {
 
       // Create a Delete Document Action to be added to the Rule Set 
       DeleteDocumentActionOrBuilder deleteDocumentAction = 
-          DeleteDocumentAction.newBuilder().setEnableHardDelete(true);
+          DeleteDocumentAction.newBuilder().setEnableHardDelete(true).build();
 
       // Add Delete Document Action to Action Object 
       ActionOrBuilder action = Action.newBuilder()
-            .setDeleteDocumentAction((DeleteDocumentAction) deleteDocumentAction);
+            .setDeleteDocumentAction((DeleteDocumentAction) deleteDocumentAction).build();
             
       // Create rule to add to rule set 
       RuleOrBuilder rule = Rule.newBuilder()
