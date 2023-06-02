@@ -55,7 +55,7 @@ public class DocumentManagement {
               .build();
       OperationFuture<Document, KnowledgeOperationMetadata> response =
           documentsClient.createDocumentAsync(createDocumentRequest);
-      Document createdDocument = response.get(180, TimeUnit.SECONDS);
+      Document createdDocument = response.get(300, TimeUnit.SECONDS);
       System.out.format("Created Document:\n");
       System.out.format(" - Display Name: %s\n", createdDocument.getDisplayName());
       System.out.format(" - Document Name: %s\n", createdDocument.getName());
