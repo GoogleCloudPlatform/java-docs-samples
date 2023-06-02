@@ -54,7 +54,11 @@ assign_issues_by:
   - 'api: dataplex'
   to:
   - GoogleCloudPlatform/googleapi-dataplex
-  
+- labels:
+  - 'api: contentwarehouse'
+  to:
+  - GoogleCloudPlatform/googleapis-contentwarehouse
+
 assign_prs:
   - GoogleCloudPlatform/java-samples-reviewers
 
@@ -93,3 +97,7 @@ assign_prs_by:
   - 'api: dataplex'
   to:
   - GoogleCloudPlatform/googleapi-dataplex
+- labels:
+  - 'api: contentwarehouse'
+  to:
+  - GoogleCloudPlatform/googleapis-contentwarehouse
