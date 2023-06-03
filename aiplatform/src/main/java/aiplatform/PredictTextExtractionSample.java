@@ -33,6 +33,8 @@ public class PredictTextExtractionSample {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+    // Details about designing prompts that extract information from text:
+    // https://cloud.google.com/vertex-ai/docs/generative-ai/text/extraction-prompts
     String instance =
         "{\"content\": \"Background: There is evidence that there have been significant changes \n"
             + "in Amazon rainforest vegetation over the last 21,000 years through the Last \n"
@@ -101,11 +103,15 @@ public class PredictTextExtractionSample {
       final EndpointName endpointName =
           EndpointName.ofProjectLocationPublisherModelName(project, location, publisher, model);
 
+      // Use Value.Builder to convert instance to a dynamically typed value that can be
+      // processed by the service.
       Value.Builder instanceValue = Value.newBuilder();
       JsonFormat.parser().merge(instance, instanceValue);
       List<Value> instances = new ArrayList<>();
       instances.add(instanceValue.build());
 
+      // Use Value.Builder to convert parameter to a dynamically typed value that can be
+      // processed by the service.
       Value.Builder parameterValueBuilder = Value.newBuilder();
       JsonFormat.parser().merge(parameters, parameterValueBuilder);
       Value parameterValue = parameterValueBuilder.build();
@@ -113,6 +119,7 @@ public class PredictTextExtractionSample {
       PredictResponse predictResponse =
           predictionServiceClient.predict(endpointName, instances, parameterValue);
       System.out.println("Predict Response");
+      System.out.println(predictResponse);
     }
   }
 }
