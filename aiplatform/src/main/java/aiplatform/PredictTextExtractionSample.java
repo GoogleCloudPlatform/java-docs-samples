@@ -81,25 +81,29 @@ public class PredictTextExtractionSample {
             + "  \"topK\": 1\n"
             + "}";
     String project = "YOUR_PROJECT_ID";
+    String location = "us-central1";
     String publisher = "google";
     String model = "text-bison@001";
 
-    predictTextExtraction(instance, parameters, project, publisher, model);
+    predictTextExtraction(instance, parameters, project, location, publisher, model);
   }
 
   static void predictTextExtraction(
-      String instance, String parameters, String project, String publisher, String model)
+      String instance,
+      String parameters,
+      String project,
+      String location,
+      String publisher,
+      String model)
       throws IOException {
+    String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     PredictionServiceSettings predictionServiceSettings =
-        PredictionServiceSettings.newBuilder()
-            .setEndpoint("us-central1-aiplatform.googleapis.com:443")
-            .build();
+        PredictionServiceSettings.newBuilder().setEndpoint(endpoint).build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (PredictionServiceClient predictionServiceClient =
         PredictionServiceClient.create(predictionServiceSettings)) {
-      String location = "us-central1";
       final EndpointName endpointName =
           EndpointName.ofProjectLocationPublisherModelName(project, location, publisher, model);
 
