@@ -76,6 +76,7 @@ public class PredictTextExtractionSampleTest {
           + "  \"topK\": 1\n"
           + "}";
   private static final String PUBLISHER = "google";
+  private static final String LOCATION = "us-central1";
   private static final String MODEL = "text-bison@001";
 
   private ByteArrayOutputStream bout;
@@ -112,7 +113,7 @@ public class PredictTextExtractionSampleTest {
   public void testPredictTextExtraction() throws IOException {
     // Act
     PredictTextExtractionSample.predictTextExtraction(
-        INSTANCE, PARAMETERS, PROJECT, PUBLISHER, MODEL);
+        INSTANCE, PARAMETERS, PROJECT, LOCATION, PUBLISHER, MODEL);
 
     // Assert
     String got = bout.toString();
