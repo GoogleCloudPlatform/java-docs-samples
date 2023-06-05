@@ -41,7 +41,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 
-// [START contentwarehouse_createruleset]
+// [START contentwarehouse_create_rule_set]
 public class CreateRuleSet {
 
   public static void createRuleSet() throws IOException, 
@@ -121,5 +121,5 @@ public class CreateRuleSet {
     } 
   }
 }
-// [END contentwarehouse_createruleset]
+// [END contentwarehouse_create_rule_set]
 
