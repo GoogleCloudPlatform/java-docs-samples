@@ -80,7 +80,7 @@ public class CreateRuleSet {
       RuleOrBuilder rule = Rule.newBuilder()
           .setTriggerType(TriggerType.ON_CREATE)
           .setCondition("documentType == 'W9' && STATE =='CA' ")
-          .setActions(0, (Action) action).build();
+          .addActions(0, (Action) action).build();
             
       // Create rule set and add rule to it
       RuleSetOrBuilder ruleSetOrBuilder = RuleSet.newBuilder()
