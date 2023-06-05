@@ -16,6 +16,7 @@
 
 package contentwarehouse.v1;
 
+// [START contentwarehouse_create_rule_set]
 import com.google.cloud.contentwarehouse.v1.Action;
 import com.google.cloud.contentwarehouse.v1.ActionOrBuilder;
 import com.google.cloud.contentwarehouse.v1.CreateRuleSetRequest;
@@ -41,7 +42,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 
-// [START contentwarehouse_create_rule_set]
 public class CreateRuleSet {
 
   public static void createRuleSet() throws IOException, 
