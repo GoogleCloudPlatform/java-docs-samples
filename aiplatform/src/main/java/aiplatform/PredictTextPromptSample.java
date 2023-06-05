@@ -33,7 +33,7 @@ public class PredictTextPromptSample {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    // Creating text prompts for supported large language models are available on:
+    // Details of designing text prompts for supported large language models:
     // https://cloud.google.com/vertex-ai/docs/generative-ai/text/text-overview
     String instance =
         "{ \"prompt\": " + "\"Give me ten interview questions for the role of program manager.\"}";
