@@ -101,14 +101,14 @@ public class CreateRuleSet {
 
       ListRuleSetsRequestOrBuilder listRuleSetsRequest = 
           ListRuleSetsRequest.newBuilder()
-              .setParent(parent);
+              .setParent(parent).build();
 
       ListRuleSetsPagedResponse listRuleSetsPagedResponse = 
           ruleSetServiceClient.listRuleSets((ListRuleSetsRequest) listRuleSetsRequest);
-            
-      while (listRuleSetsPagedResponse.getNextPageToken() != null) { 
-        System.out.println("Rule sets:" + listRuleSetsPagedResponse.getPage().toString());
-      }
+      
+      listRuleSetsPagedResponse.iterateAll().forEach(
+        (ruleSet -> System.out.print(ruleSet))
+      );
     }
   }
 
