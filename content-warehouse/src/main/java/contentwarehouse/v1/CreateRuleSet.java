@@ -107,7 +107,7 @@ public class CreateRuleSet {
           ruleSetServiceClient.listRuleSets((ListRuleSetsRequest) listRuleSetsRequest);
       
       listRuleSetsPagedResponse.iterateAll().forEach(
-        (ruleSet -> System.out.print(ruleSet))
+          (ruleSet -> System.out.print(ruleSet))
       );
     }
   }
