@@ -33,7 +33,7 @@ public class PredictTextSentimentSample {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    // Creating text prompts for supported large language models are available on:
+    // The details of designing text prompts for supported large language models:
     // https://cloud.google.com/vertex-ai/docs/generative-ai/text/text-overview
     String instance =
         "{ \"content\": \"I had to compare two versions of Hamlet for my Shakespeare \n"
