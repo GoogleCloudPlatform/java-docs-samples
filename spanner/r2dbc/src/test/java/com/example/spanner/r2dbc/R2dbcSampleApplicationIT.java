@@ -90,7 +90,7 @@ public class R2dbcSampleApplicationIT {
   public void testAllWebEndpoints() {
 
     // DDL takes time; extend timeout to avoid "Timeout on blocking read" exceptions.
-    webTestClient = webTestClient.mutate().responseTimeout(Duration.ofSeconds(120)).build();
+    webTestClient = webTestClient.mutate().responseTimeout(Duration.ofSeconds(240)).build();
 
     this.webTestClient
         .post()
