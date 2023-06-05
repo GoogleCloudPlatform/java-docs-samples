@@ -104,7 +104,7 @@ public class PredictTextSentimentSample {
     // once, and can be reused for multiple requests.
     try (PredictionServiceClient predictionServiceClient =
         PredictionServiceClient.create(predictionServiceSettings)) {
-      EndpointName endpointName =
+      final EndpointName endpointName =
           EndpointName.ofProjectLocationPublisherModelName(project, location, publisher, model);
 
       // Use Value.Builder to convert instance to a dynamically typed value that can be
