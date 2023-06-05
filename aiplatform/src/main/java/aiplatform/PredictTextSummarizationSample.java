@@ -33,8 +33,8 @@ public class PredictTextSummarizationSample {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    // Creating text prompts for supported large language models:
-    // https://cloud.google.com/vertex-ai/docs/generative-ai/text/text-overview
+    // Designing prompts for text summerization with supported large language models:
+    // https://cloud.google.com/vertex-ai/docs/generative-ai/text/summarization-prompts
     String instance =
         "{ \"content\": \"Background: There is evidence that there have been significant changes \n"
             + "in Amazon rainforest vegetation over the last 21,000 years through the Last \n"
