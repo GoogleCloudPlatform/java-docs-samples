@@ -18,6 +18,7 @@ path:
     contact-center-insights: "contactcenterinsights"
     container: "container"
     container-registry: "containeranalysis"
+    content-warehouse: "contentwarehouse"
     datacatalog: "datacatalog"
     dataplex: "dataplex"
     datalabeling: "datalabeling"
