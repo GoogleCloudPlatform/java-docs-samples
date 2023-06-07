@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Test a text prompt with a supported large language model
 public class PredictTextPromptSample {
 
   public static void main(String[] args) throws IOException {
