@@ -41,15 +41,15 @@ public class PredictCodeChatSample {
             + "},\n"
             + "{\n"
             + "  \"author\": \"system\",\n"
-            + "  \"content\": \"I am doing good. What can I help you in the coding world?\",\n"
+            + "  \"content\": \"I am doing good. What can I help you in the coding world?\"\n"
             + " },\n"
             + "{\n"
             + "  \"author\": \"content\",\n"
             + "  \"content\":\n"
-            + "     \"Please help write a function to calculate the min of two numbers.\",\n"
-            + "},\n"
-            + "],";
-    String parameters = "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 256,\n" + "}";
+            + "     \"Please help write a function to calculate the min of two numbers.\"\n"
+            + "}\n"
+            + "]}";
+    String parameters = "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 256\n" + "}";
     String project = "YOUR_PROJECT_ID";
     String location = "us-central1";
     String publisher = "google";

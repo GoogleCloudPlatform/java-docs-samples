@@ -27,30 +27,20 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class PredictCodeChatSampleTest {
+public class PredictCodeGenerationFunctionSampleTest {
 
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
   private static final String INSTANCE =
-      "{ \"messages\": [\n"
-          + "{\n"
-          + "  \"author\": \"content\",\n"
-          + "  \"content\": \"Hi, how are you?\"\n"
-          + "},\n"
-          + "{\n"
-          + "  \"author\": \"system\",\n"
-          + "  \"content\": \"I am doing good. What can I help you in the coding world?\"\n"
-          + " },\n"
-          + "{\n"
-          + "  \"author\": \"content\",\n"
-          + "  \"content\":\n"
-          + "     \"Please help write a function to calculate the min of two numbers.\"\n"
-          + "}\n"
-          + "]}";
+      "{\"prefix\": \"Write a function that checks if a year is a leap year.\"}";
   private static final String PARAMETERS =
-      "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 256\n" + "}";
+      "{\n"
+          + "  \"task\": \"GENERATION\",\n"
+          + "  \"temperature\": 0.2,\n"
+          + "  \"maxOutputTokens\": 256\n"
+          + "}";
   private static final String PUBLISHER = "google";
   private static final String LOCATION = "us-central1";
-  private static final String MODEL = "codechat-bison@001";
+  private static final String MODEL = "text-bison@001";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -83,9 +73,9 @@ public class PredictCodeChatSampleTest {
   }
 
   @Test
-  public void testPredictCodeChat() throws IOException {
+  public void testPredictFunction() throws IOException {
     // Act
-    PredictCodeChatSample.predictCodeChat(
+    PredictCodeGenerationFunctionSample.predictFunction(
         INSTANCE, PARAMETERS, PROJECT, LOCATION, PUBLISHER, MODEL);
 
     // Assert
