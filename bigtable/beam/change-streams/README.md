@@ -24,7 +24,7 @@ feature.
    ```sh
    gcloud alpha bigtable instances tables create $TABLE_ID \
     --column-families=cf1 --change-stream-retention-period=7d \
-   --instance=$BIGTABLE_TESTING_INSTANCE --project=$GOOGLE_CLOUD_PROJECT
+   --instance=$BIGTABLE_TESTING_INSTANCE --project=$GOOGLE_CLOUD_PROJECT 
    ```
 
 1. Run command to start the pipeline
@@ -33,7 +33,7 @@ feature.
     mvn compile exec:java -Dexec.mainClass=ChangeStreamsHelloWorld \
     "-Dexec.args=--project=$GOOGLE_CLOUD_PROJECT --bigtableProjectId=$BIGTABLE_PROJECT \
     --bigtableInstanceId=$INSTANCE_ID --bigtableTableId=$TABLE_ID \
-    --runner=dataflow --region=$REGION"
+    --runner=dataflow --region=$REGION --experiments=use_runner_v2"
     ```
 
 1. Make changes to your data via the clients or with the `cbt` CLI, and view the
