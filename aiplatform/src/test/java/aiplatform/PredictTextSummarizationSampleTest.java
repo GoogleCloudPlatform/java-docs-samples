@@ -71,7 +71,7 @@ public class PredictTextSummarizationSampleTest {
   private static final String PARAMETERS =
       "{\n"
           + "  \"temperature\": 0,\n"
-          + "  \"maxDecodeSteps\": 32,\n"
+          + "  \"maxOutputTokens\": 32,\n"
           + "  \"topP\": 0,\n"
           + "  \"topK\": 1\n"
           + "}";
