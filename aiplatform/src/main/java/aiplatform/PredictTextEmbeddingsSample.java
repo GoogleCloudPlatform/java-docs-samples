@@ -50,7 +50,9 @@ public class PredictTextEmbeddingsSample {
       throws IOException {
     String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     PredictionServiceSettings predictionServiceSettings =
-        PredictionServiceSettings.newBuilder().setEndpoint(endpoint).build();
+        PredictionServiceSettings.newBuilder()
+            .setEndpoint(endpoint)
+            .build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
