@@ -35,7 +35,7 @@ import org.junit.runners.JUnit4;
 /** Tests for search samples. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class Search {
+public class SearchIT {
 
   private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String datasetName = RemoteBigQueryHelper.generateDatasetName();

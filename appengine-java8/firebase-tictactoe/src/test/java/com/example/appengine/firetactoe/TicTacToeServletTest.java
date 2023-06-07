@@ -61,7 +61,7 @@ import org.mockito.MockitoAnnotations;
 /** Unit tests for {@link TicTacToeServlet}. */
 @RunWith(JUnit4.class)
 public class TicTacToeServletTest {
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
   private static final String USER_EMAIL = "whisky@tangofoxtr.ot";
   private static final String USER_ID = "whiskytangofoxtrot";

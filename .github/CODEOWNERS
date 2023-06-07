@@ -83,6 +83,7 @@
 
 # Self-service
 # ---* Shared with DEE Teams
+/content-warehouse               @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/googleapis-contentwarehouse
 /datacatalog                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/googleapi-dataplex
 /functions                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/functions-framework-google
 # ---* Fully Eng Owned
