@@ -35,7 +35,7 @@ public class PredictTextPromptSampleTest {
   private static final String PARAMETERS =
       "{\n"
           + "  \"temperature\": 0.2,\n"
-          + "  \"maxDecodeSteps\": 256,\n"
+          + "  \"maxOutputTokens\": 256,\n"
           + "  \"topP\": 0.95,\n"
           + "  \"topK\": 40\n"
           + "}";

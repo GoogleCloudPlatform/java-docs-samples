@@ -40,7 +40,7 @@ public class PredictTextPromptSample {
     String parameters =
         "{\n"
             + "  \"temperature\": 0.2,\n"
-            + "  \"maxDecodeSteps\": 256,\n"
+            + "  \"maxOutputTokens\": 256,\n"
             + "  \"topP\": 0.95,\n"
             + "  \"topK\": 40\n"
             + "}";
@@ -52,7 +52,8 @@ public class PredictTextPromptSample {
     predictTextPrompt(instance, parameters, project, location, publisher, model);
   }
 
-  static void predictTextPrompt(
+  // Get a text prompt from a supported text model
+  public static void predictTextPrompt(
       String instance,
       String parameters,
       String project,
