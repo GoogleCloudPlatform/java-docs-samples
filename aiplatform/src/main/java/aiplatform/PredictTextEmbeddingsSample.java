@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Get text embeddings from a supported embedding model
 public class PredictTextEmbeddingsSample {
 
   public static void main(String[] args) throws IOException {
@@ -45,7 +44,8 @@ public class PredictTextEmbeddingsSample {
     predictTextEmbeddings(instance, project, location, publisher, model);
   }
 
-  static void predictTextEmbeddings(
+  // Get text embeddings from a supported embedding model
+  public static void predictTextEmbeddings(
       String instance, String project, String location, String publisher, String model)
       throws IOException {
     String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
