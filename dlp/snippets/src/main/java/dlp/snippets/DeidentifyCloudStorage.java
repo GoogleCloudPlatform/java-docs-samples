@@ -42,6 +42,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class DeidentifyCloudStorage {
+
+  // Set the timeout duration in minutes.
+  private static final int TIMEOUT_MINUTES = 30;
+
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // The Google Cloud project id to use as a parent resource.
@@ -159,9 +163,6 @@ public class DeidentifyCloudStorage {
       // Send the job creation request.
       DlpJob response = dlp.createDlpJob(createDlpJobRequest);
 
-      // Set the timeout duration in minutes.
-      int timeoutMinutes = 30;
-
       // Get the current time.
       long startTime = System.currentTimeMillis();
 
@@ -175,7 +176,7 @@ public class DeidentifyCloudStorage {
 
         // Check if the timeout duration has exceeded.
         long elapsedTime = System.currentTimeMillis() - startTime;
-        if (TimeUnit.MILLISECONDS.toMinutes(elapsedTime) >= timeoutMinutes) {
+        if (TimeUnit.MILLISECONDS.toMinutes(elapsedTime) >= TIMEOUT_MINUTES) {
           System.out.println("Job did not complete within 30 minutes.");
           break;
         }

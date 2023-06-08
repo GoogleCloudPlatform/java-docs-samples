@@ -51,6 +51,11 @@ public class JobsTests extends TestBase {
 
   private static DlpServiceClient DLP_SERVICE_CLIENT;
 
+  @Override
+  protected ImmutableList<String> requiredEnvVars() {
+    return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT", "GCS_PATH");
+  }
+
   @BeforeClass
   public static void setUp() throws Exception {
     // Initialize the Dlp Service Client.
@@ -125,11 +130,6 @@ public class JobsTests extends TestBase {
     DLP_SERVICE_CLIENT.createJobTrigger(createDlpJobRequest);
   }
 
-  @Override
-  protected ImmutableList<String> requiredEnvVars() {
-    return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT", "GCS_PATH");
-  }
-
   @Test
   public void testCreateJobs() throws Exception {
     // Call createJobs to create a Dlp job from project id and gcs path.
@@ -166,21 +166,21 @@ public class JobsTests extends TestBase {
 
   @Test
   public void testListJobs() throws Exception {
-    // Call listJobs to print out a list of jobIds.
+    // Call listJobs to print out a list of jobIds
     JobsList.listJobs(PROJECT_ID);
     String output = bout.toString();
 
-    // Check that the output contains a list of jobs, or is empty.
+    // Check that the output contains a list of jobs, or is empty
     assertThat(output).contains("DLP jobs found:");
   }
 
   @Test
   public void testDeleteJobs() throws Exception {
-    // Create a job with a unique UUID to be deleted.
+    // Create a job with a unique UUID to be deleted
     String jobId = UUID.randomUUID().toString();
     createJob(jobId);
 
-    // Delete the job with the specified ID.
+    // Delete the job with the specified ID
     JobsDelete.deleteJobs(PROJECT_ID, "i-" + jobId);
     String output = bout.toString();
     assertThat(output).contains("Job deleted successfully.");
@@ -247,8 +247,7 @@ public class JobsTests extends TestBase {
     assertThat(output).contains("InfoType: PERSON_NAME");
 
     // Delete the job.
-    String jobName =
-        Arrays.stream(output.split("\n"))
+    String jobName = Arrays.stream(output.split("\n"))
             .filter(line -> line.contains("Job name:"))
             .findFirst()
             .get();
