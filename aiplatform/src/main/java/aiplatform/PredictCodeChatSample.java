@@ -32,8 +32,12 @@ import java.util.List;
 public class PredictCodeChatSample {
 
   public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace this variable before running the sample.
+    String project = "YOUR_PROJECT_ID";
+
     // Learn more about creating prompts to work with a code chat model at:
     // https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-chat-prompts
+    // TODO(developer): Overwrite these variables as needed.
     String instance =
         "{ \"messages\": [\n"
             + "{\n"
@@ -51,8 +55,6 @@ public class PredictCodeChatSample {
             + "}\n"
             + "]}";
     String parameters = "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 256\n" + "}";
-    // TODO(developer): Replace these variables before running the sample.
-    String project = "YOUR_PROJECT_ID";
     String location = "us-central1";
     String publisher = "google";
     String model = "codechat-bison@001";
@@ -60,7 +62,7 @@ public class PredictCodeChatSample {
     predictCodeChat(instance, parameters, project, location, publisher, model);
   }
 
-  // Use a code chat model to generate a function
+  // Use a code chat model to generate a code function
   public static void predictCodeChat(
       String instance,
       String parameters,

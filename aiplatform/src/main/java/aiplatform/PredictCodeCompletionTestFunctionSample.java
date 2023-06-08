@@ -22,17 +22,22 @@ import com.google.cloud.aiplatform.v1beta1.EndpointName;
 import com.google.cloud.aiplatform.v1beta1.PredictResponse;
 import com.google.cloud.aiplatform.v1beta1.PredictionServiceClient;
 import com.google.cloud.aiplatform.v1beta1.PredictionServiceSettings;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Use Code Completion to complete a test function
 public class PredictCodeCompletionTestFunctionSample {
 
   public static void main(String[] args) throws IOException {
-    // TODO(developer): Replace these variables before running the sample.
+    // TODO(developer): Replace this variable before running the sample.
+    String project = "YOUR_PROJECT_ID";
+
+    // Learn how to create prompts to work with a code model to create code completion suggestions:
+    // https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-completion-prompts
+    // TODO(developer): Overwrite these variables as needed.
     String instance =
         "{ \"prefix\": \""
             + "def reverse_string(s):\n"
@@ -40,7 +45,6 @@ public class PredictCodeCompletionTestFunctionSample {
             + "def test_empty_input_string()"
             + "}";
     String parameters = "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 256,\n" + "}";
-    String project = "YOUR_PROJECT_ID";
     String location = "us-central1";
     String publisher = "google";
     String model = "code-gecko@001";
@@ -48,7 +52,8 @@ public class PredictCodeCompletionTestFunctionSample {
     predictTestFunction(instance, parameters, project, location, publisher, model);
   }
 
-  static void predictTestFunction(
+  // Use Code Completion to complete a test function
+  public static void predictTestFunction(
       String instance,
       String parameters,
       String project,
@@ -56,7 +61,7 @@ public class PredictCodeCompletionTestFunctionSample {
       String publisher,
       String model)
       throws IOException {
-    String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
+    final String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     PredictionServiceSettings predictionServiceSettings =
         PredictionServiceSettings.newBuilder().setEndpoint(endpoint).build();
 
@@ -67,24 +72,24 @@ public class PredictCodeCompletionTestFunctionSample {
       final EndpointName endpointName =
           EndpointName.ofProjectLocationPublisherModelName(project, location, publisher, model);
 
-      // Use Value.Builder to convert instance to a dynamically typed value that can be
-      // processed by the service.
-      Value.Builder instanceValue = Value.newBuilder();
-      JsonFormat.parser().merge(instance, instanceValue);
+      Value instanceValue = stringToValue(instance);
       List<Value> instances = new ArrayList<>();
-      instances.add(instanceValue.build());
+      instances.add(instanceValue);
 
-      // Use Value.Builder to convert parameter to a dynamically typed value that can be
-      // processed by the service.
-      Value.Builder parameterValueBuilder = Value.newBuilder();
-      JsonFormat.parser().merge(parameters, parameterValueBuilder);
-      Value parameterValue = parameterValueBuilder.build();
+      Value parameterValue = stringToValue(parameters);
 
       PredictResponse predictResponse =
           predictionServiceClient.predict(endpointName, instances, parameterValue);
       System.out.println("Predict Response");
       System.out.println(predictResponse);
     }
+  }
+
+  // Convert a Json string to a protobuf.Value
+  static Value stringToValue(String value) throws InvalidProtocolBufferException {
+    Value.Builder builder = Value.newBuilder();
+    JsonFormat.parser().merge(value, builder);
+    return builder.build();
   }
 }
 // [END aiplatform_sdk_code_completion_test_function]

@@ -19,24 +19,25 @@ package aiplatform;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class PredictCodeGenerationFunctionSampleTest {
+
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
   private static final String INSTANCE =
       "{\"prefix\": \"Write a function that checks if a year is a leap year.\"}";
   private static final String PARAMETERS =
-      "{\n"
-          + "  \"temperature\": 0.2,\n"
-          + "  \"maxOutputTokens\": 256\n"
-          + "}";
+      "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 256\n" + "}";
   private static final String PUBLISHER = "google";
   private static final String LOCATION = "us-central1";
   private static final String MODEL = "code-bison@001";
