@@ -100,4 +100,4 @@ public class PredictCodeGenerationUnitTestSample {
     return builder.build();
   }
 }
-// [END aiplatform_sdk_code_generation_function]
+// [END aiplatform_sdk_code_generation_unittest]
