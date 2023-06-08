@@ -17,36 +17,34 @@
 import static com.google.common.truth.Truth.assertThat;
 
 import com.example.jobs.JobSearchListJobs;
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 public class JobSearchListJobsTest {
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TENANT_ID = System.getenv("CTS_TENANT_ID");
-  private static final String FILTER =
-      "companyName=\"projects/%s/companies/bdad284d-9aca-4cb9-af09-ce65afcc5d6a\"";
+  private static final String COMPANY_ID = System.getenv("CTS_COMPANY_ID");
+
+  private static final String FILTER = "companyName=\"projects/%s/companies/%s\"";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
+    out = System.out;
+    System.setOut(new PrintStream(bout));
   }
 
   @Test
   public void testListJobs() throws IOException {
     // retrieve a job.
-    JobSearchListJobs.listJobs(PROJECT_ID, TENANT_ID, String.format(FILTER, PROJECT_ID));
+    JobSearchListJobs.listJobs(
+        PROJECT_ID, TENANT_ID, String.format(FILTER, PROJECT_ID, COMPANY_ID));
     String got = bout.toString();
 
     assertThat(got).contains("Job name:");
@@ -56,6 +54,6 @@ public class JobSearchListJobsTest {
 
   @After
   public void tearDown() {
-    System.setOut(null);
+    System.setOut(out);
   }
 }

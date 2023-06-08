@@ -18,10 +18,10 @@ package com.example.jobs;
 
 // [START job_search_get_tenant_beta]
 
-import com.google.cloud.talent.v4beta1.GetTenantRequest;
-import com.google.cloud.talent.v4beta1.Tenant;
-import com.google.cloud.talent.v4beta1.TenantName;
-import com.google.cloud.talent.v4beta1.TenantServiceClient;
+import com.google.cloud.talent.v4.GetTenantRequest;
+import com.google.cloud.talent.v4.Tenant;
+import com.google.cloud.talent.v4.TenantName;
+import com.google.cloud.talent.v4.TenantServiceClient;
 import java.io.IOException;
 
 public class JobSearchGetTenant {

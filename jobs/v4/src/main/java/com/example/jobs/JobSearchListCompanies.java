@@ -18,10 +18,10 @@ package com.example.jobs;
 
 // [START job_search_list_companies_beta]
 
-import com.google.cloud.talent.v4beta1.Company;
-import com.google.cloud.talent.v4beta1.CompanyServiceClient;
-import com.google.cloud.talent.v4beta1.ListCompaniesRequest;
-import com.google.cloud.talent.v4beta1.TenantName;
+import com.google.cloud.talent.v4.Company;
+import com.google.cloud.talent.v4.CompanyServiceClient;
+import com.google.cloud.talent.v4.ListCompaniesRequest;
+import com.google.cloud.talent.v4.TenantName;
 import java.io.IOException;
 
 public class JobSearchListCompanies {

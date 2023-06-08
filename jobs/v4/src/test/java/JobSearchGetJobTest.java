@@ -16,20 +16,14 @@
 import static com.google.common.truth.Truth.assertThat;
 
 import com.example.jobs.JobSearchGetJob;
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
-
-
 public class JobSearchGetJobTest {
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TENANT_ID = System.getenv("CTS_TENANT_ID");
   private static final String JOB_ID = System.getenv("CTS_GET_JOB_ID");
@@ -40,8 +34,8 @@ public class JobSearchGetJobTest {
   @Before
   public void setUp() throws IOException {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
+    out = System.out;
+    System.setOut(new PrintStream(bout));
   }
 
   @Test
@@ -54,8 +48,8 @@ public class JobSearchGetJobTest {
   }
 
   @After
-  public void tearDown() throws IOException {
-    System.setOut(null);
+  public void tearDown() {
+    System.setOut(out);
   }
 
   // Helper method for getting the last id from the full path.

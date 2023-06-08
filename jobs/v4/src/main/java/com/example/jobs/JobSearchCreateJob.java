@@ -18,18 +18,13 @@ package com.example.jobs;
 
 // [START job_search_create_job_beta]
 
-import com.google.cloud.talent.v4beta1.CreateJobRequest;
-import com.google.cloud.talent.v4beta1.Job;
-import com.google.cloud.talent.v4beta1.JobServiceClient;
-import com.google.cloud.talent.v4beta1.TenantName;
+import com.google.cloud.talent.v4.CreateJobRequest;
+import com.google.cloud.talent.v4.Job;
+import com.google.cloud.talent.v4.JobServiceClient;
+import com.google.cloud.talent.v4.TenantName;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 public class JobSearchCreateJob {
 
@@ -40,6 +35,11 @@ public class JobSearchCreateJob {
     String companyId = "your-company-id";
     String requisitionId = "your-unique-req-id";
     String jobApplicationUrl = "your-job-url";
+    // String projectId = "me-qa-1";
+    // String tenantId = "8ed97629-27ee-4215-909b-18cfe3b7e8e3";
+    // String companyId = "05317758-b30e-4b26-a57d-d9e54e4cccd8";
+    // String requisitionId = "test-requisitionid-1";
+    // String jobApplicationUrl = "http://job.url";
     createJob(projectId, tenantId, companyId, requisitionId, jobApplicationUrl);
   }
 

@@ -18,12 +18,12 @@ package com.example.jobs;
 
 // [START job_search_custom_ranking_search]
 
-import com.google.cloud.talent.v4beta1.Job;
-import com.google.cloud.talent.v4beta1.JobServiceClient;
-import com.google.cloud.talent.v4beta1.RequestMetadata;
-import com.google.cloud.talent.v4beta1.SearchJobsRequest;
-import com.google.cloud.talent.v4beta1.SearchJobsResponse;
-import com.google.cloud.talent.v4beta1.TenantName;
+import com.google.cloud.talent.v4.Job;
+import com.google.cloud.talent.v4.JobServiceClient;
+import com.google.cloud.talent.v4.RequestMetadata;
+import com.google.cloud.talent.v4.SearchJobsRequest;
+import com.google.cloud.talent.v4.SearchJobsResponse;
+import com.google.cloud.talent.v4.TenantName;
 import java.io.IOException;
 
 public class CustomRankingSearchJobs {
@@ -68,7 +68,7 @@ public class CustomRankingSearchJobs {
               .setOrderBy(orderBy)
               .build();
       for (SearchJobsResponse.MatchingJob responseItem :
-          jobServiceClient.searchJobs(request).iterateAll()) {
+          jobServiceClient.searchJobs(request).getMatchingJobsList()) {
         System.out.format("Job summary: %s%n", responseItem.getJobSummary());
         System.out.format("Job title snippet: %s%n", responseItem.getJobTitleSnippet());
         Job job = responseItem.getJob();

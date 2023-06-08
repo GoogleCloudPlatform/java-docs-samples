@@ -18,10 +18,10 @@ package com.example.jobs;
 
 // [START job_search_get_company_beta]
 
-import com.google.cloud.talent.v4beta1.Company;
-import com.google.cloud.talent.v4beta1.CompanyName;
-import com.google.cloud.talent.v4beta1.CompanyServiceClient;
-import com.google.cloud.talent.v4beta1.GetCompanyRequest;
+import com.google.cloud.talent.v4.Company;
+import com.google.cloud.talent.v4.CompanyName;
+import com.google.cloud.talent.v4.CompanyServiceClient;
+import com.google.cloud.talent.v4.GetCompanyRequest;
 import java.io.IOException;
 
 public class JobSearchGetCompany {
@@ -41,7 +41,7 @@ public class JobSearchGetCompany {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (CompanyServiceClient companyServiceClient = CompanyServiceClient.create()) {
-      CompanyName name = CompanyName.ofProjectTenantCompanyName(projectId, tenantId, companyId);
+      CompanyName name = CompanyName.of(projectId, tenantId, companyId);
 
       GetCompanyRequest request = GetCompanyRequest.newBuilder().setName(name.toString()).build();
 

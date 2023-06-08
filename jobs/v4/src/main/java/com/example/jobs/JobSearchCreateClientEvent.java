@@ -18,11 +18,11 @@ package com.example.jobs;
 
 // [START job_search_create_client_event]
 
-import com.google.cloud.talent.v4beta1.ClientEvent;
-import com.google.cloud.talent.v4beta1.CreateClientEventRequest;
-import com.google.cloud.talent.v4beta1.EventServiceClient;
-import com.google.cloud.talent.v4beta1.JobEvent;
-import com.google.cloud.talent.v4beta1.TenantName;
+import com.google.cloud.talent.v4.ClientEvent;
+import com.google.cloud.talent.v4.CreateClientEventRequest;
+import com.google.cloud.talent.v4.EventServiceClient;
+import com.google.cloud.talent.v4.JobEvent;
+import com.google.cloud.talent.v4.TenantName;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class JobSearchCreateClientEvent {
       // The timestamp of the event as seconds of UTC time since Unix epoch
       // For more information on how to create google.protobuf.Timestamps
       // See:
-      // https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/timestamp.proto
+      // https://github.com/protocolbuffers/protobuf/blob/main/src/google/protobuf/timestamp.proto
       long seconds = 3L;
       Timestamp createTime = Timestamp.newBuilder().setSeconds(seconds).build();
 

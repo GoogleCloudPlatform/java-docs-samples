@@ -18,19 +18,15 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.example.jobs.JobSearchCreateTenant;
 import com.example.jobs.JobSearchDeleteTenant;
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 public class JobSearchDeleteTenantTest {
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TENANT_EXT_ID =
       String.format("EXTERNAL_TEMP_TENANT_ID_%s", UUID.randomUUID().toString().substring(0, 20));
@@ -42,8 +38,9 @@ public class JobSearchDeleteTenantTest {
   @Before
   public void setUp() throws IOException {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
+    out = System.out;
+    System.setOut(new PrintStream(bout));
+
     // create a tenant for job and company
     JobSearchCreateTenant.createTenant(PROJECT_ID, TENANT_EXT_ID);
 
@@ -62,7 +59,7 @@ public class JobSearchDeleteTenantTest {
   }
 
   @After
-  public void tearDown() throws IOException {
-    System.setOut(null);
+  public void tearDown() {
+    System.setOut(out);
   }
 }

@@ -18,15 +18,15 @@ package com.example.jobs;
 
 // [START job_search_commute_search]
 
-import com.google.cloud.talent.v4beta1.CommuteFilter;
-import com.google.cloud.talent.v4beta1.CommuteMethod;
-import com.google.cloud.talent.v4beta1.Job;
-import com.google.cloud.talent.v4beta1.JobQuery;
-import com.google.cloud.talent.v4beta1.JobServiceClient;
-import com.google.cloud.talent.v4beta1.RequestMetadata;
-import com.google.cloud.talent.v4beta1.SearchJobsRequest;
-import com.google.cloud.talent.v4beta1.SearchJobsResponse;
-import com.google.cloud.talent.v4beta1.TenantName;
+import com.google.cloud.talent.v4.CommuteFilter;
+import com.google.cloud.talent.v4.CommuteMethod;
+import com.google.cloud.talent.v4.Job;
+import com.google.cloud.talent.v4.JobQuery;
+import com.google.cloud.talent.v4.JobServiceClient;
+import com.google.cloud.talent.v4.RequestMetadata;
+import com.google.cloud.talent.v4.SearchJobsRequest;
+import com.google.cloud.talent.v4.SearchJobsResponse;
+import com.google.cloud.talent.v4.TenantName;
 import com.google.protobuf.Duration;
 import com.google.type.LatLng;
 import java.io.IOException;
@@ -82,7 +82,7 @@ public class CommuteSearchJobs {
               .build();
 
       for (SearchJobsResponse.MatchingJob responseItem :
-          jobServiceClient.searchJobs(request).iterateAll()) {
+          jobServiceClient.searchJobs(request).getMatchingJobsList()) {
         System.out.format("Job summary: %s%n", responseItem.getJobSummary());
         System.out.format("Job title snippet: %s%n", responseItem.getJobTitleSnippet());
         Job job = responseItem.getJob();

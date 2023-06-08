@@ -18,9 +18,9 @@ package com.example.jobs;
 
 // [START job_search_delete_job_beta]
 
-import com.google.cloud.talent.v4beta1.DeleteJobRequest;
-import com.google.cloud.talent.v4beta1.JobName;
-import com.google.cloud.talent.v4beta1.JobServiceClient;
+import com.google.cloud.talent.v4.DeleteJobRequest;
+import com.google.cloud.talent.v4.JobName;
+import com.google.cloud.talent.v4.JobServiceClient;
 import java.io.IOException;
 
 public class JobSearchDeleteJob {
@@ -39,7 +39,7 @@ public class JobSearchDeleteJob {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
-      JobName name = JobName.ofProjectTenantJobName(projectId, tenantId, jobId);
+      JobName name = JobName.of(projectId, tenantId, jobId);
 
       DeleteJobRequest request = DeleteJobRequest.newBuilder().setName(name.toString()).build();
 

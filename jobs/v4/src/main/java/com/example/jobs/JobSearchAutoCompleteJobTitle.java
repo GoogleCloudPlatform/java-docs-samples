@@ -18,10 +18,10 @@ package com.example.jobs;
 
 // [START job_search_autocomplete_job_title]
 
-import com.google.cloud.talent.v4beta1.CompleteQueryRequest;
-import com.google.cloud.talent.v4beta1.CompleteQueryResponse;
-import com.google.cloud.talent.v4beta1.CompletionClient;
-import com.google.cloud.talent.v4beta1.TenantName;
+import com.google.cloud.talent.v4.CompleteQueryRequest;
+import com.google.cloud.talent.v4.CompleteQueryResponse;
+import com.google.cloud.talent.v4.CompletionClient;
+import com.google.cloud.talent.v4.TenantName;
 import java.io.IOException;
 
 public class JobSearchAutoCompleteJobTitle {
@@ -44,7 +44,7 @@ public class JobSearchAutoCompleteJobTitle {
       TenantName parent = TenantName.of(projectId, tenantId);
       CompleteQueryRequest request =
           CompleteQueryRequest.newBuilder()
-              .setParent(parent.toString())
+              .setTenant(parent.toString())
               .setQuery(query)
               .setPageSize(5) // limit for number of results
               .addLanguageCodes("en-US") // language code

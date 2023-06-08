@@ -18,10 +18,10 @@ package com.example.jobs;
 
 // [START job_search_get_job_beta]
 
-import com.google.cloud.talent.v4beta1.GetJobRequest;
-import com.google.cloud.talent.v4beta1.Job;
-import com.google.cloud.talent.v4beta1.JobName;
-import com.google.cloud.talent.v4beta1.JobServiceClient;
+import com.google.cloud.talent.v4.GetJobRequest;
+import com.google.cloud.talent.v4.Job;
+import com.google.cloud.talent.v4.JobName;
+import com.google.cloud.talent.v4.JobServiceClient;
 import java.io.IOException;
 
 public class JobSearchGetJob {
@@ -40,7 +40,7 @@ public class JobSearchGetJob {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (JobServiceClient jobServiceClient = JobServiceClient.create()) {
-      JobName name = JobName.ofProjectTenantJobName(projectId, tenantId, jobId);
+      JobName name = JobName.of(projectId, tenantId, jobId);
 
       GetJobRequest request = GetJobRequest.newBuilder().setName(name.toString()).build();
 
