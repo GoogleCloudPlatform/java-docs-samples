@@ -34,13 +34,12 @@ public class PredictCodeGenerationFunctionSampleTest {
       "{\"prefix\": \"Write a function that checks if a year is a leap year.\"}";
   private static final String PARAMETERS =
       "{\n"
-          + "  \"task\": \"GENERATION\",\n"
           + "  \"temperature\": 0.2,\n"
           + "  \"maxOutputTokens\": 256\n"
           + "}";
   private static final String PUBLISHER = "google";
   private static final String LOCATION = "us-central1";
-  private static final String MODEL = "text-bison@001";
+  private static final String MODEL = "code-bison@001";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;

@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Use Code Completion to complete a code comment
 public class PredictCodeCompletionCommentSample {
 
   public static void main(String[] args) throws IOException {
@@ -45,10 +44,11 @@ public class PredictCodeCompletionCommentSample {
     String publisher = "google";
     String model = "code-gecko@001";
 
-    predictUnitTest(instance, parameters, project, location, publisher, model);
+    predictComment(instance, parameters, project, location, publisher, model);
   }
 
-  static void predictUnitTest(
+  // Use Code Completion to complete a code comment
+  static void predictComment(
       String instance,
       String parameters,
       String project,
@@ -58,7 +58,9 @@ public class PredictCodeCompletionCommentSample {
       throws IOException {
     String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     PredictionServiceSettings predictionServiceSettings =
-        PredictionServiceSettings.newBuilder().setEndpoint(endpoint).build();
+        PredictionServiceSettings.newBuilder()
+            .setEndpoint(endpoint)
+            .build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.

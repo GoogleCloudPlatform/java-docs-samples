@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Use Code Generation to generate a unit test
 public class PredictCodeGenerationUnitTestSample {
 
   public static void main(String[] args) throws IOException {
@@ -56,6 +55,7 @@ public class PredictCodeGenerationUnitTestSample {
     predictUnitTest(instance, parameters, project, location, publisher, model);
   }
 
+  // Use Code Generation to generate a unit test
   static void predictUnitTest(
       String instance,
       String parameters,
