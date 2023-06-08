@@ -42,7 +42,7 @@ public class PredictCodeCompletionTestFunctionSampleTest {
           + "def test_empty_input_string()"
           + "\"}";
   private static final String PARAMETERS =
-      "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 256\n" + "}";
+      "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 64\n" + "}";
 
   private static final String PUBLISHER = "google";
   private static final String LOCATION = "us-central1";

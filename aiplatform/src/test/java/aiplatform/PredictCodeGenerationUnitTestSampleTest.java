@@ -50,7 +50,7 @@ public class PredictCodeGenerationUnitTestSampleTest {
           + "            return False\n"
           + "\"}";
   private static final String PARAMETERS =
-      "{\n" + "  \"temperature\": 0.5,\n" + "  \"maxOutputTokens\": 512\n" + "}";
+      "{\n" + "  \"temperature\": 0.5,\n" + "  \"maxOutputTokens\": 256\n" + "}";
 
   private static final String PUBLISHER = "google";
   private static final String LOCATION = "us-central1";

@@ -39,10 +39,10 @@ public class PredictCodeCompletionCommentSampleTest {
       "{ \"prefix\": \""
           + "def reverse_string(s):\n"
           + "  return s[::-1]\n"
-          + "//This function"
+          + "#This function"
           + "\"}";
   private static final String PARAMETERS =
-      "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 256\n" + "}";
+      "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 64\n" + "}";
   private static final String PUBLISHER = "google";
   private static final String LOCATION = "us-central1";
   private static final String MODEL = "code-gecko@001";

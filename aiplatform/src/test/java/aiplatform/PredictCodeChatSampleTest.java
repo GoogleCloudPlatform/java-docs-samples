@@ -37,7 +37,7 @@ public class PredictCodeChatSampleTest {
   private static final String INSTANCE =
       "{ \"messages\": [\n"
           + "{\n"
-          + "  \"author\": \"content\",\n"
+          + "  \"author\": \"user\",\n"
           + "  \"content\": \"Hi, how are you?\"\n"
           + "},\n"
           + "{\n"
@@ -45,13 +45,13 @@ public class PredictCodeChatSampleTest {
           + "  \"content\": \"I am doing good. What can I help you in the coding world?\"\n"
           + " },\n"
           + "{\n"
-          + "  \"author\": \"content\",\n"
+          + "  \"author\": \"user\",\n"
           + "  \"content\":\n"
           + "     \"Please help write a function to calculate the min of two numbers.\"\n"
           + "}\n"
           + "]}";
   private static final String PARAMETERS =
-      "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 256\n" + "}";
+      "{\n" + "  \"temperature\": 0.5,\n" + "  \"maxOutputTokens\": 1024\n" + "}";
   private static final String PUBLISHER = "google";
   private static final String LOCATION = "us-central1";
   private static final String MODEL = "codechat-bison@001";
