@@ -44,7 +44,7 @@ public class PredictCodeCompletionTestFunctionSample {
             + "  return s[::-1]\n"
             + "def test_empty_input_string()"
             + "}";
-    String parameters = "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 256,\n" + "}";
+    String parameters = "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 64,\n" + "}";
     String location = "us-central1";
     String publisher = "google";
     String model = "code-gecko@001";

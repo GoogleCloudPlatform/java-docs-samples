@@ -39,7 +39,7 @@ public class PredictCodeGenerationFunctionSample {
     // https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-generation-prompts
     // TODO(developer): Overwrite these variables as needed.
     String instance = "{ \"prefix\": \"Write a function that checks if a year is a leap year.\"}";
-    String parameters = "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 256,\n" + "}";
+    String parameters = "{\n" + "  \"temperature\": 0.5,\n" + "  \"maxOutputTokens\": 256,\n" + "}";
     String location = "us-central1";
     String publisher = "google";
     String model = "code-bison@001";

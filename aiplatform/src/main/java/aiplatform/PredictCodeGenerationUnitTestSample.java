@@ -52,7 +52,7 @@ public class PredictCodeGenerationUnitTestSample {
             + "        else:\n"
             + "            return False\n"
             + "\"}";
-    String parameters = "{\n" + "  \"temperature\": 0.5,\n" + "  \"maxOutputTokens\": 512\n" + "}";
+    String parameters = "{\n" + "  \"temperature\": 0.5,\n" + "  \"maxOutputTokens\": 256\n" + "}";
     String location = "us-central1";
     String publisher = "google";
     String model = "code-bison@001";

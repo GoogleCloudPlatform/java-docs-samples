@@ -41,7 +41,7 @@ public class PredictCodeChatSample {
     String instance =
         "{ \"messages\": [\n"
             + "{\n"
-            + "  \"author\": \"content\",\n"
+            + "  \"author\": \"user\",\n"
             + "  \"content\": \"Hi, how are you?\"\n"
             + "},\n"
             + "{\n"
@@ -49,12 +49,12 @@ public class PredictCodeChatSample {
             + "  \"content\": \"I am doing good. What can I help you in the coding world?\"\n"
             + " },\n"
             + "{\n"
-            + "  \"author\": \"content\",\n"
+            + "  \"author\": \"user\",\n"
             + "  \"content\":\n"
             + "     \"Please help write a function to calculate the min of two numbers.\"\n"
             + "}\n"
             + "]}";
-    String parameters = "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 256\n" + "}";
+    String parameters = "{\n" + "  \"temperature\": 0.5,\n" + "  \"maxOutputTokens\": 1024\n" + "}";
     String location = "us-central1";
     String publisher = "google";
     String model = "codechat-bison@001";
