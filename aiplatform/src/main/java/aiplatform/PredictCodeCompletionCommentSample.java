@@ -37,7 +37,6 @@ public class PredictCodeCompletionCommentSample {
 
     // Learn how to create prompts to work with a code model to create code completion suggestions:
     // https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-completion-prompts
-    // TODO(developer): Overwrite these variables as needed.
     String instance =
         "{ \"prefix\": \""
             + "def reverse_string(s):\n"

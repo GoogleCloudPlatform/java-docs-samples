@@ -37,7 +37,6 @@ public class PredictCodeGenerationFunctionSample {
 
     // Learn how to create prompts to work with a code model to generate code:
     // https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-generation-prompts
-    // TODO(developer): Overwrite these variables as needed.
     String instance = "{ \"prefix\": \"Write a function that checks if a year is a leap year.\"}";
     String parameters = "{\n" + "  \"temperature\": 0.5,\n" + "  \"maxOutputTokens\": 256,\n" + "}";
     String location = "us-central1";

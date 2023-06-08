@@ -37,7 +37,6 @@ public class PredictCodeGenerationUnitTestSample {
 
     // Learn how to create prompts to work with a code model to generate code:
     // https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-generation-prompts
-    // TODO(developer): Overwrite these variables as needed.
     String instance =
         "{ \"prefix\": \"Write a unit test for this function:\n"
             + "    def is_leap_year(year):\n"

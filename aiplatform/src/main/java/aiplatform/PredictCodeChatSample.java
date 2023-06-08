@@ -37,7 +37,6 @@ public class PredictCodeChatSample {
 
     // Learn more about creating prompts to work with a code chat model at:
     // https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-chat-prompts
-    // TODO(developer): Overwrite these variables as needed.
     String instance =
         "{ \"messages\": [\n"
             + "{\n"
