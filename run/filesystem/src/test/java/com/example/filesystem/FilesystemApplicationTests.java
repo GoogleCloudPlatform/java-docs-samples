@@ -17,6 +17,7 @@
 package com.example.filesystem;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +41,13 @@ public class FilesystemApplicationTests {
 
   @Autowired private MockMvc mockMvc;
 
-  private static String mntDir;
+  private static String mntDir = System.getenv("MNT_DIR");
   String filename = System.getenv().getOrDefault("FILENAME", "Dockerfile");
+
+  @BeforeClass
+  public static void ensureEnvVar() {
+    assertTrue(!System.getenv("MNT_DIR").isEmpty());
+  }
 
   @Test
   public void indexReturnsRedirect() throws Exception {

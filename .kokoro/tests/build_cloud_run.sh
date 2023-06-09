@@ -22,7 +22,8 @@ if [ -n "$JIB" ]; then
   # Only needed if deploy completed.
   function cleanup {
     set -x
-    gcloud container images delete "${CONTAINER_IMAGE}" --quiet --no-user-output-enabled || true
+    sha=$(gcloud artifacts docker images describe $CONTAINER_IMAGE --format="value(image_summary.digest)")
+    gcloud artifacts docker images delete $BASE_IMAGE:$sha --quiet --no-user-output-enabled || true
     gcloud run services delete ${SERVICE_NAME} \
       --platform=managed \
       --region="${REGION:-us-central1}" \
@@ -45,8 +46,9 @@ if [ -n "$JIB" ]; then
   export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
   # Remove "/" from the Cloud Run service name
   export SERVICE_NAME="${SERVICE_NAME//\//$'-'}"
-  export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
-  export SPECIAL_BASE_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/imagemagick"
+  export BASE_IMAGE="us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/containers/run-${SAMPLE_NAME}"
+  export CONTAINER_IMAGE="${BASE_IMAGE}:${SAMPLE_VERSION}"
+  export SPECIAL_BASE_IMAGE="us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/containers/imagemagick"
   BASE_IMAGE_SAMPLES=("image-processing" "system-packages")
 
   # Build the service
@@ -55,7 +57,7 @@ if [ -n "$JIB" ]; then
   mvn -q -B jib:build -Dimage="${CONTAINER_IMAGE}" \
     `if [[ "${BASE_IMAGE_SAMPLES[@]}" =~ "${SAMPLE_NAME}" ]]; then echo "-Djib.from.image=${SPECIAL_BASE_IMAGE}"; fi`
 
-
+  mvn clean # remove jib cache
   export MEMORY_NEEDED=("image-processing" "idp-sql");  # Samples that need more memory
 
   gcloud run deploy "${SERVICE_NAME}" \
