@@ -56,7 +56,7 @@ limitations under the License.
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>5.0.0-alpha.17</version>
+      <version>5.0.0-alpha.11</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
