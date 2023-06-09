@@ -82,7 +82,7 @@ else
 fi
 
 # Build and deploy Cloud Run samples
-if [[ "$file" == *"run/"* && "$file" != *"run/filesystem"* ]]; then
+if [[ "$file" == *"run/"* && ("$file" != *"run/filesystem"* && "$file" != *"run/jobs"*) ]]; then
     export SAMPLE_NAME=${file#*run/}
     # chmod 755 "$SCRIPT_DIR"/build_cloud_run.sh
     "$SCRIPT_DIR"/build_cloud_run.sh
