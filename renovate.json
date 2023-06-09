@@ -123,6 +123,11 @@
     {
       "matchPackagePatterns": [ "org.springframework.boot" ],
       "matchCurrentVersion": "!/.*[SNAPSHOT | M]/"
+    },
+    {
+      "matchPackagePatterns": [ "org.springframework.boot" ],
+      "matchPaths": ["appengine-java11/**", "appengine-java8/**", "flexible/*", "flexible/java-11/**", "flexible/java-8/**"],
+      "allowedVersions": "<3"
     }
   ],
   "labels": [

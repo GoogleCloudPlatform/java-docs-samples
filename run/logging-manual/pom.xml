@@ -24,8 +24,8 @@ limitations under the License.
   </parent>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -56,7 +56,7 @@ limitations under the License.
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>5.0.0-alpha.11</version>
+      <version>5.0.0-alpha.17</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

@@ -14,9 +14,9 @@
 
 # [START cloudrun_fs_dockerfile]
 
-# Use the official maven/Java 11 image to create a build artifact.
+# Use the official maven/Java 17 image to create a build artifact.
 # https://hub.docker.com/_/maven
-FROM maven:3.8.6-jdk-11 as builder
+FROM maven:3.8.6-jdk-17 as builder
 
 # Copy local code to the container image.
 WORKDIR /app
