@@ -65,7 +65,6 @@ public class ApplicationTests {
     ProcessBuilder deploy = new ProcessBuilder();
     deploy.command(
         "gcloud",
-        "alpha",
         "run",
         "deploy",
         service,

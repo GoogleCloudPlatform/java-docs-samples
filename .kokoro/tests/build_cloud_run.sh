@@ -24,7 +24,7 @@ if [ -n "$JIB" ]; then
     mvn -q -B clean
     set -x
     sha=$(gcloud artifacts docker images describe $CONTAINER_IMAGE --format="value(image_summary.digest)")
-    gcloud artifacts docker images delete $BASE_IMAGE@$sha --quiet --no-user-output-enabled || true
+    gcloud artifacts docker images delete $BASE_IMAGE@$sha --quiet --delete-tags --no-user-output-enabled || true
     gcloud run services delete ${SERVICE_NAME} \
       --platform=managed \
       --region="${REGION:-us-central1}" \
@@ -53,11 +53,11 @@ if [ -n "$JIB" ]; then
   BASE_IMAGE_SAMPLES=("image-processing" "system-packages")
 
   # Build the service
+  set -x
   mvn -q -B jib:build -Dimage="${CONTAINER_IMAGE}" \
     `if [[ "${BASE_IMAGE_SAMPLES[@]}" =~ "${SAMPLE_NAME}" ]]; then echo "-Djib.from.image=${SPECIAL_BASE_IMAGE}"; fi`
 
   export MEMORY_NEEDED=("image-processing" "idp-sql");  # Samples that need more memory
-  set -x
 
   gcloud run deploy "${SERVICE_NAME}" \
     --image="${CONTAINER_IMAGE}" \
@@ -65,7 +65,7 @@ if [ -n "$JIB" ]; then
     --platform=managed \
     --quiet --no-user-output-enabled  \
     `if [[ "${MEMORY_NEEDED[@]}" =~ "${SAMPLE_NAME}" ]]; then echo "--memory 512M"; fi` \
-    `if [ $SAMPLE_NAME = "idp-sql" ]; then echo "--update-env-vars CLOUD_SQL_CREDENTIALS_SECRET=projects/${GOOGLE_CLOUD_PROJECT}/secrets/idp-sql-secret/versions/latest"; fi`
+    `if [ $SAMPLE_NAME = "idp-sql" ]; then echo "--update-secrets CLOUD_SQL_CREDENTIALS_SECRET=projects/${GOOGLE_CLOUD_PROJECT}/secrets/idp-sql-secret/versions/latest"; fi`
 
   set +x
 
