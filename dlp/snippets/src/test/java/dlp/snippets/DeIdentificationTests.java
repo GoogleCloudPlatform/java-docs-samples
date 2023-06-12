@@ -18,9 +18,19 @@ package dlp.snippets;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.common.collect.ImmutableList;
+import com.google.privacy.dlp.v2.CreateDlpJobRequest;
+import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.FieldId;
+import com.google.privacy.dlp.v2.GetDlpJobRequest;
+import com.google.privacy.dlp.v2.InfoType;
+import com.google.privacy.dlp.v2.InfoTypeStats;
+import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.Table;
 import com.google.privacy.dlp.v2.Table.Row;
 import com.google.privacy.dlp.v2.Value;
@@ -30,12 +40,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.UUID;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 public class DeIdentificationTests extends TestBase {
@@ -789,5 +800,49 @@ public class DeIdentificationTests extends TestBase {
     assertThat(output).contains("Table after de-identification: ");
     assertThat(output).doesNotContain("user1@example.org");
     assertThat(output).doesNotContain("858-555-0222");
+  }
+
+  @Test
+  public void testDeIdentifyStorage() throws IOException, InterruptedException {
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+
+      InfoTypeStats infoTypeStats =
+          InfoTypeStats.newBuilder()
+              .setInfoType(InfoType.newBuilder().setName("EMAIL_ADDRESS").build())
+              .setCount(2)
+              .build();
+      DlpJob dlpJob =
+          DlpJob.newBuilder()
+              .setName("projects/project_id/locations/global/dlpJobs/job_id")
+              .setState(DlpJob.JobState.DONE)
+              .setInspectDetails(
+                  InspectDataSourceDetails.newBuilder()
+                      .setResult(
+                          InspectDataSourceDetails.Result.newBuilder()
+                              .addInfoTypeStats(infoTypeStats)
+                              .build()))
+              .build();
+      when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class)))
+          .thenReturn(dlpJob);
+      when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
+
+      DeidentifyCloudStorage.deidentifyCloudStorage(
+          "project_id",
+          "gs://input_bucket/test.txt",
+          "table_id",
+          "dataset_id",
+          "gs://output_bucket",
+          "deidentify_template_id",
+          "deidentify_structured_template_id",
+          "image_redact_template_id");
+      String output = bout.toString();
+      assertThat(output).contains("Job status: DONE");
+      assertThat(output).contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+      assertThat(output).contains("Info type: EMAIL_ADDRESS");
+      assertThat(output).contains("Count: 2");
+    }
   }
 }
