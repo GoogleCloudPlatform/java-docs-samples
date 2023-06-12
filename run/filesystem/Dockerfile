@@ -28,7 +28,7 @@ RUN mvn package -DskipTests
 
 # Use Eclipse Temurin for base image.
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:18-jdk-focal
 
 # Install filesystem dependencies
 RUN apt-get update -y && apt-get install -y \
