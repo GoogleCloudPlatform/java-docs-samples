@@ -16,6 +16,18 @@
 
 package com.example.speech;
 
+import com.google.api.gax.rpc.ClientStream;
+import com.google.api.gax.rpc.ResponseObserver;
+import com.google.api.gax.rpc.StreamController;
+import com.google.cloud.speech.v1p1beta1.RecognitionConfig;
+import com.google.cloud.speech.v1p1beta1.SpeechClient;
+import com.google.cloud.speech.v1p1beta1.SpeechRecognitionAlternative;
+import com.google.cloud.speech.v1p1beta1.StreamingRecognitionConfig;
+import com.google.cloud.speech.v1p1beta1.StreamingRecognitionResult;
+import com.google.cloud.speech.v1p1beta1.StreamingRecognizeRequest;
+import com.google.cloud.speech.v1p1beta1.StreamingRecognizeResponse;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.Duration;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +36,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -48,28 +59,16 @@ import javax.sound.sampled.TargetDataLine;
  * When the active stream is stopped, the buffered audio input is used to create a new stream.
  * This class also demonstrates how to align the transcript of the previous stream with the
  * transcript of the current stream. This is useful in situations where you want to perform
- * continuous speech recognition on a continuous audio input, but need to restart the stream 
+ * continuous speech recognition on a continuous audio input, but need to restart the stream
  */
-
-import com.google.api.gax.rpc.ClientStream;
-import com.google.api.gax.rpc.ResponseObserver;
-import com.google.api.gax.rpc.StreamController;
-import com.google.cloud.speech.v1p1beta1.RecognitionConfig;
-import com.google.cloud.speech.v1p1beta1.SpeechClient;
-import com.google.cloud.speech.v1p1beta1.SpeechRecognitionAlternative;
-import com.google.cloud.speech.v1p1beta1.StreamingRecognitionConfig;
-import com.google.cloud.speech.v1p1beta1.StreamingRecognitionResult;
-import com.google.cloud.speech.v1p1beta1.StreamingRecognizeRequest;
-import com.google.cloud.speech.v1p1beta1.StreamingRecognizeResponse;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.Duration;
 
 public class InfiniteStreamRecognizeSoftHandOver {
 
   private static final int STREAMING_LIMIT = 30000; // resetting 30 seconds to test
 
   enum Stream {
-    STREAM1, STREAM2;
+    STREAM1,
+    STREAM2;
   }
 
   public static final String RED = "\033[0;31m";
@@ -88,7 +87,8 @@ public class InfiniteStreamRecognizeSoftHandOver {
   private static double bridgingOffset = 0;
   private static volatile Stream activeStream = Stream.STREAM1;
   private static ByteString tempByteString;
-  private static Map<String, StreamingRecognitionResult> streamWiseLatestResults = new HashMap<String, StreamingRecognitionResult>();
+  private static Map<String, StreamingRecognitionResult> streamWiseLatestResults =
+      new HashMap<String, StreamingRecognitionResult>();
 
   public static void main(String... args) {
     InfiniteStreamRecognizeOptions options = InfiniteStreamRecognizeOptions.fromFlags(args);
@@ -117,10 +117,11 @@ public class InfiniteStreamRecognizeSoftHandOver {
                 - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))));
   }
 
-  private static boolean computeIntersectionRatio(String previousTranscript, String currentTranscript) { // Compare the
-                                                                                                         // transcripts
-                                                                                                         // for
-                                                                                                         // alignment
+  private static boolean computeIntersectionRatio(
+      String previousTranscript, String currentTranscript) { // Compare the
+    // transcripts
+    // for
+    // alignment
     int commonWordCount = 0;
     String[] previousWords = previousTranscript.split("\\s+");
     String[] currentWords = currentTranscript.split("\\s+");
@@ -138,10 +139,8 @@ public class InfiniteStreamRecognizeSoftHandOver {
         }
       }
     }
-    
 
     return false;
-
   }
 
   /** Performs infinite streaming speech recognition */
@@ -181,115 +180,116 @@ public class InfiniteStreamRecognizeSoftHandOver {
       ClientStream<StreamingRecognizeRequest> stream1 = null;
       ClientStream<StreamingRecognizeRequest> stream2 = null;
 
-      responseObserver1 = new ResponseObserver<StreamingRecognizeResponse>() {
-        ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
+      responseObserver1 =
+          new ResponseObserver<StreamingRecognizeResponse>() {
+            ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
 
-        public void onStart(StreamController controller) {
+            public void onStart(StreamController controller) {}
 
-        }
+            public void onResponse(StreamingRecognizeResponse response) {
+              responses.add(response);
+              if (response.getResults(0).getIsFinal()) { // we only compare final and finals has
+                // only one results
+                streamWiseLatestResults.put("stream1", response.getResults(0));
+              }
+              StreamingRecognitionResult result = response.getResultsList().get(0);
+              Duration resultEndTime = result.getResultEndTime();
+              resultEndTimeInMS =
+                  (int)
+                      ((resultEndTime.getSeconds() * 1000) + (resultEndTime.getNanos() / 1000000));
+              double correctedTime =
+                  resultEndTimeInMS - bridgingOffset + (STREAMING_LIMIT * restartCounter);
 
-        public void onResponse(StreamingRecognizeResponse response) {
-          responses.add(response);
-          if (response.getResults(0).getIsFinal()) { // we only compare final and finals has
-                                                                             // only one results
-            streamWiseLatestResults.put("stream1", response.getResults(0));
-          }
-          StreamingRecognitionResult result = response.getResultsList().get(0);
-          Duration resultEndTime = result.getResultEndTime();
-          resultEndTimeInMS = (int) ((resultEndTime.getSeconds() * 1000) + (resultEndTime.getNanos() / 1000000));
-          double correctedTime = resultEndTimeInMS - bridgingOffset + (STREAMING_LIMIT * restartCounter);
-
-          if (activeStream == Stream.STREAM1) {
-            SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-            if (result.getIsFinal()) {
-              System.out.print(GREEN);
-              System.out.print("\033[2K\r");
-              System.out.printf(
-                  "%s: %s [confidence: %.2f] [stream: %s]\n",
-                  convertMillisToDate(correctedTime),
-                  alternative.getTranscript(),
-                  alternative.getConfidence(),
-                  "stream1");
-            } else {
-              System.out.print(RED);
-              System.out.print("\033[2K\r");
-              System.out.printf(
-                  "%s: %s", convertMillisToDate(correctedTime), alternative.getTranscript());
+              if (activeStream == Stream.STREAM1) {
+                SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+                if (result.getIsFinal()) {
+                  System.out.print(GREEN);
+                  System.out.print("\033[2K\r");
+                  System.out.printf(
+                      "%s: %s [confidence: %.2f] [stream: %s]\n",
+                      convertMillisToDate(correctedTime),
+                      alternative.getTranscript(),
+                      alternative.getConfidence(),
+                      "stream1");
+                } else {
+                  System.out.print(RED);
+                  System.out.print("\033[2K\r");
+                  System.out.printf(
+                      "%s: %s", convertMillisToDate(correctedTime), alternative.getTranscript());
+                }
+              }
             }
-          }
-        }
 
-        public void onComplete() {
-        }
+            public void onComplete() {}
 
-        @Override
-        public void onError(Throwable t) {
-
-        }
-      };
+            @Override
+            public void onError(Throwable t) {}
+          };
       stream1 = client.streamingRecognizeCallable().splitCall(responseObserver1);
 
-      responseObserver2 = new ResponseObserver<StreamingRecognizeResponse>() {
-        ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
+      responseObserver2 =
+          new ResponseObserver<StreamingRecognizeResponse>() {
+            ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
 
-        public void onStart(StreamController controller) {
+            public void onStart(StreamController controller) {}
 
-        }
+            public void onResponse(StreamingRecognizeResponse response) {
+              responses.add(response);
+              if (response.getResults(0).getIsFinal()) { // we only compare final and finals has
+                // only one results
+                streamWiseLatestResults.put("stream2", response.getResults(0));
+              }
+              StreamingRecognitionResult result = response.getResultsList().get(0);
+              Duration resultEndTime = result.getResultEndTime();
+              resultEndTimeInMS =
+                  (int)
+                      ((resultEndTime.getSeconds() * 1000) + (resultEndTime.getNanos() / 1000000));
+              double correctedTime =
+                  resultEndTimeInMS - bridgingOffset + (STREAMING_LIMIT * restartCounter);
 
-        public void onResponse(StreamingRecognizeResponse response) {
-          responses.add(response);
-          if (response.getResults(0).getIsFinal()) { // we only compare final and finals has
-                                                                             // only one results
-            streamWiseLatestResults.put("stream2", response.getResults(0));
-          }
-          StreamingRecognitionResult result = response.getResultsList().get(0);
-          Duration resultEndTime = result.getResultEndTime();
-          resultEndTimeInMS = (int) ((resultEndTime.getSeconds() * 1000) + (resultEndTime.getNanos() / 1000000));
-          double correctedTime = resultEndTimeInMS - bridgingOffset + (STREAMING_LIMIT * restartCounter);
+              if (activeStream == Stream.STREAM2) {
+                SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+                if (result.getIsFinal()) {
+                  System.out.print(GREEN);
+                  System.out.print("\033[2K\r");
+                  System.out.printf(
+                      "%s: %s [confidence: %.2f] [stream: %s]\n",
+                      convertMillisToDate(correctedTime),
+                      alternative.getTranscript(),
+                      alternative.getConfidence(),
+                      "stream2");
 
-          if (activeStream == Stream.STREAM2) {
-            SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-            if (result.getIsFinal()) {
-              System.out.print(GREEN);
-              System.out.print("\033[2K\r");
-              System.out.printf(
-                  "%s: %s [confidence: %.2f] [stream: %s]\n",
-                  convertMillisToDate(correctedTime),
-                  alternative.getTranscript(),
-                  alternative.getConfidence(),
-                  "stream2");
-
-            } else {
-              System.out.print(RED);
-              System.out.print("\033[2K\r");
-              System.out.printf(
-                  "%s: %s", convertMillisToDate(correctedTime), alternative.getTranscript());
-
+                } else {
+                  System.out.print(RED);
+                  System.out.print("\033[2K\r");
+                  System.out.printf(
+                      "%s: %s", convertMillisToDate(correctedTime), alternative.getTranscript());
+                }
+              }
             }
-          }
-        }
 
-        public void onComplete() {
-        }
+            public void onComplete() {}
 
-        public void onError(Throwable t) {
-        }
-      };
+            public void onError(Throwable t) {}
+          };
 
-      RecognitionConfig recognitionConfig = RecognitionConfig.newBuilder()
-          .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
-          .setLanguageCode(languageCode)
-          .setSampleRateHertz(16000)
-          .build();
+      RecognitionConfig recognitionConfig =
+          RecognitionConfig.newBuilder()
+              .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
+              .setLanguageCode(languageCode)
+              .setSampleRateHertz(16000)
+              .build();
 
-      StreamingRecognitionConfig streamingRecognitionConfig = StreamingRecognitionConfig.newBuilder()
-          .setConfig(recognitionConfig)
-          .setInterimResults(true)
-          .build();
+      StreamingRecognitionConfig streamingRecognitionConfig =
+          StreamingRecognitionConfig.newBuilder()
+              .setConfig(recognitionConfig)
+              .setInterimResults(true)
+              .build();
 
-      StreamingRecognizeRequest request = StreamingRecognizeRequest.newBuilder()
-          .setStreamingConfig(streamingRecognitionConfig)
-          .build(); // The first request in a streaming call has to be a config
+      StreamingRecognizeRequest request =
+          StreamingRecognizeRequest.newBuilder()
+              .setStreamingConfig(streamingRecognitionConfig)
+              .build(); // The first request in a streaming call has to be a config
 
       stream1.send(request);
 
@@ -298,9 +298,10 @@ public class InfiniteStreamRecognizeSoftHandOver {
         // true,
         // bigEndian: false
         AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, false);
-        DataLine.Info targetInfo = new Info(
-            TargetDataLine.class,
-            audioFormat); // Set the system information to read from the microphone audio
+        DataLine.Info targetInfo =
+            new Info(
+                TargetDataLine.class,
+                audioFormat); // Set the system information to read from the microphone audio
         // stream
 
         if (!AudioSystem.isLineSupported(targetInfo)) {
@@ -324,11 +325,13 @@ public class InfiniteStreamRecognizeSoftHandOver {
             restartCounter++;
             newStream = true;
 
-            request = StreamingRecognizeRequest.newBuilder()
-                .setStreamingConfig(streamingRecognitionConfig)
-                .build();
+            request =
+                StreamingRecognizeRequest.newBuilder()
+                    .setStreamingConfig(streamingRecognitionConfig)
+                    .build();
 
-            if (activeStream == Stream.STREAM2) { // meaning stream2 is active, so prepare stream 1 for reset
+            if (activeStream
+                == Stream.STREAM2) { // meaning stream2 is active, so prepare stream 1 for reset
               stream1 = client.streamingRecognizeCallable().splitCall(responseObserver1);
               while (!stream1.isSendReady()) {
                 Thread.sleep(5);
@@ -355,7 +358,8 @@ public class InfiniteStreamRecognizeSoftHandOver {
               if (!isAligned.get()) {
                 // now we're comparing for aligment
                 // Send audio to two streams to check for alignment:
-                request = StreamingRecognizeRequest.newBuilder().setAudioContent(tempByteString).build();
+                request =
+                    StreamingRecognizeRequest.newBuilder().setAudioContent(tempByteString).build();
 
                 stream1.send(request);
                 stream2.send(request);
@@ -366,8 +370,10 @@ public class InfiniteStreamRecognizeSoftHandOver {
                   StreamingRecognitionResult result2 = streamWiseLatestResults.get("stream2");
 
                   if (result1 != null && result2 != null) {
-                    isAligned.set(computeIntersectionRatio(result1.getAlternatives(0).getTranscript(),
-                        result2.getAlternatives(0).getTranscript()));
+                    isAligned.set(
+                        computeIntersectionRatio(
+                            result1.getAlternatives(0).getTranscript(),
+                            result2.getAlternatives(0).getTranscript()));
                   }
                 }
               } else {
@@ -387,10 +393,11 @@ public class InfiniteStreamRecognizeSoftHandOver {
             }
             tempByteString = ByteString.copyFrom(sharedQueue.take());
 
-            request = StreamingRecognizeRequest.newBuilder().setAudioContent(tempByteString).build();
-  
+            request =
+                StreamingRecognizeRequest.newBuilder().setAudioContent(tempByteString).build();
+
             audioInput.add(tempByteString);
-  
+
             if (activeStream == Stream.STREAM1) {
               stream1.send(request);
             } else {
