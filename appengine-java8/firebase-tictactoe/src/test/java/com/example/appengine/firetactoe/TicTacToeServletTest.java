@@ -167,8 +167,7 @@ public class TicTacToeServletTest {
     Objectify ofy = ObjectifyService.ofy();
     Game game = null;
     int count = 0;
-    while (game == null && count < 5)
-    {
+    while (game == null && count < 5) {
       QueryResults<Game> before = ofy.load().type(Game.class).iterator();
       servletUnderTest.doGet(mockRequest, mockResponse);
       QueryResults<Game> after = ofy.load().type(Game.class).iterator();
