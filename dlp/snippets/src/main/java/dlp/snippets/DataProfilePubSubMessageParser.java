@@ -41,7 +41,7 @@ public class DataProfilePubSubMessageParser {
 
   // Parses messages received from a Google Cloud Pub/Sub subscription into a
   // DataProfilePubSubMessage object.
-  public static void parseMessage(String projectId, String subscriptionId)throws TimeoutException {
+  public static void parseMessage(String projectId, String subscriptionId) throws TimeoutException {
     int timeoutSeconds = 5;
 
     // The `ProjectSubscriptionName.of` method creates a fully qualified identifier
@@ -79,7 +79,9 @@ public class DataProfilePubSubMessageParser {
       System.out.printf(
           "Listening for messages on %s for %d seconds.%n", subscriptionName, timeoutSeconds);
       subscriber.awaitTerminated(timeoutSeconds, TimeUnit.SECONDS);
-    }  finally {
+    } catch (TimeoutException ignored) {
+      System.out.println("Done waiting");
+    } finally {
       subscriber.stopAsync();
     }
   }
