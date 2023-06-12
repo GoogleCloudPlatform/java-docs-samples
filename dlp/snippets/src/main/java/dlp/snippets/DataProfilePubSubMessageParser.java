@@ -41,7 +41,7 @@ public class DataProfilePubSubMessageParser {
 
   // Parses messages received from a Google Cloud Pub/Sub subscription into a
   // DataProfilePubSubMessage object.
-  public static void parseMessage(String projectId, String subscriptionId) throws TimeoutException {
+  public static void parseMessage(String projectId, String subscriptionId) {
     int timeoutSeconds = 5;
 
     // The `ProjectSubscriptionName.of` method creates a fully qualified identifier
