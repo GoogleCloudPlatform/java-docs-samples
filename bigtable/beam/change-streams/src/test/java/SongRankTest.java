@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -105,7 +106,8 @@ public class SongRankTest {
     FileInputStream fis = new FileInputStream(
         TEST_OUTPUT_LOCATION + "/song-charts/GlobalWindow-pane-0-00000-of-00001.txt");
     byte[] data = new byte[(int) fis.available()];
-    String content = new String(data, "UTF-8");
+    fis.read(data);
+    String content = new String(data, StandardCharsets.UTF_8);
     assertThat(content).contains("[KV{song 1, 3}, KV{song 2, 1}]");
     assertThat(content).contains("[KV{song 1, 5}, KV{song 2, 1}]");
 
