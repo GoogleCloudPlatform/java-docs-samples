@@ -19,6 +19,7 @@ package contentwarehouse.v1;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -26,12 +27,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class QuickStartTest {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
+
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION = "us"; 
-  private static final String USER_ID = "user:andrewchasin@google.com"; 
+  private static final String LOCATION = "us";
+  private static final String USER_ID = "user:andrewchasin@google.com";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;

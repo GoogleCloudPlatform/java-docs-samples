@@ -67,7 +67,7 @@ public class PubsubliteToGcsIT {
   @Rule public final TestPipeline testPipeline = TestPipeline.create();
 
   private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String cloudRegion = "us-east1";
+  private static final String cloudRegion = "us-central1";
   private static final char zoneId = 'b';
   private static final String suffix = UUID.randomUUID().toString().substring(0, 6);
   private static final String topicId = "pubsublite-streaming-analytics-topic-" + suffix;

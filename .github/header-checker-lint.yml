@@ -36,3 +36,5 @@ sourceFileExtensions:
   - 'txt'
   - 'yaml'
   - 'yml'
+ignoreFiles:
+  - '.github/auto-label.yaml'

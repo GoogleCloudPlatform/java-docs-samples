@@ -34,6 +34,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalURLFetchServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.cloud.datastore.QueryResults;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.collect.ImmutableMap;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -43,12 +44,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -59,6 +62,8 @@ import org.mockito.MockitoAnnotations;
 /** Unit tests for {@link TicTacToeServlet}. */
 @RunWith(JUnit4.class)
 public class TicTacToeServletTest {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+
   private static final String USER_EMAIL = "whisky@tangofoxtr.ot";
   private static final String USER_ID = "whiskytangofoxtrot";
   private static final String FIREBASE_DB_URL = "http://firebase.com/dburl";
@@ -71,8 +76,10 @@ public class TicTacToeServletTest {
                   .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
               new LocalUserServiceTestConfig(),
               new LocalURLFetchServiceTestConfig())
-          .setEnvEmail(USER_EMAIL)
-          .setEnvAuthDomain("gmail.com")
+              .setEnvInstance(
+                  String.valueOf(ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE)))
+              .setEnvEmail(USER_EMAIL)
+              .setEnvAuthDomain("gmail.com")
               .setEnvAttributes(new HashMap<>(ImmutableMap
                   .of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 

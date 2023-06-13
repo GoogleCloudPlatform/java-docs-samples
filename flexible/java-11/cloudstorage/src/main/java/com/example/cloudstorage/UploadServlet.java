@@ -38,7 +38,8 @@ import javax.servlet.http.Part;
 @MultipartConfig()
 public class UploadServlet extends HttpServlet {
 
-  private static final String BUCKET_NAME = System.getenv("BUCKET_NAME");
+  private static final String BUCKET_NAME =
+      System.getenv().getOrDefault("BUCKET_NAME", "my-test-bucket");
   private static Storage storage = null;
 
   public UploadServlet() {

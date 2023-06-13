@@ -91,9 +91,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.1.3</version>
+      <version>1.1.4</version>
       <scope>test</scope>
     </dependency>
     <!-- [End_test_dependencies] -->

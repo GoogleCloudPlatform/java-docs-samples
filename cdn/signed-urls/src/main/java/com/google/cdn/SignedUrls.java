@@ -66,7 +66,7 @@ public class SignedUrls {
   public static String getSignature(byte[] privateKey, String input)
       throws InvalidKeyException, NoSuchAlgorithmException {
 
-    final String algorithm = "HmacSHA1";
+    final String algorithm = "HmacSHA256";
     final int offset = 0;
     Key key = new SecretKeySpec(privateKey, offset, privateKey.length, algorithm);
     Mac mac = Mac.getInstance(algorithm);
