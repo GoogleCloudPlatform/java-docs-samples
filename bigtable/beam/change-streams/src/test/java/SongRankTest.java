@@ -71,15 +71,23 @@ public class SongRankTest {
     String[] args = {"--bigtableProjectId=" + projectId, "--bigtableInstanceId=" + instanceId,
         "--bigtableTableId=" + TABLE_ID, "--outputLocation=" + TEST_OUTPUT_LOCATION};
 
+    // Stagger tests for versions to avoid conflicts.
+    Integer javaVersion = Runtime.version().version().get(0);
+    if (javaVersion == 11) {
+      Thread.sleep(30 * 1000);
+    } else if (javaVersion == 17) {
+      Thread.sleep(60 * 1000);
+    }
+
     new Thread(() -> SongRank.main(args)).start();
 
     // Pause for job to start.
-    Thread.sleep(0 * 1000);
+    Thread.sleep(10 * 1000);
 
     BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId);
     String rowKey = "user-1234";
-    String song1 = "song " + UUID.randomUUID().toString().substring(0, 5);
-    String song2 = "song " + UUID.randomUUID().toString().substring(0, 5);
+    String song1 = "song 1-" + UUID.randomUUID().toString().substring(0, 5);
+    String song2 = "song 2-" + UUID.randomUUID().toString().substring(0, 5);
 
     for (int i = 0; i < 3; i++) {
       dataClient.mutateRow(
