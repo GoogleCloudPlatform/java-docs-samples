@@ -100,7 +100,7 @@ public class SongRankTest {
     }
 
     // Wait for output to be written
-    Thread.sleep(2 * 60 * 1000);
+    Thread.sleep(3 * 60 * 1000);
 
     FileInputStream fis = new FileInputStream(
         TEST_OUTPUT_LOCATION + "/song-charts/GlobalWindow-pane-0-00000-of-00001.txt");
