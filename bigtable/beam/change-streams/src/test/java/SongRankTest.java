@@ -39,6 +39,7 @@ public class SongRankTest {
   private static final String TABLE_ID = "song-rank-test";
   private static final String COLUMN_FAMILY_NAME = "cf";
   private static final String COLUMN_NAME = "song";
+  private static final String TEST_OUTPUT_LOCATION = "test-output/";
 
   private static String projectId;
   private static String instanceId;
@@ -66,7 +67,6 @@ public class SongRankTest {
 
   @Test
   public void testSongRank() throws IOException, InterruptedException {
-    String TEST_OUTPUT_LOCATION = "test-output/";
     String[] args = {
         "--bigtableProjectId=" + projectId,
         "--bigtableInstanceId=" + instanceId,
