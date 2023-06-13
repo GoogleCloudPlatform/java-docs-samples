@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -67,12 +68,8 @@ public class SongRankTest {
 
   @Test
   public void testSongRank() throws IOException, InterruptedException {
-    String[] args = {
-        "--bigtableProjectId=" + projectId,
-        "--bigtableInstanceId=" + instanceId,
-        "--bigtableTableId=" + TABLE_ID,
-        "--outputLocation=" + TEST_OUTPUT_LOCATION
-    };
+    String[] args = {"--bigtableProjectId=" + projectId, "--bigtableInstanceId=" + instanceId,
+        "--bigtableTableId=" + TABLE_ID, "--outputLocation=" + TEST_OUTPUT_LOCATION};
 
     new Thread(() -> SongRank.main(args)).start();
 
@@ -81,24 +78,26 @@ public class SongRankTest {
 
     BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId);
     String rowKey = "user-1234";
+    String song1 = "song " + UUID.randomUUID().toString().substring(0, 5);
+    String song2 = "song " + UUID.randomUUID().toString().substring(0, 5);
 
     for (int i = 0; i < 3; i++) {
-      dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey)
-          .setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, "song 1"));
+      dataClient.mutateRow(
+          RowMutation.create(TABLE_ID, rowKey).setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, song1));
     }
-    dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey)
-        .setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, "song 2"));
+    dataClient.mutateRow(
+        RowMutation.create(TABLE_ID, rowKey).setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, song2));
 
     // Pause for a second set of writes
     Thread.sleep(15 * 1000);
 
     // Send second batch of writes
     for (int i = 0; i < 5; i++) {
-      dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey)
-          .setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, "song 1"));
+      dataClient.mutateRow(
+          RowMutation.create(TABLE_ID, rowKey).setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, song1));
     }
-    dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey)
-        .setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, "song 2"));
+    dataClient.mutateRow(
+        RowMutation.create(TABLE_ID, rowKey).setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, song2));
 
     // Wait for output to be written
     Thread.sleep(2 * 60 * 1000);
@@ -108,12 +107,12 @@ public class SongRankTest {
     byte[] data = new byte[(int) fis.available()];
     fis.read(data);
     String content = new String(data, StandardCharsets.UTF_8);
-    assertThat(content).contains("[KV{song 1, 3}, KV{song 2, 1}]");
-    assertThat(content).contains("[KV{song 1, 5}, KV{song 2, 1}]");
+    assertThat(content).contains("[KV{" + song1 + ", 3}, KV{" + song2 + ", 1}]");
+    assertThat(content).contains("[KV{" + song1 + ", 5}, KV{" + song2 + ", 1}]");
 
     String output = bout.toString();
-    assertThat(output).contains("[KV{song 1, 3}, KV{song 2, 1}]");
-    assertThat(output).contains("[KV{song 1, 5}, KV{song 2, 1}]");
+    assertThat(output).contains("[KV{" + song1 + ", 3}, KV{" + song2 + ", 1}]");
+    assertThat(output).contains("[KV{" + song1 + ", 5}, KV{" + song2 + ", 1}]");
 
     FileUtils.deleteDirectory(new File(TEST_OUTPUT_LOCATION));
   }
