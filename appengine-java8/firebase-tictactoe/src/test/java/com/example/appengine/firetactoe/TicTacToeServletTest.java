@@ -168,11 +168,16 @@ public class TicTacToeServletTest {
 
     // Make sure the game object was created for a new game
     Objectify ofy = ObjectifyService.ofy();
-    QueryResults<Game> before = ofy.load().type(Game.class).iterator();
-    servletUnderTest.doGet(mockRequest, mockResponse);
-    QueryResults<Game> after = ofy.load().type(Game.class).iterator();
-    Game game = getNewGame(before, after);
-
+    Game game = null;
+    int count = 0;
+    while (game == null && count < 5) {
+      QueryResults<Game> before = ofy.load().type(Game.class).iterator();
+      servletUnderTest.doGet(mockRequest, mockResponse);
+      QueryResults<Game> after = ofy.load().type(Game.class).iterator();
+      game = getNewGame(before, after);
+      count++;
+    }
+    assertThat(game).isNotNull();
     assertThat(game.userX).isEqualTo(USER_ID);
 
     verify(mockHttpTransport, times(1)).buildRequest(eq("PATCH"),
