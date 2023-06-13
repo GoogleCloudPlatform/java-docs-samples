@@ -29,12 +29,12 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class PredictTextExtractionSampleTest {
+public class PredictTextSummarizationSampleTest {
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
   private static final String INSTANCE =
-      "{\"content\": \"Background: There is evidence that there have been significant changes \n"
+      "{ \"content\": \"Background: There is evidence that there have been significant changes \n"
           + "in Amazon rainforest vegetation over the last 21,000 years through the Last \n"
           + "Glacial Maximum (LGM) and subsequent deglaciation. Analyses of sediment \n"
           + "deposits from Amazon basin paleo lakes and from the Amazon Fan indicate that \n"
@@ -74,7 +74,7 @@ public class PredictTextExtractionSampleTest {
   private static final String PARAMETERS =
       "{\n"
           + "  \"temperature\": 0,\n"
-          + "  \"maxDecodeSteps\": 32,\n"
+          + "  \"maxOutputTokens\": 32,\n"
           + "  \"topP\": 0,\n"
           + "  \"topK\": 1\n"
           + "}";
@@ -113,9 +113,9 @@ public class PredictTextExtractionSampleTest {
   }
 
   @Test
-  public void testPredictTextExtraction() throws IOException {
+  public void testPredictTextSummarization() throws IOException {
     // Act
-    PredictTextExtractionSample.predictTextExtraction(
+    PredictTextSummarizationSample.predictTextSummarization(
         INSTANCE, PARAMETERS, PROJECT, LOCATION, PUBLISHER, MODEL);
 
     // Assert

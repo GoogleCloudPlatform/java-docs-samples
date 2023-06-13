@@ -29,37 +29,15 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class PredictChatPromptSampleTest {
+public class PredictTextEmbeddingsSampleTest {
+
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
-  private static final String INSTANCE =
-      "{\n"
-          + "   \"context\":  \"My name is Ned. You are my personal assistant. My favorite movies "
-          + "are Lord of the Rings and Hobbit.\",\n"
-          + "   \"examples\": [ { \n"
-          + "       \"input\": {\"content\": \"Who do you work for?\"},\n"
-          + "       \"output\": {\"content\": \"I work for Ned.\"}\n"
-          + "    },\n"
-          + "    { \n"
-          + "       \"input\": {\"content\": \"What do I like?\"},\n"
-          + "       \"output\": {\"content\": \"Ned likes watching movies.\"}\n"
-          + "    }],\n"
-          + "   \"messages\": [\n"
-          + "    { \n"
-          + "       \"author\": \"user\",\n"
-          + "       \"content\": \"Are my favorite movies based on a book series?\"\n"
-          + "    }]\n"
-          + "}";
-  private static final String PARAMETERS =
-      "{\n"
-          + "  \"temperature\": 0.3,\n"
-          + "  \"maxDecodeSteps\": 200,\n"
-          + "  \"topP\": 0.8,\n"
-          + "  \"topK\": 40\n"
-          + "}";
+  private static final String LOCATION = "us-central1";
+  private static final String INSTANCE = "{ \"content\": \"What is life?\"}";
   private static final String PUBLISHER = "google";
-  private static final String MODEL = "chat-bison@001";
+  private static final String MODEL = "textembedding-gecko@001";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -92,9 +70,10 @@ public class PredictChatPromptSampleTest {
   }
 
   @Test
-  public void testPredictChatPrompt() throws IOException {
+  public void testPredictTextEmbeddings() throws IOException {
     // Act
-    PredictChatPromptSample.predictChatPrompt(INSTANCE, PARAMETERS, PROJECT, PUBLISHER, MODEL);
+    PredictTextEmbeddingsSample.predictTextEmbeddings(
+        INSTANCE, PROJECT, LOCATION, PUBLISHER, MODEL);
 
     // Assert
     String got = bout.toString();

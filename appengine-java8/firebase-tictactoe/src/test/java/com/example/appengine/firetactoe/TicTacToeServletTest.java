@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,8 +76,10 @@ public class TicTacToeServletTest {
                   .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
               new LocalUserServiceTestConfig(),
               new LocalURLFetchServiceTestConfig())
-          .setEnvEmail(USER_EMAIL)
-          .setEnvAuthDomain("gmail.com")
+              .setEnvInstance(
+                  String.valueOf(ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE)))
+              .setEnvEmail(USER_EMAIL)
+              .setEnvAuthDomain("gmail.com")
               .setEnvAttributes(new HashMap<>(ImmutableMap
                   .of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
