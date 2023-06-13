@@ -74,7 +74,7 @@ public class SongRankTest {
     new Thread(() -> SongRank.main(args)).start();
 
     // Pause for job to start.
-    Thread.sleep(10 * 1000);
+    Thread.sleep(0 * 1000);
 
     BigtableDataClient dataClient = BigtableDataClient.create(projectId, instanceId);
     String rowKey = "user-1234";
@@ -100,7 +100,13 @@ public class SongRankTest {
     }
 
     // Wait for output to be written
-    Thread.sleep(3 * 60 * 1000);
+    Thread.sleep(2 * 60 * 1000);
+
+    String output = bout.toString();
+    assertThat(output).contains("KV{" + song1 + ", 3}");
+    assertThat(output).contains("KV{" + song2 + ", 1}");
+    assertThat(output).contains("KV{" + song1 + ", 5}");
+    assertThat(output).contains("KV{" + song2 + ", 5}");
 
     FileInputStream fis = new FileInputStream(
         TEST_OUTPUT_LOCATION + "/song-charts/GlobalWindow-pane-0-00000-of-00001.txt");
@@ -111,12 +117,6 @@ public class SongRankTest {
     assertThat(content).contains("KV{" + song2 + ", 1}");
     assertThat(content).contains("KV{" + song1 + ", 5}");
     assertThat(content).contains("KV{" + song2 + ", 5}");
-
-    String output = bout.toString();
-    assertThat(output).contains("KV{" + song1 + ", 3}");
-    assertThat(output).contains("KV{" + song2 + ", 1}");
-    assertThat(output).contains("KV{" + song1 + ", 5}");
-    assertThat(output).contains("KV{" + song2 + ", 5}");
 
     FileUtils.deleteDirectory(new File(TEST_OUTPUT_LOCATION));
   }
