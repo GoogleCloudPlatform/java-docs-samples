@@ -89,7 +89,7 @@ public class SongRankTest {
         RowMutation.create(TABLE_ID, rowKey).setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, song2));
 
     // Pause for a second set of writes
-    Thread.sleep(15 * 1000);
+    Thread.sleep(20 * 1000);
 
     // Send second batch of writes
     for (int i = 0; i < 5; i++) {
@@ -100,7 +100,7 @@ public class SongRankTest {
     }
 
     // Wait for output to be written
-    Thread.sleep(2 * 60 * 1000);
+    Thread.sleep(3 * 60 * 1000);
 
     String output = bout.toString();
     assertThat(output).contains("KV{" + song1 + ", 3}");

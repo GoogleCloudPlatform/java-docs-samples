@@ -66,7 +66,6 @@ public class SongRank {
             Window.<String>into(new GlobalWindows())
                 .triggering(
                     Repeatedly.forever(
-
                         AfterProcessingTime
                             .pastFirstElementInPane()
                             .plusDelayOf(Duration.standardSeconds(10))
