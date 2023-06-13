@@ -70,12 +70,13 @@ public class SongRankTest {
   public void testSongRank() throws IOException, InterruptedException {
     String[] args = {"--bigtableProjectId=" + projectId, "--bigtableInstanceId=" + instanceId,
         "--bigtableTableId=" + TABLE_ID, "--outputLocation=" + TEST_OUTPUT_LOCATION};
+    System.out.println(System.getProperty("java.version"));
 
     // Stagger tests for versions to avoid conflicts.
-    Integer javaVersion = Runtime.version().version().get(0);
-    if (javaVersion == 11) {
+    String javaVersion = System.getProperty("java.version");
+    if (javaVersion.startsWith("11")) {
       Thread.sleep(30 * 1000);
-    } else if (javaVersion == 17) {
+    } else if (javaVersion.startsWith("17")) {
       Thread.sleep(60 * 1000);
     }
 
