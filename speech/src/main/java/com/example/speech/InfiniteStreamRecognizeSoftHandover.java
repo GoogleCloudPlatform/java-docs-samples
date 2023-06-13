@@ -16,6 +16,8 @@
 
 package com.example.speech;
 
+// [START speech_transcribe_infinite_streaming_soft_handover]
+
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ResponseObserver;
 import com.google.api.gax.rpc.StreamController;
@@ -41,8 +43,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.TargetDataLine;
-
-// [START speech_transcribe_infinite_streaming_soft_handover]
 
 /*
  * This class demonstrates how to perform infinite streaming speech recognition using the
