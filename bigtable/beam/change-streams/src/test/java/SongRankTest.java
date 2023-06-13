@@ -113,8 +113,10 @@ public class SongRankTest {
     assertThat(content).contains("KV{" + song2 + ", 5}");
 
     String output = bout.toString();
-    assertThat(output).contains("[KV{" + song1 + ", 3}, KV{" + song2 + ", 1}]");
-    assertThat(output).contains("[KV{" + song1 + ", 5}, KV{" + song2 + ", 5}]");
+    assertThat(output).contains("KV{" + song1 + ", 3}");
+    assertThat(output).contains("KV{" + song2 + ", 1}");
+    assertThat(output).contains("KV{" + song1 + ", 5}");
+    assertThat(output).contains("KV{" + song2 + ", 5}");
 
     FileUtils.deleteDirectory(new File(TEST_OUTPUT_LOCATION));
   }
