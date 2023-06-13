@@ -105,7 +105,7 @@ public class SongRankTest {
     FileInputStream fis = new FileInputStream(
         TEST_OUTPUT_LOCATION + "/song-charts/GlobalWindow-pane-0-00000-of-00001.txt");
     byte[] data = new byte[(int) fis.available()];
-    String content = new String(data, "UTF_8");
+    String content = new String(data, "UTF-8");
     assertThat(content).contains("[KV{song 1, 3}, KV{song 2, 1}]");
     assertThat(content).contains("[KV{song 1, 5}, KV{song 2, 1}]");
 
