@@ -67,8 +67,9 @@ public class SpannerTemplateSample {
     Context.current().withValue(SpannerOptions.CALL_CONTEXT_CONFIGURATOR_KEY,
         SpannerCallContextTimeoutConfigurator.create()
             .withExecuteUpdateTimeout(Duration.ofSeconds(10L))).run(() -> {
-      this.spannerTemplate.executeDmlStatement(Statement.of("delete from Singers where true"));
-    });
+              this.spannerTemplate
+                 .executeDmlStatement(Statement.of("delete from Singers where true"));
+            });
 
     // Insert a new Singer record using a mutation (Commit) with a timeout.
     // NOTE: SpannerTemplate uses mutations for executing data modifications. Mutations are applied
@@ -77,8 +78,8 @@ public class SpannerTemplateSample {
     Context.current().withValue(SpannerOptions.CALL_CONTEXT_CONFIGURATOR_KEY,
         SpannerCallContextTimeoutConfigurator.create()
             .withCommitTimeout(Duration.ofSeconds(10L))).run(() -> {
-      this.spannerTemplate.insert(singer);
-    });
+              this.spannerTemplate.insert(singer);
+            });
   }
 
 }
