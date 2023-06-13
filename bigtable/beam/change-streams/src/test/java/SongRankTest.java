@@ -95,9 +95,9 @@ public class SongRankTest {
     for (int i = 0; i < 5; i++) {
       dataClient.mutateRow(
           RowMutation.create(TABLE_ID, rowKey).setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, song1));
+      dataClient.mutateRow(
+          RowMutation.create(TABLE_ID, rowKey).setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, song2));
     }
-    dataClient.mutateRow(
-        RowMutation.create(TABLE_ID, rowKey).setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, song2));
 
     // Wait for output to be written
     Thread.sleep(2 * 60 * 1000);
@@ -107,12 +107,14 @@ public class SongRankTest {
     byte[] data = new byte[(int) fis.available()];
     fis.read(data);
     String content = new String(data, StandardCharsets.UTF_8);
-    assertThat(content).contains("[KV{" + song1 + ", 3}, KV{" + song2 + ", 1}]");
-    assertThat(content).contains("[KV{" + song1 + ", 5}, KV{" + song2 + ", 1}]");
+    assertThat(content).contains("KV{" + song1 + ", 3}");
+    assertThat(content).contains("KV{" + song2 + ", 1}");
+    assertThat(content).contains("KV{" + song1 + ", 5}");
+    assertThat(content).contains("KV{" + song2 + ", 5}");
 
     String output = bout.toString();
     assertThat(output).contains("[KV{" + song1 + ", 3}, KV{" + song2 + ", 1}]");
-    assertThat(output).contains("[KV{" + song1 + ", 5}, KV{" + song2 + ", 1}]");
+    assertThat(output).contains("[KV{" + song1 + ", 5}, KV{" + song2 + ", 5}]");
 
     FileUtils.deleteDirectory(new File(TEST_OUTPUT_LOCATION));
   }
