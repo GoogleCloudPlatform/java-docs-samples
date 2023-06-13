@@ -46,7 +46,7 @@ public class FilesystemApplicationTests {
 
   @BeforeClass
   public static void ensureEnvVar() {
-    assertTrue(!System.getenv("MNT_DIR").isEmpty());
+    assertTrue("MNT_DIR env var must be defined.", System.getenv("MNT_DIR") != null);
   }
 
   @Test
