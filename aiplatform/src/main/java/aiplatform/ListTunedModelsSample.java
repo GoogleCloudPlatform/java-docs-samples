@@ -23,9 +23,9 @@ package aiplatform;
 
 // [START aiplatform_sdk_list_tuned_models]
 
+import com.google.cloud.aiplatform.v1beta1.ListModelsRequest;
 import com.google.cloud.aiplatform.v1beta1.LocationName;
 import com.google.cloud.aiplatform.v1beta1.Model;
-import com.google.cloud.aiplatform.v1beta1.ListModelsRequest;
 import com.google.cloud.aiplatform.v1beta1.ModelServiceClient;
 import com.google.cloud.aiplatform.v1beta1.ModelServiceClient.ListModelsPagedResponse;
 import com.google.cloud.aiplatform.v1beta1.ModelServiceSettings;
