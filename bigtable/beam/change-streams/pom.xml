@@ -101,5 +101,11 @@
       <groupId>com.google.api</groupId>
       <artifactId>gax</artifactId>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.11.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

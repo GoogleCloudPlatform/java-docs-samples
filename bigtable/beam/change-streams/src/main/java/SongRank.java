@@ -15,36 +15,31 @@
  */
 
 import com.google.cloud.bigtable.data.v2.models.ChangeStreamMutation;
-import com.google.cloud.bigtable.data.v2.models.ChangeStreamMutation.MutationType;
-import com.google.cloud.bigtable.data.v2.models.DeleteCells;
-import com.google.cloud.bigtable.data.v2.models.DeleteFamily;
 import com.google.cloud.bigtable.data.v2.models.Entry;
 import com.google.cloud.bigtable.data.v2.models.SetCell;
 import com.google.protobuf.ByteString;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.bigtable.BigtableIO;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.Count;
 import org.apache.beam.sdk.transforms.DoFn;
-import org.apache.beam.sdk.transforms.FlatMapElements;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.transforms.Top;
+import org.apache.beam.sdk.transforms.windowing.AfterFirst;
+import org.apache.beam.sdk.transforms.windowing.AfterPane;
 import org.apache.beam.sdk.transforms.windowing.AfterProcessingTime;
-import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.GlobalWindows;
 import org.apache.beam.sdk.transforms.windowing.Repeatedly;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.KV;
-import org.apache.beam.sdk.values.TypeDescriptors;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
@@ -55,7 +50,9 @@ public class SongRank {
         PipelineOptionsFactory.fromArgs(args).withValidation().as(
             BigtableOptions.class);
     Pipeline p = Pipeline.create(options);
-    p.apply("Stream from Bigtable",
+
+    p.apply(
+            "Stream from Bigtable",
             BigtableIO.readChangeStream()
                 .withProjectId(options.getBigtableProjectId())
                 .withInstanceId(options.getBigtableInstanceId())
@@ -64,16 +61,44 @@ public class SongRank {
                 .withHeartbeatDuration(Duration.standardSeconds(1))
         )
         .apply("Add key", ParDo.of(new ExtractSongName()))
-        .apply("Windowing", Window.into(FixedWindows.of(Duration.standardSeconds(30))))
-//         .apply("Windowing", Window.<String>into(new GlobalWindows())
-//             .withAllowedLateness(Duration.standardDays(100))
-//             .triggering(Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane()
-//                 .plusDelayOf(Duration.standardSeconds(30))))
-//             .discardingFiredPanes())
+        .apply(
+            "Collect listens in 5 second windows",
+            Window.<String>into(new GlobalWindows())
+                .triggering(
+                    Repeatedly.forever(
+
+                        AfterProcessingTime
+                            .pastFirstElementInPane()
+                            .plusDelayOf(Duration.standardSeconds(10))
+                    ))
+                .discardingFiredPanes())
         .apply(Count.perElement())
         .apply("Top songs", Top.of(5, new SongComparator()).withoutDefaults())
-        .apply("Print", ParDo.of(new PrintFn()));
-    p.run().waitUntilFinish();
+        .apply("Print", ParDo.of(new PrintFn()))
+        .apply(
+            "Collect at least 10 elements or 1 minute of elements",
+            Window.<String>into(new GlobalWindows())
+                .triggering(
+                    Repeatedly.forever(
+                        AfterFirst.of(
+                            AfterPane.elementCountAtLeast(10),
+                            AfterProcessingTime
+                                .pastFirstElementInPane()
+                                .plusDelayOf(Duration.standardMinutes(1)
+                                )
+                        )
+                    ))
+                .discardingFiredPanes())
+        .apply(
+            "Output top songs",
+            TextIO.write()
+                .to(options.getOutputLocation() + "song-charts/")
+                .withSuffix(".txt")
+                .withNumShards(1)
+                .withWindowedWrites()
+        );
+
+    p.run();
   }
 
 
@@ -85,9 +110,9 @@ public class SongRank {
       for (Entry e : Objects.requireNonNull(c.element()).getValue().getEntries()) {
         if (e instanceof SetCell) {
           SetCell setCell = (SetCell) e;
-          if (setCell.getFamilyName().equals("data1") && setCell.getQualifier().toStringUtf8()
-              .equals("data")) {
-            c.outputWithTimestamp(setCell.getValue().toStringUtf8(), c.timestamp());
+          if (setCell.getFamilyName().equals("cf") && setCell.getQualifier().toStringUtf8()
+              .equals("song")) {
+            c.output(setCell.getValue().toStringUtf8());
           }
         }
       }
@@ -103,11 +128,14 @@ public class SongRank {
   }
 
 
-  private static class PrintFn extends DoFn<List<KV<String, Long>>, Void> {
+  private static class PrintFn extends DoFn<List<KV<String, Long>>, String> {
 
     @DoFn.ProcessElement
     public void processElement(ProcessContext c) throws Exception {
-      System.out.println(c.timestamp() + " " + Objects.requireNonNull(c.element()));
+      String result = Instant.now() + " " + Objects.requireNonNull(c.element());
+      System.out.println(result);
+      // System.out.println("hi");
+      c.output(result);
     }
   }
 
@@ -127,7 +155,7 @@ public class SongRank {
     void setBigtableInstanceId(String bigtableInstanceId);
 
     @Description("The Bigtable table ID in the instance.")
-    @Default.String("change-stream-hello-world")
+    @Default.String("song-rank")
     String getBigtableTableId();
 
     void setBigtableTableId(String bigtableTableId);
@@ -137,5 +165,12 @@ public class SongRank {
     String getBigtableAppProfile();
 
     void setBigtableAppProfile(String bigtableAppProfile);
+
+    @Description("The location to write to. Begin with gs:// to write to a Cloud Storage bucket. "
+        + "End with a slash.")
+    @Default.String("gs://your-bucket")
+    String getOutputLocation();
+
+    void setOutputLocation(String value);
   }
 }
