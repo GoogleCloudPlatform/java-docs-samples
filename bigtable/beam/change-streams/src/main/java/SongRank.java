@@ -134,7 +134,6 @@ public class SongRank {
     public void processElement(ProcessContext c) throws Exception {
       String result = Instant.now() + " " + Objects.requireNonNull(c.element());
       System.out.println(result);
-      // System.out.println("hi");
       c.output(result);
     }
   }
