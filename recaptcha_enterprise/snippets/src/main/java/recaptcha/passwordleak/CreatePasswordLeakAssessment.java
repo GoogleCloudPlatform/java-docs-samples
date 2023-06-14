@@ -66,8 +66,8 @@ public class CreatePasswordLeakAssessment {
    * a match in the database.
    *
    * To perform hashing, encryption and verification (steps 1, 2 and 4),
-   * reCAPTCHA Enterprise provides a helper library in Typescript.
-   * See, https://github.com/GoogleCloudPlatform/typescript-recaptcha-password-check-helpers
+   * reCAPTCHA Enterprise provides a helper library in Java.
+   * See, https://github.com/GoogleCloudPlatform/java-recaptcha-password-check-helpers
 
    * If you want to extend this behavior to your own implementation/ languages,
    * make sure to perform the following steps:
