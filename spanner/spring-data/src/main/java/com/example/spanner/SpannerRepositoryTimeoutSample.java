@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google Inc.
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.example.spanner;
 
-// [START spring_data_spanner_repository_timeout_sample]
+// [START spanner_spring_data_repository_timeout_sample]
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.SpannerOptions.SpannerCallContextTimeoutConfigurator;
 import io.grpc.Context;
@@ -54,4 +54,4 @@ public class SpannerRepositoryTimeoutSample {
   }
 
 }
-// [END spring_data_spanner_repository_timeout_sample]
+// [END spanner_spring_data_repository_timeout_sample]
