@@ -17,13 +17,9 @@
 package com.example.spanner;
 
 // [START spring_data_spanner_repository_sample]
-import com.google.cloud.spanner.SpannerOptions;
-import com.google.cloud.spanner.SpannerOptions.SpannerCallContextTimeoutConfigurator;
-import io.grpc.Context;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.threeten.bp.Duration;
 
 /**
  * A quick start code for Spring Data Cloud Spanner.
@@ -43,23 +39,6 @@ public class SpannerRepositorySample {
     int fistNameCount = this.singerRepository.countByFirstName("a first name");
 
     int deletedLastNameCount = this.singerRepository.deleteByLastName("a last name");
-  }
-
-  public void runRepositoryTimeoutExample() {
-    // Run multiple statements (both queries and updates), all with a timeout of 10 seconds.
-    // NOTE: Spring Data Spanner uses mutations for updating data. Mutations are applied using the
-    // Commit RPC. This example therefore sets a timeout value for the Commit RPC.
-    Context context = Context.current().withValue(SpannerOptions.CALL_CONTEXT_CONFIGURATOR_KEY,
-        SpannerCallContextTimeoutConfigurator.create()
-            .withExecuteQueryTimeout(Duration.ofSeconds(10L))
-            .withCommitTimeout(Duration.ofMillis(10L)));
-    context.run(() -> {
-      List<Singer> lastNameSingers = this.singerRepository.findByLastName("a last name");
-
-      int fistNameCount = this.singerRepository.countByFirstName("a first name");
-
-      int deletedLastNameCount = this.singerRepository.deleteByLastName("a last name");
-    });
   }
 
 }
