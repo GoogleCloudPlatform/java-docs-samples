@@ -8,9 +8,9 @@ terraform {
 }
 
 provider "google" {
-  project     = var.project_id
-  region      = var.region
-  zone        = var.zone
+  project = var.project_id
+  region  = var.region
+  zone    = var.zone
 }
 
 # Create a random string to make each run unique.
@@ -147,8 +147,8 @@ module "vertexai" {
 
   platform = "linux"
 
-  create_cmd_entrypoint  = "${path.module}/scripts/vertexai_build.sh"
-  create_cmd_body        = "${var.region} ${random_string.uuid.result} ${google_storage_bucket.tf-fd-bucket.name}"
+  create_cmd_entrypoint = "${path.module}/scripts/vertexai_build.sh"
+  create_cmd_body       = "${var.region} ${random_string.uuid.result} ${google_storage_bucket.tf-fd-bucket.name}"
 
   destroy_cmd_entrypoint = "${path.module}/scripts/vertexai_destroy.sh"
   destroy_cmd_body       = "${var.region} ${random_string.uuid.result}"
@@ -178,7 +178,7 @@ module "load_dataset" {
   source  = "terraform-google-modules/gcloud/google"
   version = "~> 3.0"
 
-  platform = "linux"
+  platform          = "linux"
   module_depends_on = [module.dataflow_pipeline.wait]
 
   create_cmd_entrypoint = "${path.module}/scripts/load_dataset.sh"
