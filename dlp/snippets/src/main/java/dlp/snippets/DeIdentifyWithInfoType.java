@@ -16,7 +16,7 @@
 
 package dlp.snippets;
 
-// [START dlp_deidentify_infotype]
+// [START dlp_deidentify_replace_infotype]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ContentItem;
@@ -92,4 +92,4 @@ public class DeIdentifyWithInfoType {
     }
   }
 }
-// [END dlp_deidentify_infotype]
+// [END dlp_deidentify_replace_infotype]
