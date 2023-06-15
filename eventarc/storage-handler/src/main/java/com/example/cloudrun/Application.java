@@ -16,98 +16,102 @@
 
 package com.example.cloudrun;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.codec.CodecCustomizer;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.codec.CodecConfigurer;
+import org.springframework.http.converter.HttpMessageConverter;
 
 import io.cloudevents.spring.http.CloudEventHttpUtils;
-import io.cloudevents.spring.webflux.CloudEventHttpMessageReader;
-import io.cloudevents.spring.webflux.CloudEventHttpMessageWriter;
-
+import io.cloudevents.spring.mvc.CloudEventHttpMessageConverter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import io.cloudevents.CloudEvent;
-
+import io.cloudevents.rw.CloudEventRWException;
 
 @SpringBootApplication
 @RestController
 public class Application {
 
-  public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
-  }
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
 
-	/**
-	 * Configure an HTTP reader and writer so that we can process CloudEvents over
-     * HTTP via Spring Webflux.
-	 */
 	@Configuration
-	public static class CloudEventHandlerConfiguration implements CodecCustomizer {
+	public static class CloudEventHandlerConfiguration implements WebMvcConfigurer {
 
 		@Override
-		public void customize(CodecConfigurer configurer) {
-			configurer.customCodecs().register(new CloudEventHttpMessageReader());
-			configurer.customCodecs().register(new CloudEventHttpMessageWriter());
+		public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+			converters.add(0, new CloudEventHttpMessageConverter());
 		}
 
 	}
 
-  @PostMapping("/")
-  ResponseEntity<String> handlehttp(@RequestBody String body, @RequestHeader HttpHeaders headers) throws Exception {
-	CloudEvent cloudEvent;
-	try {
-	cloudEvent = CloudEventHttpUtils.fromHttp(headers).withData(body.getBytes()).build();
-	} 
-	catch(Exception e) {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+	ResponseEntity<String> handlehttp(@RequestBody String body, @RequestHeader HttpHeaders headers) throws Exception {
+		CloudEvent cloudEvent;
+		try {
+			cloudEvent = CloudEventHttpUtils.fromHttp(headers).withData(body.getBytes()).build();
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+
+		// CloudEvent information
+		System.out.println("Id: " + cloudEvent.getId());
+		System.out.println("Source: " + cloudEvent.getSource());
+		System.out.println("Type: " + cloudEvent.getType());
+
+		// String json = new String(cloudEvent.getData().toBytes());
+		// LogEntryData.Builder builder = LogEntryData.newBuilder();
+		// JsonFormat.parser().merge(json, builder);
+		// LogEntryData data = builder.build();
+
+		// // Audit log data
+		// logger.info("ProtoPayload: " + data.getProtoPayload());
+		// logger.info("ServiceName: " + data.getProtoPayload().getServiceName());
+		// logger.info("MethodName: " + data.getProtoPayload().getMethodName());
+		// logger.info("ResourceName: " + data.getProtoPayload().getResourceName());
+
+		return ResponseEntity.ok().body("okay");
 	}
 
-    // CloudEvent information
-    System.out.println("Id: " + cloudEvent.getId());
-    System.out.println("Source: " + cloudEvent.getSource());
-    System.out.println("Type: " + cloudEvent.getType());
+	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
+	ResponseEntity<String> handleCloudEvent(@RequestBody CloudEvent cloudEvent) throws Exception {
 
-    // String json = new String(cloudEvent.getData().toBytes());
-    // LogEntryData.Builder builder = LogEntryData.newBuilder();
-    // JsonFormat.parser().merge(json, builder);
-    // LogEntryData data = builder.build();
+		// CloudEvent information
+		System.out.println("Id: " + cloudEvent.getId());
+		System.out.println("Source: " + cloudEvent.getSource());
+		System.out.println("Type: " + cloudEvent.getType());
 
-    // // Audit log data
-    // logger.info("ProtoPayload: " + data.getProtoPayload());
-    // logger.info("ServiceName: " + data.getProtoPayload().getServiceName());
-    // logger.info("MethodName: " + data.getProtoPayload().getMethodName());
-    // logger.info("ResourceName: " + data.getProtoPayload().getResourceName());
+		// String json = new String(cloudEvent.getData().toBytes());
+		// LogEntryData.Builder builder = LogEntryData.newBuilder();
+		// JsonFormat.parser().merge(json, builder);
+		// LogEntryData data = builder.build();
 
-    return ResponseEntity.ok().body("okay");
-  }
-//   @PostMapping("/")
-  ResponseEntity<String> handleCloudEvent(@RequestBody CloudEvent cloudEvent) throws Exception {
+		// // Audit log data
+		// logger.info("ProtoPayload: " + data.getProtoPayload());
+		// logger.info("ServiceName: " + data.getProtoPayload().getServiceName());
+		// logger.info("MethodName: " + data.getProtoPayload().getMethodName());
+		// logger.info("ResourceName: " + data.getProtoPayload().getResourceName());
 
-    // CloudEvent information
-    System.out.println("Id: " + cloudEvent.getId());
-    System.out.println("Source: " + cloudEvent.getSource());
-    System.out.println("Type: " + cloudEvent.getType());
+		return ResponseEntity.ok().body("okay");
+	}
 
-    // String json = new String(cloudEvent.getData().toBytes());
-    // LogEntryData.Builder builder = LogEntryData.newBuilder();
-    // JsonFormat.parser().merge(json, builder);
-    // LogEntryData data = builder.build();
-
-    // // Audit log data
-    // logger.info("ProtoPayload: " + data.getProtoPayload());
-    // logger.info("ServiceName: " + data.getProtoPayload().getServiceName());
-    // logger.info("MethodName: " + data.getProtoPayload().getMethodName());
-    // logger.info("ResourceName: " + data.getProtoPayload().getResourceName());
-
-    return ResponseEntity.ok().body("okay");
-  }
+	// Handle Errors by mapping Exceptions to HTTP Responses.
+	@ExceptionHandler({ IllegalStateException.class, CloudEventRWException.class })
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Invalid CloudEvent received")
+	public void noop() {
+	}
 }
 // [END eventarc_storage_server]

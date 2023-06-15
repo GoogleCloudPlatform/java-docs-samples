@@ -58,9 +58,8 @@ public class ApplicationTests {
 
   @Test
   public void addEmptyBody() throws Exception {
-    System.out.println(this.mockMvc);
     this.mockMvc.perform(post("/")).andDo(print());
-    this.mockMvc.perform(post("/")).andExpect(status().isBadRequest());
+    this.mockMvc.perform(post("/").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
   }
 
   @Test
@@ -74,7 +73,7 @@ public class ApplicationTests {
   public void addInvalidMimetype() throws Exception {
     mockMvc
         .perform(post("/").contentType(MediaType.TEXT_HTML).content(mockBody))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isUnsupportedMediaType());
   }
 
   @Test
@@ -84,7 +83,6 @@ public class ApplicationTests {
             post("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mockBody)
-                // .content("{}")
                 .header("ce-id", "test")
                 .header("ce-source", "test")
                 .header("ce-type", "test")
@@ -102,7 +100,7 @@ public class ApplicationTests {
                 .content(mockBody)
                 .header("ce-source", "test")
                 .header("ce-type", "test")
-                .header("ce-specversion", "test")
+                .header("ce-specversion", "1.0")
                 .header("ce-subject", "test"))
         .andExpect(status().isBadRequest());
 
@@ -112,9 +110,8 @@ public class ApplicationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mockBody)
                 .header("ce-id", "test")
-                .header("ce-source", "test")
                 .header("ce-type", "test")
-                .header("ce-specversion", "test"))
+                .header("ce-specversion", "1.0"))
         .andExpect(status().isBadRequest());
   }
 }
