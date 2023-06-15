@@ -16,7 +16,7 @@
 
 package dlp.snippets;
 
-// [START dlp_inspect_data_to_hybrid_job_trigger]
+// [START dlp_inspect_send_data_to_hybrid_job_trigger]
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ActivateJobTriggerRequest;
@@ -116,4 +116,4 @@ public class InspectDataToHybridJobTrigger {
     }
   }
 }
-// [END dlp_inspect_data_to_hybrid_job_trigger]
+// [END dlp_inspect_send_data_to_hybrid_job_trigger]
