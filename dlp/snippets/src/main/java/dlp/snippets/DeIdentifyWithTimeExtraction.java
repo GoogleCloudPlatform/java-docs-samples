@@ -49,40 +49,41 @@ public class DeIdentifyWithTimeExtraction {
             .addHeaders(FieldId.newBuilder().setName("Register Date").build())
             .addRows(
                 Table.Row.newBuilder()
-                    .addValues(Value.newBuilder().setStringValue("Ann").build())
+                    .addValues(Value.newBuilder().setStringValue("Alex").build())
                     .addValues(Value.newBuilder().setStringValue("01/01/1970").build())
                     .addValues(Value.newBuilder().setStringValue("4532908762519852").build())
                     .addValues(Value.newBuilder().setStringValue("07/21/1996").build())
                     .build())
             .addRows(
                 Table.Row.newBuilder()
-                    .addValues(Value.newBuilder().setStringValue("James").build())
+                    .addValues(Value.newBuilder().setStringValue("Charlie").build())
                     .addValues(Value.newBuilder().setStringValue("03/06/1988").build())
                     .addValues(Value.newBuilder().setStringValue("4301261899725540").build())
                     .addValues(Value.newBuilder().setStringValue("04/09/2001").build())
                     .build())
             .build();
-    deIdentifyWithDateShift(projectId, tableToDeIdentify);
+    deIdentifyWithTimeExtraction(projectId, tableToDeIdentify);
   }
 
-  public static Table deIdentifyWithDateShift(String projectId, Table tableToDeIdentify)
+  // De-identifies a table by extracting specific parts of the time (year in this case) from
+  // designated fields.
+  public static Table deIdentifyWithTimeExtraction(String projectId, Table tableToDeIdentify)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Read the contents of the Table
-
+      // Specify what content you want the service to de-identify.
       ContentItem item = ContentItem.newBuilder().setTable(tableToDeIdentify).build();
 
-      // Specify the time part to extract
+      // Specify the time part to extract.
       TimePartConfig timePartConfig =
           TimePartConfig.newBuilder().setPartToExtract(TimePartConfig.TimePart.YEAR).build();
 
       PrimitiveTransformation transformation =
           PrimitiveTransformation.newBuilder().setTimePartConfig(timePartConfig).build();
 
-      // Specify which fields the TimePart should apply too
+      // Specify which fields the TimePart should apply too.
       List<FieldId> dateFields =
           Arrays.asList(
               FieldId.newBuilder().setName("Birth Date").build(),
@@ -97,7 +98,7 @@ public class DeIdentifyWithTimeExtraction {
       RecordTransformations recordTransformations =
           RecordTransformations.newBuilder().addFieldTransformations(fieldTransformation).build();
 
-      // Specify the config for the de-identify request
+      // Construct the configuration for the de-id request and list all desired transformations.
       DeidentifyConfig deidentifyConfig =
           DeidentifyConfig.newBuilder().setRecordTransformations(recordTransformations).build();
 
@@ -109,7 +110,7 @@ public class DeIdentifyWithTimeExtraction {
               .setDeidentifyConfig(deidentifyConfig)
               .build();
 
-      // Send the request and receive response from the service
+      // Send the request and receive response from the service.
       DeidentifyContentResponse response = dlp.deidentifyContent(request);
       System.out.println("Table after de-identification: " + response.getItem().getTable());
       return response.getItem().getTable();

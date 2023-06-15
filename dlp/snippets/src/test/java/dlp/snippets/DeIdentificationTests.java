@@ -606,14 +606,14 @@ public class DeIdentificationTests extends TestBase {
             .addHeaders(FieldId.newBuilder().setName("Register Date").build())
             .addRows(
                 Table.Row.newBuilder()
-                    .addValues(Value.newBuilder().setStringValue("Ann").build())
+                    .addValues(Value.newBuilder().setStringValue("Alex").build())
                     .addValues(Value.newBuilder().setStringValue("01/01/1970").build())
                     .addValues(Value.newBuilder().setStringValue("4532908762519852").build())
                     .addValues(Value.newBuilder().setStringValue("07/21/1996").build())
                     .build())
             .addRows(
                 Table.Row.newBuilder()
-                    .addValues(Value.newBuilder().setStringValue("James").build())
+                    .addValues(Value.newBuilder().setStringValue("Charlie").build())
                     .addValues(Value.newBuilder().setStringValue("03/06/1988").build())
                     .addValues(Value.newBuilder().setStringValue("4301261899725540").build())
                     .addValues(Value.newBuilder().setStringValue("04/09/2001").build())
@@ -627,21 +627,21 @@ public class DeIdentificationTests extends TestBase {
             .addHeaders(FieldId.newBuilder().setName("Register Date").build())
             .addRows(
                 Table.Row.newBuilder()
-                    .addValues(Value.newBuilder().setStringValue("Ann").build())
+                    .addValues(Value.newBuilder().setStringValue("Alex").build())
                     .addValues(Value.newBuilder().setStringValue("1970").build())
                     .addValues(Value.newBuilder().setStringValue("4532908762519852").build())
                     .addValues(Value.newBuilder().setStringValue("1996").build())
                     .build())
             .addRows(
                 Table.Row.newBuilder()
-                    .addValues(Value.newBuilder().setStringValue("James").build())
+                    .addValues(Value.newBuilder().setStringValue("Charlie").build())
                     .addValues(Value.newBuilder().setStringValue("1988").build())
                     .addValues(Value.newBuilder().setStringValue("4301261899725540").build())
                     .addValues(Value.newBuilder().setStringValue("2001").build())
                     .build())
             .build();
     Table table =
-        DeIdentifyWithTimeExtraction.deIdentifyWithDateShift(PROJECT_ID, tableToDeIdentify);
+        DeIdentifyWithTimeExtraction.deIdentifyWithTimeExtraction(PROJECT_ID, tableToDeIdentify);
     String output = bout.toString();
     assertThat(output).contains("Table after de-identification:");
     assertThat(table).isEqualTo(expectedTable);
@@ -650,14 +650,14 @@ public class DeIdentificationTests extends TestBase {
   @Test
   public void testDeIdentifyDataReplaceWithDictionary() throws IOException {
     DeIdentifyDataReplaceWithDictionary.deidentifyDataReplaceWithDictionary(
-        PROJECT_ID, "My name is Alicia Abernathy, and my email address is aabernathy@example.com.");
+        PROJECT_ID, "My name is Charlie and email address is charlie@example.com.");
     String output = bout.toString();
     assertThat(
             ImmutableList.of(
-                "Text after de-identification: My name is Alicia Abernathy, "
-                        + "and my email address is izumi@example.com.",
-                "Text after de-identification: My name is Alicia Abernathy, "
-                        + "and my email address is alex@example.com."))
+                "Text after de-identification: My name is Charlie "
+                        + "and email address is izumi@example.com.",
+                "Text after de-identification: My name is Charlie "
+                        + "and email address is alex@example.com."))
         .contains(output);
   }
 
