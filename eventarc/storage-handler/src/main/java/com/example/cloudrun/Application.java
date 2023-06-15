@@ -38,6 +38,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.google.events.cloud.storage.v1.StorageObjectData;
+import com.google.protobuf.util.JsonFormat;
+
 import io.cloudevents.CloudEvent;
 import io.cloudevents.rw.CloudEventRWException;
 
@@ -59,33 +62,6 @@ public class Application {
 
 	}
 
-	ResponseEntity<String> handlehttp(@RequestBody String body, @RequestHeader HttpHeaders headers) throws Exception {
-		CloudEvent cloudEvent;
-		try {
-			cloudEvent = CloudEventHttpUtils.fromHttp(headers).withData(body.getBytes()).build();
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}
-
-		// CloudEvent information
-		System.out.println("Id: " + cloudEvent.getId());
-		System.out.println("Source: " + cloudEvent.getSource());
-		System.out.println("Type: " + cloudEvent.getType());
-
-		// String json = new String(cloudEvent.getData().toBytes());
-		// LogEntryData.Builder builder = LogEntryData.newBuilder();
-		// JsonFormat.parser().merge(json, builder);
-		// LogEntryData data = builder.build();
-
-		// // Audit log data
-		// logger.info("ProtoPayload: " + data.getProtoPayload());
-		// logger.info("ServiceName: " + data.getProtoPayload().getServiceName());
-		// logger.info("MethodName: " + data.getProtoPayload().getMethodName());
-		// logger.info("ResourceName: " + data.getProtoPayload().getResourceName());
-
-		return ResponseEntity.ok().body("okay");
-	}
-
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
 	ResponseEntity<String> handleCloudEvent(@RequestBody CloudEvent cloudEvent) throws Exception {
 
@@ -94,18 +70,17 @@ public class Application {
 		System.out.println("Source: " + cloudEvent.getSource());
 		System.out.println("Type: " + cloudEvent.getType());
 
-		// String json = new String(cloudEvent.getData().toBytes());
-		// LogEntryData.Builder builder = LogEntryData.newBuilder();
-		// JsonFormat.parser().merge(json, builder);
-		// LogEntryData data = builder.build();
+		String json = new String(cloudEvent.getData().toBytes());
+		StorageObjectData.Builder builder = StorageObjectData.newBuilder();
+		JsonFormat.parser().merge(json, builder);
+		StorageObjectData data = builder.build();
 
-		// // Audit log data
-		// logger.info("ProtoPayload: " + data.getProtoPayload());
-		// logger.info("ServiceName: " + data.getProtoPayload().getServiceName());
-		// logger.info("MethodName: " + data.getProtoPayload().getMethodName());
-		// logger.info("ResourceName: " + data.getProtoPayload().getResourceName());
+		StringBuilder mb = new StringBuilder();
+		mb.append(
+			String.format("Cloud Storage object changed: %s/%s modified at %s\n",
+			data.getBucket(), data.getName(), data.getUpdated()));
 
-		return ResponseEntity.ok().body("okay");
+		return ResponseEntity.ok().body(mb.toString());
 	}
 
 	// Handle Errors by mapping Exceptions to HTTP Responses.

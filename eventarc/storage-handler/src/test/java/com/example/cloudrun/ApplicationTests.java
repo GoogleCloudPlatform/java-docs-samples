@@ -18,7 +18,10 @@ package com.example.cloudrun;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.hamcrest.CoreMatchers.containsString;
+
+import java.net.URI;
 
 
 import org.json.JSONException;
@@ -29,14 +32,21 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.google.events.cloud.storage.v1.StorageObjectData;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
+
+import io.cloudevents.CloudEvent;
+import io.cloudevents.core.v1.CloudEventBuilder;
+import io.cloudevents.spring.http.CloudEventHttpUtils;
+
 @RunWith(SpringRunner.class)
-@SpringBootTest(
-  classes = Application.class
-)
+@SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
 public class ApplicationTests {
 
@@ -44,74 +54,55 @@ public class ApplicationTests {
   MockMvc mockMvc;
 
   String mockBody;
+  String jsondata;
+  CloudEvent testevent;
 
   @Before
-  public void setup() throws JSONException {
-    JSONObject message =
-        new JSONObject()
-            .put("data", "dGVzdA==")
-            .put("messageId", "91010751788941")
-            .put("publishTime", "2017-09-25T23:16:42.302Z")
-            .put("attributes", new JSONObject());
-    mockBody = new JSONObject().put("message", message).toString();
+  public void setup() throws JSONException, InvalidProtocolBufferException {
+    StorageObjectData testdata = StorageObjectData.newBuilder()
+        .setBucket("testbucket")
+        .setName("test-file.txt")
+        .build();
+    jsondata = JsonFormat.printer().print(testdata);
+    testevent = new CloudEventBuilder()
+        .withId("1")
+        .withSource(URI.create("test"))
+        .withSubject("testbucket")
+        .withType("test")
+        .withData("application/json", jsondata.getBytes())
+        .build();
   }
 
   @Test
-  public void addEmptyBody() throws Exception {
-    this.mockMvc.perform(post("/")).andDo(print());
-    this.mockMvc.perform(post("/").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
-  }
-
-  @Test
-  public void addNoMessage() throws Exception {
+  public void testInvalidMimetype() throws Exception {
     mockMvc
-        .perform(post("/").contentType(MediaType.APPLICATION_JSON).content("{}"))
-        .andExpect(status().isBadRequest());
-  }
-
-  @Test
-  public void addInvalidMimetype() throws Exception {
-    mockMvc
-        .perform(post("/").contentType(MediaType.TEXT_HTML).content(mockBody))
+        .perform(post("/").contentType(MediaType.TEXT_HTML).content(jsondata))
         .andExpect(status().isUnsupportedMediaType());
   }
 
   @Test
-  public void addRequiredHeaders() throws Exception {
+  public void withRequiredHeaders() throws Exception {
+    HttpHeaders heads = CloudEventHttpUtils.toHttp(testevent);
     mockMvc
         .perform(
             post("/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mockBody)
-                .header("ce-id", "test")
-                .header("ce-source", "test")
-                .header("ce-type", "test")
-                .header("ce-specversion", "1.0")
-                .header("ce-subject", "test"))
-        .andExpect(status().isOk());
+                .headers(heads)
+                .content(jsondata))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("testbucket/test-file.txt")));
+    
   }
 
   @Test
   public void missingRequiredHeaders() throws Exception {
+    HttpHeaders badHeaders = CloudEventHttpUtils.toHttp(testevent);
+    // remove a required field from the header object.
+    badHeaders.remove("ce-type");
     mockMvc
         .perform(
             post("/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mockBody)
-                .header("ce-source", "test")
-                .header("ce-type", "test")
-                .header("ce-specversion", "1.0")
-                .header("ce-subject", "test"))
-        .andExpect(status().isBadRequest());
-
-    mockMvc
-        .perform(
-            post("/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mockBody)
-                .header("ce-id", "test")
-                .header("ce-type", "test")
-                .header("ce-specversion", "1.0"))
+                .headers(badHeaders)
+                .content(jsondata))
         .andExpect(status().isBadRequest());
   }
 }
