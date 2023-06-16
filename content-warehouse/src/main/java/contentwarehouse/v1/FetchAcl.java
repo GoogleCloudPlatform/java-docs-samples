@@ -16,88 +16,81 @@
 
 package contentwarehouse.v1;
 
-import java.io.IOException;
-
-import org.checkerframework.checker.units.qual.g;
-
-import com.google.cloud.contentwarehouse.v1.Document;
 import com.google.cloud.contentwarehouse.v1.DocumentName;
 import com.google.cloud.contentwarehouse.v1.DocumentServiceClient;
 import com.google.cloud.contentwarehouse.v1.DocumentServiceSettings;
 import com.google.cloud.contentwarehouse.v1.FetchAclRequest;
 import com.google.cloud.contentwarehouse.v1.FetchAclResponse;
-import com.google.cloud.contentwarehouse.v1.GetDocumentRequest;
-import com.google.cloud.contentwarehouse.v1.LocationName;
 import com.google.cloud.contentwarehouse.v1.RequestMetadata;
 import com.google.cloud.contentwarehouse.v1.UserInfo;
 import com.google.cloud.resourcemanager.v3.Project;
 import com.google.cloud.resourcemanager.v3.ProjectName;
 import com.google.cloud.resourcemanager.v3.ProjectsClient;
+import java.io.IOException;
 
 // [START contentwarehouse_fetch_acl]
 
 public class FetchAcl {
-    public static void fetchAcl() throws IOException {
-        // TODO(developer): Replace these variables before running the sample.
-        String projectId = "your-project-id";
-        String location = "your-location"; // Format is "us" or "eu".
-        String userId = "your-user-id"; // Format is user:<user-id>
-        String documentId = "your-documentid";
-        fetchAcl(projectId, location, userId, documentId);
-    }
+  public static void fetchAcl() throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String location = "your-location"; // Format is "us" or "eu".
+    String userId = "your-user-id"; // Format is user:<user-id>
+    String documentId = "your-documentid";
+    fetchAcl(projectId, location, userId, documentId);
+  }
 
-    public static void fetchAcl(String projectId, String location, String userId, String documentId) throws IOException {
-        String projectNumber = getProjectNumber(projectId); 
-        String endpoint = String.format("%s-contentwarehouse.googleapis.com:443", location);
+  public static void fetchAcl(String projectId, String location, String userId, String documentId) 
+      throws IOException {
+    String projectNumber = getProjectNumber(projectId); 
+    String endpoint = String.format("%s-contentwarehouse.googleapis.com:443", location);
 
-        DocumentServiceSettings documentServiceSettings = 
-            DocumentServiceSettings.newBuilder().setEndpoint(endpoint).build();
+    DocumentServiceSettings documentServiceSettings = 
+        DocumentServiceSettings.newBuilder().setEndpoint(endpoint).build();
         
-        try(DocumentServiceClient documentServiceClient = 
+    try (DocumentServiceClient documentServiceClient = 
             DocumentServiceClient.create(documentServiceSettings)) {
 
+      UserInfo userInfo = 
+          UserInfo.newBuilder().setId(userId).build();
 
-            UserInfo userInfo = 
-                UserInfo.newBuilder().setId(userId).build();
+      DocumentName documentName = 
+          DocumentName.ofProjectLocationDocumentName(projectNumber, location, documentId);
 
-            DocumentName documentName = 
-                DocumentName.ofProjectLocationDocumentName(projectNumber, location, documentId);
+      RequestMetadata requestMetadata = 
+          RequestMetadata.newBuilder().setUserInfo(userInfo).build();
 
-            RequestMetadata requestMetadata = 
-                RequestMetadata.newBuilder().setUserInfo(userInfo).build();
+      FetchAclResponse fetchAclResponse = 
+          FetchAclResponse.newBuilder().build();
 
-            FetchAclResponse fetchAclResponse = 
-                FetchAclResponse.newBuilder().build();
-
-            if(documentId != null || documentId == "") { 
-                /* The full resource name of the document, e.g.:
-                projects/{project_number}/locations/{location}/documents/{document_id} */
-                FetchAclRequest fetchAclRequest = 
-                    FetchAclRequest.newBuilder()
-                        .setRequestMetadata(requestMetadata)
-                        .setResource(documentName.toString()).build(); 
-                 fetchAclResponse = documentServiceClient.fetchAcl(fetchAclRequest);
-            } 
-            else {
-                FetchAclRequest fetchAclRequest = 
-                    FetchAclRequest.newBuilder()
-                        .setRequestMetadata(requestMetadata)
-                        .setResource(projectNumber)
-                        .setProjectOwner(true).build();
-                 fetchAclResponse = documentServiceClient.fetchAcl(fetchAclRequest);
-            }
-            System.out.println(fetchAclResponse);
-        }
-    }
-    private static String getProjectNumber(String projectId) throws IOException { 
-        try (ProjectsClient projectsClient = ProjectsClient.create()) { 
-          ProjectName projectName = ProjectName.of(projectId); 
-          Project project = projectsClient.getProject(projectName);
-          String projectNumber = project.getName(); // Format returned is projects/xxxxxx
-          return projectNumber.substring(projectNumber.lastIndexOf("/") + 1);
-        } 
+      if (documentId != null || documentId == "") { 
+        /* The full resource name of the document, e.g.:
+        projects/{project_number}/locations/{location}/documents/{document_id} */
+        FetchAclRequest fetchAclRequest = 
+            FetchAclRequest.newBuilder()
+                .setRequestMetadata(requestMetadata)
+                .setResource(documentName.toString()).build(); 
+        fetchAclResponse = documentServiceClient.fetchAcl(fetchAclRequest);
+      } else {
+        FetchAclRequest fetchAclRequest = 
+            FetchAclRequest.newBuilder()
+                .setRequestMetadata(requestMetadata)
+                .setResource(projectNumber)
+                .setProjectOwner(true).build();
+        fetchAclResponse = documentServiceClient.fetchAcl(fetchAclRequest);
       }
+      System.out.println(fetchAclResponse);
+    }
+  }
 
+  private static String getProjectNumber(String projectId) throws IOException { 
+    try (ProjectsClient projectsClient = ProjectsClient.create()) { 
+      ProjectName projectName = ProjectName.of(projectId); 
+      Project project = projectsClient.getProject(projectName);
+      String projectNumber = project.getName(); // Format returned is projects/xxxxxx
+      return projectNumber.substring(projectNumber.lastIndexOf("/") + 1);
+    } 
+  }
 }
 // [END contentwarehouse_fetch_acl]
 
