@@ -16,6 +16,7 @@
 
 package contentwarehouse.v1;
 
+// [START contentwarehouse_fetch_acl]
 import com.google.cloud.contentwarehouse.v1.DocumentName;
 import com.google.cloud.contentwarehouse.v1.DocumentServiceClient;
 import com.google.cloud.contentwarehouse.v1.DocumentServiceSettings;
@@ -28,7 +29,6 @@ import com.google.cloud.resourcemanager.v3.ProjectName;
 import com.google.cloud.resourcemanager.v3.ProjectsClient;
 import java.io.IOException;
 
-// [START contentwarehouse_fetch_acl]
 
 public class FetchAcl {
   public static void fetchAcl() throws IOException {
