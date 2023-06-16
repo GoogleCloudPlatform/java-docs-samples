@@ -240,9 +240,9 @@ public class SnippetsIT {
 
   @Test
   public void testPasswordLeakAssessment()
-      throws JSONException, IOException, ExecutionException, InterruptedException {
-    String testURL = "http://localhost:" + randomServerPort + "/";
-    createAssessment(testURL, ByteString.EMPTY, AssessmentType.PASSWORD_LEAK);
+      throws IOException, ExecutionException, InterruptedException {
+    passwordleak.CreatePasswordLeakAssessment.
+        checkPasswordLeak(PROJECT_ID, "username", "password");
     assertThat(stdOut.toString()).contains("Is Credential leaked: ");
   }
 
@@ -268,15 +268,6 @@ public class SnippetsIT {
       case ASSESSMENT:
         {
           recaptcha.CreateAssessment.createAssessment(
-              PROJECT_ID,
-              RECAPTCHA_SITE_KEY_1,
-              tokenActionPair.getString("token"),
-              tokenActionPair.getString("action"));
-          break;
-        }
-      case PASSWORD_LEAK:
-        {
-          passwordleak.CreatePasswordLeakAssessment.checkPasswordLeak(
               PROJECT_ID,
               RECAPTCHA_SITE_KEY_1,
               tokenActionPair.getString("token"),
@@ -313,8 +304,7 @@ public class SnippetsIT {
 
   enum AssessmentType {
     ASSESSMENT,
-    ACCOUNT_DEFENDER,
-    PASSWORD_LEAK;
+    ACCOUNT_DEFENDER;
 
     AssessmentType() {}
   }

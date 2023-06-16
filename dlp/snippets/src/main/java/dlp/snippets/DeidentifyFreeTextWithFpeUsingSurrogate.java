@@ -91,7 +91,7 @@ public class DeidentifyFreeTextWithFpeUsingSurrogate {
 
       InfoType surrogateInfoType = InfoType.newBuilder().setName("PHONE_TOKEN").build();
 
-      // Specify how to decrypt the previously de-identified information.
+      // Specify how the info from the inspection should be encrypted.
       CryptoReplaceFfxFpeConfig cryptoReplaceFfxFpeConfig =
           CryptoReplaceFfxFpeConfig.newBuilder()
               .setCryptoKey(cryptoKey)
