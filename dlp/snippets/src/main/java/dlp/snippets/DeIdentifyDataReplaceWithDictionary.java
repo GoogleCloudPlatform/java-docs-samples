@@ -40,17 +40,19 @@ public class DeIdentifyDataReplaceWithDictionary {
     String projectId = "your-project-id";
     // The string to de-identify
     String textToDeIdentify =
-        "My name is Alicia Abernathy, and my email address is aabernathy@example.com.";
+        "My name is Charlie and email address is charlie@example.com.";
     deidentifyDataReplaceWithDictionary(projectId, textToDeIdentify);
   }
 
+  // Performs data de-identification by replacing identified email addresses in a given text with
+  // randomly selected values from a dictionary.
   public static void deidentifyDataReplaceWithDictionary(String projectId, String textToDeIdentify)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Specify the content to be inspected.
+      // Specify what content you want the service to de-identify.
       ContentItem item = ContentItem.newBuilder().setValue(textToDeIdentify).build();
 
       // Specify the type of info the inspection will look for.
@@ -62,7 +64,7 @@ public class DeIdentifyDataReplaceWithDictionary {
       WordList wordList =
           WordList.newBuilder().addWords("izumi@example.com").addWords("alex@example.com").build();
 
-      // Specify the Dictionary to use for selecting replacement values for the finding.
+      // Specify the dictionary to use for selecting replacement values for the finding.
       ReplaceDictionaryConfig replaceDictionaryConfig =
           ReplaceDictionaryConfig.newBuilder().setWordList(wordList).build();
 
@@ -96,7 +98,7 @@ public class DeIdentifyDataReplaceWithDictionary {
       // Use the client to send the API request.
       DeidentifyContentResponse response = dlp.deidentifyContent(request);
 
-      // Parse the response and process results
+      // Parse the response and process results.
       System.out.print("Text after de-identification: " + response.getItem().getValue());
     }
   }

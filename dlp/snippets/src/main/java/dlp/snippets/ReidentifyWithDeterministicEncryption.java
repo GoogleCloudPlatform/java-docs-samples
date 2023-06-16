@@ -62,13 +62,15 @@ public class ReidentifyWithDeterministicEncryption {
     reIdentifyWithDeterminsiticEncryption(projectId, textToReIdentify, wrappedKey, kmsKeyName);
   }
 
+  // Re-identifies sensitive data in a string that was previously de-identified through
+  // deterministic encryption.
   public static void reIdentifyWithDeterminsiticEncryption(
       String projectId, String textToReIdentify, String wrappedKey, String key) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Specify what content you want the service to ReIdentify
+      // Specify what content you want the service to re-identify.
       ContentItem contentItem = ContentItem.newBuilder().setValue(textToReIdentify).build();
 
       CustomInfoType.SurrogateType surrogateType =

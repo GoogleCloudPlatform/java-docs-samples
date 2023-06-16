@@ -70,6 +70,8 @@ public class DeIdentifyTableWithBucketingConfig {
     deIdentifyTableBucketing(projectId, tableToDeIdentify);
   }
 
+  // Performs data de-identification on a table by replacing the values within each bucket with
+  // predefined replacement values.
   public static Table deIdentifyTableBucketing(String projectId, Table tableToDeIdentify)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -104,7 +106,7 @@ public class DeIdentifyTableWithBucketingConfig {
       PrimitiveTransformation primitiveTransformation =
           PrimitiveTransformation.newBuilder().setBucketingConfig(bucketingConfig).build();
 
-      // Specify the field of the table to be de-identified
+      // Specify the field of the table to be de-identified.
       FieldId fieldId = FieldId.newBuilder().setName("HAPPINESS SCORE").build();
 
       FieldTransformation fieldTransformation =
