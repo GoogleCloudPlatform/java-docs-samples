@@ -19,6 +19,8 @@ package dlp.snippets;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.api.core.SettableApiFuture;
@@ -445,6 +447,8 @@ public class InspectTests extends TestBase {
         assertThat(output)
             .contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
         assertThat(output).contains("Info type: EMAIL_ADDRESS");
+        verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+        verify(dlpServiceClient, times(1)).getDlpJob(any(GetDlpJobRequest.class));
       }
     }
   }
@@ -523,6 +527,8 @@ public class InspectTests extends TestBase {
         assertThat(output)
             .contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
         assertThat(output).contains("Info type: EMAIL_ADDRESS");
+        verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+        verify(dlpServiceClient, times(1)).getDlpJob(any(GetDlpJobRequest.class));
       }
     }
   }

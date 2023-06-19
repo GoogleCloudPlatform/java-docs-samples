@@ -19,6 +19,8 @@ package dlp.snippets;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.dlp.v2.DlpServiceClient;
@@ -29,6 +31,7 @@ import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.DeleteDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.GetDlpJobRequest;
+import com.google.privacy.dlp.v2.HybridInspectJobTriggerRequest;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InfoTypeStats;
 import com.google.privacy.dlp.v2.InspectConfig;
@@ -211,7 +214,8 @@ public class JobsTests extends TestBase {
                               .build()))
               .build();
       when(dlpServiceClient.activateJobTrigger(any())).thenReturn(dlpJob);
-      when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
+      when(dlpServiceClient.hybridInspectJobTrigger(any(HybridInspectJobTriggerRequest.class)))
+          .thenReturn(null);
       when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
       InspectDataToHybridJobTrigger.inspectDataToHybridJobTrigger(
           textToDeIdentify, "project_id", "job_trigger_id");
@@ -219,6 +223,10 @@ public class JobsTests extends TestBase {
       assertThat(output).contains("Job status: DONE");
       assertThat(output).contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
       assertThat(output).contains("InfoType: EMAIL_ADDRESS");
+      verify(dlpServiceClient, times(1)).activateJobTrigger(any());
+      verify(dlpServiceClient, times(1))
+          .hybridInspectJobTrigger(any(HybridInspectJobTriggerRequest.class));
+      verify(dlpServiceClient, times(1)).getDlpJob(any(GetDlpJobRequest.class));
     }
   }
 }
