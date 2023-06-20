@@ -46,7 +46,7 @@
     },
     {
       "packagePatterns": [
-        "^io.grpc:grpc-"
+        "io.grpc:(?:protoc-gen-)?grpc-*"
       ],
       "groupName": "gRPC packages"
     },
