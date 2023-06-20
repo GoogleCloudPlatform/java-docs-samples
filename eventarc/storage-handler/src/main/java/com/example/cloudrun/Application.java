@@ -27,7 +27,6 @@ import org.springframework.http.converter.HttpMessageConverter;
 import io.cloudevents.spring.mvc.CloudEventHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 @SpringBootApplication
 public class Application {
 
