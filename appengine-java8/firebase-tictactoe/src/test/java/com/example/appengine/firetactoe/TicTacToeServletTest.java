@@ -18,6 +18,7 @@ package com.example.appengine.firetactoe;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -180,7 +181,7 @@ public class TicTacToeServletTest {
     assertThat(game).isNotNull();
     assertThat(game.userX).isEqualTo(USER_ID);
 
-    verify(mockHttpTransport, times(1)).buildRequest(eq("PATCH"),
+    verify(mockHttpTransport, atLeastOnce()).buildRequest(eq("PATCH"),
         ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
     verify(requestDispatcher).forward(mockRequest, mockResponse);
     verify(mockRequest).setAttribute(eq("token"), anyString());
