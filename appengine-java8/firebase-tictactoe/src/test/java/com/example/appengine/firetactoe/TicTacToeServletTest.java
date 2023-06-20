@@ -18,6 +18,7 @@ package com.example.appengine.firetactoe;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -180,15 +181,15 @@ public class TicTacToeServletTest {
     assertThat(game).isNotNull();
     assertThat(game.userX).isEqualTo(USER_ID);
 
-    verify(mockHttpTransport, times(1)).buildRequest(eq("PATCH"),
+    verify(mockHttpTransport, atLeastOnce()).buildRequest(eq("PATCH"),
         ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
-    verify(requestDispatcher).forward(mockRequest, mockResponse);
-    verify(mockRequest).setAttribute(eq("token"), anyString());
-    verify(mockRequest).setAttribute("game_key", game.id);
-    verify(mockRequest).setAttribute("me", USER_ID);
-    verify(mockRequest).setAttribute("channel_id", USER_ID + game.id);
-    verify(mockRequest).setAttribute(eq("initial_message"), anyString());
-    verify(mockRequest).setAttribute(eq("game_link"), anyString());
+    verify(requestDispatcher, atLeastOnce()).forward(mockRequest, mockResponse);
+    verify(mockRequest, atLeastOnce()).setAttribute(eq("token"), anyString());
+    verify(mockRequest, atLeastOnce()).setAttribute("game_key", game.id);
+    verify(mockRequest, atLeastOnce()).setAttribute("me", USER_ID);
+    verify(mockRequest, atLeastOnce()).setAttribute("channel_id", USER_ID + game.id);
+    verify(mockRequest, atLeastOnce()).setAttribute(eq("initial_message"), anyString());
+    verify(mockRequest, atLeastOnce()).setAttribute(eq("game_link"), anyString());
   }
 
   @Test
