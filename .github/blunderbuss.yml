@@ -16,88 +16,286 @@ assign_issues:
   - GoogleCloudPlatform/java-samples-reviewers
 
 assign_issues_by:
-- labels:
-  - "api: asset"
-  to:
-  - GoogleCloudPlatform/cloud-asset-analysis-team
-  - GoogleCloudPlatform/cloud-asset-platform-team
-- labels:
-  - 'api: logging'
-  - 'api: clouderrorreporting'
-  to:
-  - simonz130
-- labels:
-  - 'api: cloudiot'
-  to:
-  - attilagargyan
-  - simoncsaba-g
-- labels:
-  - 'api: bigtable'
-  - 'api: datastore'
-  - 'api: firestore'
-  to:
-  - GoogleCloudPlatform/cloud-native-db-dpes
-- labels:
-  - 'api: cloudsql'
-  to:
-  - GoogleCloudPlatform/infra-db-dpes
-- labels:
-  - 'api: spanner'
-  to:
-  - rajatbhatta
-- labels:
-  - 'api: dlp'
-  to:
-  - GoogleCloudPlatform/googleapis-dlp
-- labels:
-  - 'api: datacatalog'
-  - 'api: dataplex'
-  to:
-  - GoogleCloudPlatform/googleapi-dataplex
-- labels:
-  - 'api: contentwarehouse'
-  to:
-  - GoogleCloudPlatform/googleapis-contentwarehouse
+  - labels:
+      - "api: cloudiot"
+    to:
+      - GoogleCloudPlatform/api-iot
+  - labels:
+      - "api: pubsub"
+      - "api: pubsublite"
+    to:
+      - GoogleCloudPlatform/api-pubsub-and-pubsublite
+  - labels:
+      - "api: spanner"
+    to:
+      - GoogleCloudPlatform/api-spanner-java
+  - labels:
+      - "api: cloudasset"
+    to:
+      - GoogleCloudPlatform/cloud-asset-analysis-team
+      - GoogleCloudPlatform/cloud-asset-platform-team
+  - labels:
+      - "api: mediatranslation"
+      - "api: media"
+    to:
+      - GoogleCloudPlatform/cloud-media-team
+      - GoogleCloudPlatform/dee-data-ai
+  - labels:
+      - "api: bigtable"
+      - "api: datastore"
+      - "api: firestore"
+    to:
+      - GoogleCloudPlatform/cloud-native-db-dpes
+  - labels:
+      - "api: retail"
+    to:
+      - GoogleCloudPlatform/cloud-retail-team
+  - labels:
+      - "api: storage"
+      - "api: storagetransfer"
+    to:
+      - GoogleCloudPlatform/cloud-storage-dpes
+  - labels:
+      - "api: aiplatform"
+      - "api: automl"
+      - "api: contactcenterinsights"
+      - "api: contentwarehouse"
+      - "api: datacatalog"
+      - "api: dataflow"
+      - "api: datalabeling"
+      - "api: dataproc"
+      - "api: dialogflow"
+      - "api: documentai"
+      - "api: jobs"
+      - "api: jobs"
+      - "api: language"
+      - "api: livestream"
+      - "api: speech"
+      - "api: texttospeech"
+      - "api: dialogflow"
+      - "api: translate"
+      - "api: videointelligence"
+      - "api: videostitcher"
+      - "api: vision"
+      - "api: ml"
+    to:
+      - GoogleCloudPlatform/dee-data-ai
+  - labels:
+      - "api: batch"
+      - "api: bigquery"
+      - "api: compute"
+      - "api: iam"
+      - "api: iap"
+      - "api: privateca"
+      - "api: secretmanager"
+      - "api: securitycenter"
+      - "api: servicedirectory"
+      - "api: webrisk"
+      - "api: cloudkms"
+    to:
+      - GoogleCloudPlatform/dee-infra
+  - labels:
+      - "api: monitoring"
+      - "api: transcoder"
+      - "api: logging"
+      - "api: clouderrorreporting"
+      - "api: cloudoptimization"
+      - "api: cloudtrace"
+    to:
+      - GoogleCloudPlatform/dee-platform-ops
+  - labels:
+      - "api: datacatalog"
+      - "api: dataplex"
+    to:
+      - GoogleCloudPlatform/googleapi-dataplex
+      - GoogleCloudPlatform/dee-data-ai
+  - labels:
+      - "api: auth"
+    to:
+      - GoogleCloudPlatform/googleapis-auth
+      - GoogleCloudPlatform/dee-infra
+  - labels:
+      - "api: content-warehouse"
+    to:
+      - GoogleCloudPlatform/googleapis-contentwarehouse
+      - GoogleCloudPlatform/dee-data-ai
+  - labels:
+      - "api: dlp"
+    to:
+      - GoogleCloudPlatform/googleapis-dlp
+  - labels:
+      - "api: healthcare"
+    to:
+      - GoogleCloudPlatform/healthcare-life-sciences
+  - labels:
+      - "api: cloudsql"
+    to:
+      - GoogleCloudPlatform/infra-db-dpes
+  - labels:
+      - "api: recaptchaenterprise"
+    to:
+      - GoogleCloudPlatform/recaptcha-customer-obsession-reviewers
+      - GoogleCloudPlatform/dee-infra
+  - labels:
+      - "api: appengine"
+    to:
+      - GoogleCloudPlatform/serverless-runtimes
+  - labels:
+      - "api: cloudfunctions"
+      - "api: cloudscheduler"
+      - "api: containeranalysis"
+      - "api: endpoints"
+      - "api: eventarc"
+      - "api: run"
+      - "api: workflows"
+    to:
+      - GoogleCloudPlatform/torus-dpe
+  - labels:
+      - "api: cloudfunctions"
+    to:
+      - GoogleCloudPlatform/functions-framework-google
+      - GoogleCloudPlatform/torus-dpe
 
 assign_prs:
   - GoogleCloudPlatform/java-samples-reviewers
 
 assign_prs_by:
-- labels:
-  - "api: asset"
-  to:
-  - GoogleCloudPlatform/cloud-asset-analysis-team
-  - GoogleCloudPlatform/cloud-asset-platform-team
-- labels:
-  - 'api: logging'
-  - 'api: clouderrorreporting'
-  to:
-  - simonz130
-- labels:
-  - 'api: cloudiot'
-  to:
-  - attilagargyan
-  - simoncsaba-g
-- labels:
-  - 'api: bigtable'
-  - 'api: datastore'
-  - 'api: firestore'
-  to:
-  - GoogleCloudPlatform/cloud-native-db-dpes
-- labels:
-  - 'api: cloudsql'
-  to:
-  - GoogleCloudPlatform/infra-db-dpes
-- labels:
-  - 'api: dlp'
-  to:
-  - GoogleCloudPlatform/googleapis-dlp
-- labels:
-  - 'api: datacatalog'
-  - 'api: dataplex'
-  to:
-  - GoogleCloudPlatform/googleapi-dataplex
-- labels:
-  - 'api: contentwarehouse'
-  to:
-  - GoogleCloudPlatform/googleapis-contentwarehouse
+  - labels:
+      - "api: cloudiot"
+    to:
+      - GoogleCloudPlatform/api-iot
+  - labels:
+      - "api: pubsub"
+      - "api: pubsublite"
+    to:
+      - GoogleCloudPlatform/api-pubsub-and-pubsublite
+  - labels:
+      - "api: spanner"
+    to:
+      - GoogleCloudPlatform/api-spanner-java
+  - labels:
+      - "api: cloudasset"
+    to:
+      - GoogleCloudPlatform/cloud-asset-analysis-team
+      - GoogleCloudPlatform/cloud-asset-platform-team
+  - labels:
+      - "api: mediatranslation"
+      - "api: media"
+    to:
+      - GoogleCloudPlatform/cloud-media-team
+      - GoogleCloudPlatform/dee-data-ai
+  - labels:
+      - "api: bigtable"
+      - "api: datastore"
+      - "api: firestore"
+    to:
+      - GoogleCloudPlatform/cloud-native-db-dpes
+  - labels:
+      - "api: retail"
+    to:
+      - GoogleCloudPlatform/cloud-retail-team
+  - labels:
+      - "api: storage"
+      - "api: storagetransfer"
+    to:
+      - GoogleCloudPlatform/cloud-storage-dpes
+  - labels:
+      - "api: aiplatform"
+      - "api: automl"
+      - "api: contactcenterinsights"
+      - "api: contentwarehouse"
+      - "api: datacatalog"
+      - "api: dataflow"
+      - "api: datalabeling"
+      - "api: dataproc"
+      - "api: dialogflow"
+      - "api: documentai"
+      - "api: jobs"
+      - "api: jobs"
+      - "api: language"
+      - "api: livestream"
+      - "api: speech"
+      - "api: texttospeech"
+      - "api: dialogflow"
+      - "api: translate"
+      - "api: videointelligence"
+      - "api: videostitcher"
+      - "api: vision"
+      - "api: ml"
+    to:
+      - GoogleCloudPlatform/dee-data-ai
+  - labels:
+      - "api: batch"
+      - "api: bigquery"
+      - "api: compute"
+      - "api: iam"
+      - "api: iap"
+      - "api: privateca"
+      - "api: secretmanager"
+      - "api: securitycenter"
+      - "api: servicedirectory"
+      - "api: webrisk"
+      - "api: cloudkms"
+    to:
+      - GoogleCloudPlatform/dee-infra
+  - labels:
+      - "api: monitoring"
+      - "api: transcoder"
+      - "api: logging"
+      - "api: clouderrorreporting"
+      - "api: cloudoptimization"
+      - "api: cloudtrace"
+    to:
+      - GoogleCloudPlatform/dee-platform-ops
+  - labels:
+      - "api: datacatalog"
+      - "api: dataplex"
+    to:
+      - GoogleCloudPlatform/googleapi-dataplex
+      - GoogleCloudPlatform/dee-data-ai
+  - labels:
+      - "api: auth"
+    to:
+      - GoogleCloudPlatform/googleapis-auth
+      - GoogleCloudPlatform/dee-infra
+  - labels:
+      - "api: content-warehouse"
+    to:
+      - GoogleCloudPlatform/googleapis-contentwarehouse
+      - GoogleCloudPlatform/dee-data-ai
+  - labels:
+      - "api: dlp"
+    to:
+      - GoogleCloudPlatform/googleapis-dlp
+  - labels:
+      - "api: healthcare"
+    to:
+      - GoogleCloudPlatform/healthcare-life-sciences
+  - labels:
+      - "api: cloudsql"
+    to:
+      - GoogleCloudPlatform/infra-db-dpes
+  - labels:
+      - "api: recaptchaenterprise"
+    to:
+      - GoogleCloudPlatform/recaptcha-customer-obsession-reviewers
+      - GoogleCloudPlatform/dee-infra
+  - labels:
+      - "api: appengine"
+    to:
+      - GoogleCloudPlatform/serverless-runtimes
+  - labels:
+      - "api: cloudfunctions"
+      - "api: cloudscheduler"
+      - "api: containeranalysis"
+      - "api: endpoints"
+      - "api: eventarc"
+      - "api: run"
+      - "api: workflows"
+    to:
+      - GoogleCloudPlatform/torus-dpe
+  - labels:
+      - "api: cloudfunctions"
+    to:
+      - GoogleCloudPlatform/functions-framework-google
+      - GoogleCloudPlatform/torus-dpe
