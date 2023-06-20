@@ -29,6 +29,12 @@
       "groupName": "Bigtable packages"
     },
     {
+      "packagePatterns": [
+        "^com.google.cloud.sql:"
+      ],
+      "groupName": "Cloud SQL connectors"
+    },
+    {
       "matchPackagePrefixes": [ "com.google" ],
       "allowedVersions": "!/.+-sp\\.[0-9]+$/"
     },
