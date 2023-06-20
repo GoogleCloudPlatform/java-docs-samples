@@ -17,7 +17,7 @@ assign_issues:
 
 assign_issues_by:
 - labels:
-  - "api: asset"
+  - "api: cloudasset"
   to:
   - GoogleCloudPlatform/cloud-asset-analysis-team
   - GoogleCloudPlatform/cloud-asset-platform-team
@@ -64,7 +64,7 @@ assign_prs:
 
 assign_prs_by:
 - labels:
-  - "api: asset"
+  - "api: cloudasset"
   to:
   - GoogleCloudPlatform/cloud-asset-analysis-team
   - GoogleCloudPlatform/cloud-asset-platform-team
