@@ -1,4 +1,4 @@
-# Eventarc - Cloud Storage Events via Audit Logs
+# Eventarc - Cloud Storage Events
 
 This sample shows how to create a service that processes GCS events.
 
@@ -22,6 +22,8 @@ export MY_RUN_SERVICE=gcs-service
 export MY_RUN_CONTAINER=gcs-container
 export MY_GCS_TRIGGER=gcs-trigger
 export MY_GCS_BUCKET="$(gcloud config get-value project)-gcs-bucket"
+export SERVICE_ACCOUNT=gcs-trigger-svcacct
+export PROJECT_ID=$(gcloud config get-value project)
 ```
 
 ## Quickstart
@@ -29,40 +31,50 @@ export MY_GCS_BUCKET="$(gcloud config get-value project)-gcs-bucket"
 Use the [Jib Maven Plugin](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) to build and push your container image:
 
 ```sh
-mvn jib:build -Dimage gcr.io/$(gcloud config get-value project)/$MY_RUN_CONTAINER
+mvn jib:build -Dimage=gcr.io/$PROJECT_ID/$MY_RUN_CONTAINER
 ```
 
 Deploy your Cloud Run service:
 
 ```sh
 gcloud run deploy $MY_RUN_SERVICE \
---image gcr.io/$(gcloud config get-value project)/$MY_RUN_CONTAINER \
+--image gcr.io/$PROJECT_ID/$MY_RUN_CONTAINER \
 --allow-unauthenticated
 ```
 
 Create a _single region_ Cloud Storage bucket:
 
 ```sh
-gsutil mb -p $(gcloud config get-value project) -l us-central1 gs://"$MY_GCS_BUCKET"
+gsutil mb -p $PROJECT_ID -l us-central1 gs://"$MY_GCS_BUCKET"
 ```
 
-Create a Cloud Storage (via Audit Log) trigger:
+Create a Service Account for Eventarc trigger
+
+```
+gcloud iam service-accounts create $SERVICE_ACCOUNT
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/eventarc.eventReceiver"
+```
+
+Create a Cloud Storage trigger:
 
 ```sh
-gcloud alpha events triggers create $MY_GCS_TRIGGER \
---target-service $MY_RUN_SERVICE \
---type com.google.cloud.auditlog.event \
---parameters methodName=storage.buckets.update \
---parameters serviceName=storage.googleapis.com \
---parameters resourceName=projects/_/buckets/"$MY_GCS_BUCKET"
-```
+gcloud eventarc triggers create $MY_GCS_TRIGGER \
+--destination-run-service=$MY_RUN_SERVICE \
+--destination-run-region=us-central1
+--event-filters="type=google.cloud.storage.object.v1.finalized"
+--event-filters="bucket=$MY_GCS_BUCKET"
+--service-account=$SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com
+
 
 ## Test
 
 Test your Cloud Run service by creating a GCS event:
 
 ```sh
-gsutil defstorageclass set NEARLINE gs://$MY_GCS_BUCKET
+touch testfile.txt
+gsutil copy testfile.txt gs://$MY_GCS_BUCKET
 ```
 
 Observe the Cloud Run service printing upon receiving an event in Cloud Logging:
@@ -70,8 +82,8 @@ Observe the Cloud Run service printing upon receiving an event in Cloud Logging:
 ```sh
 gcloud logging read "resource.type=cloud_run_revision AND \
 resource.labels.service_name=$MY_RUN_SERVICE" --project \
-$(gcloud config get-value project) --limit 30 --format 'value(textPayload)'
+$PROJECT_ID --limit 30 --format 'value(textPayload)'
 ```
 
 [run_img]: https://storage.googleapis.com/cloudrun/button.svg
-[run_link]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=run/events-storage
+[run_link]: https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&dir=eventarc/storage-handler
