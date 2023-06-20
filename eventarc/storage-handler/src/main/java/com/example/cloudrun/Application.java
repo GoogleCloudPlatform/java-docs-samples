@@ -18,30 +18,28 @@ package com.example.cloudrun;
 
 // [START eventarc_storage_cloudevent_server]
 
+import io.cloudevents.spring.mvc.CloudEventHttpMessageConverter;
 import java.util.List;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
-
-import io.cloudevents.spring.mvc.CloudEventHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 public class Application {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
 
-	@Configuration
-	public static class CloudEventHandlerConfiguration implements WebMvcConfigurer {
+  @Configuration
+  public static class CloudEventHandlerConfiguration implements WebMvcConfigurer {
 
-		@Override
-		public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-			converters.add(0, new CloudEventHttpMessageConverter());
-		}
-
-	}
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+      converters.add(0, new CloudEventHttpMessageConverter());
+    }
+  }
 }
 // [END eventarc_storage_cloudevent_server]

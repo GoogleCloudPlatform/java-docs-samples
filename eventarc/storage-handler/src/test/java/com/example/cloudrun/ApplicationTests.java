@@ -16,14 +16,18 @@
 
 package com.example.cloudrun;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.google.events.cloud.storage.v1.StorageObjectData;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
+import io.cloudevents.CloudEvent;
+import io.cloudevents.core.v1.CloudEventBuilder;
+import io.cloudevents.spring.http.CloudEventHttpUtils;
 import java.net.URI;
-
-import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,40 +39,30 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.google.events.cloud.storage.v1.StorageObjectData;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
-
-import io.cloudevents.CloudEvent;
-import io.cloudevents.core.v1.CloudEventBuilder;
-import io.cloudevents.spring.http.CloudEventHttpUtils;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
 public class ApplicationTests {
 
-  @Autowired
-  MockMvc mockMvc;
+  @Autowired MockMvc mockMvc;
 
   String mockBody;
   String jsondata;
   CloudEvent testevent;
 
   @Before
-  public void setup() throws JSONException, InvalidProtocolBufferException {
-    StorageObjectData testdata = StorageObjectData.newBuilder()
-        .setBucket("testbucket")
-        .setName("test-file.txt")
-        .build();
+  public void setup() throws InvalidProtocolBufferException {
+    StorageObjectData testdata =
+        StorageObjectData.newBuilder().setBucket("testbucket").setName("test-file.txt").build();
     jsondata = JsonFormat.printer().print(testdata);
-    testevent = new CloudEventBuilder()
-        .withId("1")
-        .withSource(URI.create("test"))
-        .withSubject("testbucket")
-        .withType("test")
-        .withData("application/json", jsondata.getBytes())
-        .build();
+    testevent =
+        new CloudEventBuilder()
+            .withId("1")
+            .withSource(URI.create("test"))
+            .withSubject("testbucket")
+            .withType("test")
+            .withData("application/json", jsondata.getBytes())
+            .build();
   }
 
   @Test
@@ -82,13 +76,9 @@ public class ApplicationTests {
   public void withRequiredHeaders() throws Exception {
     HttpHeaders heads = CloudEventHttpUtils.toHttp(testevent);
     mockMvc
-        .perform(
-            post("/")
-                .headers(heads)
-                .content(jsondata))
+        .perform(post("/").headers(heads).content(jsondata))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("testbucket/test-file.txt")));
-
   }
 
   @Test
@@ -97,10 +87,7 @@ public class ApplicationTests {
     // remove a required field from the header object.
     badHeaders.remove("ce-type");
     mockMvc
-        .perform(
-            post("/")
-                .headers(badHeaders)
-                .content(jsondata))
+        .perform(post("/").headers(badHeaders).content(jsondata))
         .andExpect(status().isBadRequest());
   }
 }
