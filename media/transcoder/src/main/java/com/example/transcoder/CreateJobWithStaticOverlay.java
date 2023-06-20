@@ -43,7 +43,7 @@ public class CreateJobWithStaticOverlay {
     String projectId = "my-project-id";
     String location = "us-central1";
     String inputUri = "gs://my-bucket/my-video-file";
-    String overlayImageUri = "gs://my-bucket/my-overlay-image.jpg"; // Must be a JPEG
+    String overlayImageUri = "gs://my-bucket/my-overlay-image.jpg";
     String outputUri = "gs://my-bucket/my-output-folder/";
 
     createJobWithStaticOverlay(projectId, location, inputUri, overlayImageUri, outputUri);
@@ -70,9 +70,9 @@ public class CreateJobWithStaticOverlay {
       AudioStream audioStream0 =
           AudioStream.newBuilder().setCodec("aac").setBitrateBps(64000).build();
 
-      // Create the overlay image. Only JPEG is supported. Image resolution is based on output
-      // video resolution. To respect the original image aspect ratio, set either x or y to 0.0.
-      // This example stretches the overlay image the full width and half of the height of the
+      // Create the overlay image. Image resolution is based on output video resolution.
+      // To respect the original image aspect ratio, set either x or y to 0.0. This example
+      // stretches the overlay image the full width and half of the height of the
       // output video.
       Overlay.Image overlayImage =
           Overlay.Image.newBuilder()

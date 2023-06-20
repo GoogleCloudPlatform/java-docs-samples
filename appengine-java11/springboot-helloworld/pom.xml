@@ -31,6 +31,7 @@
   <properties>
       <maven.compiler.target>11</maven.compiler.target>
       <maven.compiler.source>11</maven.compiler.source>
+      <spring-boot.version>2.7.11</spring-boot.version>      
   </properties>
 
   <dependencyManagement>
@@ -39,7 +40,7 @@
               <!-- Import dependency management from Spring Boot -->
               <groupId>org.springframework.boot</groupId>
               <artifactId>spring-boot-dependencies</artifactId>
-              <version>2.7.10</version>
+              <version>${spring-boot.version}</version>
               <type>pom</type>
               <scope>import</scope>
           </dependency>
@@ -47,7 +48,7 @@
           <dependency>
               <groupId>org.springframework.cloud</groupId>
               <artifactId>spring-cloud-dependencies</artifactId>
-              <version>2022.0.2</version>
+              <version>2022.0.3</version>
               <type>pom</type>
               <scope>import</scope>
           </dependency>
@@ -70,8 +71,7 @@
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-jetty</artifactId>
-        <version>2.7.10</version>
-    </dependency>
+        </dependency>
   </dependencies>
 
   <build>
@@ -79,7 +79,7 @@
       <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>2.7.10</version>
+          <version>${spring-boot.version}</version>
           <executions>
               <execution>
                   <goals>

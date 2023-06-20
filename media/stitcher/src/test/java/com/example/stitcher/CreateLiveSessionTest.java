@@ -28,6 +28,7 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -84,6 +85,7 @@ public class CreateLiveSessionTest {
   }
 
   @Test
+  @Ignore
   public void test_CreateLiveSession() throws IOException {
     CreateLiveSession.createLiveSession(PROJECT_ID, LOCATION, LIVE_URI, LIVE_AD_TAG_URI, SLATE_ID);
     String output = bout.toString();

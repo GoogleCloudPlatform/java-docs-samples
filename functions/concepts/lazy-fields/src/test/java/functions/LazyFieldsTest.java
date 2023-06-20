@@ -42,7 +42,7 @@ public class LazyFieldsTest {
 
   @Before
   public void beforeTest() throws IOException {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     request = mock(HttpRequest.class);
     response = mock(HttpResponse.class);

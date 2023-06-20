@@ -20,7 +20,7 @@ package snippets.healthcare.fhir;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
 import com.google.api.services.healthcare.v1.CloudHealthcare.Projects.Locations.Datasets.FhirStores;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
@@ -34,7 +34,7 @@ import java.util.Map;
 
 public class FhirStoreCreate {
   private static final String DATASET_NAME = "projects/%s/locations/%s/datasets/%s";
-  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  private static final JsonFactory JSON_FACTORY = new GsonFactory();
   private static final NetHttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
   public static void fhirStoreCreate(String datasetName, String fhirStoreId) throws IOException {
@@ -46,7 +46,7 @@ public class FhirStoreCreate {
     CloudHealthcare client = createClient();
 
     // Configure the FhirStore to be created.
-    Map<String, String> labels = new HashMap<String, String>();
+    Map<String, String> labels = new HashMap<>();
     labels.put("key1", "value1");
     labels.put("key2", "value2");
     String version = "STU3";

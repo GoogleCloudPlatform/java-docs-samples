@@ -49,7 +49,7 @@ public class HelloHttpTest {
 
   @Before
   public void beforeTest() throws IOException {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     // use an empty string as the default request content
     BufferedReader reader = new BufferedReader(new StringReader(""));

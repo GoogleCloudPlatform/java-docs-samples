@@ -75,7 +75,7 @@ public class MetadataKindsTest {
     // Start with unrestricted kind query
     Query q = new Query(Entities.KIND_METADATA_KIND);
 
-    List<Filter> subFils = new ArrayList();
+    List<Filter> subFils = new ArrayList<>();
 
     // Limit to lowercase initial letters
     subFils.add(

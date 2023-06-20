@@ -52,12 +52,12 @@ public class BuildIapRequest {
   }
 
   /**
-   * Clone request and add an IAP Bearer Authorization header with signed JWT token.
+   * Clone request and add an IAP Bearer Authorization header with ID Token.
    *
    * @param request Request to add authorization header
    * @param iapClientId OAuth 2.0 client ID for IAP protected resource
-   * @return Clone of request with Bearer style authorization header with signed jwt token.
-   * @throws IOException exception creating signed JWT
+   * @return Clone of request with Bearer style authorization header with ID Token.
+   * @throws IOException exception creating ID Token
    */
   public static HttpRequest buildIapRequest(HttpRequest request, String iapClientId)
       throws IOException {

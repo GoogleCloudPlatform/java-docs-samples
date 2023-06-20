@@ -29,12 +29,10 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
 
 @RunWith(JUnit4.class)
 public class FeaturestoreSamplesTest {
@@ -80,8 +78,8 @@ public class FeaturestoreSamplesTest {
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
 
     // Delete the featurestore
-    DeleteFeaturestoreSample.deleteFeaturestoreSample(PROJECT_ID, featurestoreId, USE_FORCE,
-        LOCATION, ENDPOINT, TIMEOUT);
+    DeleteFeaturestoreSample.deleteFeaturestoreSample(
+        PROJECT_ID, featurestoreId, USE_FORCE, LOCATION, ENDPOINT, TIMEOUT);
 
     // Assert
     String deleteFeaturestoreResponse = bout.toString();

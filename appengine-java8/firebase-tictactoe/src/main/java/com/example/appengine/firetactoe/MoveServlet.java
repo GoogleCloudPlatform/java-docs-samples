@@ -40,7 +40,7 @@ public class MoveServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String currentUserId = userService.getCurrentUser().getUserId();
 
-    int cell = new Integer(request.getParameter("cell"));
+    int cell = Integer.valueOf(request.getParameter("cell"));
     if (!game.makeMove(cell, currentUserId)) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     } else {

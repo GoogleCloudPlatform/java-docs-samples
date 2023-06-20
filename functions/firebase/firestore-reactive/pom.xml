@@ -18,13 +18,13 @@
 
 <!-- [START functions_java_example_pom] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.example.cloud.functions</groupId>
+  <groupId>com.example.functions</groupId>
   <artifactId>functions-firebase-firestore-reactive</artifactId>
-  
+
   <!-- [END functions_java_example_pom] -->
 
   <parent>
@@ -32,6 +32,18 @@
     <artifactId>shared-configuration</artifactId>
     <version>1.2.0</version>
   </parent>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>libraries-bom</artifactId>
+        <groupId>com.google.cloud</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>26.12.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <!-- [START functions_java_example_pom] -->
   <properties>
@@ -44,14 +56,13 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      <version>3.9.2</version>
     </dependency>
 
     <!-- Required for Function primitives -->
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
-      <version>1.0.4</version>
+      <version>1.1.0</version>
       <scope>provided</scope>
     </dependency>
 
@@ -59,34 +70,32 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.8.2</version>
+      <version>5.9.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.1.3</version>
+      <version>1.1.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>4.11.0</version>
+      <version>5.3.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
-      <version>31.1-jre</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.10.1</version>
     </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -111,7 +120,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version 3.0.0-M4 does not load JUnit5 correctly -->
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
-        <version>3.0.0-M7</version>  
+        <version>3.1.2</version>
         <!-- [END functions_java_example_pom] -->
         <configuration>
           <includes>
@@ -126,7 +135,7 @@
       <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.11.0</version>
         <executions>
           <execution>
             <id>compile</id>

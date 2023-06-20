@@ -44,7 +44,7 @@ public class FirebaseEventProxy {
    */
   public FirebaseEventProxy() {
     String firebaseLocation = "https://crackling-torch-392.firebaseio.com";
-    Map<String, Object> databaseAuthVariableOverride = new HashMap<String, Object>();
+    Map<String, Object> databaseAuthVariableOverride = new HashMap<>();
     // uid and provider will have to match what you have in your firebase security rules
     databaseAuthVariableOverride.put("uid", "gae-firebase-event-proxy");
     databaseAuthVariableOverride.put("provider", "com.example");

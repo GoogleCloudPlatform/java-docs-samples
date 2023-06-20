@@ -41,20 +41,20 @@ public class EventController {
       if (headers.get(field) == null) {
         String msg = String.format("Missing expected header: %s.", field);
         System.out.println(msg);
-        return new ResponseEntity<String>(msg, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
       }
     }
 
     if (headers.get("ce-subject") == null) {
       String msg = "Missing expected header: ce-subject.";
       System.out.println(msg);
-      return new ResponseEntity<String>(msg, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
     }
 
     String ceSubject = headers.get("ce-subject");
     String msg = "Detected change in Cloud Storage bucket: " + ceSubject;
     System.out.println(msg);
-    return new ResponseEntity<String>(msg, HttpStatus.OK);
+    return new ResponseEntity<>(msg, HttpStatus.OK);
   }
 }
 // [END eventarc_audit_storage_handler]

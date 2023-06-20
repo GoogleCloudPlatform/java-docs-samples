@@ -18,7 +18,6 @@ package aiplatform;
 
 // [START aiplatform_predict_image_object_detection_sample]
 
-import com.google.api.client.util.Base64;
 import com.google.cloud.aiplatform.util.ValueConverter;
 import com.google.cloud.aiplatform.v1.EndpointName;
 import com.google.cloud.aiplatform.v1.PredictResponse;
@@ -33,6 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class PredictImageObjectDetectionSample {
@@ -60,7 +60,7 @@ public class PredictImageObjectDetectionSample {
       String location = "us-central1";
       EndpointName endpointName = EndpointName.of(project, location, endpointId);
 
-      byte[] contents = Base64.encodeBase64(Files.readAllBytes(Paths.get(fileName)));
+      byte[] contents = Base64.getEncoder().encode(Files.readAllBytes(Paths.get(fileName)));
       String content = new String(contents, StandardCharsets.UTF_8);
 
       ImageObjectDetectionPredictionParams params =

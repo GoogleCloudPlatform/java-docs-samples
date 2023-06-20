@@ -23,13 +23,24 @@ import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.collect.ImmutableList;
+import com.google.privacy.dlp.v2.BigQueryField;
+import com.google.privacy.dlp.v2.BigQueryTable;
+import com.google.privacy.dlp.v2.CloudStoragePath;
+import com.google.privacy.dlp.v2.CreateStoredInfoTypeRequest;
+import com.google.privacy.dlp.v2.DeleteStoredInfoTypeRequest;
 import com.google.privacy.dlp.v2.FieldId;
+import com.google.privacy.dlp.v2.LargeCustomDictionaryConfig;
+import com.google.privacy.dlp.v2.LocationName;
+import com.google.privacy.dlp.v2.ProjectStoredInfoTypeName;
+import com.google.privacy.dlp.v2.StoredInfoType;
+import com.google.privacy.dlp.v2.StoredInfoTypeConfig;
 import com.google.privacy.dlp.v2.Table;
 import com.google.privacy.dlp.v2.Table.Row;
 import com.google.privacy.dlp.v2.Value;
-import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PushConfig;
+import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.TopicName;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.UUID;
 import org.junit.AfterClass;
@@ -49,8 +60,8 @@ public class InspectTests extends TestBase {
   private static final UUID testRunUuid = UUID.randomUUID();
   private static final TopicName topicName =
       TopicName.of(PROJECT_ID, String.format("%s-%s", TOPIC_ID, testRunUuid));
-  private static final ProjectSubscriptionName subscriptionName =
-      ProjectSubscriptionName.of(
+  private static final SubscriptionName subscriptionName =
+      SubscriptionName.of(
           PROJECT_ID, String.format("%s-%s", SUBSCRIPTION_ID, testRunUuid.toString()));
 
   @Override
@@ -100,6 +111,66 @@ public class InspectTests extends TestBase {
     }
   }
 
+  public static void createStoredInfoType(String projectId, String outputPath, String infoTypeId)
+      throws IOException, InterruptedException {
+    try (DlpServiceClient dlp = DlpServiceClient.create()) {
+
+      // Optionally set a display name and a description.
+      String displayName = "GitHub usernames";
+      String description = "Dictionary of GitHub usernames used in commits";
+
+      CloudStoragePath cloudStoragePath = CloudStoragePath.newBuilder().setPath(outputPath).build();
+
+      BigQueryTable table =
+          BigQueryTable.newBuilder()
+              .setProjectId("bigquery-public-data")
+              .setTableId("github_nested")
+              .setDatasetId("samples")
+              .build();
+
+      BigQueryField bigQueryField =
+          BigQueryField.newBuilder()
+              .setTable(table)
+              .setField(FieldId.newBuilder().setName("actor").build())
+              .build();
+
+      LargeCustomDictionaryConfig largeCustomDictionaryConfig =
+          LargeCustomDictionaryConfig.newBuilder()
+              .setOutputPath(cloudStoragePath)
+              .setBigQueryField(bigQueryField)
+              .build();
+
+      StoredInfoTypeConfig storedInfoTypeConfig =
+          StoredInfoTypeConfig.newBuilder()
+              .setDisplayName(displayName)
+              .setDescription(description)
+              .setLargeCustomDictionary(largeCustomDictionaryConfig)
+              .build();
+
+      // Combine configurations into a request for the service.
+      CreateStoredInfoTypeRequest createStoredInfoType =
+          CreateStoredInfoTypeRequest.newBuilder()
+              .setParent(LocationName.of(projectId, "global").toString())
+              .setConfig(storedInfoTypeConfig)
+              .setStoredInfoTypeId(infoTypeId)
+              .build();
+
+      // Send the request and receive response from the service.
+      StoredInfoType response = dlp.createStoredInfoType(createStoredInfoType);
+
+      // Wait for the creation of Stored InfoType.
+      boolean isReady = false;
+      StoredInfoType storedInfoType = null;
+      while (!isReady) {
+        storedInfoType = dlp.getStoredInfoType(response.getName());
+        if (storedInfoType.getCurrentVersion().getState().toString().equals("READY")) {
+          isReady = true;
+        } else {
+          Thread.sleep(5000);
+        }
+      }
+    }
+  }
 
   @Test
   public void testInspectPhoneNumber() throws Exception {
@@ -406,5 +477,61 @@ public class InspectTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Findings: 2");
     assertThat(output).contains("Info type: C_MRN");
+  }
+
+  @Test
+  public void testInspectStringAugmentInfoType() throws Exception {
+    InspectStringAugmentInfoType.inspectStringAugmentInfoType(
+        PROJECT_ID, "The patient's name is Quasimodo", Arrays.asList("quasimodo"));
+    String output = bout.toString();
+    assertThat(output).contains("Findings: 1");
+    assertThat(output).contains("Info type: PERSON_NAME");
+  }
+
+  @Test
+  public void testInspectTableWithCustomHotword() throws Exception {
+    Table tableToDeIdentify =
+        Table.newBuilder()
+            .addHeaders(FieldId.newBuilder().setName("Some Social Security Number").build())
+            .addHeaders(FieldId.newBuilder().setName("Real Social Security Number").build())
+            .addRows(
+                Table.Row.newBuilder()
+                    .addValues(Value.newBuilder().setStringValue("111-11-1111").build())
+                    .addValues(Value.newBuilder().setStringValue("222-22-2222").build())
+                    .build())
+            .build();
+    InspectTableWithCustomHotword.inspectDemotingFindingsWithHotwords(
+        PROJECT_ID, tableToDeIdentify, "Some Social Security Number");
+
+    String output = bout.toString();
+    assertThat(output).contains("Findings: 1");
+    assertThat(output).contains("Info type: US_SOCIAL_SECURITY_NUMBER");
+    assertThat(output).contains("Likelihood: VERY_LIKELY");
+    assertThat(output).contains("Quote: 222-22-2222");
+  }
+
+  @Test
+  public void testInspectWithStoredInfotype() throws Exception {
+    // Create a new stored InfoType.
+    String infoTypeId = UUID.randomUUID().toString();
+    String textToDeidentify =
+            "Email address: gary@example.com";
+
+    createStoredInfoType(PROJECT_ID, GCS_PATH, infoTypeId);
+    InspectWithStoredInfotype.inspectWithStoredInfotype(PROJECT_ID, infoTypeId, textToDeidentify);
+
+    String output = bout.toString();
+    assertThat(output).contains("Findings: 1");
+    assertThat(output).contains("Quote: gary");
+    assertThat(output).contains("InfoType: STORED_TYPE");
+
+    // Delete the specific stored InfoType.
+    DeleteStoredInfoTypeRequest deleteStoredInfoTypeRequest =
+        DeleteStoredInfoTypeRequest.newBuilder()
+            .setName(ProjectStoredInfoTypeName.of(PROJECT_ID, infoTypeId).toString())
+            .build();
+    try (DlpServiceClient client = DlpServiceClient.create()) {
+      client.deleteStoredInfoType(deleteStoredInfoTypeRequest);
+    }
   }
 }

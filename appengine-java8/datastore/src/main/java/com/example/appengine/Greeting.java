@@ -19,16 +19,16 @@ package com.example.appengine;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.users.User;
 import com.google.auto.value.AutoValue;
+import java.time.Instant;
 import java.util.Date;
 import javax.annotation.Nullable;
-import org.joda.time.Instant;
 
 @AutoValue
 public abstract class Greeting {
 
   static Greeting create(Entity entity) {
     User user = (User) entity.getProperty("user");
-    Instant date = new Instant((Date) entity.getProperty("date"));
+    Instant date = ((Date) entity.getProperty("date")).toInstant();
     String content = (String) entity.getProperty("content");
     return new AutoValue_Greeting(user, date, content);
   }
