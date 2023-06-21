@@ -202,7 +202,6 @@ assign_prs_by:
       - "api: aiplatform"
       - "api: automl"
       - "api: contactcenterinsights"
-      - "api: contentwarehouse"
       - "api: datacatalog"
       - "api: dataflow"
       - "api: datalabeling"
