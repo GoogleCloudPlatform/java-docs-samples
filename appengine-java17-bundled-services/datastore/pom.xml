@@ -134,7 +134,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version> <!-- Needed for JDK17.-->
+        <version>3.4.0</version> <!-- Needed for JDK17.-->
         <executions>
           <execution>
             <id>default-war</id>
