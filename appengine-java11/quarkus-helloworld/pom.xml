@@ -40,7 +40,7 @@ limitations under the License.
       <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-bom</artifactId>
-        <version>3.1.0.Final</version>
+        <version>3.1.2.Final</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
