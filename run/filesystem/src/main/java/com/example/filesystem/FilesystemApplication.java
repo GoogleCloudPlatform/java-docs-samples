@@ -46,8 +46,8 @@ public class FilesystemApplication {
 
   @RestController
   /**
-   * Redirects to the file system path to interact with file system Writes a new file on each
-   * request
+   * Redirects to the file system path to interact with file system
+   * Writes a new file on each request
    */
   class FilesystemController {
 
