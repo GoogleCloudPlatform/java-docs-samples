@@ -59,7 +59,6 @@ assign_issues_by:
       - "api: aiplatform"
       - "api: automl"
       - "api: contactcenterinsights"
-      - "api: contentwarehouse"
       - "api: datacatalog"
       - "api: dataflow"
       - "api: datalabeling"
@@ -115,7 +114,7 @@ assign_issues_by:
       - GoogleCloudPlatform/googleapis-auth
       - GoogleCloudPlatform/dee-infra
   - labels:
-      - "api: content-warehouse"
+      - "api: contentwarehouse"
     to:
       - GoogleCloudPlatform/googleapis-contentwarehouse
       - GoogleCloudPlatform/dee-data-ai
@@ -259,7 +258,7 @@ assign_prs_by:
       - GoogleCloudPlatform/googleapis-auth
       - GoogleCloudPlatform/dee-infra
   - labels:
-      - "api: content-warehouse"
+      - "api: contentwarehouse"
     to:
       - GoogleCloudPlatform/googleapis-contentwarehouse
       - GoogleCloudPlatform/dee-data-ai
