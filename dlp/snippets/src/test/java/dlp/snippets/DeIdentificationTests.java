@@ -18,9 +18,19 @@ package dlp.snippets;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.common.collect.ImmutableList;
+import com.google.privacy.dlp.v2.CreateDlpJobRequest;
+import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.FieldId;
+import com.google.privacy.dlp.v2.GetDlpJobRequest;
+import com.google.privacy.dlp.v2.InfoType;
+import com.google.privacy.dlp.v2.InfoTypeStats;
+import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.Table;
 import com.google.privacy.dlp.v2.Table.Row;
 import com.google.privacy.dlp.v2.Value;
@@ -30,12 +40,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.UUID;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 public class DeIdentificationTests extends TestBase {
@@ -595,14 +606,14 @@ public class DeIdentificationTests extends TestBase {
             .addHeaders(FieldId.newBuilder().setName("Register Date").build())
             .addRows(
                 Table.Row.newBuilder()
-                    .addValues(Value.newBuilder().setStringValue("Ann").build())
+                    .addValues(Value.newBuilder().setStringValue("Alex").build())
                     .addValues(Value.newBuilder().setStringValue("01/01/1970").build())
                     .addValues(Value.newBuilder().setStringValue("4532908762519852").build())
                     .addValues(Value.newBuilder().setStringValue("07/21/1996").build())
                     .build())
             .addRows(
                 Table.Row.newBuilder()
-                    .addValues(Value.newBuilder().setStringValue("James").build())
+                    .addValues(Value.newBuilder().setStringValue("Charlie").build())
                     .addValues(Value.newBuilder().setStringValue("03/06/1988").build())
                     .addValues(Value.newBuilder().setStringValue("4301261899725540").build())
                     .addValues(Value.newBuilder().setStringValue("04/09/2001").build())
@@ -616,21 +627,21 @@ public class DeIdentificationTests extends TestBase {
             .addHeaders(FieldId.newBuilder().setName("Register Date").build())
             .addRows(
                 Table.Row.newBuilder()
-                    .addValues(Value.newBuilder().setStringValue("Ann").build())
+                    .addValues(Value.newBuilder().setStringValue("Alex").build())
                     .addValues(Value.newBuilder().setStringValue("1970").build())
                     .addValues(Value.newBuilder().setStringValue("4532908762519852").build())
                     .addValues(Value.newBuilder().setStringValue("1996").build())
                     .build())
             .addRows(
                 Table.Row.newBuilder()
-                    .addValues(Value.newBuilder().setStringValue("James").build())
+                    .addValues(Value.newBuilder().setStringValue("Charlie").build())
                     .addValues(Value.newBuilder().setStringValue("1988").build())
                     .addValues(Value.newBuilder().setStringValue("4301261899725540").build())
                     .addValues(Value.newBuilder().setStringValue("2001").build())
                     .build())
             .build();
     Table table =
-        DeIdentifyWithTimeExtraction.deIdentifyWithDateShift(PROJECT_ID, tableToDeIdentify);
+        DeIdentifyWithTimeExtraction.deIdentifyWithTimeExtraction(PROJECT_ID, tableToDeIdentify);
     String output = bout.toString();
     assertThat(output).contains("Table after de-identification:");
     assertThat(table).isEqualTo(expectedTable);
@@ -639,14 +650,14 @@ public class DeIdentificationTests extends TestBase {
   @Test
   public void testDeIdentifyDataReplaceWithDictionary() throws IOException {
     DeIdentifyDataReplaceWithDictionary.deidentifyDataReplaceWithDictionary(
-        PROJECT_ID, "My name is Alicia Abernathy, and my email address is aabernathy@example.com.");
+        PROJECT_ID, "My name is Charlie and email address is charlie@example.com.");
     String output = bout.toString();
     assertThat(
             ImmutableList.of(
-                "Text after de-identification: My name is Alicia Abernathy, "
-                        + "and my email address is izumi@example.com.",
-                "Text after de-identification: My name is Alicia Abernathy, "
-                        + "and my email address is alex@example.com."))
+                "Text after de-identification: My name is Charlie "
+                        + "and email address is izumi@example.com.",
+                "Text after de-identification: My name is Charlie "
+                        + "and email address is alex@example.com."))
         .contains(output);
   }
 
@@ -789,5 +800,49 @@ public class DeIdentificationTests extends TestBase {
     assertThat(output).contains("Table after de-identification: ");
     assertThat(output).doesNotContain("user1@example.org");
     assertThat(output).doesNotContain("858-555-0222");
+  }
+
+  @Test
+  public void testDeIdentifyStorage() throws IOException, InterruptedException {
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+
+      InfoTypeStats infoTypeStats =
+          InfoTypeStats.newBuilder()
+              .setInfoType(InfoType.newBuilder().setName("EMAIL_ADDRESS").build())
+              .setCount(2)
+              .build();
+      DlpJob dlpJob =
+          DlpJob.newBuilder()
+              .setName("projects/project_id/locations/global/dlpJobs/job_id")
+              .setState(DlpJob.JobState.DONE)
+              .setInspectDetails(
+                  InspectDataSourceDetails.newBuilder()
+                      .setResult(
+                          InspectDataSourceDetails.Result.newBuilder()
+                              .addInfoTypeStats(infoTypeStats)
+                              .build()))
+              .build();
+      when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class)))
+          .thenReturn(dlpJob);
+      when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
+
+      DeidentifyCloudStorage.deidentifyCloudStorage(
+          "project_id",
+          "gs://input_bucket/test.txt",
+          "table_id",
+          "dataset_id",
+          "gs://output_bucket",
+          "deidentify_template_id",
+          "deidentify_structured_template_id",
+          "image_redact_template_id");
+      String output = bout.toString();
+      assertThat(output).contains("Job status: DONE");
+      assertThat(output).contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+      assertThat(output).contains("Info type: EMAIL_ADDRESS");
+      assertThat(output).contains("Count: 2");
+    }
   }
 }
