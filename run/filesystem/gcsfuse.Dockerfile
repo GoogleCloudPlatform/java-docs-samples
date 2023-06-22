@@ -15,7 +15,7 @@
 # [START cloudrun_fuse_dockerfile]
 # Use the official maven/Java 11 image to create a build artifact.
 # https://hub.docker.com/_/maven
-FROM maven:3.8.6-jdk-11 as builder
+FROM maven:3-eclipse-temurin-17-alpine as builder
 
 # Copy local code to the container image.
 WORKDIR /app
@@ -25,7 +25,7 @@ COPY src ./src
 # Build a release artifact.
 RUN mvn package -DskipTests
 
-# Use AdoptOpenJDK for base image.
+# Use Eclipse Temurin for base image.
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
 FROM eclipse-temurin:18-jdk-focal
 
