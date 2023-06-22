@@ -43,8 +43,7 @@ public class ApplicationTests {
 
   private static final String project = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String suffix = UUID.randomUUID().toString();
-  private static final String mntDir =
-      System.getenv().getOrDefault("MNT_DIR", "/mnt/nfs/filestore");
+  private static final String mntDir = "/mnt/nfs/filestore";
   private static final String connector =
       System.getenv().getOrDefault("CONNECTOR", "my-run-connector");
   private static final String ipAddress = System.getenv("FILESTORE_IP_ADDRESS");
@@ -66,7 +65,6 @@ public class ApplicationTests {
     ProcessBuilder deploy = new ProcessBuilder();
     deploy.command(
         "gcloud",
-        "alpha",
         "run",
         "deploy",
         service,
