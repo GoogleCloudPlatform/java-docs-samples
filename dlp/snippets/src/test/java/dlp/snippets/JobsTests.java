@@ -220,7 +220,8 @@ public class JobsTests extends TestBase {
                                                       .build()))
                       .build();
       when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
-      InspectBigQuerySendToScc.inspectBigQuerySendToScc("project_id", "dataset_id", "table_id");
+      InspectBigQuerySendToScc.inspectBigQuerySendToScc(
+          "bigquery-public-data", "usa_names", "usa_1910_current");
       String output = bout.toString();
       assertThat(output).contains("Job status: DONE");
       assertThat(output).contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
