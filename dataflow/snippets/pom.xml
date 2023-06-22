@@ -90,6 +90,10 @@
           <groupId>com.google.api.grpc</groupId>
           <artifactId>grpc-google-common-protos</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.google.apis</groupId>
+          <artifactId>google-api-services-storage</artifactId>
+        </exclusion>       
       </exclusions>
     </dependency>
 
@@ -103,6 +107,12 @@
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
       <version>${apache_beam.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.apis</groupId>
+          <artifactId>google-api-services-storage</artifactId>
+        </exclusion>
+      </exclusions>     
     </dependency>
 
     <!-- Google Cloud -->
@@ -127,5 +137,11 @@
       <version>${slf4j.version}</version>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>   
   </dependencies>
 </project>
