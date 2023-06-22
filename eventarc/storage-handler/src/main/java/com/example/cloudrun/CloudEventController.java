@@ -18,6 +18,7 @@ package com.example.cloudrun;
 
 // [START eventarc_storage_cloudevent_handler]
 import com.google.events.cloud.storage.v1.StorageObjectData;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import io.cloudevents.CloudEvent;
@@ -35,7 +36,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class CloudEventController {
 
   @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
-  ResponseEntity<String> handleCloudEvent(@RequestBody CloudEvent cloudEvent) throws Exception {
+  ResponseEntity<String> handleCloudEvent(@RequestBody CloudEvent cloudEvent)
+      throws InvalidProtocolBufferException {
 
     // CloudEvent information
     System.out.println("Id: " + cloudEvent.getId());
