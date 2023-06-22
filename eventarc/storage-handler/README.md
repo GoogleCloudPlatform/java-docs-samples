@@ -39,7 +39,7 @@ Deploy your Cloud Run service:
 ```sh
 gcloud run deploy $MY_RUN_SERVICE \
 --image gcr.io/$PROJECT_ID/$MY_RUN_CONTAINER \
---allow-unauthenticated
+--region us-central1
 ```
 
 Create a _single region_ Cloud Storage bucket:

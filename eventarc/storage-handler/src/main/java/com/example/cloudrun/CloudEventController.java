@@ -47,17 +47,16 @@ public class CloudEventController {
     JsonFormat.parser().merge(json, builder);
     StorageObjectData data = builder.build();
 
-    StringBuilder mb = new StringBuilder();
     // Convert protobuf timestamp to java Instant
     Timestamp ts = data.getUpdated();
     Instant updated = Instant.ofEpochSecond(ts.getSeconds(), ts.getNanos());
-    mb.append(
+    String msg =
         String.format(
             "Cloud Storage object changed: %s/%s modified at %s\n",
-            data.getBucket(), data.getName(), updated));
+            data.getBucket(), data.getName(), updated);
 
-    System.out.println(mb.toString());
-    return ResponseEntity.ok().body(mb.toString());
+    System.out.println(msg);
+    return ResponseEntity.ok().body(msg);
   }
 
   // Handle exceptions from CloudEvent Message Converter
