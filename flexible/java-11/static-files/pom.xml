@@ -38,7 +38,7 @@
 
     <appengine.maven.plugin>2.4.4</appengine.maven.plugin>
 
-    <spring.boot.version>2.7.11</spring.boot.version>
+    <spring.boot.version>2.7.13</spring.boot.version>
   </properties>
 
   <dependencyManagement>
