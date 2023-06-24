@@ -70,6 +70,12 @@
         <version>${beam.version}</version>
         <type>pom</type>
         <scope>import</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-storage</artifactId>
+          </exclusion>
+        </exclusions>        
       </dependency>
       <!-- Google Cloud libraries -->
       <dependency>
@@ -121,6 +127,12 @@
       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
       <version>${beam.version}</version>
       <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.apis</groupId>
+          <artifactId>google-api-services-storage</artifactId>
+        </exclusion>
+      </exclusions>      
     </dependency>
 
     <!-- Beam examples -->
