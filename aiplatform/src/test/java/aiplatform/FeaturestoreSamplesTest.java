@@ -80,7 +80,7 @@ public class FeaturestoreSamplesTest {
     if (featurestoreId != null) {
       // Delete the featurestore
       DeleteFeaturestoreSample.deleteFeaturestoreSample(PROJECT_ID, featurestoreId, USE_FORCE,
-        LOCATION, ENDPOINT, TIMEOUT);
+          LOCATION, ENDPOINT, TIMEOUT);
 
       // Assert
       String deleteFeaturestoreResponse = bout.toString();
