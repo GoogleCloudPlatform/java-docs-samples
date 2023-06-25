@@ -41,7 +41,7 @@ dependencies {
     implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub'
     implementation 'org.springframework.boot:spring-boot-starter-web:'
     implementation 'org.springframework.integration:spring-integration-core'
-    testImplementation 'com.google.truth:truth:1.1.4'
+    testImplementation 'com.google.truth:truth:1.1.5'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.springframework.boot:spring-boot-test'
 }
