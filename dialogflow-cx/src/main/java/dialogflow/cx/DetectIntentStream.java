@@ -90,7 +90,7 @@ public abstract class DetectIntentStream {
       VoiceSelectionParams voiceSelection =
           // Voices that are available https://cloud.google.com/text-to-speech/docs/voices
           VoiceSelectionParams.newBuilder()
-              .setName("en-US-Standard-A")
+              .setName("en-US-Standard-F")
               .setSsmlGender(SsmlVoiceGender.SSML_VOICE_GENDER_FEMALE)
               .build();
 
