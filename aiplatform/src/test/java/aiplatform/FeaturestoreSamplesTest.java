@@ -77,17 +77,17 @@ public class FeaturestoreSamplesTest {
   public void tearDown()
           throws InterruptedException, ExecutionException, IOException, TimeoutException {
 
-      if (featurestoreId != null) {
-          // Delete the featurestore
-          DeleteFeaturestoreSample.deleteFeaturestoreSample(PROJECT_ID, featurestoreId, USE_FORCE,
-                  LOCATION, ENDPOINT, TIMEOUT);
+    if (featurestoreId != null) {
+      // Delete the featurestore
+      DeleteFeaturestoreSample.deleteFeaturestoreSample(PROJECT_ID, featurestoreId, USE_FORCE,
+        LOCATION, ENDPOINT, TIMEOUT);
 
-          // Assert
-          String deleteFeaturestoreResponse = bout.toString();
-          assertThat(deleteFeaturestoreResponse).contains("Deleted Featurestore");
-      }
-      System.out.flush();
-      System.setOut(originalPrintStream);
+      // Assert
+      String deleteFeaturestoreResponse = bout.toString();
+      assertThat(deleteFeaturestoreResponse).contains("Deleted Featurestore");
+    }
+    System.out.flush();
+    System.setOut(originalPrintStream);
   }
 
   @Test
