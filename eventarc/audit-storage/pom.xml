@@ -11,7 +11,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.eventarc</groupId>
   <artifactId>audit-storage</artifactId>
@@ -27,7 +29,7 @@ limitations under the License.
   <properties>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
-    <spring.boot.version>3.1.0</spring.boot.version>
+    <spring.boot.version>3.1.1</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -69,6 +71,29 @@ limitations under the License.
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20230618</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- CloudEvent SDK libraries -->
+    <dependency>
+      <groupId>io.cloudevents</groupId>
+      <artifactId>cloudevents-api</artifactId>
+      <version>2.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.cloudevents</groupId>
+      <artifactId>cloudevents-spring</artifactId>
+      <version>2.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.cloudevents</groupId>
+      <artifactId>cloudevents-http-basic</artifactId>
+      <version>2.5.0</version>
+    </dependency>
+    <!-- To parse the CloudEvent data into Google Cloud Events data -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloudevent-types</artifactId>
+      <version>0.13.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

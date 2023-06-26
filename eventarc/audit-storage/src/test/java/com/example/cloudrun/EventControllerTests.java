@@ -16,17 +16,25 @@
 
 package com.example.cloudrun;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.events.cloud.storage.v1.StorageObjectData;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
+import io.cloudevents.CloudEvent;
+import io.cloudevents.core.v1.CloudEventBuilder;
+import io.cloudevents.spring.http.CloudEventHttpUtils;
+import java.net.URI;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,75 +45,48 @@ import org.springframework.test.web.servlet.MockMvc;
 public class EventControllerTests {
 
   @Autowired private MockMvc mockMvc;
-  String mockBody;
+  CloudEvent inputEvent;
 
   @Before
-  public void setup() throws JSONException {
-    JSONObject message =
-        new JSONObject()
-            .put("data", "dGVzdA==")
-            .put("messageId", "91010751788941")
-            .put("publishTime", "2017-09-25T23:16:42.302Z")
-            .put("attributes", new JSONObject());
-    mockBody = new JSONObject().put("message", message).toString();
-  }
-
-  @Test
-  public void addEmptyBody() throws Exception {
-    mockMvc.perform(post("/")).andExpect(status().isBadRequest());
-  }
-
-  @Test
-  public void addNoMessage() throws Exception {
-    mockMvc
-        .perform(post("/").contentType(MediaType.APPLICATION_JSON).content("{}"))
-        .andExpect(status().isBadRequest());
+  public void setup() throws InvalidProtocolBufferException {
+    StorageObjectData so = StorageObjectData.getDefaultInstance();
+    String jsondata = JsonFormat.printer().print(so);
+    inputEvent =
+        new CloudEventBuilder()
+            .withId("1")
+            .withSource(URI.create("test"))
+            .withSubject("testbucket")
+            .withType("test")
+            .withData(MediaType.APPLICATION_JSON_VALUE, jsondata.getBytes())
+            .build();
   }
 
   @Test
   public void addInvalidMimetype() throws Exception {
+    HttpHeaders heads = CloudEventHttpUtils.toHttp(inputEvent);
     mockMvc
-        .perform(post("/").contentType(MediaType.TEXT_HTML).content(mockBody))
+        .perform(
+            post("/")
+                .headers(heads)
+                .contentType(MediaType.TEXT_HTML)
+                .content(inputEvent.getData().toString()))
         .andExpect(status().isUnsupportedMediaType());
   }
 
   @Test
   public void addRequiredHeaders() throws Exception {
+    HttpHeaders heads = CloudEventHttpUtils.toHttp(inputEvent);
     mockMvc
-        .perform(
-            post("/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mockBody)
-                .header("ce-id", "test")
-                .header("ce-source", "test")
-                .header("ce-type", "test")
-                .header("ce-specversion", "test")
-                .header("ce-subject", "test"))
-        .andExpect(status().isOk());
+        .perform(post("/").headers(heads).content(inputEvent.getData().toString()))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("testbucket")));
   }
 
   @Test
   public void missingRequiredHeaders() throws Exception {
-    mockMvc
-        .perform(
-            post("/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mockBody)
-                .header("ce-source", "test")
-                .header("ce-type", "test")
-                .header("ce-specversion", "test")
-                .header("ce-subject", "test"))
-        .andExpect(status().isBadRequest());
-
-    mockMvc
-        .perform(
-            post("/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mockBody)
-                .header("ce-id", "test")
-                .header("ce-source", "test")
-                .header("ce-type", "test")
-                .header("ce-specversion", "test"))
-        .andExpect(status().isBadRequest());
+    HttpHeaders badHeaders = CloudEventHttpUtils.toHttp(inputEvent);
+    // remove a required header
+    badHeaders.remove("ce-type");
+    mockMvc.perform(post("/").headers(badHeaders)).andExpect(status().isBadRequest());
   }
 }

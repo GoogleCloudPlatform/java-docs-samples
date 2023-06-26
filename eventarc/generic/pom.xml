@@ -27,7 +27,7 @@ limitations under the License.
   <properties>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
-    <spring.boot.version>3.1.0</spring.boot.version>
+    <spring.boot.version>3.1.1</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -66,7 +66,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.1.4</version>
+      <version>1.1.5</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

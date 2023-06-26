@@ -27,7 +27,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <spring.boot.version>2.7.11</spring.boot.version>
+    <spring.boot.version>2.7.13</spring.boot.version>
   </properties>
 
   <!--
@@ -95,7 +95,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.1.4</version>
+      <version>1.1.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>

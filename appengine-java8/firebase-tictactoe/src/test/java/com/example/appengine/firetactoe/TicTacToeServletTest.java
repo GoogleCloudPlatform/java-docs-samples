@@ -18,7 +18,6 @@ package com.example.appengine.firetactoe;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -34,7 +33,6 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalURLFetchServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.cloud.datastore.QueryResults;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.collect.ImmutableMap;
 import com.googlecode.objectify.Objectify;
@@ -43,9 +41,6 @@ import com.googlecode.objectify.util.Closeable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,8 +72,6 @@ public class TicTacToeServletTest {
                   .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
               new LocalUserServiceTestConfig(),
               new LocalURLFetchServiceTestConfig())
-              .setEnvInstance(
-                  String.valueOf(ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE)))
               .setEnvEmail(USER_EMAIL)
               .setEnvAuthDomain("gmail.com")
               .setEnvAttributes(new HashMap<>(ImmutableMap
@@ -110,7 +103,6 @@ public class TicTacToeServletTest {
     // Set up a fake HTTP response.
     when(mockRequest.getRequestURL()).thenReturn(new StringBuffer("https://timbre/"));
     when(mockRequest.getRequestDispatcher("/WEB-INF/view/index.jsp")).thenReturn(requestDispatcher);
-
     servletUnderTest = new TicTacToeServlet();
 
     helper.setEnvIsLoggedIn(true);
@@ -120,29 +112,6 @@ public class TicTacToeServletTest {
   public void tearDown() {
     dbSession.close();
     helper.tearDown();
-  }
-
-  /**
-   * Compares game results before and after to find new game. Objectify v6 does
-   * not guarantee new record is first.
-   *
-   * @param before query containing games before inserting
-   * @param after query containing games after inserting
-   * @return the game that was not in the original query
-   */
-  private Game getNewGame(QueryResults<Game> before, QueryResults<Game> after) {
-    Set<String> gameKeys = new HashSet<>();
-    while (before.hasNext()) {
-      String gameKey = before.next().id;
-      gameKeys.add(gameKey);
-    }
-    while (after.hasNext()) {
-      Game game = after.next();
-      if (!gameKeys.contains(game.id)) {
-        return game;
-      }
-    }
-    return null;
   }
 
   @Test
@@ -167,29 +136,23 @@ public class TicTacToeServletTest {
             });
     FirebaseChannel.getInstance().httpTransport = mockHttpTransport;
 
+    servletUnderTest.doGet(mockRequest, mockResponse);
+
     // Make sure the game object was created for a new game
     Objectify ofy = ObjectifyService.ofy();
-    Game game = null;
-    int count = 0;
-    while (game == null && count < 5) {
-      QueryResults<Game> before = ofy.load().type(Game.class).iterator();
-      servletUnderTest.doGet(mockRequest, mockResponse);
-      QueryResults<Game> after = ofy.load().type(Game.class).iterator();
-      game = getNewGame(before, after);
-      count++;
-    }
-    assertThat(game).isNotNull();
+    // Get the game with the most recent create date
+    Game game = ofy.load().type(Game.class).order("-created").first().safe();
     assertThat(game.userX).isEqualTo(USER_ID);
 
-    verify(mockHttpTransport, atLeastOnce()).buildRequest(eq("PATCH"),
+    verify(mockHttpTransport).buildRequest(eq("PATCH"),
         ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
-    verify(requestDispatcher, atLeastOnce()).forward(mockRequest, mockResponse);
-    verify(mockRequest, atLeastOnce()).setAttribute(eq("token"), anyString());
-    verify(mockRequest, atLeastOnce()).setAttribute("game_key", game.id);
-    verify(mockRequest, atLeastOnce()).setAttribute("me", USER_ID);
-    verify(mockRequest, atLeastOnce()).setAttribute("channel_id", USER_ID + game.id);
-    verify(mockRequest, atLeastOnce()).setAttribute(eq("initial_message"), anyString());
-    verify(mockRequest, atLeastOnce()).setAttribute(eq("game_link"), anyString());
+    verify(requestDispatcher).forward(mockRequest, mockResponse);
+    verify(mockRequest).setAttribute(eq("token"), anyString());
+    verify(mockRequest).setAttribute("game_key", game.id);
+    verify(mockRequest).setAttribute("me", USER_ID);
+    verify(mockRequest).setAttribute("channel_id", USER_ID + game.id);
+    verify(mockRequest).setAttribute(eq("initial_message"), anyString());
+    verify(mockRequest).setAttribute(eq("game_link"), anyString());
   }
 
   @Test

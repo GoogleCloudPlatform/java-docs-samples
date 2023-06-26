@@ -43,7 +43,7 @@
       </exclusions>
       <groupId>com.google.truth</groupId>
       <scope>test</scope>
-      <version>1.1.4</version>
+      <version>1.1.5</version>
     </dependency>
     <dependency>
       <artifactId>guava</artifactId>
@@ -72,7 +72,7 @@
     </dependencies>
   </dependencyManagement>
   <properties>
-    <apache_beam.version>2.47.0</apache_beam.version>
+    <apache_beam.version>2.48.0</apache_beam.version>
     <exec.cleanupDaemonThreads>false</exec.cleanupDaemonThreads>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
