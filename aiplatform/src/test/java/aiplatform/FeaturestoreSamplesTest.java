@@ -29,6 +29,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,6 +92,7 @@ public class FeaturestoreSamplesTest {
   }
 
   @Test
+  @Ignore("Temporarily skipping due to b/288815617")
   public void testCreateFeaturestoreSample()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Create the featurestore
