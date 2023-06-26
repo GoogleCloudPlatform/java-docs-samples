@@ -34,7 +34,7 @@ limitations under the License.
   <properties>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
-    <spring.boot.version>2.7.11</spring.boot.version>
+    <spring.boot.version>2.7.13</spring.boot.version>
   </properties>
 
   <dependencyManagement>

@@ -24,8 +24,8 @@ limitations under the License.
   </parent>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -44,7 +44,7 @@ limitations under the License.
     <dependency>
       <groupId>net.logstash.logback</groupId>
       <artifactId>logstash-logback-encoder</artifactId>
-      <version>7.3</version>
+      <version>7.4</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>

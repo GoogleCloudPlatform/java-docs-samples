@@ -94,7 +94,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.3.0</version>
+        <version>26.17.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

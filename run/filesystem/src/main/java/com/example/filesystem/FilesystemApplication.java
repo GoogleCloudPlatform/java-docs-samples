@@ -16,6 +16,9 @@
 
 package com.example.filesystem;
 
+import jakarta.annotation.PreDestroy;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,9 +28,6 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.annotation.PreDestroy;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -45,10 +45,10 @@ public class FilesystemApplication {
   String filename = System.getenv().getOrDefault("FILENAME", "test");
 
   @RestController
-  /** 
+  /**
    * Redirects to the file system path to interact with file system
-   * Writes a new file on each request 
-   * */
+   * Writes a new file on each request
+   */
   class FilesystemController {
 
     @GetMapping("/**")
@@ -57,7 +57,7 @@ public class FilesystemApplication {
       // Retrieve URL path
       String path =
           (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-          
+
       // Redirect to mount path
       if (!path.startsWith(mntDir)) {
         response.sendRedirect(mntDir);

@@ -11,7 +11,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.eventarc</groupId>
   <artifactId>events-pubsub</artifactId>
@@ -25,9 +27,9 @@ limitations under the License.
   </parent>
 
   <properties>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.source>11</maven.compiler.source>
-    <spring.boot.version>2.7.11</spring.boot.version>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <spring.boot.version>3.1.1</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -58,7 +60,7 @@ limitations under the License.
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      </dependency>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -67,7 +69,7 @@ limitations under the License.
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20230227</version>
+      <version>20230618</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -98,7 +100,7 @@ limitations under the License.
         <version>3.3.2</version>
         <configuration>
           <to>
-            <image>gcr.io/PROJECT_ID/cloudrun-events-pubsub</image>
+            <image>gcr.io/${env.PROJECT_ID}/cloudrun-events-pubsub</image>
           </to>
         </configuration>
       </plugin>
