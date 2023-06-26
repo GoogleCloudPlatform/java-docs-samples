@@ -39,14 +39,14 @@ import com.google.protobuf.ByteString;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class DetectIntentStream {
+public abstract class DetectIntentStream {
 
   // DialogFlow API Detect Intent sample with audio files processes as an audio stream.
   public static void detectIntentStream(
       String projectId, String locationId, String agentId, String sessionId, String audioFilePath)
       throws ApiException, IOException {
     SessionsSettings.Builder sessionsSettingsBuilder = SessionsSettings.newBuilder();
-    if (locationId.equals("global")) {
+    if ("global".equals(locationId)) {
       sessionsSettingsBuilder.setEndpoint("dialogflow.googleapis.com:443");
     } else {
       sessionsSettingsBuilder.setEndpoint(locationId + "-dialogflow.googleapis.com:443");
@@ -90,7 +90,7 @@ public class DetectIntentStream {
       VoiceSelectionParams voiceSelection =
           // Voices that are available https://cloud.google.com/text-to-speech/docs/voices
           VoiceSelectionParams.newBuilder()
-              .setName("en-GB-Standard-A")
+              .setName("en-US-Standard-F")
               .setSsmlGender(SsmlVoiceGender.SSML_VOICE_GENDER_FEMALE)
               .build();
 
@@ -143,7 +143,8 @@ public class DetectIntentStream {
         System.out.format("Query Text: '%s'\n", queryResult.getTranscript());
         System.out.format(
             "Detected Intent: %s (confidence: %f)\n",
-            queryResult.getIntent().getDisplayName(), queryResult.getIntentDetectionConfidence());
+            queryResult.getMatch().getIntent().getDisplayName(),
+            queryResult.getMatch().getConfidence());
       }
     }
   }

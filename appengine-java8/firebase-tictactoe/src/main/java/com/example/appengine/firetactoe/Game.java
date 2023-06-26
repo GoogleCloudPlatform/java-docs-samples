@@ -16,8 +16,10 @@
 
 package com.example.appengine.firetactoe;
 
+import com.google.cloud.Timestamp;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -57,6 +59,8 @@ public class Game {
 
   @Id
   public String id;
+  @Index
+  public Timestamp created;
   public String userX;
   public String userO;
   public String board;
@@ -67,11 +71,12 @@ public class Game {
   private static final Logger LOGGER = Logger.getLogger(Game.class.getName());
 
   Game() {
-    this.id = UUID.randomUUID().toString();
+    this(null, null, null, false);
   }
 
   Game(String userX, String userO, String board, boolean moveX) {
     this.id = UUID.randomUUID().toString();
+    this.created = Timestamp.now();
     this.userX = userX;
     this.userO = userO;
     this.board = board;

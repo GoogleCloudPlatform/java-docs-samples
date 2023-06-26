@@ -34,16 +34,18 @@ import com.google.privacy.dlp.v2.BigQueryTable;
 import com.google.privacy.dlp.v2.CloudStoragePath;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.CreateStoredInfoTypeRequest;
-import com.google.privacy.dlp.v2.DeleteStoredInfoTypeRequest;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.FieldId;
+import com.google.privacy.dlp.v2.Finding;
 import com.google.privacy.dlp.v2.GetDlpJobRequest;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InfoTypeStats;
+import com.google.privacy.dlp.v2.InspectContentResponse;
 import com.google.privacy.dlp.v2.InspectDataSourceDetails;
+import com.google.privacy.dlp.v2.InspectResult;
 import com.google.privacy.dlp.v2.LargeCustomDictionaryConfig;
+import com.google.privacy.dlp.v2.Likelihood;
 import com.google.privacy.dlp.v2.LocationName;
-import com.google.privacy.dlp.v2.ProjectStoredInfoTypeName;
 import com.google.privacy.dlp.v2.StoredInfoType;
 import com.google.privacy.dlp.v2.StoredInfoTypeConfig;
 import com.google.privacy.dlp.v2.Table;
@@ -579,25 +581,28 @@ public class InspectTests extends TestBase {
 
   @Test
   public void testInspectWithStoredInfotype() throws Exception {
-    // Create a new stored InfoType.
-    String infoTypeId = UUID.randomUUID().toString();
-    String textToDeidentify = "Email address: gary@example.com";
-
-    createStoredInfoType(PROJECT_ID, GCS_PATH, infoTypeId);
-    InspectWithStoredInfotype.inspectWithStoredInfotype(PROJECT_ID, infoTypeId, textToDeidentify);
-
-    String output = bout.toString();
-    assertThat(output).contains("Findings: 1");
-    assertThat(output).contains("Quote: gary");
-    assertThat(output).contains("InfoType: STORED_TYPE");
-
-    // Delete the specific stored InfoType.
-    DeleteStoredInfoTypeRequest deleteStoredInfoTypeRequest =
-        DeleteStoredInfoTypeRequest.newBuilder()
-            .setName(ProjectStoredInfoTypeName.of(PROJECT_ID, infoTypeId).toString())
-            .build();
-    try (DlpServiceClient client = DlpServiceClient.create()) {
-      client.deleteStoredInfoType(deleteStoredInfoTypeRequest);
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    String textToInspect = "Email address: gary@example.com";
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(DlpServiceClient::create).thenReturn(dlpServiceClient);
+      InspectResult inspectResult =
+          InspectResult.newBuilder()
+              .addFindings(
+                  Finding.newBuilder()
+                      .setInfoType(InfoType.newBuilder().setName("STORED_TYPE").build())
+                      .setQuote("gary")
+                      .setLikelihood(Likelihood.VERY_LIKELY)
+                      .build())
+              .build();
+      InspectContentResponse response =
+          InspectContentResponse.newBuilder().setResult(inspectResult).build();
+      when(dlpServiceClient.inspectContent(any())).thenReturn(response);
+      InspectWithStoredInfotype.inspectWithStoredInfotype(
+          "project_id", "github-usernames", textToInspect);
+      String output = bout.toString();
+      assertThat(output).contains("Findings: 1");
+      assertThat(output).contains("Quote: gary");
+      assertThat(output).contains("InfoType: STORED_TYPE");
     }
   }
 }

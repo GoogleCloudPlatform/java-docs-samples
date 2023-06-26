@@ -16,6 +16,7 @@
 
 package com.example.speech;
 
+// [START speech_transcribe_file_v2]
 import com.google.cloud.speech.v2.AutoDetectDecodingConfig;
 import com.google.cloud.speech.v2.RecognitionConfig;
 import com.google.cloud.speech.v2.RecognizeRequest;
@@ -76,3 +77,4 @@ public class TranscribeFileV2 {
     }
   }
 }
+// [END speech_transcribe_file_v2]
