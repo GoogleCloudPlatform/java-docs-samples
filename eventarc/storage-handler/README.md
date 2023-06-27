@@ -62,9 +62,9 @@ Create a Cloud Storage trigger:
 ```sh
 gcloud eventarc triggers create $MY_GCS_TRIGGER \
 --destination-run-service=$MY_RUN_SERVICE \
---destination-run-region=us-central1
---event-filters="type=google.cloud.storage.object.v1.finalized"
---event-filters="bucket=$MY_GCS_BUCKET"
+--destination-run-region=us-central1 \
+--event-filters="type=google.cloud.storage.object.v1.finalized" \
+--event-filters="bucket=$MY_GCS_BUCKET" \
 --service-account=$SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com
 
 
