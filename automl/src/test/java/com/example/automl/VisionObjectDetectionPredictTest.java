@@ -23,6 +23,7 @@ import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.DeployModelRequest;
 import com.google.cloud.automl.v1.Model;
 import com.google.cloud.automl.v1.ModelName;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -30,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -37,16 +39,17 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class VisionObjectDetectionPredictTest {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private static final String MODEL_ID = System.getenv("OBJECT_DETECTION_MODEL_ID");
   private ByteArrayOutputStream bout;
-  private PrintStream out;
   private PrintStream originalPrintStream;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
         System.getenv(varName),
-        "Environment variable '%s' is required to perform these tests.".format(varName));
+        String.format("Environment variable '%s' is required to perform these tests.", varName));
+
   }
 
   @BeforeClass
@@ -71,7 +74,7 @@ public class VisionObjectDetectionPredictTest {
     }
 
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
   }

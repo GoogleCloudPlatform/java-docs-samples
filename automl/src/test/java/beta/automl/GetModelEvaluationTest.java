@@ -23,24 +23,25 @@ import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.ListModelEvaluationsRequest;
 import com.google.cloud.automl.v1.ModelEvaluation;
 import com.google.cloud.automl.v1.ModelName;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class GetModelEvaluationTest {
-
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private static final String MODEL_ID = System.getenv("ENTITY_EXTRACTION_MODEL_ID");
   private String modelEvaluationId;
   private ByteArrayOutputStream bout;
-  private PrintStream out;
   private PrintStream originalPrintStream;
 
   private static String requireEnvVar(String varName) {
@@ -76,7 +77,7 @@ public class GetModelEvaluationTest {
     }
 
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
   }

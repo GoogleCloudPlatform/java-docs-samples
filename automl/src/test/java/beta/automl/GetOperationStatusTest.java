@@ -21,6 +21,7 @@ import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.automl.v1beta1.AutoMlClient;
 import com.google.cloud.automl.v1beta1.LocationName;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.longrunning.ListOperationsRequest;
 import com.google.longrunning.Operation;
 import java.io.ByteArrayOutputStream;
@@ -29,17 +30,17 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class GetOperationStatusTest {
-
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private String operationId;
   private ByteArrayOutputStream bout;
-  private PrintStream out;
   private PrintStream originalPrintStream;
 
   private static String requireEnvVar(String varName) {
@@ -69,7 +70,7 @@ public class GetOperationStatusTest {
     }
 
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
   }
