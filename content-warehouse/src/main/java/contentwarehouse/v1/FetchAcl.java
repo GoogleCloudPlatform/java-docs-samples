@@ -51,7 +51,8 @@ public class FetchAcl {
 
     DocumentServiceSettings documentServiceSettings = 
         DocumentServiceSettings.newBuilder().setEndpoint(endpoint).build();
-        
+    /* Initialize client that will be used to send requests. 
+    This client only needs to be created once, and can be reused for multiple requests. */
     try (DocumentServiceClient documentServiceClient = 
             DocumentServiceClient.create(documentServiceSettings)) {
 
@@ -88,6 +89,8 @@ public class FetchAcl {
   }
 
   private static String getProjectNumber(String projectId) throws IOException { 
+    /* Initialize client that will be used to send requests. This client only needs to be
+     created once, and can be reused for multiple requests. */
     try (ProjectsClient projectsClient = ProjectsClient.create()) { 
       ProjectName projectName = ProjectName.of(projectId); 
       Project project = projectsClient.getProject(projectName);
