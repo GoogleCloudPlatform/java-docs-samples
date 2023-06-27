@@ -25,9 +25,9 @@ limitations under the License.
   </parent>
 
   <properties>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.source>11</maven.compiler.source>
-    <spring.boot.version>2.7.11</spring.boot.version>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <spring.boot.version>3.1.1</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -61,12 +61,12 @@ limitations under the License.
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20230227</version>
+      <version>20230618</version>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.1.4</version>
+      <version>1.1.5</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -92,7 +92,7 @@ limitations under the License.
         <version>3.3.2</version>
         <configuration>
           <to>
-            <image>gcr.io/PROJECT_ID/eventarc-generic</image>
+            <image>gcr.io/${env.PROJECT_ID}/eventarc-generic</image>
           </to>
         </configuration>
       </plugin>

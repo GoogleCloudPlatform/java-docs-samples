@@ -17,7 +17,13 @@
 package dlp.snippets;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.api.core.SettableApiFuture;
 import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
@@ -26,12 +32,20 @@ import com.google.common.collect.ImmutableList;
 import com.google.privacy.dlp.v2.BigQueryField;
 import com.google.privacy.dlp.v2.BigQueryTable;
 import com.google.privacy.dlp.v2.CloudStoragePath;
+import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.CreateStoredInfoTypeRequest;
-import com.google.privacy.dlp.v2.DeleteStoredInfoTypeRequest;
+import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.FieldId;
+import com.google.privacy.dlp.v2.Finding;
+import com.google.privacy.dlp.v2.GetDlpJobRequest;
+import com.google.privacy.dlp.v2.InfoType;
+import com.google.privacy.dlp.v2.InfoTypeStats;
+import com.google.privacy.dlp.v2.InspectContentResponse;
+import com.google.privacy.dlp.v2.InspectDataSourceDetails;
+import com.google.privacy.dlp.v2.InspectResult;
 import com.google.privacy.dlp.v2.LargeCustomDictionaryConfig;
+import com.google.privacy.dlp.v2.Likelihood;
 import com.google.privacy.dlp.v2.LocationName;
-import com.google.privacy.dlp.v2.ProjectStoredInfoTypeName;
 import com.google.privacy.dlp.v2.StoredInfoType;
 import com.google.privacy.dlp.v2.StoredInfoTypeConfig;
 import com.google.privacy.dlp.v2.Table;
@@ -43,14 +57,19 @@ import com.google.pubsub.v1.TopicName;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 public class InspectTests extends TestBase {
+
+  private SettableApiFuture<Boolean> doneMock;
 
   // TODO: Update as ENV_VARs
   private static final String datastoreNamespace = "";
@@ -396,18 +415,43 @@ public class InspectTests extends TestBase {
 
   @Test
   public void testInspectGcsFileWithSampling() throws Exception {
-    InspectGcsFileWithSampling.inspectGcsFileWithSampling(
-        PROJECT_ID, GCS_PATH, topicName.getTopic(), subscriptionName.getSubscription());
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    doneMock = mock(SettableApiFuture.class);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+      try (MockedStatic<SettableApiFuture> mockedStatic1 =
+          Mockito.mockStatic(SettableApiFuture.class)) {
+        mockedStatic1.when(() -> SettableApiFuture.create()).thenReturn(doneMock);
 
-    String output = bout.toString();
-    assertThat(output).contains("Job status: DONE");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
-    jobName = jobName.split(":")[1].trim();
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteDlpJob(jobName);
+        InfoTypeStats infoTypeStats =
+            InfoTypeStats.newBuilder()
+                .setInfoType(InfoType.newBuilder().setName("EMAIL_ADDRESS").build())
+                .setCount(1)
+                .build();
+        DlpJob dlpJob =
+            DlpJob.newBuilder()
+                .setName("projects/project_id/locations/global/dlpJobs/job_id")
+                .setState(DlpJob.JobState.DONE)
+                .setInspectDetails(
+                    InspectDataSourceDetails.newBuilder()
+                        .setResult(
+                            InspectDataSourceDetails.Result.newBuilder()
+                                .addInfoTypeStats(infoTypeStats)
+                                .build()))
+                .build();
+        when(doneMock.get(15, TimeUnit.MINUTES)).thenReturn(true);
+        when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
+        when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
+        InspectGcsFileWithSampling.inspectGcsFileWithSampling(
+            "project_id", "gs://bucket_name/test.txt", "topic_id", "subscription_id");
+        String output = bout.toString();
+        assertThat(output).contains("Job status: DONE");
+        assertThat(output)
+            .contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+        assertThat(output).contains("Info type: EMAIL_ADDRESS");
+        verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+        verify(dlpServiceClient, times(1)).getDlpJob(any(GetDlpJobRequest.class));
+      }
     }
   }
 
@@ -451,18 +495,43 @@ public class InspectTests extends TestBase {
 
   @Test
   public void testInspectBigQueryTableWithSampling() throws Exception {
-    InspectBigQueryTableWithSampling.inspectBigQueryTableWithSampling(
-        PROJECT_ID, topicName.getTopic(), subscriptionName.getSubscription());
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    doneMock = mock(SettableApiFuture.class);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+      try (MockedStatic<SettableApiFuture> mockedStatic1 =
+          Mockito.mockStatic(SettableApiFuture.class)) {
+        mockedStatic1.when(() -> SettableApiFuture.create()).thenReturn(doneMock);
 
-    String output = bout.toString();
-    assertThat(output).contains("Job status: DONE");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
-    jobName = jobName.split(":")[1].trim();
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteDlpJob(jobName);
+        InfoTypeStats infoTypeStats =
+            InfoTypeStats.newBuilder()
+                .setInfoType(InfoType.newBuilder().setName("EMAIL_ADDRESS").build())
+                .setCount(1)
+                .build();
+        DlpJob dlpJob =
+            DlpJob.newBuilder()
+                .setName("projects/project_id/locations/global/dlpJobs/job_id")
+                .setState(DlpJob.JobState.DONE)
+                .setInspectDetails(
+                    InspectDataSourceDetails.newBuilder()
+                        .setResult(
+                            InspectDataSourceDetails.Result.newBuilder()
+                                .addInfoTypeStats(infoTypeStats)
+                                .build()))
+                .build();
+        when(doneMock.get(15, TimeUnit.MINUTES)).thenReturn(true);
+        when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
+        when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
+        InspectBigQueryTableWithSampling.inspectBigQueryTableWithSampling(
+            "project_id", "topic_id", "subscription_id");
+        String output = bout.toString();
+        assertThat(output).contains("Job status: DONE");
+        assertThat(output)
+            .contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+        assertThat(output).contains("Info type: EMAIL_ADDRESS");
+        verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+        verify(dlpServiceClient, times(1)).getDlpJob(any(GetDlpJobRequest.class));
+      }
     }
   }
 
@@ -512,26 +581,28 @@ public class InspectTests extends TestBase {
 
   @Test
   public void testInspectWithStoredInfotype() throws Exception {
-    // Create a new stored InfoType.
-    String infoTypeId = UUID.randomUUID().toString();
-    String textToDeidentify =
-            "Email address: gary@example.com";
-
-    createStoredInfoType(PROJECT_ID, GCS_PATH, infoTypeId);
-    InspectWithStoredInfotype.inspectWithStoredInfotype(PROJECT_ID, infoTypeId, textToDeidentify);
-
-    String output = bout.toString();
-    assertThat(output).contains("Findings: 1");
-    assertThat(output).contains("Quote: gary");
-    assertThat(output).contains("InfoType: STORED_TYPE");
-
-    // Delete the specific stored InfoType.
-    DeleteStoredInfoTypeRequest deleteStoredInfoTypeRequest =
-        DeleteStoredInfoTypeRequest.newBuilder()
-            .setName(ProjectStoredInfoTypeName.of(PROJECT_ID, infoTypeId).toString())
-            .build();
-    try (DlpServiceClient client = DlpServiceClient.create()) {
-      client.deleteStoredInfoType(deleteStoredInfoTypeRequest);
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    String textToInspect = "Email address: gary@example.com";
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(DlpServiceClient::create).thenReturn(dlpServiceClient);
+      InspectResult inspectResult =
+          InspectResult.newBuilder()
+              .addFindings(
+                  Finding.newBuilder()
+                      .setInfoType(InfoType.newBuilder().setName("STORED_TYPE").build())
+                      .setQuote("gary")
+                      .setLikelihood(Likelihood.VERY_LIKELY)
+                      .build())
+              .build();
+      InspectContentResponse response =
+          InspectContentResponse.newBuilder().setResult(inspectResult).build();
+      when(dlpServiceClient.inspectContent(any())).thenReturn(response);
+      InspectWithStoredInfotype.inspectWithStoredInfotype(
+          "project_id", "github-usernames", textToInspect);
+      String output = bout.toString();
+      assertThat(output).contains("Findings: 1");
+      assertThat(output).contains("Quote: gary");
+      assertThat(output).contains("InfoType: STORED_TYPE");
     }
   }
 }

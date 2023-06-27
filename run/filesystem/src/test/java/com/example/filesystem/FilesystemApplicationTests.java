@@ -17,6 +17,7 @@
 package com.example.filesystem;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,22 +41,12 @@ public class FilesystemApplicationTests {
 
   @Autowired private MockMvc mockMvc;
 
-  private static final String systemMntDir =
-      System.getenv().getOrDefault("MNT_DIR", "/mnt/nfs/filestore");
-  private static String mntDir;
+  private static String mntDir = System.getenv("MNT_DIR");
   String filename = System.getenv().getOrDefault("FILENAME", "Dockerfile");
 
   @BeforeClass
-  public static void setup() throws Exception {
-    // Set MNT_DIR env var for local testing purposes
-    mntDir = System.getProperty("user.dir");
-    getModifiableEnvironment().put("MNT_DIR", mntDir);
-  }
-
-  @AfterClass
-  public static void cleanup() throws Exception {
-    // Reset MNT_DIR env var for e2e tests
-    getModifiableEnvironment().put("MNT_DIR", systemMntDir);
+  public static void ensureEnvVar() {
+    assertTrue("MNT_DIR env var must be defined.", System.getenv("MNT_DIR") != null);
   }
 
   @Test

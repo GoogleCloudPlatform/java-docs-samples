@@ -136,6 +136,7 @@ public class HelloWorldTest {
   public void testRead() {
     HelloWorldRead.main(
         new String[]{
+            "--project=" + projectId,
             "--bigtableProjectId=" + projectId,
             "--bigtableInstanceId=" + instanceId,
             "--bigtableTableId=" + TABLE_ID

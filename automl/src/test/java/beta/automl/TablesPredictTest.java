@@ -47,7 +47,6 @@ public class TablesPredictTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String MODEL_ID = "TBL7972827093840953344";
   private ByteArrayOutputStream bout;
-  private PrintStream out;
   private PrintStream originalPrintStream;
 
   private static String requireEnvVar(String varName) {
@@ -79,7 +78,7 @@ public class TablesPredictTest {
     }
 
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
   }

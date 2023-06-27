@@ -37,7 +37,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <apache_beam.version>2.47.0</apache_beam.version>
+    <apache_beam.version>2.48.0</apache_beam.version>
     <slf4j.version>2.0.7</slf4j.version>
   </properties>
 
@@ -66,7 +66,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>25.4.0</version>
+        <version>26.17.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -90,6 +90,10 @@
           <groupId>com.google.api.grpc</groupId>
           <artifactId>grpc-google-common-protos</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.google.apis</groupId>
+          <artifactId>google-api-services-storage</artifactId>
+        </exclusion>       
       </exclusions>
     </dependency>
 
@@ -103,6 +107,12 @@
       <groupId>org.apache.beam</groupId>
       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
       <version>${apache_beam.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.apis</groupId>
+          <artifactId>google-api-services-storage</artifactId>
+        </exclusion>
+      </exclusions>     
     </dependency>
 
     <!-- Google Cloud -->
@@ -127,5 +137,11 @@
       <version>${slf4j.version}</version>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>   
   </dependencies>
 </project>
