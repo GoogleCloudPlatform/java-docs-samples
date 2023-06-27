@@ -9,7 +9,6 @@ For more details on how to work with this sample read the [Google Cloud Run Java
 ## Dependencies
 
 * **Spring Boot**: Web server framework.
-* **Jib**: Container build tool.
 * **Junit + SpringBootTest**: [development] Test running framework.
 * **MockMVC**: [development] Integration testing support framework.
 
@@ -19,7 +18,6 @@ Configure environment variables:
 
 ```sh
 export MY_RUN_SERVICE=gcs-service
-export MY_RUN_CONTAINER=gcs-container
 export MY_GCS_TRIGGER=gcs-trigger
 export MY_GCS_BUCKET="$(gcloud config get-value project)-gcs-bucket"
 export SERVICE_ACCOUNT=gcs-trigger-svcacct
@@ -28,17 +26,11 @@ export PROJECT_ID=$(gcloud config get-value project)
 
 ## Quickstart
 
-Use the [Jib Maven Plugin](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) to build and push your container image:
-
-```sh
-mvn jib:build -Dimage=gcr.io/$PROJECT_ID/$MY_RUN_CONTAINER
-```
-
 Deploy your Cloud Run service:
 
 ```sh
 gcloud run deploy $MY_RUN_SERVICE \
---image gcr.io/$PROJECT_ID/$MY_RUN_CONTAINER \
+--source .
 --region us-central1
 ```
 
@@ -54,7 +46,8 @@ Create a Service Account for Eventarc trigger
 gcloud iam service-accounts create $SERVICE_ACCOUNT
 gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member="serviceAccount:$SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com" \
-  --role="roles/eventarc.eventReceiver"
+  --role="roles/eventarc.eventReceiver" \
+  --role="roles/run.invoker"
 ```
 
 Create a Cloud Storage trigger:
@@ -66,7 +59,7 @@ gcloud eventarc triggers create $MY_GCS_TRIGGER \
 --event-filters="type=google.cloud.storage.object.v1.finalized" \
 --event-filters="bucket=$MY_GCS_BUCKET" \
 --service-account=$SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com
-
+```
 
 ## Test
 
