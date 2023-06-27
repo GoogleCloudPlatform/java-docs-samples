@@ -32,7 +32,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.12.0</version>
+        <version>26.17.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -72,7 +72,7 @@
     <dependency>
       <groupId>com.google.api.grpc</groupId>
       <artifactId>proto-google-cloud-aiplatform-v1beta1</artifactId>
-      <version>0.35.0</version>
+      <version>0.37.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
