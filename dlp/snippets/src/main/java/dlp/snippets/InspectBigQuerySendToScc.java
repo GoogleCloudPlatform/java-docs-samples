@@ -132,7 +132,7 @@ public class InspectBigQuerySendToScc {
         // Check if the timeout duration has exceeded.
         long elapsedTime = System.currentTimeMillis() - startTime;
         if (TimeUnit.MILLISECONDS.toMinutes(elapsedTime) >= TIMEOUT_MINUTES) {
-          System.out.println("Job did not complete within 15 minutes.");
+          System.out.printf("Job did not complete within %d minutes.%n", TIMEOUT_MINUTES);
           break;
         }
       }
