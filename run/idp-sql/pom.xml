@@ -30,8 +30,8 @@ limitations under the License.
   </parent>
 
   <properties>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
   </properties>
 
   <dependencyManagement>
@@ -40,14 +40,14 @@ limitations under the License.
         <!-- Import dependency management from Spring Boot -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.7.11</version>
+        <version>3.1.1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>3.5.2</version>
+        <version>4.4.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -56,7 +56,7 @@ limitations under the License.
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.12.0</version>
+        <version>26.17.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -89,7 +89,7 @@ limitations under the License.
     <dependency>
       <groupId>net.logstash.logback</groupId>
       <artifactId>logstash-logback-encoder</artifactId>
-      <version>7.3</version>
+      <version>7.4</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback.contrib</groupId>
@@ -99,7 +99,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.firebase</groupId>
       <artifactId>firebase-admin</artifactId>
-      <version>9.1.1</version>
+      <version>9.2.0</version>
       <exclusions>
         <exclusion>
           <groupId>com.google.api-client</groupId>
@@ -142,7 +142,7 @@ limitations under the License.
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>3.0.6</version>
+        <version>3.1.1</version>
       </plugin>
       <!-- [START cloudrun_user_auth_jib] -->
       <plugin>

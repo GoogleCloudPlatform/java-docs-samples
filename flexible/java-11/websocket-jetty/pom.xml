@@ -38,7 +38,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
     <jetty.version>9.4.51.v20230217</jetty.version>
-    <spring.boot.version>2.7.11</spring.boot.version>
+    <spring.boot.version>2.7.13</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -46,7 +46,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.12.0</version>
+        <version>26.17.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -139,7 +139,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>
+        <version>3.4.0</version>
       </plugin>
       <!-- for deployment of web application -->
       <plugin>

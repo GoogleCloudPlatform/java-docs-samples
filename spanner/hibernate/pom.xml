@@ -31,7 +31,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.12.0</version>
+        <version>26.17.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -48,7 +48,7 @@
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>6.2.4.Final</version>
+      <version>6.2.5.Final</version>
     </dependency>
   </dependencies>
   <!-- [END spanner_hibernate_dependencies] -->

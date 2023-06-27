@@ -43,7 +43,7 @@ Copyright 2019 Google LLC
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.12.0</version>
+        <version>26.17.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -106,7 +106,7 @@ Copyright 2019 Google LLC
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>
+        <version>3.4.0</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

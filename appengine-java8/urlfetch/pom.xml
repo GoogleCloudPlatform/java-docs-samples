@@ -48,7 +48,7 @@ Copyright 2015 Google Inc.
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20230227</version>
+      <version>20230618</version>
     </dependency>
   </dependencies>
 
@@ -59,7 +59,7 @@ Copyright 2015 Google Inc.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>
+        <version>3.4.0</version>
       </plugin>
       <plugin>
         <groupId>com.google.cloud.tools</groupId>

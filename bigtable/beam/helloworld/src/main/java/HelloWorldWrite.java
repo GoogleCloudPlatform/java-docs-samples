@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 // [START bigtable_beam_helloworld_write]
+
 import com.google.cloud.bigtable.beam.CloudBigtableIO;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
+import com.google.cloud.bigtable.hbase.BigtableOptionsFactory;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.options.Default;
@@ -29,6 +31,7 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 
 public class HelloWorldWrite {
+
   public static void main(String[] args) {
     // [START bigtable_beam_helloworld_create_pipeline]
     BigtableOptions options =
@@ -71,6 +74,7 @@ public class HelloWorldWrite {
 
   // [START bigtable_beam_helloworld_options]
   public interface BigtableOptions extends DataflowPipelineOptions {
+
     @Description("The Bigtable project ID, this can be different than your Dataflow project")
     @Default.String("bigtable-project")
     String getBigtableProjectId();
@@ -90,5 +94,20 @@ public class HelloWorldWrite {
     void setBigtableTableId(String bigtableTableId);
   }
   // [END bigtable_beam_helloworld_options]
+
+  public static CloudBigtableTableConfiguration batchWriteFlowControlExample(
+      BigtableOptions options) {
+    // [START bigtable_beam_helloworld_write_batch_write_flow_control]
+    CloudBigtableTableConfiguration bigtableTableConfig =
+        new CloudBigtableTableConfiguration.Builder()
+            .withProjectId(options.getBigtableProjectId())
+            .withInstanceId(options.getBigtableInstanceId())
+            .withTableId(options.getBigtableTableId())
+            .withConfiguration(BigtableOptionsFactory.BIGTABLE_ENABLE_BULK_MUTATION_FLOW_CONTROL,
+                "true")
+            .build();
+    return bigtableTableConfig;
+    // [END bigtable_beam_helloworld_write_batch_write_flow_control]
+  }
 }
 // [END bigtable_beam_helloworld_write]

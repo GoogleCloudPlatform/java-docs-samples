@@ -21,13 +21,15 @@ if [ -n "$JIB" ]; then
   # Register post-test cleanup.
   # Only needed if deploy completed.
   function cleanup {
+    mvn -q -B clean
     set -x
-    gcloud container images delete "${CONTAINER_IMAGE}" --quiet --no-user-output-enabled || true
+    sha=$(gcloud artifacts docker images describe $CONTAINER_IMAGE --format="value(image_summary.digest)")
+    gcloud artifacts docker images delete $BASE_IMAGE@$sha --quiet --delete-tags --no-user-output-enabled || true
     gcloud run services delete ${SERVICE_NAME} \
       --platform=managed \
       --region="${REGION:-us-central1}" \
       --quiet --no-user-output-enabled
-    mvn -q -B clean
+    set +x
   }
   trap cleanup EXIT
 
@@ -45,16 +47,15 @@ if [ -n "$JIB" ]; then
   export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
   # Remove "/" from the Cloud Run service name
   export SERVICE_NAME="${SERVICE_NAME//\//$'-'}"
-  export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
-  export SPECIAL_BASE_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/imagemagick"
+  export BASE_IMAGE="us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/containers/run-${SAMPLE_NAME}"
+  export CONTAINER_IMAGE="${BASE_IMAGE}:${SAMPLE_VERSION}"
+  export SPECIAL_BASE_IMAGE="us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/containers/imagemagick"
   BASE_IMAGE_SAMPLES=("image-processing" "system-packages")
 
   # Build the service
   set -x
-
   mvn -q -B jib:build -Dimage="${CONTAINER_IMAGE}" \
     `if [[ "${BASE_IMAGE_SAMPLES[@]}" =~ "${SAMPLE_NAME}" ]]; then echo "-Djib.from.image=${SPECIAL_BASE_IMAGE}"; fi`
-
 
   export MEMORY_NEEDED=("image-processing" "idp-sql");  # Samples that need more memory
 
@@ -64,8 +65,7 @@ if [ -n "$JIB" ]; then
     --platform=managed \
     --quiet --no-user-output-enabled  \
     `if [[ "${MEMORY_NEEDED[@]}" =~ "${SAMPLE_NAME}" ]]; then echo "--memory 512M"; fi` \
-    `if [ $SAMPLE_NAME = "idp-sql" ]; then echo "--update-env-vars CLOUD_SQL_CREDENTIALS_SECRET=projects/${GOOGLE_CLOUD_PROJECT}/secrets/idp-sql-secret/versions/latest"; fi`
-
+    `if [ $SAMPLE_NAME = "idp-sql" ]; then echo "--update-secrets CLOUD_SQL_CREDENTIALS_SECRET=idp-sql-secret:latest"; fi`
 
   set +x
 

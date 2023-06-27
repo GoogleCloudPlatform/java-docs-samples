@@ -21,7 +21,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring.boot.version>2.7.11</spring.boot.version>
+    <spring.boot.version>2.7.13</spring.boot.version>
   </properties>
 
 
@@ -30,7 +30,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.12.0</version>
+        <version>26.17.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -49,7 +49,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>3.0.6</version>
+        <version>3.1.1</version>
       </plugin>
     </plugins>
   </build>
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>io.github.bonigarcia</groupId>
       <artifactId>webdrivermanager</artifactId>
-      <version>5.3.3</version>
+      <version>5.4.0</version>
     </dependency>
     <!-- [End_Selenium_dependencies] -->
 
@@ -98,7 +98,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.1.4</version>
+      <version>1.1.5</version>
       <scope>test</scope>
     </dependency>
     <!-- [End_test_dependencies] -->

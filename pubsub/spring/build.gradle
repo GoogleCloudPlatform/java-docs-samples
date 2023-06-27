@@ -17,7 +17,7 @@
 plugins {
     id 'application'
     id 'java'
-    id 'org.springframework.boot' version '2.7.11'
+    id 'org.springframework.boot' version '2.7.13'
 }
 
 repositories {
@@ -34,14 +34,14 @@ description = 'Spring Cloud GCP Pub/Sub Code Sample'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-    implementation platform('com.google.cloud:spring-cloud-gcp-dependencies:3.5.2')
-    implementation platform('org.springframework.boot:spring-boot-dependencies:2.7.11')
+    implementation platform('com.google.cloud:spring-cloud-gcp-dependencies:3.5.3')
+    implementation platform('org.springframework.boot:spring-boot-dependencies:2.7.13')
     implementation 'com.github.spotbugs:spotbugs-annotations:4.7.3'
     implementation 'com.google.cloud:spring-cloud-gcp-pubsub-stream-binder'
     implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub'
     implementation 'org.springframework.boot:spring-boot-starter-web:'
     implementation 'org.springframework.integration:spring-integration-core'
-    testImplementation 'com.google.truth:truth:1.1.4'
+    testImplementation 'com.google.truth:truth:1.1.5'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.springframework.boot:spring-boot-test'
 }

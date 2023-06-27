@@ -37,7 +37,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.12.0</version>
+        <version>26.17.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -46,7 +46,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <app.mainclass>app.SpringbootMain</app.mainclass>
-    <spring.boot.version>2.7.11</spring.boot.version>
+    <spring.boot.version>2.7.13</spring.boot.version>
   </properties>
 
   <dependencies>
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20230227</version>
+      <version>20230618</version>
     </dependency>
 
 
@@ -92,7 +92,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.1.4</version>
+      <version>1.1.5</version>
       <scope>test</scope>
     </dependency>
     <!-- end_test_dependencies -->

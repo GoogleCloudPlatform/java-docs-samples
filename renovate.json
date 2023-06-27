@@ -29,6 +29,12 @@
       "groupName": "Bigtable packages"
     },
     {
+      "packagePatterns": [
+        "^com.google.cloud.sql:"
+      ],
+      "groupName": "Cloud SQL connectors"
+    },
+    {
       "matchPackagePrefixes": [ "com.google" ],
       "allowedVersions": "!/.+-sp\\.[0-9]+$/"
     },
@@ -40,7 +46,7 @@
     },
     {
       "packagePatterns": [
-        "^io.grpc:grpc-"
+        "io.grpc:(?:protoc-gen-)?grpc-*"
       ],
       "groupName": "gRPC packages"
     },
@@ -123,6 +129,11 @@
     {
       "matchPackagePatterns": [ "org.springframework.boot" ],
       "matchCurrentVersion": "!/.*[SNAPSHOT | M]/"
+    },
+    {
+      "matchPackagePatterns": [ "org.springframework.boot" ],
+      "matchPaths": ["appengine-java11/**", "appengine-java8/**", "flexible/*", "flexible/java-11/**", "flexible/java-8/**", "cloud-sql/**", "monitoring/**", "pubsub/spring/**", "recaptcha_enterprise/**", "run/endpoints-v2-backend/*", "spanner/**", "vision/**"],
+      "allowedVersions": "<3"
     }
   ],
   "labels": [

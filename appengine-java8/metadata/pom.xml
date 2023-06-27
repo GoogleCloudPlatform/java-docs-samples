@@ -47,7 +47,7 @@ Copyright 2017 Google Inc.
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.12.0</version>
+        <version>26.17.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -89,7 +89,7 @@ Copyright 2017 Google Inc.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>
+        <version>3.4.0</version>
         <configuration>
           <webResources>
             <!-- in order to interpolate version from pom into appengine-web.xml -->

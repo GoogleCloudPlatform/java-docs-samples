@@ -24,7 +24,7 @@
     <java.version>11</java.version>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
-    <spring.boot.version>2.7.11</spring.boot.version>
+    <spring.boot.version>2.7.13</spring.boot.version>
   </properties>
 
   <dependencies>
@@ -50,7 +50,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
-      <version>1.11.2</version>
+      <version>1.12.0</version>
     </dependency>
     <!-- MySQL dependencies end -->
 
@@ -63,7 +63,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
-      <version>1.11.2</version>
+      <version>1.12.0</version>
     </dependency>
     <!-- Postgres dependencies end -->
   </dependencies>
