@@ -39,14 +39,13 @@ public class DatasetApiIT {
   private static final String BUCKET = PROJECT_ID + "-vcm";
   private static final String COMPUTE_REGION = "us-central1";
   private ByteArrayOutputStream bout;
-  private PrintStream out;
   private PrintStream originalPrintStream;
   private String datasetId = "TEN0000000000000000000";
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
   }

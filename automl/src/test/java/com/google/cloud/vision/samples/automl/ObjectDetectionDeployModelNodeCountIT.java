@@ -40,7 +40,7 @@ public class ObjectDetectionDeployModelNodeCountIT {
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     System.setOut(out);
   }
 

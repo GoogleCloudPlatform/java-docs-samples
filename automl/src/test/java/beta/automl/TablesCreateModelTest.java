@@ -43,9 +43,7 @@ public class TablesCreateModelTest {
   private static final String TABLE_SPEC_ID = "3172574831249981440";
   private static final String COLUMN_SPEC_ID = "3224682886313541632";
   private ByteArrayOutputStream bout;
-  private PrintStream out;
   private PrintStream originalPrintStream;
-  private String operationId;
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
@@ -64,7 +62,7 @@ public class TablesCreateModelTest {
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
   }

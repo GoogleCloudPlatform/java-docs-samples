@@ -37,7 +37,7 @@ import net.sourceforge.argparse4j.inf.Subparsers;
  * -Dexec.mainClass ='com.google.cloud.translate.samples.DatasetAPI' -Dexec.args='create_dataset
  * test_dataset'
  */
-public class DatasetApi {
+public abstract class DatasetApi {
 
   // [START automl_translate_import_data]
   /**
@@ -76,8 +76,7 @@ public class DatasetApi {
   // [END automl_translate_import_data]
 
   public static void main(String[] args) throws Exception {
-    DatasetApi datasetApi = new DatasetApi();
-    datasetApi.argsHelper(args, System.out);
+    DatasetApi.argsHelper(args, System.out);
   }
 
   public static void argsHelper(String[] args, PrintStream out) throws Exception {
@@ -94,7 +93,7 @@ public class DatasetApi {
     Namespace ns;
     try {
       ns = parser.parseArgs(args);
-      if (ns.get("command").equals("import_data")) {
+      if ("import_data".equals(ns.get("command"))) {
         importData(projectId, computeRegion, ns.getString("datasetId"), ns.getString("path"));
       }
     } catch (ArgumentParserException e) {
