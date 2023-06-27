@@ -23,6 +23,8 @@ import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -39,7 +41,11 @@ public class PredictImageFromImageAndTextSampleTest {
   private static final String MODEL = "multimodalembedding@001";
   private static final String BASE_IMAGE_PATH = "resources/image_flower_daisy.jpg";
   private static final String TEXT_PROMPT = "an impressionist painting";
-  private static final String PARAMETERS = "{\n" + "  \"sampleCount\": 1\n" + "}";
+  private static final Map<String, Object> PARAMETERS = new HashMap<String, Object>();
+
+  static {
+    PARAMETERS.put("sampleCount", 1);
+  }
 
   private ByteArrayOutputStream bout;
   private PrintStream originalPrintStream;

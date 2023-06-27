@@ -22,6 +22,8 @@ import com.google.cloud.aiplatform.v1beta1.EndpointName;
 import com.google.cloud.aiplatform.v1beta1.PredictResponse;
 import com.google.cloud.aiplatform.v1beta1.PredictionServiceClient;
 import com.google.cloud.aiplatform.v1beta1.PredictionServiceSettings;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
@@ -31,7 +33,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PredictImageFromImageAndTextSample {
 
@@ -43,7 +47,9 @@ public class PredictImageFromImageAndTextSample {
 
     // Learn how to use text prompts to update an image:
     // https://cloud.google.com/vertex-ai/docs/generative-ai/image/edit-images
-    String parameters = "{\n" + "  \"sampleCount\": 1\n" + "}";
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put("sampleCount", 1);
+
     String location = "us-central1";
     String publisher = "google";
     String model = "multimodalembedding@001";
@@ -60,7 +66,7 @@ public class PredictImageFromImageAndTextSample {
       String model,
       String textPrompt,
       String baseImagePath,
-      String parameters)
+      Map<String, Object> parameters)
       throws IOException {
     final String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     final PredictionServiceSettings predictionServiceSettings =
@@ -76,19 +82,20 @@ public class PredictImageFromImageAndTextSample {
       // Convert the image to Base64
       byte[] imageData = Base64.getEncoder().encode(Files.readAllBytes(Paths.get(baseImagePath)));
       String encodedImage = new String(imageData, StandardCharsets.UTF_8);
-      String instance =
-          "{\"text\": \""
-              + textPrompt
-              + "\",\n"
-              + "\"image\": { \"bytesBase64Encoded\": \""
-              + encodedImage
-              + "\" }\n"
-              + "} \n";
-      Value instanceValue = stringToValue(instance);
+
+      JsonObject jsonInstance = new JsonObject();
+      jsonInstance.addProperty("text", textPrompt);
+      JsonObject jsonImage = new JsonObject();
+      jsonImage.addProperty("bytesBase64Encoded", encodedImage);
+      jsonInstance.add("image", jsonImage);
+
+      Value instanceValue = stringToValue(jsonInstance.toString());
       List<Value> instances = new ArrayList<>();
       instances.add(instanceValue);
 
-      Value parameterValue = stringToValue(parameters);
+      Gson gson = new Gson();
+      String gsonString = gson.toJson(parameters);
+      Value parameterValue = stringToValue(gsonString);
 
       PredictResponse predictResponse =
           predictionServiceClient.predict(endpointName, instances, parameterValue);
