@@ -23,6 +23,8 @@ import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -36,7 +38,12 @@ public class PredictImageFromTextSampleTest {
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
   private static final String TEXT_PROMPT =
       "small red boat on water in the morning watercolor illustration muted colors";
-  private static final String PARAMETERS = "{\n" + "  \"sampleCount\": 1\n" + "}";
+  private static final Map<String, Object> PARAMETERS = new HashMap<String, Object>();
+
+  static {
+    PARAMETERS.put("sampleCount", 1);
+  }
+
   private static final String PUBLISHER = "google";
   private static final String LOCATION = "us-central1";
   private static final String MODEL = "multimodalembedding@001";

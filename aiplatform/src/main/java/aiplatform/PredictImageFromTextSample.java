@@ -22,12 +22,16 @@ import com.google.cloud.aiplatform.v1beta1.EndpointName;
 import com.google.cloud.aiplatform.v1beta1.PredictResponse;
 import com.google.cloud.aiplatform.v1beta1.PredictionServiceClient;
 import com.google.cloud.aiplatform.v1beta1.PredictionServiceSettings;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PredictImageFromTextSample {
 
@@ -38,7 +42,9 @@ public class PredictImageFromTextSample {
 
     // Learn how to generate images from text prompts:
     // https://cloud.google.com/vertex-ai/docs/generative-ai/image/generate-images
-    String parameters = "{\n" + "  \"sampleCount\": 1\n" + "}";
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put("sampleCount", 1);
+
     String location = "us-central1";
     String publisher = "google";
     String model = "multimodalembedding@001";
@@ -53,7 +59,7 @@ public class PredictImageFromTextSample {
       String publisher,
       String model,
       String textPrompt,
-      String parameters)
+      Map<String, Object> parameters)
       throws IOException {
     final String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     final PredictionServiceSettings predictionServiceSettings =
@@ -66,12 +72,15 @@ public class PredictImageFromTextSample {
       final EndpointName endpointName =
           EndpointName.ofProjectLocationPublisherModelName(project, location, publisher, model);
 
-      String instance = "{ \"text\": \"" + textPrompt + "\"}";
-      Value instanceValue = stringToValue(instance);
+      JsonObject jsonInstance = new JsonObject();
+      jsonInstance.addProperty("text", textPrompt);
+      Value instanceValue = stringToValue(jsonInstance.toString());
       List<Value> instances = new ArrayList<>();
       instances.add(instanceValue);
 
-      Value parameterValue = stringToValue(parameters);
+      Gson gson = new Gson();
+      String gsonString = gson.toJson(parameters);
+      Value parameterValue = stringToValue(gsonString);
 
       PredictResponse predictResponse =
           predictionServiceClient.predict(endpointName, instances, parameterValue);
