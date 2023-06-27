@@ -31,15 +31,19 @@ import java.io.IOException;
 
 
 public class FetchAcl {
-  public static void fetchAcl() throws IOException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "your-project-id";
+    String projectId = "your-project-id"; 
     String location = "your-location"; // Format is "us" or "eu".
     String userId = "your-user-id"; // Format is user:<user-id>
-    String documentId = "your-documentid";
+    String documentId = "your-documentid"; // Document ID to retrieve ACL details
     fetchAcl(projectId, location, userId, documentId);
   }
 
+  /* This method retrieves access control (ACL) information relevant to a specific document. 
+  *  Please see the following documentation to learn more about FetchAcl 
+  *  https://cloud.google.com/document-warehouse/docs/manage-access-control#setacl-and-fetchacl
+  */
   public static void fetchAcl(String projectId, String location, String userId, String documentId) 
       throws IOException {
     String projectNumber = getProjectNumber(projectId); 
