@@ -41,13 +41,13 @@ public class LanguageTextClassificationCreateModelTest {
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private static final String DATASET_ID = "TCN00000000000000000000";
   private ByteArrayOutputStream bout;
-  private PrintStream out;
   private PrintStream originalPrintStream;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
         System.getenv(varName),
-        "Environment variable '%s' is required to perform these tests.".format(varName));
+        String.format("Environment variable '%s' is required to perform these tests.", varName));
+
   }
 
   @BeforeClass
@@ -59,7 +59,7 @@ public class LanguageTextClassificationCreateModelTest {
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
   }
