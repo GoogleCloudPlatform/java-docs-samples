@@ -132,7 +132,7 @@
     },
     {
       "matchPackagePatterns": [ "org.springframework.boot" ],
-      "matchPaths": ["appengine-java11/**", "appengine-java8/**", "flexible/*", "flexible/java-11/**", "flexible/java-8/**"],
+      "matchPaths": ["appengine-java11/**", "appengine-java8/**", "flexible/*", "flexible/java-11/**", "flexible/java-8/**", "cloud-sql/**", "monitoring/**", "pubsub/spring/**", "recaptcha_enterprise/**", "run/endpoints-v2-backend/*", "spanner/**", "vision/**"],
       "allowedVersions": "<3"
     }
   ],
