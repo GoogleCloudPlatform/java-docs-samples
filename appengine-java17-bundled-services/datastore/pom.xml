@@ -68,7 +68,7 @@
     <dependency>
       <groupId>com.google.auto.value</groupId>
       <artifactId>auto-value</artifactId>
-      <version>1.10.1</version>
+      <version>1.10.2</version>
       <scope>provided</scope>
     </dependency>
 
@@ -166,7 +166,7 @@
             <annotationProcessorPath>
               <groupId>com.google.auto.value</groupId>
               <artifactId>auto-value</artifactId>
-              <version>1.10.1</version>
+              <version>1.10.2</version>
             </annotationProcessorPath>
           </annotationProcessorPaths>
         </configuration>
