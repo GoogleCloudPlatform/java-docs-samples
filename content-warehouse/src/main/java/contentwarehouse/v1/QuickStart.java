@@ -57,7 +57,7 @@ public class QuickStart {
 
     String endpoint = "contentwarehouse.googleapis.com:443";
     if (!"us".equals(location)) {
-        endpoint = String.format("%s-%s", location, endpoint);
+      endpoint = String.format("%s-%s", location, endpoint);
     }
     DocumentSchemaServiceSettings documentSchemaServiceSettings = 
          DocumentSchemaServiceSettings.newBuilder().setEndpoint(endpoint).build(); 
