@@ -56,8 +56,8 @@ public class CreateRuleSet {
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String projectNumber = getProjectNumber(projectId);
 
-        
-    String endpoint = String.format("%s-contentwarehouse.googleapis.com:443", location);
+    String endpoint = "us".equals(location) ? "contentwarehouse.googleapis.com:443"
+        : String.format("%s-contentwarehouse.googleapis.com:443", location);
     RuleSetServiceSettings ruleSetServiceSettings =
         RuleSetServiceSettings.newBuilder().setEndpoint(endpoint).build();
         
