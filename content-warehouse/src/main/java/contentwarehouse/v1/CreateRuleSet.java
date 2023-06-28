@@ -58,7 +58,7 @@ public class CreateRuleSet {
 
     String endpoint = "contentwarehouse.googleapis.com:443";
     if (!"us".equals(location)) {
-        endpoint = String.format("%s-%s", location, endpoint);
+      endpoint = String.format("%s-%s", location, endpoint);
     }
     RuleSetServiceSettings ruleSetServiceSettings =
         RuleSetServiceSettings.newBuilder().setEndpoint(endpoint).build();
