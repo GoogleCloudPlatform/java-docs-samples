@@ -343,17 +343,7 @@ public class ReadsTest {
     assertThat(output)
         .contains(
             String.format(
-                "Reading data for phone#5c10102#20190502\n"
-                    + "Column Family stats_summary\n"
-                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
-                    + "\tos_build: PQ2A.190406.000 @%1$s"
-                    + "Reading data for phone#5c10102#20190501\n"
-                    + "Column Family stats_summary\n"
-                    + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"
-                    + "\tos_build: PQ2A.190401.002 @%1$s\n\n"
-                    + "Reading data for phone#4c410523#20190505\n"
+                    "Reading data for phone#4c410523#20190505\n"
                     + "Column Family stats_summary\n"
                     + "\tconnected_cell: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 @%1$s\n"
                     + "\tconnected_wifi: \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001 @%1$s\n"

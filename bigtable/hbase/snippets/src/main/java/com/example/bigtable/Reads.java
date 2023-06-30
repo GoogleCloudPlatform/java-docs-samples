@@ -251,12 +251,12 @@ public class Reads {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
-      Scan prefixScan =
+      Scan revScan =
           new Scan()
               .setReversed(true)
               .setLimit(2)
-              .setRowPrefixFilter(Bytes.toBytes("phone#4c410523"));
-      ResultScanner rows = table.getScanner(prefixScan);
+              .withStartRow(Bytes.toBytes("phone#4c410523#20190505"));
+      ResultScanner rows = table.getScanner(revScan);
 
       for (Result row : rows) {
         printRow(row);
