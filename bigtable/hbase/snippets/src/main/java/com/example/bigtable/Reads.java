@@ -38,7 +38,6 @@ import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
-
 public class Reads {
 
   // Write your code here.
@@ -252,10 +251,11 @@ public class Reads {
     // the "close" method on the client to safely clean up any remaining background resources.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
-      Scan prefixScan = new Scan()
-          .setReversed(true)
-          .setLimit(2)
-          .setRowPrefixFilter(Bytes.toBytes("phone#4c410523"))
+      Scan prefixScan =
+          new Scan()
+              .setReversed(true)
+              .setLimit(2)
+              .setRowPrefixFilter(Bytes.toBytes("phone#4c410523"));
       ResultScanner rows = table.getScanner(prefixScan);
 
       for (Result row : rows) {
