@@ -43,7 +43,7 @@ public class ScopesTest {
 
   @Before
   public void beforeTest() throws IOException {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     BufferedReader reader = new BufferedReader(new StringReader("{}"));
     when(request.getReader()).thenReturn(reader);

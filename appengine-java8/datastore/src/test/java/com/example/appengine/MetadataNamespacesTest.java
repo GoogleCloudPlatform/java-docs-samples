@@ -104,7 +104,7 @@ public class MetadataNamespacesTest {
 
     // Start with unrestricted namespace query
     Query q = new Query(Entities.NAMESPACE_METADATA_KIND);
-    List<Filter> subFilters = new ArrayList();
+    List<Filter> subFilters = new ArrayList<>();
     // Limit to specified range, if any
     if (start != null) {
       subFilters.add(
@@ -124,7 +124,7 @@ public class MetadataNamespacesTest {
     q.setFilter(CompositeFilterOperator.and(subFilters));
 
     // Initialize result list
-    List<String> results = new ArrayList<String>();
+    List<String> results = new ArrayList<>();
 
     // Build list of query results
     for (Entity e : ds.prepare(q).asIterable()) {

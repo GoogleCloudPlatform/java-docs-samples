@@ -33,9 +33,9 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalURLFetchServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.collect.ImmutableMap;
 import com.googlecode.objectify.Objectify;
-import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
 import java.io.ByteArrayInputStream;
@@ -47,16 +47,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /** Unit tests for {@link TicTacToeServlet}. */
 @RunWith(JUnit4.class)
 public class TicTacToeServletTest {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+
   private static final String USER_EMAIL = "whisky@tangofoxtr.ot";
   private static final String USER_ID = "whiskytangofoxtrot";
   private static final String FIREBASE_DB_URL = "http://firebase.com/dburl";
@@ -69,12 +72,10 @@ public class TicTacToeServletTest {
                   .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
               new LocalUserServiceTestConfig(),
               new LocalURLFetchServiceTestConfig())
-          .setEnvEmail(USER_EMAIL)
-          .setEnvAuthDomain("gmail.com")
-          .setEnvAttributes(
-              new HashMap(
-                  ImmutableMap.of(
-                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+              .setEnvEmail(USER_EMAIL)
+              .setEnvAuthDomain("gmail.com")
+              .setEnvAttributes(new HashMap<>(ImmutableMap
+                  .of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -86,7 +87,7 @@ public class TicTacToeServletTest {
   @BeforeClass
   public static void setUpBeforeClass() {
     // Reset the Factory so that all translators work properly.
-    ObjectifyService.setFactory(new ObjectifyFactory());
+    ObjectifyService.init();
     ObjectifyService.register(Game.class);
     // Mock out the firebase config
     FirebaseChannel.firebaseConfigStream =
@@ -95,14 +96,13 @@ public class TicTacToeServletTest {
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     helper.setUp();
     dbSession = ObjectifyService.begin();
 
     // Set up a fake HTTP response.
     when(mockRequest.getRequestURL()).thenReturn(new StringBuffer("https://timbre/"));
     when(mockRequest.getRequestDispatcher("/WEB-INF/view/index.jsp")).thenReturn(requestDispatcher);
-
     servletUnderTest = new TicTacToeServlet();
 
     helper.setEnvIsLoggedIn(true);
@@ -115,7 +115,7 @@ public class TicTacToeServletTest {
   }
 
   @Test
-  public void doGet_noGameKey() throws Exception {
+  public void doGetNoGameKey() throws Exception {
     // Mock out the firebase response. See
     // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
     MockHttpTransport mockHttpTransport =
@@ -140,11 +140,12 @@ public class TicTacToeServletTest {
 
     // Make sure the game object was created for a new game
     Objectify ofy = ObjectifyService.ofy();
-    Game game = ofy.load().type(Game.class).first().safe();
+    // Get the game with the most recent create date
+    Game game = ofy.load().type(Game.class).order("-created").first().safe();
     assertThat(game.userX).isEqualTo(USER_ID);
 
-    verify(mockHttpTransport, times(1))
-        .buildRequest(eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
+    verify(mockHttpTransport).buildRequest(eq("PATCH"),
+        ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
     verify(requestDispatcher).forward(mockRequest, mockResponse);
     verify(mockRequest).setAttribute(eq("token"), anyString());
     verify(mockRequest).setAttribute("game_key", game.id);
@@ -155,7 +156,7 @@ public class TicTacToeServletTest {
   }
 
   @Test
-  public void doGet_existingGame() throws Exception {
+  public void doGetExistingGame() throws Exception {
     // Mock out the firebase response. See
     // http://g.co/dv/api-client-library/java/google-http-java-client/unit-testing
     MockHttpTransport mockHttpTransport =
@@ -187,12 +188,12 @@ public class TicTacToeServletTest {
     servletUnderTest.doGet(mockRequest, mockResponse);
 
     // Make sure the game object was updated with the other player
-    game = ofy.load().type(Game.class).first().safe();
+    game = ofy.load().type(Game.class).id(gameKey).safe();
     assertThat(game.userX).isEqualTo("some-other-user-id");
     assertThat(game.userO).isEqualTo(USER_ID);
 
-    verify(mockHttpTransport, times(2))
-        .buildRequest(eq("PATCH"), Matchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
+    verify(mockHttpTransport, times(2)).buildRequest(eq("PATCH"),
+        ArgumentMatchers.matches(FIREBASE_DB_URL + "/channels/[\\w-]+.json$"));
     verify(requestDispatcher).forward(mockRequest, mockResponse);
     verify(mockRequest).setAttribute(eq("token"), anyString());
     verify(mockRequest).setAttribute("game_key", game.id);
@@ -203,7 +204,7 @@ public class TicTacToeServletTest {
   }
 
   @Test
-  public void doGet_nonExistentGame() throws Exception {
+  public void doGetNonExistentGame() throws Exception {
     when(mockRequest.getParameter("gameKey")).thenReturn("does-not-exist");
 
     servletUnderTest.doGet(mockRequest, mockResponse);

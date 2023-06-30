@@ -1,0 +1,8 @@
+# Default version is Java 11
+#  - See https://cloud.google.com/docs/buildpacks/java#specify_a_java_version
+# Match the version required in pom.xml by setting it here
+#  - See https://cloud.google.com/docs/buildpacks/set-environment-variables#build_the_application_with_environment_variables
+
+[[build.env]]
+  name = "GOOGLE_RUNTIME_VERSION"
+  value = "17"

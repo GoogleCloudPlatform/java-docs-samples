@@ -1,5 +1,5 @@
 {
-  "name": "Pub/Sub Lite to Clous Storage",
+  "name": "Pub/Sub Lite to Cloud Storage",
   "description": "An Apache Beam streaming pipeline that reads messages from Pub/Sub Lite, applies fixed windowing on the messages, and writes the results to files on Cloud Storage.",
   "parameters": [
     {

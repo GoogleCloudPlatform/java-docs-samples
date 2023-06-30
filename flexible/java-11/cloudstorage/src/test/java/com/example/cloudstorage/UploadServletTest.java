@@ -32,32 +32,31 @@ import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetEnvironmentVariable;
+import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 
+@SpringBootTest
 public class UploadServletTest {
 
   @Test
-  @SetEnvironmentVariable(key = "BUCKET_NAME", value = "testbucket")
   public void testPost() throws Exception {
 
-    // assertNotNull(System.getenv("PUBSUB_TOPIC"));
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
 
-    BufferedReader reader = mock(BufferedReader.class);
-    when(request.getReader()).thenReturn(reader);
-
+    try (BufferedReader reader = mock(BufferedReader.class)) {
+      when(request.getReader()).thenReturn(reader);
+    }
     Part filePart = mock(Part.class);
     when(filePart.getSubmittedFileName()).thenReturn("testfile.txt");
     when(filePart.getInputStream()).thenReturn(mock(InputStream.class));
     when(request.getPart("file")).thenReturn(filePart);
-    Storage mockStorage = Mockito.mock(Storage.class);
+    Storage mockStorage = mock(Storage.class);
     Blob mockBlob = mock(Blob.class);
     when(mockBlob.getMediaLink()).thenReturn("test blob data");
     when(mockStorage.create(any(BlobInfo.class), any(InputStream.class))).thenReturn(mockBlob);

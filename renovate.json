@@ -12,9 +12,27 @@
   "packageRules": [
     {
       "packagePatterns": [
+        "^com.fasterxml.jackson.core:"
+      ],
+      "groupName": "Jackson core packages"
+    },    
+    {
+      "packagePatterns": [
         "^com.google.appengine:"
       ],
       "groupName": "AppEngine packages"
+    },
+    {
+      "packagePatterns": [
+        "^com.google.cloud.bigtable:"
+      ],
+      "groupName": "Bigtable packages"
+    },
+    {
+      "packagePatterns": [
+        "^com.google.cloud.sql:"
+      ],
+      "groupName": "Cloud SQL connectors"
     },
     {
       "matchPackagePrefixes": [ "com.google" ],
@@ -28,7 +46,7 @@
     },
     {
       "packagePatterns": [
-        "^io.grpc:grpc-"
+        "io.grpc:(?:protoc-gen-)?grpc-*"
       ],
       "groupName": "gRPC packages"
     },
@@ -37,6 +55,12 @@
         "^io.micronaut:"
       ],
       "groupName": "Micronaut packages"
+    },
+    {
+      "packagePatterns": [
+        "^io.quarkus:"
+      ],
+      "groupName": "Quarkus packages"
     },
     {
       "packagePatterns": [
@@ -56,6 +80,12 @@
       ],
       "groupName": "Jetty packages"
     },
+    {
+      "packagePatterns": [
+        "^org.slf4j:"
+      ],
+      "groupName": "SLF4J packages"
+    },    
     {
       "packageNames": [
         "javax.servlet:javax.servlet-api"
@@ -87,6 +117,15 @@
       "enabled": false
     },
     {
+      "packagePatterns": [
+        "^io.ktor:",
+        "^com.amazonaws:"
+      ],
+      "schedule": [
+        "before 3am on the first day of the month"
+      ]
+    },
+    {
       "matchPackageNames": [
         "com.google.apis:google-api-services-dataflow"
       ],
@@ -96,6 +135,11 @@
     {
       "matchPackagePatterns": [ "org.springframework.boot" ],
       "matchCurrentVersion": "!/.*[SNAPSHOT | M]/"
+    },
+    {
+      "matchPackagePatterns": [ "org.springframework.boot" ],
+      "matchPaths": ["appengine-java11/**", "appengine-java8/**", "flexible/*", "flexible/java-11/**", "flexible/java-8/**", "cloud-sql/**", "monitoring/**", "pubsub/spring/**", "recaptcha_enterprise/**", "run/endpoints-v2-backend/*", "spanner/**", "vision/**"],
+      "allowedVersions": "<3"
     }
   ],
   "labels": [

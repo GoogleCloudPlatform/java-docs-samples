@@ -19,7 +19,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
-  <groupId>com.example</groupId>
+  <groupId>com.example.opencensus</groupId>
   <artifactId>opencensus-samples</artifactId>
   <version>1.0</version>
 
@@ -47,7 +47,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.12.0</version>
+        <version>26.17.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -63,17 +63,8 @@
     </dependency>
     <dependency>
       <groupId>io.opencensus</groupId>
-      <artifactId>opencensus-impl</artifactId>
-      <version>${opencensus.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.opencensus</groupId>
       <artifactId>opencensus-exporter-stats-stackdriver</artifactId>
       <version>${opencensus.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-core</artifactId>
     </dependency>
     <!-- [END monitoring_opencensus_metrics_dependencies] -->
   </dependencies>

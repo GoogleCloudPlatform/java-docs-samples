@@ -16,7 +16,7 @@
 
 package com.example.flexible.pubsub;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,13 +28,12 @@ import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class PubSubPublishTest {
 
   @Test
   public void servletPublishesPayloadMessage() throws Exception {
-    // assertNotNull(System.getenv("PUBSUB_TOPIC"));
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getParameter("payload")).thenReturn("test-message");
 

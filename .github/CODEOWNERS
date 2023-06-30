@@ -7,11 +7,11 @@
 # - Add new entry in alphabatical order under the team name
 # - Add common Github team owners first followed by specific ones
 # - Always add Github teams as owners instead of individual usernames
-# - Ensure that go/dee-codeowners file is up to date
+# - Ensure that go/jds-codeowners file is up to date
 ########################################################################
 
 ########################################################################
-# Use go/dee-codeowners and lookup by samples folder name to find who
+# Use go/jds-codeowners and lookup by samples folder name to find who
 # to reach out regarding a certain sample
 ########################################################################
 
@@ -27,8 +27,7 @@
 /workflows                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/torus-dpe
 
 # Infrastructure
-/asset                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra
-/auth                            @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra
+/auth                            @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/googleapis-auth
 /batch                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra
 /compute                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra
 /cdn                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra
@@ -43,17 +42,17 @@
 /servicedirectory                @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra
 /webrisk                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-infra
 
-# DEE Platform Ops (DEEPO) - Observability
-/errorreporting                  @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-observability @GoogleCloudPlatform/dee-platform-ops
-/monitoring                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-observability @GoogleCloudPlatform/dee-platform-ops
-/opencensus                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-observability @GoogleCloudPlatform/dee-platform-ops
-/trace                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-observability @GoogleCloudPlatform/dee-platform-ops
+# DEE Platform Ops (DEEPO)
+/errorreporting                  @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-platform-ops
+/monitoring                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-platform-ops
+/opencensus                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-platform-ops
+/trace                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-platform-ops
 
 # Cloud SDK Databases & Data Analytics teams
 # ---* Cloud Native DB
 /bigtable                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-native-db-dpes
-/memorystore                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-native-db-dpes
-/spanner                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-native-db-dpes
+/memorystore                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/spanner                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-spanner-java
 # ---* Cloud Storage
 /storage                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-storage-dpes
 /storage-transfer                @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-storage-dpes
@@ -69,6 +68,7 @@
 /dataproc                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
 /dialogflow                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
 /dialogflow-cx                   @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
+/discoveryengine                 @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
 /document-ai                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
 /jobs                            @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
 /language                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai
@@ -83,10 +83,12 @@
 
 # Self-service
 # ---* Shared with DEE Teams
-/datacatalog                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/googleapi-dataplex
+/content-warehouse               @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/googleapis-contentwarehouse
+/datacatalog                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/googleapi-dataplex
 /functions                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/functions-framework-google
 # ---* Fully Eng Owned
 /appengine-*                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes
+/asset                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-asset-analysis-team @GoogleCloudPlatform/cloud-asset-platform-team
 /dlp                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/googleapis-dlp
 /flexible                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes
 /healthcare                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/healthcare-life-sciences

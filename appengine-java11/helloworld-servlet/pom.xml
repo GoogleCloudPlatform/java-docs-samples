@@ -48,7 +48,7 @@ limitations under the License.
 		<!-- See the README for more information -->
     <!-- [START gae_java11_jetty_main_dependency] -->
     <dependency>
-      <groupId>com.example.appengine.demo</groupId>
+      <groupId>com.example.appengine</groupId>
       <artifactId>simple-jetty-main</artifactId>
       <version>1</version>
       <scope>provided</scope>
@@ -70,7 +70,7 @@ limitations under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>
+        <version>3.4.0</version>
       </plugin>
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
@@ -86,7 +86,7 @@ limitations under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.5.0</version>
+        <version>3.6.0</version>
         <executions>
           <execution>
             <id>copy</id>

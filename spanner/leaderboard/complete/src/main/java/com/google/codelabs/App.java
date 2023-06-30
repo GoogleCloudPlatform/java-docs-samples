@@ -128,7 +128,7 @@ public class App {
                   numberOfPlayers = resultSet.getLong("PlayerCount");
                 }
                 // Insert 100 player records into the Players table.
-                List<Statement> stmts = new ArrayList<Statement>();
+                List<Statement> stmts = new ArrayList<>();
                 long randomId;
                 for (int x = 1; x <= 100; x++) {
                   numberOfPlayers++;
@@ -176,7 +176,7 @@ public class App {
                   LocalDate startDate = LocalDate.of(startYear, startMonth, startDay);
                   long start = startDate.toEpochDay();
                   Random r = new Random();
-                  List<Statement> stmts = new ArrayList<Statement>();
+                  List<Statement> stmts = new ArrayList<>();
                   // Insert 4 score records into the Scores table 
                   // for each player in the Players table.
                   for (int x = 1; x <= 4; x++) {

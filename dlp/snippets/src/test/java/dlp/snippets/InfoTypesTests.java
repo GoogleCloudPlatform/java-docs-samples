@@ -17,18 +17,30 @@
 package dlp.snippets;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.common.collect.ImmutableList;
+import com.google.privacy.dlp.v2.CreateStoredInfoTypeRequest;
+import com.google.privacy.dlp.v2.StoredInfoType;
+import com.google.privacy.dlp.v2.UpdateStoredInfoTypeRequest;
+import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 public class InfoTypesTests extends TestBase {
 
   @Override
   protected ImmutableList<String> requiredEnvVars() {
-    return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS");
+    return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT");
   }
 
   @Test
@@ -37,5 +49,47 @@ public class InfoTypesTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Name");
     assertThat(output).contains("Display name");
+  }
+
+  @Test
+  public void testCreateStoredInfoType() throws IOException {
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(DlpServiceClient::create).thenReturn(dlpServiceClient);
+      StoredInfoType response =
+          StoredInfoType.newBuilder()
+              .setName("projects/project_id/locations/global/storedInfoTypes/github-usernames")
+              .build();
+      when(dlpServiceClient.createStoredInfoType(any(CreateStoredInfoTypeRequest.class)))
+          .thenReturn(response);
+      CreateStoredInfoType.createStoredInfoType("project_id", "gs://bucket_name");
+      String output = bout.toString();
+      assertThat(output)
+          .contains(
+              "Created Stored InfoType: "
+                  + "projects/project_id/locations/global/storedInfoTypes/github-usernames");
+      verify(dlpServiceClient, times(1))
+          .createStoredInfoType(any(CreateStoredInfoTypeRequest.class));
+    }
+  }
+
+  @Test
+  public void testUpdateStoredInfoType() throws Exception {
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(DlpServiceClient::create).thenReturn(dlpServiceClient);
+      StoredInfoType response =
+          StoredInfoType.newBuilder()
+              .setName("projects/project_id/locations/global/storedInfoTypes/github-usernames")
+              .build();
+      when(dlpServiceClient.updateStoredInfoType(any(UpdateStoredInfoTypeRequest.class)))
+          .thenReturn(response);
+      UpdateStoredInfoType.updateStoredInfoType(
+          "project_id", "gs://bucket_name/term_list.txt", "gs://bucket_name", "github-usernames");
+      String output = bout.toString();
+      assertThat(output).contains("Updated stored InfoType successfully");
+      verify(dlpServiceClient, times(1))
+          .updateStoredInfoType(any(UpdateStoredInfoTypeRequest.class));
+    }
   }
 }

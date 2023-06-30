@@ -70,7 +70,7 @@ public class BigQueryRunnerTest {
 
   @Before
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
 
@@ -79,7 +79,7 @@ public class BigQueryRunnerTest {
 
     when(metricsServiceStub.listMetricDescriptorsPagedCallable()).thenReturn(listCallable);
     when(listCallable.call(any(ListMetricDescriptorsRequest.class))).thenReturn(listResponse);
-    when(listResponse.iterateAll()).thenReturn(Collections.EMPTY_LIST);
+    when(listResponse.iterateAll()).thenReturn(Collections.emptyList());
 
     when(metricsServiceStub.createMetricDescriptorCallable()).thenReturn(createMetricCallable);
     when(createMetricCallable.call(any(CreateMetricDescriptorRequest.class))).thenReturn(null);

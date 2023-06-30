@@ -23,6 +23,7 @@ import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.gax.rpc.ResourceExhaustedException;
 import com.google.cloud.automl.v1.AutoMlClient;
 import com.google.cloud.automl.v1.LocationName;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.longrunning.ListOperationsRequest;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
@@ -35,21 +36,23 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class ListOperationStatusTest {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
   private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
   private ByteArrayOutputStream bout;
-  private PrintStream out;
   private PrintStream originalPrintStream;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
         System.getenv(varName),
-        "Environment variable '%s' is required to perform these tests.".format(varName));
+        String.format("Environment variable '%s' is required to perform these tests.", varName));
+
   }
 
   @BeforeClass
@@ -61,7 +64,7 @@ public class ListOperationStatusTest {
   @Before
   public void setUp() throws IOException, InterruptedException {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
 

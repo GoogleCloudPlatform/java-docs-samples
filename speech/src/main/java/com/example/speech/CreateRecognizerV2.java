@@ -16,6 +16,7 @@
 
 package com.example.speech;
 
+// [START speech_create_recognizer_v2]
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.speech.v2.CreateRecognizerRequest;
 import com.google.cloud.speech.v2.OperationMetadata;
@@ -61,3 +62,4 @@ public class CreateRecognizerV2 {
     }
   }
 }
+// [END speech_create_recognizer_v2]

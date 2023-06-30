@@ -23,7 +23,7 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.UriTemplate;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.discovery.Discovery;
 import com.google.api.services.discovery.model.JsonSchema;
 import com.google.api.services.discovery.model.RestDescription;
@@ -41,7 +41,7 @@ import java.util.List;
 public class OnlinePredictionSample {
   public static void main(String[] args) throws Exception {
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
     Discovery discovery = new Discovery.Builder(httpTransport, jsonFactory, null).build();
 
     RestDescription api = discovery.apis().getRest("ml", "v1").execute();

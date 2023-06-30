@@ -19,41 +19,41 @@ package com.example.monitoring;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
 
 /** Tests for list an alert policy sample. */
 public class ListAlertPolicyIT {
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-  private static final String PROJECT_ID = requireEnvVar("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_ID = requireEnvVar();
   private ByteArrayOutputStream bout;
-  private PrintStream out;
   private PrintStream originalPrintStream;
+  private static final String suffix = UUID.randomUUID().toString().substring(0, 8);
+  private static final String testPolicyName = "test-policy" + suffix;
 
-  private static String requireEnvVar(String varName) {
-    String value = System.getenv(varName);
+  private static String requireEnvVar() {
+    String value = System.getenv("GOOGLE_CLOUD_PROJECT");
     assertNotNull(
-        "Environment variable " + varName + " is required to perform these tests.",
-        System.getenv(varName));
+        "Environment variable " + "GOOGLE_CLOUD_PROJECT" + " is required to perform these tests.",
+        System.getenv("GOOGLE_CLOUD_PROJECT"));
     return value;
   }
 
   @BeforeClass
-  public static void checkRequirements() {
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+  public static void checkRequirements() throws IOException {
+    requireEnvVar();
+    CreateAlertPolicy.createAlertPolicy(PROJECT_ID, testPolicyName);
   }
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
   }

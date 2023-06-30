@@ -120,4 +120,20 @@ public class TriggersTests extends TestBase {
     String output = bout.toString();
     assertThat(output).contains("Trigger deleted:");
   }
+
+  @Test
+  public void testUpdateTrigger() throws Exception {
+
+    JobTrigger trigger = createTrigger();
+    String triggerName = trigger.getName();
+
+    String[] components = triggerName.split("/");
+    String triggerId = components[components.length - 1];
+    TriggersPatch.patchTrigger(PROJECT_ID, triggerId);
+    String output = bout.toString();
+    assertThat(output).contains("Job Trigger Name:");
+    assertThat(output).contains("InfoType updated:");
+    assertThat(output).contains("Likelihood updated:");
+    TriggersDelete.deleteTrigger(PROJECT_ID, triggerId);
+  }
 }

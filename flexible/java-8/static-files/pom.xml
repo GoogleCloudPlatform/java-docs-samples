@@ -37,8 +37,8 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml>    <!-- REQUIRED -->
 
-    <appengine.maven.plugin>2.4.3</appengine.maven.plugin>
-    <jetty>9.4.44.v20210927</jetty>
+    <appengine.maven.plugin>2.4.4</appengine.maven.plugin>
+    <jetty>9.4.51.v20230217</jetty>
   </properties>
 
   <dependencies>
@@ -57,12 +57,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>
+        <version>3.4.0</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>
+        <version>3.4.0</version>
       </plugin>
       <plugin>
         <groupId>com.google.cloud.tools</groupId>

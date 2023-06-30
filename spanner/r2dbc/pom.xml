@@ -4,14 +4,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.example</groupId>
+  <groupId>com.example.spanner</groupId>
   <artifactId>cloud-spanner-r2dbc-sample</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <spring-boot.version>2.7.10</spring-boot.version>
+    <spring-boot.version>2.7.13</spring-boot.version>
   </properties>
 
   <!--
@@ -26,10 +26,10 @@
 
   <dependencyManagement>
     <dependencies>
-     <dependency>
+      <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.12.0</version>
+        <version>26.17.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -50,7 +50,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>cloud-spanner-spring-data-r2dbc</artifactId>
-      <version>1.2.0</version>
+      <version>1.2.2</version>
     </dependency>
     <!-- [END spanner_spring_data_r2dbc_dependency] -->
 
@@ -61,7 +61,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>cloud-spanner-r2dbc</artifactId>
-      <version>1.2.0</version>
+      <version>1.2.2</version>
     </dependency>
     <!-- [END spanner_r2dbc_dependency] -->
 
@@ -84,6 +84,11 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -92,6 +97,16 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${spring-boot.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.1.2</version>
+        <configuration>
+          <systemPropertyVariables>
+            <spanner.test.instance>default-instance</spanner.test.instance>
+          </systemPropertyVariables>
+        </configuration>
       </plugin>
     </plugins>
   </build>

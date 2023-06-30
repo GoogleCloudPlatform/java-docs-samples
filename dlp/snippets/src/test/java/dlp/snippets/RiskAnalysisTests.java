@@ -17,14 +17,26 @@
 package dlp.snippets;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.common.collect.ImmutableList;
-import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KAnonymityResult;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityHistogramBucket;
+import com.google.privacy.dlp.v2.CreateDlpJobRequest;
+import com.google.privacy.dlp.v2.DlpJob;
+import com.google.privacy.dlp.v2.GetDlpJobRequest;
+import com.google.privacy.dlp.v2.Value;
 import com.google.pubsub.v1.PushConfig;
+import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.TopicName;
 import java.util.Arrays;
 import java.util.UUID;
@@ -33,16 +45,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @RunWith(JUnit4.class)
 public class RiskAnalysisTests extends TestBase {
 
+  private static DlpServiceClient DLP_SERVICE_CLIENT;
+
   private UUID testRunUuid = UUID.randomUUID();
   private TopicName topicName =
       TopicName.of(PROJECT_ID, String.format("%s-%s", TOPIC_ID, testRunUuid.toString()));
-  private ProjectSubscriptionName subscriptionName =
-      ProjectSubscriptionName.of(
+  private SubscriptionName subscriptionName =
+      SubscriptionName.of(
           PROJECT_ID, String.format("%s-%s", SUBSCRIPTION_ID, testRunUuid.toString()));
 
   @Override
@@ -58,6 +74,8 @@ public class RiskAnalysisTests extends TestBase {
 
   @Before
   public void before() throws Exception {
+
+    DLP_SERVICE_CLIENT = DlpServiceClient.create();
     // Create a new topic
     try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
       topicAdminClient.createTopic(topicName);
@@ -101,9 +119,7 @@ public class RiskAnalysisTests extends TestBase {
         .findFirst()
         .get();
     jobName = jobName.split(":")[1].trim();
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteDlpJob(jobName);
-    }
+    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
   }
 
   @Test
@@ -120,9 +136,7 @@ public class RiskAnalysisTests extends TestBase {
         .findFirst()
         .get();
     jobName = jobName.split(":")[1].trim();
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteDlpJob(jobName);
-    }
+    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
   }
 
   @Test
@@ -138,9 +152,7 @@ public class RiskAnalysisTests extends TestBase {
         .findFirst()
         .get();
     jobName = jobName.split(":")[1].trim();
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteDlpJob(jobName);
-    }
+    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
   }
 
   @Test
@@ -156,9 +168,7 @@ public class RiskAnalysisTests extends TestBase {
         .findFirst()
         .get();
     jobName = jobName.split(":")[1].trim();
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteDlpJob(jobName);
-    }
+    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
   }
 
   @Test
@@ -176,8 +186,48 @@ public class RiskAnalysisTests extends TestBase {
         .findFirst()
         .get();
     jobName = jobName.split(":")[1].trim();
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      dlp.deleteDlpJob(jobName);
+    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
+  }
+
+  @Test
+  public void testKAnonymityWithEntityId() throws Exception {
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+
+      KAnonymityHistogramBucket anonymityHistogramBucket =
+          KAnonymityHistogramBucket.newBuilder()
+              .addBucketValues(
+                  KAnonymityResult.KAnonymityEquivalenceClass.newBuilder()
+                      .addQuasiIdsValues(
+                          Value.newBuilder().setStringValue("[\"25\",\"engineer\"]").build())
+                      .setEquivalenceClassSize(1)
+                      .build())
+              .build();
+      DlpJob dlpJob =
+          DlpJob.newBuilder()
+              .setName("projects/project_id/locations/global/dlpJobs/job_id")
+              .setState(DlpJob.JobState.DONE)
+              .setRiskDetails(
+                  AnalyzeDataSourceRiskDetails.newBuilder()
+                      .setKAnonymityResult(
+                          KAnonymityResult.newBuilder()
+                              .addEquivalenceClassHistogramBuckets(anonymityHistogramBucket)
+                              .build())
+                      .build())
+              .build();
+      when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
+      when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
+      RiskAnalysisKAnonymityWithEntityId.calculateKAnonymityWithEntityId(
+          "project_id", "dataset_id", "table_id");
+      String output = bout.toString();
+      assertThat(output).contains("Quasi-ID values");
+      assertThat(output).contains("Class size: 1");
+      assertThat(output).contains("Job status: DONE");
+      assertThat(output).containsMatch("Bucket size range: \\[\\d, \\d\\]");
+      assertThat(output).contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+      verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+      verify(dlpServiceClient, times(1)).getDlpJob(any(GetDlpJobRequest.class));
     }
   }
 }

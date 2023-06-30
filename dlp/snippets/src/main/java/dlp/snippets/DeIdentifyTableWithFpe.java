@@ -63,13 +63,13 @@ public class DeIdentifyTableWithFpe {
                     .build())
             .addRows(
                 Row.newBuilder()
-                    .addValues(Value.newBuilder().setStringValue("11111").build())
+                    .addValues(Value.newBuilder().setStringValue("22222").build())
                     .addValues(Value.newBuilder().setStringValue("2016").build())
                     .addValues(Value.newBuilder().setStringValue("$20").build())
                     .build())
             .addRows(
                 Row.newBuilder()
-                    .addValues(Value.newBuilder().setStringValue("22222").build())
+                    .addValues(Value.newBuilder().setStringValue("33333").build())
                     .addValues(Value.newBuilder().setStringValue("2016").build())
                     .addValues(Value.newBuilder().setStringValue("$15").build())
                     .build())

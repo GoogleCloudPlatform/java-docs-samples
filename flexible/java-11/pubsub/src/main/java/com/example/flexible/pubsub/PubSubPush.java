@@ -39,7 +39,8 @@ public class PubSubPush extends HttpServlet {
       throws IOException, ServletException {
     String pubsubVerificationToken = System.getenv("PUBSUB_VERIFICATION_TOKEN");
     // Do not process message if request token does not match pubsubVerificationToken
-    if (req.getParameter("token").compareTo(pubsubVerificationToken) != 0) {
+    if (pubsubVerificationToken == null
+        || pubsubVerificationToken.compareTo(req.getParameter("token")) != 0) {
       resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
@@ -59,7 +60,7 @@ public class PubSubPush extends HttpServlet {
 
   private Message getMessage(HttpServletRequest request) throws IOException {
     String requestBody = request.getReader().lines().collect(Collectors.joining("\n"));
-    JsonElement jsonRoot = jsonParser.parse(requestBody);
+    JsonElement jsonRoot = JsonParser.parseString(requestBody).getAsJsonObject();
     String messageStr = jsonRoot.getAsJsonObject().get("message").toString();
     Message message = gson.fromJson(messageStr, Message.class);
     // decode from base64
@@ -73,7 +74,6 @@ public class PubSubPush extends HttpServlet {
   }
 
   private final Gson gson = new Gson();
-  private final JsonParser jsonParser = new JsonParser();
   private MessageRepository messageRepository;
 
   PubSubPush(MessageRepository messageRepository) {

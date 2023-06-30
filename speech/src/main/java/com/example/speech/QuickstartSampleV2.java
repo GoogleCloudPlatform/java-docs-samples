@@ -16,6 +16,8 @@
 
 package com.example.speech;
 
+// [START speech_quickstart_v2]
+// Imports the Google Cloud client library
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.speech.v2.AutoDetectDecodingConfig;
 import com.google.cloud.speech.v2.CreateRecognizerRequest;
@@ -99,3 +101,4 @@ public class QuickstartSampleV2 {
     }
   }
 }
+// [END speech_quickstart_v2]

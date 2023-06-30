@@ -30,7 +30,7 @@ import com.google.cloud.automl.v1beta1.PredictionServiceClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-class TablesBatchPredictBigQuery {
+abstract class TablesBatchPredictBigQuery {
 
   static void batchPredict() throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
@@ -74,7 +74,7 @@ class TablesBatchPredictBigQuery {
           client.batchPredictAsync(request);
 
       System.out.println("Waiting for operation to complete...");
-      BatchPredictResult response = future.get();
+      future.get();
       System.out.println("Batch Prediction results saved to BigQuery.");
     }
   }

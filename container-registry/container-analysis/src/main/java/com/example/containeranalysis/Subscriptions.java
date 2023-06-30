@@ -22,10 +22,11 @@ import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.pubsub.v1.ProjectSubscriptionName;
-import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
+import com.google.pubsub.v1.SubscriptionName;
+import com.google.pubsub.v1.TopicName;
 import io.grpc.StatusRuntimeException;
 import java.io.IOException;
 import java.lang.InterruptedException;
@@ -79,8 +80,8 @@ public class Subscriptions {
       throws IOException, StatusRuntimeException, InterruptedException {
     // This topic id will automatically receive messages when Occurrences are added or modified
     String topicId = "container-analysis-occurrences-v1";
-    ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
-    ProjectSubscriptionName subName = ProjectSubscriptionName.of(projectId, subId);
+    TopicName topicName = TopicName.of(projectId, topicId);
+    SubscriptionName subName = SubscriptionName.of(projectId, subId);
 
     SubscriptionAdminClient client = SubscriptionAdminClient.create();
     PushConfig config = PushConfig.getDefaultInstance();

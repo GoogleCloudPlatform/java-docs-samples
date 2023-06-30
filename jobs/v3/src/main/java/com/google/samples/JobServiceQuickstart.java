@@ -19,7 +19,7 @@ package com.google.samples;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.jobs.v3.CloudTalentSolution;
 import com.google.api.services.jobs.v3.CloudTalentSolutionScopes;
 import com.google.api.services.jobs.v3.model.Company;
@@ -34,7 +34,7 @@ public class JobServiceQuickstart {
 
   // [START quickstart]
 
-  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  private static final JsonFactory JSON_FACTORY = new GsonFactory();
   private static final NetHttpTransport NET_HTTP_TRANSPORT = new NetHttpTransport();
   private static final String DEFAULT_PROJECT_ID =
       "projects/" + System.getenv("GOOGLE_CLOUD_PROJECT");

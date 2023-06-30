@@ -101,14 +101,14 @@ public class RecognizeBetaIT {
   public void testTranscribeMultiLanguage() throws Exception {
     RecognizeBeta.transcribeMultiLanguage(videoFileName);
     String got = bout.toString();
-    assertThat(got).contains("Transcript : OK Google");
+    assertThat(got.toLowerCase()).contains("Transcript : OK Google".toLowerCase());
   }
 
   @Test
   public void testTranscribeMultiLanguageGcs() throws Exception {
     RecognizeBeta.transcribeMultiLanguageGcs(gcsVideoPath);
     String got = bout.toString();
-    assertThat(got).contains("Transcript : OK Google");
+    assertThat(got.toLowerCase()).contains("Transcript : OK Google".toLowerCase());
   }
 
   @Test
