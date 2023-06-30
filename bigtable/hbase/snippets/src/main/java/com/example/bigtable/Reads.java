@@ -43,6 +43,9 @@ public class Reads {
   // Write your code here.
   // [START_EXCLUDE]
   // [START bigtable_reads_row_hbase]
+  /**
+   * Example of reading an individual row key.
+   */
   public static void readRow() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -70,6 +73,9 @@ public class Reads {
   // [END bigtable_reads_row_hbase]
 
   // [START bigtable_reads_row_partial_hbase]
+  /**
+   * Example of reading a subset of the columns for a single row.
+   */
   public static void readRowPartial() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -98,6 +104,10 @@ public class Reads {
   // [END bigtable_reads_row_partial_hbase]
 
   // [START bigtable_reads_rows_hbase]
+
+  /**
+   * Example of reading multiple row keys.
+   */
   public static void readRows() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -128,6 +138,10 @@ public class Reads {
   // [END bigtable_reads_rows_hbase]
 
   // [START bigtable_reads_row_range_hbase]
+
+  /**
+   * Example of reading a range of rows using a key range.
+   */
   public static void readRowRange() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -161,6 +175,9 @@ public class Reads {
   // [END bigtable_reads_row_range_hbase]
 
   // [START bigtable_reads_row_ranges_hbase]
+  /**
+   * Example of reading multiple disjoint row ranges.
+   */
   public static void readRowRanges() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -204,6 +221,10 @@ public class Reads {
   // [END bigtable_reads_row_ranges_hbase]
 
   // [START bigtable_reads_prefix_hbase]
+
+  /**
+   * Example of reading a range of rows using a row prefix.
+   */
   public static void readPrefix() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -231,6 +252,9 @@ public class Reads {
   // [END bigtable_reads_prefix_hbase]
 
   // [START bigtable_reverse_scan_hbase]
+  /**
+   * Example of reading a range of rows in reverse order.
+   */
   public static void readRowsReversed() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -262,6 +286,10 @@ public class Reads {
   // [END bigtable_reverse_scan_hbase]
 
   // [START bigtable_reads_filter_hbase]
+
+  /**
+   * Example of filtering row contents using filters.
+   */
   public static void readFilter() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
