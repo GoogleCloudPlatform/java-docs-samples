@@ -30,6 +30,8 @@ import java.io.IOException;
 
 public class MonitorCertificateAuthority {
 
+  public static final String POLICY_NAME = "policy-name";
+
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String project = "your-project-id";
@@ -37,7 +39,7 @@ public class MonitorCertificateAuthority {
   }
 
   // Creates a monitoring policy that notifies you 30 days before a managed CA expires.
-  public static void createCaMonitoringPolicy(String project) throws IOException {
+  public static String createCaMonitoringPolicy(String project) throws IOException {
     /* Initialize client that will be used to send requests. This client only needs to be created
     once, and can be reused for multiple requests. After completing all of your requests, call
     the `client.close()` method on the client to safely
@@ -45,8 +47,6 @@ public class MonitorCertificateAuthority {
     try (AlertPolicyServiceClient client = AlertPolicyServiceClient.create();
         NotificationChannelServiceClient notificationClient =
             NotificationChannelServiceClient.create()) {
-
-      String policyName = "policy-name";
 
       /* Query which indicates the resource to monitor and the constraints.
       Here, the alert policy notifies you 30 days before a managed CA expires.
@@ -72,7 +72,7 @@ public class MonitorCertificateAuthority {
       // Set the query and notification channel.
       AlertPolicy alertPolicy =
           AlertPolicy.newBuilder()
-              .setDisplayName(policyName)
+              .setDisplayName(POLICY_NAME)
               .addConditions(
                   Condition.newBuilder()
                       .setDisplayName("ca-cert-chain-expiration")
@@ -86,6 +86,7 @@ public class MonitorCertificateAuthority {
       AlertPolicy policy = client.createAlertPolicy(ProjectName.of(project), alertPolicy);
 
       System.out.println("Monitoring policy successfully created !" + policy.getName());
+      return policy.getName();
     }
   }
 }
