@@ -92,8 +92,12 @@
         </exclusion>
         <exclusion>
           <groupId>com.google.apis</groupId>
+          <artifactId>google-api-services-bigquery</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.apis</groupId>
           <artifactId>google-api-services-storage</artifactId>
-        </exclusion>       
+        </exclusion>
       </exclusions>
     </dependency>
 
