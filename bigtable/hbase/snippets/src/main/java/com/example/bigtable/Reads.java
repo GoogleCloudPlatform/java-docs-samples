@@ -53,8 +53,7 @@ public class Reads {
 
   public static void readRow(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
 
@@ -81,8 +80,7 @@ public class Reads {
 
   public static void readRowPartial(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
       byte[] rowkey = Bytes.toBytes("phone#4c410523#20190501");
@@ -110,8 +108,7 @@ public class Reads {
 
   public static void readRows(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
       List<Get> queryRowList = new ArrayList<Get>();
@@ -141,8 +138,7 @@ public class Reads {
 
   public static void readRowRange(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
 
@@ -175,8 +171,7 @@ public class Reads {
 
   public static void readRowRanges(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
       List<RowRange> ranges = new ArrayList<>();
@@ -219,8 +214,7 @@ public class Reads {
 
   public static void readPrefix(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
       Scan prefixScan = new Scan().setRowPrefixFilter(Bytes.toBytes("phone"));
@@ -278,8 +272,7 @@ public class Reads {
 
   public static void readFilter(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
 
