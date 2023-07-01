@@ -16,6 +16,7 @@ package com.example.batch;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+
 import com.google.cloud.batch.v1.BatchServiceClient;
 import com.google.cloud.batch.v1.Job;
 import com.google.cloud.batch.v1.JobName;

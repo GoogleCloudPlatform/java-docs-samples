@@ -16,6 +16,7 @@ package com.example.batch;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+
 import com.google.cloud.compute.v1.AccessConfig;
 import com.google.cloud.compute.v1.AccessConfig.NetworkTier;
 import com.google.cloud.compute.v1.AttachedDisk;
@@ -85,8 +86,8 @@ public class BatchTemplateIT {
 
       // Get project number from project id.
       try (ProjectsClient projectsClient = ProjectsClient.create()) {
-        PROJECT_NUMBER = projectsClient.getProject(String.format("projects/%s", PROJECT_ID)).getName()
-            .split("/")[1];
+        PROJECT_NUMBER = projectsClient.getProject(String.format("projects/%s", PROJECT_ID))
+            .getName().split("/")[1];
       }
       String uuid = String.valueOf(UUID.randomUUID());
       SCRIPT_JOB_NAME = "test-job-template-" + uuid;
