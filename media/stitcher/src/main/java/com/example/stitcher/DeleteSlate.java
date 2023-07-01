@@ -22,6 +22,9 @@ import com.google.cloud.video.stitcher.v1.DeleteSlateRequest;
 import com.google.cloud.video.stitcher.v1.SlateName;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class DeleteSlate {
 
@@ -35,7 +38,7 @@ public class DeleteSlate {
   }
 
   public static void deleteSlate(String projectId, String location, String slateId)
-      throws IOException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -46,7 +49,7 @@ public class DeleteSlate {
               .setName(SlateName.of(projectId, location, slateId).toString())
               .build();
 
-      videoStitcherServiceClient.deleteSlate(deleteSlateRequest);
+      videoStitcherServiceClient.deleteSlateAsync(deleteSlateRequest).get(2, TimeUnit.MINUTES);
       System.out.println("Deleted slate");
     }
   }

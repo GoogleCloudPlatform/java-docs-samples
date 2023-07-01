@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,49 +16,63 @@
 
 package com.example.stitcher;
 
-// [START videostitcher_create_vod_session]
+// [START videostitcher_create_live_config]
 
 import com.google.cloud.video.stitcher.v1.AdTracking;
-import com.google.cloud.video.stitcher.v1.CreateVodSessionRequest;
+import com.google.cloud.video.stitcher.v1.CreateLiveConfigRequest;
+import com.google.cloud.video.stitcher.v1.LiveConfig;
+import com.google.cloud.video.stitcher.v1.LiveConfig.StitchingPolicy;
 import com.google.cloud.video.stitcher.v1.LocationName;
+import com.google.cloud.video.stitcher.v1.SlateName;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
-import com.google.cloud.video.stitcher.v1.VodSession;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class CreateVodSession {
+public class CreateLiveConfig {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
-    // Uri of the media to stitch; this URI must reference either an MPEG-DASH
+    String liveConfigId = "my-live-config-id";
+    // Uri of the live stream to stitch; this URI must reference either an MPEG-DASH
     // manifest (.mpd) file or an M3U playlist manifest (.m3u8) file.
     String sourceUri = "https://storage.googleapis.com/my-bucket/main.mpd";
-    // See VMAP Pre-roll
+    // See Single Inline Linear
     // (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
     String adTagUri = "https://pubads.g.doubleclick.net/gampad/ads...";
-    createVodSession(projectId, location, sourceUri, adTagUri);
+    String slateId = "my-slate-id";
+
+    createLiveConfig(projectId, location, liveConfigId, sourceUri, adTagUri, slateId);
   }
 
-  public static void createVodSession(
-      String projectId, String location, String sourceUri, String adTagUri) throws IOException {
+  public static void createLiveConfig(String projectId, String location, String liveConfigId,
+      String sourceUri, String adTagUri, String slateId)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
-      CreateVodSessionRequest createVodSessionRequest =
-          CreateVodSessionRequest.newBuilder()
+      CreateLiveConfigRequest createLiveConfigRequest =
+          CreateLiveConfigRequest.newBuilder()
               .setParent(LocationName.of(projectId, location).toString())
-              .setVodSession(
-                  VodSession.newBuilder().setSourceUri(sourceUri).setAdTagUri(adTagUri)
-                      .setAdTracking(
-                          AdTracking.SERVER).build())
+              .setLiveConfigId(liveConfigId)
+              .setLiveConfig(LiveConfig.newBuilder()
+                  .setSourceUri(sourceUri)
+                  .setAdTagUri(adTagUri)
+                  .setDefaultSlate(SlateName.format(projectId, location, slateId))
+                  .setAdTracking(AdTracking.SERVER)
+                  .setStitchingPolicy(StitchingPolicy.CUT_CURRENT).build())
               .build();
 
-      VodSession response = videoStitcherServiceClient.createVodSession(createVodSessionRequest);
-      System.out.println("Created VOD session: " + response.getName());
+      LiveConfig response = videoStitcherServiceClient.createLiveConfigAsync(
+              createLiveConfigRequest)
+          .get(2, TimeUnit.MINUTES);
+      System.out.println("Created new live config: " + response.getName());
     }
   }
 }
-// [END videostitcher_create_vod_session]
+// [END videostitcher_create_live_config]

@@ -26,6 +26,9 @@ import com.google.cloud.video.stitcher.v1.MediaCdnKey;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreateCdnKey {
 
@@ -54,7 +57,7 @@ public class CreateCdnKey {
       String keyName,
       String privateKey,
       Boolean isMediaCdn)
-      throws IOException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -90,8 +93,9 @@ public class CreateCdnKey {
               .setCdnKey(cdnKey)
               .build();
 
-      CdnKey response = videoStitcherServiceClient.createCdnKey(createCdnKeyRequest);
-      System.out.println("Created new CDN key: " + response.getName());
+      CdnKey result = videoStitcherServiceClient.createCdnKeyAsync(createCdnKeyRequest)
+          .get(2, TimeUnit.MINUTES);
+      System.out.println("Created new CDN key: " + result.getName());
     }
   }
 }

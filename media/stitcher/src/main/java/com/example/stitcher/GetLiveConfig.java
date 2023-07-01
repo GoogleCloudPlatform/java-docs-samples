@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,42 +16,40 @@
 
 package com.example.stitcher;
 
-// [START videostitcher_delete_cdn_key]
+// [START videostitcher_get_live_config]
 
-import com.google.cloud.video.stitcher.v1.CdnKeyName;
-import com.google.cloud.video.stitcher.v1.DeleteCdnKeyRequest;
+import com.google.cloud.video.stitcher.v1.GetLiveConfigRequest;
+import com.google.cloud.video.stitcher.v1.LiveConfig;
+import com.google.cloud.video.stitcher.v1.LiveConfigName;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-public class DeleteCdnKey {
+public class GetLiveConfig {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
-    String cdnKeyId = "my-cdn-key-id";
+    String liveConfigId = "my-live-config-id";
 
-    deleteCdnKey(projectId, location, cdnKeyId);
+    getLiveConfig(projectId, location, liveConfigId);
   }
 
-  public static void deleteCdnKey(String projectId, String location, String cdnKeyId)
-      throws InterruptedException, ExecutionException, TimeoutException, IOException {
+  public static void getLiveConfig(String projectId, String location, String liveConfigId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
-      DeleteCdnKeyRequest deleteCdnKeyRequest =
-          DeleteCdnKeyRequest.newBuilder()
-              .setName(CdnKeyName.of(projectId, location, cdnKeyId).toString())
+      GetLiveConfigRequest getLiveConfigRequest =
+          GetLiveConfigRequest.newBuilder()
+              .setName(LiveConfigName.of(projectId, location, liveConfigId).toString())
               .build();
 
-      videoStitcherServiceClient.deleteCdnKeyAsync(deleteCdnKeyRequest).get(2, TimeUnit.MINUTES);
-      System.out.println("Deleted CDN key");
+      LiveConfig response = videoStitcherServiceClient.getLiveConfig(getLiveConfigRequest);
+      System.out.println("Live config: " + response.getName());
     }
   }
 }
-// [END videostitcher_delete_cdn_key]
+// [END videostitcher_get_live_config]

@@ -35,13 +35,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class DeleteCdnKeyTest {
+public class DeleteLiveConfigTest {
 
   @Rule
   public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-  private static final String CLOUD_CDN_KEY_ID = TestUtils.getCdnKeyId();
-  private static final String MEDIA_CDN_KEY_ID = TestUtils.getCdnKeyId();
-  private static final String AKAMAI_KEY_ID = TestUtils.getCdnKeyId();
+  private static final String SLATE_ID = TestUtils.getSlateId();
+  private static final String LIVE_CONFIG_ID = TestUtils.getLiveConfigId();
   private static String PROJECT_ID;
   private static PrintStream originalOut;
   private ByteArrayOutputStream bout;
@@ -62,53 +61,31 @@ public class DeleteCdnKeyTest {
   @Before
   public void beforeTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    TestUtils.cleanStaleCdnKeys(PROJECT_ID, TestUtils.LOCATION);
+    TestUtils.cleanStaleSlates(PROJECT_ID, TestUtils.LOCATION);
+    TestUtils.cleanStaleLiveConfigs(PROJECT_ID, TestUtils.LOCATION);
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    // Cloud CDN key
-    CreateCdnKey.createCdnKey(
-        PROJECT_ID, TestUtils.LOCATION, CLOUD_CDN_KEY_ID, TestUtils.HOSTNAME, TestUtils.KEYNAME,
-        TestUtils.CLOUD_CDN_PRIVATE_KEY, false);
-
-    // Media CDN key
-    CreateCdnKey.createCdnKey(
-        PROJECT_ID, TestUtils.LOCATION, MEDIA_CDN_KEY_ID, TestUtils.HOSTNAME, TestUtils.KEYNAME,
-        TestUtils.MEDIA_CDN_PRIVATE_KEY, true);
-
-    // Akamai CDN key
-    CreateCdnKeyAkamai.createCdnKeyAkamai(
-        PROJECT_ID, TestUtils.LOCATION, AKAMAI_KEY_ID, TestUtils.HOSTNAME,
-        TestUtils.AKAMAI_TOKEN_KEY);
-
+    CreateSlate.createSlate(PROJECT_ID, TestUtils.LOCATION, SLATE_ID, TestUtils.SLATE_URI);
+    CreateLiveConfig.createLiveConfig(PROJECT_ID, TestUtils.LOCATION, LIVE_CONFIG_ID,
+        TestUtils.LIVE_URI, TestUtils.LIVE_AD_TAG_URI, SLATE_ID);
     bout.reset();
   }
 
   @Test
-  public void test_DeleteCdnKey()
+  public void test_DeleteLiveConfig()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Cloud CDN key
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, TestUtils.LOCATION, CLOUD_CDN_KEY_ID);
+    DeleteLiveConfig.deleteLiveConfig(PROJECT_ID, TestUtils.LOCATION, LIVE_CONFIG_ID);
     String output = bout.toString();
-    assertThat(output, containsString("Deleted CDN key"));
-    bout.reset();
-
-    // Media CDN key
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, TestUtils.LOCATION, MEDIA_CDN_KEY_ID);
-    output = bout.toString();
-    assertThat(output, containsString("Deleted CDN key"));
-    bout.reset();
-
-    // Aakamai CDN key
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, TestUtils.LOCATION, AKAMAI_KEY_ID);
-    output = bout.toString();
-    assertThat(output, containsString("Deleted CDN key"));
+    assertThat(output, containsString("Deleted live config"));
     bout.reset();
   }
 
   @After
-  public void tearDown() throws IOException {
+  public void tearDown()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    DeleteSlate.deleteSlate(PROJECT_ID, TestUtils.LOCATION, SLATE_ID);
     System.setOut(originalOut);
     bout.reset();
   }

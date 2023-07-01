@@ -23,6 +23,9 @@ import com.google.cloud.video.stitcher.v1.LocationName;
 import com.google.cloud.video.stitcher.v1.Slate;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CreateSlate {
 
@@ -38,7 +41,7 @@ public class CreateSlate {
   }
 
   public static void createSlate(String projectId, String location, String slateId, String slateUri)
-      throws IOException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -51,7 +54,8 @@ public class CreateSlate {
               .setSlate(Slate.newBuilder().setUri(slateUri).build())
               .build();
 
-      Slate response = videoStitcherServiceClient.createSlate(createSlateRequest);
+      Slate response = videoStitcherServiceClient.createSlateAsync(createSlateRequest)
+          .get(2, TimeUnit.MINUTES);
       System.out.println("Created new slate: " + response.getName());
     }
   }
