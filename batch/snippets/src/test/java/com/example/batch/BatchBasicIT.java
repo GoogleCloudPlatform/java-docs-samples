@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+package com.example.batch;
+
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-
 import com.google.cloud.batch.v1.BatchServiceClient;
 import com.google.cloud.batch.v1.Job;
 import com.google.cloud.batch.v1.JobName;
@@ -39,7 +40,7 @@ import org.junit.runners.JUnit4;
 public class BatchBasicIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String REGION = "europe-north1";
+  private static final String REGION = "us-central1";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static String SCRIPT_JOB_NAME;
@@ -62,49 +63,51 @@ public class BatchBasicIT {
   @BeforeClass
   public static void setUp()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    try (PrintStream out = System.out) {
+      ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(stdOut));
+      requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+      requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    String uuid = String.valueOf(UUID.randomUUID());
-    SCRIPT_JOB_NAME = "test-job-script-" + uuid;
-    CONTAINER_JOB_NAME = "test-job-container-" + uuid;
+      String uuid = String.valueOf(UUID.randomUUID());
+      SCRIPT_JOB_NAME = "test-job-script-" + uuid;
+      CONTAINER_JOB_NAME = "test-job-container-" + uuid;
 
-    CreateWithContainerNoMounting.createContainerJob(PROJECT_ID, REGION, CONTAINER_JOB_NAME);
-    assertThat(stdOut.toString())
-        .contains(
-            "Successfully created the job: "
-                + String.format(
-                "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, CONTAINER_JOB_NAME));
-    CreateWithScriptNoMounting.createScriptJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
-    assertThat(stdOut.toString())
-        .contains(
-            "Successfully created the job: "
-                + String.format(
-                "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, SCRIPT_JOB_NAME));
-    TimeUnit.SECONDS.sleep(10);
+      CreateWithContainerNoMounting.createContainerJob(PROJECT_ID, REGION, CONTAINER_JOB_NAME);
+      assertThat(stdOut.toString())
+          .contains(
+              "Successfully created the job: "
+                  + String.format(
+                  "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, CONTAINER_JOB_NAME));
+      CreateWithScriptNoMounting.createScriptJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
+      assertThat(stdOut.toString())
+          .contains(
+              "Successfully created the job: "
+                  + String.format(
+                  "projects/%s/locations/%s/jobs/%s", PROJECT_ID, REGION, SCRIPT_JOB_NAME));
+      TimeUnit.SECONDS.sleep(10);
 
-    Util.waitForJobCompletion(Util.getJob(PROJECT_ID, REGION, CONTAINER_JOB_NAME));
-    Util.waitForJobCompletion(Util.getJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME));
+      Util.waitForJobCompletion(Util.getJob(PROJECT_ID, REGION, CONTAINER_JOB_NAME));
+      Util.waitForJobCompletion(Util.getJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME));
 
-    stdOut.close();
-    System.setOut(out);
+      stdOut.close();
+      System.setOut(out);
+    }
   }
 
   @AfterClass
   public static void cleanup()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
+    try (PrintStream out = System.out) {
+      ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(stdOut));
 
-    DeleteJob.deleteJob(PROJECT_ID, REGION, CONTAINER_JOB_NAME);
-    DeleteJob.deleteJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
+      DeleteJob.deleteJob(PROJECT_ID, REGION, CONTAINER_JOB_NAME);
+      DeleteJob.deleteJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
 
-    stdOut.close();
-    System.setOut(out);
+      stdOut.close();
+      System.setOut(out);
+    }
   }
 
   @Before
@@ -160,5 +163,4 @@ public class BatchBasicIT {
       assertThat(stdOut.toString()).contains(goal);
     }
   }
-
 }

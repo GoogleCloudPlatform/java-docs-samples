@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START batch_list_tasks]
+package com.example.batch;
 
+// [START batch_get_task]
 import com.google.cloud.batch.v1.BatchServiceClient;
 import com.google.cloud.batch.v1.Task;
+import com.google.cloud.batch.v1.TaskName;
 import java.io.IOException;
 
-public class ListTasks {
+public class GetTask {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -26,29 +28,34 @@ public class ListTasks {
     String projectId = "YOUR_PROJECT_ID";
     // Name of the region hosts the job.
     String region = "europe-central2";
-    // Name of the job which tasks you want to list.
+    // The name of the job you want to retrieve information about.
     String jobName = "JOB_NAME";
-    // Name of the group of tasks. Usually it's `group0`.
+    // The name of the group that owns the task you want to check. Usually it's `group0`.
     String groupName = "group0";
+    // Number of the task you want to look up.
+    int taskNumber = 0;
 
-    listTasks(projectId, region, jobName, groupName);
+    getTask(projectId, region, jobName, groupName, taskNumber);
   }
 
-  // Get a list of all jobs defined in given region.
-  public static void listTasks(String projectId, String region, String jobName, String groupName)
-      throws IOException {
+  // Retrieve information about a Task.
+  public static void getTask(String projectId, String region, String jobName, String groupName,
+      int taskNumber) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `batchServiceClient.close()` method on the client to safely
     // clean up any remaining background resources.
     try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {
 
-      String parent = String.format("projects/%s/locations/%s/jobs/%s/taskGroups/%s", projectId,
-          region, jobName, groupName);
-      for (Task task : batchServiceClient.listTasks(parent).iterateAll()) {
-        System.out.println(task.getName());
-      }
+      Task task = batchServiceClient.getTask(TaskName.newBuilder()
+          .setProject(projectId)
+          .setLocation(region)
+          .setJob(jobName)
+          .setTaskGroup(groupName)
+          .setTask(String.valueOf(taskNumber))
+          .build());
+      System.out.printf("Retrieved task information: %s", task.getName());
     }
   }
 }
-// [END batch_list_tasks]
+// [END batch_get_task]

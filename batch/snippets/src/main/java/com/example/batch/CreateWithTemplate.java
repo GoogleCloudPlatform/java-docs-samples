@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START batch_create_container_job]
+package com.example.batch;
 
+// [START batch_create_job_with_template]
 import com.google.cloud.batch.v1.AllocationPolicy;
-import com.google.cloud.batch.v1.AllocationPolicy.InstancePolicy;
 import com.google.cloud.batch.v1.AllocationPolicy.InstancePolicyOrTemplate;
 import com.google.cloud.batch.v1.BatchServiceClient;
 import com.google.cloud.batch.v1.ComputeResource;
@@ -24,7 +24,7 @@ import com.google.cloud.batch.v1.Job;
 import com.google.cloud.batch.v1.LogsPolicy;
 import com.google.cloud.batch.v1.LogsPolicy.Destination;
 import com.google.cloud.batch.v1.Runnable;
-import com.google.cloud.batch.v1.Runnable.Container;
+import com.google.cloud.batch.v1.Runnable.Script;
 import com.google.cloud.batch.v1.TaskGroup;
 import com.google.cloud.batch.v1.TaskSpec;
 import com.google.protobuf.Duration;
@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateWithContainerNoMounting {
+public class CreateWithTemplate {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -49,12 +49,19 @@ public class CreateWithContainerNoMounting {
     // It needs to be unique for each project and region pair.
     String jobName = "JOB_NAME";
 
-    createContainerJob(projectId, region, jobName);
+    // A link to an existing Instance Template. Acceptable formats:
+    //   * "projects/{projectId}/global/instanceTemplates/{templateName}"
+    //   * "{templateName}" - if the template is defined in the same project
+    //   as used to create the Job.
+    String templateLink = "TEMPLATE_LINK";
+
+    createWithTemplate(projectId, region, jobName, templateLink);
   }
 
-  // This method shows how to create a sample Batch Job that will run a simple command inside a
-  // container on Cloud Compute instances.
-  public static void createContainerJob(String projectId, String region, String jobName)
+  // This method shows how to create a sample Batch Job that will run
+  // a simple command on Cloud Compute instances created using a provided Template.
+  public static void createWithTemplate(String projectId, String region, String jobName,
+      String templateLink)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -65,14 +72,15 @@ public class CreateWithContainerNoMounting {
       // Define what will be done as part of the job.
       Runnable runnable =
           Runnable.newBuilder()
-              .setContainer(
-                  Container.newBuilder()
-                      .setImageUri("gcr.io/google-containers/busybox")
-                      .setEntrypoint("/bin/sh")
-                      .addCommands("-c")
-                      .addCommands(
+              .setScript(
+                  Script.newBuilder()
+                      .setText(
                           "echo Hello world! This is task ${BATCH_TASK_INDEX}. "
                               + "This job has a total of ${BATCH_TASK_COUNT} tasks.")
+                      // You can also run a script from a file. Just remember, that needs to be a
+                      // script that's already on the VM that will be running the job.
+                      // Using setText() and setPath() is mutually exclusive.
+                      // .setPath("/tmp/test.sh")
                       .build())
               .build();
 
@@ -99,14 +107,12 @@ public class CreateWithContainerNoMounting {
       TaskGroup taskGroup = TaskGroup.newBuilder().setTaskCount(4).setTaskSpec(task).build();
 
       // Policies are used to define on what kind of virtual machines the tasks will run on.
-      // In this case, we tell the system to use "e2-standard-4" machine type.
-      // Read more about machine types here: https://cloud.google.com/compute/docs/machine-types
-      InstancePolicy instancePolicy =
-          InstancePolicy.newBuilder().setMachineType("e2-standard-4").build();
-
+      // In this case, we tell the system to use an instance template that defines all the
+      // required parameters.
       AllocationPolicy allocationPolicy =
           AllocationPolicy.newBuilder()
-              .addInstances(InstancePolicyOrTemplate.newBuilder().setPolicy(instancePolicy).build())
+              .addInstances(
+                  InstancePolicyOrTemplate.newBuilder().setInstanceTemplate(templateLink).build())
               .build();
 
       Job job =
@@ -114,7 +120,7 @@ public class CreateWithContainerNoMounting {
               .addTaskGroups(taskGroup)
               .setAllocationPolicy(allocationPolicy)
               .putLabels("env", "testing")
-              .putLabels("type", "container")
+              .putLabels("type", "script")
               // We use Cloud Logging as it's an out of the box available option.
               .setLogsPolicy(
                   LogsPolicy.newBuilder().setDestination(Destination.CLOUD_LOGGING).build())
@@ -138,4 +144,4 @@ public class CreateWithContainerNoMounting {
     }
   }
 }
-// [END batch_create_container_job]
+// [END batch_create_job_with_template]

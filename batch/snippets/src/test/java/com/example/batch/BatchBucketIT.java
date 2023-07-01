@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+package com.example.batch;
+
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-
 import com.google.cloud.batch.v1.Job;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
@@ -45,7 +46,7 @@ import org.junit.runners.JUnit4;
 public class BatchBucketIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String REGION = "europe-north1";
+  private static final String REGION = "us-central1";
   private static String SCRIPT_JOB_NAME;
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
@@ -67,44 +68,46 @@ public class BatchBucketIT {
   @BeforeClass
   public static void setUp()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    try (PrintStream out = System.out) {
+      ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(stdOut));
+      requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+      requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    String uuid = String.valueOf(UUID.randomUUID());
-    SCRIPT_JOB_NAME = "test-job-script-" + uuid;
-    BUCKET_NAME = "test-bucket-" + uuid;
+      String uuid = String.valueOf(UUID.randomUUID());
+      SCRIPT_JOB_NAME = "test-job-script-" + uuid;
+      BUCKET_NAME = "test-bucket-" + uuid;
 
-    createBucket(BUCKET_NAME);
-    TimeUnit.SECONDS.sleep(10);
+      createBucket(BUCKET_NAME);
+      TimeUnit.SECONDS.sleep(10);
 
-    stdOut.close();
-    System.setOut(out);
+      stdOut.close();
+      System.setOut(out);
+    }
   }
 
   @AfterClass
   public static void cleanup()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
+    try (PrintStream out = System.out) {
+      ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(stdOut));
 
-    // Delete bucket.
-    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
-    Bucket bucket = storage.get(BUCKET_NAME);
-    for (Blob blob : storage.list(bucket.getName()).iterateAll()) {
-      storage.delete(blob.getBlobId());
+      // Delete bucket.
+      Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
+      Bucket bucket = storage.get(BUCKET_NAME);
+      for (Blob blob : storage.list(bucket.getName()).iterateAll()) {
+        storage.delete(blob.getBlobId());
+      }
+      storage.delete(bucket.getName());
+      System.out.println("Bucket " + bucket.getName() + " was deleted");
+
+      // Delete job.
+      DeleteJob.deleteJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
+
+      stdOut.close();
+      System.setOut(out);
     }
-    storage.delete(bucket.getName());
-    System.out.println("Bucket " + bucket.getName() + " was deleted");
-
-    // Delete job.
-    DeleteJob.deleteJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
-
-    stdOut.close();
-    System.setOut(out);
   }
 
   private static void createBucket(String bucketName) {

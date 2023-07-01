@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+package com.example.batch;
+
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-
 import com.google.cloud.compute.v1.AccessConfig;
 import com.google.cloud.compute.v1.AccessConfig.NetworkTier;
 import com.google.cloud.compute.v1.AttachedDisk;
@@ -53,7 +54,7 @@ import org.junit.runners.JUnit4;
 public class BatchTemplateIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String REGION = "europe-north1";
+  private static final String REGION = "us-central1";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static String PROJECT_NUMBER;
@@ -76,57 +77,59 @@ public class BatchTemplateIT {
   @BeforeClass
   public static void setUp()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    try (PrintStream out = System.out) {
+      ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(stdOut));
+      requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+      requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    // Get project number from project id.
-    try (ProjectsClient projectsClient = ProjectsClient.create()) {
-      PROJECT_NUMBER = projectsClient.getProject(String.format("projects/%s", PROJECT_ID)).getName()
-          .split("/")[1];
-    }
-    String uuid = String.valueOf(UUID.randomUUID());
-    SCRIPT_JOB_NAME = "test-job-template-" + uuid;
-
-    // Delete stale instance templates.
-    Util.cleanUpExistingInstanceTemplates("test-job-template-", PROJECT_ID);
-    // Delete existing stale jobs if any.
-    try {
-      DeleteJob.deleteJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
-    } catch (ExecutionException e) {
-      if (!e.getMessage().contains("NOT_FOUND")) {
-        throw e;
+      // Get project number from project id.
+      try (ProjectsClient projectsClient = ProjectsClient.create()) {
+        PROJECT_NUMBER = projectsClient.getProject(String.format("projects/%s", PROJECT_ID)).getName()
+            .split("/")[1];
       }
-      // System.out.println("Do nothing");
+      String uuid = String.valueOf(UUID.randomUUID());
+      SCRIPT_JOB_NAME = "test-job-template-" + uuid;
+
+      // Delete stale instance templates.
+      Util.cleanUpExistingInstanceTemplates("test-job-template-", PROJECT_ID);
+      // Delete existing stale jobs if any.
+      try {
+        DeleteJob.deleteJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
+      } catch (ExecutionException e) {
+        if (!e.getMessage().contains("NOT_FOUND")) {
+          throw e;
+        }
+        // System.out.println("Do nothing");
+      }
+
+      // Create instance templates.
+      INSTANCE_TEMPLATE = createInstanceTemplate();
+      TimeUnit.SECONDS.sleep(10);
+
+      // Create job with template.
+      CreateWithTemplate.createWithTemplate(PROJECT_ID, REGION, SCRIPT_JOB_NAME,
+          INSTANCE_TEMPLATE.getSelfLink());
+      assertThat(stdOut.toString()).contains("Successfully created the job: ");
+
+      stdOut.close();
+      System.setOut(out);
     }
-
-    // Create instance templates.
-    INSTANCE_TEMPLATE = createInstanceTemplate();
-    TimeUnit.SECONDS.sleep(10);
-
-    // Create job with template.
-    CreateWithTemplate.createWithTemplate(PROJECT_ID, REGION, SCRIPT_JOB_NAME,
-        INSTANCE_TEMPLATE.getSelfLink());
-    assertThat(stdOut.toString()).contains("Successfully created the job: ");
-
-    stdOut.close();
-    System.setOut(out);
   }
 
   @AfterClass
   public static void cleanup()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
+    try (PrintStream out = System.out) {
+      ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(stdOut));
 
-    deleteInstanceTemplate();
-    DeleteJob.deleteJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
+      deleteInstanceTemplate();
+      DeleteJob.deleteJob(PROJECT_ID, REGION, SCRIPT_JOB_NAME);
 
-    stdOut.close();
-    System.setOut(out);
+      stdOut.close();
+      System.setOut(out);
+    }
   }
 
   // Create a new instance template with the provided name and a specific
