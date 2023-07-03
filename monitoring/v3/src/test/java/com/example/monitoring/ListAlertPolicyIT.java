@@ -19,11 +19,13 @@ package com.example.monitoring;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.monitoring.v3.AlertPolicy;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,6 +35,7 @@ public class ListAlertPolicyIT {
   private static final String PROJECT_ID = requireEnvVar();
   private ByteArrayOutputStream bout;
   private PrintStream originalPrintStream;
+  private static String policyName;
   private static final String suffix = UUID.randomUUID().toString().substring(0, 8);
   private static final String testPolicyName = "test-policy" + suffix;
 
@@ -47,7 +50,8 @@ public class ListAlertPolicyIT {
   @BeforeClass
   public static void checkRequirements() throws IOException {
     requireEnvVar();
-    CreateAlertPolicy.createAlertPolicy(PROJECT_ID, testPolicyName);
+    AlertPolicy policy = CreateAlertPolicy.createAlertPolicy(PROJECT_ID, testPolicyName);
+    policyName = policy.getName();
   }
 
   @Before
@@ -63,6 +67,11 @@ public class ListAlertPolicyIT {
     // restores print statements in the original method
     System.out.flush();
     System.setOut(originalPrintStream);
+  }
+
+  @AfterClass
+  public static void tearDownClass() throws IOException {
+    DeleteAlertPolicy.deleteAlertPolicy(policyName);
   }
 
   @Test
