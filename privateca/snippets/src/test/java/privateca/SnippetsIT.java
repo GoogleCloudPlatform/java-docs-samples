@@ -18,7 +18,7 @@ package privateca;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-
+import com.google.cloud.monitoring.v3.AlertPolicyServiceClient;
 import com.google.cloud.security.privateca.v1.CaPool.IssuancePolicy;
 import com.google.cloud.security.privateca.v1.CaPoolName;
 import com.google.cloud.security.privateca.v1.Certificate;
@@ -45,6 +45,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -71,6 +73,7 @@ public class SnippetsIT {
   private static String CERTIFICATE_TEMPLATE_NAME;
   private static String CERTIFICATE_NAME;
   private static String CSR_CERTIFICATE_NAME;
+  private static String ALERT_POLICY_NAME;
   private static int KEY_SIZE;
 
   private ByteArrayOutputStream stdOut;
@@ -211,6 +214,11 @@ public class SnippetsIT {
     // Delete CA Pool.
     DeleteCaPool.deleteCaPool(PROJECT_ID, LOCATION, CA_poolId);
 
+    // Delete Alert Policy.
+    try (AlertPolicyServiceClient client = AlertPolicyServiceClient.create()) {
+      client.deleteAlertPolicy(ALERT_POLICY_NAME);
+    }
+
     stdOut = null;
     System.setOut(null);
   }
@@ -343,8 +351,14 @@ public class SnippetsIT {
 
   @Test
   public void testMonitorCertificateAuthority() throws IOException, InterruptedException {
+    String monitoringPolicyCreated = "Monitoring policy successfully created !";
     MonitorCertificateAuthority.createCaMonitoringPolicy(PROJECT_ID);
-    assertThat(stdOut.toString()).contains("Monitoring policy successfully created !");
+    assertThat(stdOut.toString()).contains(monitoringPolicyCreated);
+
+    Pattern pattern = Pattern.compile(monitoringPolicyCreated + "(\\w+)\\b");
+    Matcher matcher = pattern.matcher(stdOut.toString());
+    assertThat(matcher.find()).isTrue();    
+    ALERT_POLICY_NAME = matcher.group(1);
   }
 
   @Test
