@@ -97,8 +97,7 @@ public class SnippetsIT {
     reqEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     reqEnvVar("GOOGLE_CLOUD_PROJECT");
 
-
-    LOCATION = Util.getRegion();    
+    LOCATION = Util.getRegion();
     CA_poolId = "ca-pool-" + UUID.randomUUID();
     CA_poolId_DELETE = "ca-pool-" + UUID.randomUUID();
     CA_NAME = "ca-name-" + UUID.randomUUID();
