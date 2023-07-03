@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -130,25 +131,13 @@ public abstract class Util {
   }
 
   /**
-   * @return region (e.g. "us-west1") that is selected based on the Java version. This
-   * distributes the testing workload across regions to avoid exceeding quotas.
+   * @return a region (e.g. "us-west1") that is randomly selected from uswest-* regions.
+   * This distributes the testing workload across regions to avoid exceeding quotas.
    */
   public static String getRegion() {
-    String regionPrefix = "us-west";  // 4 available us-west regions
-    String javaVersion = System.getProperty("java.version");
-    String majorVersion = javaVersion.split("\\.")[0];
-
-    String regionSuffix;
-    if ("8".equals(majorVersion)) {
-      regionSuffix = "1";
-    } else if ("11".equals(majorVersion)) {
-      regionSuffix = "2";
-    } else if ("17".equals(majorVersion)) {
-      regionSuffix = "3";
-    } else {
-      regionSuffix = "4";
-    }
-
-    return regionPrefix + regionSuffix;
+    String regionPrefix = "us-west";
+    int numRegions = 4;  // 4 available us-west regions
+    int selectedRegion = ThreadLocalRandom.current().nextInt(1, numRegions + 1);
+    return regionPrefix + String.valueOf(selectedRegion);
   }
 }
