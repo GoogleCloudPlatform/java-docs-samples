@@ -19,6 +19,7 @@ package privateca;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.monitoring.v3.AlertPolicyServiceClient;
 import com.google.cloud.security.privateca.v1.CaPool.IssuancePolicy;
 import com.google.cloud.security.privateca.v1.CaPoolName;
 import com.google.cloud.security.privateca.v1.Certificate;
@@ -77,10 +78,10 @@ public class SnippetsIT {
 
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 300000; // 5 minutes
+
   @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
-      MAX_ATTEMPT_COUNT,
-      INITIAL_BACKOFF_MILLIS);
+  public final MultipleAttemptsRule multipleAttemptsRule =
+      new MultipleAttemptsRule(MAX_ATTEMPT_COUNT, INITIAL_BACKOFF_MILLIS);
 
   // Check if the required environment variables are set.
   public static void reqEnvVar(String envVarName) {
@@ -92,7 +93,7 @@ public class SnippetsIT {
   @BeforeClass
   public static void setUp()
       throws IOException, ExecutionException, NoSuchProviderException, NoSuchAlgorithmException,
-      InterruptedException, TimeoutException {
+          InterruptedException, TimeoutException {
     reqEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     reqEnvVar("GOOGLE_CLOUD_PROJECT");
 
@@ -117,8 +118,7 @@ public class SnippetsIT {
     privateca.CreateCaPool.createCaPool(PROJECT_ID, LOCATION, CA_poolId_DELETE);
     sleep(5);
     // Set the issuance policy for the created CA Pool.
-    UpdateCaPoolIssuancePolicy.updateCaPoolIssuancePolicy(
-        PROJECT_ID, LOCATION, CA_poolId);
+    UpdateCaPoolIssuancePolicy.updateCaPoolIssuancePolicy(PROJECT_ID, LOCATION, CA_poolId);
     // <--- END CA POOL --->
 
     // <--- START ROOT CA --->
@@ -344,8 +344,14 @@ public class SnippetsIT {
 
   @Test
   public void testMonitorCertificateAuthority() throws IOException, InterruptedException {
-    privateca.MonitorCertificateAuthority.createCaMonitoringPolicy(PROJECT_ID);
-    assertThat(stdOut.toString()).contains("Monitoring policy successfully created !");
+    String policyName = privateca.MonitorCertificateAuthority.createCaMonitoringPolicy(PROJECT_ID);
+    assertThat(policyName).contains("projects/" + PROJECT_ID + "/alertPolicies/");
+
+    // cleanup created policy
+
+    try (AlertPolicyServiceClient client = AlertPolicyServiceClient.create()) {
+      client.deleteAlertPolicy(policyName);
+    }
   }
 
   @Test
@@ -463,8 +469,7 @@ public class SnippetsIT {
         CertificateAuthorityServiceClient.create()) {
       Certificate response =
           certificateAuthorityServiceClient.getCertificate(
-              CertificateName.of(PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME)
-                  .toString());
+              CertificateName.of(PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME).toString());
       Assert.assertTrue(response.hasCreateTime());
     }
   }
@@ -476,8 +481,7 @@ public class SnippetsIT {
         CertificateAuthorityServiceClient.create()) {
       Certificate response =
           certificateAuthorityServiceClient.getCertificate(
-              CertificateName.of(PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME)
-                  .toString());
+              CertificateName.of(PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME).toString());
 
       String pemCertificate = response.getPemCertificate();
 
