@@ -46,8 +46,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -74,17 +72,16 @@ public class SnippetsIT {
   private static String CERTIFICATE_TEMPLATE_NAME;
   private static String CERTIFICATE_NAME;
   private static String CSR_CERTIFICATE_NAME;
-  private static String ALERT_POLICY_NAME;
   private static int KEY_SIZE;
 
   private ByteArrayOutputStream stdOut;
 
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 300000; // 5 minutes
+
   @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
-      MAX_ATTEMPT_COUNT,
-      INITIAL_BACKOFF_MILLIS);
+  public final MultipleAttemptsRule multipleAttemptsRule =
+      new MultipleAttemptsRule(MAX_ATTEMPT_COUNT, INITIAL_BACKOFF_MILLIS);
 
   // Check if the required environment variables are set.
   public static void reqEnvVar(String envVarName) {
@@ -97,7 +94,7 @@ public class SnippetsIT {
   @SuppressWarnings("unused")
   public static void setUp()
       throws IOException, ExecutionException, NoSuchProviderException, NoSuchAlgorithmException,
-      InterruptedException, TimeoutException {
+          InterruptedException, TimeoutException {
     reqEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     reqEnvVar("GOOGLE_CLOUD_PROJECT");
 
@@ -122,8 +119,7 @@ public class SnippetsIT {
     CreateCaPool.createCaPool(PROJECT_ID, LOCATION, CA_poolId_DELETE);
     sleep(5);
     // Set the issuance policy for the created CA Pool.
-    UpdateCaPoolIssuancePolicy.updateCaPoolIssuancePolicy(
-        PROJECT_ID, LOCATION, CA_poolId);
+    UpdateCaPoolIssuancePolicy.updateCaPoolIssuancePolicy(PROJECT_ID, LOCATION, CA_poolId);
     // <--- END CA POOL --->
 
     // <--- START ROOT CA --->
@@ -214,11 +210,6 @@ public class SnippetsIT {
     sleep(5);
     // Delete CA Pool.
     DeleteCaPool.deleteCaPool(PROJECT_ID, LOCATION, CA_poolId);
-
-    // Delete Alert Policy.
-    try (AlertPolicyServiceClient client = AlertPolicyServiceClient.create()) {
-      client.deleteAlertPolicy(ALERT_POLICY_NAME);
-    }
 
     stdOut = null;
     System.setOut(null);
@@ -352,14 +343,14 @@ public class SnippetsIT {
 
   @Test
   public void testMonitorCertificateAuthority() throws IOException, InterruptedException {
-    String monitoringPolicyCreated = "Monitoring policy successfully created !";
-    MonitorCertificateAuthority.createCaMonitoringPolicy(PROJECT_ID);
-    assertThat(stdOut.toString()).contains(monitoringPolicyCreated);
+    String policyName = MonitorCertificateAuthority.createCaMonitoringPolicy(PROJECT_ID);
+    assertThat(policyName).contains("projects/" + PROJECT_ID + "/alertPolicies/");
 
-    Pattern pattern = Pattern.compile(monitoringPolicyCreated + "(.*)");
-    Matcher matcher = pattern.matcher(stdOut.toString());
-    assertThat(matcher.find()).isTrue();
-    ALERT_POLICY_NAME = matcher.group(1);
+    // cleanup created policy
+
+    try (AlertPolicyServiceClient client = AlertPolicyServiceClient.create()) {
+      client.deleteAlertPolicy(policyName);
+    }
   }
 
   @Test
@@ -477,8 +468,7 @@ public class SnippetsIT {
         CertificateAuthorityServiceClient.create()) {
       Certificate response =
           certificateAuthorityServiceClient.getCertificate(
-              CertificateName.of(PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME)
-                  .toString());
+              CertificateName.of(PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME).toString());
       Assert.assertTrue(response.hasCreateTime());
     }
   }
@@ -490,8 +480,7 @@ public class SnippetsIT {
         CertificateAuthorityServiceClient.create()) {
       Certificate response =
           certificateAuthorityServiceClient.getCertificate(
-              CertificateName.of(PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME)
-                  .toString());
+              CertificateName.of(PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME).toString());
 
       String pemCertificate = response.getPemCertificate();
 
