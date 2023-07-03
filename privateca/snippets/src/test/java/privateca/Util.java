@@ -34,10 +34,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class Util {
+public abstract class Util {
 
   private static final int DELETION_THRESHOLD_TIME_HOURS = 24;
-
+  
   // Delete Ca pools which starts with the given prefixToDelete.
   public static void cleanUpCaPool(String projectId,
       String location)
@@ -127,5 +127,27 @@ public class Util {
     Instant instant = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
     return instant
         .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.HOURS));
+  }
+
+  /**
+   * @return region (e.g. "us-west1") that is selected based on the Java version. This
+   * distributes the testing workload across regions to avoid exceeding quotas.
+   */
+  public static String getRegion() {
+    String regionPrefix = "us-west";  // 4 available us-west regions
+    String javaVersion = System.getProperty("java.version");
+    String majorVersion = javaVersion.split("\\.")[0];
+    
+    String regionSuffix;
+    if ("8".equals(majorVersion)) {
+      regionSuffix = "1";
+    } else if ("11".equals(majorVersion)) {
+      regionSuffix = "2";
+    } else if ("17".equals(majorVersion)) {
+      regionSuffix = "3";
+    } else {
+      regionSuffix = "4";
+    }
+    return regionPrefix + regionSuffix;
   }
 }
