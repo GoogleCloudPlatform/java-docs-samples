@@ -18,6 +18,7 @@ package privateca;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+
 import com.google.cloud.monitoring.v3.AlertPolicyServiceClient;
 import com.google.cloud.security.privateca.v1.CaPool.IssuancePolicy;
 import com.google.cloud.security.privateca.v1.CaPoolName;
@@ -355,9 +356,9 @@ public class SnippetsIT {
     MonitorCertificateAuthority.createCaMonitoringPolicy(PROJECT_ID);
     assertThat(stdOut.toString()).contains(monitoringPolicyCreated);
 
-    Pattern pattern = Pattern.compile(monitoringPolicyCreated + "(\\w+)\\b");
+    Pattern pattern = Pattern.compile(monitoringPolicyCreated + "(.*)");
     Matcher matcher = pattern.matcher(stdOut.toString());
-    assertThat(matcher.find()).isTrue();    
+    assertThat(matcher.find()).isTrue();
     ALERT_POLICY_NAME = matcher.group(1);
   }
 
