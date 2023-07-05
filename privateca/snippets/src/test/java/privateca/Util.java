@@ -31,10 +31,11 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class Util {
+public abstract class Util {
 
   private static final int DELETION_THRESHOLD_TIME_HOURS = 24;
 
@@ -127,5 +128,16 @@ public class Util {
     Instant instant = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
     return instant
         .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.HOURS));
+  }
+
+  /**
+   * @return a region (e.g. "us-west1") that is randomly selected from uswest-* regions.
+   * This distributes the testing workload across regions to avoid exceeding quotas.
+   */
+  public static String getRegion() {
+    String regionPrefix = "us-west";
+    int numRegions = 4;  // 4 available us-west regions
+    int selectedRegion = ThreadLocalRandom.current().nextInt(1, numRegions + 1);
+    return regionPrefix + String.valueOf(selectedRegion);
   }
 }
