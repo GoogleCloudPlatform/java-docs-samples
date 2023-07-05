@@ -23,7 +23,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.api.gax.rpc.ApiException;
+import com.google.api.core.SettableApiFuture;import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
@@ -40,6 +40,7 @@ import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.TopicName;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +54,7 @@ import org.mockito.Mockito;
 public class RiskAnalysisTests extends TestBase {
 
   private static DlpServiceClient DLP_SERVICE_CLIENT;
+  private SettableApiFuture<Boolean> doneMock;
 
   private UUID testRunUuid = UUID.randomUUID();
   private TopicName topicName =
@@ -141,18 +143,47 @@ public class RiskAnalysisTests extends TestBase {
 
   @Test
   public void testKAnonymity() throws Exception {
-    RiskAnalysisKAnonymity.calculateKAnonymity(
-        PROJECT_ID, DATASET_ID, TABLE_ID, topicName.getTopic(), subscriptionName.getSubscription());
-    String output = bout.toString();
-    assertThat(output).containsMatch("Bucket size range: \\[\\d, \\d\\]");
-    assertThat(output).contains("Quasi-ID values: integer_value: 19");
-    assertThat(output).contains("Class size: 1");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
-    jobName = jobName.split(":")[1].trim();
-    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
+
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    doneMock = mock(SettableApiFuture.class);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+      try (MockedStatic<SettableApiFuture> mockedStatic1 =
+          Mockito.mockStatic(SettableApiFuture.class)) {
+        mockedStatic1.when(() -> SettableApiFuture.create()).thenReturn(doneMock);
+        KAnonymityHistogramBucket anonymityHistogramBucket =
+            KAnonymityHistogramBucket.newBuilder()
+                .addBucketValues(
+                    KAnonymityResult.KAnonymityEquivalenceClass.newBuilder()
+                        .addQuasiIdsValues(Value.newBuilder().setIntegerValue(19).build())
+                        .setEquivalenceClassSize(1)
+                        .build())
+                .build();
+        DlpJob dlpJob =
+            DlpJob.newBuilder()
+                .setName("projects/project_id/locations/global/dlpJobs/job_id")
+                .setState(DlpJob.JobState.DONE)
+                .setRiskDetails(
+                    AnalyzeDataSourceRiskDetails.newBuilder()
+                        .setKAnonymityResult(
+                            KAnonymityResult.newBuilder()
+                                .addEquivalenceClassHistogramBuckets(anonymityHistogramBucket)
+                                .build())
+                        .build())
+                .build();
+        when(doneMock.get(15, TimeUnit.MINUTES)).thenReturn(true);
+        when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
+        when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
+        RiskAnalysisKAnonymity.calculateKAnonymity(
+            "bigquery-public-data", "usa_names", "usa_1910_current", "topic_id", "subscription_id");
+        String output = bout.toString();
+        assertThat(output).containsMatch("Bucket size range: \\[\\d, \\d\\]");
+        assertThat(output).contains("Quasi-ID values: integer_value: 19");
+        assertThat(output).contains("Class size: 1");
+        verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+        verify(dlpServiceClient, times(1)).getDlpJob(any(GetDlpJobRequest.class));
+      }
+    }
   }
 
   @Test
