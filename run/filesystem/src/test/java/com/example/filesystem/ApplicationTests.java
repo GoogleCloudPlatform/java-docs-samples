@@ -119,8 +119,8 @@ public class ApplicationTests {
 
   @AfterClass
   public static void cleanup() throws IOException, InterruptedException {
-    ProcessBuilder delete = new ProcessBuilder();
-    delete.command(
+    ProcessBuilder deleteService = new ProcessBuilder();
+    deleteService.command(
         "gcloud",
         "run",
         "services",
@@ -131,8 +131,25 @@ public class ApplicationTests {
         "--project=" + project);
 
     System.out.println("Deleting Cloud Run service: " + service);
-    Process p = delete.start();
-    p.waitFor(5, TimeUnit.MINUTES);
+    Process p1 = deleteService.start();
+    p1.waitFor(5, TimeUnit.MINUTES);
+
+    ProcessBuilder deleteContainer = new ProcessBuilder();
+    String image =
+        "us-central1-docker.pkg.dev/" + project + "/cloud-run-source-deploy/" + service + ":latest";
+    deleteContainer.command(
+        "gcloud",
+        "artifacts",
+        "docker",
+        "images",
+        "delete",
+        image,
+        "--quiet",
+        "--project=" + project);
+
+    System.out.println("Deleting image: " + image);
+    Process p2 = deleteContainer.start();
+    p2.waitFor(5, TimeUnit.MINUTES);
   }
 
   public Response authenticatedRequest(String url) throws IOException {
