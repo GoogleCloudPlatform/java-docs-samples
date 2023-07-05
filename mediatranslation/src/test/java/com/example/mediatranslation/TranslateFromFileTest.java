@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -44,7 +45,9 @@ public class TranslateFromFileTest {
     bout.reset();
   }
 
+  // Test is ignored because code sample it is testing is deprecated
   @Test
+  @Ignore
   public void testTranslateFromFile() throws IOException {
     // Call translateFromFile to print out the translated output.
     TranslateFromFile.translateFromFile("resources/audio.raw");
