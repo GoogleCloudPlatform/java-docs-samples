@@ -12,30 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START batch_create_script_job_with_bucket]
+package com.example.batch;
 
+// [START batch_create_container_job]
 import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.AllocationPolicy.InstancePolicy;
 import com.google.cloud.batch.v1.AllocationPolicy.InstancePolicyOrTemplate;
 import com.google.cloud.batch.v1.BatchServiceClient;
 import com.google.cloud.batch.v1.ComputeResource;
 import com.google.cloud.batch.v1.CreateJobRequest;
-import com.google.cloud.batch.v1.GCS;
 import com.google.cloud.batch.v1.Job;
 import com.google.cloud.batch.v1.LogsPolicy;
 import com.google.cloud.batch.v1.LogsPolicy.Destination;
 import com.google.cloud.batch.v1.Runnable;
-import com.google.cloud.batch.v1.Runnable.Script;
+import com.google.cloud.batch.v1.Runnable.Container;
 import com.google.cloud.batch.v1.TaskGroup;
 import com.google.cloud.batch.v1.TaskSpec;
-import com.google.cloud.batch.v1.Volume;
 import com.google.protobuf.Duration;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateWithMountedBucket {
+public class CreateWithContainerNoMounting {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -51,16 +50,12 @@ public class CreateWithMountedBucket {
     // It needs to be unique for each project and region pair.
     String jobName = "JOB_NAME";
 
-    // Name of the bucket to be mounted for your Job.
-    String bucketName = "BUCKET_NAME";
-
-    createScriptJobWithBucket(projectId, region, jobName, bucketName);
+    createContainerJob(projectId, region, jobName);
   }
 
-  // This method shows how to create a sample Batch Job that will run
-  // a simple command on Cloud Compute instances.
-  public static void createScriptJobWithBucket(String projectId, String region, String jobName,
-      String bucketName)
+  // This method shows how to create a sample Batch Job that will run a simple command inside a
+  // container on Cloud Compute instances.
+  public static void createContainerJob(String projectId, String region, String jobName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -71,30 +66,22 @@ public class CreateWithMountedBucket {
       // Define what will be done as part of the job.
       Runnable runnable =
           Runnable.newBuilder()
-              .setScript(
-                  Script.newBuilder()
-                      .setText(
-                          "echo Hello world from task ${BATCH_TASK_INDEX}. >> "
-                              + "/mnt/share/output_task_${BATCH_TASK_INDEX}.txt")
-                      // You can also run a script from a file. Just remember, that needs to be a
-                      // script that's already on the VM that will be running the job.
-                      // Using setText() and setPath() is mutually exclusive.
-                      // .setPath("/tmp/test.sh")
+              .setContainer(
+                  Container.newBuilder()
+                      .setImageUri("gcr.io/google-containers/busybox")
+                      .setEntrypoint("/bin/sh")
+                      .addCommands("-c")
+                      .addCommands(
+                          "echo Hello world! This is task ${BATCH_TASK_INDEX}. "
+                              + "This job has a total of ${BATCH_TASK_COUNT} tasks.")
                       .build())
               .build();
-
-      Volume volume = Volume.newBuilder()
-          .setGcs(GCS.newBuilder()
-              .setRemotePath(bucketName)
-              .build())
-          .setMountPath("/mnt/share")
-          .build();
 
       // We can specify what resources are requested by each task.
       ComputeResource computeResource =
           ComputeResource.newBuilder()
-              // In milliseconds per cpu-second. This means the task requires 50% of a single CPUs.
-              .setCpuMilli(500)
+              // In milliseconds per cpu-second. This means the task requires 2 whole CPUs.
+              .setCpuMilli(2000)
               // In MiB.
               .setMemoryMib(16)
               .build();
@@ -103,7 +90,6 @@ public class CreateWithMountedBucket {
           TaskSpec.newBuilder()
               // Jobs can be divided into tasks. In this case, we have only one task.
               .addRunnables(runnable)
-              .addVolumes(volume)
               .setComputeResource(computeResource)
               .setMaxRetryCount(2)
               .setMaxRunDuration(Duration.newBuilder().setSeconds(3600).build())
@@ -129,8 +115,7 @@ public class CreateWithMountedBucket {
               .addTaskGroups(taskGroup)
               .setAllocationPolicy(allocationPolicy)
               .putLabels("env", "testing")
-              .putLabels("type", "script")
-              .putLabels("mount", "bucket")
+              .putLabels("type", "container")
               // We use Cloud Logging as it's an out of the box available option.
               .setLogsPolicy(
                   LogsPolicy.newBuilder().setDestination(Destination.CLOUD_LOGGING).build())
@@ -154,4 +139,4 @@ public class CreateWithMountedBucket {
     }
   }
 }
-// [END batch_create_script_job_with_bucket]
+// [END batch_create_container_job]

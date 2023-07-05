@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START batch_create_script_job]
+package com.example.batch;
 
+// [START batch_create_script_job]
 import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.AllocationPolicy.InstancePolicy;
 import com.google.cloud.batch.v1.AllocationPolicy.InstancePolicyOrTemplate;
