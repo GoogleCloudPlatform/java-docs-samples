@@ -47,6 +47,7 @@ import com.google.cloud.pubsublite.proto.Topic.RetentionConfig;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.util.Durations;
 import com.google.pubsub.v1.PubsubMessage;
@@ -65,6 +66,7 @@ import org.junit.Test;
 
 public class PubsubliteToGcsIT {
   @Rule public final TestPipeline testPipeline = TestPipeline.create();
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String cloudRegion = "us-central1";
