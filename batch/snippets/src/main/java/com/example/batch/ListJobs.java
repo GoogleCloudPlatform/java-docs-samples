@@ -12,44 +12,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START batch_job_logs]
+package com.example.batch;
 
+// [START batch_list_jobs]
+import com.google.cloud.batch.v1.BatchServiceClient;
 import com.google.cloud.batch.v1.Job;
-import com.google.cloud.logging.v2.LoggingClient;
-import com.google.logging.v2.ListLogEntriesRequest;
-import com.google.logging.v2.LogEntry;
 import java.io.IOException;
 
-public class ReadJobLogs {
+public class ListJobs {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project hosting the job.
+    // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
 
-    // The job which logs you want to print.
-    Job job = Job.newBuilder().build();
+    // Name of the region hosting the jobs.
+    String region = "europe-central2";
 
-    readJobLogs(projectId, job);
+    listJobs(projectId, region);
   }
 
-  // Prints the log messages created by given job.
-  public static void readJobLogs(String projectId, Job job) throws IOException {
+  // Get a list of all jobs defined in given region.
+  public static void listJobs(String projectId, String region) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `loggingClient.close()` method on the client to safely
+    // the `batchServiceClient.close()` method on the client to safely
     // clean up any remaining background resources.
-    try (LoggingClient loggingClient = LoggingClient.create()) {
+    try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {
 
-      ListLogEntriesRequest request = ListLogEntriesRequest.newBuilder()
-          .addResourceNames(String.format("projects/%s", projectId))
-          .setFilter(String.format("labels.job_uid=%s", job.getUid()))
-          .build();
+      // Construct the parent path of the job.
+      String parent = String.format("projects/%s/locations/%s", projectId, region);
 
-      for (LogEntry logEntry : loggingClient.listLogEntries(request).iterateAll()) {
-        System.out.println(logEntry.getTextPayload());
+      for (Job job : batchServiceClient.listJobs(parent).iterateAll()) {
+        System.out.println(job.getName());
       }
+      System.out.println("Listed all batch jobs.");
     }
   }
 }
-// [END batch_job_logs]
+// [END batch_list_jobs]

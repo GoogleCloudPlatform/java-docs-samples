@@ -12,18 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START batch_delete_job]
+package com.example.batch;
 
+// [START batch_get_job]
 import com.google.cloud.batch.v1.BatchServiceClient;
+import com.google.cloud.batch.v1.Job;
+import com.google.cloud.batch.v1.JobName;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-public class DeleteJob {
+public class GetJob {
 
-  public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
@@ -31,27 +30,30 @@ public class DeleteJob {
     // Name of the region hosts the job.
     String region = "europe-central2";
 
-    // The name of the job that you want to delete.
+    // The name of the job you want to retrieve information about.
     String jobName = "JOB_NAME";
 
-    deleteJob(projectId, region, jobName);
+    getJob(projectId, region, jobName);
   }
 
-  // Triggers the deletion of a Job.
-  public static void deleteJob(String projectId, String region, String jobName)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  // Retrieve information about a Batch Job.
+  public static void getJob(String projectId, String region, String jobName) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `batchServiceClient.close()` method on the client to safely
     // clean up any remaining background resources.
     try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {
 
-      // Construct the parent path of the job.
-      String name = String.format("projects/%s/locations/%s/jobs/%s", projectId, region, jobName);
+      Job job =
+          batchServiceClient.getJob(
+              JobName.newBuilder()
+                  .setProject(projectId)
+                  .setLocation(region)
+                  .setJob(jobName)
+                  .build());
 
-      batchServiceClient.deleteJobAsync(name).get(5, TimeUnit.MINUTES);
-      System.out.printf("Delete the job: %s", jobName);
+      System.out.printf("Retrieved the job: %s ", job.getName());
     }
   }
 }
-// [END batch_delete_job]
+// [END batch_get_job]
