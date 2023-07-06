@@ -29,7 +29,7 @@ public class Quickstart {
     quickstart(projectId);
   }
 
-  public void quickstart(String projectId) throws IOException {
+  private void quickstart(String projectId) throws IOException {
     try (AccessApprovalAdminClient client = AccessApprovalAdminClient.create()) {
       String parent = "projects/" + projectId;
       AccessApprovalAdminClient.ListApprovalRequestsPagedResponse response =
