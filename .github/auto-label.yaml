@@ -2,6 +2,7 @@ path:
   pullrequest: true
   labelprefix: "api: "
   paths:
+    accessapproval: "accessapproval"
     aiplatform: "aiplatform"
     appengine-java8: "appengine"
     appengine-java11: "appengine"
