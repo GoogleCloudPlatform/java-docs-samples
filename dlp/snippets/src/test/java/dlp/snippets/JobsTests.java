@@ -146,48 +146,103 @@ public class JobsTests extends TestBase {
 
   @Test
   public void testInspectBigQuerySendToScc() throws Exception {
-    InspectBigQuerySendToScc.inspectBigQuerySendToScc(PROJECT_ID, DATASET_ID, TABLE_ID);
 
-    String output = bout.toString();
-    assertThat(output).contains("Job created successfully");
-    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
 
-    // Delete the created Dlp Job
-    DeleteDlpJobRequest deleteDlpJobRequest =
-        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
-
-    DLP_SERVICE_CLIENT.deleteDlpJob(deleteDlpJobRequest);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+      InfoTypeStats infoTypeStats =
+              InfoTypeStats.newBuilder()
+                      .setInfoType(InfoType.newBuilder().setName("EMAIL_ADDRESS").build())
+                      .setCount(1)
+                      .build();
+      DlpJob dlpJob =
+              DlpJob.newBuilder()
+                      .setName("projects/project_id/locations/global/dlpJobs/job_id")
+                      .setState(DlpJob.JobState.DONE)
+                      .setInspectDetails(
+                              InspectDataSourceDetails.newBuilder()
+                                      .setResult(
+                                              InspectDataSourceDetails.Result.newBuilder()
+                                                      .setProcessedBytes(200)
+                                                      .addInfoTypeStats(infoTypeStats)
+                                                      .build()))
+                      .build();
+      when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
+      InspectBigQuerySendToScc.inspectBigQuerySendToScc(
+          "bigquery-public-data", "usa_names", "usa_1910_current");
+      String output = bout.toString();
+      assertThat(output).contains("Job status: DONE");
+      assertThat(output).contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+      assertThat(output).contains("Info type: EMAIL_ADDRESS");
+      verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+    }
   }
 
   @Test
   public void testCreateDatastoreJobWithScc() throws Exception {
-    InspectDatastoreSendToScc.inspectDatastoreSendToScc(
-        PROJECT_ID, DATASTORE_NAMESPACE, DATASTORE_KIND);
 
-    String output = bout.toString();
-    assertThat(output).contains("Job created successfully");
-    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
 
-    // Delete the created Dlp Job
-    DeleteDlpJobRequest deleteDlpJobRequest =
-        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
-
-    DLP_SERVICE_CLIENT.deleteDlpJob(deleteDlpJobRequest);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+      InfoTypeStats infoTypeStats =
+          InfoTypeStats.newBuilder()
+              .setInfoType(InfoType.newBuilder().setName("EMAIL_ADDRESS").build())
+              .setCount(1)
+              .build();
+      DlpJob dlpJob =
+          DlpJob.newBuilder()
+              .setName("projects/project_id/locations/global/dlpJobs/job_id")
+              .setState(DlpJob.JobState.DONE)
+              .setInspectDetails(
+                  InspectDataSourceDetails.newBuilder()
+                      .setResult(
+                          InspectDataSourceDetails.Result.newBuilder()
+                              .addInfoTypeStats(infoTypeStats)
+                              .build()))
+              .build();
+      when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
+      InspectDatastoreSendToScc.inspectDatastoreSendToScc(
+          "project_id", "datastore_namespace_test", "datastore_kind_test");
+      String output = bout.toString();
+      assertThat(output).contains("Job status: DONE");
+      assertThat(output).contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+      assertThat(output).contains("Info type: EMAIL_ADDRESS");
+      verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+    }
   }
 
   @Test
   public void testCreateJobsSendScc() throws Exception {
-    // Call createJobs to create a Dlp job from project id and gcs path and send data to SCC.
-    InspectGcsFileSendToScc.createJobSendToScc(PROJECT_ID, GCS_PATH);
-    String output = bout.toString();
-    assertThat(output).contains("Job created successfully:");
 
-    // Delete the created Dlp Job
-    String dlpJobName = output.split("Job created successfully: ")[1].split("\n")[0];
-    DeleteDlpJobRequest deleteDlpJobRequest =
-        DeleteDlpJobRequest.newBuilder().setName(dlpJobName).build();
-
-    DLP_SERVICE_CLIENT.deleteDlpJob(deleteDlpJobRequest);
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+      InfoTypeStats infoTypeStats =
+          InfoTypeStats.newBuilder()
+              .setInfoType(InfoType.newBuilder().setName("EMAIL_ADDRESS").build())
+              .setCount(1)
+              .build();
+      DlpJob dlpJob =
+          DlpJob.newBuilder()
+              .setName("projects/project_id/locations/global/dlpJobs/job_id")
+              .setState(DlpJob.JobState.DONE)
+              .setInspectDetails(
+                  InspectDataSourceDetails.newBuilder()
+                      .setResult(
+                          InspectDataSourceDetails.Result.newBuilder()
+                              .addInfoTypeStats(infoTypeStats)
+                              .build()))
+              .build();
+      when(dlpServiceClient.createDlpJob(any())).thenReturn(dlpJob);
+      InspectGcsFileSendToScc.createJobSendToScc("project_id", "gs://bucket_name/test.txt");
+      String output = bout.toString();
+      assertThat(output).contains("Job status: DONE");
+      assertThat(output).contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+      assertThat(output).contains("Info type: EMAIL_ADDRESS");
+      verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+    }
   }
 
   @Test

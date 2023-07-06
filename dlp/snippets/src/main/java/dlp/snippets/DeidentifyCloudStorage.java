@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 public class DeidentifyCloudStorage {
 
   // Set the timeout duration in minutes.
-  private static final int TIMEOUT_MINUTES = 30;
+  private static final int TIMEOUT_MINUTES = 15;
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
@@ -177,7 +177,7 @@ public class DeidentifyCloudStorage {
         // Check if the timeout duration has exceeded.
         long elapsedTime = System.currentTimeMillis() - startTime;
         if (TimeUnit.MILLISECONDS.toMinutes(elapsedTime) >= TIMEOUT_MINUTES) {
-          System.out.println("Job did not complete within 30 minutes.");
+          System.out.printf("Job did not complete within %d minutes.%n", TIMEOUT_MINUTES);
           break;
         }
       }
