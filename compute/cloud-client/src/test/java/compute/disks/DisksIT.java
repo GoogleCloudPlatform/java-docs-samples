@@ -94,7 +94,7 @@ public class DisksIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     ZONE = getZone();
-    REGION = ZONE.substring(0, ZONE.length() - 1);
+    REGION = ZONE.substring(0, ZONE.length() - 2);
     String uuid = UUID.randomUUID().toString().split("-")[0];
     INSTANCE_NAME = "test-disks-" + uuid;
     DISK_NAME = "gcloud-test-disk-" + uuid;

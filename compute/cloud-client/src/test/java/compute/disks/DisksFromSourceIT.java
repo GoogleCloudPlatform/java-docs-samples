@@ -91,7 +91,7 @@ public class DisksFromSourceIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     ZONE = getZone();
-    REGION = ZONE.substring(0, ZONE.length() - 1);
+    REGION = ZONE.substring(0, ZONE.length() - 2);
     KMS_KEYRING_NAME = "compute-test-keyring";
     KMS_KEY_NAME = "compute-test-key";
 

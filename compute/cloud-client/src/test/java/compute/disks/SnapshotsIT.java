@@ -76,7 +76,7 @@ public class SnapshotsIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     ZONE = getZone();
-    LOCATION = ZONE.substring(0, ZONE.length() - 1);
+    LOCATION = ZONE.substring(0, ZONE.length() - 2);
     String uuid = UUID.randomUUID().toString().split("-")[0];
     DISK_NAME = "gcloud-test-disk-" + uuid;
     REGIONAL_DISK_NAME = "gcloud-regional-test-disk-" + uuid;

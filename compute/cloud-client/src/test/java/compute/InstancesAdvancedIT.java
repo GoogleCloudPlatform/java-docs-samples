@@ -92,7 +92,8 @@ public class InstancesAdvancedIT {
     MACHINE_NAME_SUBNETWORK = "test-instance-subnet-" + uuid;
     MACHINE_NAME_EXISTING_DISK = "test-instance-exis" + uuid;
     NETWORK_NAME = "global/networks/default";
-    SUBNETWORK_NAME = "regions/us-central1/subnetworks/default";
+    SUBNETWORK_NAME = String.format("regions/%s/subnetworks/default",
+        ZONE.substring(0, ZONE.length() - 2));
 
     TEST_DISK = createSourceDisk();
     TEST_SNAPSHOT = createSnapshot(TEST_DISK);
