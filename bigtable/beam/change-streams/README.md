@@ -67,7 +67,7 @@ This example outputs a message to standard output when a change is made to Bigta
 ## Song rank
 
 This example keeps track of songs listened to and gets the top 5 songs over a period.
-The top 5 songs are outputted to standard out and files which can be local or on Google Cloud Storage.
+The top 5 songs are output to standard out and files which can be local or on Google Cloud Storage.
 
 1. Create a Bigtable instance or use an existing one
 
