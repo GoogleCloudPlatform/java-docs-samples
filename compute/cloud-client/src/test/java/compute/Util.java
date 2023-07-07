@@ -51,16 +51,16 @@ public abstract class Util {
   private static final String[] ZONES;
 
   static {
-    ZONES = new String[] {
-      "us-central1-a",
-      "us-central1-b",
-      "us-central1-c",
-      "us-west1-a",
-      "us-west1-b",
-      "us-west1-c",
-      "asia-south1-a",
-      "asia-south1-b",
-      "asia-south1-c"
+    ZONES = new String[]{
+        "us-central1-a",
+        "us-central1-b",
+        "us-central1-c",
+        "us-west1-a",
+        "us-west1-b",
+        "us-west1-c",
+        "asia-south1-a",
+        "asia-south1-b",
+        "asia-south1-c"
     };
   }
 
@@ -174,7 +174,7 @@ public abstract class Util {
       return regionDisksClient.get(projectId, region, diskName);
     }
   }
-  
+
   // Returns a random zone.
   public static String getZone() {
     return ZONES[new Random().nextInt(ZONES.length)];

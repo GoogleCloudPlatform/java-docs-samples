@@ -45,7 +45,7 @@ public class InstanceTemplatesIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String DEFAULT_ZONE = getZone();
-  private static final String DEFAULT_REGION = DEFAULT_ZONE.substring(0, DEFAULT_ZONE.length()-1);
+  private static final String DEFAULT_REGION = DEFAULT_ZONE.substring(0, DEFAULT_ZONE.length() - 1);
   private static String TEMPLATE_NAME;
   private static String TEMPLATE_NAME_WITH_DISK;
   private static String TEMPLATE_NAME_FROM_INSTANCE;
