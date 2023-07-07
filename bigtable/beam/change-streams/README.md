@@ -138,5 +138,5 @@ $TABLE_ID song-rank-data.csv  column-family=cf batch-size=1
 
 To run either program on your local machine, you can use the direct Beam runner
 by
-setting `--runner=direct`. If you're running it locally, you don't need the
+setting `--runner=DirectRunner` (also the default if not specified). If you're running it locally, you don't need the
 `--project` or `--region` parameters.
