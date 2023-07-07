@@ -114,7 +114,8 @@ public class SongRank {
     @DoFn.ProcessElement
     public void processElement(ProcessContext c) {
 
-      for (Entry e : Objects.requireNonNull(Objects.requireNonNull(c.element()).getValue()).getEntries()) {
+      for (Entry e : Objects.requireNonNull(Objects.requireNonNull(c.element()).getValue())
+          .getEntries()) {
         if (e instanceof SetCell) {
           SetCell setCell = (SetCell) e;
           if (setCell.getFamilyName().equals("cf") && setCell.getQualifier().toStringUtf8()
