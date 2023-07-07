@@ -5,7 +5,8 @@ feature.
 
 ## Hello World
 
-This example outputs a message to standard output when a change is made to Bigtable. 
+This example writes a message to standard output when a change is made to
+Bigtable.
 
 ### Running
 
@@ -26,7 +27,7 @@ This example outputs a message to standard output when a change is made to Bigta
    ```sh
    gcloud alpha bigtable instances tables create $TABLE_ID \
     --column-families=cf1 --change-stream-retention-period=7d \
-   --instance=$BIGTABLE_TESTING_INSTANCE --project=$GOOGLE_CLOUD_PROJECT 
+   --instance=INSTANCE_ID --project=$GOOGLE_CLOUD_PROJECT 
    ```
 
 1. Run command to start the pipeline
@@ -66,8 +67,10 @@ This example outputs a message to standard output when a change is made to Bigta
 
 ## Song rank
 
-This example keeps track of songs listened to and gets the top 5 songs over a period.
-The top 5 songs are output to standard out and files which can be local or on Google Cloud Storage.
+This example keeps track of songs listened to and gets the top 5 songs over a
+period of time.
+The top 5 songs are output to standard out and files which can be local or on
+Google Cloud Storage.
 
 1. Create a Bigtable instance or use an existing one
 
@@ -82,13 +85,12 @@ The top 5 songs are output to standard out and files which can be local or on Go
     OUTPUT_LOCATION=gs://your-bucket-id  # Exclude the gs:// to save locally 
     ```
 
-
 1. Create a table with a change streams enabled
 
    ```sh
-   gcloud alpha bigtable instances tables create $TABLE_ID \
+    gcloud alpha bigtable instances tables create $TABLE_ID \
     --column-families=cf --change-stream-retention-period=7d \
-   --instance=$BIGTABLE_TESTING_INSTANCE --project=$GOOGLE_CLOUD_PROJECT 
+    --instance=$INSTANCE_ID --project=$GOOGLE_CLOUD_PROJECT 
    ```
 
 1. Run command to start the pipeline
@@ -102,14 +104,37 @@ The top 5 songs are output to standard out and files which can be local or on Go
 
 1. Stream some data which contains song listens for various users
 
-```sh
-cbt -instance=$BIGTABLE_INSTANCE_ID -project=$GOOGLE_CLOUD_PROJECT import\
-$TABLE_ID song-rank-data.csv  column-family=cf batch-size=1
-```
+   ```sh
+   cbt -instance=INSTANCE_ID -project=$GOOGLE_CLOUD_PROJECT import\
+   $TABLE_ID song-rank-data.csv  column-family=cf batch-size=1
+   ```
 
-1. Observe the output and see the most popular songs.
+1. Observe the output on GCS and see the most popular songs.
+
+    ```sh
+    gsutil cat ${OUTPUT_LOCATION}/song-charts/GlobalWindow-pane-0-00000-of-00001.txt 
+    ```
+
+   Example output:
+    ```
+    2023-07-06T19:53:38.232Z [KV{The Wheels on the Bus, 199}, KV{Twinkle, Twinkle, Little Star, 199}, KV{Ode to Joy , 192}, KV{Row, Row, Row Your Boat, 186}, KV{Take Me Out to the Ball Game, 182}]
+    2023-07-06T19:53:49.536Z [KV{Old MacDonald Had a Farm, 20}, KV{Take Me Out to the Ball Game, 18}, KV{Für Elise, 17}, KV{Ode to Joy , 15}, KV{Mary Had a Little Lamb, 12}]
+    2023-07-06T19:53:50.425Z [KV{Twinkle, Twinkle, Little Star, 20}, KV{The Wheels on the Bus, 17}, KV{Row, Row, Row Your Boat, 13}, KV{Happy Birthday to You, 12}, KV{Over the Rainbow, 9}]
+    ```
 
 1. Stop your Dataflow job to avoid incurring any costs.
+
+    1. List the jobs to get the job id.
+
+       ```sh
+       gcloud dataflow jobs list --region=$REGION
+       ```
+
+    1. Cancel the job
+
+         ```sh
+         gcloud dataflow jobs cancel ${JOB_ID}
+         ```
 
 ### Testing
 

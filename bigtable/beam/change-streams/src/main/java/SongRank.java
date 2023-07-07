@@ -29,6 +29,7 @@ import org.apache.beam.sdk.io.gcp.bigtable.BigtableIO;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.Count;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
@@ -51,6 +52,7 @@ public class SongRank {
             BigtableOptions.class);
     Pipeline p = Pipeline.create(options);
 
+    // [START bigtable_cdc_tut_readchangestream]
     p.apply(
             "Stream from Bigtable",
             BigtableIO.readChangeStream()
@@ -59,7 +61,9 @@ public class SongRank {
                 .withTableId(options.getBigtableTableId())
                 .withAppProfileId(options.getBigtableAppProfile())
                 .withHeartbeatDuration(Duration.standardSeconds(1))
+
         )
+    // [END bigtable_cdc_tut_readchangestream]
         .apply("Add key", ParDo.of(new ExtractSongName()))
         .apply(
             "Collect listens in 5 second windows",
@@ -71,8 +75,11 @@ public class SongRank {
                             .plusDelayOf(Duration.standardSeconds(10))
                     ))
                 .discardingFiredPanes())
+        // [START bigtable_cdc_tut_countrank]
         .apply(Count.perElement())
         .apply("Top songs", Top.of(5, new SongComparator()).withoutDefaults())
+        // [END bigtable_cdc_tut_countrank]
+        // [START bigtable_cdc_tut_output]
         .apply("Print", ParDo.of(new PrintFn()))
         .apply(
             "Collect at least 10 elements or 1 minute of elements",
@@ -96,11 +103,13 @@ public class SongRank {
                 .withNumShards(1)
                 .withWindowedWrites()
         );
+    // [END bigtable_cdc_tut_output]
 
-    p.run();
+    p.run().waitUntilFinish();
   }
 
 
+  // [START bigtable_cdc_tut_songname]
   private static class ExtractSongName extends DoFn<KV<ByteString, ChangeStreamMutation>, String> {
 
     @DoFn.ProcessElement
@@ -117,6 +126,7 @@ public class SongRank {
       }
     }
   }
+  // [END bigtable_cdc_tut_songname]
 
   private static class SongComparator implements Comparator<KV<String, Long>>, Serializable {
 
