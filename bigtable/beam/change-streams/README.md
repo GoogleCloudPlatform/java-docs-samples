@@ -105,7 +105,7 @@ Google Cloud Storage.
 1. Stream some data which contains song listens for various users
 
    ```sh
-   cbt -instance=INSTANCE_ID -project=$GOOGLE_CLOUD_PROJECT import\
+   cbt -instance=$INSTANCE_ID -project=$GOOGLE_CLOUD_PROJECT import \
    $TABLE_ID song-rank-data.csv  column-family=cf batch-size=1
    ```
 
