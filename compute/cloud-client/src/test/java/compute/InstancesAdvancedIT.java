@@ -17,6 +17,7 @@
 package compute;
 
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.Disk;
@@ -82,7 +83,7 @@ public class InstancesAdvancedIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     UUID uuid = UUID.randomUUID();
-    ZONE = "us-central1-a";
+    ZONE = getZone();
     MACHINE_NAME_PUBLIC_IMAGE = "test-instance-pub-" + uuid;
     MACHINE_NAME_CUSTOM_IMAGE = "test-instance-cust-" + uuid;
     MACHINE_NAME_ADDITIONAL_DISK = "test-instance-add-" + uuid;

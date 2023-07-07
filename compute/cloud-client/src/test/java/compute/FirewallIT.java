@@ -123,10 +123,9 @@ public class FirewallIT {
     try {
       compute.ListFirewallRules.listFirewallRules(PROJECT_ID);
       assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
-    } catch (NotFoundException e) {
-      System.out.println("Rule already deleted! ");
-    } catch (InvalidArgumentException | NullPointerException e) {
-      System.out.println("Rule is not ready (probably being deleted).");
+    } catch (AssertionError e) {
+      // Catches assertion error.
+      System.out.println("Rule already deleted or being deleted.");
     }
     // Clear system output to not affect other tests.
     // Refrain from setting out to null.

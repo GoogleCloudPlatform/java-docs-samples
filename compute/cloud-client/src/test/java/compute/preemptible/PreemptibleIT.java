@@ -18,6 +18,7 @@ package compute.preemptible;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ZoneOperationsClient.ListPagedResponse;
@@ -44,7 +45,7 @@ import org.junit.runners.JUnit4;
 public class PreemptibleIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  private static final String ZONE = getZone();
   private static String INSTANCE_NAME;
 
   private ByteArrayOutputStream stdOut;
