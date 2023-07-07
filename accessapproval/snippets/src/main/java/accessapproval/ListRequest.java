@@ -23,13 +23,13 @@ import java.io.IOException;
 
 public class ListRequest {
 
-  public void quickstart() throws IOException {
+  public static void main(String[] arguments) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    listRequest(projectId);
+    listAccessApprovalRequest(projectId);
   }
 
-  void listRequest(String projectId) throws IOException {
+  static void listAccessApprovalRequest(String projectId) throws IOException {
     try (AccessApprovalAdminClient client = AccessApprovalAdminClient.create()) {
       String parent = "projects/" + projectId;
       AccessApprovalAdminClient.ListApprovalRequestsPagedResponse response =

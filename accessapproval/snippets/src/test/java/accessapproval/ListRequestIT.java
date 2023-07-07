@@ -39,8 +39,8 @@ public class ListRequestIT {
 
   @Test
   public void testListRequest() throws IOException {
-    ListRequest quickstart = new ListRequest();
-    quickstart.listRequest(PROJECT_ID);
+    ListRequest listRequest = new ListRequest();
+    listRequest.listAccessApprovalRequest(PROJECT_ID);
     assertEquals("No approval requests found\n", stdOutCap.getCapturedOutputAsUtf8String());
   }
 }
