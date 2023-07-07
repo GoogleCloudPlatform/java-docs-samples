@@ -148,10 +148,9 @@ Google Cloud Storage.
 1. Run the command to create a test table with change streams enabled
 
    ```sh
-   gcloud bigtable instances tables create song-rank-test \
+   gcloud alpha bigtable instances tables create song-rank-test \
     --column-families=cf --change-stream-retention-period=7d \
    --instance=$BIGTABLE_TESTING_INSTANCE --project=$GOOGLE_CLOUD_PROJECT
-   ```
 
 1. Run the test (output location is local)
 
