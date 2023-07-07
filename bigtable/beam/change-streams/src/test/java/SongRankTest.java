@@ -70,15 +70,6 @@ public class SongRankTest {
   public void testSongRank() throws IOException, InterruptedException {
     String[] args = {"--bigtableProjectId=" + projectId, "--bigtableInstanceId=" + instanceId,
         "--bigtableTableId=" + TABLE_ID, "--outputLocation=" + TEST_OUTPUT_LOCATION};
-    System.out.println(System.getProperty("java.version"));
-
-    // Stagger tests for versions to avoid conflicts. Hard-coded java 11 and 17 for tests. 
-    String javaVersion = System.getProperty("java.version");
-    if (javaVersion.startsWith("11")) {
-      Thread.sleep(30 * 1000);
-    } else if (javaVersion.startsWith("17")) {
-      Thread.sleep(60 * 1000);
-    }
 
     new Thread(() -> SongRank.main(args)).start();
 
