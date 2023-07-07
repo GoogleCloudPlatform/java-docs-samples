@@ -88,10 +88,9 @@ Google Cloud Storage.
 1. Create a table with a change streams enabled
 
    ```sh
-    gcloud bigtable instances tables create $TABLE_ID \
+    gcloud alpha bigtable instances tables create $TABLE_ID \
     --column-families=cf --change-stream-retention-period=7d \
     --instance=$INSTANCE_ID --project=$GOOGLE_CLOUD_PROJECT 
-   ```
 
 1. Run command to start the pipeline
 
