@@ -53,14 +53,8 @@ public abstract class Util {
   static {
     ZONES = new String[]{
         "us-central1-a",
-        "us-central1-b",
-        "us-central1-c",
         "us-west1-a",
-        "us-west1-b",
-        "us-west1-c",
         "asia-south1-a",
-        "asia-south1-b",
-        "asia-south1-c"
     };
   }
 

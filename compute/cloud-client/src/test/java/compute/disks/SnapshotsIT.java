@@ -154,8 +154,8 @@ public class SnapshotsIT {
           .setName(diskName)
           .addAllReplicaZones(
               List.of(
-                  String.format("projects/%s/zones/europe-central2-a", projectId),
-                  String.format("projects/%s/zones/europe-central2-b", projectId))
+                  String.format("projects/%s/zones/%s", projectId, LOCATION + "-b"),
+                  String.format("projects/%s/zones/%s", projectId, LOCATION + "-c"))
           )
           .build();
 
