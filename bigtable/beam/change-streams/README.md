@@ -128,7 +128,7 @@ $TABLE_ID song-rank-data.csv  column-family=cf batch-size=1
    --instance=$BIGTABLE_TESTING_INSTANCE --project=$GOOGLE_CLOUD_PROJECT
    ```
 
-1. Run the test
+1. Run the test (output location is local)
 
    ```sh
    mvn clean test -Dtest=SongRankTest
