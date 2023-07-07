@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.bigtable.data.v2.BigtableDataClient;
 import com.google.cloud.bigtable.data.v2.models.RowMutation;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,10 +30,13 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
-
 public class SongRankTest {
+
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   // This table needs to be created manually before running the test since there is no API to create
   // change-stream enabled tables yet. For java-docs-samples, the table should already be created,
