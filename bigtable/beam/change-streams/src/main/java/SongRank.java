@@ -63,7 +63,7 @@ public class SongRank {
                 .withHeartbeatDuration(Duration.standardSeconds(1))
 
         )
-    // [END bigtable_cdc_tut_readchangestream]
+        // [END bigtable_cdc_tut_readchangestream]
         .apply("Add key", ParDo.of(new ExtractSongName()))
         .apply(
             "Collect listens in 5 second windows",
