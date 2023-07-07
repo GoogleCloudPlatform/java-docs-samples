@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,31 @@
 
 package accessapproval;
 
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertEquals;
 
 import com.google.cloud.testing.junit4.StdOutCaptureRule;
-import com.google.common.base.Strings;
 import java.io.IOException;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class QuickstartIT {
+public class ListRequestIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   @Rule public StdOutCaptureRule stdOutCap = new StdOutCaptureRule();
 
   @BeforeClass
-  public static void beforeAll() throws Exception {
-    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
+  public static void setUp() throws Exception {
+    assertWithMessage("Missing environment variable 'GOOGLE_CLOUD_PROJECT'")
+        .that(PROJECT_ID)
+        .isNotEmpty();
   }
 
   @Test
-  public void testQuickstart() throws IOException {
-    Quickstart quickstart = new Quickstart();
-    quickstart.quickstart(PROJECT_ID);
+  public void testListRequest() throws IOException {
+    ListRequest quickstart = new ListRequest();
+    quickstart.listRequest(PROJECT_ID);
     assertEquals("No approval requests found\n", stdOutCap.getCapturedOutputAsUtf8String());
   }
 }

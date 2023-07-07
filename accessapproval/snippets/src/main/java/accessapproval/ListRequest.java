@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,15 @@ import com.google.cloud.accessapproval.v1.AccessApprovalAdminClient;
 import com.google.cloud.accessapproval.v1.ApprovalRequest;
 import java.io.IOException;
 
-public class Quickstart {
+public class ListRequest {
 
   public void quickstart() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    quickstart(projectId);
+    listRequest(projectId);
   }
 
-  void quickstart(String projectId) throws IOException {
+  void listRequest(String projectId) throws IOException {
     try (AccessApprovalAdminClient client = AccessApprovalAdminClient.create()) {
       String parent = "projects/" + projectId;
       AccessApprovalAdminClient.ListApprovalRequestsPagedResponse response =
