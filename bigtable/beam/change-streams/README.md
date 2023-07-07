@@ -25,7 +25,7 @@ Bigtable.
 1. Create a table with a change streams enabled
 
    ```sh
-   gcloud alpha bigtable instances tables create $TABLE_ID \
+   gcloud bigtable instances tables create $TABLE_ID \
     --column-families=cf1 --change-stream-retention-period=7d \
    --instance=INSTANCE_ID --project=$GOOGLE_CLOUD_PROJECT 
    ```
@@ -54,7 +54,7 @@ Bigtable.
 1. Run the command to create a test table with change streams enabled
 
    ```sh
-   gcloud alpha bigtable instances tables create change-stream-hello-world-test \
+   gcloud bigtable instances tables create change-stream-hello-world-test \
     --column-families=cf1,cf2 --change-stream-retention-period=7d \
    --instance=$BIGTABLE_TESTING_INSTANCE --project=$GOOGLE_CLOUD_PROJECT
    ```
@@ -88,7 +88,7 @@ Google Cloud Storage.
 1. Create a table with a change streams enabled
 
    ```sh
-    gcloud alpha bigtable instances tables create $TABLE_ID \
+    gcloud bigtable instances tables create $TABLE_ID \
     --column-families=cf --change-stream-retention-period=7d \
     --instance=$INSTANCE_ID --project=$GOOGLE_CLOUD_PROJECT 
    ```
@@ -148,7 +148,7 @@ Google Cloud Storage.
 1. Run the command to create a test table with change streams enabled
 
    ```sh
-   gcloud alpha bigtable instances tables create song-rank-test \
+   gcloud bigtable instances tables create song-rank-test \
     --column-families=cf --change-stream-retention-period=7d \
    --instance=$BIGTABLE_TESTING_INSTANCE --project=$GOOGLE_CLOUD_PROJECT
    ```
