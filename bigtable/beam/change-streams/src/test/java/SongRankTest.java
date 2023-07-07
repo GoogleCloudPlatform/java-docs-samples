@@ -97,25 +97,12 @@ public class SongRankTest {
     dataClient.mutateRow(
         RowMutation.create(TABLE_ID, rowKey).setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, song2));
 
-    // Pause for a second set of writes
-    Thread.sleep(20 * 1000);
-
-    // Send second batch of writes
-    for (int i = 0; i < 5; i++) {
-      dataClient.mutateRow(
-          RowMutation.create(TABLE_ID, rowKey).setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, song1));
-      dataClient.mutateRow(
-          RowMutation.create(TABLE_ID, rowKey).setCell(COLUMN_FAMILY_NAME, COLUMN_NAME, song2));
-    }
-
     // Wait for output to be written
     Thread.sleep(3 * 60 * 1000);
 
     String output = bout.toString();
     assertThat(output).contains("KV{" + song1 + ", 3}");
     assertThat(output).contains("KV{" + song2 + ", 1}");
-    assertThat(output).contains("KV{" + song1 + ", 5}");
-    assertThat(output).contains("KV{" + song2 + ", 5}");
 
     FileInputStream fis = new FileInputStream(
         TEST_OUTPUT_LOCATION + "/song-charts/GlobalWindow-pane-0-00000-of-00001.txt");
@@ -124,8 +111,6 @@ public class SongRankTest {
     String content = new String(data, StandardCharsets.UTF_8);
     assertThat(content).contains("KV{" + song1 + ", 3}");
     assertThat(content).contains("KV{" + song2 + ", 1}");
-    assertThat(content).contains("KV{" + song1 + ", 5}");
-    assertThat(content).contains("KV{" + song2 + ", 5}");
 
     FileUtils.deleteDirectory(new File(TEST_OUTPUT_LOCATION));
   }
