@@ -82,7 +82,7 @@ Google Cloud Storage.
     INSTANCE_ID=your-instance-id
     TABLE_ID=song-rank
     REGION=us-central1
-    OUTPUT_LOCATION=gs://your-bucket-id  # Exclude the gs:// to save locally 
+    OUTPUT_LOCATION=gs://your-bucket-id/  # Exclude the gs:// to save locally 
     ```
 
 1. Create a table with a change streams enabled
