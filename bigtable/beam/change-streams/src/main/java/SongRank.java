@@ -151,19 +151,16 @@ public class SongRank {
   public interface BigtableOptions extends DataflowPipelineOptions {
 
     @Description("The Bigtable project ID, this can be different than your Dataflow project")
-    @Default.String("bigtable-project")
     String getBigtableProjectId();
 
     void setBigtableProjectId(String bigtableProjectId);
 
     @Description("The Bigtable instance ID")
-    @Default.String("bigtable-instance")
     String getBigtableInstanceId();
 
     void setBigtableInstanceId(String bigtableInstanceId);
 
     @Description("The Bigtable table ID in the instance.")
-    @Default.String("song-rank")
     String getBigtableTableId();
 
     void setBigtableTableId(String bigtableTableId);
@@ -176,7 +173,6 @@ public class SongRank {
 
     @Description("The location to write to. Begin with gs:// to write to a Cloud Storage bucket. "
         + "End with a slash.")
-    @Default.String("gs://your-bucket")
     String getOutputLocation();
 
     void setOutputLocation(String value);
