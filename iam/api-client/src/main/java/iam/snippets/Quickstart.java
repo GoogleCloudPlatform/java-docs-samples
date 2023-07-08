@@ -135,7 +135,7 @@ public class Quickstart {
         break;
       }
     }
-    if (binding.getMembers().contains(member)) {
+    if (binding != null && binding.getMembers().contains(member)) {
       binding.getMembers().remove(member);
       if (binding.getMembers().isEmpty()) {
         policy.getBindings().remove(binding);

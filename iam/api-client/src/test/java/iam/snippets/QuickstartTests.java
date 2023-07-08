@@ -108,7 +108,9 @@ public class QuickstartTests {
 
     String resource = "projects/-/serviceAccounts/" + serviceAccount.getEmail();
     try {
-      iamService.projects().serviceAccounts().delete(resource).execute();
+      if (resource != null) {
+        iamService.projects().serviceAccounts().delete(resource).execute();
+      }
     } catch (IOException e) {
       System.out.println("Unable to delete service account: \n" + e.toString());
     }
@@ -135,6 +137,7 @@ public class QuickstartTests {
         break;
       }
     }
+    assertNotNull(binding);
     assertThat(binding.getMembers(), hasItem(member));
 
     // Tests removeMember()
