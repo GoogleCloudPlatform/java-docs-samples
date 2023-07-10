@@ -28,6 +28,8 @@ import java.util.concurrent.TimeoutException;
 
 public class DeleteCdnKey {
 
+  private static final int TIMEOUT_IN_MINUTES = 2;
+
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -49,7 +51,8 @@ public class DeleteCdnKey {
               .setName(CdnKeyName.of(projectId, location, cdnKeyId).toString())
               .build();
 
-      videoStitcherServiceClient.deleteCdnKeyAsync(deleteCdnKeyRequest).get(2, TimeUnit.MINUTES);
+      videoStitcherServiceClient.deleteCdnKeyAsync(deleteCdnKeyRequest)
+          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
       System.out.println("Deleted CDN key");
     }
   }

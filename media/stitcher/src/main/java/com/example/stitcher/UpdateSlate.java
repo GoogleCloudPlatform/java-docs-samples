@@ -30,6 +30,8 @@ import java.util.concurrent.TimeoutException;
 
 public class UpdateSlate {
 
+  private static final int TIMEOUT_IN_MINUTES = 2;
+
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -62,7 +64,7 @@ public class UpdateSlate {
               .build();
 
       Slate response = videoStitcherServiceClient.updateSlateAsync(updateSlateRequest)
-          .get(2, TimeUnit.MINUTES);
+          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
       System.out.println("Updated slate: " + response.getName());
     }
   }
