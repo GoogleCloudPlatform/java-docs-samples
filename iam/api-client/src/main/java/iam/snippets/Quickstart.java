@@ -98,7 +98,13 @@ public class Quickstart {
     // Gets the project's policy.
     Policy policy = getPolicy(crmService, projectId);
 
-    // Finds binding in policy, if it exists
+    // If policy is not retrieved, return early.
+    if (policy == null)
+    {
+      return;
+    }
+
+    // Finds binding in policy, if it exists.
     Binding binding = null;
     for (Binding b : policy.getBindings()) {
       if (b.getRole().equals(role)) {
@@ -118,7 +124,7 @@ public class Quickstart {
       policy.getBindings().add(binding);
     }
 
-    // Sets the updated policy
+    // Sets the updated policy.
     setPolicy(crmService, projectId, policy);
   }
 
