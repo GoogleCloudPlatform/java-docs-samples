@@ -99,8 +99,7 @@ public class Quickstart {
     Policy policy = getPolicy(crmService, projectId);
 
     // If policy is not retrieved, return early.
-    if (policy == null)
-    {
+    if (policy == null) {
       return;
     }
 

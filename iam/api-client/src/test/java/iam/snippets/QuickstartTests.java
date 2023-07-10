@@ -109,7 +109,7 @@ public class QuickstartTests {
     if (email != null) {
       String resource = "projects/-/serviceAccounts/" + email;
       try {
-          iamService.projects().serviceAccounts().delete(resource).execute();
+        iamService.projects().serviceAccounts().delete(resource).execute();
       } catch (IOException e) {
         System.out.println("Unable to delete service account: \n" + e.toString());
       }
