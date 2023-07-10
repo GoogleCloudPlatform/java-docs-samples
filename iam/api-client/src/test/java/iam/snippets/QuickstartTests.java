@@ -105,12 +105,14 @@ public class QuickstartTests {
   // Deletes the service account used in the test.
   @After
   public void tearDown() {
-
-    String resource = "projects/-/serviceAccounts/" + serviceAccount.getEmail();
-    try {
-      iamService.projects().serviceAccounts().delete(resource).execute();
-    } catch (IOException e) {
-      System.out.println("Unable to delete service account: \n" + e.toString());
+    String email = serviceAccount.getEmail();
+    if (email != null) {
+      String resource = "projects/-/serviceAccounts/" + email;
+      try {
+        iamService.projects().serviceAccounts().delete(resource).execute();
+      } catch (IOException e) {
+        System.out.println("Unable to delete service account: \n" + e.toString());
+      }
     }
   }
 
@@ -135,6 +137,7 @@ public class QuickstartTests {
         break;
       }
     }
+    assertNotNull(binding);
     assertThat(binding.getMembers(), hasItem(member));
 
     // Tests removeMember()
