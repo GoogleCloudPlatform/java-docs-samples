@@ -27,7 +27,7 @@ buildscript {
   }
 }
 
-def grpcVersion = '1.56.0'
+def grpcVersion = '1.56.1'
 
 dependencies {
   repositories {
@@ -40,7 +40,7 @@ dependencies {
 
 protobuf {
   protoc {
-    artifact = 'com.google.protobuf:protoc:3.23.3'
+    artifact = 'com.google.protobuf:protoc:3.23.4'
   }
 
   plugins {

@@ -34,7 +34,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <kotlin.version>1.8.22</kotlin.version>
+    <kotlin.version>1.9.0</kotlin.version>
   </properties>
 
   <dependencyManagement>
@@ -44,7 +44,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.17.0</version>
+        <version>26.18.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -103,7 +103,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.10.1</version>
+        <version>0.11.0</version>
         <configuration>
           <functionTarget>functions.KotlinHelloBackground</functionTarget>
         </configuration>

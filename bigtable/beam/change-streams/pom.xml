@@ -25,7 +25,7 @@
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
-    Removing or replacing it should not affect the execution of the samples in anyway.
+    Removing or replacing it should not affect the execution of the samples in any way.
   -->
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -52,7 +52,7 @@
       <dependency>
         <artifactId>libraries-bom</artifactId>
         <groupId>com.google.cloud</groupId>
-        <version>26.17.0</version>
+        <version>26.18.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -106,6 +106,12 @@
     <dependency>
       <groupId>com.google.api</groupId>
       <artifactId>gax</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.13.0</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

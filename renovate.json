@@ -58,6 +58,12 @@
     },
     {
       "packagePatterns": [
+        "^io.quarkus:"
+      ],
+      "groupName": "Quarkus packages"
+    },
+    {
+      "packagePatterns": [
         "^io.vertx:"
       ],
       "groupName": "Vertx packages"

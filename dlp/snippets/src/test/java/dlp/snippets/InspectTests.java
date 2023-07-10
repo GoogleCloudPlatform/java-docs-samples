@@ -130,67 +130,6 @@ public class InspectTests extends TestBase {
     }
   }
 
-  public static void createStoredInfoType(String projectId, String outputPath, String infoTypeId)
-      throws IOException, InterruptedException {
-    try (DlpServiceClient dlp = DlpServiceClient.create()) {
-
-      // Optionally set a display name and a description.
-      String displayName = "GitHub usernames";
-      String description = "Dictionary of GitHub usernames used in commits";
-
-      CloudStoragePath cloudStoragePath = CloudStoragePath.newBuilder().setPath(outputPath).build();
-
-      BigQueryTable table =
-          BigQueryTable.newBuilder()
-              .setProjectId("bigquery-public-data")
-              .setTableId("github_nested")
-              .setDatasetId("samples")
-              .build();
-
-      BigQueryField bigQueryField =
-          BigQueryField.newBuilder()
-              .setTable(table)
-              .setField(FieldId.newBuilder().setName("actor").build())
-              .build();
-
-      LargeCustomDictionaryConfig largeCustomDictionaryConfig =
-          LargeCustomDictionaryConfig.newBuilder()
-              .setOutputPath(cloudStoragePath)
-              .setBigQueryField(bigQueryField)
-              .build();
-
-      StoredInfoTypeConfig storedInfoTypeConfig =
-          StoredInfoTypeConfig.newBuilder()
-              .setDisplayName(displayName)
-              .setDescription(description)
-              .setLargeCustomDictionary(largeCustomDictionaryConfig)
-              .build();
-
-      // Combine configurations into a request for the service.
-      CreateStoredInfoTypeRequest createStoredInfoType =
-          CreateStoredInfoTypeRequest.newBuilder()
-              .setParent(LocationName.of(projectId, "global").toString())
-              .setConfig(storedInfoTypeConfig)
-              .setStoredInfoTypeId(infoTypeId)
-              .build();
-
-      // Send the request and receive response from the service.
-      StoredInfoType response = dlp.createStoredInfoType(createStoredInfoType);
-
-      // Wait for the creation of Stored InfoType.
-      boolean isReady = false;
-      StoredInfoType storedInfoType = null;
-      while (!isReady) {
-        storedInfoType = dlp.getStoredInfoType(response.getName());
-        if (storedInfoType.getCurrentVersion().getState().toString().equals("READY")) {
-          isReady = true;
-        } else {
-          Thread.sleep(5000);
-        }
-      }
-    }
-  }
-
   @Test
   public void testInspectPhoneNumber() throws Exception {
     InspectString.inspectString(PROJECT_ID, "My phone number is (415) 555-0890");

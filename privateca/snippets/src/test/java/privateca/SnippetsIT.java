@@ -19,6 +19,7 @@ package privateca;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.monitoring.v3.AlertPolicyServiceClient;
 import com.google.cloud.security.privateca.v1.CaPool.IssuancePolicy;
 import com.google.cloud.security.privateca.v1.CaPoolName;
 import com.google.cloud.security.privateca.v1.Certificate;
@@ -77,10 +78,10 @@ public class SnippetsIT {
 
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 300000; // 5 minutes
+
   @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
-      MAX_ATTEMPT_COUNT,
-      INITIAL_BACKOFF_MILLIS);
+  public final MultipleAttemptsRule multipleAttemptsRule =
+      new MultipleAttemptsRule(MAX_ATTEMPT_COUNT, INITIAL_BACKOFF_MILLIS);
 
   // Check if the required environment variables are set.
   public static void reqEnvVar(String envVarName) {
@@ -90,13 +91,14 @@ public class SnippetsIT {
   }
 
   @BeforeClass
+  @SuppressWarnings("unused")
   public static void setUp()
       throws IOException, ExecutionException, NoSuchProviderException, NoSuchAlgorithmException,
-      InterruptedException, TimeoutException {
+          InterruptedException, TimeoutException {
     reqEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     reqEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    LOCATION = "asia-south1";
+    LOCATION = Util.getRegion();
     CA_poolId = "ca-pool-" + UUID.randomUUID();
     CA_poolId_DELETE = "ca-pool-" + UUID.randomUUID();
     CA_NAME = "ca-name-" + UUID.randomUUID();
@@ -113,34 +115,33 @@ public class SnippetsIT {
 
     // <--- START CA POOL --->
     // Create CA Pool.
-    privateca.CreateCaPool.createCaPool(PROJECT_ID, LOCATION, CA_poolId);
-    privateca.CreateCaPool.createCaPool(PROJECT_ID, LOCATION, CA_poolId_DELETE);
+    CreateCaPool.createCaPool(PROJECT_ID, LOCATION, CA_poolId);
+    CreateCaPool.createCaPool(PROJECT_ID, LOCATION, CA_poolId_DELETE);
     sleep(5);
     // Set the issuance policy for the created CA Pool.
-    UpdateCaPoolIssuancePolicy.updateCaPoolIssuancePolicy(
-        PROJECT_ID, LOCATION, CA_poolId);
+    UpdateCaPoolIssuancePolicy.updateCaPoolIssuancePolicy(PROJECT_ID, LOCATION, CA_poolId);
     // <--- END CA POOL --->
 
     // <--- START ROOT CA --->
     // Create and Enable Certificate Authority.
-    privateca.CreateCertificateAuthority.createCertificateAuthority(
+    CreateCertificateAuthority.createCertificateAuthority(
         PROJECT_ID, LOCATION, CA_poolId, CA_NAME);
     sleep(10);
-    privateca.EnableCertificateAuthority.enableCertificateAuthority(
+    EnableCertificateAuthority.enableCertificateAuthority(
         PROJECT_ID, LOCATION, CA_poolId, CA_NAME);
 
     // Create and Delete Certificate Authority.
-    privateca.CreateCertificateAuthority.createCertificateAuthority(
+    CreateCertificateAuthority.createCertificateAuthority(
         PROJECT_ID, LOCATION, CA_poolId, CA_NAME_DELETE);
     sleep(10);
-    privateca.DeleteCertificateAuthority.deleteCertificateAuthority(
+    DeleteCertificateAuthority.deleteCertificateAuthority(
         PROJECT_ID, LOCATION, CA_poolId, CA_NAME_DELETE);
     // <--- END ROOT CA --->
 
     // <--- START SUBORDINATE CA --->
     // Follow the below steps to create and enable a Subordinate Certificate Authority.
     // 1. Create a Subordinate Certificate Authority.
-    privateca.CreateSubordinateCa.createSubordinateCertificateAuthority(
+    CreateSubordinateCa.createSubordinateCertificateAuthority(
         PROJECT_ID, LOCATION, CA_poolId, SUBORDINATE_CA_NAME);
     sleep(10);
     // 2. Fetch CSR.
@@ -152,7 +153,7 @@ public class SnippetsIT {
 
     // <--- START CERTIFICATE --->
     // Create Certificate Template.
-    privateca.CreateCertificateTemplate.createCertificateTemplate(
+    CreateCertificateTemplate.createCertificateTemplate(
         PROJECT_ID, LOCATION, CERTIFICATE_TEMPLATE_NAME);
 
     // Create an asymmetric key pair using Bouncy Castle crypto framework.
@@ -174,7 +175,7 @@ public class SnippetsIT {
     ByteString privateKeyByteString = convertToPemEncodedByteString(privateKeyPemObject);
 
     // Create certificate with the above generated public key.
-    privateca.CreateCertificate.createCertificate(
+    CreateCertificate.createCertificate(
         PROJECT_ID, LOCATION, CA_poolId, CA_NAME, CERTIFICATE_NAME, publicKeyByteString);
     sleep(5);
     // <--- END CERTIFICATE --->
@@ -188,27 +189,27 @@ public class SnippetsIT {
     System.setOut(new PrintStream(stdOut));
 
     // Revoke Certificate.
-    privateca.RevokeCertificate.revokeCertificate(
+    RevokeCertificate.revokeCertificate(
         PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME);
 
     // Delete Certificate Template.
-    privateca.DeleteCertificateTemplate.deleteCertificateTemplate(
+    DeleteCertificateTemplate.deleteCertificateTemplate(
         PROJECT_ID, LOCATION, CERTIFICATE_TEMPLATE_NAME);
 
     // Delete root CA.
-    privateca.DeleteCertificateAuthority.deleteCertificateAuthority(
+    DeleteCertificateAuthority.deleteCertificateAuthority(
         PROJECT_ID, LOCATION, CA_poolId, CA_NAME);
     sleep(5);
     // Deleting the undeleted CA.
-    privateca.DeleteCertificateAuthority.deleteCertificateAuthority(
+    DeleteCertificateAuthority.deleteCertificateAuthority(
         PROJECT_ID, LOCATION, CA_poolId, CA_NAME_DELETE);
 
     // Delete Subordinate CA.
-    privateca.DeleteCertificateAuthority.deleteCertificateAuthority(
+    DeleteCertificateAuthority.deleteCertificateAuthority(
         PROJECT_ID, LOCATION, CA_poolId, SUBORDINATE_CA_NAME);
     sleep(5);
     // Delete CA Pool.
-    privateca.DeleteCaPool.deleteCaPool(PROJECT_ID, LOCATION, CA_poolId);
+    DeleteCaPool.deleteCaPool(PROJECT_ID, LOCATION, CA_poolId);
 
     stdOut = null;
     System.setOut(null);
@@ -241,9 +242,8 @@ public class SnippetsIT {
     // Generate the key pair with RSA algorithm using Bouncy Castle (BC).
     KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
     generator.initialize(KEY_SIZE);
-    KeyPair keyPair = generator.generateKeyPair();
 
-    return keyPair;
+    return generator.generateKeyPair();
   }
 
   // Convert the encoded PemObject to ByteString.
@@ -253,9 +253,8 @@ public class SnippetsIT {
     PemWriter pemWriter = new PemWriter(new OutputStreamWriter(byteArrayOutputStream));
     pemWriter.writeObject(pemEncodedKey);
     pemWriter.close();
-    ByteString keyByteString = ByteString.copyFrom(byteArrayOutputStream.toByteArray());
 
-    return keyByteString;
+    return ByteString.copyFrom(byteArrayOutputStream.toByteArray());
   }
 
   @Before
@@ -306,14 +305,14 @@ public class SnippetsIT {
 
   @Test
   public void testListCAPools() throws IOException {
-    privateca.ListCaPools.listCaPools(PROJECT_ID, LOCATION);
+    ListCaPools.listCaPools(PROJECT_ID, LOCATION);
     assertThat(stdOut.toString()).contains(CA_poolId);
   }
 
   @Test
   public void testDeleteCAPool()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
-    privateca.DeleteCaPool.deleteCaPool(PROJECT_ID, LOCATION, CA_poolId_DELETE);
+    DeleteCaPool.deleteCaPool(PROJECT_ID, LOCATION, CA_poolId_DELETE);
     assertThat(stdOut.toString()).contains("Deleted CA Pool: " + CA_poolId_DELETE);
   }
 
@@ -331,30 +330,36 @@ public class SnippetsIT {
 
   @Test
   public void testListCertificateAuthorities() throws IOException {
-    privateca.ListCertificateAuthorities.listCertificateAuthority(PROJECT_ID, LOCATION, CA_poolId);
+    ListCertificateAuthorities.listCertificateAuthority(PROJECT_ID, LOCATION, CA_poolId);
     assertThat(stdOut.toString()).contains(CA_NAME);
   }
 
   @Test
   public void testUpdateCertificateAuthority()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    privateca.UpdateCertificateAuthority.updateCaLabel(PROJECT_ID, LOCATION, CA_poolId, CA_NAME);
+    UpdateCertificateAuthority.updateCaLabel(PROJECT_ID, LOCATION, CA_poolId, CA_NAME);
     assertThat(stdOut.toString()).contains("Successfully updated the labels ! ");
   }
 
   @Test
   public void testMonitorCertificateAuthority() throws IOException, InterruptedException {
-    privateca.MonitorCertificateAuthority.createCaMonitoringPolicy(PROJECT_ID);
-    assertThat(stdOut.toString()).contains("Monitoring policy successfully created !");
+    String policyName = MonitorCertificateAuthority.createCaMonitoringPolicy(PROJECT_ID);
+    assertThat(policyName).contains("projects/" + PROJECT_ID + "/alertPolicies/");
+
+    // cleanup created policy
+
+    try (AlertPolicyServiceClient client = AlertPolicyServiceClient.create()) {
+      client.deleteAlertPolicy(policyName);
+    }
   }
 
   @Test
   public void testEnableDisableCertificateAuthority()
       throws InterruptedException, ExecutionException, IOException {
-    privateca.EnableCertificateAuthority.enableCertificateAuthority(
+    EnableCertificateAuthority.enableCertificateAuthority(
         PROJECT_ID, LOCATION, CA_poolId, CA_NAME);
     assertThat(stdOut.toString()).contains("Enabled Certificate Authority : " + CA_NAME);
-    privateca.DisableCertificateAuthority.disableCertificateAuthority(
+    DisableCertificateAuthority.disableCertificateAuthority(
         PROJECT_ID, LOCATION, CA_poolId, CA_NAME);
     assertThat(stdOut.toString()).contains("Disabled Certificate Authority : " + CA_NAME);
   }
@@ -364,7 +369,7 @@ public class SnippetsIT {
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
     // CA deleted as part of setup(). Undelete the CA.
     // The undelete operation will be executed only if the CA was successfully deleted.
-    privateca.UndeleteCertificateAuthority.undeleteCertificateAuthority(
+    UndeleteCertificateAuthority.undeleteCertificateAuthority(
         PROJECT_ID, LOCATION, CA_poolId, CA_NAME_DELETE);
     assertThat(stdOut.toString())
         .contains("Successfully restored the Certificate Authority ! " + CA_NAME_DELETE);
@@ -390,14 +395,14 @@ public class SnippetsIT {
   @Test
   public void testListCertificateTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    privateca.ListCertificateTemplates.listCertificateTemplates(PROJECT_ID, LOCATION);
+    ListCertificateTemplates.listCertificateTemplates(PROJECT_ID, LOCATION);
     assertThat(stdOut.toString()).contains(CERTIFICATE_TEMPLATE_NAME);
   }
 
   @Test
   public void updateCertificateTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    privateca.UpdateCertificateTemplate.updateCertificateTemplate(
+    UpdateCertificateTemplate.updateCertificateTemplate(
         PROJECT_ID, LOCATION, CERTIFICATE_TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Successfully updated the certificate template ! ");
   }
@@ -416,14 +421,14 @@ public class SnippetsIT {
 
   @Test
   public void testListCertificates() throws IOException {
-    privateca.ListCertificates.listCertificates(PROJECT_ID, LOCATION, CA_poolId);
+    ListCertificates.listCertificates(PROJECT_ID, LOCATION, CA_poolId);
     assertThat(stdOut.toString()).contains(CERTIFICATE_NAME);
   }
 
   @Test
   public void testFilterCertificates() throws IOException {
     // Filter only certificates created using CSR.
-    privateca.FilterCertificates.filterCertificates(PROJECT_ID, LOCATION, CA_poolId);
+    FilterCertificates.filterCertificates(PROJECT_ID, LOCATION, CA_poolId);
     assertThat(stdOut.toString()).contains(CSR_CERTIFICATE_NAME);
     assertThat(stdOut.toString()).doesNotContain(CERTIFICATE_NAME);
   }
@@ -433,7 +438,7 @@ public class SnippetsIT {
     try (CertificateAuthorityServiceClient certificateAuthorityServiceClient =
         CertificateAuthorityServiceClient.create()) {
       // Revoke the certificate.
-      privateca.RevokeCertificate.revokeCertificate(
+      RevokeCertificate.revokeCertificate(
           PROJECT_ID, LOCATION, CA_poolId, CERTIFICATE_NAME);
 
       // Check if the certificate has revocation details. If it does, then the certificate is
@@ -463,8 +468,7 @@ public class SnippetsIT {
         CertificateAuthorityServiceClient.create()) {
       Certificate response =
           certificateAuthorityServiceClient.getCertificate(
-              CertificateName.of(PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME)
-                  .toString());
+              CertificateName.of(PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME).toString());
       Assert.assertTrue(response.hasCreateTime());
     }
   }
@@ -476,12 +480,11 @@ public class SnippetsIT {
         CertificateAuthorityServiceClient.create()) {
       Certificate response =
           certificateAuthorityServiceClient.getCertificate(
-              CertificateName.of(PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME)
-                  .toString());
+              CertificateName.of(PROJECT_ID, LOCATION, CA_poolId, CSR_CERTIFICATE_NAME).toString());
 
       String pemCertificate = response.getPemCertificate();
 
-      privateca.ActivateSubordinateCa.activateSubordinateCa(
+      ActivateSubordinateCa.activateSubordinateCa(
           PROJECT_ID, LOCATION, CA_poolId, CA_NAME, SUBORDINATE_CA_NAME, pemCertificate);
       assertThat(stdOut.toString()).contains("Current State: STAGED");
     }

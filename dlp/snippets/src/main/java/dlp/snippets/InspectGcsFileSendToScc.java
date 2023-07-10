@@ -24,17 +24,22 @@ import com.google.privacy.dlp.v2.CloudStorageOptions;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.InfoType;
+import com.google.privacy.dlp.v2.InfoTypeStats;
 import com.google.privacy.dlp.v2.InspectConfig;
+import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.InspectJobConfig;
 import com.google.privacy.dlp.v2.Likelihood;
 import com.google.privacy.dlp.v2.LocationName;
 import com.google.privacy.dlp.v2.StorageConfig;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class InspectGcsFileSendToScc {
+
+  private static final int TIMEOUT_MINUTES = 15;
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
@@ -47,7 +52,8 @@ public class InspectGcsFileSendToScc {
 
   // Creates a DLP Job to scan the sample data stored in a Cloud Storage and save its scan results
   // to Security Command Center.
-  public static void createJobSendToScc(String projectId, String gcsPath) throws IOException {
+  public static void createJobSendToScc(String projectId, String gcsPath)
+      throws IOException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -108,8 +114,34 @@ public class InspectGcsFileSendToScc {
               .build();
 
       // Send the job creation request and process the response.
-      DlpJob createdDlpJob = dlpServiceClient.createDlpJob(createDlpJobRequest);
-      System.out.println("Job created successfully: " + createdDlpJob.getName());
+      DlpJob response = dlpServiceClient.createDlpJob(createDlpJobRequest);
+      // Get the current time.
+      long startTime = System.currentTimeMillis();
+
+      // Check if the job state is DONE.
+      while (response.getState() != DlpJob.JobState.DONE) {
+        // Sleep for 30 second.
+        Thread.sleep(30000);
+
+        // Get the updated job status.
+        response = dlpServiceClient.getDlpJob(response.getName());
+
+        // Check if the timeout duration has exceeded.
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        if (TimeUnit.MILLISECONDS.toMinutes(elapsedTime) >= TIMEOUT_MINUTES) {
+          System.out.printf("Job did not complete within %d minutes.%n", TIMEOUT_MINUTES);
+          break;
+        }
+      }
+      // Print the results.
+      System.out.println("Job status: " + response.getState());
+      System.out.println("Job name: " + response.getName());
+      InspectDataSourceDetails.Result result = response.getInspectDetails().getResult();
+      System.out.println("Findings: ");
+      for (InfoTypeStats infoTypeStat : result.getInfoTypeStatsList()) {
+        System.out.print("\tInfo type: " + infoTypeStat.getInfoType().getName());
+        System.out.println("\tCount: " + infoTypeStat.getCount());
+      }
     }
   }
 }

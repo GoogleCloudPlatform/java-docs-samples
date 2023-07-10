@@ -12,13 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START batch_create_job_with_template]
+package com.example.batch;
 
+// [START batch_create_script_job_with_bucket]
 import com.google.cloud.batch.v1.AllocationPolicy;
+import com.google.cloud.batch.v1.AllocationPolicy.InstancePolicy;
 import com.google.cloud.batch.v1.AllocationPolicy.InstancePolicyOrTemplate;
 import com.google.cloud.batch.v1.BatchServiceClient;
 import com.google.cloud.batch.v1.ComputeResource;
 import com.google.cloud.batch.v1.CreateJobRequest;
+import com.google.cloud.batch.v1.GCS;
 import com.google.cloud.batch.v1.Job;
 import com.google.cloud.batch.v1.LogsPolicy;
 import com.google.cloud.batch.v1.LogsPolicy.Destination;
@@ -26,13 +29,14 @@ import com.google.cloud.batch.v1.Runnable;
 import com.google.cloud.batch.v1.Runnable.Script;
 import com.google.cloud.batch.v1.TaskGroup;
 import com.google.cloud.batch.v1.TaskSpec;
+import com.google.cloud.batch.v1.Volume;
 import com.google.protobuf.Duration;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateWithTemplate {
+public class CreateWithMountedBucket {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -48,19 +52,16 @@ public class CreateWithTemplate {
     // It needs to be unique for each project and region pair.
     String jobName = "JOB_NAME";
 
-    // A link to an existing Instance Template. Acceptable formats:
-    //   * "projects/{projectId}/global/instanceTemplates/{templateName}"
-    //   * "{templateName}" - if the template is defined in the same project
-    //   as used to create the Job.
-    String templateLink = "TEMPLATE_LINK";
+    // Name of the bucket to be mounted for your Job.
+    String bucketName = "BUCKET_NAME";
 
-    createWithTemplate(projectId, region, jobName, templateLink);
+    createScriptJobWithBucket(projectId, region, jobName, bucketName);
   }
 
   // This method shows how to create a sample Batch Job that will run
-  // a simple command on Cloud Compute instances created using a provided Template.
-  public static void createWithTemplate(String projectId, String region, String jobName,
-      String templateLink)
+  // a simple command on Cloud Compute instances.
+  public static void createScriptJobWithBucket(String projectId, String region, String jobName,
+      String bucketName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -74,8 +75,8 @@ public class CreateWithTemplate {
               .setScript(
                   Script.newBuilder()
                       .setText(
-                          "echo Hello world! This is task ${BATCH_TASK_INDEX}. "
-                              + "This job has a total of ${BATCH_TASK_COUNT} tasks.")
+                          "echo Hello world from task ${BATCH_TASK_INDEX}. >> "
+                              + "/mnt/share/output_task_${BATCH_TASK_INDEX}.txt")
                       // You can also run a script from a file. Just remember, that needs to be a
                       // script that's already on the VM that will be running the job.
                       // Using setText() and setPath() is mutually exclusive.
@@ -83,11 +84,18 @@ public class CreateWithTemplate {
                       .build())
               .build();
 
+      Volume volume = Volume.newBuilder()
+          .setGcs(GCS.newBuilder()
+              .setRemotePath(bucketName)
+              .build())
+          .setMountPath("/mnt/share")
+          .build();
+
       // We can specify what resources are requested by each task.
       ComputeResource computeResource =
           ComputeResource.newBuilder()
-              // In milliseconds per cpu-second. This means the task requires 2 whole CPUs.
-              .setCpuMilli(2000)
+              // In milliseconds per cpu-second. This means the task requires 50% of a single CPUs.
+              .setCpuMilli(500)
               // In MiB.
               .setMemoryMib(16)
               .build();
@@ -96,6 +104,7 @@ public class CreateWithTemplate {
           TaskSpec.newBuilder()
               // Jobs can be divided into tasks. In this case, we have only one task.
               .addRunnables(runnable)
+              .addVolumes(volume)
               .setComputeResource(computeResource)
               .setMaxRetryCount(2)
               .setMaxRunDuration(Duration.newBuilder().setSeconds(3600).build())
@@ -106,12 +115,14 @@ public class CreateWithTemplate {
       TaskGroup taskGroup = TaskGroup.newBuilder().setTaskCount(4).setTaskSpec(task).build();
 
       // Policies are used to define on what kind of virtual machines the tasks will run on.
-      // In this case, we tell the system to use an instance template that defines all the
-      // required parameters.
+      // In this case, we tell the system to use "e2-standard-4" machine type.
+      // Read more about machine types here: https://cloud.google.com/compute/docs/machine-types
+      InstancePolicy instancePolicy =
+          InstancePolicy.newBuilder().setMachineType("e2-standard-4").build();
+
       AllocationPolicy allocationPolicy =
           AllocationPolicy.newBuilder()
-              .addInstances(
-                  InstancePolicyOrTemplate.newBuilder().setInstanceTemplate(templateLink).build())
+              .addInstances(InstancePolicyOrTemplate.newBuilder().setPolicy(instancePolicy).build())
               .build();
 
       Job job =
@@ -120,6 +131,7 @@ public class CreateWithTemplate {
               .setAllocationPolicy(allocationPolicy)
               .putLabels("env", "testing")
               .putLabels("type", "script")
+              .putLabels("mount", "bucket")
               // We use Cloud Logging as it's an out of the box available option.
               .setLogsPolicy(
                   LogsPolicy.newBuilder().setDestination(Destination.CLOUD_LOGGING).build())
@@ -143,4 +155,4 @@ public class CreateWithTemplate {
     }
   }
 }
-// [END batch_create_job_with_template]
+// [END batch_create_script_job_with_bucket]

@@ -38,12 +38,14 @@ import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
-
 public class Reads {
 
   // Write your code here.
   // [START_EXCLUDE]
   // [START bigtable_reads_row_hbase]
+  /**
+   * Example of reading an individual row key.
+   */
   public static void readRow() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -54,8 +56,7 @@ public class Reads {
 
   public static void readRow(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
 
@@ -72,6 +73,9 @@ public class Reads {
   // [END bigtable_reads_row_hbase]
 
   // [START bigtable_reads_row_partial_hbase]
+  /**
+   * Example of reading a subset of the columns for a single row.
+   */
   public static void readRowPartial() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -82,8 +86,7 @@ public class Reads {
 
   public static void readRowPartial(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
       byte[] rowkey = Bytes.toBytes("phone#4c410523#20190501");
@@ -101,6 +104,10 @@ public class Reads {
   // [END bigtable_reads_row_partial_hbase]
 
   // [START bigtable_reads_rows_hbase]
+
+  /**
+   * Example of reading multiple row keys.
+   */
   public static void readRows() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -111,8 +118,7 @@ public class Reads {
 
   public static void readRows(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
       List<Get> queryRowList = new ArrayList<Get>();
@@ -132,6 +138,10 @@ public class Reads {
   // [END bigtable_reads_rows_hbase]
 
   // [START bigtable_reads_row_range_hbase]
+
+  /**
+   * Example of reading a range of rows using a key range.
+   */
   public static void readRowRange() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -142,8 +152,7 @@ public class Reads {
 
   public static void readRowRange(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
 
@@ -166,6 +175,9 @@ public class Reads {
   // [END bigtable_reads_row_range_hbase]
 
   // [START bigtable_reads_row_ranges_hbase]
+  /**
+   * Example of reading multiple disjoint row ranges.
+   */
   public static void readRowRanges() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -176,8 +188,7 @@ public class Reads {
 
   public static void readRowRanges(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
       List<RowRange> ranges = new ArrayList<>();
@@ -210,6 +221,10 @@ public class Reads {
   // [END bigtable_reads_row_ranges_hbase]
 
   // [START bigtable_reads_prefix_hbase]
+
+  /**
+   * Example of reading a range of rows using a row prefix.
+   */
   public static void readPrefix() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -220,8 +235,7 @@ public class Reads {
 
   public static void readPrefix(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
       Scan prefixScan = new Scan().setRowPrefixFilter(Bytes.toBytes("phone"));
@@ -237,7 +251,45 @@ public class Reads {
   }
   // [END bigtable_reads_prefix_hbase]
 
+  // [START bigtable_reverse_scan_hbase]
+  /**
+   * Example of reading a range of rows in reverse order.
+   */
+  public static void readRowsReversed() {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "my-project-id";
+    String instanceId = "my-instance-id";
+    String tableId = "mobile-time-series";
+    readRowsReversed(projectId, instanceId, tableId);
+  }
+
+  public static void readRowsReversed(String projectId, String instanceId, String tableId) {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      Table table = connection.getTable(TableName.valueOf(tableId));
+      Scan revScan =
+          new Scan()
+              .setReversed(true)
+              .setLimit(2)
+              .withStartRow(Bytes.toBytes("phone#4c410523#20190505"));
+      ResultScanner rows = table.getScanner(revScan);
+
+      for (Result row : rows) {
+        printRow(row);
+      }
+    } catch (IOException e) {
+      System.out.println(
+          "Unable to initialize service client, as a network error occurred: \n" + e.toString());
+    }
+  }
+  // [END bigtable_reverse_scan_hbase]
+
   // [START bigtable_reads_filter_hbase]
+
+  /**
+   * Example of filtering row contents using filters.
+   */
   public static void readFilter() {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
@@ -248,8 +300,7 @@ public class Reads {
 
   public static void readFilter(String projectId, String instanceId, String tableId) {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       Table table = connection.getTable(TableName.valueOf(tableId));
 
