@@ -20,8 +20,16 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import com.google.cloud.contentwarehouse.v1.DocumentSchema;
+import com.google.cloud.contentwarehouse.v1.DocumentSchemaName;
 import com.google.cloud.contentwarehouse.v1.DocumentSchemaServiceClient;
 import com.google.cloud.contentwarehouse.v1.DocumentSchemaServiceSettings;
+import com.google.cloud.contentwarehouse.v1.PropertyDefinition;
+import com.google.cloud.contentwarehouse.v1.TextTypeOptions;
+import com.google.cloud.contentwarehouse.v1.UpdateDocumentSchemaRequest;
+import com.google.cloud.resourcemanager.v3.Project;
+import com.google.cloud.resourcemanager.v3.ProjectName;
+import com.google.cloud.resourcemanager.v3.ProjectsClient;
 
 public class UpdateDocumentSchema {
     public static void updateDocumentSchema() throws IOException, 
@@ -29,76 +37,64 @@ public class UpdateDocumentSchema {
         // TODO(developer): Replace these variables before running the sample.
         String projectId = "your-project-id";
         String location = "your-region"; // Format is "us" or "eu".
-        updateDocumentSchema(projectId, location);
-}
-    public static void updateDocumentSchema(String projectId, String location) throws IOException, 
-        InterruptedException, ExecutionException, TimeoutException { 
+        String documentSchemaId = "your-document-schema-id";
+        updateDocumentSchema(projectId, location, documentSchemaId);
+    }
 
-        String endpoint = String.format("%s-contentwarehouse.googleapis.com:443", location);
+    public static void updateDocumentSchema(String projectId, String location, String documentSchemaId) 
+      throws IOException, InterruptedException, ExecutionException, TimeoutException { 
+        String projectNumber = getProjectNumber(projectId);
+
+        String endpoint = "contentwarehouse.googleapis.com:443";
+        if (!"us".equals(location)) {
+            endpoint = String.format("%s-%s", location, endpoint);
+        }
+
         DocumentSchemaServiceSettings documentSchemaServiceSettings = 
              DocumentSchemaServiceSettings.newBuilder().setEndpoint(endpoint).build(); 
 
-        //Create the Schema Service Client 
-        DocumentSchemaServiceClient documentSchemaServiceClient = 
-            DocumentSchemaServiceClient.create(documentSchemaServiceSettings);
-        
-        //The full resource name of the location, e.g.: 
-        //projects/{project_number}/location/{location}/documentSchemas/{document_schema_id}
-        
-        
+        // Create the Schema Service Client 
+        try (DocumentSchemaServiceClient documentSchemaServiceClient = 
+            DocumentSchemaServiceClient.create(documentSchemaServiceSettings)){
+            
+            //The full resource name of the location, e.g.: 
+            //projects/{project_number}/location/{location}/documentSchemas/{document_schema_id}
+            DocumentSchemaName documentSchemaName = DocumentSchemaName.of(projectNumber, location, documentSchemaId);
+            
+            // Define the new Schema Property with updated values
+            PropertyDefinition propertyDefinition = PropertyDefinition.newBuilder()
+                .setName("stock_symbol")
+                .setDisplayName("Searchable text")
+                .setIsSearchable(true)
+                .setIsRepeatable(true)
+                .setIsRequired(false)
+                .setTextTypeOptions(TextTypeOptions.newBuilder().build()).build();
+
+            DocumentSchema updatedDocumentSchema = DocumentSchema.newBuilder()
+                            .setDisplayName("My Test Schema") 
+                            .addPropertyDefinitions(0, propertyDefinition).build();
+
+            // Create the Request to Update the Document Schema
+            UpdateDocumentSchemaRequest updateDocumentSchemaRequest = 
+                UpdateDocumentSchemaRequest.newBuilder()
+                .setName(documentSchemaName.toString())
+                .setDocumentSchema(updatedDocumentSchema).build();
+            
+            // Update Document Schema
+            updatedDocumentSchema = 
+                documentSchemaServiceClient.updateDocumentSchema(updateDocumentSchemaRequest);
+            
+            // Read the output of Updated Document Schema Name
+            System.out.println(updatedDocumentSchema.getName());
+        }
     }
 
+    private static String getProjectNumber(String projectId) throws IOException { 
+    try (ProjectsClient projectsClient = ProjectsClient.create()) { 
+      ProjectName projectName = ProjectName.of(projectId); 
+      Project project = projectsClient.getProject(projectName);
+      String projectNumber = project.getName(); // Format returned is projects/xxxxxx
+      return projectNumber.substring(projectNumber.lastIndexOf("/") + 1);
+    } 
+  }
 }
-
-/*
- * 
-from google.cloud import contentwarehouse
-
-# TODO(developer): Uncomment these variables before running the sample.
-# project_number = "YOUR_PROJECT_NUMBER"
-# location = "us" # Format is 'us' or 'eu'
-# document_schema_id = "YOUR_SCHEMA_ID"
-
-
-def update_document_schema(
-    project_number: str, location: str, document_schema_id: str
-) -> None:
-    # Create a Schema Service client
-    document_schema_client = contentwarehouse.DocumentSchemaServiceClient()
-
-    # The full resource name of the location, e.g.:
-    # projects/{project_number}/locations/{location}/documentSchemas/{document_schema_id}
-    document_schema_path = document_schema_client.document_schema_path(
-        project=project_number,
-        location=location,
-        document_schema=document_schema_id,
-    )
-
-    # Define Schema Property of Text Type with updated values
-    updated_property_definition = contentwarehouse.PropertyDefinition(
-        name="stock_symbol",  # Must be unique within a document schema (case insensitive)
-        display_name="Searchable text",
-        is_searchable=True,
-        is_repeatable=False,
-        is_required=True,
-        text_type_options=contentwarehouse.TextTypeOptions(),
-    )
-
-    # Define Update Document Schema Request
-    update_document_schema_request = contentwarehouse.UpdateDocumentSchemaRequest(
-        name=document_schema_path,
-        document_schema=contentwarehouse.DocumentSchema(
-            display_name="My Test Schema",
-            property_definitions=[updated_property_definition],
-        ),
-    )
-
-    # Update Document schema
-    updated_document_schema = document_schema_client.update_document_schema(
-        request=update_document_schema_request
-    )
-
-    # Read the output
-    print(f"Updated Document Schema: {updated_document_schema}")
-
- */
