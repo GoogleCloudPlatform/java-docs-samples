@@ -33,7 +33,7 @@ public class DeleteConnection {
     deleteConnection(projectId, location, connectionName);
   }
 
-  public static void deleteConnection(String projectId, String location, String connectionName)
+  static void deleteConnection(String projectId, String location, String connectionName)
       throws IOException {
     try (ConnectionServiceClient client = ConnectionServiceClient.create()) {
       ConnectionName name = ConnectionName.of(projectId, location, connectionName);

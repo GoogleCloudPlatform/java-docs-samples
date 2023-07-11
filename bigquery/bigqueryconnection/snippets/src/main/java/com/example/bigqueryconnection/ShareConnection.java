@@ -36,7 +36,7 @@ public class ShareConnection {
     shareConnection(projectId, location, connectionId);
   }
 
-  public static void shareConnection(String projectId, String location, String connectionId)
+  static void shareConnection(String projectId, String location, String connectionId)
       throws IOException {
     try (ConnectionServiceClient client = ConnectionServiceClient.create()) {
       ResourceName resource = ConnectionName.of(projectId, location, connectionId);

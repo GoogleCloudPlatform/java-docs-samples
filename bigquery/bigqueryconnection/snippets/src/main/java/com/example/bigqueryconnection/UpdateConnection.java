@@ -38,7 +38,7 @@ public class UpdateConnection {
     updateConnection(projectId, location, connectionId, connection);
   }
 
-  public static void updateConnection(
+  static void updateConnection(
       String projectId, String location, String connectionId, Connection connection)
       throws IOException {
     try (ConnectionServiceClient client = ConnectionServiceClient.create()) {

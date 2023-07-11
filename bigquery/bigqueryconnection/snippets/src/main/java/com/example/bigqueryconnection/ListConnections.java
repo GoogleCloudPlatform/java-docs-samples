@@ -32,7 +32,7 @@ public class ListConnections {
     listConnections(projectId, location);
   }
 
-  public static void listConnections(String projectId, String location) throws IOException {
+  static void listConnections(String projectId, String location) throws IOException {
     try (ConnectionServiceClient client = ConnectionServiceClient.create()) {
       LocationName parent = LocationName.of(projectId, location);
       int pageSize = 10;

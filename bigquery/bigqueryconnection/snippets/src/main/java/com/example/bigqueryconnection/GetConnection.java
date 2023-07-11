@@ -34,7 +34,7 @@ public class GetConnection {
     getConnection(projectId, location, connectionId);
   }
 
-  public static void getConnection(String projectId, String location, String connectionId)
+  static void getConnection(String projectId, String location, String connectionId)
       throws IOException {
     try (ConnectionServiceClient client = ConnectionServiceClient.create()) {
       ConnectionName name = ConnectionName.of(projectId, location, connectionId);

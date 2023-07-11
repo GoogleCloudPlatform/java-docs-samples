@@ -42,7 +42,7 @@ public class CreateAwsConnection {
     createAwsConnection(projectId, location, connectionId, connection);
   }
 
-  public static void createAwsConnection(
+  static void createAwsConnection(
       String projectId, String location, String connectionId, Connection connection)
       throws IOException {
     try (ConnectionServiceClient client = ConnectionServiceClient.create()) {

@@ -52,7 +52,7 @@ public class CreateConnection {
     createConnection(projectId, location, connectionId, connection);
   }
 
-  public static void createConnection(
+  static void createConnection(
       String projectId, String location, String connectionId, Connection connection)
       throws IOException {
     try (ConnectionServiceClient client = ConnectionServiceClient.create()) {
