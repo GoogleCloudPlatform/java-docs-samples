@@ -58,18 +58,20 @@ public class ReidentifyFreeTextWithFpeUsingSurrogate {
     reIdentifyWithFpeSurrogate(projectId, textToReIdentify, base64EncodedKey);
   }
 
+  // Re-identifies sensitive data in a string that was encrypted by Format Preserving Encryption
+  // (FPE) with surrogate type.
   public static void reIdentifyWithFpeSurrogate(
       String projectId, String textToReIdentify, String unwrappedKey) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Specify what content you want the service to ReIdentify
+      // Specify what content you want the service to re-identify.
       ContentItem contentItem = ContentItem.newBuilder().setValue(textToReIdentify).build();
       CustomInfoType.SurrogateType surrogateType =
           CustomInfoType.SurrogateType.newBuilder().build();
 
-      // Specify the surrogate type used at time of de-identification
+      // Specify the surrogate type used at time of de-identification.
       InfoType surrogateInfoType = InfoType.newBuilder().setName("PHONE_TOKEN").build();
 
       CustomInfoType customInfoType =
@@ -80,14 +82,14 @@ public class ReidentifyFreeTextWithFpeUsingSurrogate {
       InspectConfig inspectConfig =
           InspectConfig.newBuilder().addCustomInfoTypes(customInfoType).build();
 
-      // Specify an unwrapped crypto key
+      // Specify an unwrapped crypto key.
       UnwrappedCryptoKey unwrappedCryptoKey =
           UnwrappedCryptoKey.newBuilder()
               .setKey(ByteString.copyFrom(BaseEncoding.base64().decode(unwrappedKey)))
               .build();
       CryptoKey cryptoKey = CryptoKey.newBuilder().setUnwrapped(unwrappedCryptoKey).build();
 
-      // Specify how to un-encrypt the previously de-identified information
+      // Specify how to decrypt the previously de-identified information.
       CryptoReplaceFfxFpeConfig cryptoReplaceFfxFpeConfig =
           CryptoReplaceFfxFpeConfig.newBuilder()
               .setCryptoKey(cryptoKey)
@@ -121,10 +123,10 @@ public class ReidentifyFreeTextWithFpeUsingSurrogate {
               .setInspectConfig(inspectConfig)
               .setReidentifyConfig(reidentifyConfig)
               .build();
-      // Send the request and receive response from the service
+      // Send the request and receive response from the service.
       ReidentifyContentResponse response = dlp.reidentifyContent(request);
 
-      // Print the results
+      // Print the results.
       System.out.println("Text after re-identification: " + response.getItem().getValue());
     }
   }

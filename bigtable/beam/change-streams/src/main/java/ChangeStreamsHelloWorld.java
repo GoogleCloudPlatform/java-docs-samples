@@ -40,6 +40,7 @@ import org.joda.time.Instant;
 public class ChangeStreamsHelloWorld {
 
   public static void main(String[] args) {
+    // [START bigtable_cdc_hw_pipeline]
     BigtableOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableOptions.class);
     Pipeline p = Pipeline.create(options);
@@ -68,8 +69,10 @@ public class ChangeStreamsHelloWorld {
                   }
                 }));
     p.run();
+    // [END bigtable_cdc_hw_pipeline]
   }
 
+  // [START bigtable_cdc_hw_tostring_mutation]
   static List<String> mutationEntriesToString(KV<ByteString, ChangeStreamMutation> mutationPair) {
     List<String> mutations = new ArrayList<>();
     String rowKey = mutationPair.getKey().toStringUtf8();
@@ -89,7 +92,9 @@ public class ChangeStreamsHelloWorld {
     }
     return mutations;
   }
+  // [END bigtable_cdc_hw_tostring_mutation]
 
+  // [START bigtable_cdc_hw_tostring_setcell]
   private static String setCellToString(String rowKey, MutationType mutationType, SetCell setCell) {
     List<String> mutationParts =
         Arrays.asList(
@@ -101,7 +106,9 @@ public class ChangeStreamsHelloWorld {
             setCell.getValue().toStringUtf8());
     return String.join(",", mutationParts);
   }
+  // [END bigtable_cdc_hw_tostring_setcell]
 
+  // [START bigtable_cdc_hw_tostring_deletecell]
   private static String deleteCellsToString(
       String rowKey, MutationType mutationType, DeleteCells deleteCells) {
     String timestampRange =
@@ -116,6 +123,9 @@ public class ChangeStreamsHelloWorld {
             timestampRange);
     return String.join(",", mutationParts);
   }
+  // [END bigtable_cdc_hw_tostring_deletecell]
+
+  // [START bigtable_cdc_hw_tostring_deletefamily]
 
   private static String deleteFamilyToString(
       String rowKey, MutationType mutationType, DeleteFamily deleteFamily) {
@@ -123,6 +133,7 @@ public class ChangeStreamsHelloWorld {
         Arrays.asList(rowKey, mutationType.name(), "DeleteFamily", deleteFamily.getFamilyName());
     return String.join(",", mutationParts);
   }
+  // [END bigtable_cdc_hw_tostring_deletefamily]
 
   public interface BigtableOptions extends DataflowPipelineOptions {
 

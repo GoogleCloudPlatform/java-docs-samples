@@ -44,7 +44,7 @@ public class SignedUrls {
    * @param expirationTime the date that the signed URL expires
    * @return a properly formatted signed URL
    * @throws InvalidKeyException when there is an error generating the signature for the input key
-   * @throws NoSuchAlgorithmException when HmacSHA1 algorithm is not available in the environment
+   * @throws NoSuchAlgorithmException when HmacSHA256 algorithm is not available in the environment
    */
   public static String signUrl(String url,
                                byte[] key,

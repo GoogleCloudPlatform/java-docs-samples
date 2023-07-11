@@ -38,7 +38,7 @@ if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
     exit 0
 fi
 
-if [[ ",$JAVA_VERSION," =~ "17" && ( "$file" == *"run/hello-broken"* || "$file" == *"run/filesystem"* || "$file" == *"flexible/java-11/pubsub"* || "$file" == *"flexible/java-11/cloudstorage"*|| "$file" == *"flexible/java-11/datastore"*) ]]; then
+if [[ ",$JAVA_VERSION," =~ "17" && ( "$file" == *"run/hello-broken"* || "$file" == *"flexible/java-11/pubsub"* || "$file" == *"flexible/java-11/cloudstorage"*|| "$file" == *"flexible/java-11/datastore"*) ]]; then
     echo -e "\n Skipping tests: Sample ($file) tests do not work with Java 17\n"
     exit 0
 fi
@@ -82,8 +82,8 @@ else
 fi
 
 # Build and deploy Cloud Run samples
-if [[ "$file" == "run/"* ]]; then
-    export SAMPLE_NAME=${file#"run/"}
+if [[ "$file" == *"run/"* && ("$file" != *"run/filesystem"* && "$file" != *"run/jobs"*) ]]; then
+    export SAMPLE_NAME=${file#*run/}
     # chmod 755 "$SCRIPT_DIR"/build_cloud_run.sh
     "$SCRIPT_DIR"/build_cloud_run.sh
     EXIT=$?

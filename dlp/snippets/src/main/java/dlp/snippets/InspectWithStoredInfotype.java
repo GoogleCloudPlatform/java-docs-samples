@@ -42,21 +42,21 @@ public class InspectWithStoredInfotype {
     // https://cloud.google.com/dlp/docs/creating-stored-infotypes#create-storedinfotye 
     String storedInfoTypeId = "your-info-type-id";
     // The string to de-identify.
-    String textToDeidentify =
+    String textToInspect =
         "My phone number is (223) 456-7890 and my email address is gary@example.com.";
-    inspectWithStoredInfotype(projectId, storedInfoTypeId, textToDeidentify);
+    inspectWithStoredInfotype(projectId, storedInfoTypeId, textToInspect);
   }
 
   //  Inspects the given text using the specified stored infoType detector.
   public static void inspectWithStoredInfotype(
-      String projectId, String storedInfoTypeId, String textToDeidentify) throws IOException {
+      String projectId, String storedInfoTypeId, String textToInspect) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
 
       // Specify the content to be inspected.
-      ContentItem contentItem = ContentItem.newBuilder().setValue(textToDeidentify).build();
+      ContentItem contentItem = ContentItem.newBuilder().setValue(textToInspect).build();
 
       InfoType infoType = InfoType.newBuilder().setName("STORED_TYPE").build();
 

@@ -43,8 +43,7 @@ public class ApplicationTests {
 
   private static final String project = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String suffix = UUID.randomUUID().toString();
-  private static final String mntDir =
-      System.getenv().getOrDefault("MNT_DIR", "/mnt/nfs/filestore");
+  private static final String mntDir = "/mnt/nfs/filestore";
   private static final String connector =
       System.getenv().getOrDefault("CONNECTOR", "my-run-connector");
   private static final String ipAddress = System.getenv("FILESTORE_IP_ADDRESS");
@@ -66,7 +65,6 @@ public class ApplicationTests {
     ProcessBuilder deploy = new ProcessBuilder();
     deploy.command(
         "gcloud",
-        "alpha",
         "run",
         "deploy",
         service,
@@ -121,8 +119,8 @@ public class ApplicationTests {
 
   @AfterClass
   public static void cleanup() throws IOException, InterruptedException {
-    ProcessBuilder delete = new ProcessBuilder();
-    delete.command(
+    ProcessBuilder deleteService = new ProcessBuilder();
+    deleteService.command(
         "gcloud",
         "run",
         "services",
@@ -133,8 +131,24 @@ public class ApplicationTests {
         "--project=" + project);
 
     System.out.println("Deleting Cloud Run service: " + service);
-    Process p = delete.start();
-    p.waitFor(5, TimeUnit.MINUTES);
+    Process p1 = deleteService.start();
+
+    ProcessBuilder deleteContainer = new ProcessBuilder();
+    String image = "us-central1-docker.pkg.dev/" + project + "/cloud-run-source-deploy/" + service;
+    deleteContainer.command(
+        "gcloud",
+        "artifacts",
+        "docker",
+        "images",
+        "delete",
+        image,
+        "--quiet",
+        "--project=" + project);
+
+    System.out.println("Deleting image: " + image);
+    Process p2 = deleteContainer.start();
+    p1.waitFor(5, TimeUnit.MINUTES);
+    p2.waitFor(5, TimeUnit.MINUTES);
   }
 
   public Response authenticatedRequest(String url) throws IOException {

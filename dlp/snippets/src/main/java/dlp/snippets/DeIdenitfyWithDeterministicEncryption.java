@@ -58,13 +58,15 @@ public class DeIdenitfyWithDeterministicEncryption {
     deIdentifyWithDeterministicEncryption(projectId, textToDeIdentify, wrappedKey, kmsKeyName);
   }
 
+  // De-identifies sensitive data in a string using deterministic encryption. The encryption is
+  // performed with a wrapped key.
   public static String deIdentifyWithDeterministicEncryption(
       String projectId, String textToDeIdentify, String wrappedKey, String key) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (DlpServiceClient dlp = DlpServiceClient.create()) {
-      // Specify what content you want the service to DeIdentify.
+      // Specify what content you want the service to de-identify.
       ContentItem contentItem = ContentItem.newBuilder()
               .setValue(textToDeIdentify)
               .build();
