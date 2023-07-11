@@ -16,16 +16,14 @@
 
 package contentwarehouse.v1;
 
-import static org.junit.Assert.assertNotNull;
 import static com.google.common.truth.Truth.assertThat;
-
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

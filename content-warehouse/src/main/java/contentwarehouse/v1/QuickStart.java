@@ -55,10 +55,7 @@ public class QuickStart {
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String projectNumber = getProjectNumber(projectId);
 
-    String endpoint = "contentwarehouse.googleapis.com:443";
-    if (!"us".equals(location)) {
-      endpoint = String.format("%s-%s", location, endpoint);
-    }
+    String endpoint = String.format("%s-contentwarehouse.googleapis.com:443", location);
     DocumentSchemaServiceSettings documentSchemaServiceSettings = 
          DocumentSchemaServiceSettings.newBuilder().setEndpoint(endpoint).build(); 
   

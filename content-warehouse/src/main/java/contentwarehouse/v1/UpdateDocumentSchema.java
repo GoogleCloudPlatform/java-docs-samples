@@ -16,9 +16,7 @@
 
 package contentwarehouse.v1;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
+// [START contentwarehouse_update_document_schema]
 
 import com.google.cloud.contentwarehouse.v1.DocumentSchema;
 import com.google.cloud.contentwarehouse.v1.DocumentSchemaName;
@@ -30,66 +28,71 @@ import com.google.cloud.contentwarehouse.v1.UpdateDocumentSchemaRequest;
 import com.google.cloud.resourcemanager.v3.Project;
 import com.google.cloud.resourcemanager.v3.ProjectName;
 import com.google.cloud.resourcemanager.v3.ProjectsClient;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class UpdateDocumentSchema {
-    public static void updateDocumentSchema() throws IOException, 
+  public static void updateDocumentSchema() throws IOException, 
         InterruptedException, ExecutionException, TimeoutException { 
-        // TODO(developer): Replace these variables before running the sample.
-        String projectId = "your-project-id";
-        String location = "your-region"; // Format is "us" or "eu".
-        String documentSchemaId = "your-document-schema-id";
-        updateDocumentSchema(projectId, location, documentSchemaId);
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String location = "your-region"; // Format is "us" or "eu".
+    String documentSchemaId = "your-document-schema-id";
+    updateDocumentSchema(projectId, location, documentSchemaId);
+  }
+
+  public static void updateDocumentSchema(String projectId, String location, 
+        String documentSchemaId) throws IOException, InterruptedException,
+          ExecutionException, TimeoutException { 
+    String projectNumber = getProjectNumber(projectId);
+
+    String endpoint = "contentwarehouse.googleapis.com:443";
+    if (!"us".equals(location)) {
+      endpoint = String.format("%s-%s", location, endpoint);
     }
 
-    public static void updateDocumentSchema(String projectId, String location, String documentSchemaId) 
-      throws IOException, InterruptedException, ExecutionException, TimeoutException { 
-        String projectNumber = getProjectNumber(projectId);
-
-        String endpoint = "contentwarehouse.googleapis.com:443";
-        if (!"us".equals(location)) {
-            endpoint = String.format("%s-%s", location, endpoint);
-        }
-
-        DocumentSchemaServiceSettings documentSchemaServiceSettings = 
+    DocumentSchemaServiceSettings documentSchemaServiceSettings = 
              DocumentSchemaServiceSettings.newBuilder().setEndpoint(endpoint).build(); 
 
-        // Create the Schema Service Client 
-        try (DocumentSchemaServiceClient documentSchemaServiceClient = 
-            DocumentSchemaServiceClient.create(documentSchemaServiceSettings)){
+    // Create the Schema Service Client 
+    try (DocumentSchemaServiceClient documentSchemaServiceClient = 
+            DocumentSchemaServiceClient.create(documentSchemaServiceSettings)) {
             
-            //The full resource name of the location, e.g.: 
-            //projects/{project_number}/location/{location}/documentSchemas/{document_schema_id}
-            DocumentSchemaName documentSchemaName = DocumentSchemaName.of(projectNumber, location, documentSchemaId);
+      //The full resource name of the location, e.g.: 
+      //projects/{project_number}/location/{location}/documentSchemas/{document_schema_id}
+      DocumentSchemaName documentSchemaName = 
+          DocumentSchemaName.of(projectNumber, location, documentSchemaId);
             
-            // Define the new Schema Property with updated values
-            PropertyDefinition propertyDefinition = PropertyDefinition.newBuilder()
-                .setName("stock_symbol")
-                .setDisplayName("Searchable text")
-                .setIsSearchable(true)
-                .setIsRepeatable(true)
-                .setIsRequired(false)
-                .setTextTypeOptions(TextTypeOptions.newBuilder().build()).build();
+      // Define the new Schema Property with updated values
+      PropertyDefinition propertyDefinition = PropertyDefinition.newBuilder()
+          .setName("stock_symbol")
+          .setDisplayName("Searchable text")
+          .setIsSearchable(true)
+          .setIsRepeatable(true)
+          .setIsRequired(false)
+          .setTextTypeOptions(TextTypeOptions.newBuilder().build()).build();
 
-            DocumentSchema updatedDocumentSchema = DocumentSchema.newBuilder()
-                            .setDisplayName("My Test Schema") 
-                            .addPropertyDefinitions(0, propertyDefinition).build();
+      DocumentSchema updatedDocumentSchema = DocumentSchema.newBuilder()
+                    .setDisplayName("My Test Schema") 
+                    .addPropertyDefinitions(0, propertyDefinition).build();
 
-            // Create the Request to Update the Document Schema
-            UpdateDocumentSchemaRequest updateDocumentSchemaRequest = 
-                UpdateDocumentSchemaRequest.newBuilder()
-                .setName(documentSchemaName.toString())
-                .setDocumentSchema(updatedDocumentSchema).build();
+      // Create the Request to Update the Document Schema
+      UpdateDocumentSchemaRequest updateDocumentSchemaRequest = 
+            UpdateDocumentSchemaRequest.newBuilder()
+            .setName(documentSchemaName.toString())
+            .setDocumentSchema(updatedDocumentSchema).build();
             
-            // Update Document Schema
-            updatedDocumentSchema = 
-                documentSchemaServiceClient.updateDocumentSchema(updateDocumentSchemaRequest);
+      // Update Document Schema
+      updatedDocumentSchema = 
+        documentSchemaServiceClient.updateDocumentSchema(updateDocumentSchemaRequest);
             
-            // Read the output of Updated Document Schema Name
-            System.out.println(updatedDocumentSchema.getName());
-        }
+      // Read the output of Updated Document Schema Name
+      System.out.println(updatedDocumentSchema.getName());
     }
+  }
 
-    private static String getProjectNumber(String projectId) throws IOException { 
+  private static String getProjectNumber(String projectId) throws IOException { 
     try (ProjectsClient projectsClient = ProjectsClient.create()) { 
       ProjectName projectName = ProjectName.of(projectId); 
       Project project = projectsClient.getProject(projectName);
@@ -98,3 +101,4 @@ public class UpdateDocumentSchema {
     } 
   }
 }
+// [END contentwarehouse_update_document_schema]
