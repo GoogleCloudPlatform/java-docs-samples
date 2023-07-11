@@ -36,7 +36,7 @@ public class RemoveMember {
         binding = b;
       }
     }
-    if (binding.getMembers().contains(member)) {
+    if (binding != null && binding.getMembers().contains(member)) {
       binding.getMembers().remove(member);
       System.out.println("Member " + member + " removed from " + role);
       if (binding.getMembers().isEmpty()) {

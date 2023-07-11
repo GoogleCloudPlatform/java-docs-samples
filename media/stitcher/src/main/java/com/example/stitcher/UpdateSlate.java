@@ -24,8 +24,13 @@ import com.google.cloud.video.stitcher.v1.UpdateSlateRequest;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class UpdateSlate {
+
+  private static final int TIMEOUT_IN_MINUTES = 2;
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
@@ -40,7 +45,7 @@ public class UpdateSlate {
 
   // updateSlate updates the slate URI for an existing slate.
   public static void updateSlate(String projectId, String location, String slateId, String slateUri)
-      throws IOException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -58,7 +63,8 @@ public class UpdateSlate {
               .setUpdateMask(FieldMask.newBuilder().addPaths("uri").build())
               .build();
 
-      Slate response = videoStitcherServiceClient.updateSlate(updateSlateRequest);
+      Slate response = videoStitcherServiceClient.updateSlateAsync(updateSlateRequest)
+          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
       System.out.println("Updated slate: " + response.getName());
     }
   }

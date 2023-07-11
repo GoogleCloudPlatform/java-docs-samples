@@ -20,15 +20,15 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,11 +37,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CreateSlateTest {
 
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-  private static final String LOCATION = "us-central1";
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private static final String SLATE_ID = TestUtils.getSlateId();
-  private static final String SLATE_URI =
-      "https://storage.googleapis.com/cloud-samples-data/media/ForBiggerEscapes.mp4";
   private static String PROJECT_ID;
   private static String SLATE_NAME;
   private static PrintStream originalOut;
@@ -62,32 +60,28 @@ public class CreateSlateTest {
 
   @Before
   public void beforeTest() throws IOException {
-    TestUtils.cleanStaleSlates(PROJECT_ID, LOCATION);
+    TestUtils.cleanStaleSlates(PROJECT_ID, TestUtils.LOCATION);
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
     // Project number is always returned in the slate name
-    SLATE_NAME = String.format("/locations/%s/slates/%s", LOCATION, SLATE_ID);
-    try {
-      DeleteSlate.deleteSlate(PROJECT_ID, LOCATION, SLATE_ID);
-    } catch (NotFoundException e) {
-      // Don't worry if the slate doesn't already exist.
-    }
+    SLATE_NAME = String.format("/locations/%s/slates/%s", TestUtils.LOCATION, SLATE_ID);
     bout.reset();
   }
 
   @Test
-  @Ignore
-  public void test_CreateSlate() throws IOException {
-    CreateSlate.createSlate(PROJECT_ID, LOCATION, SLATE_ID, SLATE_URI);
+  public void test_CreateSlate()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    CreateSlate.createSlate(PROJECT_ID, TestUtils.LOCATION, SLATE_ID, TestUtils.SLATE_URI);
     String output = bout.toString();
     assertThat(output, containsString(SLATE_NAME));
     bout.reset();
   }
 
   @After
-  public void tearDown() throws IOException {
-    DeleteSlate.deleteSlate(PROJECT_ID, LOCATION, SLATE_ID);
+  public void tearDown()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    DeleteSlate.deleteSlate(PROJECT_ID, TestUtils.LOCATION, SLATE_ID);
     System.setOut(originalOut);
     bout.reset();
   }

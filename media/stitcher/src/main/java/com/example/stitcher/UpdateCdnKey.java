@@ -27,8 +27,13 @@ import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class UpdateCdnKey {
+
+  private static final int TIMEOUT_IN_MINUTES = 2;
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
@@ -55,7 +60,7 @@ public class UpdateCdnKey {
       String keyName,
       String privateKey,
       Boolean isMediaCdn)
-      throws IOException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -97,7 +102,8 @@ public class UpdateCdnKey {
               .setUpdateMask(FieldMask.newBuilder().addPaths("hostname").addPaths(path).build())
               .build();
 
-      CdnKey response = videoStitcherServiceClient.updateCdnKey(updateCdnKeyRequest);
+      CdnKey response = videoStitcherServiceClient.updateCdnKeyAsync(updateCdnKeyRequest)
+          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
       System.out.println("Updated CDN key: " + response.getName());
     }
   }

@@ -16,10 +16,11 @@
 
 package com.example.stitcher;
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.video.stitcher.v1.CdnKey;
 import com.google.cloud.video.stitcher.v1.ListCdnKeysRequest;
+import com.google.cloud.video.stitcher.v1.ListLiveConfigsRequest;
 import com.google.cloud.video.stitcher.v1.ListSlatesRequest;
+import com.google.cloud.video.stitcher.v1.LiveConfig;
 import com.google.cloud.video.stitcher.v1.LocationName;
 import com.google.cloud.video.stitcher.v1.Slate;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
@@ -30,13 +31,40 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Instant;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TestUtils {
 
+  public static final String LOCATION = "us-central1";
   public static final String SLATE_ID_PREFIX = "slate-";
   public static final String CDN_KEY_ID_PREFIX = "cdn-key-";
+  public static final String LIVE_CONFIG_ID_PREFIX = "live-config-";
+
+  public static final String HOSTNAME = "cdn.example.com";
+  public static final String UPDATED_HOSTNAME = "updated.example.com";
+  public static final String KEYNAME = "my-key"; // field in the CDN key
+  public static final String CLOUD_CDN_PRIVATE_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
+  public static final String MEDIA_CDN_PRIVATE_KEY =
+      "MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxzg5MDEyMzQ1Njc4OTAxMjM0NTY3DkwMTIzNA";
+  public static final String AKAMAI_TOKEN_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
+
+  public static final String SLATE_URI =
+      "https://storage.googleapis.com/cloud-samples-data/media/ForBiggerEscapes.mp4";
+  public static final String LIVE_URI =
+      "https://storage.googleapis.com/cloud-samples-data/media/hls-live/manifest.m3u8";
+  // Single Inline Linear
+  // (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
+  public static final String LIVE_AD_TAG_URI =
+      "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=";
+  public static final String VOD_URI =
+      "https://storage.googleapis.com/cloud-samples-data/media/hls-vod/manifest.m3u8";
+  // VMAP Pre-roll
+  // (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
+  public static final String VOD_AD_TAG_URI =
+      "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpreonly&ciu_szs=300x250%2C728x90&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&correlator=";
+
   private static final int DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS = 10800; // 3 hours
 
   // Clean up old test slates.
@@ -58,12 +86,12 @@ public class TestUtils {
           long createEpochSec = Long.parseLong(createTime);
           if (createEpochSec
               < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
-            videoStitcherServiceClient.deleteSlate(slate.getName());
+            videoStitcherServiceClient.deleteSlateAsync(slate.getName()).get(2, TimeUnit.MINUTES);
           }
         }
       }
-    } catch (IOException | NotFoundException e) {
-      e.printStackTrace();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -86,12 +114,41 @@ public class TestUtils {
           long createEpochSec = Long.parseLong(createTime);
           if (createEpochSec
               < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
-            videoStitcherServiceClient.deleteCdnKey(cdnKey.getName());
+            videoStitcherServiceClient.deleteCdnKeyAsync(cdnKey.getName()).get(2, TimeUnit.MINUTES);
           }
         }
       }
-    } catch (IOException | NotFoundException e) {
-      e.printStackTrace();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  // Clean up old test live configs.
+  public static void cleanStaleLiveConfigs(String projectId, String location) throws IOException {
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
+      ListLiveConfigsRequest listLiveConfigsRequest =
+          ListLiveConfigsRequest.newBuilder()
+              .setParent(LocationName.of(projectId, location).toString())
+              .build();
+
+      VideoStitcherServiceClient.ListLiveConfigsPagedResponse response =
+          videoStitcherServiceClient.listLiveConfigs(listLiveConfigsRequest);
+
+      for (LiveConfig liveConfig : response.iterateAll()) {
+        Matcher matcher = Pattern.compile(LIVE_CONFIG_ID_PREFIX).matcher(liveConfig.getName());
+        if (matcher.find()) {
+          String createTime = liveConfig.getName().substring(matcher.end()).trim();
+          long createEpochSec = Long.parseLong(createTime);
+          if (createEpochSec
+              < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
+            videoStitcherServiceClient.deleteLiveConfigAsync(liveConfig.getName())
+                .get(2, TimeUnit.MINUTES);
+          }
+        }
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -149,6 +206,16 @@ public class TestUtils {
         "test-%s-%s%s",
         UUID.randomUUID().toString().substring(0, 15),
         CDN_KEY_ID_PREFIX,
+        Instant.now().getEpochSecond());
+  }
+
+  // Get a live config ID that includes a creation timestamp. Add some randomness in case tests are
+  // run in parallel.
+  public static String getLiveConfigId() {
+    return String.format(
+        "test-%s-%s%s",
+        UUID.randomUUID().toString().substring(0, 15),
+        LIVE_CONFIG_ID_PREFIX,
         Instant.now().getEpochSecond());
   }
 }

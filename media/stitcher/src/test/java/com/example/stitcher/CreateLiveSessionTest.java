@@ -20,15 +20,15 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,17 +37,10 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CreateLiveSessionTest {
 
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-  private static final String LOCATION = "us-central1";
-  private static final String LIVE_URI =
-      "https://storage.googleapis.com/cloud-samples-data/media/hls-live/manifest.m3u8";
-  // Single Inline Linear
-  // (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
-  private static final String LIVE_AD_TAG_URI =
-      "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=";
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private static final String SLATE_ID = TestUtils.getSlateId();
-  private static final String SLATE_URI =
-      "https://storage.googleapis.com/cloud-samples-data/media/ForBiggerEscapes.mp4";
+  private static final String LIVE_CONFIG_ID = TestUtils.getLiveConfigId();
   private static String PROJECT_ID;
   private static String SESSION_NAME;
   private static PrintStream originalOut;
@@ -67,35 +60,35 @@ public class CreateLiveSessionTest {
   }
 
   @Before
-  public void beforeTest() throws IOException {
-    TestUtils.cleanStaleSlates(PROJECT_ID, LOCATION);
+  public void beforeTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    TestUtils.cleanStaleSlates(PROJECT_ID, TestUtils.LOCATION);
+    TestUtils.cleanStaleLiveConfigs(PROJECT_ID, TestUtils.LOCATION);
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
-    // Project number is always returned in the live session name
-    SESSION_NAME = String.format("locations/%s/liveSessions/", LOCATION);
 
-    try {
-      DeleteSlate.deleteSlate(PROJECT_ID, LOCATION, SLATE_ID);
-    } catch (NotFoundException e) {
-      // Don't worry if the slate doesn't already exist.
-    }
-    CreateSlate.createSlate(PROJECT_ID, LOCATION, SLATE_ID, SLATE_URI);
+    // Project number is always returned in the live session name
+    SESSION_NAME = String.format("locations/%s/liveSessions/", TestUtils.LOCATION);
+    CreateSlate.createSlate(PROJECT_ID, TestUtils.LOCATION, SLATE_ID, TestUtils.SLATE_URI);
+    CreateLiveConfig.createLiveConfig(PROJECT_ID, TestUtils.LOCATION, LIVE_CONFIG_ID,
+        TestUtils.LIVE_URI, TestUtils.LIVE_AD_TAG_URI, SLATE_ID);
     bout.reset();
   }
 
   @Test
-  @Ignore
   public void test_CreateLiveSession() throws IOException {
-    CreateLiveSession.createLiveSession(PROJECT_ID, LOCATION, LIVE_URI, LIVE_AD_TAG_URI, SLATE_ID);
+    CreateLiveSession.createLiveSession(PROJECT_ID, TestUtils.LOCATION, LIVE_CONFIG_ID);
     String output = bout.toString();
     assertThat(output, containsString(SESSION_NAME));
     bout.reset();
   }
 
   @After
-  public void tearDown() throws IOException {
-    DeleteSlate.deleteSlate(PROJECT_ID, LOCATION, SLATE_ID);
+  public void tearDown()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    DeleteSlate.deleteSlate(PROJECT_ID, TestUtils.LOCATION, SLATE_ID);
+    DeleteLiveConfig.deleteLiveConfig(PROJECT_ID, TestUtils.LOCATION, LIVE_CONFIG_ID);
     // No delete method for a live session
     System.setOut(originalOut);
     bout.reset();

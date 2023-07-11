@@ -18,8 +18,8 @@ package com.example.stitcher;
 
 // [START videostitcher_create_live_session]
 
-import com.google.cloud.video.stitcher.v1.AdTag;
 import com.google.cloud.video.stitcher.v1.CreateLiveSessionRequest;
+import com.google.cloud.video.stitcher.v1.LiveConfigName;
 import com.google.cloud.video.stitcher.v1.LiveSession;
 import com.google.cloud.video.stitcher.v1.LocationName;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
@@ -31,19 +31,13 @@ public class CreateLiveSession {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
-    // Uri of the live stream to stitch; this URI must reference either an MPEG-DASH
-    // manifest (.mpd) file or an M3U playlist manifest (.m3u8) file.
-    String sourceUri = "https://storage.googleapis.com/my-bucket/main.mpd";
-    // See Single Inline Linear
-    // (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
-    String adTagUri = "https://pubads.g.doubleclick.net/gampad/ads...";
-    String slateId = "my-slate-id";
+    String liveConfigId = "my-live-config-id";
 
-    createLiveSession(projectId, location, sourceUri, adTagUri, slateId);
+    createLiveSession(projectId, location, liveConfigId);
   }
 
   public static void createLiveSession(
-      String projectId, String location, String sourceUri, String adTagUri, String slateId)
+      String projectId, String location, String liveConfigId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -55,9 +49,7 @@ public class CreateLiveSession {
               .setParent(LocationName.of(projectId, location).toString())
               .setLiveSession(
                   LiveSession.newBuilder()
-                      .setSourceUri(sourceUri)
-                      .putAdTagMap("default", AdTag.newBuilder().setUri(adTagUri).build())
-                      .setDefaultSlateId(slateId))
+                      .setLiveConfig(LiveConfigName.format(projectId, location, liveConfigId)))
               .build();
 
       LiveSession response = videoStitcherServiceClient.createLiveSession(createLiveSessionRequest);

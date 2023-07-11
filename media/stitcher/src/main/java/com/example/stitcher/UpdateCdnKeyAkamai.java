@@ -26,8 +26,13 @@ import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class UpdateCdnKeyAkamai {
+
+  private static final int TIMEOUT_IN_MINUTES = 2;
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
@@ -40,10 +45,10 @@ public class UpdateCdnKeyAkamai {
     updateCdnKeyAkamai(projectId, location, cdnKeyId, hostname, akamaiTokenKey);
   }
 
-  // updateCdnKeyAkamai updates the hostname and key fields for an existing CDN key.
+  // updateCdnKeyAkamai u/**/pdates the hostname and key fields for an existing CDN key.
   public static void updateCdnKeyAkamai(
       String projectId, String location, String cdnKeyId, String hostname, String akamaiTokenKey)
-      throws IOException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -68,7 +73,8 @@ public class UpdateCdnKeyAkamai {
                   FieldMask.newBuilder().addPaths("hostname").addPaths("akamai_cdn_key").build())
               .build();
 
-      CdnKey response = videoStitcherServiceClient.updateCdnKey(updateCdnKeyRequest);
+      CdnKey response = videoStitcherServiceClient.updateCdnKeyAsync(updateCdnKeyRequest)
+          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
       System.out.println("Updated CDN key: " + response.getName());
     }
   }

@@ -20,15 +20,15 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,18 +37,10 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class UpdateCdnKeyTest {
 
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-  private static final String LOCATION = "us-central1";
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private static final String CLOUD_CDN_KEY_ID = TestUtils.getCdnKeyId();
   private static final String MEDIA_CDN_KEY_ID = TestUtils.getCdnKeyId();
-
-  private static final String HOSTNAME = "cdn.example.com";
-  private static final String UPDATED_HOSTNAME = "updated.example.com";
-  private static final String KEYNAME = "my-key"; // field in the key
-
-  private static final String CLOUD_CDN_PRIVATE_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
-  private static final String MEDIA_CDN_PRIVATE_KEY =
-      "MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxzg5MDEyMzQ1Njc4OTAxMjM0NTY3DkwMTIzNA";
   private static final String UPDATED_CLOUD_CDN_PRIVATE_KEY =
       "VGhpcyBpcyBhbiB1cGRhdGVkIHRlc3Qgc3RyaW5nLg==";
   private static final String UPDATED_MEDIA_CDN_PRIVATE_KEY =
@@ -74,45 +66,40 @@ public class UpdateCdnKeyTest {
   }
 
   @Before
-  public void beforeTest() throws IOException {
-    TestUtils.cleanStaleCdnKeys(PROJECT_ID, LOCATION);
+  public void beforeTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    TestUtils.cleanStaleCdnKeys(PROJECT_ID, TestUtils.LOCATION);
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
     // Cloud CDN key
-    CLOUD_CDN_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", LOCATION, CLOUD_CDN_KEY_ID);
-    try {
-      DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID);
-    } catch (NotFoundException e) {
-      // Don't worry if the key doesn't already exist.
-    }
+    CLOUD_CDN_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", TestUtils.LOCATION,
+        CLOUD_CDN_KEY_ID);
     CreateCdnKey.createCdnKey(
-        PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID, HOSTNAME, KEYNAME, CLOUD_CDN_PRIVATE_KEY, false);
+        PROJECT_ID, TestUtils.LOCATION, CLOUD_CDN_KEY_ID, TestUtils.HOSTNAME, TestUtils.KEYNAME,
+        TestUtils.CLOUD_CDN_PRIVATE_KEY, false);
 
     // Media CDN key
-    MEDIA_CDN_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", LOCATION, MEDIA_CDN_KEY_ID);
-    try {
-      DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID);
-    } catch (NotFoundException e) {
-      // Don't worry if the key doesn't already exist.
-    }
+    MEDIA_CDN_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", TestUtils.LOCATION,
+        MEDIA_CDN_KEY_ID);
     CreateCdnKey.createCdnKey(
-        PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID, HOSTNAME, KEYNAME, MEDIA_CDN_PRIVATE_KEY, true);
+        PROJECT_ID, TestUtils.LOCATION, MEDIA_CDN_KEY_ID, TestUtils.HOSTNAME, TestUtils.KEYNAME,
+        TestUtils.MEDIA_CDN_PRIVATE_KEY, true);
 
     bout.reset();
   }
 
   @Test
-  @Ignore
-  public void test_UpdateCdnKey() throws IOException {
+  public void test_UpdateCdnKey()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Cloud CDN key
     UpdateCdnKey.updateCdnKey(
         PROJECT_ID,
-        LOCATION,
+        TestUtils.LOCATION,
         CLOUD_CDN_KEY_ID,
-        UPDATED_HOSTNAME,
-        KEYNAME,
+        TestUtils.UPDATED_HOSTNAME,
+        TestUtils.KEYNAME,
         UPDATED_CLOUD_CDN_PRIVATE_KEY,
         false);
     String output = bout.toString();
@@ -122,10 +109,10 @@ public class UpdateCdnKeyTest {
     // Media CDN key
     UpdateCdnKey.updateCdnKey(
         PROJECT_ID,
-        LOCATION,
+        TestUtils.LOCATION,
         MEDIA_CDN_KEY_ID,
-        UPDATED_HOSTNAME,
-        KEYNAME,
+        TestUtils.UPDATED_HOSTNAME,
+        TestUtils.KEYNAME,
         UPDATED_MEDIA_CDN_PRIVATE_KEY,
         true);
     output = bout.toString();
@@ -134,11 +121,12 @@ public class UpdateCdnKeyTest {
   }
 
   @After
-  public void tearDown() throws IOException {
+  public void tearDown()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Cloud CDN key
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID);
+    DeleteCdnKey.deleteCdnKey(PROJECT_ID, TestUtils.LOCATION, CLOUD_CDN_KEY_ID);
     // Media CDN key
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID);
+    DeleteCdnKey.deleteCdnKey(PROJECT_ID, TestUtils.LOCATION, MEDIA_CDN_KEY_ID);
     System.setOut(originalOut);
     bout.reset();
   }
