@@ -18,6 +18,7 @@ package compute.custommachinetype;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import compute.custommachinetype.HelperClass.CpuSeries;
 import compute.custommachinetype.HelperClass.CustomMachineType;
@@ -38,7 +39,7 @@ import org.junit.jupiter.api.Test;
 public class HelperIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  private static final String ZONE = getZone();
 
   private ByteArrayOutputStream stdOut;
 

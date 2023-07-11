@@ -18,6 +18,7 @@ package compute;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
@@ -43,8 +44,8 @@ import org.junit.runners.JUnit4;
 public class InstanceTemplatesIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String DEFAULT_REGION = "us-central1";
-  private static final String DEFAULT_ZONE = DEFAULT_REGION + "-a";
+  private static final String DEFAULT_ZONE = getZone();
+  private static final String DEFAULT_REGION = DEFAULT_ZONE.substring(0, DEFAULT_ZONE.length() - 2);
   private static String TEMPLATE_NAME;
   private static String TEMPLATE_NAME_WITH_DISK;
   private static String TEMPLATE_NAME_FROM_INSTANCE;

@@ -16,6 +16,7 @@ package compute.windows.windowsinstances;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.RoutesClient;
 import compute.DeleteFirewallRule;
@@ -41,7 +42,7 @@ import org.junit.runners.JUnit4;
 public class CreatingManagingWindowsInstancesIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-b";
+  private static final String ZONE = getZone();
   private static String INSTANCE_NAME_EXTERNAL;
   private static String INSTANCE_NAME_INTERNAL;
   private static String FIREWALL_RULE_NAME;
@@ -75,7 +76,8 @@ public class CreatingManagingWindowsInstancesIT {
     INSTANCE_NAME_INTERNAL = "windows-test-instance-internal-" + uuid;
     FIREWALL_RULE_NAME = "windows-test-firewall-" + uuid;
     NETWORK_NAME = "global/networks/default";
-    SUBNETWORK_NAME = "regions/us-central1/subnetworks/default";
+    SUBNETWORK_NAME = String.format("regions/%s/subnetworks/default",
+        ZONE.substring(0, ZONE.length() - 2));
     ROUTE_NAME = "windows-test-route-" + uuid;
 
     stdOut.close();
