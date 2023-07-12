@@ -41,6 +41,34 @@ Bigtable.
 
 1. Make changes to your data via the clients or with the `cbt` CLI, and view the
    output of the stream in the Dataflow worker logs.
+### Clean up
+
+1. Stop your Dataflow job to avoid incurring any costs.
+
+   1. List the jobs to get the job id.
+
+      ```sh
+      gcloud dataflow jobs list --region=$REGION
+      ```
+
+   1. Cancel the job
+
+        ```sh
+        gcloud dataflow jobs cancel ${JOB_ID} --region=$REGION
+        ```
+
+1. Disable change stream on the table.
+
+   ```sh
+    gcloud alpha bigtable instances tables update $TABLE_ID --instance=$INSTANCE_ID \
+    --clear-change-stream-retention-period
+   ```
+
+1. Delete the table.
+
+    ```sh
+    cbt -instance=$INSTANCE_ID -project=$GOOGLE_CLOUD_PROJECT deletetable $TABLE_ID
+    ```
 
 ### Testing
 
@@ -120,6 +148,7 @@ Google Cloud Storage.
     2023-07-06T19:53:49.536Z [KV{Old MacDonald Had a Farm, 20}, KV{Take Me Out to the Ball Game, 18}, KV{Für Elise, 17}, KV{Ode to Joy , 15}, KV{Mary Had a Little Lamb, 12}]
     2023-07-06T19:53:50.425Z [KV{Twinkle, Twinkle, Little Star, 20}, KV{The Wheels on the Bus, 17}, KV{Row, Row, Row Your Boat, 13}, KV{Happy Birthday to You, 12}, KV{Over the Rainbow, 9}]
     ```
+### Clean up
 
 1. Stop your Dataflow job to avoid incurring any costs.
 
@@ -130,10 +159,24 @@ Google Cloud Storage.
        ```
 
     1. Cancel the job
-
+       
          ```sh
-         gcloud dataflow jobs cancel ${JOB_ID}
+         gcloud dataflow jobs cancel ${JOB_ID} --region=$REGION
          ```
+
+1. Disable change stream on the table.
+   
+   ```sh
+    gcloud alpha bigtable instances tables update song-rank --instance=$INSTANCE_ID \
+    --clear-change-stream-retention-period
+   ```
+
+1. Delete the table `song-rank`.
+
+    ```sh
+    cbt -instance=$INSTANCE_ID -project=$GOOGLE_CLOUD_PROJECT deletetable song-rank
+    ```
+
 
 ### Testing
 
