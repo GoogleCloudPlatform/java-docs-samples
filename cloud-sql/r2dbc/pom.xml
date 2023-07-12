@@ -50,7 +50,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>cloud-sql-connector-r2dbc-mysql</artifactId>
-      <version>1.12.0</version>
+      <version>1.13.0</version>
     </dependency>
     <!-- MySQL dependencies end -->
 
@@ -63,7 +63,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>cloud-sql-connector-r2dbc-postgres</artifactId>
-      <version>1.12.0</version>
+      <version>1.13.0</version>
     </dependency>
     <!-- Postgres dependencies end -->
   </dependencies>
