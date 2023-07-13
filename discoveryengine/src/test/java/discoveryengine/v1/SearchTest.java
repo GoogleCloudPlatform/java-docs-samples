@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package discoveryengine.v1beta;
+package discoveryengine.v1;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;

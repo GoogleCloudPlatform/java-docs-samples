@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package discoveryengine.v1beta;
+package discoveryengine.v1;
 
 // [START genappbuilder_search]
 
-import com.google.cloud.discoveryengine.v1beta.SearchRequest;
-import com.google.cloud.discoveryengine.v1beta.SearchResponse;
-import com.google.cloud.discoveryengine.v1beta.SearchServiceClient;
-import com.google.cloud.discoveryengine.v1beta.ServingConfigName;
+import com.google.cloud.discoveryengine.v1.SearchRequest;
+import com.google.cloud.discoveryengine.v1.SearchResponse;
+import com.google.cloud.discoveryengine.v1.SearchServiceClient;
+import com.google.cloud.discoveryengine.v1.ServingConfigName;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
