@@ -40,7 +40,7 @@ public class SignedUrlWithPrefixTest {
   @Test
   public void testUrlPathSignedWithPrefix() throws Exception {
     String result = signUrlWithPrefix(REQUEST_URL, URL_PREFIX, KEY_BYTES, KEY_NAME, EXPIRATION);
-    final String expected = "https://media.example.com/videos/id/main.m3u8?userID=abc123&starting_profile=1&URLPrefix=aHR0cHM6Ly9tZWRpYS5leGFtcGxlLmNvbS92aWRlb3Mv&Expires=1518135754&KeyName=my-key&Signature=FHY8GYuIs-7-ZUnmBFjGryFTxBHmnl90dIgC1jq_MSE=";
+    final String expected = "https://media.example.com/videos/id/main.m3u8?userID=abc123&starting_profile=1&URLPrefix=aHR0cHM6Ly9tZWRpYS5leGFtcGxlLmNvbS92aWRlb3Mv&Expires=1518135754&KeyName=my-key&Signature=SPov5sp5XKefUpuJaqUckinUO_4=";
     assertEquals(expected, result);
   }
 
