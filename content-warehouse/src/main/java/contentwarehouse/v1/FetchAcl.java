@@ -32,7 +32,10 @@ import java.io.IOException;
 
 public class FetchAcl {
   public static void main(String[] args) throws IOException {
-    // TODO(developer): Replace these variables before running the sample.
+    /* TODO(developer): Replace these variables before running the sample.
+    * Please see the following documentation to see how userId is used with FetchACL
+    * https://cloud.google.com/document-warehouse/docs/manage-access-control#getdocument-and-fetchacl
+    */
     String projectId = "your-project-id"; 
     String location = "your-location"; // Format is "us" or "eu".
     String userId = "your-user-id"; // Format is user:<user-id>
