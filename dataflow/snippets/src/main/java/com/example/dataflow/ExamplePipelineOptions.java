@@ -17,24 +17,24 @@
 package com.example.dataflow;
 
 import org.apache.beam.sdk.options.Description;
-import org.apache.beam.sdk.options.PipelineOptions;
+import org.apache.beam.sdk.options.StreamingOptions;
 
 /**
  * Extends PipelineOptions and adds custom pipeline options for this sample.
  */
-public interface BigQueryReadOptions extends PipelineOptions {
+public interface ExamplePipelineOptions extends StreamingOptions {
   @Description("Project ID for the BigQuery table")
   String getProjectId();
 
-  void setProjectId(String input);
+  void setProjectId(String value);
 
   @Description("Dataset for the BigQuery table")
   String getDatasetName();
 
-  void setDatasetName(String output);
+  void setDatasetName(String value);
 
   @Description("BigQuery table name")
   String getTableName();
 
-  void setTableName(String output);
+  void setTableName(String value);
 }
