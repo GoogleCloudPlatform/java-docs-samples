@@ -51,7 +51,7 @@ public class BigQueryWriteIT {
   private String datasetName;
   private String tableName;
 
-  private void CreateTable() {
+  private void createTable() {
     Schema schema = Schema.of(
         Field.of("user_name", StandardSQLTypeName.STRING),
         Field.of("age", StandardSQLTypeName.INT64));
@@ -76,14 +76,14 @@ public class BigQueryWriteIT {
 
   @After
   public void tearDown() {
-   bigquery.delete(
-     DatasetId.of(projectId, datasetName), DatasetDeleteOption.deleteContents());
-   System.setOut(null);
+    bigquery.delete(
+        DatasetId.of(projectId, datasetName), DatasetDeleteOption.deleteContents());
+    System.setOut(null);
   }
 
   @Test
   public void write() throws Exception {
-    CreateTable();
+    createTable();
     BigQueryWrite.main(
         new String[] {
             "--runner=DirectRunner",
@@ -119,7 +119,7 @@ public class BigQueryWriteIT {
 
   @Test
   public void streamExactlyOnce() throws Exception {
-    CreateTable();
+    createTable();
     PipelineResult r = BigQueryStreamExactlyOnce.main(
         new String[] {
             "--runner=DirectRunner",

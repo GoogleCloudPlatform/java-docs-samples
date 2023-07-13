@@ -36,9 +36,10 @@ public class BigQueryWrite {
   public static class MyData {
     public String name;
     public Long age;
+
     public MyData() {}
-    public MyData(String name, Long age)
-    {
+
+    public MyData(String name, Long age) {
       this.name = name;
       this.age = age;
     }
@@ -62,9 +63,9 @@ public class BigQueryWrite {
 
     // Create a pipeline and apply transforms.
     Pipeline pipeline = Pipeline.create(options);
-    pipeline.
+    pipeline
         // Create an in-memory PCollection of MyData objects.
-        apply(Create.of(data))
+        .apply(Create.of(data))
         // Write the data to an exiting BigQuery table.
         .apply(BigQueryIO.<MyData>write()
             .to(String.format("%s:%s.%s",
@@ -72,7 +73,7 @@ public class BigQueryWrite {
                 options.getDatasetName(),
                 options.getTableName()))
             .withFormatFunction(
-                (MyData x) -> new TableRow().set("user_name",x.name).set("age",x.age))
+                (MyData x) -> new TableRow().set("user_name", x.name).set("age", x.age))
             .withCreateDisposition(CreateDisposition.CREATE_NEVER)
             .withWriteDisposition(WriteDisposition.WRITE_APPEND)
             .withMethod(Write.Method.STORAGE_WRITE_API));

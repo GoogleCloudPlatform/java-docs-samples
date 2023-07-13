@@ -84,7 +84,7 @@ public class BigQueryStreamExactlyOnce {
             // frequency.
             .withNumStorageWriteApiStreams(1)
             .withTriggeringFrequency(Duration.standardSeconds(5)));
-     return pipeline.run();
+    return pipeline.run();
   }
 }
 // [END dataflow_bigquery_stream_exactly_once]
