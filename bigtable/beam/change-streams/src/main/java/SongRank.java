@@ -29,6 +29,7 @@ import org.apache.beam.sdk.io.gcp.bigtable.BigtableIO;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.Count;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
@@ -40,6 +41,7 @@ import org.apache.beam.sdk.transforms.windowing.GlobalWindows;
 import org.apache.beam.sdk.transforms.windowing.Repeatedly;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.KV;
+import org.apache.beam.vendor.guava.v26_0_jre.com.google.common.base.Preconditions;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
@@ -50,6 +52,9 @@ public class SongRank {
         PipelineOptionsFactory.fromArgs(args).withValidation().as(
             BigtableOptions.class);
     Pipeline p = Pipeline.create(options);
+
+    Preconditions.checkArgument(options.getOutputLocation().endsWith("/"),
+        "Output location must end with a slash.");
 
     // [START bigtable_cdc_tut_readchangestream]
     p.apply(
@@ -104,7 +109,7 @@ public class SongRank {
         );
     // [END bigtable_cdc_tut_output]
 
-    p.run().waitUntilFinish();
+    p.run();
   }
 
 
