@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,17 @@
 
 package com.example.stitcher;
 
-// [START videostitcher_create_slate]
+// [START videostitcher_delete_live_config]
 
-import com.google.cloud.video.stitcher.v1.CreateSlateRequest;
-import com.google.cloud.video.stitcher.v1.LocationName;
-import com.google.cloud.video.stitcher.v1.Slate;
+import com.google.cloud.video.stitcher.v1.DeleteLiveConfigRequest;
+import com.google.cloud.video.stitcher.v1.LiveConfigName;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateSlate {
+public class DeleteLiveConfig {
 
   private static final int TIMEOUT_IN_MINUTES = 2;
 
@@ -35,31 +34,27 @@ public class CreateSlate {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
-    String slateId = "my-slate-id";
-    String slateUri =
-        "https://my-slate-uri/test.mp4"; // URI of an MP4 video with at least one audio track
+    String liveConfigId = "my-live-config-id";
 
-    createSlate(projectId, location, slateId, slateUri);
+    deleteLiveConfig(projectId, location, liveConfigId);
   }
 
-  public static void createSlate(String projectId, String location, String slateId, String slateUri)
+  public static void deleteLiveConfig(String projectId, String location, String liveConfigId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
-      CreateSlateRequest createSlateRequest =
-          CreateSlateRequest.newBuilder()
-              .setParent(LocationName.of(projectId, location).toString())
-              .setSlateId(slateId)
-              .setSlate(Slate.newBuilder().setUri(slateUri).build())
+      DeleteLiveConfigRequest deleteLiveConfigRequest =
+          DeleteLiveConfigRequest.newBuilder()
+              .setName(LiveConfigName.of(projectId, location, liveConfigId).toString())
               .build();
 
-      Slate response = videoStitcherServiceClient.createSlateAsync(createSlateRequest)
+      videoStitcherServiceClient.deleteLiveConfigAsync(deleteLiveConfigRequest)
           .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-      System.out.println("Created new slate: " + response.getName());
+      System.out.println("Deleted live config");
     }
   }
 }
-// [END videostitcher_create_slate]
+// [END videostitcher_delete_live_config]

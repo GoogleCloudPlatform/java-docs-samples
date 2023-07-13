@@ -37,16 +37,26 @@ import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 
-public class Util {
+public abstract class Util {
   // Cleans existing test resources if any.
   // If the project contains too many instances, use "filter" when listing resources
   // and delete the listed resources based on the timestamp.
 
   private static final int DELETION_THRESHOLD_TIME_HOURS = 24;
+  private static final String[] ZONES;
+
+  static {
+    ZONES = new String[]{
+        "us-central1-a",
+        "us-west1-a",
+        "asia-south1-a",
+    };
+  }
 
   // Delete templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
@@ -157,6 +167,11 @@ public class Util {
     try (RegionDisksClient regionDisksClient = RegionDisksClient.create()) {
       return regionDisksClient.get(projectId, region, diskName);
     }
+  }
+
+  // Returns a random zone.
+  public static String getZone() {
+    return ZONES[new Random().nextInt(ZONES.length)];
   }
 
 }

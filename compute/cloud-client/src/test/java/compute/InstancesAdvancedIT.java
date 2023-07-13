@@ -17,6 +17,7 @@
 package compute;
 
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.Disk;
@@ -82,7 +83,7 @@ public class InstancesAdvancedIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     UUID uuid = UUID.randomUUID();
-    ZONE = "us-central1-a";
+    ZONE = getZone();
     MACHINE_NAME_PUBLIC_IMAGE = "test-instance-pub-" + uuid;
     MACHINE_NAME_CUSTOM_IMAGE = "test-instance-cust-" + uuid;
     MACHINE_NAME_ADDITIONAL_DISK = "test-instance-add-" + uuid;
@@ -91,7 +92,8 @@ public class InstancesAdvancedIT {
     MACHINE_NAME_SUBNETWORK = "test-instance-subnet-" + uuid;
     MACHINE_NAME_EXISTING_DISK = "test-instance-exis" + uuid;
     NETWORK_NAME = "global/networks/default";
-    SUBNETWORK_NAME = "regions/us-central1/subnetworks/default";
+    SUBNETWORK_NAME = String.format("regions/%s/subnetworks/default",
+        ZONE.substring(0, ZONE.length() - 2));
 
     TEST_DISK = createSourceDisk();
     TEST_SNAPSHOT = createSnapshot(TEST_DISK);
