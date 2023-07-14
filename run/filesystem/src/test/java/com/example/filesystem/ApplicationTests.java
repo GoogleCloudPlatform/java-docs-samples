@@ -131,7 +131,7 @@ public class ApplicationTests {
         "--project=" + project);
 
     System.out.println("Deleting Cloud Run service: " + service);
-    Process p1 = deleteService.start();
+    // Process p1 = deleteService.start();
 
     ProcessBuilder deleteContainer = new ProcessBuilder();
     String image = "us-central1-docker.pkg.dev/" + project + "/cloud-run-source-deploy/" + service;
@@ -147,7 +147,7 @@ public class ApplicationTests {
 
     System.out.println("Deleting image: " + image);
     Process p2 = deleteContainer.start();
-    p1.waitFor(5, TimeUnit.MINUTES);
+    // p1.waitFor(5, TimeUnit.MINUTES);
     p2.waitFor(5, TimeUnit.MINUTES);
   }
 
