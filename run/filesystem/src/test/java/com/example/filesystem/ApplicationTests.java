@@ -108,7 +108,7 @@ public class ApplicationTests {
         "--format=value(status.url)");
     baseUrl = IOUtils.toString(getUrl.start().getInputStream(), StandardCharsets.UTF_8).trim();
     if (baseUrl == null || baseUrl.equals("")) {
-      throw new RuntimeException("Base URL not found.");
+      assertTrue("Base URL not found.", false);
     }
 
     // Get Token
