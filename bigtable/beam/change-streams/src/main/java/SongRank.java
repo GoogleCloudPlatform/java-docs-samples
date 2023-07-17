@@ -64,7 +64,6 @@ public class SongRank {
                 .withInstanceId(options.getBigtableInstanceId())
                 .withTableId(options.getBigtableTableId())
                 .withAppProfileId(options.getBigtableAppProfile())
-                .withHeartbeatDuration(Duration.standardSeconds(1))
 
         )
         // [END bigtable_cdc_tut_readchangestream]
