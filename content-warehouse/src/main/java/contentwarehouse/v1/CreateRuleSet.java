@@ -46,7 +46,7 @@ public class CreateRuleSet {
 
   public static void createRuleSet() throws IOException, 
         InterruptedException, ExecutionException, TimeoutException { 
-    // TODO(developer): Replace these variables before running the sample. 
+    // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String location = "your-region"; // Format is "us" or "eu".
     createRuleSet(projectId, location);
