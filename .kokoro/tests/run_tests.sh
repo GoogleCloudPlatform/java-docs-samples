@@ -81,7 +81,8 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     "java-cloud-sql-samples-secrets.txt" \
     "java-iam-samples-secrets.txt" \
     "java-scc-samples-secrets.txt" \
-    "java-bigqueryconnection-samples-secrets.txt")
+    "java-bigqueryconnection-samples-secrets.txt" \
+    "java-bigquerydatatransfer-samples-secrets.txt")
 
     # create secret dir
     mkdir -p "${KOKORO_GFILE_DIR}/secrets"
