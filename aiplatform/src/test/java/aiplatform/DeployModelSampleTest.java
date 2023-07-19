@@ -35,6 +35,7 @@ public class DeployModelSampleTest {
 
   private static final String PROJECT_ID = System.getenv("UCAIP_PROJECT_ID");
   private static final String MODEL_ID = "00000000000000000";
+  private static final int TIMEOUT = 900;
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -76,7 +77,7 @@ public class DeployModelSampleTest {
             UUID.randomUUID().toString().replaceAll("-", "_").substring(0, 26));
     try {
       DeployModelSample.deployModelSample(
-          PROJECT_ID, deployedModelDisplayName, "4366591682456584192", MODEL_ID);
+          PROJECT_ID, deployedModelDisplayName, "4366591682456584192", MODEL_ID, TIMEOUT);
       // Assert
       String got = bout.toString();
       assertThat(got).contains("is not found.");
