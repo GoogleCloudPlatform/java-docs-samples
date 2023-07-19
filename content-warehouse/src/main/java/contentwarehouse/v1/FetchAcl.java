@@ -16,6 +16,7 @@
 
 package contentwarehouse.v1;
 
+import com.google.api.gax.rpc.DeadlineExceededException;
 // [START contentwarehouse_fetch_acl]
 import com.google.cloud.contentwarehouse.v1.DocumentName;
 import com.google.cloud.contentwarehouse.v1.DocumentServiceClient;
@@ -88,6 +89,8 @@ public class FetchAcl {
         fetchAclResponse = documentServiceClient.fetchAcl(fetchAclRequest);
       }
       System.out.println(fetchAclResponse);
+    } catch(DeadlineExceededException e){ 
+        System.out.println(e.getReason());
     }
   }
 
