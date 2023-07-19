@@ -89,7 +89,7 @@ public class FetchAcl {
         fetchAclResponse = documentServiceClient.fetchAcl(fetchAclRequest);
       }
       System.out.println(fetchAclResponse);
-    } catch(DeadlineExceededException e){ 
+    } catch (DeadlineExceededException e) { 
         System.out.println(e.getReason());
     }
   }
