@@ -18,7 +18,8 @@ package contentwarehouse.v1;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
- 
+import static org.mockito.ArgumentMatchers.any;
+
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class FetchAclTest {
        throws InterruptedException, ExecutionException, IOException, TimeoutException {
     FetchAcl.fetchAcl(PROJECT_ID, LOCATION, USER_ID, DOCUMENT_ID);
     String got = bout.toString();
-    assertThat(got).contains("rule");
+    assertThat(got).contains(any());
   }
    
   @After

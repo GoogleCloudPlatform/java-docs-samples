@@ -89,8 +89,9 @@ public class FetchAcl {
         fetchAclResponse = documentServiceClient.fetchAcl(fetchAclRequest);
       }
       System.out.println(fetchAclResponse);
+    // If the document does not exist, a deadline exception will be thrown
     } catch (DeadlineExceededException e) { 
-        System.out.println(e.getReason());
+      System.out.println(e.getReason());
     }
   }
 
