@@ -51,7 +51,7 @@ public class CreatePipelineJobModelTuningSampleTest {
       "gs://ucaip-samples-europe-west4/training_pipeline_output";
   private static final String DATASET_URI =
       "gs://cloud-samples-data/ai-platform/generative_ai/headline_classification.jsonl";
-  private static final int TRAINING_STEPS = 100;
+  private static final int TRAINING_STEPS = 300;
   private String pipelineJobName;
   private ByteArrayOutputStream bout;
   private PrintStream originalPrintStream;
