@@ -103,6 +103,7 @@ public class QuickStart {
           DocumentServiceClient.create(documentServiceSettings)) {
         TextArray textArray = TextArray.newBuilder().addValues("Test").build();
         Document document = Document.newBuilder()
+              .setName("my-document")
               .setDisplayName("My Test Document")
               .setDocumentSchemaName(documentSchemaResponse.getName())
               .setPlainText("This is a sample of a document's text.")

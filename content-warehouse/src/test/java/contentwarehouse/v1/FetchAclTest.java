@@ -41,7 +41,7 @@ public class FetchAclTest {
   private static final String LOCATION = "us";
   private static final String
       USER_ID = "user:dw-ui-service-account@arched-inkwell-368821.iam.gserviceaccount.com";
-  private static final String DOCUMENT_ID = "document-test";
+  private static final String DOCUMENT_ID = "my-document";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -72,7 +72,7 @@ public class FetchAclTest {
        throws InterruptedException, ExecutionException, IOException, TimeoutException {
     FetchAcl.fetchAcl(PROJECT_ID, LOCATION, USER_ID, DOCUMENT_ID);
     String got = bout.toString();
-    assertThat(got).contains(any());
+    assertThat(got).contains("rule");
   }
    
   @After
