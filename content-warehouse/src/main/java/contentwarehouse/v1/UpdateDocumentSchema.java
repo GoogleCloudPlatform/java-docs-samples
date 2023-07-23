@@ -42,6 +42,7 @@ public class UpdateDocumentSchema {
     updateDocumentSchema(projectId, location, documentSchemaId);
   }
 
+  // Updates an existing Document Schema
   public static void updateDocumentSchema(String projectId, String location, 
         String documentSchemaId) throws IOException, InterruptedException,
           ExecutionException, TimeoutException { 
@@ -55,12 +56,14 @@ public class UpdateDocumentSchema {
     DocumentSchemaServiceSettings documentSchemaServiceSettings = 
              DocumentSchemaServiceSettings.newBuilder().setEndpoint(endpoint).build(); 
 
-    // Create the Schema Service Client 
+    /* Create the Schema Service Client 
+     * Initialize client that will be used to send requests. 
+     * This client only needs to be created once, and can be reused for multiple requests. */
     try (DocumentSchemaServiceClient documentSchemaServiceClient = 
             DocumentSchemaServiceClient.create(documentSchemaServiceSettings)) {
             
-      //The full resource name of the location, e.g.: 
-      //projects/{project_number}/location/{location}/documentSchemas/{document_schema_id}
+      /* The full resource name of the location, e.g.: 
+       projects/{project_number}/location/{location}/documentSchemas/{document_schema_id} */
       DocumentSchemaName documentSchemaName = 
           DocumentSchemaName.of(projectNumber, location, documentSchemaId);
             
@@ -71,7 +74,9 @@ public class UpdateDocumentSchema {
           .setIsSearchable(true)
           .setIsRepeatable(true)
           .setIsRequired(false)
-          .setTextTypeOptions(TextTypeOptions.newBuilder().build()).build();
+          .setTextTypeOptions(TextTypeOptions.newBuilder()
+          .build())
+          .build();
 
       DocumentSchema updatedDocumentSchema = DocumentSchema.newBuilder()
                     .setDisplayName("My Test Schema") 
@@ -81,7 +86,8 @@ public class UpdateDocumentSchema {
       UpdateDocumentSchemaRequest updateDocumentSchemaRequest = 
             UpdateDocumentSchemaRequest.newBuilder()
             .setName(documentSchemaName.toString())
-            .setDocumentSchema(updatedDocumentSchema).build();
+            .setDocumentSchema(updatedDocumentSchema)
+            .build();
             
       // Update Document Schema
       updatedDocumentSchema = 
@@ -93,6 +99,8 @@ public class UpdateDocumentSchema {
   }
 
   private static String getProjectNumber(String projectId) throws IOException { 
+    /* Initialize client that will be used to send requests. 
+    * This client only needs to be created once, and can be reused for multiple requests. */
     try (ProjectsClient projectsClient = ProjectsClient.create()) { 
       ProjectName projectName = ProjectName.of(projectId); 
       Project project = projectsClient.getProject(projectName);
