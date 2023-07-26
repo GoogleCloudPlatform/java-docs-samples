@@ -22,38 +22,39 @@ import com.google.cloud.storageinsights.v1.ReportConfig;
 import com.google.cloud.storageinsights.v1.ReportConfigName;
 import com.google.cloud.storageinsights.v1.StorageInsightsClient;
 import com.google.cloud.storageinsights.v1.UpdateReportConfigRequest;
-
 import java.io.IOException;
 
 public class EditInventoryReportConfig {
 
-    public static void main(String[] args) throws IOException {
-        // The ID of your Google Cloud Project
-        String projectId = "your-project-id";
+  public static void main(String[] args) throws IOException {
+    // The ID of your Google Cloud Project
+    String projectId = "your-project-id";
 
-        // The location your bucket is in
-        String bucketLocation = "us-west-1";
+    // The location your bucket is in
+    String bucketLocation = "us-west-1";
 
-        // The UUID of the inventory report you want to edit
-        String inventoryReportConfigUUID = "2b90d21c-f2f4-40b5-9519-e29a78f2b09f";
+    // The UUID of the inventory report you want to edit
+    String inventoryReportConfigUUID = "2b90d21c-f2f4-40b5-9519-e29a78f2b09f";
 
-        editInventoryReportConfig(projectId, bucketLocation, inventoryReportConfigUUID);
+    editInventoryReportConfig(projectId, bucketLocation, inventoryReportConfigUUID);
+  }
+
+  public static void editInventoryReportConfig(
+      String projectID, String location, String inventoryReportConfigUUID) throws IOException {
+    try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {
+      ReportConfigName name = ReportConfigName.of(projectID, location, inventoryReportConfigUUID);
+      ReportConfig reportConfig = storageInsightsClient.getReportConfig(name);
+
+      // Set any other fields you want to update here
+      ReportConfig updatedReportConfig =
+          reportConfig.toBuilder().setDisplayName("Updated Display Name").build();
+
+      storageInsightsClient.updateReportConfig(
+          UpdateReportConfigRequest.newBuilder().setReportConfig(updatedReportConfig).build());
+
+      System.out.println("Edited inventory report config with name " + name);
     }
-
-    public static void editInventoryReportConfig(String projectID, String location, String inventoryReportConfigUUID) throws IOException {
-        try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {
-            ReportConfigName name = ReportConfigName.of(projectID, location, inventoryReportConfigUUID);
-            ReportConfig reportConfig = storageInsightsClient.getReportConfig(name);
-
-            // Set any other fields you want to update here
-            ReportConfig updatedReportConfig = reportConfig.toBuilder().setDisplayName("Updated Display Name").build();
-
-            storageInsightsClient.updateReportConfig(UpdateReportConfigRequest.newBuilder()
-                    .setReportConfig(updatedReportConfig).build());
-
-            System.out.println("Edited inventory report config with name " + name);
-        }
-    }
+  }
 }
 
 // [END storageinsights_edit_inventory_report_config]

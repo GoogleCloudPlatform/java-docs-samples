@@ -22,36 +22,40 @@ import com.google.cloud.storageinsights.v1.ReportConfig;
 import com.google.cloud.storageinsights.v1.ReportConfigName;
 import com.google.cloud.storageinsights.v1.ReportDetail;
 import com.google.cloud.storageinsights.v1.StorageInsightsClient;
-
 import java.io.IOException;
 
 public class GetInventoryReportNames {
 
-    public static void main(String[] args) throws IOException {
-        // The ID of your Google Cloud Project
-        String projectId = "your-project-id";
+  public static void main(String[] args) throws IOException {
+    // The ID of your Google Cloud Project
+    String projectId = "your-project-id";
 
-        // The location your bucket is in
-        String bucketLocation = "us-west-1";
+    // The location your bucket is in
+    String bucketLocation = "us-west-1";
 
-        // The UUID of the inventory report you want to get file names for
-        String inventoryReportConfigUUID = "2b90d21c-f2f4-40b5-9519-e29a78f2b09f";
+    // The UUID of the inventory report you want to get file names for
+    String inventoryReportConfigUUID = "2b90d21c-f2f4-40b5-9519-e29a78f2b09f";
 
-        getInventoryReportNames(projectId, bucketLocation, inventoryReportConfigUUID);
-    }
+    getInventoryReportNames(projectId, bucketLocation, inventoryReportConfigUUID);
+  }
 
-    public static void getInventoryReportNames(String projectID, String location, String reportConfigUUID) throws IOException {
-        try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {
-            ReportConfig config = storageInsightsClient.getReportConfig(ReportConfigName.of(projectID, location, reportConfigUUID));
-            String extension = config.hasCsvOptions() ? "csv" : "parquet";
-            System.out.println("You can use the Google Cloud Storage Client to download the following objects from Google Cloud Storage:");
-            for (ReportDetail reportDetail : storageInsightsClient.listReportDetails(config.getName()).iterateAll()) {
-                for(long index = reportDetail.getShardsCount() - 1; index >= 0; index--) {
-                    System.out.println(reportDetail.getReportPathPrefix() + index + "." + extension);
-                }
-            }
+  public static void getInventoryReportNames(
+      String projectID, String location, String reportConfigUUID) throws IOException {
+    try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {
+      ReportConfig config =
+          storageInsightsClient.getReportConfig(
+              ReportConfigName.of(projectID, location, reportConfigUUID));
+      String extension = config.hasCsvOptions() ? "csv" : "parquet";
+      System.out.println(
+          "You can use the Google Cloud Storage Client to download the following objects from Google Cloud Storage:");
+      for (ReportDetail reportDetail :
+          storageInsightsClient.listReportDetails(config.getName()).iterateAll()) {
+        for (long index = reportDetail.getShardsCount() - 1; index >= 0; index--) {
+          System.out.println(reportDetail.getReportPathPrefix() + index + "." + extension);
         }
+      }
     }
+  }
 }
 
 // [END storageinsights_get_inventory_report_names]

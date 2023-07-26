@@ -32,8 +32,7 @@ import com.google.cloud.storage.testing.RemoteStorageHelper;
 import com.google.cloud.storageinsights.v1.*;
 import com.google.cloud.testing.junit4.StdOutCaptureRule;
 import com.google.common.collect.ImmutableList;
-import org.junit.*;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,163 +40,196 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.junit.*;
 
 public class ITStorageinsightsSamplesTest {
-    private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-    private static final String SINK_BUCKET = "insights-test-bucket-sink" + UUID.randomUUID();
-    private static final String SOURCE_BUCKET = "insights-test-bucket-source" + UUID.randomUUID();
-    public static final String BUCKET_LOCATION = "us-west1";
-    private static Storage storage;
-    private static StorageInsightsClient insights;
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String SINK_BUCKET = "insights-test-bucket-sink" + UUID.randomUUID();
+  private static final String SOURCE_BUCKET = "insights-test-bucket-source" + UUID.randomUUID();
+  public static final String BUCKET_LOCATION = "us-west1";
+  private static Storage storage;
+  private static StorageInsightsClient insights;
 
-    @Rule
-    public final StdOutCaptureRule stdOutCaptureRule = new StdOutCaptureRule();
+  @Rule public final StdOutCaptureRule stdOutCaptureRule = new StdOutCaptureRule();
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        insights = StorageInsightsClient.create();
+  @BeforeClass
+  public static void beforeClass() throws Exception {
+    insights = StorageInsightsClient.create();
 
-        ProjectsClient pc = ProjectsClient.create();
-        Project project = pc.getProject(ProjectName.of(PROJECT_ID));
-        String projectNumber = project.getName().split("/")[1];
-        String insightsServiceAccount = "service-" + projectNumber + "@gcp-sa-storageinsights.iam.gserviceaccount.com";
+    ProjectsClient pc = ProjectsClient.create();
+    Project project = pc.getProject(ProjectName.of(PROJECT_ID));
+    String projectNumber = project.getName().split("/")[1];
+    String insightsServiceAccount =
+        "service-" + projectNumber + "@gcp-sa-storageinsights.iam.gserviceaccount.com";
 
-        storage = StorageOptions.newBuilder().build().getService();
-        storage.create(
-                BucketInfo.newBuilder(SOURCE_BUCKET)
-                        .setLocation(BUCKET_LOCATION)
-                        .setLifecycleRules(
-                                ImmutableList.of(
-                                        new BucketInfo.LifecycleRule(
-                                                BucketInfo.LifecycleRule.LifecycleAction.newDeleteAction(),
-                                                BucketInfo.LifecycleRule.LifecycleCondition.newBuilder().setAge(1).build())))
-                        .build());
-        storage.create(
-                BucketInfo.newBuilder(SINK_BUCKET)
-                        .setLocation(BUCKET_LOCATION)
-                        .setLifecycleRules(
-                                ImmutableList.of(
-                                        new BucketInfo.LifecycleRule(
-                                                BucketInfo.LifecycleRule.LifecycleAction.newDeleteAction(),
-                                                BucketInfo.LifecycleRule.LifecycleCondition.newBuilder().setAge(1).build())))
-                        .setStorageClass(StorageClass.NEARLINE)
-                        .build());
+    storage = StorageOptions.newBuilder().build().getService();
+    storage.create(
+        BucketInfo.newBuilder(SOURCE_BUCKET)
+            .setLocation(BUCKET_LOCATION)
+            .setLifecycleRules(
+                ImmutableList.of(
+                    new BucketInfo.LifecycleRule(
+                        BucketInfo.LifecycleRule.LifecycleAction.newDeleteAction(),
+                        BucketInfo.LifecycleRule.LifecycleCondition.newBuilder()
+                            .setAge(1)
+                            .build())))
+            .build());
+    storage.create(
+        BucketInfo.newBuilder(SINK_BUCKET)
+            .setLocation(BUCKET_LOCATION)
+            .setLifecycleRules(
+                ImmutableList.of(
+                    new BucketInfo.LifecycleRule(
+                        BucketInfo.LifecycleRule.LifecycleAction.newDeleteAction(),
+                        BucketInfo.LifecycleRule.LifecycleCondition.newBuilder()
+                            .setAge(1)
+                            .build())))
+            .setStorageClass(StorageClass.NEARLINE)
+            .build());
 
-        grantBucketsInsightsPermissions(insightsServiceAccount, SOURCE_BUCKET);
-        grantBucketsInsightsPermissions(insightsServiceAccount, SINK_BUCKET);
+    // The following is a failsafe to make sure that the insights service account exists before we
+    // try to grant it
+    // the permissions. It isn't created until a report is configured for the first time, so this
+    // makes sure it
+    // gets created in any account that runs the tests. Then it deletes all reports congis so that
+    // they don't get
+    // counted in the rest of the tests.
+    CreateInventoryReportConfig.createInventoryReportConfig(
+        PROJECT_ID, BUCKET_LOCATION, SOURCE_BUCKET, SINK_BUCKET);
+    for (ReportConfig config :
+        insights.listReportConfigs(LocationName.of(PROJECT_ID, BUCKET_LOCATION)).iterateAll()) {
+      insights.deleteReportConfig(config.getName());
     }
 
-    @AfterClass
-    public static void afterClass() throws Exception {
-        if (storage != null) {
-            long cleanTime = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(2);
-            long cleanTimeout = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(1);
-            RemoteStorageHelper.cleanBuckets(storage, cleanTime, cleanTimeout);
+    grantBucketsInsightsPermissions(insightsServiceAccount, SOURCE_BUCKET);
+    grantBucketsInsightsPermissions(insightsServiceAccount, SINK_BUCKET);
+  }
 
-            RemoteStorageHelper.forceDelete(storage, SINK_BUCKET, 1, TimeUnit.MINUTES);
-            RemoteStorageHelper.forceDelete(storage, SOURCE_BUCKET, 1, TimeUnit.MINUTES);
-        }
+  @AfterClass
+  public static void afterClass() throws Exception {
+    if (storage != null) {
+      long cleanTime = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(2);
+      long cleanTimeout = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(1);
+      RemoteStorageHelper.cleanBuckets(storage, cleanTime, cleanTimeout);
+
+      RemoteStorageHelper.forceDelete(storage, SINK_BUCKET, 1, TimeUnit.MINUTES);
+      RemoteStorageHelper.forceDelete(storage, SOURCE_BUCKET, 1, TimeUnit.MINUTES);
     }
+  }
 
-    private static void grantBucketsInsightsPermissions(String serviceAccount, String bucket) {
-        Policy policy =
-                storage.getIamPolicy(bucket, Storage.BucketSourceOption.requestedPolicyVersion(3));
+  private static void grantBucketsInsightsPermissions(String serviceAccount, String bucket)
+      throws IOException {
 
-        String insightsCollectorService = "roles/storage.insightsCollectorService";
-        String objectCreator = "roles/storage.objectCreator";
-        String member = "serviceAccount:" + serviceAccount;
+    Policy policy =
+        storage.getIamPolicy(bucket, Storage.BucketSourceOption.requestedPolicyVersion(3));
 
-        List<Binding> bindings = new ArrayList<>(policy.getBindingsList());
+    String insightsCollectorService = "roles/storage.insightsCollectorService";
+    String objectCreator = "roles/storage.objectCreator";
+    String member = "serviceAccount:" + serviceAccount;
 
-        Binding objectViewerBinding =
-                Binding.newBuilder().setRole(insightsCollectorService).setMembers(Arrays.asList(member)).build();
-        bindings.add(objectViewerBinding);
+    List<Binding> bindings = new ArrayList<>(policy.getBindingsList());
 
-        Binding bucketReaderBinding =
-                Binding.newBuilder().setRole(objectCreator).setMembers(Arrays.asList(member)).build();
-        bindings.add(bucketReaderBinding);
+    Binding objectViewerBinding =
+        Binding.newBuilder()
+            .setRole(insightsCollectorService)
+            .setMembers(Arrays.asList(member))
+            .build();
+    bindings.add(objectViewerBinding);
 
-        Policy.Builder newPolicy = policy.toBuilder().setBindings(bindings).setVersion(3);
-        storage.setIamPolicy(bucket, newPolicy.build());
+    Binding bucketReaderBinding =
+        Binding.newBuilder().setRole(objectCreator).setMembers(Arrays.asList(member)).build();
+    bindings.add(bucketReaderBinding);
+
+    Policy.Builder newPolicy = policy.toBuilder().setBindings(bindings).setVersion(3);
+    storage.setIamPolicy(bucket, newPolicy.build());
+  }
+
+  @Test
+  public void testCreateInventoryReportConfig() throws Exception {
+    CreateInventoryReportConfig.createInventoryReportConfig(
+        PROJECT_ID, BUCKET_LOCATION, SOURCE_BUCKET, SINK_BUCKET);
+    String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
+    assertThat(sampleOutput.contains("reportConfigs/"));
+    deleteInventoryReportConfig(sampleOutput);
+  }
+
+  @Test
+  public void testDeleteInventoryReportConfig() throws Exception {
+    CreateInventoryReportConfig.createInventoryReportConfig(
+        PROJECT_ID, BUCKET_LOCATION, SOURCE_BUCKET, SINK_BUCKET);
+    String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
+    String reportConfigName = getReportConfigNameFromSampleOutput(sampleOutput);
+
+    DeleteInventoryReportConfig.deleteInventoryReportConfig(
+        PROJECT_ID, BUCKET_LOCATION, reportConfigName.split("/")[5]);
+    for (ReportConfig config :
+        insights.listReportConfigs(LocationName.of(PROJECT_ID, BUCKET_LOCATION)).iterateAll()) {
+      assertThat(!config.getName().equals(reportConfigName));
     }
+  }
 
-    @Test
-    public void testCreateInventoryReportConfig() throws Exception {
-        CreateInventoryReportConfig.createInventoryReportConfig(PROJECT_ID, BUCKET_LOCATION, SOURCE_BUCKET, SINK_BUCKET);
-        String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
-        assertThat(sampleOutput.contains("reportConfigs/"));
-        deleteInventoryReportConfig(sampleOutput);
+  @Test
+  public void testEditInventoryReportConfig() throws Exception {
+    CreateInventoryReportConfig.createInventoryReportConfig(
+        PROJECT_ID, BUCKET_LOCATION, SOURCE_BUCKET, SINK_BUCKET);
+    String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
+    String reportConfigName = getReportConfigNameFromSampleOutput(sampleOutput);
+    try {
+      EditInventoryReportConfig.editInventoryReportConfig(
+          PROJECT_ID, BUCKET_LOCATION, reportConfigName.split("/")[5]);
+      ReportConfig reportConfig = insights.getReportConfig(reportConfigName);
+      assertThat(reportConfig.getDisplayName().contains("Updated"));
+    } finally {
+      insights.deleteReportConfig(reportConfigName);
     }
+  }
 
-    @Test
-    public void testDeleteInventoryReportConfig() throws Exception {
-        CreateInventoryReportConfig.createInventoryReportConfig(PROJECT_ID, BUCKET_LOCATION, SOURCE_BUCKET, SINK_BUCKET);
-        String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
-        String reportConfigName = getReportConfigNameFromSampleOutput(sampleOutput);
-
-        DeleteInventoryReportConfig.deleteInventoryReportConfig(PROJECT_ID, BUCKET_LOCATION, reportConfigName.split("/")[5]);
-        for(ReportConfig config : insights.listReportConfigs(LocationName.of(PROJECT_ID, BUCKET_LOCATION)).iterateAll()) {
-            assertThat(!config.getName().equals(reportConfigName));
-        }
+  @Test
+  public void testListInventoryReportConfigs() throws Exception {
+    CreateInventoryReportConfig.createInventoryReportConfig(
+        PROJECT_ID, BUCKET_LOCATION, SOURCE_BUCKET, SINK_BUCKET);
+    String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
+    int originalSampleOutputLength = sampleOutput.length();
+    String reportConfigName = getReportConfigNameFromSampleOutput(sampleOutput);
+    try {
+      ListInventoryReportConfigs.listInventoryReportConfigs(PROJECT_ID, BUCKET_LOCATION);
+      sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
+      // Using originalSampleOutputLength as fromIndex prevents the output from the creation from
+      // being taken into account
+      assertThat(sampleOutput.indexOf(reportConfigName, originalSampleOutputLength) > -1);
+    } finally {
+      insights.deleteReportConfig(reportConfigName);
     }
+  }
 
-    @Test
-    public void testEditInventoryReportConfig() throws Exception {
-        CreateInventoryReportConfig.createInventoryReportConfig(PROJECT_ID, BUCKET_LOCATION, SOURCE_BUCKET, SINK_BUCKET);
-        String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
-        String reportConfigName = getReportConfigNameFromSampleOutput(sampleOutput);
-        try {
-            EditInventoryReportConfig.editInventoryReportConfig(PROJECT_ID, BUCKET_LOCATION, reportConfigName.split("/")[5]);
-            ReportConfig reportConfig = insights.getReportConfig(reportConfigName);
-            assertThat(reportConfig.getDisplayName().contains("Updated"));
-        } finally {
-            insights.deleteReportConfig(reportConfigName);
-        }
+  @Test
+  public void testGetInventoryReportConfigNames() throws Exception {
+    CreateInventoryReportConfig.createInventoryReportConfig(
+        PROJECT_ID, BUCKET_LOCATION, SOURCE_BUCKET, SINK_BUCKET);
+    String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
+    String reportConfigName = getReportConfigNameFromSampleOutput(sampleOutput);
+    try {
+      GetInventoryReportNames.getInventoryReportNames(
+          PROJECT_ID, BUCKET_LOCATION, reportConfigName.split("/")[5]);
+      /* We can't actually test for a report config name showing up here, because we create the bucket and inventory
+       * configs for this test, and it takes 24 hours for an inventory report to actually get written to the bucket.
+       * We could set up a hard-coded bucket, but that would probably introduce flakes.
+       * The best we can do is make sure the test runs without throwing an error
+       */
+    } finally {
+      insights.deleteReportConfig(reportConfigName);
     }
+  }
 
-    @Test
-    public void testListInventoryReportConfigs() throws Exception {
-        CreateInventoryReportConfig.createInventoryReportConfig(PROJECT_ID, BUCKET_LOCATION, SOURCE_BUCKET, SINK_BUCKET);
-        String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
-        int originalSampleOutputLength = sampleOutput.length();
-        String reportConfigName = getReportConfigNameFromSampleOutput(sampleOutput);
-        try {
-            ListInventoryReportConfigs.listInventoryReportConfigs(PROJECT_ID, BUCKET_LOCATION);
-            sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
-            // Using originalSampleOutputLength as fromIndex prevents the output from the creation from being taken into account
-            assertThat(sampleOutput.indexOf(reportConfigName, originalSampleOutputLength) > -1);
-        } finally {
-            insights.deleteReportConfig(reportConfigName);
-        }
-    }
+  private static void deleteInventoryReportConfig(String sampleOutput) {
+    String reportConfigName = getReportConfigNameFromSampleOutput(sampleOutput);
+    insights.deleteReportConfig(reportConfigName);
+  }
 
-    @Test
-    public void testGetInventoryReportConfigNames() throws Exception {
-        CreateInventoryReportConfig.createInventoryReportConfig(PROJECT_ID, BUCKET_LOCATION, SOURCE_BUCKET, SINK_BUCKET);
-        String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
-        String reportConfigName = getReportConfigNameFromSampleOutput(sampleOutput);
-        try {
-            GetInventoryReportNames.getInventoryReportNames(PROJECT_ID, BUCKET_LOCATION, reportConfigName.split("/")[5]);
-            /* We can't actually test for a report config name showing up here, because we create the bucket and inventory
-             * configs for this test, and it takes 24 hours for an inventory report to actually get written to the bucket.
-             * We could set up a hard-coded bucket, but that would probably introduce flakes.
-             * The best we can do is make sure the test runs without throwing an error
-             */
-        } finally {
-            insights.deleteReportConfig(reportConfigName);
-        }
-    }
-
-    private static void deleteInventoryReportConfig(String sampleOutput) {
-        String reportConfigName = getReportConfigNameFromSampleOutput(sampleOutput);
-        insights.deleteReportConfig(reportConfigName);
-    }
-
-    private static String getReportConfigNameFromSampleOutput(String sampleOutput) {
-        Pattern pattern = Pattern.compile("(projects.*)");
-        Matcher matcher = pattern.matcher(sampleOutput);
-        matcher.find();
-        return matcher.group(1).trim();
-    }
-
+  private static String getReportConfigNameFromSampleOutput(String sampleOutput) {
+    Pattern pattern = Pattern.compile("(projects.*)");
+    Matcher matcher = pattern.matcher(sampleOutput);
+    matcher.find();
+    return matcher.group(1).trim();
+  }
 }

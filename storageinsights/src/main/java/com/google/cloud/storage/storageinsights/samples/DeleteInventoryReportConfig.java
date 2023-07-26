@@ -20,31 +20,31 @@ package com.google.cloud.storage.storageinsights.samples;
 
 import com.google.cloud.storageinsights.v1.ReportConfigName;
 import com.google.cloud.storageinsights.v1.StorageInsightsClient;
-
 import java.io.IOException;
 
 public class DeleteInventoryReportConfig {
 
-    public static void main(String[] args) throws IOException {
-        // The ID of your Google Cloud Project
-        String projectId = "your-project-id";
+  public static void main(String[] args) throws IOException {
+    // The ID of your Google Cloud Project
+    String projectId = "your-project-id";
 
-        // The location your bucket is in
-        String bucketLocation = "us-west-1";
+    // The location your bucket is in
+    String bucketLocation = "us-west-1";
 
-        // The UUID of the inventory report you want to delete
-        String inventoryReportConfigUUID = "2b90d21c-f2f4-40b5-9519-e29a78f2b09f";
+    // The UUID of the inventory report you want to delete
+    String inventoryReportConfigUUID = "2b90d21c-f2f4-40b5-9519-e29a78f2b09f";
 
-        deleteInventoryReportConfig(projectId, bucketLocation, inventoryReportConfigUUID);
+    deleteInventoryReportConfig(projectId, bucketLocation, inventoryReportConfigUUID);
+  }
+
+  public static void deleteInventoryReportConfig(
+      String projectID, String location, String inventoryReportConfigUUID) throws IOException {
+    try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {
+      ReportConfigName name = ReportConfigName.of(projectID, location, inventoryReportConfigUUID);
+      storageInsightsClient.deleteReportConfig(name);
+
+      System.out.println("Deleted inventory report config with name " + name);
     }
-
-    public static void deleteInventoryReportConfig(String projectID, String location, String inventoryReportConfigUUID) throws IOException {
-        try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {
-            ReportConfigName name = ReportConfigName.of(projectID, location, inventoryReportConfigUUID);
-            storageInsightsClient.deleteReportConfig(name);
-
-            System.out.println("Deleted inventory report config with name " + name);
-        }
-    }
+  }
 }
 // [END storageinsights_delete_inventory_report_config]

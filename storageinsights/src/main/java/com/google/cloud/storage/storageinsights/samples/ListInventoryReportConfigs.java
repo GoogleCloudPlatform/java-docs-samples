@@ -21,28 +21,36 @@ package com.google.cloud.storage.storageinsights.samples;
 import com.google.cloud.storageinsights.v1.LocationName;
 import com.google.cloud.storageinsights.v1.ReportConfig;
 import com.google.cloud.storageinsights.v1.StorageInsightsClient;
-
 import java.io.IOException;
 
 public class ListInventoryReportConfigs {
 
-    public static void main(String[] args) throws IOException {
-        // The ID of your Google Cloud Project
-        String projectId = "your-project-id";
+  public static void main(String[] args) throws IOException {
+    // The ID of your Google Cloud Project
+    String projectId = "your-project-id";
 
-        // The location to list configs in
-        String bucketLocation = "us-west-1";
+    // The location to list configs in
+    String bucketLocation = "us-west-1";
 
-        listInventoryReportConfigs(projectId, bucketLocation);
+    listInventoryReportConfigs(projectId, bucketLocation);
+  }
+
+  public static void listInventoryReportConfigs(String projectId, String location)
+      throws IOException {
+    try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {
+      System.out.println(
+          "Printing inventory report configs in project "
+              + projectId
+              + " and location "
+              + location);
+      for (ReportConfig config :
+          storageInsightsClient
+              .listReportConfigs(LocationName.of(projectId, location))
+              .iterateAll()) {
+        System.out.println(config.getName());
+      }
     }
-    public static void listInventoryReportConfigs(String projectId, String location) throws IOException {
-        try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {
-            System.out.println("Printing inventory report configs in project " + projectId + " and location " + location);
-            for (ReportConfig config : storageInsightsClient.listReportConfigs(LocationName.of(projectId, location)).iterateAll()) {
-                System.out.println(config.getName());
-            }
-        }
-    }
+  }
 }
 
 // [END storageinsights_list_inventory_report_configs]
