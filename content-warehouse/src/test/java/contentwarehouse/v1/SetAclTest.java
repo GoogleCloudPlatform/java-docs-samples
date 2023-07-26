@@ -39,7 +39,7 @@ public class SetAclTest {
  
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us";
-  private static final String USER_ID = "user:fredwu@google.com";
+  private static final String USER_ID = "user:yonggangl@google.com";
   private static final String DOCUMENT_ID = "06rubracospg8";
   private static final ArrayList<String> MEMBERS = new ArrayList<>();
   private static final String ROLE = "roles/contentwarehouse.documentAdmin";  
