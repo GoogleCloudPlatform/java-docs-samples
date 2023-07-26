@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google Inc.
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,20 +34,21 @@ public class GetInventoryReportNames {
     String bucketLocation = "us-west-1";
 
     // The UUID of the inventory report you want to get file names for
-    String inventoryReportConfigUUID = "2b90d21c-f2f4-40b5-9519-e29a78f2b09f";
+    String inventoryReportConfigUuid = "2b90d21c-f2f4-40b5-9519-e29a78f2b09f";
 
-    getInventoryReportNames(projectId, bucketLocation, inventoryReportConfigUUID);
+    getInventoryReportNames(projectId, bucketLocation, inventoryReportConfigUuid);
   }
 
   public static void getInventoryReportNames(
-      String projectID, String location, String reportConfigUUID) throws IOException {
+      String projectId, String location, String reportConfigUuid) throws IOException {
     try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {
       ReportConfig config =
           storageInsightsClient.getReportConfig(
-              ReportConfigName.of(projectID, location, reportConfigUUID));
+              ReportConfigName.of(projectId, location, reportConfigUuid));
       String extension = config.hasCsvOptions() ? "csv" : "parquet";
       System.out.println(
-          "You can use the Google Cloud Storage Client to download the following objects from Google Cloud Storage:");
+          "You can use the Google Cloud Storage Client "
+              + "to download the following objects from Google Cloud Storage:");
       for (ReportDetail reportDetail :
           storageInsightsClient.listReportDetails(config.getName()).iterateAll()) {
         for (long index = reportDetail.getShardsCount() - 1; index >= 0; index--) {

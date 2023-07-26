@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google Inc.
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,15 +34,15 @@ public class EditInventoryReportConfig {
     String bucketLocation = "us-west-1";
 
     // The UUID of the inventory report you want to edit
-    String inventoryReportConfigUUID = "2b90d21c-f2f4-40b5-9519-e29a78f2b09f";
+    String inventoryReportConfigUuid = "2b90d21c-f2f4-40b5-9519-e29a78f2b09f";
 
-    editInventoryReportConfig(projectId, bucketLocation, inventoryReportConfigUUID);
+    editInventoryReportConfig(projectId, bucketLocation, inventoryReportConfigUuid);
   }
 
   public static void editInventoryReportConfig(
-      String projectID, String location, String inventoryReportConfigUUID) throws IOException {
+      String projectId, String location, String inventoryReportConfigUuid) throws IOException {
     try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {
-      ReportConfigName name = ReportConfigName.of(projectID, location, inventoryReportConfigUUID);
+      ReportConfigName name = ReportConfigName.of(projectId, location, inventoryReportConfigUuid);
       ReportConfig reportConfig = storageInsightsClient.getReportConfig(name);
 
       // Set any other fields you want to update here

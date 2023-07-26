@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google Inc.
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,22 @@ import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageClass;
 import com.google.cloud.storage.StorageOptions;
-import com.google.cloud.storage.storageinsights.samples.*;
+import com.google.cloud.storage.storageinsights.samples.CreateInventoryReportConfig;
+import com.google.cloud.storage.storageinsights.samples.DeleteInventoryReportConfig;
+import com.google.cloud.storage.storageinsights.samples.EditInventoryReportConfig;
+import com.google.cloud.storage.storageinsights.samples.GetInventoryReportNames;
+import com.google.cloud.storage.storageinsights.samples.ListInventoryReportConfigs;
 import com.google.cloud.storage.testing.RemoteStorageHelper;
-import com.google.cloud.storageinsights.v1.*;
+import com.google.cloud.storageinsights.v1.LocationName;
+import com.google.cloud.storageinsights.v1.ReportConfig;
+import com.google.cloud.storageinsights.v1.StorageInsightsClient;
 import com.google.cloud.testing.junit4.StdOutCaptureRule;
 import com.google.common.collect.ImmutableList;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +51,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.junit.*;
 
 public class ITStorageinsightsSamplesTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -50,17 +60,12 @@ public class ITStorageinsightsSamplesTest {
   private static Storage storage;
   private static StorageInsightsClient insights;
 
-  @Rule public final StdOutCaptureRule stdOutCaptureRule = new StdOutCaptureRule();
+  @Rule
+  public final StdOutCaptureRule stdOutCaptureRule = new StdOutCaptureRule();
 
   @BeforeClass
   public static void beforeClass() throws Exception {
     insights = StorageInsightsClient.create();
-
-    ProjectsClient pc = ProjectsClient.create();
-    Project project = pc.getProject(ProjectName.of(PROJECT_ID));
-    String projectNumber = project.getName().split("/")[1];
-    String insightsServiceAccount =
-        "service-" + projectNumber + "@gcp-sa-storageinsights.iam.gserviceaccount.com";
 
     storage = StorageOptions.newBuilder().build().getService();
     storage.create(
@@ -87,19 +92,11 @@ public class ITStorageinsightsSamplesTest {
             .setStorageClass(StorageClass.NEARLINE)
             .build());
 
-    // The following is a failsafe to make sure that the insights service account exists before we
-    // try to grant it
-    // the permissions. It isn't created until a report is configured for the first time, so this
-    // makes sure it
-    // gets created in any account that runs the tests. Then it deletes all reports congis so that
-    // they don't get
-    // counted in the rest of the tests.
-    CreateInventoryReportConfig.createInventoryReportConfig(
-        PROJECT_ID, BUCKET_LOCATION, SOURCE_BUCKET, SINK_BUCKET);
-    for (ReportConfig config :
-        insights.listReportConfigs(LocationName.of(PROJECT_ID, BUCKET_LOCATION)).iterateAll()) {
-      insights.deleteReportConfig(config.getName());
-    }
+    ProjectsClient pc = ProjectsClient.create();
+    Project project = pc.getProject(ProjectName.of(PROJECT_ID));
+    String projectNumber = project.getName().split("/")[1];
+    String insightsServiceAccount =
+            "service-" + projectNumber + "@gcp-sa-storageinsights.iam.gserviceaccount.com";
 
     grantBucketsInsightsPermissions(insightsServiceAccount, SOURCE_BUCKET);
     grantBucketsInsightsPermissions(insightsServiceAccount, SINK_BUCKET);
@@ -211,8 +208,9 @@ public class ITStorageinsightsSamplesTest {
     try {
       GetInventoryReportNames.getInventoryReportNames(
           PROJECT_ID, BUCKET_LOCATION, reportConfigName.split("/")[5]);
-      /* We can't actually test for a report config name showing up here, because we create the bucket and inventory
-       * configs for this test, and it takes 24 hours for an inventory report to actually get written to the bucket.
+      /* We can't actually test for a report config name showing up here, because we create
+       * the bucket and inventory configs for this test, and it takes 24 hours for an
+       * inventory report to actually get written to the bucket.
        * We could set up a hard-coded bucket, but that would probably introduce flakes.
        * The best we can do is make sure the test runs without throwing an error
        */
