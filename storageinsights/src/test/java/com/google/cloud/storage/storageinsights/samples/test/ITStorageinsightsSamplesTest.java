@@ -38,11 +38,6 @@ import com.google.cloud.storageinsights.v1.ReportConfig;
 import com.google.cloud.storageinsights.v1.StorageInsightsClient;
 import com.google.cloud.testing.junit4.StdOutCaptureRule;
 import com.google.common.collect.ImmutableList;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +46,10 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 
 public class ITStorageinsightsSamplesTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
