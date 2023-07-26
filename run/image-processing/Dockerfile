@@ -18,7 +18,7 @@
 # It's important to use JDK 8u191 or above that has container support enabled.
 # https://hub.docker.com/_/eclipse-temurin/
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM eclipse-temurin:17.0.7_7-jre
+FROM eclipse-temurin:17.0.8_7-jre
 
 # Install Imagemagick into the container image.
 # For more on system packages review the system packages tutorial.
