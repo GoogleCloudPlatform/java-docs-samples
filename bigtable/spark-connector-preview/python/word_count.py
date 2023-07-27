@@ -29,8 +29,6 @@ if not (bigtable_project_id and
               f'and --{TABLE_NAME_PROPERTY_NAME}=Z, respectively.'
               )
 
-bigtable_table_name = 'wordcountexample'
-
 spark = SparkSession.builder.getOrCreate()
 
 catalog = ''.join(("""{
