@@ -52,8 +52,8 @@ import com.google.cloud.storage.BucketInfo.LifecycleRule.LifecycleCondition;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageClass;
 import com.google.cloud.storage.storagetransfer.samples.CheckLatestTransferOperation;
-import com.google.cloud.storage.storagetransfer.samples.CreateEventDrivenAWSTransfer;
-import com.google.cloud.storage.storagetransfer.samples.CreateEventDrivenGCSTransfer;
+import com.google.cloud.storage.storagetransfer.samples.CreateEventDrivenAwsTransfer;
+import com.google.cloud.storage.storagetransfer.samples.CreateEventDrivenGcsTransfer;
 import com.google.cloud.storage.storagetransfer.samples.DownloadToPosix;
 import com.google.cloud.storage.storagetransfer.samples.QuickstartSample;
 import com.google.cloud.storage.storagetransfer.samples.TransferBetweenPosix;
@@ -153,10 +153,11 @@ public class ITStoragetransferSamplesTest {
 
     s3.createBucket(AMAZON_BUCKET);
 
-    blobServiceClient = new BlobServiceClientBuilder()
-        .connectionString(AZURE_CONNECTION_STRING)
-        .sasToken(AZURE_SAS_TOKEN)
-        .buildClient();
+    blobServiceClient =
+        new BlobServiceClientBuilder()
+            .connectionString(AZURE_CONNECTION_STRING)
+            .sasToken(AZURE_SAS_TOKEN)
+            .buildClient();
     blobContainerClient = blobServiceClient.createBlobContainer(AZURE_BUCKET);
   }
 
@@ -337,8 +338,7 @@ public class ITStoragetransferSamplesTest {
         "Sample transfer job from S3 to GCS.",
         AMAZON_BUCKET,
         SINK_GCS_BUCKET,
-        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00")
-            .getTime());
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime());
 
     String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
     assertThat(sampleOutput).contains("transferJobs/");
@@ -353,8 +353,7 @@ public class ITStoragetransferSamplesTest {
         "Sample transfer job from S3 to GCS.",
         AMAZON_BUCKET,
         SINK_GCS_BUCKET,
-        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00")
-            .getTime());
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2000-01-01 00:00:00").getTime());
 
     String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
     assertThat(sampleOutput).contains("transferJobs/");
@@ -520,11 +519,13 @@ public class ITStoragetransferSamplesTest {
     String pubSubSubscriptionId = "pubsub-sts-subscription" + UUID.randomUUID();
     SubscriptionName subscriptionName = SubscriptionName.of(PROJECT_ID, pubSubSubscriptionId);
     SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create();
-    Subscription subscription =  subscriptionAdminClient
-            .createSubscription(subscriptionName, topicName, PushConfig.getDefaultInstance(), 20);
+    Subscription subscription =
+        subscriptionAdminClient.createSubscription(
+            subscriptionName, topicName, PushConfig.getDefaultInstance(), 20);
 
     try {
-      CreateEventDrivenGCSTransfer.createEventDrivenGcsTransfer(PROJECT_ID, SOURCE_GCS_BUCKET, SINK_GCS_BUCKET, subscription.getName());
+      CreateEventDrivenGcsTransfer.createEventDrivenGcsTransfer(
+          PROJECT_ID, SOURCE_GCS_BUCKET, SINK_GCS_BUCKET, subscription.getName());
       String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
       assertThat(sampleOutput).contains("transferJobs/");
       deleteTransferJob(sampleOutput);
@@ -539,19 +540,22 @@ public class ITStoragetransferSamplesTest {
   @Test
   public void testCreateEventDrivenAwsTransfer() throws Exception {
     AmazonSQS sqs = AmazonSQSClientBuilder.standard().withRegion(Regions.US_WEST_1).build();
-    CreateQueueRequest createQueueRequest = new CreateQueueRequest("sqs-sts-queue" + UUID.randomUUID())
+    CreateQueueRequest createQueueRequest =
+        new CreateQueueRequest("sqs-sts-queue" + UUID.randomUUID())
             .addAttributesEntry("DelaySeconds", "60")
             .addAttributesEntry("MessageRetentionPeriod", "86400");
-    String qUrl = sqs.createQueue(createQueueRequest).getQueueUrl();
-    String qArn = sqs.getQueueAttributes(qUrl, ImmutableList.of("QueueArn")).getAttributes().get("QueueArn");
+    String queueUrl = sqs.createQueue(createQueueRequest).getQueueUrl();
+    String queueArn = sqs.getQueueAttributes(
+            queueUrl, ImmutableList.of("QueueArn")).getAttributes().get("QueueArn");
 
     try {
-      CreateEventDrivenAWSTransfer.createEventDrivenAwsTransfer(PROJECT_ID, AMAZON_BUCKET, SOURCE_GCS_BUCKET, qArn);
+      CreateEventDrivenAwsTransfer.createEventDrivenAwsTransfer(
+          PROJECT_ID, AMAZON_BUCKET, SOURCE_GCS_BUCKET, queueArn);
       String sampleOutput = stdOutCaptureRule.getCapturedOutputAsUtf8String();
       assertThat(sampleOutput).contains("transferJobs/");
       deleteTransferJob(sampleOutput);
     } finally {
-      sqs.deleteQueue(qUrl);
+      sqs.deleteQueue(queueUrl);
     }
   }
 }

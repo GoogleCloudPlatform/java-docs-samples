@@ -52,23 +52,26 @@ public class TransferFromAzure {
   /**
    * Creates and runs a transfer job to transfer all data from an Azure container to a GCS bucket.
    */
-  public static void transferFromAzureBlobStorage(String projectId, String azureStorageAccount,
-      String azureSourceContainer, String gcsSinkBucket)
+  public static void transferFromAzureBlobStorage(
+      String projectId,
+      String azureStorageAccount,
+      String azureSourceContainer,
+      String gcsSinkBucket)
       throws IOException, ExecutionException, InterruptedException {
 
     // Your Azure SAS token, should be accessed via environment variable
     String azureSasToken = System.getenv("AZURE_SAS_TOKEN");
 
-    TransferSpec transferSpec = TransferSpec.newBuilder()
-        .setAzureBlobStorageDataSource(
-            AzureBlobStorageData.newBuilder()
-                .setAzureCredentials(AzureCredentials.newBuilder()
-                    .setSasToken(azureSasToken)
-                    .build())
-                .setContainer(azureSourceContainer)
-                .setStorageAccount(azureStorageAccount))
-        .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket).build())
-        .build();
+    TransferSpec transferSpec =
+        TransferSpec.newBuilder()
+            .setAzureBlobStorageDataSource(
+                AzureBlobStorageData.newBuilder()
+                    .setAzureCredentials(
+                        AzureCredentials.newBuilder().setSasToken(azureSasToken).build())
+                    .setContainer(azureSourceContainer)
+                    .setStorageAccount(azureStorageAccount))
+            .setGcsDataSink(GcsData.newBuilder().setBucketName(gcsSinkBucket).build())
+            .build();
 
     TransferJob transferJob =
         TransferJob.newBuilder()
@@ -84,7 +87,8 @@ public class TransferFromAzure {
     try (StorageTransferServiceClient storageTransfer = StorageTransferServiceClient.create()) {
       // Create the transfer job
       TransferJob response =
-          storageTransfer.createTransferJob(TransferProto.CreateTransferJobRequest.newBuilder()
+          storageTransfer.createTransferJob(
+              TransferProto.CreateTransferJobRequest.newBuilder()
                   .setTransferJob(transferJob)
                   .build());
 
@@ -106,7 +110,6 @@ public class TransferFromAzure {
               + "name "
               + response.getName());
     }
-
   }
 }
 // [END storagetransfer_transfer_from_azure]
