@@ -17,6 +17,8 @@
 package com.example.cloudrun;
 
 // [START eventarc_audit_storage_server]
+// [START eventarc_http_quickstart_server]
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -27,3 +29,4 @@ public class Application {
   }
 }
 // [END eventarc_audit_storage_server]
+// [END eventarc_http_quickstart_server]

@@ -33,13 +33,12 @@ public class CreatePipelineJobModelTuningSample {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String project = "PROJECT";
-    String location =
-        "europe-west4"; // Model tuning is only supported in europe-west4 for Public Preview
+    String location = "europe-west4"; // europe-west4 and us-central1 are the supported regions
     String pipelineJobDisplayName = "PIPELINE_JOB_DISPLAY_NAME";
     String modelDisplayName = "MODEL_DISPLAY_NAME";
     String outputDir = "OUTPUT_DIR";
     String datasetUri = "DATASET_URI";
-    int trainingSteps = 100;
+    int trainingSteps = 300;
 
     createPipelineJobModelTuningSample(
         project,
@@ -88,7 +87,7 @@ public class CreatePipelineJobModelTuningSample {
       PipelineJob pipelineJob =
           PipelineJob.newBuilder()
               .setTemplateUri(
-                  "https://us-kfp.pkg.dev/ml-pipeline/large-language-model-pipelines/tune-large-model/v1.0.0")
+                  "https://us-kfp.pkg.dev/ml-pipeline/large-language-model-pipelines/tune-large-model/v2.0.0")
               .setDisplayName(pipelineJobDisplayName)
               .setRuntimeConfig(runtimeConfig)
               .build();

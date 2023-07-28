@@ -45,7 +45,7 @@ public class ApplicationTests {
   private static final String suffix = UUID.randomUUID().toString();
   private static final String mntDir = "/mnt/nfs/filestore";
   private static final String connector =
-      System.getenv().getOrDefault("CONNECTOR", "my-run-connector");
+      System.getenv().getOrDefault("CONNECTOR", "my-filestore-connector");
   private static final String ipAddress = System.getenv("FILESTORE_IP_ADDRESS");
   private static String service;
   private static String baseUrl;
@@ -108,7 +108,7 @@ public class ApplicationTests {
         "--format=value(status.url)");
     baseUrl = IOUtils.toString(getUrl.start().getInputStream(), StandardCharsets.UTF_8).trim();
     if (baseUrl == null || baseUrl.equals("")) {
-      throw new RuntimeException("Base URL not found.");
+      assertTrue("Base URL not found.", false);
     }
 
     // Get Token

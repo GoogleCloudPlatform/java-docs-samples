@@ -18,6 +18,7 @@ package compute.disks;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
@@ -74,8 +75,8 @@ public class SnapshotsIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    ZONE = "europe-central2-b";
-    LOCATION = "europe-central2";
+    ZONE = getZone();
+    LOCATION = ZONE.substring(0, ZONE.length() - 2);
     String uuid = UUID.randomUUID().toString().split("-")[0];
     DISK_NAME = "gcloud-test-disk-" + uuid;
     REGIONAL_DISK_NAME = "gcloud-regional-test-disk-" + uuid;
@@ -153,8 +154,8 @@ public class SnapshotsIT {
           .setName(diskName)
           .addAllReplicaZones(
               List.of(
-                  String.format("projects/%s/zones/europe-central2-a", projectId),
-                  String.format("projects/%s/zones/europe-central2-b", projectId))
+                  String.format("projects/%s/zones/%s", projectId, LOCATION + "-b"),
+                  String.format("projects/%s/zones/%s", projectId, LOCATION + "-c"))
           )
           .build();
 
