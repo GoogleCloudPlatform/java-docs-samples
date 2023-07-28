@@ -47,7 +47,7 @@ public class GetJobTemplate {
               .setLocation(location)
               .setJobTemplate(templateId)
               .build();
-      var getJobTemplateRequest =
+      GetJobTemplateRequest getJobTemplateRequest =
           GetJobTemplateRequest.newBuilder().setName(jobTemplateName.toString()).build();
 
       // Send the get job template request and process the response.

@@ -103,9 +103,6 @@ public class CreateJobWithConcatenatedInputsTest {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
-
     deleteBucket(BUCKET_NAME);
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
     storage.create(

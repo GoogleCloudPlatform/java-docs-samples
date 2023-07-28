@@ -40,7 +40,7 @@ public class ListJobs {
     // once, and can be reused for multiple requests.
     try (TranscoderServiceClient transcoderServiceClient = TranscoderServiceClient.create()) {
 
-      var listJobsRequest =
+      ListJobsRequest listJobsRequest =
           ListJobsRequest.newBuilder()
               .setParent(LocationName.of(projectId, location).toString())
               .build();

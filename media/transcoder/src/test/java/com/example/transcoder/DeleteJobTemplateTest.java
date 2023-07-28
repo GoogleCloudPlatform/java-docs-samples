@@ -65,9 +65,6 @@ public class DeleteJobTemplateTest {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
-
     try {
       DeleteJobTemplate.deleteJobTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     } catch (com.google.api.gax.rpc.NotFoundException e) {

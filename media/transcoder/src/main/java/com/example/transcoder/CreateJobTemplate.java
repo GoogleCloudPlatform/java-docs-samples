@@ -100,7 +100,7 @@ public class CreateJobTemplate {
                       .build())
               .build();
 
-      var createJobTemplateRequest =
+      CreateJobTemplateRequest createJobTemplateRequest =
           CreateJobTemplateRequest.newBuilder()
               .setParent(LocationName.of(projectId, location).toString())
               .setJobTemplateId(templateId)
