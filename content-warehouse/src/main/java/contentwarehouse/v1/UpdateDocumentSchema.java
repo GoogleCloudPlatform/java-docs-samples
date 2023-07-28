@@ -39,6 +39,11 @@ public class UpdateDocumentSchema {
     String projectId = "your-project-id";
     String location = "your-region"; // Format is "us" or "eu".
     String documentSchemaId = "your-document-schema-id";
+    /* The below method call retrieves details about the schema you are about to update.
+     * It is important to note that some properties cannot be edited or removed. 
+     * For more information on managing document schemas, please see the below documentation.
+     * https://cloud.google.com/document-warehouse/docs/manage-document-schemas */
+    GetDocumentSchema.getDocumentSchema(projectId, location, documentSchemaId);
     updateDocumentSchema(projectId, location, documentSchemaId);
   }
 
