@@ -30,11 +30,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class CreateDocumentSchemaTest {
+public class DocumentSchemaTests {
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us";
+  private static final String DOCUMENT_SCHEMA_ID = "7rk7ssfv2f298";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -66,6 +67,32 @@ public class CreateDocumentSchemaTest {
     CreateDocumentSchema.createDocumentSchema(PROJECT_ID, LOCATION);
     String got = bout.toString();
     assertThat(got).contains("document");
+  }
+
+  @Test
+  public void testGetDocumentSchemas()
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    GetDocumentSchema.getDocumentSchema(PROJECT_ID, LOCATION, DOCUMENT_SCHEMA_ID);
+    String got = bout.toString();
+    System.out.println(got);
+    assertThat(got).contains("document");
+  }
+  
+  @Test
+  public void testListDocumentSchemas()
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    ListDocumentSchema.listDocumentSchemas(PROJECT_ID, LOCATION);
+    String got = bout.toString();
+    System.out.println(got);
+    assertThat(got).contains("document");
+  }
+    
+  @Test
+  public void testUpdateDocumentSchema()
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    UpdateDocumentSchema.updateDocumentSchema(PROJECT_ID, LOCATION, DOCUMENT_SCHEMA_ID);
+    String got = bout.toString();
+    assertThat(got).contains("Schema");
   }
 
   @After
