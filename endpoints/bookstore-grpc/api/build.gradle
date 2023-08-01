@@ -31,8 +31,8 @@ dependencies {
   repositories {
     mavenCentral()
   }
-  compile 'io.grpc:grpc-netty:1.57.0'
-  compile 'io.grpc:grpc-protobuf:1.57.0'
+  compile 'io.grpc:grpc-netty:1.57.1'
+  compile 'io.grpc:grpc-protobuf:1.57.1'
   compile 'io.grpc:grpc-stub:1.57.0'
 }
 
