@@ -32,6 +32,8 @@ public class CreateJobFromPreset {
     String location = "us-central1";
     String inputUri = "gs://my-bucket/my-video-file";
     String outputUri = "gs://my-bucket/my-output-folder/";
+    // See https://cloud.google.com/transcoder/docs/concepts/overview#job_template
+    // for information on this preset.
     String preset = "preset/web-hd";
 
     createJobFromPreset(projectId, location, inputUri, outputUri, preset);
@@ -45,7 +47,7 @@ public class CreateJobFromPreset {
     // once, and can be reused for multiple requests.
     try (TranscoderServiceClient transcoderServiceClient = TranscoderServiceClient.create()) {
 
-      var createJobRequest =
+      CreateJobRequest createJobRequest =
           CreateJobRequest.newBuilder()
               .setJob(
                   Job.newBuilder()

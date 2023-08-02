@@ -46,7 +46,7 @@ public class DeleteJobTemplate {
               .setLocation(location)
               .setJobTemplate(templateId)
               .build();
-      var deleteJobTemplateRequest =
+      DeleteJobTemplateRequest deleteJobTemplateRequest =
           DeleteJobTemplateRequest.newBuilder().setName(jobTemplateName.toString()).build();
 
       // Send the delete job template request and process the response.

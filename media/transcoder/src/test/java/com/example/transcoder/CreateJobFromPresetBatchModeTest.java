@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,9 +47,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class CreateJobFromPresetTest {
+public class CreateJobFromPresetBatchModeTest {
 
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
   private static final String LOCATION = "us-central1";
   private static final String BUCKET_NAME =
@@ -59,7 +60,7 @@ public class CreateJobFromPresetTest {
       "src/test/java/com/example/transcoder/testdata/" + TEST_FILE_NAME;
   private static final String INPUT_URI = "gs://" + BUCKET_NAME + "/" + TEST_FILE_NAME;
   private static final String OUTPUT_URI_FOR_PRESET =
-      "gs://" + BUCKET_NAME + "/test-output-preset/";
+      "gs://" + BUCKET_NAME + "/test-output-preset-batch-mode/";
   private static final String PRESET = "preset/web-hd";
   private static String PROJECT_ID;
   private static String PROJECT_NUMBER;
@@ -117,9 +118,9 @@ public class CreateJobFromPresetTest {
   }
 
   @Test
-  public void test_CreateJobFromPreset() throws Exception {
+  public void test_CreateJobFromPresetBatchMode() throws Exception {
     String jobName = String.format("projects/%s/locations/%s/jobs/", PROJECT_NUMBER, LOCATION);
-    CreateJobFromPreset.createJobFromPreset(
+    CreateJobFromPresetBatchMode.createJobFromPresetBatchMode(
         PROJECT_ID, LOCATION, INPUT_URI, OUTPUT_URI_FOR_PRESET, PRESET);
     String output = bout.toString();
     assertThat(output, containsString(jobName));

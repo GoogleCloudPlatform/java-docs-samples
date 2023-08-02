@@ -42,7 +42,7 @@ public class GetJob {
     try (TranscoderServiceClient transcoderServiceClient = TranscoderServiceClient.create()) {
       JobName jobName =
           JobName.newBuilder().setProject(projectId).setLocation(location).setJob(jobId).build();
-      var getJobRequest = GetJobRequest.newBuilder().setName(jobName.toString()).build();
+      GetJobRequest getJobRequest = GetJobRequest.newBuilder().setName(jobName.toString()).build();
 
       // Send the get job request and process the response.
       Job job = transcoderServiceClient.getJob(getJobRequest);

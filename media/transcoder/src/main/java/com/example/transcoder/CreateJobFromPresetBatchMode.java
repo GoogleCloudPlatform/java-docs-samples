@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,16 @@
 
 package com.example.transcoder;
 
-// [START transcoder_create_job_from_template]
+// [START transcoder_create_job_from_preset_batch_mode]
 
 import com.google.cloud.video.transcoder.v1.CreateJobRequest;
 import com.google.cloud.video.transcoder.v1.Job;
+import com.google.cloud.video.transcoder.v1.Job.ProcessingMode;
 import com.google.cloud.video.transcoder.v1.LocationName;
 import com.google.cloud.video.transcoder.v1.TranscoderServiceClient;
 import java.io.IOException;
 
-public class CreateJobFromTemplate {
+public class CreateJobFromPresetBatchMode {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
@@ -32,14 +33,16 @@ public class CreateJobFromTemplate {
     String location = "us-central1";
     String inputUri = "gs://my-bucket/my-video-file";
     String outputUri = "gs://my-bucket/my-output-folder/";
-    String templateId = "my-job-template";
+    // See https://cloud.google.com/transcoder/docs/concepts/overview#job_template
+    // for information on this preset.
+    String preset = "preset/web-hd";
 
-    createJobFromTemplate(projectId, location, inputUri, outputUri, templateId);
+    createJobFromPresetBatchMode(projectId, location, inputUri, outputUri, preset);
   }
 
-  // Creates a job from a job template.
-  public static void createJobFromTemplate(
-      String projectId, String location, String inputUri, String outputUri, String templateId)
+  // Creates a job from a preset in batch mode.
+  public static void createJobFromPresetBatchMode(
+      String projectId, String location, String inputUri, String outputUri, String preset)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -51,7 +54,9 @@ public class CreateJobFromTemplate {
                   Job.newBuilder()
                       .setInputUri(inputUri)
                       .setOutputUri(outputUri)
-                      .setTemplateId(templateId)
+                      .setTemplateId(preset)
+                      .setMode(ProcessingMode.PROCESSING_MODE_BATCH)
+                      .setBatchModePriority(10)
                       .build())
               .setParent(LocationName.of(projectId, location).toString())
               .build();
@@ -62,4 +67,4 @@ public class CreateJobFromTemplate {
     }
   }
 }
-// [END transcoder_create_job_from_template]
+// [END transcoder_create_job_from_preset_batch_mode]

@@ -41,7 +41,8 @@ public class DeleteJob {
     try (TranscoderServiceClient transcoderServiceClient = TranscoderServiceClient.create()) {
       JobName jobName =
           JobName.newBuilder().setProject(projectId).setLocation(location).setJob(jobId).build();
-      var deleteJobRequest = DeleteJobRequest.newBuilder().setName(jobName.toString()).build();
+      DeleteJobRequest deleteJobRequest = DeleteJobRequest.newBuilder().setName(jobName.toString())
+          .build();
 
       // Send the delete job request and process the response.
       transcoderServiceClient.deleteJob(deleteJobRequest);
