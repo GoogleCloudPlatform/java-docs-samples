@@ -138,7 +138,7 @@ public class CreateJobWithAnimatedOverlay {
               .addOverlays(overlay) // Add the overlay to the job config
               .build();
 
-      var createJobRequest =
+      CreateJobRequest createJobRequest =
           CreateJobRequest.newBuilder()
               .setJob(
                   Job.newBuilder()

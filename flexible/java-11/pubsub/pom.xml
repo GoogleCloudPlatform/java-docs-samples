@@ -39,7 +39,7 @@
     <appengine.maven.plugin>2.4.4</appengine.maven.plugin>
     <jetty>9.4.51.v20230217</jetty>
 
-    <spring.boot.version>2.7.13</spring.boot.version>
+    <spring.boot.version>2.7.14</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -47,7 +47,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.18.0</version>
+        <version>26.20.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

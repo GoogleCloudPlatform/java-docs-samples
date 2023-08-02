@@ -148,7 +148,7 @@ public class CreateJobWithStandaloneCaptions {
                       .build())
               .build();
 
-      var createJobRequest =
+      CreateJobRequest createJobRequest =
           CreateJobRequest.newBuilder()
               .setJob(Job.newBuilder().setOutputUri(outputUri).setConfig(config).build())
               .setParent(LocationName.of(projectId, location).toString())

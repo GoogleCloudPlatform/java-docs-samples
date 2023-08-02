@@ -106,7 +106,7 @@ public class CreateJobFromAdHoc {
                       .build())
               .build();
 
-      var createJobRequest =
+      CreateJobRequest createJobRequest =
           CreateJobRequest.newBuilder()
               .setJob(
                   Job.newBuilder()

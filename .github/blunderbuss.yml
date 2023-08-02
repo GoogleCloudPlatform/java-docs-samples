@@ -44,7 +44,7 @@ assign_issues_by:
 - labels:
   - 'api: spanner'
   to:
-  - rajatbhatta
+  - arpan14
 - labels:
   - 'api: dlp'
   to:

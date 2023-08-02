@@ -30,6 +30,7 @@ import org.apache.beam.sdk.testing.TestStream;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.values.TimestampedValue;
 import org.apache.beam.sdk.values.TypeDescriptor;
+import org.apache.beam.sdk.values.TypeDescriptors;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
@@ -45,6 +46,8 @@ public class BigQueryStreamExactlyOnce {
             TimestampedValue.of("Bob,30",
                 startTime.plus(Duration.standardSeconds(1))),
             TimestampedValue.of("Charles,40",
+                startTime.plus(Duration.standardSeconds(2))),
+            TimestampedValue.of("Dylan,Invalid value",
                 startTime.plus(Duration.standardSeconds(2))))
         .advanceWatermarkToInfinity();
   }
@@ -80,10 +83,19 @@ public class BigQueryStreamExactlyOnce {
             .withCreateDisposition(CreateDisposition.CREATE_NEVER)
             .withWriteDisposition(WriteDisposition.WRITE_APPEND)
             .withMethod(Write.Method.STORAGE_WRITE_API)
-            // For exactly-once processing, set the number of Write API streams and the triggering
-            // frequency.
-            .withNumStorageWriteApiStreams(1)
-            .withTriggeringFrequency(Duration.standardSeconds(5)));
+            // For exactly-once processing, set the triggering frequency.
+            .withTriggeringFrequency(Duration.standardSeconds(5)))
+        // Get the collection of write errors.
+        .getFailedStorageApiInserts()
+        .apply(MapElements.into(TypeDescriptors.strings())
+            // Process each error. In production systems, it's useful to write the errors to
+            // another destination, such as a dead-letter table or queue.
+            .via(
+                x -> {
+                  System.out.println("Failed insert: " + x.getErrorMessage());
+                  System.out.println("Row: " + x.getRow());
+                  return "";
+                }));
     return pipeline.run();
   }
 }

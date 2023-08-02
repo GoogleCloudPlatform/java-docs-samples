@@ -17,6 +17,7 @@
 package com.example.dataflow;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
@@ -136,5 +137,8 @@ public class BigQueryWriteIT {
         QueryJobConfiguration.newBuilder(query).setDefaultDataset(datasetName).build();
     TableResult result = bigquery.query(queryConfig);
     assertEquals(3, result.getTotalRows());
+    // Verify that the bad data was written to the error collection.
+    String got = bout.toString();
+    assertTrue(got.contains("Failed insert: "));
   }
 }

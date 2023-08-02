@@ -30,7 +30,7 @@ limitations under the License.
   <properties>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
-    <spring.boot.version>3.1.1</spring.boot.version>
+    <spring.boot.version>3.1.2</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -91,7 +91,7 @@ limitations under the License.
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
-      <version>5.10.0-RC1</version>
+      <version>5.10.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
