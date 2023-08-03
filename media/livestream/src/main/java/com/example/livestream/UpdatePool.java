@@ -47,25 +47,25 @@ public class UpdatePool {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      var updatePoolRequest =
-          UpdatePoolRequest.newBuilder()
-              .setPool(
-                  Pool.newBuilder()
-                      .setName(PoolName.of(projectId, location, poolId).toString())
-                      .setNetworkConfig(
-                          NetworkConfig.newBuilder()
-                              .setPeeredNetwork(peeredNetwork)
-                              .build()
+    LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create();
+    var updatePoolRequest =
+        UpdatePoolRequest.newBuilder()
+            .setPool(
+                Pool.newBuilder()
+                    .setName(PoolName.of(projectId, location, poolId).toString())
+                    .setNetworkConfig(
+                        NetworkConfig.newBuilder()
+                            .setPeeredNetwork(peeredNetwork)
+                            .build()
 
-                      ))
-              .setUpdateMask(FieldMask.newBuilder().addPaths("network_config").build())
-              .build();
-      // Update pool can take 20+ minutes.
-      Pool result =
-          livestreamServiceClient.updatePoolAsync(updatePoolRequest).get(20, TimeUnit.MINUTES);
-      System.out.println("Updated pool: " + result.getName());
-    }
+                    ))
+            .setUpdateMask(FieldMask.newBuilder().addPaths("network_config").build())
+            .build();
+    // Update pool can take 20+ minutes.
+    Pool result =
+        livestreamServiceClient.updatePoolAsync(updatePoolRequest).get(20, TimeUnit.MINUTES);
+    System.out.println("Updated pool: " + result.getName());
+    livestreamServiceClient.close();
   }
 }
 // [END livestream_update_pool]

@@ -45,24 +45,24 @@ public class CreateAsset {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      var createAssetRequest =
-          CreateAssetRequest.newBuilder()
-              .setParent(LocationName.of(projectId, location).toString())
-              .setAssetId(assetId)
-              .setAsset(
-                  Asset.newBuilder()
-                      .setVideo(
-                          VideoAsset.newBuilder()
-                              .setUri(assetUri)
-                              .build())
-                      .build())
-              .build();
-      // First API call in a project can take up to 15 minutes.
-      Asset result =
-          livestreamServiceClient.createAssetAsync(createAssetRequest).get(15, TimeUnit.MINUTES);
-      System.out.println("Asset: " + result.getName());
-    }
+    LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create();
+    var createAssetRequest =
+        CreateAssetRequest.newBuilder()
+            .setParent(LocationName.of(projectId, location).toString())
+            .setAssetId(assetId)
+            .setAsset(
+                Asset.newBuilder()
+                    .setVideo(
+                        VideoAsset.newBuilder()
+                            .setUri(assetUri)
+                            .build())
+                    .build())
+            .build();
+    // First API call in a project can take up to 15 minutes.
+    Asset result =
+        livestreamServiceClient.createAssetAsync(createAssetRequest).get(15, TimeUnit.MINUTES);
+    System.out.println("Asset: " + result.getName());
+    livestreamServiceClient.close();
   }
 }
 // [END livestream_create_asset]
