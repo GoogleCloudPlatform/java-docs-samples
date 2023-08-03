@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,34 +16,42 @@
 
 package com.example.livestream;
 
-// [START livestream_get_channel]
+// [START livestream_list_assets]
 
-import com.google.cloud.video.livestream.v1.Channel;
-import com.google.cloud.video.livestream.v1.ChannelName;
+import com.google.cloud.video.livestream.v1.Asset;
+import com.google.cloud.video.livestream.v1.ListAssetsRequest;
 import com.google.cloud.video.livestream.v1.LivestreamServiceClient;
+import com.google.cloud.video.livestream.v1.LocationName;
 import java.io.IOException;
 
-public class GetChannel {
+public class ListAssets {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
-    String channelId = "my-channel-id";
 
-    getChannel(projectId, location, channelId);
+    listAssets(projectId, location);
   }
 
-  public static void getChannel(String projectId, String location, String channelId)
-      throws IOException {
+  public static void listAssets(String projectId, String location) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. In this example, try-with-resources is used
     // which automatically calls close() on the client to clean up resources.
     try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      ChannelName name = ChannelName.of(projectId, location, channelId);
-      Channel response = livestreamServiceClient.getChannel(name);
-      System.out.println("Channel: " + response.getName());
+      var listAssetsRequest =
+          ListAssetsRequest.newBuilder()
+              .setParent(LocationName.of(projectId, location).toString())
+              .build();
+
+      LivestreamServiceClient.ListAssetsPagedResponse response =
+          livestreamServiceClient.listAssets(listAssetsRequest);
+      System.out.println("Assets:");
+
+      for (Asset asset : response.iterateAll()) {
+        System.out.println(asset.getName());
+      }
     }
   }
 }
-// [END livestream_get_channel]
+// [END livestream_list_assets]

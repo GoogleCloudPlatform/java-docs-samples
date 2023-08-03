@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,15 +37,17 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class CreateInputTest {
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+public class DeleteAssetTest {
+
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
   private static final String LOCATION = "us-central1";
-  private static final String INPUT_ID =
-      "my-input-" + UUID.randomUUID().toString().substring(0, 25);
+  private static final String ASSET_ID =
+      "my-asset-" + UUID.randomUUID().toString().substring(0, 25);
+  private static final String ASSET_URI = "gs://cloud-samples-data/media/ForBiggerEscapes.mp4";
 
   private static String PROJECT_ID;
-  private static String INPUT_NAME;
   private static PrintStream originalOut;
   private ByteArrayOutputStream bout;
 
@@ -63,37 +65,35 @@ public class CreateInputTest {
   }
 
   @Before
-  public void beforeTest() throws IOException {
-    // Clean up old inputs in the test project.
+  public void beforeTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Clean up old assets in the test project.
     TestUtils.cleanAllStale(PROJECT_ID, LOCATION);
 
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    INPUT_NAME =
-        String.format("projects/%s/locations/%s/inputs/%s", PROJECT_ID, LOCATION, INPUT_ID);
     try {
-      DeleteInput.deleteInput(PROJECT_ID, LOCATION, INPUT_ID);
+      DeleteAsset.deleteAsset(PROJECT_ID, LOCATION, ASSET_ID);
     } catch (NotFoundException | InterruptedException | ExecutionException | TimeoutException e) {
-      // Don't worry if the input doesn't already exist.
+      // Don't worry if the asset doesn't already exist.
     }
+    CreateAsset.createAsset(PROJECT_ID, LOCATION, ASSET_ID, ASSET_URI);
     bout.reset();
   }
 
   @Test
-  public void test_CreateInput()
+  public void test_DeleteAsset()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateInput.createInput(PROJECT_ID, LOCATION, INPUT_ID);
+    DeleteAsset.deleteAsset(PROJECT_ID, LOCATION, ASSET_ID);
     String output = bout.toString();
-    assertThat(output, containsString(INPUT_NAME));
+    assertThat(output, containsString("Deleted asset"));
     bout.reset();
   }
 
   @After
-  public void tearDown()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    DeleteInput.deleteInput(PROJECT_ID, LOCATION, INPUT_ID);
+  public void tearDown() throws IOException {
     System.setOut(originalOut);
     bout.reset();
   }

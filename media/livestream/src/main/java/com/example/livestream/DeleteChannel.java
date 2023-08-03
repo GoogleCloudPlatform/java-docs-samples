@@ -42,15 +42,15 @@ public class DeleteChannel {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      var deleteChannelRequest =
-          DeleteChannelRequest.newBuilder()
-              .setName(ChannelName.of(projectId, location, channelId).toString())
-              .build();
-      // First API call in a project can take up to 10 minutes.
-      livestreamServiceClient.deleteChannelAsync(deleteChannelRequest).get(10, TimeUnit.MINUTES);
-      System.out.println("Deleted channel");
-    }
+    LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create();
+    var deleteChannelRequest =
+        DeleteChannelRequest.newBuilder()
+            .setName(ChannelName.of(projectId, location, channelId).toString())
+            .build();
+    // First API call in a project can take up to 10 minutes.
+    livestreamServiceClient.deleteChannelAsync(deleteChannelRequest).get(10, TimeUnit.MINUTES);
+    System.out.println("Deleted channel");
+    livestreamServiceClient.close();
   }
 }
 // [END livestream_delete_channel]

@@ -48,27 +48,27 @@ public class UpdateChannel {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      var updateChannelRequest =
-          UpdateChannelRequest.newBuilder()
-              .setChannel(
-                  Channel.newBuilder()
-                      .setName(ChannelName.of(projectId, location, channelId).toString())
-                      .addInputAttachments(
-                          0,
-                          InputAttachment.newBuilder()
-                              .setKey("updated-input")
-                              .setInput(InputName.of(projectId, location, inputId).toString())
-                              .build()))
-              .setUpdateMask(FieldMask.newBuilder().addPaths("input_attachments").build())
-              .build();
-      // First API call in a project can take up to 10 minutes.
-      Channel result =
-          livestreamServiceClient
-              .updateChannelAsync(updateChannelRequest)
-              .get(10, TimeUnit.MINUTES);
-      System.out.println("Updated channel: " + result.getName());
-    }
+    LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create();
+    var updateChannelRequest =
+        UpdateChannelRequest.newBuilder()
+            .setChannel(
+                Channel.newBuilder()
+                    .setName(ChannelName.of(projectId, location, channelId).toString())
+                    .addInputAttachments(
+                        0,
+                        InputAttachment.newBuilder()
+                            .setKey("updated-input")
+                            .setInput(InputName.of(projectId, location, inputId).toString())
+                            .build()))
+            .setUpdateMask(FieldMask.newBuilder().addPaths("input_attachments").build())
+            .build();
+    // First API call in a project can take up to 10 minutes.
+    Channel result =
+        livestreamServiceClient
+            .updateChannelAsync(updateChannelRequest)
+            .get(10, TimeUnit.MINUTES);
+    System.out.println("Updated channel: " + result.getName());
+    livestreamServiceClient.close();
   }
 }
 // [END livestream_update_channel]

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,34 +16,34 @@
 
 package com.example.livestream;
 
-// [START livestream_get_channel]
+// [START livestream_get_pool]
 
-import com.google.cloud.video.livestream.v1.Channel;
-import com.google.cloud.video.livestream.v1.ChannelName;
 import com.google.cloud.video.livestream.v1.LivestreamServiceClient;
+import com.google.cloud.video.livestream.v1.Pool;
+import com.google.cloud.video.livestream.v1.PoolName;
 import java.io.IOException;
 
-public class GetChannel {
+public class GetPool {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
-    String channelId = "my-channel-id";
+    String poolId = "default"; // only 1 pool supported per location
 
-    getChannel(projectId, location, channelId);
+    getPool(projectId, location, poolId);
   }
 
-  public static void getChannel(String projectId, String location, String channelId)
+  public static void getPool(String projectId, String location, String poolId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. In this example, try-with-resources is used
     // which automatically calls close() on the client to clean up resources.
     try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      ChannelName name = ChannelName.of(projectId, location, channelId);
-      Channel response = livestreamServiceClient.getChannel(name);
-      System.out.println("Channel: " + response.getName());
+      PoolName name = PoolName.of(projectId, location, poolId);
+      Pool response = livestreamServiceClient.getPool(name);
+      System.out.println("Pool: " + response.getName());
     }
   }
 }
-// [END livestream_get_channel]
+// [END livestream_get_pool]
