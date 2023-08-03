@@ -33,7 +33,7 @@ dependencies {
   }
   compile 'io.grpc:grpc-netty:1.57.1'
   compile 'io.grpc:grpc-protobuf:1.57.1'
-  compile 'io.grpc:grpc-stub:1.57.0'
+  compile 'io.grpc:grpc-stub:1.57.1'
 }
 
 protobuf {
@@ -43,7 +43,7 @@ protobuf {
 
   plugins {
     grpc {
-      artifact = 'io.grpc:protoc-gen-grpc-java:1.57.0'
+      artifact = 'io.grpc:protoc-gen-grpc-java:1.57.1'
     }
   }
   generateProtoTasks {
