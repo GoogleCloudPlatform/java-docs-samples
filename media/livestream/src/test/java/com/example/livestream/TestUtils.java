@@ -17,12 +17,15 @@
 package com.example.livestream;
 
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.video.livestream.v1.Asset;
 import com.google.cloud.video.livestream.v1.Channel;
+import com.google.cloud.video.livestream.v1.DeleteAssetRequest;
 import com.google.cloud.video.livestream.v1.DeleteChannelRequest;
 import com.google.cloud.video.livestream.v1.DeleteEventRequest;
 import com.google.cloud.video.livestream.v1.DeleteInputRequest;
 import com.google.cloud.video.livestream.v1.Event;
 import com.google.cloud.video.livestream.v1.Input;
+import com.google.cloud.video.livestream.v1.ListAssetsRequest;
 import com.google.cloud.video.livestream.v1.ListChannelsRequest;
 import com.google.cloud.video.livestream.v1.ListEventsRequest;
 import com.google.cloud.video.livestream.v1.ListInputsRequest;
@@ -41,6 +44,7 @@ public class TestUtils {
   public static void cleanAllStale(String projectId, String location) {
     cleanStaleChannels(projectId, location);
     cleanStaleInputs(projectId, location);
+    cleanStaleAssets(projectId, location);
   }
 
   public static void cleanStaleInputs(String projectId, String location) {
@@ -110,6 +114,30 @@ public class TestUtils {
           livestreamServiceClient
               .deleteChannelAsync(deleteChannelRequest)
               .get(10, TimeUnit.MINUTES);
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (NotFoundException | InterruptedException | ExecutionException | TimeoutException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static void cleanStaleAssets(String projectId, String location) {
+    try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
+      var listAssetsRequest =
+          ListAssetsRequest.newBuilder()
+              .setParent(LocationName.of(projectId, location).toString())
+              .build();
+
+      LivestreamServiceClient.ListAssetsPagedResponse response =
+          livestreamServiceClient.listAssets(listAssetsRequest);
+
+      for (Asset asset : response.iterateAll()) {
+        if (asset.getCreateTime().getSeconds()
+            < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
+          var deleteAssetRequest = DeleteAssetRequest.newBuilder().setName(asset.getName()).build();
+          livestreamServiceClient.deleteAssetAsync(deleteAssetRequest).get(10, TimeUnit.MINUTES);
         }
       }
     } catch (IOException e) {
