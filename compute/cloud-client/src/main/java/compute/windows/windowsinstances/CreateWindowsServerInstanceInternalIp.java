@@ -69,7 +69,7 @@ public class CreateWindowsServerInstanceInternalIp {
     String machineType = "n1-standard-1";
     // sourceImageFamily - Name of the public image family for Windows Server or SQL Server images.
     //  *    https://cloud.google.com/compute/docs/images#os-compute-support
-    String sourceImageFamily = "windows-2012-r2";
+    String sourceImageFamily = "windows-2022";
 
     // Instantiates a client.
     try (InstancesClient instancesClient = InstancesClient.create()) {
