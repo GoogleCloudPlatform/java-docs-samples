@@ -36,7 +36,7 @@ limitations under the License.
     <ktor_version>3.0.0-eap-759</ktor_version>
     <kotlin.code.style>official</kotlin.code.style>
     <kotlin_version>1.9.0</kotlin_version>
-    <logback_version>1.4.8</logback_version>
+    <logback_version>1.4.9</logback_version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <main.class>com.example.appengine.ApplicationKt</main.class>
