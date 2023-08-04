@@ -58,6 +58,11 @@ assign_issues_by:
   - 'api: contentwarehouse'
   to:
   - GoogleCloudPlatform/googleapis-contentwarehouse
+- labels:
+  - 'api: storage'
+  - 'api: storagetransfer'
+  to:
+  - GoogleCloudPlatform/cloud-storage-dpes
 
 assign_prs:
   - GoogleCloudPlatform/java-samples-reviewers
@@ -101,3 +106,8 @@ assign_prs_by:
   - 'api: contentwarehouse'
   to:
   - GoogleCloudPlatform/googleapis-contentwarehouse
+- labels:
+  - 'api: storage'
+  - 'api: storagetransfer'
+  to:
+  - GoogleCloudPlatform/cloud-storage-dpes
