@@ -75,7 +75,6 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-      <version>4.0.1</version>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
@@ -93,13 +92,11 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-inline</artifactId>
-      <version>5.2.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
-      <version>5.4.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
