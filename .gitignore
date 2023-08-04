@@ -41,8 +41,9 @@ secrets.env
 *.iml
 
 # Eclipse files
-.project
 .classpath
+.metadata
+.project
 .settings
 
 # vim
@@ -67,3 +68,6 @@ out/
 terraform.tfstate*
 .terraform*
 *.output
+
+# PMD
+.pmdCache
