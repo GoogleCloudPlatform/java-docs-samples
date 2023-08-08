@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-// [START functions_cloudevent_storage_unit_test]
 package functions;
+
+// [START functions_cloudevent_storage_unit_test]
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -105,4 +106,5 @@ public class HelloGcsTest {
     assertThat(logMessage).isEqualTo("No data found in cloud event payload!");
   }
 }
+
 // [END functions_cloudevent_storage_unit_test]
