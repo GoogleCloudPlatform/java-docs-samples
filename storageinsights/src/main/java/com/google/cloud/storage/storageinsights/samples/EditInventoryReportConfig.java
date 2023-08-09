@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-// [START storageinsights_edit_inventory_report_config]
-
 package com.google.cloud.storage.storageinsights.samples;
+// [START storageinsights_edit_inventory_report_config]
 
 import com.google.cloud.storageinsights.v1.ReportConfig;
 import com.google.cloud.storageinsights.v1.ReportConfigName;
@@ -25,7 +24,7 @@ import com.google.cloud.storageinsights.v1.UpdateReportConfigRequest;
 import java.io.IOException;
 
 public class EditInventoryReportConfig {
-
+// [END storageinsights_edit_inventory_report_config]
   public static void main(String[] args) throws IOException {
     // The ID of your Google Cloud Project
     String projectId = "your-project-id";
@@ -38,7 +37,7 @@ public class EditInventoryReportConfig {
 
     editInventoryReportConfig(projectId, bucketLocation, inventoryReportConfigUuid);
   }
-
+// [START storageinsights_edit_inventory_report_config]
   public static void editInventoryReportConfig(
       String projectId, String location, String inventoryReportConfigUuid) throws IOException {
     try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {
