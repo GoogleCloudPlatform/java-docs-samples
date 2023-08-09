@@ -23,7 +23,7 @@ import com.google.cloud.storageinsights.v1.StorageInsightsClient;
 import java.io.IOException;
 
 public class DeleteInventoryReportConfig {
-// [END storageinsights_delete_inventory_report_config]
+  // [END storageinsights_delete_inventory_report_config]
   public static void main(String[] args) throws IOException {
     // The ID of your Google Cloud Project
     String projectId = "your-project-id";
@@ -36,7 +36,7 @@ public class DeleteInventoryReportConfig {
 
     deleteInventoryReportConfig(projectId, bucketLocation, inventoryReportConfigUuid);
   }
-// [START storageinsights_delete_inventory_report_config]
+  // [START storageinsights_delete_inventory_report_config]
   public static void deleteInventoryReportConfig(
       String projectId, String location, String inventoryReportConfigUuid) throws IOException {
     try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {

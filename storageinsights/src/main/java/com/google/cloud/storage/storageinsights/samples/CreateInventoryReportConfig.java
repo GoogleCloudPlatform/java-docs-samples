@@ -32,7 +32,7 @@ import com.google.type.Date;
 import java.io.IOException;
 
 public class CreateInventoryReportConfig {
-// [END storageinsights_create_inventory_report_config]
+  // [END storageinsights_create_inventory_report_config]
 
   public static void main(String[] args) throws IOException {
     // The ID of your Google Cloud Project
@@ -49,7 +49,7 @@ public class CreateInventoryReportConfig {
 
     createInventoryReportConfig(projectId, bucketLocation, sourceBucket, destinationBucket);
   }
-// [START storageinsights_create_inventory_report_config]
+  // [START storageinsights_create_inventory_report_config]
   public static void createInventoryReportConfig(
       String projectId, String bucketLocation, String sourceBucket, String destinationBucket)
       throws IOException {

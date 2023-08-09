@@ -24,7 +24,7 @@ import com.google.cloud.storageinsights.v1.StorageInsightsClient;
 import java.io.IOException;
 
 public class GetInventoryReportNames {
-// [END storageinsights_get_inventory_report_names]
+  // [END storageinsights_get_inventory_report_names]
   public static void main(String[] args) throws IOException {
     // The ID of your Google Cloud Project
     String projectId = "your-project-id";

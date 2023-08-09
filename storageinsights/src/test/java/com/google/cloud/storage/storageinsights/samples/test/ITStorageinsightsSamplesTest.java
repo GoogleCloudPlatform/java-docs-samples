@@ -59,8 +59,7 @@ public class ITStorageinsightsSamplesTest {
   private static Storage storage;
   private static StorageInsightsClient insights;
 
-  @Rule
-  public final StdOutCaptureRule stdOutCaptureRule = new StdOutCaptureRule();
+  @Rule public final StdOutCaptureRule stdOutCaptureRule = new StdOutCaptureRule();
 
   @BeforeClass
   public static void beforeClass() throws Exception {
@@ -95,7 +94,7 @@ public class ITStorageinsightsSamplesTest {
     Project project = pc.getProject(ProjectName.of(PROJECT_ID));
     String projectNumber = project.getName().split("/")[1];
     String insightsServiceAccount =
-            "service-" + projectNumber + "@gcp-sa-storageinsights.iam.gserviceaccount.com";
+        "service-" + projectNumber + "@gcp-sa-storageinsights.iam.gserviceaccount.com";
 
     grantBucketsInsightsPermissions(insightsServiceAccount, SOURCE_BUCKET);
     grantBucketsInsightsPermissions(insightsServiceAccount, SINK_BUCKET);
