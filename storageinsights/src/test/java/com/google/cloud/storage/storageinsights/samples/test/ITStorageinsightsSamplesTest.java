@@ -98,6 +98,7 @@ public class ITStorageinsightsSamplesTest {
 
     grantBucketsInsightsPermissions(insightsServiceAccount, SOURCE_BUCKET);
     grantBucketsInsightsPermissions(insightsServiceAccount, SINK_BUCKET);
+    Thread.sleep(10000); //gives time for service account permissions to propagate.
   }
 
   @AfterClass
