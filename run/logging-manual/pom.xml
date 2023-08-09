@@ -49,7 +49,7 @@ limitations under the License.
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.4.10</version>
+      <version>1.4.11</version>
     </dependency>
     <!-- [END run_manual_logging_dep] -->
     <!-- [END cloudrun_manual_logging_dep] -->
