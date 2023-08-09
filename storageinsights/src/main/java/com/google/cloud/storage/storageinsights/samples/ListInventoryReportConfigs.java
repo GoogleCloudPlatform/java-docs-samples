@@ -15,6 +15,7 @@
  */
 
 package com.google.cloud.storage.storageinsights.samples;
+
 // [START storageinsights_list_inventory_report_configs]
 
 import com.google.cloud.storageinsights.v1.LocationName;
@@ -23,6 +24,7 @@ import com.google.cloud.storageinsights.v1.StorageInsightsClient;
 import java.io.IOException;
 
 public class ListInventoryReportConfigs {
+
   // [END storageinsights_list_inventory_report_configs]
   public static void main(String[] args) throws IOException {
     // The ID of your Google Cloud Project
@@ -34,6 +36,7 @@ public class ListInventoryReportConfigs {
     listInventoryReportConfigs(projectId, bucketLocation);
   }
   // [START storageinsights_list_inventory_report_configs]
+
   public static void listInventoryReportConfigs(String projectId, String location)
       throws IOException {
     try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {

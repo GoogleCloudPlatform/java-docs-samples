@@ -49,7 +49,9 @@ public class CreateInventoryReportConfig {
 
     createInventoryReportConfig(projectId, bucketLocation, sourceBucket, destinationBucket);
   }
+
   // [START storageinsights_create_inventory_report_config]
+
   public static void createInventoryReportConfig(
       String projectId, String bucketLocation, String sourceBucket, String destinationBucket)
       throws IOException {
