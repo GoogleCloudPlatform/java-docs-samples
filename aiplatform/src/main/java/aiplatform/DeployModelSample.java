@@ -77,7 +77,7 @@ public class DeployModelSample {
     EndpointServiceStubSettings.Builder endpointServiceStubSettingsBuilder =
         EndpointServiceStubSettings.newBuilder();
     endpointServiceStubSettingsBuilder
-        .createEndpointOperationSettings()
+        .deployModelOperationSettings()
         .setPollingAlgorithm(operationTimedPollAlgorithm);
     EndpointServiceStubSettings endpointStubSettings = endpointServiceStubSettingsBuilder.build();
     EndpointServiceSettings endpointServiceSettings =
