@@ -73,7 +73,7 @@ public class CreateTrainingPipelineImageObjectDetectionSample {
 
       AutoMlImageObjectDetectionInputs autoMlImageObjectDetectionInputs =
           AutoMlImageObjectDetectionInputs.newBuilder()
-              .setModelType(ModelType.CLOUD_HIGH_ACCURACY_1)
+              .setModelType(ModelType.CLOUD_1)
               .setBudgetMilliNodeHours(20000)
               .setDisableEarlyStopping(false)
               .build();
