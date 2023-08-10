@@ -27,11 +27,6 @@ assign_issues_by:
   to:
   - simonz130
 - labels:
-  - 'api: cloudiot'
-  to:
-  - attilagargyan
-  - simoncsaba-g
-- labels:
   - 'api: bigtable'
   - 'api: datastore'
   - 'api: firestore'
@@ -78,11 +73,6 @@ assign_prs_by:
   - 'api: clouderrorreporting'
   to:
   - simonz130
-- labels:
-  - 'api: cloudiot'
-  to:
-  - attilagargyan
-  - simoncsaba-g
 - labels:
   - 'api: bigtable'
   - 'api: datastore'
