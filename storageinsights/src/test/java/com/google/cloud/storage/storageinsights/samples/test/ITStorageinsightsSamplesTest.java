@@ -64,7 +64,7 @@ public class ITStorageinsightsSamplesTest {
 
   // This is in case the tests fail due to the permissions for the service account needing extra
   // time to propagate.
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(10);
 
   @BeforeClass
   public static void beforeClass() throws Exception {
