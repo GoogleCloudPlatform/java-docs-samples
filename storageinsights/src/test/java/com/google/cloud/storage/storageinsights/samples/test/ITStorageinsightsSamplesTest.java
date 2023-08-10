@@ -36,6 +36,7 @@ import com.google.cloud.storage.testing.RemoteStorageHelper;
 import com.google.cloud.storageinsights.v1.LocationName;
 import com.google.cloud.storageinsights.v1.ReportConfig;
 import com.google.cloud.storageinsights.v1.StorageInsightsClient;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.cloud.testing.junit4.StdOutCaptureRule;
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
@@ -60,6 +61,10 @@ public class ITStorageinsightsSamplesTest {
   private static StorageInsightsClient insights;
 
   @Rule public final StdOutCaptureRule stdOutCaptureRule = new StdOutCaptureRule();
+
+  // This is in case the tests fail due to the permissions for the service account needing extra
+  // time to propagate.
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
   @BeforeClass
   public static void beforeClass() throws Exception {
@@ -98,7 +103,6 @@ public class ITStorageinsightsSamplesTest {
 
     grantBucketsInsightsPermissions(insightsServiceAccount, SOURCE_BUCKET);
     grantBucketsInsightsPermissions(insightsServiceAccount, SINK_BUCKET);
-    Thread.sleep(10000); //gives time for service account permissions to propagate.
   }
 
   @AfterClass
