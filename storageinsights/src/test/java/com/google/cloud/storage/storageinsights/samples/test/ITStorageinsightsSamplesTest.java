@@ -39,7 +39,9 @@ import com.google.cloud.storageinsights.v1.StorageInsightsClient;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.cloud.testing.junit4.StdOutCaptureRule;
 import com.google.common.collect.ImmutableList;
+import com.google.common.io.CharStreams;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,11 +62,13 @@ public class ITStorageinsightsSamplesTest {
   private static Storage storage;
   private static StorageInsightsClient insights;
 
-  @Rule public final StdOutCaptureRule stdOutCaptureRule = new StdOutCaptureRule();
+  @Rule(order = 1)
+  public final StdOutCaptureRule stdOutCaptureRule = new StdOutCaptureRule();
 
   // This is in case the tests fail due to the permissions for the service account needing extra
   // time to propagate.
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(10);
+  @Rule(order = 2)
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
   @BeforeClass
   public static void beforeClass() throws Exception {
@@ -222,15 +226,21 @@ public class ITStorageinsightsSamplesTest {
     }
   }
 
-  private static void deleteInventoryReportConfig(String sampleOutput) {
+  private static void deleteInventoryReportConfig(String sampleOutput) throws IOException {
     String reportConfigName = getReportConfigNameFromSampleOutput(sampleOutput);
     insights.deleteReportConfig(reportConfigName);
   }
-
-  private static String getReportConfigNameFromSampleOutput(String sampleOutput) {
-    Pattern pattern = Pattern.compile("(projects.*)");
-    Matcher matcher = pattern.matcher(sampleOutput);
-    matcher.find();
-    return matcher.group(1).trim();
+  // Gets the last instance of a Report Config Name from an output string
+  private static String getReportConfigNameFromSampleOutput(String sampleOutput)
+      throws IOException {
+    Pattern pattern = Pattern.compile(".*(projects/.*)");
+    return ImmutableList.copyOf(CharStreams.readLines(new StringReader(sampleOutput)))
+        .reverse()
+        .stream()
+        .map(pattern::matcher)
+        .filter(Matcher::matches)
+        .map(m -> m.group(1))
+        .findFirst()
+        .orElse("");
   }
 }
