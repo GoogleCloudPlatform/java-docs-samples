@@ -230,6 +230,7 @@ public class ITStorageinsightsSamplesTest {
     String reportConfigName = getReportConfigNameFromSampleOutput(sampleOutput);
     insights.deleteReportConfig(reportConfigName);
   }
+
   // Gets the last instance of a Report Config Name from an output string
   private static String getReportConfigNameFromSampleOutput(String sampleOutput)
       throws IOException {
