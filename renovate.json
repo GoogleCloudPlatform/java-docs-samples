@@ -11,119 +11,121 @@
   ],
   "packageRules": [
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "^com.fasterxml.jackson.core:"
       ],
       "groupName": "Jackson core packages"
-    },    
+    },
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "^com.google.appengine:"
       ],
       "groupName": "AppEngine packages"
     },
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "^com.google.cloud.bigtable:"
       ],
       "groupName": "Bigtable packages"
     },
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "^com.google.cloud.sql:"
       ],
       "groupName": "Cloud SQL connectors"
     },
     {
-      "matchPackagePrefixes": [ "com.google" ],
+      "matchPackagePrefixes": [
+        "com.google"
+      ],
       "allowedVersions": "!/.+-sp\\.[0-9]+$/"
     },
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "^org.apache.beam:"
       ],
       "groupName": "Apache Beam packages"
     },
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "io.grpc:(?:protoc-gen-)?grpc-*"
       ],
       "groupName": "gRPC packages"
     },
     {
-      "packagePatterns": [
-        "^io.micronaut(?:\.validation)?:"
-      ],
-      "groupName": "Micronaut packages"
-    },
-    {
-      "packagePatterns": [
-        "^io.quarkus:"
-      ],
-      "groupName": "Quarkus packages"
-    },
-    {
-      "packagePatterns": [
-        "^io.vertx:"
-      ],
-      "groupName": "Vertx packages"
-    },
-    {
-      "packagePatterns": [
-        "^io.opencensus:"
-      ],
-      "groupName": "OpenCensus packages"
-    },
-    {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "^org.eclipse.jetty:"
       ],
       "groupName": "Jetty packages"
     },
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
+        "^io.micronaut(?:\.validation)?:"
+      ],
+      "groupName": "Micronaut packages"
+    },
+    {
+      "matchPackagePatterns": [
+        "^io.quarkus:"
+      ],
+      "groupName": "Quarkus packages"
+    },
+    {
+      "matchPackagePatterns": [
+        "^io.vertx:"
+      ],
+      "groupName": "Vertx packages"
+    },
+    {
+      "matchPackagePatterns": [
+        "^io.opencensus:"
+      ],
+      "groupName": "OpenCensus packages"
+    },
+    {
+      "matchPackagePatterns": [
         "^org.slf4j:"
       ],
       "groupName": "SLF4J packages"
-    },    
-    {
-      "packageNames": [
-        "javax.servlet:javax.servlet-api"
-      ],
-      "rangeStrategy": "pin"
     },
     {
-      "packageNames": [
+      "matchPackageNames": [
         "com.microsoft.sqlserver:mssql-jdbc"
       ],
       "allowedVersions": "/.+jre8.?/"
     },
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "scala"
       ],
       "enabled": false
     },
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "^spark-sql"
       ],
       "enabled": false
     },
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "^jackson-module-scala"
       ],
       "enabled": false
     },
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "^io.ktor:",
         "^com.amazonaws:"
       ],
       "schedule": [
         "before 3am on the first day of the month"
       ]
+    },
+    {
+      "matchPackagePatterns": [
+        "org.springframework.boot"
+      ],
+      "matchCurrentVersion": "!/.*[SNAPSHOT | M]/"
     },
     {
       "matchPackageNames": [
@@ -133,20 +135,66 @@
       "description": "@anguillanneuf: This package is no longer actively maintained. Best to use the version specified in https://github.com/googleapis/google-api-java-client-services/tree/main/clients/google-api-services-dataflow/v1b3"
     },
     {
-      "matchPackagePatterns": [ "org.springframework.boot" ],
-      "matchCurrentVersion": "!/.*[SNAPSHOT | M]/"
+      "matchPackagePatterns": [
+        "org.springframework.boot"
+      ],
+      "matchPaths": [
+        "appengine-java11/**",
+        "appengine-java8/**",
+        "flexible/*",
+        "flexible/java-11/**",
+        "flexible/java-8/**",
+        "cloud-sql/**",
+        "monitoring/**",
+        "pubsub/spring/**",
+        "recaptcha_enterprise/**",
+        "run/endpoints-v2-backend/*",
+        "spanner/**",
+        "vision/**"
+      ],
+      "allowedVersions": "<3",
+      "description": "@akitsch: Spring Boot V3 requires Java 17"
     },
     {
-      "matchPackagePatterns": [ "org.springframework.boot" ],
-      "matchPaths": ["appengine-java11/**", "appengine-java8/**", "flexible/*", "flexible/java-11/**", "flexible/java-8/**", "cloud-sql/**", "monitoring/**", "pubsub/spring/**", "recaptcha_enterprise/**", "run/endpoints-v2-backend/*", "spanner/**", "vision/**"],
-      "allowedVersions": "<3"
+      "matchPackagePatterns": [
+        "^org.eclipse.jetty:"
+      ],
+      "groupName": "Jetty packages",
+      "allowedVersions": "<10",
+      "matchPaths": [
+        "appengine-java8/**",
+        "flexible/java-8/**"
+      ],
+      "description": "@akitsch: Java 8 on App Engine supports servlets V3.1 and Jetty V9 https://cloud.google.com/appengine/docs/flexible/java/runtime"
+    },
+    {
+      "matchPackageNames": [
+        "javax.servlet:javax.servlet-api"
+      ],
+      "allowedVersions": "3.1.0",
+      "matchPaths": [
+        "appengine-java8/**",
+        "flexible/java-8/**"
+      ],
+      "description": "@akitsch: Java 8 on App Engine supports servlets V3.1 and Jetty V9 https://cloud.google.com/appengine/docs/flexible/java/runtime"
+    },
+    {
+      "matchPackagePatterns": ["^io.micronaut(?:\.validation)?:"
+      ],
+      "groupName": "Micronaut packages",
+      "allowedVersions": "<4",
+      "matchPaths": [
+        "appengine-java11/**",
+        "flexible/java-11/**"
+      ],
+      "description": "@akitsch: Micronaut V4 requires Java 11"
     }
   ],
   "labels": [
     "automerge"
   ],
   "rebaseWhen": "never",
-    "dependencyDashboard": true,
+  "dependencyDashboard": true,
   "dependencyDashboardLabels": [
     "type: process"
   ],
