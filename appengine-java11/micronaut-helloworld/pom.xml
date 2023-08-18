@@ -33,7 +33,7 @@
     <exec.mainClass>com.example.appengine.Application</exec.mainClass>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
-    <micronaut.version>4.0.0</micronaut.version>
+    <micronaut.version>3.10.1</micronaut.version>
   </properties>
 
   <dependencies>
@@ -44,7 +44,7 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>io.micronaut.validation</groupId>
+      <groupId>io.micronaut</groupId>
       <artifactId>micronaut-validation</artifactId>
       <version>${micronaut.version}</version>
       <scope>compile</scope>
@@ -150,8 +150,8 @@
                 <version>${micronaut.version}</version>
               </path>
               <path>
-                <groupId>io.micronaut.validation</groupId>
-                <artifactId>micronaut-validation-processor</artifactId>
+                <groupId>io.micronaut</groupId>
+                <artifactId>micronaut-validation</artifactId>
                 <version>${micronaut.version}</version>
               </path>
             </annotationProcessorPaths>
@@ -173,8 +173,8 @@
                     <version>${micronaut.version}</version>
                   </path>
                   <path>
-                    <groupId>io.micronaut.validation</groupId>
-                    <artifactId>micronaut-validation-processor</artifactId>
+                    <groupId>io.micronaut</groupId>
+                    <artifactId>micronaut-validation</artifactId>
                     <version>${micronaut.version}</version>
                   </path>
                 </annotationProcessorPaths>
