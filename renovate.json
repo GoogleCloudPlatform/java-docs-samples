@@ -163,9 +163,14 @@
       "allowedVersions": "<10",
       "matchPaths": [
         "appengine-java8/**",
-        "flexible/java-8/**"
+        "appengine-java11/**",
+        "appengine-java17/**",
+        "flexible/java-8/**",
+        "iap/**",
+        "memorystore/redis/**",
+        "unittests/**"
       ],
-      "description": "@akitsch: Java 8 on App Engine supports servlets V3.1 and Jetty V9 https://cloud.google.com/appengine/docs/flexible/java/runtime"
+      "description": "@akitsch: Java 8 on App Engine supports servlets V3.1 and Jetty V9 https://cloud.google.com/appengine/docs/flexible/java/runtime. Folders appengine-java1* needs to be migrated"
     },
     {
       "matchPackageNames": [
@@ -174,20 +179,25 @@
       "allowedVersions": "3.1.0",
       "matchPaths": [
         "appengine-java8/**",
-        "flexible/java-8/**"
+        "appengine-java11/**",
+        "appengine-java17/**",
+        "flexible/java-8/**",
+        "iap/**",
+        "session-handling/**",
+        "memorystore/redis/**",
+        "unittests/**"
       ],
-      "description": "@akitsch: Java 8 on App Engine supports servlets V3.1 and Jetty V9 https://cloud.google.com/appengine/docs/flexible/java/runtime"
+      "description": "@akitsch: Java 8 on App Engine supports servlets V3.1 and Jetty V9 https://cloud.google.com/appengine/docs/flexible/java/runtime. Folders appengine-java1* needs to be migrated"
     },
     {
-      "matchPackagePatterns": ["^io.micronaut(?:\.validation)?:"
-      ],
+      "matchPackagePatterns": ["^io.micronaut"],
       "groupName": "Micronaut packages",
       "allowedVersions": "<4",
       "matchPaths": [
         "appengine-java11/**",
         "flexible/java-11/**"
       ],
-      "description": "@akitsch: Micronaut V4 requires Java 11"
+      "description": "@akitsch: Micronaut V4 requires Java 17"
     }
   ],
   "labels": [
