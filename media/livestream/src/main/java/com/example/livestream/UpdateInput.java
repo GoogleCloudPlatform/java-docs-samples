@@ -46,24 +46,24 @@ public class UpdateInput {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      var updateInputRequest =
-          UpdateInputRequest.newBuilder()
-              .setInput(
-                  Input.newBuilder()
-                      .setName(InputName.of(projectId, location, inputId).toString())
-                      .setPreprocessingConfig(
-                          PreprocessingConfig.newBuilder()
-                              .setCrop(Crop.newBuilder().setTopPixels(5).setBottomPixels(5).build())
-                              .build())
-                      .build())
-              .setUpdateMask(FieldMask.newBuilder().addPaths("preprocessing_config").build())
-              .build();
-      // First API call in a project can take up to 10 minutes.
-      Input result =
-          livestreamServiceClient.updateInputAsync(updateInputRequest).get(10, TimeUnit.MINUTES);
-      System.out.println("Updated input: " + result.getName());
-    }
+    LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create();
+    var updateInputRequest =
+        UpdateInputRequest.newBuilder()
+            .setInput(
+                Input.newBuilder()
+                    .setName(InputName.of(projectId, location, inputId).toString())
+                    .setPreprocessingConfig(
+                        PreprocessingConfig.newBuilder()
+                            .setCrop(Crop.newBuilder().setTopPixels(5).setBottomPixels(5).build())
+                            .build())
+                    .build())
+            .setUpdateMask(FieldMask.newBuilder().addPaths("preprocessing_config").build())
+            .build();
+    // First API call in a project can take up to 10 minutes.
+    Input result =
+        livestreamServiceClient.updateInputAsync(updateInputRequest).get(10, TimeUnit.MINUTES);
+    System.out.println("Updated input: " + result.getName());
+    livestreamServiceClient.close();
   }
 }
 // [END livestream_update_input]

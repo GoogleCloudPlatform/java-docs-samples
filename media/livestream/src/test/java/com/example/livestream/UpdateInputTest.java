@@ -65,7 +65,7 @@ public class UpdateInputTest {
   public void beforeTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Clean up old inputs in the test project.
-    TestUtils.cleanStaleInputs(PROJECT_ID, LOCATION);
+    TestUtils.cleanAllStale(PROJECT_ID, LOCATION);
 
     originalOut = System.out;
     bout = new ByteArrayOutputStream();

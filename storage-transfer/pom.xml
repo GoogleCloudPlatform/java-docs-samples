@@ -47,7 +47,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.20.0</version>
+        <version>26.22.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -56,7 +56,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storagetransfer</artifactId>
-      <version>v1-rev20230516-2.0.0</version>
+      <version>v1-rev20230807-2.0.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>

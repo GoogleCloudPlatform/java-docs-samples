@@ -16,6 +16,8 @@
 
 package functions;
 
+// [START functions_cloudevent_storage_unit_test]
+
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
@@ -104,3 +106,5 @@ public class HelloGcsTest {
     assertThat(logMessage).isEqualTo("No data found in cloud event payload!");
   }
 }
+
+// [END functions_cloudevent_storage_unit_test]

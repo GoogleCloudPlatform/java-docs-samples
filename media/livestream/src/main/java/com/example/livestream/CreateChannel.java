@@ -58,78 +58,78 @@ public class CreateChannel {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      VideoStream videoStream =
-          VideoStream.newBuilder()
-              .setH264(
-                  H264CodecSettings.newBuilder()
-                      .setProfile("high")
-                      .setBitrateBps(3000000)
-                      .setFrameRate(30)
-                      .setHeightPixels(720)
-                      .setWidthPixels(1280))
-              .build();
+    LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create();
+    VideoStream videoStream =
+        VideoStream.newBuilder()
+            .setH264(
+                H264CodecSettings.newBuilder()
+                    .setProfile("high")
+                    .setBitrateBps(3000000)
+                    .setFrameRate(30)
+                    .setHeightPixels(720)
+                    .setWidthPixels(1280))
+            .build();
 
-      AudioStream audioStream =
-          AudioStream.newBuilder().setCodec("aac").setChannelCount(2).setBitrateBps(160000).build();
+    AudioStream audioStream =
+        AudioStream.newBuilder().setCodec("aac").setChannelCount(2).setBitrateBps(160000).build();
 
-      var createChannelRequest =
-          CreateChannelRequest.newBuilder()
-              .setParent(LocationName.of(projectId, location).toString())
-              .setChannelId(channelId)
-              .setChannel(
-                  Channel.newBuilder()
-                      .addInputAttachments(
-                          0,
-                          InputAttachment.newBuilder()
-                              .setKey("my-input")
-                              .setInput(InputName.of(projectId, location, inputId).toString())
-                              .build())
-                      .setOutput(Output.newBuilder().setUri(outputUri).build())
-                      .addElementaryStreams(
-                          ElementaryStream.newBuilder()
-                              .setKey("es_video")
-                              .setVideoStream(videoStream))
-                      .addElementaryStreams(
-                          ElementaryStream.newBuilder()
-                              .setKey("es_audio")
-                              .setAudioStream(audioStream))
-                      .addMuxStreams(
-                          MuxStream.newBuilder()
-                              .setKey("mux_video")
-                              .addElementaryStreams("es_video")
-                              .setSegmentSettings(
-                                  SegmentSettings.newBuilder()
-                                      .setSegmentDuration(
-                                          Duration.newBuilder().setSeconds(2).build())
-                                      .build())
-                              .build())
-                      .addMuxStreams(
-                          MuxStream.newBuilder()
-                              .setKey("mux_audio")
-                              .addElementaryStreams("es_audio")
-                              .setSegmentSettings(
-                                  SegmentSettings.newBuilder()
-                                      .setSegmentDuration(
-                                          Duration.newBuilder().setSeconds(2).build())
-                                      .build())
-                              .build())
-                      .addManifests(
-                          Manifest.newBuilder()
-                              .setFileName("manifest.m3u8")
-                              .setType(ManifestType.HLS)
-                              .addMuxStreams("mux_video")
-                              .addMuxStreams("mux_audio")
-                              .setMaxSegmentCount(5)
-                              .build()))
-              .build();
-      // First API call in a project can take up to 10 minutes.
-      Channel result =
-          livestreamServiceClient
-              .createChannelAsync(createChannelRequest)
-              .get(10, TimeUnit.MINUTES);
-      System.out.println("Channel: " + result.getName());
-    }
+    var createChannelRequest =
+        CreateChannelRequest.newBuilder()
+            .setParent(LocationName.of(projectId, location).toString())
+            .setChannelId(channelId)
+            .setChannel(
+                Channel.newBuilder()
+                    .addInputAttachments(
+                        0,
+                        InputAttachment.newBuilder()
+                            .setKey("my-input")
+                            .setInput(InputName.of(projectId, location, inputId).toString())
+                            .build())
+                    .setOutput(Output.newBuilder().setUri(outputUri).build())
+                    .addElementaryStreams(
+                        ElementaryStream.newBuilder()
+                            .setKey("es_video")
+                            .setVideoStream(videoStream))
+                    .addElementaryStreams(
+                        ElementaryStream.newBuilder()
+                            .setKey("es_audio")
+                            .setAudioStream(audioStream))
+                    .addMuxStreams(
+                        MuxStream.newBuilder()
+                            .setKey("mux_video")
+                            .addElementaryStreams("es_video")
+                            .setSegmentSettings(
+                                SegmentSettings.newBuilder()
+                                    .setSegmentDuration(
+                                        Duration.newBuilder().setSeconds(2).build())
+                                    .build())
+                            .build())
+                    .addMuxStreams(
+                        MuxStream.newBuilder()
+                            .setKey("mux_audio")
+                            .addElementaryStreams("es_audio")
+                            .setSegmentSettings(
+                                SegmentSettings.newBuilder()
+                                    .setSegmentDuration(
+                                        Duration.newBuilder().setSeconds(2).build())
+                                    .build())
+                            .build())
+                    .addManifests(
+                        Manifest.newBuilder()
+                            .setFileName("manifest.m3u8")
+                            .setType(ManifestType.HLS)
+                            .addMuxStreams("mux_video")
+                            .addMuxStreams("mux_audio")
+                            .setMaxSegmentCount(5)
+                            .build()))
+            .build();
+    // First API call in a project can take up to 10 minutes.
+    Channel result =
+        livestreamServiceClient
+            .createChannelAsync(createChannelRequest)
+            .get(10, TimeUnit.MINUTES);
+    System.out.println("Channel: " + result.getName());
+    livestreamServiceClient.close();
   }
 }
 // [END livestream_create_channel]

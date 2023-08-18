@@ -42,15 +42,15 @@ public class DeleteInput {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      var deleteInputRequest =
-          DeleteInputRequest.newBuilder()
-              .setName(InputName.of(projectId, location, inputId).toString())
-              .build();
-      // First API call in a project can take up to 10 minutes.
-      livestreamServiceClient.deleteInputAsync(deleteInputRequest).get(10, TimeUnit.MINUTES);
-      System.out.println("Deleted input");
-    }
+    LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create();
+    var deleteInputRequest =
+        DeleteInputRequest.newBuilder()
+            .setName(InputName.of(projectId, location, inputId).toString())
+            .build();
+    // First API call in a project can take up to 10 minutes.
+    livestreamServiceClient.deleteInputAsync(deleteInputRequest).get(10, TimeUnit.MINUTES);
+    System.out.println("Deleted input");
+    livestreamServiceClient.close();
   }
 }
 // [END livestream_delete_input]
