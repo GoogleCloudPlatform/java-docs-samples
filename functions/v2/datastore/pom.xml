@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example.functions</groupId>
-  <artifactId>functions-firebase-firestore</artifactId>
+  <artifactId>functions-datastore</artifactId>
 
   <parent>
     <groupId>com.google.cloud.samples</groupId>
@@ -108,7 +108,7 @@
         <artifactId>function-maven-plugin</artifactId>
         <version>0.11.0</version>
         <configuration>
-          <functionTarget>functions.FirebaseFirestore</functionTarget>
+          <functionTarget>functions.Datastore</functionTarget>
         </configuration>
       </plugin>
       <plugin>
