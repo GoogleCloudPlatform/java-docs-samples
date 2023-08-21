@@ -17,7 +17,7 @@
 package com.example.workflows;
 
 // [START workflows_api_quickstart]
-
+// [START workflows_api_quickstart_client_libraries]
 // Imports the Google Cloud client library
 
 import com.google.cloud.workflows.executions.v1.CreateExecutionRequest;
@@ -26,6 +26,7 @@ import com.google.cloud.workflows.executions.v1.ExecutionsClient;
 import com.google.cloud.workflows.executions.v1.WorkflowName;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+// [END workflows_api_quickstart_client_libraries]
 
 public class WorkflowsQuickstart {
 
@@ -51,6 +52,7 @@ public class WorkflowsQuickstart {
     // to be created once, and can be reused for multiple requests. After completing all of your
     // requests, call the "close" method on the client to safely clean up any remaining background
     // resources.
+    // [START workflows_api_quickstart_execution]
     try (ExecutionsClient executionsClient = ExecutionsClient.create()) {
       // Construct the fully qualified location path.
       WorkflowName parent = WorkflowName.of(projectId, location, workflow);
@@ -88,6 +90,7 @@ public class WorkflowsQuickstart {
         }
       }
     }
+    // [END workflows_api_quickstart_execution]
   }
 }
 // [END workflows_api_quickstart]
