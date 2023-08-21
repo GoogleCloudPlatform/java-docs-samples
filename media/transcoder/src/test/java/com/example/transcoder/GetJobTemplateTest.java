@@ -66,9 +66,6 @@ public class GetJobTemplateTest {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
-
     TEMPLATE_NAME =
         String.format(
             "projects/%s/locations/%s/jobTemplates/%s", PROJECT_NUMBER, LOCATION, TEMPLATE_ID);

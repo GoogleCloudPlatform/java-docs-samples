@@ -63,7 +63,6 @@ public class UndeployModelSample {
       // Traffic percentage values must add up to 100
       // Leave dictionary empty if endpoint should not accept any traffic
       Map<String, Integer> trafficSplit = new HashMap<>();
-      trafficSplit.put("0", 100);
 
       OperationFuture<UndeployModelResponse, UndeployModelOperationMetadata> operation =
           endpointServiceClient.undeployModelAsync(

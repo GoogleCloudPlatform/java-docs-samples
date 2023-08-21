@@ -20,15 +20,15 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,12 +37,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class UpdateCdnKeyAkamaiTest {
 
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-  private static final String LOCATION = "us-central1";
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private static final String AKAMAI_KEY_ID = TestUtils.getCdnKeyId();
-  private static final String HOSTNAME = "cdn.example.com";
-  private static final String UPDATED_HOSTNAME = "updated.example.com";
-  private static final String AKAMAI_TOKEN_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
   private static final String UPDATED_AKAMAI_TOKEN_KEY =
       "VGhpcyBpcyBhbiB1cGRhdGVkIHRlc3Qgc3RyaW5nLg==";
   private static String PROJECT_ID;
@@ -64,37 +61,35 @@ public class UpdateCdnKeyAkamaiTest {
   }
 
   @Before
-  public void beforeTest() throws IOException {
-    TestUtils.cleanStaleCdnKeys(PROJECT_ID, LOCATION);
+  public void beforeTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    TestUtils.cleanStaleCdnKeys(PROJECT_ID, TestUtils.LOCATION);
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    AKAMAI_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", LOCATION, AKAMAI_KEY_ID);
-    try {
-      DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, AKAMAI_KEY_ID);
-    } catch (NotFoundException e) {
-      // Don't worry if the key doesn't already exist.
-    }
+    AKAMAI_KEY_NAME = String.format("/locations/%s/cdnKeys/%s", TestUtils.LOCATION, AKAMAI_KEY_ID);
     CreateCdnKeyAkamai.createCdnKeyAkamai(
-        PROJECT_ID, LOCATION, AKAMAI_KEY_ID, HOSTNAME, AKAMAI_TOKEN_KEY);
-
+        PROJECT_ID, TestUtils.LOCATION, AKAMAI_KEY_ID, TestUtils.HOSTNAME,
+        TestUtils.AKAMAI_TOKEN_KEY);
     bout.reset();
   }
 
   @Test
-  @Ignore
-  public void test_UpdateCdnKeyAkamai() throws IOException {
+  public void test_UpdateCdnKeyAkamai()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     UpdateCdnKeyAkamai.updateCdnKeyAkamai(
-        PROJECT_ID, LOCATION, AKAMAI_KEY_ID, UPDATED_HOSTNAME, UPDATED_AKAMAI_TOKEN_KEY);
+        PROJECT_ID, TestUtils.LOCATION, AKAMAI_KEY_ID, TestUtils.UPDATED_HOSTNAME,
+        UPDATED_AKAMAI_TOKEN_KEY);
     String output = bout.toString();
     assertThat(output, containsString(AKAMAI_KEY_NAME));
     bout.reset();
   }
 
   @After
-  public void tearDown() throws IOException {
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, AKAMAI_KEY_ID);
+  public void tearDown()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    DeleteCdnKey.deleteCdnKey(PROJECT_ID, TestUtils.LOCATION, AKAMAI_KEY_ID);
     System.setOut(originalOut);
     bout.reset();
   }

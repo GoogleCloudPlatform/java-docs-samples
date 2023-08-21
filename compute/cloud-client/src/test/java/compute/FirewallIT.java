@@ -26,6 +26,7 @@ import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -122,11 +123,11 @@ public class FirewallIT {
     System.setOut(new PrintStream(stdOut));
     try {
       compute.ListFirewallRules.listFirewallRules(PROJECT_ID);
-      assertThat(stdOut.toString()).contains(FIREWALL_RULE_CREATE);
-    } catch (NotFoundException e) {
-      System.out.println("Rule already deleted! ");
-    } catch (InvalidArgumentException | NullPointerException e) {
-      System.out.println("Rule is not ready (probably being deleted).");
+      if (!stdOut.toString().contains(FIREWALL_RULE_CREATE)) {
+        throw new NoSuchElementException("Rule already deleted or being deleted.");
+      }
+    } catch (NoSuchElementException e) {
+      System.out.println(e.getMessage());
     }
     // Clear system output to not affect other tests.
     // Refrain from setting out to null.

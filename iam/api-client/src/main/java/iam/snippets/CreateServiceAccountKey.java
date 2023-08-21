@@ -16,7 +16,6 @@
 package iam.snippets;
 
 // [START iam_create_key]
-
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.iam.v1.Iam;

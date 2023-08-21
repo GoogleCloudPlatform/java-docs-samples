@@ -20,15 +20,15 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,17 +37,11 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class DeleteCdnKeyTest {
 
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-  private static final String LOCATION = "us-central1";
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private static final String CLOUD_CDN_KEY_ID = TestUtils.getCdnKeyId();
   private static final String MEDIA_CDN_KEY_ID = TestUtils.getCdnKeyId();
   private static final String AKAMAI_KEY_ID = TestUtils.getCdnKeyId();
-  private static final String HOSTNAME = "cdn.example.com";
-  private static final String KEYNAME = "my-key"; // field in the key
-  private static final String CLOUD_CDN_PRIVATE_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
-  private static final String MEDIA_CDN_PRIVATE_KEY =
-      "MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxzg5MDEyMzQ1Njc4OTAxMjM0NTY3DkwMTIzNA";
-  private static final String AKAMAI_TOKEN_KEY = "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==";
   private static String PROJECT_ID;
   private static PrintStream originalOut;
   private ByteArrayOutputStream bout;
@@ -66,59 +60,48 @@ public class DeleteCdnKeyTest {
   }
 
   @Before
-  public void beforeTest() throws IOException {
-    TestUtils.cleanStaleCdnKeys(PROJECT_ID, LOCATION);
+  public void beforeTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    TestUtils.cleanStaleCdnKeys(PROJECT_ID, TestUtils.LOCATION);
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
     // Cloud CDN key
-    try {
-      DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID);
-    } catch (NotFoundException e) {
-      // Don't worry if the key doesn't already exist.
-    }
     CreateCdnKey.createCdnKey(
-        PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID, HOSTNAME, KEYNAME, CLOUD_CDN_PRIVATE_KEY, false);
+        PROJECT_ID, TestUtils.LOCATION, CLOUD_CDN_KEY_ID, TestUtils.HOSTNAME, TestUtils.KEYNAME,
+        TestUtils.CLOUD_CDN_PRIVATE_KEY, false);
 
     // Media CDN key
-    try {
-      DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID);
-    } catch (NotFoundException e) {
-      // Don't worry if the key doesn't already exist.
-    }
     CreateCdnKey.createCdnKey(
-        PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID, HOSTNAME, KEYNAME, MEDIA_CDN_PRIVATE_KEY, true);
+        PROJECT_ID, TestUtils.LOCATION, MEDIA_CDN_KEY_ID, TestUtils.HOSTNAME, TestUtils.KEYNAME,
+        TestUtils.MEDIA_CDN_PRIVATE_KEY, true);
 
     // Akamai CDN key
-    try {
-      DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, AKAMAI_KEY_ID);
-    } catch (NotFoundException e) {
-      // Don't worry if the key doesn't already exist.
-    }
     CreateCdnKeyAkamai.createCdnKeyAkamai(
-        PROJECT_ID, LOCATION, AKAMAI_KEY_ID, HOSTNAME, AKAMAI_TOKEN_KEY);
+        PROJECT_ID, TestUtils.LOCATION, AKAMAI_KEY_ID, TestUtils.HOSTNAME,
+        TestUtils.AKAMAI_TOKEN_KEY);
 
     bout.reset();
   }
 
   @Test
-  @Ignore
-  public void test_DeleteCdnKey() throws IOException {
+  public void test_DeleteCdnKey()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Cloud CDN key
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, CLOUD_CDN_KEY_ID);
+    DeleteCdnKey.deleteCdnKey(PROJECT_ID, TestUtils.LOCATION, CLOUD_CDN_KEY_ID);
     String output = bout.toString();
     assertThat(output, containsString("Deleted CDN key"));
     bout.reset();
 
     // Media CDN key
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, MEDIA_CDN_KEY_ID);
+    DeleteCdnKey.deleteCdnKey(PROJECT_ID, TestUtils.LOCATION, MEDIA_CDN_KEY_ID);
     output = bout.toString();
     assertThat(output, containsString("Deleted CDN key"));
     bout.reset();
 
     // Aakamai CDN key
-    DeleteCdnKey.deleteCdnKey(PROJECT_ID, LOCATION, AKAMAI_KEY_ID);
+    DeleteCdnKey.deleteCdnKey(PROJECT_ID, TestUtils.LOCATION, AKAMAI_KEY_ID);
     output = bout.toString();
     assertThat(output, containsString("Deleted CDN key"));
     bout.reset();

@@ -18,6 +18,7 @@ package dlp.snippets;
 
 // [START dlp_inspect_send_data_to_hybrid_job_trigger]
 
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.privacy.dlp.v2.ActivateJobTriggerRequest;
 import com.google.privacy.dlp.v2.Container;
@@ -30,6 +31,7 @@ import com.google.privacy.dlp.v2.HybridInspectJobTriggerRequest;
 import com.google.privacy.dlp.v2.InfoTypeStats;
 import com.google.privacy.dlp.v2.InspectDataSourceDetails;
 import com.google.privacy.dlp.v2.JobTriggerName;
+import com.google.privacy.dlp.v2.ListDlpJobsRequest;
 
 public class InspectDataToHybridJobTrigger {
 
@@ -57,7 +59,8 @@ public class InspectDataToHybridJobTrigger {
       ContentItem contentItem = ContentItem.newBuilder().setValue(textToDeIdentify).build();
 
       // Contains metadata to associate with the content.
-      // Refer to https://cloud.google.com/dlp/docs/reference/rest/v2/Container for specifying the paths in container object.
+      // Refer to https://cloud.google.com/dlp/docs/reference/rest/v2/Container for specifying the
+      // paths in container object.
       Container container =
           Container.newBuilder()
               .setFullPath("10.0.0.2:logs1:app1")
@@ -81,7 +84,22 @@ public class InspectDataToHybridJobTrigger {
           ActivateJobTriggerRequest.newBuilder()
               .setName(JobTriggerName.of(projectId, jobTriggerId).toString())
               .build();
-      DlpJob dlpJob = dlpClient.activateJobTrigger(activateJobTriggerRequest);
+
+      DlpJob dlpJob;
+
+      try {
+        dlpJob = dlpClient.activateJobTrigger(activateJobTriggerRequest);
+      } catch (InvalidArgumentException e) {
+        ListDlpJobsRequest request =
+            ListDlpJobsRequest.newBuilder()
+                .setParent(JobTriggerName.of(projectId, jobTriggerId).toString())
+                .setFilter("trigger_name=" + JobTriggerName.of(projectId, jobTriggerId).toString())
+                .build();
+
+        // Retrieve the DLP jobs triggered by the job trigger
+        DlpServiceClient.ListDlpJobsPagedResponse response = dlpClient.listDlpJobs(request);
+        dlpJob = response.getPage().getResponse().getJobs(0);
+      }
 
       // Build the hybrid inspect request.
       HybridInspectJobTriggerRequest request =
@@ -94,15 +112,15 @@ public class InspectDataToHybridJobTrigger {
       dlpClient.hybridInspectJobTrigger(request);
 
       // Build a request to get the completed job
-      GetDlpJobRequest getDlpJobRequest = GetDlpJobRequest.newBuilder()
-              .setName(dlpJob.getName())
-              .build();
+      GetDlpJobRequest getDlpJobRequest =
+          GetDlpJobRequest.newBuilder().setName(dlpJob.getName()).build();
+
       DlpJob result = null;
+
       do {
         result = dlpClient.getDlpJob(getDlpJobRequest);
         Thread.sleep(5000);
       } while (result.getInspectDetails().getResult().getProcessedBytes() <= 0);
-
 
       System.out.println("Job status: " + result.getState());
       System.out.println("Job name: " + result.getName());

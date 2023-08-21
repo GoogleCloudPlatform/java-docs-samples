@@ -65,7 +65,7 @@ public class CreateInputTest {
   @Before
   public void beforeTest() throws IOException {
     // Clean up old inputs in the test project.
-    TestUtils.cleanStaleInputs(PROJECT_ID, LOCATION);
+    TestUtils.cleanAllStale(PROJECT_ID, LOCATION);
 
     originalOut = System.out;
     bout = new ByteArrayOutputStream();

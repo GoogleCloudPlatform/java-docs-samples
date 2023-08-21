@@ -43,7 +43,7 @@ Copyright 2019 Google LLC
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.18.0</version>
+        <version>26.22.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -85,7 +85,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>org.thymeleaf</groupId>
       <artifactId>thymeleaf</artifactId>
-      <version>3.1.1.RELEASE</version>
+      <version>3.1.2.RELEASE</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

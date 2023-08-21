@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminClient;
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -38,9 +39,13 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class FiltersTest {
+
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
   private static final String INSTANCE_ENV = "BIGTABLE_TESTING_INSTANCE";
   private static final String TABLE_ID =
@@ -73,8 +78,10 @@ public class FiltersTest {
       try (Admin admin = connection.getAdmin()) {
         admin.createTable(
             new HTableDescriptor(TableName.valueOf(TABLE_ID))
-                .addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME_STATS))
-                .addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME_DATA)));
+                .addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME_STATS).setMaxVersions(
+                    Integer.MAX_VALUE))
+                .addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME_DATA).setMaxVersions(
+                    Integer.MAX_VALUE)));
 
         try (BufferedMutator batcher = connection.getBufferedMutator(TableName.valueOf(TABLE_ID))) {
 

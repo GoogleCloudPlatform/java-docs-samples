@@ -36,8 +36,8 @@ public class ListInputs {
 
   public static void listInputs(String projectId, String location) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests. In this example, try-with-resources is used
+    // which automatically calls close() on the client to clean up resources.
     try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
       var listInputsRequest =
           ListInputsRequest.newBuilder()

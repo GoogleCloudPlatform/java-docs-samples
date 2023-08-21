@@ -41,12 +41,12 @@ public class StopChannel {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      ChannelName name = ChannelName.of(projectId, location, channelId);
-      // First API call in a project can take up to 10 minutes.
-      livestreamServiceClient.stopChannelAsync(name).get(10, TimeUnit.MINUTES);
-      System.out.println("Stopped channel");
-    }
+    LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create();
+    ChannelName name = ChannelName.of(projectId, location, channelId);
+    // First API call in a project can take up to 10 minutes.
+    livestreamServiceClient.stopChannelAsync(name).get(10, TimeUnit.MINUTES);
+    System.out.println("Stopped channel");
+    livestreamServiceClient.close();
   }
 }
 // [END livestream_stop_channel]

@@ -18,6 +18,7 @@ package compute.customhostname;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import compute.DeleteInstance;
 import java.io.ByteArrayOutputStream;
@@ -62,7 +63,7 @@ public class CustomHostnameInstanceIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     INSTANCE_NAME = "my-custom-hostname-test-instance" + UUID.randomUUID().toString().split("-")[0];
-    ZONE = "us-central1-a";
+    ZONE = getZone();
     CUSTOM_HOSTNAME = "host.domain.com";
 
     // Create Instance with a custom hostname.

@@ -30,7 +30,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.18.0</version>
+        <version>26.22.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -41,10 +41,6 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-discoveryengine</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api.grpc</groupId>
-      <artifactId>proto-google-cloud-discoveryengine-v1beta</artifactId>
     </dependency>
     <!-- [END genappbuilder_install_with_bom] -->
     <dependency>

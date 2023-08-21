@@ -114,7 +114,7 @@ public class CreateJobWithPeriodicImagesSpritesheet {
               .addSpriteSheets(largeSpriteSheet) // Add the spritesheet config to the job config
               .build();
 
-      var createJobRequest =
+      CreateJobRequest createJobRequest =
           CreateJobRequest.newBuilder()
               .setJob(
                   Job.newBuilder()

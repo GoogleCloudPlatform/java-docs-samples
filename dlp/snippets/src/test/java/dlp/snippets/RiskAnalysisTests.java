@@ -23,25 +23,29 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.api.gax.rpc.ApiException;
+import com.google.api.core.SettableApiFuture;
 import com.google.cloud.dlp.v2.DlpServiceClient;
-import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
-import com.google.cloud.pubsub.v1.TopicAdminClient;
+import com.google.cloud.dlp.v2.DlpServiceSettings;
 import com.google.common.collect.ImmutableList;
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.CategoricalStatsResult;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.CategoricalStatsResult.CategoricalStatsHistogramBucket;
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KAnonymityResult;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityEquivalenceClass;
 import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KAnonymityResult.KAnonymityHistogramBucket;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KMapEstimationResult;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KMapEstimationResult.KMapEstimationHistogramBucket;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.KMapEstimationResult.KMapEstimationQuasiIdValues;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.LDiversityResult;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.LDiversityResult.LDiversityEquivalenceClass;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.LDiversityResult.LDiversityHistogramBucket;
+import com.google.privacy.dlp.v2.AnalyzeDataSourceRiskDetails.NumericalStatsResult;
 import com.google.privacy.dlp.v2.CreateDlpJobRequest;
 import com.google.privacy.dlp.v2.DlpJob;
 import com.google.privacy.dlp.v2.GetDlpJobRequest;
 import com.google.privacy.dlp.v2.Value;
-import com.google.pubsub.v1.PushConfig;
-import com.google.pubsub.v1.SubscriptionName;
-import com.google.pubsub.v1.TopicName;
-import java.util.Arrays;
-import java.util.UUID;
-import org.junit.After;
-import org.junit.Before;
+import com.google.privacy.dlp.v2.ValueFrequency;
+import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -52,141 +56,255 @@ import org.mockito.Mockito;
 @RunWith(JUnit4.class)
 public class RiskAnalysisTests extends TestBase {
 
-  private static DlpServiceClient DLP_SERVICE_CLIENT;
-
-  private UUID testRunUuid = UUID.randomUUID();
-  private TopicName topicName =
-      TopicName.of(PROJECT_ID, String.format("%s-%s", TOPIC_ID, testRunUuid.toString()));
-  private SubscriptionName subscriptionName =
-      SubscriptionName.of(
-          PROJECT_ID, String.format("%s-%s", SUBSCRIPTION_ID, testRunUuid.toString()));
+  private SettableApiFuture<Boolean> doneMock;
 
   @Override
   protected ImmutableList<String> requiredEnvVars() {
-    return ImmutableList.of(
-        "GOOGLE_APPLICATION_CREDENTIALS",
-        "GOOGLE_CLOUD_PROJECT",
-        "PUB_SUB_TOPIC",
-        "PUB_SUB_SUBSCRIPTION",
-        "BIGQUERY_DATASET",
-        "BIGQUERY_TABLE");
-  }
-
-  @Before
-  public void before() throws Exception {
-
-    DLP_SERVICE_CLIENT = DlpServiceClient.create();
-    // Create a new topic
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.createTopic(topicName);
-    }
-    // Create a new subscription
-    try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
-      subscriptionAdminClient.createSubscription(
-          subscriptionName, topicName, PushConfig.getDefaultInstance(), 0);
-    }
-  }
-
-  @After
-  public void after() throws Exception {
-    // Delete the test topic
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(topicName);
-    } catch (ApiException e) {
-      System.err.println(String.format("Error deleting topic %s: %s", topicName.getTopic(), e));
-      // Keep trying to clean up
-    }
-
-    // Delete the test subscription
-    try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
-      subscriptionAdminClient.deleteSubscription(subscriptionName);
-    } catch (ApiException e) {
-      System.err.println(
-          String.format(
-              "Error deleting subscription %s: %s", subscriptionName.getSubscription(), e));
-      // Keep trying to clean up
-    }
+    return ImmutableList.of("GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_CLOUD_PROJECT");
   }
 
   @Test
   public void testNumericalStats() throws Exception {
-    RiskAnalysisNumericalStats.numericalStatsAnalysis(
-        PROJECT_ID, DATASET_ID, TABLE_ID, topicName.getTopic(), subscriptionName.getSubscription());
-    String output = bout.toString();
-    assertThat(output).contains("Value at ");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
-    jobName = jobName.split(":")[1].trim();
-    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    doneMock = mock(SettableApiFuture.class);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+      try (MockedStatic<SettableApiFuture> mockedStatic1 =
+          Mockito.mockStatic(SettableApiFuture.class)) {
+        mockedStatic1.when(() -> SettableApiFuture.create()).thenReturn(doneMock);
+
+        DlpJob dlpJob =
+            DlpJob.newBuilder()
+                .setName("projects/project_id/locations/global/dlpJobs/job_id")
+                .setState(DlpJob.JobState.DONE)
+                .setRiskDetails(
+                    AnalyzeDataSourceRiskDetails.newBuilder()
+                        .setNumericalStatsResult(
+                            NumericalStatsResult.newBuilder()
+                                .setMaxValue(Value.newBuilder().setIntegerValue(1).build())
+                                .setMinValue(Value.newBuilder().setIntegerValue(1).build())
+                                .addQuantileValues(Value.newBuilder().setFloatValue(1).build()))
+                        .build())
+                .build();
+
+        when(doneMock.get(15, TimeUnit.MINUTES)).thenReturn(true);
+        when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
+        when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
+        RiskAnalysisNumericalStats.numericalStatsAnalysis(
+            "bigquery-public-data", "usa_names", "usa_1910_current", "topic_id", "subscription_id");
+        String output = bout.toString();
+        assertThat(output)
+            .contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+        assertThat(output).contains("Job status: DONE");
+        assertThat(output).contains("Value at");
+        verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+        verify(dlpServiceClient, times(1)).getDlpJob(any(GetDlpJobRequest.class));
+      }
+    }
   }
 
   @Test
   public void testCategoricalStats() throws Exception {
-    RiskAnalysisCategoricalStats.categoricalStatsAnalysis(
-        PROJECT_ID, DATASET_ID, TABLE_ID, topicName.getTopic(), subscriptionName.getSubscription());
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    doneMock = mock(SettableApiFuture.class);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+      try (MockedStatic<SettableApiFuture> mockedStatic1 =
+          Mockito.mockStatic(SettableApiFuture.class)) {
+        mockedStatic1.when(() -> SettableApiFuture.create()).thenReturn(doneMock);
 
-    String output = bout.toString();
+        CategoricalStatsHistogramBucket categoricalStatsHistogramBucket =
+            CategoricalStatsHistogramBucket.newBuilder()
+                .setValueFrequencyLowerBound(1)
+                .setValueFrequencyUpperBound(1)
+                .addBucketValues(ValueFrequency.newBuilder()
+                        .setValue(Value.newBuilder().setStringValue("James").build())
+                        .setCount(1)
+                        .build())
+                .build();
+        DlpJob dlpJob =
+            DlpJob.newBuilder()
+                .setName("projects/project_id/locations/global/dlpJobs/job_id")
+                .setState(DlpJob.JobState.DONE)
+                .setRiskDetails(
+                    AnalyzeDataSourceRiskDetails.newBuilder()
+                        .setCategoricalStatsResult(
+                            CategoricalStatsResult.newBuilder()
+                                .addValueFrequencyHistogramBuckets(categoricalStatsHistogramBucket)
+                                .build())
+                        .build())
+                .build();
 
-    assertThat(output).containsMatch("Most common value occurs \\d time");
-    assertThat(output).containsMatch("Least common value occurs \\d time");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
-    jobName = jobName.split(":")[1].trim();
-    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
+        when(doneMock.get(15, TimeUnit.MINUTES)).thenReturn(true);
+        when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
+        when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
+        RiskAnalysisCategoricalStats.categoricalStatsAnalysis(
+            "bigquery-public-data", "usa_names", "usa_1910_current", "topic_id", "subscription_id");
+        String output = bout.toString();
+        assertThat(output)
+            .contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+        assertThat(output).contains("Job status: DONE");
+        assertThat(output).containsMatch("Most common value occurs \\d time");
+        assertThat(output).containsMatch("Least common value occurs \\d time");
+        verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+        verify(dlpServiceClient, times(1)).getDlpJob(any(GetDlpJobRequest.class));
+      }
+    }
   }
 
   @Test
   public void testKAnonymity() throws Exception {
-    RiskAnalysisKAnonymity.calculateKAnonymity(
-        PROJECT_ID, DATASET_ID, TABLE_ID, topicName.getTopic(), subscriptionName.getSubscription());
-    String output = bout.toString();
-    assertThat(output).containsMatch("Bucket size range: \\[\\d, \\d\\]");
-    assertThat(output).contains("Quasi-ID values: integer_value: 19");
-    assertThat(output).contains("Class size: 1");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
-    jobName = jobName.split(":")[1].trim();
-    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
+
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    doneMock = mock(SettableApiFuture.class);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+      try (MockedStatic<SettableApiFuture> mockedStatic1 =
+          Mockito.mockStatic(SettableApiFuture.class)) {
+        mockedStatic1.when(() -> SettableApiFuture.create()).thenReturn(doneMock);
+
+        KAnonymityHistogramBucket anonymityHistogramBucket =
+            KAnonymityHistogramBucket.newBuilder()
+                .addBucketValues(KAnonymityEquivalenceClass.newBuilder()
+                        .addQuasiIdsValues(Value.newBuilder().setIntegerValue(19).build())
+                        .setEquivalenceClassSize(1)
+                        .build())
+                .build();
+        DlpJob dlpJob =
+            DlpJob.newBuilder()
+                .setName("projects/project_id/locations/global/dlpJobs/job_id")
+                .setState(DlpJob.JobState.DONE)
+                .setRiskDetails(
+                    AnalyzeDataSourceRiskDetails.newBuilder()
+                        .setKAnonymityResult(
+                            KAnonymityResult.newBuilder()
+                                .addEquivalenceClassHistogramBuckets(anonymityHistogramBucket)
+                                .build())
+                        .build())
+                .build();
+
+        when(doneMock.get(15, TimeUnit.MINUTES)).thenReturn(true);
+        when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
+        when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
+        RiskAnalysisKAnonymity.calculateKAnonymity(
+            "bigquery-public-data", "usa_names", "usa_1910_current", "topic_id", "subscription_id");
+        String output = bout.toString();
+        assertThat(output)
+                .contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+        assertThat(output).contains("Job status: DONE");
+        assertThat(output).containsMatch("Bucket size range: \\[\\d, \\d\\]");
+        assertThat(output).contains("Quasi-ID values: integer_value: 19");
+        assertThat(output).contains("Class size: 1");
+        verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+        verify(dlpServiceClient, times(1)).getDlpJob(any(GetDlpJobRequest.class));
+      }
+    }
   }
 
   @Test
   public void testLDiversity() throws Exception {
-    RiskAnalysisLDiversity.calculateLDiversity(
-        PROJECT_ID, DATASET_ID, TABLE_ID, topicName.getTopic(), subscriptionName.getSubscription());
-    String output = bout.toString();
-    assertThat(output).contains("Quasi-ID values: integer_value: 19");
-    assertThat(output).contains("Class size: 1");
-    assertThat(output).contains("Sensitive value string_value: \"James\"");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
-    jobName = jobName.split(":")[1].trim();
-    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
+
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    doneMock = mock(SettableApiFuture.class);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic
+          .when(() -> DlpServiceClient.create(any(DlpServiceSettings.class)))
+          .thenReturn(dlpServiceClient);
+      try (MockedStatic<SettableApiFuture> mockedStatic1 =
+          Mockito.mockStatic(SettableApiFuture.class)) {
+        mockedStatic1.when(() -> SettableApiFuture.create()).thenReturn(doneMock);
+
+        LDiversityHistogramBucket ldiversityHistogramBucket =
+            LDiversityHistogramBucket.newBuilder()
+                .setSensitiveValueFrequencyLowerBound(1)
+                .setSensitiveValueFrequencyUpperBound(1)
+                .addBucketValues(LDiversityEquivalenceClass.newBuilder()
+                        .addQuasiIdsValues(Value.newBuilder().setIntegerValue(19).build())
+                        .addTopSensitiveValues(ValueFrequency.newBuilder()
+                                .setValue(Value.newBuilder().setStringValue("James").build())
+                                .setCount(1)
+                                .build())
+                        .setEquivalenceClassSize(1))
+                .build();
+        DlpJob dlpJob =
+            DlpJob.newBuilder()
+                .setName("projects/project_id/locations/global/dlpJobs/job_id")
+                .setState(DlpJob.JobState.DONE)
+                .setRiskDetails(
+                    AnalyzeDataSourceRiskDetails.newBuilder()
+                        .setLDiversityResult(
+                            LDiversityResult.newBuilder()
+                                .addSensitiveValueFrequencyHistogramBuckets(
+                                    ldiversityHistogramBucket)
+                                .build())
+                        .build())
+                .build();
+        when(doneMock.get(15, TimeUnit.MINUTES)).thenReturn(true);
+        when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
+        when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
+        RiskAnalysisLDiversity.calculateLDiversity(
+            "bigquery-public-data", "usa_names", "usa_1910_current", "topic_id", "subscription_id");
+        String output = bout.toString();
+        assertThat(output)
+                .contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+        assertThat(output).contains("Job status: DONE");
+        assertThat(output).contains("Quasi-ID values: integer_value: 19");
+        assertThat(output).contains("Class size: 1");
+        assertThat(output).contains("Sensitive value string_value: \"James\"");
+        verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+        verify(dlpServiceClient, times(1)).getDlpJob(any(GetDlpJobRequest.class));
+      }
+    }
   }
 
   @Test
   public void testKMap() throws Exception {
-    RiskAnalysisKMap.calculateKMap(
-        PROJECT_ID, DATASET_ID, TABLE_ID, topicName.getTopic(), subscriptionName.getSubscription());
+    DlpServiceClient dlpServiceClient = mock(DlpServiceClient.class);
+    doneMock = mock(SettableApiFuture.class);
+    try (MockedStatic<DlpServiceClient> mockedStatic = Mockito.mockStatic(DlpServiceClient.class)) {
+      mockedStatic.when(() -> DlpServiceClient.create()).thenReturn(dlpServiceClient);
+      try (MockedStatic<SettableApiFuture> mockedStatic1 =
+          Mockito.mockStatic(SettableApiFuture.class)) {
+        mockedStatic1.when(() -> SettableApiFuture.create()).thenReturn(doneMock);
 
-    String output = bout.toString();
+        KMapEstimationHistogramBucket kmapEstimationHistogramBucket =
+            KMapEstimationHistogramBucket.newBuilder()
+                .setMaxAnonymity(1)
+                .setMinAnonymity(1)
+                .addBucketValues(KMapEstimationQuasiIdValues.newBuilder()
+                        .addQuasiIdsValues(Value.newBuilder().setIntegerValue(27).build())
+                        .addQuasiIdsValues(Value.newBuilder().setStringValue("Female").build())
+                        .build())
+                .build();
+        DlpJob dlpJob =
+            DlpJob.newBuilder()
+                .setName("projects/project_id/locations/global/dlpJobs/job_id")
+                .setState(DlpJob.JobState.DONE)
+                .setRiskDetails(
+                    AnalyzeDataSourceRiskDetails.newBuilder()
+                        .setKMapEstimationResult(
+                            KMapEstimationResult.newBuilder()
+                                .addKMapEstimationHistogram(kmapEstimationHistogramBucket)
+                                .build())
+                        .build())
+                .build();
 
-    assertThat(output).containsMatch("Anonymity range: \\[\\d, \\d]");
-    assertThat(output).containsMatch("Size: \\d");
-    assertThat(output).containsMatch("Values: \\{\\d{2}, \"Female\"\\}");
-    String jobName = Arrays.stream(output.split("\n"))
-        .filter(line -> line.contains("Job name:"))
-        .findFirst()
-        .get();
-    jobName = jobName.split(":")[1].trim();
-    DLP_SERVICE_CLIENT.deleteDlpJob(jobName);
+        when(doneMock.get(15, TimeUnit.MINUTES)).thenReturn(true);
+        when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
+        when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
+        RiskAnalysisKMap.calculateKMap(
+            "bigquery-public-data", "usa_names", "usa_1910_current", "topic_id", "subscription_id");
+        String output = bout.toString();
+        assertThat(output)
+                .contains("Job name: projects/project_id/locations/global/dlpJobs/job_id");
+        assertThat(output).contains("Job status: DONE");
+        assertThat(output).containsMatch("Anonymity range: \\[\\d, \\d]");
+        assertThat(output).containsMatch("Size: \\d");
+        assertThat(output).containsMatch("Values: \\{\\d{2}, \"Female\"\\}");
+        verify(dlpServiceClient, times(1)).createDlpJob(any(CreateDlpJobRequest.class));
+        verify(dlpServiceClient, times(1)).getDlpJob(any(GetDlpJobRequest.class));
+      }
+    }
   }
 
   @Test
@@ -198,7 +316,7 @@ public class RiskAnalysisTests extends TestBase {
       KAnonymityHistogramBucket anonymityHistogramBucket =
           KAnonymityHistogramBucket.newBuilder()
               .addBucketValues(
-                  KAnonymityResult.KAnonymityEquivalenceClass.newBuilder()
+                  KAnonymityEquivalenceClass.newBuilder()
                       .addQuasiIdsValues(
                           Value.newBuilder().setStringValue("[\"25\",\"engineer\"]").build())
                       .setEquivalenceClassSize(1)
@@ -216,6 +334,7 @@ public class RiskAnalysisTests extends TestBase {
                               .build())
                       .build())
               .build();
+
       when(dlpServiceClient.createDlpJob(any(CreateDlpJobRequest.class))).thenReturn(dlpJob);
       when(dlpServiceClient.getDlpJob((GetDlpJobRequest) any())).thenReturn(dlpJob);
       RiskAnalysisKAnonymityWithEntityId.calculateKAnonymityWithEntityId(

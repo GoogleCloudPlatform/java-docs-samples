@@ -18,6 +18,7 @@ package compute.disks;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.CreateSnapshotDiskRequest;
 import com.google.cloud.compute.v1.Disk;
@@ -89,8 +90,8 @@ public class DisksFromSourceIT {
     // requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    ZONE = "us-central1-a";
-    REGION = "us-central1";
+    ZONE = getZone();
+    REGION = ZONE.substring(0, ZONE.length() - 2);
     KMS_KEYRING_NAME = "compute-test-keyring";
     KMS_KEY_NAME = "compute-test-key";
 

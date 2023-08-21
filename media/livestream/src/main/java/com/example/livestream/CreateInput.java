@@ -43,18 +43,18 @@ public class CreateInput {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      var createInputRequest =
-          CreateInputRequest.newBuilder()
-              .setParent(LocationName.of(projectId, location).toString())
-              .setInputId(inputId)
-              .setInput(Input.newBuilder().setType(Input.Type.RTMP_PUSH).build())
-              .build();
-      // First API call in a project can take up to 15 minutes.
-      Input result =
-          livestreamServiceClient.createInputAsync(createInputRequest).get(15, TimeUnit.MINUTES);
-      System.out.println("Input: " + result.getName());
-    }
+    LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create();
+    var createInputRequest =
+        CreateInputRequest.newBuilder()
+            .setParent(LocationName.of(projectId, location).toString())
+            .setInputId(inputId)
+            .setInput(Input.newBuilder().setType(Input.Type.RTMP_PUSH).build())
+            .build();
+    // First API call in a project can take up to 15 minutes.
+    Input result =
+        livestreamServiceClient.createInputAsync(createInputRequest).get(15, TimeUnit.MINUTES);
+    System.out.println("Input: " + result.getName());
+    livestreamServiceClient.close();
   }
 }
 // [END livestream_create_input]

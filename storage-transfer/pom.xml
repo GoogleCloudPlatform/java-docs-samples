@@ -47,7 +47,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.18.0</version>
+        <version>26.22.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -56,7 +56,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-storagetransfer</artifactId>
-      <version>v1-rev20230516-2.0.0</version>
+      <version>v1-rev20230807-2.0.0</version>
       <exclusions>
         <exclusion> <!-- exclude an old version of Guava -->
           <groupId>com.google.guava</groupId>
@@ -81,7 +81,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.1.4</version>
+      <version>1.1.5</version>
       <scope>test</scope>
     </dependency>
 
@@ -106,6 +106,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-pubsub</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-s3</artifactId>
       <version>1.12.479</version>
@@ -113,9 +119,16 @@
     </dependency>
 
     <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-sqs</artifactId>
+      <version>1.12.515</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.azure</groupId>
       <artifactId>azure-storage-blob</artifactId>
-      <version>12.22.3</version>
+      <version>12.23.0</version>
     </dependency>
 
     <dependency>

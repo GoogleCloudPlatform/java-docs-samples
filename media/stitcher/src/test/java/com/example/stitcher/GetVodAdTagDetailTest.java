@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,14 +37,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class GetVodAdTagDetailTest {
 
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
-  private static final String LOCATION = "us-central1";
-  private static final String VOD_URI =
-      "https://storage.googleapis.com/cloud-samples-data/media/hls-vod/manifest.m3u8";
-  // VMAP Pre-roll
-  // (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
-  private static final String VOD_AD_TAG_URI =
-      "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpreonly&ciu_szs=300x250%2C728x90&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&correlator=";
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private static String PROJECT_ID;
   private static String SESSION_ID;
   private static String AD_TAG_DETAIL_ID;
@@ -72,14 +65,16 @@ public class GetVodAdTagDetailTest {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    CreateVodSession.createVodSession(PROJECT_ID, LOCATION, VOD_URI, VOD_AD_TAG_URI);
+    CreateVodSession.createVodSession(PROJECT_ID, TestUtils.LOCATION, TestUtils.VOD_URI,
+        TestUtils.VOD_AD_TAG_URI);
     String output = bout.toString();
     String[] arr = output.split("/");
     SESSION_ID = arr[arr.length - 1].replace("\n", "");
-    String sessionName = String.format("locations/%s/vodSessions/%s/", LOCATION, SESSION_ID);
+    String sessionName = String.format("locations/%s/vodSessions/%s/", TestUtils.LOCATION,
+        SESSION_ID);
     bout.reset();
 
-    ListVodAdTagDetails.listVodAdTagDetails(PROJECT_ID, LOCATION, SESSION_ID);
+    ListVodAdTagDetails.listVodAdTagDetails(PROJECT_ID, TestUtils.LOCATION, SESSION_ID);
     Matcher idMatcher =
         Pattern.compile("name: \"projects/.*/" + sessionName + "vodAdTagDetails/(.*)\"")
             .matcher(bout.toString());
@@ -91,9 +86,9 @@ public class GetVodAdTagDetailTest {
   }
 
   @Test
-  @Ignore
   public void test_GetVodAdTagDetailTest() throws IOException {
-    GetVodAdTagDetail.getVodAdTagDetail(PROJECT_ID, LOCATION, SESSION_ID, AD_TAG_DETAIL_ID);
+    GetVodAdTagDetail.getVodAdTagDetail(PROJECT_ID, TestUtils.LOCATION, SESSION_ID,
+        AD_TAG_DETAIL_ID);
     String output = bout.toString();
     assertThat(output, containsString(AD_TAG_DETAIL_NAME));
     bout.reset();

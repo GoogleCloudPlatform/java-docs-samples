@@ -59,7 +59,7 @@ public class AdaptationInlineCustomClassV2 {
           .build();
 
       CustomClass customClass = CustomClass.newBuilder()
-          .setName("ChromeCast")
+          .setName("chromecast")
           .addItems(classItem)
           .build();
 

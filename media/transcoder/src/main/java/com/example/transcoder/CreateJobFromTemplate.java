@@ -45,7 +45,7 @@ public class CreateJobFromTemplate {
     // once, and can be reused for multiple requests.
     try (TranscoderServiceClient transcoderServiceClient = TranscoderServiceClient.create()) {
 
-      var createJobRequest =
+      CreateJobRequest createJobRequest =
           CreateJobRequest.newBuilder()
               .setJob(
                   Job.newBuilder()

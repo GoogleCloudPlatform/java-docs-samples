@@ -19,6 +19,8 @@ package aiplatform;
 // [START aiplatform_deploy_model_sample]
 
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.aiplatform.v1.AutomaticResources;
 import com.google.cloud.aiplatform.v1.DedicatedResources;
 import com.google.cloud.aiplatform.v1.DeployModelOperationMetadata;
@@ -29,12 +31,14 @@ import com.google.cloud.aiplatform.v1.EndpointServiceClient;
 import com.google.cloud.aiplatform.v1.EndpointServiceSettings;
 import com.google.cloud.aiplatform.v1.MachineSpec;
 import com.google.cloud.aiplatform.v1.ModelName;
+import com.google.cloud.aiplatform.v1.stub.EndpointServiceStubSettings;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.threeten.bp.Duration;
 
 public class DeployModelSample {
 
@@ -45,14 +49,41 @@ public class DeployModelSample {
     String deployedModelDisplayName = "YOUR_DEPLOYED_MODEL_DISPLAY_NAME";
     String endpointId = "YOUR_ENDPOINT_NAME";
     String modelId = "YOUR_MODEL_ID";
-    deployModelSample(project, deployedModelDisplayName, endpointId, modelId);
+    int timeout = 900;
+    deployModelSample(project, deployedModelDisplayName, endpointId, modelId, timeout);
   }
 
   static void deployModelSample(
-      String project, String deployedModelDisplayName, String endpointId, String modelId)
+      String project,
+      String deployedModelDisplayName,
+      String endpointId,
+      String modelId,
+      int timeout)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
+
+    // Set long-running operations (LROs) timeout
+    final OperationTimedPollAlgorithm operationTimedPollAlgorithm =
+        OperationTimedPollAlgorithm.create(
+            RetrySettings.newBuilder()
+                .setInitialRetryDelay(Duration.ofMillis(5000L))
+                .setRetryDelayMultiplier(1.5)
+                .setMaxRetryDelay(Duration.ofMillis(45000L))
+                .setInitialRpcTimeout(Duration.ZERO)
+                .setRpcTimeoutMultiplier(1.0)
+                .setMaxRpcTimeout(Duration.ZERO)
+                .setTotalTimeout(Duration.ofSeconds(timeout))
+                .build());
+
+    EndpointServiceStubSettings.Builder endpointServiceStubSettingsBuilder =
+        EndpointServiceStubSettings.newBuilder();
+    endpointServiceStubSettingsBuilder
+        .deployModelOperationSettings()
+        .setPollingAlgorithm(operationTimedPollAlgorithm);
+    EndpointServiceStubSettings endpointStubSettings = endpointServiceStubSettingsBuilder.build();
     EndpointServiceSettings endpointServiceSettings =
-        EndpointServiceSettings.newBuilder()
+        EndpointServiceSettings.create(endpointStubSettings);
+    endpointServiceSettings =
+        endpointServiceSettings.toBuilder()
             .setEndpoint("us-central1-aiplatform.googleapis.com:443")
             .build();
 

@@ -31,10 +31,10 @@ public class BigQueryReadWithProjectionAndFiltering {
     // Parse the pipeline options passed into the application. Example:
     //   --projectId=$PROJECT_ID --datasetName=$DATASET_NAME --tableName=$TABLE_NAME
     // For more information, see https://beam.apache.org/documentation/programming-guide/#configuring-pipeline-options
-    PipelineOptionsFactory.register(BigQueryReadOptions.class);
-    BigQueryReadOptions options = PipelineOptionsFactory.fromArgs(args)
+    PipelineOptionsFactory.register(ExamplePipelineOptions.class);
+    ExamplePipelineOptions options = PipelineOptionsFactory.fromArgs(args)
         .withValidation()
-        .as(BigQueryReadOptions.class);
+        .as(ExamplePipelineOptions.class);
 
     // Create a pipeline and apply transforms.
     Pipeline pipeline = Pipeline.create(options);

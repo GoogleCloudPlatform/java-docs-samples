@@ -18,6 +18,7 @@ package com.example.stitcher;
 
 // [START videostitcher_create_vod_session]
 
+import com.google.cloud.video.stitcher.v1.AdTracking;
 import com.google.cloud.video.stitcher.v1.CreateVodSessionRequest;
 import com.google.cloud.video.stitcher.v1.LocationName;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
@@ -50,7 +51,9 @@ public class CreateVodSession {
           CreateVodSessionRequest.newBuilder()
               .setParent(LocationName.of(projectId, location).toString())
               .setVodSession(
-                  VodSession.newBuilder().setSourceUri(sourceUri).setAdTagUri(adTagUri).build())
+                  VodSession.newBuilder().setSourceUri(sourceUri).setAdTagUri(adTagUri)
+                      .setAdTracking(
+                          AdTracking.SERVER).build())
               .build();
 
       VodSession response = videoStitcherServiceClient.createVodSession(createVodSessionRequest);

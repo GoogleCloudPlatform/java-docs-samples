@@ -27,11 +27,6 @@ assign_issues_by:
   to:
   - simonz130
 - labels:
-  - 'api: cloudiot'
-  to:
-  - attilagargyan
-  - simoncsaba-g
-- labels:
   - 'api: bigtable'
   - 'api: datastore'
   - 'api: firestore'
@@ -44,7 +39,7 @@ assign_issues_by:
 - labels:
   - 'api: spanner'
   to:
-  - rajatbhatta
+  - arpan14
 - labels:
   - 'api: dlp'
   to:
@@ -58,6 +53,11 @@ assign_issues_by:
   - 'api: contentwarehouse'
   to:
   - GoogleCloudPlatform/googleapis-contentwarehouse
+- labels:
+  - 'api: storage'
+  - 'api: storagetransfer'
+  to:
+  - GoogleCloudPlatform/cloud-storage-dpes
 
 assign_prs:
   - GoogleCloudPlatform/java-samples-reviewers
@@ -74,11 +74,6 @@ assign_prs_by:
   to:
   - simonz130
 - labels:
-  - 'api: cloudiot'
-  to:
-  - attilagargyan
-  - simoncsaba-g
-- labels:
   - 'api: bigtable'
   - 'api: datastore'
   - 'api: firestore'
@@ -101,3 +96,8 @@ assign_prs_by:
   - 'api: contentwarehouse'
   to:
   - GoogleCloudPlatform/googleapis-contentwarehouse
+- labels:
+  - 'api: storage'
+  - 'api: storagetransfer'
+  to:
+  - GoogleCloudPlatform/cloud-storage-dpes

@@ -52,7 +52,7 @@
     },
     {
       "packagePatterns": [
-        "^io.micronaut:"
+        "^io.micronaut(?:\.validation)?:"
       ],
       "groupName": "Micronaut packages"
     },
