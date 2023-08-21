@@ -23,8 +23,8 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import io.cloudevents.CloudEvent;
 import java.util.logging.Logger;
 
-public class DatastoreFunction implements CloudEventsFunction {
-  private static final Logger logger = Logger.getLogger(DatastoreFunction.class.getName());
+public class Datastore implements CloudEventsFunction {
+  private static final Logger logger = Logger.getLogger(Datastore.class.getName());
 
   @Override
   public void accept(CloudEvent event) throws InvalidProtocolBufferException {
