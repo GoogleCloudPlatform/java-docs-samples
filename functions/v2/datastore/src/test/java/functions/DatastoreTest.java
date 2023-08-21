@@ -19,8 +19,10 @@ package functions;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
-import com.google.events.cloud.firestore.v1.Document;
-import com.google.events.cloud.firestore.v1.DocumentEventData;
+import com.google.events.cloud.datastore.v1.Entity;
+import com.google.events.cloud.datastore.v1.EntityEventData;
+import com.google.events.cloud.datastore.v1.EntityResult;
+import com.google.events.cloud.datastore.v1.Value;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
@@ -33,12 +35,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class FirebaseFirestoreTest {
+public class DatastoreTest {
 
   // Loggers + handlers for various tested classes
   // (Must be declared at class-level, or LoggingHandler won't detect log
   // records!)
-  private static final Logger logger = Logger.getLogger(FirebaseFirestore.class.getName());
+  private static final Logger logger = Logger.getLogger(Datastore.class.getName());
 
   private static final TestLogHandler LOG_HANDLER = new TestLogHandler();
 
@@ -53,40 +55,40 @@ public class FirebaseFirestoreTest {
   }
 
   @Test
-  public void functionsFirebaseFirestore_shouldUnmarshalAndPrint()
-      throws InvalidProtocolBufferException {
-    Document oldValue = Document.newBuilder()
-        .setName("oldValue")
-        .build();
-    Document newValue = Document.newBuilder()
-        .setName("newValue")
-        .build();
-    DocumentEventData firestorePayload = DocumentEventData.newBuilder()
-        .setValue(newValue)
-        .setOldValue(oldValue)
-        .build();
+  public void functionsDatastore_shouldUnmarshalAndPrint() throws InvalidProtocolBufferException {
+    Entity oldEntity =
+        Entity.newBuilder()
+            .putProperties("Name", Value.newBuilder().setStringValue("oldValue").build())
+            .build();
+    EntityResult oldResult = EntityResult.newBuilder().setEntity(oldEntity).build();
+    Entity newEntity =
+        Entity.newBuilder()
+            .putProperties("Name", Value.newBuilder().setStringValue("newValue").build())
+            .build();
+    EntityResult newResult = EntityResult.newBuilder().setEntity(newEntity).build();
+    EntityEventData datastorePayload =
+        EntityEventData.newBuilder().setValue(newResult).setOldValue(oldResult).build();
 
-    CloudEvent event = CloudEventBuilder.v1()
-        .withId("0")
-        .withSubject("test subject")
-        .withSource(URI.create("https://example.com"))
-        .withType("google.cloud.firestore.document.v1.written")
-        .withData(firestorePayload.toByteArray())
-        .build();
+    CloudEvent event =
+        CloudEventBuilder.v1()
+            .withId("0")
+            .withSubject("test subject")
+            .withSource(URI.create("https://example.com"))
+            .withType("google.cloud.datastore.entity.v1.written")
+            .withData(datastorePayload.toByteArray())
+            .build();
 
-    new FirebaseFirestore().accept(event);
+    new Datastore().accept(event);
 
-    assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage()).isEqualTo(
-        "Function triggered by event on: " + event.getSource());
-    assertThat(LOG_HANDLER.getStoredLogRecords().get(1).getMessage()).isEqualTo(
-        "Event type: " + event.getType());
-    assertThat(LOG_HANDLER.getStoredLogRecords().get(2).getMessage()).isEqualTo(
-        "Old value:");
-    assertThat(LOG_HANDLER.getStoredLogRecords().get(3).getMessage()).isEqualTo(
-        oldValue.toString());
-    assertThat(LOG_HANDLER.getStoredLogRecords().get(4).getMessage()).isEqualTo(
-        "New value:");
-    assertThat(LOG_HANDLER.getStoredLogRecords().get(5).getMessage()).isEqualTo(
-        newValue.toString());
+    assertThat(LOG_HANDLER.getStoredLogRecords().get(0).getMessage())
+        .isEqualTo("Function triggered by event on: " + event.getSource());
+    assertThat(LOG_HANDLER.getStoredLogRecords().get(1).getMessage())
+        .isEqualTo("Event type: " + event.getType());
+    assertThat(LOG_HANDLER.getStoredLogRecords().get(2).getMessage()).isEqualTo("Old value:");
+    assertThat(LOG_HANDLER.getStoredLogRecords().get(3).getMessage())
+        .isEqualTo(oldResult.toString());
+    assertThat(LOG_HANDLER.getStoredLogRecords().get(4).getMessage()).isEqualTo("New value:");
+    assertThat(LOG_HANDLER.getStoredLogRecords().get(5).getMessage())
+        .isEqualTo(newResult.toString());
   }
 }
