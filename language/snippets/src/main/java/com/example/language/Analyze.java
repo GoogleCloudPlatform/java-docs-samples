@@ -16,13 +16,13 @@
 
 package com.example.language;
 
-import com.google.cloud.language.v2.AnalyzeEntitiesRequest;
-import com.google.cloud.language.v2.AnalyzeEntitiesResponse;
 import com.google.cloud.language.v1.AnalyzeEntitySentimentRequest;
 import com.google.cloud.language.v1.AnalyzeEntitySentimentResponse;
-import com.google.cloud.language.v2.AnalyzeSentimentResponse;
 import com.google.cloud.language.v1.AnalyzeSyntaxRequest;
 import com.google.cloud.language.v1.AnalyzeSyntaxResponse;
+import com.google.cloud.language.v2.AnalyzeEntitiesRequest;
+import com.google.cloud.language.v2.AnalyzeEntitiesResponse;
+import com.google.cloud.language.v2.AnalyzeSentimentResponse;
 import com.google.cloud.language.v2.ClassificationCategory;
 import com.google.cloud.language.v2.ClassifyTextRequest;
 import com.google.cloud.language.v2.ClassifyTextResponse;
