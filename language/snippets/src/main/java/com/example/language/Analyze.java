@@ -322,7 +322,8 @@ public class Analyze {
     try (com.google.cloud.language.v1.LanguageServiceClient language =
         com.google.cloud.language.v1.LanguageServiceClient.create()) {
       com.google.cloud.language.v1.Document doc =
-          com.google.cloud.language.v1.Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
+          com.google.cloud.language.v1.Document.newBuilder().setContent(text)
+              .setType(Type.PLAIN_TEXT).build();
       AnalyzeEntitySentimentRequest request =
           AnalyzeEntitySentimentRequest.newBuilder()
               .setDocument(doc)
@@ -354,7 +355,8 @@ public class Analyze {
     try (com.google.cloud.language.v1.LanguageServiceClient language =
         com.google.cloud.language.v1.LanguageServiceClient.create()) {
       com.google.cloud.language.v1.Document doc =
-          com.google.cloud.language.v1.Document.newBuilder().setGcsContentUri(gcsUri).setType(Type.PLAIN_TEXT).build();
+          com.google.cloud.language.v1.Document.newBuilder().setGcsContentUri(gcsUri)
+              .setType(Type.PLAIN_TEXT).build();
       AnalyzeEntitySentimentRequest request =
           AnalyzeEntitySentimentRequest.newBuilder()
               .setDocument(doc)
