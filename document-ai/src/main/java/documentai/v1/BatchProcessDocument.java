@@ -113,7 +113,7 @@ public class BatchProcessDocument {
       // Note: first request to the service takes longer than subsequent
       // requests.
       System.out.println("Waiting for operation to complete...");
-      future.get(240, TimeUnit.SECONDS);
+      future.get();
 
       System.out.println("Document processing complete.");
 
