@@ -17,6 +17,7 @@
 package com.example.spanner.jdbc;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.spanner.DatabaseAdminClient;
@@ -445,6 +446,13 @@ public class JdbcExamplesIT {
                             JsonQueryDataExample.queryJsonData(
                                     ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
     assertThat(out).contains("VenueId: 19");
+  }
+
+  @Test
+  public void testRunPartitionedQuery() throws SQLException {
+    String out = runExample(() -> RunPartitionedQueryExample.runPartitionedQuery(
+        ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    assertTrue(out, out.contains("Data boost query returned"));
   }
 
   static String formatForTest(String name) {
