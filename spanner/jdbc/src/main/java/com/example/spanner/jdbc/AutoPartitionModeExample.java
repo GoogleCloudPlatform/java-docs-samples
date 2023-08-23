@@ -16,42 +16,43 @@
 
 package com.example.spanner.jdbc;
 
-//[START spanner_jdbc_run_partitioned_query]
+//[START spanner_jdbc_auto_partition_mode]
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class RunPartitionedQueryExample {
+public class AutoPartitionModeExample {
 
   public static void main(String[] args) throws SQLException {
-    runPartitionedQuery();
+    autoPartitionMode();
   }
 
-  static void runPartitionedQuery() throws SQLException {
+  static void autoPartitionMode() throws SQLException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project";
     String instanceId = "my-instance";
     String databaseId = "my-database";
-    runPartitionedQuery(projectId, instanceId, databaseId);
+    autoPartitionMode(projectId, instanceId, databaseId);
   }
 
-  // This example shows how to run a query directly as a partitioned query on a JDBC connection.
-  // The query will be partitioned and each partition will be executed using the same JDBC
-  // connection. You can set the maximum parallelism that should be used to execute the query with
-  // the SQL statement 'SET max_partitioned_parallelism=<parallelism>'.
-  static void runPartitionedQuery(String projectId, String instanceId, String databaseId)
+  // This example shows how to use 'auto_partition_mode=true' to execute partitioned queries with
+  // the JDBC driver.
+  static void autoPartitionMode(String projectId, String instanceId, String databaseId)
       throws SQLException {
     String connectionUrl = String.format("jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
         projectId, instanceId, databaseId);
     try (Connection connection = DriverManager.getConnection(
         connectionUrl); Statement statement = connection.createStatement()) {
-      // Run a query directly as a partitioned query.
+      // A connection can also be set to 'auto_partition_mode', which will instruct it to execute
+      // all queries as a partitioned query. This is essentially the same as automatically prefixing
+      // all queries with 'RUN PARTITIONED QUERY ...'.
+      statement.execute("set auto_partition_mode=true");
       // This will execute at most max_partitioned_parallelism partitions in parallel.
       statement.execute("set max_partitioned_parallelism=8");
       try (ResultSet resultSet = statement.executeQuery(
-          "RUN PARTITIONED QUERY SELECT SingerId, FirstName, LastName FROM singers")) {
+          "SELECT SingerId, FirstName, LastName FROM singers")) {
         while (resultSet.next()) {
           System.out.printf("%s %s %s%n", resultSet.getString(1), resultSet.getString(2),
               resultSet.getString(3));
@@ -60,4 +61,4 @@ public class RunPartitionedQueryExample {
     }
   }
 }
-//[END spanner_jdbc_run_partitioned_query]
+//[END spanner_jdbc_auto_partition_mode]

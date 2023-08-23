@@ -16,42 +16,54 @@
 
 package com.example.spanner.jdbc;
 
-//[START spanner_jdbc_run_partitioned_query]
+//[START spanner_jdbc_data_boost]
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class RunPartitionedQueryExample {
+public class DataBoostExample {
 
   public static void main(String[] args) throws SQLException {
-    runPartitionedQuery();
+    dataBoost();
   }
 
-  static void runPartitionedQuery() throws SQLException {
+  static void dataBoost() throws SQLException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project";
     String instanceId = "my-instance";
     String databaseId = "my-database";
-    runPartitionedQuery(projectId, instanceId, databaseId);
+    dataBoost(projectId, instanceId, databaseId);
   }
 
-  // This example shows how to run a query directly as a partitioned query on a JDBC connection.
-  // The query will be partitioned and each partition will be executed using the same JDBC
-  // connection. You can set the maximum parallelism that should be used to execute the query with
-  // the SQL statement 'SET max_partitioned_parallelism=<parallelism>'.
-  static void runPartitionedQuery(String projectId, String instanceId, String databaseId)
+  // This example shows how to execute queries with data boost using the JDBC driver.
+  static void dataBoost(String projectId, String instanceId, String databaseId)
       throws SQLException {
     String connectionUrl = String.format("jdbc:cloudspanner:/projects/%s/instances/%s/databases/%s",
         projectId, instanceId, databaseId);
     try (Connection connection = DriverManager.getConnection(
         connectionUrl); Statement statement = connection.createStatement()) {
-      // Run a query directly as a partitioned query.
+      
+      // A connection can also be set to 'auto_partition_mode', which will instruct it to execute
+      // all queries as a partitioned query. This is essentially the same as automatically prefixing
+      // all queries with 'RUN PARTITIONED QUERY ...'.
+      statement.execute("set auto_partition_mode=true");
+      
       // This will execute at most max_partitioned_parallelism partitions in parallel.
       statement.execute("set max_partitioned_parallelism=8");
+      
+      // Setting 'data_boost_enabled' to true will instruct the JDBC connection to execute all
+      // partitioned queries using Data Boost. This setting applies to all the above methods that
+      // can be used to run a partitioned query:
+      // 1. RUN PARTITION '...'
+      // 2. RUN PARTITIONED QUERY ...
+      // 3. SET AUTO_PARTITION_MODE=TRUE; SELECT ...
+      statement.execute("set data_boost_enabled=true");
+      
+      // This query will be executed as a partitioned query using data boost.
       try (ResultSet resultSet = statement.executeQuery(
-          "RUN PARTITIONED QUERY SELECT SingerId, FirstName, LastName FROM singers")) {
+          "SELECT SingerId, FirstName, LastName FROM singers")) {
         while (resultSet.next()) {
           System.out.printf("%s %s %s%n", resultSet.getString(1), resultSet.getString(2),
               resultSet.getString(3));
@@ -60,4 +72,4 @@ public class RunPartitionedQueryExample {
     }
   }
 }
-//[END spanner_jdbc_run_partitioned_query]
+//[START spanner_jdbc_data_boost]

@@ -113,6 +113,11 @@ public class JdbcExamplesIT {
       this.lastName = lastName;
       this.revenues = revenues;
     }
+    
+    @Override
+    public String toString() {
+      return String.format("%d %s %s", singerId, firstName, lastName);
+    }
   }
 
   static final List<Singer> TEST_SINGERS =
@@ -449,10 +454,38 @@ public class JdbcExamplesIT {
   }
 
   @Test
+  public void testPartitionQuery() throws SQLException {
+    String out = runExample(() -> PartitionQueryExample.partitionQuery(
+        ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    assertOutputContainsAllSingers(out);
+  }
+
+  @Test
+  public void testAutoPartitionMode() throws SQLException {
+    String out = runExample(() -> AutoPartitionModeExample.autoPartitionMode(
+        ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    assertOutputContainsAllSingers(out);
+  }
+
+  @Test
+  public void testDataBoost() throws SQLException {
+    String out = runExample(() -> DataBoostExample.dataBoost(
+        ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    assertOutputContainsAllSingers(out);
+  }
+
+  @Test
   public void testRunPartitionedQuery() throws SQLException {
     String out = runExample(() -> RunPartitionedQueryExample.runPartitionedQuery(
         ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
-    assertTrue(out, out.contains("Data boost query returned"));
+    assertOutputContainsAllSingers(out);
+  }
+  
+  void assertOutputContainsAllSingers(String out) {
+    for (Singer singer : TEST_SINGERS) {
+      assertTrue(out + " should contain " + singer.toString(),
+          out.contains(singer.toString()));
+    }
   }
 
   static String formatForTest(String name) {
