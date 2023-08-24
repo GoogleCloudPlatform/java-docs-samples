@@ -25,6 +25,7 @@ import com.google.api.services.healthcare.v1.CloudHealthcare;
 import com.google.api.services.healthcare.v1.CloudHealthcare.Projects.Locations.Datasets.Hl7V2Stores;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
 import com.google.api.services.healthcare.v1.model.Hl7V2Store;
+import com.google.api.services.healthcare.v1.model.ParserConfig;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
@@ -39,7 +40,8 @@ public class Hl7v2StoreCreate {
 
   public static void hl7v2StoreCreate(String datasetName, String hl7v2StoreId) throws IOException {
     // String datasetName =
-    //     String.format(DATASET_NAME, "your-project-id", "your-region-id", "your-dataset-id");
+    // String.format(DATASET_NAME, "your-project-id", "your-region-id",
+    // "your-dataset-id");
     // String hl7v2StoreId = "your-hl7v25-id"
 
     // Initialize the client, which will be used to interact with the service.
@@ -49,17 +51,17 @@ public class Hl7v2StoreCreate {
     Map<String, String> labels = new HashMap<>();
     labels.put("key1", "value1");
     labels.put("key2", "value2");
-    Hl7V2Store content = new Hl7V2Store().setLabels(labels);
+    Hl7V2Store content = 
+        new Hl7V2Store().setLabels(labels).setParserConfig(new ParserConfig().setVersion("V3"));
 
     // Create request and configure any parameters.
-    Hl7V2Stores.Create request =
-        client
-            .projects()
-            .locations()
-            .datasets()
-            .hl7V2Stores()
-            .create(datasetName, content)
-            .setHl7V2StoreId(hl7v2StoreId);
+    Hl7V2Stores.Create request = client
+        .projects()
+        .locations()
+        .datasets()
+        .hl7V2Stores()
+        .create(datasetName, content)
+        .setHl7V2StoreId(hl7v2StoreId);
 
     // Execute the request and process the results.
     Hl7V2Store response = request.execute();
@@ -68,18 +70,18 @@ public class Hl7v2StoreCreate {
 
   private static CloudHealthcare createClient() throws IOException {
     // Use Application Default Credentials (ADC) to authenticate the requests
-    // For more information see https://cloud.google.com/docs/authentication/production
-    GoogleCredentials credential =
-        GoogleCredentials.getApplicationDefault()
-            .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
+    // For more information see
+    // https://cloud.google.com/docs/authentication/production
+    GoogleCredentials credential = GoogleCredentials.getApplicationDefault()
+        .createScoped(Collections.singleton(CloudHealthcareScopes.CLOUD_PLATFORM));
 
-    // Create a HttpRequestInitializer, which will provide a baseline configuration to all requests.
-    HttpRequestInitializer requestInitializer =
-        request -> {
-          new HttpCredentialsAdapter(credential).initialize(request);
-          request.setConnectTimeout(60000); // 1 minute connect timeout
-          request.setReadTimeout(60000); // 1 minute read timeout
-        };
+    // Create a HttpRequestInitializer, which will provide a baseline configuration
+    // to all requests.
+    HttpRequestInitializer requestInitializer = request -> {
+      new HttpCredentialsAdapter(credential).initialize(request);
+      request.setConnectTimeout(60000); // 1 minute connect timeout
+      request.setReadTimeout(60000); // 1 minute read timeout
+    };
 
     // Build the client for interacting with the service.
     return new CloudHealthcare.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer)
