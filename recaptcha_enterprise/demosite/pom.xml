@@ -46,7 +46,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <app.mainclass>app.SpringbootMain</app.mainclass>
-    <spring.boot.version>2.7.14</spring.boot.version>
+    <spring.boot.version>2.7.15</spring.boot.version>
   </properties>
 
   <dependencies>
