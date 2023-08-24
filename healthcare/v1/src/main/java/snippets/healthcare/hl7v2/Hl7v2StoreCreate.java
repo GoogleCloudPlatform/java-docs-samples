@@ -51,7 +51,8 @@ public class Hl7v2StoreCreate {
     Map<String, String> labels = new HashMap<>();
     labels.put("key1", "value1");
     labels.put("key2", "value2");
-    Hl7V2Store content = new Hl7V2Store().setLabels(labels).setParserConfig(new ParserConfig().setVersion("V3"));
+    Hl7V2Store content = 
+      new Hl7V2Store().setLabels(labels).setParserConfig(new ParserConfig().setVersion("V3"));
 
     // Create request and configure any parameters.
     Hl7V2Stores.Create request = client
