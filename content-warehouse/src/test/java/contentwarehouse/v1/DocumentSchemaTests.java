@@ -36,6 +36,7 @@ public class DocumentSchemaTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us";
   private static final String DOCUMENT_SCHEMA_ID = "7rk7ssfv2f298";
+  private static final String DELETE_DOCUMENT_SCHEMA_ID = "7rk7ssfv2f299";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -93,6 +94,13 @@ public class DocumentSchemaTests {
     UpdateDocumentSchema.updateDocumentSchema(PROJECT_ID, LOCATION, DOCUMENT_SCHEMA_ID);
     String got = bout.toString();
     assertThat(got).contains("Schema");
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testDeleteDocumentSchemas()
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    DeleteDocumentSchema.deleteDocumentSchema(PROJECT_ID, LOCATION, DELETE_DOCUMENT_SCHEMA_ID);
+    GetDocumentSchema.getDocumentSchema(PROJECT_ID, LOCATION, DELETE_DOCUMENT_SCHEMA_ID);
   }
 
   @After
