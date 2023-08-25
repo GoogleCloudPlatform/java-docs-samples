@@ -70,6 +70,9 @@ public class DeleteDocumentSchema {
 
       // Delete Document Schema
       documentSchemaServiceClient.deleteDocumentSchema(deleteDocumentSchemaRequest);
+
+      System.out.println("Document Schema ID "+ documentSchemaId + " has been deleted.");
+      
     }
   }
 
