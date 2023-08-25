@@ -18,15 +18,10 @@ package contentwarehouse.v1;
 
 // [START contentwarehouse_delete_document_schema]
 
-import com.google.cloud.contentwarehouse.v1.CreateDocumentSchemaRequest;
 import com.google.cloud.contentwarehouse.v1.DeleteDocumentSchemaRequest;
-import com.google.cloud.contentwarehouse.v1.DocumentSchema;
 import com.google.cloud.contentwarehouse.v1.DocumentSchemaName;
 import com.google.cloud.contentwarehouse.v1.DocumentSchemaServiceClient;
 import com.google.cloud.contentwarehouse.v1.DocumentSchemaServiceSettings;
-import com.google.cloud.contentwarehouse.v1.LocationName;
-import com.google.cloud.contentwarehouse.v1.PropertyDefinition;
-import com.google.cloud.contentwarehouse.v1.TextTypeOptions;
 import com.google.cloud.resourcemanager.v3.Project;
 import com.google.cloud.resourcemanager.v3.ProjectName;
 import com.google.cloud.resourcemanager.v3.ProjectsClient;
