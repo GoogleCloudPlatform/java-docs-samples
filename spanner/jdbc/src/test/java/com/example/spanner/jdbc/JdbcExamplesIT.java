@@ -18,6 +18,8 @@ package com.example.spanner.jdbc;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.example.spanner.jdbc.SingerProto.Genre;
+import com.example.spanner.jdbc.SingerProto.SingerInfo;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.spanner.DatabaseAdminClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -52,7 +54,8 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class JdbcExamplesIT {
   // The instance needs to exist for tests to pass.
-  private static String instanceId = System.getProperty("spanner.test.instance");
+  private static String instanceId =
+      System.getProperty("spanner.test.instance", "harsha-test-gcloud");
   private static String databaseId =
       formatForTest(System.getProperty("spanner.sample.database", "mysample"));
   private static DatabaseId dbId;
@@ -78,7 +81,11 @@ public class JdbcExamplesIT {
 
   @BeforeClass
   public static void createTestDatabase() throws Exception {
-    SpannerOptions options = SpannerOptions.newBuilder().build();
+    SpannerOptions options =
+        SpannerOptions.newBuilder()
+            .setProjectId("span-cloud-testing")
+            .setHost("https://staging-wrenchworks.sandbox.googleapis.com")
+            .build();
     Spanner spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
     if (instanceId == null) {
@@ -445,6 +452,36 @@ public class JdbcExamplesIT {
                             JsonQueryDataExample.queryJsonData(
                                     ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
     assertThat(out).contains("VenueId: 19");
+  }
+
+  @Test
+  public void insertAndQueryProtoColumnsData_shouldReturnData() throws SQLException {
+    String out =
+        runExample(
+            () ->
+                ProtoColumnsCreateTableExample.createTableWithProtoDataType(
+                    ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    assertThat(out)
+        .contains("Created table with Proto Message and Enum data type. DDL counts: [-2, -2]");
+    out =
+        runExample(
+            () ->
+                ProtoColumnsInsertDataExample.insertProtoColumnsData(
+                    ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    assertThat(out).contains("Insert counts: [1, 1]");
+    out =
+        runExample(
+            () ->
+                ProtoColumnsQueryDataExample.queryProtoColumnsData(
+                    ServiceOptions.getDefaultProjectId(), instanceId, databaseId));
+    SingerInfo singerInfo =
+        SingerInfo.newBuilder()
+            .setSingerId(1)
+            .setNationality("Country1")
+            .setGenre(Genre.ROCK)
+            .build();
+    assertThat(out).contains("SingerId: 1, SingerInfo: " + singerInfo + ", SingerGenre: ROCK");
+    assertThat(out).contains("SingerId: 2, SingerInfo: null, SingerGenre: null");
   }
 
   static String formatForTest(String name) {
