@@ -84,7 +84,7 @@ public class UpdateDocumentSchema {
           .build();
 
       DocumentSchema updatedDocumentSchema = DocumentSchema.newBuilder()
-                    .setDisplayName("My Test Schema") 
+                    .setDisplayName("Plaintiff") 
                     .addPropertyDefinitions(0, propertyDefinition).build();
 
       // Create the Request to Update the Document Schema
