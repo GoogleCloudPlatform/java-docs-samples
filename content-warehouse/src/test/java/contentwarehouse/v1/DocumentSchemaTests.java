@@ -36,7 +36,7 @@ public class DocumentSchemaTests {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us";
-  private static final String DOCUMENT_SCHEMA_ID = "0gbaq424mdei0";
+  private static final String DOCUMENT_SCHEMA_ID = "27hhcik7eddv0";
   private static final String DELETE_DOCUMENT_SCHEMA_ID = "1en66na9epak0";
 
   private ByteArrayOutputStream bout;
