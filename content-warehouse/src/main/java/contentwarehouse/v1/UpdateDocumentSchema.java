@@ -74,8 +74,8 @@ public class UpdateDocumentSchema {
             
       // Define the new Schema Property with updated values
       PropertyDefinition propertyDefinition = PropertyDefinition.newBuilder()
-          .setName("stock_symbol")
-          .setDisplayName("Searchable text")
+          .setName("plaintiff")
+          .setDisplayName("Plaintiff")
           .setIsSearchable(true)
           .setIsRepeatable(true)
           .setIsRequired(false)
@@ -84,7 +84,7 @@ public class UpdateDocumentSchema {
           .build();
 
       DocumentSchema updatedDocumentSchema = DocumentSchema.newBuilder()
-                    .setDisplayName("My Test Schema") 
+                    .setDisplayName("Test Doc Schema") 
                     .addPropertyDefinitions(0, propertyDefinition).build();
 
       // Create the Request to Update the Document Schema

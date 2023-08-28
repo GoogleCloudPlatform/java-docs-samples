@@ -19,6 +19,7 @@ package contentwarehouse.v1;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,7 +36,8 @@ public class DocumentSchemaTests {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us";
-  private static final String DOCUMENT_SCHEMA_ID = "7rk7ssfv2f298";
+  private static final String DOCUMENT_SCHEMA_ID = "27hhcik7eddv0";
+  private static final String DELETE_DOCUMENT_SCHEMA_ID = "1en66na9epak0";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -93,6 +95,12 @@ public class DocumentSchemaTests {
     UpdateDocumentSchema.updateDocumentSchema(PROJECT_ID, LOCATION, DOCUMENT_SCHEMA_ID);
     String got = bout.toString();
     assertThat(got).contains("Schema");
+  }
+
+  @Test(expected = NotFoundException.class)
+  public void testDeleteDocumentSchemas()
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    DeleteDocumentSchema.deleteDocumentSchema(PROJECT_ID, LOCATION, DELETE_DOCUMENT_SCHEMA_ID);
   }
 
   @After
