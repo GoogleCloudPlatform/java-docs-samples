@@ -13,6 +13,7 @@ environment.
 
 * [Hello World](helloworld/)
 * [Concepts](concepts/)
+* [Datastore](v2/datastore/)
 * [Firebase](firebase/)
 * [Cloud Pub/Sub](pubsub/)
 * [HTTP](http/)
