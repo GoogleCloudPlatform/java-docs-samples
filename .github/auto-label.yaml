@@ -14,6 +14,7 @@ path:
     batch: "batch"
     bigquery: "bigquery"
     bigtable: "bigtable"
+      bigquerydatatransfer: "bigquerydatatransfer"
     cloud-sql: "cloudsql"
     compute: "compute"
     contact-center-insights: "contactcenterinsights"
