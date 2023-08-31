@@ -40,7 +40,7 @@
     <maven.war.plugin>2.6</maven.war.plugin>
 
     <appengine.maven.plugin>2.4.4</appengine.maven.plugin>
-    <jetty.maven.plugin>11.0.15</jetty.maven.plugin>
+    <jetty.maven.plugin>11.0.16</jetty.maven.plugin>
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
   </properties>
