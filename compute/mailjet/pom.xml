@@ -33,7 +33,7 @@
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <mailjet.version>5.2.3</mailjet.version>
+    <mailjet.version>5.2.4</mailjet.version>
   </properties>
 
   <dependencies>
