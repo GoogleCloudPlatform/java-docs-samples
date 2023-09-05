@@ -66,7 +66,7 @@ public class ProcessOcrDocumentTest {
 
     assertThat(got).contains("Page 1");
     assertThat(got).contains("en");
-    assertThat(got).matches("Fake\s*Doc");
+    assertThat(got).matches("Fake\\s*Doc");
   }
 
   @After
