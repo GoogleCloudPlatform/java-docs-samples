@@ -24,11 +24,13 @@ import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /** Tests for vision "Deploy Model Node Count" sample. */
+@Ignore("This test is ignored because the legacy version of AutoML API is deprecated")
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ObjectDetectionDeployModelNodeCountIT {

@@ -28,12 +28,14 @@ import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 // Tests for Automl translation models.
+@Ignore("This test is ignored because the legacy version of AutoML API is deprecated")
 @RunWith(JUnit4.class)
 public class TranslateCreateModelTest {
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
