@@ -19,6 +19,7 @@ package contentwarehouse.v1;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.cloud.storage.Acl.User;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,6 +38,7 @@ public class DocumentTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us";
   private static final String DOCUMENT_SCHEMA_ID = "27hhcik7eddv0";
+  private static final String DOCUMENT_ID = "3iceo587ciooo";
   private static final String USER_ID = "user:andrewchasin@google.com";
 
   private ByteArrayOutputStream bout;
@@ -67,6 +69,14 @@ public class DocumentTests {
   public void testCreateDocument()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
     CreateDocument.createDocument(PROJECT_ID, LOCATION, USER_ID, DOCUMENT_SCHEMA_ID);
+    String got = bout.toString();
+    assertThat(got).contains("document");
+  }
+
+  @Test
+  public void testGetDocument()
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    GetDocumentByDocumentID.getDocument(PROJECT_ID, LOCATION, DOCUMENT_ID, USER_ID);
     String got = bout.toString();
     assertThat(got).contains("document");
   }
