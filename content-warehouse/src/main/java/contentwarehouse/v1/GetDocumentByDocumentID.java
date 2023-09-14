@@ -43,7 +43,7 @@ public class GetDocumentByDocumentId {
     getDocument(projectId, location, documentId, userId);
   }
   
-  // Retrieves details about existing Document using the document ID
+  // Retrieves details about existing Document using the document Id
   public static void getDocument(String projectId, String location, 
         String documentId, String userId) throws IOException, 
             InterruptedException, ExecutionException, TimeoutException {
