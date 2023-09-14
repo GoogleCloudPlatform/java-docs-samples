@@ -75,7 +75,7 @@ public class DocumentTests {
   @Test
   public void testGetDocument()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
-    GetDocumentByDocumentID.getDocument(PROJECT_ID, LOCATION, DOCUMENT_ID, USER_ID);
+    GetDocumentByDocumentId.getDocument(PROJECT_ID, LOCATION, DOCUMENT_ID, USER_ID);
     String got = bout.toString();
     assertThat(got).contains("document");
   }

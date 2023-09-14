@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-public class GetDocumentByDocumentID {
+public class GetDocumentByDocumentId {
 
   public static void getDocument() throws IOException, 
         InterruptedException, ExecutionException, TimeoutException {
@@ -65,7 +65,7 @@ public class GetDocumentByDocumentID {
           DocumentName.of(projectNumber, location, documentId);
 
       // Define Request Metadata for enforcing access control
-        RequestMetadata requestMetadata = RequestMetadata.newBuilder()
+      RequestMetadata requestMetadata = RequestMetadata.newBuilder()
             .setUserInfo(
             UserInfo.newBuilder()
               .setId(userId).build()).build();
