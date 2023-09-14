@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-public class GetDocumentByDocumentId {
+public class GetDocument {
 
   public static void getDocument() throws IOException, 
         InterruptedException, ExecutionException, TimeoutException {
