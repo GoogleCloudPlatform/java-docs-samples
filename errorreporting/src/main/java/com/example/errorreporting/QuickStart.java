@@ -27,16 +27,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * Snippet demonstrates using the Error Reporting API to report a custom error
- * event.
- *
+ * Snippet demonstrates using the Error Reporting API to report an exception.
  * <p>
- * This library is not required on App Engine, errors written to stderr are
- * automatically written
- * to Error Reporting. It is also not required if you are writing logs to Cloud
- * Logging. Errors
- * written to Cloud Logging that contain an exception or stack trace are
- * automatically written out
+ * When the workload runs on App Engine, GKE, Cloud Functions or another managed environment,
+ * printing the exception's stack trace to stderr will automatically report the error
  * to Error Reporting.
  */
 public class QuickStart {
