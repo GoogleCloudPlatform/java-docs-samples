@@ -20,6 +20,7 @@ import com.google.cloud.language.v1.AnalyzeEntitySentimentRequest;
 import com.google.cloud.language.v1.AnalyzeEntitySentimentResponse;
 import com.google.cloud.language.v1.AnalyzeSyntaxRequest;
 import com.google.cloud.language.v1.AnalyzeSyntaxResponse;
+import com.google.cloud.language.v1.Token;
 import com.google.cloud.language.v2.AnalyzeEntitiesRequest;
 import com.google.cloud.language.v2.AnalyzeEntitiesResponse;
 import com.google.cloud.language.v2.AnalyzeSentimentResponse;
@@ -33,7 +34,6 @@ import com.google.cloud.language.v2.Entity;
 import com.google.cloud.language.v2.EntityMention;
 import com.google.cloud.language.v2.LanguageServiceClient;
 import com.google.cloud.language.v2.Sentiment;
-import com.google.cloud.language.v2.Token;
 import java.util.List;
 import java.util.Map;
 
@@ -198,11 +198,13 @@ public class Analyze {
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (com.google.cloud.language.v1.LanguageServiceClient language =
         com.google.cloud.language.v1.LanguageServiceClient.create()) {
-      Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
+      com.google.cloud.language.v1.Document doc =
+          com.google.cloud.language.v1.Document.newBuilder().setContent(text)
+            .setType(com.google.cloud.language.v1.Document.Type.PLAIN_TEXT).build();
       AnalyzeSyntaxRequest request =
           AnalyzeSyntaxRequest.newBuilder()
               .setDocument(doc)
-              .setEncodingType(EncodingType.UTF16)
+              .setEncodingType(com.google.cloud.language.v1.EncodingType.UTF16)
               .build();
       // Analyze the syntax in the given text
       AnalyzeSyntaxResponse response = language.analyzeSyntax(request);
@@ -238,12 +240,14 @@ public class Analyze {
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
     try (com.google.cloud.language.v1.LanguageServiceClient language =
         com.google.cloud.language.v1.LanguageServiceClient.create()) {
-      Document doc =
-          Document.newBuilder().setGcsContentUri(gcsUri).setType(Type.PLAIN_TEXT).build();
+      com.google.cloud.language.v1.Document doc =
+          com.google.cloud.language.v1.Document.newBuilder().setGcsContentUri(gcsUri).setType(
+            com.google.cloud.language.v1.Document.Type.PLAIN_TEXT
+          ).build();
       AnalyzeSyntaxRequest request =
           AnalyzeSyntaxRequest.newBuilder()
               .setDocument(doc)
-              .setEncodingType(EncodingType.UTF16)
+              .setEncodingType(com.google.cloud.language.v1.EncodingType.UTF16)
               .build();
       // Analyze the syntax in the given text
       AnalyzeSyntaxResponse response = language.analyzeSyntax(request);
@@ -323,11 +327,11 @@ public class Analyze {
         com.google.cloud.language.v1.LanguageServiceClient.create()) {
       com.google.cloud.language.v1.Document doc =
           com.google.cloud.language.v1.Document.newBuilder().setContent(text)
-              .setType(Type.PLAIN_TEXT).build();
+              .setType(com.google.cloud.language.v1.Document.Type.PLAIN_TEXT).build();
       AnalyzeEntitySentimentRequest request =
           AnalyzeEntitySentimentRequest.newBuilder()
               .setDocument(doc)
-              .setEncodingType(EncodingType.UTF16)
+              .setEncodingType(com.google.cloud.language.v1.EncodingType.UTF16)
               .build();
       // Detect entity sentiments in the given string
       AnalyzeEntitySentimentResponse response = language.analyzeEntitySentiment(request);
@@ -356,11 +360,11 @@ public class Analyze {
         com.google.cloud.language.v1.LanguageServiceClient.create()) {
       com.google.cloud.language.v1.Document doc =
           com.google.cloud.language.v1.Document.newBuilder().setGcsContentUri(gcsUri)
-              .setType(Type.PLAIN_TEXT).build();
+              .setType(com.google.cloud.language.v1.Document.Type.PLAIN_TEXT).build();
       AnalyzeEntitySentimentRequest request =
           AnalyzeEntitySentimentRequest.newBuilder()
               .setDocument(doc)
-              .setEncodingType(EncodingType.UTF16)
+              .setEncodingType(com.google.cloud.language.v1.EncodingType.UTF16)
               .build();
       // Detect entity sentiments in the given file
       AnalyzeEntitySentimentResponse response = language.analyzeEntitySentiment(request);
