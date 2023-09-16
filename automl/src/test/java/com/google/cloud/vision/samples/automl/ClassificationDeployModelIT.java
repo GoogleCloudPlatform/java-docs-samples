@@ -24,8 +24,10 @@ import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("This test is ignored because the legacy version of AutoML API is deprecated")
 public class ClassificationDeployModelIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String MODEL_ID = "ICN0000000000000000000";

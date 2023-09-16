@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,72 +14,67 @@
  * limitations under the License.
  */
 
-package com.example.automl;
+package contentwarehouse.v1;
 
 import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-// Tests for translation "Predict" sample.
-@Ignore("This test is ignored because the legacy version of AutoML API is deprecated")
-@RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class TranslatePredictTest {
+public class DocumentTests {
+    
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
-  private static final String PROJECT_ID = System.getenv("AUTOML_PROJECT_ID");
-  private static final String modelId = System.getenv("TRANSLATION_MODEL_ID");
-  private static final String filePath = "./resources/input.txt";
+
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String LOCATION = "us";
+  private static final String DOCUMENT_SCHEMA_ID = "27hhcik7eddv0";
+  private static final String USER_ID = "user:andrewchasin@google.com";
+
   private ByteArrayOutputStream bout;
+  private PrintStream out;
   private PrintStream originalPrintStream;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-        System.getenv(varName),
-        String.format("Environment variable '%s' is required to perform these tests.", varName));
-
+        String.format("Environment variable '%s' must be set to perform these tests.", varName),
+        System.getenv(varName));
   }
 
-  @BeforeClass
-  public static void checkRequirements() {
+  @Before
+  public void checkRequirements() {
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("AUTOML_PROJECT_ID");
-    requireEnvVar("TRANSLATION_MODEL_ID");
   }
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    PrintStream out = new PrintStream(bout);
+    out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
   }
 
+  @Test
+  public void testCreateDocument()
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    CreateDocument.createDocument(PROJECT_ID, LOCATION, USER_ID, DOCUMENT_SCHEMA_ID);
+    String got = bout.toString();
+    assertThat(got).contains("document");
+  }
+  
   @After
   public void tearDown() {
-    // restores print statements in the original method
     System.out.flush();
     System.setOut(originalPrintStream);
-  }
-
-  @Test
-  public void testPredict() throws IOException {
-    // Act
-    TranslatePredict.predict(PROJECT_ID, modelId, filePath);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Translated Content");
+  
   }
 }

@@ -34,7 +34,7 @@ repositories {
 }
 
 def beamVersion = '2.49.0'
-def slf4jVersion = '2.0.7'
+def slf4jVersion = '2.0.8'
 dependencies {
     implementation enforcedPlatform("org.apache.beam:beam-sdks-java-io-google-cloud-platform:${beamVersion}")
     implementation platform("com.google.cloud:libraries-bom:26.22.0")
