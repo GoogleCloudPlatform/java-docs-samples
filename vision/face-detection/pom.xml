@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-vision</artifactId>
-      <version>v1-rev20230804-2.0.0</version>
+      <version>v1-rev20230908-2.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
