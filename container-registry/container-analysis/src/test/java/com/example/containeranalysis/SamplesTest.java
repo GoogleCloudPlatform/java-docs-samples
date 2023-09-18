@@ -18,6 +18,7 @@ package com.example.containeranalysis;
 
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.api.gax.rpc.AlreadyExistsException;
@@ -60,7 +61,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class SamplesTest {
-  
+
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String subId = "CA-Occurrences-" + (new Date()).getTime();
   private String noteId;
@@ -288,6 +289,7 @@ public class SamplesTest {
       attempt += 1;
       sleep(3 * SLEEP_TIME * Math.round((Math.pow(2, attempt - 1))));
     }
+    assertNotNull("Polling failed.", found);
     AnalysisStatus foundStatus = found.getDiscovery().getAnalysisStatus();
     assertEquals(foundStatus, AnalysisStatus.FINISHED_SUCCESS);
 
