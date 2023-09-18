@@ -65,7 +65,7 @@ public class LogoDetectionGcs {
 
       System.out.println("Waiting for operation to complete...");
       // The first result is retrieved because a single video was processed.
-      AnnotateVideoResponse response = future.get(300, TimeUnit.SECONDS);
+      AnnotateVideoResponse response = future.get(600, TimeUnit.SECONDS);
       VideoAnnotationResults annotationResult = response.getAnnotationResults(0);
 
       // Annotations for list of logos detected, tracked and recognized in video.
