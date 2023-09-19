@@ -19,8 +19,8 @@ package com.example.language;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.language.v1.PartOfSpeech.Tag;
-import com.google.cloud.language.v1.Sentiment;
 import com.google.cloud.language.v1.Token;
+import com.google.cloud.language.v2.Sentiment;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
