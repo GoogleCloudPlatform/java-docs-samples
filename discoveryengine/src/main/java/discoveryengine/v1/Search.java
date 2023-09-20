@@ -55,11 +55,9 @@ public class Search {
       throws IOException, ExecutionException {
     // For more information, refer to:
     // https://cloud.google.com/generative-ai-app-builder/docs/locations#specify_a_multi-region_for_your_data_store
-    if (location == "global") {
-      String endpoint = String.format("discoveryengine.googleapis.com:443", location);
-    } else {
-      String endpoint = String.format("%s-discoveryengine.googleapis.com:443", location);
-    }
+    String endpoint = (location.equals("global")) 
+        ? String.format("discoveryengine.googleapis.com:443", location) 
+        : String.format("%s-discoveryengine.googleapis.com:443", location);
     SearchServiceSettings settings =
         SearchServiceSettings.newBuilder().setEndpoint(endpoint).build();
     // Initialize client that will be used to send requests. This client only needs to be created
