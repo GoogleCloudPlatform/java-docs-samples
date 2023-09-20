@@ -52,6 +52,12 @@ limitations under the License.
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>9.4.52.v20230823</version>
+    </dependency>
+
     <!-- Test Dependencies -->
     <dependency>
       <groupId>com.google.appengine</groupId>
