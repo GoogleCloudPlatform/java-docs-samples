@@ -31,20 +31,20 @@ public class Search {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "PROJECT_ID";
-    // Location of the search engine. Options: "global", "us", "eu"
+    // Location of the data store. Options: "global", "us", "eu"
     String location = "global";
-    // Collection containing the datastore.
+    // Collection containing the data store.
     String collectionId = "default_collection";
     // Data store ID.
     String dataStoreId = "DATA_STORE_ID";
     // Serving configuration. Options: "default_search"
     String servingConfigId = "default_search";
-    // Search Query for the search engine.
+    // Search Query for the data store.
     String searchQuery = "Google";
     search(projectId, location, collectionId, dataStoreId, servingConfigId, searchQuery);
   }
 
-  /** Performs a search on a given datastore/search engine. */
+  /** Performs a search on a given datastore. */
   public static void search(
       String projectId,
       String location,
