@@ -61,6 +61,12 @@
       <artifactId>google-cloud-recaptchaenterprise</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>recaptcha-password-check-helpers</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+
     <!-- [Start_Selenium_dependencies] -->
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
@@ -79,6 +85,16 @@
       <groupId>io.github.bonigarcia</groupId>
       <artifactId>webdrivermanager</artifactId>
       <version>5.5.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-http-jdk-client</artifactId>
+      <version>4.8.1</version>
     </dependency>
     <!-- [End_Selenium_dependencies] -->
 
