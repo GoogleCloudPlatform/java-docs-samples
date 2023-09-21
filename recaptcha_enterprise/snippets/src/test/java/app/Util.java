@@ -34,10 +34,10 @@ public class Util {
     for (String line : stdout.split("\n")) {
       if (line.contains("Assessment name: ")) {
         assessmentName = Util.substring(line);
-        return assessmentName;
+        break;
       }
     }
-    return "";
+    return assessmentName;
   }
 
   public static ByteString createHashedAccountId()

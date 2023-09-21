@@ -81,9 +81,7 @@ public class CreateMfaAssessment {
       ByteString hashedAccountId, String emailId, String phoneNumber)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `client.close()` method on the client to safely
-    // clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
 
       // Set the properties of the event to be tracked.
