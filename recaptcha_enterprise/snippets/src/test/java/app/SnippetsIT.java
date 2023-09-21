@@ -30,16 +30,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -76,25 +72,9 @@ public class SnippetsIT {
   private static String RECAPTCHA_SITE_KEY_1 = "recaptcha-site-key1";
   private static String RECAPTCHA_SITE_KEY_2 = "recaptcha-site-key2";
   private static WebDriver browser;
-  @LocalServerPort private int randomServerPort;
+  @LocalServerPort
+  private int randomServerPort;
   private ByteArrayOutputStream stdOut;
-
-  @Test
-  public void testCreateAnnotateAssessment()
-      throws JSONException, IOException, InterruptedException, NoSuchAlgorithmException,
-          ExecutionException {
-    // Create an assessment.
-    String testURL = "http://localhost:" + randomServerPort;
-    JSONObject createAssessmentResult =
-        createAssessment(testURL, ByteString.EMPTY, AssessmentType.ASSESSMENT);
-    String assessmentName = createAssessmentResult.getString("assessmentName");
-    // Verify that the assessment name has been modified post the assessment creation.
-    assertThat(assessmentName).isNotEmpty();
-
-    // Annotate the assessment.
-    AnnotateAssessment.annotateAssessment(PROJECT_ID, assessmentName);
-    assertThat(stdOut.toString()).contains("Annotated response sent successfully ! ");
-  }
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -134,6 +114,23 @@ public class SnippetsIT {
 
     stdOut.close();
     System.setOut(null);
+  }
+
+  @Test
+  public void testCreateAnnotateAssessment()
+      throws JSONException, IOException, InterruptedException, NoSuchAlgorithmException,
+      ExecutionException {
+    // Create an assessment.
+    String testURL = "http://localhost:" + randomServerPort;
+    JSONObject createAssessmentResult =
+        createAssessment(testURL, ByteString.EMPTY, AssessmentType.ASSESSMENT);
+    String assessmentName = createAssessmentResult.getString("assessmentName");
+    // Verify that the assessment name has been modified post the assessment creation.
+    assertThat(assessmentName).isNotEmpty();
+
+    // Annotate the assessment.
+    AnnotateAssessment.annotateAssessment(PROJECT_ID, assessmentName);
+    assertThat(stdOut.toString()).contains("Annotated response sent successfully ! ");
   }
 
   @Before
@@ -242,17 +239,17 @@ public class SnippetsIT {
   @Test
   public void testMultiFactorAuthenticationAssessment()
       throws IOException, JSONException, NoSuchAlgorithmException, InvalidKeyException, InterruptedException, ExecutionException {
-      ByteString hashedAccountId = Util.createHashedAccountId();
-      String testURL = "http://localhost:" + randomServerPort;
+    ByteString hashedAccountId = Util.createHashedAccountId();
+    String testURL = "http://localhost:" + randomServerPort;
 
-      // Create the assessment.
-      JSONObject createAssessmentResult =
-          createAssessment(testURL, hashedAccountId, AssessmentType.MFA);
-      String assessmentName = createAssessmentResult.getString("assessmentName");
-      assertThat(assessmentName).isNotEmpty();
-      String mfaResult = createAssessmentResult.getString("mfaResult");
-      assertThat(mfaResult).contains("Result unspecified. Triggering MFA challenge.");
-    }
+    // Create the assessment.
+    JSONObject createAssessmentResult =
+        createAssessment(testURL, hashedAccountId, AssessmentType.MFA);
+    String assessmentName = createAssessmentResult.getString("assessmentName");
+    assertThat(assessmentName).isNotEmpty();
+    String mfaResult = createAssessmentResult.getString("mfaResult");
+    assertThat(mfaResult).contains("Result unspecified. Triggering MFA challenge.");
+  }
 
   public JSONObject createAssessment(
       String testURL, ByteString hashedAccountId, AssessmentType assessmentType)
@@ -263,37 +260,34 @@ public class SnippetsIT {
 
     // Send the token for analysis. The analysis score ranges from 0.0 to 1.0
     switch (assessmentType) {
-      case ACCOUNT_DEFENDER:
-        {
-          AccountDefenderAssessment.accountDefenderAssessment(
-              PROJECT_ID,
-              RECAPTCHA_SITE_KEY_1,
-              tokenActionPair.getString("token"),
-              tokenActionPair.getString("action"),
-              hashedAccountId);
-          break;
-        }
-      case ASSESSMENT:
-        {
-          recaptcha.CreateAssessment.createAssessment(
-              PROJECT_ID,
-              RECAPTCHA_SITE_KEY_1,
-              tokenActionPair.getString("token"),
-              tokenActionPair.getString("action"));
-          break;
-        }
-      case MFA:
-        {
-          CreateMfaAssessment.createMfaAssessment(
-              PROJECT_ID,
-              RECAPTCHA_SITE_KEY_1,
-              tokenActionPair.getString("token"),
-              tokenActionPair.getString("action"),
-              hashedAccountId,
-              "foo@bar.com",
-              "+11111111111");
-          break;
-        }
+      case ACCOUNT_DEFENDER: {
+        AccountDefenderAssessment.accountDefenderAssessment(
+            PROJECT_ID,
+            RECAPTCHA_SITE_KEY_1,
+            tokenActionPair.getString("token"),
+            tokenActionPair.getString("action"),
+            hashedAccountId);
+        break;
+      }
+      case ASSESSMENT: {
+        recaptcha.CreateAssessment.createAssessment(
+            PROJECT_ID,
+            RECAPTCHA_SITE_KEY_1,
+            tokenActionPair.getString("token"),
+            tokenActionPair.getString("action"));
+        break;
+      }
+      case MFA: {
+        CreateMfaAssessment.createMfaAssessment(
+            PROJECT_ID,
+            RECAPTCHA_SITE_KEY_1,
+            tokenActionPair.getString("token"),
+            tokenActionPair.getString("action"),
+            hashedAccountId,
+            "foo@bar.com",
+            "+11111111111");
+        break;
+      }
     }
 
     // Assert the response.
@@ -324,14 +318,6 @@ public class SnippetsIT {
         .put("recaptchaScore", recaptchaScore)
         .put("assessmentName", assessmentName)
         .put("mfaResult", mfaResult);
-  }
-
-  enum AssessmentType {
-    ASSESSMENT,
-    ACCOUNT_DEFENDER,
-    MFA;
-
-    AssessmentType() {}
   }
 
   public JSONObject initiateBrowserTest(String testURL)
@@ -370,5 +356,14 @@ public class SnippetsIT {
 
   public String substr(String line) {
     return line.substring((line.lastIndexOf(":") + 1)).trim();
+  }
+
+  enum AssessmentType {
+    ASSESSMENT,
+    ACCOUNT_DEFENDER,
+    MFA;
+
+    AssessmentType() {
+    }
   }
 }
