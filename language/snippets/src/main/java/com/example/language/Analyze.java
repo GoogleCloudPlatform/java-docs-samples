@@ -16,27 +16,24 @@
 
 package com.example.language;
 
-import com.google.cloud.language.v1.AnalyzeEntitiesRequest;
-import com.google.cloud.language.v1.AnalyzeEntitiesResponse;
 import com.google.cloud.language.v1.AnalyzeEntitySentimentRequest;
 import com.google.cloud.language.v1.AnalyzeEntitySentimentResponse;
-import com.google.cloud.language.v1.AnalyzeSentimentResponse;
 import com.google.cloud.language.v1.AnalyzeSyntaxRequest;
 import com.google.cloud.language.v1.AnalyzeSyntaxResponse;
-import com.google.cloud.language.v1.ClassificationCategory;
-import com.google.cloud.language.v1.ClassificationModelOptions;
-import com.google.cloud.language.v1.ClassificationModelOptions.V2Model;
-import com.google.cloud.language.v1.ClassificationModelOptions.V2Model.ContentCategoriesVersion;
-import com.google.cloud.language.v1.ClassifyTextRequest;
-import com.google.cloud.language.v1.ClassifyTextResponse;
-import com.google.cloud.language.v1.Document;
-import com.google.cloud.language.v1.Document.Type;
-import com.google.cloud.language.v1.EncodingType;
-import com.google.cloud.language.v1.Entity;
-import com.google.cloud.language.v1.EntityMention;
-import com.google.cloud.language.v1.LanguageServiceClient;
-import com.google.cloud.language.v1.Sentiment;
 import com.google.cloud.language.v1.Token;
+import com.google.cloud.language.v2.AnalyzeEntitiesRequest;
+import com.google.cloud.language.v2.AnalyzeEntitiesResponse;
+import com.google.cloud.language.v2.AnalyzeSentimentResponse;
+import com.google.cloud.language.v2.ClassificationCategory;
+import com.google.cloud.language.v2.ClassifyTextRequest;
+import com.google.cloud.language.v2.ClassifyTextResponse;
+import com.google.cloud.language.v2.Document;
+import com.google.cloud.language.v2.Document.Type;
+import com.google.cloud.language.v2.EncodingType;
+import com.google.cloud.language.v2.Entity;
+import com.google.cloud.language.v2.EntityMention;
+import com.google.cloud.language.v2.LanguageServiceClient;
+import com.google.cloud.language.v2.Sentiment;
 import java.util.List;
 import java.util.Map;
 
@@ -93,7 +90,7 @@ public class Analyze {
   /** Identifies entities in the string {@code text}. */
   public static void analyzeEntitiesText(String text) throws Exception {
     // [START language_entities_text]
-    // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
+    // Instantiate the Language client com.google.cloud.language.v2.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
       AnalyzeEntitiesRequest request =
@@ -107,7 +104,6 @@ public class Analyze {
       // Print the response
       for (Entity entity : response.getEntitiesList()) {
         System.out.printf("Entity: %s", entity.getName());
-        System.out.printf("Salience: %.3f\n", entity.getSalience());
         System.out.println("Metadata: ");
         for (Map.Entry<String, String> entry : entity.getMetadataMap().entrySet()) {
           System.out.printf("%s : %s", entry.getKey(), entry.getValue());
@@ -116,6 +112,7 @@ public class Analyze {
           System.out.printf("Begin offset: %d\n", mention.getText().getBeginOffset());
           System.out.printf("Content: %s\n", mention.getText().getContent());
           System.out.printf("Type: %s\n\n", mention.getType());
+          System.out.printf("Probability: %s\n\n", mention.getProbability());
         }
       }
     }
@@ -125,7 +122,7 @@ public class Analyze {
   /** Identifies entities in the contents of the object at the given GCS {@code path}. */
   public static void analyzeEntitiesFile(String gcsUri) throws Exception {
     // [START language_entities_gcs]
-    // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
+    // Instantiate the Language client com.google.cloud.language.v2.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // Set the GCS Content URI path to the file to be analyzed
       Document doc =
@@ -141,7 +138,6 @@ public class Analyze {
       // Print the response
       for (Entity entity : response.getEntitiesList()) {
         System.out.printf("Entity: %s\n", entity.getName());
-        System.out.printf("Salience: %.3f\n", entity.getSalience());
         System.out.println("Metadata: ");
         for (Map.Entry<String, String> entry : entity.getMetadataMap().entrySet()) {
           System.out.printf("%s : %s", entry.getKey(), entry.getValue());
@@ -150,6 +146,7 @@ public class Analyze {
           System.out.printf("Begin offset: %d\n", mention.getText().getBeginOffset());
           System.out.printf("Content: %s\n", mention.getText().getContent());
           System.out.printf("Type: %s\n\n", mention.getType());
+          System.out.printf("Probability: %s\n\n", mention.getProbability());
         }
       }
     }
@@ -159,7 +156,7 @@ public class Analyze {
   /** Identifies the sentiment in the string {@code text}. */
   public static Sentiment analyzeSentimentText(String text) throws Exception {
     // [START language_sentiment_text]
-    // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
+    // Instantiate the Language client com.google.cloud.language.v2.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
       AnalyzeSentimentResponse response = language.analyzeSentiment(doc);
@@ -178,7 +175,7 @@ public class Analyze {
   /** Gets {@link Sentiment} from the contents of the GCS hosted file. */
   public static Sentiment analyzeSentimentFile(String gcsUri) throws Exception {
     // [START language_sentiment_gcs]
-    // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
+    // Instantiate the Language client com.google.cloud.language.v2.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc =
           Document.newBuilder().setGcsContentUri(gcsUri).setType(Type.PLAIN_TEXT).build();
@@ -199,12 +196,15 @@ public class Analyze {
   public static List<Token> analyzeSyntaxText(String text) throws Exception {
     // [START language_syntax_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
-    try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
+    try (com.google.cloud.language.v1.LanguageServiceClient language =
+        com.google.cloud.language.v1.LanguageServiceClient.create()) {
+      com.google.cloud.language.v1.Document doc =
+          com.google.cloud.language.v1.Document.newBuilder().setContent(text)
+            .setType(com.google.cloud.language.v1.Document.Type.PLAIN_TEXT).build();
       AnalyzeSyntaxRequest request =
           AnalyzeSyntaxRequest.newBuilder()
               .setDocument(doc)
-              .setEncodingType(EncodingType.UTF16)
+              .setEncodingType(com.google.cloud.language.v1.EncodingType.UTF16)
               .build();
       // Analyze the syntax in the given text
       AnalyzeSyntaxResponse response = language.analyzeSyntax(request);
@@ -238,13 +238,16 @@ public class Analyze {
   public static List<Token> analyzeSyntaxFile(String gcsUri) throws Exception {
     // [START language_syntax_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
-    try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc =
-          Document.newBuilder().setGcsContentUri(gcsUri).setType(Type.PLAIN_TEXT).build();
+    try (com.google.cloud.language.v1.LanguageServiceClient language =
+        com.google.cloud.language.v1.LanguageServiceClient.create()) {
+      com.google.cloud.language.v1.Document doc =
+          com.google.cloud.language.v1.Document.newBuilder().setGcsContentUri(gcsUri).setType(
+            com.google.cloud.language.v1.Document.Type.PLAIN_TEXT
+          ).build();
       AnalyzeSyntaxRequest request =
           AnalyzeSyntaxRequest.newBuilder()
               .setDocument(doc)
-              .setEncodingType(EncodingType.UTF16)
+              .setEncodingType(com.google.cloud.language.v1.EncodingType.UTF16)
               .build();
       // Analyze the syntax in the given text
       AnalyzeSyntaxResponse response = language.analyzeSyntax(request);
@@ -278,20 +281,11 @@ public class Analyze {
   /** Detects categories in text using the Language Beta API. */
   public static void classifyText(String text) throws Exception {
     // [START language_classify_text]
-    // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
+    // Instantiate the Language client com.google.cloud.language.v2.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // Set content to the text string
       Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
-      V2Model v2Model = V2Model.newBuilder()
-          .setContentCategoriesVersion(ContentCategoriesVersion.V2)
-          .build();
-      ClassificationModelOptions options =
-          ClassificationModelOptions.newBuilder().setV2Model(v2Model).build();
-      ClassifyTextRequest request =
-          ClassifyTextRequest.newBuilder()
-              .setDocument(doc)
-              .setClassificationModelOptions(options)
-              .build();
+      ClassifyTextRequest request = ClassifyTextRequest.newBuilder().setDocument(doc).build();
       // Detect categories in the given text
       ClassifyTextResponse response = language.classifyText(request);
 
@@ -307,7 +301,7 @@ public class Analyze {
   /** Detects categories in a GCS hosted file using the Language Beta API. */
   public static void classifyFile(String gcsUri) throws Exception {
     // [START language_classify_gcs]
-    // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
+    // Instantiate the Language client com.google.cloud.language.v2.LanguageServiceClient
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       // Set the GCS content URI path
       Document doc =
@@ -329,21 +323,24 @@ public class Analyze {
   public static void entitySentimentText(String text) throws Exception {
     // [START language_entity_sentiment_text]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
-    try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
+    try (com.google.cloud.language.v1.LanguageServiceClient language =
+        com.google.cloud.language.v1.LanguageServiceClient.create()) {
+      com.google.cloud.language.v1.Document doc =
+          com.google.cloud.language.v1.Document.newBuilder().setContent(text)
+              .setType(com.google.cloud.language.v1.Document.Type.PLAIN_TEXT).build();
       AnalyzeEntitySentimentRequest request =
           AnalyzeEntitySentimentRequest.newBuilder()
               .setDocument(doc)
-              .setEncodingType(EncodingType.UTF16)
+              .setEncodingType(com.google.cloud.language.v1.EncodingType.UTF16)
               .build();
       // Detect entity sentiments in the given string
       AnalyzeEntitySentimentResponse response = language.analyzeEntitySentiment(request);
       // Print the response
-      for (Entity entity : response.getEntitiesList()) {
+      for (com.google.cloud.language.v1.Entity entity : response.getEntitiesList()) {
         System.out.printf("Entity: %s\n", entity.getName());
         System.out.printf("Salience: %.3f\n", entity.getSalience());
         System.out.printf("Sentiment : %s\n", entity.getSentiment());
-        for (EntityMention mention : entity.getMentionsList()) {
+        for (com.google.cloud.language.v1.EntityMention mention : entity.getMentionsList()) {
           System.out.printf("Begin offset: %d\n", mention.getText().getBeginOffset());
           System.out.printf("Content: %s\n", mention.getText().getContent());
           System.out.printf("Magnitude: %.3f\n", mention.getSentiment().getMagnitude());
@@ -359,22 +356,24 @@ public class Analyze {
   public static void entitySentimentFile(String gcsUri) throws Exception {
     // [START language_entity_sentiment_gcs]
     // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
-    try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      Document doc =
-          Document.newBuilder().setGcsContentUri(gcsUri).setType(Type.PLAIN_TEXT).build();
+    try (com.google.cloud.language.v1.LanguageServiceClient language =
+        com.google.cloud.language.v1.LanguageServiceClient.create()) {
+      com.google.cloud.language.v1.Document doc =
+          com.google.cloud.language.v1.Document.newBuilder().setGcsContentUri(gcsUri)
+              .setType(com.google.cloud.language.v1.Document.Type.PLAIN_TEXT).build();
       AnalyzeEntitySentimentRequest request =
           AnalyzeEntitySentimentRequest.newBuilder()
               .setDocument(doc)
-              .setEncodingType(EncodingType.UTF16)
+              .setEncodingType(com.google.cloud.language.v1.EncodingType.UTF16)
               .build();
       // Detect entity sentiments in the given file
       AnalyzeEntitySentimentResponse response = language.analyzeEntitySentiment(request);
       // Print the response
-      for (Entity entity : response.getEntitiesList()) {
+      for (com.google.cloud.language.v1.Entity entity : response.getEntitiesList()) {
         System.out.printf("Entity: %s\n", entity.getName());
         System.out.printf("Salience: %.3f\n", entity.getSalience());
         System.out.printf("Sentiment : %s\n", entity.getSentiment());
-        for (EntityMention mention : entity.getMentionsList()) {
+        for (com.google.cloud.language.v1.EntityMention mention : entity.getMentionsList()) {
           System.out.printf("Begin offset: %d\n", mention.getText().getBeginOffset());
           System.out.printf("Content: %s\n", mention.getText().getContent());
           System.out.printf("Magnitude: %.3f\n", mention.getSentiment().getMagnitude());

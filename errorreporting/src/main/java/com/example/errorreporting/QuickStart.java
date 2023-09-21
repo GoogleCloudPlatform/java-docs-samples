@@ -18,52 +18,63 @@ package com.example.errorreporting;
 
 // [START error_reporting_quickstart]
 // [START error_reporting_setup_java]
-
 import com.google.cloud.ServiceOptions;
-import com.google.devtools.clouderrorreporting.v1beta1.ErrorContext;
 import com.google.devtools.clouderrorreporting.v1beta1.ProjectName;
 import com.google.devtools.clouderrorreporting.v1beta1.ReportErrorsServiceClient;
 import com.google.devtools.clouderrorreporting.v1beta1.ReportedErrorEvent;
-import com.google.devtools.clouderrorreporting.v1beta1.SourceLocation;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
- * Snippet demonstrates using the Error Reporting API to report a custom error event.
- *
- * <p>This library is not required on App Engine, errors written to stderr are automatically written
- * to Error Reporting. It is also not required if you are writing logs to Cloud Logging. Errors
- * written to Cloud Logging that contain an exception or stack trace are automatically written out
+ * Snippet demonstrates using the Error Reporting API to report an exception.
+ * <p>
+ * When the workload runs on App Engine, GKE, Cloud Functions or another managed environment,
+ * printing the exception's stack trace to stderr will automatically report the error
  * to Error Reporting.
  */
 public class QuickStart {
+
+  static String projectId;
+
   public static void main(String[] args) throws Exception {
+    // Set your Google Cloud Platform project ID via environment or explicitly
+    projectId = ServiceOptions.getDefaultProjectId();
+    if (args.length > 0) {
+      projectId = args[0];
+    } else {
+      String value = System.getenv("GOOGLE_CLOUD_PROJECT");
+      if (value != null && value.isEmpty()) {
+        projectId = value;
+      }
+    }
 
-    // Google Cloud Platform Project ID
-    String projectId = (args.length > 0) ? args[0] : ServiceOptions.getDefaultProjectId();
-    ProjectName projectName = ProjectName.of(projectId);
+    try {
+      throw new Exception("Something went wrong");
+    } catch (Exception ex) {
+      reportError(ex);
+    }
+  }
 
-    // Instantiate an Error Reporting Client
-    try (ReportErrorsServiceClient reportErrorsServiceClient = ReportErrorsServiceClient.create()) {
+  /**
+   * Sends formatted error report to Google Cloud including the error context.
+   *
+   * @param ex Exception containing the error and the context.
+   * @throws IOException if fails to communicate with Google Cloud
+   */
+  private static void reportError(Exception ex) throws IOException {
+    try (ReportErrorsServiceClient serviceClient = ReportErrorsServiceClient.create()) {
+      StringWriter sw = new StringWriter();
+      PrintWriter pw = new PrintWriter(sw);
+      ex.printStackTrace(pw);
 
-      // Custom error events require an error reporting location as well.
-      ErrorContext errorContext =
-          ErrorContext.newBuilder()
-              .setReportLocation(
-                  SourceLocation.newBuilder()
-                      .setFilePath("Test.java")
-                      .setLineNumber(10)
-                      .setFunctionName("myMethod")
-                      .build())
-              .build();
-
-      // Report a custom error event
-      ReportedErrorEvent customErrorEvent =
-          ReportedErrorEvent.getDefaultInstance()
-              .toBuilder()
-              .setMessage("custom error event")
-              .setContext(errorContext)
-              .build();
-      // Report an event synchronously, use .reportErrorEventCallable for asynchronous reporting.
-      reportErrorsServiceClient.reportErrorEvent(projectName, customErrorEvent);
+      ReportedErrorEvent errorEvent = ReportedErrorEvent.getDefaultInstance()
+          .toBuilder()
+          .setMessage(sw.toString())
+          .build();
+      // If you need to report an error asynchronously, use reportErrorEventCallable()
+      // method
+      serviceClient.reportErrorEvent(ProjectName.of(projectId), errorEvent);
     }
   }
 }
