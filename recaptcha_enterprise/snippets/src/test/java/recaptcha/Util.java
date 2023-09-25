@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app;
+package recaptcha;
 
 import com.google.protobuf.ByteString;
 import java.nio.charset.StandardCharsets;
