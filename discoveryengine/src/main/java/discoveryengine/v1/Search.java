@@ -21,6 +21,7 @@ package discoveryengine.v1;
 import com.google.cloud.discoveryengine.v1.SearchRequest;
 import com.google.cloud.discoveryengine.v1.SearchResponse;
 import com.google.cloud.discoveryengine.v1.SearchServiceClient;
+import com.google.cloud.discoveryengine.v1.SearchServiceSettings;
 import com.google.cloud.discoveryengine.v1.ServingConfigName;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -30,38 +31,45 @@ public class Search {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "PROJECT_ID";
-    // Location of the search engine. Options: "global"
+    // Location of the data store. Options: "global", "us", "eu"
     String location = "global";
-    // Collection containing the datastore.
+    // Collection containing the data store.
     String collectionId = "default_collection";
-    // Datastore/Search Engine ID.
-    String searchEngineId = "DATA_STORE_ID";
+    // Data store ID.
+    String dataStoreId = "DATA_STORE_ID";
     // Serving configuration. Options: "default_search"
     String servingConfigId = "default_search";
-    // Search Query for the search engine.
+    // Search Query for the data store.
     String searchQuery = "Google";
-    search(projectId, location, collectionId, searchEngineId, servingConfigId, searchQuery);
+    search(projectId, location, collectionId, dataStoreId, servingConfigId, searchQuery);
   }
 
-  /** Performs a search on a given datastore/search engine. */
+  /** Performs a search on a given datastore. */
   public static void search(
       String projectId,
       String location,
       String collectionId,
-      String searchEngineId,
+      String dataStoreId,
       String servingConfigId,
       String searchQuery)
       throws IOException, ExecutionException {
+    // For more information, refer to:
+    // https://cloud.google.com/generative-ai-app-builder/docs/locations#specify_a_multi-region_for_your_data_store
+    String endpoint = (location.equals("global")) 
+        ? String.format("discoveryengine.googleapis.com:443", location) 
+        : String.format("%s-discoveryengine.googleapis.com:443", location);
+    SearchServiceSettings settings =
+        SearchServiceSettings.newBuilder().setEndpoint(endpoint).build();
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `searchServiceClient.close()` method on the client to safely
     // clean up any remaining background resources.
-    try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {
+    try (SearchServiceClient searchServiceClient = SearchServiceClient.create(settings)) {
       SearchRequest request =
           SearchRequest.newBuilder()
               .setServingConfig(
                   ServingConfigName.formatProjectLocationCollectionDataStoreServingConfigName(
-                      projectId, location, collectionId, searchEngineId, servingConfigId))
+                      projectId, location, collectionId, dataStoreId, servingConfigId))
               .setQuery(searchQuery)
               .setPageSize(10)
               .build();
