@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package recaptcha;
+package app;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
