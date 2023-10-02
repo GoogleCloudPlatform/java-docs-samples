@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package account_defender;
+package recaptcha.accountdefender;
 
 // [START recaptcha_enterprise_annotate_account_defender_assessment]
 
@@ -32,16 +32,16 @@ public class AnnotateAccountDefenderAssessment {
 
   public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
     // TODO(developer): Replace these variables before running the sample.
-    // projectID: GCloud Project id.
-    String projectID = "project-id";
+    // projectId: GCloud Project id.
+    String projectId = "project-id";
 
     // assessmentId: Value of the 'name' field returned from the CreateAssessment call.
     String assessmentId = "account-defender-assessment-id";
 
     // hashedAccountId: Set the hashedAccountId corresponding to the assessment id.
-    ByteString hashedAccountId = ByteString.copyFrom(new byte[] {});
+    ByteString hashedAccountId = ByteString.copyFrom(new byte[]{});
 
-    annotateAssessment(projectID, assessmentId, hashedAccountId);
+    annotateAssessment(projectId, assessmentId, hashedAccountId);
   }
 
   /**
@@ -49,7 +49,7 @@ public class AnnotateAccountDefenderAssessment {
    * feedback on the correctness of recaptcha prediction.
    */
   public static void annotateAssessment(
-      String projectID, String assessmentId, ByteString hashedAccountId) throws IOException {
+      String projectId, String assessmentId, ByteString hashedAccountId) throws IOException {
 
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
       // Build the annotation request.
@@ -57,7 +57,7 @@ public class AnnotateAccountDefenderAssessment {
       // https://cloud.google.com/recaptcha-enterprise/docs/annotate-assessment#when_to_annotate
       AnnotateAssessmentRequest annotateAssessmentRequest =
           AnnotateAssessmentRequest.newBuilder()
-              .setName(AssessmentName.of(projectID, assessmentId).toString())
+              .setName(AssessmentName.of(projectId, assessmentId).toString())
               .setAnnotation(Annotation.LEGITIMATE)
               .addReasons(Reason.PASSED_TWO_FACTOR)
               .setHashedAccountId(hashedAccountId)

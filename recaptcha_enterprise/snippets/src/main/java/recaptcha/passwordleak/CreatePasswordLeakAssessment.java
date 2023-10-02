@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package passwordleak;
+package recaptcha.passwordleak;
 
 // [START recaptcha_enterprise_password_leak_verification]
 
@@ -38,13 +38,13 @@ public class CreatePasswordLeakAssessment {
       throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // Google Cloud Project ID.
-    String projectID = "project-id";
+    String projectId = "project-id";
 
     // Username and password to be checked for credential breach.
     String username = "username";
     String password = "password";
 
-    checkPasswordLeak(projectID, username, password);
+    checkPasswordLeak(projectId, username, password);
   }
 
   /*
@@ -83,7 +83,7 @@ public class CreatePasswordLeakAssessment {
    * 6. If there is a match, that indicates a credential breach.
    */
   public static void checkPasswordLeak(
-      String projectID, String username, String password)
+      String projectId, String username, String password)
       throws ExecutionException, InterruptedException, IOException {
 
     // Instantiate the java-password-leak-helper library to perform the cryptographic functions.
@@ -101,7 +101,7 @@ public class CreatePasswordLeakAssessment {
     // the matching database entry for the hash prefix.
     PrivatePasswordLeakVerification credentials =
         createPasswordLeakAssessment(
-            projectID,
+            projectId,
             lookupHashPrefix,
             encryptedUserCredentialsHash);
 
@@ -130,7 +130,7 @@ public class CreatePasswordLeakAssessment {
   // reencryptedUserCredentialsHash and credential breach database
   // whose prefix matches the lookupHashPrefix.
   private static PrivatePasswordLeakVerification createPasswordLeakAssessment(
-      String projectID,
+      String projectId,
       byte[] lookupHashPrefix,
       byte[] encryptedUserCredentialsHash)
       throws IOException {
@@ -147,7 +147,7 @@ public class CreatePasswordLeakAssessment {
       // Build the assessment request.
       CreateAssessmentRequest createAssessmentRequest =
           CreateAssessmentRequest.newBuilder()
-              .setParent(String.format("projects/%s", projectID))
+              .setParent(String.format("projects/%s", projectId))
               .setAssessment(
                   Assessment.newBuilder()
                       // Set request for Password leak verification.

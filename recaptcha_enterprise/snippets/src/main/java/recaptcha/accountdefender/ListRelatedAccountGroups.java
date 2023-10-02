@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package account_defender;
+package recaptcha.accountdefender;
 
 // [START recaptcha_enterprise_list_related_account_group]
 

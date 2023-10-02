@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package account_defender;
+package recaptcha.accountdefender;
 
 // [START recaptcha_enterprise_search_related_account_group_membership]
 
@@ -33,7 +33,7 @@ public class SearchRelatedAccountGroupMemberships {
     String projectId = "project-id";
 
     // HMAC SHA-256 hashed unique id of the customer.
-    ByteString hashedAccountId = ByteString.copyFrom(new byte[] {});
+    ByteString hashedAccountId = ByteString.copyFrom(new byte[]{});
 
     searchRelatedAccountGroupMemberships(projectId, hashedAccountId);
   }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package account_defender;
+package recaptcha.accountdefender;
 
 // [START recaptcha_enterprise_account_defender_assessment]
 
@@ -60,12 +60,12 @@ public class AccountDefenderAssessment {
     String userIdentifier = "default" + UUID.randomUUID().toString().split("-")[0];
 
     // Change this to a secret not shared with Google.
-    final String HMAC_KEY = "SOME_INTERNAL_UNSHARED_KEY";
+    final String hmacKey = "SOME_INTERNAL_UNSHARED_KEY";
 
     // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
     // secret key.
     Mac mac = Mac.getInstance("HmacSHA256");
-    mac.init(new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
+    mac.init(new SecretKeySpec(hmacKey.getBytes(StandardCharsets.UTF_8),
         "HmacSHA256"));
     byte[] hashBytes = mac.doFinal(userIdentifier.getBytes(StandardCharsets.UTF_8));
     ByteString hashedAccountId = ByteString.copyFrom(hashBytes);

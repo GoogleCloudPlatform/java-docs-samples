@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package account_defender;
+package recaptcha.accountdefender;
 
 // [START recaptcha_enterprise_list_related_account_group_membership]
 
@@ -36,7 +36,9 @@ public class ListRelatedAccountGroupMemberships {
     listRelatedAccountGroupMemberships(projectId, relatedAccountGroup);
   }
 
-  /** Given a group name, list memberships in the group. */
+  /**
+   * Given a group name, list memberships in the group.
+   */
   public static void listRelatedAccountGroupMemberships(
       String projectId, String relatedAccountGroup) throws IOException {
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
