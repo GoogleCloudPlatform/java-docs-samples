@@ -33,21 +33,21 @@ public class UpdateSiteKey {
   public static void main(String[] args)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectID = "your-project-id";
-    String recaptchaSiteKeyID = "recaptcha-site-key-id";
+    String projectId = "your-project-id";
+    String recaptchaSiteKeyId = "recaptcha-site-key-id";
     String domainName = "domain-name";
 
-    updateSiteKey(projectID, recaptchaSiteKeyID, domainName);
+    updateSiteKey(projectId, recaptchaSiteKeyId, domainName);
   }
 
   /**
    * Update the properties of the given site key present under the project id.
    *
-   * @param projectID: GCloud Project ID.
-   * @param recaptchaSiteKeyID: Specify the site key.
+   * @param projectId: GCloud Project ID.
+   * @param recaptchaSiteKeyId: Specify the site key.
    * @param domainName: Specify the domain name for which the settings should be updated.
    */
-  public static void updateSiteKey(String projectID, String recaptchaSiteKeyID, String domainName)
+  public static void updateSiteKey(String projectId, String recaptchaSiteKeyId, String domainName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -61,7 +61,7 @@ public class UpdateSiteKey {
               .setKey(
                   Key.newBuilder()
                       .setDisplayName("any descriptive name for the key")
-                      .setName(KeyName.of(projectID, recaptchaSiteKeyID).toString())
+                      .setName(KeyName.of(projectId, recaptchaSiteKeyId).toString())
                       .setWebSettings(
                           WebKeySettings.newBuilder()
                               .setAllowAmpTraffic(true)
@@ -75,7 +75,7 @@ public class UpdateSiteKey {
       // Check if the key has been updated.
       GetKeyRequest getKeyRequest =
           GetKeyRequest.newBuilder()
-              .setName(KeyName.of(projectID, recaptchaSiteKeyID).toString())
+              .setName(KeyName.of(projectId, recaptchaSiteKeyId).toString())
               .build();
       Key response = client.getKey(getKeyRequest);
 

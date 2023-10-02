@@ -41,7 +41,7 @@ public class CreateMfaAssessment {
       throws IOException, NoSuchAlgorithmException, InvalidKeyException {
     // TODO(developer): Replace these variables before running the sample.
     // Google Cloud Project ID.
-    String projectID = "PROJECT_ID";
+    String projectId = "PROJECT_ID";
     // Site key obtained by registering a domain/app to use recaptcha services.
     // See, https://cloud.google.com/recaptcha-enterprise/docs/instrument-web-pages
     String recaptchaSiteKey = "SITE_KEY";
@@ -60,16 +60,16 @@ public class CreateMfaAssessment {
     // It's a one-way hash of the user identifier: HMAC SHA256 + salt.
     String userIdentifier = "Alice Bob";
     // Change this to a secret not shared with Google.
-    final String HMAC_KEY = "SOME_INTERNAL_UNSHARED_KEY";
+    final String hmacKey = "SOME_INTERNAL_UNSHARED_KEY";
     // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
     // secret key.
     Mac mac = Mac.getInstance("HmacSHA256");
-    mac.init(new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
+    mac.init(new SecretKeySpec(hmacKey.getBytes(StandardCharsets.UTF_8),
         "HmacSHA256"));
     byte[] hashBytes = mac.doFinal(userIdentifier.getBytes(StandardCharsets.UTF_8));
     ByteString hashedAccountId = ByteString.copyFrom(hashBytes);
 
-    createMfaAssessment(projectID, recaptchaSiteKey, token, recaptchaAction, hashedAccountId,
+    createMfaAssessment(projectId, recaptchaSiteKey, token, recaptchaAction, hashedAccountId,
         emailId, phoneNumber);
   }
 
@@ -77,7 +77,7 @@ public class CreateMfaAssessment {
   // If the result is unspecified, sends the request token to the caller to initiate MFA challenge.
   // See, https://cloud.google.com/recaptcha-enterprise/docs/integrate-account-verification#understanding_the_configuration_process_of_mfa
   public static void createMfaAssessment(
-      String projectID, String recaptchaSiteKey, String token, String recaptchaAction,
+      String projectId, String recaptchaSiteKey, String token, String recaptchaAction,
       ByteString hashedAccountId, String emailId, String phoneNumber)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -102,7 +102,7 @@ public class CreateMfaAssessment {
       // Build the assessment request.
       CreateAssessmentRequest createAssessmentRequest =
           CreateAssessmentRequest.newBuilder()
-              .setParent(ProjectName.of(projectID).toString())
+              .setParent(ProjectName.of(projectId).toString())
               .setAssessment(Assessment.newBuilder()
                   .setEvent(event)
                   .setAccountVerification(accountVerificationInfo)

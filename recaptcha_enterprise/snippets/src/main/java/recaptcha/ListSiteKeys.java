@@ -29,17 +29,17 @@ public class ListSiteKeys {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectID = "your-project-id";
+    String projectId = "your-project-id";
 
-    listSiteKeys(projectID);
+    listSiteKeys(projectId);
   }
 
   /**
    * List all keys present under the given project ID.
    *
-   * @param projectID : GCloud Project ID.
+   * @param projectId : GCloud Project ID.
    */
-  public static ListKeysPagedResponse listSiteKeys(String projectID) throws IOException {
+  public static ListKeysPagedResponse listSiteKeys(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `client.close()` method on the client to safely
@@ -47,7 +47,7 @@ public class ListSiteKeys {
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
       // Set the project ID to list the keys present in it.
       ListKeysRequest listKeysRequest =
-          ListKeysRequest.newBuilder().setParent(ProjectName.of(projectID).toString()).build();
+          ListKeysRequest.newBuilder().setParent(ProjectName.of(projectId).toString()).build();
 
       ListKeysPagedResponse response = client.listKeys(listKeysRequest);
       System.out.println("Listing reCAPTCHA site keys: ");

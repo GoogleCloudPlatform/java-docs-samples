@@ -232,14 +232,14 @@ public class SnippetsIT {
   @Test
   public void testPasswordLeakAssessment()
       throws IOException, ExecutionException, InterruptedException {
-    CreatePasswordLeakAssessment.
-        checkPasswordLeak(PROJECT_ID, "username", "password");
+    CreatePasswordLeakAssessment.checkPasswordLeak(PROJECT_ID, "username", "password");
     assertThat(stdOut.toString()).contains("Is Credential leaked: ");
   }
 
   @Test
   public void testMultiFactorAuthenticationAssessment()
-      throws IOException, JSONException, NoSuchAlgorithmException, InvalidKeyException, InterruptedException, ExecutionException {
+      throws IOException, JSONException, NoSuchAlgorithmException,
+      InvalidKeyException, InterruptedException, ExecutionException {
     ByteString hashedAccountId = Util.createHashedAccountId();
     String testURL = "http://localhost:" + randomServerPort;
 
@@ -289,6 +289,7 @@ public class SnippetsIT {
             "+11111111111");
         break;
       }
+      default: break;
     }
 
     // Assert the response.
