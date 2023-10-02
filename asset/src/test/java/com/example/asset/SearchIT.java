@@ -26,6 +26,7 @@ import com.google.cloud.bigquery.DatasetInfo;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,7 +69,7 @@ public class SearchIT {
   @Test
   public void testSearchAllResourcesExample() throws Exception {
     // Wait 10 seconds to let dataset creation event go to CAI
-    Thread.sleep(10000);
+    TimeUnit.SECONDS.sleep(120);
     String scope = "projects/" + projectId;
     String query = "name:" + datasetName;
     SearchAllResourcesExample.searchAllResources(scope, query);
