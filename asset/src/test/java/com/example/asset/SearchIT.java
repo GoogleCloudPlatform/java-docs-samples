@@ -79,6 +79,7 @@ public class SearchIT {
 
   @Test
   public void testSearchAllIamPoliciesExample() throws Exception {
+    TimeUnit.SECONDS.sleep(60);
     String scope = "projects/" + projectId;
     String query = "policy:roles/owner";
     SearchAllIamPoliciesExample.searchAllIamPolicies(scope, query);
