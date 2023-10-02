@@ -68,7 +68,7 @@ public class SearchIT {
 
   @Test
   public void testSearchAllResourcesExample() throws Exception {
-    // Wait 10 seconds to let dataset creation event go to CAI
+    // Wait 120 seconds to let dataset creation event go to CAI
     TimeUnit.SECONDS.sleep(120);
     String scope = "projects/" + projectId;
     String query = "name:" + datasetName;
