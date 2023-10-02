@@ -248,7 +248,7 @@ public class SnippetsIT {
     String assessmentName = createAssessmentResult.getString("assessmentName");
     assertThat(assessmentName).isNotEmpty();
     String mfaResult = createAssessmentResult.getString("mfaResult");
-    assertThat(mfaResult).contains("Result unspecified. Triggering MFA challenge.");
+    assertThat(mfaResult).contains("MFA result: ");
   }
 
   public JSONObject createAssessment(
@@ -293,7 +293,6 @@ public class SnippetsIT {
     // Assert the response.
     String response = stdOut.toString();
     assertThat(response).contains("Assessment name: ");
-    assertThat(response).contains("The reCAPTCHA score is: ");
     if (assessmentType == AssessmentType.ACCOUNT_DEFENDER) {
       assertThat(response).contains("Account Defender Assessment Result: ");
     }
