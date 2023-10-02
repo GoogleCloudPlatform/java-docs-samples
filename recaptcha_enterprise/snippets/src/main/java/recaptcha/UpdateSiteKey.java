@@ -43,9 +43,9 @@ public class UpdateSiteKey {
   /**
    * Update the properties of the given site key present under the project id.
    *
-   * @param projectId: GCloud Project ID.
-   * @param recaptchaSiteKeyId: Specify the site key.
-   * @param domainName: Specify the domain name for which the settings should be updated.
+   * @param projectId : GCloud Project ID.
+   * @param recaptchaSiteKeyId : Specify the site key.
+   * @param domainName : Specify the domain name for which the settings should be updated.
    */
   public static void updateSiteKey(String projectId, String recaptchaSiteKeyId, String domainName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {

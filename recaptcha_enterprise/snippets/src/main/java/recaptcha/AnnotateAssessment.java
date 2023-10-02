@@ -39,8 +39,8 @@ public class AnnotateAssessment {
    * Pre-requisite: Create an assessment before annotating.
    * Annotate an assessment to provide feedback on the correctness of recaptcha prediction.
    *
-   * @param projectId: GCloud Project id
-   * @param assessmentId: Value of the 'name' field returned from the CreateAssessment call.
+   * @param projectId : GCloud Project id
+   * @param assessmentId : Value of the 'name' field returned from the CreateAssessment call.
    */
   public static void annotateAssessment(String projectId, String assessmentId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created

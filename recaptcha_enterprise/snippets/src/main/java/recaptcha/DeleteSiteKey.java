@@ -40,8 +40,8 @@ public class DeleteSiteKey {
   /**
    * Delete the given reCAPTCHA site key present under the project ID.
    *
-   * @param projectId: GCloud Project ID.
-   * @param recaptchaSiteKey: Specify the site key to be deleted.
+   * @param projectId : GCloud Project ID.
+   * @param recaptchaSiteKey : Specify the site key to be deleted.
    */
   public static void deleteSiteKey(String projectId, String recaptchaSiteKey)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
