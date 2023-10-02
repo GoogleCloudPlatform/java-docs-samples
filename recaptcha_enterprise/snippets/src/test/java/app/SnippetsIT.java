@@ -19,11 +19,6 @@ package app;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import account_defender.AccountDefenderAssessment;
-import account_defender.AnnotateAccountDefenderAssessment;
-import account_defender.ListRelatedAccountGroupMemberships;
-import account_defender.ListRelatedAccountGroups;
-import account_defender.SearchRelatedAccountGroupMemberships;
 import com.google.protobuf.ByteString;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.ByteArrayOutputStream;
@@ -60,7 +55,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.util.UriComponentsBuilder;
 import recaptcha.AnnotateAssessment;
 import recaptcha.GetMetrics;
+import recaptcha.accountdefender.AccountDefenderAssessment;
+import recaptcha.accountdefender.AnnotateAccountDefenderAssessment;
+import recaptcha.accountdefender.ListRelatedAccountGroupMemberships;
+import recaptcha.accountdefender.ListRelatedAccountGroups;
+import recaptcha.accountdefender.SearchRelatedAccountGroupMemberships;
 import recaptcha.mfa.CreateMfaAssessment;
+import recaptcha.passwordleak.CreatePasswordLeakAssessment;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @EnableAutoConfiguration
@@ -231,7 +232,7 @@ public class SnippetsIT {
   @Test
   public void testPasswordLeakAssessment()
       throws IOException, ExecutionException, InterruptedException {
-    passwordleak.CreatePasswordLeakAssessment.
+    CreatePasswordLeakAssessment.
         checkPasswordLeak(PROJECT_ID, "username", "password");
     assertThat(stdOut.toString()).contains("Is Credential leaked: ");
   }
