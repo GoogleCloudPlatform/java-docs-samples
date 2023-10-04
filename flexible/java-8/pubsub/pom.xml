@@ -38,7 +38,7 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml>    <!-- REQUIRED -->
 
-    <appengine.maven.plugin>2.4.4</appengine.maven.plugin>
+    <appengine.maven.plugin>2.5.0</appengine.maven.plugin>
     <jetty>9.4.52.v20230823</jetty>
   </properties>
 
