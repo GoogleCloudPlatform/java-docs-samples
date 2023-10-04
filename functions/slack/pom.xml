@@ -75,7 +75,7 @@
     <dependency>
       <groupId>com.slack.api</groupId>
       <artifactId>slack-app-backend</artifactId>
-      <version>1.33.0</version>
+      <version>1.34.0</version>
     </dependency>
 
     <!-- The following dependencies are only required for testing -->
