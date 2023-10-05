@@ -32,7 +32,7 @@ repositories {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '8.3'
+    gradleVersion = '8.4'
 }
 
 def projectId = 'YOUR_PROJECT_ID'
