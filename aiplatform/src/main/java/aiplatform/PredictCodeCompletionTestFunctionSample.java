@@ -51,7 +51,7 @@ public class PredictCodeCompletionTestFunctionSample {
     predictTestFunction(instance, parameters, project, location, publisher, model);
   }
 
-  // Use Code Completion to complete a test function
+  // Use Codey for Code Completion to complete a test function
   public static void predictTestFunction(
       String instance,
       String parameters,
