@@ -37,7 +37,7 @@ public class DocumentTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us";
   private static final String DOCUMENT_SCHEMA_ID = "27hhcik7eddv0";
-  private static final String DOCUMENT_ID = "22j813egkmcc0";
+  private static final String DOCUMENT_ID = "171ncje57546g";
   private static final String USER_ID = "user:andrewchasin@google.com";
 
   private ByteArrayOutputStream bout;
@@ -80,10 +80,17 @@ public class DocumentTests {
     assertThat(got).contains("document");
   }
   
+  @Test
+  public void testUpdateDocument()
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    UpdateDocument.updateDocument(PROJECT_ID, LOCATION, DOCUMENT_ID, USER_ID);
+    String got = bout.toString();
+    assertThat(got).contains("Document");
+  }
+  
   @After
   public void tearDown() {
     System.out.flush();
     System.setOut(originalPrintStream);
-  
   }
 }

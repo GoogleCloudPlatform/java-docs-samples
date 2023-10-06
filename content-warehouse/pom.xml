@@ -4,7 +4,7 @@
   <groupId>com.example.contentwarehouse</groupId>
   <artifactId>contentwarehouse-snippets</artifactId>
   <packaging>jar</packaging>
-  <name>Google Document AI Snippets</name>
+  <name>Google Document Warehouse Snippets</name>
   <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/content-warehouse</url>
 
   <!--
