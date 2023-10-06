@@ -51,7 +51,7 @@ public class PredictCodeCompletionCommentSample {
     predictComment(instance, parameters, project, location, publisher, model);
   }
 
-  // Use Code Completion to complete a code comment
+  // Use Codey for Code Completion to complete a code comment
   public static void predictComment(
       String instance,
       String parameters,
