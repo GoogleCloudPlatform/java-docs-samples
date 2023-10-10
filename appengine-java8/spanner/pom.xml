@@ -83,7 +83,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.52.v20230823</version>
+        <version>9.4.53.v20231009</version>
       </plugin>
       <!-- END -->
       <plugin>
