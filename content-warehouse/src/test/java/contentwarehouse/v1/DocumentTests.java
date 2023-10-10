@@ -87,6 +87,14 @@ public class DocumentTests {
     String got = bout.toString();
     assertThat(got).contains("Document");
   }
+
+  @Test
+  public void testSearchDocument()
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    SearchDocument.searchDocument(PROJECT_ID, LOCATION, "document" , USER_ID);
+    String got = bout.toString();
+    assertThat(got).contains("Document");
+  }
   
   @After
   public void tearDown() {
