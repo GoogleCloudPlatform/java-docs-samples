@@ -16,7 +16,6 @@
 
 package contentwarehouse.v1;
 
-// [START contentwarehouse_update_document]
 import com.google.cloud.contentwarehouse.v1.Document;
 import com.google.cloud.contentwarehouse.v1.DocumentName;
 import com.google.cloud.contentwarehouse.v1.DocumentServiceClient;
@@ -41,15 +40,15 @@ public class UpdateDocument {
     String location = "your-region"; // Format is "us" or "eu".
     String documentId = "your-document-id";
     String userId = "your-user-id"; // Format is user:<user-id>
-    /* The below method call retrieves details about the document you are about to update.
+    /* The below method call retrieves details about the schema you are about to update.
     * It is important to note that some properties cannot be edited or removed. 
-    * For more information on managing documents, please see the below documentation.
-    * https://cloud.google.com/document-warehouse/docs/manage-documents */
-    GetDocument.getDocument(projectId, location, documentId, userId);
+    * For more information on managing document schemas, please see the below documentation.
+    * https://cloud.google.com/document-warehouse/docs/manage-document-schemas */
+    GetDocumentSchema.getDocumentSchema(projectId, location, documentId);
     updateDocument(projectId, location, documentId, userId);
   }
 
-  // Updates an existing Document
+  // Updates an existing Document Schema
   public static void updateDocument(String projectId, String location,
         String documentId, String userId) throws IOException, InterruptedException,
           ExecutionException, TimeoutException { 
@@ -63,7 +62,7 @@ public class UpdateDocument {
     DocumentServiceSettings documentServiceSettings = 
              DocumentServiceSettings.newBuilder().setEndpoint(endpoint).build(); 
 
-    /* Create the Document Service Client 
+    /* Create the Schema Service Client 
      * Initialize client that will be used to send requests. 
      * This client only needs to be created once, and can be reused for multiple requests. */
     try (DocumentServiceClient documentServiceClient = 
@@ -122,4 +121,3 @@ public class UpdateDocument {
     } 
   }
 }
-// [END contentwarehouse_update_document]
