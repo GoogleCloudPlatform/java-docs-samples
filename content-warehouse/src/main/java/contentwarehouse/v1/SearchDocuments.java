@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-public class SearchDocument {
+public class SearchDocuments {
   public static void searchDocument() throws IOException, 
         InterruptedException, ExecutionException, TimeoutException { 
     // TODO(developer): Replace these variables before running the sample.
@@ -44,11 +44,11 @@ public class SearchDocument {
     String documentQuery = "your-document-query";
     String userId = "your-user-id"; // Format is user:<user-id>
 
-    searchDocument(projectId, location, documentQuery, userId);
+    searchDocuments(projectId, location, documentQuery, userId);
   }
 
-  // Searches a Document
-  public static void searchDocument(String projectId, String location,
+  // Searches all Documents for given Document Query
+  public static void searchDocuments(String projectId, String location,
         String documentQuery, String userId) throws IOException, InterruptedException,
           ExecutionException, TimeoutException { 
     String projectNumber = getProjectNumber(projectId);
