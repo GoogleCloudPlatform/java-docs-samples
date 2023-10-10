@@ -89,10 +89,14 @@ public class SearchDocuments {
           .setQuery(documentQuery)
           .setFileTypeFilter(fileTypeFilter).build();
 
-      // Create the request to search all documents for specified query
+      /*  Create the request to search all documents for specified query. 
+      * Please note the offset in this request is to only return the specified number of results 
+      * to avoid hitting the API quota. 
+      */
       SearchDocumentsRequest searchDocumentsRequest = SearchDocumentsRequest.newBuilder()
           .setParent(parent)
           .setRequestMetadata(requestMetadata)
+          .setOffset(5)
           .setDocumentQuery(query).build();
 
       // Make the call to search documents with document service client and store the response
