@@ -59,7 +59,7 @@ public class PredictCodeGenerationUnitTestSample {
     predictUnitTest(instance, parameters, project, location, publisher, model);
   }
 
-  // Use Code Generation to generate a unit test
+  // Use Codey for Code Generation to generate a unit test
   public static void predictUnitTest(
       String instance,
       String parameters,

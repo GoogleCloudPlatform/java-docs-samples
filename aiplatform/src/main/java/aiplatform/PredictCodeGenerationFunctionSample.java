@@ -46,7 +46,7 @@ public class PredictCodeGenerationFunctionSample {
     predictFunction(instance, parameters, project, location, publisher, model);
   }
 
-  // Use Code Generation to generate a code function
+  // Use Codey for Code Generation to generate a code function
   public static void predictFunction(
       String instance,
       String parameters,

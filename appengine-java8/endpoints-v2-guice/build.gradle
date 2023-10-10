@@ -19,7 +19,7 @@ buildscript {
 
   dependencies {
     classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:2.1.0'
-    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.4.5'
+    classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.5.0'
   }
 }
 
@@ -32,7 +32,7 @@ repositories {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '8.3'
+    gradleVersion = '8.4'
 }
 
 def projectId = 'YOUR_PROJECT_ID'

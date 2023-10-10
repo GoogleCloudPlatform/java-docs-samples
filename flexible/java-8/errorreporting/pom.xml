@@ -32,11 +32,11 @@
   </parent>
 
   <properties>
-    <appengine.maven.plugin>2.4.4</appengine.maven.plugin>
+    <appengine.maven.plugin>2.5.0</appengine.maven.plugin>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml>
-    <jetty.maven.plugin>9.4.52.v20230823</jetty.maven.plugin>
+    <jetty.maven.plugin>9.4.53.v20231009</jetty.maven.plugin>
   </properties>
 
   <dependencyManagement>
