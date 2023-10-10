@@ -91,7 +91,7 @@ public class DocumentTests {
   @Test
   public void testSearchDocument()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
-    SearchDocument.searchDocument(PROJECT_ID, LOCATION, "document" , USER_ID);
+    SearchDocument.searchDocument(PROJECT_ID, LOCATION, "document", USER_ID);
     String got = bout.toString();
     assertThat(got).contains("Document");
   }
