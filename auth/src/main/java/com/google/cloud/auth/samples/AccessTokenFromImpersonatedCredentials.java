@@ -15,6 +15,7 @@
  */
 
 // [START auth_cloud_accesstoken_impersonated_credentials]
+
 package com.google.cloud.auth.samples;
 
 import com.google.auth.oauth2.GoogleCredentials;
