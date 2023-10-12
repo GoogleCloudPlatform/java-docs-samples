@@ -36,7 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 public class SearchDocuments {
-  public static void searchDocument() throws IOException, 
+  public static void main(String[] args) throws IOException, 
         InterruptedException, ExecutionException, TimeoutException { 
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
@@ -47,7 +47,7 @@ public class SearchDocuments {
     searchDocuments(projectId, location, documentQuery, userId);
   }
 
-  // Searches all Documents for given Document Query
+  // Searches all documents for a given Document Query
   public static void searchDocuments(String projectId, String location,
         String documentQuery, String userId) throws IOException, InterruptedException,
           ExecutionException, TimeoutException { 
@@ -59,45 +59,56 @@ public class SearchDocuments {
     }
 
     DocumentServiceSettings documentServiceSettings = 
-             DocumentServiceSettings.newBuilder().setEndpoint(endpoint).build(); 
+             DocumentServiceSettings.newBuilder().setEndpoint(endpoint)
+             .build(); 
 
-    /* Create the Document Service Client 
+    /*
+     * Create the Document Service Client 
      * Initialize client that will be used to send requests. 
-     * This client only needs to be created once, and can be reused for multiple requests. */
+     * This client only needs to be created once, and can be reused for multiple requests. 
+     */
     try (DocumentServiceClient documentServiceClient = 
             DocumentServiceClient.create(documentServiceSettings)) {  
 
-      /*  The full resource name of the location, e.g.:
-      projects/{project_number}/locations/{location} */
+      /*
+       * The full resource name of the location, e.g.:
+       * projects/{project_number}/locations/{location} 
+       */
       String parent = LocationName.format(projectNumber, location);
 
       // Define RequestMetadata object for context of the user making the API call
       RequestMetadata requestMetadata = RequestMetadata.newBuilder()
           .setUserInfo(
           UserInfo.newBuilder()
-            .setId(userId).build()).build();
+            .setId(userId)
+            .build())
+            .build();
 
-      // Set file type for filter to type DOCUMENT
+      // Set file type for filter to 'DOCUMENT'
       FileType documentFileType = FileType.DOCUMENT;
 
       // Create a file type filter for documents 
       FileTypeFilter fileTypeFilter = FileTypeFilter.newBuilder()
-          .setFileType(documentFileType).build();
+          .setFileType(documentFileType)
+          .build();
       
       // Create document query to search all documents for text given at input
       DocumentQuery query = DocumentQuery.newBuilder()
           .setQuery(documentQuery)
-          .setFileTypeFilter(fileTypeFilter).build();
+          .setFileTypeFilter(fileTypeFilter)
+          .build();
 
-      /*  Create the request to search all documents for specified query. 
-      * Please note the offset in this request is to only return the specified number of results 
-      * to avoid hitting the API quota. 
-      */
+      /*
+       * Create the request to search all documents for specified query. 
+       * Please note the offset in this request is to only return the specified number of results 
+       * to avoid hitting the API quota. 
+       */
       SearchDocumentsRequest searchDocumentsRequest = SearchDocumentsRequest.newBuilder()
           .setParent(parent)
           .setRequestMetadata(requestMetadata)
           .setOffset(5)
-          .setDocumentQuery(query).build();
+          .setDocumentQuery(query)
+          .build();
 
       // Make the call to search documents with document service client and store the response
       SearchDocumentsPagedResponse searchDocumentsPagedResponse = 
@@ -116,8 +127,10 @@ public class SearchDocuments {
   }
 
   private static String getProjectNumber(String projectId) throws IOException { 
-    /* Initialize client that will be used to send requests. 
-    * This client only needs to be created once, and can be reused for multiple requests. */
+    /*
+     * Initialize client that will be used to send requests. 
+     * This client only needs to be created once, and can be reused for multiple requests.
+     */
     try (ProjectsClient projectsClient = ProjectsClient.create()) { 
       ProjectName projectName = ProjectName.of(projectId); 
       Project project = projectsClient.getProject(projectName);
