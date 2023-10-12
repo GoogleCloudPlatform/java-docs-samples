@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,10 +31,12 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 //CHECKSTYLE OFF: AbbreviationAsWordInName
 public class AccessTokenFromImpersonatedCredentialsIT {
+
   //CHECKSTYLE ON: AbbreviationAsWordInName
   private static final String impersonatedServiceAccount =
       System.getenv("IMPERSONATED_SERVICE_ACCOUNT");
   private static final String scope = "https://www.googleapis.com/auth/cloud-platform";
+  private final PrintStream originalOut = System.out;
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private String credentials;
@@ -53,5 +56,11 @@ public class AccessTokenFromImpersonatedCredentialsIT {
     AccessTokenFromImpersonatedCredentials.getAccessToken(impersonatedServiceAccount, scope);
     String output = bout.toString();
     assertTrue(output.contains("Generated access token."));
+  }
+
+  @After
+  public void tearDown() throws IOException {
+    System.setOut(originalOut);
+    bout.reset();
   }
 }
