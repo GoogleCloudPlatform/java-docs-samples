@@ -31,7 +31,8 @@ import org.junit.runners.JUnit4;
 //CHECKSTYLE OFF: AbbreviationAsWordInName
 public class AccessTokenFromImpersonatedCredentialsIT {
   //CHECKSTYLE ON: AbbreviationAsWordInName
-  private static final String impersonatedServiceAccount = System.getenv("IMPERSONATED_SERVICE_ACCOUNT");
+  private static final String impersonatedServiceAccount =
+      System.getenv("IMPERSONATED_SERVICE_ACCOUNT");
   private static final String scope = "https://www.googleapis.com/auth/cloud-platform";
   private ByteArrayOutputStream bout;
   private PrintStream out;
