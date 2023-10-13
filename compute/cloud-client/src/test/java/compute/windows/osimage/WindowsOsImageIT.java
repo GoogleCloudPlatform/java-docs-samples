@@ -84,7 +84,8 @@ public class WindowsOsImageIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     // Cleanup existing test instances.
-    Util.cleanUpExistingInstances("windowsimage-test-instance-", PROJECT_ID, ZONE);
+    // commenting out the line because it is a source of flaky testing (b/304088503)
+    // Util.cleanUpExistingInstances("windowsimage-test-instance-", PROJECT_ID, ZONE);
 
     String randomUUID = UUID.randomUUID().toString().split("-")[0];
     INSTANCE_NAME = "windowsimage-test-instance-" + randomUUID;
