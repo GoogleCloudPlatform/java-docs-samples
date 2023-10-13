@@ -20,6 +20,8 @@ import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
+import com.google.cloud.compute.v1.Image;
+import com.google.cloud.compute.v1.ImagesClient;
 import com.google.cloud.compute.v1.InsertInstanceRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
@@ -55,6 +57,7 @@ public class WindowsOsImageIT {
   private static final String ZONE = getZone();
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
+  private static final int WAIT_FOR_IMAGE_MILLIS = 30000; // 30 seconds
   private static String INSTANCE_NAME;
   private static String DISK_NAME;
   private static String IMAGE_NAME;
@@ -133,9 +136,6 @@ public class WindowsOsImageIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    // Delete image.
-    DeleteImage.deleteImage(PROJECT_ID, IMAGE_NAME);
-
     // Delete instance.
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
 
@@ -165,13 +165,30 @@ public class WindowsOsImageIT {
         String.format("Instance %s should be stopped.", INSTANCE_NAME));
   }
 
+  private boolean isImageReady() throws IOException, InterruptedException {
+    try (ImagesClient imagesClient = ImagesClient.create()) {
+      Image image = imagesClient.get(PROJECT_ID, IMAGE_NAME);
+      int waitCycles = INITIAL_BACKOFF_MILLIS / WAIT_FOR_IMAGE_MILLIS;
+      while (!image.getStatus().equals("READY") && waitCycles-- >= 0) {
+        Thread.sleep(WAIT_FOR_IMAGE_MILLIS);
+        image = imagesClient.get(PROJECT_ID, IMAGE_NAME);
+      }
+      return image.getStatus().equals("READY");
+    }
+  }
 
   @Test
-  public void testCreateWindowsImage_pass()
+  public void testCreateAndDeleteWindowsImage_pass()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateImage.createImage(
         PROJECT_ID, ZONE, DISK_NAME, IMAGE_NAME, "eu", true);
     assertThat(stdOut.toString()).contains("Image created.");
+
+    assertWithMessage(String.format("Failed to complete image creation in %d milliseconds",
+        INITIAL_BACKOFF_MILLIS)).that(isImageReady()).isTrue();
+
+    DeleteImage.deleteImage(PROJECT_ID, IMAGE_NAME);
+    assertThat(stdOut.toString()).contains("Operation Status for Image Name");
   }
 
 }
