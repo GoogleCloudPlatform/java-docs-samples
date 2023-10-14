@@ -54,7 +54,7 @@ import org.junit.runners.JUnit4;
 public class WindowsOsImageIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = getZone();
+  private static final String ZONE = "us-central1-a";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static final int WAIT_FOR_IMAGE_MILLIS = 30000; // 30 seconds
@@ -71,6 +71,40 @@ public class WindowsOsImageIT {
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
         .that(System.getenv(envVarName)).isNotEmpty();
+  }
+
+  private static boolean isImageReady() throws IOException, InterruptedException {
+    try (ImagesClient imagesClient = ImagesClient.create()) {
+      Image image = imagesClient.get(PROJECT_ID, IMAGE_NAME);
+      int waitCycles = INITIAL_BACKOFF_MILLIS / WAIT_FOR_IMAGE_MILLIS;
+      while (!image.getStatus().equals("READY") && waitCycles-- >= 0) {
+        Thread.sleep(WAIT_FOR_IMAGE_MILLIS);
+        image = imagesClient.get(PROJECT_ID, IMAGE_NAME);
+      }
+      return image.getStatus().equals("READY");
+    }
+  }
+
+  private static boolean isInstanceReady() throws IOException, InterruptedException {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+      Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_NAME);
+      if (instance == null) {
+        return false;
+      }
+
+      for (int waitCycles = INITIAL_BACKOFF_MILLIS / WAIT_FOR_IMAGE_MILLIS;
+            waitCycles >= 0;
+            waitCycles--) {
+        String status = instance.getStatus();
+        if (status.equals("SUSPENDED") || status.equals("RUNNING") || status.equals("REPAIRING")
+            || status.equals("TERMINATED")) {
+          return true;
+        }
+        Thread.sleep(WAIT_FOR_IMAGE_MILLIS);
+        instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_NAME);
+      }
+      return false;
+    }
   }
 
   @BeforeAll
@@ -138,7 +172,9 @@ public class WindowsOsImageIT {
     System.setOut(new PrintStream(stdOut));
 
     // Delete instance.
-    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
+    if (WindowsOsImageIT.isInstanceReady()) {
+      DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
+    }
 
     stdOut.close();
     System.setOut(out);
@@ -166,18 +202,6 @@ public class WindowsOsImageIT {
         String.format("Instance %s should be stopped.", INSTANCE_NAME));
   }
 
-  private boolean isImageReady() throws IOException, InterruptedException {
-    try (ImagesClient imagesClient = ImagesClient.create()) {
-      Image image = imagesClient.get(PROJECT_ID, IMAGE_NAME);
-      int waitCycles = INITIAL_BACKOFF_MILLIS / WAIT_FOR_IMAGE_MILLIS;
-      while (!image.getStatus().equals("READY") && waitCycles-- >= 0) {
-        Thread.sleep(WAIT_FOR_IMAGE_MILLIS);
-        image = imagesClient.get(PROJECT_ID, IMAGE_NAME);
-      }
-      return image.getStatus().equals("READY");
-    }
-  }
-
   @Test
   public void testCreateAndDeleteWindowsImage_pass()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -186,7 +210,7 @@ public class WindowsOsImageIT {
     assertThat(stdOut.toString()).contains("Image created.");
 
     assertWithMessage(String.format("Failed to complete image creation in %d milliseconds",
-        INITIAL_BACKOFF_MILLIS)).that(isImageReady()).isTrue();
+        INITIAL_BACKOFF_MILLIS)).that(WindowsOsImageIT.isImageReady()).isTrue();
 
     DeleteImage.deleteImage(PROJECT_ID, IMAGE_NAME);
     assertThat(stdOut.toString()).contains("Operation Status for Image Name");
