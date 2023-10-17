@@ -16,6 +16,7 @@
 
 set -eo pipefail
 
+current_dir="$PWD"
 # Based on this content: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
 # https://github.com/alixaxel/chrome-aws-lambda/issues/164
 echo "Y" | apt install libnss3
@@ -41,5 +42,6 @@ mkdir -p /opt/selenium \
 export CHROME_DRIVER_PATH="$PWD/chromedriver"
 echo "Installing chrome and driver. Path to installation: $CHROME_DRIVER_PATH"
 
+cd "$current_dir"
 # Do not use exec to preserve trap behavior.
 "$@"
