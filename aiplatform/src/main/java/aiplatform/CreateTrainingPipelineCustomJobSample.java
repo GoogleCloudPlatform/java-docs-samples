@@ -62,13 +62,13 @@ public class CreateTrainingPipelineCustomJobSample {
       JsonObject jsonMachineSpec = new JsonObject();
       jsonMachineSpec.addProperty("machineType", "n1-standard-4");
 
-      JsonArray jsonArgs = new JsonArray();
-      jsonArgs.add("--model_dir=$(AIP_MODEL_DIR)");
-
       // A working docker image can be found at
       // gs://cloud-samples-data/ai-platform/mnist_tfrecord/custom_job
+      // This sample image accepts a set of arguments including model_dir.
       JsonObject jsonContainerSpec = new JsonObject();
       jsonContainerSpec.addProperty("imageUri", containerImageUri);
+      JsonArray jsonArgs = new JsonArray();
+      jsonArgs.add("--model_dir=$(AIP_MODEL_DIR)");
       jsonContainerSpec.add("args", jsonArgs);
 
       JsonObject jsonJsonWorkerPoolSpec0 = new JsonObject();
