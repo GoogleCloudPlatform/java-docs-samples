@@ -60,6 +60,19 @@ if [[ "$file" == *"functions/helloworld/"* ]]; then
     fi
 fi
 
+# Install Chrome and chrome driver for recaptcha tests
+if [[ "$file" == *"recaptcha_enterprise/snippets/"* ]]; then
+    source "$SCRIPT_DIR"/build_recaptcha.sh
+    EXIT=$?
+
+    if [[ $EXIT -ne 0 ]]; then
+        RTN=1
+        echo -e "\n Chrome driver installation failed. \n"
+    else
+        echo -e "\n Chrome driver started successfully. \n"
+    fi
+fi
+
 # Use maven to execute the tests for the project.
 mvn --quiet --batch-mode --fail-at-end clean verify \
     -Dfile.encoding="UTF-8" \
