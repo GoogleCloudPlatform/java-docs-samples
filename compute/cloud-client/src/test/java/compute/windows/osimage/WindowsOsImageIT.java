@@ -20,8 +20,6 @@ import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
-import com.google.cloud.compute.v1.Image;
-import com.google.cloud.compute.v1.ImagesClient;
 import com.google.cloud.compute.v1.InsertInstanceRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
@@ -29,7 +27,6 @@ import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import compute.DeleteInstance;
-import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -54,131 +51,93 @@ import org.junit.runners.JUnit4;
 public class WindowsOsImageIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  private static final String ZONE = getZone();
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
-  private static final int WAIT_FOR_IMAGE_MILLIS = 30000; // 30 seconds
-  private static String INSTANCE_NAME;
-  private static String DISK_NAME;
-  private static String IMAGE_NAME;
+  private static String testInstanceName;
+  private static String testImageName;
+
+  private static String getBootDiskName(String instanceName) {
+    return instanceName + "-boot-disk";
+  }
+
   @Rule
   public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
       MAX_ATTEMPT_COUNT,
       INITIAL_BACKOFF_MILLIS);
-  private ByteArrayOutputStream stdOut;
 
-  // Check if the required environment variables are set.
-  public static void requireEnvVar(String envVarName) {
-    assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
-        .that(System.getenv(envVarName)).isNotEmpty();
-  }
-
-  private static boolean isImageReady() throws IOException, InterruptedException {
-    try (ImagesClient imagesClient = ImagesClient.create()) {
-      Image image = imagesClient.get(PROJECT_ID, IMAGE_NAME);
-      int waitCycles = INITIAL_BACKOFF_MILLIS / WAIT_FOR_IMAGE_MILLIS;
-      while (!image.getStatus().equals("READY") && waitCycles-- >= 0) {
-        Thread.sleep(WAIT_FOR_IMAGE_MILLIS);
-        image = imagesClient.get(PROJECT_ID, IMAGE_NAME);
-      }
-      return image.getStatus().equals("READY");
-    }
-  }
-
-  private static boolean isInstanceReady() throws IOException, InterruptedException {
-    try (InstancesClient instancesClient = InstancesClient.create()) {
-      Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_NAME);
-      if (instance == null) {
-        return false;
-      }
-
-      for (int waitCycles = INITIAL_BACKOFF_MILLIS / WAIT_FOR_IMAGE_MILLIS;
-            waitCycles >= 0;
-            waitCycles--) {
-        String status = instance.getStatus();
-        if (status.equals("SUSPENDED") || status.equals("RUNNING") || status.equals("REPAIRING")
-            || status.equals("TERMINATED")) {
-          return true;
-        }
-        Thread.sleep(WAIT_FOR_IMAGE_MILLIS);
-        instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_NAME);
-      }
-      return false;
-    }
-  }
-
-  @BeforeAll
-  public static void setup()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    // Cleanup existing test instances.
-    // commenting out the line because it is a source of flaky testing (b/304088503)
-    // Util.cleanUpExistingInstances("windowsimage-test-instance-", PROJECT_ID, ZONE);
-
-    String randomUUID = UUID.randomUUID().toString().split("-")[0];
-    INSTANCE_NAME = "windowsimage-test-instance-" + randomUUID;
-    DISK_NAME = "windowsimage-test-disk-" + randomUUID;
-    IMAGE_NAME = "windowsimage-test-image-" + randomUUID;
-
-    // Create Instance with Windows source image.
+  private static boolean createInstance(String instanceName)
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    final String MACHINE_TYPE = String.format("zones/%s/machineTypes/n1-standard-1", ZONE);
+    final String MACHINE_FAMILY = "projects/debian-cloud/global/images/family/debian-11";
+    final long DISK_SIZE = 10L;
     try (InstancesClient instancesClient = InstancesClient.create()) {
       AttachedDisk attachedDisk = AttachedDisk.newBuilder()
-          .setDeviceName(DISK_NAME)
+          .setDeviceName(getBootDiskName(instanceName))
           .setAutoDelete(true)
           .setBoot(true)
           .setType(AttachedDisk.Type.PERSISTENT.name())
           .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
-              .setDiskName(DISK_NAME)
-              .setDiskSizeGb(64)
-              .setSourceImage(
-                  "projects/windows-cloud/global/images/windows-server-2012-r2-dc-core-v20220314")
+              .setDiskName(getBootDiskName(instanceName))
+              .setDiskSizeGb(DISK_SIZE)
+              .setSourceImage(MACHINE_FAMILY)
               .build())
           .build();
-
       Instance instance = Instance.newBuilder()
-          .setName(INSTANCE_NAME)
-          .setMachineType(String.format("zones/%s/machineTypes/n1-standard-1", ZONE))
+          .setName(instanceName)
+          .setMachineType(MACHINE_TYPE)
+          .addDisks(attachedDisk)
+          // mind that it will not work with custom VPC
           .addNetworkInterfaces(NetworkInterface.newBuilder()
               .setName("global/networks/default")
               .build())
-          .addDisks(attachedDisk)
           .build();
-
       InsertInstanceRequest request = InsertInstanceRequest.newBuilder()
           .setProject(PROJECT_ID)
           .setZone(ZONE)
           .setInstanceResource(instance)
           .build();
-
-      Operation response = instancesClient.insertAsync(request).get();
-      Assert.assertFalse(response.hasError());
+      Operation response = instancesClient.insertAsync(request).get(5, TimeUnit.MINUTES);
+      return !response.hasError();
     }
+  }
 
-    stdOut.close();
-    System.setOut(out);
+  /**
+   * Assert that environment has a variable set.
+   *
+   * @param envVarName the name of the required environment variable
+   *
+   */
+  private static void requireEnvVar(String envVarName) {
+    assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
+        .that(System.getenv(envVarName)).isNotEmpty();
+  }
+
+  @BeforeAll
+  public static void setup()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
+    String randomUUID = UUID.randomUUID().toString().split("-")[0];
+    testInstanceName = "images-test-help-instance-" + randomUUID;
+    testImageName = "test-image-" + randomUUID;
+
+    // Create a VM with a smallest possible disk that can be used for testing
+    Assert.assertTrue("Failed to setup instance for image create/delete testing",
+        createInstance(testInstanceName));
   }
 
   @AfterAll
   public static void cleanUp()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
 
-    // Delete instance.
-    if (WindowsOsImageIT.isInstanceReady()) {
-      DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
-    }
-
-    stdOut.close();
-    System.setOut(out);
+    // mind that we use *another* code sample
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, testInstanceName);
   }
+
+  private ByteArrayOutputStream stdOut;
 
   @BeforeEach
   public void beforeEach() {
@@ -188,32 +147,27 @@ public class WindowsOsImageIT {
 
   @AfterEach
   public void afterEach() {
-    stdOut = null;
-    System.setOut(null);
+    System.setOut(System.out);
   }
 
   @Test
-  public void testCreateWindowsImage_failDueToRunningInstance()
+  public void testCanCreateImage()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    CreateImage.createImage(
+        PROJECT_ID, ZONE, getBootDiskName(testInstanceName), testImageName, "us", true);
+    assertThat(stdOut.toString()).contains("Image created.");
+    DeleteImage.deleteImage(PROJECT_ID, testImageName);
+    assertThat(stdOut.toString()).contains("Operation Status for Image Name");
+  }
+
+  @Test
+  public void testUnforcedCreateImage()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Assertions.assertThrows(
         IllegalStateException.class,
-        () -> CreateImage.createImage(PROJECT_ID, ZONE, DISK_NAME, IMAGE_NAME,
-            "eu", false),
-        String.format("Instance %s should be stopped.", INSTANCE_NAME));
-  }
-
-  @Test
-  public void testCreateAndDeleteWindowsImage_pass()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateImage.createImage(
-        PROJECT_ID, ZONE, DISK_NAME, IMAGE_NAME, "eu", true);
-    assertThat(stdOut.toString()).contains("Image created.");
-
-    assertWithMessage(String.format("Failed to complete image creation in %d milliseconds",
-        INITIAL_BACKOFF_MILLIS)).that(WindowsOsImageIT.isImageReady()).isTrue();
-
-    DeleteImage.deleteImage(PROJECT_ID, IMAGE_NAME);
-    assertThat(stdOut.toString()).contains("Operation Status for Image Name");
+        () -> CreateImage.createImage(
+            PROJECT_ID, ZONE, getBootDiskName(testInstanceName), testImageName, "us", false),
+        String.format("Instance %s should be stopped.", testInstanceName));
   }
 
 }
