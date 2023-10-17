@@ -404,20 +404,20 @@ public class Snippets {
   // [END monitoring_get_resource]
 
   /**
-   * Gets full information for a monitored resource.
+   * Gets full information for a custom metric descriptor.
    *
-   * @param type The resource type
+   * @param name The name of the custom metric descriptor
    */
-  void describeMonitoredResources(String type) throws IOException {
+  void describeMetricResources(String name) throws IOException {
     // [START monitoring_get_descriptor]
     // Your Google Cloud Platform project ID
     String projectId = System.getProperty("projectId");
 
     final MetricServiceClient client = MetricServiceClient.create();
-    MonitoredResourceDescriptorName name = MonitoredResourceDescriptorName.of(projectId, type);
-    MonitoredResourceDescriptor response = client.getMonitoredResourceDescriptor(name);
+    MetricDescriptorName descriptorName = MetricDescriptorName.of(projectId, name);
+    MetricDescriptor response = client.getMetricDescriptor(descriptorName);
 
-    System.out.println("Printing monitored resource descriptor: ");
+    System.out.println("Printing metrics descriptor: ");
     System.out.println(response);
     // [END monitoring_get_descriptor]
   }
@@ -460,12 +460,12 @@ public class Snippets {
         }
         listMonitoredResources();
         break;
-      case "get-resource":
+      case "get-descriptor-resource":
         args = commandLine.split("\\s+", 2);
         if (args.length != 2) {
           throw new IllegalArgumentException("usage: <type>");
         }
-        describeMonitoredResources(args[1]);
+        describeMetricResources(args[1]);
         break;
       case "delete-metric-descriptor":
         args = commandLine.split("\\s+", 2);
