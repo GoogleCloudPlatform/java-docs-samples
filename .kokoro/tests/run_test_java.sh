@@ -63,7 +63,7 @@ fi
 # Install Chrome and chrome driver for recaptcha tests
 echo "Starting chrome driver installation: $file"
 if [[ "$file" == *"recaptcha_enterprise/snippets"* ]]; then
-    echo "Y" | source "$SCRIPT_DIR"/build_recaptcha.sh
+    source "$SCRIPT_DIR"/build_recaptcha.sh
     EXIT=$?
 
     if [[ $EXIT -ne 0 ]]; then

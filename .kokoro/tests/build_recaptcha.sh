@@ -18,8 +18,8 @@ set -eo pipefail
 
 # Based on this content: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix
 # https://github.com/alixaxel/chrome-aws-lambda/issues/164
-apt install libnss3
-apt install libnss3-dev libgdk-pixbuf2.0-dev libgtk-3-dev libxss-dev libgconf-2-4
+echo "Y" | apt install libnss3
+echo "Y" | apt install libnss3-dev libgdk-pixbuf2.0-dev libgtk-3-dev libxss-dev libgconf-2-4
 
 # Install Chrome.
 curl https://dl-ssl.google.com/linux/linux_signing_key.pub -o /tmp/google.pub \
