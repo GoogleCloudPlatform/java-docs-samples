@@ -60,11 +60,10 @@ if [[ "$file" == *"functions/helloworld/"* ]]; then
     fi
 fi
 
-echo "Starting chrome driver installation: $file"
 # Install Chrome and chrome driver for recaptcha tests
-if [[ "$file" == *"recaptcha_enterprise/snippets/"* ]]; then
+echo "Starting chrome driver installation: $file"
+if [[ "$file" == *"recaptcha_enterprise/snippets"* ]]; then
     source "$SCRIPT_DIR"/build_recaptcha.sh
-    echo "Script execution completed"
     EXIT=$?
 
     if [[ $EXIT -ne 0 ]]; then
