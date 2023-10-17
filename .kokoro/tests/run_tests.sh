@@ -117,6 +117,7 @@ if [[ ",$JAVA_VERSION," =~ "11" ]]; then
   cd ../../
 fi
 
+echo "File name: $file"
 # Install Chrome and chrome driver for recaptcha tests
 if [[ "$file" == *"recaptcha_enterprise/"* ]]; then
 
