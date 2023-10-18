@@ -42,11 +42,11 @@ public class CreateAssessment {
    * Create an assessment to analyze the risk of an UI action. Assessment approach is the same for
    * both 'score' and 'checkbox' type recaptcha site keys.
    *
-   * @param projectId : GCloud Project ID
-   * @param recaptchaSiteKey : Site key obtained by registering a domain/app to use recaptcha
+   * @param projectId Google Cloud Project ID.
+   * @param recaptchaSiteKey Site key obtained by registering a domain/app to use recaptcha
    *     services. (score/ checkbox type)
-   * @param token : The token obtained from the client on passing the recaptchaSiteKey.
-   * @param recaptchaAction : Action name corresponding to the token.
+   * @param token The token obtained from the client on passing the recaptchaSiteKey.
+   * @param recaptchaAction Action name corresponding to the token.
    */
   public static void createAssessment(
       String projectId, String recaptchaSiteKey, String token, String recaptchaAction)

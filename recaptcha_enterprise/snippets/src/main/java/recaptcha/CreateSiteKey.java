@@ -39,8 +39,8 @@ public class CreateSiteKey {
   /**
    * Create reCAPTCHA Site key which binds a domain name to a unique key.
    *
-   * @param projectId : GCloud Project ID.
-   * @param domainName : Specify the domain name in which the reCAPTCHA should be activated.
+   * @param projectId Google Cloud Project ID.
+   * @param domainName Specify the domain name in which the reCAPTCHA should be activated.
    */
   public static String createSiteKey(String projectId, String domainName) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created

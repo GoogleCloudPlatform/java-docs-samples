@@ -37,7 +37,7 @@ public class ListSiteKeys {
   /**
    * List all keys present under the given project ID.
    *
-   * @param projectId : GCloud Project ID.
+   * @param projectId Google Cloud Project ID.
    */
   public static ListKeysPagedResponse listSiteKeys(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created

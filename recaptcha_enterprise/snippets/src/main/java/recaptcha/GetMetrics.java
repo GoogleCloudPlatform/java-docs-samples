@@ -38,8 +38,8 @@ public class GetMetrics {
    * Get metrics specific to a recaptcha site key. E.g: score bucket count for a key or number of
    * times the checkbox key failed/ passed etc.,
    *
-   * @param projectId : Google Cloud Project id.
-   * @param recaptchaSiteKey : Specify the site key to get metrics.
+   * @param projectId Google Cloud Project ID.
+   * @param recaptchaSiteKey Specify the site key to get metrics.
    */
   public static void getMetrics(String projectId, String recaptchaSiteKey) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created

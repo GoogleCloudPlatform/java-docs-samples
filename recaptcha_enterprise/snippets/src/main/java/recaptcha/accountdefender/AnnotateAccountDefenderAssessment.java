@@ -32,7 +32,7 @@ public class AnnotateAccountDefenderAssessment {
 
   public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
     // TODO(developer): Replace these variables before running the sample.
-    // projectId: GCloud Project id.
+    // projectId: Google Cloud Project ID.
     String projectId = "project-id";
 
     // assessmentId: Value of the 'name' field returned from the CreateAssessment call.

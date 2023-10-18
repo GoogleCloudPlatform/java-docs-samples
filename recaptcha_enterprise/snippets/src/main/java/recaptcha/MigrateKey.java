@@ -39,8 +39,8 @@ public class MigrateKey {
    * to reCAPTCHA Enterprise. For more info, see:
    * https://cloud.google.com/recaptcha-enterprise/docs/migrate-recaptcha
    *
-   * @param projectId : Google Cloud Project Id.
-   * @param recaptchaSiteKey : Specify the site key to migrate.
+   * @param projectId Google Cloud Project ID.
+   * @param recaptchaSiteKey Specify the site key to migrate.
    */
   public static void migrateKey(String projectId, String recaptchaSiteKey) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
