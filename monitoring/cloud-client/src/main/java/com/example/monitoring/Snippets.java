@@ -50,7 +50,6 @@ import java.util.Map;
 // Imports the Google Cloud client library
 
 public class Snippets {
-  private static final String CUSTOM_METRIC_DOMAIN = "custom.googleapis.com";
   private static final Gson gson = new Gson();
 
   /**
@@ -94,31 +93,32 @@ public class Snippets {
   void createMetricDescriptor(String type) throws IOException {
     // [START monitoring_create_metric]
     // Your Google Cloud Platform project ID
-    String projectId = System.getProperty("projectId");
-    String metricType = CUSTOM_METRIC_DOMAIN + "/" + type;
+    final String projectId = System.getProperty("projectId");
 
-    final MetricServiceClient client = MetricServiceClient.create();
-    ProjectName name = ProjectName.of(projectId);
+    try (final MetricServiceClient client = MetricServiceClient.create();) {
+      ProjectName projectName = ProjectName.of(projectId);
 
-    MetricDescriptor descriptor =
-        MetricDescriptor.newBuilder()
-            .setType(metricType)
-            .addLabels(
-                LabelDescriptor.newBuilder()
-                    .setKey("store_id")
-                    .setValueType(LabelDescriptor.ValueType.STRING))
-            .setDescription("This is a simple example of a custom metric.")
-            .setMetricKind(MetricDescriptor.MetricKind.GAUGE)
-            .setValueType(MetricDescriptor.ValueType.DOUBLE)
-            .build();
+      MetricDescriptor descriptor =
+          MetricDescriptor.newBuilder()
+              .setType(type)
+              .addLabels(
+                  LabelDescriptor.newBuilder()
+                      .setKey("store_id")
+                      .setValueType(LabelDescriptor.ValueType.STRING))
+              .setDescription("This is a simple example of a custom metric.")
+              .setMetricKind(MetricDescriptor.MetricKind.GAUGE)
+              .setValueType(MetricDescriptor.ValueType.DOUBLE)
+              .build();
 
-    CreateMetricDescriptorRequest request =
-        CreateMetricDescriptorRequest.newBuilder()
-            .setName(name.toString())
-            .setMetricDescriptor(descriptor)
-            .build();
+      CreateMetricDescriptorRequest request =
+          CreateMetricDescriptorRequest.newBuilder()
+              .setName(projectName.toString())
+              .setMetricDescriptor(descriptor)
+              .build();
 
-    client.createMetricDescriptor(request);
+      descriptor = client.createMetricDescriptor(request);
+      System.out.println("Created descriptor " + descriptor.getName());
+    }
     // [END monitoring_create_metric]
   }
 
@@ -127,13 +127,14 @@ public class Snippets {
    *
    * @param name Name of metric descriptor to delete
    */
-  void deleteMetricDescriptor(String name) throws IOException {
+  void deleteMetricDescriptor(String type) throws IOException {
     // [START monitoring_delete_metric]
-    String projectId = System.getProperty("projectId");
-    final MetricServiceClient client = MetricServiceClient.create();
-    MetricDescriptorName metricName = MetricDescriptorName.of(projectId, name);
-    client.deleteMetricDescriptor(metricName);
-    System.out.println("Deleted descriptor " + name);
+    final String projectId = System.getProperty("projectId");
+    try (final MetricServiceClient client = MetricServiceClient.create();) {
+      MetricDescriptorName metricName = MetricDescriptorName.of(projectId, type);
+      client.deleteMetricDescriptor(metricName);
+      System.out.println("Deleted descriptor " + type);
+    }
     // [END monitoring_delete_metric]
   }
 
@@ -148,8 +149,6 @@ public class Snippets {
   void writeTimeSeries() throws IOException {
     // [START monitoring_write_timeseries]
     String projectId = System.getProperty("projectId");
-    // Instantiates a client
-    MetricServiceClient metricServiceClient = MetricServiceClient.create();
 
     // Prepares an individual data point
     TimeInterval interval =
@@ -198,7 +197,9 @@ public class Snippets {
             .build();
 
     // Writes time series data
-    metricServiceClient.createTimeSeries(request);
+    try (final MetricServiceClient client = MetricServiceClient.create();) {
+      client.createTimeSeries(request);
+    }
     System.out.println("Done writing time series value.");
     // [END monitoring_write_timeseries]
   }
@@ -207,7 +208,6 @@ public class Snippets {
   /** Demonstrates listing time series headers. */
   void listTimeSeriesHeaders() throws IOException {
     // [START monitoring_read_timeseries_fields]
-    MetricServiceClient metricServiceClient = MetricServiceClient.create();
     String projectId = System.getProperty("projectId");
     ProjectName name = ProjectName.of(projectId);
 
@@ -228,11 +228,12 @@ public class Snippets {
 
     ListTimeSeriesRequest request = requestBuilder.build();
 
-    ListTimeSeriesPagedResponse response = metricServiceClient.listTimeSeries(request);
-
-    System.out.println("Got timeseries headers: ");
-    for (TimeSeries ts : response.iterateAll()) {
-      System.out.println(ts);
+    try (final MetricServiceClient client = MetricServiceClient.create();) {
+      ListTimeSeriesPagedResponse response = client.listTimeSeries(request);
+      System.out.println("Got timeseries headers: ");
+      for (TimeSeries ts : response.iterateAll()) {
+        System.out.println(ts);
+      }
     }
     // [END monitoring_read_timeseries_fields]
   }
@@ -240,7 +241,6 @@ public class Snippets {
   /** Demonstrates listing time series using a filter. */
   void listTimeSeries(String filter) throws IOException {
     // [START monitoring_read_timeseries_simple]
-    MetricServiceClient metricServiceClient = MetricServiceClient.create();
     String projectId = System.getProperty("projectId");
     ProjectName name = ProjectName.of(projectId);
 
@@ -260,11 +260,13 @@ public class Snippets {
 
     ListTimeSeriesRequest request = requestBuilder.build();
 
-    ListTimeSeriesPagedResponse response = metricServiceClient.listTimeSeries(request);
+    try (final MetricServiceClient client = MetricServiceClient.create();) {
+      ListTimeSeriesPagedResponse response = client.listTimeSeries(request);
 
-    System.out.println("Got timeseries: ");
-    for (TimeSeries ts : response.iterateAll()) {
-      System.out.println(ts);
+      System.out.println("Got timeseries: ");
+      for (TimeSeries ts : response.iterateAll()) {
+        System.out.println(ts);
+      }
     }
     // [END monitoring_read_timeseries_simple]
   }
@@ -272,7 +274,6 @@ public class Snippets {
   /** Demonstrates listing time series and aggregating them. */
   void listTimeSeriesAggregrate() throws IOException {
     // [START monitoring_read_timeseries_align]
-    MetricServiceClient metricServiceClient = MetricServiceClient.create();
     String projectId = System.getProperty("projectId");
     ProjectName name = ProjectName.of(projectId);
 
@@ -299,11 +300,13 @@ public class Snippets {
 
     ListTimeSeriesRequest request = requestBuilder.build();
 
-    ListTimeSeriesPagedResponse response = metricServiceClient.listTimeSeries(request);
+    try (final MetricServiceClient client = MetricServiceClient.create();) {
+      ListTimeSeriesPagedResponse response = client.listTimeSeries(request);
 
-    System.out.println("Got timeseries: ");
-    for (TimeSeries ts : response.iterateAll()) {
-      System.out.println(ts);
+      System.out.println("Got timeseries: ");
+      for (TimeSeries ts : response.iterateAll()) {
+        System.out.println(ts);
+      }
     }
     // [END monitoring_read_timeseries_align]
   }
@@ -311,7 +314,6 @@ public class Snippets {
   /** Demonstrates listing time series and aggregating and reducing them. */
   void listTimeSeriesReduce() throws IOException {
     // [START monitoring_read_timeseries_reduce]
-    MetricServiceClient metricServiceClient = MetricServiceClient.create();
     String projectId = System.getProperty("projectId");
     ProjectName name = ProjectName.of(projectId);
 
@@ -339,11 +341,13 @@ public class Snippets {
 
     ListTimeSeriesRequest request = requestBuilder.build();
 
-    ListTimeSeriesPagedResponse response = metricServiceClient.listTimeSeries(request);
+    try (final MetricServiceClient client = MetricServiceClient.create();) {
+      ListTimeSeriesPagedResponse response = client.listTimeSeries(request);
 
-    System.out.println("Got timeseries: ");
-    for (TimeSeries ts : response.iterateAll()) {
-      System.out.println(ts);
+      System.out.println("Got timeseries: ");
+      for (TimeSeries ts : response.iterateAll()) {
+        System.out.println(ts);
+      }
     }
     // [END monitoring_read_timeseries_reduce]
   }
@@ -353,18 +357,20 @@ public class Snippets {
     // [START monitoring_list_descriptors]
     // Your Google Cloud Platform project ID
     String projectId = System.getProperty("projectId");
-
-    final MetricServiceClient client = MetricServiceClient.create();
     ProjectName name = ProjectName.of(projectId);
 
     ListMetricDescriptorsRequest request =
         ListMetricDescriptorsRequest.newBuilder().setName(name.toString()).build();
-    ListMetricDescriptorsPagedResponse response = client.listMetricDescriptors(request);
 
-    System.out.println("Listing descriptors: ");
+    // Instantiates a client
+    try (final MetricServiceClient client = MetricServiceClient.create();) {
+      ListMetricDescriptorsPagedResponse response = client.listMetricDescriptors(request);
 
-    for (MetricDescriptor d : response.iterateAll()) {
-      System.out.println(d.getName() + " " + d.getDisplayName());
+      System.out.println("Listing descriptors: ");
+
+      for (MetricDescriptor d : response.iterateAll()) {
+        System.out.println(d.getName() + " " + d.getDisplayName());
+      }
     }
     // [END monitoring_list_descriptors]
   }
@@ -374,8 +380,6 @@ public class Snippets {
     // [START monitoring_list_resources]
     // Your Google Cloud Platform project ID
     String projectId = System.getProperty("projectId");
-
-    final MetricServiceClient client = MetricServiceClient.create();
     ProjectName name = ProjectName.of(projectId);
 
     ListMonitoredResourceDescriptorsRequest request =
@@ -383,11 +387,14 @@ public class Snippets {
 
     System.out.println("Listing monitored resource descriptors: ");
 
-    ListMonitoredResourceDescriptorsPagedResponse response =
-        client.listMonitoredResourceDescriptors(request);
+    // Instantiates a client
+    try (final MetricServiceClient client = MetricServiceClient.create();) {
+      ListMonitoredResourceDescriptorsPagedResponse response =
+          client.listMonitoredResourceDescriptors(request);
 
-    for (MonitoredResourceDescriptor d : response.iterateAll()) {
-      System.out.println(d.getType());
+      for (MonitoredResourceDescriptor d : response.iterateAll()) {
+        System.out.println(d.getType());
+      }
     }
     // [END monitoring_list_resources]
   }
@@ -395,30 +402,33 @@ public class Snippets {
   // [START monitoring_get_resource]
   void getMonitoredResource(String resourceId) throws IOException {
     String projectId = System.getProperty("projectId");
-    MetricServiceClient client = MetricServiceClient.create();
-    MonitoredResourceDescriptorName name =
-        MonitoredResourceDescriptorName.of(projectId, resourceId);
-    MonitoredResourceDescriptor response = client.getMonitoredResourceDescriptor(name);
-    System.out.println("Retrieved Monitored Resource: " + gson.toJson(response));
+
+    try (final MetricServiceClient client = MetricServiceClient.create();) {
+      MonitoredResourceDescriptorName name =
+          MonitoredResourceDescriptorName.of(projectId, resourceId);
+      MonitoredResourceDescriptor response = client.getMonitoredResourceDescriptor(name);
+      System.out.println("Retrieved Monitored Resource: " + gson.toJson(response));
+    }
   }
   // [END monitoring_get_resource]
 
   /**
    * Gets full information for a custom metric descriptor.
    *
-   * @param name The name of the custom metric descriptor
+   * @param type The metric type, including its DNS name prefix.
    */
-  void describeMetricResources(String name) throws IOException {
+  void describeMetricResources(String type) throws IOException {
     // [START monitoring_get_descriptor]
     // Your Google Cloud Platform project ID
-    String projectId = System.getProperty("projectId");
+    final String projectId = System.getProperty("projectId");
+    
+    MetricDescriptorName descriptorName = MetricDescriptorName.of(projectId, type);
 
-    final MetricServiceClient client = MetricServiceClient.create();
-    MetricDescriptorName descriptorName = MetricDescriptorName.of(projectId, name);
-    MetricDescriptor response = client.getMetricDescriptor(descriptorName);
+    try (final MetricServiceClient client = MetricServiceClient.create();) {
+      MetricDescriptor response = client.getMetricDescriptor(descriptorName);
 
-    System.out.println("Printing metrics descriptor: ");
-    System.out.println(response);
+      System.out.println("Printing metrics descriptor: " + response);
+    }
     // [END monitoring_get_descriptor]
   }
 

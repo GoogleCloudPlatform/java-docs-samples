@@ -20,7 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -137,22 +136,15 @@ public class SnippetsIT {
   @Test
   public void testGetMetricDescriptor() throws Exception {
     // Act
-    final String RAND_SUFFIX = UUID.randomUUID().toString().split("-")[0];
-    final String CUSTOM_METRIC = "custom.googleapis.com/java-docs-samples-tests/get-" + RAND_SUFFIX;
+    final String METRIC_TYPE = "bigquery.googleapis.com/query/count";
 
     System.setProperty("projectId", SnippetsIT.getProjectId());
     Snippets snippets = new Snippets();
-    snippets.createMetricDescriptor(CUSTOM_METRIC);
-
-    try {
-      snippets.describeMetricResources(CUSTOM_METRIC);
-    } finally {
-      snippets.deleteMetricDescriptor(CUSTOM_METRIC);
-    }
+    snippets.describeMetricResources(METRIC_TYPE);
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("\"A database hosted in Google Cloud SQL");
+    assertThat(got).contains("type: \"" + METRIC_TYPE + "\"");
   }
 
   @Test
