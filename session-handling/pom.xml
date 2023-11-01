@@ -41,7 +41,7 @@ Copyright 2019 Google LLC
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
     <maven.compiler.failOnWarning>false</maven.compiler.failOnWarning>
     <maven.war.filteringDeploymentDescriptors>false</maven.war.filteringDeploymentDescriptors>
-    <jetty.version>11.0.17</jetty.version>
+    <jetty.version>11.0.18</jetty.version>
   </properties>
 
   <dependencyManagement>
