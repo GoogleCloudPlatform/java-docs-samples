@@ -27,7 +27,7 @@ val hbaseVersion = "2.5.6-hadoop3"
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % sparkVersion % Provided,
-  "org.apache.hbase.connectors.spark" % "hbase-spark" % "1.0.0" % Provided,
+  "org.apache.hbase.connectors.spark" % "hbase-spark" % "1.0.1" % Provided,
   "com.google.cloud.bigtable" % "bigtable-hbase-2.x-hadoop" % bigtableVersion
 )
 
