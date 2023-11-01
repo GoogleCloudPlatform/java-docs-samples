@@ -44,7 +44,7 @@ Copyright 2015 Google Inc.
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.22.0</version>
+        <version>26.26.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
