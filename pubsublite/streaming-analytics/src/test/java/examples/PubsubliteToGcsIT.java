@@ -143,6 +143,9 @@ public class PubsubliteToGcsIT {
       Subscription response = adminClient.createSubscription(subscription).get();
       System.out.println(response.getAllFields() + " created successfully.");
     }
+    catch (ExecutionException e) {
+      e.printStackTrace();
+    }
   }
 
   @After
@@ -154,6 +157,10 @@ public class PubsubliteToGcsIT {
       adminClient.deleteSubscription(subscriptionPath).get();
       System.out.println("Deleted subscription: " + subscriptionPath);
     }
+    catch (ExecutionException e) {
+      e.printStackTrace();
+    }
+
 
     // Delete the output files.
     Page<Blob> blobs = storage.list(bucketName, Storage.BlobListOption.prefix(directoryPrefix));
