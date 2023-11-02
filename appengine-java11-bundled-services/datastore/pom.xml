@@ -166,7 +166,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>11.0.17</version>
+        <version>11.0.18</version>
       </plugin>
     </plugins>
   </build>
