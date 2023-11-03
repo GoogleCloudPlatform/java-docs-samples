@@ -128,7 +128,7 @@ public class UpdateAnswerRecordTest {
   }
 
   @Test
-  public void testUpdateAnswerRecord() throws IOException {
+  public void testUpdateAnswerRecord() throws IOException, InterruptedException {
     TimeUnit.SECONDS.sleep(120);
     // Send AnalyzeContent Requests
     ParticipantManagement.analyzeContent(
