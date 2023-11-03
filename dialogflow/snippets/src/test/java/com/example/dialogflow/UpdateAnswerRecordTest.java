@@ -32,6 +32,7 @@ import java.io.PrintStream;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
@@ -128,6 +129,7 @@ public class UpdateAnswerRecordTest {
 
   @Test
   public void testUpdateAnswerRecord() throws IOException {
+    TimeUnit.SECONDS.sleep(120);
     // Send AnalyzeContent Requests
     ParticipantManagement.analyzeContent(
         PROJECT_ID,
