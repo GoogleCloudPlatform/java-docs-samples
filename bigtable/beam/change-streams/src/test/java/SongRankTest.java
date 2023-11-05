@@ -101,12 +101,12 @@ public class SongRankTest {
 
     try (FileInputStream fis = new FileInputStream(
         TEST_OUTPUT_LOCATION + "/song-charts/GlobalWindow-pane-0-00000-of-00001.txt")) {
-			byte[] data = new byte[(int) fis.available()];
-			fis.read(data);
-			String content = new String(data, StandardCharsets.UTF_8);
-			assertThat(content).contains("KV{" + song1 + ", 3}");
-			assertThat(content).contains("KV{" + song2 + ", 1}");
-		}
+      byte[] data = new byte[(int) fis.available()];
+      fis.read(data);
+      String content = new String(data, StandardCharsets.UTF_8);
+      assertThat(content).contains("KV{" + song1 + ", 3}");
+      assertThat(content).contains("KV{" + song2 + ", 1}");
+    }
     FileUtils.deleteDirectory(new File(TEST_OUTPUT_LOCATION));
   }
 }
