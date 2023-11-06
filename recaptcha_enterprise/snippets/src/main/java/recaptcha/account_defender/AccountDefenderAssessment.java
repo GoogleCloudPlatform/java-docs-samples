@@ -56,21 +56,10 @@ public class AccountDefenderAssessment {
     // recaptchaAction: The action name corresponding to the token.
     String recaptchaAction = "recaptcha-action";
 
-    // Unique ID of the customer, such as email, customer ID, etc.
-    String userIdentifier = "default" + UUID.randomUUID().toString().split("-")[0];
+    // Unique ID of the user, such as email, customer ID, etc.
+    String accountId = "default" + UUID.randomUUID().toString().split("-")[0];
 
-    // Change this to a secret not shared with Google.
-    final String HMAC_KEY = "SOME_INTERNAL_UNSHARED_KEY";
-
-    // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
-    // secret key.
-    Mac mac = Mac.getInstance("HmacSHA256");
-    mac.init(new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
-        "HmacSHA256"));
-    byte[] hashBytes = mac.doFinal(userIdentifier.getBytes(StandardCharsets.UTF_8));
-    ByteString hashedAccountId = ByteString.copyFrom(hashBytes);
-
-    accountDefenderAssessment(projectId, recaptchaSiteKey, token, recaptchaAction, hashedAccountId);
+    accountDefenderAssessment(projectId, recaptchaSiteKey, token, recaptchaAction, accountId);
   }
 
   /**
@@ -84,19 +73,22 @@ public class AccountDefenderAssessment {
       String recaptchaSiteKey,
       String token,
       String recaptchaAction,
-      ByteString hashedAccountId)
+      String accountId)
       throws IOException {
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
 
       // Set the properties of the event to be tracked.
-      Event event =
+      Event.Builder eventBuilder =
           Event.newBuilder()
               .setSiteKey(recaptchaSiteKey)
-              .setToken(token)
-              // Set the hashed account id (of the user).
-              // Recommended approach: HMAC SHA256 along with salt (or secret key).
-              .setHashedAccountId(hashedAccountId)
-              .build();
+              .setToken(token);
+
+      // Set the account id (of the user).
+      eventBuilder
+          .getUserInfo()
+          .setAccountId(accountId)
+
+      Event event = eventBuilder.build();
 
       // Build the assessment request.
       CreateAssessmentRequest createAssessmentRequest =
