@@ -17,6 +17,7 @@
 import com.google.cloud.bigtable.data.v2.models.ChangeStreamMutation;
 import com.google.cloud.bigtable.data.v2.models.Entry;
 import com.google.cloud.bigtable.data.v2.models.SetCell;
+import com.google.common.base.Preconditions;
 import com.google.protobuf.ByteString;
 import java.io.Serializable;
 import java.util.Comparator;
@@ -29,7 +30,6 @@ import org.apache.beam.sdk.io.gcp.bigtable.BigtableIO;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
-import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.Count;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
@@ -41,7 +41,6 @@ import org.apache.beam.sdk.transforms.windowing.GlobalWindows;
 import org.apache.beam.sdk.transforms.windowing.Repeatedly;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.KV;
-import org.apache.beam.vendor.guava.v26_0_jre.com.google.common.base.Preconditions;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
@@ -122,8 +121,8 @@ public class SongRank {
           .getEntries()) {
         if (e instanceof SetCell) {
           SetCell setCell = (SetCell) e;
-          if (setCell.getFamilyName().equals("cf") && setCell.getQualifier().toStringUtf8()
-              .equals("song")) {
+          if ("cf".equals(setCell.getFamilyName())
+              && "song".equals(setCell.getQualifier().toStringUtf8())) {
             c.output(setCell.getValue().toStringUtf8());
           }
         }
