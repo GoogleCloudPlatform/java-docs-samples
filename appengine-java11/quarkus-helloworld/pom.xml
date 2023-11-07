@@ -29,7 +29,7 @@ limitations under the License.
   </parent>
 
   <properties>
-    <surefire-plugin.version>3.2.1</surefire-plugin.version>
+    <surefire-plugin.version>3.2.2</surefire-plugin.version>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
