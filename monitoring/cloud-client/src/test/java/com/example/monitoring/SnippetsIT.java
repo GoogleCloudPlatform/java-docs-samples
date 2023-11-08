@@ -134,16 +134,17 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testGetResource() throws Exception {
+  public void testGetMetricDescriptor() throws Exception {
     // Act
+    final String METRIC_TYPE = "bigquery.googleapis.com/query/count";
+
     System.setProperty("projectId", SnippetsIT.getProjectId());
     Snippets snippets = new Snippets();
-
-    snippets.describeMonitoredResources("cloudsql_database");
+    snippets.describeMetricResources(METRIC_TYPE);
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("\"A database hosted in Google Cloud SQL");
+    assertThat(got).contains("type: \"" + METRIC_TYPE + "\"");
   }
 
   @Test

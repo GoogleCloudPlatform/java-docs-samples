@@ -27,7 +27,7 @@ limitations under the License.
   <properties>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
-    <spring.boot.version>3.1.4</spring.boot.version>
+    <spring.boot.version>3.1.5</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -61,7 +61,7 @@ limitations under the License.
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20230618</version>
+      <version>20231013</version>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>

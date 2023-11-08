@@ -53,17 +53,17 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudkms</artifactId>
-      <version>v1-rev20230808-2.0.0</version>
+      <version>v1-rev20231012-2.0.0</version>
     </dependency>  
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>cloud-sql-connector-jdbc-sqlserver</artifactId>
-      <version>1.14.0</version>
+      <version>1.14.1</version>
     </dependency>
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
-      <version>12.4.0.jre8</version>
+      <version>12.4.2.jre8</version>
     </dependency>
     <dependency>
       <groupId>com.google.crypto.tink</groupId>
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-      <version>5.0.1</version>
+      <version>5.1.0</version>
     </dependency>
 
     <dependency>

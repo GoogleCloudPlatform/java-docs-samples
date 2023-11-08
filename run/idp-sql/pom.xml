@@ -30,8 +30,8 @@ limitations under the License.
   </parent>
 
   <properties>
-    <maven.compiler.target>17</maven.compiler.target>
-    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
   <dependencyManagement>
@@ -40,14 +40,14 @@ limitations under the License.
         <!-- Import dependency management from Spring Boot -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>3.1.4</version>
+        <version>2.7.17</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>4.7.1</version>
+        <version>3.7.3</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -142,7 +142,7 @@ limitations under the License.
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>3.1.4</version>
+        <version>3.1.5</version>
       </plugin>
       <!-- [START cloudrun_user_auth_jib] -->
       <plugin>

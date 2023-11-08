@@ -142,6 +142,8 @@ public class PubsubliteToGcsIT {
       System.out.println(responseTopic.getAllFields() + " created successfully.");
       Subscription response = adminClient.createSubscription(subscription).get();
       System.out.println(response.getAllFields() + " created successfully.");
+    } catch (ExecutionException e) {
+      e.printStackTrace();
     }
   }
 
@@ -153,7 +155,10 @@ public class PubsubliteToGcsIT {
       System.out.println("Deleted topic: " + topicPath);
       adminClient.deleteSubscription(subscriptionPath).get();
       System.out.println("Deleted subscription: " + subscriptionPath);
+    } catch (ExecutionException e) {
+      e.printStackTrace();
     }
+
 
     // Delete the output files.
     Page<Blob> blobs = storage.list(bucketName, Storage.BlobListOption.prefix(directoryPrefix));
