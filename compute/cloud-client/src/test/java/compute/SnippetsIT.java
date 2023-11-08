@@ -214,9 +214,7 @@ public class SnippetsIT {
     assertThat(stdOut.toString().contains("Operation Status: DONE"));
   }
 
-  // Skipping the test until the flakiness can be resolved.
-  // Candidate for nightly.
-  @Ignore
+  @Ignore("Skipping the test until the flakiness can be resolved. Candidate for nightly.")
   @Test
   public void testSetUsageBucketExportCustomPrefix()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
