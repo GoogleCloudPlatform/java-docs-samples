@@ -35,7 +35,7 @@ limitations under the License.
     <maven.compiler.source>11</maven.compiler.source>
     <ktor_version>3.0.0-eap-759</ktor_version>
     <kotlin.code.style>official</kotlin.code.style>
-    <kotlin_version>1.9.10</kotlin_version>
+    <kotlin_version>1.9.20</kotlin_version>
     <logback_version>1.4.11</logback_version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
@@ -162,7 +162,7 @@ limitations under the License.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.4.4</version>
+        <version>2.5.0</version>
         <configuration>
           <projectId>GCLOUD_CONFIG</projectId>
           <version>kotlin-ktor</version>

@@ -37,8 +37,8 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml>    <!-- REQUIRED -->
 
-    <appengine.maven.plugin>2.4.4</appengine.maven.plugin>
-    <jetty>9.4.52.v20230823</jetty>
+    <appengine.maven.plugin>2.5.0</appengine.maven.plugin>
+    <jetty>9.4.53.v20231009</jetty>
   </properties>
 
   <!-- [START gae_flex_storage_dependencies] -->

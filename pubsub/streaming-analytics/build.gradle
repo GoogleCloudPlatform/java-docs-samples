@@ -33,10 +33,10 @@ repositories {
     }
 }
 
-def beamVersion = '2.49.0'
-def slf4jVersion = '2.0.8'
+def beamVersion = '2.51.0'
+def slf4jVersion = '2.0.9'
 dependencies {
-    implementation 'com.github.spotbugs:spotbugs-annotations:4.7.3'
+    implementation 'com.github.spotbugs:spotbugs-annotations:4.8.1'
     implementation "org.apache.beam:beam-sdks-java-core:${beamVersion}"
     implementation "org.apache.beam:beam-sdks-java-io-google-cloud-platform:${beamVersion}"
     implementation "org.apache.beam:beam-examples-java:${beamVersion}"

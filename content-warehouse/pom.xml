@@ -4,7 +4,7 @@
   <groupId>com.example.contentwarehouse</groupId>
   <artifactId>contentwarehouse-snippets</artifactId>
   <packaging>jar</packaging>
-  <name>Google Document AI Snippets</name>
+  <name>Google Document Warehouse Snippets</name>
   <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/content-warehouse</url>
 
   <!--
@@ -66,7 +66,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.5.0</version>
+      <version>5.7.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

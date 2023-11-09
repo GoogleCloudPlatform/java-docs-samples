@@ -50,14 +50,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>3.1.1</version>
-        <configuration>
-          <mainClass>app.Main</mainClass>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.1.2</version>
       </plugin>
     </plugins>
   </build>
@@ -69,46 +61,24 @@
       <artifactId>google-cloud-recaptchaenterprise</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>recaptcha-password-check-helpers</artifactId>
-      <version>1.0.1</version>
-    </dependency>
-
     <!-- [Start_Selenium_dependencies] -->
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-chrome-driver</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <scope>test</scope>
-    </dependency>
+      </dependency>
     <!-- Removes the dependency of driver binary file -->
     <dependency>
       <groupId>io.github.bonigarcia</groupId>
       <artifactId>webdrivermanager</artifactId>
-      <version>5.5.3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents.client5</groupId>
-      <artifactId>httpclient5</artifactId>
-      <version>5.2.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-http-jdk-client</artifactId>
-      <version>4.8.1</version>
-      <scope>test</scope>
+      <version>5.6.2</version>
     </dependency>
     <!-- [End_Selenium_dependencies] -->
 
@@ -148,20 +118,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
     <!-- [End_Spring_dependencies] -->
 

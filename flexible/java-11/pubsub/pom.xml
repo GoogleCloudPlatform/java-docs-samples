@@ -36,10 +36,10 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
 
-    <appengine.maven.plugin>2.4.4</appengine.maven.plugin>
-    <jetty>10.0.16</jetty>
+    <appengine.maven.plugin>2.5.0</appengine.maven.plugin>
+    <jetty>10.0.18</jetty>
 
-    <spring.boot.version>2.7.16</spring.boot.version>
+    <spring.boot.version>2.7.17</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -85,19 +85,19 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>2.0.19</version>
+      <version>2.0.21</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>2.0.19</version>
+      <version>2.0.21</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.toolchain</groupId>
       <artifactId>jetty-test-helper</artifactId>
-      <version>6.1</version>
+      <version>6.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>

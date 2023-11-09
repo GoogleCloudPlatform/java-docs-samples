@@ -80,10 +80,17 @@ public class DocumentTests {
     assertThat(got).contains("document");
   }
   
+  @Test
+  public void testUpdateDocument()
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    UpdateDocument.updateDocument(PROJECT_ID, LOCATION, DOCUMENT_ID, USER_ID);
+    String got = bout.toString();
+    assertThat(got).contains("Document");
+  }
+  
   @After
   public void tearDown() {
     System.out.flush();
     System.setOut(originalPrintStream);
-  
   }
 }
