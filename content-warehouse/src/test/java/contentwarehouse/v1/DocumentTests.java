@@ -91,9 +91,9 @@ public class DocumentTests {
   @Test
   public void testSearchDocument()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
-    SearchDocuments.searchDocuments(PROJECT_ID, LOCATION, "warehouse", USER_ID);
+    SearchDocuments.searchDocuments(PROJECT_ID, LOCATION, "automlops", USER_ID);
     String got = bout.toString();
-    assertThat(got).contains("");;
+    assertThat(got).contains("automlops");;
   }
   
   @After
