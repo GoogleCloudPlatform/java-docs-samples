@@ -14,19 +14,25 @@
 
 # Adapted from https://spring.io/guides/topicals/spring-boot-docker/#_multi_stage_build
 # syntax=docker/dockerfile:experimental
-FROM eclipse-temurin:17-jdk-alpine AS build
+FROM eclipse-temurin:17-jdk-alpine as build
 WORKDIR /workspace/app
 
-COPY . /workspace/app
-RUN --mount=type=cache,target=/root/.gradle ./gradlew clean build
-RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*-SNAPSHOT.jar)
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+
+RUN --mount=type=cache,target=/root/.m2 ./mvnw install -DskipTests
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+FROM eclipse-temurin:17-jdk-alpine as agent
 RUN wget -O /opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.31.0/opentelemetry-javaagent.jar
 
 FROM eclipse-temurin:17-jdk-alpine
 VOLUME /tmp
-ARG DEPENDENCY=/workspace/app/build/dependency
+ARG DEPENDENCY=/workspace/app/target/dependency
+COPY --from=agent /opentelemetry-javaagent.jar /opentelemetry-javaagent.jar
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-COPY --from=build /opentelemetry-javaagent.jar /opentelemetry-javaagent.jar
 ENTRYPOINT ["java","-javaagent:/opentelemetry-javaagent.jar","-cp","app:app/lib/*","com.example.demo.DemoApplication"]
