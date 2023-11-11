@@ -15,9 +15,9 @@
 -->
 
 <configuration>
-	<include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-	<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
-	<root level="INFO">
-		<appender-ref ref="CONSOLE" />
-	</root>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
 </configuration>
