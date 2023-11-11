@@ -29,8 +29,6 @@ public class SingleController {
   /**
    * handleSingle handles an http request by sleeping for 100-200 ms. It writes the number of
    * milliseconds slept as its response.
-   *
-   * @throws InterruptedException
    */
   // [START opentelemetry_instrumentation_handle_single]
   @GetMapping("/single")

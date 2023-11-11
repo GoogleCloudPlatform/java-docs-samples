@@ -34,9 +34,8 @@ public class MultiController {
   @Autowired private HttpClient client;
 
   /**
-   * handleMulti handles an http request by making 3-7 http requests to the /single endpoint.
-   *
-   * @throws Exception
+   * handleMulti handles an http request by making 3-7 http requests to the
+   * /single endpoint.
    */
   // [START opentelemetry_instrumentation_handle_multi]
   @GetMapping("/multi")
