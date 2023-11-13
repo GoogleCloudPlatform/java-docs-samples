@@ -146,6 +146,12 @@
       <artifactId>junit</artifactId>
       <version>4.13.2</version>
       <scope>test</scope>
-    </dependency>   
+    </dependency>
+    <dependency>
+      <artifactId>truth</artifactId>
+      <groupId>com.google.truth</groupId>
+      <scope>test</scope>
+      <version>1.1.5</version>
+    </dependency>
   </dependencies>
 </project>
