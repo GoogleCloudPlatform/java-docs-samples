@@ -58,6 +58,7 @@ public class PubSubWriteWithAttributes {
       this.timestamp = timestamp;
     }
   }
+  
   // Write messages to a Pub/Sub topic.
   public static void main(String[] args) {
     // Example source data.
