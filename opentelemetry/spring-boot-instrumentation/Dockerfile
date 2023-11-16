@@ -35,4 +35,5 @@ COPY --from=agent /opentelemetry-javaagent.jar /opentelemetry-javaagent.jar
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-javaagent:/opentelemetry-javaagent.jar","-cp","app:app/lib/*","com.example.demo.DemoApplication"]
+CMD sh -c "java -javaagent:/opentelemetry-javaagent.jar -cp app:app/lib/* com.example.demo.DemoApplication \
+	2>&1 | tee /var/log/app.log"

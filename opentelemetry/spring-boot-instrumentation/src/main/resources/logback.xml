@@ -16,16 +16,35 @@
 
 <configuration>
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder class="ch.qos.logback.classic.encoder.JsonEncoder"/>
-  </appender>
-  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>/var/log/app.log</file>
-    <encoder class="ch.qos.logback.classic.encoder.JsonEncoder"/>
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <!-- Format JSON logs for the Logging agent
+      https://cloud.google.com/logging/docs/structured-logging#special-payload-fields -->
+      <provider class="net.logstash.logback.composite.loggingevent.LoggingEventPatternJsonProvider">
+        <pattern>
+          {
+            "logging.googleapis.com/trace": "projects/${GOOGLE_CLOUD_PROJECT}/traces/%mdc{trace_id}",
+            "logging.googleapis.com/spanId": "%mdc{span_id}",
+            "logging.googleapis.com/trace_sampled": "#asBoolean{%replace(%mdc{trace_flags}){'01', 'true'}}"
+          }
+        </pattern>
+      </provider>
+
+      <!-- Rename fields for the Logging agent -->
+      <fieldNames>
+        <level>severity</level>
+        <timestamp>timestamp</timestamp>
+        <levelValue>[ignore]</levelValue>
+      </fieldNames>
+
+      <!-- Exclude tracing MDC keys which are handled above -->
+      <excludeMdcKeyName>trace_id</excludeMdcKeyName>
+      <excludeMdcKeyName>span_id</excludeMdcKeyName>
+      <excludeMdcKeyName>trace_flags</excludeMdcKeyName>
+    </encoder>
   </appender>
 
   <root level="INFO">
     <appender-ref ref="STDOUT"/>
-    <appender-ref ref="FILE"/>
   </root>
 
 </configuration>
