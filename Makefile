@@ -10,7 +10,13 @@ INTERFACE_ACTIONS="build test lint"
 # Default to current dir if not specified.
 dir ?= $(shell pwd)
 
-export GOOGLE_CLOUD_PROJECT = ${GOOGLE_SAMPLES_PROJECT}
+
+# GOOGLE_SAMPLES_PROJECT takes precedence over GOOGLE_CLOUD_PROJECT
+PROJECT_ID = ${GOOGLE_SAMPLES_PROJECT}
+PROJECT_ID ?= ${GOOGLE_CLOUD_PROJECT}
+# export our project ID as GOOGLE_CLOUD_PROJECT in the action environment
+override GOOGLE_CLOUD_PROJECT := ${PROJECT_ID}
+export GOOGLE_CLOUD_PROJECT
 
 build:
 	cd ${dir}
@@ -30,8 +36,8 @@ lint:
 	mvn -P lint checkstyle:check
 
 check-env:
-ifndef GOOGLE_SAMPLES_PROJECT
-	$(error GOOGLE_SAMPLES_PROJECT environment variable is required to perform this action)
+ifndef PROJECT_ID
+	$(error At least one of the following env vars must be set: GOOGLE_SAMPLES_PROJECT, GOOGLE_CLOUD_PROJECT.)
 endif
 
 list-actions:
