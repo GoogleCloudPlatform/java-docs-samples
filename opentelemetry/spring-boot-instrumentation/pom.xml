@@ -35,9 +35,9 @@
     <name>demo</name>
     <description>OpenTelemetry Spring Boot demo</description>
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <spring-boot.version>3.1.5</spring-boot.version>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <spring-boot.version>2.7.17</spring-boot.version>
     </properties>
 
     <dependencyManagement>
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>7.4</version>
+            <version>7.3</version>
             <scope>runtime</scope>
         </dependency>
     </dependencies>

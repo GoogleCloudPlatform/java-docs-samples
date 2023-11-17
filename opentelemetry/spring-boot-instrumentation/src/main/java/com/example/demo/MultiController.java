@@ -44,7 +44,7 @@ public class MultiController {
 
     // Write a structured log with the request context, which allows the log to
     // be linked with the trace for this request.
-    logger.atInfo().addKeyValue("subRequests", subRequests).log("handle /multi request");
+    logger.info("handle /multi request with subRequests={}", subRequests);
 
     // Make 3-7 http requests to the /single endpoint.
     for (int i = 0; i < subRequests; i++) {
