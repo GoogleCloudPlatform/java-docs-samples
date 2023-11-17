@@ -1,6 +1,8 @@
 # Makefile for running typical developer workflow actions.
 # To run actions in a subdirectory of the repo:
 #   make lint build dir=translate/snippets
+# Note: testing requires Application Default Credentials.
+# For details about ADC, see https://cloud.google.com/docs/authentication/application-default-credentials
 
 INTERFACE_ACTIONS="build test lint"
 
