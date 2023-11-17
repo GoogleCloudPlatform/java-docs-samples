@@ -22,6 +22,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class DemoApplicationTests {
 
+  /**
+   * Empty test is included by Spring Boot Initializr and ensures that the Spring
+   * Boot application can start up. This checks that the dependency injection is
+   * working correctly and the logback.xml config works.
+   */
   @Test
   void contextLoads() {}
 }
