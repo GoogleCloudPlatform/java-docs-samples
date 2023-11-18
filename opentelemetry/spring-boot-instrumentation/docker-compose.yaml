@@ -27,6 +27,8 @@ services:
       - "otelcol"
   otelcol:
     image: otel/opentelemetry-collector-contrib:0.88.0
+    ports:
+      - 8888:8888
     volumes:
       - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
       - logs:/var/log:ro

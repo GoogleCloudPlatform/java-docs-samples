@@ -16,11 +16,14 @@
 
 package com.example.demo;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
-class DemoApplicationTests {
+public class DemoApplicationTests {
 
   /**
    * Empty test is included by Spring Boot Initializr and ensures that the Spring
@@ -28,5 +31,5 @@ class DemoApplicationTests {
    * working correctly and the logback.xml config works.
    */
   @Test
-  void contextLoads() {}
+  public void contextLoads() {}
 }
