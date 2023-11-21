@@ -16,18 +16,25 @@
 
 package com.example.demo;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.ComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 public class DockerComposeTestsIT {
-    Logger logger = LoggerFactory.getLogger(getClass());
-
     @ClassRule
     public static ComposeContainer environment = new ComposeContainer(
             new File("docker-compose.yaml"))
@@ -35,15 +42,48 @@ public class DockerComposeTestsIT {
             .withEnv("GOOGLE_CLOUD_PROJECT", System.getenv("GOOGLE_CLOUD_PROJECT"))
             .withEnv("GOOGLE_APPLICATION_CREDENTIALS",
                     System.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
-            .withTailChildContainers(true)
             .withExposedService("app", 8080)
+            .withExposedService("otelcol", 8888)
             .waitingFor("app", Wait.forHttp("/multi"))
             .withBuild(true);
 
     @Test
-    public void testApp() throws InterruptedException {
+    public void testApp() throws InterruptedException, IOException, URISyntaxException {
         // Let the docker compose app run until some spans/logs/metrics are sent to
         // GCP
-        Thread.sleep(30_000);
+        Thread.sleep(60_000);
+
+        HttpClient client = HttpClient.newHttpClient();
+        String collectorHost = environment.getServiceHost("otelcol", 8888);
+        int collectorPromPort = environment.getServicePort("otelcol", 8888);
+        URI promUri = new URI("http://" + collectorHost + ":" + collectorPromPort + "/metrics");
+
+        HttpResponse<String> response = client.send(
+                HttpRequest.newBuilder(promUri)
+                        .GET()
+                        .build(),
+                BodyHandlers.ofString());
+
+        // Check the collector's self-observability prometheus metrics to see that
+        // RPCs to cloud APIs were successfull. Looking for metrics like:
+        ///
+        // otelcol_grpc_io_client_completed_rpcs{grpc_client_method="google.devtools.cloudtrace.v2.TraceService/BatchWriteSpans",grpc_client_status="OK",service_instance_id="ec30370c-a8a2-4c1b-a211-067ea3e97a9c",service_name="otelcol-contrib",service_version="0.88.0"} 19
+        // otelcol_grpc_io_client_completed_rpcs{grpc_client_method="google.logging.v2.LoggingServiceV2/WriteLogEntries",grpc_client_status="OK",service_instance_id="ec30370c-a8a2-4c1b-a211-067ea3e97a9c",service_name="otelcol-contrib",service_version="0.88.0"} 101
+        // otelcol_grpc_io_client_completed_rpcs{grpc_client_method="google.monitoring.v3.MetricService/CreateTimeSeries",grpc_client_status="OK",service_instance_id="ec30370c-a8a2-4c1b-a211-067ea3e97a9c",service_name="otelcol-contrib",service_version="0.88.0"} 1
+        String promText = response.body();
+        for (String clientMethod : List.of("google.devtools.cloudtrace.v2.TraceService/BatchWriteSpans",
+                "google.logging.v2.LoggingServiceV2/WriteLogEntries",
+                "google.monitoring.v3.MetricService/CreateTimeSeries")) {
+
+            Pattern re = Pattern.compile(
+                    "^" +
+                            Pattern.quote("otelcol_grpc_io_client_completed_rpcs{grpc_client_method=\""
+                                    + clientMethod
+                                    + "\",grpc_client_status=\"OK\"")
+                            +
+                            ".+\\} [1-9][0-9]*$",
+                    Pattern.MULTILINE);
+            assertThat(promText).containsMatch(re);
+        }
     }
 }

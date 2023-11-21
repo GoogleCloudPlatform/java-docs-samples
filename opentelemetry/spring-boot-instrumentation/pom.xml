@@ -97,6 +97,12 @@
             <version>1.19.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.truth</groupId>
+            <artifactId>truth</artifactId>
+            <version>1.1.5</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
