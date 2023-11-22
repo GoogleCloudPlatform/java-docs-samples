@@ -26,9 +26,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class DemoApplicationTests {
 
   /**
-   * Empty test is included by Spring Boot Initializr and ensures that the Spring
-   * Boot application can start up. This checks that the dependency injection is
-   * working correctly and the logback.xml config works.
+   * Empty test is included by Spring Boot Initializr and ensures that the Spring Boot application
+   * can start up. This checks that the dependency injection is working correctly and the
+   * logback.xml config works.
    */
   @Test
   public void contextLoads() {}
