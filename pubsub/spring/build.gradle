@@ -34,7 +34,7 @@ description = 'Spring Cloud GCP Pub/Sub Code Sample'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-    implementation platform('com.google.cloud:spring-cloud-gcp-dependencies:3.7.3')
+    implementation platform('com.google.cloud:spring-cloud-gcp-dependencies:3.7.4')
     implementation platform('org.springframework.boot:spring-boot-dependencies:2.7.17')
     implementation 'com.github.spotbugs:spotbugs-annotations:4.8.1'
     implementation 'com.google.cloud:spring-cloud-gcp-pubsub-stream-binder'

@@ -42,7 +42,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.22.0</version>
+        <version>26.27.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -58,7 +58,7 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>cloud-sql-connector-jdbc-sqlserver</artifactId>
-      <version>1.14.1</version>
+      <version>1.15.0</version>
     </dependency>
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
@@ -68,7 +68,7 @@
     <dependency>
       <groupId>com.google.crypto.tink</groupId>
       <artifactId>tink</artifactId>
-      <version>1.10.0</version>
+      <version>1.11.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.crypto.tink</groupId>
