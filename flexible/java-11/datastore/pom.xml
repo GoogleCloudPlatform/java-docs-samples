@@ -38,7 +38,7 @@
 
     <appengine.maven.plugin>2.5.0</appengine.maven.plugin>
 
-    <spring.boot.version>2.7.17</spring.boot.version>
+    <spring.boot.version>2.7.18</spring.boot.version>
   </properties>
 
   <!-- [START gae_flex_datastore_config] -->
