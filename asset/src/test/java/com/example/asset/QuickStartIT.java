@@ -51,14 +51,14 @@ public class QuickStartIT {
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
   
   private static final String bucketName = "java-docs-samples-testing";
-  private static final String[] assetTypes = { "compute.googleapis.com/Disk" };
+  private static final String[] assetTypes = { "compute.googleapis.com/Network" };
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
   private BigQuery bigquery;
 
-  private static final void deleteObjects(String path) {
+  private static void deleteObjects(String path) {
     Storage storage = StorageOptions.getDefaultInstance().getService();
     for (BlobInfo info :
         storage
