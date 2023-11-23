@@ -22,14 +22,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.testcontainers.containers.ComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
@@ -52,18 +49,16 @@ public class DockerComposeTestsIT {
     // GCP
     Thread.sleep(60_000);
 
-    HttpClient client = HttpClient.newHttpClient();
+    WebClient client = WebClient.create();
     String collectorHost = environment.getServiceHost("otelcol", 8888);
     int collectorPromPort = environment.getServicePort("otelcol", 8888);
     URI promUri = new URI("http://" + collectorHost + ":" + collectorPromPort + "/metrics");
 
-    HttpResponse<String> response =
-        client.send(HttpRequest.newBuilder(promUri).GET().build(), BodyHandlers.ofString());
+    String promText = client.get().uri(promUri).retrieve().bodyToMono(String.class).block();
 
     // Check the collector's self-observability prometheus metrics to see that RPCs to cloud APIs
     // were successfull. Looking for metric otelcol_grpc_io_client_completed_rpcs with labels
     // grpc_client_method and grpc_client_status and non-zero count.
-    String promText = response.body();
     for (String clientMethod :
         List.of(
             "google.devtools.cloudtrace.v2.TraceService/BatchWriteSpans",

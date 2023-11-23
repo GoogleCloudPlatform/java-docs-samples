@@ -16,27 +16,26 @@
 
 package com.example.demo;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.ThreadLocalRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 public class MultiController {
   Logger logger = LoggerFactory.getLogger(getClass());
 
-  @Autowired private HttpClient client;
+  @Autowired private WebClient client;
 
   /** handleMulti handles an http request by making 3-7 http requests to the /single endpoint. */
   // [START opentelemetry_instrumentation_handle_multi]
   @GetMapping("/multi")
-  public String index() throws Exception {
+  public Mono<String> index() throws Exception {
     int subRequests = ThreadLocalRandom.current().nextInt(3, 8);
 
     // Write a structured log with the request context, which allows the log to
@@ -44,13 +43,11 @@ public class MultiController {
     logger.info("handle /multi request with subRequests={}", subRequests);
 
     // Make 3-7 http requests to the /single endpoint.
-    for (int i = 0; i < subRequests; i++) {
-      client.send(
-          HttpRequest.newBuilder(new URI("http://localhost:8080/single")).GET().build(),
-          BodyHandlers.ofString());
-    }
-
-    return "ok";
+    return Flux.range(0, subRequests)
+        .concatMap(
+            i -> client.get().uri("http://localhost:8080/single").retrieve().bodyToMono(Void.class))
+        .collectList()
+        .thenReturn("ok");
   }
   // [END opentelemetry_instrumentation_handle_multi]
 }
