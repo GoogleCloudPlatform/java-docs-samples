@@ -30,7 +30,7 @@ curl https://dl-ssl.google.com/linux/linux_signing_key.pub -o /tmp/google.pub \
   && apt-get -y update && apt-get install -y google-chrome-stable
 
 # Disable the SUID sandbox so that Chrome can launch without being in a privileged container.
-dpkg-divert --add --rename --divert /opt/google/chrome/google-chrome.real /opt/google/chrome/google-chrome \
+echo "Y" | dpkg-divert --add --rename --divert /opt/google/chrome/google-chrome.real /opt/google/chrome/google-chrome \
   && echo "#!/bin/bash\nexec /opt/google/chrome/google-chrome.real --no-sandbox --disable-setuid-sandbox \"\$@\"" > /opt/google/chrome/google-chrome \
   && chmod 755 /opt/google/chrome/google-chrome \
   && ln -fs /opt/google/chrome/google-chrome /usr/bin/google-chrome
