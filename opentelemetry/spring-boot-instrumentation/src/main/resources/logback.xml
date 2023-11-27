@@ -16,6 +16,7 @@
 
 <configuration>
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- [START opentelemetry_instrumentation_logbackxml] -->
     <encoder class="net.logstash.logback.encoder.LogstashEncoder">
       <!-- Format JSON logs for the Logging agent
       https://cloud.google.com/logging/docs/structured-logging#special-payload-fields -->
@@ -41,6 +42,7 @@
       <excludeMdcKeyName>span_id</excludeMdcKeyName>
       <excludeMdcKeyName>trace_flags</excludeMdcKeyName>
     </encoder>
+    <!-- [END opentelemetry_instrumentation_logbackxml] -->
   </appender>
 
   <root level="INFO">
