@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,15 +93,7 @@ public class CreateAzureBlobStorageTransferIT {
     params.put("field_delimiter", Value.newBuilder().setStringValue(",").build());
     params.put("skip_leading_rows", Value.newBuilder().setStringValue("1").build());
 
-    TransferConfig transferConfig =
-        TransferConfig.newBuilder()
-            .setDestinationDatasetId(DATASET_ID)
-            .setDisplayName("Azure Blob Storage Transfer Code Example Test")
-            .setDataSourceId("azure_blob_storage")
-            .setParams(Struct.newBuilder().putAllFields(params).build())
-            .setSchedule("every 24 hours")
-            .build();
-    CreateAzureBlobStorageTransfer.createAzureBlobStorageTransfer(PROJECT_ID, transferConfig);
+    CreateAzureBlobStorageTransfer.createAzureBlobStorageTransfer(PROJECT_ID, DATASET_ID, params);
     String result = bout.toString();
     name = result.substring(result.indexOf(":") + 1, result.length() - 1);
     assertThat(result).contains("Azure Blob Storage transfer created successfully: ");
