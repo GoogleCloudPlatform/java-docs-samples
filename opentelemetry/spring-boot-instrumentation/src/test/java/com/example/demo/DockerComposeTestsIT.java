@@ -41,6 +41,7 @@ public class DockerComposeTestsIT {
           .withExposedService("app", 8080)
           .withExposedService("otelcol", 8888)
           .waitingFor("app", Wait.forHttp("/multi"))
+          .withTailChildContainers(true)
           .withBuild(true);
 
   @Test
