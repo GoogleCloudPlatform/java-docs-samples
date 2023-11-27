@@ -39,13 +39,7 @@ public class CreateAzureBlobStorageTransferIT {
 
   private static final Logger LOG =
       Logger.getLogger(CreateAzureBlobStorageTransferIT.class.getName());
-  private static final String ID = UUID.randomUUID().toString().substring(0, 8);
-  private BigQuery bigquery;
   private ByteArrayOutputStream bout;
-  private String name;
-  private String displayName;
-  private String datasetName;
-  private String tableName;
   private PrintStream out;
   private PrintStream originalPrintStream;
 
@@ -95,7 +89,6 @@ public class CreateAzureBlobStorageTransferIT {
 
     CreateAzureBlobStorageTransfer.createAzureBlobStorageTransfer(PROJECT_ID, DATASET_ID, params);
     String result = bout.toString();
-    name = result.substring(result.indexOf(":") + 1, result.length() - 1);
     assertThat(result).contains("Azure Blob Storage transfer created successfully: ");
   }
 }
