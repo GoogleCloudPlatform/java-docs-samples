@@ -1,3 +1,4 @@
+// find legacy configuration at https://github.com/GoogleCloudPlatform/java-docs-samples/blob/91792d4da53a12f96032f4556815f7d91f27257b/renovate.json
 {
     "extends": [
         "config:recommended",
