@@ -14,6 +14,13 @@ Docker compose also runs the OpenTelemetry collector, set up to receive telemetr
 application and parse its logs from a shared volume. Finally, a loadgen container sends
 requests to the Java app.
 
+## Permissions
+
+This sample writes to Cloud Logging, Cloud Monitoring, and Cloud Trace. Grant the following roles to run the example:
+- `roles/logging.logWriter` – see https://cloud.google.com/logging/docs/access-control#permissions_and_roles
+- `roles/monitoring.metricWriter` – see https://cloud.google.com/monitoring/access-control#predefined_roles
+- `roles/cloudtrace.agent` – see https://cloud.google.com/trace/docs/iam#trace-roles
+
 ## Running the example
 
 ### Cloud Shell or GCE
