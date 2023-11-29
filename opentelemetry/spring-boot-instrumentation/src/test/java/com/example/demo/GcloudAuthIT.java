@@ -16,6 +16,7 @@
 
 package com.example.demo;
 
+import com.google.api.client.util.Preconditions;
 import java.io.File;
 import org.junit.Test;
 import org.testcontainers.containers.ComposeContainer;
@@ -38,9 +39,12 @@ public class GcloudAuthIT {
     ToStringConsumer logs = new ToStringConsumer();
     try {
       env.withEnv("USERID", System.getenv("USERID"))
-          .withEnv("GOOGLE_CLOUD_PROJECT", System.getenv("GOOGLE_CLOUD_PROJECT"))
           .withEnv(
-              "GOOGLE_APPLICATION_CREDENTIALS", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+              "GOOGLE_CLOUD_PROJECT",
+              Preconditions.checkNotNull(System.getenv("GOOGLE_CLOUD_PROJECT")))
+          .withEnv(
+              "GOOGLE_APPLICATION_CREDENTIALS",
+              Preconditions.checkNotNull(System.getenv("GOOGLE_APPLICATION_CREDENTIALS")))
           .withServices(containerName)
           .withBuild(true)
           .withLogConsumer(containerName, logs)

@@ -18,6 +18,7 @@ package com.example.demo;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.client.util.Preconditions;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -35,9 +36,12 @@ public class DockerComposeTestsIT {
   public static ComposeContainer environment =
       new ComposeContainer(new File("docker-compose.yaml"), new File("docker-compose.adc.yaml"))
           .withEnv("USERID", System.getenv("USERID"))
-          .withEnv("GOOGLE_CLOUD_PROJECT", System.getenv("GOOGLE_CLOUD_PROJECT"))
           .withEnv(
-              "GOOGLE_APPLICATION_CREDENTIALS", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+              "GOOGLE_CLOUD_PROJECT",
+              Preconditions.checkNotNull(System.getenv("GOOGLE_CLOUD_PROJECT")))
+          .withEnv(
+              "GOOGLE_APPLICATION_CREDENTIALS",
+              Preconditions.checkNotNull(System.getenv("GOOGLE_APPLICATION_CREDENTIALS")))
           .withExposedService("app", 8080)
           .withExposedService("otelcol", 8888)
           .waitingFor("app", Wait.forHttp("/multi"))
