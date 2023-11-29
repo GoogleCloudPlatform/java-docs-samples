@@ -19,6 +19,7 @@ package com.example.demo;
 import java.io.File;
 import org.junit.Test;
 import org.testcontainers.containers.ComposeContainer;
+import org.testcontainers.containers.output.ToStringConsumer;
 
 public class GcloudAuthIT {
   @Test
@@ -32,16 +33,22 @@ public class GcloudAuthIT {
   }
 
   private void runSingle(String containerName) {
-    try (ComposeContainer env =
-        new ComposeContainer(new File("docker-compose.yaml"))
-            .withEnv("USERID", System.getenv("USERID"))
-            .withEnv("GOOGLE_CLOUD_PROJECT", System.getenv("GOOGLE_CLOUD_PROJECT"))
-            .withEnv(
-                "GOOGLE_APPLICATION_CREDENTIALS", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
-            .withServices(containerName)
-            .withBuild(true)
-            .withTailChildContainers(true)) {
-      env.start();
+    ComposeContainer env =
+        new ComposeContainer(new File("docker-compose.yaml"), new File("docker-compose.adc.yaml"));
+    ToStringConsumer logs = new ToStringConsumer();
+    try {
+      env.withEnv("USERID", System.getenv("USERID"))
+          .withEnv("GOOGLE_CLOUD_PROJECT", System.getenv("GOOGLE_CLOUD_PROJECT"))
+          .withEnv(
+              "GOOGLE_APPLICATION_CREDENTIALS", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+          .withServices(containerName)
+          .withBuild(true)
+          .withLogConsumer(containerName, logs)
+          // .withTailChildContainers(true)
+          .start();
+    } finally {
+      env.stop();
+      System.out.println("Full logs from container " + containerName + ":\n" + logs.toUtf8String());
     }
   }
 }

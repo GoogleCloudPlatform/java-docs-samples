@@ -55,8 +55,5 @@ services:
       dockerfile: uploadtrace.dockerfile
     environment:
       - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT?}
-      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/gcp-credentials.json
-    volumes:
-      - ${GOOGLE_APPLICATION_CREDENTIALS:-/dev/null}:/tmp/keys/gcp-credentials.json:ro
 volumes:
   logs:
