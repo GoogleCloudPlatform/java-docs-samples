@@ -18,11 +18,12 @@ package com.example.demo;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.client.util.Preconditions;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -33,11 +34,11 @@ import org.testcontainers.containers.wait.strategy.Wait;
 public class DockerComposeTestsIT {
   @ClassRule
   public static ComposeContainer environment =
-      new ComposeContainer(new File("docker-compose.yaml"))
+      new ComposeContainer(new File("docker-compose.yaml"), new File("docker-compose.adc.yaml"))
           .withEnv("USERID", System.getenv("USERID"))
-          .withEnv("GOOGLE_CLOUD_PROJECT", System.getenv("GOOGLE_CLOUD_PROJECT"))
+          .withEnv("GOOGLE_CLOUD_PROJECT", getenvNotNull("GOOGLE_CLOUD_PROJECT"))
           .withEnv(
-              "GOOGLE_APPLICATION_CREDENTIALS", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+              "GOOGLE_APPLICATION_CREDENTIALS", getenvNotNull("GOOGLE_APPLICATION_CREDENTIALS"))
           .withExposedService("app", 8080)
           .withExposedService("otelcol", 8888)
           .waitingFor("app", Wait.forHttp("/multi"))
@@ -61,7 +62,7 @@ public class DockerComposeTestsIT {
     // were successfull. Looking for metric otelcol_grpc_io_client_completed_rpcs with labels
     // grpc_client_method and grpc_client_status and non-zero count.
     for (String clientMethod :
-        List.of(
+        Arrays.asList(
             "google.devtools.cloudtrace.v2.TraceService/BatchWriteSpans",
             "google.logging.v2.LoggingServiceV2/WriteLogEntries",
             "google.monitoring.v3.MetricService/CreateTimeSeries")) {
@@ -77,5 +78,10 @@ public class DockerComposeTestsIT {
               Pattern.MULTILINE);
       assertThat(promText).containsMatch(re);
     }
+  }
+
+  private static String getenvNotNull(String key) {
+    return Preconditions.checkNotNull(
+        System.getenv(key), "Environment variable " + key + " is required but was not set");
   }
 }
