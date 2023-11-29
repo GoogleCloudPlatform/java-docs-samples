@@ -46,8 +46,7 @@ public class MultiController {
     return Flux.range(0, subRequests)
         .concatMap(
             i -> client.get().uri("http://localhost:8080/single").retrieve().bodyToMono(Void.class))
-        .collectList()
-        .thenReturn("ok");
+        .then(Mono.just("ok"));
   }
   // [END opentelemetry_instrumentation_handle_multi]
 }
