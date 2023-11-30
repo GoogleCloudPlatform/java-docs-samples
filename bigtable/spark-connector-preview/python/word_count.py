@@ -49,16 +49,16 @@ input_data.show()
 input_data.write \
        .format('bigtable') \
        .options(catalog=catalog) \
-       .option('bigtable.spark.project.id', bigtable_project_id) \
-       .option('bigtable.spark.instance.id', bigtable_instance_id) \
-       .option('bigtable.spark.create.new.table', create_new_table) \
+       .option('spark.bigtable.project.id', bigtable_project_id) \
+       .option('spark.bigtable.instance.id', bigtable_instance_id) \
+       .option('spark.bigtable.create.new.table', create_new_table) \
        .save()
 print('DataFrame was written to Bigtable.')
 
 records = spark.read \
        .format('bigtable') \
-       .option('bigtable.spark.project.id', bigtable_project_id) \
-       .option('bigtable.spark.instance.id', bigtable_instance_id) \
+       .option('spark.bigtable.project.id', bigtable_project_id) \
+       .option('spark.bigtable.instance.id', bigtable_instance_id) \
        .options(catalog=catalog) \
        .load()
 

@@ -19,8 +19,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.google.cloud.bigtable</groupId>
-  <artifactId>bigtable-spark-example</artifactId>
+  <groupId>com.google.cloud.spark.bigtable</groupId>
+  <artifactId>spark-bigtable-example</artifactId>
   <packaging>jar</packaging>
   <version>0.0.1-SNAPSHOT</version>
 
@@ -28,7 +28,7 @@
     <scala.binary.version>2.12</scala.binary.version>
     <spark.version>3.1.2</spark.version>
     <reload4j.version>1.7.36</reload4j.version>
-    <bigtable.spark.version>0.0.1-preview1-SNAPSHOT</bigtable.spark.version>
+    <spark.bigtable.version>0.0.1-preview2-SNAPSHOT</spark.bigtable.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
@@ -48,9 +48,9 @@
     </dependency>
 
     <dependency>
-      <groupId>com.google.cloud.bigtable</groupId>
-      <artifactId>bigtable-spark</artifactId>
-      <version>${bigtable.spark.version}</version>
+      <groupId>com.google.cloud.spark.bigtable</groupId>
+      <artifactId>spark-bigtable</artifactId>
+      <version>${spark.bigtable.version}</version>
     </dependency>
 
     <dependency>
@@ -63,7 +63,7 @@
   <repositories>
     <repository>
       <id>artifact-registry</id>
-      <url>artifactregistry://us-central1-maven.pkg.dev/cloud-bigtable-ecosystem/bigtable-spark-connector-preview</url>
+      <url>artifactregistry://us-central1-maven.pkg.dev/cloud-bigtable-ecosystem/spark-bigtable-connector-preview</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -96,7 +96,7 @@
               <transformers>
                 <transformer
                   implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>bigtable.spark.example.WordCount</mainClass>
+                  <mainClass>spark.bigtable.example.WordCount</mainClass>
                 </transformer>
               </transformers>
             </configuration>

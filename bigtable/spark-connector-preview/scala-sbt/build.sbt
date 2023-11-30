@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-name := "bigtable-spark-example"
+name := "spark-bigtable-example"
 
 version := "0.1"
 
 scalaVersion := "2.12.10"
 val sparkVersion = "3.0.1"
 
-resolvers += "Private preview artifacts" at "artifactregistry://us-central1-maven.pkg.dev/cloud-bigtable-ecosystem/bigtable-spark-connector-preview"
+resolvers += "Private preview artifacts" at "artifactregistry://us-central1-maven.pkg.dev/cloud-bigtable-ecosystem/spark-bigtable-connector-preview"
 
-libraryDependencies += "com.google.cloud.bigtable" % "bigtable-spark" % "0.0.1-preview1-SNAPSHOT"
+libraryDependencies += "com.google.cloud.spark.bigtable" % "spark-bigtable" % "0.0.1-preview2-SNAPSHOT"
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % sparkVersion % Provided,

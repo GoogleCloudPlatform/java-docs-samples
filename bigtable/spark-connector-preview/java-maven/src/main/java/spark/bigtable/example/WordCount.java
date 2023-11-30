@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bigtable.spark.example;
+package spark.bigtable.example;
 
-import bigtable.spark.example.model.TestRow;
+import spark.bigtable.example.model.TestRow;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,9 +92,9 @@ public class WordCount {
         .write()
         .format("bigtable")
         .option("catalog", catalog)
-        .option("bigtable.spark.project.id", projectId)
-        .option("bigtable.spark.instance.id", instanceId)
-        .option("bigtable.spark.create.new.table", createNewTable)
+        .option("spark.bigtable.project.id", projectId)
+        .option("spark.bigtable.instance.id", instanceId)
+        .option("spark.bigtable.create.new.table", createNewTable)
         .save();
   }
 
@@ -103,8 +103,8 @@ public class WordCount {
         .read()
         .format("bigtable")
         .option("catalog", catalog)
-        .option("bigtable.spark.project.id", projectId)
-        .option("bigtable.spark.instance.id", instanceId)
+        .option("spark.bigtable.project.id", projectId)
+        .option("spark.bigtable.instance.id", instanceId)
         .load();
     return dataframe;
   }

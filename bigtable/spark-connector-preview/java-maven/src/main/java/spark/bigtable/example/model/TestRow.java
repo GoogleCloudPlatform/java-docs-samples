@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bigtable.spark.example.model;
+package spark.bigtable.example.model;
 
 /** A JavaBean class for using as a DataFrame row in tests. */
 public class TestRow {

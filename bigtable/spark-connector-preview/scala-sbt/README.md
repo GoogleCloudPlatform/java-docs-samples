@@ -1,4 +1,4 @@
-# Bigtable Spark Example Using Scala and sbt
+# Spark Bigtable Example Using Scala and sbt
 
 This example uses Scala and sbt for package management to write data
 to a Bigtable table and read it back.
@@ -14,7 +14,7 @@ sbt clean assembly
 ```
 
 The target JAR will be located under
-`target/scala-2.12/bigtable-spark-example-assembly-0.1.jar`.
+`target/scala-2.12/spark-bigtable-example-assembly-0.1.jar`.
 
 ## Running the example using Dataproc
 
@@ -28,14 +28,14 @@ To run the job using dataproc, you can run the following command:
 
 ```
 gcloud dataproc jobs submit spark \
---cluster=$BIGTABLE_SPARK_DATAPROC_CLUSTER \
---region=$BIGTABLE_SPARK_DATAPROC_REGION \
---class=bigtable.spark.example.WordCount \
---jars=target/scala-2.12/bigtable-spark-example-assembly-0.1.jar  \
+--cluster=$SPARK_BIGTABLE_DATAPROC_CLUSTER \
+--region=$SPARK_BIGTABLE_DATAPROC_REGION \
+--class=spark.bigtable.example.WordCount \
+--jars=target/scala-2.12/spark-bigtable-example-assembly-0.1.jar  \
 --  \
-$BIGTABLE_SPARK_PROJECT_ID \
-$BIGTABLE_SPARK_INSTANCE_ID \
-$BIGTABLE_SPARK_TABLE_NAME
+$SPARK_BIGTABLE_PROJECT_ID \
+$SPARK_BIGTABLE_INSTANCE_ID \
+$SPARK_BIGTABLE_TABLE_NAME
 ```
 
 ## Expected output
@@ -65,8 +65,8 @@ To verify that the data has been written to Bigtable, you can run the following
 command (requires [cbt CLI](https://cloud.google.com/bigtable/docs/cbt-overview)):
 
 ```
-cbt -project=$BIGTABLE_SPARK_PROJECT_ID -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-read $BIGTABLE_SPARK_TABLE_NAME
+cbt -project=$SPARK_BIGTABLE_PROJECT_ID -instance=$SPARK_BIGTABLE_INSTANCE_ID \
+read $SPARK_BIGTABLE_TABLE_NAME
 ```
 
 With this expected output:

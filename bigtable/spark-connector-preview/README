@@ -1,6 +1,6 @@
 # Examples for Cloud Bigtable Apache Spark connector Private Preview
 
-This project contains sample code to use the Bigtable Spark connector in
+This project contains sample code to use the Spark Bigtable connector in
 different languages. You can refer to the following subdirectories
 to access the example for each of the languages, as well as commands
 needed to run the examples using Dataproc:

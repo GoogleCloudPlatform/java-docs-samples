@@ -1,4 +1,4 @@
-# Bigtable Spark Example Using Java and Maven
+# Spark Bigtable Example Using Java and Maven
 
 This example uses Java and Maven for package management to write data
 to a Bigtable table and read it back.
@@ -14,7 +14,7 @@ mvn clean install
 ```
 
 The target JAR will be located under
-`target/bigtable-spark-example-0.0.1-SNAPSHOT.jar`.
+`target/spark-bigtable-example-0.0.1-SNAPSHOT.jar`.
 
 ## Running the example using Dataproc
 
@@ -28,14 +28,14 @@ To run the JAR using dataproc, you can run the following command:
 
 ```
 gcloud dataproc jobs submit spark \
---cluster=$BIGTABLE_SPARK_DATAPROC_CLUSTER \
---region=$BIGTABLE_SPARK_DATAPROC_REGION \
---class=bigtable.spark.example.WordCount \
---jars=target/bigtable-spark-example-0.0.1-SNAPSHOT.jar  \
+--cluster=$SPARK_BIGTABLE_DATAPROC_CLUSTER \
+--region=$SPARK_BIGTABLE_DATAPROC_REGION \
+--class=spark.bigtable.example.WordCount \
+--jars=target/spark-bigtable-example-0.0.1-SNAPSHOT.jar  \
 --  \
-$BIGTABLE_SPARK_PROJECT_ID \
-$BIGTABLE_SPARK_INSTANCE_ID \
-$BIGTABLE_SPARK_TABLE_NAME
+$SPARK_BIGTABLE_PROJECT_ID \
+$SPARK_BIGTABLE_INSTANCE_ID \
+$SPARK_BIGTABLE_TABLE_NAME
 ```
 
 ## Expected output
@@ -65,8 +65,8 @@ To verify that the data has been written to Bigtable, you can run the following
 command (requires [cbt CLI](https://cloud.google.com/bigtable/docs/cbt-overview)):
 
 ```
-cbt -project=$BIGTABLE_SPARK_PROJECT_ID -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-read $BIGTABLE_SPARK_TABLE_NAME
+cbt -project=$SPARK_BIGTABLE_PROJECT_ID -instance=$SPARK_BIGTABLE_INSTANCE_ID \
+read $SPARK_BIGTABLE_TABLE_NAME
 ```
 
 With this expected output:

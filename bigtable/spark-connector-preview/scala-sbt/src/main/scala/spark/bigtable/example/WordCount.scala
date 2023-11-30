@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package bigtable.spark.example
+package spark.bigtable.example
 
 import org.apache.spark.sql.SparkSession
 
@@ -44,9 +44,9 @@ object WordCount extends App {
     .write
     .format("bigtable")
     .option("catalog", catalog)
-    .option("bigtable.spark.project.id", projectId)
-    .option("bigtable.spark.instance.id", instanceId)
-    .option("bigtable.spark.create.new.table", createNewTable)
+    .option("spark.bigtable.project.id", projectId)
+    .option("spark.bigtable.instance.id", instanceId)
+    .option("spark.bigtable.create.new.table", createNewTable)
     .save
   println("DataFrame was written to Bigtable.")
 
@@ -54,8 +54,8 @@ object WordCount extends App {
     .read
     .format("bigtable")
     .option("catalog", catalog)
-    .option("bigtable.spark.project.id", projectId)
-    .option("bigtable.spark.instance.id", instanceId)
+    .option("spark.bigtable.project.id", projectId)
+    .option("spark.bigtable.instance.id", instanceId)
     .load
 
   println("Reading the DataFrame from Bigtable:");
@@ -64,13 +64,13 @@ object WordCount extends App {
   def parse(args: Array[String]): (String, String, String, String) = {
     import scala.util.Try
     val projectId = Try(args(0)).getOrElse {
-      throw new IllegalArgumentException("Missing command-line argument: BIGTABLE_SPARK_PROJECT_ID")
+      throw new IllegalArgumentException("Missing command-line argument: SPARK_BIGTABLE_PROJECT_ID")
     }
     val instanceId = Try(args(1)).getOrElse {
-      throw new IllegalArgumentException("Missing command-line argument: BIGTABLE_SPARK_INSTANCE_ID")
+      throw new IllegalArgumentException("Missing command-line argument: SPARK_BIGTABLE_INSTANCE_ID")
     }
     val tableName = Try(args(2)).getOrElse {
-      throw new IllegalArgumentException("Missing command-line argument: BIGTABLE_SPARK_TABLE_NAME")
+      throw new IllegalArgumentException("Missing command-line argument: SPARK_BIGTABLE_TABLE_NAME")
     }
     val createNewTable = Try(args(3)).getOrElse {
       "true"

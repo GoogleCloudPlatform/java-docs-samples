@@ -1,4 +1,4 @@
-# Bigtable Spark Example Using Python
+# Spark Bigtable Example Using Python
 
 This example uses Python to write data to a Bigtable table and read it back.
 
@@ -14,14 +14,14 @@ To run the JAR using dataproc, you can run the following command:
 
 ```
 gcloud dataproc jobs submit pyspark \
---cluster=$BIGTABLE_SPARK_DATAPROC_CLUSTER \
---region=$BIGTABLE_SPARK_DATAPROC_REGION \
---jars=gs://bigtable-spark-preview/jars/bigtable-spark-0.0.1-preview1-SNAPSHOT.jar \
+--cluster=$SPARK_BIGTABLE_DATAPROC_CLUSTER \
+--region=$SPARK_BIGTABLE_DATAPROC_REGION \
+--jars=gs://spark-bigtable-preview/jars/spark-bigtable-0.0.1-preview2-SNAPSHOT.jar \
 word_count.py \
 -- \
---bigtableProjectId=$BIGTABLE_SPARK_PROJECT_ID \
---bigtableInstanceId=$BIGTABLE_SPARK_INSTANCE_ID \
---bigtableTableName=$BIGTABLE_SPARK_TABLE_NAME
+--bigtableProjectId=$SPARK_BIGTABLE_PROJECT_ID \
+--bigtableInstanceId=$SPARK_BIGTABLE_INSTANCE_ID \
+--bigtableTableName=$SPARK_BIGTABLE_TABLE_NAME
 ```
 
 ## Expected output
@@ -51,8 +51,8 @@ To verify that the data has been written to Bigtable, you can run the following
 command (requires [cbt CLI](https://cloud.google.com/bigtable/docs/cbt-overview)):
 
 ```
-cbt -project=$BIGTABLE_SPARK_PROJECT_ID -instance=$BIGTABLE_SPARK_INSTANCE_ID \
-read $BIGTABLE_SPARK_TABLE_NAME
+cbt -project=$SPARK_BIGTABLE_PROJECT_ID -instance=$SPARK_BIGTABLE_INSTANCE_ID \
+read $SPARK_BIGTABLE_TABLE_NAME
 ```
 
 With this expected output:
