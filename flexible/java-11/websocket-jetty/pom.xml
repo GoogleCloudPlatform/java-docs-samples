@@ -38,7 +38,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
     <jetty.version>9.4.53.v20231009</jetty.version>
-    <spring.boot.version>2.7.17</spring.boot.version>
+    <spring.boot.version>2.7.18</spring.boot.version>
   </properties>
 
   <dependencyManagement>
@@ -46,7 +46,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.22.0</version>
+        <version>26.27.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -154,7 +154,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
         <executions>
           <execution>
             <goals>

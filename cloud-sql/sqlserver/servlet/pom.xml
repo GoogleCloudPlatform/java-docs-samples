@@ -58,12 +58,12 @@
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>cloud-sql-connector-jdbc-sqlserver</artifactId>
-      <version>1.14.1</version>
+      <version>1.15.0</version>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-      <version>5.0.1</version>
+      <version>5.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>

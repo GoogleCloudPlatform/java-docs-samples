@@ -31,7 +31,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.22.0</version>
+        <version>26.27.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -48,7 +48,7 @@
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>6.3.1.Final</version>
+      <version>6.4.0.Final</version>
     </dependency>
   </dependencies>
   <!-- [END spanner_hibernate_dependencies] -->
@@ -58,7 +58,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
         <executions>
           <execution>
             <goals>
