@@ -93,8 +93,8 @@ public class FlexTemplateGettingStartedIT {
 
     templatePath = String.format("gs://%s/getting_started_java.json", bucketName);
     imagePath = String.format(
-        "%s-docker.pkg.dev/%s/%s/dataflow/getting-started-java:latest",
-        REGION, PROJECT_ID, repositoryName);
+        "%s-docker.pkg.dev/%s/%s/dataflow/getting-started-java:%s",
+        REGION, PROJECT_ID, repositoryName, UUID.randomUUID());
   }
 
   @AfterClass
