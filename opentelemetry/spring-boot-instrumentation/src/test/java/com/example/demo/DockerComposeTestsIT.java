@@ -49,7 +49,7 @@ public class DockerComposeTestsIT {
   public void testApp() throws InterruptedException, IOException, URISyntaxException {
     // Let the docker compose app run until some spans/logs/metrics are sent to
     // GCP
-    Thread.sleep(60_000);
+    Thread.sleep(10_000);
 
     WebClient client = WebClient.create();
     String collectorHost = environment.getServiceHost("otelcol", 8888);

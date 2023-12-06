@@ -18,7 +18,7 @@ receivers:
     protocols:
       grpc:
         endpoint: "0.0.0.0:4317"
-  # Use the filelog receiver to read our log from its log file.
+  # Use the filelog receiver to read the application's logs from its log file.
   filelog:
     start_at: beginning
     include:
