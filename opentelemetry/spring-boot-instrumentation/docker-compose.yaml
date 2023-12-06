@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-version: '3'
+version: "3"
 
 services:
   app:
@@ -27,8 +27,6 @@ services:
       - "otelcol"
   otelcol:
     image: otel/opentelemetry-collector-contrib:0.88.0
-    ports:
-      - 8888:8888
     volumes:
       - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
       - logs:/var/log:ro
@@ -36,7 +34,15 @@ services:
       - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT?}
   loadgen:
     image: golang:1.21
-    command: ["go", "run", "github.com/rakyll/hey@latest", "-c=2", "-q=1", "http://app:8080/multi"]
+    command:
+      [
+        "go",
+        "run",
+        "github.com/rakyll/hey@latest",
+        "-c=2",
+        "-q=1",
+        "http://app:8080/multi",
+      ]
     depends_on:
       - "app"
 volumes:
