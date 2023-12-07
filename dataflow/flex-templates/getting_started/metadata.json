@@ -1,0 +1,14 @@
+{
+  "name": "Getting started Java flex template",
+  "description": "An example flex template for Java.",
+  "parameters": [
+    {
+      "name": "output",
+      "label": "Output destination",
+      "helpText": "The path and filename prefix for writing output files.",
+      "regexes": [
+        "^gs:\\/\\/[^\\n\\r]+$"
+      ]
+    }
+  ]
+}
