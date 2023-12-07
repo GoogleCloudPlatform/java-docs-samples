@@ -84,10 +84,19 @@ public class ChangeStreamsHelloWorldTest {
 
     dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey).deleteRow());
 
-    // Wait for change to be captured.
-    Thread.sleep(15 * 1000);
-
     String output = bout.toString();
+    int attempt = 0;
+
+    while (attempt < 5) {
+      if (output.contains("USER,SetCell,cf1,col a,a")) {
+        break;
+      }
+
+      // Wait for change to be captured.
+      Thread.sleep(15 * 1000);
+      attempt++;
+    }
+
     assertThat(output).contains("USER,SetCell,cf1,col a,a");
     assertThat(output).contains("USER,DeleteCells,cf1,col a,0-0");
     assertThat(output).contains("USER,DeleteFamily,cf1");
