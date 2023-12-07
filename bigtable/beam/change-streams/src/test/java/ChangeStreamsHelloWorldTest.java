@@ -87,7 +87,7 @@ public class ChangeStreamsHelloWorldTest {
 
     dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey).deleteRow());
 
-    // Wait for change to be captured.
+    // Wait for written data to propagate into the Bigtable change stream.
     Thread.sleep(15 * 1000);
 
     String output = bout.toString();
