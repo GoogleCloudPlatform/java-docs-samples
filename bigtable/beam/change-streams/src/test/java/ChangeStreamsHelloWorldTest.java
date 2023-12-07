@@ -19,15 +19,18 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.bigtable.data.v2.BigtableDataClient;
 import com.google.cloud.bigtable.data.v2.models.RowMutation;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class ChangeStreamsHelloWorldTest {
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
 
   // This table needs to be created manually before running the test since there is no API to create
   // change-stream enabled tables yet. For java-docs-samples, the table should already be created,
@@ -84,19 +87,10 @@ public class ChangeStreamsHelloWorldTest {
 
     dataClient.mutateRow(RowMutation.create(TABLE_ID, rowKey).deleteRow());
 
+    // Wait for change to be captured.
+    Thread.sleep(15 * 1000);
+
     String output = bout.toString();
-    int attempt = 0;
-
-    while (attempt < 5) {
-      if (output.contains("USER,SetCell,cf1,col a,a")) {
-        break;
-      }
-
-      // Wait for change to be captured.
-      Thread.sleep(15 * 1000);
-      attempt++;
-    }
-
     assertThat(output).contains("USER,SetCell,cf1,col a,a");
     assertThat(output).contains("USER,DeleteCells,cf1,col a,0-0");
     assertThat(output).contains("USER,DeleteFamily,cf1");
