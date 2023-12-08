@@ -18,7 +18,11 @@ receivers:
     protocols:
       grpc:
         endpoint: "0.0.0.0:4317"
+
   # Use the filelog receiver to read the application's logs from its log file.
+  # This config reads JSON logs in same format that the Cloud Logging agents
+  # support:
+  # https://cloud.google.com/logging/docs/structured-logging#special-payload-fields
   filelog:
     start_at: beginning
     include:
@@ -47,7 +51,8 @@ receivers:
           span_id:
             parse_from: body["logging.googleapis.com/spanId"]
 
-      # Remove fields that are redundant from translation above
+      # Remove fields that are redundant from translation above and already
+      # included in OTel LogEntry message
       - type: remove
         field: body.timestamp
       - type: remove
