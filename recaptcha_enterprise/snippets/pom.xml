@@ -60,20 +60,38 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-recaptchaenterprise</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>recaptcha-password-check-helpers</artifactId>
+      <version>1.0.2</version>
+    </dependency>
 
     <!-- [Start_Selenium_dependencies] -->
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
+      <version>4.15.0</version>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-chrome-driver</artifactId>
+      <version>4.15.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-http-jdk-client</artifactId>
+      <version>4.13.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.2.1</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      </dependency>
+    </dependency>
     <!-- Removes the dependency of driver binary file -->
     <dependency>
       <groupId>io.github.bonigarcia</groupId>

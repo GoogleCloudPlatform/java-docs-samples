@@ -19,27 +19,18 @@ package app;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import account_defender.AccountDefenderAssessment;
-import account_defender.AnnotateAccountDefenderAssessment;
-import account_defender.ListRelatedAccountGroupMemberships;
-import account_defender.ListRelatedAccountGroups;
-import account_defender.SearchRelatedAccountGroupMemberships;
 import com.google.protobuf.ByteString;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -54,6 +45,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -63,10 +55,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.util.UriComponentsBuilder;
 import recaptcha.AnnotateAssessment;
 import recaptcha.GetMetrics;
+import recaptcha.accountdefender.AccountDefenderAssessment;
+import recaptcha.accountdefender.AnnotateAccountDefenderAssessment;
+import recaptcha.accountdefender.ListRelatedAccountGroupMemberships;
+import recaptcha.accountdefender.ListRelatedAccountGroups;
+import recaptcha.accountdefender.SearchRelatedAccountGroupMemberships;
+import recaptcha.mfa.CreateMfaAssessment;
+import recaptcha.passwordleak.CreatePasswordLeakAssessment;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @EnableAutoConfiguration
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = Main.class)
 public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -74,25 +73,9 @@ public class SnippetsIT {
   private static String RECAPTCHA_SITE_KEY_1 = "recaptcha-site-key1";
   private static String RECAPTCHA_SITE_KEY_2 = "recaptcha-site-key2";
   private static WebDriver browser;
-  @LocalServerPort private int randomServerPort;
+  @LocalServerPort
+  private int randomServerPort;
   private ByteArrayOutputStream stdOut;
-
-  @Test
-  public void testCreateAnnotateAssessment()
-      throws JSONException, IOException, InterruptedException, NoSuchAlgorithmException,
-          ExecutionException {
-    // Create an assessment.
-    String testURL = "http://localhost:" + randomServerPort + "/";
-    JSONObject createAssessmentResult =
-        createAssessment(testURL, ByteString.EMPTY, AssessmentType.ASSESSMENT);
-    String assessmentName = createAssessmentResult.getString("assessmentName");
-    // Verify that the assessment name has been modified post the assessment creation.
-    assertThat(assessmentName).isNotEmpty();
-
-    // Annotate the assessment.
-    AnnotateAssessment.annotateAssessment(PROJECT_ID, assessmentName);
-    assertThat(stdOut.toString()).contains("Annotated response sent successfully ! ");
-  }
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -112,6 +95,9 @@ public class SnippetsIT {
     TimeUnit.SECONDS.sleep(5);
 
     // Set Selenium Driver to Chrome.
+    System.setProperty("webdriver.http.factory", "jdk-http-client");
+    ChromeOptions chromeOptions = new ChromeOptions();
+    chromeOptions.addArguments("--remote-allow-origins=*");
     WebDriverManager.chromedriver().setup();
     browser = new ChromeDriver();
   }
@@ -129,6 +115,23 @@ public class SnippetsIT {
 
     stdOut.close();
     System.setOut(null);
+  }
+
+  @Test
+  public void testCreateAnnotateAssessment()
+      throws JSONException, IOException, InterruptedException, NoSuchAlgorithmException,
+      ExecutionException {
+    // Create an assessment.
+    String testURL = "http://localhost:" + randomServerPort;
+    JSONObject createAssessmentResult =
+        createAssessment(testURL, ByteString.EMPTY, AssessmentType.ASSESSMENT);
+    String assessmentName = createAssessmentResult.getString("assessmentName");
+    // Verify that the assessment name has been modified post the assessment creation.
+    assertThat(assessmentName).isNotEmpty();
+
+    // Annotate the assessment.
+    AnnotateAssessment.annotateAssessment(PROJECT_ID, assessmentName);
+    assertThat(stdOut.toString()).contains("Annotated response sent successfully ! ");
   }
 
   @Before
@@ -181,20 +184,8 @@ public class SnippetsIT {
       throws JSONException, IOException, InterruptedException, NoSuchAlgorithmException,
       ExecutionException, InvalidKeyException {
 
-    String testURL = "http://localhost:" + randomServerPort + "/";
-
-    // Secret not shared with Google.
-    String HMAC_KEY = "123456789";
-    // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
-    // secret key.
-    Mac mac = Mac.getInstance("HmacSHA256");
-    SecretKeySpec secretKeySpec = new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
-        "HmacSHA256");
-    mac.init(secretKeySpec);
-    byte[] hashBytes = mac.doFinal(
-        ("default-" + UUID.randomUUID().toString().split("-")[0])
-            .getBytes(StandardCharsets.UTF_8));
-    ByteString hashedAccountId = ByteString.copyFrom(hashBytes);
+    String testURL = "http://localhost:" + randomServerPort;
+    ByteString hashedAccountId = Util.createHashedAccountId();
 
     // Create the assessment.
     JSONObject createAssessmentResult =
@@ -241,9 +232,24 @@ public class SnippetsIT {
   @Test
   public void testPasswordLeakAssessment()
       throws IOException, ExecutionException, InterruptedException {
-    passwordleak.CreatePasswordLeakAssessment.
-        checkPasswordLeak(PROJECT_ID, "username", "password");
+    CreatePasswordLeakAssessment.checkPasswordLeak(PROJECT_ID, "username", "password");
     assertThat(stdOut.toString()).contains("Is Credential leaked: ");
+  }
+
+  @Test
+  public void testMultiFactorAuthenticationAssessment()
+      throws IOException, JSONException, NoSuchAlgorithmException,
+      InvalidKeyException, InterruptedException, ExecutionException {
+    ByteString hashedAccountId = Util.createHashedAccountId();
+    String testURL = "http://localhost:" + randomServerPort;
+
+    // Create the assessment.
+    JSONObject createAssessmentResult =
+        createAssessment(testURL, hashedAccountId, AssessmentType.MFA);
+    String assessmentName = createAssessmentResult.getString("assessmentName");
+    assertThat(assessmentName).isNotEmpty();
+    String mfaResult = createAssessmentResult.getString("mfaResult");
+    assertThat(mfaResult).contains("MFA result: ");
   }
 
   public JSONObject createAssessment(
@@ -255,43 +261,55 @@ public class SnippetsIT {
 
     // Send the token for analysis. The analysis score ranges from 0.0 to 1.0
     switch (assessmentType) {
-      case ACCOUNT_DEFENDER:
-        {
-          AccountDefenderAssessment.accountDefenderAssessment(
-              PROJECT_ID,
-              RECAPTCHA_SITE_KEY_1,
-              tokenActionPair.getString("token"),
-              tokenActionPair.getString("action"),
-              hashedAccountId);
-          break;
-        }
-      case ASSESSMENT:
-        {
-          recaptcha.CreateAssessment.createAssessment(
-              PROJECT_ID,
-              RECAPTCHA_SITE_KEY_1,
-              tokenActionPair.getString("token"),
-              tokenActionPair.getString("action"));
-          break;
-        }
+      case ACCOUNT_DEFENDER: {
+        AccountDefenderAssessment.accountDefenderAssessment(
+            PROJECT_ID,
+            RECAPTCHA_SITE_KEY_1,
+            tokenActionPair.getString("token"),
+            tokenActionPair.getString("action"),
+            hashedAccountId);
+        break;
+      }
+      case ASSESSMENT: {
+        recaptcha.CreateAssessment.createAssessment(
+            PROJECT_ID,
+            RECAPTCHA_SITE_KEY_1,
+            tokenActionPair.getString("token"),
+            tokenActionPair.getString("action"));
+        break;
+      }
+      case MFA: {
+        CreateMfaAssessment.createMfaAssessment(
+            PROJECT_ID,
+            RECAPTCHA_SITE_KEY_1,
+            tokenActionPair.getString("token"),
+            tokenActionPair.getString("action"),
+            hashedAccountId,
+            "foo@bar.com",
+            "+11111111111");
+        break;
+      }
+      default: break;
     }
 
     // Assert the response.
     String response = stdOut.toString();
     assertThat(response).contains("Assessment name: ");
-    assertThat(response).contains("The reCAPTCHA score is: ");
-    if (!hashedAccountId.isEmpty()) {
+    if (assessmentType == AssessmentType.ACCOUNT_DEFENDER) {
       assertThat(response).contains("Account Defender Assessment Result: ");
     }
 
     // Retrieve the results.
     float recaptchaScore = 0;
     String assessmentName = "";
+    String mfaResult = "";
     for (String line : response.split("\n")) {
       if (line.contains("The reCAPTCHA score is: ")) {
         recaptchaScore = Float.parseFloat(substr(line));
       } else if (line.contains("Assessment name: ")) {
         assessmentName = substr(line);
+      } else if (line.contains("MFA result:")) {
+        mfaResult = line;
       }
     }
 
@@ -299,14 +317,8 @@ public class SnippetsIT {
     browser.findElement(By.cssSelector("#assessment")).sendKeys(String.valueOf(recaptchaScore));
     return new JSONObject()
         .put("recaptchaScore", recaptchaScore)
-        .put("assessmentName", assessmentName);
-  }
-
-  enum AssessmentType {
-    ASSESSMENT,
-    ACCOUNT_DEFENDER;
-
-    AssessmentType() {}
+        .put("assessmentName", assessmentName)
+        .put("mfaResult", mfaResult);
   }
 
   public JSONObject initiateBrowserTest(String testURL)
@@ -345,5 +357,14 @@ public class SnippetsIT {
 
   public String substr(String line) {
     return line.substring((line.lastIndexOf(":") + 1)).trim();
+  }
+
+  enum AssessmentType {
+    ASSESSMENT,
+    ACCOUNT_DEFENDER,
+    MFA;
+
+    AssessmentType() {
+    }
   }
 }
