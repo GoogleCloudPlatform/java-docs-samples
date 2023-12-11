@@ -68,6 +68,8 @@ public class MultimodalQuery {
 
         byte[] imageBytes = Base64.getDecoder().decode(DATA_IMAGE_PNG_BASE_64);
 
+        // Initialize client that will be used to send requests.
+        // This client only needs to be created once, and can be reused for multiple requests.
         try (VertexAI vertexAI = new VertexAI(PROJECT_ID, LOCATION)) {
             GenerativeModel model = new GenerativeModel(MODEL_NAME, vertexAI);
 

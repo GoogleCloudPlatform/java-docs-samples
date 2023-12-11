@@ -35,6 +35,8 @@ public class QuestionAnswer {
     public static String simpleQuestion() throws Exception {
         String output = "";
 
+        // Initialize client that will be used to send requests.
+        // This client only needs to be created once, and can be reused for multiple requests.
         try (VertexAI vertexAI = new VertexAI(PROJECT_ID, LOCATION)) {
             GenerativeModel model = new GenerativeModel(MODEL_NAME, vertexAI);
 
