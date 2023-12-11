@@ -32,6 +32,12 @@ public class WithSafetySettings {
     private static final String LOCATION = "us-central1";
     private static final String MODEL_NAME = "gemini-pro-vision";
 
+    /**
+     * Use safety settings to avoid harmful questions and content generation.
+     *
+     * @return the answer and whether the request was blocked or not
+     * @throws Exception if connection to the model fails
+     */
     public static String safetyCheck() throws Exception {
         StringBuilder output = new StringBuilder();
 

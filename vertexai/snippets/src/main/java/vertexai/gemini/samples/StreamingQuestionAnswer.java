@@ -27,6 +27,12 @@ public class StreamingQuestionAnswer {
     private static final String LOCATION = "us-central1";
     private static final String MODEL_NAME = "gemini-pro-vision";
 
+    /**
+     * Ask a simple question and get the response via streaming.
+     *
+     * @return the answer to the question
+     * @throws Exception if connection to the model fails
+     */
     public static String streamingQuestion() throws Exception {
         StringBuilder output = new StringBuilder();
 

@@ -53,6 +53,13 @@ public class MultimodalChat {
             "k0sPXeGUWp2uD66se4T99aISPG3zLy9dfwlCb/A1x0ADDTTQQAO9PHqx+TS+mxlooIEGGmiggQYa6ES/" +
             "DQpJANBAAw000EADDTTQqJoCDTTQQAMNNNBAAy0R/RvS59KvO5/ILQAAAABJRU5ErkJggg==";
 
+    /**
+     * Conversation asking the model to recognise the brand associated with a logo,
+     * then ask which products are made by that brand.
+     *
+     * @return the output of the answers from the model
+     * @throws Exception if the connection to the model fails
+     */
     public static String brandLogoQuestion() throws Exception {
         StringBuilder output = new StringBuilder();
 

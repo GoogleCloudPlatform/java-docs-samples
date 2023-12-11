@@ -26,6 +26,12 @@ public class QuestionAnswer {
     private static final String LOCATION = "us-central1";
     private static final String MODEL_NAME = "gemini-pro-vision";
 
+    /**
+     * Ask a simple question to the model.
+     *
+     * @return the answer from the model
+     * @throws Exception if connection to the model fails
+     */
     public static String simpleQuestion() throws Exception {
         String output = "";
 

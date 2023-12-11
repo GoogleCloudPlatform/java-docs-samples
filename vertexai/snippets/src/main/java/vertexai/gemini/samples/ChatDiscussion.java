@@ -30,6 +30,12 @@ public class ChatDiscussion {
     private static final String LOCATION = "us-central1";
     private static final String MODEL_NAME = "gemini-pro-vision";
 
+    /**
+     * Ask three interrelated questions in a row using a <code>ChatSession</code>.
+     *
+     * @return the answers to the questions
+     * @throws IOException if the connection to the model fails
+     */
     public static String threeQuestions() throws IOException {
         StringBuilder output = new StringBuilder();
 

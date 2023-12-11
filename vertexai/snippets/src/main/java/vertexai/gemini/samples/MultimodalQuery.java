@@ -57,6 +57,12 @@ public class MultimodalQuery {
             "k0sPXeGUWp2uD66se4T99aISPG3zLy9dfwlCb/A1x0ADDTTQQAO9PHqx+TS+mxlooIEGGmiggQYa6ES/" +
             "DQpJANBAAw000EADDTTQqJoCDTTQQAMNNNBAAy0R/RvS59KvO5/ILQAAAABJRU5ErkJggg==";
 
+    /**
+     * Ask the model to recognise the brand associated with the logo image.
+     *
+     * @return the answer given by the model
+     * @throws Exception if connection to the model fails
+     */
     public static String brandQuestion() throws Exception {
         String output = "";
 
