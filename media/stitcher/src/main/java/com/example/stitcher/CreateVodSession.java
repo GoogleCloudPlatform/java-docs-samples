@@ -43,17 +43,19 @@ public class CreateVodSession {
   public static void createVodSession(
       String projectId, String location, String sourceUri, String adTagUri) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests. In this example, try-with-resources is used
+    // which automatically calls close() on the client to clean up resources.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       CreateVodSessionRequest createVodSessionRequest =
           CreateVodSessionRequest.newBuilder()
               .setParent(LocationName.of(projectId, location).toString())
               .setVodSession(
-                  VodSession.newBuilder().setSourceUri(sourceUri).setAdTagUri(adTagUri)
-                      .setAdTracking(
-                          AdTracking.SERVER).build())
+                  VodSession.newBuilder()
+                      .setSourceUri(sourceUri)
+                      .setAdTagUri(adTagUri)
+                      .setAdTracking(AdTracking.SERVER)
+                      .build())
               .build();
 
       VodSession response = videoStitcherServiceClient.createVodSession(createVodSessionRequest);
