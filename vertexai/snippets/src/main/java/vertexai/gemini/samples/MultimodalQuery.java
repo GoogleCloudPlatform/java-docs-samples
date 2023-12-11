@@ -58,7 +58,7 @@ public class MultimodalQuery {
             "DQpJANBAAw000EADDTTQqJoCDTTQQAMNNNBAAy0R/RvS59KvO5/ILQAAAABJRU5ErkJggg==";
 
     public static String brandQuestion() throws Exception {
-        StringBuilder output = new StringBuilder();
+        String output = "";
 
         byte[] imageBytes = Base64.getDecoder().decode(DATA_IMAGE_PNG_BASE_64);
 
@@ -70,11 +70,9 @@ public class MultimodalQuery {
                     "What brand does the following logo represent?",
                     PartMaker.fromMimeTypeAndData("image/png", imageBytes)
                 )));
-            String text = ResponseHandler.getText(response);
-
-            output.append(text);
+            output = ResponseHandler.getText(response);
         }
 
-        return output.toString();
+        return output;
     }
 }

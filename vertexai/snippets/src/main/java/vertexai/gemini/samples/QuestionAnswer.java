@@ -27,17 +27,15 @@ public class QuestionAnswer {
     private static final String MODEL_NAME = "gemini-pro-vision";
 
     public static String simpleQuestion() throws Exception {
-        StringBuilder output = new StringBuilder();
+        String output = "";
 
         try (VertexAI vertexAI = new VertexAI(PROJECT_ID, LOCATION)) {
             GenerativeModel model = new GenerativeModel(MODEL_NAME, vertexAI);
 
             GenerateContentResponse response = model.generateContent("Why is the sky blue?");
-            String text = ResponseHandler.getText(response);
-
-            output.append(text);
+            output = ResponseHandler.getText(response);
         }
 
-        return output.toString();
+        return output;
     }
 }
