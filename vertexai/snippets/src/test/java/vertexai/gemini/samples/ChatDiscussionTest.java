@@ -27,12 +27,12 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 @RunWith(JUnit4.class)
 public class ChatDiscussionTest {
-    private static final String GCP_PROJECT_VAR_NAME = "GOOGLE_CLOUD_PROJECT";
+    private static final String GOOGLE_CLOUD_PROJECT = "GOOGLE_CLOUD_PROJECT";
 
     @BeforeClass
     public static void setUp() {
-        assertWithMessage(String.format("Missing environment variable '%s' ", GCP_PROJECT_VAR_NAME))
-            .that(System.getenv(GCP_PROJECT_VAR_NAME))
+        assertWithMessage(String.format("Missing environment variable '%s' ", GOOGLE_CLOUD_PROJECT))
+            .that(System.getenv(GOOGLE_CLOUD_PROJECT))
             .isNotEmpty();
     }
 
