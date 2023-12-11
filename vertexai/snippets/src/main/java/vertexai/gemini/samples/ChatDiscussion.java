@@ -47,7 +47,6 @@ public class ChatDiscussion {
             ChatSession chatSession = new ChatSession(model);
 
             GenerateContentResponse response;
-
             response = chatSession.sendMessage("What are large language models?");
             output.append(ResponseHandler.getText(response));
 

@@ -71,14 +71,15 @@ public class MultimodalChat {
             GenerativeModel model = new GenerativeModel(MODEL_NAME, vertexAI);
 
             ChatSession chatSession = new ChatSession(model);
-            GenerateContentResponse response;
 
+            GenerateContentResponse response;
             response = chatSession.sendMessage(ContentMaker.fromMultiModalData(
                 "What brand does the following logo represent?",
                 PartMaker.fromMimeTypeAndData("image/png", imageBytes)
             ));
             output.append("Answer: ")
-                .append(ResponseHandler.getText(response)).append("\n\n");
+                .append(ResponseHandler.getText(response))
+                .append("\n\n");
 
             response = chatSession.sendMessage("Give me 3 examples of products from that brand: ");
             output.append("Answer: ")
