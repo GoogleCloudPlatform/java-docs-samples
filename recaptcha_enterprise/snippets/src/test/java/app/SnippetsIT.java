@@ -182,6 +182,7 @@ public class SnippetsIT {
       ExecutionException, InvalidKeyException {
 
     String testURL = "http://localhost:" + randomServerPort + "/";
+    String accountId = "default-" + UUID.randomUUID().toString().split("-")[0];
 
     // Secret not shared with Google.
     String HMAC_KEY = "123456789";
@@ -191,21 +192,19 @@ public class SnippetsIT {
     SecretKeySpec secretKeySpec = new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
         "HmacSHA256");
     mac.init(secretKeySpec);
-    byte[] hashBytes = mac.doFinal(
-        ("default-" + UUID.randomUUID().toString().split("-")[0])
-            .getBytes(StandardCharsets.UTF_8));
-    ByteString hashedAccountId = ByteString.copyFrom(hashBytes);
+    byte[] hashBytes = mac.doFinal(accountId.getBytes(StandardCharsets.UTF_8));
+    asdfByteString hashedAccountId = ByteString.copyFrom(hashBytes);
 
     // Create the assessment.
     JSONObject createAssessmentResult =
-        createAssessment(testURL, hashedAccountId, AssessmentType.ACCOUNT_DEFENDER);
+        createAssessment(testURL, accountId, AssessmentType.ACCOUNT_DEFENDER);
     String assessmentName = createAssessmentResult.getString("assessmentName");
     // Verify that the assessment name has been modified post the assessment creation.
     assertThat(assessmentName).isNotEmpty();
 
     // Annotate the assessment.
     AnnotateAccountDefenderAssessment.annotateAssessment(
-        PROJECT_ID, assessmentName, hashedAccountId);
+        PROJECT_ID, assessmentName, accountId);
     assertThat(stdOut.toString()).contains("Annotated response sent successfully ! ");
 
     // NOTE: The below assert statements have no significant effect,
@@ -247,7 +246,7 @@ public class SnippetsIT {
   }
 
   public JSONObject createAssessment(
-      String testURL, ByteString hashedAccountId, AssessmentType assessmentType)
+      String testURL, String accountId, AssessmentType assessmentType)
       throws IOException, JSONException, InterruptedException, ExecutionException {
 
     // Setup the automated browser test and retrieve the token and action.
@@ -262,7 +261,7 @@ public class SnippetsIT {
               RECAPTCHA_SITE_KEY_1,
               tokenActionPair.getString("token"),
               tokenActionPair.getString("action"),
-              hashedAccountId);
+              accountId);
           break;
         }
       case ASSESSMENT:
@@ -280,7 +279,7 @@ public class SnippetsIT {
     String response = stdOut.toString();
     assertThat(response).contains("Assessment name: ");
     assertThat(response).contains("The reCAPTCHA score is: ");
-    if (!hashedAccountId.isEmpty()) {
+    if (!accountId.isEmpty()) {
       assertThat(response).contains("Account Defender Assessment Result: ");
     }
 

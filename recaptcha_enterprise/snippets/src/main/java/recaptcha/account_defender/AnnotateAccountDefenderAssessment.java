@@ -27,6 +27,7 @@ import com.google.recaptchaenterprise.v1.AnnotateAssessmentResponse;
 import com.google.recaptchaenterprise.v1.AssessmentName;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 public class AnnotateAccountDefenderAssessment {
 
@@ -38,10 +39,10 @@ public class AnnotateAccountDefenderAssessment {
     // assessmentId: Value of the 'name' field returned from the CreateAssessment call.
     String assessmentId = "account-defender-assessment-id";
 
-    // hashedAccountId: Set the hashedAccountId corresponding to the assessment id.
-    ByteString hashedAccountId = ByteString.copyFrom(new byte[] {});
+    // accountId: Set the accountId corresponding to the assessment id.
+    String accountId = "default" + UUID.randomUUID().toString().split("-")[0];
 
-    annotateAssessment(projectID, assessmentId, hashedAccountId);
+    annotateAssessment(projectID, assessmentId, accountId);
   }
 
   /**
@@ -49,7 +50,7 @@ public class AnnotateAccountDefenderAssessment {
    * feedback on the correctness of recaptcha prediction.
    */
   public static void annotateAssessment(
-      String projectID, String assessmentId, ByteString hashedAccountId) throws IOException {
+      String projectID, String assessmentId, String accountId) throws IOException {
 
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
       // Build the annotation request.
@@ -60,7 +61,7 @@ public class AnnotateAccountDefenderAssessment {
               .setName(AssessmentName.of(projectID, assessmentId).toString())
               .setAnnotation(Annotation.LEGITIMATE)
               .addReasons(Reason.PASSED_TWO_FACTOR)
-              .setHashedAccountId(hashedAccountId)
+              .setAccountId(accountId)
               .build();
 
       // Empty response is sent back.
