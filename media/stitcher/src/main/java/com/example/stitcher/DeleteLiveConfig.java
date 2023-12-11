@@ -44,17 +44,17 @@ public class DeleteLiveConfig {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (VideoStitcherServiceClient videoStitcherServiceClient =
-        VideoStitcherServiceClient.create()) {
-      DeleteLiveConfigRequest deleteLiveConfigRequest =
-          DeleteLiveConfigRequest.newBuilder()
-              .setName(LiveConfigName.of(projectId, location, liveConfigId).toString())
-              .build();
+    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
+    DeleteLiveConfigRequest deleteLiveConfigRequest =
+        DeleteLiveConfigRequest.newBuilder()
+            .setName(LiveConfigName.of(projectId, location, liveConfigId).toString())
+            .build();
 
-      videoStitcherServiceClient.deleteLiveConfigAsync(deleteLiveConfigRequest)
-          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-      System.out.println("Deleted live config");
-    }
+    videoStitcherServiceClient
+        .deleteLiveConfigAsync(deleteLiveConfigRequest)
+        .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+    System.out.println("Deleted live config");
+    videoStitcherServiceClient.close();
   }
 }
 // [END videostitcher_delete_live_config]

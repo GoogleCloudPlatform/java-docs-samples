@@ -63,42 +63,43 @@ public class CreateCdnKey {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (VideoStitcherServiceClient videoStitcherServiceClient =
-        VideoStitcherServiceClient.create()) {
-      CdnKey cdnKey;
-      if (isMediaCdn) {
-        cdnKey =
-            CdnKey.newBuilder()
-                .setHostname(hostname)
-                .setMediaCdnKey(
-                    MediaCdnKey.newBuilder()
-                        .setKeyName(keyName)
-                        .setPrivateKey(ByteString.copyFromUtf8(privateKey))
-                        .build())
-                .build();
-      } else {
-        cdnKey =
-            CdnKey.newBuilder()
-                .setHostname(hostname)
-                .setGoogleCdnKey(
-                    GoogleCdnKey.newBuilder()
-                        .setKeyName(keyName)
-                        .setPrivateKey(ByteString.copyFromUtf8(privateKey))
-                        .build())
-                .build();
-      }
-
-      CreateCdnKeyRequest createCdnKeyRequest =
-          CreateCdnKeyRequest.newBuilder()
-              .setParent(LocationName.of(projectId, location).toString())
-              .setCdnKeyId(cdnKeyId)
-              .setCdnKey(cdnKey)
+    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
+    CdnKey cdnKey;
+    if (isMediaCdn) {
+      cdnKey =
+          CdnKey.newBuilder()
+              .setHostname(hostname)
+              .setMediaCdnKey(
+                  MediaCdnKey.newBuilder()
+                      .setKeyName(keyName)
+                      .setPrivateKey(ByteString.copyFromUtf8(privateKey))
+                      .build())
               .build();
-
-      CdnKey result = videoStitcherServiceClient.createCdnKeyAsync(createCdnKeyRequest)
-          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-      System.out.println("Created new CDN key: " + result.getName());
+    } else {
+      cdnKey =
+          CdnKey.newBuilder()
+              .setHostname(hostname)
+              .setGoogleCdnKey(
+                  GoogleCdnKey.newBuilder()
+                      .setKeyName(keyName)
+                      .setPrivateKey(ByteString.copyFromUtf8(privateKey))
+                      .build())
+              .build();
     }
+
+    CreateCdnKeyRequest createCdnKeyRequest =
+        CreateCdnKeyRequest.newBuilder()
+            .setParent(LocationName.of(projectId, location).toString())
+            .setCdnKeyId(cdnKeyId)
+            .setCdnKey(cdnKey)
+            .build();
+
+    CdnKey result =
+        videoStitcherServiceClient
+            .createCdnKeyAsync(createCdnKeyRequest)
+            .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+    System.out.println("Created new CDN key: " + result.getName());
+    videoStitcherServiceClient.close();
   }
 }
 // [END videostitcher_create_cdn_key]

@@ -44,17 +44,17 @@ public class DeleteCdnKey {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (VideoStitcherServiceClient videoStitcherServiceClient =
-        VideoStitcherServiceClient.create()) {
-      DeleteCdnKeyRequest deleteCdnKeyRequest =
-          DeleteCdnKeyRequest.newBuilder()
-              .setName(CdnKeyName.of(projectId, location, cdnKeyId).toString())
-              .build();
+    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
+    DeleteCdnKeyRequest deleteCdnKeyRequest =
+        DeleteCdnKeyRequest.newBuilder()
+            .setName(CdnKeyName.of(projectId, location, cdnKeyId).toString())
+            .build();
 
-      videoStitcherServiceClient.deleteCdnKeyAsync(deleteCdnKeyRequest)
-          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-      System.out.println("Deleted CDN key");
-    }
+    videoStitcherServiceClient
+        .deleteCdnKeyAsync(deleteCdnKeyRequest)
+        .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+    System.out.println("Deleted CDN key");
+    videoStitcherServiceClient.close();
   }
 }
 // [END videostitcher_delete_cdn_key]
