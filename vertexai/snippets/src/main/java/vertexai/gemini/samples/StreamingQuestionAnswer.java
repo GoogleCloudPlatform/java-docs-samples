@@ -27,7 +27,9 @@ public class StreamingQuestionAnswer {
     private static final String LOCATION = "us-central1";
     private static final String MODEL_NAME = "gemini-pro-vision";
 
-    public static void main(String[] args) throws Exception {
+    public static String streamingQuestion() throws Exception {
+        StringBuilder output = new StringBuilder();
+
         try (VertexAI vertexAI = new VertexAI(PROJECT_ID, LOCATION)) {
             GenerativeModel model = new GenerativeModel(MODEL_NAME, vertexAI);
 
@@ -35,8 +37,10 @@ public class StreamingQuestionAnswer {
                 model.generateContentStream("Why is the sky blue?");
 
             for (GenerateContentResponse respElement : responseStream) {
-                System.out.print(ResponseHandler.getText(respElement));
+                output.append(ResponseHandler.getText(respElement));
             }
         }
+
+        return output.toString();
     }
 }

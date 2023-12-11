@@ -26,14 +26,18 @@ public class QuestionAnswer {
     private static final String LOCATION = "us-central1";
     private static final String MODEL_NAME = "gemini-pro-vision";
 
-    public static void main(String[] args) throws Exception {
+    public static String simpleQuestion() throws Exception {
+        StringBuilder output = new StringBuilder();
+
         try (VertexAI vertexAI = new VertexAI(PROJECT_ID, LOCATION)) {
             GenerativeModel model = new GenerativeModel(MODEL_NAME, vertexAI);
 
             GenerateContentResponse response = model.generateContent("Why is the sky blue?");
             String text = ResponseHandler.getText(response);
 
-            System.out.println("Answer: " + text);
+            output.append(text);
         }
+
+        return output.toString();
     }
 }

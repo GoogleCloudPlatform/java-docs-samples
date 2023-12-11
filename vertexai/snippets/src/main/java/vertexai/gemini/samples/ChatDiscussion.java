@@ -22,13 +22,17 @@ import com.google.cloud.vertexai.generativeai.preview.ResponseHandler;
 import com.google.cloud.vertexai.v1beta1.GenerateContentResponse;
 import com.google.cloud.vertexai.v1beta1.GenerationConfig;
 
+import java.io.IOException;
+
 public class ChatDiscussion {
 
     private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
     private static final String LOCATION = "us-central1";
     private static final String MODEL_NAME = "gemini-pro-vision";
 
-    public static void main(String[] args) throws Exception {
+    public static String threeQuestions() throws IOException {
+        StringBuilder output = new StringBuilder();
+
         try (VertexAI vertexAI = new VertexAI(PROJECT_ID, LOCATION)) {
             GenerativeModel model = new GenerativeModel(
                 MODEL_NAME,
@@ -40,17 +44,18 @@ public class ChatDiscussion {
 
             GenerateContentResponse response;
 
-            System.out.println("===================");
             response = chatSession.sendMessage("What are large language models?");
-            System.out.println(ResponseHandler.getText(response));
+            output.append(ResponseHandler.getText(response));
 
-            System.out.println("===================");
+            output.append("\n===================\n");
             response = chatSession.sendMessage("How do they work?");
-            System.out.println(ResponseHandler.getText(response));
+            output.append(ResponseHandler.getText(response));
 
-            System.out.println("===================");
+            output.append("\n===================\n");
             response = chatSession.sendMessage("Can you please name some of them?");
-            System.out.println(ResponseHandler.getText(response));
+            output.append(ResponseHandler.getText(response));
+
+            return output.toString();
         }
     }
 }

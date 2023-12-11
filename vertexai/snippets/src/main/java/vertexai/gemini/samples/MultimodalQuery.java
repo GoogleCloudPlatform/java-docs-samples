@@ -57,7 +57,9 @@ public class MultimodalQuery {
             "k0sPXeGUWp2uD66se4T99aISPG3zLy9dfwlCb/A1x0ADDTTQQAO9PHqx+TS+mxlooIEGGmiggQYa6ES/" +
             "DQpJANBAAw000EADDTTQqJoCDTTQQAMNNNBAAy0R/RvS59KvO5/ILQAAAABJRU5ErkJggg==";
 
-    public static void main(String[] args) throws Exception {
+    public static String brandQuestion() throws Exception {
+        StringBuilder output = new StringBuilder();
+
         byte[] imageBytes = Base64.getDecoder().decode(DATA_IMAGE_PNG_BASE_64);
 
         try (VertexAI vertexAI = new VertexAI(PROJECT_ID, LOCATION)) {
@@ -70,7 +72,9 @@ public class MultimodalQuery {
                 )));
             String text = ResponseHandler.getText(response);
 
-            System.out.println("Answer: " + text);
+            output.append(text);
         }
+
+        return output.toString();
     }
 }

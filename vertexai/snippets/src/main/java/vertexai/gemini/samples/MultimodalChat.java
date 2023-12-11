@@ -53,7 +53,9 @@ public class MultimodalChat {
             "k0sPXeGUWp2uD66se4T99aISPG3zLy9dfwlCb/A1x0ADDTTQQAO9PHqx+TS+mxlooIEGGmiggQYa6ES/" +
             "DQpJANBAAw000EADDTTQqJoCDTTQQAMNNNBAAy0R/RvS59KvO5/ILQAAAABJRU5ErkJggg==";
 
-    public static void main(String[] args) throws Exception {
+    public static String brandLogoQuestion() throws Exception {
+        StringBuilder output = new StringBuilder();
+
         byte[] imageBytes = Base64.getDecoder().decode(DATA_IMAGE_PNG_BASE_64);
 
         try (VertexAI vertexAI = new VertexAI(PROJECT_ID, LOCATION)) {
@@ -66,10 +68,14 @@ public class MultimodalChat {
                 "What brand does the following logo represent?",
                 PartMaker.fromMimeTypeAndData("image/png", imageBytes)
             ));
-            System.out.println("Answer: " + ResponseHandler.getText(response));
+            output.append("Answer: ")
+                .append(ResponseHandler.getText(response)).append("\n\n");
 
             response = chatSession.sendMessage("Give me 3 examples of products from that brand: ");
-            System.out.println("Answer: " + ResponseHandler.getText(response));
+            output.append("Answer: ")
+                .append(ResponseHandler.getText(response));
         }
+
+        return output.toString();
     }
 }
