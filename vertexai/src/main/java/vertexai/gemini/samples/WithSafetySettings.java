@@ -28,7 +28,7 @@ import java.util.List;
 
 public class WithSafetySettings {
 
-    private static final String PROJECT_ID = "glaforge-genai-playground";
+    private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
     private static final String LOCATION = "us-central1";
     private static final String MODEL_NAME = "gemini-pro-vision";
 
