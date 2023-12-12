@@ -17,18 +17,15 @@
 package vertexai.gemini;
 
 import com.google.cloud.vertexai.VertexAI;
-import com.google.cloud.vertexai.api.Blob;
-import com.google.cloud.vertexai.api.Content;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.GenerationConfig;
-import com.google.cloud.vertexai.api.Part;
+import com.google.cloud.vertexai.generativeai.preview.ContentMaker;
 import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
+import com.google.cloud.vertexai.generativeai.preview.PartMaker;
 import com.google.cloud.vertexai.generativeai.preview.ResponseStream;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 
 public class SingleTurnMultimodal {
 
@@ -44,7 +41,8 @@ public class SingleTurnMultimodal {
   }
 
   // Analyses the given multimodal input.
-  public static void generateContent(String projectId, String location, String modelName, String textPrompt, String dataImageBase64) throws IOException {
+  public static void generateContent(String projectId, String location, String modelName,
+      String textPrompt, String dataImageBase64) throws IOException {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
@@ -60,20 +58,11 @@ public class SingleTurnMultimodal {
               .build();
 
       GenerativeModel model = new GenerativeModel(modelName, generationConfig, vertexAI);
-
-      List<Content> contents = new ArrayList<>();
-      contents.add(Content.newBuilder()
-          .setRole("user")
-          .addParts(Part.newBuilder()
-              .setText(textPrompt))
-          .addParts(Part.newBuilder()
-              .setInlineData(Blob.newBuilder()
-                  // Update Mime type according to your image
-                  .setMimeType("image/jpeg")
-                  .setData(decodedImage)))
-          .build());
-
-      ResponseStream<GenerateContentResponse> responseStream = model.generateContentStream(contents);
+      ResponseStream<GenerateContentResponse> responseStream = model.generateContentStream(
+          ContentMaker.fromMultiModalData(
+              textPrompt,
+              PartMaker.fromMimeTypeAndData("image/jpg", decodedImage)
+          ));
       responseStream.stream().forEach(System.out::println);
     }
   }
