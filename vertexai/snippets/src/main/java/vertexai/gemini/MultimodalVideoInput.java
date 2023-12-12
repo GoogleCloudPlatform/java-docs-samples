@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START aiplatform_gemini_pro_video_example]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.preview.ContentMaker;
@@ -55,3 +56,4 @@ public class MultimodalVideoInput {
     }
   }
 }
+// [END aiplatform_gemini_pro_video_example]

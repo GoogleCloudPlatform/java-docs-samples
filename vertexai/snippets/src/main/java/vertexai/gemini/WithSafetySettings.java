@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START aiplatform_gemini_pro_safety_example]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Candidate;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -84,3 +85,4 @@ public class WithSafetySettings {
     }
   }
 }
+// [END aiplatform_gemini_pro_safety_example]

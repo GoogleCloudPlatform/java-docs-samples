@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START aiplatform_gemini_pro_example]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.preview.ContentMaker;
@@ -50,7 +51,7 @@ public class MultimodalQuery {
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
       GenerateContentResponse response = model.generateContent(
           ContentMaker.fromMultiModalData(
-              "What brand does the following logo represent?",
+              "What is this image?",
               PartMaker.fromMimeTypeAndData("image/jpg", imageBytes)
           ));
 
@@ -59,3 +60,4 @@ public class MultimodalQuery {
     }
   }
 }
+// [END aiplatform_gemini_pro_example]

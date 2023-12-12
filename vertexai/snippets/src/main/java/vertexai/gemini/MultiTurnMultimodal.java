@@ -34,7 +34,7 @@ public class MultiTurnMultimodal {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-ultra-vision";
+    String modelName = "gemini-pro-vision";
 
     multiTurnMultimodal(projectId, location, modelName);
   }

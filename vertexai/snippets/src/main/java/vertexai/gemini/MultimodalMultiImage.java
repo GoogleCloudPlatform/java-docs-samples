@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START aiplatform_gemini_multi_image_example]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Content;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -90,3 +91,4 @@ public class MultimodalMultiImage {
     }
   }
 }
+// [END aiplatform_gemini_multi_image_example]
