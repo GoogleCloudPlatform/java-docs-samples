@@ -18,7 +18,7 @@ package vertexai.gemini.samples;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.preview.ResponseHandler;
-import com.google.cloud.vertexai.v1beta1.GenerateContentResponse;
+import com.google.cloud.vertexai.api.GenerateContentResponse;
 
 public class QuestionAnswer {
 
@@ -33,7 +33,7 @@ public class QuestionAnswer {
      * @throws Exception if connection to the model fails
      */
     public static String simpleQuestion() throws Exception {
-        String output = "";
+        String output;
 
         // Initialize client that will be used to send requests.
         // This client only needs to be created once, and can be reused for multiple requests.

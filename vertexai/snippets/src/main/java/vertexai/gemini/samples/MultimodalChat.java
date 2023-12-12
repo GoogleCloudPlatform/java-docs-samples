@@ -17,7 +17,7 @@ package vertexai.gemini.samples;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.generativeai.preview.*;
-import com.google.cloud.vertexai.v1beta1.GenerateContentResponse;
+import com.google.cloud.vertexai.api.GenerateContentResponse;
 
 import java.util.Base64;
 

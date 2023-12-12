@@ -19,8 +19,7 @@ import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.generativeai.preview.ChatSession;
 import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.preview.ResponseHandler;
-import com.google.cloud.vertexai.v1beta1.GenerateContentResponse;
-import com.google.cloud.vertexai.v1beta1.GenerationConfig;
+import com.google.cloud.vertexai.api.GenerateContentResponse;
 
 import java.io.IOException;
 

@@ -20,7 +20,7 @@ import com.google.cloud.vertexai.generativeai.preview.ContentMaker;
 import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.preview.PartMaker;
 import com.google.cloud.vertexai.generativeai.preview.ResponseHandler;
-import com.google.cloud.vertexai.v1beta1.GenerateContentResponse;
+import com.google.cloud.vertexai.api.GenerateContentResponse;
 
 import java.util.Base64;
 import java.util.Collections;
@@ -64,7 +64,7 @@ public class MultimodalQuery {
      * @throws Exception if connection to the model fails
      */
     public static String brandQuestion() throws Exception {
-        String output = "";
+        String output;
 
         byte[] imageBytes = Base64.getDecoder().decode(DATA_IMAGE_PNG_BASE_64);
 

@@ -18,10 +18,10 @@ package vertexai.gemini.samples;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.preview.ResponseHandler;
-import com.google.cloud.vertexai.v1beta1.Candidate;
-import com.google.cloud.vertexai.v1beta1.GenerateContentResponse;
-import com.google.cloud.vertexai.v1beta1.HarmCategory;
-import com.google.cloud.vertexai.v1beta1.SafetySetting;
+import com.google.cloud.vertexai.api.Candidate;
+import com.google.cloud.vertexai.api.GenerateContentResponse;
+import com.google.cloud.vertexai.api.HarmCategory;
+import com.google.cloud.vertexai.api.SafetySetting;
 
 import java.util.Arrays;
 import java.util.List;
