@@ -18,12 +18,12 @@ package vertexai.gemini;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
-import com.google.cloud.vertexai.generativeai.preview.ChatSession;
+import com.google.cloud.vertexai.generativeai.preview.ContentMaker;
 import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
-import com.google.cloud.vertexai.generativeai.preview.ResponseHandler;
+import com.google.cloud.vertexai.generativeai.preview.PartMaker;
 import java.io.IOException;
 
-public class ChatDiscussion {
+public class Quickstart {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -31,30 +31,25 @@ public class ChatDiscussion {
     String location = "us-central1";
     String modelName = "gemini-pro-vision";
 
-    chatDiscussion(projectId, location, modelName);
+    String output = quickstart(projectId, location, modelName);
+    System.out.println(output);
   }
 
-  // Ask interrelated questions in a row using a ChatSession object.
-  public static void chatDiscussion(String projectId, String location, String modelName)
+  // Analyzes the provided Multimodal input.
+  public static String quickstart(String projectId, String location, String modelName)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      GenerateContentResponse response;
+      String imageUri = "https://storage.googleapis.com/generativeai-downloads/images/scones.jpg";
 
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
-      // Create a chat session to be used for interactive conversation.
-      ChatSession chatSession = new ChatSession(model);
+      GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
+          "What's in this photo",
+          PartMaker.fromMimeTypeAndData("image/jpg", imageUri)
+      ));
 
-      response = chatSession.sendMessage("Hello.");
-      System.out.println(ResponseHandler.getText(response));
-
-      response = chatSession.sendMessage("What are all the colors in a rainbow?");
-      System.out.println(ResponseHandler.getText(response));
-
-      response = chatSession.sendMessage("Why does it appear when it rains?");
-      System.out.println(ResponseHandler.getText(response));
-      System.out.println("Chat Ended.");
+      return response.toString();
     }
   }
 }

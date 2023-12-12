@@ -22,6 +22,8 @@ import com.google.cloud.vertexai.generativeai.preview.ContentMaker;
 import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.preview.PartMaker;
 import com.google.cloud.vertexai.generativeai.preview.ResponseHandler;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Collections;
 
@@ -32,27 +34,27 @@ public class MultimodalQuery {
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
     String modelName = "gemini-pro-vision";
-    String dataImagePngBase64 = "your-image-png-base64-encoded";
+    String dataImageBase64 = "your-base64-encoded-image";
 
-    String output = multimodalQuery(projectId, location, modelName, dataImagePngBase64);
+    String output = multimodalQuery(projectId, location, modelName, dataImageBase64);
     System.out.println(output);
   }
 
 
   // Ask the model to recognise the brand associated with the logo image.
   public static String multimodalQuery(String projectId, String location, String modelName,
-      String dataImagePngBase64) throws Exception {
+      String dataImageBase64) throws Exception {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       String output;
-      byte[] imageBytes = Base64.getDecoder().decode(dataImagePngBase64);
+      byte[] imageBytes = Base64.getDecoder().decode(dataImageBase64);
 
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
       GenerateContentResponse response = model.generateContent(
           ContentMaker.fromMultiModalData(
               "What brand does the following logo represent?",
-              PartMaker.fromMimeTypeAndData("image/png", imageBytes)
+              PartMaker.fromMimeTypeAndData("image/jpg", imageBytes)
           ));
 
       output = ResponseHandler.getText(response);

@@ -19,10 +19,10 @@ package vertexai.gemini;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Candidate;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
+import com.google.cloud.vertexai.api.GenerationConfig;
 import com.google.cloud.vertexai.api.HarmCategory;
 import com.google.cloud.vertexai.api.SafetySetting;
 import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
-import com.google.cloud.vertexai.generativeai.preview.ResponseHandler;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,20 +33,29 @@ public class WithSafetySettings {
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
     String modelName = "gemini-pro-vision";
-    String offensiveText = "some-harmful-text";
+    String textPrompt = "your-text-here";
 
-    String output = safetyCheck(projectId, location, modelName, offensiveText);
+    String output = safetyCheck(projectId, location, modelName, textPrompt);
     System.out.println(output);
   }
 
   // Use safety settings to avoid harmful questions and content generation.
   public static String safetyCheck(String projectId, String location, String modelName,
-      String offensiveText) throws Exception {
+      String textPrompt) throws Exception {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       StringBuilder output = new StringBuilder();
-      GenerativeModel model = new GenerativeModel(modelName, vertexAI);
+
+      GenerationConfig generationConfig =
+          GenerationConfig.newBuilder()
+              .setMaxOutputTokens(2048)
+              .setTemperature(0.4F)
+              .setTopK(32)
+              .setTopP(1)
+              .build();
+
+      GenerativeModel model = new GenerativeModel(modelName, generationConfig, vertexAI);
 
       List<SafetySetting> safetySettings = Arrays.asList(
           SafetySetting.newBuilder()
@@ -60,18 +69,17 @@ public class WithSafetySettings {
       );
 
       GenerateContentResponse response = model.generateContent(
-          offensiveText,
+          textPrompt,
           safetySettings
       );
+      output.append(response).append("\n");
 
-      String text = ResponseHandler.getText(response);
-      output.append(text).append("\n\n");
-
+      // Verifies if the above content has been blocked for safety reasons.
       boolean blockedForSafetyReason = response.getCandidatesList()
           .stream()
           .anyMatch(candidate -> candidate.getFinishReason() == Candidate.FinishReason.SAFETY);
+      output.append("Blocked for safety reasons?: ").append(blockedForSafetyReason);
 
-      output.append("Blocked for safety reasons?").append(blockedForSafetyReason);
       return output.toString();
     }
   }
