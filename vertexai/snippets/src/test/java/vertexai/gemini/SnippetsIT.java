@@ -22,9 +22,8 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Base64;
 import org.junit.After;
 import org.junit.Before;
@@ -72,6 +71,28 @@ public class SnippetsIT {
     }
   }
 
+  public static String readBase64Image(String imagePath) {
+    String base64EncodedImage = "";
+    InputStream inputStream = MultiTurnMultimodal.class.getClassLoader()
+        .getResourceAsStream(imagePath);
+    try {
+      assert inputStream != null;
+      byte[] imageBytes = inputStream.readAllBytes();
+      base64EncodedImage = Base64.getEncoder().encodeToString(imageBytes);
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if (inputStream != null) {
+          inputStream.close();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return base64EncodedImage;
+  }
+
   @Before
   public void beforeEach() {
     bout = new ByteArrayOutputStream();
@@ -100,8 +121,7 @@ public class SnippetsIT {
 
   @Test
   public void testMultimodalQuery() throws Exception {
-    String dataImageBase64 = Base64.getEncoder()
-        .encodeToString(Files.readAllBytes(Paths.get("src/main/resources/scones.jpg")));
+    String dataImageBase64 = readBase64Image("scones.jpg");
 
     String output = MultimodalQuery.multimodalQuery(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         dataImageBase64);
@@ -135,9 +155,9 @@ public class SnippetsIT {
 
   @Test
   public void testSingleTurnMultimodal() throws IOException {
-    String dataImageBase64 = Base64.getEncoder()
-        .encodeToString(Files.readAllBytes(Paths.get("src/main/resources/scones.jpg")));
-    SingleTurnMultimodal.generateContent(PROJECT_ID, LOCATION, GEMINI_PRO_VISION, "What is this image", dataImageBase64);
+    String dataImageBase64 = readBase64Image("scones.jpg");
+    SingleTurnMultimodal.generateContent(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
+        "What is this image", dataImageBase64);
     assertThat(out.toString()).contains("scones");
   }
 

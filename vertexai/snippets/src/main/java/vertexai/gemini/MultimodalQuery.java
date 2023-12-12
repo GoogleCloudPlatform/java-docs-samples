@@ -22,10 +22,7 @@ import com.google.cloud.vertexai.generativeai.preview.ContentMaker;
 import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.preview.PartMaker;
 import com.google.cloud.vertexai.generativeai.preview.ResponseHandler;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Base64;
-import java.util.Collections;
 
 public class MultimodalQuery {
 

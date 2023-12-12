@@ -29,7 +29,8 @@ public class Quickstart {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-pro-vision";
+    // For Gemini-pro, pass in the image as base64 encoded bytes.
+    String modelName = "gemini-ultra-vision";
 
     String output = quickstart(projectId, location, modelName);
     System.out.println(output);

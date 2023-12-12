@@ -25,8 +25,7 @@ import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.preview.PartMaker;
 import com.google.cloud.vertexai.generativeai.preview.ResponseHandler;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.Base64;
 
 public class MultiTurnMultimodal {
@@ -48,8 +47,7 @@ public class MultiTurnMultimodal {
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       // Update the values for your query.
       String firstTextPrompt = "What is this image";
-      String dataImageBase64 = Base64.getEncoder()
-          .encodeToString(Files.readAllBytes(Paths.get("src/main/resources/scones.jpg")));
+      String dataImageBase64 = readBase64Image("scones.jpg");
       String secondTextPrompt = "what did I just show you";
 
       GenerationConfig generationConfig =
@@ -79,5 +77,27 @@ public class MultiTurnMultimodal {
       response = chatSession.sendMessage(secondTextPrompt);
       System.out.println(ResponseHandler.getText(response));
     }
+  }
+
+  public static String readBase64Image(String imagePath) {
+    String base64EncodedImage = "";
+    InputStream inputStream = MultiTurnMultimodal.class.getClassLoader()
+        .getResourceAsStream(imagePath);
+    try {
+      assert inputStream != null;
+      byte[] imageBytes = inputStream.readAllBytes();
+      base64EncodedImage = Base64.getEncoder().encodeToString(imageBytes);
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if (inputStream != null) {
+          inputStream.close();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return base64EncodedImage;
   }
 }
