@@ -24,6 +24,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Base64;
 import org.junit.After;
 import org.junit.Before;
@@ -39,7 +41,6 @@ public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
   private static final String GEMINI_PRO_VISION = "gemini-pro-vision";
-  private static final String GEMINI_ULTRA_VISION = "gemini-ultra-vision";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   @Rule
@@ -71,26 +72,28 @@ public class SnippetsIT {
     }
   }
 
-  public static String readBase64Image(String imagePath) {
-    String base64EncodedImage = "";
-    InputStream inputStream = MultiTurnMultimodal.class.getClassLoader()
-        .getResourceAsStream(imagePath);
-    try {
-      assert inputStream != null;
-      byte[] imageBytes = inputStream.readAllBytes();
-      base64EncodedImage = Base64.getEncoder().encodeToString(imageBytes);
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        if (inputStream != null) {
-          inputStream.close();
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
+  // Reads the image data from the given URL.
+  public static byte[] readImageFile(String url) throws IOException {
+    URL urlObj = new URL(url);
+    HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
+    connection.setRequestMethod("GET");
+
+    int responseCode = connection.getResponseCode();
+
+    if (responseCode == HttpURLConnection.HTTP_OK) {
+      InputStream inputStream = connection.getInputStream();
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+      byte[] buffer = new byte[1024];
+      int bytesRead;
+      while ((bytesRead = inputStream.read(buffer)) != -1) {
+        outputStream.write(buffer, 0, bytesRead);
       }
+
+      return outputStream.toByteArray();
+    } else {
+      throw new RuntimeException("Error fetching file: " + responseCode);
     }
-    return base64EncodedImage;
   }
 
   @Before
@@ -115,14 +118,14 @@ public class SnippetsIT {
 
   @Test
   public void testMultimodalMultiImage() throws IOException {
-    MultimodalMultiImage.multimodalMultiImage(PROJECT_ID, LOCATION, GEMINI_ULTRA_VISION);
+    MultimodalMultiImage.multimodalMultiImage(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
     assertThat(out.toString()).contains("city: Rio de Janeiro, Landmark: Christ the Redeemer");
   }
 
   @Test
   public void testMultimodalQuery() throws Exception {
-    String dataImageBase64 = readBase64Image("scones.jpg");
-
+    String imageUri = "gs://generativeai-downloads/images/scones.jpg";
+    String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
     String output = MultimodalQuery.multimodalQuery(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         dataImageBase64);
     assertThat(output).isNotEmpty();
@@ -136,7 +139,7 @@ public class SnippetsIT {
 
   @Test
   public void testMultiTurnMultimodal() throws IOException {
-    MultiTurnMultimodal.multiTurnMultimodal(PROJECT_ID, LOCATION, GEMINI_ULTRA_VISION);
+    MultiTurnMultimodal.multiTurnMultimodal(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
     assertThat(out.toString()).contains("scones");
   }
 
@@ -155,7 +158,8 @@ public class SnippetsIT {
 
   @Test
   public void testSingleTurnMultimodal() throws IOException {
-    String dataImageBase64 = readBase64Image("scones.jpg");
+    String imageUri = "gs://generativeai-downloads/images/scones.jpg";
+    String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
     SingleTurnMultimodal.generateContent(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         "What is this image", dataImageBase64);
     assertThat(out.toString()).contains("scones");
