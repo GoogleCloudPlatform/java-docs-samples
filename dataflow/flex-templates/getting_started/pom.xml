@@ -143,39 +143,19 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- Apache Beam
+    <!-- https://mvnrepository.com/artifact/org.apache.beam/beam-sdks-java-google-cloud-platform-bom -->
+    <!--
       To run on another of the Beam runners, add its module to this pom.xml
       according to the runner-specific setup instructions on the Beam website:
         http://beam.apache.org/documentation/#runners
     -->
     <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-core</artifactId>
-      <version>${beam.version}</version>
+        <groupId>org.apache.beam</groupId>
+        <artifactId>beam-sdks-java-google-cloud-platform-bom</artifactId>
+        <version>${beam.version}</version>
+        <type>pom</type>
     </dependency>
 
-    <!-- Direct Runner -->
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-runners-direct-java</artifactId>
-      <version>${beam.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <!-- Dataflow Runner -->
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
-      <version>${beam.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <!-- Google Cloud I/O -->
-    <dependency>
-      <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-io-google-cloud-platform</artifactId>
-      <version>${beam.version}</version>
-    </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-dataflow</artifactId>
