@@ -43,6 +43,12 @@ if [[ ",$JAVA_VERSION," =~ "17" && ( "$file" == *"run/hello-broken"* || "$file" 
     exit 0
 fi
 
+# TODO: Remove the check post Gemini launch.
+if [[ ( "$file" == *"vertexai/snippets"* ) ]]; then
+    echo -e "\n Skipping tests until API live.\n"
+    exit 0
+fi
+
 # Build and deploy Cloud Functions hello-world samples
 # (Some of these samples have E2E tests that use deployed functions.)
 if [[ "$file" == *"functions/helloworld/"* ]]; then
