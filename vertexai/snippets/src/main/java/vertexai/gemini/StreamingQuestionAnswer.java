@@ -30,26 +30,23 @@ public class StreamingQuestionAnswer {
     String location = "us-central1";
     String modelName = "gemini-pro-vision";
 
-    String output = streamingQuestion(projectId, location, modelName);
-    System.out.println(output);
+    streamingQuestion(projectId, location, modelName);
   }
 
   // Ask a simple question and get the response via streaming.
-  public static String streamingQuestion(String projectId, String location, String modelName)
+  public static void streamingQuestion(String projectId, String location, String modelName)
       throws Exception {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      StringBuilder output = new StringBuilder();
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
 
-      ResponseStream<GenerateContentResponse> responseStream =
-          model.generateContentStream("Why is the sky blue?");
+      // Stream the result.
+      model.generateContentStream("Why is the sky blue?")
+          .stream()
+          .forEach(System.out::println);
 
-      for (GenerateContentResponse respElement : responseStream) {
-        output.append(ResponseHandler.getText(respElement));
-      }
-      return output.toString();
+      System.out.println("Streaming complete.");
     }
   }
 }

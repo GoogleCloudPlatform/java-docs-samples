@@ -167,10 +167,9 @@ public class SnippetsIT {
 
   @Test
   public void testStreamingQuestions() throws Exception {
-    String output = StreamingQuestionAnswer.streamingQuestion(PROJECT_ID, LOCATION,
+    StreamingQuestionAnswer.streamingQuestion(PROJECT_ID, LOCATION,
         GEMINI_PRO_VISION);
-    assertThat(output).isNotEmpty();
-    assertThat(output).contains("Rayleigh scattering");
+    assertThat(out.toString()).contains("Rayleigh scattering");
   }
 
   @Test
