@@ -138,7 +138,8 @@ public class SnippetsIT {
     assertThat(out.toString()).contains("Zootopia");
   }
 
-  @Test @Ignore("Don't test until ultra launch")
+  @Ignore("Don't test until ultra launch")
+  @Test
   public void testMultiTurnMultimodal() throws IOException {
     MultiTurnMultimodal.multiTurnMultimodal(PROJECT_ID, LOCATION, "gemini-ultra-vision");
     assertThat(out.toString()).contains("scones");
