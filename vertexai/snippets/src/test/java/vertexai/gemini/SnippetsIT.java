@@ -30,6 +30,7 @@ import java.util.Base64;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -137,9 +138,9 @@ public class SnippetsIT {
     assertThat(out.toString()).contains("Zootopia");
   }
 
-  @Test
+  @Test @Ignore("Don't test until ultra launch")
   public void testMultiTurnMultimodal() throws IOException {
-    MultiTurnMultimodal.multiTurnMultimodal(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
+    MultiTurnMultimodal.multiTurnMultimodal(PROJECT_ID, LOCATION, "gemini-ultra-vision");
     assertThat(out.toString()).contains("scones");
   }
 
