@@ -103,7 +103,6 @@
           <version>GCLOUD_CONFIG</version>
         </configuration>
       </plugin>
-
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.4.0</version>
@@ -111,7 +110,15 @@
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
       </plugin>
-
+      <!-- disable tests due to discontinued support for Java 8 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.3</version>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

@@ -105,13 +105,20 @@ Copyright 2016 Google Inc.
           <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.4.0</version>
       </plugin>
-
+      <!-- disable tests due to discontinued support for Java 8 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.3</version>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>

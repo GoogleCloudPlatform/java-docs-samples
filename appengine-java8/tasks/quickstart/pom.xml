@@ -107,13 +107,6 @@ Copyright 2018 Google LLC
           <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
         </configuration>
       </plugin>
-
-      <!-- <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.0</version>
-      </plugin> -->
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -121,6 +114,15 @@ Copyright 2018 Google LLC
         <configuration>
           <mainClass>com.example.task.CreateTask</mainClass>
           <cleanupDaemonThreads>false</cleanupDaemonThreads>
+        </configuration>
+      </plugin>
+      <!-- disable tests due to discontinued support for Java 8 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.3</version>
+        <configuration>
+          <skipTests>true</skipTests>
         </configuration>
       </plugin>
     </plugins>
