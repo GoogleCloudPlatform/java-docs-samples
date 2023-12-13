@@ -124,7 +124,7 @@ public class SnippetsIT {
 
   @Test
   public void testMultimodalQuery() throws Exception {
-    String imageUri = "gs://generativeai-downloads/images/scones.jpg";
+    String imageUri = "https://storage.googleapis.com/generativeai-downloads/images/scones.jpg";
     String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
     String output = MultimodalQuery.multimodalQuery(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         dataImageBase64);
@@ -158,7 +158,7 @@ public class SnippetsIT {
 
   @Test
   public void testSingleTurnMultimodal() throws IOException {
-    String imageUri = "gs://generativeai-downloads/images/scones.jpg";
+    String imageUri = "https://storage.googleapis.com/generativeai-downloads/images/scones.jpg";
     String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
     SingleTurnMultimodal.generateContent(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         "What is this image", dataImageBase64);
