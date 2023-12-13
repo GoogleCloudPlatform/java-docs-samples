@@ -16,7 +16,7 @@
 
 package vertexai.gemini;
 
-// [START aiplatform_gemini_multi_image_example]
+// [START aiplatform_gemini_single_turn_multi_image]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Content;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -36,7 +36,7 @@ public class MultimodalMultiImage {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-ultra-vision";
+    String modelName = "gemini-pro-vision";
 
     multimodalMultiImage(projectId, location, modelName);
   }
@@ -91,4 +91,4 @@ public class MultimodalMultiImage {
     }
   }
 }
-// [END aiplatform_gemini_multi_image_example]
+// [END aiplatform_gemini_single_turn_multi_image]

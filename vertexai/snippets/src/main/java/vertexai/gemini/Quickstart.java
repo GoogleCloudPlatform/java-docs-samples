@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START aiplatform_gemini_get_started]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.preview.ContentMaker;
@@ -29,7 +30,7 @@ public class Quickstart {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-ultra-vision";
+    String modelName = "gemini-pro-vision";
 
     String output = quickstart(projectId, location, modelName);
     System.out.println(output);
@@ -41,7 +42,7 @@ public class Quickstart {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      String imageUri = "https://storage.googleapis.com/generativeai-downloads/images/scones.jpg";
+      String imageUri = "gs://generativeai-downloads/images/scones.jpg";
 
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
       GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
@@ -53,3 +54,4 @@ public class Quickstart {
     }
   }
 }
+// [END aiplatform_gemini_get_started]
