@@ -32,8 +32,13 @@ public class MultiController {
 
   @Autowired private WebClient client;
 
-  /** handleMulti handles an http request by making 3-7 http requests to the /single endpoint. */
   // [START opentelemetry_instrumentation_handle_multi]
+  /**
+   * handleMulti handles an http request by making 3-7 http requests to the /single endpoint.
+   *
+   * <p>OpenTelemetry instrumentation requires no changes here. It will automatically generate a
+   * span for the controller body.
+   */
   @GetMapping("/multi")
   public Mono<String> index() throws Exception {
     int subRequests = ThreadLocalRandom.current().nextInt(3, 8);

@@ -26,11 +26,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class SingleController {
   Logger logger = LoggerFactory.getLogger(getClass());
 
+  // [START opentelemetry_instrumentation_handle_single]
   /**
    * handleSingle handles an http request by sleeping for 100-200 ms. It writes the number of
    * milliseconds slept as its response.
+   *
+   * <p>OpenTelemetry instrumentation requires no changes here. It will automatically generate a
+   * span for the controller body.
    */
-  // [START opentelemetry_instrumentation_handle_single]
   @GetMapping("/single")
   public String index() throws InterruptedException {
     int sleepMillis = ThreadLocalRandom.current().nextInt(100, 200);
