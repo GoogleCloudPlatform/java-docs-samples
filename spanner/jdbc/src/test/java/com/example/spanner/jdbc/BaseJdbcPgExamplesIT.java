@@ -112,6 +112,11 @@ public abstract class BaseJdbcPgExamplesIT {
       this.lastName = lastName;
       this.revenues = revenues;
     }
+
+    @Override
+    public String toString() {
+      return String.format("%d %s %s", singerId, firstName, lastName);
+    }
   }
 
   static final List<Singer> TEST_SINGERS =
@@ -140,7 +145,7 @@ public abstract class BaseJdbcPgExamplesIT {
           connection
               .createStatement()
               .execute(
-                  "CREATE TABLE Singers (\n"
+                  "CREATE TABLE IF NOT EXISTS Singers (\n"
                       + "  SingerId   BIGINT NOT NULL PRIMARY KEY,\n"
                       + "  FirstName  VARCHAR(1024),\n"
                       + "  LastName   VARCHAR(1024),\n"
