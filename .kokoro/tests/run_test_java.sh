@@ -14,6 +14,8 @@
 # limitations under the License.
 
 file="$(pwd)"
+project_root="$(git rev-parse --show-toplevel)"
+rel_dir=$(realpath --relative-to=${project_root} $file)
 SCRIPT_DIR="$(dirname $0)/"
 
 # Fail the tests if no Java version was found.
@@ -67,13 +69,10 @@ if [[ "$file" == *"functions/helloworld/"* ]]; then
 fi
 
 # Use maven to execute the tests for the project.
-mvn --quiet --batch-mode --fail-at-end clean verify \
-    -Dfile.encoding="UTF-8" \
-    -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-    -Dmaven.test.redirectTestOutputToFile=true \
-    -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
-    -Dbigtable.instanceID=instance
+pushd ${project_root}
+make test dir=${rel_dir}
 EXIT=$?
+popd
 
 # Tear down (deployed) Cloud Functions after deployment tests are run
 if [[ "$file" == *"functions/helloworld/"* ]]; then
