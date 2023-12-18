@@ -1,0 +1,114 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+receivers:
+  # Receive OTLP from our application
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+
+  # Use the filelog receiver to read the application's logs from its log file.
+  # This config reads JSON logs in same format that the Cloud Logging agents
+  # support:
+  # https://cloud.google.com/logging/docs/structured-logging#special-payload-fields
+  filelog:
+    start_at: beginning
+    include:
+    - "/var/log/app.log"
+    operators:
+      - type: json_parser
+        parse_to: body
+        timestamp:
+          parse_from: body.timestamp
+          layout: '%Y-%m-%dT%H:%M:%S.%fZ'
+        severity:
+          parse_from: body.severity
+
+      # set trace_flags to SAMPLED if GCP attribute is set to true
+      - type: add
+        field: body.trace_flags
+        value: "01"
+        if: body["logging.googleapis.com/trace_sampled"] == true
+
+      # parse the trace context fields from GCP attributes
+      - type: regex_parser
+        parse_from: body["logging.googleapis.com/trace"]
+        parse_to: body
+        regex: projects/.+/traces/(?P<trace_id>.*)
+        trace:
+          span_id:
+            parse_from: body["logging.googleapis.com/spanId"]
+
+      # Remove fields that are redundant from translation above and already
+      # included in OTel LogEntry message
+      - type: remove
+        field: body.timestamp
+      - type: remove
+        field: body.trace_id
+      - type: remove
+        field: body.trace_flags
+      - type: remove
+        field: body.severity
+      - type: remove
+        field: body["logging.googleapis.com/trace"]
+      - type: remove
+        field: body["logging.googleapis.com/spanId"]
+      - type: remove
+        field: body["logging.googleapis.com/trace_sampled"]
+
+exporters:
+  # Export logs and traces using the standard googelcloud exporter
+  googlecloud:
+    project: $GOOGLE_CLOUD_PROJECT
+    # Needed when using Application Default Credentials in Cloud Shell to call Cloud Trace
+    # destination_project_quota: true
+    log:
+      default_log_name: "opentelemetry.io/collector-exported-log"
+  # Export metrics to Google Managed service for Prometheus
+  googlemanagedprometheus:
+    project: $GOOGLE_CLOUD_PROJECT
+
+processors:
+  # Batch telemetry together to more efficiently send to GCP
+  batch:
+    send_batch_max_size: 500
+    send_batch_size: 500
+    timeout: 1s
+  # Make sure Google Managed service for Prometheus required labels are set
+  resource:
+    attributes:
+      - { key: "location", value: "us-central1", action: "upsert" }
+      - { key: "cluster", value: "no-cluster", action: "upsert" }
+      - { key: "namespace", value: "no-namespace", action: "upsert" }
+      - { key: "job", value: "us-job", action: "upsert" }
+      - { key: "instance", value: "us-instance", action: "upsert" }
+  # If running on GCP (e.g. on GKE), detect resource attributes from the environment.
+  resourcedetection:
+    detectors: ["env", "gcp"]
+
+service:
+  pipelines:
+    traces:
+      receivers: ["otlp"]
+      processors: ["batch", "resourcedetection"]
+      exporters: ["googlecloud"]
+    metrics:
+      receivers: ["otlp"]
+      processors: ["batch", "resourcedetection", "resource"]
+      exporters: ["googlemanagedprometheus"]
+    logs:
+      receivers: ["filelog"]
+      processors: ["batch", "resourcedetection"]
+      exporters: ["googlecloud"]

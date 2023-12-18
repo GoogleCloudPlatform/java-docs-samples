@@ -1,0 +1,52 @@
+<!--
+ Copyright 2023 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<configuration>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- [START opentelemetry_instrumentation_logbackxml] -->
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <!-- Format JSON logs for the Logging agent
+      https://cloud.google.com/logging/docs/structured-logging#special-payload-fields -->
+      <provider class="net.logstash.logback.composite.loggingevent.LoggingEventPatternJsonProvider">
+        <pattern>
+          {
+            "logging.googleapis.com/trace": "projects/${GOOGLE_CLOUD_PROJECT}/traces/%mdc{trace_id}",
+            "logging.googleapis.com/spanId": "%mdc{span_id}",
+            "logging.googleapis.com/trace_sampled": "#asBoolean{%replace(%mdc{trace_flags}){'01', 'true'}}"
+          }
+        </pattern>
+      </provider>
+
+      <!-- Rename fields for the Logging agent -->
+      <fieldNames>
+        <level>severity</level>
+        <timestamp>timestamp</timestamp>
+        <levelValue>[ignore]</levelValue>
+      </fieldNames>
+
+      <!-- Exclude tracing MDC keys which are handled above -->
+      <excludeMdcKeyName>trace_id</excludeMdcKeyName>
+      <excludeMdcKeyName>span_id</excludeMdcKeyName>
+      <excludeMdcKeyName>trace_flags</excludeMdcKeyName>
+    </encoder>
+    <!-- [END opentelemetry_instrumentation_logbackxml] -->
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="STDOUT"/>
+  </root>
+
+</configuration>
