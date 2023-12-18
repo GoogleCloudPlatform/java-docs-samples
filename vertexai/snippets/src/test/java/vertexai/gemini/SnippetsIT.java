@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// Tests for Gemini code samples.
+
 package vertexai.gemini;
 
 import static com.google.common.truth.Truth.assertThat;
