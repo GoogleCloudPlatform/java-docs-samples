@@ -21,7 +21,6 @@ package vertexai.gemini;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.CountTokensResponse;
 import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
-
 import java.io.IOException;
 
 public class GetTokenCount {
