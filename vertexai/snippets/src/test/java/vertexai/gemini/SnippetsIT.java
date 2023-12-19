@@ -50,9 +50,8 @@ public class SnippetsIT {
   public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
       MAX_ATTEMPT_COUNT,
       INITIAL_BACKOFF_MILLIS);
+  private final PrintStream printStream = System.out;
   private ByteArrayOutputStream bout;
-  private PrintStream out;
-  private PrintStream originalPrintStream;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -102,27 +101,25 @@ public class SnippetsIT {
   @Before
   public void beforeEach() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    originalPrintStream = System.out;
-    System.setOut(out);
+    System.setOut(new PrintStream(bout));
   }
 
   @After
   public void afterEach() {
     System.out.flush();
-    System.setOut(originalPrintStream);
+    System.setOut(printStream);
   }
 
   @Test
   public void testChatSession() throws IOException {
     ChatDiscussion.chatDiscussion(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
-    assertThat(out.toString()).contains("Chat Ended.");
+    assertThat(bout.toString()).contains("Chat Ended.");
   }
 
   @Test
   public void testMultimodalMultiImage() throws IOException {
     MultimodalMultiImage.multimodalMultiImage(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
-    assertThat(out.toString()).contains("city: Rio de Janeiro, Landmark: Christ the Redeemer");
+    assertThat(bout.toString()).contains("city: Rio de Janeiro, Landmark: Christ the Redeemer");
   }
 
   @Test
@@ -137,14 +134,14 @@ public class SnippetsIT {
   @Test
   public void testMultimodalVideoInput() throws IOException {
     MultimodalVideoInput.multimodalVideoInput(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
-    assertThat(out.toString()).contains("Zootopia");
+    assertThat(bout.toString()).contains("Zootopia");
   }
 
   @Ignore("Don't test until ultra launch")
   @Test
   public void testMultiTurnMultimodal() throws IOException {
     MultiTurnMultimodal.multiTurnMultimodal(PROJECT_ID, LOCATION, "gemini-ultra-vision");
-    assertThat(out.toString()).contains("scones");
+    assertThat(bout.toString()).contains("scones");
   }
 
   @Test
@@ -156,8 +153,8 @@ public class SnippetsIT {
 
   @Test
   public void testQuickstart() throws IOException {
-    Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
-    assertThat(out.toString()).contains("scones");
+    String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
+    assertThat(output).contains("scones");
   }
 
   @Test
@@ -166,19 +163,19 @@ public class SnippetsIT {
     String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
     SingleTurnMultimodal.generateContent(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         "What is this image", dataImageBase64);
-    assertThat(out.toString()).contains("scones");
+    assertThat(bout.toString()).contains("scones");
   }
 
   @Test
   public void testStreamingQuestions() throws Exception {
     StreamingQuestionAnswer.streamingQuestion(PROJECT_ID, LOCATION,
         GEMINI_PRO_VISION);
-    assertThat(out.toString()).contains("Rayleigh scattering");
+    assertThat(bout.toString()).contains("Rayleigh scattering");
   }
 
   @Test
   public void testSafetySettings() throws Exception {
-    String textPrompt = "";
+    String textPrompt = "Hello World!";
 
     String output = WithSafetySettings.safetyCheck(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         textPrompt);
