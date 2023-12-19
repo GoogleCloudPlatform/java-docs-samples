@@ -34,7 +34,7 @@ public class GetTokenCount {
     getTokenCount(projectId, location, modelName, textPrompt);
   }
 
-// [START aiplatform_gemini_token_count]
+  // [START aiplatform_gemini_token_count]
   public static int getTokenCount(String projectId, String location, String modelName,
                                   String textPrompt)
       throws IOException {
@@ -48,5 +48,5 @@ public class GetTokenCount {
       return tokenCount;
     }
   }
-// [END aiplatform_gemini_token_count]
+  // [END aiplatform_gemini_token_count]
 }
