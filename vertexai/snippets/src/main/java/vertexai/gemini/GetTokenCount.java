@@ -17,11 +17,11 @@
 package vertexai.gemini;
 
 // [START aiplatform_gemini_token_count]
-
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.CountTokensResponse;
 import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
 import java.io.IOException;
+// [END aiplatform_gemini_token_count]
 
 public class GetTokenCount {
   public static void main(String[] args) throws IOException {
@@ -34,6 +34,7 @@ public class GetTokenCount {
     getTokenCount(projectId, location, modelName, textPrompt);
   }
 
+// [START aiplatform_gemini_token_count]
   public static int getTokenCount(String projectId, String location, String modelName,
                                   String textPrompt)
       throws IOException {
@@ -47,5 +48,5 @@ public class GetTokenCount {
       return tokenCount;
     }
   }
-}
 // [END aiplatform_gemini_token_count]
+}
