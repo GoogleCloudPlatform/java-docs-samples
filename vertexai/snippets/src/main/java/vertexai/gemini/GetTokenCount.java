@@ -16,42 +16,37 @@
 
 package vertexai.gemini;
 
-// [START aiplatform_gemini_get_started]
+// [START aiplatform_gemini_token_count]
 import com.google.cloud.vertexai.VertexAI;
-import com.google.cloud.vertexai.api.GenerateContentResponse;
-import com.google.cloud.vertexai.generativeai.preview.ContentMaker;
+import com.google.cloud.vertexai.api.CountTokensResponse;
 import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
-import com.google.cloud.vertexai.generativeai.preview.PartMaker;
 import java.io.IOException;
+// [END aiplatform_gemini_token_count]
 
-public class Quickstart {
-
+public class GetTokenCount {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
     String modelName = "gemini-pro-vision";
 
-    String output = quickstart(projectId, location, modelName);
-    System.out.println(output);
+    String textPrompt = "How many tokens are there in this prompt?";
+    getTokenCount(projectId, location, modelName, textPrompt);
   }
 
-  // Analyzes the provided Multimodal input.
-  public static String quickstart(String projectId, String location, String modelName)
+  // [START aiplatform_gemini_token_count]
+  public static int getTokenCount(String projectId, String location, String modelName,
+                                  String textPrompt)
       throws IOException {
-    // Initialize client that will be used to send requests. This client only needs
-    // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      String imageUri = "gs://generativeai-downloads/images/scones.jpg";
-
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
-      GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
-          PartMaker.fromMimeTypeAndData("image/jpg", imageUri),
-          "What's in this photo"
-      ));
+      CountTokensResponse response = model.countTokens(textPrompt);
 
-      return response.toString();
+      int tokenCount = response.getTotalTokens();
+      System.out.println("There are " + tokenCount + " tokens in the prompt.");
+
+      return tokenCount;
     }
   }
+  // [END aiplatform_gemini_token_count]
 }
-// [END aiplatform_gemini_get_started]

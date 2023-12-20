@@ -183,4 +183,13 @@ public class SnippetsIT {
     assertThat(output).isNotEmpty();
     assertThat(output).contains("reasons?");
   }
+
+  @Test
+  public void testTokenCount() throws Exception {
+    String textPrompt = "How many tokens are there in this prompt?";
+
+    int tokenCount = GetTokenCount.getTokenCount(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
+        textPrompt);
+    assertThat(tokenCount).isGreaterThan(6);
+  }
 }
