@@ -42,6 +42,7 @@ public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
   private static final String GEMINI_PRO_VISION = "gemini-pro-vision";
+  private static final String GEMINI_PRO = "gemini-pro";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   @Rule
@@ -113,7 +114,7 @@ public class SnippetsIT {
 
   @Test
   public void testChatSession() throws IOException {
-    ChatDiscussion.chatDiscussion(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
+    ChatDiscussion.chatDiscussion(PROJECT_ID, LOCATION, GEMINI_PRO);
     assertThat(out.toString()).contains("Chat Ended.");
   }
 
