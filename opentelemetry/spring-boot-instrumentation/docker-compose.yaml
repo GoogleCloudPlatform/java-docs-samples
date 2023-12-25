@@ -27,7 +27,7 @@ services:
     depends_on:
       - "otelcol"
   otelcol:
-    image: otel/opentelemetry-collector-contrib:0.88.0
+    image: otel/opentelemetry-collector-contrib:0.91.0
     volumes:
       - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
       - logs:/var/log:ro
