@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.1.4")
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.1.5")

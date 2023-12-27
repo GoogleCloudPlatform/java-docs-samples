@@ -1,0 +1,142 @@
+// find legacy configuration at https://github.com/GoogleCloudPlatform/java-docs-samples/blob/91792d4da53a12f96032f4556815f7d91f27257b/renovate.json
+{
+    "extends": [
+        "config:recommended",
+        ":approveMajorUpdates",
+        "schedule:earlyMondays",
+        ":ignoreUnstable",
+    ],
+    "labels": [
+        "dependencies",
+        "automerge"
+    ],
+    "minimumReleaseAge": "7 days",
+    "dependencyDashboardLabels": [
+        "type: process",
+    ],
+    // discontinue upgrades for java8 code samples
+    "ignorePaths": ["**/*java8*/**", "**/*java-8*/**"],
+    "packageRules": [
+        {
+            "matchCategories": [
+                "java"
+            ],
+            "addLabels": [
+                "lang: java"
+            ]
+        },
+        // TODO: check if auto-merge rules will work at all
+        {
+            "matchUpdateTypes": [
+                "minor",
+                "patch",
+                "digest",
+                "lockFileMaintenance"
+            ],
+            "automerge": true
+        },
+        {
+            "matchDepTypes": [
+                "devDependencies"
+            ],
+            "automerge": true
+        },
+        // group all Dockerfile dependencies
+        {
+            "matchCategories": [
+                "docker"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "patch",
+                "digest",
+                "lockFileMaintenance"
+            ],
+            "groupName": "docker",
+            "pinDigests": true,
+            "automerge": true
+        },
+        // group all terraform dependencies for google providers
+        {
+            "matchCategories": [
+                "terraform"
+            ],
+            "matchDepTypes": [
+                "provider",
+                "required_provider"
+            ],
+            "matchPackagePatterns": "^google",
+            "groupName": "Terraform Google providers",
+        },
+        // *** Java dependency rules:
+        // group *ALL* Java dependencies
+        {
+            "matchCategories": [
+                "java"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "patch",
+                "digest",
+                "lockFileMaintenance"
+            ],
+            "groupName": "java",
+            "automerge": true
+        },
+        // do not allow Spring Boot 3 upgrades yet
+        {
+            "matchCategories": [
+                "java"
+            ],
+            "matchPackagePatterns": [
+                "org.springframework.boot"
+            ],
+            "matchCurrentVersion": ">=2.0.0, <3.0.0",
+            "allowedVersions": "<3",
+            "groupName": "Spring Boot upgrades for v2",
+            "description": "@akitsch: Spring Boot V3 requires Java 17"
+        },
+        // limit micronaut upgrades for versions <= 4
+        {
+            "matchPackagePatterns": [
+                "^io.micronaut"
+            ],
+            "groupName": "Micronaut packages",
+            "allowedVersions": "<4",
+            "matchPaths": [
+                "appengine-java11/**",
+                "flexible/java-11/**"
+            ],
+            "description": "@akitsch: Micronaut V4 requires Java 17"
+        },
+        // disable Scala dependency upgrades
+        {
+            "matchPackagePatterns": [
+                "scala"
+            ],
+            "enabled": false
+        },
+        {
+            "matchPackagePatterns": [
+                "^jackson-module-scala"
+            ],
+            "enabled": false
+        },
+        // disable SQL Spark dependency upgrades
+        {
+            "matchPackagePatterns": [
+                "^spark-sql"
+            ],
+            "enabled": false
+        },
+        {},
+    ],
+    "rebaseWhen": "behind-base-branch",
+    "semanticCommits": "enabled",
+    "vulnerabilityAlerts": {
+        "labels": [
+            "type:security"
+        ],
+        "minimumReleaseAge": null
+    },
+}

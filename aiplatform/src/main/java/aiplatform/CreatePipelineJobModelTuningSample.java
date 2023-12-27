@@ -77,6 +77,7 @@ public class CreatePipelineJobModelTuningSample {
               "us-central1")); // Deployment is only supported in us-central1 for Public Preview
       parameterValues.put("large_model_reference", stringToValue("text-bison@001"));
       parameterValues.put("train_steps", numberToValue(trainingSteps));
+      parameterValues.put("accelerator_type", stringToValue("GPU")); // Optional: GPU or TPU
 
       RuntimeConfig runtimeConfig =
           RuntimeConfig.newBuilder()

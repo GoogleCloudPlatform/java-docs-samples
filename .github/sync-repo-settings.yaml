@@ -6,7 +6,7 @@ branchProtectionRules:
   isAdminEnforced: true
   requiredStatusCheckContexts:
     - 'Kokoro CI - Java 11'
-    - 'Kokoro CI - Java 8'
+    - 'Kokoro CI - Java 17'
     - 'Kokoro CI - Lint'
     - 'cla/google'
   requiredApprovingReviewCount: 1
@@ -20,6 +20,4 @@ permissionRules:
   - team: yoshi-approver-team
     permission: push
   - team: devrel-java-admin
-    permission: admin
-  - team: yoshi-admins
     permission: admin

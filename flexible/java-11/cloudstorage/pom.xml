@@ -38,7 +38,7 @@
 
     <appengine.maven.plugin>2.5.0</appengine.maven.plugin>
 
-    <spring.boot.version>2.7.17</spring.boot.version>
+    <spring.boot.version>2.7.18</spring.boot.version>
   </properties>
 
   <!-- [START gae_flex_storage_dependencies] -->
@@ -86,7 +86,7 @@
     <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
-      <version>2.1.0</version>
+      <version>2.2.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

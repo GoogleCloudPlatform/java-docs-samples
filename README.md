@@ -1,7 +1,6 @@
 # Google Cloud Platform Java Samples
 
-[![Build Status][java-8-badge]][java-8-link] [![Build 
-Status][java-11-badge]][java-11-link] [![Build 
+[![Build Status][java-11-badge]][java-11-link] [![Build
 Status][java-17-badge]][java-17-link]
 
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=README.md">
@@ -47,6 +46,15 @@ To browse ready to use code samples check [Google Cloud Samples](https://cloud.g
 
 * See [LICENSE](LICENSE)
 
+## Supported Java runtimes
+
+Every submitted change has to pass all checks that run on the testing environments with Java 11 and Java 17 runtimes before merging the change to the main branch.
+We run periodic checks on the environments with Java 8 and Java 21 runtimes but we don't enforce passing these tests at the moment.
+Because Java 8 is a [supported Java runtime][supported_runtimes] in Google Cloud, please configure to build your code sample with Java 8.
+In exceptional cases, configure to build your code sample using Java 11.
+
+[supported_runtimes]: https://cloud.google.com/java/docs/supported-java-versions
+
 ## Source Code Headers
 
 Every file containing source code must include copyright and license
@@ -71,20 +79,18 @@ Apache header:
     limitations under the License.
 
 [ADC]: https://developers.google.com/identity/protocols/application-default-credentials
-[cred]: http://google.github.io/google-auth-library-java/releases/0.6.0/apidocs/com/google/auth/Credentials.html?is-external=true
-[options]: http://googlecloudplatform.github.io/google-cloud-java/0.12.0/apidocs/com/google/cloud/ServiceOptions.Builder.html#setCredentials-com.google.auth.Credentials-
 [auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
-[java-8-badge]: 
+[java-8-badge]:
 https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-8.svg
-[java-8-link]: 
+[java-8-link]:
 https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-8.html
-[java-11-badge]: 
+[java-11-badge]:
 https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-11.svg
-[java-11-link]: 
+[java-11-link]:
 https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-11.html
-[java-17-badge]: 
+[java-17-badge]:
 https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-17.svg
-[java-17-link]: 
+[java-17-link]:
 https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-17.html
 
 Java is a registered trademark of Oracle and/or its affiliates.
