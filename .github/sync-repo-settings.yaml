@@ -6,6 +6,7 @@ branchProtectionRules:
   isAdminEnforced: true
   requiredStatusCheckContexts:
     - 'Kokoro CI - Java 11'
+    - 'Kokoro CI - Java 17'
     - 'Kokoro CI - Lint'
     - 'cla/google'
   requiredApprovingReviewCount: 1
