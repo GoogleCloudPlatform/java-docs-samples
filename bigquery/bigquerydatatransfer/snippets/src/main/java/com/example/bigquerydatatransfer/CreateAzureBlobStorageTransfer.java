@@ -35,6 +35,7 @@ public class CreateAzureBlobStorageTransfer {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     final String projectId = "MY_PROJECT_ID";
+    final String displayName = "MY_TRANSFER_DISPLAY_NAME";
     final String datasetId = "MY_DATASET_ID";
     String tableId = "MY_TABLE_ID";
     String storageAccount = "MY_AZURE_STORAGE_ACCOUNT_NAME";
@@ -54,16 +55,16 @@ public class CreateAzureBlobStorageTransfer {
     params.put("file_format", Value.newBuilder().setStringValue(fileFormat).build());
     params.put("field_delimiter", Value.newBuilder().setStringValue(fieldDelimiter).build());
     params.put("skip_leading_rows", Value.newBuilder().setStringValue(skipLeadingRows).build());
-    createAzureBlobStorageTransfer(projectId, datasetId, params);
+    createAzureBlobStorageTransfer(projectId, displayName, datasetId, params);
   }
 
-  public static void createAzureBlobStorageTransfer(String projectId, String datasetId,
-      Map<String, Value> params)
+  public static void createAzureBlobStorageTransfer(
+      String projectId, String displayName, String datasetId, Map<String, Value> params)
       throws IOException {
     TransferConfig transferConfig =
         TransferConfig.newBuilder()
             .setDestinationDatasetId(datasetId)
-            .setDisplayName("Your Azure Blob Storage Transfer Config Name")
+            .setDisplayName(displayName)
             .setDataSourceId("azure_blob_storage")
             .setParams(Struct.newBuilder().putAllFields(params).build())
             .setSchedule("every 24 hours")

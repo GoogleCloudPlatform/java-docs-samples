@@ -17,7 +17,7 @@
 package com.example.bigquerydatatransfer;
 
 import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.TestCase.assertNotNull;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
@@ -65,9 +65,9 @@ public class CreateAmazonS3TransferIT {
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
-    assertNotNull(
-        "Environment variable " + varName + " is required to perform these tests.",
-        System.getenv(varName));
+    assertWithMessage("Environment variable %s is required to perform these tests.", varName)
+        .that(value)
+        .isNotEmpty();
     return value;
   }
 

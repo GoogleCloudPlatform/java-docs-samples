@@ -17,11 +17,18 @@
 package com.example.bigquerydatatransfer;
 
 import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.TestCase.assertNotNull;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.bigquery.BigQuery;
-import com.google.cloud.bigquery.datatransfer.v1.TransferConfig;
-import com.google.protobuf.Struct;
+import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.DatasetInfo;
+import com.google.cloud.bigquery.Field;
+import com.google.cloud.bigquery.Schema;
+import com.google.cloud.bigquery.StandardSQLTypeName;
+import com.google.cloud.bigquery.StandardTableDefinition;
+import com.google.cloud.bigquery.TableDefinition;
+import com.google.cloud.bigquery.TableId;
+import com.google.cloud.bigquery.TableInfo;
 import com.google.protobuf.Value;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,19 +40,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class CreateAzureBlobStorageTransferIT {
 
   private static final Logger LOG =
       Logger.getLogger(CreateAzureBlobStorageTransferIT.class.getName());
+  private static final String ID = UUID.randomUUID().toString().substring(0, 8);
+  private BigQuery bigquery;
+  private String name;
+  private String displayName;
+  private String datasetName;
+  private String tableName;
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
 
   private static final String PROJECT_ID = requireEnvVar("GOOGLE_CLOUD_PROJECT");
-  private static final String DATASET_ID = requireEnvVar("DATASET_ID");
-  private static final String TABLE_NAME = requireEnvVar("TABLE_NAME");
   private static final String STORAGE_ACCOUNT = requireEnvVar("STORAGE_ACCOUNT");
   private static final String CONTAINER = requireEnvVar("CONTAINER");
   private static final String DATA_PATH = requireEnvVar("DATA_PATH");
@@ -53,14 +65,38 @@ public class CreateAzureBlobStorageTransferIT {
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
-    assertNotNull(
-        "Environment variable " + varName + " is required to perform these tests.",
-        System.getenv(varName));
+    assertWithMessage("Environment variable %s is required to perform these tests.", varName)
+        .that(value)
+        .isNotEmpty();
     return value;
+  }
+
+  @BeforeClass
+  public static void checkRequirements() {
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("STORAGE_ACCOUNT");
+    requireEnvVar("CONTAINER");
+    requireEnvVar("DATA_PATH");
+    requireEnvVar("SAS_TOKEN");
   }
 
   @Before
   public void setUp() {
+    displayName = "MY_TRANSFER_NAME_TEST_" + ID;
+    datasetName = "MY_DATASET_NAME_TEST_" + ID;
+    tableName = "MY_TABLE_NAME_TEST_" + ID;
+    // create a temporary dataset
+    bigquery = BigQueryOptions.getDefaultInstance().getService();
+    bigquery.create(DatasetInfo.of(datasetName));
+    // create a temporary table
+    Schema schema =
+        Schema.of(
+            Field.of("name", StandardSQLTypeName.STRING),
+            Field.of("post_abbr", StandardSQLTypeName.STRING));
+    TableDefinition tableDefinition = StandardTableDefinition.of(schema);
+    TableInfo tableInfo = TableInfo.of(TableId.of(datasetName, tableName), tableDefinition);
+    bigquery.create(tableInfo);
+
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     originalPrintStream = System.out;
@@ -69,6 +105,13 @@ public class CreateAzureBlobStorageTransferIT {
 
   @After
   public void tearDown() throws IOException {
+    // Clean up
+    DeleteScheduledQuery.deleteScheduledQuery(name);
+    // delete a temporary table
+    bigquery.delete(TableId.of(datasetName, tableName));
+    // delete a temporary dataset
+    bigquery.delete(datasetName, BigQuery.DatasetDeleteOption.deleteContents());
+    // restores print statements in the original method
     System.out.flush();
     System.setOut(originalPrintStream);
     LOG.log(Level.INFO, bout.toString());
@@ -78,7 +121,7 @@ public class CreateAzureBlobStorageTransferIT {
   public void testCreateAzureBlobStorageTransfer() throws IOException {
     Map<String, Value> params = new HashMap<>();
     params.put(
-        "destination_table_name_template", Value.newBuilder().setStringValue(TABLE_NAME).build());
+        "destination_table_name_template", Value.newBuilder().setStringValue(tableName).build());
     params.put("storage_account", Value.newBuilder().setStringValue(STORAGE_ACCOUNT).build());
     params.put("container", Value.newBuilder().setStringValue(CONTAINER).build());
     params.put("data_path", Value.newBuilder().setStringValue(DATA_PATH).build());
@@ -87,8 +130,10 @@ public class CreateAzureBlobStorageTransferIT {
     params.put("field_delimiter", Value.newBuilder().setStringValue(",").build());
     params.put("skip_leading_rows", Value.newBuilder().setStringValue("1").build());
 
-    CreateAzureBlobStorageTransfer.createAzureBlobStorageTransfer(PROJECT_ID, DATASET_ID, params);
+    CreateAzureBlobStorageTransfer.createAzureBlobStorageTransfer(
+        PROJECT_ID, displayName, datasetName, params);
     String result = bout.toString();
+    name = result.substring(result.indexOf(":") + 1, result.length() - 1);
     assertThat(result).contains("Azure Blob Storage transfer created successfully: ");
   }
 }
