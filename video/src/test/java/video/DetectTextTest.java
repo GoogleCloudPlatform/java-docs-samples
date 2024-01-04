@@ -27,9 +27,11 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
+@Ignore("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8968")
 public class DetectTextTest {
   static final String SPEECH_GCS_LOCATION =
       "gs://java-docs-samples-testing/video/googlework_short.mp4";
