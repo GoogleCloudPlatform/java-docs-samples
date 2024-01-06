@@ -58,10 +58,10 @@ public class CreateAzureBlobStorageTransferIT {
   private PrintStream originalPrintStream;
 
   private static final String PROJECT_ID = requireEnvVar("GOOGLE_CLOUD_PROJECT");
-  private static final String AZURE_STORAGE_ACCOUNT = requireEnvVar("AZURE_STORAGE_ACCOUNT");
-  private static final String AZURE_BLOB_CONTAINER = requireEnvVar("AZURE_BLOB_CONTAINER");
-  private static final String AZURE_BLOB_DATA_PATH = requireEnvVar("AZURE_BLOB_DATA_PATH");
-  private static final String AZURE_SAS_TOKEN = requireEnvVar("AZURE_SAS_TOKEN");
+  private static final String DTS_AZURE_STORAGE_ACCOUNT =
+      requireEnvVar("DTS_AZURE_STORAGE_ACCOUNT");
+  private static final String DTS_AZURE_BLOB_CONTAINER = requireEnvVar("DTS_AZURE_BLOB_CONTAINER");
+  private static final String DTS_AZURE_SAS_TOKEN = requireEnvVar("DTS_AZURE_SAS_TOKEN");
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
@@ -74,10 +74,9 @@ public class CreateAzureBlobStorageTransferIT {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("AZURE_STORAGE_ACCOUNT");
-    requireEnvVar("AZURE_BLOB_CONTAINER");
-    requireEnvVar("AZURE_BLOB_DATA_PATH");
-    requireEnvVar("AZURE_SAS_TOKEN");
+    requireEnvVar("DTS_AZURE_STORAGE_ACCOUNT");
+    requireEnvVar("DTS_AZURE_BLOB_CONTAINER");
+    requireEnvVar("DTS_AZURE_SAS_TOKEN");
   }
 
   @Before
@@ -122,10 +121,11 @@ public class CreateAzureBlobStorageTransferIT {
     Map<String, Value> params = new HashMap<>();
     params.put(
         "destination_table_name_template", Value.newBuilder().setStringValue(tableName).build());
-    params.put("storage_account", Value.newBuilder().setStringValue(AZURE_STORAGE_ACCOUNT).build());
-    params.put("container", Value.newBuilder().setStringValue(AZURE_BLOB_CONTAINER).build());
-    params.put("data_path", Value.newBuilder().setStringValue(AZURE_BLOB_DATA_PATH).build());
-    params.put("sas_token", Value.newBuilder().setStringValue(AZURE_SAS_TOKEN).build());
+    params.put(
+        "storage_account", Value.newBuilder().setStringValue(DTS_AZURE_STORAGE_ACCOUNT).build());
+    params.put("container", Value.newBuilder().setStringValue(DTS_AZURE_BLOB_CONTAINER).build());
+    params.put("data_path", Value.newBuilder().setStringValue("*").build());
+    params.put("sas_token", Value.newBuilder().setStringValue(DTS_AZURE_SAS_TOKEN).build());
     params.put("file_format", Value.newBuilder().setStringValue("CSV").build());
     params.put("field_delimiter", Value.newBuilder().setStringValue(",").build());
     params.put("skip_leading_rows", Value.newBuilder().setStringValue("1").build());
