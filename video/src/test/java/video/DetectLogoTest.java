@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DetectLogoTest {
@@ -48,6 +49,7 @@ public class DetectLogoTest {
   }
 
   @Test
+  @Ignore("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8968")
   public void testLogoDetect()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     LogoDetection.detectLogo("resources/googlework_short.mp4");

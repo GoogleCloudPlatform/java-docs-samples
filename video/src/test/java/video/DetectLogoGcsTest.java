@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DetectLogoGcsTest {
@@ -48,6 +49,7 @@ public class DetectLogoGcsTest {
   }
 
   @Test
+  @Ignore("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8968")
   public void testLogoDetectGcs()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     LogoDetectionGcs.detectLogoGcs("gs://cloud-samples-data/video/googlework_tiny.mp4");

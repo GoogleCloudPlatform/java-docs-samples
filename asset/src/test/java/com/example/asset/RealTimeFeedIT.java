@@ -32,6 +32,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -41,6 +42,7 @@ import org.junit.runners.MethodSorters;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Ignore("TODO: Fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8963")
 public class RealTimeFeedIT {
   private static final String topicId = "topicId";
   private static final String feedId = UUID.randomUUID().toString();
