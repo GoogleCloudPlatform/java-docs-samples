@@ -35,7 +35,7 @@ public class SingleController {
    * span for the controller body.
    */
   @GetMapping("/single")
-  public String index() throws InterruptedException {
+  public String handleSingle() throws InterruptedException {
     int sleepMillis = ThreadLocalRandom.current().nextInt(100, 200);
     logger.info("Going to sleep for {}", sleepMillis);
     Thread.sleep(sleepMillis);
