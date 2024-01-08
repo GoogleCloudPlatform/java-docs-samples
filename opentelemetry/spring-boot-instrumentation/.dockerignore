@@ -1,0 +1,26 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### VS Code ###
+.vscode/
+
+### Docker ###
+Dockerfile
+docker-compose*.yaml
+otel-collector-config.yaml

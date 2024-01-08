@@ -46,8 +46,8 @@ public class Quickstart {
 
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
       GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
-          "What's in this photo",
-          PartMaker.fromMimeTypeAndData("image/jpg", imageUri)
+          PartMaker.fromMimeTypeAndData("image/jpg", imageUri),
+          "What's in this photo"
       ));
 
       return response.toString();

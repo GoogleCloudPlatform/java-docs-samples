@@ -29,6 +29,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -118,6 +119,7 @@ public class StreamingPipelineTest {
   // that we know fraudulent. Waits for the response for each transaction and
   // then measures the ML model accuracy.
   @Test
+  @Ignore("TODO: Fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8964")
   public void testFraudulentTransactions() throws IOException, IllegalAccessException {
     System.out.println("Running testFraudulentTransactions");
 

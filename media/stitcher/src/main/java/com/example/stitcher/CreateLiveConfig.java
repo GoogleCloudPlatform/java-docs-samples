@@ -50,31 +50,38 @@ public class CreateLiveConfig {
     createLiveConfig(projectId, location, liveConfigId, sourceUri, adTagUri, slateId);
   }
 
-  public static void createLiveConfig(String projectId, String location, String liveConfigId,
-      String sourceUri, String adTagUri, String slateId)
+  public static void createLiveConfig(
+      String projectId,
+      String location,
+      String liveConfigId,
+      String sourceUri,
+      String adTagUri,
+      String slateId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (VideoStitcherServiceClient videoStitcherServiceClient =
-        VideoStitcherServiceClient.create()) {
-      CreateLiveConfigRequest createLiveConfigRequest =
-          CreateLiveConfigRequest.newBuilder()
-              .setParent(LocationName.of(projectId, location).toString())
-              .setLiveConfigId(liveConfigId)
-              .setLiveConfig(LiveConfig.newBuilder()
-                  .setSourceUri(sourceUri)
-                  .setAdTagUri(adTagUri)
-                  .setDefaultSlate(SlateName.format(projectId, location, slateId))
-                  .setAdTracking(AdTracking.SERVER)
-                  .setStitchingPolicy(StitchingPolicy.CUT_CURRENT).build())
-              .build();
+    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
+    CreateLiveConfigRequest createLiveConfigRequest =
+        CreateLiveConfigRequest.newBuilder()
+            .setParent(LocationName.of(projectId, location).toString())
+            .setLiveConfigId(liveConfigId)
+            .setLiveConfig(
+                LiveConfig.newBuilder()
+                    .setSourceUri(sourceUri)
+                    .setAdTagUri(adTagUri)
+                    .setDefaultSlate(SlateName.format(projectId, location, slateId))
+                    .setAdTracking(AdTracking.SERVER)
+                    .setStitchingPolicy(StitchingPolicy.CUT_CURRENT)
+                    .build())
+            .build();
 
-      LiveConfig response = videoStitcherServiceClient.createLiveConfigAsync(
-              createLiveConfigRequest)
-          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-      System.out.println("Created new live config: " + response.getName());
-    }
+    LiveConfig response =
+        videoStitcherServiceClient
+            .createLiveConfigAsync(createLiveConfigRequest)
+            .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+    System.out.println("Created new live config: " + response.getName());
+    videoStitcherServiceClient.close();
   }
 }
 // [END videostitcher_create_live_config]

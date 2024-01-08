@@ -38,3 +38,4 @@ sourceFileExtensions:
   - 'yml'
 ignoreFiles:
   - '.github/auto-label.yaml'
+  - '.github/sync-repo-settings.yaml'

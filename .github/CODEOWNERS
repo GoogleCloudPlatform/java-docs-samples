@@ -100,3 +100,4 @@
 /retail                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-retail-team
 /unittests                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes
 /bigquery/bigquerydatatransfer   @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/bigquery-data-connectors
+/opentelemetry                   @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/opentelemetry-ops

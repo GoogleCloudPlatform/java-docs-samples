@@ -14,6 +14,8 @@
     "dependencyDashboardLabels": [
         "type: process",
     ],
+    // discontinue upgrades for java8 code samples
+    "ignorePaths": ["**/*java8*/**", "**/*java-8*/**"],
     "packageRules": [
         {
             "matchCategories": [

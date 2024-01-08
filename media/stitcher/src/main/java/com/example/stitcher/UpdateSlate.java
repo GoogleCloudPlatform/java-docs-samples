@@ -49,24 +49,25 @@ public class UpdateSlate {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (VideoStitcherServiceClient videoStitcherServiceClient =
-        VideoStitcherServiceClient.create()) {
-      UpdateSlateRequest updateSlateRequest =
-          UpdateSlateRequest.newBuilder()
-              .setSlate(
-                  Slate.newBuilder()
-                      .setName(SlateName.of(projectId, location, slateId).toString())
-                      .setUri(slateUri)
-                      .build())
-              // Set the update mask to the uri field in the existing slate. You must set the mask
-              // to the field you want to update.
-              .setUpdateMask(FieldMask.newBuilder().addPaths("uri").build())
-              .build();
+    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
+    UpdateSlateRequest updateSlateRequest =
+        UpdateSlateRequest.newBuilder()
+            .setSlate(
+                Slate.newBuilder()
+                    .setName(SlateName.of(projectId, location, slateId).toString())
+                    .setUri(slateUri)
+                    .build())
+            // Set the update mask to the uri field in the existing slate. You must set the mask
+            // to the field you want to update.
+            .setUpdateMask(FieldMask.newBuilder().addPaths("uri").build())
+            .build();
 
-      Slate response = videoStitcherServiceClient.updateSlateAsync(updateSlateRequest)
-          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-      System.out.println("Updated slate: " + response.getName());
-    }
+    Slate response =
+        videoStitcherServiceClient
+            .updateSlateAsync(updateSlateRequest)
+            .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+    System.out.println("Updated slate: " + response.getName());
+    videoStitcherServiceClient.close();
   }
 }
 // [END videostitcher_update_slate]

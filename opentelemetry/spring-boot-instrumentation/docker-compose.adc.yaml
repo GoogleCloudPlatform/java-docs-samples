@@ -1,0 +1,33 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Use this compose file along with docker-compose.yaml to pass Application Default
+# Credentials from the host into the collector container:
+#
+# ```
+# export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/application_default_credentials.json
+# docker compose -f docker-compose.yaml -f docker-compose.adc.yaml up
+# ```
+
+version: "3"
+
+services:
+  otelcol:
+    # If the collector does not have permission to read the mounted volumes, set
+    # USERID=$(id -u) to run the container as the current user
+    user: ${USERID}
+    volumes:
+      - ${GOOGLE_APPLICATION_CREDENTIALS:-/dev/null}:/tmp/keys/gcp-credentials.json:ro
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/gcp-credentials.json

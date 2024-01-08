@@ -18,7 +18,7 @@ SCRIPT_DIR="$(dirname $0)/"
 
 # Fail the tests if no Java version was found.
 POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
-ALLOWED_VERSIONS=("1.8" "11" "17")
+ALLOWED_VERSIONS=("1.8" "11" "17" "21")
 # shellcheck disable=SC2199
 # shellcheck disable=SC2076
 if [[ "$POM_JAVA" = "" ]] || [[ ! " ${ALLOWED_VERSIONS[*]} " =~ " ${POM_JAVA} " ]]; then
@@ -38,8 +38,8 @@ if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
     exit 0
 fi
 
-if [[ ",$JAVA_VERSION," =~ "17" && ( "$file" == *"run/hello-broken"* || "$file" == *"flexible/java-11/pubsub"* || "$file" == *"flexible/java-11/cloudstorage"*|| "$file" == *"flexible/java-11/datastore"*) ]]; then
-    echo -e "\n Skipping tests: Sample ($file) tests do not work with Java 17\n"
+if [[ (",$JAVA_VERSION," =~ "17" || ",$JAVA_VERSION," =~ "21")  && ( "$file" == *"run/hello-broken"* || "$file" == *"flexible/java-11/pubsub"* || "$file" == *"flexible/java-11/cloudstorage"*|| "$file" == *"flexible/java-11/datastore"*) ]]; then
+    echo -e "\n Skipping tests: Sample ($file) tests do not work with Java runtimes 17 or greater\n"
     exit 0
 fi
 

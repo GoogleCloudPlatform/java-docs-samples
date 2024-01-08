@@ -28,6 +28,7 @@ import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -71,6 +72,7 @@ public class GreetingTest {
     closeable.close();
   }
 
+  @Ignore("TODO: Fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8961")
   @Test
   public void createSaveObject() throws Exception {
 

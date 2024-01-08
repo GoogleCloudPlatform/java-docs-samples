@@ -37,8 +37,8 @@ def beamVersion = '2.52.0'
 def slf4jVersion = '2.0.9'
 dependencies {
     implementation enforcedPlatform("org.apache.beam:beam-sdks-java-io-google-cloud-platform:${beamVersion}")
-    implementation platform("com.google.cloud:libraries-bom:26.27.0")
-    implementation "com.github.spotbugs:spotbugs-annotations:4.8.1"
+    implementation platform("com.google.cloud:libraries-bom:26.28.0")
+    implementation "com.github.spotbugs:spotbugs-annotations:4.8.2"
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     implementation "org.slf4j:slf4j-jdk14:${slf4jVersion}"
     implementation "org.apache.beam:beam-examples-java:${beamVersion}"
