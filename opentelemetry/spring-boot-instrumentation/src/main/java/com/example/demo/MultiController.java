@@ -40,7 +40,7 @@ public class MultiController {
    * span for the controller body.
    */
   @GetMapping("/multi")
-  public Mono<String> index() throws Exception {
+  public Mono<String> handleMulti() throws Exception {
     int subRequests = ThreadLocalRandom.current().nextInt(3, 8);
 
     // Write a structured log with the request context, which allows the log to
