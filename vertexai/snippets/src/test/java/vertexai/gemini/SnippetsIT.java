@@ -114,7 +114,7 @@ public class SnippetsIT {
   @Test
   public void testChatSession() throws IOException {
     ChatDiscussion.chatDiscussion(PROJECT_ID, LOCATION, GEMINI_PRO);
-    assertThat(out.toString()).contains("Chat Ended.");
+    assertThat(bout.toString()).contains("Chat Ended.");
   }
 
   @Test
