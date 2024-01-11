@@ -221,7 +221,7 @@ public class SnippetsIT {
     ListRelatedAccountGroupMemberships.listRelatedAccountGroupMemberships(PROJECT_ID, "legitimate");
     assertThat(stdOut.toString()).contains("Finished listing related account group memberships.");
 
-    // Search related group memberships for a hashed account id.
+    // Search related group memberships for a account id.
     SearchRelatedAccountGroupMemberships.searchRelatedAccountGroupMemberships(
         PROJECT_ID, hashedAccountId);
     assertThat(stdOut.toString())
