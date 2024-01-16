@@ -38,7 +38,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -183,16 +182,6 @@ public class SnippetsIT {
 
     String testURL = "http://localhost:" + randomServerPort + "/";
     String accountId = "default-" + UUID.randomUUID().toString().split("-")[0];
-
-    // Secret not shared with Google.
-    String HMAC_KEY = "123456789";
-    // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
-    // secret key.
-    Mac mac = Mac.getInstance("HmacSHA256");
-    SecretKeySpec secretKeySpec = new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
-        "HmacSHA256");
-    mac.init(secretKeySpec);
-    byte[] hashBytes = mac.doFinal(accountId.getBytes(StandardCharsets.UTF_8));
 
     // Create the assessment.
     JSONObject createAssessmentResult =
