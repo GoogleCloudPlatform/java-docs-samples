@@ -193,7 +193,6 @@ public class SnippetsIT {
         "HmacSHA256");
     mac.init(secretKeySpec);
     byte[] hashBytes = mac.doFinal(accountId.getBytes(StandardCharsets.UTF_8));
-    asdfByteString hashedAccountId = ByteString.copyFrom(hashBytes);
 
     // Create the assessment.
     JSONObject createAssessmentResult =
@@ -223,11 +222,11 @@ public class SnippetsIT {
 
     // Search related group memberships for a account id.
     SearchRelatedAccountGroupMemberships.searchRelatedAccountGroupMemberships(
-        PROJECT_ID, hashedAccountId);
+        PROJECT_ID, accountId);
     assertThat(stdOut.toString())
         .contains(
             String.format(
-                "Finished searching related account group memberships for %s", hashedAccountId));
+                "Finished searching related account group memberships for %s", accountId));
   }
 
   @Test
