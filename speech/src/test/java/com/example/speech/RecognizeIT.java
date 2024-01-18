@@ -142,7 +142,7 @@ public class RecognizeIT {
   public void testModelSelection() throws Exception {
     Recognize.transcribeModelSelection(videoFileName);
     String got = bout.toString();
-    assertThat(got).contains("the weather outside is sunny");
+    assertThat(got).contains("stranger things from Netflix playing on TV from the people that brought you Google home");
   }
 
   @Test
