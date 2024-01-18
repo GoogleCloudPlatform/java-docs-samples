@@ -143,7 +143,7 @@ public class RecognizeIT {
     Recognize.transcribeModelSelection(videoFileName);
     String got = bout.toString();
     assertThat(got).contains(
-      "stranger things from Netflix playing on TV from the people that brought you Google home");
+        "stranger things from Netflix playing on TV from the people that brought you Google home");
   }
 
   @Test
