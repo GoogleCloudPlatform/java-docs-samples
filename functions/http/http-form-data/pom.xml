@@ -43,7 +43,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.28.0</version>
+        <version>26.29.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.1.5</version>
+      <version>1.2.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -105,7 +105,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.5</version>
         <configuration>
           <skipTests>${skipTests}</skipTests>
           <reportNameSuffix>sponge_log</reportNameSuffix>

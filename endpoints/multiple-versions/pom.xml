@@ -39,8 +39,8 @@
 
     <maven.war.plugin>2.6</maven.war.plugin>
 
-    <appengine.maven.plugin>2.5.0</appengine.maven.plugin>
-    <jetty.maven.plugin>11.0.18</jetty.maven.plugin>
+    <appengine.maven.plugin>2.5.1</appengine.maven.plugin>
+    <jetty.maven.plugin>11.0.19</jetty.maven.plugin>
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
   </properties>
@@ -52,7 +52,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.28.0</version>
+        <version>26.29.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

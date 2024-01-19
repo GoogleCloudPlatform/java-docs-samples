@@ -37,7 +37,7 @@
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <spring-boot.version>2.7.17</spring-boot.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
     </properties>
 
     <dependencyManagement>
@@ -60,7 +60,7 @@
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
-                <version>1.19.2</version>
+                <version>1.19.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>7.3</version>
+            <version>7.4</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -94,13 +94,13 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>1.19.2</version>
+            <version>1.19.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.truth</groupId>
             <artifactId>truth</artifactId>
-            <version>1.1.5</version>
+            <version>1.2.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
