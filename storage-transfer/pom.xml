@@ -95,7 +95,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.8.0</version>
+      <version>5.9.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -114,14 +114,14 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-s3</artifactId>
-      <version>1.12.634</version>
+      <version>1.12.637</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-sqs</artifactId>
-      <version>1.12.634</version>
+      <version>1.12.637</version>
       <scope>test</scope>
     </dependency>
 
