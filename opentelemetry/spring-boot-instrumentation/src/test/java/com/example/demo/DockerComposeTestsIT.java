@@ -26,7 +26,6 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.testcontainers.containers.ComposeContainer;
@@ -47,7 +46,6 @@ public class DockerComposeTestsIT {
           .withBuild(true);
 
   @Test
-  @Ignore("TODO: Remove after fixing https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8979")
   public void testApp() throws InterruptedException, IOException, URISyntaxException {
     // Let the docker compose app run until some spans/logs/metrics are sent to
     // GCP

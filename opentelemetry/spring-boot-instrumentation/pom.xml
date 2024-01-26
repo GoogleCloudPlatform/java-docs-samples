@@ -82,7 +82,9 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>7.4</version>
+            <!-- Cannot be updated until logback is updated to 1.3+, probably in the next
+            Spring Boot major version -->
+            <version>7.3</version>
             <scope>runtime</scope>
         </dependency>
 
