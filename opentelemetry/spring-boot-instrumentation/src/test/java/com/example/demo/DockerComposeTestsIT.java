@@ -34,7 +34,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 public class DockerComposeTestsIT {
   @ClassRule
   public static ComposeContainer environment =
-      new ComposeContainer(new File("docker-compose.yaml"), new File("docker-compose.adc.yaml"))
+      new ComposeContainer(new File("docker-compose.yaml"), new File("docker-compose.creds.yaml"))
           .withEnv("USERID", System.getenv("USERID"))
           .withEnv("GOOGLE_CLOUD_PROJECT", getenvNotNull("GOOGLE_CLOUD_PROJECT"))
           .withEnv(
