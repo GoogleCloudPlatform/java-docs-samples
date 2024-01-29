@@ -80,17 +80,9 @@ Apache header:
 
 [ADC]: https://developers.google.com/identity/protocols/application-default-credentials
 [auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
-[java-8-badge]:
-https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-8.svg
-[java-8-link]:
-https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-8.html
-[java-11-badge]:
-https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-11.svg
-[java-11-link]:
-https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-11.html
-[java-17-badge]:
-https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-17.svg
-[java-17-link]:
-https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-17.html
+[java-21-badge]:
+https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-21.svg
+[java-21-link]:
+https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-21.html
 
 Java is a registered trademark of Oracle and/or its affiliates.
