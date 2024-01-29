@@ -58,7 +58,7 @@ cd java-docs-samples/opentelemetry/spring-boot-instrumentation/
 export USERID="$(id -u)"
 # Specify the project ID
 export GOOGLE_CLOUD_PROJECT=<your project id>
-docker compose -f docker-compose.yaml -f docker-compose.adc.yaml up  --abort-on-container-exit
+docker compose -f docker-compose.yaml -f docker-compose.creds.yaml up --abort-on-container-exit
 ```
 
 [auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
