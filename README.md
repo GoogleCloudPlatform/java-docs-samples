@@ -91,6 +91,6 @@ https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-do
 [java-21-badge]:
 https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-21.svg
 [java-21-link]:
-https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/
+https://storage.googleapis.com/cloud-devrel-kokoro-resources/java/badges/java-docs-samples-21.html
 
 Java is a registered trademark of Oracle and/or its affiliates.
