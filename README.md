@@ -1,7 +1,7 @@
 # Google Cloud Platform Java Samples
 
 [![Build Status][java-11-badge]][java-11-link] [![Build
-Status][java-17-badge]][java-17-link]
+Status][java-17-badge]][java-17-link] [![Build Status][java-21-badge]][java-21-link]
 
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=README.md">
 <img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
