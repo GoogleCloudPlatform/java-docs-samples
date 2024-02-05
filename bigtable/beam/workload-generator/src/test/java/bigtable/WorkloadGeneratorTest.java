@@ -23,20 +23,22 @@ import static org.junit.Assert.assertNotNull;
 import bigtable.WorkloadGenerator.BigtableWorkloadOptions;
 import bigtable.WorkloadGenerator.ReadFromTableFn;
 import com.google.api.services.dataflow.model.Job;
-import com.google.bigtable.repackaged.com.google.cloud.monitoring.v3.MetricServiceClient;
-import com.google.bigtable.repackaged.com.google.cloud.monitoring.v3.MetricServiceClient.ListTimeSeriesPagedResponse;
-import com.google.bigtable.repackaged.com.google.monitoring.v3.ListTimeSeriesRequest;
-import com.google.bigtable.repackaged.com.google.monitoring.v3.Point;
-import com.google.bigtable.repackaged.com.google.monitoring.v3.ProjectName;
-import com.google.bigtable.repackaged.com.google.monitoring.v3.TimeInterval;
-import com.google.bigtable.repackaged.com.google.monitoring.v3.TimeSeries;
-import com.google.bigtable.repackaged.com.google.protobuf.util.Timestamps;
-import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
-import com.google.cloud.bigtable.hbase.BigtableConfiguration;
+import com.google.cloud.bigtable.admin.v2.BigtableTableAdminClient;
+import com.google.cloud.bigtable.admin.v2.BigtableTableAdminSettings;
+import com.google.cloud.bigtable.admin.v2.models.CreateTableRequest;
+import com.google.cloud.bigtable.data.v2.BigtableDataClient;
+import com.google.cloud.monitoring.v3.MetricServiceClient;
+import com.google.cloud.monitoring.v3.MetricServiceClient.ListTimeSeriesPagedResponse;
 import com.google.dataflow.v1beta3.FlexTemplatesServiceClient;
 import com.google.dataflow.v1beta3.LaunchFlexTemplateParameter;
 import com.google.dataflow.v1beta3.LaunchFlexTemplateRequest;
 import com.google.dataflow.v1beta3.LaunchFlexTemplateResponse;
+import com.google.monitoring.v3.ListTimeSeriesRequest;
+import com.google.monitoring.v3.Point;
+import com.google.monitoring.v3.ProjectName;
+import com.google.monitoring.v3.TimeInterval;
+import com.google.monitoring.v3.TimeSeries;
+import com.google.protobuf.util.Timestamps;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -49,13 +51,6 @@ import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.sdk.transforms.ParDo;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Admin;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.Table;
-import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -70,6 +65,7 @@ public class WorkloadGeneratorTest {
 
   private static String projectId;
   private static String instanceId;
+  private static BigtableTableAdminClient adminClient;
   private static final String REGION_ID = "us-central1";
 
   private ByteArrayOutputStream bout;
@@ -86,11 +82,18 @@ public class WorkloadGeneratorTest {
   public static void beforeClass() {
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
     instanceId = requireEnv("BIGTABLE_TESTING_INSTANCE");
-    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
-      Admin admin = connection.getAdmin();
-      HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(TABLE_ID));
-      descriptor.addFamily(new HColumnDescriptor(COLUMN_FAMILY_NAME));
-      admin.createTable(descriptor);
+
+    try {
+      BigtableTableAdminSettings adminSettings =
+          BigtableTableAdminSettings.newBuilder()
+              .setProjectId(projectId)
+              .setInstanceId(instanceId)
+              .build();
+
+      adminClient = BigtableTableAdminClient.create(adminSettings);
+      CreateTableRequest createTableRequest =
+          CreateTableRequest.of(TABLE_ID).addFamily(COLUMN_FAMILY_NAME);
+      adminClient.createTable(createTableRequest);
     } catch (Exception e) {
       System.out.println("Error during beforeClass: \n" + e.toString());
     }
@@ -104,18 +107,15 @@ public class WorkloadGeneratorTest {
 
   @AfterClass
   public static void afterClass() {
-    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
-      Admin admin = connection.getAdmin();
-      Table table = connection.getTable(TableName.valueOf(Bytes.toBytes(TABLE_ID)));
-      admin.disableTable(table.getName());
-      admin.deleteTable(table.getName());
+    try {
+      adminClient.deleteTable(TABLE_ID);
     } catch (Exception e) {
       System.out.println("Error during afterClass: \n" + e.toString());
     }
   }
 
   @Test
-  public void testGenerateWorkload() {
+  public void testGenerateWorkload() throws IOException {
     BigtableWorkloadOptions options = PipelineOptionsFactory.create()
         .as(BigtableWorkloadOptions.class);
     options.setBigtableInstanceId(instanceId);
@@ -124,16 +124,12 @@ public class WorkloadGeneratorTest {
 
     Pipeline p = Pipeline.create(options);
 
-    CloudBigtableTableConfiguration bigtableTableConfig =
-        new CloudBigtableTableConfiguration.Builder()
-            .withProjectId(options.getProject())
-            .withInstanceId(options.getBigtableInstanceId())
-            .withTableId(options.getBigtableTableId())
-            .build();
+    BigtableDataClient bigtableDataClient = BigtableDataClient.create(options.getProject(),
+        options.getBigtableInstanceId());
 
     // Initiates a new pipeline every second
     p.apply(Create.of(1L))
-        .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig)));
+        .apply(ParDo.of(new ReadFromTableFn(bigtableDataClient)));
     p.run().waitUntilFinish();
 
     String output = bout.toString();

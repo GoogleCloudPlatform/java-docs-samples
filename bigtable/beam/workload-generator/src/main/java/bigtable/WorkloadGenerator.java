@@ -16,10 +16,11 @@
 
 package bigtable;
 
+import com.google.api.gax.rpc.ServerStream;
 import com.google.api.services.dataflow.model.Job;
-import com.google.cloud.bigtable.beam.AbstractCloudBigtableTableDoFn;
-import com.google.cloud.bigtable.beam.CloudBigtableConfiguration;
-import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
+import com.google.cloud.bigtable.data.v2.BigtableDataClient;
+import com.google.cloud.bigtable.data.v2.models.Query;
+import com.google.cloud.bigtable.data.v2.models.Row;
 import java.io.IOException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -33,33 +34,26 @@ import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
-import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.client.Table;
 import org.joda.time.Duration;
 
 public class WorkloadGenerator {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     BigtableWorkloadOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableWorkloadOptions.class);
     generateWorkload(options);
   }
 
-  static PipelineResult generateWorkload(BigtableWorkloadOptions options) {
-    CloudBigtableTableConfiguration bigtableTableConfig =
-        new CloudBigtableTableConfiguration.Builder()
-            .withProjectId(options.getProject())
-            .withInstanceId(options.getBigtableInstanceId())
-            .withTableId(options.getBigtableTableId())
-            .build();
-
+  static PipelineResult generateWorkload(BigtableWorkloadOptions options) throws IOException {
     Pipeline p = Pipeline.create(options);
+    BigtableDataClient bigtableDataClient = BigtableDataClient.create(options.getProject(),
+        options.getBigtableInstanceId());
 
     // Initiates a new pipeline every second
     p.apply(GenerateSequence.from(0).withRate(options.getWorkloadRate(), new Duration(1000)))
-        .apply(ParDo.of(new ReadFromTableFn(bigtableTableConfig)));
+        .apply(ParDo.of(new ReadFromTableFn(bigtableDataClient)));
     System.out.println("Beginning to generate read workload.");
     PipelineResult pipelineResult = p.run();
 
@@ -88,19 +82,20 @@ public class WorkloadGenerator {
     client.updateJob(jobId, job);
   }
 
-  public static class ReadFromTableFn extends AbstractCloudBigtableTableDoFn<Long, Void> {
+  public static class ReadFromTableFn extends DoFn<Long, Void> {
 
-    public ReadFromTableFn(CloudBigtableConfiguration config) {
-      super(config);
+    private final BigtableDataClient bigtableDataClient;
+
+    public ReadFromTableFn(BigtableDataClient bigtableDataClient) {
+      this.bigtableDataClient = bigtableDataClient;
       System.out.println("Connected to table.");
     }
 
     @ProcessElement
     public void processElement(PipelineOptions po) throws IOException {
       BigtableWorkloadOptions options = po.as(BigtableWorkloadOptions.class);
-      Scan scan = new Scan();
-      Table table = getConnection().getTable(TableName.valueOf(options.getBigtableTableId()));
-      table.getScanner(scan);
+      Query query = Query.create(options.getBigtableTableId());
+      ServerStream<Row> rows = this.bigtableDataClient.readRows(query);
     }
   }
 
