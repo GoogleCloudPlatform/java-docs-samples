@@ -133,7 +133,7 @@ public class WorkloadGeneratorTest {
     p.run().waitUntilFinish();
 
     String output = bout.toString();
-    assertThat(output).contains("Connected to table");
+    assertThat(output).contains("Connected to client");
   }
 
   // todo: Fix test flakiness
