@@ -48,12 +48,11 @@ public class WorkloadGenerator {
 
   static PipelineResult generateWorkload(BigtableWorkloadOptions options) throws IOException {
     Pipeline p = Pipeline.create(options);
-    BigtableDataClient bigtableDataClient = BigtableDataClient.create(options.getProject(),
-        options.getBigtableInstanceId());
 
     // Initiates a new pipeline every second
     p.apply(GenerateSequence.from(0).withRate(options.getWorkloadRate(), new Duration(1000)))
-        .apply(ParDo.of(new ReadFromTableFn(bigtableDataClient)));
+        .apply(
+            ParDo.of(new ReadFromTableFn(options.getProject(), options.getBigtableInstanceId())));
     System.out.println("Beginning to generate read workload.");
     PipelineResult pipelineResult = p.run();
 
@@ -84,18 +83,34 @@ public class WorkloadGenerator {
 
   public static class ReadFromTableFn extends DoFn<Long, Void> {
 
-    private final BigtableDataClient bigtableDataClient;
+    private final String projectId;
+    private final String instanceId;
+    private BigtableDataClient bigtableDataClient;
 
-    public ReadFromTableFn(BigtableDataClient bigtableDataClient) {
-      this.bigtableDataClient = bigtableDataClient;
-      System.out.println("Connected to table.");
+    public ReadFromTableFn(String projectId, String instanceId) {
+      this.projectId = projectId;
+      this.instanceId = instanceId;
+    }
+
+    @Setup
+    public void setup() throws IOException {
+      this.bigtableDataClient = BigtableDataClient.create(this.projectId, this.instanceId);
+      System.out.println("Connected to client.");
+    }
+
+    @Teardown
+    public void teardown() {
+      this.bigtableDataClient.close();
     }
 
     @ProcessElement
-    public void processElement(PipelineOptions po) throws IOException {
+    public void processElement(PipelineOptions po) {
       BigtableWorkloadOptions options = po.as(BigtableWorkloadOptions.class);
       Query query = Query.create(options.getBigtableTableId());
       ServerStream<Row> rows = this.bigtableDataClient.readRows(query);
+      // for (Row row : rows) {
+      //   System.out.println(row);
+      // }
     }
   }
 

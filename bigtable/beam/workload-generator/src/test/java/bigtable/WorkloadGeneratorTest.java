@@ -129,7 +129,7 @@ public class WorkloadGeneratorTest {
 
     // Initiates a new pipeline every second
     p.apply(Create.of(1L))
-        .apply(ParDo.of(new ReadFromTableFn(bigtableDataClient)));
+        .apply(ParDo.of(new ReadFromTableFn(projectId, instanceId)));
     p.run().waitUntilFinish();
 
     String output = bout.toString();
