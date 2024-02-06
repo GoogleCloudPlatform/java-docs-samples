@@ -83,9 +83,10 @@ public class WorkloadGenerator {
 
   public static class ReadFromTableFn extends DoFn<Long, Void> {
 
-    static Object lock = new Object();
-    static BigtableDataClient bigtableDataClient;
-    static int refCount = 0;
+    // Lock is used to share the Bigtable client between DoFn threads and stay in sync.
+    private final static Object lock = new Object();
+    private static BigtableDataClient bigtableDataClient;
+    private static int clientRefCount = 0;
 
     private final String projectId;
     private final String instanceId;
@@ -96,9 +97,9 @@ public class WorkloadGenerator {
     }
 
     @Setup
-    void setup() throws IOException {
+    public void setup() throws IOException {
       synchronized (lock) {
-        if (++refCount == 1) {
+        if (++clientRefCount == 1) {
           bigtableDataClient = BigtableDataClient.create(this.projectId, this.instanceId);
           System.out.println("Connected to client.");
         }
@@ -106,11 +107,12 @@ public class WorkloadGenerator {
     }
 
     @Teardown
-    void teardown() {
+    public void teardown() {
       synchronized (lock) {
-        if (--refCount == 0) {
+        if (--clientRefCount == 0) {
           bigtableDataClient.close();
           bigtableDataClient = null;
+          System.out.println("Closed client connection.");
         }
       }
     }
@@ -119,7 +121,8 @@ public class WorkloadGenerator {
     public void processElement(PipelineOptions po) {
       BigtableWorkloadOptions options = po.as(BigtableWorkloadOptions.class);
       Query query = Query.create(options.getBigtableTableId());
-      ServerStream<Row> rows = this.bigtableDataClient.readRows(query);
+      ServerStream<Row> rows = bigtableDataClient.readRows(query);
+      // Consume the stream.
       for (Row ignored : rows) {
       }
     }

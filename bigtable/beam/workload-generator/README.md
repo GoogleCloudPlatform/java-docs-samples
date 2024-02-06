@@ -27,9 +27,9 @@ be run as a Dataflow job.
     --template-file-gcs-location "$TEMPLATE_PATH" \
     --parameters bigtableInstanceId="$INSTANCE_ID" \
     --parameters bigtableTableId="$TABLE_ID" \
-    --region "$REGION \
-    --parameters workloadRate=$WORKLOAD_RATE \
-    --parameters workloadDurationMinutes=$WORKLOAD_DURATION"
+    --region="$REGION" \
+    --parameters workloadRate="$WORKLOAD_RATE" \
+    --parameters workloadDurationMinutes="$WORKLOAD_DURATION"
     ```
 
 ### Deploying a template instructions
