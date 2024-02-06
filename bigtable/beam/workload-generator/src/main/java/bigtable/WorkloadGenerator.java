@@ -83,9 +83,12 @@ public class WorkloadGenerator {
 
   public static class ReadFromTableFn extends DoFn<Long, Void> {
 
+    static Object lock = new Object();
+    static BigtableDataClient bigtableDataClient;
+    static int refCount = 0;
+
     private final String projectId;
     private final String instanceId;
-    private BigtableDataClient bigtableDataClient;
 
     public ReadFromTableFn(String projectId, String instanceId) {
       this.projectId = projectId;
@@ -93,14 +96,23 @@ public class WorkloadGenerator {
     }
 
     @Setup
-    public void setup() throws IOException {
-      this.bigtableDataClient = BigtableDataClient.create(this.projectId, this.instanceId);
-      System.out.println("Connected to client.");
+    void setup() throws IOException {
+      synchronized (lock) {
+        if (++refCount == 1) {
+          bigtableDataClient = BigtableDataClient.create(this.projectId, this.instanceId);
+          System.out.println("Connected to client.");
+        }
+      }
     }
 
     @Teardown
-    public void teardown() {
-      this.bigtableDataClient.close();
+    void teardown() {
+      synchronized (lock) {
+        if (--refCount == 0) {
+          bigtableDataClient.close();
+          bigtableDataClient = null;
+        }
+      }
     }
 
     @ProcessElement
@@ -108,9 +120,8 @@ public class WorkloadGenerator {
       BigtableWorkloadOptions options = po.as(BigtableWorkloadOptions.class);
       Query query = Query.create(options.getBigtableTableId());
       ServerStream<Row> rows = this.bigtableDataClient.readRows(query);
-      // for (Row row : rows) {
-      //   System.out.println(row);
-      // }
+      for (Row ignored : rows) {
+      }
     }
   }
 

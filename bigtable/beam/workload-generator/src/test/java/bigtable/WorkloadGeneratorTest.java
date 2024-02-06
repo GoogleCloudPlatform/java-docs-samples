@@ -26,7 +26,6 @@ import com.google.api.services.dataflow.model.Job;
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminClient;
 import com.google.cloud.bigtable.admin.v2.BigtableTableAdminSettings;
 import com.google.cloud.bigtable.admin.v2.models.CreateTableRequest;
-import com.google.cloud.bigtable.data.v2.BigtableDataClient;
 import com.google.cloud.monitoring.v3.MetricServiceClient;
 import com.google.cloud.monitoring.v3.MetricServiceClient.ListTimeSeriesPagedResponse;
 import com.google.dataflow.v1beta3.FlexTemplatesServiceClient;
@@ -79,24 +78,20 @@ public class WorkloadGeneratorTest {
   }
 
   @BeforeClass
-  public static void beforeClass() {
+  public static void beforeClass() throws IOException {
     projectId = requireEnv("GOOGLE_CLOUD_PROJECT");
     instanceId = requireEnv("BIGTABLE_TESTING_INSTANCE");
 
-    try {
-      BigtableTableAdminSettings adminSettings =
-          BigtableTableAdminSettings.newBuilder()
-              .setProjectId(projectId)
-              .setInstanceId(instanceId)
-              .build();
+    BigtableTableAdminSettings adminSettings =
+        BigtableTableAdminSettings.newBuilder()
+            .setProjectId(projectId)
+            .setInstanceId(instanceId)
+            .build();
 
-      adminClient = BigtableTableAdminClient.create(adminSettings);
-      CreateTableRequest createTableRequest =
-          CreateTableRequest.of(TABLE_ID).addFamily(COLUMN_FAMILY_NAME);
-      adminClient.createTable(createTableRequest);
-    } catch (Exception e) {
-      System.out.println("Error during beforeClass: \n" + e.toString());
-    }
+    adminClient = BigtableTableAdminClient.create(adminSettings);
+    CreateTableRequest createTableRequest =
+        CreateTableRequest.of(TABLE_ID).addFamily(COLUMN_FAMILY_NAME);
+    adminClient.createTable(createTableRequest);
   }
 
   @Before
@@ -107,11 +102,7 @@ public class WorkloadGeneratorTest {
 
   @AfterClass
   public static void afterClass() {
-    try {
-      adminClient.deleteTable(TABLE_ID);
-    } catch (Exception e) {
-      System.out.println("Error during afterClass: \n" + e.toString());
-    }
+    adminClient.deleteTable(TABLE_ID);
   }
 
   @Test
@@ -123,9 +114,6 @@ public class WorkloadGeneratorTest {
     options.setRegion(REGION_ID);
 
     Pipeline p = Pipeline.create(options);
-
-    BigtableDataClient bigtableDataClient = BigtableDataClient.create(options.getProject(),
-        options.getBigtableInstanceId());
 
     // Initiates a new pipeline every second
     p.apply(Create.of(1L))
