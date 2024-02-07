@@ -39,3 +39,4 @@ sourceFileExtensions:
 ignoreFiles:
   - '.github/auto-label.yaml'
   - '.github/sync-repo-settings.yaml'
+ignoreLicenseYear: true
