@@ -18,9 +18,15 @@ package com.example.spanner;
 
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
+import com.google.cloud.spanner.ReadContext.QueryAnalyzeMode;
+import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
+import com.google.cloud.spanner.Statement;
+import com.google.protobuf.Value;
 import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.metrics.DoubleHistogram;
+import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.exporter.otlp.metrics.OtlpGrpcMetricExporter;
 import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
@@ -34,16 +40,16 @@ import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
  */
 public class OpenTelemetryUsage {
 
-  // [START spanner_opentelemetry_usage]
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project";
     String instanceId = "my-instance";
     String databaseId = "my-database";
 
+    // [START spanner_opentelemetry_usage]
     // Enable OpenTelemetry metrics and traces before Injecting OpenTelemetry
     SpannerOptions.enableOpenTelemetryMetrics();
-    SpannerOptions.enableOpenCensusTraces();
+    SpannerOptions.enableOpenTelemetryTraces();
 
     // Create a new meter provider
     SdkMeterProvider sdkMeterProvider = SdkMeterProvider.builder()
@@ -70,8 +76,65 @@ public class OpenTelemetryUsage {
         .setOpenTelemetry(openTelemetry)
         .build();
     Spanner spanner = options.getService();
+
+    // [END spanner_opentelemetry_usage]
     DatabaseClient dbClient = spanner
         .getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
+
+    captureGfeMetric(dbClient);
+    captureQueryStatsMetric(openTelemetry, dbClient);
+    sdkMeterProvider.forceFlush();
+    sdkTracerProvider.forceFlush();
   }
-  // [END spanner_opentelemetry_usage]
+
+
+  // [START spanner_opentelemetry_capture_query_stats_metric]
+  static void captureQueryStatsMetric(OpenTelemetry openTelemetry, DatabaseClient dbClient) {
+    // Register query stats metric.
+    // This should be done once before start recording the data.
+    Meter meter = openTelemetry.getMeter("cloud.google.com/java");
+    DoubleHistogram queryStatsMetricLatencies =
+        meter
+            .histogramBuilder("spanner/query_stats_elapsed")
+            .setDescription("The execution of the query")
+            .setUnit("ms")
+            .build();
+
+    // Capture query stats metric data.
+    try (ResultSet resultSet = dbClient.singleUse()
+        .analyzeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"),
+            QueryAnalyzeMode.PROFILE)) {
+
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %d %s", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
+      }
+
+      String value = resultSet.getStats().getQueryStats()
+          .getFieldsOrDefault("elapsed_time", Value.newBuilder().setStringValue("0 msecs").build())
+          .getStringValue();
+      double elapsedTime = value.contains("msecs")
+          ? Double.parseDouble(value.replaceAll(" msecs", ""))
+          : Double.parseDouble(value.replaceAll(" secs", "")) * 1000;
+      queryStatsMetricLatencies.record(elapsedTime);
+    }
+  }
+  // [END spanner_opentelemetry_capture_query_stats_metric]
+
+  // [START spanner_opentelemetry_gfe_metric]
+  static void captureGfeMetric(DatabaseClient dbClient) {
+    // GFE_latency and other Spanner metrics are automatically collected
+    // when OpenTelemetry metrics are enabled.
+
+    try (ResultSet resultSet =
+        dbClient
+            .singleUse() // Execute a single read or query against Cloud Spanner.
+            .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"))) {
+      while (resultSet.next()) {
+        System.out.printf(
+            "%d %d %s", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
+      }
+    }
+  }
+  // [END spanner_opentelemetry_gfe_metric]
 }
