@@ -19,7 +19,7 @@ package vertexai.gemini;
 // [START aiplatform_gemini_token_count]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.CountTokensResponse;
-import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
+import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import java.io.IOException;
 // [END aiplatform_gemini_token_count]
 
