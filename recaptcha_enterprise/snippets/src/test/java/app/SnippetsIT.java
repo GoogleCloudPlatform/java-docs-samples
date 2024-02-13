@@ -38,7 +38,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -184,17 +183,6 @@ public class SnippetsIT {
     String testURL = "http://localhost:" + randomServerPort + "/";
     String accountId = "default-" + UUID.randomUUID().toString().split("-")[0];
 
-    // Secret not shared with Google.
-    String HMAC_KEY = "123456789";
-    // Get instance of Mac object implementing HmacSHA256, and initialize it with the above
-    // secret key.
-    Mac mac = Mac.getInstance("HmacSHA256");
-    SecretKeySpec secretKeySpec = new SecretKeySpec(HMAC_KEY.getBytes(StandardCharsets.UTF_8),
-        "HmacSHA256");
-    mac.init(secretKeySpec);
-    byte[] hashBytes = mac.doFinal(accountId.getBytes(StandardCharsets.UTF_8));
-    asdfByteString hashedAccountId = ByteString.copyFrom(hashBytes);
-
     // Create the assessment.
     JSONObject createAssessmentResult =
         createAssessment(testURL, accountId, AssessmentType.ACCOUNT_DEFENDER);
@@ -221,13 +209,13 @@ public class SnippetsIT {
     ListRelatedAccountGroupMemberships.listRelatedAccountGroupMemberships(PROJECT_ID, "legitimate");
     assertThat(stdOut.toString()).contains("Finished listing related account group memberships.");
 
-    // Search related group memberships for a hashed account id.
+    // Search related group memberships for a account id.
     SearchRelatedAccountGroupMemberships.searchRelatedAccountGroupMemberships(
-        PROJECT_ID, hashedAccountId);
+        PROJECT_ID, accountId);
     assertThat(stdOut.toString())
         .contains(
             String.format(
-                "Finished searching related account group memberships for %s", hashedAccountId));
+                "Finished searching related account group memberships for %s", accountId));
   }
 
   @Test

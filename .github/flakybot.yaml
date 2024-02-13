@@ -1,4 +1,4 @@
-# Copyright 2019 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,15 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Format: //devtools/kokoro/config/proto/build.proto
-
-# Tell the trampoline which build file to use.
-env_vars: {
-    key: "TRAMPOLINE_BUILD_FILE"
-    value: "github/java-docs-samples/.kokoro/tests/run_tests.sh"
-}
-# Only diff from main
-env_vars: {
-    key: "GIT_DIFF"
-    value: "origin/main... ."
-}
+issuePriority: p2

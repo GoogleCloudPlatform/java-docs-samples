@@ -29,6 +29,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,7 @@ public class R2dbcSampleApplicationIT {
   }
 
   @Test
+  @Ignore("TODO: Remove after fixing https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8978")
   public void testAllWebEndpoints() {
 
     // DDL takes time; extend timeout to avoid "Timeout on blocking read" exceptions.

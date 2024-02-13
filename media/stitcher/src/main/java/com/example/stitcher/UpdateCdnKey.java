@@ -64,48 +64,49 @@ public class UpdateCdnKey {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-    try (VideoStitcherServiceClient videoStitcherServiceClient =
-        VideoStitcherServiceClient.create()) {
-      CdnKey cdnKey;
-      String path;
-      if (isMediaCdn) {
-        path = "media_cdn_key";
-        cdnKey =
-            CdnKey.newBuilder()
-                .setName(CdnKeyName.of(projectId, location, cdnKeyId).toString())
-                .setHostname(hostname)
-                .setMediaCdnKey(
-                    MediaCdnKey.newBuilder()
-                        .setKeyName(keyName)
-                        .setPrivateKey(ByteString.copyFromUtf8(privateKey))
-                        .build())
-                .build();
-      } else {
-        path = "google_cdn_key";
-        cdnKey =
-            CdnKey.newBuilder()
-                .setName(CdnKeyName.of(projectId, location, cdnKeyId).toString())
-                .setHostname(hostname)
-                .setGoogleCdnKey(
-                    GoogleCdnKey.newBuilder()
-                        .setKeyName(keyName)
-                        .setPrivateKey(ByteString.copyFromUtf8(privateKey))
-                        .build())
-                .build();
-      }
-
-      UpdateCdnKeyRequest updateCdnKeyRequest =
-          UpdateCdnKeyRequest.newBuilder()
-              .setCdnKey(cdnKey)
-              // Update the hostname field and the fields for the specific key type (Media CDN
-              // or Cloud CDN). You must set the mask to the fields you want to update.
-              .setUpdateMask(FieldMask.newBuilder().addPaths("hostname").addPaths(path).build())
+    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
+    CdnKey cdnKey;
+    String path;
+    if (isMediaCdn) {
+      path = "media_cdn_key";
+      cdnKey =
+          CdnKey.newBuilder()
+              .setName(CdnKeyName.of(projectId, location, cdnKeyId).toString())
+              .setHostname(hostname)
+              .setMediaCdnKey(
+                  MediaCdnKey.newBuilder()
+                      .setKeyName(keyName)
+                      .setPrivateKey(ByteString.copyFromUtf8(privateKey))
+                      .build())
               .build();
-
-      CdnKey response = videoStitcherServiceClient.updateCdnKeyAsync(updateCdnKeyRequest)
-          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-      System.out.println("Updated CDN key: " + response.getName());
+    } else {
+      path = "google_cdn_key";
+      cdnKey =
+          CdnKey.newBuilder()
+              .setName(CdnKeyName.of(projectId, location, cdnKeyId).toString())
+              .setHostname(hostname)
+              .setGoogleCdnKey(
+                  GoogleCdnKey.newBuilder()
+                      .setKeyName(keyName)
+                      .setPrivateKey(ByteString.copyFromUtf8(privateKey))
+                      .build())
+              .build();
     }
+
+    UpdateCdnKeyRequest updateCdnKeyRequest =
+        UpdateCdnKeyRequest.newBuilder()
+            .setCdnKey(cdnKey)
+            // Update the hostname field and the fields for the specific key type (Media CDN
+            // or Cloud CDN). You must set the mask to the fields you want to update.
+            .setUpdateMask(FieldMask.newBuilder().addPaths("hostname").addPaths(path).build())
+            .build();
+
+    CdnKey response =
+        videoStitcherServiceClient
+            .updateCdnKeyAsync(updateCdnKeyRequest)
+            .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+    System.out.println("Updated CDN key: " + response.getName());
+    videoStitcherServiceClient.close();
   }
 }
 // [END videostitcher_update_cdn_key]

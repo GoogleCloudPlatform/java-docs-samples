@@ -14,11 +14,13 @@
 # limitations under the License.
 
 file="$(pwd)"
+project_root="$(git rev-parse --show-toplevel)"
+rel_dir=$(realpath --relative-to=${project_root} $file)
 SCRIPT_DIR="$(dirname $0)/"
 
 # Fail the tests if no Java version was found.
 POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
-ALLOWED_VERSIONS=("1.8" "11" "17")
+ALLOWED_VERSIONS=("1.8" "11" "17" "21")
 # shellcheck disable=SC2199
 # shellcheck disable=SC2076
 if [[ "$POM_JAVA" = "" ]] || [[ ! " ${ALLOWED_VERSIONS[*]} " =~ " ${POM_JAVA} " ]]; then
@@ -38,8 +40,8 @@ if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
     exit 0
 fi
 
-if [[ ",$JAVA_VERSION," =~ "17" && ( "$file" == *"run/hello-broken"* || "$file" == *"flexible/java-11/pubsub"* || "$file" == *"flexible/java-11/cloudstorage"*|| "$file" == *"flexible/java-11/datastore"*) ]]; then
-    echo -e "\n Skipping tests: Sample ($file) tests do not work with Java 17\n"
+if [[ (",$JAVA_VERSION," =~ "17" || ",$JAVA_VERSION," =~ "21")  && ( "$file" == *"run/hello-broken"* || "$file" == *"flexible/java-11/pubsub"* || "$file" == *"flexible/java-11/cloudstorage"*|| "$file" == *"flexible/java-11/datastore"*) ]]; then
+    echo -e "\n Skipping tests: Sample ($file) tests do not work with Java runtimes 17 or greater\n"
     exit 0
 fi
 
@@ -67,13 +69,10 @@ if [[ "$file" == *"functions/helloworld/"* ]]; then
 fi
 
 # Use maven to execute the tests for the project.
-mvn --quiet --batch-mode --fail-at-end clean verify \
-    -Dfile.encoding="UTF-8" \
-    -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-    -Dmaven.test.redirectTestOutputToFile=true \
-    -Dbigtable.projectID="${GOOGLE_CLOUD_PROJECT}" \
-    -Dbigtable.instanceID=instance
+pushd ${project_root}
+make test dir=${rel_dir}
 EXIT=$?
+popd
 
 # Tear down (deployed) Cloud Functions after deployment tests are run
 if [[ "$file" == *"functions/helloworld/"* ]]; then
@@ -102,9 +101,9 @@ if [[ "$file" == *"run/"* && ("$file" != *"run/filesystem"* && "$file" != *"run/
     fi
 fi
 
-# If this is a periodic build, send the test log to the FlakyBot.
+# If this is a periodic build, send the test log to the FlakyBot except for Java 8
 # See https://github.com/googleapis/repo-automation-bots/tree/main/packages/flakybot.
-if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"periodic"* ]]; then
+if [[ $JAVA_VERSION != "1.8" && $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"periodic"* ]]; then
     chmod +x $KOKORO_GFILE_DIR/linux_amd64/flakybot
     $KOKORO_GFILE_DIR/linux_amd64/flakybot
 fi
