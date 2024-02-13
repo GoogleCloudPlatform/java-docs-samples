@@ -19,11 +19,11 @@ package vertexai.gemini;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.GenerationConfig;
-import com.google.cloud.vertexai.generativeai.preview.ChatSession;
-import com.google.cloud.vertexai.generativeai.preview.ContentMaker;
-import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
-import com.google.cloud.vertexai.generativeai.preview.PartMaker;
-import com.google.cloud.vertexai.generativeai.preview.ResponseHandler;
+import com.google.cloud.vertexai.generativeai.ChatSession;
+import com.google.cloud.vertexai.generativeai.ContentMaker;
+import com.google.cloud.vertexai.generativeai.GenerativeModel;
+import com.google.cloud.vertexai.generativeai.PartMaker;
+import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import java.io.IOException;
 
 public class MultiTurnMultimodal {
