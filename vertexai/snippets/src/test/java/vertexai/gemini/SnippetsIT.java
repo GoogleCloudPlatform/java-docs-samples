@@ -41,9 +41,9 @@ public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
-  public static final String GEMINI_ULTRA_VISION = "gemini-ultra-vision";
-  private static final String GEMINI_PRO_VISION = "gemini-pro-vision";
-  private static final String GEMINI_PRO = "gemini-pro";
+  public static final String GEMINI_ULTRA_VISION = "gemini-1.0-ultra-vision";
+  private static final String GEMINI_PRO_VISION = "gemini-1.0-pro-vision";
+  private static final String GEMINI_PRO = "gemini-1.0-pro";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   @Rule

@@ -31,7 +31,7 @@ public class MultimodalQuery {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-pro-vision";
+    String modelName = "gemini-1.0-pro-vision";
     String dataImageBase64 = "your-base64-encoded-image";
 
     String output = multimodalQuery(projectId, location, modelName, dataImageBase64);

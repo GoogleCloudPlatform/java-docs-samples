@@ -28,7 +28,7 @@ public class GetTokenCount {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-pro-vision";
+    String modelName = "gemini-1.0-pro-vision";
 
     String textPrompt = "Why is the sky blue?";
     getTokenCount(projectId, location, modelName, textPrompt);
