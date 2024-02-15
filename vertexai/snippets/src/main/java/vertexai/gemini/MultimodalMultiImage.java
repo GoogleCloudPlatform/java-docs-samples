@@ -36,7 +36,7 @@ public class MultimodalMultiImage {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-pro-vision";
+    String modelName = "gemini-1.0-pro-vision";
 
     multimodalMultiImage(projectId, location, modelName);
   }
