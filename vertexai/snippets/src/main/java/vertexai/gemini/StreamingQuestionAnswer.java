@@ -17,10 +17,7 @@
 package vertexai.gemini;
 
 import com.google.cloud.vertexai.VertexAI;
-import com.google.cloud.vertexai.api.GenerateContentResponse;
-import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
-import com.google.cloud.vertexai.generativeai.preview.ResponseHandler;
-import com.google.cloud.vertexai.generativeai.preview.ResponseStream;
+import com.google.cloud.vertexai.generativeai.GenerativeModel;
 
 public class StreamingQuestionAnswer {
 
