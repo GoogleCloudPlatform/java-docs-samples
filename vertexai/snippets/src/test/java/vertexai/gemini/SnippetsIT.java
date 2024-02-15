@@ -188,11 +188,11 @@ public class SnippetsIT {
 
   @Test
   public void testTokenCount() throws Exception {
-    String textPrompt = "How many tokens are there in this prompt?";
+    String textPrompt = "Why is the sky blue?";
 
     int tokenCount = GetTokenCount.getTokenCount(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         textPrompt);
-    assertThat(tokenCount).isGreaterThan(6);
+    assertThat(tokenCount).isEqualTo(6);
   }
 
   @Test
