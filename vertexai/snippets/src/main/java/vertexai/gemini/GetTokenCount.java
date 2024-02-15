@@ -30,7 +30,7 @@ public class GetTokenCount {
     String location = "us-central1";
     String modelName = "gemini-pro-vision";
 
-    String textPrompt = "How many tokens are there in this prompt?";
+    String textPrompt = "Why is the sky blue?";
     getTokenCount(projectId, location, modelName, textPrompt);
   }
 
