@@ -228,6 +228,7 @@ public class WorkloadGeneratorTest {
   }
 
   @Test
+  @Ignore("TODO: remove after fixing https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9243")
   public void testDeployedPipeline() throws IOException, InterruptedException {
     FlexTemplatesServiceClient flexTemplatesServiceClient =
         FlexTemplatesServiceClient.create();

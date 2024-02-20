@@ -33,6 +33,7 @@ limitations under the License.
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <quarkus.version>3.6.5</quarkus.version>
   </properties>
 
   <dependencyManagement>
@@ -40,7 +41,7 @@ limitations under the License.
       <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-bom</artifactId>
-        <version>3.7.2</version>
+        <version>${quarkus.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -69,7 +70,7 @@ limitations under the License.
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>3.7.2</version>
+        <version>${quarkus.version}</version>
         <executions>
           <execution>
             <goals>
