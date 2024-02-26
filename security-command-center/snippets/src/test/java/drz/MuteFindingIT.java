@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2;
+package drz;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -39,14 +39,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import v2.muteconfig.BulkMuteFindings;
-import v2.muteconfig.CreateMuteRule;
-import v2.muteconfig.DeleteMuteRule;
-import v2.muteconfig.GetMuteRule;
-import v2.muteconfig.ListMuteRules;
-import v2.muteconfig.SetMuteFinding;
-import v2.muteconfig.SetUnmuteFinding;
-import v2.muteconfig.UpdateMuteRule;
+import drz.muteconfig.BulkMuteFindings;
+import drz.muteconfig.CreateMuteRule;
+import drz.muteconfig.DeleteMuteRule;
+import drz.muteconfig.GetMuteRule;
+import drz.muteconfig.ListMuteRules;
+import drz.muteconfig.SetMuteFinding;
+import drz.muteconfig.SetUnmuteFinding;
+import drz.muteconfig.UpdateMuteRule;
 
 // Test v2 Mute config samples.
 @RunWith(JUnit4.class)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2;
+package drz;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -32,10 +32,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import v2.findings.GroupFindings;
-import v2.findings.GroupFindingsWithFilter;
-import v2.findings.ListAllFindings;
-import v2.findings.ListFindingsWithFilter;
+import drz.findings.GroupFindings;
+import drz.findings.GroupFindingsWithFilter;
+import drz.findings.ListAllFindings;
+import drz.findings.ListFindingsWithFilter;
 
 // Test v2 Findings samples.
 @RunWith(JUnit4.class)

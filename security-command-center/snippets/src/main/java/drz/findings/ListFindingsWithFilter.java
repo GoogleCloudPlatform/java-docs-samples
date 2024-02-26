@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package v2.findings;
+package drz.findings;
 
-// [START securitycenter_list_all_findings_v2]
+// [START securitycenter_list_filtered_findings_v2]
 
 import com.google.cloud.securitycenter.v2.ListFindingsRequest;
 import com.google.cloud.securitycenter.v2.ListFindingsResponse.ListFindingsResult;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import java.io.IOException;
 
-public class ListAllFindings {
+public class ListFindingsWithFilter {
 
   public static void main(String[] args) throws IOException {
-    // organizationId: The source to list all findings for.
+    // TODO: Replace the variables within {}
+    // organizationId: Google Cloud Organization id.
     // You can also use project/ folder as the parent resource.
     String organizationId = "google-cloud-organization-id";
 
@@ -34,20 +35,34 @@ public class ListAllFindings {
     // Available locations: "us", "eu", "global".
     String location = "us";
 
-    listAllFindings(organizationId, location);
+    // The source id to scope the findings.
+    String sourceId = "source-id";
+
+    listFilteredFindings(organizationId, sourceId, location);
   }
 
-  // List all findings under a given parent resource.
-  public static void listAllFindings(String organizationId, String location) throws IOException {
+  // List filtered findings under a source.
+  public static void listFilteredFindings(String organizationId, String sourceId, String location)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
+
+      // Use any one of the following formats:
+      //  * organizations/{organization_id}/sources/{source_id}/locations/{location}
+      //  * folders/{folder_id}/sources/{source_id}/locations/{location}
+      //  * projects/{project_id}/sources/{source_id}/locations/{location}
+      String parent = String.format("organizations/%s/sources/%s/locations/%s", organizationId,
+          sourceId,
+          location);
+
+      // Listing all findings of category "MEDIUM_RISK_ONE".
+      String filter = "category=\"MEDIUM_RISK_ONE\"";
+
       ListFindingsRequest request =
           ListFindingsRequest.newBuilder()
-              // "-" Indicates listing across all sources.
-              .setParent(
-                  String.format("organizations/%s/sources/%s/locations/%s", organizationId, "-",
-                      location))
+              .setParent(parent)
+              .setFilter(filter)
               .build();
 
       for (ListFindingsResult result : client.listFindings(request).iterateAll()) {
@@ -57,4 +72,4 @@ public class ListAllFindings {
     }
   }
 }
-// [END securitycenter_list_all_findings_v2]
+// [END securitycenter_list_filtered_findings_v2]

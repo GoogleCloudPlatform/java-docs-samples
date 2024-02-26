@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.muteconfig;
+package drz.muteconfig;
 
 // [START securitycenter_set_unmute_v2]
 

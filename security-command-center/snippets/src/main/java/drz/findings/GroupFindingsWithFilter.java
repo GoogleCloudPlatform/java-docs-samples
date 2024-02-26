@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.findings;
+package drz.findings;
 
 // [START securitycenter_group_filtered_findings_v2]
 
