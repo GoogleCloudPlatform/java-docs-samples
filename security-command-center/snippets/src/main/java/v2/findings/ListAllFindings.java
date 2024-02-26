@@ -26,19 +26,19 @@ import java.io.IOException;
 public class ListAllFindings {
 
   public static void main(String[] args) throws IOException {
-    // projectId: The source to list all findings for.
-    // You can also use organization/ folder as the parent resource.
-    String projectId = "google-cloud-project-id";
+    // organizationId: The source to list all findings for.
+    // You can also use project/ folder as the parent resource.
+    String organizationId = "google-cloud-organization-id";
 
     // Specify the DRZ location to list the findings.
     // Available locations: "us", "eu", "global".
-    String location = "global";
+    String location = "us";
 
-    listAllFindings(projectId, location);
+    listAllFindings(organizationId, location);
   }
 
   // List all findings under a given parent resource.
-  public static void listAllFindings(String projectId, String location) throws IOException {
+  public static void listAllFindings(String organizationId, String location) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -46,14 +46,14 @@ public class ListAllFindings {
           ListFindingsRequest.newBuilder()
               // "-" Indicates listing across all sources.
               .setParent(
-                  String.format("projects/%s/sources/%s/locations/%s", projectId, "-",
+                  String.format("organizations/%s/sources/%s/locations/%s", organizationId, "-",
                       location))
               .build();
 
       for (ListFindingsResult result : client.listFindings(request).iterateAll()) {
         System.out.printf("Finding: %s", result.getFinding().getName());
       }
-      System.out.println("Listing complete.");
+      System.out.println("\nListing complete.");
     }
   }
 }

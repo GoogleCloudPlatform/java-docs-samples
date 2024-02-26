@@ -24,7 +24,7 @@ import com.google.cloud.securitycenter.v2.UpdateMuteConfigRequest;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
 
-public class UpdateMuteRuleV2 {
+public class UpdateMuteRule {
 
   public static void main(String[] args) {
     // TODO: Replace the variables within {}
@@ -34,7 +34,7 @@ public class UpdateMuteRuleV2 {
     // Specify the DRZ location of the mute config to update. If the mute config was
     // created with v1 API, it can be accessed with "global".
     // Available locations: "us", "eu", "global".
-    String location = "global";
+    String location = "us";
 
     // muteConfigId: Name of the mute config to update.
     String muteConfigId = "mute-config-id";
@@ -80,4 +80,3 @@ public class UpdateMuteRuleV2 {
   }
 }
 // [END securitycenter_update_mute_config_v2]
-

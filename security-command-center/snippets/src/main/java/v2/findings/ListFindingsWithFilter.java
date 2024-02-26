@@ -27,22 +27,22 @@ public class ListFindingsWithFilter {
 
   public static void main(String[] args) throws IOException {
     // TODO: Replace the variables within {}
-    // projectId: Google Cloud Project id.
-    // You can also use organization/ folder as the parent resource.
-    String projectId = "google-cloud-project-id";
+    // organizationId: Google Cloud Organization id.
+    // You can also use project/ folder as the parent resource.
+    String organizationId = "google-cloud-organization-id";
 
     // Specify the DRZ location to list the findings.
     // Available locations: "us", "eu", "global".
-    String location = "global";
+    String location = "us";
 
     // The source id to scope the findings.
     String sourceId = "source-id";
 
-    listFilteredFindings(projectId, sourceId, location);
+    listFilteredFindings(organizationId, sourceId, location);
   }
 
   // List filtered findings under a source.
-  public static void listFilteredFindings(String projectId, String sourceId, String location)
+  public static void listFilteredFindings(String organizationId, String sourceId, String location)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -52,7 +52,8 @@ public class ListFindingsWithFilter {
       //  * organizations/{organization_id}/sources/{source_id}/locations/{location}
       //  * folders/{folder_id}/sources/{source_id}/locations/{location}
       //  * projects/{project_id}/sources/{source_id}/locations/{location}
-      String parent = String.format("projects/%s/sources/%s/locations/%s", projectId, sourceId,
+      String parent = String.format("organizations/%s/sources/%s/locations/%s", organizationId,
+          sourceId,
           location);
 
       // Listing all findings of category "MEDIUM_RISK_ONE".
@@ -67,7 +68,7 @@ public class ListFindingsWithFilter {
       for (ListFindingsResult result : client.listFindings(request).iterateAll()) {
         System.out.printf("Finding: %s", result.getFinding().getName());
       }
-      System.out.println("Listing complete.");
+      System.out.println("\nListing complete.");
     }
   }
 }

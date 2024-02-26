@@ -20,11 +20,12 @@ package v2.muteconfig;
 
 import com.google.cloud.securitycenter.v2.LocationName;
 import com.google.cloud.securitycenter.v2.MuteConfig;
+import com.google.cloud.securitycenter.v2.MuteConfig.MuteConfigType;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import java.io.IOException;
 import java.util.UUID;
 
-public class CreateMuteRuleV2 {
+public class CreateMuteRule {
 
   public static void main(String[] args) {
     // TODO: Replace the following variables.
@@ -33,7 +34,7 @@ public class CreateMuteRuleV2 {
 
     // Specify the DRZ location of the mute config.
     // Available locations: "us", "eu", "global".
-    String location = "global";
+    String location = "us";
 
     // muteConfigId: Set a random id; max of 63 chars.
     String muteConfigId = "random-mute-id-" + UUID.randomUUID();
@@ -57,6 +58,7 @@ public class CreateMuteRuleV2 {
                   "severity=\"LOW\" OR severity=\"MEDIUM\" AND "
                       + "category=\"Persistence: IAM Anomalous Grant\" AND "
                       + "-resource.type:\"compute\"")
+              .setType(MuteConfigType.STATIC)
               .build();
 
       // You can also create mute rules in an organization/ folder.

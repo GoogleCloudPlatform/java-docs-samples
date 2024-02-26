@@ -16,6 +16,7 @@
 
 package v2;
 
+import com.google.cloud.securitycenter.v2.CreateFindingRequest;
 import com.google.cloud.securitycenter.v2.CreateSourceRequest;
 import com.google.cloud.securitycenter.v2.Finding;
 import com.google.cloud.securitycenter.v2.Finding.FindingClass;
@@ -52,7 +53,7 @@ public class Util {
     }
   }
 
-  public static Finding createFinding(String sourceName, String findingId,
+  public static Finding createFinding(String sourceName, String findingId, String location,
       Optional<String> category) throws IOException {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
@@ -79,7 +80,13 @@ public class Util {
               .setCategory(category.orElse("LOW_RISK_ONE"))
               .build();
 
-      Finding response = client.createFinding(sourceName, finding, findingId);
+      CreateFindingRequest createFindingRequest = CreateFindingRequest.newBuilder()
+          .setParent(String.format("%s/locations/%s", sourceName, location))
+          .setFinding(finding)
+          .setFindingId(findingId)
+          .build();
+
+      Finding response = client.createFinding(createFindingRequest);
 
       System.out.println("Created Finding: " + response);
       return response;

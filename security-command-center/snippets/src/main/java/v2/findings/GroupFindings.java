@@ -20,42 +20,40 @@ package v2.findings;
 
 import com.google.cloud.securitycenter.v2.GroupFindingsRequest;
 import com.google.cloud.securitycenter.v2.GroupResult;
-import com.google.cloud.securitycenter.v2.OrganizationName;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
-import com.google.cloud.securitycenter.v2.SecurityCenterClient.GroupFindingsPagedResponse;
-import com.google.cloud.securitycenter.v2.SourceName;
-import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 
 public class GroupFindings {
 
   public static void main(String[] args) throws IOException {
     // TODO: Replace the variables within {}
-    // projectId: Google Cloud Project id.
-    String projectId = "google-cloud-project-id";
+    // organizationId: Google Cloud Organization id.
+    String organizationId = "google-cloud-organization-id";
 
     // Specify the DRZ location to scope the findings specific to the location.
     // Available locations: "us", "eu", "global".
-    String location = "global";
+    String location = "us";
 
     // The source id corresponding to the finding.
     String sourceId = "source-id";
 
-    groupFindings(projectId, sourceId, location);
+    groupFindings(organizationId, sourceId, location);
   }
 
-   // Group all findings under a parent type across all sources by their specified properties (e.g.
-   // category, state).
-  public static void groupFindings(String projectId, String sourceId, String location)
+  // Group all findings under a parent type across all sources by their specified properties
+  // (e.g category, state).
+  public static void groupFindings(String organizationId, String sourceId, String location)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Use any one of the following formats:
-      //  * organizations/{organization_id}/sources/{source_id}/locations/{location}/findings
-      //  * folders/{folder_id}/sources/{source_id}/locations/{location}/findings
-      //  * projects/{project_id}/sources/{source_id}/locations/{location}/findings
-      String parent = String.format("projects/%s/sources/%s/locations/%s/findings", projectId, sourceId,
+      //  * organizations/{organization_id}/sources/{source_id}/locations/{location}
+      //  * folders/{folder_id}/sources/{source_id}/locations/{location}
+      //  * projects/{project_id}/sources/{source_id}/locations/{location}
+      String parent = String.format("organizations/%s/sources/%s/locations/%s",
+          organizationId,
+          sourceId,
           location);
 
       GroupFindingsRequest request =
@@ -66,7 +64,7 @@ public class GroupFindings {
               .setGroupBy("category, state")
               .build();
 
-      for(GroupResult result : client.groupFindings(request).iterateAll()) {
+      for (GroupResult result : client.groupFindings(request).iterateAll()) {
         System.out.println(result.getPropertiesMap());
       }
       System.out.println("Listed grouped findings.");

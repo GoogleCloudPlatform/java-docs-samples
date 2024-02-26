@@ -24,7 +24,7 @@ import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-public class BulkMuteFindingsV2 {
+public class BulkMuteFindings {
 
   public static void main(String[] args) {
     // TODO: Replace the variables within {}
@@ -33,12 +33,12 @@ public class BulkMuteFindingsV2 {
 
     // Specify the DRZ location of the mute configs.
     // Available locations: "us", "eu", "global".
-    String location = "global";
+    String location = "us";
 
     // muteRule: Expression that identifies findings that should be muted.
     // Can also refer to an organization/ folder.
     // eg: "resource.project_display_name=\"PROJECT_ID\""
-    String muteRule = "resource.project_display_name=\""+ projectId + "\"";
+    String muteRule = "resource.project_display_name=\"" + projectId + "\"";
 
     bulkMute(projectId, location, muteRule);
   }

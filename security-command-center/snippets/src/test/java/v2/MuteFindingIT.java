@@ -39,14 +39,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import v2.muteconfig.BulkMuteFindingsV2;
-import v2.muteconfig.CreateMuteRuleV2;
-import v2.muteconfig.DeleteMuteRuleV2;
-import v2.muteconfig.GetMuteRuleV2;
-import v2.muteconfig.ListMuteRulesV2;
-import v2.muteconfig.SetMuteFindingV2;
-import v2.muteconfig.SetUnmuteFindingV2;
-import v2.muteconfig.UpdateMuteRuleV2;
+import v2.muteconfig.BulkMuteFindings;
+import v2.muteconfig.CreateMuteRule;
+import v2.muteconfig.DeleteMuteRule;
+import v2.muteconfig.GetMuteRule;
+import v2.muteconfig.ListMuteRules;
+import v2.muteconfig.SetMuteFinding;
+import v2.muteconfig.SetUnmuteFinding;
+import v2.muteconfig.UpdateMuteRule;
 
 // Test v2 Mute config samples.
 @RunWith(JUnit4.class)
@@ -55,7 +55,7 @@ public class MuteFindingIT {
   // TODO(Developer): Replace the below variables.
   private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
   private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
-  private static final String LOCATION = "global";
+  private static final String LOCATION = "us";
   private static final String MUTE_RULE_CREATE = "random-mute-id-" + UUID.randomUUID();
   private static final String MUTE_RULE_UPDATE = "random-mute-id-" + UUID.randomUUID();
   private static Source SOURCE;
@@ -82,15 +82,16 @@ public class MuteFindingIT {
     requireEnvVar("SCC_PROJECT_ORG_ID");
 
     // Create mute rules.
-    CreateMuteRuleV2.createMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_CREATE);
-    CreateMuteRuleV2.createMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
+    CreateMuteRule.createMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_CREATE);
+    CreateMuteRule.createMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
     // Create source.
     SOURCE = Util.createSource(ORGANIZATION_ID);
     // Create findings within the source.
     String uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_1 = Util.createFinding(SOURCE.getName(), "test-finding-mute-v2-" + uuid,
+    FINDING_1 = Util.createFinding(SOURCE.getName(), "testfindingv2" + uuid, LOCATION,
         Optional.empty());
-    FINDING_2 = Util.createFinding(SOURCE.getName(), "test-finding-mute-v2-" + uuid,
+    uuid = UUID.randomUUID().toString().split("-")[0];
+    FINDING_2 = Util.createFinding(SOURCE.getName(), "testfindingv2" + uuid, LOCATION,
         Optional.empty());
 
     stdOut = null;
@@ -102,9 +103,9 @@ public class MuteFindingIT {
     final PrintStream out = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    DeleteMuteRuleV2.deleteMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_CREATE);
+    DeleteMuteRule.deleteMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_CREATE);
     assertThat(stdOut.toString()).contains("Mute rule deleted successfully: " + MUTE_RULE_CREATE);
-    DeleteMuteRuleV2.deleteMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
+    DeleteMuteRule.deleteMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
     assertThat(stdOut.toString()).contains("Mute rule deleted successfully: " + MUTE_RULE_UPDATE);
     stdOut = null;
     System.setOut(out);
@@ -113,7 +114,9 @@ public class MuteFindingIT {
   public static ListFindingsPagedResponse getAllFindings(String sourceName) throws IOException {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
-      ListFindingsRequest request = ListFindingsRequest.newBuilder().setParent(sourceName).build();
+      ListFindingsRequest request = ListFindingsRequest.newBuilder()
+          .setParent(sourceName)
+          .build();
 
       return client.listFindings(request);
     }
@@ -133,31 +136,31 @@ public class MuteFindingIT {
 
   @Test
   public void testGetMuteRule() {
-    GetMuteRuleV2.getMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_CREATE);
+    GetMuteRule.getMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_CREATE);
     assertThat(stdOut.toString()).contains("Retrieved the mute config: ");
     assertThat(stdOut.toString()).contains(MUTE_RULE_CREATE);
   }
 
   @Test
   public void testListMuteRules() {
-    ListMuteRulesV2.listMuteRules(PROJECT_ID, LOCATION);
+    ListMuteRules.listMuteRules(PROJECT_ID, LOCATION);
     assertThat(stdOut.toString()).contains(MUTE_RULE_CREATE);
     assertThat(stdOut.toString()).contains(MUTE_RULE_UPDATE);
   }
 
   @Test
   public void testUpdateMuteRules() {
-    UpdateMuteRuleV2.updateMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
-    GetMuteRuleV2.getMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
+    UpdateMuteRule.updateMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
+    GetMuteRule.getMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
     assertThat(stdOut.toString()).contains("Updated mute config description");
   }
 
   @Test
-  public void testSetMuteFinding() {
-    SetMuteFindingV2.setMute(PROJECT_ID, LOCATION, SOURCE.getName(), FINDING_1.getName());
+  public void testMuteUnmuteFinding() {
+    SetMuteFinding.setMute(FINDING_1.getName());
     assertThat(stdOut.toString())
         .contains("Mute value for the finding " + FINDING_1.getName() + " is: " + "MUTED");
-    SetUnmuteFindingV2.setUnmute(PROJECT_ID, LOCATION, SOURCE.getName(), FINDING_1.getName());
+    SetUnmuteFinding.setUnmute(FINDING_1.getName());
     assertThat(stdOut.toString())
         .contains("Mute value for the finding " + FINDING_1.getName() + " is: " + "UNMUTED");
   }
@@ -165,7 +168,7 @@ public class MuteFindingIT {
   @Test
   public void testBulkMuteFindings() throws IOException {
     // Mute findings that belong to this project.
-    BulkMuteFindingsV2.bulkMute(PROJECT_ID, LOCATION,
+    BulkMuteFindings.bulkMute(PROJECT_ID, LOCATION,
         String.format("resource.project_display_name=\"%s\"", PROJECT_ID));
 
     // Get all findings in the source to check if they are muted.

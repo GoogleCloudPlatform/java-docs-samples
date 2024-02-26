@@ -27,31 +27,31 @@ public class GroupFindingsWithFilter {
 
   public static void main(String[] args) throws IOException {
     // TODO: Replace the variables within {}
-    // projectId: Google Cloud Project id.
-    String projectId = "google-cloud-project-id";
+    // organizationId: Google Cloud Organization id.
+    String organizationId = "google-cloud-organization-id";
 
     // Specify the DRZ location to scope the findings specific to the location.
     // Available locations: "us", "eu", "global".
-    String location = "global";
+    String location = "us";
 
     // The source id corresponding to the finding.
     String sourceId = "source-id";
 
-    groupFilteredFindings(projectId, sourceId, location);
+    groupFilteredFindings(organizationId, sourceId, location);
   }
 
   // Group filtered findings under a parent type across all sources by their specified properties
   // (e.g. category, state).
-  public static void groupFilteredFindings(String projectId, String sourceId, String location)
+  public static void groupFilteredFindings(String organizationId, String sourceId, String location)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Use any one of the following formats:
-      //  * organizations/{organization_id}/sources/{source_id}/locations/{location}/findings
-      //  * folders/{folder_id}/sources/{source_id}/locations/{location}/findings
-      //  * projects/{project_id}/sources/{source_id}/locations/{location}/findings
-      String parent = String.format("projects/%s/sources/%s/locations/%s/findings", projectId,
+      //  * organizations/{organization_id}/sources/{source_id}/locations/{location}
+      //  * folders/{folder_id}/sources/{source_id}/locations/{location}
+      //  * projects/{project_id}/sources/{source_id}/locations/{location}
+      String parent = String.format("organizations/%s/sources/%s/locations/%s", organizationId,
           sourceId,
           location);
 
@@ -63,12 +63,12 @@ public class GroupFindingsWithFilter {
               .setParent(parent)
               // Supported grouping properties: resource_name/ category/ state/ parent/ severity.
               // Multiple properties should be separated by comma.
-              .setGroupBy("state")
+              .setGroupBy("state, category")
               .setFilter(filter)
               .build();
 
       for (GroupResult result : client.groupFindings(request).iterateAll()) {
-        System.out.println(result.getPropertiesMap());
+        System.out.println(result);
       }
       System.out.println("Listed filtered and grouped findings.");
     }

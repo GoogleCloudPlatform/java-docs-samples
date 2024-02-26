@@ -16,7 +16,7 @@
 
 package v2.muteconfig;
 
-// [START securitycenter_set_mute_v2]
+// [START securitycenter_set_unmute_v2]
 
 import com.google.cloud.securitycenter.v2.Finding;
 import com.google.cloud.securitycenter.v2.Finding.Mute;
@@ -24,47 +24,35 @@ import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.SetMuteRequest;
 import java.io.IOException;
 
-public class SetMuteFindingV2 {
+public class SetUnmuteFinding {
 
   public static void main(String[] args) {
     // TODO: Replace the variables within {}
-    // projectId: Google Cloud Project id.
-    String projectId = "google-cloud-project-id";
-
-    // Specify the DRZ location of the mute config. If the mute config was
-    // created with v1 API, it can be accessed with "global".
+    // findingPath: The relative resource name of the finding. See:
+    // https://cloud.google.com/apis/design/resource_names#relative_resource_name
+    // Use any one of the following formats:
+    //  - organizations/{organization_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
+    //  - folders/{folder_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
+    //  - projects/{project_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
+    //
     // Available locations: "us", "eu", "global".
-    String location = "global";
+    String findingPath = "{path-to-the-finding}";
 
-    // The source id corresponding to the finding.
-    String sourceId = "source-id";
-
-    String findingId = "finding-id";
-
-    setMute(projectId, location, sourceId, findingId);
+    setUnmute(findingPath);
   }
 
-  // Mute an individual finding.
-  // If a finding is already muted, muting it again has no effect.
+  // Unmute an individual finding.
+  // Unmuting a finding that isn't muted has no effect.
   // Various mute states are: MUTE_UNSPECIFIED/MUTE/UNMUTE.
-  public static void setMute(String projectId, String location, String sourceId, String findingId) {
+  public static void setUnmute(String findingPath) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
-      // Create the finding path. See:
-      // https://cloud.google.com/apis/design/resource_names#relative_resource_name
-      // Use any one of the following formats:
-      //  * organizations/{organization_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
-      //  * folders/{folder_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
-      //  * projects/{project_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
-      String findingPath = String.format("projects/%s/sources/%s/locations/%s/findings/%s",
-          projectId, sourceId, location, findingId);
-
       SetMuteRequest setMuteRequest =
           SetMuteRequest.newBuilder()
               .setName(findingPath)
-              .setMute(Mute.MUTED)
+              .setMute(Mute.UNMUTED)
               .build();
 
       Finding finding = client.setMute(setMuteRequest);
@@ -75,4 +63,4 @@ public class SetMuteFindingV2 {
     }
   }
 }
-// [END securitycenter_set_mute_v2]
+// [END securitycenter_set_unmute_v2]

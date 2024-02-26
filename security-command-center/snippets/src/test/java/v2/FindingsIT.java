@@ -42,9 +42,8 @@ import v2.findings.ListFindingsWithFilter;
 public class FindingsIT {
 
   // TODO(Developer): Replace the below variables.
-  private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
   private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
-  private static final String LOCATION = "global";
+  private static final String LOCATION = "us";
   private static Source SOURCE;
   private static Finding FINDING_1;
   private static Finding FINDING_2;
@@ -65,16 +64,17 @@ public class FindingsIT {
     System.setOut(new PrintStream(stdOut));
 
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("SCC_PROJECT_ID");
     requireEnvVar("SCC_PROJECT_ORG_ID");
 
     // Create source.
     SOURCE = Util.createSource(ORGANIZATION_ID);
     // Create findings within the source.
     String uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_1 = Util.createFinding(SOURCE.getName(), "test-finding-v2-" + uuid,
+    FINDING_1 = Util.createFinding(SOURCE.getName(), "testfindingv2" + uuid, LOCATION,
         Optional.of("MEDIUM_RISK_ONE"));
-    FINDING_2 = Util.createFinding(SOURCE.getName(), "test-finding-v2-" + uuid, Optional.empty());
+    uuid = UUID.randomUUID().toString().split("-")[0];
+    FINDING_2 = Util.createFinding(SOURCE.getName(), "testfindingv2" + uuid, LOCATION,
+        Optional.empty());
 
     stdOut = null;
     System.setOut(out);
@@ -94,28 +94,29 @@ public class FindingsIT {
 
   @Test
   public void testListAllFindings() throws IOException {
-    ListAllFindings.listAllFindings(PROJECT_ID, LOCATION);
+    ListAllFindings.listAllFindings(ORGANIZATION_ID, LOCATION);
     assertThat(stdOut.toString()).contains(FINDING_1.getName());
     assertThat(stdOut.toString()).contains(FINDING_2.getName());
   }
 
   @Test
   public void testListFilteredFindings() throws IOException {
-    ListFindingsWithFilter.listFilteredFindings(PROJECT_ID, SOURCE.getName(), LOCATION);
+    ListFindingsWithFilter.listFilteredFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3],
+        LOCATION);
     assertThat(stdOut.toString()).contains(FINDING_1.getName());
     assertThat(stdOut.toString()).doesNotContain(FINDING_2.getName());
   }
 
   @Test
   public void testGroupAllFindings() throws IOException {
-    GroupFindings.groupFindings(PROJECT_ID, SOURCE.getName(), LOCATION);
+    GroupFindings.groupFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION);
     assertThat(stdOut.toString()).contains("Listed grouped findings.");
   }
 
   @Test
   public void testGroupFilteredFindings() throws IOException {
-    GroupFindingsWithFilter.groupFilteredFindings(PROJECT_ID, SOURCE.getName(), LOCATION);
-    assertThat(stdOut.toString()).contains(FINDING_1.getName());
-    assertThat(stdOut.toString()).doesNotContain(FINDING_2.getName());
+    GroupFindingsWithFilter.groupFilteredFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3],
+        LOCATION);
+    assertThat(stdOut.toString()).contains("count: 1");
   }
 }

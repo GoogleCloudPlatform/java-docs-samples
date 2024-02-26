@@ -16,13 +16,14 @@
 
 package v2.muteconfig;
 
-// [START securitycenter_delete_mute_config_v2]
+// [START securitycenter_get_mute_config_v2]
 
+import com.google.cloud.securitycenter.v2.MuteConfig;
 import com.google.cloud.securitycenter.v2.MuteConfigName;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import java.io.IOException;
 
-public class DeleteMuteRuleV2 {
+public class GetMuteRule {
 
   public static void main(String[] args) {
     // TODO(Developer): Replace the following variables
@@ -32,30 +33,30 @@ public class DeleteMuteRuleV2 {
     // Specify the DRZ location of the mute config. If the mute config was
     // created with v1 API, it can be accessed with "global".
     // Available locations: "us", "eu", "global".
-    String location = "global";
+    String location = "us";
 
-    // muteConfigId: Specify the name of the mute config to delete.
+    // muteConfigId: Name of the mute config to retrieve.
     String muteConfigId = "mute-config-id";
 
-    deleteMuteRule(projectId, location, muteConfigId);
+    getMuteRule(projectId, location, muteConfigId);
   }
 
-  // Deletes a mute configuration given its resource name.
-  // Note: Previously muted findings are not affected when a mute config is deleted.
-  public static void deleteMuteRule(String projectId, String location, String muteConfigId) {
+  // Retrieves a DRZ compliant mute configuration given its resource name.
+  public static void getMuteRule(String projectId, String location, String muteConfigId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Use appropriate `MuteConfigName` methods depending on the parent type.
-      // folder -> MuteConfigName.ofFolderLocationMuteConfigName()
-      // organization -> MuteConfigName.ofOrganizationLocationMuteConfigName()
-      client.deleteMuteConfig(
-          MuteConfigName.ofProjectLocationMuteConfigName(projectId, location, muteConfigId));
+      //  * organization -> MuteConfigName.ofOrganizationLocationMuteConfigName()
+      //  * folder -> MuteConfigName.ofFolderLocationMuteConfigName()
 
-      System.out.println("Mute rule deleted successfully: " + muteConfigId);
+      MuteConfigName muteConfigName = MuteConfigName.ofProjectLocationMuteConfigName(projectId,
+          location, muteConfigId);
+      MuteConfig muteConfig = client.getMuteConfig(muteConfigName);
+      System.out.println("Retrieved the mute config: " + muteConfig);
     } catch (IOException e) {
-      System.out.println("Mute rule deletion failed! \n Exception: " + e);
+      System.out.println("Mute rule retrieval failed! \n Exception: " + e);
     }
   }
 }
-// [END securitycenter_delete_mute_config_v2]
+// [END securitycenter_get_mute_config_v2]

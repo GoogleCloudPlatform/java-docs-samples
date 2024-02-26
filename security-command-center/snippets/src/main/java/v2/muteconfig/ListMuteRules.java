@@ -23,7 +23,7 @@ import com.google.cloud.securitycenter.v2.MuteConfig;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import java.io.IOException;
 
-public class ListMuteRulesV2 {
+public class ListMuteRules {
 
   public static void main(String[] args) {
     // TODO: Replace variables enclosed within {}
@@ -32,7 +32,7 @@ public class ListMuteRulesV2 {
 
     // Specify the DRZ location to list mute configs.
     // Available locations: "us", "eu", "global".
-    String location = "global";
+    String location = "us";
 
     listMuteRules(projectId, location);
   }
@@ -44,7 +44,7 @@ public class ListMuteRulesV2 {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
       // Parent can also be one of:
-      //  * "organization/{org_id}/locations/{location}"
+      //  * "organizations/{org_id}/locations/{location}"
       //  * "folders/{folder_id}/locations/{location}"
       ListMuteConfigsRequest listMuteConfigsRequest = ListMuteConfigsRequest.newBuilder()
           .setParent(String.format("projects/%s/locations/%s", projectId, location))
