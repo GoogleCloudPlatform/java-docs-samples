@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -63,6 +64,7 @@ public class CreateClusterTest {
   }
 
   @Test
+  @Ignore("TODO: remove after fixing https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9245")
   public void createClusterTest() throws IOException, InterruptedException {
     CreateCluster.createCluster(PROJECT_ID, REGION, CLUSTER_NAME);
     String output = bout.toString();

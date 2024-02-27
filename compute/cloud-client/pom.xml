@@ -64,7 +64,7 @@
       <artifactId>truth</artifactId>
       <groupId>com.google.truth</groupId>
       <scope>test</scope>
-      <version>1.2.0</version>
+      <version>1.4.0</version>
     </dependency>
     <dependency>
       <artifactId>junit</artifactId>
@@ -82,7 +82,7 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.10.1</version>
+      <version>5.10.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -94,7 +94,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.29.0</version>
+        <version>26.32.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

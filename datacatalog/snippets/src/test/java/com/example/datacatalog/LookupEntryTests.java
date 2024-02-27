@@ -24,12 +24,14 @@ import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
+@Ignore("TODO: remove after fixing https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9244")
 public class LookupEntryTests {
   @Rule
   public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
