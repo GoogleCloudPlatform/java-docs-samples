@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package drz;
+package v2;
 
 import com.google.cloud.securitycenter.v2.CreateFindingRequest;
 import com.google.cloud.securitycenter.v2.CreateSourceRequest;

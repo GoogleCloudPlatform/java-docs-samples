@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package drz.muteconfig;
+package v2.muteconfig;
 
 // [START securitycenter_create_mute_config_v2]
 
@@ -32,9 +32,8 @@ public class CreateMuteRule {
     // projectId: Google Cloud Project id.
     String projectId = "google-cloud-project-id";
 
-    // Specify the DRZ location of the mute config.
-    // Available locations: "us", "eu", "global".
-    String location = "us";
+    // Specify the location of the mute config.
+    String location = "global";
 
     // muteConfigId: Set a random id; max of 63 chars.
     String muteConfigId = "random-mute-id-" + UUID.randomUUID();
@@ -42,7 +41,7 @@ public class CreateMuteRule {
     createMuteRule(projectId, location, muteConfigId);
   }
 
-  // Creates a DRZ compliant mute configuration in a project under a given location.
+  // Creates a mute configuration in a project under a given location.
   public static void createMuteRule(String projectId, String location, String muteConfigId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.

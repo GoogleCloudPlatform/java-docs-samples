@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package drz;
+package v2;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -39,14 +39,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import drz.muteconfig.BulkMuteFindings;
-import drz.muteconfig.CreateMuteRule;
-import drz.muteconfig.DeleteMuteRule;
-import drz.muteconfig.GetMuteRule;
-import drz.muteconfig.ListMuteRules;
-import drz.muteconfig.SetMuteFinding;
-import drz.muteconfig.SetUnmuteFinding;
-import drz.muteconfig.UpdateMuteRule;
+import v2.muteconfig.BulkMuteFindings;
+import v2.muteconfig.CreateMuteRule;
+import v2.muteconfig.DeleteMuteRule;
+import v2.muteconfig.GetMuteRule;
+import v2.muteconfig.ListMuteRules;
+import v2.muteconfig.SetMuteFinding;
+import v2.muteconfig.SetUnmuteFinding;
+import v2.muteconfig.UpdateMuteRule;
 
 // Test v2 Mute config samples.
 @RunWith(JUnit4.class)
@@ -55,7 +55,7 @@ public class MuteFindingIT {
   // TODO(Developer): Replace the below variables.
   private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
   private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
-  private static final String LOCATION = "us";
+  private static final String LOCATION = "global";
   private static final String MUTE_RULE_CREATE = "random-mute-id-" + UUID.randomUUID();
   private static final String MUTE_RULE_UPDATE = "random-mute-id-" + UUID.randomUUID();
   private static Source SOURCE;

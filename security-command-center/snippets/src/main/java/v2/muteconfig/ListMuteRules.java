@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package drz.muteconfig;
+package v2.muteconfig;
 
 // [START securitycenter_list_mute_configs_v2]
 
@@ -30,9 +30,8 @@ public class ListMuteRules {
     // projectId: Google Cloud Project id.
     String projectId = "google-cloud-project-id";
 
-    // Specify the DRZ location to list mute configs.
-    // Available locations: "us", "eu", "global".
-    String location = "us";
+    // Specify the location to list mute configs.
+    String location = "global";
 
     listMuteRules(projectId, location);
   }

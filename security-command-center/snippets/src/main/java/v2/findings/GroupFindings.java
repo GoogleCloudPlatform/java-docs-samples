@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package drz.findings;
+package v2.findings;
 
 // [START securitycenter_group_all_findings_v2]
 
@@ -30,9 +30,8 @@ public class GroupFindings {
     // organizationId: Google Cloud Organization id.
     String organizationId = "google-cloud-organization-id";
 
-    // Specify the DRZ location to scope the findings specific to the location.
-    // Available locations: "us", "eu", "global".
-    String location = "us";
+    // Specify the location to scope the findings to.
+    String location = "global";
 
     // The source id corresponding to the finding.
     String sourceId = "source-id";

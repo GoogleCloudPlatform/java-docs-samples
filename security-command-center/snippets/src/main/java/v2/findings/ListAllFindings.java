@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package drz.findings;
+package v2.findings;
 
 // [START securitycenter_list_all_findings_v2]
 
@@ -30,9 +30,8 @@ public class ListAllFindings {
     // You can also use project/ folder as the parent resource.
     String organizationId = "google-cloud-organization-id";
 
-    // Specify the DRZ location to list the findings.
-    // Available locations: "us", "eu", "global".
-    String location = "us";
+    // Specify the location to list the findings.
+    String location = "global";
 
     listAllFindings(organizationId, location);
   }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package drz.muteconfig;
+package v2.muteconfig;
 
 // [START securitycenter_get_mute_config_v2]
 
@@ -30,10 +30,9 @@ public class GetMuteRule {
     // projectId: Google Cloud Project id.
     String projectId = "google-cloud-project-id";
 
-    // Specify the DRZ location of the mute config. If the mute config was
+    // Specify the location of the mute config. If the mute config was
     // created with v1 API, it can be accessed with "global".
-    // Available locations: "us", "eu", "global".
-    String location = "us";
+    String location = "global";
 
     // muteConfigId: Name of the mute config to retrieve.
     String muteConfigId = "mute-config-id";

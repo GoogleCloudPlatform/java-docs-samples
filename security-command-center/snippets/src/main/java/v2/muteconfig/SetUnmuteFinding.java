@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package drz.muteconfig;
+package v2.muteconfig;
 
-// [START securitycenter_set_mute_v2]
+// [START securitycenter_set_unmute_v2]
 
 import com.google.cloud.securitycenter.v2.Finding;
 import com.google.cloud.securitycenter.v2.Finding.Mute;
@@ -24,7 +24,7 @@ import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.SetMuteRequest;
 import java.io.IOException;
 
-public class SetMuteFinding {
+public class SetUnmuteFinding {
 
   public static void main(String[] args) {
     // TODO: Replace the variables within {}
@@ -35,25 +35,23 @@ public class SetMuteFinding {
     //  - folders/{folder_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
     //  - projects/{project_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
     //
-    // Available locations: "us", "eu", "global".
     String findingPath = "{path-to-the-finding}";
 
-    setMute(findingPath);
+    setUnmute(findingPath);
   }
 
-  // Mute an individual finding.
-  // If a finding is already muted, muting it again has no effect.
+  // Unmute an individual finding.
+  // Unmuting a finding that isn't muted has no effect.
   // Various mute states are: MUTE_UNSPECIFIED/MUTE/UNMUTE.
-  public static void setMute(String findingPath) {
+  public static void setUnmute(String findingPath) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
       SetMuteRequest setMuteRequest =
           SetMuteRequest.newBuilder()
-              // Relative path for the finding.
               .setName(findingPath)
-              .setMute(Mute.MUTED)
+              .setMute(Mute.UNMUTED)
               .build();
 
       Finding finding = client.setMute(setMuteRequest);
@@ -64,4 +62,4 @@ public class SetMuteFinding {
     }
   }
 }
-// [END securitycenter_set_mute_v2]
+// [END securitycenter_set_unmute_v2]

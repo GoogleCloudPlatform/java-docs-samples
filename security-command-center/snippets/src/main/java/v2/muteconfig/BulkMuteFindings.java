@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package drz.muteconfig;
+package v2.muteconfig;
 
 // [START securitycenter_bulk_mute_v2]
 
@@ -31,9 +31,8 @@ public class BulkMuteFindings {
     // projectId: Google Cloud Project id.
     String projectId = "google-cloud-project-id";
 
-    // Specify the DRZ location of the mute configs.
-    // Available locations: "us", "eu", "global".
-    String location = "us";
+    // Specify the location of the mute configs.
+    String location = "global";
 
     // muteRule: Expression that identifies findings that should be muted.
     // Can also refer to an organization/ folder.
@@ -43,7 +42,7 @@ public class BulkMuteFindings {
     bulkMute(projectId, location, muteRule);
   }
 
-  // Kicks off a DRZ compliant long-running operation (LRO) to bulk mute findings for a parent based on a filter.
+  // Kicks off a long-running operation (LRO) to bulk mute findings for a parent based on a filter.
   // The parent can be either an organization, folder, or project. The findings
   // matched by the filter will be muted after the LRO is done.
   public static void bulkMute(String projectId, String location, String muteRule) {

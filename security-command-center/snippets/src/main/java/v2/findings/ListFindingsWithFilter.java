@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-package drz.findings;
+package v2.findings;
 
-// [START securitycenter_group_filtered_findings_v2]
+// [START securitycenter_list_filtered_findings_v2]
 
-import com.google.cloud.securitycenter.v2.GroupFindingsRequest;
-import com.google.cloud.securitycenter.v2.GroupResult;
+import com.google.cloud.securitycenter.v2.ListFindingsRequest;
+import com.google.cloud.securitycenter.v2.ListFindingsResponse.ListFindingsResult;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import java.io.IOException;
 
-public class GroupFindingsWithFilter {
+public class ListFindingsWithFilter {
 
   public static void main(String[] args) throws IOException {
     // TODO: Replace the variables within {}
     // organizationId: Google Cloud Organization id.
+    // You can also use project/ folder as the parent resource.
     String organizationId = "google-cloud-organization-id";
 
-    // Specify the DRZ location to scope the findings specific to the location.
-    // Available locations: "us", "eu", "global".
-    String location = "us";
+    // Specify the location to list the findings.
+    String location = "global";
 
-    // The source id corresponding to the finding.
+    // The source id to scope the findings.
     String sourceId = "source-id";
 
-    groupFilteredFindings(organizationId, sourceId, location);
+    listFilteredFindings(organizationId, sourceId, location);
   }
 
-  // Group filtered findings under a parent type across all sources by their specified properties
-  // (e.g. category, state).
-  public static void groupFilteredFindings(String organizationId, String sourceId, String location)
+  // List filtered findings under a source.
+  public static void listFilteredFindings(String organizationId, String sourceId, String location)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
+
       // Use any one of the following formats:
       //  * organizations/{organization_id}/sources/{source_id}/locations/{location}
       //  * folders/{folder_id}/sources/{source_id}/locations/{location}
@@ -55,23 +55,20 @@ public class GroupFindingsWithFilter {
           sourceId,
           location);
 
-      // Group all findings of category "MEDIUM_RISK_ONE".
+      // Listing all findings of category "MEDIUM_RISK_ONE".
       String filter = "category=\"MEDIUM_RISK_ONE\"";
 
-      GroupFindingsRequest request =
-          GroupFindingsRequest.newBuilder()
+      ListFindingsRequest request =
+          ListFindingsRequest.newBuilder()
               .setParent(parent)
-              // Supported grouping properties: resource_name/ category/ state/ parent/ severity.
-              // Multiple properties should be separated by comma.
-              .setGroupBy("state, category")
               .setFilter(filter)
               .build();
 
-      for (GroupResult result : client.groupFindings(request).iterateAll()) {
-        System.out.println(result);
+      for (ListFindingsResult result : client.listFindings(request).iterateAll()) {
+        System.out.printf("Finding: %s", result.getFinding().getName());
       }
-      System.out.println("Listed filtered and grouped findings.");
+      System.out.println("\nListing complete.");
     }
   }
 }
-// [END securitycenter_group_filtered_findings_v2]
+// [END securitycenter_list_filtered_findings_v2]

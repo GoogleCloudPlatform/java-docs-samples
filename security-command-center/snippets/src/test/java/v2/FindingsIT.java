@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package drz;
+package v2;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -32,10 +32,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import drz.findings.GroupFindings;
-import drz.findings.GroupFindingsWithFilter;
-import drz.findings.ListAllFindings;
-import drz.findings.ListFindingsWithFilter;
+import v2.findings.GroupFindings;
+import v2.findings.GroupFindingsWithFilter;
+import v2.findings.ListAllFindings;
+import v2.findings.ListFindingsWithFilter;
 
 // Test v2 Findings samples.
 @RunWith(JUnit4.class)
@@ -43,7 +43,7 @@ public class FindingsIT {
 
   // TODO(Developer): Replace the below variables.
   private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
-  private static final String LOCATION = "us";
+  private static final String LOCATION = "global";
   private static Source SOURCE;
   private static Finding FINDING_1;
   private static Finding FINDING_2;
