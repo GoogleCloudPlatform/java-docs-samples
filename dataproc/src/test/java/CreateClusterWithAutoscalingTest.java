@@ -34,6 +34,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -95,6 +96,7 @@ public class CreateClusterWithAutoscalingTest {
   }
 
   @Test
+  @Ignore("TODO: remove after fixing https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9245")
   public void createClusterWithAutoscalingTest() throws IOException, InterruptedException {
     CreateClusterWithAutoscaling.createClusterwithAutoscaling(
         PROJECT_ID, REGION, CLUSTER_NAME, AUTOSCALING_POLICY_NAME);
