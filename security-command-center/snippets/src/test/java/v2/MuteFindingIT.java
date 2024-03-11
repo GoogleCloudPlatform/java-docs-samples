@@ -26,6 +26,7 @@ import com.google.cloud.securitycenter.v2.ListFindingsResponse.ListFindingsResul
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient.ListFindingsPagedResponse;
 import com.google.cloud.securitycenter.v2.Source;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -36,6 +37,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -62,7 +64,15 @@ public class MuteFindingIT {
   // The findings will be used to test bulk mute.
   private static Finding FINDING_1;
   private static Finding FINDING_2;
+  private static final int MAX_ATTEMPT_COUNT = 3;
+  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
+
   private static ByteArrayOutputStream stdOut;
+
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
+      MAX_ATTEMPT_COUNT,
+      INITIAL_BACKOFF_MILLIS);
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
