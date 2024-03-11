@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -67,7 +68,7 @@ public class FindingsIT {
   }
 
   @BeforeClass
-  public static void setUp() throws IOException {
+  public static void setUp() throws IOException, InterruptedException {
     final PrintStream out = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
@@ -87,6 +88,7 @@ public class FindingsIT {
 
     stdOut = null;
     System.setOut(out);
+    TimeUnit.MINUTES.sleep(1);
   }
 
   @Before
