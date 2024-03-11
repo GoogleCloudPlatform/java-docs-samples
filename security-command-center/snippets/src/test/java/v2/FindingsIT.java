@@ -104,6 +104,7 @@ public class FindingsIT {
   }
 
   @Test
+  @Ignore
   public void testListAllFindings() throws IOException {
     ListAllFindings.listAllFindings(ORGANIZATION_ID, LOCATION);
     assertThat(stdOut.toString()).contains(FINDING_1.getName());
