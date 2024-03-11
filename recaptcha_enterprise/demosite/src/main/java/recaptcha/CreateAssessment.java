@@ -28,22 +28,26 @@ public class CreateAssessment {
    * Create an assessment to analyze the risk of a UI action.
    *
    * @param projectID : Google Cloud Project ID
-   * @param recaptchaSiteKey : Site key obtained by registering a domain/app to use recaptcha
-   *     services. (score/ checkbox type)
-   * @param token : The token obtained from the client on passing the recaptchaSiteKey.
+   * @param recaptchaSiteKey : Site key obtained by registering a domain/app to
+   *     use recaptcha services. (score/ checkbox type)
+   * @param token : The token obtained from the client on passing the
+   *     recaptchaSiteKey.
+   * @param expectedAction : The expected action for this type of event.
    * @return Assessment response.
    */
-  public static Assessment createAssessment(
-      String projectID, String recaptchaSiteKey, String token)
+  public static Assessment createAssessment(String projectID,
+                                            String recaptchaSiteKey,
+                                            String token, String expectedAction)
       throws Exception {
 
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Starts -->
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
       // Set the properties of the event to be tracked.
       Event event = Event.newBuilder()
-          .setSiteKey(recaptchaSiteKey)
-          .setToken(token)
-          .build();
+                        .setSiteKey(recaptchaSiteKey)
+                        .setToken(token)
+                        .setExpectedAction(expectedAction)
+                        .build();
 
       // Build the assessment request.
       CreateAssessmentRequest createAssessmentRequest =

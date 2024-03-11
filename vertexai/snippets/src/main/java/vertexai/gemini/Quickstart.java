@@ -19,9 +19,9 @@ package vertexai.gemini;
 // [START aiplatform_gemini_get_started]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
-import com.google.cloud.vertexai.generativeai.preview.ContentMaker;
-import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
-import com.google.cloud.vertexai.generativeai.preview.PartMaker;
+import com.google.cloud.vertexai.generativeai.ContentMaker;
+import com.google.cloud.vertexai.generativeai.GenerativeModel;
+import com.google.cloud.vertexai.generativeai.PartMaker;
 import java.io.IOException;
 
 public class Quickstart {
@@ -30,7 +30,7 @@ public class Quickstart {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-pro-vision";
+    String modelName = "gemini-1.0-pro-vision";
 
     String output = quickstart(projectId, location, modelName);
     System.out.println(output);

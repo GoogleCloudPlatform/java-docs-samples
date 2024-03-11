@@ -41,8 +41,9 @@ public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
-  private static final String GEMINI_PRO_VISION = "gemini-pro-vision";
-  private static final String GEMINI_PRO = "gemini-pro";
+  public static final String GEMINI_ULTRA_VISION = "gemini-1.0-ultra-vision";
+  private static final String GEMINI_PRO_VISION = "gemini-1.0-pro-vision";
+  private static final String GEMINI_PRO = "gemini-1.0-pro";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   @Rule
@@ -142,7 +143,7 @@ public class SnippetsIT {
   @Ignore("Don't test until ultra launch")
   @Test
   public void testMultiTurnMultimodal() throws IOException {
-    MultiTurnMultimodal.multiTurnMultimodal(PROJECT_ID, LOCATION, "gemini-ultra-vision");
+    MultiTurnMultimodal.multiTurnMultimodal(PROJECT_ID, LOCATION, GEMINI_ULTRA_VISION);
     assertThat(out.toString()).contains("scones");
   }
 
@@ -187,10 +188,20 @@ public class SnippetsIT {
 
   @Test
   public void testTokenCount() throws Exception {
-    String textPrompt = "How many tokens are there in this prompt?";
+    String textPrompt = "Why is the sky blue?";
 
     int tokenCount = GetTokenCount.getTokenCount(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         textPrompt);
-    assertThat(tokenCount).isGreaterThan(6);
+    assertThat(tokenCount).isEqualTo(6);
+  }
+
+  @Test
+  public void testFunctionCalling() throws Exception {
+    String textPrompt = "What's the weather in Paris?";
+
+    String answer = FunctionCalling.whatsTheWeatherLike(PROJECT_ID, LOCATION, GEMINI_PRO,
+        textPrompt);
+    assertThat(answer).ignoringCase().contains("Paris");
+    assertThat(answer).ignoringCase().contains("sunny");
   }
 }

@@ -20,10 +20,10 @@ package vertexai.gemini;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.GenerationConfig;
-import com.google.cloud.vertexai.generativeai.preview.ContentMaker;
-import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
-import com.google.cloud.vertexai.generativeai.preview.PartMaker;
-import com.google.cloud.vertexai.generativeai.preview.ResponseStream;
+import com.google.cloud.vertexai.generativeai.ContentMaker;
+import com.google.cloud.vertexai.generativeai.GenerativeModel;
+import com.google.cloud.vertexai.generativeai.PartMaker;
+import com.google.cloud.vertexai.generativeai.ResponseStream;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 import java.util.Base64;
@@ -34,7 +34,7 @@ public class SingleTurnMultimodal {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-pro-vision";
+    String modelName = "gemini-1.0-pro-vision";
     String textPrompt = "What is this image";
     String dataImageBase64 = "your-base64-encoded-image";
 

@@ -119,9 +119,8 @@ public class MainController {
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
       assessmentResponse = CreateAssessment.createAssessment(
-          CONTEXT.get("project_id"),
-          CONTEXT.get("site_key"),
-          jsonData.get("token"));
+          CONTEXT.get("project_id"), CONTEXT.get("site_key"),
+          jsonData.get("token"), recaptchaAction);
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
       // Take action based on the result (BAD / NOT_BAD).
@@ -172,9 +171,8 @@ public class MainController {
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
       assessmentResponse = CreateAssessment.createAssessment(
-          CONTEXT.get("project_id"),
-          CONTEXT.get("site_key"),
-          jsonData.get("token").toString());
+          CONTEXT.get("project_id"), CONTEXT.get("site_key"),
+          jsonData.get("token").toString(), recaptchaAction);
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
       // Take action based on the result (BAD / NOT_BAD).
@@ -227,9 +225,8 @@ public class MainController {
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
       assessmentResponse = CreateAssessment.createAssessment(
-          CONTEXT.get("project_id"),
-          CONTEXT.get("site_key"),
-          jsonData.get("token"));
+          CONTEXT.get("project_id"), CONTEXT.get("site_key"),
+          jsonData.get("token"), recaptchaAction);
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
       // Take action based on the result (BAD / NOT_BAD).
@@ -282,9 +279,8 @@ public class MainController {
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
       assessmentResponse = CreateAssessment.createAssessment(
-          CONTEXT.get("project_id"),
-          CONTEXT.get("site_key"),
-          jsonData.get("token").toString());
+          CONTEXT.get("project_id"), CONTEXT.get("site_key"),
+          jsonData.get("token").toString(), recaptchaAction);
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
       // Take action based on the result (BAD / NOT_BAD).
@@ -336,9 +332,8 @@ public class MainController {
     try {
       // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
       assessmentResponse = CreateAssessment.createAssessment(
-          CONTEXT.get("project_id"),
-          CONTEXT.get("site_key"),
-          jsonData.get("token"));
+          CONTEXT.get("project_id"), CONTEXT.get("site_key"),
+          jsonData.get("token"), recaptchaAction);
 
       // Check if the token is valid, score is above threshold score and the action equals expected.
       // Take action based on the result (BAD / NOT_BAD).
