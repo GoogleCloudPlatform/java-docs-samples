@@ -40,7 +40,7 @@ public class GetMuteRule {
     getMuteRule(projectId, location, muteConfigId);
   }
 
-  // Retrieves a DRZ compliant mute configuration given its resource name.
+  // Retrieves a mute configuration given its resource name.
   public static void getMuteRule(String projectId, String location, String muteConfigId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
