@@ -33,19 +33,23 @@ public class ListAllFindings {
     // Specify the location to list the findings.
     String location = "global";
 
-    listAllFindings(organizationId, location);
+    // The source id to scope the findings.
+    String sourceId = "source-id";
+
+    listAllFindings(organizationId, sourceId, location);
   }
 
   // List all findings under a given parent resource.
-  public static void listAllFindings(String organizationId, String location) throws IOException {
+  public static void listAllFindings(String organizationId, String sourceId, String location) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       ListFindingsRequest request =
           ListFindingsRequest.newBuilder()
-              // "-" Indicates listing across all sources.
+              // To list findings across all sources, use "-".
               .setParent(
-                  String.format("organizations/%s/sources/%s/locations/%s", organizationId, "-",
+                  String.format("organizations/%s/sources/%s/locations/%s", organizationId,
+                      sourceId,
                       location))
               .build();
 

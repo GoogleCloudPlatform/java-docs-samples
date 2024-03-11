@@ -105,9 +105,8 @@ public class FindingsIT {
   }
 
   @Test
-  @Ignore
   public void testListAllFindings() throws IOException {
-    ListAllFindings.listAllFindings(ORGANIZATION_ID, LOCATION);
+    ListAllFindings.listAllFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION);
     assertThat(stdOut.toString()).contains(FINDING_1.getName());
     assertThat(stdOut.toString()).contains(FINDING_2.getName());
   }
