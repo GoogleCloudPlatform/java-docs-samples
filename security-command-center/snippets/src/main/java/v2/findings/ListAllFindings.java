@@ -40,7 +40,8 @@ public class ListAllFindings {
   }
 
   // List all findings under a given parent resource.
-  public static void listAllFindings(String organizationId, String sourceId, String location) throws IOException {
+  public static void listAllFindings(String organizationId, String sourceId, String location)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {

@@ -31,7 +31,7 @@ public class SetUnmuteFinding {
     // findingPath: The relative resource name of the finding. See:
     // https://cloud.google.com/apis/design/resource_names#relative_resource_name
     // Use any one of the following formats:
-    //  - organizations/{organization_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
+    //  - organizations/{org_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
     //  - folders/{folder_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
     //  - projects/{project_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
     //
