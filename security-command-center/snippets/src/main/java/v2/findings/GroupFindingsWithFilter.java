@@ -69,7 +69,7 @@ public class GroupFindingsWithFilter {
       for (GroupResult result : client.groupFindings(request).iterateAll()) {
         System.out.println(result);
       }
-      System.out.println("Listed filtered and grouped findings.");
+      System.out.println("Listed all filtered and grouped findings.");
     }
   }
 }

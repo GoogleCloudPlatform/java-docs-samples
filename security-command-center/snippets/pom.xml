@@ -59,8 +59,7 @@
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java-util</artifactId>
-      <version>3.25.2</version>
-      </dependency>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
@@ -71,7 +70,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.4.0</version>
+      <version>1.2.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
