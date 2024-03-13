@@ -24,7 +24,7 @@ import java.io.IOException;
 
 public class DeleteMuteRule {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO(Developer): Replace the following variables
     // projectId: Google Cloud Project id.
     String projectId = "google-cloud-project-id";
@@ -41,7 +41,8 @@ public class DeleteMuteRule {
 
   // Deletes a mute configuration given its resource name.
   // Note: Previously muted findings are not affected when a mute config is deleted.
-  public static void deleteMuteRule(String projectId, String location, String muteConfigId) {
+  public static void deleteMuteRule(String projectId, String location, String muteConfigId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -52,8 +53,6 @@ public class DeleteMuteRule {
           MuteConfigName.ofProjectLocationMuteConfigName(projectId, location, muteConfigId));
 
       System.out.println("Mute rule deleted successfully: " + muteConfigId);
-    } catch (IOException e) {
-      System.out.println("Mute rule deletion failed! \n Exception: " + e);
     }
   }
 }

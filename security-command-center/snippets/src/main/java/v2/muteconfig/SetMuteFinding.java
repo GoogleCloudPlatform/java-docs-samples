@@ -26,7 +26,7 @@ import java.io.IOException;
 
 public class SetMuteFinding {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO: Replace the variables within {}
     // findingPath: The relative resource name of the finding. See:
     // https://cloud.google.com/apis/design/resource_names#relative_resource_name
@@ -43,7 +43,7 @@ public class SetMuteFinding {
   // Mute an individual finding.
   // If a finding is already muted, muting it again has no effect.
   // Various mute states are: MUTE_UNSPECIFIED/MUTE/UNMUTE.
-  public static void setMute(String findingPath) {
+  public static void setMute(String findingPath) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -58,8 +58,6 @@ public class SetMuteFinding {
       Finding finding = client.setMute(setMuteRequest);
       System.out.println(
           "Mute value for the finding " + finding.getName() + " is: " + finding.getMute());
-    } catch (IOException e) {
-      System.out.println("Failed to set the specified mute value. \n Exception: " + e);
     }
   }
 }

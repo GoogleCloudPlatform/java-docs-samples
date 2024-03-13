@@ -26,7 +26,7 @@ import java.io.IOException;
 
 public class UpdateMuteRule {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO: Replace the variables within {}
     // projectId: Google Cloud Project id.
     String projectId = "google-cloud-project-id";
@@ -43,7 +43,8 @@ public class UpdateMuteRule {
 
   // Updates an existing mute configuration.
   // The following can be updated in a mute config: description and filter.
-  public static void updateMuteRule(String projectId, String location, String muteConfigId) {
+  public static void updateMuteRule(String projectId, String location, String muteConfigId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient securityCenterClient = SecurityCenterClient.create()) {
@@ -62,10 +63,8 @@ public class UpdateMuteRule {
       UpdateMuteConfigRequest updateMuteConfigRequest =
           UpdateMuteConfigRequest.newBuilder()
               .setMuteConfig(updateMuteConfig)
-              // Set the update mask to specify which properties of the mute config should be
-              // updated.
-              // If empty, all mutable fields will be updated.
-              // Make sure that the mask fields match the properties changed in 'updateMuteConfig'.
+              // Make sure that the mask fields match the properties changed in
+              // 'updateMuteConfig' object.
               // For more info on constructing update mask path, see the proto or:
               // https://cloud.google.com/security-command-center/docs/reference/rest/v2/folders.muteConfigs/patch?hl=en#query-parameters
               .setUpdateMask(FieldMask.newBuilder().addPaths("description").build())
@@ -73,8 +72,6 @@ public class UpdateMuteRule {
 
       MuteConfig response = securityCenterClient.updateMuteConfig(updateMuteConfigRequest);
       System.out.println(response);
-    } catch (IOException e) {
-      System.out.println("Mute rule update failed! \n Exception: " + e);
     }
   }
 }

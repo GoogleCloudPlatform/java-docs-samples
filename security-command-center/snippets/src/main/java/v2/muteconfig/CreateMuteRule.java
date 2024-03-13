@@ -27,7 +27,7 @@ import java.util.UUID;
 
 public class CreateMuteRule {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO: Replace the following variables.
     // projectId: Google Cloud Project id.
     String projectId = "google-cloud-project-id";
@@ -42,7 +42,8 @@ public class CreateMuteRule {
   }
 
   // Creates a mute configuration in a project under a given location.
-  public static void createMuteRule(String projectId, String location, String muteConfigId) {
+  public static void createMuteRule(String projectId, String location, String muteConfigId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -67,8 +68,6 @@ public class CreateMuteRule {
       MuteConfig response = client.createMuteConfig(
           LocationName.of(projectId, location), muteConfig, muteConfigId);
       System.out.println("Mute rule created successfully: " + response.getName());
-    } catch (IOException e) {
-      System.out.println("Mute rule creation failed! \n Exception: " + e);
     }
   }
 }

@@ -26,7 +26,8 @@ import java.util.concurrent.ExecutionException;
 
 public class BulkMuteFindings {
 
-  public static void main(String[] args) {
+  public static void main(String[] args)
+      throws IOException, ExecutionException, InterruptedException {
     // TODO: Replace the variables within {}
     // projectId: Google Cloud Project id.
     String projectId = "google-cloud-project-id";
@@ -45,7 +46,8 @@ public class BulkMuteFindings {
   // Kicks off a long-running operation (LRO) to bulk mute findings for a parent based on a filter.
   // The parent can be either an organization, folder, or project. The findings
   // matched by the filter will be muted after the LRO is done.
-  public static void bulkMute(String projectId, String location, String muteRule) {
+  public static void bulkMute(String projectId, String location, String muteRule)
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -65,8 +67,6 @@ public class BulkMuteFindings {
       BulkMuteFindingsResponse response =
           client.bulkMuteFindingsAsync(bulkMuteFindingsRequest).get();
       System.out.println("Bulk mute findings completed successfully! " + response);
-    } catch (IOException | InterruptedException | ExecutionException e) {
-      System.out.println("Bulk mute findings failed! \n Exception: " + e);
     }
   }
 }

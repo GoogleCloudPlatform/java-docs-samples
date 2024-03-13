@@ -25,7 +25,7 @@ import java.io.IOException;
 
 public class ListMuteRules {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO: Replace variables enclosed within {}
     // projectId: Google Cloud Project id.
     String projectId = "google-cloud-project-id";
@@ -37,7 +37,7 @@ public class ListMuteRules {
   }
 
   // Lists all mute rules present under the resource type in the given location.
-  public static void listMuteRules(String projectId, String location) {
+  public static void listMuteRules(String projectId, String location) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -53,8 +53,6 @@ public class ListMuteRules {
       for (MuteConfig muteConfig : client.listMuteConfigs(listMuteConfigsRequest).iterateAll()) {
         System.out.println(muteConfig.getName());
       }
-    } catch (IOException e) {
-      System.out.println("Listing Mute rule failed! \n Exception: " + e);
     }
   }
 }

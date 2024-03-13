@@ -23,6 +23,7 @@ import com.google.cloud.securitycenter.v2.Finding;
 import com.google.cloud.securitycenter.v2.Finding.Mute;
 import com.google.cloud.securitycenter.v2.ListFindingsRequest;
 import com.google.cloud.securitycenter.v2.ListFindingsResponse.ListFindingsResult;
+import com.google.cloud.securitycenter.v2.MuteConfig;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient.ListFindingsPagedResponse;
 import com.google.cloud.securitycenter.v2.Source;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -61,13 +63,12 @@ public class MuteFindingIT {
   private static final String LOCATION = "global";
   private static final String MUTE_RULE_CREATE = "random-mute-id-" + UUID.randomUUID();
   private static final String MUTE_RULE_UPDATE = "random-mute-id-" + UUID.randomUUID();
+  private static final int MAX_ATTEMPT_COUNT = 3;
+  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static Source SOURCE;
   // The findings will be used to test bulk mute.
   private static Finding FINDING_1;
   private static Finding FINDING_2;
-  private static final int MAX_ATTEMPT_COUNT = 3;
-  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
-
   private static ByteArrayOutputStream stdOut;
 
   @Rule
@@ -111,7 +112,7 @@ public class MuteFindingIT {
   }
 
   @AfterClass
-  public static void cleanUp() {
+  public static void cleanUp() throws IOException {
     final PrintStream out = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
@@ -147,28 +148,27 @@ public class MuteFindingIT {
   }
 
   @Test
-  public void testGetMuteRule() {
-    GetMuteRule.getMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_CREATE);
-    assertThat(stdOut.toString()).contains("Retrieved the mute config: ");
-    assertThat(stdOut.toString()).contains(MUTE_RULE_CREATE);
+  public void testGetMuteRule() throws IOException {
+    MuteConfig muteConfig = GetMuteRule.getMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_CREATE);
+    assertThat(muteConfig.getName()).contains(MUTE_RULE_CREATE);
   }
 
   @Test
-  public void testListMuteRules() {
+  public void testListMuteRules() throws IOException {
     ListMuteRules.listMuteRules(PROJECT_ID, LOCATION);
     assertThat(stdOut.toString()).contains(MUTE_RULE_CREATE);
     assertThat(stdOut.toString()).contains(MUTE_RULE_UPDATE);
   }
 
   @Test
-  public void testUpdateMuteRules() {
+  public void testUpdateMuteRules() throws IOException {
     UpdateMuteRule.updateMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
-    GetMuteRule.getMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
-    assertThat(stdOut.toString()).contains("Updated mute config description");
+    MuteConfig muteConfig = GetMuteRule.getMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
+    assertThat(muteConfig.getDescription()).contains("Updated mute config description");
   }
 
   @Test
-  public void testMuteUnmuteFinding() {
+  public void testMuteUnmuteFinding() throws IOException {
     SetMuteFinding.setMute(FINDING_1.getName());
     assertThat(stdOut.toString())
         .contains("Mute value for the finding " + FINDING_1.getName() + " is: " + "MUTED");
@@ -178,7 +178,7 @@ public class MuteFindingIT {
   }
 
   @Test
-  public void testBulkMuteFindings() throws IOException {
+  public void testBulkMuteFindings() throws IOException, ExecutionException, InterruptedException {
     // Mute findings that belong to this project.
     BulkMuteFindings.bulkMute(PROJECT_ID, LOCATION,
         String.format("resource.project_display_name=\"%s\"", PROJECT_ID));

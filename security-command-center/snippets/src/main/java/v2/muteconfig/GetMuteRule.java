@@ -25,7 +25,7 @@ import java.io.IOException;
 
 public class GetMuteRule {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO(Developer): Replace the following variables
     // projectId: Google Cloud Project id.
     String projectId = "google-cloud-project-id";
@@ -41,7 +41,8 @@ public class GetMuteRule {
   }
 
   // Retrieves a mute configuration given its resource name.
-  public static void getMuteRule(String projectId, String location, String muteConfigId) {
+  public static MuteConfig getMuteRule(String projectId, String location, String muteConfigId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -51,10 +52,7 @@ public class GetMuteRule {
 
       MuteConfigName muteConfigName = MuteConfigName.ofProjectLocationMuteConfigName(projectId,
           location, muteConfigId);
-      MuteConfig muteConfig = client.getMuteConfig(muteConfigName);
-      System.out.println("Retrieved the mute config: " + muteConfig);
-    } catch (IOException e) {
-      System.out.println("Mute rule retrieval failed! \n Exception: " + e);
+      return client.getMuteConfig(muteConfigName);
     }
   }
 }
