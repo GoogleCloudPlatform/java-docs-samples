@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2;
+package v_two;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -31,15 +31,14 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import v2.findings.GroupFindings;
-import v2.findings.GroupFindingsWithFilter;
-import v2.findings.ListAllFindings;
-import v2.findings.ListFindingsWithFilter;
+import v_two.findings.GroupFindings;
+import v_two.findings.GroupFindingsWithFilter;
+import v_two.findings.ListAllFindings;
+import v_two.findings.ListFindingsWithFilter;
 
 // Test v2 Findings samples.
 @RunWith(JUnit4.class)
