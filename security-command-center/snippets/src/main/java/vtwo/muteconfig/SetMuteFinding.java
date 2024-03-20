@@ -43,7 +43,7 @@ public class SetMuteFinding {
   // Mute an individual finding.
   // If a finding is already muted, muting it again has no effect.
   // Various mute states are: MUTE_UNSPECIFIED/MUTE/UNMUTE.
-  public static void setMute(String findingPath) throws IOException {
+  public static Finding setMute(String findingPath) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -58,6 +58,7 @@ public class SetMuteFinding {
       Finding finding = client.setMute(setMuteRequest);
       System.out.println(
           "Mute value for the finding " + finding.getName() + " is: " + finding.getMute());
+      return finding;
     }
   }
 }
