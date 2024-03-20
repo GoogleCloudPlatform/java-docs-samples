@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v_two.muteconfig;
+package vtwo.muteconfig;
 
 // [START securitycenter_update_mute_config_v2]
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v_two.findings;
+package vtwo.findings;
 
 // [START securitycenter_group_all_findings_v2]
 

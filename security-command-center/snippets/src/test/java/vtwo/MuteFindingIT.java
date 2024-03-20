@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v_two;
+package vtwo;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -44,14 +44,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import v_two.muteconfig.BulkMuteFindings;
-import v_two.muteconfig.CreateMuteRule;
-import v_two.muteconfig.DeleteMuteRule;
-import v_two.muteconfig.GetMuteRule;
-import v_two.muteconfig.ListMuteRules;
-import v_two.muteconfig.SetMuteFinding;
-import v_two.muteconfig.SetUnmuteFinding;
-import v_two.muteconfig.UpdateMuteRule;
+import vtwo.muteconfig.BulkMuteFindings;
+import vtwo.muteconfig.CreateMuteRule;
+import vtwo.muteconfig.DeleteMuteRule;
+import vtwo.muteconfig.GetMuteRule;
+import vtwo.muteconfig.ListMuteRules;
+import vtwo.muteconfig.SetMuteFinding;
+import vtwo.muteconfig.SetUnmuteFinding;
+import vtwo.muteconfig.UpdateMuteRule;
 
 // Test v2 Mute config samples.
 @RunWith(JUnit4.class)

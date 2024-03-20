@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v_two;
+package vtwo;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -35,10 +35,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import v_two.findings.GroupFindings;
-import v_two.findings.GroupFindingsWithFilter;
-import v_two.findings.ListAllFindings;
-import v_two.findings.ListFindingsWithFilter;
+import vtwo.findings.GroupFindings;
+import vtwo.findings.GroupFindingsWithFilter;
+import vtwo.findings.ListAllFindings;
+import vtwo.findings.ListFindingsWithFilter;
 
 // Test v2 Findings samples.
 @RunWith(JUnit4.class)
