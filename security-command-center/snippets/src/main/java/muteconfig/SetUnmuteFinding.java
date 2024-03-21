@@ -26,7 +26,7 @@ import java.io.IOException;
 
 public class SetUnmuteFinding {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO: Replace the variables within {}
 
     // findingPath: The relative resource name of the finding. See:
@@ -42,7 +42,7 @@ public class SetUnmuteFinding {
   // Unmute an individual finding.
   // Unmuting a finding that isn't muted has no effect.
   // Various mute states are: MUTE_UNSPECIFIED/MUTE/UNMUTE.
-  public static void setUnmute(String findingPath) {
+  public static Finding setUnmute(String findingPath) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -54,8 +54,7 @@ public class SetUnmuteFinding {
       Finding finding = client.setMute(setMuteRequest);
       System.out.println(
           "Mute value for the finding " + finding.getName() + " is: " + finding.getMute());
-    } catch (IOException e) {
-      System.out.println("Failed to set the specified mute value. \n Exception: " + e);
+      return finding;
     }
   }
 }
