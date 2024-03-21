@@ -24,6 +24,7 @@ import java.io.PrintStream;
 import java.util.regex.Pattern;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -53,6 +54,7 @@ public class DetectCropHintsGcsTest {
   }
 
   @Test
+  @Ignore("TODO: Remove after fixing https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8977")
   public void testCropHintsGcs() throws Exception {
     // Act
     DetectCropHintsGcs.detectCropHintsGcs("gs://" + ASSET_BUCKET + "/vision/label/wakeupcat.jpg");

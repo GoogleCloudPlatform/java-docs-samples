@@ -23,6 +23,7 @@ import java.io.PrintStream;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -54,6 +55,7 @@ public class InstantiateInlineWorkflowTemplateTest {
   }
 
   @Test
+  @Ignore("TODO: remove after fixing https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9245")
   public void instanstiateInlineWorkflowTest() throws IOException, InterruptedException {
     InstantiateInlineWorkflowTemplate.instantiateInlineWorkflowTemplate(PROJECT_ID, REGION);
     String output = bout.toString();

@@ -22,7 +22,6 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.aiplatform.v1.EndpointName;
 import com.google.cloud.aiplatform.v1.EndpointServiceClient;
 import com.google.cloud.aiplatform.v1.EndpointServiceSettings;
-import com.google.cloud.aiplatform.v1.ModelName;
 import com.google.cloud.aiplatform.v1.UndeployModelOperationMetadata;
 import com.google.cloud.aiplatform.v1.UndeployModelResponse;
 import java.io.IOException;
@@ -57,7 +56,6 @@ public class UndeployModelSample {
         EndpointServiceClient.create(endpointServiceSettings)) {
       String location = "us-central1";
       EndpointName endpointName = EndpointName.of(project, location, endpointId);
-      ModelName modelName = ModelName.of(project, location, modelId);
 
       // key '0' assigns traffic for the newly deployed model
       // Traffic percentage values must add up to 100
@@ -66,7 +64,7 @@ public class UndeployModelSample {
 
       OperationFuture<UndeployModelResponse, UndeployModelOperationMetadata> operation =
           endpointServiceClient.undeployModelAsync(
-              endpointName.toString(), modelName.toString(), trafficSplit);
+              endpointName.toString(), modelId, trafficSplit);
       System.out.format("Operation name: %s\n", operation.getInitialFuture().get().getName());
       System.out.println("Waiting for operation to finish...");
       UndeployModelResponse undeployModelResponse = operation.get(180, TimeUnit.SECONDS);

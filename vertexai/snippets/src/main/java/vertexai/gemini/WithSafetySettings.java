@@ -23,7 +23,7 @@ import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.GenerationConfig;
 import com.google.cloud.vertexai.api.HarmCategory;
 import com.google.cloud.vertexai.api.SafetySetting;
-import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
+import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class WithSafetySettings {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-pro-vision";
+    String modelName = "gemini-1.0-pro-vision";
     String textPrompt = "your-text-here";
 
     String output = safetyCheck(projectId, location, modelName, textPrompt);

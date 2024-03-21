@@ -31,19 +31,19 @@ dependencies {
   repositories {
     mavenCentral()
   }
-  compile 'io.grpc:grpc-netty:1.60.0'
-  compile 'io.grpc:grpc-protobuf:1.60.0'
-  compile 'io.grpc:grpc-stub:1.60.0'
+  compile 'io.grpc:grpc-netty:1.61.1'
+  compile 'io.grpc:grpc-protobuf:1.61.1'
+  compile 'io.grpc:grpc-stub:1.61.1'
 }
 
 protobuf {
   protoc {
-    artifact = 'com.google.protobuf:protoc:3.25.1'
+    artifact = 'com.google.protobuf:protoc:3.25.2'
   }
 
   plugins {
     grpc {
-      artifact = 'io.grpc:protoc-gen-grpc-java:1.60.0'
+      artifact = 'io.grpc:protoc-gen-grpc-java:1.61.1'
     }
   }
   generateProtoTasks {

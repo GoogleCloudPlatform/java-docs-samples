@@ -19,7 +19,7 @@ package vertexai.gemini;
 // [START aiplatform_gemini_token_count]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.CountTokensResponse;
-import com.google.cloud.vertexai.generativeai.preview.GenerativeModel;
+import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import java.io.IOException;
 // [END aiplatform_gemini_token_count]
 
@@ -28,9 +28,9 @@ public class GetTokenCount {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-pro-vision";
+    String modelName = "gemini-1.0-pro-vision";
 
-    String textPrompt = "How many tokens are there in this prompt?";
+    String textPrompt = "Why is the sky blue?";
     getTokenCount(projectId, location, modelName, textPrompt);
   }
 
