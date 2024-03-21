@@ -220,13 +220,11 @@ public class MuteFindingIT {
   }
 
   @Test
-  public void testSetMuteFinding() {
-    SetMuteFinding.setMute(FINDING_1.getName());
-    assertThat(stdOut.toString())
-        .contains("Mute value for the finding " + FINDING_1.getName() + " is: " + "MUTED");
-    SetUnmuteFinding.setUnmute(FINDING_1.getName());
-    assertThat(stdOut.toString())
-        .contains("Mute value for the finding " + FINDING_1.getName() + " is: " + "UNMUTED");
+  public void testSetMuteFinding() throws IOException {
+    Finding finding = SetMuteFinding.setMute(FINDING_1.getName());
+    assertThat(finding.getMute()).isEqualTo(Mute.MUTED);
+    finding = SetUnmuteFinding.setUnmute(FINDING_1.getName());
+    assertThat(finding.getMute()).isEqualTo(Mute.UNMUTED);
   }
 
   @Test
