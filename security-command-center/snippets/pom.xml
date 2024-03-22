@@ -31,7 +31,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.32.0</version>
+        <version>26.33.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -42,7 +42,8 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-securitycenter</artifactId>
-      </dependency>
+      <version>2.45.0</version>
+    </dependency>
 
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -58,7 +59,7 @@
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java-util</artifactId>
-      </dependency>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>

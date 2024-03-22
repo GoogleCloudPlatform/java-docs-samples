@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package muteconfig;
+package vtwo.muteconfig;
 
-// [START securitycenter_set_unmute]
+// [START securitycenter_set_unmute_v2]
 
-import com.google.cloud.securitycenter.v1.Finding;
-import com.google.cloud.securitycenter.v1.Finding.Mute;
-import com.google.cloud.securitycenter.v1.SecurityCenterClient;
-import com.google.cloud.securitycenter.v1.SetMuteRequest;
+import com.google.cloud.securitycenter.v2.Finding;
+import com.google.cloud.securitycenter.v2.Finding.Mute;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient;
+import com.google.cloud.securitycenter.v2.SetMuteRequest;
 import java.io.IOException;
 
 public class SetUnmuteFinding {
 
   public static void main(String[] args) throws IOException {
     // TODO: Replace the variables within {}
-
     // findingPath: The relative resource name of the finding. See:
     // https://cloud.google.com/apis/design/resource_names#relative_resource_name
     // Use any one of the following formats:
-    //  - organizations/{organization_id}/sources/{source_id}/finding/{finding_id}
-    //  - folders/{folder_id}/sources/{source_id}/finding/{finding_id}
-    //  - projects/{project_id}/sources/{source_id}/finding/{finding_id}
+    //  - organizations/{org_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
+    //  - folders/{folder_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
+    //  - projects/{project_id}/sources/{source_id}/locations/{location}/finding/{finding_id}
+    //
     String findingPath = "{path-to-the-finding}";
+
     setUnmute(findingPath);
   }
 
@@ -44,12 +45,14 @@ public class SetUnmuteFinding {
   // Various mute states are: MUTE_UNSPECIFIED/MUTE/UNMUTE.
   public static Finding setUnmute(String findingPath) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
       SetMuteRequest setMuteRequest =
-          SetMuteRequest.newBuilder().setName(findingPath).setMute(Mute.UNMUTED).build();
+          SetMuteRequest.newBuilder()
+              .setName(findingPath)
+              .setMute(Mute.UNMUTED)
+              .build();
 
       Finding finding = client.setMute(setMuteRequest);
       System.out.println(
@@ -58,4 +61,4 @@ public class SetUnmuteFinding {
     }
   }
 }
-// [END securitycenter_set_unmute]
+// [END securitycenter_set_unmute_v2]
