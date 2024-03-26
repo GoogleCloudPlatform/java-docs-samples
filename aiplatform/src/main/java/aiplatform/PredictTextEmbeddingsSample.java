@@ -17,62 +17,84 @@
 package aiplatform;
 
 // [START aiplatform_sdk_embedding]
-
-import com.google.cloud.aiplatform.util.ValueConverter;
 import com.google.cloud.aiplatform.v1beta1.EndpointName;
+import com.google.cloud.aiplatform.v1beta1.PredictRequest;
 import com.google.cloud.aiplatform.v1beta1.PredictResponse;
 import com.google.cloud.aiplatform.v1beta1.PredictionServiceClient;
 import com.google.cloud.aiplatform.v1beta1.PredictionServiceSettings;
+import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
-import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PredictTextEmbeddingsSample {
+  public static final Pattern APIS_ENDPOINT_PATTERN =
+      Pattern.compile("(?<Location>.+)(-autopush|-staging)?-aiplatform.+");
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     // Details about text embedding request structure and supported models are available in:
     // https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings
-    String instance = "{ \"content\": \"What is life?\"}";
+    String endpoint = "us-central1-aiplatform.googleapis.com:443";
     String project = "YOUR_PROJECT_ID";
-    String location = "us-central1";
     String publisher = "google";
-    String model = "textembedding-gecko@001";
-
-    predictTextEmbeddings(instance, project, location, publisher, model);
+    String model = "text-embedding-preview-0409"; // makes its debut at Cloud Next '24 (April 2024).
+    predictTextEmbeddings(
+        endpoint,
+        project,
+        publisher,
+        model,
+        List.of("banana bread?", "banana muffins?"),
+        List.of("QUESTION_ANSWERING", "FACT_VERIFICATION"));
   }
 
-  // Get text embeddings from a supported embedding model
+  // Gets text embeddings from a pretrained, foundational model.
   public static void predictTextEmbeddings(
-      String instance, String project, String location, String publisher, String model)
+      String endpoint,
+      String project,
+      String publisher,
+      String model,
+      List<String> texts,
+      List<String> tasks)
       throws IOException {
-    String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
-    PredictionServiceSettings predictionServiceSettings =
-        PredictionServiceSettings.newBuilder()
-            .setEndpoint(endpoint)
-            .build();
+    boolean elastic =
+        List.of("text-embedding-preview-0409", "text-multilingual-embedding-preview-0409")
+            .contains(model);
+    PredictionServiceSettings settings =
+        PredictionServiceSettings.newBuilder().setEndpoint(endpoint).build();
+    Matcher matcher = APIS_ENDPOINT_PATTERN.matcher(endpoint);
+    String location = matcher.matches() ? matcher.group("Location") : "us-central1";
+    EndpointName endpointName =
+        EndpointName.ofProjectLocationPublisherModelName(project, location, publisher, model);
 
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (PredictionServiceClient predictionServiceClient =
-        PredictionServiceClient.create(predictionServiceSettings)) {
-      EndpointName endpointName =
-          EndpointName.ofProjectLocationPublisherModelName(project, location, publisher, model);
-
-      // Use Value.Builder to convert instance to a dynamically typed value that can be
-      // processed by the service.
-      Value.Builder instanceValue = Value.newBuilder();
-      JsonFormat.parser().merge(instance, instanceValue);
-      List<Value> instances = new ArrayList<>();
-      instances.add(instanceValue.build());
-
-      PredictResponse predictResponse =
-          predictionServiceClient.predict(endpointName, instances, ValueConverter.EMPTY_VALUE);
-      System.out.println("Predict Response");
-      for (Value prediction : predictResponse.getPredictionsList()) {
-        System.out.format("\tPrediction: %s\n", prediction);
+    // You can use this prediction service client for multiple requests.
+    try (PredictionServiceClient client = PredictionServiceClient.create(settings)) {
+      PredictRequest.Builder request =
+          PredictRequest.newBuilder().setEndpoint(endpointName.toString());
+      if (elastic) {
+        Value n192 = Value.newBuilder().setNumberValue(192).build();
+        request.setParameters(
+            Value.newBuilder()
+                .setStructValue(
+                    Struct.newBuilder().putFields("outputDimensionality", n192).build()));
+      }
+      for (int i = 0; i < texts.size(); i++) {
+        Value text = Value.newBuilder().setStringValue(texts.get(i)).build();
+        Value task = Value.newBuilder().setStringValue(tasks.get(i)).build();
+        request.addInstances(
+            Value.newBuilder()
+                .setStructValue(
+                    Struct.newBuilder()
+                        .putFields("content", text)
+                        .putFields("taskType", task)
+                        .build()));
+      }
+      PredictResponse response = client.predict(request.build());
+      System.out.println("Got predict response:\n");
+      for (Value prediction : response.getPredictionsList()) {
+        System.out.format("Got prediction: %s\n", prediction);
       }
     }
   }
