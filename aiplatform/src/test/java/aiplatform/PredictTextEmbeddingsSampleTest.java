@@ -18,11 +18,11 @@ package aiplatform;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
-
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,15 +30,11 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class PredictTextEmbeddingsSampleTest {
-
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
-
+  private static final String APIS_ENDPOINT = "us-central1-aiplatform.googleapis.com:443";
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
-  private static final String LOCATION = "us-central1";
-  private static final String INSTANCE = "{ \"content\": \"What is life?\"}";
   private static final String PUBLISHER = "google";
-  private static final String MODEL = "textembedding-gecko@001";
-
+  private static final String MODEL = "textembedding-gecko@003";
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -71,12 +67,17 @@ public class PredictTextEmbeddingsSampleTest {
 
   @Test
   public void testPredictTextEmbeddings() throws IOException {
-    // Act
+    List<String> texts =
+        List.of("banana bread?", "banana muffin?", "banana?", "recipe?", "muffin recipe?");
+    List<String> tasks =
+        List.of(
+            "RETRIEVAL_QUERY",
+            "RETRIEVAL_DOCUMENT",
+            "SEMANTIC_SIMILARITY",
+            "CLASSIFICATION",
+            "CLUSTERING");
     PredictTextEmbeddingsSample.predictTextEmbeddings(
-        INSTANCE, PROJECT, LOCATION, PUBLISHER, MODEL);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Predict Response");
+        APIS_ENDPOINT, PROJECT, PUBLISHER, MODEL, texts, tasks);
+    assertThat(bout.toString()).contains("Got predict response");
   }
 }
