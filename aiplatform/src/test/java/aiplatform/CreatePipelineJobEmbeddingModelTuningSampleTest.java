@@ -142,7 +142,6 @@ public class CreatePipelineJobEmbeddingModelTuningSampleTest {
         ITERATIONS);
 
     String got = bout.toString();
-    System.out.println("hylee:: " + got);
     assertThat(got).contains(pipelineJobDisplayName);
     pipelineJobName = got.split("job_name: ")[1].split("\n")[0];
   }
