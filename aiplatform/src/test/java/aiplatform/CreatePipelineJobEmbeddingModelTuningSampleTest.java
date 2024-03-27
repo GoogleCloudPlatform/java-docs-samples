@@ -56,8 +56,7 @@ public class CreatePipelineJobEmbeddingModelTuningSampleTest {
       "gs://embedding-customization-pipeline/dataset/train.tsv";
   private static final String TEST_LABEL = "gs://embedding-customization-pipeline/dataset/test.tsv";
   private static final String OUTPUT_DIR =
-      // "gs://ucaip-samples-us-central1/training_pipeline_output";
-      "gs://embedding-customization-integration-tests/pipeline-output";
+      "gs://ucaip-samples-us-central1/training_pipeline_output";
   private static final int BATCH_SIZE = 50;
   private static final int ITERATIONS = 300;
   private String pipelineJobName;
