@@ -128,17 +128,12 @@ public class CreatePipelineJobEmbeddingModelTuningSampleTest {
         String.format(
             "temp_create_pipeline_job_test_%s",
             UUID.randomUUID().toString().replaceAll("-", "_").substring(0, 26));
-    final String modelDisplayName =
-        String.format(
-            "temp_create_pipeline_job_embedding_model_test_%s",
-            UUID.randomUUID().toString().replaceAll("-", "_").substring(0, 26));
     CreatePipelineJobEmbeddingModelTuningSample.createEmbeddingModelTuningPipelineJob(
         API_ENDPOINT,
         PROJECT,
         BASE_MODEL_VERSION_ID,
         TASK_TYPE,
         pipelineJobDisplayName,
-        modelDisplayName,
         OUTPUT_DIR,
         QUERIES,
         CORPUS,

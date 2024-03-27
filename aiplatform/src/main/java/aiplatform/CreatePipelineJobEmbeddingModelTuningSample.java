@@ -42,7 +42,6 @@ public class CreatePipelineJobEmbeddingModelTuningSample {
     String baseModelVersionId = "BASE_MODEL_VERSION_ID";
     String taskType = "TASK_TYPE";
     String pipelineJobDisplayName = "PIPELINE_JOB_DISPLAY_NAME";
-    String modelDisplayName = "MODEL_DISPLAY_NAME";
     String outputDir = "OUTPUT_DIR";
     String queriesPath = "QUERIES";
     String corpusPath = "CORPUS";
@@ -56,7 +55,6 @@ public class CreatePipelineJobEmbeddingModelTuningSample {
         baseModelVersionId,
         taskType,
         pipelineJobDisplayName,
-        modelDisplayName,
         outputDir,
         queriesPath,
         corpusPath,
@@ -73,7 +71,6 @@ public class CreatePipelineJobEmbeddingModelTuningSample {
       String baseModelVersionId,
       String taskType,
       String pipelineJobDisplayName,
-      String modelDisplayName,
       String outputDir,
       String queriesPath,
       String corpusPath,
