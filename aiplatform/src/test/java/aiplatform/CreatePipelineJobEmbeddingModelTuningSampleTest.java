@@ -110,9 +110,6 @@ public class CreatePipelineJobEmbeddingModelTuningSampleTest {
           // wait for another 1 minute, then retry
           System.out.println("Retrying (due to unfinished cancellation operation)...");
           TimeUnit.MINUTES.sleep(1);
-        } catch (Exception otherExceptions) {
-          // other exception, let them throw
-          throw otherExceptions;
         }
       }
     }
