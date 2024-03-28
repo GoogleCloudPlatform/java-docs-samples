@@ -29,7 +29,7 @@
   <properties>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
-    <spring-boot.version>3.2.2</spring-boot.version>
+    <spring-boot.version>3.2.4</spring-boot.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -94,7 +94,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.1</version>
         <configuration>
           <to>
             <image>gcr.io/PROJECT_ID/renderer</image>

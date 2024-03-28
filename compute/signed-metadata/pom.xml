@@ -44,7 +44,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.32.0</version>
+        <version>26.34.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -75,7 +75,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>3.7.1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -98,7 +98,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.12.1</version>
+        <version>3.13.0</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>

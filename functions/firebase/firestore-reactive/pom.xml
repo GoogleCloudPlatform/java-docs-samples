@@ -40,7 +40,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.32.0</version>
+        <version>26.34.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -76,13 +76,13 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.4.0</version>
+      <version>1.4.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.10.0</version>
+      <version>5.11.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -135,7 +135,7 @@
       <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.12.1</version>
+        <version>3.13.0</version>
         <executions>
           <execution>
             <id>compile</id>
