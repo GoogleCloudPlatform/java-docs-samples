@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,46 +24,47 @@ import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import java.io.IOException;
 
 public class CreateNotification {
-    public static void main(String[] args) throws IOException {
-        // parentId: must be in one of the following formats:
-        //    "organizations/{organization_id}"
-        //    "projects/{project_id}"
-        //    "folders/{folder_id}"
-        String projectId = "{project-id}";
-        String topicName = "{your-topic}";
-        String notificationConfigId = "{your-notification-id}";
-        // Specify the location of the notification config.
-        String location = "global";
 
-        createNotificationConfig(projectId, location , topicName, notificationConfigId);
+  public static void main(String[] args) throws IOException {
+    // parentId: must be in one of the following formats:
+    //    "organizations/{organization_id}"
+    //    "projects/{project_id}"
+    //    "folders/{folder_id}"
+    String parentId = "{parent-id}";
+    String topicName = "{your-topic}";
+    String notificationConfigId = "{your-notification-id}";
+    // Specify the location of the notification config.
+    String location = "global";
+
+    createNotificationConfig(parentId, location, topicName, notificationConfigId);
+  }
+
+  // Crete a notification config.
+  // Ensure the ServiceAccount has the "pubsub.topics.setIamPolicy" permission on the new topic.
+  public static NotificationConfig createNotificationConfig(
+      String parentId, String location, String topicName, String notificationConfigId)
+      throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (SecurityCenterClient client = SecurityCenterClient.create()) {
+
+      String pubsubTopic = String.format("projects/%s/topics/%s", parentId, topicName);
+
+      NotificationConfig notificationConfig = NotificationConfig.newBuilder()
+          .setDescription("Java notification config")
+          .setPubsubTopic(pubsubTopic)
+          .setStreamingConfig(
+              NotificationConfig.StreamingConfig.newBuilder().setFilter("state = \"ACTIVE\"")
+                  .build())
+          .build();
+
+      NotificationConfig response = client.createNotificationConfig(
+          LocationName.of(parentId, location), notificationConfig, notificationConfigId);
+
+      System.out.printf("Notification config was created: %s%n", response);
+      return response;
     }
-
-    // Crete a notification config.
-    // Ensure the ServiceAccount has the "pubsub.topics.setIamPolicy" permission on the new topic.
-    public static NotificationConfig createNotificationConfig(
-            String projectId, String location, String topicName, String notificationConfigId)
-            throws IOException {
-        // Initialize client that will be used to send requests. This client only needs to be created
-        // once, and can be reused for multiple requests. After completing all of your requests, call
-        // the "close" method on the client to safely clean up any remaining background resources.
-        try (SecurityCenterClient client = SecurityCenterClient.create()) {
-
-            String pubsubTopic = String.format("projects/%s/topics/%s", projectId, topicName);
-
-            NotificationConfig notificationConfig = NotificationConfig.newBuilder()
-                    .setDescription("Java notification config")
-                    .setPubsubTopic(pubsubTopic)
-                    .setStreamingConfig(
-                            NotificationConfig.StreamingConfig.newBuilder().setFilter("state = \"ACTIVE\"").build())
-                    .build();
-
-            // when using the createNotificationConfig method, a notification will be created located at projectId / location
-            NotificationConfig response = client.createNotificationConfig(
-                    LocationName.of(projectId, location), notificationConfig, notificationConfigId);
-
-            System.out.printf("Notification config was created: %s%n", response);
-            return response;
-        }
-    }
+  }
 }
 // [END securitycenter_create_notification_config]

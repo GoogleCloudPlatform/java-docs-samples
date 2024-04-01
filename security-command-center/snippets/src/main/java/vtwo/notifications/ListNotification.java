@@ -21,48 +21,48 @@ package vtwo.notifications;
 import com.google.cloud.securitycenter.v2.ListNotificationConfigsRequest;
 import com.google.cloud.securitycenter.v2.NotificationConfig;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient.ListNotificationConfigsPagedResponse;
 import com.google.common.collect.ImmutableList;
-
 import java.io.IOException;
 
 public class ListNotification {
-    public static void main(String[] args) throws IOException {
-        // parentId: must be in one of the following formats:
-        //    "organizations/{organization_id}"
-        //    "projects/{project_id}"
-        //    "folders/{folder_id}"
 
-        String projectId = "{your-project}";
+  public static void main(String[] args) throws IOException {
+    // parentId: must be in one of the following formats:
+    //    "organizations/{organization_id}"
+    //    "projects/{project_id}"
+    //    "folders/{folder_id}"
+    String parentId = "{parent-id}";
+    // Specify the location to list the findings.
+    String location = "global";
 
-        // Specify the location to list the findings.
-        String location = "global";
+    listNotificationConfigs(parentId, location);
+  }
 
-        listNotificationConfigs(projectId,location);
+  // List notification configs present in the given parent.
+  public static ImmutableList<NotificationConfig> listNotificationConfigs(String parentId,
+      String location)
+      throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (SecurityCenterClient client = SecurityCenterClient.create()) {
+
+      ListNotificationConfigsRequest request = ListNotificationConfigsRequest.newBuilder()
+          .setParent(String.format("projects/%s/locations/%s",
+              parentId,
+              location))
+          .build();
+
+      ListNotificationConfigsPagedResponse response = client.listNotificationConfigs(
+          request);
+
+      ImmutableList<NotificationConfig> notificationConfigs =
+          ImmutableList.copyOf(response.iterateAll());
+
+      System.out.printf("List notifications response: %s%n", response.getPage().getValues());
+      return notificationConfigs;
     }
-
-    // List notification configs present in the given parent.
-    public static ImmutableList<NotificationConfig> listNotificationConfigs(String projectId, String location)
-            throws IOException {
-        // Initialize client that will be used to send requests. This client only needs to be created
-        // once, and can be reused for multiple requests. After completing all of your requests, call
-        // the "close" method on the client to safely clean up any remaining background resources.
-
-        try (SecurityCenterClient client = SecurityCenterClient.create()) {
-
-            ListNotificationConfigsRequest request = ListNotificationConfigsRequest.newBuilder()
-                    .setParent( String.format("projects/%s/locations/%s",
-                            projectId,
-                            location))
-                    .build();
-
-            SecurityCenterClient.ListNotificationConfigsPagedResponse response = client.listNotificationConfigs(request);
-
-            ImmutableList<NotificationConfig> notificationConfigs =
-                    ImmutableList.copyOf(response.iterateAll());
-
-            System.out.printf("List notifications response: %s%n", response.getPage().getValues());
-            return notificationConfigs;
-        }
-    }
+  }
 }
 // [END securitycenter_list_notification_configs]
