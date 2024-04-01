@@ -68,7 +68,7 @@ public class NotificationIT {
   }
 
   @BeforeClass
-  public static void setUp() throws IOException {
+  public static void setUp() throws IOException, InterruptedException{
     final PrintStream out = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
