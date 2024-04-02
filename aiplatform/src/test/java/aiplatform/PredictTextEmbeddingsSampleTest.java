@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.OptionalInt;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -70,15 +71,23 @@ public class PredictTextEmbeddingsSampleTest {
   public void testPredictTextEmbeddings() throws IOException {
     List<String> texts =
         List.of("banana bread?", "banana muffin?", "banana?", "recipe?", "muffin recipe?");
-    List<String> tasks =
-        List.of(
-            "RETRIEVAL_QUERY",
-            "RETRIEVAL_DOCUMENT",
-            "SEMANTIC_SIMILARITY",
-            "CLASSIFICATION",
-            "CLUSTERING");
     PredictTextEmbeddingsSample.predictTextEmbeddings(
-        APIS_ENDPOINT, PROJECT, PUBLISHER, MODEL, texts, tasks);
+        APIS_ENDPOINT, PROJECT, PUBLISHER, "textembedding-gecko@003", texts, "RETRIEVAL_DOCUMENT");
+    assertThat(bout.toString()).contains("Got predict response");
+  }
+
+  @Test
+  public void testPredictTextEmbeddingsPreview() throws IOException {
+    List<String> texts =
+        List.of("banana bread?", "banana muffin?", "banana?", "recipe?", "muffin recipe?");
+    PredictTextEmbeddingsSamplePreview.predictTextEmbeddings(
+        APIS_ENDPOINT,
+        PROJECT,
+        PUBLISHER,
+        "text-embedding-preview-0409",
+        texts,
+        "RETRIEVAL_DOCUMENT",
+        OptionalInt.of(256));
     assertThat(bout.toString()).contains("Got predict response");
   }
 }
