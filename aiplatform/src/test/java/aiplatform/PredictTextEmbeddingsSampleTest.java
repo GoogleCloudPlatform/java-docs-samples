@@ -36,7 +36,6 @@ public class PredictTextEmbeddingsSampleTest {
   private static final String APIS_ENDPOINT = "us-central1-aiplatform.googleapis.com:443";
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
   private static final String PUBLISHER = "google";
-  private static final String MODEL = "textembedding-gecko@003";
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
