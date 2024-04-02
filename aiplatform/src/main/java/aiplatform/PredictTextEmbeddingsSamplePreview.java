@@ -16,7 +16,7 @@
 
 package aiplatform;
 
-// [START aiplatform_sdk_embedding]
+// [START generativeaionvertexai_sdk_embedding]
 import com.google.cloud.aiplatform.v1beta1.EndpointName;
 import com.google.cloud.aiplatform.v1beta1.PredictRequest;
 import com.google.cloud.aiplatform.v1beta1.PredictResponse;
@@ -107,4 +107,4 @@ public class PredictTextEmbeddingsSamplePreview {
     return Value.newBuilder().setNumberValue(n).build();
   }
 }
-// [END aiplatform_sdk_embedding]
+// [END generativeaionvertexai_sdk_embedding]
