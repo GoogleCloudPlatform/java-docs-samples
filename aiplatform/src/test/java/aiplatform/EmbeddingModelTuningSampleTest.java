@@ -55,6 +55,7 @@ public class EmbeddingModelTuningSampleTest {
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
   private static final String BASE_MODEL_VERSION_ID = "textembedding-gecko@003";
   private static final String TASK_TYPE = "DEFAULT";
+  private static final String JOB_DISPLAY_NAME = "embedding-customization-pipeline-sample";
   private static final String QUERIES =
       "gs://embedding-customization-pipeline/dataset/queries.jsonl";
   private static final String CORPUS = "gs://embedding-customization-pipeline/dataset/corpus.jsonl";
@@ -65,11 +66,11 @@ public class EmbeddingModelTuningSampleTest {
       "gs://ucaip-samples-us-central1/training_pipeline_output";
   private static final int BATCH_SIZE = 50;
   private static final int ITERATIONS = 300;
-  private static Queue<String> pipelineJobNames = new LinkedList<String>();
+  private static Queue<String> JobNames = new LinkedList<String>();
 
   private static final RetryConfig RETRY_CONFIG =
       RetryConfig.custom()
-          .maxAttempts(10)
+          .maxAttempts(30)
           .waitDuration(Duration.ofSeconds(10))
           .retryExceptions(TimeoutException.class)
           .failAfterMaxAttempts(false)
@@ -93,8 +94,8 @@ public class EmbeddingModelTuningSampleTest {
     PipelineServiceSettings settings =
         PipelineServiceSettings.newBuilder().setEndpoint(API_ENDPOINT).build();
     try (PipelineServiceClient client = PipelineServiceClient.create(settings)) {
-      List<CancelPipelineJobRequest> reqs =
-          pipelineJobNames.stream()
+      List<CancelPipelineJobRequest> requests =
+          JobNames.stream()
               .map(n -> CancelPipelineJobRequest.newBuilder().setName(n).build())
               .collect(toList());
       CheckedRunnable runnable =
@@ -102,7 +103,7 @@ public class EmbeddingModelTuningSampleTest {
               RETRY_REGISTRY.retry("delete-pipeline-jobs", RETRY_CONFIG),
               () -> {
                 List<OperationFuture<Empty, DeleteOperationMetadata>> deletions =
-                    reqs.stream()
+                    requests.stream()
                         .map(
                             req -> {
                               client.cancelPipelineJobCallable().futureCall(req);
@@ -123,13 +124,13 @@ public class EmbeddingModelTuningSampleTest {
 
   @Test
   public void createPipelineJobEmbeddingModelTuningSample() throws IOException {
-    PipelineJob pipelineJob =
+    PipelineJob job =
         EmbeddingModelTuningSample.createEmbeddingModelTuningPipelineJob(
             API_ENDPOINT,
             PROJECT,
             BASE_MODEL_VERSION_ID,
             TASK_TYPE,
-            "embedding-customization-pipeline-sample",
+            JOB_DISPLAY_NAME,
             OUTPUT_DIR,
             QUERIES,
             CORPUS,
@@ -137,7 +138,7 @@ public class EmbeddingModelTuningSampleTest {
             TEST_LABEL,
             BATCH_SIZE,
             ITERATIONS);
-    assertThat(pipelineJob.getState()).isNotEqualTo(PipelineState.PIPELINE_STATE_FAILED);
-    pipelineJobNames.add(pipelineJob.getName());
+    assertThat(job.getState()).isNotEqualTo(PipelineState.PIPELINE_STATE_FAILED);
+    JobNames.add(job.getName());
   }
 }
