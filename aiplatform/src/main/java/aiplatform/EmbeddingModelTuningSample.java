@@ -17,26 +17,24 @@
 package aiplatform;
 
 // [START aiplatform_sdk_embedding_model_tuning]
-import com.google.cloud.aiplatform.v1beta1.CreatePipelineJobRequest;
-import com.google.cloud.aiplatform.v1beta1.LocationName;
-import com.google.cloud.aiplatform.v1beta1.PipelineJob;
-import com.google.cloud.aiplatform.v1beta1.PipelineJob.RuntimeConfig;
-import com.google.cloud.aiplatform.v1beta1.PipelineServiceClient;
-import com.google.cloud.aiplatform.v1beta1.PipelineServiceSettings;
+import com.google.cloud.aiplatform.v1.CreatePipelineJobRequest;
+import com.google.cloud.aiplatform.v1.LocationName;
+import com.google.cloud.aiplatform.v1.PipelineJob;
+import com.google.cloud.aiplatform.v1.PipelineJob.RuntimeConfig;
+import com.google.cloud.aiplatform.v1.PipelineServiceClient;
+import com.google.cloud.aiplatform.v1.PipelineServiceSettings;
 import com.google.protobuf.Value;
 import java.io.IOException;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CreatePipelineJobEmbeddingModelTuningSample {
-  public static final String PIPELINE_TEMPLATE_URI =
-      "https://us-kfp.pkg.dev/ml-pipeline/llm-text-embedding/tune-text-embedding-model/v1.1.2";
-  public static final Pattern API_ENDPOINT_PATTERN =
-      Pattern.compile("(?<Location>.+)(-autopush|-staging)?-aiplatform.+");
+// [END aiplatform_sdk_embedding_model_tuning]
 
+public class EmbeddingModelTuningSample {
   public static void main(String[] args) throws IOException {
-    // TODO(developer): Replace these variables before running the sample.
+    // [START aiplatform_sdk_embedding_model_tuning]
+    // TODO(developer): Replace these variables before running this sample.
     String apiEndpoint = "us-central1-aiplatform.googleapis.com:443";
     String project = "PROJECT";
     String baseModelVersionId = "BASE_MODEL_VERSION_ID";
@@ -49,6 +47,7 @@ public class CreatePipelineJobEmbeddingModelTuningSample {
     String testLabelPath = "TEST_LABEL";
     int batchSize = 50;
     int iterations = 300;
+
     createEmbeddingModelTuningPipelineJob(
         apiEndpoint,
         project,
@@ -62,10 +61,11 @@ public class CreatePipelineJobEmbeddingModelTuningSample {
         testLabelPath,
         batchSize,
         iterations);
+    // [END aiplatform_sdk_embedding_model_tuning]
   }
 
-  // Creates an embedding-model tuning pipeline job.
-  public static void createEmbeddingModelTuningPipelineJob(
+  // [START aiplatform_sdk_embedding_model_tuning]
+  public static PipelineJob createEmbeddingModelTuningPipelineJob(
       String apiEndpoint,
       String project,
       String baseModelVersionId,
@@ -79,25 +79,29 @@ public class CreatePipelineJobEmbeddingModelTuningSample {
       int batchSize,
       int iterations)
       throws IOException {
-    Matcher matcher = API_ENDPOINT_PATTERN.matcher(apiEndpoint);
+    Pattern apiEndpointPattern =
+        Pattern.compile("(?<Location>.+)(-autopush|-staging)?-aiplatform.+");
+    Matcher matcher = apiEndpointPattern.matcher(apiEndpoint);
     String location = matcher.matches() ? matcher.group("Location") : "us-central1";
     PipelineServiceSettings settings =
         PipelineServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
     try (PipelineServiceClient client = PipelineServiceClient.create(settings)) {
-      Map<String, Value> parameterValues = Map.of(
-          "project", valueOf(project),
-          "base_model_version_id", valueOf(baseModelVersionId),
-          "task_type", valueOf(taskType),
-          "location", valueOf(location),
-          "queries_path", valueOf(queriesPath),
-          "corpus_path", valueOf(corpusPath),
-          "train_label_path", valueOf(trainLabelPath),
-          "test_label_path", valueOf(testLabelPath),
-          "batch_size", valueOf(batchSize),
-          "iterations", valueOf(iterations));
+      Map<String, Value> parameterValues =
+          Map.of(
+              "project", valueOf(project),
+              "base_model_version_id", valueOf(baseModelVersionId),
+              "task_type", valueOf(taskType),
+              "location", valueOf(location),
+              "queries_path", valueOf(queriesPath),
+              "corpus_path", valueOf(corpusPath),
+              "train_label_path", valueOf(trainLabelPath),
+              "test_label_path", valueOf(testLabelPath),
+              "batch_size", valueOf(batchSize),
+              "iterations", valueOf(iterations));
       PipelineJob pipelineJob =
           PipelineJob.newBuilder()
-              .setTemplateUri(PIPELINE_TEMPLATE_URI)
+              .setTemplateUri(
+                  "https://us-kfp.pkg.dev/ml-pipeline/llm-text-embedding/tune-text-embedding-model/v1.1.2")
               .setDisplayName(pipelineJobDisplayName)
               .setRuntimeConfig(
                   RuntimeConfig.newBuilder()
@@ -110,9 +114,7 @@ public class CreatePipelineJobEmbeddingModelTuningSample {
               .setParent(LocationName.of(project, location).toString())
               .setPipelineJob(pipelineJob)
               .build();
-      PipelineJob response = client.createPipelineJob(request);
-      System.out.format("Got create respopnse: %s\n", response);
-      System.out.format("Got pipeline job_name: %s\n", response.getName());
+      return client.createPipelineJob(request);
     }
   }
 
@@ -123,6 +125,5 @@ public class CreatePipelineJobEmbeddingModelTuningSample {
   private static Value valueOf(int n) {
     return Value.newBuilder().setNumberValue(n).build();
   }
+  // [END aiplatform_sdk_embedding_model_tuning]
 }
-
- // [END aiplatform_sdk_embedding_model_tuning]
