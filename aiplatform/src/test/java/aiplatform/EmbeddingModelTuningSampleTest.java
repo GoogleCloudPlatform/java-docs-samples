@@ -66,8 +66,8 @@ public class EmbeddingModelTuningSampleTest {
       "gs://ucaip-samples-us-central1/training_pipeline_output";
   private static final int BATCH_SIZE = 50;
   private static final int ITERATIONS = 300;
-  private static Queue<String> JobNames = new LinkedList<String>();
 
+  private static Queue<String> JobNames = new LinkedList<String>();
   private static final RetryConfig RETRY_CONFIG =
       RetryConfig.custom()
           .maxAttempts(30)
@@ -78,8 +78,7 @@ public class EmbeddingModelTuningSampleTest {
   private static final RetryRegistry RETRY_REGISTRY = RetryRegistry.of(RETRY_CONFIG);
 
   private static void requireEnvVar(String varName) {
-    String errorMessage =
-        String.format("Environment variable '%s' is required to perform these tests.", varName);
+    String errorMessage = String.format("Test requires environment variable '%s'.", varName);
     assertNotNull(errorMessage, System.getenv(varName));
   }
 
