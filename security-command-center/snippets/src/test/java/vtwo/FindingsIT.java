@@ -35,10 +35,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import vtwo.findings.CreateFindings;
 import vtwo.findings.GroupFindings;
 import vtwo.findings.GroupFindingsWithFilter;
 import vtwo.findings.ListAllFindings;
 import vtwo.findings.ListFindingsWithFilter;
+import vtwo.findings.SetFindingsByState;
+import vtwo.source.CreateSource;
 
 // Test v2 Findings samples.
 @RunWith(JUnit4.class)
@@ -77,14 +80,15 @@ public class FindingsIT {
     requireEnvVar("SCC_PROJECT_ORG_ID");
 
     // Create source.
-    SOURCE = Util.createSource(ORGANIZATION_ID);
+    SOURCE = CreateSource.createSource(ORGANIZATION_ID);
     // Create findings within the source.
     String uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_1 = Util.createFinding(SOURCE.getName(), "testfindingv2" + uuid, LOCATION,
-        Optional.of("MEDIUM_RISK_ONE"));
+    FINDING_1 = CreateFindings.createFinding(ORGANIZATION_ID, "testfindingv2" + uuid, LOCATION,
+        SOURCE.getName().split("/")[3], Optional.of("MEDIUM_RISK_ONE"));
+
     uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_2 = Util.createFinding(SOURCE.getName(), "testfindingv2" + uuid, LOCATION,
-        Optional.empty());
+    FINDING_2 = CreateFindings.createFinding(ORGANIZATION_ID, "testfindingv2" + uuid, LOCATION,
+        SOURCE.getName().split("/")[3], Optional.empty());
 
     stdOut = null;
     System.setOut(out);
@@ -130,4 +134,13 @@ public class FindingsIT {
         LOCATION);
     assertThat(stdOut.toString()).contains("count: 1");
   }
+
+  @Test
+  public void testSetFindingsByStateInactive() throws IOException {
+    SetFindingsByState.setFindingState(ORGANIZATION_ID, SOURCE.getName().split("/")[3],
+        LOCATION, FINDING_1.getName().split("/")[7]);
+    assertThat(stdOut.toString()).contains("Updated Finding: ");
+
+  }
+
 }
