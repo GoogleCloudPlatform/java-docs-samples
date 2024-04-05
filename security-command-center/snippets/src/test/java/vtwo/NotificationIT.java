@@ -64,11 +64,10 @@ public class NotificationIT {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
         .that(System.getenv(envVarName))
         .isNotEmpty();
-
   }
 
   @BeforeClass
-  public static void setUp() throws IOException, InterruptedException{
+  public static void setUp() throws IOException, InterruptedException {
     final PrintStream out = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
@@ -84,7 +83,6 @@ public class NotificationIT {
     stdOut = null;
     System.setOut(out);
     TimeUnit.MINUTES.sleep(3);
-
   }
 
   @AfterClass
@@ -98,36 +96,33 @@ public class NotificationIT {
 
     stdOut = null;
     System.setOut(out);
-
   }
 
   @Before
   public void beforeEach() {
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-
   }
 
   @After
   public void afterEach() {
     stdOut = null;
     System.setOut(null);
-
   }
 
   @Test
   public void testGetNotificationRule() throws IOException {
     NotificationConfig notificationConfig = GetNotification.getNotificationConfig(PROJECT_ID,
         LOCATION, NOTIFICATION_RULE_CREATE);
-    assertThat(notificationConfig.getName()).contains(NOTIFICATION_RULE_CREATE);
 
+    assertThat(notificationConfig.getName()).contains(NOTIFICATION_RULE_CREATE);
   }
 
   @Test
   public void testListNotificationRules() throws IOException {
     ListNotification.listNotificationConfigs(PROJECT_ID, LOCATION);
-    assertThat(stdOut.toString()).contains(NOTIFICATION_TOPIC);
 
+    assertThat(stdOut.toString()).contains(NOTIFICATION_TOPIC);
   }
 
   @Test
@@ -136,8 +131,8 @@ public class NotificationIT {
         NOTIFICATION_RULE_CREATE);
     NotificationConfig notificationConfig = GetNotification.getNotificationConfig(PROJECT_ID,
         LOCATION, NOTIFICATION_RULE_CREATE);
-    assertThat(notificationConfig.getDescription()).contains("updated description");
 
+    assertThat(notificationConfig.getDescription()).contains("updated description");
   }
 
 }

@@ -53,12 +53,7 @@ public class GetNotification {
               notificationConfigId))
           .build();
 
-      System.out.printf("getNotificationConfig config:" + String.format(
-          "projects/%s/locations/%s/notificationConfigs/%s",
-          parentId,
-          location,
-          notificationConfigId));
-
+      // Call the API.
       NotificationConfig response =
           client.getNotificationConfig(request);
 
