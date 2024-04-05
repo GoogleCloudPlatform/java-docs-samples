@@ -45,8 +45,8 @@ public class EmbeddingModelTuningSample {
     String corpusPath = "CORPUS";
     String trainLabelPath = "TRAIN_LABEL";
     String testLabelPath = "TEST_LABEL";
-    int batchSize = 50;
-    int iterations = 300;
+    int batchSize = 128;
+    int iterations = 1000;
 
     createEmbeddingModelTuningPipelineJob(
         apiEndpoint,
