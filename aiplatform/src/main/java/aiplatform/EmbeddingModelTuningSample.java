@@ -79,9 +79,7 @@ public class EmbeddingModelTuningSample {
       int batchSize,
       int iterations)
       throws IOException {
-    Pattern apiEndpointPattern =
-        Pattern.compile("(?<Location>.+)(-autopush|-staging)?-aiplatform.+");
-    Matcher matcher = apiEndpointPattern.matcher(apiEndpoint);
+    Matcher matcher = Pattern.compile("^(?<Location>\\w+-\\w+)").matcher(apiEndpoint);
     String location = matcher.matches() ? matcher.group("Location") : "us-central1";
     PipelineServiceSettings settings =
         PipelineServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
