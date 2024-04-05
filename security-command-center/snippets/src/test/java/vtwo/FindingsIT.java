@@ -81,13 +81,14 @@ public class FindingsIT {
 
     // Create source.
     SOURCE = CreateSource.createSource(ORGANIZATION_ID);
+
     // Create findings within the source.
     String uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_1 = CreateFindings.createFinding(ORGANIZATION_ID, "testfindingv2" + uuid, LOCATION,
+    FINDING_1 = CreateFindings.createFinding(ORGANIZATION_ID, LOCATION, "testfindingv2" + uuid,
         SOURCE.getName().split("/")[3], Optional.of("MEDIUM_RISK_ONE"));
 
     uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_2 = CreateFindings.createFinding(ORGANIZATION_ID, "testfindingv2" + uuid, LOCATION,
+    FINDING_2 = CreateFindings.createFinding(ORGANIZATION_ID, LOCATION, "testfindingv2" + uuid,
         SOURCE.getName().split("/")[3], Optional.empty());
 
     stdOut = null;
@@ -110,6 +111,7 @@ public class FindingsIT {
   @Test
   public void testListAllFindings() throws IOException {
     ListAllFindings.listAllFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION);
+
     assertThat(stdOut.toString()).contains(FINDING_1.getName());
     assertThat(stdOut.toString()).contains(FINDING_2.getName());
   }
@@ -118,6 +120,7 @@ public class FindingsIT {
   public void testListFilteredFindings() throws IOException {
     ListFindingsWithFilter.listFilteredFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3],
         LOCATION);
+
     assertThat(stdOut.toString()).contains(FINDING_1.getName());
     assertThat(stdOut.toString()).doesNotContain(FINDING_2.getName());
   }
@@ -125,6 +128,7 @@ public class FindingsIT {
   @Test
   public void testGroupAllFindings() throws IOException {
     GroupFindings.groupFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION);
+
     assertThat(stdOut.toString()).contains("Listed grouped findings.");
   }
 
@@ -132,15 +136,16 @@ public class FindingsIT {
   public void testGroupFilteredFindings() throws IOException {
     GroupFindingsWithFilter.groupFilteredFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3],
         LOCATION);
+
     assertThat(stdOut.toString()).contains("count: 1");
   }
 
   @Test
   public void testSetFindingsByStateInactive() throws IOException {
-    SetFindingsByState.setFindingState(ORGANIZATION_ID, SOURCE.getName().split("/")[3],
-        LOCATION, FINDING_1.getName().split("/")[7]);
-    assertThat(stdOut.toString()).contains("Updated Finding: ");
+    SetFindingsByState.setFindingState(ORGANIZATION_ID, LOCATION, SOURCE.getName().split("/")[3],
+        FINDING_1.getName().split("/")[7]);
 
+    assertThat(stdOut.toString()).contains("Updated Finding: ");
   }
 
 }

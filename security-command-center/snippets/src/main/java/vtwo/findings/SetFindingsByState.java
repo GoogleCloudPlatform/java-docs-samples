@@ -20,6 +20,7 @@ package vtwo.findings;
 
 import com.google.cloud.securitycenter.v2.Finding;
 import com.google.cloud.securitycenter.v2.Finding.State;
+import com.google.cloud.securitycenter.v2.FindingName;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.SetFindingStateRequest;
 import java.io.IOException;
@@ -30,32 +31,32 @@ public class SetFindingsByState {
     // organizationId: Google Cloud Organization id.
     String organizationId = "{google-cloud-organization-id}";
 
+    // Specify the location to list the findings.
+    String location = "global";
+
     // The source id corresponding to the finding.
     String sourceId = "{source-id}";
-
-    // Specify the location.
-    String location = "global";
 
     // The finding id.
     String findingId = "{finding-id}";
 
-    setFindingState(organizationId, sourceId, location, findingId);
+    setFindingState(organizationId, location, sourceId, findingId);
   }
 
   // Demonstrates how to update a finding's state
-  public static Finding setFindingState(String organizationId, String sourceId, String location,
+  public static Finding setFindingState(String organizationId, String location, String sourceId,
       String findingId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
-      // FindingName findingName = FindingName.of(/*organization=*/"123234324",
-      // /*source=*/"423432321", /*findingId=*/"samplefindingidv2");
+      // Optionally FindingName or String can be used.
+      // String findingName = String.format("organizations/%s/sources/%s/locations/%s/findings/%s",
+      // organizationId,sourceId,location,findingId);
+      FindingName findingName = FindingName
+          .ofOrganizationSourceLocationFindingName(organizationId, sourceId, location, findingId);
+
       SetFindingStateRequest request = SetFindingStateRequest.newBuilder()
-          .setName(String.format("organizations/%s/sources/%s/locations/%s/findings/%s",
-              organizationId,
-              sourceId,
-              location,
-              findingId))
+          .setName(findingName.toString())
           .setState(State.INACTIVE)
           .build();
 

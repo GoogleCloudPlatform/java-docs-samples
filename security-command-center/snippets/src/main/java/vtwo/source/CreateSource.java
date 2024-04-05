@@ -19,6 +19,7 @@ package vtwo.source;
 // [START securitycenter_create_source_v2]
 
 import com.google.cloud.securitycenter.v2.CreateSourceRequest;
+import com.google.cloud.securitycenter.v2.OrganizationName;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.Source;
 import java.io.IOException;
@@ -36,7 +37,8 @@ public class CreateSource {
   public static Source createSource(String organizationId) throws IOException {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Start setting up a request to create a source in an organization.
-      // OrganizationName organizationName = OrganizationName.of(/*organizationId=*/"123234324");
+      OrganizationName organizationName = OrganizationName.of(organizationId);
+
       Source source =
           Source.newBuilder()
               .setDisplayName("Custom display name")
@@ -45,16 +47,15 @@ public class CreateSource {
 
       CreateSourceRequest createSourceRequest =
           CreateSourceRequest.newBuilder()
-              .setParent(String.format("organizations/%s", organizationId))
+              .setParent(organizationName.toString())
               .setSource(source)
               .build();
 
-      //The source is not visible in the Security Command Center dashboard
-      // until it generates findings
+      // The source is not visible in the Security Command Center dashboard
+      // until it generates findings.
       Source response = client.createSource(createSourceRequest);
-      System.out.println("Created source : " + response);
       return response;
     }
   }
 }
-// [START securitycenter_create_source_v2]
+// [END securitycenter_create_source_v2]
