@@ -30,21 +30,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PredictTextEmbeddingsSample {
-  public static final Pattern APIS_ENDPOINT_PATTERN =
-      Pattern.compile("(?<Location>.+)(-autopush|-staging)?-aiplatform.+");
-
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     // Details about text embedding request structure and supported models are available in:
     // https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings
     String endpoint = "us-central1-aiplatform.googleapis.com:443";
     String project = "YOUR_PROJECT_ID";
-    String publisher = "google";
     String model = "textembedding-gecko@003";
     predictTextEmbeddings(
         endpoint,
         project,
-        publisher,
         model,
         List.of("banana bread?", "banana muffins?"),
         "RETRIEVAL_DOCUMENT");
@@ -54,17 +49,16 @@ public class PredictTextEmbeddingsSample {
   public static void predictTextEmbeddings(
       String endpoint,
       String project,
-      String publisher,
       String model,
       List<String> texts,
       String task)
       throws IOException {
     PredictionServiceSettings settings =
         PredictionServiceSettings.newBuilder().setEndpoint(endpoint).build();
-    Matcher matcher = APIS_ENDPOINT_PATTERN.matcher(endpoint);
+    Matcher matcher = Pattern.compile("^(?<Location>\\w+-\\w+)").matcher(endpoint);
     String location = matcher.matches() ? matcher.group("Location") : "us-central1";
     EndpointName endpointName =
-        EndpointName.ofProjectLocationPublisherModelName(project, location, publisher, model);
+        EndpointName.ofProjectLocationPublisherModelName(project, location, "google", model);
 
     // You can use this prediction service client for multiple requests.
     try (PredictionServiceClient client = PredictionServiceClient.create(settings)) {

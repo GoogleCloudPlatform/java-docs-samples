@@ -35,7 +35,6 @@ public class PredictTextEmbeddingsSampleTest {
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
   private static final String APIS_ENDPOINT = "us-central1-aiplatform.googleapis.com:443";
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
-  private static final String PUBLISHER = "google";
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -71,7 +70,7 @@ public class PredictTextEmbeddingsSampleTest {
     List<String> texts =
         List.of("banana bread?", "banana muffin?", "banana?", "recipe?", "muffin recipe?");
     PredictTextEmbeddingsSample.predictTextEmbeddings(
-        APIS_ENDPOINT, PROJECT, PUBLISHER, "textembedding-gecko@003", texts, "RETRIEVAL_DOCUMENT");
+        APIS_ENDPOINT, PROJECT, "textembedding-gecko@003", texts, "RETRIEVAL_DOCUMENT");
     assertThat(bout.toString()).contains("Got predict response");
   }
 
@@ -82,10 +81,9 @@ public class PredictTextEmbeddingsSampleTest {
     PredictTextEmbeddingsSamplePreview.predictTextEmbeddings(
         APIS_ENDPOINT,
         PROJECT,
-        PUBLISHER,
         "text-embedding-preview-0409",
         texts,
-        "RETRIEVAL_DOCUMENT",
+        "QUESTION_ANSWERING",
         OptionalInt.of(256));
     assertThat(bout.toString()).contains("Got predict response");
   }
