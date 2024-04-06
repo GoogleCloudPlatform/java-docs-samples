@@ -71,7 +71,7 @@ public class EmbeddingModelTuningSampleTest {
   private static final RetryConfig RETRY_CONFIG =
       RetryConfig.custom()
           .maxAttempts(30)
-          .waitDuration(Duration.ofSeconds(10))
+          .waitDuration(Duration.ofSeconds(6))
           .retryExceptions(TimeoutException.class)
           .failAfterMaxAttempts(false)
           .build();
