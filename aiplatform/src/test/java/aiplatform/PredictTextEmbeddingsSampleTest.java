@@ -20,13 +20,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.List;
 import java.util.OptionalInt;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,9 +31,6 @@ public class PredictTextEmbeddingsSampleTest {
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
   private static final String APIS_ENDPOINT = "us-central1-aiplatform.googleapis.com:443";
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
-  private ByteArrayOutputStream bout;
-  private PrintStream out;
-  private PrintStream originalPrintStream;
 
   private static void requireEnvVar(String varName) {
     String errorMessage =
@@ -51,40 +44,30 @@ public class PredictTextEmbeddingsSampleTest {
     requireEnvVar("UCAIP_PROJECT_ID");
   }
 
-  @Before
-  public void setUp() {
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    originalPrintStream = System.out;
-    System.setOut(out);
-  }
-
-  @After
-  public void tearDown() {
-    System.out.flush();
-    System.setOut(originalPrintStream);
-  }
-
   @Test
   public void testPredictTextEmbeddings() throws IOException {
     List<String> texts =
         List.of("banana bread?", "banana muffin?", "banana?", "recipe?", "muffin recipe?");
-    PredictTextEmbeddingsSample.predictTextEmbeddings(
-        APIS_ENDPOINT, PROJECT, "textembedding-gecko@003", texts, "RETRIEVAL_DOCUMENT");
-    assertThat(bout.toString()).contains("Got predict response");
+    List<List<Float>> embeddings =
+        PredictTextEmbeddingsSample.predictTextEmbeddings(
+            APIS_ENDPOINT, PROJECT, "textembedding-gecko@003", texts, "RETRIEVAL_DOCUMENT");
+    assertThat(embeddings.size()).isEqualTo(texts.size());
+    assertThat(embeddings.get(0).size()).isEqualTo(768);
   }
 
   @Test
   public void testPredictTextEmbeddingsPreview() throws IOException {
     List<String> texts =
         List.of("banana bread?", "banana muffin?", "banana?", "recipe?", "muffin recipe?");
-    PredictTextEmbeddingsSamplePreview.predictTextEmbeddings(
-        APIS_ENDPOINT,
-        PROJECT,
-        "text-embedding-preview-0409",
-        texts,
-        "QUESTION_ANSWERING",
-        OptionalInt.of(256));
-    assertThat(bout.toString()).contains("Got predict response");
+    List<List<Float>> embeddings =
+        PredictTextEmbeddingsSamplePreview.predictTextEmbeddings(
+            APIS_ENDPOINT,
+            PROJECT,
+            "text-embedding-preview-0409",
+            texts,
+            "QUESTION_ANSWERING",
+            OptionalInt.of(5));
+    assertThat(embeddings.size()).isEqualTo(texts.size());
+    assertThat(embeddings.get(0).size()).isEqualTo(5);
   }
 }
