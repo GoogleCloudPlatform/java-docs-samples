@@ -20,28 +20,17 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import org.junit.After;
-import org.junit.Before;
+import java.util.List;
+import java.util.OptionalInt;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
 public class PredictTextEmbeddingsSampleTest {
-
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
-
+  private static final String APIS_ENDPOINT = "us-central1-aiplatform.googleapis.com:443";
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
-  private static final String LOCATION = "us-central1";
-  private static final String INSTANCE = "{ \"content\": \"What is life?\"}";
-  private static final String PUBLISHER = "google";
-  private static final String MODEL = "textembedding-gecko@001";
-
-  private ByteArrayOutputStream bout;
-  private PrintStream out;
-  private PrintStream originalPrintStream;
 
   private static void requireEnvVar(String varName) {
     String errorMessage =
@@ -55,28 +44,30 @@ public class PredictTextEmbeddingsSampleTest {
     requireEnvVar("UCAIP_PROJECT_ID");
   }
 
-  @Before
-  public void setUp() {
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    originalPrintStream = System.out;
-    System.setOut(out);
-  }
-
-  @After
-  public void tearDown() {
-    System.out.flush();
-    System.setOut(originalPrintStream);
+  @Test
+  public void testPredictTextEmbeddings() throws IOException {
+    List<String> texts =
+        List.of("banana bread?", "banana muffin?", "banana?", "recipe?", "muffin recipe?");
+    List<List<Float>> embeddings =
+        PredictTextEmbeddingsSample.predictTextEmbeddings(
+            APIS_ENDPOINT, PROJECT, "textembedding-gecko@003", texts, "RETRIEVAL_DOCUMENT");
+    assertThat(embeddings.size()).isEqualTo(texts.size());
+    assertThat(embeddings.get(0).size()).isEqualTo(768);
   }
 
   @Test
-  public void testPredictTextEmbeddings() throws IOException {
-    // Act
-    PredictTextEmbeddingsSample.predictTextEmbeddings(
-        INSTANCE, PROJECT, LOCATION, PUBLISHER, MODEL);
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Predict Response");
+  public void testPredictTextEmbeddingsPreview() throws IOException {
+    List<String> texts =
+        List.of("banana bread?", "banana muffin?", "banana?", "recipe?", "muffin recipe?");
+    List<List<Float>> embeddings =
+        PredictTextEmbeddingsSamplePreview.predictTextEmbeddings(
+            APIS_ENDPOINT,
+            PROJECT,
+            "text-embedding-preview-0409",
+            texts,
+            "QUESTION_ANSWERING",
+            OptionalInt.of(5));
+    assertThat(embeddings.size()).isEqualTo(texts.size());
+    assertThat(embeddings.get(0).size()).isEqualTo(5);
   }
 }

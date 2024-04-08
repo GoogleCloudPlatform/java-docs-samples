@@ -30,6 +30,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,6 +92,7 @@ public class CreateTrainingPipelineSampleTest {
   }
 
   @Test
+  @Ignore("https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9281")
   public void testCreateTrainingPipelineSample()
       throws IOException, InterruptedException, ExecutionException {
     // Act

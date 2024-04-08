@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package aiplatform;
 
-// [START aiplatform_sdk_embedding]
+// [START generativeaionvertexai_sdk_embedding]
 import static java.util.stream.Collectors.toList;
 
 import com.google.cloud.aiplatform.v1beta1.EndpointName;
@@ -29,28 +29,36 @@ import com.google.protobuf.Value;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PredictTextEmbeddingsSample {
+public class PredictTextEmbeddingsSamplePreview {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    // Details about text embedding request structure and supported models are available in:
+    // Details about text embedding request structure and supported models are
+    // available in:
     // https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings
-    String endpoint = "us-central1-aiplatform.googleapis.com:443";
+    String endpoint = "us-central1-aiplatform.googleapis.com";
     String project = "YOUR_PROJECT_ID";
-    String model = "textembedding-gecko@003";
+    String model = "text-embedding-preview-0409";
     predictTextEmbeddings(
         endpoint,
         project,
         model,
         List.of("banana bread?", "banana muffins?"),
-        "RETRIEVAL_DOCUMENT");
+        "QUESTION_ANSWERING",
+        OptionalInt.of(256));
   }
 
   // Gets text embeddings from a pretrained, foundational model.
   public static List<List<Float>> predictTextEmbeddings(
-      String endpoint, String project, String model, List<String> texts, String task)
+      String endpoint,
+      String project,
+      String model,
+      List<String> texts,
+      String task,
+      OptionalInt outputDimensionality)
       throws IOException {
     PredictionServiceSettings settings =
         PredictionServiceSettings.newBuilder().setEndpoint(endpoint).build();
@@ -63,6 +71,14 @@ public class PredictTextEmbeddingsSample {
     try (PredictionServiceClient client = PredictionServiceClient.create(settings)) {
       PredictRequest.Builder request =
           PredictRequest.newBuilder().setEndpoint(endpointName.toString());
+      if (outputDimensionality.isPresent()) {
+        request.setParameters(
+            Value.newBuilder()
+                .setStructValue(
+                    Struct.newBuilder()
+                        .putFields("outputDimensionality", valueOf(outputDimensionality.getAsInt()))
+                        .build()));
+      }
       for (int i = 0; i < texts.size(); i++) {
         request.addInstances(
             Value.newBuilder()
@@ -90,5 +106,9 @@ public class PredictTextEmbeddingsSample {
   private static Value valueOf(String s) {
     return Value.newBuilder().setStringValue(s).build();
   }
+
+  private static Value valueOf(int n) {
+    return Value.newBuilder().setNumberValue(n).build();
+  }
 }
-// [END aiplatform_sdk_embedding]
+// [END generativeaionvertexai_sdk_embedding]
