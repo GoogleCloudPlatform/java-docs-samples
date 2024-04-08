@@ -34,7 +34,7 @@ import org.junit.Test;
 public class CancelTrainingPipelineSampleTest {
 
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
-  private static final String DATASET_ID = System.getenv("TRAINING_PIPELINE_DATASET_ID");
+  private static final String DATASET_ID = "1084241610289446912";
   private static final String TRAINING_TASK_DEFINITION =
       "gs://google-cloud-aiplatform/schema/trainingjob/definition/"
           + "automl_image_classification_1.0.0.yaml";
