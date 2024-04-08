@@ -29,6 +29,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CancelTrainingPipelineSampleTest {
@@ -77,6 +78,7 @@ public class CancelTrainingPipelineSampleTest {
     System.setOut(originalPrintStream);
   }
 
+  @Ignore("https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9281")
   @Test
   public void cancelTrainingPipeline() throws IOException, InterruptedException {
     // Act
