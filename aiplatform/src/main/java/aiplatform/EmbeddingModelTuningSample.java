@@ -38,7 +38,7 @@ public class EmbeddingModelTuningSample {
     String apiEndpoint = "us-central1-aiplatform.googleapis.com:443";
     String project = "PROJECT";
     String baseModelVersionId = "BASE_MODEL_VERSION_ID";
-    String taskType = "TASK_TYPE";
+    String taskType = "DEFAULT";
     String pipelineJobDisplayName = "PIPELINE_JOB_DISPLAY_NAME";
     String outputDir = "OUTPUT_DIR";
     String queriesPath = "QUERIES";
@@ -81,6 +81,8 @@ public class EmbeddingModelTuningSample {
       throws IOException {
     Matcher matcher = Pattern.compile("^(?<Location>\\w+-\\w+)").matcher(apiEndpoint);
     String location = matcher.matches() ? matcher.group("Location") : "us-central1";
+    String templateUri =
+        "https://us-kfp.pkg.dev/ml-pipeline/llm-text-embedding/tune-text-embedding-model/v1.1.2";
     PipelineServiceSettings settings =
         PipelineServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
     try (PipelineServiceClient client = PipelineServiceClient.create(settings)) {
@@ -98,8 +100,7 @@ public class EmbeddingModelTuningSample {
               "iterations", valueOf(iterations));
       PipelineJob pipelineJob =
           PipelineJob.newBuilder()
-              .setTemplateUri(
-                  "https://us-kfp.pkg.dev/ml-pipeline/llm-text-embedding/tune-text-embedding-model/v1.1.2")
+              .setTemplateUri(templateUri)
               .setDisplayName(pipelineJobDisplayName)
               .setRuntimeConfig(
                   RuntimeConfig.newBuilder()
