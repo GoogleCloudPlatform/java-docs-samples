@@ -17,6 +17,8 @@
 package aiplatform;
 
 // [START generativeaionvertexai_sdk_embedding]
+import static java.util.stream.Collectors.toList;
+
 import com.google.cloud.aiplatform.v1beta1.EndpointName;
 import com.google.cloud.aiplatform.v1beta1.PredictRequest;
 import com.google.cloud.aiplatform.v1beta1.PredictResponse;
@@ -25,6 +27,7 @@ import com.google.cloud.aiplatform.v1beta1.PredictionServiceSettings;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.regex.Matcher;
@@ -49,7 +52,7 @@ public class PredictTextEmbeddingsSamplePreview {
   }
 
   // Gets text embeddings from a pretrained, foundational model.
-  public static void predictTextEmbeddings(
+  public static List<List<Float>> predictTextEmbeddings(
       String endpoint,
       String project,
       String model,
@@ -86,10 +89,17 @@ public class PredictTextEmbeddingsSamplePreview {
                         .build()));
       }
       PredictResponse response = client.predict(request.build());
-      System.out.println("Got predict response:\n");
+      List<List<Float>> floats = new ArrayList<>();
       for (Value prediction : response.getPredictionsList()) {
-        System.out.format("Got prediction: %s\n", prediction);
+        Value embeddings = prediction.getStructValue().getFieldsOrThrow("embeddings");
+        Value values = embeddings.getStructValue().getFieldsOrThrow("values");
+        floats.add(
+            values.getListValue().getValuesList().stream()
+                .map(Value::getNumberValue)
+                .map(Double::floatValue)
+                .collect(toList()));
       }
+      return floats;
     }
   }
 
