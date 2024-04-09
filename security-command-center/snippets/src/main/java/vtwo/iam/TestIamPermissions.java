@@ -37,6 +37,7 @@ public class TestIamPermissions {
 
     testIamPermissions(organizationId, sourceId);
   }
+
   // Demonstrates how to verify IAM permissions to create findings.
   public static void testIamPermissions(String organizationId, String sourceId) {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -45,19 +46,20 @@ public class TestIamPermissions {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
       // Start setting up a request to get IAM policy for a source.
-      SourceName sourceName = SourceName.of(organizationId,sourceId);
+      SourceName sourceName = SourceName.of(organizationId, sourceId);
 
       // Iam permission to test.
       List<String> permissionsToTest = new ArrayList<>();
       permissionsToTest.add("securitycenter.findings.update");
 
       // Call the API.
-     TestIamPermissionsResponse response = client.testIamPermissions(
+      TestIamPermissionsResponse response = client.testIamPermissions(
           sourceName.toString(), permissionsToTest);
-      System.out.println("IAM Permission:"+ response);
+      System.out.println("IAM Permission: " + response);
     } catch (IOException e) {
-        System.out.println("Test iam permission failed! \n Exception: " + e);
+      System.out.println("Test iam permission failed! \n Exception: " + e);
     }
   }
 }
 // [END securitycenter_test_iam_permissions_v2]
+

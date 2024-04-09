@@ -23,10 +23,8 @@ import com.google.cloud.securitycenter.v2.SourceName;
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.Policy;
 import com.google.iam.v1.SetIamPolicyRequest;
-import com.google.iam.v1.TestIamPermissionsResponse;
+import com.google.protobuf.FieldMask;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SetIamPolices {
 
@@ -38,20 +36,21 @@ public class SetIamPolices {
     // The source id corresponding to the finding.
     String sourceId = "{source-id}";
 
-    // some user email.
+    // user email.
     String userEmail = "{user-email}";
 
-    setIamPolicySource(organizationId, sourceId,userEmail);
+    setIamPolicySource(organizationId, sourceId, userEmail);
   }
+
   // Demonstrates how to verify IAM permissions to create findings.
-  static Policy setIamPolicySource(String organizationId, String sourceId, String userEmail) {
+  public static void setIamPolicySource(String organizationId, String sourceId, String userEmail) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Start setting up a request to set IAM policy for a source.
-      SourceName sourceName = SourceName.of(organizationId,sourceId);
+      SourceName sourceName = SourceName.ofOrganizationSourceName(organizationId, sourceId);
 
       // userEmail = "someuser@domain.com"
       // Set up IAM Policy for the user userMail to use the role findingsEditor.
-      // The user must be a valid google account.
+      // The user must be a valid Google account.
       Policy oldPolicy = client.getIamPolicy(sourceName.toString());
       Binding bindings =
           Binding.newBuilder()
@@ -60,17 +59,18 @@ public class SetIamPolices {
               .build();
       Policy policy = oldPolicy.toBuilder().addBindings(bindings).build();
 
-      SetIamPolicyRequest.Builder request =
-          SetIamPolicyRequest.newBuilder().setPolicy(policy).setResource(sourceName.toString());
+      // Update policy.
+      SetIamPolicyRequest request = SetIamPolicyRequest.newBuilder()
+          .setResource(sourceName.toString())
+          .setPolicy(policy).setUpdateMask(FieldMask.newBuilder().build())
+          .build();
 
       // Call the API.
-      Policy response = client.setIamPolicy(request.build());
-
-      System.out.println("Policy: " + response);
-      return response;
+      Policy response = client.setIamPolicy(request);
+      System.out.println("Set iam policy: " + response);
     } catch (IOException e) {
-      throw new RuntimeException("Couldn't create client.", e);
+      System.out.println("Set iam policy failed! \n Exception: " + e);
     }
   }
 }
-// [START securitycenter_set_iam_polices_v2]
+// [END securitycenter_set_iam_polices_v2]

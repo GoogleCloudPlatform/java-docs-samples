@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package vtwo.iam;
 
 // [START securitycenter_get_iam_policies_v2]
 
-import com.google.api.resourcenames.ResourceName;
-import com.google.cloud.securitycenter.v2.Resource;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.SourceName;
 import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.GetPolicyOptions;
 import com.google.iam.v1.Policy;
 import java.io.IOException;
 
@@ -37,25 +37,25 @@ public class GetIamPolicies {
 
     getIamPolicySource(organizationId, sourceId);
   }
+
+  // Demonstrates how to retrieve IAM policies for a source
   public static void getIamPolicySource(String organizationId, String sourceId) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Start setting up a request to get IAM policy for a source.
-      Resource sourceName = Resource.newBuilder()
-          .setName(String.format("organizations/%s/sources/%s/",
-              organizationId,
-              sourceId))
-          .build();
+      SourceName sourceName = SourceName.ofOrganizationSourceName(organizationId, sourceId);
 
-      GetIamPolicyRequest request =
-         GetIamPolicyRequest.newBuilder().setResource(sourceName.toString()).build();
+      GetIamPolicyRequest request = GetIamPolicyRequest.newBuilder()
+          .setResource(sourceName.toString())
+          .setOptions(GetPolicyOptions.newBuilder().build())
+          .build();
 
       // Call the API.
       Policy response = client.getIamPolicy(request);
-
       System.out.println("Policy: " + response);
     } catch (IOException e) {
       System.out.println("get iam policy failed! \n Exception: " + e);
     }
   }
 }
-// [START securitycenter_get_iam_policies_v2]
+// [END securitycenter_get_iam_policies_v2]
+
