@@ -16,7 +16,7 @@ To run the JAR using dataproc, you can run the following command:
 gcloud dataproc jobs submit pyspark \
 --cluster=$SPARK_BIGTABLE_DATAPROC_CLUSTER \
 --region=$SPARK_BIGTABLE_DATAPROC_REGION \
---jars=gs://spark-bigtable-preview/jars/spark-bigtable-0.0.1-preview2-SNAPSHOT.jar \
+--jars=gs://spark-bigtable-preview/jars/spark-bigtable-0.0.1-preview5-SNAPSHOT.jar \
 word_count.py \
 -- \
 --bigtableProjectId=$SPARK_BIGTABLE_PROJECT_ID \
