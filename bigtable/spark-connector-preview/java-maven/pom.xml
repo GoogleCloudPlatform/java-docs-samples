@@ -28,7 +28,7 @@
     <scala.binary.version>2.12</scala.binary.version>
     <spark.version>3.1.2</spark.version>
     <reload4j.version>1.7.36</reload4j.version>
-    <spark.bigtable.version>0.0.1-preview2-SNAPSHOT</spark.bigtable.version>
+    <spark.bigtable.version>0.0.1-preview5-SNAPSHOT</spark.bigtable.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
