@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,42 +14,44 @@
  * limitations under the License.
  */
 
-package bigqueryexport;
+package vtwo.bigquery;
 
-// [START securitycenter_get_bigquery_export]
+// [START securitycenter_get_bigquery_export_v2]
 
-import com.google.cloud.securitycenter.v1.BigQueryExport;
-import com.google.cloud.securitycenter.v1.GetBigQueryExportRequest;
-import com.google.cloud.securitycenter.v1.SecurityCenterClient;
+import com.google.cloud.securitycenter.v2.BigQueryExport;
+import com.google.cloud.securitycenter.v2.GetBigQueryExportRequest;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient;
+import com.google.cloud.securitycenter.v2.BigQueryExportName;
 import java.io.IOException;
 
 public class GetBigQueryExport {
 
   public static void main(String[] args) throws IOException {
     // TODO(Developer): Modify the following variable values.
+    // organizationId: Google Cloud Organization id.
+    String organizationId = "{google-cloud-organization-id}";
 
-    // parent: Use any one of the following resource paths:
-    //              - organizations/{organization_id}
-    //              - folders/{folder_id}
-    //              - projects/{project_id}
-    String parent = String.format("projects/%s", "your-google-cloud-project-id");
+    // Specify the location to list the findings.
+    String location = "global";
 
     // bigQueryExportId: Unique identifier that is used to identify the export.
-    String bigQueryExportId = "export-id";
+    String bigQueryExportId = "{bigquery-export-id}";
 
-    getBigQueryExport(parent, bigQueryExportId);
+    getBigQueryExport(organizationId,location ,bigQueryExportId);
   }
 
   // Retrieve an existing BigQuery export.
-  public static void getBigQueryExport(String parent, String bigQueryExportId) throws IOException {
+  public static void getBigQueryExport(String organizationId, String location, String bigQueryExportId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
+      BigQueryExportName bigQueryExportName = BigQueryExportName.of(organizationId, location,bigQueryExportId);
+
       GetBigQueryExportRequest bigQueryExportRequest =
           GetBigQueryExportRequest.newBuilder()
-              .setName(String.format("%s/bigQueryExports/%s", parent, bigQueryExportId))
+              .setName(bigQueryExportName.toString())
               .build();
 
       BigQueryExport response = client.getBigQueryExport(bigQueryExportRequest);
@@ -57,4 +59,4 @@ public class GetBigQueryExport {
     }
   }
 }
-// [END securitycenter_get_bigquery_export]
+// [END securitycenter_get_bigquery_export_v2]

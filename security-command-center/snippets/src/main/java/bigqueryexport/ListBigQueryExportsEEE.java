@@ -16,45 +16,46 @@
 
 package bigqueryexport;
 
-// [START securitycenter_delete_bigquery_export]
+// [START securitycenter_list_bigquery_export]
 
-import com.google.cloud.securitycenter.v1.DeleteBigQueryExportRequest;
+import com.google.cloud.securitycenter.v1.BigQueryExport;
+import com.google.cloud.securitycenter.v1.ListBigQueryExportsRequest;
 import com.google.cloud.securitycenter.v1.SecurityCenterClient;
+import com.google.cloud.securitycenter.v1.SecurityCenterClient.ListBigQueryExportsPagedResponse;
 import java.io.IOException;
 
-public class DeleteBigQueryExport {
+public class ListBigQueryExportsEEE {
 
   public static void main(String[] args) throws IOException {
     // TODO(Developer): Modify the following variable values.
 
-    // parent: Use any one of the following resource paths:
+    // parent: The parent, which owns the collection of BigQuery exports.
+    //         Use any one of the following resource paths:
     //              - organizations/{organization_id}
     //              - folders/{folder_id}
     //              - projects/{project_id}
     String parent = String.format("projects/%s", "your-google-cloud-project-id");
 
-    // bigQueryExportId: Unique identifier that is used to identify the export.
-    String bigQueryExportId = "export-id";
-
-    deleteBigQueryExport(parent, bigQueryExportId);
+    listBigQueryExports(parent);
   }
 
-  // Delete an existing BigQuery export.
-  public static void deleteBigQueryExport(String parent, String bigQueryExportId)
-      throws IOException {
+  // List BigQuery exports in the given parent.
+  public static void listBigQueryExports(String parent) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
-      DeleteBigQueryExportRequest bigQueryExportRequest =
-          DeleteBigQueryExportRequest.newBuilder()
-              .setName(String.format("%s/bigQueryExports/%s", parent, bigQueryExportId))
-              .build();
+      ListBigQueryExportsRequest request =
+          ListBigQueryExportsRequest.newBuilder().setParent(parent).build();
 
-      client.deleteBigQueryExport(bigQueryExportRequest);
-      System.out.printf("BigQuery export request deleted successfully: %s", bigQueryExportId);
+      ListBigQueryExportsPagedResponse response = client.listBigQueryExports(request);
+
+      System.out.println("Listing BigQuery exports:");
+      for (BigQueryExport bigQueryExport : response.iterateAll()) {
+        System.out.println(bigQueryExport.getName());
+      }
     }
   }
 }
-// [END securitycenter_delete_bigquery_export]
+// [END securitycenter_list_bigquery_export]

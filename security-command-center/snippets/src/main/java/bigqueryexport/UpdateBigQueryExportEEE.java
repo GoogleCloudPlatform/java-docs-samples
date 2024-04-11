@@ -24,7 +24,7 @@ import com.google.cloud.securitycenter.v1.UpdateBigQueryExportRequest;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
 
-public class UpdateBigQueryExport {
+public class UpdateBigQueryExportEEE {
 
   public static void main(String[] args) throws IOException {
     // TODO(Developer): Modify the following variable values.

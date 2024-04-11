@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package bigqueryexport;
+package vtwo.bigquery;
 
-// [START securitycenter_create_bigquery_export]
+// [START securitycenter_create_bigquery_export_v2]
 
-import com.google.cloud.securitycenter.v1.BigQueryExport;
-import com.google.cloud.securitycenter.v1.CreateBigQueryExportRequest;
-import com.google.cloud.securitycenter.v1.SecurityCenterClient;
+import com.google.cloud.securitycenter.v2.BigQueryExport;
+import com.google.cloud.securitycenter.v2.CreateBigQueryExportRequest;
+import com.google.cloud.securitycenter.v2.OrganizationLocationName;
+import com.google.cloud.securitycenter.v2.OrganizationName;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -28,40 +30,35 @@ public class CreateBigQueryExport {
 
   public static void main(String[] args) throws IOException {
     // TODO(Developer): Modify the following variable values.
+    // organizationId: Google Cloud Organization id.
+    String organizationId = "{google-cloud-organization-id}";
 
-    // parent: Use any one of the following resource paths:
-    //              - organizations/{organization_id}
-    //              - folders/{folder_id}
-    //              - projects/{project_id}
-    String parent = String.format("projects/%s", "your-google-cloud-project-id");
+    // Specify the location.
+    String location = "global";
 
     // filter: Expression that defines the filter to apply across create/update events of findings.
-    String filter =
-        "severity=\"LOW\" OR severity=\"MEDIUM\" AND "
-            + "category=\"Persistence: IAM Anomalous Grant\" AND "
-            + "-resource.type:\"compute\"";
+    String filter = "severity=\"LOW\" OR severity=\"MEDIUM\"";
 
     // bigQueryDatasetId: The BigQuery dataset to write findings' updates to.
-    String bigQueryDatasetId = "your-bigquery-dataset-id";
+    String bigQueryDatasetId = "{bigquery-dataset-id}";
 
     // bigQueryExportId: Unique identifier provided by the client.
     // For more info, see:
     // https://cloud.google.com/security-command-center/docs/how-to-analyze-findings-in-big-query#export_findings_from_to
     String bigQueryExportId = "default-" + UUID.randomUUID().toString().split("-")[0];
 
-    createBigQueryExport(parent, filter, bigQueryDatasetId, bigQueryExportId);
+    createBigQueryExport(organizationId,location ,filter, bigQueryDatasetId, bigQueryExportId);
   }
 
   // Create export configuration to export findings from a project to a BigQuery dataset.
   // Optionally specify filter to export certain findings only.
-  public static void createBigQueryExport(
-      String parent, String filter, String bigQueryDatasetId, String bigQueryExportId)
+  public static void createBigQueryExport(String organizationId, String location, String filter, String bigQueryDatasetId, String bigQueryExportId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
-
+      OrganizationLocationName organizationName = OrganizationLocationName.of(organizationId, location);
       // Create the BigQuery export configuration.
       BigQueryExport bigQueryExport =
           BigQueryExport.newBuilder()
@@ -69,12 +66,12 @@ public class CreateBigQueryExport {
                   "Export low and medium findings if the compute resource "
                       + "has an IAM anomalous grant")
               .setFilter(filter)
-              .setDataset(String.format("%s/datasets/%s", parent, bigQueryDatasetId))
+              .setDataset(String.format("projects/%s/datasets/%s", "gcloud-drz-test", bigQueryDatasetId))
               .build();
 
       CreateBigQueryExportRequest bigQueryExportRequest =
           CreateBigQueryExportRequest.newBuilder()
-              .setParent(parent)
+              .setParent(organizationName.toString())
               .setBigQueryExport(bigQueryExport)
               .setBigQueryExportId(bigQueryExportId)
               .build();
@@ -86,4 +83,4 @@ public class CreateBigQueryExport {
     }
   }
 }
-// [END securitycenter_create_bigquery_export]
+// [END securitycenter_create_bigquery_export_v2]

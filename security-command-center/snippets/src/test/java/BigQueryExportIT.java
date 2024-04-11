@@ -17,11 +17,11 @@
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import bigqueryexport.CreateBigQueryExport;
-import bigqueryexport.DeleteBigQueryExport;
-import bigqueryexport.GetBigQueryExport;
-import bigqueryexport.ListBigQueryExports;
-import bigqueryexport.UpdateBigQueryExport;
+import bigqueryexport.CreateBigQueryExportEEE;
+import bigqueryexport.DeleteBigQueryExportEEE;
+import bigqueryexport.GetBigQueryExportEEE;
+import bigqueryexport.ListBigQueryExportsEEE;
+import bigqueryexport.UpdateBigQueryExportEEE;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
@@ -75,7 +75,7 @@ public class BigQueryExportIT {
     createBigQueryDataset(BQ_DATASET_NAME);
     // Create export request.
     String filter = "severity=\"LOW\" OR severity=\"MEDIUM\"";
-    CreateBigQueryExport.createBigQueryExport(
+    CreateBigQueryExportEEE.createBigQueryExport(
         String.format("projects/%s", PROJECT_ID), filter, BQ_DATASET_NAME, BQ_EXPORT_ID);
 
     stdOut = null;
@@ -90,7 +90,7 @@ public class BigQueryExportIT {
 
     // Delete BigQuery Dataset and export request.
     deleteBigQueryDataset(BQ_DATASET_NAME);
-    DeleteBigQueryExport.deleteBigQueryExport(
+    DeleteBigQueryExportEEE.deleteBigQueryExport(
         String.format("projects/%s", PROJECT_ID), BQ_EXPORT_ID);
     assertThat(stdOut.toString())
         .contains(String.format("BigQuery export request deleted successfully: %s", BQ_EXPORT_ID));
@@ -139,20 +139,20 @@ public class BigQueryExportIT {
 
   @Test
   public void testGetBigQueryExport() throws IOException {
-    GetBigQueryExport.getBigQueryExport(String.format("projects/%s", PROJECT_ID), BQ_EXPORT_ID);
+    GetBigQueryExportEEE.getBigQueryExport(String.format("projects/%s", PROJECT_ID), BQ_EXPORT_ID);
     assertThat(stdOut.toString()).contains(BQ_EXPORT_ID);
   }
 
   @Test
   public void testListBigQueryExports() throws IOException {
-    ListBigQueryExports.listBigQueryExports(String.format("projects/%s", PROJECT_ID));
+    ListBigQueryExportsEEE.listBigQueryExports(String.format("projects/%s", PROJECT_ID));
     assertThat(stdOut.toString()).contains(BQ_EXPORT_ID);
   }
 
   @Test
   public void testUpdateBigQueryExport() throws IOException {
     String filter = "severity=\"MEDIUM\"";
-    UpdateBigQueryExport.updateBigQueryExport(
+    UpdateBigQueryExportEEE.updateBigQueryExport(
         String.format("projects/%s", PROJECT_ID), filter, BQ_EXPORT_ID);
     assertThat(stdOut.toString()).contains("BigQueryExport updated successfully!");
   }

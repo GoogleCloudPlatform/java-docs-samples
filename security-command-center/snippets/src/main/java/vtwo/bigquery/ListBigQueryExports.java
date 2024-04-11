@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,40 +14,41 @@
  * limitations under the License.
  */
 
-package bigqueryexport;
+package vtwo.bigquery;
 
-// [START securitycenter_list_bigquery_export]
+// [START securitycenter_list_bigquery_export_v2]
 
-import com.google.cloud.securitycenter.v1.BigQueryExport;
-import com.google.cloud.securitycenter.v1.ListBigQueryExportsRequest;
-import com.google.cloud.securitycenter.v1.SecurityCenterClient;
-import com.google.cloud.securitycenter.v1.SecurityCenterClient.ListBigQueryExportsPagedResponse;
+import com.google.cloud.securitycenter.v2.BigQueryExport;
+import com.google.cloud.securitycenter.v2.ListBigQueryExportsRequest;
+import com.google.cloud.securitycenter.v2.OrganizationLocationName;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient.ListBigQueryExportsPagedResponse;
 import java.io.IOException;
 
 public class ListBigQueryExports {
 
   public static void main(String[] args) throws IOException {
     // TODO(Developer): Modify the following variable values.
+    // organizationId: Google Cloud Organization id.
+    String organizationId = "{google-cloud-organization-id}";
 
-    // parent: The parent, which owns the collection of BigQuery exports.
-    //         Use any one of the following resource paths:
-    //              - organizations/{organization_id}
-    //              - folders/{folder_id}
-    //              - projects/{project_id}
-    String parent = String.format("projects/%s", "your-google-cloud-project-id");
+    // Specify the location to list the findings.
+    String location = "global";
 
-    listBigQueryExports(parent);
+    listBigQueryExports(organizationId,location);
   }
 
   // List BigQuery exports in the given parent.
-  public static void listBigQueryExports(String parent) throws IOException {
+  public static void listBigQueryExports(String organizationId, String location) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
+      OrganizationLocationName organizationName = OrganizationLocationName.of(organizationId,location);
 
-      ListBigQueryExportsRequest request =
-          ListBigQueryExportsRequest.newBuilder().setParent(parent).build();
+      ListBigQueryExportsRequest request = ListBigQueryExportsRequest.newBuilder()
+          .setParent(organizationName.toString())
+          .build();
 
       ListBigQueryExportsPagedResponse response = client.listBigQueryExports(request);
 
@@ -58,4 +59,4 @@ public class ListBigQueryExports {
     }
   }
 }
-// [END securitycenter_list_bigquery_export]
+// [END securitycenter_list_bigquery_export_v2]
