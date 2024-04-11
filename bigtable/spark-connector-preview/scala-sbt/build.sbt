@@ -23,7 +23,7 @@ val sparkVersion = "3.0.1"
 
 resolvers += "Private preview artifacts" at "artifactregistry://us-central1-maven.pkg.dev/cloud-bigtable-ecosystem/spark-bigtable-connector-preview"
 
-libraryDependencies += "com.google.cloud.spark.bigtable" % "spark-bigtable" % "0.0.1-preview2-SNAPSHOT"
+libraryDependencies += "com.google.cloud.spark.bigtable" % "spark-bigtable" % "0.0.1-preview5-SNAPSHOT"
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % sparkVersion % Provided,
