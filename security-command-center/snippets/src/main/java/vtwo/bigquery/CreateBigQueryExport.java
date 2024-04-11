@@ -21,7 +21,6 @@ package vtwo.bigquery;
 import com.google.cloud.securitycenter.v2.BigQueryExport;
 import com.google.cloud.securitycenter.v2.CreateBigQueryExportRequest;
 import com.google.cloud.securitycenter.v2.OrganizationLocationName;
-import com.google.cloud.securitycenter.v2.OrganizationName;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import java.io.IOException;
 import java.util.UUID;
@@ -32,6 +31,8 @@ public class CreateBigQueryExport {
     // TODO(Developer): Modify the following variable values.
     // organizationId: Google Cloud Organization id.
     String organizationId = "{google-cloud-organization-id}";
+
+    String projectId = "{your-project}";
 
     // Specify the location.
     String location = "global";
@@ -47,12 +48,13 @@ public class CreateBigQueryExport {
     // https://cloud.google.com/security-command-center/docs/how-to-analyze-findings-in-big-query#export_findings_from_to
     String bigQueryExportId = "default-" + UUID.randomUUID().toString().split("-")[0];
 
-    createBigQueryExport(organizationId,location ,filter, bigQueryDatasetId, bigQueryExportId);
+    createBigQueryExport(organizationId,location ,projectId,filter, bigQueryDatasetId, bigQueryExportId);
   }
 
   // Create export configuration to export findings from a project to a BigQuery dataset.
   // Optionally specify filter to export certain findings only.
-  public static void createBigQueryExport(String organizationId, String location, String filter, String bigQueryDatasetId, String bigQueryExportId)
+  public static void createBigQueryExport(String organizationId, String location,
+      String projectId, String filter, String bigQueryDatasetId, String bigQueryExportId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -66,7 +68,7 @@ public class CreateBigQueryExport {
                   "Export low and medium findings if the compute resource "
                       + "has an IAM anomalous grant")
               .setFilter(filter)
-              .setDataset(String.format("projects/%s/datasets/%s", "gcloud-drz-test", bigQueryDatasetId))
+              .setDataset(String.format("projects/%s/datasets/%s", projectId, bigQueryDatasetId))
               .build();
 
       CreateBigQueryExportRequest bigQueryExportRequest =

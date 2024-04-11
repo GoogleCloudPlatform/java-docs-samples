@@ -43,7 +43,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class BigQueryExportIT {
+public class BigQueryExportITEEE {
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
   // TODO(Developer): Replace the below variables.
