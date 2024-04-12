@@ -18,10 +18,10 @@ package vtwo.bigquery;
 
 // [START securitycenter_update_bigquery_export_v2]
 
-import com.google.cloud.securitycenter.v1.BigQueryExport;
-import com.google.cloud.securitycenter.v1.SecurityCenterClient;
-import com.google.cloud.securitycenter.v1.UpdateBigQueryExportRequest;
+import com.google.cloud.securitycenter.v2.BigQueryExport;
 import com.google.cloud.securitycenter.v2.BigQueryExportName;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient;
+import com.google.cloud.securitycenter.v2.UpdateBigQueryExportRequest;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
 
@@ -46,16 +46,20 @@ public class UpdateBigQueryExport {
     // https://cloud.google.com/security-command-center/docs/how-to-analyze-findings-in-big-query#export_findings_from_to
     String bigQueryExportId = "{bigquery-export-id}";
 
-    updateBigQueryExport(organizationId, location,filter, bigQueryExportId);
+    updateBigQueryExport(organizationId, location, filter, bigQueryExportId);
   }
 
   // Updates an existing BigQuery export.
-  public static void updateBigQueryExport(String organizationId,String location, String filter, String bigQueryExportId)
+  public static void updateBigQueryExport(String organizationId, String location, String filter,
+      String bigQueryExportId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
+      // optionally BigQueryExportName or String can be used
+      // String bigQueryExportName = String.format("organizations/%s/locations/%s
+      // /bigQueryExports/%s",organizationId,location, bigQueryExportId);
       BigQueryExportName bigQueryExportName = BigQueryExportName.of(organizationId, location,
           bigQueryExportId);
 
@@ -63,6 +67,7 @@ public class UpdateBigQueryExport {
       BigQueryExport bigQueryExport =
           BigQueryExport.newBuilder()
               .setName(bigQueryExportName.toString())
+              .setDescription("Updated description.")
               .setFilter(filter)
               .build();
 
@@ -73,7 +78,9 @@ public class UpdateBigQueryExport {
               // If empty, all mutable fields will be updated.
               // For more info on constructing field mask path, see the proto or:
               // https://cloud.google.com/java/docs/reference/protobuf/latest/com.google.protobuf.FieldMask
-              .setUpdateMask(FieldMask.newBuilder().addPaths("filter").build())
+              .setUpdateMask(FieldMask.newBuilder()
+                  .addPaths("filter")
+                  .addPaths("description").build())
               .build();
 
       BigQueryExport response = client.updateBigQueryExport(request);
@@ -85,4 +92,4 @@ public class UpdateBigQueryExport {
     }
   }
 }
-// [START securitycenter_update_bigquery_export_v2]
+// [END securitycenter_update_bigquery_export_v2]

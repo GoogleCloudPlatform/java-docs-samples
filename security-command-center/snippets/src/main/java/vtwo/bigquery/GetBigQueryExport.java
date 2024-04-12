@@ -19,9 +19,9 @@ package vtwo.bigquery;
 // [START securitycenter_get_bigquery_export_v2]
 
 import com.google.cloud.securitycenter.v2.BigQueryExport;
+import com.google.cloud.securitycenter.v2.BigQueryExportName;
 import com.google.cloud.securitycenter.v2.GetBigQueryExportRequest;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
-import com.google.cloud.securitycenter.v2.BigQueryExportName;
 import java.io.IOException;
 
 public class GetBigQueryExport {
@@ -37,17 +37,19 @@ public class GetBigQueryExport {
     // bigQueryExportId: Unique identifier that is used to identify the export.
     String bigQueryExportId = "{bigquery-export-id}";
 
-    getBigQueryExport(organizationId,location ,bigQueryExportId);
+    getBigQueryExport(organizationId, location, bigQueryExportId);
   }
 
   // Retrieve an existing BigQuery export.
-  public static void getBigQueryExport(String organizationId, String location, String bigQueryExportId) throws IOException {
+  public static void getBigQueryExport(String organizationId, String location,
+      String bigQueryExportId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
-      BigQueryExportName bigQueryExportName = BigQueryExportName.of(organizationId, location,bigQueryExportId);
+      BigQueryExportName bigQueryExportName = BigQueryExportName.of(organizationId, location,
+          bigQueryExportId);
 
       GetBigQueryExportRequest bigQueryExportRequest =
           GetBigQueryExportRequest.newBuilder()

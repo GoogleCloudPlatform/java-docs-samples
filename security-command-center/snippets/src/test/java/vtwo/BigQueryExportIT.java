@@ -30,21 +30,30 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import vtwo.bigquery.CreateBigQueryExport;
+import vtwo.bigquery.DeleteBigQueryExport;
+import vtwo.bigquery.GetBigQueryExport;
+import vtwo.bigquery.ListBigQueryExports;
+import vtwo.bigquery.UpdateBigQueryExport;
 
 @RunWith(JUnit4.class)
 public class BigQueryExportIT {
 
-  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
   // TODO(Developer): Replace the below variables.
   private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
   private static final String LOCATION = "global";
   private static final String BQ_DATASET_NAME =
       "sampledataset_" + UUID.randomUUID().toString().split("-")[0];
@@ -67,21 +76,72 @@ public class BigQueryExportIT {
     System.setOut(new PrintStream(stdOut));
 
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("SCC_PROJECT_ID");
 
     // Create a BigQuery dataset.
-    createBigQueryDataset(BQ_DATASET_NAME);
+    createBigQueryDataset(PROJECT_ID, BQ_DATASET_NAME);
     // Create export request.
     String filter = "severity=\"LOW\" OR severity=\"MEDIUM\"";
-    CreateBigQueryExport.createBigQueryExport(ORGANIZATION_ID, LOCATION,PROJECT_ID, filter, BQ_DATASET_NAME, BQ_EXPORT_ID);
+    CreateBigQueryExport.createBigQueryExport(ORGANIZATION_ID, LOCATION, PROJECT_ID, filter,
+        BQ_DATASET_NAME, BQ_EXPORT_ID);
 
     stdOut = null;
     System.setOut(out);
   }
 
-  private static void createBigQueryDataset(String datasetName) {
+  @AfterClass
+  public static void cleanUp() throws IOException {
+    final PrintStream out = System.out;
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+
+    // Delete BigQuery Dataset and export request.
+    deleteBigQueryDataset(PROJECT_ID, BQ_DATASET_NAME);
+    DeleteBigQueryExport.deleteBigQueryExport(ORGANIZATION_ID, LOCATION, BQ_EXPORT_ID);
+    assertThat(stdOut.toString())
+        .contains(String.format("BigQuery export request deleted successfully: %s", BQ_EXPORT_ID));
+
+    stdOut = null;
+    System.setOut(out);
+  }
+
+  @Before
+  public void beforeEach() {
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+  }
+
+  @After
+  public void afterEach() {
+    stdOut = null;
+    System.setOut(null);
+  }
+
+  @Test
+  public void testGetBigQueryExport() throws IOException {
+    GetBigQueryExport.getBigQueryExport(ORGANIZATION_ID, LOCATION, BQ_EXPORT_ID);
+
+    assertThat(stdOut.toString()).contains(BQ_EXPORT_ID);
+  }
+
+  @Test
+  public void testListBigQueryExports() throws IOException {
+    ListBigQueryExports.listBigQueryExports(ORGANIZATION_ID, LOCATION);
+
+    assertThat(stdOut.toString()).contains(BQ_EXPORT_ID);
+  }
+
+  @Test
+  public void testUpdateBigQueryExport() throws IOException {
+    String filter = "severity=\"MEDIUM\"";
+    UpdateBigQueryExport.updateBigQueryExport(ORGANIZATION_ID, LOCATION, filter, BQ_EXPORT_ID);
+
+    assertThat(stdOut.toString()).contains("BigQueryExport updated successfully!");
+  }
+
+  private static void createBigQueryDataset(String projectId, String datasetName) {
     try {
-      BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
+      BigQuery bigquery = BigQueryOptions.newBuilder().setProjectId(projectId).build().getService();
 
       DatasetInfo datasetInfo = DatasetInfo.newBuilder(datasetName).build();
 
@@ -94,4 +154,14 @@ public class BigQueryExportIT {
       }
       Assert.fail("Dataset was not created. \n" + e);
     }
+  }
+
+  private static void deleteBigQueryDataset(String projectId, String datasetName) {
+    try {
+      BigQuery bigquery = BigQueryOptions.newBuilder().setProjectId(projectId).build().getService();
+      Assert.assertTrue("Deleted BigQuery dataset", bigquery.delete(datasetName));
+    } catch (BigQueryException e) {
+      Assert.fail("Dataset was not deleted. \n" + e);
+    }
+  }
 }

@@ -48,7 +48,8 @@ public class CreateBigQueryExport {
     // https://cloud.google.com/security-command-center/docs/how-to-analyze-findings-in-big-query#export_findings_from_to
     String bigQueryExportId = "default-" + UUID.randomUUID().toString().split("-")[0];
 
-    createBigQueryExport(organizationId,location ,projectId,filter, bigQueryDatasetId, bigQueryExportId);
+    createBigQueryExport(organizationId, location, projectId, filter, bigQueryDatasetId,
+        bigQueryExportId);
   }
 
   // Create export configuration to export findings from a project to a BigQuery dataset.
@@ -60,7 +61,8 @@ public class CreateBigQueryExport {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
-      OrganizationLocationName organizationName = OrganizationLocationName.of(organizationId, location);
+      OrganizationLocationName organizationName = OrganizationLocationName.of(organizationId,
+          location);
       // Create the BigQuery export configuration.
       BigQueryExport bigQueryExport =
           BigQueryExport.newBuilder()

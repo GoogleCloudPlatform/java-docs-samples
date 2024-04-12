@@ -35,16 +35,18 @@ public class ListBigQueryExports {
     // Specify the location to list the findings.
     String location = "global";
 
-    listBigQueryExports(organizationId,location);
+    listBigQueryExports(organizationId, location);
   }
 
   // List BigQuery exports in the given parent.
-  public static void listBigQueryExports(String organizationId, String location) throws IOException {
+  public static void listBigQueryExports(String organizationId, String location)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
-      OrganizationLocationName organizationName = OrganizationLocationName.of(organizationId,location);
+      OrganizationLocationName organizationName = OrganizationLocationName.of(organizationId,
+          location);
 
       ListBigQueryExportsRequest request = ListBigQueryExportsRequest.newBuilder()
           .setParent(organizationName.toString())

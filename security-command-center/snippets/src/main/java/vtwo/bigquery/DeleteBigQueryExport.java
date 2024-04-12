@@ -18,13 +18,12 @@ package vtwo.bigquery;
 
 // [START securitycenter_delete_bigquery_export_v2]
 
-import com.google.cloud.securitycenter.v1.DeleteBigQueryExportRequest;
-import com.google.cloud.securitycenter.v1.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.BigQueryExportName;
+import com.google.cloud.securitycenter.v2.DeleteBigQueryExportRequest;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import java.io.IOException;
 
 public class DeleteBigQueryExport {
-
 
   public static void main(String[] args) throws IOException {
     // TODO(Developer): Modify the following variable values.
@@ -48,6 +47,9 @@ public class DeleteBigQueryExport {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
+      // optionally BigQueryExportName or String can be used
+      // String bigQueryExportName = String.format("organizations/%s/locations/%s
+      // /bigQueryExports/%s",organizationId,location, bigQueryExportId);
       BigQueryExportName bigQueryExportName = BigQueryExportName.of(organizationId, location,
           bigQueryExportId);
 
