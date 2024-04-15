@@ -23,7 +23,6 @@ import com.google.cloud.storageinsights.v1.ReportConfigName;
 import com.google.cloud.storageinsights.v1.StorageInsightsClient;
 import com.google.cloud.storageinsights.v1.UpdateReportConfigRequest;
 import com.google.protobuf.FieldMask;
-
 import java.io.IOException;
 
 public class EditInventoryReportConfig {
@@ -56,7 +55,8 @@ public class EditInventoryReportConfig {
       storageInsightsClient.updateReportConfig(
               UpdateReportConfigRequest.newBuilder()
                       // Make sure to add any fields that you want to update into the update mask, in snake case
-                      .setUpdateMask(FieldMask.newBuilder().addPaths("display_name").build())
+                      .setUpdateMask(FieldMask.newBuilder().addPaths("display_name")
+                              .build())
                       .setReportConfig(updatedReportConfig).build());
 
       System.out.println("Edited inventory report config with name " + name);
