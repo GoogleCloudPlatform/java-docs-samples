@@ -35,11 +35,14 @@ public class TestIamPermissions {
     // The source id corresponding to the finding.
     String sourceId = "{source-id}";
 
-    testIamPermissions(organizationId, sourceId);
+    // Iam permission example: securitycenter.findings.update.
+    String permission = "{permission}";
+
+    testIamPermissions(organizationId, sourceId, permission);
   }
 
   // Demonstrates how to verify IAM permissions to create findings.
-  public static void testIamPermissions(String organizationId, String sourceId) {
+  public static void testIamPermissions(String organizationId, String sourceId, String permission) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -50,7 +53,7 @@ public class TestIamPermissions {
 
       // Iam permission to test.
       List<String> permissionsToTest = new ArrayList<>();
-      permissionsToTest.add("securitycenter.findings.update");
+      permissionsToTest.add(permission);
 
       // Call the API.
       TestIamPermissionsResponse response = client.testIamPermissions(

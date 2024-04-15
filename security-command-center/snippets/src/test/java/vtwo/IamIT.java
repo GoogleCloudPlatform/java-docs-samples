@@ -43,9 +43,10 @@ public class IamIT {
   // TODO(Developer): Replace the below variables.
   private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
   private static final String USER_EMAIL = "someuser@domain.com";
+  private static final String PERMISSION = "securitycenter.findings.update";
   private static Source SOURCE;
   private static final int MAX_ATTEMPT_COUNT = 3;
-  private static final int INITIAL_BACKOFF_MILLIS = 240000; // 4 minutes
+  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static ByteArrayOutputStream stdOut;
   @Rule
   public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
@@ -90,7 +91,8 @@ public class IamIT {
 
   @Test
   public void testIamPermissions() throws IOException {
-    TestIamPermissions.testIamPermissions(ORGANIZATION_ID, SOURCE.getName().split("/")[3]);
+    TestIamPermissions.testIamPermissions(ORGANIZATION_ID, SOURCE.getName().split("/")[3],
+        PERMISSION);
 
     assertThat(stdOut.toString()).contains("IAM Permission: ");
   }
