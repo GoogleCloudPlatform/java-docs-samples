@@ -16,164 +16,159 @@
 package iam.snippets;
 
 // [START iam_quickstart]
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.cloudresourcemanager.v3.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.v3.model.Binding;
-import com.google.api.services.cloudresourcemanager.v3.model.GetIamPolicyRequest;
-import com.google.api.services.cloudresourcemanager.v3.model.Policy;
-import com.google.api.services.cloudresourcemanager.v3.model.SetIamPolicyRequest;
-import com.google.api.services.iam.v1.IamScopes;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
+
+import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.ServiceAccountName;
+import com.google.iam.v1.*;
+import com.google.protobuf.FieldMask;
+
 import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class Quickstart {
 
-  public static void main(String[] args) {
-    // TODO: Replace with your project ID in the form "projects/your-project-id".
+  public static void main(String[] args) throws IOException {
+    // TODO: Replace with your project ID".
     String projectId = "your-project";
+    // TODO: Replace with your service account name".
+    String serviceAccount = "your-service-account";
     // TODO: Replace with the ID of your member in the form "user:member@example.com"
     String member = "your-member";
     // The role to be granted.
     String role = "roles/logging.logWriter";
 
-    // Initializes the Cloud Resource Manager service.
-    CloudResourceManager crmService = null;
-    try {
-      crmService = initializeService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.getMessage() + e.getStackTrace());
-    }
+    quickstart(projectId, serviceAccount, member, role);
+  }
 
-    // Grants your member the "Log writer" role for your project.
-    addBinding(crmService, projectId, member, role);
+  public static void quickstart(String projectId, String serviceAccount, String member, String role) throws IOException {
 
-    // Get the project's policy and print all members with the "Log Writer" role
-    Policy policy = getPolicy(crmService, projectId);
-    Binding binding = null;
-    List<Binding> bindings = policy.getBindings();
-    for (Binding b : bindings) {
-      if (b.getRole().equals(role)) {
-        binding = b;
-        break;
+    serviceAccount = serviceAccount + "@" + projectId + ".iam.gserviceaccount.com";
+
+    // Initializes the IAMClient service.
+    try (IAMClient iamClient = IAMClient.create()) {
+      // Grants your member the "Log writer" role for your project.
+      addBinding(iamClient, projectId, serviceAccount, member, role);
+
+      // Get the project's policy and print all members with the "Log Writer" role
+      Policy policy = getPolicy(iamClient, projectId, serviceAccount);
+      Binding binding = null;
+      List<Binding> bindings = policy.getBindingsList();
+      for (Binding b : bindings) {
+        if (b.getRole().equals(role)) {
+          binding = b;
+          break;
+        }
       }
-    }
-    System.out.println("Role: " + binding.getRole());
-    System.out.print("Members: ");
-    for (String m : binding.getMembers()) {
-      System.out.print("[" + m + "] ");
-    }
-    System.out.println();
+      System.out.println("Role: " + binding.getRole());
+      System.out.print("Members: ");
+      for (String m : binding.getMembersList()) {
+        System.out.print("[" + m + "] ");
+      }
+      System.out.println();
 
-    // Removes member from the "Log writer" role.
-    removeMember(crmService, projectId, member, role);
+      // Removes member from the "Log writer" role.
+      removeMember(iamClient, projectId, serviceAccount, member, role);
+    }
   }
 
-  public static CloudResourceManager initializeService()
-      throws IOException, GeneralSecurityException {
-    // Use the Application Default Credentials strategy for authentication. For more info, see:
-    // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
-    GoogleCredentials credential =
-        GoogleCredentials.getApplicationDefault()
-            .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-
-    // Creates the Cloud Resource Manager service object.
-    CloudResourceManager service =
-        new CloudResourceManager.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                GsonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("iam-quickstart")
-            .build();
-    return service;
-  }
-
-  public static void addBinding(
-      CloudResourceManager crmService, String projectId, String member, String role) {
-
+  public static void addBinding(IAMClient iamClient, String projectId, String serviceAccount, String member, String role) {
     // Gets the project's policy.
-    Policy policy = getPolicy(crmService, projectId);
+    Policy policy = getPolicy(iamClient, projectId, serviceAccount);
 
     // If policy is not retrieved, return early.
     if (policy == null) {
       return;
     }
 
+    Policy.Builder updatedPolicy = policy.toBuilder();
+
     // Finds binding in policy, if it exists.
     Binding binding = null;
-    for (Binding b : policy.getBindings()) {
+    for (Binding b : updatedPolicy.getBindingsList()) {
       if (b.getRole().equals(role)) {
-        binding = b; 
+        binding = b;
         break;
       }
     }
 
     if (binding != null) {
       // If binding already exists, adds member to binding.
-      binding.getMembers().add(member);
+      binding.getMembersList().add(member);
     } else {
       // If binding does not exist, adds binding to policy.
-      binding = new Binding();
-      binding.setRole(role);
-      binding.setMembers(Collections.singletonList(member));
-      policy.getBindings().add(binding);
+      binding = Binding.newBuilder()
+              .setRole(role)
+              .addAllMembers(Collections.singletonList(member))
+              .build();
+      updatedPolicy.addBindings(binding);
     }
 
     // Sets the updated policy.
-    setPolicy(crmService, projectId, policy);
+    setPolicy(iamClient, projectId, serviceAccount, updatedPolicy.build());
   }
 
   public static void removeMember(
-      CloudResourceManager crmService, String projectId, String member, String role) {
+          IAMClient iamClient, String projectId, String serviceAccount, String member, String role) {
     // Gets the project's policy.
-    Policy policy = getPolicy(crmService, projectId);
+    Policy.Builder policy = getPolicy(iamClient, projectId, serviceAccount).toBuilder();
 
     // Removes the member from the role.
     Binding binding = null;
-    for (Binding b : policy.getBindings()) {
+    for (Binding b : policy.getBindingsList()) {
       if (b.getRole().equals(role)) {
         binding = b;
         break;
       }
     }
-    if (binding != null && binding.getMembers().contains(member)) {
-      binding.getMembers().remove(member);
-      if (binding.getMembers().isEmpty()) {
-        policy.getBindings().remove(binding);
+
+    if (binding != null && binding.getMembersList().contains(member)) {
+      List<String> newMemberList = new ArrayList<>(binding.getMembersList());
+      newMemberList.remove(member);
+
+      Binding newBinding = binding.toBuilder().clearMembers()
+              .addAllMembers(newMemberList)
+              .build();
+      List<Binding> newBindingList = new ArrayList<>(policy.getBindingsList());
+      newBindingList.remove(binding);
+
+      if (!newBinding.getMembersList().isEmpty()) {
+        newBindingList.add(newBinding);
       }
+
+      policy.clearBindings()
+              .addAllBindings(newBindingList);
     }
 
     // Sets the updated policy.
-    setPolicy(crmService, projectId, policy);
+    setPolicy(iamClient, projectId, serviceAccount, policy.build());
   }
 
-  public static Policy getPolicy(CloudResourceManager crmService, String projectId) {
+  public static Policy getPolicy(IAMClient iamClient, String projectId, String serviceAccount) {
     // Gets the project's policy by calling the
-    // Cloud Resource Manager Projects API.
-    Policy policy = null;
-    try {
-      GetIamPolicyRequest request = new GetIamPolicyRequest();
-      policy = crmService.projects().getIamPolicy(projectId, request).execute();
-    } catch (IOException e) {
-      System.out.println("Unable to get policy: \n" + e.getMessage() + e.getStackTrace());
-    }
-    return policy;
+    // IAMClient API.
+    GetIamPolicyRequest request = GetIamPolicyRequest.newBuilder()
+            .setResource(ServiceAccountName.of(projectId, serviceAccount).toString())
+            .setOptions(GetPolicyOptions.newBuilder().build())
+            .build();
+    return iamClient.getIamPolicy(request);
   }
 
-  private static void setPolicy(CloudResourceManager crmService, String projectId, Policy policy) {
+  private static void setPolicy(IAMClient iamClient, String projectId, String serviceAccount, Policy policy) {
     // Sets the project's policy by calling the
     // Cloud Resource Manager Projects API.
-    try {
-      SetIamPolicyRequest request = new SetIamPolicyRequest();
-      request.setPolicy(policy);
-      crmService.projects().setIamPolicy(projectId, request).execute();
-    } catch (IOException e) {
-      System.out.println("Unable to set policy: \n" + e.getMessage() + e.getStackTrace());
-    }
+    SetIamPolicyRequest request = SetIamPolicyRequest.newBuilder()
+            .setResource(ServiceAccountName.of(projectId, serviceAccount).toString())
+            .setPolicy(policy)
+            //A FieldMask specifying which fields of the policy to modify. Only
+            //  the fields in the mask will be modified. If no mask is provided, the
+            //  following default mask is used:
+            //  `paths: "bindings, etag"`
+            .setUpdateMask(FieldMask.newBuilder().addAllPaths(Arrays.asList("bindings", "etag")).build())
+            .build();
+    iamClient.setIamPolicy(request);
   }
 }
 // [END iam_quickstart]

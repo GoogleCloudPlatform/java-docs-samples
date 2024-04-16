@@ -16,61 +16,37 @@
 package iam.snippets;
 
 // [START iam_get_policy]
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.cloudresourcemanager.v3.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.v3.model.GetIamPolicyRequest;
-import com.google.api.services.cloudresourcemanager.v3.model.Policy;
-import com.google.api.services.iam.v1.IamScopes;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
+
+import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.ServiceAccountName;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.GetPolicyOptions;
+import com.google.iam.v1.Policy;
+
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
 
 public class GetPolicy {
-
-  // Gets a project's policy.
-  public static Policy getPolicy(String projectId) {
-    // projectId = "my-project-id"
-
-    Policy policy = null;
-
-    CloudResourceManager service = null;
-    try {
-      service = createCloudResourceManagerService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return policy;
-    }
-
-    try {
-      GetIamPolicyRequest request = new GetIamPolicyRequest();
-      policy = service.projects().getIamPolicy(projectId, request).execute();
-      System.out.println("Policy retrieved: " + policy.toString());
-      return policy;
-    } catch (IOException e) {
-      System.out.println("Unable to get policy: \n" + e.toString());
-      return policy;
-    }
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace the variables before running the sample.
+    // TODO: Replace with your project ID".
+    String projectId = "your-project-id";
+    // TODO: Replace with your service account name".
+    String serviceAccount = "your-service-account";
+    getPolicy(projectId, serviceAccount);
   }
 
-  public static CloudResourceManager createCloudResourceManagerService()
-      throws IOException, GeneralSecurityException {
-    // Use the Application Default Credentials strategy for authentication. For more info, see:
-    // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
-    GoogleCredentials credential =
-        GoogleCredentials.getApplicationDefault()
-            .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-
-    CloudResourceManager service =
-        new CloudResourceManager.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                GsonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-accounts")
-            .build();
-    return service;
+  // Gets a project's policy.
+  public static Policy getPolicy(String projectId, String serviceAccount) throws IOException {
+    String serviceAccountEmail = serviceAccount + "@" + projectId + ".iam.gserviceaccount.com";
+    try(IAMClient iamClient = IAMClient.create()) {
+      GetIamPolicyRequest request = GetIamPolicyRequest.newBuilder()
+              .setResource(ServiceAccountName.of(projectId, serviceAccountEmail).toString())
+              .setOptions(GetPolicyOptions.newBuilder().build())
+              .build();
+      Policy policy = iamClient.getIamPolicy(request);
+      System.out.println("Policy retrieved: " + policy.toString());
+      return policy;
+    }
   }
 }
 // [END iam_get_policy]

@@ -16,37 +16,59 @@
 package iam.snippets;
 
 // [START iam_modify_policy_remove_member]
-import com.google.api.services.cloudresourcemanager.v3.model.Binding;
-import com.google.api.services.cloudresourcemanager.v3.model.Policy;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.Policy;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RemoveMember {
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace the variables before running the sample.
+    // TODO: Replace with your policy, GetPolicy.getPolicy(projectId, serviceAccount)".
+    Policy policy = Policy.newBuilder().build();
+    removeMember(policy);
+  }
 
   // Removes member from a role; removes binding if binding contains 0 members.
   public static void removeMember(Policy policy) {
-    // policy = service.Projects.GetIAmPolicy(new GetIamPolicyRequest(), your-project-id).Execute();
+    // policy = GetPolicy.getPolicy(String projectId, String serviceAccount);
 
     String role = "roles/existing-role";
     String member = "user:member-to-remove@example.com";
 
-    List<Binding> bindings = policy.getBindings();
+    Policy.Builder policyBuilder = policy.toBuilder();
+
+    // Removes the member from the role.
     Binding binding = null;
-    for (Binding b : bindings) {
+    for (Binding b : policy.getBindingsList()) {
       if (b.getRole().equals(role)) {
         binding = b;
+        break;
       }
     }
-    if (binding != null && binding.getMembers().contains(member)) {
-      binding.getMembers().remove(member);
+
+    if (binding != null && binding.getMembersList().contains(member)) {
+      List<String> newMemberList = new ArrayList<>(binding.getMembersList());
+      newMemberList.remove(member);
       System.out.println("Member " + member + " removed from " + role);
-      if (binding.getMembers().isEmpty()) {
-        policy.getBindings().remove(binding);
+
+      Binding newBinding = binding.toBuilder().clearMembers()
+              .addAllMembers(newMemberList)
+              .build();
+      List<Binding> newBindingList = new ArrayList<>(policyBuilder.getBindingsList());
+      newBindingList.remove(binding);
+
+      if (!newBinding.getMembersList().isEmpty()) {
+        newBindingList.add(newBinding);
       }
-      return;
+
+      policyBuilder.clearBindings()
+              .addAllBindings(newBindingList);
     }
 
     System.out.println("Role not found in policy; member not removed");
-    return;
   }
 }
 // [END iam_modify_policy_remove_member]

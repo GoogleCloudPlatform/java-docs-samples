@@ -19,16 +19,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.api.services.cloudresourcemanager.v3.model.Binding;
-import com.google.api.services.cloudresourcemanager.v3.model.Policy;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import java.util.UUID;
+
+import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.DeleteServiceAccountRequest;
+import com.google.iam.admin.v1.ServiceAccountName;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.Policy;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -38,17 +41,30 @@ public class AccessTests {
   private ByteArrayOutputStream bout;
   private Policy policyMock;
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String SERVICE_ACCOUNT =
+          "service-account-" + UUID.randomUUID().toString().substring(0, 8);
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-        System.getenv(varName),
-        String.format("Environment variable '%s' is required to perform these tests.", varName));
+            System.getenv(varName),
+            String.format("Environment variable '%s' is required to perform these tests.", varName));
   }
 
   @BeforeClass
-  public static void checkRequirements() {
+  public static void checkRequirementsAndInitServiceAccount() throws IOException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    CreateServiceAccount.createServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+  }
+
+  @AfterClass
+  public static void removeUnusedStaff() throws IOException {
+    try(IAMClient client = IAMClient.create()) {
+      DeleteServiceAccountRequest request = DeleteServiceAccountRequest.newBuilder()
+              .setName(ServiceAccountName.of(PROJECT_ID, SERVICE_ACCOUNT).toString() + "@" + PROJECT_ID + ".iam.gserviceaccount.com")
+              .build();
+      client.deleteServiceAccount(request);
+    }
   }
 
   @Before
@@ -56,15 +72,18 @@ public class AccessTests {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    policyMock = new Policy();
     List<String> members = new ArrayList<>();
     members.add("user:member-to-remove@example.com");
-    Binding binding = new Binding();
-    binding.setRole("roles/existing-role");
-    binding.setMembers(members);
-    List<Binding> bindings = new ArrayList<Binding>();
+    Binding binding = Binding.newBuilder()
+            .setRole("roles/existing-role")
+            .addAllMembers(members)
+            .build();
+    List<Binding> bindings = new ArrayList<>();
     bindings.add(binding);
-    policyMock.setBindings(bindings);
+
+    policyMock = Policy.newBuilder()
+            .addAllBindings(bindings)
+            .build();
   }
 
   @After
@@ -74,16 +93,16 @@ public class AccessTests {
   }
 
   @Test
-  public void testGetPolicy() {
-    GetPolicy.getPolicy("projects/" + PROJECT_ID);
+  public void testGetPolicy() throws IOException {
+    GetPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Policy retrieved: "));
   }
 
   @Test
-  public void testSetPolicy() {
-    Policy policy = GetPolicy.getPolicy("projects/" + PROJECT_ID);
-    SetPolicy.setPolicy(policy, "projects/" + PROJECT_ID);
+  public void testSetPolicy() throws IOException {
+    Policy policy = GetPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
+    SetPolicy.setPolicy(policy, PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Policy retrieved: "));
   }
@@ -100,8 +119,8 @@ public class AccessTests {
     AddMember.addMember(policyMock);
     String got = bout.toString();
     assertThat(
-        got,
-        containsString("Member user:member-to-add@example.com added to role roles/existing-role"));
+            got,
+            containsString("Member user:member-to-add@example.com added to role roles/existing-role"));
   }
 
   @Test
@@ -109,9 +128,9 @@ public class AccessTests {
     RemoveMember.removeMember(policyMock);
     String got = bout.toString();
     assertThat(
-        got,
-        containsString(
-            "Member user:member-to-remove@example.com removed from roles/existing-role"));
+            got,
+            containsString(
+                    "Member user:member-to-remove@example.com removed from roles/existing-role"));
   }
 
   @Test
@@ -119,7 +138,7 @@ public class AccessTests {
     TestPermissions.testPermissions("projects/" + PROJECT_ID);
     String got = bout.toString();
     assertThat(
-        got,
-        containsString("Of the permissions listed in the request, the caller has the following: "));
+            got,
+            containsString("Of the permissions listed in the request, the caller has the following: "));
   }
 }
