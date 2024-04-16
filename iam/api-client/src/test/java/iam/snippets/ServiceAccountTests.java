@@ -40,7 +40,7 @@ public class ServiceAccountTests {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String SERVICE_ACCOUNT =
-      "service-account-" + UUID.randomUUID().toString().substring(0, 8);
+          "service-account-" + UUID.randomUUID().toString().substring(0, 8);
   private static String SERVICE_ACCOUNT_KEY;
   private ByteArrayOutputStream bout;
   private final PrintStream originalOut = System.out;
@@ -49,8 +49,8 @@ public class ServiceAccountTests {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-        System.getenv(varName),
-        String.format("Environment variable '%s' is required to perform these tests.", varName));
+            System.getenv(varName),
+            String.format("Environment variable '%s' is required to perform these tests.", varName));
   }
 
   @BeforeClass
@@ -86,10 +86,12 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage2_testServiceAccountRename() {
-    RenameServiceAccount.renameServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+  public void stage2_testServiceAccountRename() throws IOException {
+    String renameTo = "your-new-display-name";
+    RenameServiceAccount.renameServiceAccount(PROJECT_ID, SERVICE_ACCOUNT, renameTo);
     String got = bout.toString();
     assertThat(got, containsString("Updated display name"));
+    assertThat(got, containsString(renameTo));
   }
 
   @Test
@@ -110,7 +112,7 @@ public class ServiceAccountTests {
   @Test
   public void stage2_testServiceAccountKeyDisable() {
     DisableServiceAccountKey
-        .disableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
+            .disableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
     String got = bout.toString();
     assertThat(got, containsString("Disabled service account key"));
   }
@@ -118,13 +120,13 @@ public class ServiceAccountTests {
   @Test
   public void stage2_testServiceAccountKeyEnable() {
     EnableServiceAccountKey
-        .enableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
+            .enableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
     String got = bout.toString();
     assertThat(got, containsString("Enabled service account key"));
   }
 
   @Test
-  public void stage3_testServiceAccountKeyDelete() {
+  public void stage3_testServiceAccountKeyDelete() throws IOException {
     DeleteServiceAccountKey.deleteKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
     String got = bout.toString();
     assertThat(got, containsString("Deleted key:"));
@@ -145,7 +147,7 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage6_testServiceAccountDelete() {
+  public void stage6_testServiceAccountDelete() throws IOException {
     DeleteServiceAccount.deleteServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Deleted service account:"));

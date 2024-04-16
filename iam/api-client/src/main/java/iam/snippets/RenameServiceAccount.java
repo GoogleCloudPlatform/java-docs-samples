@@ -16,76 +16,54 @@
 package iam.snippets;
 
 // [START iam_rename_service_account]
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.iam.v1.Iam;
-import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.ServiceAccount;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
+
+import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.GetServiceAccountRequest;
+import com.google.iam.admin.v1.PatchServiceAccountRequest;
+import com.google.iam.admin.v1.ServiceAccount;
+import com.google.iam.admin.v1.ServiceAccountName;
+import com.google.protobuf.FieldMask;
+
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
 
 public class RenameServiceAccount {
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace the variables before running the sample.
+    String projectId = "your-project-id";
+    String serviceAccountName = "my-service-account-name";
+    String displayName = "your-new-display-name";
 
-  // Changes a service account's display name.
-  public static void renameServiceAccount(String projectId, String serviceAccountName) {
-    // String projectId = "my-project-id";
-    // String serviceAccountName = "my-service-account-name";
-
-    Iam service = null;
-    try {
-      service = initService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    }
-
-    String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
-    try {
-      // First, get a service account using List() or Get()
-      ServiceAccount serviceAccount =
-          service
-              .projects()
-              .serviceAccounts()
-              .get("projects/-/serviceAccounts/" + serviceAccountEmail)
-              .execute();
-
-      // Then you can update the display name
-      serviceAccount.setDisplayName("your-new-display-name");
-      serviceAccount =
-          service
-              .projects()
-              .serviceAccounts()
-              .update(serviceAccount.getName(), serviceAccount)
-              .execute();
-
-      System.out.println(
-          "Updated display name for "
-              + serviceAccount.getName()
-              + " to: "
-              + serviceAccount.getDisplayName());
-    } catch (IOException e) {
-      System.out.println("Unable to rename service account: \n" + e.toString());
-    }
+    renameServiceAccount(projectId, serviceAccountName, displayName);
   }
 
-  private static Iam initService() throws GeneralSecurityException, IOException {
-    // Use the Application Default Credentials strategy for authentication. For more info, see:
-    // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
-    GoogleCredentials credential =
-        GoogleCredentials.getApplicationDefault()
-            .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-    // Initialize the IAM service, which can be used to send requests to the IAM API.
-    Iam service =
-        new Iam.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                GsonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-accounts")
-            .build();
-    return service;
+  // Changes a service account's display name.
+  public static void renameServiceAccount(String projectId, String serviceAccountName, String displayName) throws IOException {
+    // String projectId = "my-project-id";
+    // String serviceAccountName = "my-service-account-name";
+    String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
+    try (IAMClient iamClient = IAMClient.create()) {
+      // First, get a service account using getServiceAccount or listServiceAccounts
+      GetServiceAccountRequest serviceAccountRequest = GetServiceAccountRequest.newBuilder()
+              .setName(ServiceAccountName.of(projectId, serviceAccountEmail).toString())
+              .build();
+      ServiceAccount serviceAccount = iamClient.getServiceAccount(serviceAccountRequest);
+
+      // You can patch only the `display_name` and `description` fields. You must use
+      //  the `update_mask` field to specify which of these fields you want to patch.
+      serviceAccount = serviceAccount.toBuilder().setDisplayName(displayName).build();
+      PatchServiceAccountRequest patchServiceAccountRequest =
+              PatchServiceAccountRequest.newBuilder()
+                      .setServiceAccount(serviceAccount)
+                      .setUpdateMask(FieldMask.newBuilder().addPaths("display_name").build())
+                      .build();
+      serviceAccount = iamClient.patchServiceAccount(patchServiceAccountRequest);
+
+      System.out.println(
+              "Updated display name for "
+                      + serviceAccount.getName()
+                      + " to: "
+                      + serviceAccount.getDisplayName());
+    }
   }
 }
 // [END iam_rename_service_account]
