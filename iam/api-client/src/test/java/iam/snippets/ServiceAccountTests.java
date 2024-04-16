@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.After;
@@ -71,7 +72,7 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage1_testServiceAccountCreate() {
+  public void stage1_testServiceAccountCreate() throws IOException {
     CreateServiceAccount.createServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Created service account: " + SERVICE_ACCOUNT));
