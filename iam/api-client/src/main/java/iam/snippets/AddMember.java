@@ -16,30 +16,41 @@
 package iam.snippets;
 
 // [START iam_modify_policy_add_member]
-import com.google.api.services.cloudresourcemanager.v3.model.Binding;
-import com.google.api.services.cloudresourcemanager.v3.model.Policy;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.Policy;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddMember {
+  public static void main(String[] args) {
+    // TODO(developer): Replace the variables before running the sample.
+    // TODO: Replace with your policy, GetPolicy.getPolicy(projectId, serviceAccount)".
+    Policy policy = Policy.newBuilder().build();
+    addMember(policy);
+  }
 
   // Adds a member to a preexisting role.
   public static void addMember(Policy policy) {
-    // policy = service.Projects.GetIAmPolicy(new GetIamPolicyRequest(), your-project-id).Execute();
-
+    // policy = GetPolicy.getPolicy(String projectId, String serviceAccount);
     String role = "roles/existing-role";
     String member = "user:member-to-add@example.com";
 
-    List<Binding> bindings = policy.getBindings();
+    List<Binding> newBindingsList = new ArrayList<>();
 
-    for (Binding b : bindings) {
+    for (Binding b : policy.getBindingsList()) {
       if (b.getRole().equals(role)) {
-        b.getMembers().add(member);
+        newBindingsList.add(b.toBuilder().addMembers(member).build());
         System.out.println("Member " + member + " added to role " + role);
-        return;
+      } else {
+        newBindingsList.add(b);
       }
     }
-
-    System.out.println("Role not found in policy; member not added");
+    //use new Policy
+    policy.toBuilder()
+            .clearBindings()
+            .addAllBindings(newBindingsList)
+            .build();
   }
 }
 // [END iam_modify_policy_add_member]

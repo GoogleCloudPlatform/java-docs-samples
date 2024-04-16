@@ -16,12 +16,19 @@
 package iam.snippets;
 
 // [START iam_modify_policy_add_role]
-import com.google.api.services.cloudresourcemanager.v3.model.Binding;
-import com.google.api.services.cloudresourcemanager.v3.model.Policy;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.Policy;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddBinding {
+  public static void main(String[] args) {
+    // TODO(developer): Replace the variables before running the sample.
+    // TODO: Replace with your policy, GetPolicy.getPolicy(projectId, serviceAccount)".
+    Policy policy = Policy.newBuilder().build();
+    addBinding(policy);
+  }
 
   // Adds a member to a role with no previous members.
   public static void addBinding(Policy policy) {
@@ -31,12 +38,13 @@ public class AddBinding {
     List<String> members = new ArrayList<>();
     members.add("user:member-to-add@example.com");
 
-    Binding binding = new Binding();
-    binding.setRole(role);
-    binding.setMembers(members);
-
-    policy.getBindings().add(binding);
-    System.out.println("Added binding: " + binding.toString());
+    Binding binding = Binding.newBuilder()
+            .setRole(role)
+            .addAllMembers(members)
+            .build();
+    //use new policy
+    policy.toBuilder().addBindings(binding).build();
+    System.out.println("Added binding: " + binding);
   }
 }
 // [END iam_modify_policy_add_role]
