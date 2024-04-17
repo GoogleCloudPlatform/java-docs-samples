@@ -27,22 +27,9 @@ import java.util.List;
 
 public class TestIamPermissions {
 
-  public static void main(String[] args) throws IOException {
-    // TODO(Developer): Replace the sample resource name
-    // organizationId: Google Cloud Organization id.
-    String organizationId = "{google-cloud-organization-id}";
-
-    // The source id corresponding to the finding.
-    String sourceId = "{source-id}";
-
-    // Iam permission example: securitycenter.findings.update.
-    String permission = "{permission}";
-
-    testIamPermissions(organizationId, sourceId, permission);
-  }
-
   // Demonstrates how to verify IAM permissions to create findings.
-  public static void testIamPermissions(String organizationId, String sourceId, String permission) {
+  public static TestIamPermissionsResponse testIamPermissions(String organizationId,
+      String sourceId, String permission) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -58,9 +45,9 @@ public class TestIamPermissions {
       // Call the API.
       TestIamPermissionsResponse response = client.testIamPermissions(
           sourceName.toString(), permissionsToTest);
-      System.out.println("IAM Permission: " + response);
+      return response;
     } catch (IOException e) {
-      System.out.println("Test iam permission failed! \n Exception: " + e);
+      throw new RuntimeException("Couldn't create client.", e);
     }
   }
 }

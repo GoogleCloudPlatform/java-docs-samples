@@ -26,20 +26,8 @@ import com.google.iam.v1.Policy;
 import java.io.IOException;
 
 public class GetIamPolicies {
-
-  public static void main(String[] args) throws IOException {
-    // TODO(Developer): Replace the sample resource name
-    // organizationId: Google Cloud Organization id.
-    String organizationId = "{google-cloud-organization-id}";
-
-    // The source id corresponding to the finding.
-    String sourceId = "{source-id}";
-
-    getIamPolicySource(organizationId, sourceId);
-  }
-
   // Demonstrates how to retrieve IAM policies for a source
-  public static void getIamPolicySource(String organizationId, String sourceId) {
+  public static Policy getIamPolicySource(String organizationId, String sourceId) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Start setting up a request to get IAM policy for a source.
       SourceName sourceName = SourceName.ofOrganizationSourceName(organizationId, sourceId);
@@ -51,9 +39,9 @@ public class GetIamPolicies {
 
       // Call the API.
       Policy response = client.getIamPolicy(request);
-      System.out.println("Policy: " + response);
+      return response;
     } catch (IOException e) {
-      System.out.println("get iam policy failed! \n Exception: " + e);
+      throw new RuntimeException("Couldn't create client.", e);
     }
   }
 }

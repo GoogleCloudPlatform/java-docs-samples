@@ -28,22 +28,9 @@ import java.io.IOException;
 
 public class SetIamPolices {
 
-  public static void main(String[] args) throws IOException {
-    // TODO(Developer): Replace the sample resource name
-    // organizationId: Google Cloud Organization id.
-    String organizationId = "{google-cloud-organization-id}";
-
-    // The source id corresponding to the finding.
-    String sourceId = "{source-id}";
-
-    // user email.
-    String userEmail = "{user-email}";
-
-    setIamPolicySource(organizationId, sourceId, userEmail);
-  }
-
   // Demonstrates how to verify IAM permissions to create findings.
-  public static void setIamPolicySource(String organizationId, String sourceId, String userEmail) {
+  public static Policy setIamPolicySource(String organizationId, String sourceId, String userEmail,
+      String roleId) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Start setting up a request to set IAM policy for a source.
       SourceName sourceName = SourceName.ofOrganizationSourceName(organizationId, sourceId);
@@ -54,7 +41,7 @@ public class SetIamPolices {
       Policy oldPolicy = client.getIamPolicy(sourceName.toString());
       Binding bindings =
           Binding.newBuilder()
-              .setRole("roles/securitycenter.findingsEditor")
+              .setRole(roleId)
               .addMembers("user:" + userEmail)
               .build();
       Policy policy = oldPolicy.toBuilder().addBindings(bindings).build();
@@ -67,9 +54,9 @@ public class SetIamPolices {
 
       // Call the API.
       Policy response = client.setIamPolicy(request);
-      System.out.println("Set iam policy: " + response);
+      return response;
     } catch (IOException e) {
-      System.out.println("Set iam policy failed! \n Exception: " + e);
+      throw new RuntimeException("Couldn't create client.", e);
     }
   }
 }
