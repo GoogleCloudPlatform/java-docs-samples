@@ -54,7 +54,7 @@ public class EditInventoryReportConfig {
 
       storageInsightsClient.updateReportConfig(
               UpdateReportConfigRequest.newBuilder()
-                      // Make sure to add any fields that you want to update into the update mask, in snake case
+                      // Add any fields that you want to update to the update mask, in snake case
                       .setUpdateMask(FieldMask.newBuilder().addPaths("display_name")
                               .build())
                       .setReportConfig(updatedReportConfig).build());
