@@ -36,9 +36,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
-
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-
 import snippets.healthcare.datasets.DatasetCreate;
 import snippets.healthcare.datasets.DatasetDelete;
 import snippets.healthcare.dicom.DicomStoreCreate;
@@ -64,8 +61,8 @@ public class DicomWebTests {
   private static String studyId = "2.25.330012077234033941963257891139480825153";
   private static String seriesId = "2.25.143186483950719304925806365081717734297";
   private static String instanceId = "2.25.195151962645072062560826889007364152748";
-  private static String dicomWebInstancePath = String.format("studies/%s/series/%s/instances/%s", studyId, seriesId,
-      instanceId);
+  private static String dicomWebInstancePath = String.format("studies/%s/series/%s/instances/%s",
+      studyId, seriesId, instanceId);
   private static String dicomWebRenderedPath = dicomWebInstancePath + "/rendered";
 
   private static String instanceOutput = "instance.dcm";
@@ -92,7 +89,8 @@ public class DicomWebTests {
   @BeforeClass
   public static void setUp() throws IOException {
     String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    datasetName = String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
+    datasetName = String.format("projects/%s/locations/%s/datasets/%s",
+        PROJECT_ID, REGION_ID, datasetId);
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
 
     String dicomStoreId = "dicom-" + UUID.randomUUID().toString().replaceAll("-", "_");
@@ -180,7 +178,6 @@ public class DicomWebTests {
   // Test order is NAME_ASCENDING, so ensure that we delete the DICOM study
   // last, otherwise it might run before DicomWebRetrieve methods
   // (see https://github.com/GoogleCloudPlatform/java-docs-samples/issues/3845).
-  @SuppressWarnings("checkstyle:MethodName")
   public void testZ_DicomWebDeleteStudy() throws IOException {
     DicomWebDeleteStudy.dicomWebDeleteStudy(dicomStoreName, studyId);
 
