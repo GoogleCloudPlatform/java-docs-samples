@@ -81,7 +81,7 @@ public class ServiceAccountTests {
   public void stage1_testServiceAccountsList() {
     ListServiceAccounts.listServiceAccounts(PROJECT_ID);
     String got = bout.toString();
-    assertThat(got, containsString("Display Name:"));
+    assertThat(got, containsString("Name:"));
   }
 
   @Test

@@ -104,6 +104,11 @@
       <version>2.2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-iam-admin</artifactId>
+      <version>3.33.0</version>
+    </dependency>
   </dependencies>
 
   <build>

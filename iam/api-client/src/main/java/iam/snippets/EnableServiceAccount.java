@@ -16,16 +16,10 @@
 package iam.snippets;
 
 // [START iam_enable_service_account]
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.iam.v1.Iam;
-import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.EnableServiceAccountRequest;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.EnableServiceAccountRequest;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
+
 
 public class EnableServiceAccount {
 
@@ -34,44 +28,16 @@ public class EnableServiceAccount {
     // String projectId = "my-project-id";
     // String serviceAccountName = "my-service-account-name";
 
-    Iam service = null;
-    try {
-      service = initService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    }
-
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
-    try {
-      EnableServiceAccountRequest request = new EnableServiceAccountRequest();
-      service
-          .projects()
-          .serviceAccounts()
-          .enable("projects/-/serviceAccounts/" + serviceAccountEmail, request)
-          .execute();
+    try (IAMClient iamClient = IAMClient.create()) {
+      iamClient.enableServiceAccount(EnableServiceAccountRequest.newBuilder()
+              .setName("projects/" + projectId + "/serviceAccounts/" + serviceAccountEmail)
+              .build());
 
-      System.out.println("Enabled service account: " + serviceAccountEmail);
-    } catch (IOException e) {
-      System.out.println("Unable to enable service account: \n" + e.toString());
+      System.out.println("Enabled service account: " + serviceAccountName);
+    } catch (IOException ex) {
+      System.out.println("Unable to enable service account");
     }
-  }
-
-  private static Iam initService() throws GeneralSecurityException, IOException {
-    // Use the Application Default Credentials strategy for authentication. For more info, see:
-    // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
-    GoogleCredentials credential =
-        GoogleCredentials.getApplicationDefault()
-            .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-    // Initialize the IAM service, which can be used to send requests to the IAM API.
-    Iam service =
-        new Iam.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                GsonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-accounts")
-            .build();
-    return service;
   }
 }
 // [END iam_enable_service_account]
