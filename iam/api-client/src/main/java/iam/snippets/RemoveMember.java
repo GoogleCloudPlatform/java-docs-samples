@@ -26,18 +26,18 @@ import java.util.List;
 public class RemoveMember {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace the variables before running the sample.
-    // TODO: Replace with your policy, GetPolicy.getPolicy(projectId, serviceAccount)".
+    // TODO: Replace with your policy, GetPolicy.getPolicy(projectId, serviceAccount).
     Policy policy = Policy.newBuilder().build();
-    removeMember(policy);
+    // TODO: Replace with your role.
+    String role = "roles/existing-role";
+    // TODO: Replace with your member.
+    String member = "user:member-to-add@example.com";
+
+    removeMember(policy, role, member);
   }
 
-  // Removes member from a role; removes binding if binding contains 0 members.
-  public static void removeMember(Policy policy) {
-    // policy = GetPolicy.getPolicy(String projectId, String serviceAccount);
-
-    String role = "roles/existing-role";
-    String member = "user:member-to-remove@example.com";
-
+  // Removes member from a role; removes binding if binding contains no members.
+  public static Policy removeMember(Policy policy, String role, String member) {
     Policy.Builder policyBuilder = policy.toBuilder();
 
     // Removes the member from the role.
@@ -54,7 +54,8 @@ public class RemoveMember {
       newMemberList.remove(member);
       System.out.println("Member " + member + " removed from " + role);
 
-      Binding newBinding = binding.toBuilder().clearMembers()
+      Binding newBinding = binding.toBuilder()
+              .clearMembers()
               .addAllMembers(newMemberList)
               .build();
       List<Binding> newBindingList = new ArrayList<>(policyBuilder.getBindingsList());
@@ -63,12 +64,10 @@ public class RemoveMember {
       if (!newBinding.getMembersList().isEmpty()) {
         newBindingList.add(newBinding);
       }
-
       policyBuilder.clearBindings()
               .addAllBindings(newBindingList);
     }
-
-    System.out.println("Role not found in policy; member not removed");
+    return policyBuilder.build();
   }
 }
 // [END iam_modify_policy_remove_member]

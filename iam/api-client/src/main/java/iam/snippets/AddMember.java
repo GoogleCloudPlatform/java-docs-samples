@@ -25,29 +25,29 @@ import java.util.List;
 public class AddMember {
   public static void main(String[] args) {
     // TODO(developer): Replace the variables before running the sample.
-    // TODO: Replace with your policy, GetPolicy.getPolicy(projectId, serviceAccount)".
+    // TODO: Replace with your policy, GetPolicy.getPolicy(projectId, serviceAccount).
     Policy policy = Policy.newBuilder().build();
-    addMember(policy);
-  }
-
-  // Adds a member to a preexisting role.
-  public static void addMember(Policy policy) {
-    // policy = GetPolicy.getPolicy(String projectId, String serviceAccount);
+    // TODO: Replace with your role.
     String role = "roles/existing-role";
+    // TODO: Replace with your member.
     String member = "user:member-to-add@example.com";
 
+    addMember(policy, role, member);
+  }
+
+  // Adds a member to a pre-existing role.
+  public static Policy addMember(Policy policy, String role, String member) {
     List<Binding> newBindingsList = new ArrayList<>();
 
     for (Binding b : policy.getBindingsList()) {
       if (b.getRole().equals(role)) {
         newBindingsList.add(b.toBuilder().addMembers(member).build());
-        System.out.println("Member " + member + " added to role " + role);
       } else {
         newBindingsList.add(b);
       }
     }
-    //use new Policy
-    policy.toBuilder()
+    // Update the policy to add the member.
+    return policy.toBuilder()
             .clearBindings()
             .addAllBindings(newBindingsList)
             .build();

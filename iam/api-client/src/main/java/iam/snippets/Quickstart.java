@@ -25,15 +25,14 @@ import com.google.protobuf.FieldMask;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class Quickstart {
 
   public static void main(String[] args) throws IOException {
-    // TODO: Replace with your project ID".
+    // TODO: Replace with your project ID.
     String projectId = "your-project";
-    // TODO: Replace with your service account name".
+    // TODO: Replace with your service account name.
     String serviceAccount = "your-service-account";
     // TODO: Replace with the ID of your member in the form "user:member@example.com"
     String member = "your-member";
@@ -43,11 +42,18 @@ public class Quickstart {
     quickstart(projectId, serviceAccount, member, role);
   }
 
-  public static void quickstart(String projectId, String serviceAccount, String member, String role) throws IOException {
-
+  //Creates new policy and adds binding
+  //then checks if previous changes are present and removes policy
+  public static void quickstart(String projectId, String serviceAccount,
+                                String member, String role) throws IOException {
+    //Construct the service account email.
+    //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
+    //you want to delete the key.
+    //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
     serviceAccount = serviceAccount + "@" + projectId + ".iam.gserviceaccount.com";
 
-    // Initializes the IAMClient service.
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
       // Grants your member the "Log writer" role for your project.
       addBinding(iamClient, projectId, serviceAccount, member, role);
@@ -74,7 +80,8 @@ public class Quickstart {
     }
   }
 
-  public static void addBinding(IAMClient iamClient, String projectId, String serviceAccount, String member, String role) {
+  public static void addBinding(IAMClient iamClient, String projectId, String serviceAccount,
+                                String member, String role) {
     // Gets the project's policy.
     Policy policy = getPolicy(iamClient, projectId, serviceAccount);
 
@@ -85,7 +92,7 @@ public class Quickstart {
 
     Policy.Builder updatedPolicy = policy.toBuilder();
 
-    // Finds binding in policy, if it exists.
+    // Get the binding if present in the policy.
     Binding binding = null;
     for (Binding b : updatedPolicy.getBindingsList()) {
       if (b.getRole().equals(role)) {
@@ -101,7 +108,7 @@ public class Quickstart {
       // If binding does not exist, adds binding to policy.
       binding = Binding.newBuilder()
               .setRole(role)
-              .addAllMembers(Collections.singletonList(member))
+              .addMembers(member)
               .build();
       updatedPolicy.addBindings(binding);
     }
@@ -110,8 +117,8 @@ public class Quickstart {
     setPolicy(iamClient, projectId, serviceAccount, updatedPolicy.build());
   }
 
-  public static void removeMember(
-          IAMClient iamClient, String projectId, String serviceAccount, String member, String role) {
+  public static void removeMember(IAMClient iamClient, String projectId, String serviceAccount,
+                                  String member, String role) {
     // Gets the project's policy.
     Policy.Builder policy = getPolicy(iamClient, projectId, serviceAccount).toBuilder();
 
@@ -151,22 +158,22 @@ public class Quickstart {
     // IAMClient API.
     GetIamPolicyRequest request = GetIamPolicyRequest.newBuilder()
             .setResource(ServiceAccountName.of(projectId, serviceAccount).toString())
-            .setOptions(GetPolicyOptions.newBuilder().build())
             .build();
     return iamClient.getIamPolicy(request);
   }
 
-  private static void setPolicy(IAMClient iamClient, String projectId, String serviceAccount, Policy policy) {
-    // Sets the project's policy by calling the
-    // Cloud Resource Manager Projects API.
+  private static void setPolicy(IAMClient iamClient, String projectId,
+                                String serviceAccount, Policy policy) {
+    List<String> paths = Arrays.asList("bindings", "etag");
+    // Sets a project's policy.
     SetIamPolicyRequest request = SetIamPolicyRequest.newBuilder()
             .setResource(ServiceAccountName.of(projectId, serviceAccount).toString())
             .setPolicy(policy)
-            //A FieldMask specifying which fields of the policy to modify. Only
+            // A FieldMask specifying which fields of the policy to modify. Only
             //  the fields in the mask will be modified. If no mask is provided, the
             //  following default mask is used:
             //  `paths: "bindings, etag"`
-            .setUpdateMask(FieldMask.newBuilder().addAllPaths(Arrays.asList("bindings", "etag")).build())
+            .setUpdateMask(FieldMask.newBuilder().addAllPaths(paths).build())
             .build();
     iamClient.setIamPolicy(request);
   }

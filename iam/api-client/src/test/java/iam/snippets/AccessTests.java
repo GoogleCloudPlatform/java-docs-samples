@@ -46,8 +46,8 @@ public class AccessTests {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            String.format("Environment variable '%s' is required to perform these tests.", varName));
+          System.getenv(varName),
+          String.format("Environment variable '%s' is required to perform these tests.", varName));
   }
 
   @BeforeClass
@@ -58,10 +58,11 @@ public class AccessTests {
   }
 
   @AfterClass
-  public static void removeUnusedStaff() throws IOException {
+  public static void cleanup() throws IOException {
     try(IAMClient client = IAMClient.create()) {
+      String serviceAccName = ServiceAccountName.of(PROJECT_ID, SERVICE_ACCOUNT).toString();
       DeleteServiceAccountRequest request = DeleteServiceAccountRequest.newBuilder()
-              .setName(ServiceAccountName.of(PROJECT_ID, SERVICE_ACCOUNT).toString() + "@" + PROJECT_ID + ".iam.gserviceaccount.com")
+              .setName(serviceAccName + "@" + PROJECT_ID + ".iam.gserviceaccount.com")
               .build();
       client.deleteServiceAccount(request);
     }
@@ -94,43 +95,67 @@ public class AccessTests {
 
   @Test
   public void testGetPolicy() throws IOException {
-    GetPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
-    String got = bout.toString();
-    assertThat(got, containsString("Policy retrieved: "));
+    Policy policy = GetPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
+    assertNotNull(policy);
+    assertNotNull(policy.getEtag());
   }
 
   @Test
   public void testSetPolicy() throws IOException {
     Policy policy = GetPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
-    SetPolicy.setPolicy(policy, PROJECT_ID, SERVICE_ACCOUNT);
-    String got = bout.toString();
-    assertThat(got, containsString("Policy retrieved: "));
+    Policy setPolicy = SetPolicy.setPolicy(policy, PROJECT_ID, SERVICE_ACCOUNT);
+    assertThat("version of updated policy should be incremented",
+            setPolicy.getVersion() > policy.getVersion()
+    );
   }
 
   @Test
   public void testAddBinding() {
-    AddBinding.addBinding(policyMock);
-    String got = bout.toString();
-    assertThat(got, containsString("Added binding: "));
+    String role = "roles/role-to-add";
+    List<String> members = new ArrayList<>();
+    members.add("user:member-to-add@example.com");
+    policyMock = AddBinding.addBinding(policyMock, role, members);
+    assertNotNull(policyMock);
+    boolean bindingAdded = false;
+    for (Binding b : policyMock.getBindingsList()) {
+      if (b.getRole().equals(role) && b.getMembersList().containsAll(members)) {
+        bindingAdded = true;
+        break;
+      }
+    }
+    assertThat("policy should contain new binding", bindingAdded);
   }
 
   @Test
   public void testAddMember() {
-    AddMember.addMember(policyMock);
-    String got = bout.toString();
-    assertThat(
-            got,
-            containsString("Member user:member-to-add@example.com added to role roles/existing-role"));
+    String role = "roles/existing-role";
+    String member = "user:member-to-add@example.com";
+    policyMock = AddMember.addMember(policyMock, role, member);
+    assertNotNull(policyMock);
+    boolean memberAdded = false;
+    for (Binding b : policyMock.getBindingsList()) {
+      if (b.getRole().equals(role) && b.getMembersList().contains(member)) {
+        memberAdded = true;
+        break;
+      }
+    }
+    assertThat("policy should contain role and new member", memberAdded);
   }
 
   @Test
   public void testRemoveMember() {
-    RemoveMember.removeMember(policyMock);
-    String got = bout.toString();
-    assertThat(
-            got,
-            containsString(
-                    "Member user:member-to-remove@example.com removed from roles/existing-role"));
+    String role = "roles/existing-role";
+    String member = "user:member-to-add@example.com";
+    policyMock = RemoveMember.removeMember(policyMock, role, member);
+    assertNotNull(policyMock);
+    boolean memberRemoved = true;
+    for (Binding b : policyMock.getBindingsList()) {
+      if (b.getRole().equals(role) && b.getMembersList().contains(member)) {
+        memberRemoved = false;
+        break;
+      }
+    }
+    assertThat("policy should not contain member", memberRemoved);
   }
 
   @Test
@@ -138,7 +163,7 @@ public class AccessTests {
     TestPermissions.testPermissions("projects/" + PROJECT_ID);
     String got = bout.toString();
     assertThat(
-            got,
-            containsString("Of the permissions listed in the request, the caller has the following: "));
+        got,
+        containsString("Of the permissions listed in the request, the caller has the following: "));
   }
 }

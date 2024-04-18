@@ -39,13 +39,14 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickstartTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String SERVICE_ACCOUNT = "iam-test-account-" + UUID.randomUUID().toString().split("-")[0];
+  private static final String SERVICE_ACCOUNT =
+          "iam-test-account-" + UUID.randomUUID().toString().split("-")[0];
   private String serviceAccountEmail;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            String.format("Environment variable '%s' is required to perform these tests.", varName));
+          System.getenv(varName),
+          String.format("Environment variable '%s' is required to perform these tests.", varName));
   }
 
   @BeforeClass
@@ -77,8 +78,9 @@ public class QuickstartTests {
   @After
   public void tearDown() throws IOException {
     try (IAMClient iamClient = IAMClient.create()) {
+      String serviceAccountName = SERVICE_ACCOUNT + "@" + PROJECT_ID + ".iam.gserviceaccount.com";
       DeleteServiceAccountRequest request = DeleteServiceAccountRequest.newBuilder()
-              .setName(ServiceAccountName.of(PROJECT_ID, SERVICE_ACCOUNT + "@" + PROJECT_ID + ".iam.gserviceaccount.com").toString())
+              .setName(ServiceAccountName.of(PROJECT_ID, serviceAccountName).toString())
               .build();
       iamClient.deleteServiceAccount(request);
     }
@@ -94,7 +96,7 @@ public class QuickstartTests {
       // Tests addBinding()
       Quickstart.addBinding(iamClient, PROJECT_ID, serviceAccountName, member, role);
 
-      // Get the project's polcy and confirm that the member is in the policy
+      // Get the project's policy and confirm that the member is present in the policy
       Policy policy = Quickstart.getPolicy(iamClient, PROJECT_ID, serviceAccountName);
       Binding binding = null;
       List<Binding> bindings = policy.getBindingsList();

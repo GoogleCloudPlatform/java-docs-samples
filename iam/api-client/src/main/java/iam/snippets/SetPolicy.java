@@ -17,7 +17,6 @@ package iam.snippets;
 
 // [START iam_set_policy]
 import com.google.cloud.iam.admin.v1.IAMClient;
-import com.google.iam.admin.v1.ProjectName;
 import com.google.iam.admin.v1.ServiceAccountName;
 import com.google.iam.v1.Policy;
 import com.google.iam.v1.SetIamPolicyRequest;
@@ -25,37 +24,45 @@ import com.google.protobuf.FieldMask;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 public class SetPolicy {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace the variables before running the sample.
-    // TODO: Replace with your project ID".
+    // TODO: Replace with your project ID.
     String projectId = "your-project-id";
-    // TODO: Replace with your service account name".
+    // TODO: Replace with your service account name.
     String serviceAccount = "your-service-account";
-    // TODO: Replace with your policy, GetPolicy.getPolicy(projectId, serviceAccount)".
+    // TODO: Replace with your policy, GetPolicy.getPolicy(projectId, serviceAccount).
     Policy policy = Policy.newBuilder().build();
 
     setPolicy(policy, projectId, serviceAccount);
   }
 
   // Sets a project's policy.
-  public static void setPolicy(Policy policy, String projectId, String serviceAccount) throws IOException {
-    // policy = service.Projects.GetIAmPolicy(new GetIamPolicyRequest(), your-project-id).Execute();
-    // projectId = "my-project-id"
+  public static Policy setPolicy(Policy policy, String projectId, String serviceAccount)
+          throws IOException {
+    //Construct the service account email.
+    //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
+    //you want to delete the key.
+    //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
     String serviceAccountEmail = serviceAccount + "@" + projectId + ".iam.gserviceaccount.com";
+
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try(IAMClient iamClient = IAMClient.create()) {
+      List<String> paths = Arrays.asList("bindings", "etag");
+
       SetIamPolicyRequest request = SetIamPolicyRequest.newBuilder()
               .setResource(ServiceAccountName.of(projectId, serviceAccountEmail).toString())
               .setPolicy(policy)
-              //A FieldMask specifying which fields of the policy to modify. Only
+              // A FieldMask specifying which fields of the policy to modify. Only
               //  the fields in the mask will be modified. If no mask is provided, the
               //  following default mask is used:
               //  `paths: "bindings, etag"`
-              .setUpdateMask(FieldMask.newBuilder().addAllPaths(Arrays.asList("bindings", "etag")).build())
+              .setUpdateMask(FieldMask.newBuilder().addAllPaths(paths).build())
               .build();
-      Policy response = iamClient.setIamPolicy(request);
-      System.out.println("Policy set: " + response.toString());
+      return iamClient.setIamPolicy(request);
     }
   }
 }
