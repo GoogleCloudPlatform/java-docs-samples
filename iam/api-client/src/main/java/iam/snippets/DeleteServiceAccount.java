@@ -33,10 +33,16 @@ public class DeleteServiceAccount {
   }
 
   // Deletes a service account.
-  public static void deleteServiceAccount(String projectId, String serviceAccountName) throws IOException {
+  public static void deleteServiceAccount(String projectId, String serviceAccountName)
+          throws IOException {
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try(IAMClient client = IAMClient.create()) {
       DeleteServiceAccountRequest request = DeleteServiceAccountRequest.newBuilder()
-              .setName(ServiceAccountName.of(projectId, serviceAccountName).toString() + "@" + projectId + ".iam.gserviceaccount.com")
+              .setName(ServiceAccountName.of(projectId, serviceAccountName).toString()
+                      .concat( "@" + projectId)
+                      .concat(".iam.gserviceaccount.com")
+              )
               .build();
       client.deleteServiceAccount(request);
 

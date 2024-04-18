@@ -34,7 +34,8 @@ public class CreateServiceAccount {
   }
 
   // Creates a service account.
-  public static void createServiceAccount(String projectId, String serviceAccountName) throws IOException {
+  public static ServiceAccount createServiceAccount(String projectId, String serviceAccountName)
+          throws IOException {
     ServiceAccount serviceAccount = ServiceAccount
             .newBuilder()
             .setDisplayName("your-display-name")
@@ -44,10 +45,13 @@ public class CreateServiceAccount {
             .setAccountId(serviceAccountName)
             .setServiceAccount(serviceAccount)
             .build();
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try(IAMClient iamClient = IAMClient.create()) {
       serviceAccount = iamClient.createServiceAccount(request);
     }
     System.out.println("Created service account: " + serviceAccount.getEmail());
+    return serviceAccount;
   }
 }
 // [END iam_create_service_account]

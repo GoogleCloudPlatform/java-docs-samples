@@ -29,24 +29,24 @@ public class DeleteServiceAccountKey {
     // TODO(developer): Replace the variables before running the sample.
     String projectId = "your-project-id";
     String serviceAccountName = "my-service-account-name";
-    String serviceAccountKey = "key-name";
+    String serviceAccountKeyId = "service-account-key-id";
 
-    deleteKey(projectId, serviceAccountName, serviceAccountKey);
+    deleteKey(projectId, serviceAccountName, serviceAccountKeyId);
   }
 
   // Deletes a service account key.
   public static void deleteKey(String projectId, String serviceAccountName,
-                               String serviceAccountKey) throws IOException {
-    // Construct the service account email.
-    // You can modify the ".iam.gserviceaccount.com" to match the service account name in which
-    // you want to delete the key.
-    // See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
-    try (IAMClient iamClient = IAMClient.create()){
+                               String serviceAccountKeyId) throws IOException {
+    //Initialize client that will be used to send requests.
+    //This client only needs to be created once, and can be reused for multiple requests.
+    try (IAMClient iamClient = IAMClient.create()) {
+      //Construct the service account email.
+      //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
+      //you want to delete the key.
+      //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
       String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
 
-      String name = KeyName.of(projectId, serviceAccountName, serviceAccountKey)
-              .toString()
-              .replace(serviceAccountName, serviceAccountEmail);
+      String name = KeyName.of(projectId, serviceAccountEmail, serviceAccountKeyId).toString();
 
       DeleteServiceAccountKeyRequest request = DeleteServiceAccountKeyRequest.newBuilder()
               .setName(name)
@@ -55,7 +55,7 @@ public class DeleteServiceAccountKey {
       // Then you can delete the key
       iamClient.deleteServiceAccountKey(request);
 
-      System.out.println("Deleted key: " + serviceAccountKey);
+      System.out.println("Deleted key: " + serviceAccountKeyId);
     }
   }
 }

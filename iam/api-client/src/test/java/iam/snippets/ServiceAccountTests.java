@@ -24,6 +24,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
+
+import com.google.iam.admin.v1.ServiceAccount;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,7 +43,7 @@ public class ServiceAccountTests {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String SERVICE_ACCOUNT =
           "service-account-" + UUID.randomUUID().toString().substring(0, 8);
-  private static String SERVICE_ACCOUNT_KEY;
+  private static String SERVICE_ACCOUNT_KEY_ID;
   private ByteArrayOutputStream bout;
   private final PrintStream originalOut = System.out;
 
@@ -49,8 +51,8 @@ public class ServiceAccountTests {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            String.format("Environment variable '%s' is required to perform these tests.", varName));
+          System.getenv(varName),
+          String.format("Environment variable '%s' is required to perform these tests.", varName));
   }
 
   @BeforeClass
@@ -73,9 +75,13 @@ public class ServiceAccountTests {
 
   @Test
   public void stage1_testServiceAccountCreate() throws IOException {
-    CreateServiceAccount.createServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+    ServiceAccount serviceAccount = CreateServiceAccount
+            .createServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Created service account: " + SERVICE_ACCOUNT));
+    assertNotNull(serviceAccount);
+    assertThat(serviceAccount.getName(), containsString(SERVICE_ACCOUNT));
+
   }
 
   @Test
@@ -88,17 +94,20 @@ public class ServiceAccountTests {
   @Test
   public void stage2_testServiceAccountRename() throws IOException {
     String renameTo = "your-new-display-name";
-    RenameServiceAccount.renameServiceAccount(PROJECT_ID, SERVICE_ACCOUNT, renameTo);
+    ServiceAccount serviceAccount = RenameServiceAccount
+            .renameServiceAccount(PROJECT_ID, SERVICE_ACCOUNT, renameTo);
     String got = bout.toString();
     assertThat(got, containsString("Updated display name"));
     assertThat(got, containsString(renameTo));
+    assertNotNull(serviceAccount);
+    assertThat(renameTo, containsString(serviceAccount.getDisplayName()));
   }
 
   @Test
   public void stage2_testServiceAccountKeyCreate() {
-    SERVICE_ACCOUNT_KEY = CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
+    SERVICE_ACCOUNT_KEY_ID = CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
-    assertNotNull(SERVICE_ACCOUNT_KEY);
+    assertNotNull(SERVICE_ACCOUNT_KEY_ID);
     assertThat(got, containsString("Key created successfully"));
   }
 
@@ -112,7 +121,7 @@ public class ServiceAccountTests {
   @Test
   public void stage2_testServiceAccountKeyDisable() {
     DisableServiceAccountKey
-            .disableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
+            .disableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY_ID);
     String got = bout.toString();
     assertThat(got, containsString("Disabled service account key"));
   }
@@ -120,16 +129,21 @@ public class ServiceAccountTests {
   @Test
   public void stage2_testServiceAccountKeyEnable() {
     EnableServiceAccountKey
-            .enableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
+            .enableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY_ID);
     String got = bout.toString();
     assertThat(got, containsString("Enabled service account key"));
   }
 
   @Test
   public void stage3_testServiceAccountKeyDelete() throws IOException {
-    DeleteServiceAccountKey.deleteKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
+    DeleteServiceAccountKey.deleteKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY_ID);
     String got = bout.toString();
     assertThat(got, containsString("Deleted key:"));
+
+    bout.reset();
+    ListServiceAccountKeys.listKeys(PROJECT_ID, SERVICE_ACCOUNT);
+    got = bout.toString();
+    assertThat(got, !containsString(SERVICE_ACCOUNT_KEY_ID).matches(got));
   }
 
   @Test
@@ -151,5 +165,10 @@ public class ServiceAccountTests {
     DeleteServiceAccount.deleteServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
     String got = bout.toString();
     assertThat(got, containsString("Deleted service account:"));
+
+    bout.reset();
+    ListServiceAccounts.listServiceAccounts(PROJECT_ID);
+    got = bout.toString();
+    assertThat(got, !containsString(SERVICE_ACCOUNT).matches(got));
   }
 }

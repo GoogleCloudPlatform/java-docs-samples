@@ -37,10 +37,16 @@ public class RenameServiceAccount {
   }
 
   // Changes a service account's display name.
-  public static void renameServiceAccount(String projectId, String serviceAccountName, String displayName) throws IOException {
-    // String projectId = "my-project-id";
-    // String serviceAccountName = "my-service-account-name";
+  public static ServiceAccount renameServiceAccount(String projectId, String serviceAccountName,
+                                                    String displayName) throws IOException {
+    // Construct the service account email.
+    // You can modify the ".iam.gserviceaccount.com" to match the service account name in which
+    // you want to delete the key.
+    // See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
+
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
       // First, get a service account using getServiceAccount or listServiceAccounts
       GetServiceAccountRequest serviceAccountRequest = GetServiceAccountRequest.newBuilder()
@@ -63,6 +69,7 @@ public class RenameServiceAccount {
                       + serviceAccount.getName()
                       + " to: "
                       + serviceAccount.getDisplayName());
+      return serviceAccount;
     }
   }
 }
