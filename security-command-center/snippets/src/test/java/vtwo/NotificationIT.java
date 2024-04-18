@@ -19,13 +19,14 @@ package vtwo;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.cloud.securitycenter.v2.NotificationConfig;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+import com.google.pubsub.v1.ProjectTopicName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -44,12 +45,12 @@ import vtwo.notifications.UpdateNotification;
 @RunWith(JUnit4.class)
 public class NotificationIT {
 
-  // TODO(Developer): Replace the below variables.
+  // TODO: Replace the below variables.
   private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
   private static final String LOCATION = "global";
   private static final String NOTIFICATION_RULE_CREATE =
       "random-notification-id-" + UUID.randomUUID();
-  private static final String NOTIFICATION_TOPIC = "test-topic";
+  private static final String NOTIFICATION_TOPIC = "test-topic-" + UUID.randomUUID();
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static ByteArrayOutputStream stdOut;
@@ -75,6 +76,9 @@ public class NotificationIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("SCC_PROJECT_ID");
 
+    // Create pubsub topic.
+    createPubSubTopic(PROJECT_ID, NOTIFICATION_TOPIC);
+
     // Create notification rules.
     NotificationConfig result = CreateNotification.createNotificationConfig(PROJECT_ID, LOCATION,
         NOTIFICATION_TOPIC, NOTIFICATION_RULE_CREATE);
@@ -82,7 +86,6 @@ public class NotificationIT {
 
     stdOut = null;
     System.setOut(out);
-    TimeUnit.MINUTES.sleep(3);
   }
 
   @AfterClass
@@ -90,9 +93,12 @@ public class NotificationIT {
     final PrintStream out = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+
     DeleteNotification.deleteNotificationConfig(PROJECT_ID, LOCATION, NOTIFICATION_RULE_CREATE);
     assertThat(stdOut.toString()).contains(
         "Deleted Notification config: " + NOTIFICATION_RULE_CREATE);
+
+    deletePubSubTopic(PROJECT_ID, NOTIFICATION_TOPIC);
 
     stdOut = null;
     System.setOut(out);
@@ -133,6 +139,18 @@ public class NotificationIT {
         LOCATION, NOTIFICATION_RULE_CREATE);
 
     assertThat(notificationConfig.getDescription()).contains("updated description");
+  }
+
+  public static void createPubSubTopic(String projectId, String topicId) throws IOException {
+    ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
+    TopicAdminClient client = TopicAdminClient.create();
+    client.createTopic(topicName);
+  }
+
+  public static void deletePubSubTopic(String projectId, String topicId) throws IOException {
+    ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
+    TopicAdminClient client = TopicAdminClient.create();
+    client.deleteTopic(topicName);
   }
 
 }
