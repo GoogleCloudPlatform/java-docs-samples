@@ -111,6 +111,10 @@ public class RoleIT {
     ListRoles.listRoles(projectId);
     assertThat(bout.toString().contains(roleId));
 
+    // Test disable role.
+    DisableRole.disableRole(projectId, roleId);
+    assertThat(bout.toString().contains("Stage: DISABLED"));
+
     bout.reset();
     // Test delete role.
     DeleteRole.deleteRole(projectId, roleId);
