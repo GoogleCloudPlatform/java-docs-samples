@@ -46,6 +46,9 @@ public class CaptureGrpcMetric {
 
   // [START spanner_opencensus_capture_grpc_metric]
   static void captureGrpcMetric(DatabaseClient dbClient) {
+    // Add io.grpc:grpc-census and io.opencensus:opencensus-exporter-stats-stackdriver
+    //  dependencies to enable gRPC metrics.
+    
     // Register basic gRPC views.
     RpcViews.registerClientGrpcBasicViews();
 
