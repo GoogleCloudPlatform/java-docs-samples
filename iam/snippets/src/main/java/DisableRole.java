@@ -40,8 +40,7 @@ public class DisableRole {
               Role.newBuilder()
                       .setName(roleName)
                       .setStage(Role.RoleLaunchStage.DISABLED);
-    // See launch stage enums at
-    // https://cloud.google.com/iam/docs/reference/rpc/google.iam.admin.v1#rolelaunchstage
+
     FieldMask fieldMask = FieldMask.newBuilder().addPaths("stage").build();
     UpdateRoleRequest updateRoleRequest =
               UpdateRoleRequest.newBuilder()
