@@ -119,10 +119,11 @@ public class SourceIT {
 
   @Test
   public void testUpdateFindingSource() throws IOException {
-    Finding finding = UpdateFindingSource.updateFinding(ORGANIZATION_ID, LOCATION,
+    Finding findingUpdated = UpdateFindingSource.updateFinding(ORGANIZATION_ID, LOCATION,
         SOURCE.getName().split("/")[3], FINDING.getName().split("/")[7]);
 
-    assertThat(stdOut.toString()).contains("Updated Finding: ");
+    assertThat(findingUpdated).isNotNull();
+    assertThat(findingUpdated).isNotEqualTo(Finding.getDefaultInstance());
   }
 
 }

@@ -53,6 +53,7 @@ public class UpdateFindingSource {
       Finding finding =
           Finding.newBuilder()
               .setName(findingName.toString())
+              .setDescription("Updated finding source")
               .setEventTime(
                   Timestamp.newBuilder()
                       .setSeconds(eventTime.getEpochSecond())
@@ -66,7 +67,7 @@ public class UpdateFindingSource {
       // Call the API.
       Finding response = client.updateFinding(request.build());
 
-      System.out.println("Updated Finding: " + response);
+      System.out.println("Updated finding source: " + response);
       return response;
     } catch (IOException e) {
       throw new RuntimeException("Couldn't create client.", e);
