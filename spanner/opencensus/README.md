@@ -1,5 +1,7 @@
 # Cloud Spanner OpenCensus Sample
 
+>Note: OpenCensus project is deprecated. See [Sunsetting OpenCensus](https://opentelemetry.io/blog/2023/sunsetting-opencensus/). We recommend migrating to OpenTelemetry, the successor project.
+
 An example that demonstrates round-trip and query stats latency of [Google Cloud Spanner](https://cloud.google.com/spanner/) operations.
 
 This sample requires [Java](https://www.java.com/en/download/) and [Maven](http://maven.apache.org/) for building the application.
