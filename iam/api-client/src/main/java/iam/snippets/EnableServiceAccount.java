@@ -23,20 +23,29 @@ import java.io.IOException;
 
 public class EnableServiceAccount {
 
+  public static void main(String[] args) throws IOException {
+    // TODO(Developer): Replace the below variables before running.
+    String projectId = "your-project-id";
+    String serviceAccountName = "your-service-account-name";
+
+    enableServiceAccount(projectId, serviceAccountName);
+  }
+
   // Enables a service account.
-  public static void enableServiceAccount(String projectId, String serviceAccountName) {
+  public static void enableServiceAccount(String projectId, String serviceAccountName)
+          throws IOException {
     // String projectId = "my-project-id";
     // String serviceAccountName = "my-service-account-name";
-
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
+
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
       iamClient.enableServiceAccount(EnableServiceAccountRequest.newBuilder()
               .setName("projects/" + projectId + "/serviceAccounts/" + serviceAccountEmail)
               .build());
 
       System.out.println("Enabled service account: " + serviceAccountName);
-    } catch (IOException ex) {
-      System.out.println("Unable to enable service account");
     }
   }
 }

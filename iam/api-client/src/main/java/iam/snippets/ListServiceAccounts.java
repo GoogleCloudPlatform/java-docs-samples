@@ -18,24 +18,33 @@ package iam.snippets;
 // [START iam_list_service_accounts]
 
 import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.ServiceAccount;
 import java.io.IOException;
 
 public class ListServiceAccounts {
 
+  public static void main(String[] args) throws IOException {
+    // TODO(Developer): Replace the below variables before running.
+    String projectId = "your-project-id";
+
+    IAMClient.ListServiceAccountsPagedResponse response = listServiceAccounts(projectId);
+
+    for (ServiceAccount account : response.iterateAll()) {
+      System.out.println("Name: " + account.getName());
+      System.out.println("Display name: " + account.getDisplayName());
+      System.out.println("Email: " + account.getEmail() + "\n");
+    }
+  }
+
   // Lists all service accounts for the current project.
-  public static void listServiceAccounts(String projectId) {
+  public static IAMClient.ListServiceAccountsPagedResponse listServiceAccounts(String projectId)
+          throws IOException {
     // String projectId = "my-project-id"
 
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
-      iamClient.listServiceAccounts("projects/" + projectId).getPage()
-              .streamValues().forEach(account -> {
-                System.out.println("Name: " + account.getName());
-                System.out.println("Display name: " + account.getDisplayName());
-                System.out.println("Email: " + account.getEmail() + "\n");
-                System.out.println();
-              });
-    } catch (IOException ex) {
-      System.out.println("Unable to find service accounts");
+      return iamClient.listServiceAccounts("projects/" + projectId);
     }
   }
 }

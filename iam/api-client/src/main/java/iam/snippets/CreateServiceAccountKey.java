@@ -24,28 +24,39 @@ import java.io.IOException;
 
 public class CreateServiceAccountKey {
 
+  public static void main(String[] args) throws IOException {
+    // TODO(Developer): Replace the below variables before running.
+    String projectId = "your-project-id";
+    String serviceAccountName = "your-service-account-name";
+
+    ServiceAccountKey key = createKey(projectId, serviceAccountName);
+
+    System.out.println("Created key name: " + extractKeyName(key));
+  }
+
   // Creates a key for a service account.
-  public static String createKey(String projectId, String accountName) {
+  public static ServiceAccountKey createKey(String projectId, String accountName)
+          throws IOException {
     // String projectId = "project-id";
     // String accountName = "my-service-account-name";
     String email = accountName + "@" + projectId + ".iam.gserviceaccount.com";
+
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
-      CreateServiceAccountKeyRequest req = createAccountKeyReq(projectId, email);
+      CreateServiceAccountKeyRequest req = CreateServiceAccountKeyRequest.newBuilder()
+              .setName("projects/" + projectId + "/serviceAccounts/" + email)
+              .build();
       ServiceAccountKey createdKey = iamClient.createServiceAccountKey(req);
       System.out.println("Key created successfully");
 
-      String keyName = createdKey.getName();
-      return keyName.substring(keyName.lastIndexOf("/") + 1).trim();
-    } catch (IOException ex) {
-      System.out.println("Failed to create key");
-      return null;
+      return createdKey;
     }
   }
 
-  private static CreateServiceAccountKeyRequest createAccountKeyReq(String projId, String email) {
-    return CreateServiceAccountKeyRequest.newBuilder()
-            .setName("projects/" + projId + "/serviceAccounts/" + email)
-            .build();
+  //retrieves key name from key object
+  public static String extractKeyName(ServiceAccountKey key) {
+    return key.getName().substring(key.getName().lastIndexOf("/") + 1).trim();
   }
 }
 // [END iam_create_key]

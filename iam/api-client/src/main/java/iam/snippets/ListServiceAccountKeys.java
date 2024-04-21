@@ -24,27 +24,32 @@ import java.util.List;
 
 public class ListServiceAccountKeys {
 
+  public static void main(String[] args) throws IOException {
+    // TODO(Developer): Replace the below variables before running.
+    String projectId = "your-project-id";
+    String serviceAccountName = "your-service-account-name";
+
+    List<ServiceAccountKey> keys = listKeys(projectId, serviceAccountName);
+
+    keys.forEach(key -> System.out.println("Key: " + key.getName()));
+  }
+
   // Lists all keys for a service account.
-  public static void listKeys(String projectId, String serviceAccountName) {
+  public static List<ServiceAccountKey> listKeys(String projectId, String serviceAccountName)
+          throws IOException {
     // String projectId = "my-project-id";
     // String serviceAccountName = "my-service-account-name";
 
-    String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
+    String accountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
     try (IAMClient iamClient = IAMClient.create()) {
-      ListServiceAccountKeysRequest req = createListKeysReq(projectId, serviceAccountEmail);
-      List<ServiceAccountKey> keys = iamClient.listServiceAccountKeys(req)
-              .getKeysList();
+      ListServiceAccountKeysRequest req = ListServiceAccountKeysRequest.newBuilder()
+              .setName("projects/" + projectId + "/serviceAccounts/" + accountEmail)
+              .build();
 
-      keys.forEach(key -> System.out.println("Key: " + key.getName()));
-    } catch (IOException ex) {
-      System.out.println("Unable to find service account keys");
+      return iamClient.listServiceAccountKeys(req).getKeysList();
     }
-  }
-
-  private static ListServiceAccountKeysRequest createListKeysReq(String projectId, String email) {
-    return ListServiceAccountKeysRequest.newBuilder()
-            .setName("projects/" + projectId + "/serviceAccounts/" + email)
-            .build();
   }
 }
 // [END iam_list_keys]

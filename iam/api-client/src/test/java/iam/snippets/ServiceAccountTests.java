@@ -17,11 +17,17 @@ package iam.snippets;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
@@ -78,10 +84,10 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage1_testServiceAccountsList() {
-    ListServiceAccounts.listServiceAccounts(PROJECT_ID);
-    String got = bout.toString();
-    assertThat(got, containsString("Name:"));
+  public void stage1_testServiceAccountsList() throws IOException {
+    IAMClient.ListServiceAccountsPagedResponse response =
+            ListServiceAccounts.listServiceAccounts(PROJECT_ID);
+    assertTrue(response.iterateAll().iterator().hasNext());
   }
 
   @Test
@@ -92,18 +98,21 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage2_testServiceAccountKeyCreate() {
-    SERVICE_ACCOUNT_KEY = CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
-    String got = bout.toString();
+  public void stage2_testServiceAccountKeyCreate() throws IOException {
+    ServiceAccountKey key = CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
+    SERVICE_ACCOUNT_KEY = CreateServiceAccountKey.extractKeyName(key);
+
     assertNotNull(SERVICE_ACCOUNT_KEY);
-    assertThat(got, containsString("Key created successfully"));
   }
 
   @Test
-  public void stage2_testServiceAccountKeysList() {
-    ListServiceAccountKeys.listKeys(PROJECT_ID, SERVICE_ACCOUNT);
-    String got = bout.toString();
-    assertThat(got, containsString("Key:"));
+  public void stage2_testServiceAccountKeysList() throws IOException {
+    List<ServiceAccountKey> keys = ListServiceAccountKeys.listKeys(PROJECT_ID, SERVICE_ACCOUNT);
+
+    assertNotEquals(0, keys.size());
+    assertTrue(keys.stream()
+            .map(CreateServiceAccountKey::extractKeyName)
+            .anyMatch(keyName -> keyName.equals(SERVICE_ACCOUNT_KEY)));
   }
 
   @Test
@@ -130,15 +139,17 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage4_testDisableServiceAccount() {
+  public void stage4_testDisableServiceAccount() throws IOException {
     DisableServiceAccount.disableServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+
     String got = bout.toString();
     assertThat(got, containsString("Disabled service account:"));
   }
 
   @Test
-  public void stage5_testEnableServiceAccount() {
+  public void stage5_testEnableServiceAccount() throws IOException {
     EnableServiceAccount.enableServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+
     String got = bout.toString();
     assertThat(got, containsString("Enabled service account:"));
   }
