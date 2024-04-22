@@ -94,19 +94,34 @@ public class AccessTests {
   }
 
   @Test
-  public void testGetPolicy() throws IOException {
-    Policy policy = GetPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
+  public void testGetServiceAccountPolicy() throws IOException {
+    Policy policy = GetServiceAccountPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
     assertNotNull(policy);
     assertNotNull(policy.getEtag());
   }
 
   @Test
-  public void testSetPolicy() throws IOException {
-    Policy policy = GetPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
-    Policy setPolicy = SetPolicy.setPolicy(policy, PROJECT_ID, SERVICE_ACCOUNT);
+  public void testSetServiceAccountPolicy() throws IOException {
+    Policy policy = GetServiceAccountPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
+    Policy setPolicy = SetServiceAccountPolicy.setServiceAccountPolicy(policy, PROJECT_ID, SERVICE_ACCOUNT);
     assertThat("version of updated policy should be incremented",
             setPolicy.getVersion() > policy.getVersion()
     );
+  }
+
+  @Test
+  public void testGetProjectPolicy() throws IOException {
+    Policy policy = GetServiceAccountPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
+    assertNotNull(policy);
+    assertNotNull(policy.getEtag());
+  }
+
+  @Test
+  public void testSetProjectPolicy() throws IOException {
+    Policy policy = GetProjectPolicy.getProjectPolicy(PROJECT_ID);
+    Policy setPolicy = SetProjectPolicy.setProjectPolicy(policy, PROJECT_ID);
+    assertNotNull(setPolicy);
+    assertNotNull(setPolicy.getEtag());
   }
 
   @Test

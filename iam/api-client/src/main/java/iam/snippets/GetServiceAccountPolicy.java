@@ -15,7 +15,7 @@
 
 package iam.snippets;
 
-// [START iam_get_policy]
+// [START iam_service_account_get_policy]
 
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.ServiceAccountName;
@@ -24,7 +24,7 @@ import com.google.iam.v1.Policy;
 
 import java.io.IOException;
 
-public class GetPolicy {
+public class GetServiceAccountPolicy {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace the variables before running the sample.
     // TODO: Replace with your project ID.
@@ -34,7 +34,7 @@ public class GetPolicy {
     getPolicy(projectId, serviceAccount);
   }
 
-  // Gets a project's IAM policy.
+  // Gets a service account's IAM policy.
   public static Policy getPolicy(String projectId, String serviceAccount) throws IOException {
     //Construct the service account email.
     //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
@@ -54,4 +54,4 @@ public class GetPolicy {
     }
   }
 }
-// [END iam_get_policy]
+// [END iam_service_account_get_policy]
