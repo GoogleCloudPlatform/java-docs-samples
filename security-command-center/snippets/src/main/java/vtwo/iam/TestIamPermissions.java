@@ -21,12 +21,29 @@ package vtwo.iam;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.SourceName;
 import com.google.iam.v1.TestIamPermissionsResponse;
+// [END securitycenter_test_iam_permissions_v2]
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestIamPermissions {
 
+  public static void main(String[] args) throws IOException {
+    // TODO: Replace the sample resource name
+    // organizationId: Google Cloud Organization id.
+    String organizationId = "{google-cloud-organization-id}";
+
+    // The source id corresponding to the finding.
+    String sourceId = "{source-id}";
+
+    // The permission. For more information see [IAM Overview].
+    // https://cloud.google.com/iam/docs/overview#permissions.
+    String permission = "{permission}";
+
+    testIamPermissions(organizationId, sourceId, permission);
+  }
+
+  // [START securitycenter_test_iam_permissions_v2]
   // Demonstrates how to verify IAM permissions to create findings.
   public static TestIamPermissionsResponse testIamPermissions(String organizationId,
       String sourceId, String permission) {
@@ -50,6 +67,6 @@ public class TestIamPermissions {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
+  // [END securitycenter_test_iam_permissions_v2]
 }
-// [END securitycenter_test_iam_permissions_v2]
 

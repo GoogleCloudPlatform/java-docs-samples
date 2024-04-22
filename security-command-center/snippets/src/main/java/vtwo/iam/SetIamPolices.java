@@ -24,10 +24,29 @@ import com.google.iam.v1.Binding;
 import com.google.iam.v1.Policy;
 import com.google.iam.v1.SetIamPolicyRequest;
 import com.google.protobuf.FieldMask;
+// [END securitycenter_set_iam_polices_v2]
 import java.io.IOException;
 
 public class SetIamPolices {
 
+  public static void main(String[] args) throws IOException {
+    // TODO: Replace the sample resource name
+    // organizationId: Google Cloud Organization id.
+    String organizationId = "{google-cloud-organization-id}";
+
+    // The source id corresponding to the finding.
+    String sourceId = "{source-id}";
+
+    // Some user email.
+    String userEmail = "{user-email}";
+
+    // Identifies the IAM role.
+    String roleId = "{role-id}";
+
+    setIamPolicySource(organizationId, sourceId, userEmail, roleId);
+  }
+
+  // [START securitycenter_set_iam_polices_v2]
   // Demonstrates how to verify IAM permissions to create findings.
   public static Policy setIamPolicySource(String organizationId, String sourceId, String userEmail,
       String roleId) {
@@ -59,5 +78,5 @@ public class SetIamPolices {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
+  // [END securitycenter_set_iam_polices_v2]
 }
-// [END securitycenter_set_iam_polices_v2]
