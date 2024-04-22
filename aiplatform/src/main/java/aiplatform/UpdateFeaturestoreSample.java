@@ -24,14 +24,14 @@ package aiplatform;
 // [START aiplatform_update_featurestore_sample]
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.aiplatform.v1beta1.Featurestore;
-import com.google.cloud.aiplatform.v1beta1.Featurestore.OnlineServingConfig;
-import com.google.cloud.aiplatform.v1beta1.Featurestore.OnlineServingConfig.Scaling;
-import com.google.cloud.aiplatform.v1beta1.FeaturestoreName;
-import com.google.cloud.aiplatform.v1beta1.FeaturestoreServiceClient;
-import com.google.cloud.aiplatform.v1beta1.FeaturestoreServiceSettings;
-import com.google.cloud.aiplatform.v1beta1.UpdateFeaturestoreOperationMetadata;
-import com.google.cloud.aiplatform.v1beta1.UpdateFeaturestoreRequest;
+import com.google.cloud.aiplatform.v1.Featurestore;
+import com.google.cloud.aiplatform.v1.Featurestore.OnlineServingConfig;
+import com.google.cloud.aiplatform.v1.Featurestore.OnlineServingConfig.Scaling;
+import com.google.cloud.aiplatform.v1.FeaturestoreName;
+import com.google.cloud.aiplatform.v1.FeaturestoreServiceClient;
+import com.google.cloud.aiplatform.v1.FeaturestoreServiceSettings;
+import com.google.cloud.aiplatform.v1.UpdateFeaturestoreOperationMetadata;
+import com.google.cloud.aiplatform.v1.UpdateFeaturestoreRequest;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
