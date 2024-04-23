@@ -30,30 +30,31 @@ public class DisableRole {
     String projectId = "your-project-id";
     String roleId = "testRole";
 
-    disableRole(projectId, roleId);
+    Role role = disableRole(projectId, roleId);
+    System.out.println("Role name: " + role.getName());
+    System.out.println("Role stage: " + role.getStage());
   }
 
-  public static void disableRole(String projectId, String roleId)
+  public static Role disableRole(String projectId, String roleId)
           throws IOException {
     String roleName = "projects/" + projectId + "/roles/" + roleId;
-    Role.Builder roleBuilder =
-              Role.newBuilder()
-                      .setName(roleName)
-                      .setStage(Role.RoleLaunchStage.DISABLED);
+    Role role = Role.newBuilder()
+                    .setName(roleName)
+                    .setStage(Role.RoleLaunchStage.DISABLED)
+                    .build();
 
     FieldMask fieldMask = FieldMask.newBuilder().addPaths("stage").build();
     UpdateRoleRequest updateRoleRequest =
               UpdateRoleRequest.newBuilder()
                       .setName(roleName)
-                      .setRole(roleBuilder)
+                      .setRole(role)
                       .setUpdateMask(fieldMask)
                       .build();
 
     // Initialize client for sending requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
-      Role result = iamClient.updateRole(updateRoleRequest);
-      System.out.println("Disabled role:\n" + result);
+      return iamClient.updateRole(updateRoleRequest);
     }
   }
 }

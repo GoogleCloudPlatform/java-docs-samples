@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.UUID;
+
+import com.google.iam.admin.v1.Role;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -112,8 +114,8 @@ public class RoleIT {
     assertThat(bout.toString().contains(roleId));
 
     // Test disable role.
-    DisableRole.disableRole(projectId, roleId);
-    assertThat(bout.toString().contains("Stage: DISABLED"));
+    Role role = DisableRole.disableRole(projectId, roleId);
+    assertThat(role.getStage().equals(Role.RoleLaunchStage.DISABLED));
 
     bout.reset();
     // Test delete role.
