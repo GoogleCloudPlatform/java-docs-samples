@@ -23,7 +23,9 @@ import com.google.cloud.securitycenter.v2.Source;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.iam.v1.Policy;
 import com.google.iam.v1.TestIamPermissionsResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,6 +42,7 @@ public class IamIT {
   private static Source SOURCE;
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
+  private static ByteArrayOutputStream stdOut;
   @Rule
   public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
       MAX_ATTEMPT_COUNT,
@@ -54,11 +57,17 @@ public class IamIT {
 
   @BeforeClass
   public static void setUp() throws IOException {
+    final PrintStream out = System.out;
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
 
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
 
     // Create source.
     SOURCE = Util.createSource(ORGANIZATION_ID);
+
+    stdOut = null;
+    System.setOut(out);
   }
 
   @Test
