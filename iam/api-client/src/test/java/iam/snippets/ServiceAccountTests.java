@@ -17,12 +17,15 @@ package iam.snippets;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+import com.google.iam.admin.v1.ServiceAccount;
 import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -98,11 +101,29 @@ public class ServiceAccountTests {
   }
 
   @Test
+  public void stage2_testServiceAccountGet() throws IOException {
+    ServiceAccount account = GetServiceAccount.getServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+
+    assertTrue(account.getName().contains(SERVICE_ACCOUNT));
+    assertEquals(PROJECT_ID, account.getProjectId());
+  }
+
+  @Test
   public void stage2_testServiceAccountKeyCreate() throws IOException {
     ServiceAccountKey key = CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
     SERVICE_ACCOUNT_KEY = CreateServiceAccountKey.extractKeyName(key);
 
     assertNotNull(SERVICE_ACCOUNT_KEY);
+  }
+
+  @Test
+  public void stage2_testServiceAccountKeyGet() throws IOException {
+    ServiceAccountKey key = GetServiceAccountKey
+            .getServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
+
+    assertTrue(key.getName().contains(SERVICE_ACCOUNT_KEY));
+    assertTrue(key.getName().contains(PROJECT_ID));
+    assertTrue(key.getName().contains(SERVICE_ACCOUNT));
   }
 
   @Test
@@ -116,19 +137,25 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage2_testServiceAccountKeyDisable() {
+  public void stage2_testServiceAccountKeyDisable() throws IOException {
     DisableServiceAccountKey
         .disableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
-    String got = bout.toString();
-    assertThat(got, containsString("Disabled service account key"));
+    ServiceAccountKey key = GetServiceAccountKey
+            .getServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
+
+    assertTrue(key.getName().contains(SERVICE_ACCOUNT_KEY));
+    assertTrue(key.getDisabled());
   }
 
   @Test
-  public void stage2_testServiceAccountKeyEnable() {
+  public void stage2_testServiceAccountKeyEnable() throws IOException {
     EnableServiceAccountKey
         .enableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
-    String got = bout.toString();
-    assertThat(got, containsString("Enabled service account key"));
+    ServiceAccountKey key = GetServiceAccountKey
+            .getServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY);
+
+    assertTrue(key.getName().contains(SERVICE_ACCOUNT_KEY));
+    assertFalse(key.getDisabled());
   }
 
   @Test
@@ -141,17 +168,23 @@ public class ServiceAccountTests {
   @Test
   public void stage4_testDisableServiceAccount() throws IOException {
     DisableServiceAccount.disableServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+    ServiceAccount serviceAccount = GetServiceAccount
+            .getServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
 
-    String got = bout.toString();
-    assertThat(got, containsString("Disabled service account:"));
+    assertTrue(serviceAccount.getName().contains(SERVICE_ACCOUNT));
+    assertEquals(PROJECT_ID, serviceAccount.getProjectId());
+    assertTrue(SERVICE_ACCOUNT, serviceAccount.getDisabled());
   }
 
   @Test
   public void stage5_testEnableServiceAccount() throws IOException {
     EnableServiceAccount.enableServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+    ServiceAccount serviceAccount = GetServiceAccount
+            .getServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
 
-    String got = bout.toString();
-    assertThat(got, containsString("Enabled service account:"));
+    assertTrue(serviceAccount.getName().contains(SERVICE_ACCOUNT));
+    assertEquals(PROJECT_ID, serviceAccount.getProjectId());
+    assertFalse(SERVICE_ACCOUNT, serviceAccount.getDisabled());
   }
 
   @Test
