@@ -19,11 +19,11 @@ package aiplatform;
 // [START aiplatform_sdk_embedding]
 import static java.util.stream.Collectors.toList;
 
-import com.google.cloud.aiplatform.v1beta1.EndpointName;
-import com.google.cloud.aiplatform.v1beta1.PredictRequest;
-import com.google.cloud.aiplatform.v1beta1.PredictResponse;
-import com.google.cloud.aiplatform.v1beta1.PredictionServiceClient;
-import com.google.cloud.aiplatform.v1beta1.PredictionServiceSettings;
+import com.google.cloud.aiplatform.v1.EndpointName;
+import com.google.cloud.aiplatform.v1.PredictRequest;
+import com.google.cloud.aiplatform.v1.PredictResponse;
+import com.google.cloud.aiplatform.v1.PredictionServiceClient;
+import com.google.cloud.aiplatform.v1.PredictionServiceSettings;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import java.io.IOException;

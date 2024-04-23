@@ -22,6 +22,7 @@ import com.google.cloud.storageinsights.v1.ReportConfig;
 import com.google.cloud.storageinsights.v1.ReportConfigName;
 import com.google.cloud.storageinsights.v1.StorageInsightsClient;
 import com.google.cloud.storageinsights.v1.UpdateReportConfigRequest;
+import com.google.protobuf.FieldMask;
 import java.io.IOException;
 
 public class EditInventoryReportConfig {
@@ -42,17 +43,21 @@ public class EditInventoryReportConfig {
   // [START storageinsights_edit_inventory_report_config]
 
   public static void editInventoryReportConfig(
-      String projectId, String location, String inventoryReportConfigUuid) throws IOException {
+          String projectId, String location, String inventoryReportConfigUuid) throws IOException {
     try (StorageInsightsClient storageInsightsClient = StorageInsightsClient.create()) {
       ReportConfigName name = ReportConfigName.of(projectId, location, inventoryReportConfigUuid);
       ReportConfig reportConfig = storageInsightsClient.getReportConfig(name);
 
       // Set any other fields you want to update here
       ReportConfig updatedReportConfig =
-          reportConfig.toBuilder().setDisplayName("Updated Display Name").build();
+              reportConfig.toBuilder().setDisplayName("Updated Display Name").build();
 
       storageInsightsClient.updateReportConfig(
-          UpdateReportConfigRequest.newBuilder().setReportConfig(updatedReportConfig).build());
+              UpdateReportConfigRequest.newBuilder()
+                      // Add any fields that you want to update to the update mask, in snake case
+                      .setUpdateMask(FieldMask.newBuilder().addPaths("display_name")
+                              .build())
+                      .setReportConfig(updatedReportConfig).build());
 
       System.out.println("Edited inventory report config with name " + name);
     }
