@@ -23,7 +23,6 @@ import com.google.iam.admin.v1.PatchServiceAccountRequest;
 import com.google.iam.admin.v1.ServiceAccount;
 import com.google.iam.admin.v1.ServiceAccountName;
 import com.google.protobuf.FieldMask;
-
 import java.io.IOException;
 
 public class RenameServiceAccount {

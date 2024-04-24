@@ -20,7 +20,6 @@ package iam.snippets;
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.DeleteServiceAccountKeyRequest;
 import com.google.iam.admin.v1.KeyName;
-
 import java.io.IOException;
 
 public class DeleteServiceAccountKey {
@@ -44,7 +43,7 @@ public class DeleteServiceAccountKey {
       //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
       //you want to delete the key.
       //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
-      String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
+      String serviceAccountEmail = serviceAccountName +"@"+ projectId + ".iam.gserviceaccount.com";
 
       String name = KeyName.of(projectId, serviceAccountEmail, serviceAccountKeyId).toString();
 

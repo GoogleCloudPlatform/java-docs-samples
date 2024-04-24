@@ -21,7 +21,6 @@ import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.CreateServiceAccountRequest;
 import com.google.iam.admin.v1.ProjectName;
 import com.google.iam.admin.v1.ServiceAccount;
-
 import java.io.IOException;
 
 public class CreateServiceAccount {
@@ -47,10 +46,10 @@ public class CreateServiceAccount {
             .build();
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
-    try(IAMClient iamClient = IAMClient.create()) {
+    try (IAMClient iamClient = IAMClient.create()) {
       serviceAccount = iamClient.createServiceAccount(request);
+      System.out.println("Created service account: " + serviceAccount.getEmail());
     }
-    System.out.println("Created service account: " + serviceAccount.getEmail());
     return serviceAccount;
   }
 }

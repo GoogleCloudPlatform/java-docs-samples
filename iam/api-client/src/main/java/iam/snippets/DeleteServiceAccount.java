@@ -19,7 +19,6 @@ package iam.snippets;
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.DeleteServiceAccountRequest;
 import com.google.iam.admin.v1.ServiceAccountName;
-
 import java.io.IOException;
 
 public class DeleteServiceAccount {
@@ -37,12 +36,12 @@ public class DeleteServiceAccount {
           throws IOException {
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
-    try(IAMClient client = IAMClient.create()) {
+    try (IAMClient client = IAMClient.create()) {
+      String accountEmail = ServiceAccountName.of(projectId, serviceAccountName).toString()
+              .concat("@" + projectId)
+              .concat(".iam.gserviceaccount.com");
       DeleteServiceAccountRequest request = DeleteServiceAccountRequest.newBuilder()
-              .setName(ServiceAccountName.of(projectId, serviceAccountName).toString()
-                      .concat( "@" + projectId)
-                      .concat(".iam.gserviceaccount.com")
-              )
+              .setName(accountEmail)
               .build();
       client.deleteServiceAccount(request);
 
