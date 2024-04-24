@@ -23,11 +23,11 @@ package aiplatform;
 
 // [START aiplatform_get_featurestore_sample]
 
-import com.google.cloud.aiplatform.v1beta1.Featurestore;
-import com.google.cloud.aiplatform.v1beta1.FeaturestoreName;
-import com.google.cloud.aiplatform.v1beta1.FeaturestoreServiceClient;
-import com.google.cloud.aiplatform.v1beta1.FeaturestoreServiceSettings;
-import com.google.cloud.aiplatform.v1beta1.GetFeaturestoreRequest;
+import com.google.cloud.aiplatform.v1.Featurestore;
+import com.google.cloud.aiplatform.v1.FeaturestoreName;
+import com.google.cloud.aiplatform.v1.FeaturestoreServiceClient;
+import com.google.cloud.aiplatform.v1.FeaturestoreServiceSettings;
+import com.google.cloud.aiplatform.v1.GetFeaturestoreRequest;
 import java.io.IOException;
 
 public class GetFeaturestoreSample {

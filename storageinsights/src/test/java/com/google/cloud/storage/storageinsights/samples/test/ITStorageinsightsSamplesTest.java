@@ -182,7 +182,7 @@ public class ITStorageinsightsSamplesTest {
       EditInventoryReportConfig.editInventoryReportConfig(
           PROJECT_ID, BUCKET_LOCATION, reportConfigName.split("/")[5]);
       ReportConfig reportConfig = insights.getReportConfig(reportConfigName);
-      assertThat(reportConfig.getDisplayName().contains("Updated"));
+      assertThat(reportConfig.getDisplayName()).contains("Updated");
     } finally {
       insights.deleteReportConfig(reportConfigName);
     }

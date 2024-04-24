@@ -35,8 +35,8 @@ import com.google.cloud.aiplatform.v1.PredefinedSplit;
 import com.google.cloud.aiplatform.v1.PredictSchemata;
 import com.google.cloud.aiplatform.v1.TimestampSplit;
 import com.google.cloud.aiplatform.v1.TrainingPipeline;
-import com.google.cloud.aiplatform.v1beta1.schema.trainingjob.definition.AutoMlImageObjectDetectionInputs;
-import com.google.cloud.aiplatform.v1beta1.schema.trainingjob.definition.AutoMlImageObjectDetectionInputs.ModelType;
+import com.google.cloud.aiplatform.v1.schema.trainingjob.definition.AutoMlImageObjectDetectionInputs;
+import com.google.cloud.aiplatform.v1.schema.trainingjob.definition.AutoMlImageObjectDetectionInputs.ModelType;
 import com.google.rpc.Status;
 import java.io.IOException;
 
