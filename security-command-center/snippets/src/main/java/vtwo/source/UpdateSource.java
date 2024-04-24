@@ -24,7 +24,6 @@ import com.google.cloud.securitycenter.v2.SourceName;
 import com.google.cloud.securitycenter.v2.UpdateSourceRequest;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 public class UpdateSource {
   public static void main(String[] args) throws IOException {
@@ -37,8 +36,9 @@ public class UpdateSource {
 
     updateSource(organizationId, sourceId);
   }
+
   // Demonstrates how to update a source.
-  public static Source updateSource(String organizationId, String sourceId) throws IOException {
+  public static Source updateSource(String organizationId, String sourceId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -72,4 +72,4 @@ public class UpdateSource {
     }
   }
 }
-// [START securitycenter_update_source_v2]
+// [END securitycenter_update_source_v2]

@@ -28,13 +28,13 @@ public class ListAllFindings {
   public static void main(String[] args) throws IOException {
     // organizationId: The source to list all findings for.
     // You can also use project/ folder as the parent resource.
-    String organizationId = "790050600650";
+    String organizationId = "google-cloud-organization-id";
 
     // Specify the location to list the findings.
     String location = "global";
 
     // The source id to scope the findings.
-    String sourceId = "4686715685555434978";
+    String sourceId = "source-id";
 
     listAllFindings(organizationId, sourceId, location);
   }

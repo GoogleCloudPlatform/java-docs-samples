@@ -20,16 +20,15 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.securitycenter.v2.Finding;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient.ListSourcesPagedResponse;
 import com.google.cloud.securitycenter.v2.Source;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,7 +41,8 @@ import vtwo.source.UpdateSource;
 
 @RunWith(JUnit4.class)
 public class SourceIT {
-  // TODO(Developer): Replace the below variables.
+
+  // TODO: Replace the below variables.
   private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
   private static final String LOCATION = "global";
   private static Source SOURCE;
@@ -81,44 +81,31 @@ public class SourceIT {
 
     stdOut = null;
     System.setOut(out);
-    TimeUnit.MINUTES.sleep(1);
-  }
-
-  @Before
-  public void beforeEach() {
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-  }
-
-  @After
-  public void afterEach() {
-    stdOut = null;
-    System.setOut(null);
   }
 
   @Test
-  public void testListAllSources() throws IOException {
-    ListSources.updateSource(ORGANIZATION_ID);
+  public void testListAllSources() {
+    List<Source> response = ListSources.listSources(ORGANIZATION_ID);
 
-    assertThat(stdOut.toString()).contains(SOURCE.getName());
+    assertThat(response.stream().map(Source::getName)).contains(SOURCE.getName());
   }
 
   @Test
-  public void testGetSource() throws IOException {
+  public void testGetSource() {
     Source source = GetSource.getSource(ORGANIZATION_ID, SOURCE.getName().split("/")[3]);
 
     assertThat(source.getName()).isEqualTo(SOURCE.getName());
   }
 
   @Test
-  public void testUpdateSource() throws IOException {
+  public void testUpdateSource() {
     Source source = UpdateSource.updateSource(ORGANIZATION_ID, SOURCE.getName().split("/")[3]);
 
     assertThat(source.getDisplayName()).contains("Updated Display Name");
   }
 
   @Test
-  public void testUpdateFindingSource() throws IOException {
+  public void testUpdateFindingSource() {
     Finding findingUpdated = UpdateFindingSource.updateFinding(ORGANIZATION_ID, LOCATION,
         SOURCE.getName().split("/")[3], FINDING.getName().split("/")[7]);
 

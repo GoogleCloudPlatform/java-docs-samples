@@ -23,11 +23,10 @@ import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.Source;
 import com.google.cloud.securitycenter.v2.SourceName;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 public class GetSource {
-  public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+
+  public static void main(String[] args) {
     // TODO: Replace the below variables.
     // projectId: Google Cloud Project id.
     String organizationId = "{google-cloud-organization-id}";
@@ -37,8 +36,9 @@ public class GetSource {
 
     getSource(organizationId, sourceId);
   }
+
   // Demonstrates how to retrieve a specific source.
-  public static Source getSource(String organizationId, String sourceId) throws IOException {
+  public static Source getSource(String organizationId, String sourceId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
