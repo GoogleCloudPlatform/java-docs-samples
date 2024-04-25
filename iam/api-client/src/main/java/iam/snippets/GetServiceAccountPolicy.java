@@ -21,7 +21,6 @@ import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.ServiceAccountName;
 import com.google.iam.v1.GetIamPolicyRequest;
 import com.google.iam.v1.Policy;
-
 import java.io.IOException;
 
 public class GetServiceAccountPolicy {

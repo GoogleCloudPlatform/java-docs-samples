@@ -21,7 +21,6 @@ import com.google.iam.admin.v1.ProjectName;
 import com.google.iam.v1.Policy;
 import com.google.iam.v1.SetIamPolicyRequest;
 import com.google.protobuf.FieldMask;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;

@@ -20,14 +20,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.CreateServiceAccountRequest;
+import com.google.iam.admin.v1.DeleteServiceAccountRequest;
+import com.google.iam.admin.v1.ProjectName;
+import com.google.iam.admin.v1.ServiceAccount;
+import com.google.iam.admin.v1.ServiceAccountName;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.Policy;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-
-import com.google.cloud.iam.admin.v1.IAMClient;
-import com.google.iam.admin.v1.*;
-import com.google.iam.v1.Binding;
-import com.google.iam.v1.Policy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -58,7 +61,7 @@ public class QuickstartTests {
   // Creates a service account to use during the test
   @Before
   public void setUp() throws IOException {
-    try(IAMClient iamClient = IAMClient.create()) {
+    try (IAMClient iamClient = IAMClient.create()) {
       ServiceAccount serviceAccount = ServiceAccount
               .newBuilder()
               .setDisplayName("test-display-name")
@@ -92,7 +95,7 @@ public class QuickstartTests {
     String role = "roles/viewer";
     String serviceAccountName = SERVICE_ACCOUNT + "@" + PROJECT_ID + ".iam.gserviceaccount.com";
 
-    try(IAMClient iamClient = IAMClient.create()) {
+    try (IAMClient iamClient = IAMClient.create()) {
       // Tests addBinding()
       Quickstart.addBinding(iamClient, PROJECT_ID, serviceAccountName, member, role);
 

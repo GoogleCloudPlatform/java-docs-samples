@@ -19,19 +19,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.DeleteServiceAccountRequest;
+import com.google.iam.admin.v1.ServiceAccountName;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.Policy;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import com.google.cloud.iam.admin.v1.IAMClient;
-import com.google.iam.admin.v1.DeleteServiceAccountRequest;
-import com.google.iam.admin.v1.ServiceAccountName;
-import com.google.iam.v1.Binding;
-import com.google.iam.v1.Policy;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -103,7 +106,8 @@ public class AccessTests {
   @Test
   public void testSetServiceAccountPolicy() throws IOException {
     Policy policy = GetServiceAccountPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
-    Policy setPolicy = SetServiceAccountPolicy.setServiceAccountPolicy(policy, PROJECT_ID, SERVICE_ACCOUNT);
+    Policy setPolicy = SetServiceAccountPolicy
+            .setServiceAccountPolicy(policy, PROJECT_ID, SERVICE_ACCOUNT);
     assertThat("version of updated policy should be incremented",
             setPolicy.getVersion() > policy.getVersion()
     );

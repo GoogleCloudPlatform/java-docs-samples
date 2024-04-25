@@ -19,7 +19,6 @@ package iam.snippets;
 
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.Policy;
-
 import java.util.Collections;
 import java.util.List;
 

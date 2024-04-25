@@ -19,9 +19,11 @@ package iam.snippets;
 
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.ServiceAccountName;
-import com.google.iam.v1.*;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.Policy;
+import com.google.iam.v1.SetIamPolicyRequest;
 import com.google.protobuf.FieldMask;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;

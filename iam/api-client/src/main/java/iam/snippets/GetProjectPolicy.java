@@ -20,7 +20,6 @@ import com.google.cloud.resourcemanager.v3.ProjectsClient;
 import com.google.iam.admin.v1.ProjectName;
 import com.google.iam.v1.GetIamPolicyRequest;
 import com.google.iam.v1.Policy;
-
 import java.io.IOException;
 
 public class GetProjectPolicy {
