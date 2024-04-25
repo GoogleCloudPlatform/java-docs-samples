@@ -17,66 +17,47 @@ package iam.snippets;
 
 // [START iam_delete_key]
 
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.iam.v1.Iam;
-import com.google.api.services.iam.v1.IamScopes;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.DeleteServiceAccountKeyRequest;
+import com.google.iam.admin.v1.KeyName;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
 
 public class DeleteServiceAccountKey {
 
-  // Deletes a service account key.
-  public static void deleteKey(String projectId, String serviceAccountName,
-      String serviceAccountKey) {
-    // String projectId = "my-project-id";
-    // String serviceAccountName = "my-service-account-name";
-    // String serviceAccountKey = "key-name";
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace the variables before running the sample.
+    String projectId = "your-project-id";
+    String serviceAccountName = "my-service-account-name";
+    String serviceAccountKeyId = "service-account-key-id";
 
-    Iam service = null;
-    try {
-      service = initService();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e);
-      return;
-    }
-
-    // Construct the service account email.
-    // You can modify the ".iam.gserviceaccount.com" to match the service account name in which
-    // you want to delete the key.
-    // See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
-    String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
-    try {
-      String keyToDelete = String.format("projects/-/serviceAccounts/%s/keys/%s",
-          serviceAccountEmail, serviceAccountKey);
-
-      // Then you can delete the key
-      service.projects().serviceAccounts().keys().delete(keyToDelete).execute();
-
-      System.out.println("Deleted key: " + keyToDelete);
-    } catch (IOException e) {
-      System.out.println("Unable to delete service account key: \n" + e);
-    }
+    deleteKey(projectId, serviceAccountName, serviceAccountKeyId);
   }
 
-  private static Iam initService() throws GeneralSecurityException, IOException {
-    // Use the Application Default Credentials strategy for authentication. For more info, see:
-    // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
-    GoogleCredentials credential =
-        GoogleCredentials.getApplicationDefault()
-            .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-    // Initialize the IAM service, which can be used to send requests to the IAM API.
-    Iam service =
-        new Iam.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                GsonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credential))
-            .setApplicationName("service-account-keys")
-            .build();
-    return service;
+  // Deletes a service account key.
+  public static void deleteKey(String projectId, String accountName,
+                               String serviceAccountKeyId) throws IOException {
+    //Initialize client that will be used to send requests.
+    //This client only needs to be created once, and can be reused for multiple requests.
+    try (IAMClient iamClient = IAMClient.create()) {
+
+      //Construct the service account email.
+      //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
+      //you want to delete the key.
+      //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
+
+      String accountEmail = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
+
+      String name = KeyName.of(projectId, accountEmail, serviceAccountKeyId).toString();
+
+      DeleteServiceAccountKeyRequest request = DeleteServiceAccountKeyRequest.newBuilder()
+              .setName(name)
+              .build();
+
+      // Then you can delete the key
+      iamClient.deleteServiceAccountKey(request);
+
+      System.out.println("Deleted key: " + serviceAccountKeyId);
+    }
   }
 }
 // [END iam_delete_key]
