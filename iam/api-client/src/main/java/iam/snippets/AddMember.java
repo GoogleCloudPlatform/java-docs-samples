@@ -18,7 +18,6 @@ package iam.snippets;
 // [START iam_modify_policy_add_member]
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.Policy;
-
 import java.util.ArrayList;
 import java.util.List;
 

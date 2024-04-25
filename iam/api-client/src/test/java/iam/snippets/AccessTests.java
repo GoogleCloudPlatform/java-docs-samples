@@ -62,7 +62,7 @@ public class AccessTests {
 
   @AfterClass
   public static void cleanup() throws IOException {
-    try(IAMClient client = IAMClient.create()) {
+    try (IAMClient client = IAMClient.create()) {
       String serviceAccName = ServiceAccountName.of(PROJECT_ID, SERVICE_ACCOUNT).toString();
       DeleteServiceAccountRequest request = DeleteServiceAccountRequest.newBuilder()
               .setName(serviceAccName + "@" + PROJECT_ID + ".iam.gserviceaccount.com")
