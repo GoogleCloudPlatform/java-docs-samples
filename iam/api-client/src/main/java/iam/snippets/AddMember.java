@@ -46,11 +46,16 @@ public class AddMember {
         newBindingsList.add(b);
       }
     }
+
     // Update the policy to add the member.
-    return policy.toBuilder()
+    Policy updatedPolicy = policy.toBuilder()
             .clearBindings()
             .addAllBindings(newBindingsList)
             .build();
+
+    System.out.println("Added member: " + updatedPolicy.getBindingsList());
+
+    return updatedPolicy;
   }
 }
 // [END iam_modify_policy_add_member]

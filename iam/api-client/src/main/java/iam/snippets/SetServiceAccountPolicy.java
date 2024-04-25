@@ -42,15 +42,17 @@ public class SetServiceAccountPolicy {
     // Sets a service account's policy.
     public static Policy setServiceAccountPolicy(Policy policy, String projectId, String serviceAccount)
             throws IOException {
+
         //Construct the service account email.
         //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
         //you want to delete the key.
         //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
-        String serviceAccountEmail = serviceAccount + "@" + projectId + ".iam.gserviceaccount.com";
+
+        String serviceAccountEmail = String.format("%s@%s.iam.gserviceaccount.com", serviceAccount, projectId);
 
         // Initialize client that will be used to send requests.
         // This client only needs to be created once, and can be reused for multiple requests.
-        try(IAMClient iamClient = IAMClient.create()) {
+        try (IAMClient iamClient = IAMClient.create()) {
             List<String> paths = Arrays.asList("bindings", "etag");
             SetIamPolicyRequest request = SetIamPolicyRequest.newBuilder()
                     .setResource(ServiceAccountName.of(projectId, serviceAccountEmail).toString())

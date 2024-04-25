@@ -42,34 +42,41 @@ public class Quickstart {
     quickstart(projectId, serviceAccount, member, role);
   }
 
-  //Creates new policy and adds binding
-  //then checks if previous changes are present and removes policy
+  // Creates new policy and adds binding.
+  // Checks if changes are present and removes policy.
   public static void quickstart(String projectId, String serviceAccount,
                                 String member, String role) throws IOException {
+
     //Construct the service account email.
     //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
     //you want to delete the key.
     //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
+
     serviceAccount = serviceAccount + "@" + projectId + ".iam.gserviceaccount.com";
 
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
+
       // Grants your member the "Log writer" role for your project.
       addBinding(iamClient, projectId, serviceAccount, member, role);
 
       // Get the project's policy and print all members with the "Log Writer" role
       Policy policy = getPolicy(iamClient, projectId, serviceAccount);
+
       Binding binding = null;
       List<Binding> bindings = policy.getBindingsList();
+
       for (Binding b : bindings) {
         if (b.getRole().equals(role)) {
           binding = b;
           break;
         }
       }
+
       System.out.println("Role: " + binding.getRole());
       System.out.print("Members: ");
+
       for (String m : binding.getMembersList()) {
         System.out.print("[" + m + "] ");
       }

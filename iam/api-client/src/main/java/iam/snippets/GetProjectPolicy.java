@@ -1,4 +1,4 @@
-/* Copyright 2024 Google LLC
+/* Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,11 +33,10 @@ public class GetProjectPolicy {
   }
 
   // Gets a project's policy.
-  public static Policy getProjectPolicy(String projectId)
-          throws IOException {
+  public static Policy getProjectPolicy(String projectId) throws IOException {
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
-    try(ProjectsClient projectsClient = ProjectsClient.create()) {
+    try (ProjectsClient projectsClient = ProjectsClient.create()) {
       GetIamPolicyRequest request = GetIamPolicyRequest.newBuilder()
               .setResource(ProjectName.of(projectId).toString())
               .build();

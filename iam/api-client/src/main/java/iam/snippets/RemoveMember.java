@@ -38,9 +38,10 @@ public class RemoveMember {
 
   // Removes member from a role; removes binding if binding contains no members.
   public static Policy removeMember(Policy policy, String role, String member) {
+    // Creating new builder with all values copied from origin policy
     Policy.Builder policyBuilder = policy.toBuilder();
 
-    // Removes the member from the role.
+    // Getting binding with suitable role.
     Binding binding = null;
     for (Binding b : policy.getBindingsList()) {
       if (b.getRole().equals(role)) {
@@ -51,23 +52,37 @@ public class RemoveMember {
 
     if (binding != null && binding.getMembersList().contains(member)) {
       List<String> newMemberList = new ArrayList<>(binding.getMembersList());
+      // Removing member from a role
       newMemberList.remove(member);
+
       System.out.println("Member " + member + " removed from " + role);
 
+      // Adding all remaining members to create new binding
       Binding newBinding = binding.toBuilder()
               .clearMembers()
               .addAllMembers(newMemberList)
               .build();
+
       List<Binding> newBindingList = new ArrayList<>(policyBuilder.getBindingsList());
+
+      // Removing old binding to replace with new one
       newBindingList.remove(binding);
 
+      // If binding has no more members, binding will not be added
       if (!newBinding.getMembersList().isEmpty()) {
         newBindingList.add(newBinding);
       }
+
+      // Update the policy to remove the member.
       policyBuilder.clearBindings()
               .addAllBindings(newBindingList);
     }
-    return policyBuilder.build();
+
+    Policy updatedPolicy = policyBuilder.build();
+
+    System.out.println("Exising members: " + updatedPolicy.getBindingsList());
+
+    return updatedPolicy;
   }
 }
 // [END iam_modify_policy_remove_member]

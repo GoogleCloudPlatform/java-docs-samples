@@ -42,8 +42,13 @@ public class AddBinding {
             .setRole(role)
             .addAllMembers(members)
             .build();
+
     // Update bindings for the policy.
-    return policy.toBuilder().addBindings(binding).build();
+    Policy updatedPolicy = policy.toBuilder().addBindings(binding).build();
+
+    System.out.println("Added binding: " + updatedPolicy.getBindingsList());
+
+    return updatedPolicy;
   }
 }
 // [END iam_modify_policy_add_role]

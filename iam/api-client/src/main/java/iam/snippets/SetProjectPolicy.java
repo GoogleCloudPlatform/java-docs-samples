@@ -1,4 +1,4 @@
-/* Copyright 2024 Google LLC
+/* Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,14 +40,10 @@ public class SetProjectPolicy {
   // Sets a project's policy.
   public static Policy setProjectPolicy(Policy policy, String projectId)
           throws IOException {
-    //Construct the service account email.
-    //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
-    //you want to delete the key.
-    //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
 
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
-    try(ProjectsClient projectsClient = ProjectsClient.create()) {
+    try (ProjectsClient projectsClient = ProjectsClient.create()) {
       List<String> paths = Arrays.asList("bindings", "etag");
       SetIamPolicyRequest request = SetIamPolicyRequest.newBuilder()
               .setResource(ProjectName.of(projectId).toString())
