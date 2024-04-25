@@ -34,18 +34,20 @@ public class DeleteServiceAccountKey {
   }
 
   // Deletes a service account key.
-  public static void deleteKey(String projectId, String serviceAccountName,
+  public static void deleteKey(String projectId, String accountName,
                                String serviceAccountKeyId) throws IOException {
     //Initialize client that will be used to send requests.
     //This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
+
       //Construct the service account email.
       //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
       //you want to delete the key.
       //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
-      String serviceAccountEmail = serviceAccountName +"@"+ projectId + ".iam.gserviceaccount.com";
 
-      String name = KeyName.of(projectId, serviceAccountEmail, serviceAccountKeyId).toString();
+      String accountEmail = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
+
+      String name = KeyName.of(projectId, accountEmail, serviceAccountKeyId).toString();
 
       DeleteServiceAccountKeyRequest request = DeleteServiceAccountKeyRequest.newBuilder()
               .setName(name)

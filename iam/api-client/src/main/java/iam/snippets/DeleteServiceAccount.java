@@ -37,9 +37,8 @@ public class DeleteServiceAccount {
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient client = IAMClient.create()) {
-      String accountEmail = ServiceAccountName.of(projectId, serviceAccountName).toString()
-              .concat("@" + projectId)
-              .concat(".iam.gserviceaccount.com");
+      String accountName = ServiceAccountName.of(projectId, serviceAccountName).toString();
+      String accountEmail = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
       DeleteServiceAccountRequest request = DeleteServiceAccountRequest.newBuilder()
               .setName(accountEmail)
               .build();
