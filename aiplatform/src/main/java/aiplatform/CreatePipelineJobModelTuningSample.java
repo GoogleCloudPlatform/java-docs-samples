@@ -17,12 +17,12 @@
 package aiplatform;
 
 // [START aiplatform_sdk_tuning]
-import com.google.cloud.aiplatform.v1beta1.CreatePipelineJobRequest;
-import com.google.cloud.aiplatform.v1beta1.LocationName;
-import com.google.cloud.aiplatform.v1beta1.PipelineJob;
-import com.google.cloud.aiplatform.v1beta1.PipelineJob.RuntimeConfig;
-import com.google.cloud.aiplatform.v1beta1.PipelineServiceClient;
-import com.google.cloud.aiplatform.v1beta1.PipelineServiceSettings;
+import com.google.cloud.aiplatform.v1.CreatePipelineJobRequest;
+import com.google.cloud.aiplatform.v1.LocationName;
+import com.google.cloud.aiplatform.v1.PipelineJob;
+import com.google.cloud.aiplatform.v1.PipelineJob.RuntimeConfig;
+import com.google.cloud.aiplatform.v1.PipelineServiceClient;
+import com.google.cloud.aiplatform.v1.PipelineServiceSettings;
 import com.google.protobuf.Value;
 import java.io.IOException;
 import java.util.HashMap;
