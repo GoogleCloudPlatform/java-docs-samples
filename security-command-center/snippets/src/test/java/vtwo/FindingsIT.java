@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.securitycenter.v2.Finding;
+import com.google.cloud.securitycenter.v2.Finding.State;
 import com.google.cloud.securitycenter.v2.Source;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
@@ -142,10 +143,11 @@ public class FindingsIT {
 
   @Test
   public void testSetFindingsByStateInactive() throws IOException {
-    SetFindingsByState.setFindingState(ORGANIZATION_ID, LOCATION, SOURCE.getName().split("/")[3],
+    Finding response = SetFindingsByState.setFindingState(ORGANIZATION_ID, LOCATION,
+        SOURCE.getName().split("/")[3],
         FINDING_1.getName().split("/")[7]);
 
-    assertThat(stdOut.toString()).contains("Updated Finding: ");
+    assertThat(response.getState()).isEqualTo(State.INACTIVE);
   }
 
 }
