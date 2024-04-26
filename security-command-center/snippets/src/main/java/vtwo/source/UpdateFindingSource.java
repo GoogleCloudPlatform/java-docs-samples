@@ -49,8 +49,8 @@ public class UpdateFindingSource {
   public static Finding updateFinding(String organizationId,
       String location, String sourceId, String findingId) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
-      // Optionally FindingName or String can be used.
-      //  String findingName = String.format("organizations/%s/sources/%s/locations/%s/findings/%s",
+      // Instead of using the FindingName, a plain String can also be used. E.g.:
+      // String findingName = String.format("organizations/%s/sources/%s/locations/%s/findings/%s",
       // organizationId,sourceId,location,findingId);
       FindingName findingName = FindingName
           .ofOrganizationSourceLocationFindingName(organizationId, sourceId, location, findingId);
