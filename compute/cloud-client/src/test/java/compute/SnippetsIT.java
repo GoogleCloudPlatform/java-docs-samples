@@ -40,7 +40,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -215,7 +214,6 @@ public class SnippetsIT {
   }
 
   @Test
-  @Ignore("TODO: Fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8965")
   public void testSetUsageBucketExportCustomPrefix()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Set custom Report Name Prefix.
