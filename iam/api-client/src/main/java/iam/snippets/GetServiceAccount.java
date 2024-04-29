@@ -36,15 +36,13 @@ public class GetServiceAccount {
   // Get service account
   public static ServiceAccount getServiceAccount(String projectId, String accountName)
           throws IOException {
-    // String name = "my-service-account-name"
-    // String projectId = "my-project-id"
-
-    String email = accountName + "@" + projectId + ".iam.gserviceaccount.com";
+    String email = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
+    String accountFullName = String.format("projects/%s/serviceAccounts/%s", projectId, email);
 
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
-      return iamClient.getServiceAccount("projects/" + projectId + "/serviceAccounts/" + email);
+      return iamClient.getServiceAccount(accountFullName);
     }
   }
 }

@@ -30,22 +30,18 @@ public class ListServiceAccountKeys {
     String serviceAccountName = "your-service-account-name";
 
     List<ServiceAccountKey> keys = listKeys(projectId, serviceAccountName);
-
     keys.forEach(key -> System.out.println("Key: " + key.getName()));
   }
 
   // Lists all keys for a service account.
-  public static List<ServiceAccountKey> listKeys(String projectId, String serviceAccountName)
+  public static List<ServiceAccountKey> listKeys(String projectId, String accountName)
           throws IOException {
-    // String projectId = "my-project-id";
-    // String serviceAccountName = "my-service-account-name";
-
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
-    String accountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
+    String email = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
     try (IAMClient iamClient = IAMClient.create()) {
       ListServiceAccountKeysRequest req = ListServiceAccountKeysRequest.newBuilder()
-              .setName("projects/" + projectId + "/serviceAccounts/" + accountEmail)
+              .setName(String.format("projects/%s/serviceAccounts/%s", projectId, email))
               .build();
 
       return iamClient.listServiceAccountKeys(req).getKeysList();

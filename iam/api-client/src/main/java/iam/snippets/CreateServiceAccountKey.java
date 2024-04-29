@@ -31,32 +31,25 @@ public class CreateServiceAccountKey {
 
     ServiceAccountKey key = createKey(projectId, serviceAccountName);
 
-    System.out.println("Created key name: " + extractKeyName(key));
+    System.out.println("Created key name: " + key.getPrivateKeyData());
   }
 
   // Creates a key for a service account.
   public static ServiceAccountKey createKey(String projectId, String accountName)
           throws IOException {
-    // String projectId = "project-id";
-    // String accountName = "my-service-account-name";
-    String email = accountName + "@" + projectId + ".iam.gserviceaccount.com";
+    String email = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
 
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
       CreateServiceAccountKeyRequest req = CreateServiceAccountKeyRequest.newBuilder()
-              .setName("projects/" + projectId + "/serviceAccounts/" + email)
+              .setName(String.format("projects/%s/serviceAccounts/%s", projectId, email))
               .build();
       ServiceAccountKey createdKey = iamClient.createServiceAccountKey(req);
       System.out.println("Key created successfully");
 
       return createdKey;
     }
-  }
-
-  //retrieves key name from key object
-  public static String extractKeyName(ServiceAccountKey key) {
-    return key.getName().substring(key.getName().lastIndexOf("/") + 1).trim();
   }
 }
 // [END iam_create_key]

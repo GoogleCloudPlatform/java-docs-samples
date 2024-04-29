@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+import com.google.common.collect.Lists;
 import com.google.iam.admin.v1.ServiceAccount;
 import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.ByteArrayOutputStream;
@@ -90,7 +91,12 @@ public class ServiceAccountTests {
   public void stage1_testServiceAccountsList() throws IOException {
     IAMClient.ListServiceAccountsPagedResponse response =
             ListServiceAccounts.listServiceAccounts(PROJECT_ID);
-    assertTrue(response.iterateAll().iterator().hasNext());
+
+    List<ServiceAccount> accounts = Lists.newArrayList(response.iterateAll());
+    assertFalse(accounts.isEmpty());
+    assertTrue(accounts.stream()
+            .map(ServiceAccount::getName)
+            .anyMatch(accountName -> accountName.contains(SERVICE_ACCOUNT)));
   }
 
   @Test
@@ -111,7 +117,9 @@ public class ServiceAccountTests {
   @Test
   public void stage2_testServiceAccountKeyCreate() throws IOException {
     ServiceAccountKey key = CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
-    SERVICE_ACCOUNT_KEY = CreateServiceAccountKey.extractKeyName(key);
+    SERVICE_ACCOUNT_KEY = key.getName()
+            .substring(key.getName().lastIndexOf("/") + 1)
+            .trim();
 
     assertNotNull(SERVICE_ACCOUNT_KEY);
   }
@@ -132,8 +140,8 @@ public class ServiceAccountTests {
 
     assertNotEquals(0, keys.size());
     assertTrue(keys.stream()
-            .map(CreateServiceAccountKey::extractKeyName)
-            .anyMatch(keyName -> keyName.equals(SERVICE_ACCOUNT_KEY)));
+            .map(ServiceAccountKey::getName)
+            .anyMatch(keyName -> keyName.contains(SERVICE_ACCOUNT_KEY)));
   }
 
   @Test

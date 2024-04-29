@@ -32,20 +32,18 @@ public class EnableServiceAccount {
   }
 
   // Enables a service account.
-  public static void enableServiceAccount(String projectId, String serviceAccountName)
+  public static void enableServiceAccount(String projectId, String accountName)
           throws IOException {
-    // String projectId = "my-project-id";
-    // String serviceAccountName = "my-service-account-name";
-    String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
+    String email = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
 
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
       iamClient.enableServiceAccount(EnableServiceAccountRequest.newBuilder()
-              .setName("projects/" + projectId + "/serviceAccounts/" + serviceAccountEmail)
+              .setName(String.format("projects/%s/serviceAccounts/%s", projectId, email))
               .build());
 
-      System.out.println("Enabled service account: " + serviceAccountName);
+      System.out.println("Enabled service account: " + email);
     }
   }
 }

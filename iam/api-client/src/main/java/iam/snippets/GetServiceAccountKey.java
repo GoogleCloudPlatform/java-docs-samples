@@ -35,22 +35,18 @@ public class GetServiceAccountKey {
 
   // Get service account key
   public static ServiceAccountKey getServiceAccountKey(String projectId,
-                                                       String accountName,
-                                                       String keyName)
+                                                       String account,
+                                                       String key)
           throws IOException {
-    // String projectId = "my-project-id"
-    // String accountName = "my-service-account-name"
-    // String keyName = "my-service-account-key-name"
-
-    String serviceAccountEmail = accountName + "@" + projectId + ".iam.gserviceaccount.com";
+    String email = String.format("%s@%s.iam.gserviceaccount.com", account, projectId);
+    String name = String.format("projects/%s/serviceAccounts/%s/keys/%s", projectId, email, key);
 
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
       return iamClient.getServiceAccountKey(GetServiceAccountKeyRequest.newBuilder()
-              .setName("projects/" + projectId
-                      + "/serviceAccounts/" + serviceAccountEmail
-                      + "/keys/" + keyName).build());
+              .setName(name)
+              .build());
     }
   }
 }
