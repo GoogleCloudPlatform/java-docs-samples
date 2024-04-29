@@ -16,7 +16,7 @@
 
 package vertexai.gemini;
 
-// [START generativeaionvertexai_gemini_video_with_audio]
+// [START generativeaionvertexai_gemini_all_modalities]
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -37,7 +37,7 @@ public class MultimodalAllInput {
     multimodalAllInput(projectId, location, modelName);
   }
 
-  // Analyzes the given audio input.
+  // A request containing a text prompt, a video, and a picture.
   public static String multimodalAllInput(String projectId, String location, String modelName)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs
@@ -68,4 +68,4 @@ public class MultimodalAllInput {
     }
   }
 }
-// [END generativeaionvertexai_gemini_video_with_audio]
+// [END generativeaionvertexai_gemini_all_modalities]

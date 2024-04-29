@@ -26,7 +26,7 @@ import com.google.cloud.vertexai.generativeai.PartMaker;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import java.io.IOException;
 
-public class MultimodalVideoAudioInput {
+public class VideoInputWithAudio {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -37,7 +37,7 @@ public class MultimodalVideoAudioInput {
     videoAudioInput(projectId, location, modelName);
   }
 
-  // Analyzes the given audio input.
+  // Analyzes the given video input, including its audio track.
   public static String videoAudioInput(String projectId, String location, String modelName)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs
