@@ -125,10 +125,12 @@ public class ServiceAccountTests {
 
   @Test
   public void stage2_testServiceAccountKeyCreate() throws IOException {
-      SERVICE_ACCOUNT_KEY_ID = CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
-      String got = bout.toString();
-      assertNotNull(SERVICE_ACCOUNT_KEY_ID);
-      assertThat(got, containsString("Key created successfully"));
+    ServiceAccountKey key = CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
+    SERVICE_ACCOUNT_KEY_ID =  key.getName()
+            .substring(key.getName().lastIndexOf("/") + 1)
+            .trim();
+
+    assertNotNull(SERVICE_ACCOUNT_KEY_ID);
   }
 
   @Test
