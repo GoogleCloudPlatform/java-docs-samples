@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,16 @@
 
 package vertexai.gemini;
 
-// [START generativeaionvertexai_gemini_audio_summarization]
+// [START generativeaionvertexai_gemini_audio_transcription]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.PartMaker;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
-
 import java.io.IOException;
 
-public class MultimodalAudioInputSummarization {
+public class AudioInputTranscription {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -34,11 +33,11 @@ public class MultimodalAudioInputSummarization {
     String location = "us-central1";
     String modelName = "gemini-1.5-pro-preview-0409";
 
-    summarizeAudio(projectId, location, modelName);
+    transcribeAudio(projectId, location, modelName);
   }
 
   // Analyzes the given audio input.
-  public static String summarizeAudio(String projectId, String location, String modelName)
+  public static String transcribeAudio(String projectId, String location, String modelName)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
@@ -48,9 +47,8 @@ public class MultimodalAudioInputSummarization {
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
       GenerateContentResponse response = model.generateContent(
           ContentMaker.fromMultiModalData(
-              "Please provide a summary for the audio.\n" +
-                  "Provide chapter titles with timestamps, be concise and short, no need to provide chapter summaries.\n" +
-                  "Do not make up any information that is not part of the audio and do not be verbose.",
+              "Can you transcribe this interview, in the format of timecode, speaker, caption.\n"
+                  + "Use speaker A, speaker B, etc. to identify speakers.",
               PartMaker.fromMimeTypeAndData("audio/mp3", audioUri)
           ));
 
@@ -61,4 +59,4 @@ public class MultimodalAudioInputSummarization {
     }
   }
 }
-// [END generativeaionvertexai_gemini_audio_summarization]
+// [END generativeaionvertexai_gemini_audio_transcription]

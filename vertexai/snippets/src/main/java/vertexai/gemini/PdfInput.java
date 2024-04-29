@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.PartMaker;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
-
 import java.io.IOException;
 
 public class PdfInput {
@@ -49,8 +48,8 @@ public class PdfInput {
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
       GenerateContentResponse response = model.generateContent(
           ContentMaker.fromMultiModalData(
-              "You are a very professional document summarization specialist.\n" +
-              "Please summarize the given document.",
+              "You are a very professional document summarization specialist.\n"
+                  + "Please summarize the given document.",
               PartMaker.fromMimeTypeAndData("application/pdf", pdfUri)
           ));
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.PartMaker;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
-
 import java.io.IOException;
 
 public class MultimodalAllInput {
@@ -52,13 +51,14 @@ public class MultimodalAllInput {
           ContentMaker.fromMultiModalData(
               PartMaker.fromMimeTypeAndData("video/mp4", videoUri),
               PartMaker.fromMimeTypeAndData("image/png", imageUri),
-              "Watch each frame in the video carefully and answer the questions.\n" +
-                  "Only base your answers strictly on what information is available in the video attached.\n" +
-                  "Do not make up any information that is not part of the video and do not be too " +
-                  "verbose, be to the point.\n\n" +
-                  "Questions:\n" +
-                  "- When is the moment in the image happening in the video? Provide a timestamp.\n" +
-                  "- What is the context of the moment and what does the narrator say about it?"
+              "Watch each frame in the video carefully and answer the questions.\n"
+                  + "Only base your answers strictly on what information is available in "
+                  + "the video attached. Do not make up any information that is not part "
+                  + "of the video and do not be too verbose, be to the point.\n\n"
+                  + "Questions:\n"
+                  + "- When is the moment in the image happening in the video? "
+                  + "Provide a timestamp.\n"
+                  + "- What is the context of the moment and what does the narrator say about it?"
           ));
 
       String output = ResponseHandler.getText(response);

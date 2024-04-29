@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -208,7 +208,7 @@ public class SnippetsIT {
 
   @Test
   public void testAudioInputSummary() throws IOException {
-    String output = MultimodalAudioInputSummarization.summarizeAudio(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+    String output = AudioInputSummarization.summarizeAudio(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
 
     assertThat(output).ignoringCase().contains("Pixel");
     assertThat(output).ignoringCase().contains("feature");
@@ -216,7 +216,7 @@ public class SnippetsIT {
 
   @Test
   public void testAudioInputTranscription() throws IOException {
-    String output = MultimodalAudioInputTranscription.transcribeAudio(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+    String output = AudioInputTranscription.transcribeAudio(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
 
     assertThat(output).ignoringCase().contains("Pixel");
     assertThat(output).ignoringCase().contains("feature");
@@ -224,11 +224,12 @@ public class SnippetsIT {
 
   @Test
   public void testVideoAudioInput() throws IOException {
-    String output = MultimodalVideoAudioInput.multimodalVideoAudioInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+    String output = MultimodalVideoAudioInput.videoAudioInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
 
     assertThat(output).ignoringCase().contains("Pixel");
     assertThat(output).ignoringCase().contains("Tokyo");
   }
+
   @Test
   public void testAllModalityInputs() throws IOException {
     String output = MultimodalAllInput.multimodalAllInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
