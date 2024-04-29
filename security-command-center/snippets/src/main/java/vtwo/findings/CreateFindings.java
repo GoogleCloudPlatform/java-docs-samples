@@ -56,21 +56,6 @@ public class CreateFindings {
 
   /**
    * Creates a security finding within a specific source in the Security Command Center.
-   * <p>
-   * This method is used to create and log a new security finding related to a particular security
-   * issue detected within an organization. Findings provide insights into potential security risks
-   * and are associated with a source, which represents the origin of the detection.
-   *
-   * @param organizationId the identifier of the GCP organization where the finding is reported
-   * @param location       the geographical location or data center where the finding is associated
-   * @param findingId      a unique identifier for the finding within the specified source
-   * @param sourceId       the identifier of the source where the finding was detected, such as a
-   *                       scanner or other security tool
-   * @param category       an Optional describing the category of the finding, which could include
-   *                       classifications like 'misconfiguration', 'malware', etc.
-   * @return Finding the newly created finding object that contains detailed information about the
-   * security issue detected
-   * @throws IOException if there is an error in communication with the Security Command Center API
    */
   public static Finding createFinding(String organizationId, String location, String findingId,
       String sourceId, Optional<String> category) throws IOException {

@@ -32,6 +32,7 @@ import org.junit.Test;
 import vtwo.iam.GetIamPolicies;
 import vtwo.iam.SetIamPolices;
 import vtwo.iam.TestIamPermissions;
+import vtwo.source.CreateSource;
 
 public class IamIT {
 
@@ -64,7 +65,7 @@ public class IamIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
 
     // Create source.
-    SOURCE = Util.createSource(ORGANIZATION_ID);
+    SOURCE = CreateSource.createSource(ORGANIZATION_ID);
 
     stdOut = null;
     System.setOut(out);
