@@ -13,15 +13,13 @@
  * limitations under the License.
  */
 
-package iam.snippets;
-
-// [START iam_enable_service_account_key]
+// [START iam_disable_service_account_key]
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.iam.v1.Iam;
 import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.EnableServiceAccountKeyRequest;
+import com.google.api.services.iam.v1.model.DisableServiceAccountKeyRequest;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
@@ -29,19 +27,19 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
-public class EnableServiceAccountKey {
+public class DisableServiceAccountKey {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO(Developer): Replace the below variables before running.
     String projectId = "gcloud-project-id";
     String serviceAccountName = "service-account-name";
     String serviceAccountKeyName = "service-account-key-name";
 
-    enableServiceAccountKey(projectId, serviceAccountName, serviceAccountKeyName);
+    disableServiceAccountKey(projectId, serviceAccountName, serviceAccountKeyName);
   }
 
-  // Enables a service account key.
-  public static void enableServiceAccountKey(String projectId, String serviceAccountName,
+  // Disables a service account key.
+  public static void disableServiceAccountKey(String projectId, String serviceAccountName,
       String serviceAccountKeyName) {
     // Initialize the IAM service.
     Iam service = null;
@@ -54,26 +52,26 @@ public class EnableServiceAccountKey {
 
     // Construct the service account email.
     // You can modify the ".iam.gserviceaccount.com" to match the service account name in which
-    // you want to enable the key.
-    // See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#enabling
+    // you want to disable the key.
+    // See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#disabling
     String serviceAccountEmail = serviceAccountName + "@" + projectId + ".iam.gserviceaccount.com";
 
     try {
-      EnableServiceAccountKeyRequest
-          enableServiceAccountKeyRequest = new EnableServiceAccountKeyRequest();
-      // Use the IAM service to enable the service account key.
+      DisableServiceAccountKeyRequest
+          disableServiceAccountKeyRequest = new DisableServiceAccountKeyRequest();
+      // Use the IAM service to disable the service account key.
       service
           .projects()
           .serviceAccounts()
           .keys()
-          .enable(String
+          .disable(String
               .format("projects/%s/serviceAccounts/%s/keys/%s", projectId, serviceAccountEmail,
-                  serviceAccountKeyName), enableServiceAccountKeyRequest)
+                  serviceAccountKeyName), disableServiceAccountKeyRequest)
           .execute();
 
-      System.out.println("Enabled service account key: " + serviceAccountKeyName);
+      System.out.println("Disabled service account key: " + serviceAccountKeyName);
     } catch (IOException e) {
-      System.out.println("Failed to enable service account key: \n" + e);
+      System.out.println("Failed to disable service account key: \n" + e);
     }
   }
 
@@ -93,5 +91,5 @@ public class EnableServiceAccountKey {
         .build();
   }
 }
-// [END iam_enable_service_account_key]
+// [END iam_disable_service_account_key]
 

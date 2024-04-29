@@ -13,38 +13,38 @@
  * limitations under the License.
  */
 
-package iam.snippets;
+// [START iam_list_service_accounts]
 
-// [START iam_enable_service_account]
 import com.google.cloud.iam.admin.v1.IAMClient;
-import com.google.iam.admin.v1.EnableServiceAccountRequest;
+import com.google.iam.admin.v1.ServiceAccount;
 import java.io.IOException;
 
-
-public class EnableServiceAccount {
+public class ListServiceAccounts {
 
   public static void main(String[] args) throws IOException {
     // TODO(Developer): Replace the below variables before running.
     String projectId = "your-project-id";
-    String serviceAccountName = "your-service-account-name";
 
-    enableServiceAccount(projectId, serviceAccountName);
+    listServiceAccounts(projectId);
   }
 
-  // Enables a service account.
-  public static void enableServiceAccount(String projectId, String accountName)
+  // Lists all service accounts for the current project.
+  public static IAMClient.ListServiceAccountsPagedResponse listServiceAccounts(String projectId)
           throws IOException {
-    String email = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
-
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
-      iamClient.enableServiceAccount(EnableServiceAccountRequest.newBuilder()
-              .setName(String.format("projects/%s/serviceAccounts/%s", projectId, email))
-              .build());
+      IAMClient.ListServiceAccountsPagedResponse response =
+              iamClient.listServiceAccounts(String.format("projects/%s", projectId));
 
-      System.out.println("Enabled service account: " + email);
+      for (ServiceAccount account : response.iterateAll()) {
+        System.out.println("Name: " + account.getName());
+        System.out.println("Display name: " + account.getDisplayName());
+        System.out.println("Email: " + account.getEmail() + "\n");
+      }
+
+      return response;
     }
   }
 }
-// [END iam_enable_service_account]
+// [END iam_list_service_accounts]

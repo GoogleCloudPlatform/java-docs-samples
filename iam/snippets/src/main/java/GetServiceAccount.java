@@ -1,4 +1,4 @@
-/* Copyright 2019 Google LLC
+/* Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,39 +13,34 @@
  * limitations under the License.
  */
 
-package iam.snippets;
-
-// [START iam_list_keys]
 import com.google.cloud.iam.admin.v1.IAMClient;
-import com.google.iam.admin.v1.ListServiceAccountKeysRequest;
-import com.google.iam.admin.v1.ServiceAccountKey;
+import com.google.iam.admin.v1.ServiceAccount;
 import java.io.IOException;
-import java.util.List;
 
-public class ListServiceAccountKeys {
+public class GetServiceAccount {
 
   public static void main(String[] args) throws IOException {
     // TODO(Developer): Replace the below variables before running.
+    String name = "your-service-account-name";
     String projectId = "your-project-id";
-    String serviceAccountName = "your-service-account-name";
 
-    List<ServiceAccountKey> keys = listKeys(projectId, serviceAccountName);
-    keys.forEach(key -> System.out.println("Key: " + key.getName()));
+    ServiceAccount serviceAccount = getServiceAccount(projectId, name);
+
+    System.out.println("Service account name: " + serviceAccount.getDisplayName());
+    System.out.println("Service account email: " + serviceAccount.getEmail());
+    System.out.println("Service account description: " + serviceAccount.getDescription());
   }
 
-  // Lists all keys for a service account.
-  public static List<ServiceAccountKey> listKeys(String projectId, String accountName)
+  // Get service account
+  public static ServiceAccount getServiceAccount(String projectId, String accountName)
           throws IOException {
+    String email = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
+    String accountFullName = String.format("projects/%s/serviceAccounts/%s", projectId, email);
+
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
-    String email = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
     try (IAMClient iamClient = IAMClient.create()) {
-      ListServiceAccountKeysRequest req = ListServiceAccountKeysRequest.newBuilder()
-              .setName(String.format("projects/%s/serviceAccounts/%s", projectId, email))
-              .build();
-
-      return iamClient.listServiceAccountKeys(req).getKeysList();
+      return iamClient.getServiceAccount(accountFullName);
     }
   }
 }
-// [END iam_list_keys]

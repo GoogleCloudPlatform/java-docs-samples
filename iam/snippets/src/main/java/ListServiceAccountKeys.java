@@ -13,40 +13,37 @@
  * limitations under the License.
  */
 
-package iam.snippets;
-
-// [START iam_list_service_accounts]
-
+// [START iam_list_keys]
 import com.google.cloud.iam.admin.v1.IAMClient;
-import com.google.iam.admin.v1.ServiceAccount;
+import com.google.iam.admin.v1.ListServiceAccountKeysRequest;
+import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.IOException;
+import java.util.List;
 
-public class ListServiceAccounts {
+public class ListServiceAccountKeys {
 
   public static void main(String[] args) throws IOException {
     // TODO(Developer): Replace the below variables before running.
     String projectId = "your-project-id";
+    String serviceAccountName = "your-service-account-name";
 
-    listServiceAccounts(projectId);
+    List<ServiceAccountKey> keys = listKeys(projectId, serviceAccountName);
+    keys.forEach(key -> System.out.println("Key: " + key.getName()));
   }
 
-  // Lists all service accounts for the current project.
-  public static IAMClient.ListServiceAccountsPagedResponse listServiceAccounts(String projectId)
+  // Lists all keys for a service account.
+  public static List<ServiceAccountKey> listKeys(String projectId, String accountName)
           throws IOException {
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
+    String email = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
     try (IAMClient iamClient = IAMClient.create()) {
-      IAMClient.ListServiceAccountsPagedResponse response =
-              iamClient.listServiceAccounts(String.format("projects/%s", projectId));
+      ListServiceAccountKeysRequest req = ListServiceAccountKeysRequest.newBuilder()
+              .setName(String.format("projects/%s/serviceAccounts/%s", projectId, email))
+              .build();
 
-      for (ServiceAccount account : response.iterateAll()) {
-        System.out.println("Name: " + account.getName());
-        System.out.println("Display name: " + account.getDisplayName());
-        System.out.println("Email: " + account.getEmail() + "\n");
-      }
-
-      return response;
+      return iamClient.listServiceAccountKeys(req).getKeysList();
     }
   }
 }
-// [END iam_list_service_accounts]
+// [END iam_list_keys]

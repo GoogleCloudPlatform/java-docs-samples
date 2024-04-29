@@ -1,4 +1,4 @@
-/* Copyright 2019 Google LLC
+/* Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,37 +13,43 @@
  * limitations under the License.
  */
 
-package iam.snippets;
+// [START iam_create_key]
 
-// [START iam_disable_service_account]
 import com.google.cloud.iam.admin.v1.IAMClient;
-import com.google.iam.admin.v1.DisableServiceAccountRequest;
+import com.google.gson.Gson;
+import com.google.iam.admin.v1.CreateServiceAccountKeyRequest;
+import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.IOException;
 
-public class DisableServiceAccount {
+public class CreateServiceAccountKey {
 
   public static void main(String[] args) throws IOException {
     // TODO(Developer): Replace the below variables before running.
     String projectId = "your-project-id";
     String serviceAccountName = "your-service-account-name";
 
-    disableServiceAccount(projectId, serviceAccountName);
+    ServiceAccountKey key = createKey(projectId, serviceAccountName);
+    Gson gson = new Gson();
+
+    System.out.println("Service account key: " + gson.toJson(key));
   }
 
-  // Disables a service account.
-  public static void disableServiceAccount(String projectId, String accountName)
+  // Creates a key for a service account.
+  public static ServiceAccountKey createKey(String projectId, String accountName)
           throws IOException {
     String email = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
 
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
-      iamClient.disableServiceAccount(DisableServiceAccountRequest.newBuilder()
+      CreateServiceAccountKeyRequest req = CreateServiceAccountKeyRequest.newBuilder()
               .setName(String.format("projects/%s/serviceAccounts/%s", projectId, email))
-              .build());
+              .build();
+      ServiceAccountKey createdKey = iamClient.createServiceAccountKey(req);
+      System.out.println("Key created successfully");
 
-      System.out.println("Disabled service account: " + accountName);
+      return createdKey;
     }
   }
 }
-// [END iam_disable_service_account]
+// [END iam_create_key]

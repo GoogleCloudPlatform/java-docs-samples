@@ -1,4 +1,4 @@
-/* Copyright 2024 Google LLC
+/* Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,35 @@
  * limitations under the License.
  */
 
-package iam.snippets;
-
+// [START iam_disable_service_account]
 import com.google.cloud.iam.admin.v1.IAMClient;
-import com.google.iam.admin.v1.ServiceAccount;
+import com.google.iam.admin.v1.DisableServiceAccountRequest;
 import java.io.IOException;
 
-public class GetServiceAccount {
+public class DisableServiceAccount {
 
   public static void main(String[] args) throws IOException {
     // TODO(Developer): Replace the below variables before running.
-    String name = "your-service-account-name";
     String projectId = "your-project-id";
+    String serviceAccountName = "your-service-account-name";
 
-    ServiceAccount serviceAccount = getServiceAccount(projectId, name);
-
-    System.out.println("Service account name: " + serviceAccount.getDisplayName());
-    System.out.println("Service account email: " + serviceAccount.getEmail());
-    System.out.println("Service account description: " + serviceAccount.getDescription());
+    disableServiceAccount(projectId, serviceAccountName);
   }
 
-  // Get service account
-  public static ServiceAccount getServiceAccount(String projectId, String accountName)
+  // Disables a service account.
+  public static void disableServiceAccount(String projectId, String accountName)
           throws IOException {
     String email = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
-    String accountFullName = String.format("projects/%s/serviceAccounts/%s", projectId, email);
 
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
-      return iamClient.getServiceAccount(accountFullName);
+      iamClient.disableServiceAccount(DisableServiceAccountRequest.newBuilder()
+              .setName(String.format("projects/%s/serviceAccounts/%s", projectId, email))
+              .build());
+
+      System.out.println("Disabled service account: " + accountName);
     }
   }
 }
+// [END iam_disable_service_account]

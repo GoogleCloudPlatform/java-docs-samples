@@ -13,8 +13,6 @@
  * limitations under the License.
  */
 
-package iam.snippets;
-
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.gson.Gson;
 import com.google.iam.admin.v1.GetServiceAccountKeyRequest;
