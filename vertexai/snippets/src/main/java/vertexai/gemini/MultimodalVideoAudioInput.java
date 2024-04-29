@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.PartMaker;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
-
 import java.io.IOException;
 
 public class MultimodalVideoAudioInput {
@@ -35,11 +34,11 @@ public class MultimodalVideoAudioInput {
     String location = "us-central1";
     String modelName = "gemini-1.5-pro-preview-0409";
 
-    multimodalVideoAudioInput(projectId, location, modelName);
+    videoAudioInput(projectId, location, modelName);
   }
 
   // Analyzes the given audio input.
-  public static String multimodalVideoAudioInput(String projectId, String location, String modelName)
+  public static String videoAudioInput(String projectId, String location, String modelName)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
@@ -49,8 +48,8 @@ public class MultimodalVideoAudioInput {
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
       GenerateContentResponse response = model.generateContent(
           ContentMaker.fromMultiModalData(
-              "Provide a description of the video.\n" +
-                  "The description should also contain anything important which people say in the video.",
+              "Provide a description of the video.\n The description should also "
+                  + "contain anything important which people say in the video.",
               PartMaker.fromMimeTypeAndData("video/mp4", videoUri)
           ));
 
