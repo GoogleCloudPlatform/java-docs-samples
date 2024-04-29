@@ -16,6 +16,8 @@
 
 package vtwo.source;
 
+// [START securitycenter_update_finding_source_properties_v2]
+
 import com.google.cloud.securitycenter.v2.Finding;
 import com.google.cloud.securitycenter.v2.FindingName;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
@@ -47,19 +49,27 @@ public class UpdateFindingSource {
 
   // Creates or updates a finding.
   public static Finding updateFinding(String organizationId,
-      String location, String sourceId, String findingId) {
+      String location, String sourceId, String findingId) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
+
       // Instead of using the FindingName, a plain String can also be used. E.g.:
       // String findingName = String.format("organizations/%s/sources/%s/locations/%s/findings/%s",
-      // organizationId,sourceId,location,findingId);
+      // organizationId, sourceId, location, findingId);
       FindingName findingName = FindingName
           .ofOrganizationSourceLocationFindingName(organizationId, sourceId, location, findingId);
+
       // Use the current time as the finding "event time".
       Instant eventTime = Instant.now();
 
       // Define source properties values as protobuf "Value" objects.
       Value stringValue = Value.newBuilder().setStringValue("value").build();
 
+      // Set the update mask to specify which properties should be updated.
+      // If empty, all mutable fields will be updated.
+      // For more info on constructing field mask path, see the proto or:
+      // https://cloud.google.com/java/docs/reference/protobuf/latest/com.google.protobuf.FieldMask
       FieldMask updateMask =
           FieldMask.newBuilder()
               .addPaths("event_time")
@@ -77,16 +87,18 @@ public class UpdateFindingSource {
               .putSourceProperties("stringKey", stringValue)
               .build();
 
-      UpdateFindingRequest.Builder request =
-          UpdateFindingRequest.newBuilder().setFinding(finding).setUpdateMask(updateMask);
+      UpdateFindingRequest request =
+          UpdateFindingRequest.newBuilder()
+              .setFinding(finding)
+              .setUpdateMask(updateMask)
+              .build();
 
       // Call the API.
-      Finding response = client.updateFinding(request.build());
+      Finding response = client.updateFinding(request);
 
       System.out.println("Updated finding source: " + response);
       return response;
-    } catch (IOException e) {
-      throw new RuntimeException("Couldn't create client.", e);
     }
   }
 }
+// [END securitycenter_update_finding_source_properties_v2]

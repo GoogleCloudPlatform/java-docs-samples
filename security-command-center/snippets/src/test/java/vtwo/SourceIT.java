@@ -18,22 +18,29 @@ package vtwo;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.securitycenter.v2.Finding;
-import com.google.cloud.securitycenter.v2.SecurityCenterClient.ListSourcesPagedResponse;
 import com.google.cloud.securitycenter.v2.Source;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+import com.google.protobuf.Value;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import vtwo.findings.CreateFindings;
+import vtwo.muteconfig.SetMuteFinding;
+import vtwo.source.CreateSource;
 import vtwo.source.GetSource;
 import vtwo.source.ListSources;
 import vtwo.source.UpdateFindingSource;
@@ -73,44 +80,72 @@ public class SourceIT {
     requireEnvVar("SCC_PROJECT_ORG_ID");
 
     // Create source.
-    SOURCE = Util.createSource(ORGANIZATION_ID);
+    SOURCE = CreateSource.createSource(ORGANIZATION_ID);
 
+    // Create findings within the source.
     String uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING = Util.createFinding(SOURCE.getName(), "testfindingv2" + uuid, LOCATION,
-        Optional.of("MEDIUM_RISK_ONE"));
+    FINDING = CreateFindings.createFinding(ORGANIZATION_ID, LOCATION, "testfindingv2" + uuid,
+        SOURCE.getName().split("/")[3], Optional.of("MEDIUM_RISK_ONE"));
 
     stdOut = null;
     System.setOut(out);
   }
 
+  @AfterClass
+  public static void cleanUp() throws IOException {
+    final PrintStream out = System.out;
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+
+    // Mute an individual finding.
+    SetMuteFinding.setMute(FINDING.getName());
+
+    stdOut = null;
+    System.setOut(out);
+  }
+
+  @Before
+  public void beforeEach() {
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+  }
+
+  @After
+  public void afterEach() {
+    stdOut = null;
+    System.setOut(null);
+  }
+
   @Test
-  public void testListAllSources() {
+  public void testListAllSources() throws IOException {
     List<Source> response = ListSources.listSources(ORGANIZATION_ID);
 
     assertThat(response.stream().map(Source::getName)).contains(SOURCE.getName());
   }
 
   @Test
-  public void testGetSource() {
+  public void testGetSource() throws IOException {
     Source source = GetSource.getSource(ORGANIZATION_ID, SOURCE.getName().split("/")[3]);
 
     assertThat(source.getName()).isEqualTo(SOURCE.getName());
   }
 
   @Test
-  public void testUpdateSource() {
+  public void testUpdateSource() throws IOException {
     Source source = UpdateSource.updateSource(ORGANIZATION_ID, SOURCE.getName().split("/")[3]);
 
     assertThat(source.getDisplayName()).contains("Updated Display Name");
   }
 
   @Test
-  public void testUpdateFindingSource() {
-    Finding findingUpdated = UpdateFindingSource.updateFinding(ORGANIZATION_ID, LOCATION,
-        SOURCE.getName().split("/")[3], FINDING.getName().split("/")[7]);
+  public void testUpdateFindingSource() throws IOException {
+    Value stringValue = Value.newBuilder().setStringValue("value").build();
 
-    assertThat(findingUpdated).isNotNull();
-    assertThat(findingUpdated).isNotEqualTo(Finding.getDefaultInstance());
+    assertTrue(UpdateFindingSource.updateFinding(ORGANIZATION_ID, LOCATION,
+            SOURCE.getName().split("/")[3], FINDING.getName().split("/")[7])
+        .getSourcePropertiesMap()
+        .get("stringKey")
+        .equals(stringValue));
   }
 
 }

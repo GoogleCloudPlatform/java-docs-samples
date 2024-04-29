@@ -26,6 +26,7 @@ import com.google.protobuf.FieldMask;
 import java.io.IOException;
 
 public class UpdateSource {
+
   public static void main(String[] args) throws IOException {
     // TODO: Replace the below variables.
     // organizationId: Google Cloud Organization id.
@@ -38,37 +39,36 @@ public class UpdateSource {
   }
 
   // Demonstrates how to update a source.
-  public static Source updateSource(String organizationId, String sourceId) {
+  public static Source updateSource(String organizationId, String sourceId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
+
       // Start setting up a request to get a source.
       SourceName sourceName = SourceName.ofOrganizationSourceName(organizationId, sourceId);
       Source source = Source.newBuilder()
-              .setDisplayName("Updated Display Name")
-              .setName(sourceName.toString())
-              .build();
+          .setDisplayName("Updated Display Name")
+          .setName(sourceName.toString())
+          .build();
 
       // Set the update mask to specify which properties should be updated.
       // If empty, all mutable fields will be updated.
       // For more info on constructing field mask path, see the proto or:
       // https://cloud.google.com/java/docs/reference/protobuf/latest/com.google.protobuf.FieldMask
       FieldMask updateMask = FieldMask.newBuilder()
-              .addPaths("display_name")
-              .build();
+          .addPaths("display_name")
+          .build();
 
       UpdateSourceRequest request = UpdateSourceRequest.newBuilder()
-              .setSource(source)
-              .setUpdateMask(updateMask)
-              .build();
+          .setSource(source)
+          .setUpdateMask(updateMask)
+          .build();
 
       // Call the API.
       Source response = client.updateSource(request);
 
       System.out.println("Updated Source: " + response);
       return response;
-    } catch (IOException e) {
-      throw new RuntimeException("Couldn't create client.", e);
     }
   }
 }

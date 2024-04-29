@@ -18,6 +18,7 @@ package vtwo.source;
 
 // [START securitycenter_list_sources_v2]
 
+import com.google.cloud.securitycenter.v2.OrganizationLocationName;
 import com.google.cloud.securitycenter.v2.OrganizationName;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient.ListSourcesPagedResponse;
@@ -37,20 +38,23 @@ public class ListSources {
   }
 
   // Demonstrates how to list all security sources in an organization.
-  public static List<Source> listSources(String organizationId) {
+  public static List<Source> listSources(String organizationId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
+
       // Start setting up a request to get a source.
       OrganizationName parent = OrganizationName.of(organizationId);
 
-      ListSourcesPagedResponse response = client.listSources(parent);
-
+      // Call the API.
       List<Source> sourcesList = new ArrayList<>();
+      ListSourcesPagedResponse response = client.listSources(parent);
       response.iterateAll().forEach(sourcesList::add);
+
+      for (Source source : sourcesList) {
+        System.out.println("List sources: " + source);
+      }
       return sourcesList;
-    } catch (IOException e) {
-      throw new RuntimeException("Couldn't create client.", e);
     }
   }
 }

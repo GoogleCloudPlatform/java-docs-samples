@@ -26,9 +26,9 @@ import java.io.IOException;
 
 public class GetSource {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     // TODO: Replace the below variables.
-    // projectId: Google Cloud Project id.
+    // organizationId: Google Cloud Organization id.
     String organizationId = "{google-cloud-organization-id}";
 
     // Specify the source-id.
@@ -38,7 +38,7 @@ public class GetSource {
   }
 
   // Demonstrates how to retrieve a specific source.
-  public static Source getSource(String organizationId, String sourceId) {
+  public static Source getSource(String organizationId, String sourceId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -46,16 +46,15 @@ public class GetSource {
       // Start setting up a request to get a source.
       SourceName sourceName = SourceName.ofOrganizationSourceName(organizationId, sourceId);
 
-      GetSourceRequest.Builder request = GetSourceRequest.newBuilder()
-          .setName(sourceName.toString());
+      GetSourceRequest request = GetSourceRequest.newBuilder()
+          .setName(sourceName.toString())
+          .build();
 
       // Call the API.
-      Source response = client.getSource(request.build());
+      Source response = client.getSource(request);
 
       System.out.println("Source: " + response);
       return response;
-    } catch (IOException e) {
-      throw new RuntimeException("Couldn't create client.", e);
     }
   }
 }
