@@ -16,6 +16,7 @@
 package iam.snippets;
 
 import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.gson.Gson;
 import com.google.iam.admin.v1.GetServiceAccountKeyRequest;
 import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.IOException;
@@ -24,13 +25,14 @@ public class GetServiceAccountKey {
 
   public static void main(String[] args) throws IOException {
     // TODO(Developer): Replace the below variables before running.
-    String accountName = "my-service-account-name";
-    String projectId = "my-project-id    ";
-    String keyName = "my-key-name";
+    String accountName = "service-account-name";
+    String projectId = "project-id";
+    String keyName = "service-account-key-name";
 
-    ServiceAccountKey serviceAccountkey = getServiceAccountKey(projectId, accountName, keyName);
+    ServiceAccountKey key = getServiceAccountKey(projectId, accountName, keyName);
+    Gson gson = new Gson();
 
-    System.out.println("Service account key: " + serviceAccountkey.getName());
+    System.out.println("Service account key: " + gson.toJson(key));
   }
 
   // Get service account key

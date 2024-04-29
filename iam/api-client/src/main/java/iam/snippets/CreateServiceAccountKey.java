@@ -18,6 +18,7 @@ package iam.snippets;
 // [START iam_create_key]
 
 import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.gson.Gson;
 import com.google.iam.admin.v1.CreateServiceAccountKeyRequest;
 import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.IOException;
@@ -30,8 +31,9 @@ public class CreateServiceAccountKey {
     String serviceAccountName = "your-service-account-name";
 
     ServiceAccountKey key = createKey(projectId, serviceAccountName);
+    Gson gson = new Gson();
 
-    System.out.println("Created key name: " + key.getPrivateKeyData());
+    System.out.println("Service account key: " + gson.toJson(key));
   }
 
   // Creates a key for a service account.
