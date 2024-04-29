@@ -29,6 +29,7 @@ import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
+import javax.net.ssl.HttpsURLConnection;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,9 +42,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class SnippetsIT {
 
+  public static final String GEMINI_ULTRA_VISION = "gemini-1.0-ultra-vision";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
-  public static final String GEMINI_ULTRA_VISION = "gemini-1.0-ultra-vision";
   private static final String GEMINI_PRO_VISION = "gemini-1.0-pro-vision";
   private static final String GEMINI_PRO = "gemini-1.0-pro";
   private static final int MAX_ATTEMPT_COUNT = 3;
@@ -78,25 +79,42 @@ public class SnippetsIT {
 
   // Reads the image data from the given URL.
   public static byte[] readImageFile(String url) throws IOException {
+    if (url == null || url.isEmpty()) {
+      throw new IllegalArgumentException("Invalid URL: " + url);
+    }
     URL urlObj = new URL(url);
-    HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
-    connection.setRequestMethod("GET");
+    HttpsURLConnection connection = null;
+    InputStream inputStream = null;
+    ByteArrayOutputStream outputStream = null;
 
-    int responseCode = connection.getResponseCode();
+    try {
+      connection = (HttpsURLConnection) urlObj.openConnection();
+      connection.setRequestMethod("GET");
 
-    if (responseCode == HttpURLConnection.HTTP_OK) {
-      InputStream inputStream = connection.getInputStream();
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      int responseCode = connection.getResponseCode();
+      if (responseCode == HttpURLConnection.HTTP_OK) {
+        inputStream = connection.getInputStream();
+        outputStream = new ByteArrayOutputStream();
 
-      byte[] buffer = new byte[1024];
-      int bytesRead;
-      while ((bytesRead = inputStream.read(buffer)) != -1) {
-        outputStream.write(buffer, 0, bytesRead);
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+          outputStream.write(buffer, 0, bytesRead);
+        }
+        return outputStream.toByteArray();
+      } else {
+        throw new IOException("Error fetching file: " + responseCode);
       }
-
-      return outputStream.toByteArray();
-    } else {
-      throw new RuntimeException("Error fetching file: " + responseCode);
+    } finally {
+      if (inputStream != null) {
+        inputStream.close();
+      }
+      if (outputStream != null) {
+        outputStream.close();
+      }
+      if (connection != null) {
+        connection.disconnect();
+      }
     }
   }
 
