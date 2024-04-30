@@ -144,7 +144,7 @@ public class SnippetsIT {
 
   @Test
   public void testMultimodalQuery() throws Exception {
-    String imageUri = "https://storage.googleapis.com/generativeai-downloads/images/scones.jpg";
+    String imageUri = "https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
     String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
     String output = MultimodalQuery.multimodalQuery(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         dataImageBase64);
