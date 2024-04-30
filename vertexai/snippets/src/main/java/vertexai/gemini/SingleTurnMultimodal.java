@@ -61,7 +61,7 @@ public class SingleTurnMultimodal {
       GenerativeModel model = new GenerativeModel(modelName, generationConfig, vertexAI);
       ResponseStream<GenerateContentResponse> responseStream = model.generateContentStream(
           ContentMaker.fromMultiModalData(
-              PartMaker.fromMimeTypeAndData("image/jpg", decodedImage),
+              PartMaker.fromMimeTypeAndData("image/png", decodedImage),
               textPrompt
           ));
       responseStream.stream().forEach(System.out::println);
