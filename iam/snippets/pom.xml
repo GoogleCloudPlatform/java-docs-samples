@@ -78,12 +78,8 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-iam</artifactId>
+      <version>v1-rev20240118-2.0.0</version>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-iamcredentials</artifactId>
-      <version>v1-rev20211203-2.0.0</version>
     </dependency>
   </dependencies>
 </project>
