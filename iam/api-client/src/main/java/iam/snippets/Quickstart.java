@@ -49,10 +49,10 @@ public class Quickstart {
   public static void quickstart(String projectId, String serviceAccount,
                                 String member, String role) throws IOException {
 
-    //Construct the service account email.
-    //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
-    //you want to delete the key.
-    //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
+    // Construct the service account email.
+    // You can modify the ".iam.gserviceaccount.com" to match the service account name in which
+    // you want to delete the key.
+    // See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
 
     serviceAccount = serviceAccount + "@" + projectId + ".iam.gserviceaccount.com";
 
@@ -179,9 +179,9 @@ public class Quickstart {
             .setResource(ServiceAccountName.of(projectId, serviceAccount).toString())
             .setPolicy(policy)
             // A FieldMask specifying which fields of the policy to modify. Only
-            //  the fields in the mask will be modified. If no mask is provided, the
-            //  following default mask is used:
-            //  `paths: "bindings, etag"`
+            // the fields in the mask will be modified. If no mask is provided, the
+            // following default mask is used:
+            // `paths: "bindings, etag"`
             .setUpdateMask(FieldMask.newBuilder().addAllPaths(paths).build())
             .build();
     iamClient.setIamPolicy(request);

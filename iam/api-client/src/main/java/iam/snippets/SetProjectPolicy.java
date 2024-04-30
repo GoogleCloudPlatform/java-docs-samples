@@ -48,9 +48,9 @@ public class SetProjectPolicy {
               .setResource(ProjectName.of(projectId).toString())
               .setPolicy(policy)
               // A FieldMask specifying which fields of the policy to modify. Only
-              //  the fields in the mask will be modified. If no mask is provided, the
-              //  following default mask is used:
-              //  `paths: "bindings, etag"`
+              // the fields in the mask will be modified. If no mask is provided, the
+              // following default mask is used:
+              // `paths: "bindings, etag"`
               .setUpdateMask(FieldMask.newBuilder().addAllPaths(paths).build())
               .build();
 

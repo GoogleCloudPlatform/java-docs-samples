@@ -36,10 +36,10 @@ public class GetServiceAccountPolicy {
   // Gets a service account's IAM policy.
   public static Policy getPolicy(String projectId, String serviceAccount) throws IOException {
 
-    //Construct the service account email.
-    //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
-    //you want to delete the key.
-    //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
+    // Construct the service account email.
+    // You can modify the ".iam.gserviceaccount.com" to match the service account name in which
+    // you want to delete the key.
+    // See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
 
     String serviceAccountEmail = serviceAccount + "@" + projectId + ".iam.gserviceaccount.com";
 
