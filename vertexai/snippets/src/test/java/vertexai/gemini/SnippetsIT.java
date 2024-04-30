@@ -47,6 +47,7 @@ public class SnippetsIT {
   private static final String LOCATION = "us-central1";
   private static final String GEMINI_PRO_VISION = "gemini-1.0-pro-vision";
   private static final String GEMINI_PRO = "gemini-1.0-pro";
+  private static final String GEMINI_PRO_1_5 = "gemini-1.5-pro-preview-0409";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   @Rule
@@ -220,5 +221,44 @@ public class SnippetsIT {
         textPrompt);
     assertThat(answer).ignoringCase().contains("Paris");
     assertThat(answer).ignoringCase().contains("sunny");
+  }
+
+  @Test
+  public void testAudioInputSummary() throws IOException {
+    String output = AudioInputSummarization.summarizeAudio(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+
+    assertThat(output).ignoringCase().contains("Pixel");
+    assertThat(output).ignoringCase().contains("feature");
+  }
+
+  @Test
+  public void testAudioInputTranscription() throws IOException {
+    String output = AudioInputTranscription.transcribeAudio(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+
+    assertThat(output).ignoringCase().contains("Pixel");
+    assertThat(output).ignoringCase().contains("feature");
+  }
+
+  @Test
+  public void testVideoAudioInput() throws IOException {
+    String output = VideoInputWithAudio.videoAudioInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+
+    assertThat(output).ignoringCase().contains("Pixel");
+    assertThat(output).ignoringCase().contains("Tokyo");
+  }
+
+  @Test
+  public void testAllModalityInputs() throws IOException {
+    String output = MultimodalAllInput.multimodalAllInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+
+    assertThat(output).ignoringCase().contains("00:49");
+    assertThat(output).ignoringCase().contains("moment");
+  }
+
+  @Test
+  public void testPdfInput() throws IOException {
+    String output = PdfInput.pdfInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+
+    assertThat(output).ignoringCase().contains("Gemini");
   }
 }
