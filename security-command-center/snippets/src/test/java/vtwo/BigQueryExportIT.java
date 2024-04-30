@@ -79,7 +79,7 @@ public class BigQueryExportIT {
     requireEnvVar("SCC_PROJECT_ID");
 
     // Create a BigQuery dataset.
-    createBigQueryDataset(PROJECT_ID, BQ_DATASET_NAME);
+    createBigQueryDataset(BQ_DATASET_NAME);
     // Create export request.
     String filter = "severity=\"LOW\" OR severity=\"MEDIUM\"";
     CreateBigQueryExport.createBigQueryExport(ORGANIZATION_ID, LOCATION, PROJECT_ID, filter,
@@ -96,7 +96,7 @@ public class BigQueryExportIT {
     System.setOut(new PrintStream(stdOut));
 
     // Delete BigQuery Dataset and export request.
-    deleteBigQueryDataset(PROJECT_ID, BQ_DATASET_NAME);
+    deleteBigQueryDataset(BQ_DATASET_NAME);
     DeleteBigQueryExport.deleteBigQueryExport(ORGANIZATION_ID, LOCATION, BQ_EXPORT_ID);
     assertThat(stdOut.toString())
         .contains(String.format("BigQuery export request deleted successfully: %s", BQ_EXPORT_ID));
@@ -139,9 +139,9 @@ public class BigQueryExportIT {
     assertThat(stdOut.toString()).contains("BigQueryExport updated successfully!");
   }
 
-  private static void createBigQueryDataset(String projectId, String datasetName) {
+  private static void createBigQueryDataset(String datasetName) {
     try {
-      BigQuery bigquery = BigQueryOptions.newBuilder().setProjectId(projectId).build().getService();
+      BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
       DatasetInfo datasetInfo = DatasetInfo.newBuilder(datasetName).build();
 
@@ -156,9 +156,9 @@ public class BigQueryExportIT {
     }
   }
 
-  private static void deleteBigQueryDataset(String projectId, String datasetName) {
+  private static void deleteBigQueryDataset(String datasetName) {
     try {
-      BigQuery bigquery = BigQueryOptions.newBuilder().setProjectId(projectId).build().getService();
+      BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
       Assert.assertTrue("Deleted BigQuery dataset", bigquery.delete(datasetName));
     } catch (BigQueryException e) {
       Assert.fail("Dataset was not deleted. \n" + e);
