@@ -154,7 +154,7 @@ public class SnippetsIT {
   @Test
   public void testMultimodalVideoInput() throws IOException {
     MultimodalVideoInput.multimodalVideoInput(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
-    assertThat(bout.toString()).contains("Zootopia");
+    assertThat(bout.toString()).contains("Zoo");
   }
 
   @Ignore("Don't test until ultra launch")
@@ -174,16 +174,16 @@ public class SnippetsIT {
   @Test
   public void testQuickstart() throws IOException {
     String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
-    assertThat(output).contains("scones");
+    assertThat(output).contains("Christ the Redeemer");
   }
 
   @Test
   public void testSingleTurnMultimodal() throws IOException {
-    String imageUri = "https://storage.googleapis.com/generativeai-downloads/images/scones.jpg";
+    String imageUri = "https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
     String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
     SingleTurnMultimodal.generateContent(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         "What is this image", dataImageBase64);
-    assertThat(bout.toString()).contains("scones");
+    assertThat(bout.toString()).contains("Christ the Redeemer");
   }
 
   @Test
