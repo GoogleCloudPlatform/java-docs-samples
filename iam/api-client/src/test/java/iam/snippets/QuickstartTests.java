@@ -20,20 +20,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.cloudresourcemanager.v3.CloudResourceManager;
-import com.google.api.services.cloudresourcemanager.v3.model.Binding;
-import com.google.api.services.cloudresourcemanager.v3.model.Policy;
-import com.google.api.services.iam.v1.Iam;
-import com.google.api.services.iam.v1.IamScopes;
-import com.google.api.services.iam.v1.model.CreateServiceAccountRequest;
-import com.google.api.services.iam.v1.model.ServiceAccount;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.CreateServiceAccountRequest;
+import com.google.iam.admin.v1.DeleteServiceAccountRequest;
+import com.google.iam.admin.v1.ProjectName;
+import com.google.iam.admin.v1.ServiceAccount;
+import com.google.iam.admin.v1.ServiceAccountName;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.Policy;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.junit.After;
@@ -46,15 +41,15 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickstartTests {
-
-  private ServiceAccount serviceAccount;
-  private Iam iamService;
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String SERVICE_ACCOUNT =
+          "iam-test-account-" + UUID.randomUUID().toString().split("-")[0];
+  private String serviceAccountEmail;
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-        System.getenv(varName),
-        String.format("Environment variable '%s' is required to perform these tests.", varName));
+          System.getenv(varName),
+          String.format("Environment variable '%s' is required to perform these tests.", varName));
   }
 
   @BeforeClass
@@ -65,95 +60,73 @@ public class QuickstartTests {
 
   // Creates a service account to use during the test
   @Before
-  public void setUp() {
-    try {
-      GoogleCredentials credential =
-          GoogleCredentials.getApplicationDefault()
-              .createScoped(Collections.singleton(IamScopes.CLOUD_PLATFORM));
-
-      iamService =
-          new Iam.Builder(
-                  GoogleNetHttpTransport.newTrustedTransport(),
-                  GsonFactory.getDefaultInstance(),
-                  new HttpCredentialsAdapter(credential))
-              .setApplicationName("service-accounts")
+  public void setUp() throws IOException {
+    try (IAMClient iamClient = IAMClient.create()) {
+      ServiceAccount serviceAccount = ServiceAccount
+              .newBuilder()
+              .setDisplayName("test-display-name")
               .build();
-    } catch (IOException | GeneralSecurityException e) {
-      System.out.println("Unable to initialize service: \n" + e.toString());
-      return;
-    }
+      CreateServiceAccountRequest request = CreateServiceAccountRequest.newBuilder()
+              .setName(ProjectName.of(PROJECT_ID).toString())
+              .setAccountId(SERVICE_ACCOUNT)
+              .setServiceAccount(serviceAccount)
+              .build();
 
-    try {
-      serviceAccount = new ServiceAccount();
-      String serviceAccountUuid = UUID.randomUUID().toString().split("-")[0];
-      serviceAccount.setDisplayName("iam-test-account" + serviceAccountUuid);
-      CreateServiceAccountRequest request = new CreateServiceAccountRequest();
-      request.setAccountId("iam-test-account" + serviceAccountUuid);
-      request.setServiceAccount(serviceAccount);
-
-      serviceAccount =
-          iamService
-              .projects()
-              .serviceAccounts()
-              .create("projects/" + PROJECT_ID, request)
-              .execute();
-    } catch (IOException e) {
-      System.out.println("Unable to create service account: \n" + e.toString());
+      serviceAccount = iamClient.createServiceAccount(request);
+      serviceAccountEmail = serviceAccount.getEmail();
     }
   }
 
   // Deletes the service account used in the test.
   @After
-  public void tearDown() {
-    String email = serviceAccount.getEmail();
-    if (email != null) {
-      String resource = "projects/-/serviceAccounts/" + email;
-      try {
-        iamService.projects().serviceAccounts().delete(resource).execute();
-      } catch (IOException e) {
-        System.out.println("Unable to delete service account: \n" + e.toString());
-      }
+  public void tearDown() throws IOException {
+    try (IAMClient iamClient = IAMClient.create()) {
+      String serviceAccountName = SERVICE_ACCOUNT + "@" + PROJECT_ID + ".iam.gserviceaccount.com";
+      DeleteServiceAccountRequest request = DeleteServiceAccountRequest.newBuilder()
+              .setName(ServiceAccountName.of(PROJECT_ID, serviceAccountName).toString())
+              .build();
+      iamClient.deleteServiceAccount(request);
     }
   }
 
   @Test
   public void testQuickstart() throws Exception {
-    String member = "serviceAccount:" + serviceAccount.getEmail();
-    String role = "roles/logging.logWriter";
+    String member = "serviceAccount:" + serviceAccountEmail;
+    String role = "roles/viewer";
+    String serviceAccountName = SERVICE_ACCOUNT + "@" + PROJECT_ID + ".iam.gserviceaccount.com";
 
-    // Tests initializeService()
-    CloudResourceManager crmService = Quickstart.initializeService();
+    try (IAMClient iamClient = IAMClient.create()) {
+      // Tests addBinding()
+      Quickstart.addBinding(iamClient, PROJECT_ID, serviceAccountName, member, role);
 
-    // Tests addBinding()
-    Quickstart.addBinding(crmService, "projects/" + PROJECT_ID, member, role);
-
-    // Get the project's polcy and confirm that the member is in the policy
-    Policy policy = Quickstart.getPolicy(crmService, "projects/" + PROJECT_ID);
-    Binding binding = null;
-    List<Binding> bindings = policy.getBindings();
-    for (Binding b : bindings) {
-      if (b.getRole().equals(role)) {
-        binding = b;
-        break;
+      // Get the project's policy and confirm that the member is present in the policy
+      Policy policy = Quickstart.getPolicy(iamClient, PROJECT_ID, serviceAccountName);
+      Binding binding = null;
+      List<Binding> bindings = policy.getBindingsList();
+      for (Binding b : bindings) {
+        if (b.getRole().equals(role)) {
+          binding = b;
+          break;
+        }
       }
-    }
-    assertNotNull(binding);
-    assertThat(binding.getMembers(), hasItem(member));
+      assertNotNull(binding);
+      assertThat(binding.getMembersList(), hasItem(member));
 
-    // Tests removeMember()
-    Quickstart.removeMember(crmService, "projects/" + PROJECT_ID, member, role);
-    // Confirm that the member has been removed
-    policy = Quickstart.getPolicy(crmService, "projects/" + PROJECT_ID);
-    binding = null;
-    bindings = policy.getBindings();
-    for (Binding b : bindings) {
-      if (b.getRole().equals(role)) {
-        binding = b;
-        break;
+      // Tests removeMember()
+      Quickstart.removeMember(iamClient, PROJECT_ID, serviceAccountName, member, role);
+      // Confirm that the member has been removed
+      policy = Quickstart.getPolicy(iamClient, PROJECT_ID, serviceAccountName);
+      binding = null;
+      bindings = policy.getBindingsList();
+      for (Binding b : bindings) {
+        if (b.getRole().equals(role)) {
+          binding = b;
+          break;
+        }
       }
-    }
-    if (binding != null) {
-      assertThat(binding.getMembers(), not(hasItem(member)));
+      if (binding != null) {
+        assertThat(binding.getMembersList(), not(hasItem(member)));
+      }
     }
   }
 }
