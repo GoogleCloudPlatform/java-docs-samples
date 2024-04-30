@@ -174,7 +174,7 @@ public class SnippetsIT {
   @Test
   public void testQuickstart() throws IOException {
     String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
-    assertThat(output).contains("Christ the Redeemer");
+    assertThat(output).contains("Colosseum");
   }
 
   @Test
@@ -183,7 +183,7 @@ public class SnippetsIT {
     String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
     SingleTurnMultimodal.generateContent(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         "What is this image", dataImageBase64);
-    assertThat(bout.toString()).contains("Christ the Redeemer");
+    assertThat(bout.toString()).contains("Colosseum");
   }
 
   @Test
