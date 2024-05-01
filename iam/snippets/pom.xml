@@ -75,11 +75,5 @@
       <scope>test</scope>
       <version>4.13.2</version>
     </dependency>
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-iam</artifactId>
-      <version>v1-rev20240118-2.0.0</version>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
 </project>
