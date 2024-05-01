@@ -1,4 +1,4 @@
-/* Copyright 2024 Google LLC
+/* Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class CreateServiceAccountKey {
     ServiceAccountKey key = createKey(projectId, serviceAccountName);
     Gson gson = new Gson();
 
-    System.out.println("Service account key: " + gson.toJson(key));
+//    System.out.println("Service account key: " + gson.toJson(key));
   }
 
   // Creates a key for a service account.
