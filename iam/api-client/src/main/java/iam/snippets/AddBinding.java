@@ -16,27 +16,38 @@
 package iam.snippets;
 
 // [START iam_modify_policy_add_role]
-import com.google.api.services.cloudresourcemanager.v3.model.Binding;
-import com.google.api.services.cloudresourcemanager.v3.model.Policy;
-import java.util.ArrayList;
+
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.Policy;
+import java.util.Collections;
 import java.util.List;
 
 public class AddBinding {
-
-  // Adds a member to a role with no previous members.
-  public static void addBinding(Policy policy) {
-    // policy = service.Projects.GetIAmPolicy(new GetIamPolicyRequest(), your-project-id).Execute();
-
+  public static void main(String[] args) {
+    // TODO(developer): Replace the variables before running the sample.
+    // TODO: Replace with your policy: GetPolicy.getPolicy(projectId, serviceAccount).
+    Policy policy = Policy.newBuilder().build();
+    // TODO: Replace with your role.
     String role = "roles/role-to-add";
-    List<String> members = new ArrayList<>();
-    members.add("user:member-to-add@example.com");
+    // TODO: Replace with your members.
+    List<String> members = Collections.singletonList("user:member-to-add@example.com");
 
-    Binding binding = new Binding();
-    binding.setRole(role);
-    binding.setMembers(members);
+    addBinding(policy, role, members);
+  }
 
-    policy.getBindings().add(binding);
-    System.out.println("Added binding: " + binding.toString());
+  // Adds a member to a role.
+  public static Policy addBinding(Policy policy, String role, List<String> members) {
+    Binding binding = Binding.newBuilder()
+            .setRole(role)
+            .addAllMembers(members)
+            .build();
+
+    // Update bindings for the policy.
+    Policy updatedPolicy = policy.toBuilder().addBindings(binding).build();
+
+    System.out.println("Added binding: " + updatedPolicy.getBindingsList());
+
+    return updatedPolicy;
   }
 }
 // [END iam_modify_policy_add_role]
