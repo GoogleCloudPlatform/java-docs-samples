@@ -29,7 +29,6 @@ import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -67,7 +66,6 @@ public class SearchIT {
     bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
   }
 
-  @Ignore("Blocked on https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8798")
   @Test
   public void testSearchAllResourcesExample() throws Exception {
     // Wait 120 seconds to let dataset creation event go to CAI
