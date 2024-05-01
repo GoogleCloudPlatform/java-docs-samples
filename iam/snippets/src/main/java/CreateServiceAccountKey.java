@@ -31,7 +31,7 @@ public class CreateServiceAccountKey {
     ServiceAccountKey key = createKey(projectId, serviceAccountName);
     Gson gson = new Gson();
 
-//    System.out.println("Service account key: " + gson.toJson(key));
+    // System.out.println("Service account key: " + gson.toJson(key));
   }
 
   // Creates a key for a service account.
