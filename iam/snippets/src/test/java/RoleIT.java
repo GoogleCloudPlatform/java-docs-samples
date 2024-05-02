@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.DeleteRoleRequest;
+import com.google.iam.admin.v1.Role;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -110,6 +111,10 @@ public class RoleIT {
     // Test list roles.
     ListRoles.listRoles(projectId);
     assertThat(bout.toString().contains(roleId));
+
+    // Test disable role.
+    Role role = DisableRole.disableRole(projectId, roleId);
+    assertThat(role.getStage().equals(Role.RoleLaunchStage.DISABLED));
 
     bout.reset();
     // Test delete role.
