@@ -19,13 +19,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.api.services.cloudresourcemanager.v3.model.Binding;
-import com.google.api.services.cloudresourcemanager.v3.model.Policy;
+import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.DeleteServiceAccountRequest;
+import com.google.iam.admin.v1.ServiceAccountName;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.Policy;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,17 +44,31 @@ public class AccessTests {
   private ByteArrayOutputStream bout;
   private Policy policyMock;
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String SERVICE_ACCOUNT =
+          "service-account-" + UUID.randomUUID().toString().substring(0, 8);
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-        System.getenv(varName),
-        String.format("Environment variable '%s' is required to perform these tests.", varName));
+          System.getenv(varName),
+          String.format("Environment variable '%s' is required to perform these tests.", varName));
   }
 
   @BeforeClass
-  public static void checkRequirements() {
+  public static void checkRequirementsAndInitServiceAccount() throws IOException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    CreateServiceAccount.createServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+  }
+
+  @AfterClass
+  public static void cleanup() throws IOException {
+    try (IAMClient client = IAMClient.create()) {
+      String serviceAccName = ServiceAccountName.of(PROJECT_ID, SERVICE_ACCOUNT).toString();
+      DeleteServiceAccountRequest request = DeleteServiceAccountRequest.newBuilder()
+              .setName(serviceAccName + "@" + PROJECT_ID + ".iam.gserviceaccount.com")
+              .build();
+      client.deleteServiceAccount(request);
+    }
   }
 
   @Before
@@ -56,15 +76,18 @@ public class AccessTests {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    policyMock = new Policy();
     List<String> members = new ArrayList<>();
     members.add("user:member-to-remove@example.com");
-    Binding binding = new Binding();
-    binding.setRole("roles/existing-role");
-    binding.setMembers(members);
-    List<Binding> bindings = new ArrayList<Binding>();
+    Binding binding = Binding.newBuilder()
+            .setRole("roles/existing-role")
+            .addAllMembers(members)
+            .build();
+    List<Binding> bindings = new ArrayList<>();
     bindings.add(binding);
-    policyMock.setBindings(bindings);
+
+    policyMock = Policy.newBuilder()
+            .addAllBindings(bindings)
+            .build();
   }
 
   @After
@@ -74,44 +97,84 @@ public class AccessTests {
   }
 
   @Test
-  public void testGetPolicy() {
-    GetPolicy.getPolicy("projects/" + PROJECT_ID);
-    String got = bout.toString();
-    assertThat(got, containsString("Policy retrieved: "));
+  public void testGetServiceAccountPolicy() throws IOException {
+    Policy policy = GetServiceAccountPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
+    assertNotNull(policy);
+    assertNotNull(policy.getEtag());
   }
 
   @Test
-  public void testSetPolicy() {
-    Policy policy = GetPolicy.getPolicy("projects/" + PROJECT_ID);
-    SetPolicy.setPolicy(policy, "projects/" + PROJECT_ID);
-    String got = bout.toString();
-    assertThat(got, containsString("Policy retrieved: "));
+  public void testSetServiceAccountPolicy() throws IOException {
+    Policy policy = GetServiceAccountPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
+    Policy setPolicy = SetServiceAccountPolicy
+            .setServiceAccountPolicy(policy, PROJECT_ID, SERVICE_ACCOUNT);
+    assertThat("version of updated policy should be incremented",
+            setPolicy.getVersion() > policy.getVersion()
+    );
+  }
+
+  @Test
+  public void testGetProjectPolicy() throws IOException {
+    Policy policy = GetServiceAccountPolicy.getPolicy(PROJECT_ID, SERVICE_ACCOUNT);
+    assertNotNull(policy);
+    assertNotNull(policy.getEtag());
+  }
+
+  @Test
+  public void testSetProjectPolicy() throws IOException {
+    Policy policy = GetProjectPolicy.getProjectPolicy(PROJECT_ID);
+    Policy setPolicy = SetProjectPolicy.setProjectPolicy(policy, PROJECT_ID);
+    assertNotNull(setPolicy);
+    assertNotNull(setPolicy.getEtag());
   }
 
   @Test
   public void testAddBinding() {
-    AddBinding.addBinding(policyMock);
-    String got = bout.toString();
-    assertThat(got, containsString("Added binding: "));
+    String role = "roles/role-to-add";
+    List<String> members = new ArrayList<>();
+    members.add("user:member-to-add@example.com");
+    policyMock = AddBinding.addBinding(policyMock, role, members);
+    assertNotNull(policyMock);
+    boolean bindingAdded = false;
+    for (Binding b : policyMock.getBindingsList()) {
+      if (b.getRole().equals(role) && b.getMembersList().containsAll(members)) {
+        bindingAdded = true;
+        break;
+      }
+    }
+    assertThat("policy should contain new binding", bindingAdded);
   }
 
   @Test
   public void testAddMember() {
-    AddMember.addMember(policyMock);
-    String got = bout.toString();
-    assertThat(
-        got,
-        containsString("Member user:member-to-add@example.com added to role roles/existing-role"));
+    String role = "roles/existing-role";
+    String member = "user:member-to-add@example.com";
+    policyMock = AddMember.addMember(policyMock, role, member);
+    assertNotNull(policyMock);
+    boolean memberAdded = false;
+    for (Binding b : policyMock.getBindingsList()) {
+      if (b.getRole().equals(role) && b.getMembersList().contains(member)) {
+        memberAdded = true;
+        break;
+      }
+    }
+    assertThat("policy should contain role and new member", memberAdded);
   }
 
   @Test
   public void testRemoveMember() {
-    RemoveMember.removeMember(policyMock);
-    String got = bout.toString();
-    assertThat(
-        got,
-        containsString(
-            "Member user:member-to-remove@example.com removed from roles/existing-role"));
+    String role = "roles/existing-role";
+    String member = "user:member-to-add@example.com";
+    policyMock = RemoveMember.removeMember(policyMock, role, member);
+    assertNotNull(policyMock);
+    boolean memberRemoved = true;
+    for (Binding b : policyMock.getBindingsList()) {
+      if (b.getRole().equals(role) && b.getMembersList().contains(member)) {
+        memberRemoved = false;
+        break;
+      }
+    }
+    assertThat("policy should not contain member", memberRemoved);
   }
 
   @Test

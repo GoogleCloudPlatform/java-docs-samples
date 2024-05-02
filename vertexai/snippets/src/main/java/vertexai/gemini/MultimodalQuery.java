@@ -52,7 +52,7 @@ public class MultimodalQuery {
       GenerateContentResponse response = model.generateContent(
           ContentMaker.fromMultiModalData(
               "What is this image?",
-              PartMaker.fromMimeTypeAndData("image/jpg", imageBytes)
+              PartMaker.fromMimeTypeAndData("image/png", imageBytes)
           ));
 
       output = ResponseHandler.getText(response);

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// Tests for Gemini code samples.
+
 package vertexai.gemini;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -27,6 +29,7 @@ import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
+import javax.net.ssl.HttpsURLConnection;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -39,9 +42,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class SnippetsIT {
 
+  public static final String GEMINI_ULTRA_VISION = "gemini-1.0-ultra-vision";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
-  public static final String GEMINI_ULTRA_VISION = "gemini-1.0-ultra-vision";
   private static final String GEMINI_PRO_VISION = "gemini-1.0-pro-vision";
   private static final String GEMINI_PRO = "gemini-1.0-pro";
   private static final String GEMINI_PRO_1_5 = "gemini-1.5-pro-preview-0409";
@@ -51,9 +54,8 @@ public class SnippetsIT {
   public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
       MAX_ATTEMPT_COUNT,
       INITIAL_BACKOFF_MILLIS);
+  private final PrintStream printStream = System.out;
   private ByteArrayOutputStream bout;
-  private PrintStream out;
-  private PrintStream originalPrintStream;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -78,57 +80,72 @@ public class SnippetsIT {
 
   // Reads the image data from the given URL.
   public static byte[] readImageFile(String url) throws IOException {
+    if (url == null || url.isEmpty()) {
+      throw new IllegalArgumentException("Invalid URL: " + url);
+    }
     URL urlObj = new URL(url);
-    HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
-    connection.setRequestMethod("GET");
+    HttpsURLConnection connection = null;
+    InputStream inputStream = null;
+    ByteArrayOutputStream outputStream = null;
 
-    int responseCode = connection.getResponseCode();
+    try {
+      connection = (HttpsURLConnection) urlObj.openConnection();
+      connection.setRequestMethod("GET");
 
-    if (responseCode == HttpURLConnection.HTTP_OK) {
-      InputStream inputStream = connection.getInputStream();
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      int responseCode = connection.getResponseCode();
+      if (responseCode == HttpURLConnection.HTTP_OK) {
+        inputStream = connection.getInputStream();
+        outputStream = new ByteArrayOutputStream();
 
-      byte[] buffer = new byte[1024];
-      int bytesRead;
-      while ((bytesRead = inputStream.read(buffer)) != -1) {
-        outputStream.write(buffer, 0, bytesRead);
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+          outputStream.write(buffer, 0, bytesRead);
+        }
+        return outputStream.toByteArray();
+      } else {
+        throw new IOException("Error fetching file: " + responseCode);
       }
-
-      return outputStream.toByteArray();
-    } else {
-      throw new RuntimeException("Error fetching file: " + responseCode);
+    } finally {
+      if (inputStream != null) {
+        inputStream.close();
+      }
+      if (outputStream != null) {
+        outputStream.close();
+      }
+      if (connection != null) {
+        connection.disconnect();
+      }
     }
   }
 
   @Before
   public void beforeEach() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    originalPrintStream = System.out;
-    System.setOut(out);
+    System.setOut(new PrintStream(bout));
   }
 
   @After
   public void afterEach() {
     System.out.flush();
-    System.setOut(originalPrintStream);
+    System.setOut(printStream);
   }
 
   @Test
   public void testChatSession() throws IOException {
     ChatDiscussion.chatDiscussion(PROJECT_ID, LOCATION, GEMINI_PRO);
-    assertThat(out.toString()).contains("Chat Ended.");
+    assertThat(bout.toString()).contains("Chat Ended.");
   }
 
   @Test
   public void testMultimodalMultiImage() throws IOException {
     MultimodalMultiImage.multimodalMultiImage(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
-    assertThat(out.toString()).contains("city: Rio de Janeiro, Landmark: Christ the Redeemer");
+    assertThat(bout.toString()).contains("city: Rio de Janeiro, Landmark: Christ the Redeemer");
   }
 
   @Test
   public void testMultimodalQuery() throws Exception {
-    String imageUri = "https://storage.googleapis.com/generativeai-downloads/images/scones.jpg";
+    String imageUri = "https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
     String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
     String output = MultimodalQuery.multimodalQuery(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         dataImageBase64);
@@ -138,14 +155,14 @@ public class SnippetsIT {
   @Test
   public void testMultimodalVideoInput() throws IOException {
     MultimodalVideoInput.multimodalVideoInput(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
-    assertThat(out.toString()).contains("Zootopia");
+    assertThat(bout.toString()).contains("Zoo");
   }
 
   @Ignore("Don't test until ultra launch")
   @Test
   public void testMultiTurnMultimodal() throws IOException {
     MultiTurnMultimodal.multiTurnMultimodal(PROJECT_ID, LOCATION, GEMINI_ULTRA_VISION);
-    assertThat(out.toString()).contains("scones");
+    assertThat(bout.toString()).contains("scones");
   }
 
   @Test
@@ -157,29 +174,29 @@ public class SnippetsIT {
 
   @Test
   public void testQuickstart() throws IOException {
-    Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
-    assertThat(out.toString()).contains("scones");
+    String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
+    assertThat(output).contains("Colosseum");
   }
 
   @Test
   public void testSingleTurnMultimodal() throws IOException {
-    String imageUri = "https://storage.googleapis.com/generativeai-downloads/images/scones.jpg";
+    String imageUri = "https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
     String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
     SingleTurnMultimodal.generateContent(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         "What is this image", dataImageBase64);
-    assertThat(out.toString()).contains("scones");
+    assertThat(bout.toString()).contains("Colosseum");
   }
 
   @Test
   public void testStreamingQuestions() throws Exception {
     StreamingQuestionAnswer.streamingQuestion(PROJECT_ID, LOCATION,
         GEMINI_PRO_VISION);
-    assertThat(out.toString()).contains("Rayleigh scattering");
+    assertThat(bout.toString()).contains("Rayleigh scattering");
   }
 
   @Test
   public void testSafetySettings() throws Exception {
-    String textPrompt = "";
+    String textPrompt = "Hello World!";
 
     String output = WithSafetySettings.safetyCheck(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
         textPrompt);

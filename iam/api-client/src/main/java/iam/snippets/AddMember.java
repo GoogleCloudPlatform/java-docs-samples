@@ -16,30 +16,45 @@
 package iam.snippets;
 
 // [START iam_modify_policy_add_member]
-import com.google.api.services.cloudresourcemanager.v3.model.Binding;
-import com.google.api.services.cloudresourcemanager.v3.model.Policy;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.Policy;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddMember {
-
-  // Adds a member to a preexisting role.
-  public static void addMember(Policy policy) {
-    // policy = service.Projects.GetIAmPolicy(new GetIamPolicyRequest(), your-project-id).Execute();
-
+  public static void main(String[] args) {
+    // TODO(developer): Replace the variables before running the sample.
+    // TODO: Replace with your policy, GetPolicy.getPolicy(projectId, serviceAccount).
+    Policy policy = Policy.newBuilder().build();
+    // TODO: Replace with your role.
     String role = "roles/existing-role";
+    // TODO: Replace with your member.
     String member = "user:member-to-add@example.com";
 
-    List<Binding> bindings = policy.getBindings();
+    addMember(policy, role, member);
+  }
 
-    for (Binding b : bindings) {
+  // Adds a member to a pre-existing role.
+  public static Policy addMember(Policy policy, String role, String member) {
+    List<Binding> newBindingsList = new ArrayList<>();
+
+    for (Binding b : policy.getBindingsList()) {
       if (b.getRole().equals(role)) {
-        b.getMembers().add(member);
-        System.out.println("Member " + member + " added to role " + role);
-        return;
+        newBindingsList.add(b.toBuilder().addMembers(member).build());
+      } else {
+        newBindingsList.add(b);
       }
     }
 
-    System.out.println("Role not found in policy; member not added");
+    // Update the policy to add the member.
+    Policy updatedPolicy = policy.toBuilder()
+            .clearBindings()
+            .addAllBindings(newBindingsList)
+            .build();
+
+    System.out.println("Added member: " + updatedPolicy.getBindingsList());
+
+    return updatedPolicy;
   }
 }
 // [END iam_modify_policy_add_member]
