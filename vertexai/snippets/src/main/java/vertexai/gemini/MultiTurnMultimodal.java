@@ -56,7 +56,8 @@ public class MultiTurnMultimodal {
               .setTopP(1)
               .build();
 
-      GenerativeModel model = new GenerativeModel(modelName, generationConfig, vertexAI);
+      GenerativeModel model = new GenerativeModel(modelName, vertexAI)
+          .withGenerationConfig(generationConfig);
       // For multi-turn responses, start a chat session.
       ChatSession chatSession = model.startChat();
 

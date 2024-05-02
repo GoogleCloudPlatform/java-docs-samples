@@ -56,7 +56,8 @@ public class WithSafetySettings {
               .setTopP(1)
               .build();
 
-      GenerativeModel model = new GenerativeModel(modelName, generationConfig, vertexAI);
+      GenerativeModel model = new GenerativeModel(modelName, vertexAI)
+          .withGenerationConfig(generationConfig);
 
       List<SafetySetting> safetySettings = Arrays.asList(
           SafetySetting.newBuilder()
@@ -69,10 +70,7 @@ public class WithSafetySettings {
               .build()
       );
 
-      GenerateContentResponse response = model.generateContent(
-          textPrompt,
-          safetySettings
-      );
+      GenerateContentResponse response = model.generateContent(textPrompt);
       output.append(response).append("\n");
 
       // Verifies if the above content has been blocked for safety reasons.

@@ -30,8 +30,8 @@ import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.PartMaker;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class FunctionCalling {
   public static void main(String[] args) throws IOException {
@@ -76,12 +76,8 @@ public class FunctionCalling {
           .build();
 
       // Start a chat session from a model, with the use of the declared function.
-      GenerativeModel model =
-          GenerativeModel.newBuilder()
-              .setModelName(modelName)
-              .setVertexAi(vertexAI)
-              .setTools(Arrays.asList(tool))
-              .build();
+      GenerativeModel model = new GenerativeModel(modelName, vertexAI)
+          .withTools(List.of(tool));
       ChatSession chat = model.startChat();
 
       System.out.println(String.format("Ask the question: %s", promptText));
