@@ -20,13 +20,12 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.iam.admin.v1.DeleteRoleRequest;
+import com.google.iam.admin.v1.Role;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.UUID;
-
-import com.google.iam.admin.v1.Role;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -35,7 +34,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-public class RoleIT {
+public class RoleIt {
   private ByteArrayOutputStream bout;
 
   private static final String projectId = System.getenv("IAM_PROJECT_ID");
