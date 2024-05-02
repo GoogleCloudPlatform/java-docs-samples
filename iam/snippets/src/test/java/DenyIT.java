@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class DenyIt {
+public class DenyIT {
 
   private static final String PROJECT_ID = System.getenv("IAM_PROJECT_ID");
   private static final String GOOGLE_APPLICATION_CREDENTIALS = System.getenv("IAM_CREDENTIALS");

@@ -34,7 +34,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-public class RoleIt {
+public class RoleIT {
   private ByteArrayOutputStream bout;
 
   private static final String projectId = System.getenv("IAM_PROJECT_ID");
