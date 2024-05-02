@@ -56,9 +56,6 @@ public class WithSafetySettings {
               .setTopP(1)
               .build();
 
-      GenerativeModel model = new GenerativeModel(modelName, vertexAI)
-          .withGenerationConfig(generationConfig);
-
       List<SafetySetting> safetySettings = Arrays.asList(
           SafetySetting.newBuilder()
               .setCategory(HarmCategory.HARM_CATEGORY_HATE_SPEECH)
@@ -69,6 +66,10 @@ public class WithSafetySettings {
               .setThreshold(SafetySetting.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE)
               .build()
       );
+
+      GenerativeModel model = new GenerativeModel(modelName, vertexAI)
+          .withGenerationConfig(generationConfig)
+          .withSafetySettings(safetySettings);
 
       GenerateContentResponse response = model.generateContent(textPrompt);
       output.append(response).append("\n");
