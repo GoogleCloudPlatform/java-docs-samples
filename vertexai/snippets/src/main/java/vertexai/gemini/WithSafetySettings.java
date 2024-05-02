@@ -56,8 +56,6 @@ public class WithSafetySettings {
               .setTopP(1)
               .build();
 
-      GenerativeModel model = new GenerativeModel(modelName, generationConfig, vertexAI);
-
       List<SafetySetting> safetySettings = Arrays.asList(
           SafetySetting.newBuilder()
               .setCategory(HarmCategory.HARM_CATEGORY_HATE_SPEECH)
@@ -69,10 +67,11 @@ public class WithSafetySettings {
               .build()
       );
 
-      GenerateContentResponse response = model.generateContent(
-          textPrompt,
-          safetySettings
-      );
+      GenerativeModel model = new GenerativeModel(modelName, vertexAI)
+          .withGenerationConfig(generationConfig)
+          .withSafetySettings(safetySettings);
+
+      GenerateContentResponse response = model.generateContent(textPrompt);
       output.append(response).append("\n");
 
       // Verifies if the above content has been blocked for safety reasons.

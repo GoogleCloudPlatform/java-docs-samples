@@ -76,12 +76,8 @@ public class FunctionCalling {
           .build();
 
       // Start a chat session from a model, with the use of the declared function.
-      GenerativeModel model =
-          GenerativeModel.newBuilder()
-              .setModelName(modelName)
-              .setVertexAi(vertexAI)
-              .setTools(Arrays.asList(tool))
-              .build();
+      GenerativeModel model = new GenerativeModel(modelName, vertexAI)
+          .withTools(Arrays.asList(tool));
       ChatSession chat = model.startChat();
 
       System.out.println(String.format("Ask the question: %s", promptText));
