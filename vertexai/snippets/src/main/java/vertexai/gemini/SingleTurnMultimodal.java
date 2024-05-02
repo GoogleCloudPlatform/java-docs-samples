@@ -58,7 +58,9 @@ public class SingleTurnMultimodal {
               .setTopP(1)
               .build();
 
-      GenerativeModel model = new GenerativeModel(modelName, generationConfig, vertexAI);
+      GenerativeModel model = new GenerativeModel(modelName, vertexAI)
+          .withGenerationConfig(generationConfig);
+
       ResponseStream<GenerateContentResponse> responseStream = model.generateContentStream(
           ContentMaker.fromMultiModalData(
               PartMaker.fromMimeTypeAndData("image/png", decodedImage),
