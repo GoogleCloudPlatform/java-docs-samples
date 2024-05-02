@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,42 +16,47 @@
 
 package vertexai.gemini;
 
-// [START aiplatform_gemini_get_started]
+// [START generativeaionvertexai_gemini_pdf]
+
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.PartMaker;
+import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import java.io.IOException;
 
-public class Quickstart {
+public class PdfInput {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-vision";
+    String modelName = "gemini-1.5-pro-preview-0409";
 
-    String output = quickstart(projectId, location, modelName);
-    System.out.println(output);
+    pdfInput(projectId, location, modelName);
   }
 
-  // Analyzes the provided Multimodal input.
-  public static String quickstart(String projectId, String location, String modelName)
+  // Analyzes the given video input.
+  public static String pdfInput(String projectId, String location, String modelName)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      String imageUri = "gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
+      String pdfUri = "gs://cloud-samples-data/generative-ai/pdf/2403.05530.pdf";
 
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
-      GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
-          PartMaker.fromMimeTypeAndData("image/png", imageUri),
-          "What's in this photo"
-      ));
+      GenerateContentResponse response = model.generateContent(
+          ContentMaker.fromMultiModalData(
+              "You are a very professional document summarization specialist.\n"
+                  + "Please summarize the given document.",
+              PartMaker.fromMimeTypeAndData("application/pdf", pdfUri)
+          ));
 
-      return response.toString();
+      String output = ResponseHandler.getText(response);
+      System.out.println(output);
+      return output;
     }
   }
 }
-// [END aiplatform_gemini_get_started]
+// [END generativeaionvertexai_gemini_pdf]
