@@ -45,8 +45,8 @@ public class SnippetsIT {
   public static final String GEMINI_ULTRA_VISION = "gemini-1.0-ultra-vision";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
-  private static final String GEMINI_PRO_VISION = "gemini-1.0-pro-vision";
-  private static final String GEMINI_PRO = "gemini-1.0-pro";
+  private static final String GEMINI_PRO_VISION = "gemini-1.0-pro-vision-001";
+  private static final String GEMINI_PRO = "gemini-1.0-pro-002";
   private static final String GEMINI_PRO_1_5 = "gemini-1.5-pro-preview-0409";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
@@ -70,7 +70,7 @@ public class SnippetsIT {
       ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
       System.setOut(new PrintStream(stdOut));
 
-      requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+      //requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
       requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
       stdOut.close();
