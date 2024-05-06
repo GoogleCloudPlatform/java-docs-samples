@@ -70,7 +70,7 @@ public class SnippetsIT {
       ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
       System.setOut(new PrintStream(stdOut));
 
-      //requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+      requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
       requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
       stdOut.close();
