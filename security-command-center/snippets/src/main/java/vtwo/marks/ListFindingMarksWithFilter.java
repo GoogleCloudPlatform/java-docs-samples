@@ -36,7 +36,7 @@ public class ListFindingMarksWithFilter {
     // Specify the source-id.
     String sourceId = "{source-id}";
 
-    // Specify the location of the notification config.
+    // Specify the location.
     String location = "global";
 
     listFindingsWithQueryMarks(organizationId, sourceId, location);
@@ -57,7 +57,7 @@ public class ListFindingMarksWithFilter {
     String parent = String.format("organizations/%s/sources/%s/locations/%s",
         organizationId, sourceId, location);
 
-    // Listing all findings of category "MEDIUM_RISK_ONE".
+    // Lists findings where the 'security_marks.marks.key_a' field does not equal 'value_a'.
     String filter = "NOT security_marks.marks.key_a=\"value_a\"";
 
     ListFindingsRequest request = ListFindingsRequest.newBuilder()

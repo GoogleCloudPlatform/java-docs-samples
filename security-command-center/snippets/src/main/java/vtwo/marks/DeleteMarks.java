@@ -38,7 +38,7 @@ public class DeleteMarks {
     // Specify the finding-id.
     String findingId = "{finding-id}";
 
-    // Specify the location of the notification config.
+    // Specify the location.
     String location = "global";
 
     deleteMarks(organizationId, sourceId, location, findingId);

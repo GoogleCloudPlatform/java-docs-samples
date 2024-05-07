@@ -32,19 +32,19 @@ public class DeleteAndUpdateMarks {
     // organizationId: Google Cloud Organization id.
     String organizationId = "{google-cloud-organization-id}";
 
-    // Specify the source-id.
+    // Specify the source id.
     String sourceId = "{source-id}";
 
-    // Specify the finding-id.
+    // Specify the finding id.
     String findingId = "{finding-id}";
 
-    // Specify the location of the notification config.
+    // Specify the location.
     String location = "global";
 
     deleteAndUpdateMarks(organizationId, sourceId, location, findingId);
   }
 
-  // Demonstrates adding and deleting security marks in the same request.
+  // Demonstrates updating and deleting security marks in the same request.
   public static SecurityMarks deleteAndUpdateMarks(String organizationId, String sourceId,
       String location, String findingId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -72,6 +72,8 @@ public class DeleteAndUpdateMarks {
     FieldMask updateMask =
         FieldMask.newBuilder()
             .addPaths("marks.key_a")
+            // Since no marks have been added, including "marks.key_b" in the update mask
+            // will cause it to be deleted.
             .addPaths("marks.key_b")
             .build();
 

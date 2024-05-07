@@ -39,7 +39,7 @@ public class AddMarkToFinding {
     // Specify the finding-id.
     String findingId = "{finding-id}";
 
-    // Specify the location of the notification config.
+    // Specify the location.
     String location = "global";
 
     addMarksToFinding(organizationId, sourceId, location, findingId);

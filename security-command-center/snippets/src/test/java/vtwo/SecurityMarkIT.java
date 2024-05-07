@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -101,6 +102,15 @@ public class SecurityMarkIT {
     System.setOut(null);
   }
 
+  @AfterClass
+  public static void cleanUp() throws IOException {
+    final PrintStream out = System.out;
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+    stdOut = null;
+    System.setOut(out);
+  }
+
   @Test
   public void testAddMarksToFinding() throws IOException {
     SecurityMarks response = AddMarkToFinding.addMarksToFinding(
@@ -125,7 +135,11 @@ public class SecurityMarkIT {
         ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION,
         FINDING_1.getName().split("/")[7]);
 
+    // Assert update for key_a
     assertTrue(response.getMarksOrThrow("key_a").contains("new_value_for_a"));
+
+    // Assert deletion for key_b
+    assertFalse(response.getMarksMap().containsKey("key_b"));
   }
 
   @Test
