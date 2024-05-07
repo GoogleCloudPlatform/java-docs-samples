@@ -57,7 +57,7 @@ public class UpdateBigQueryExport {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
-      // optionally BigQueryExportName or String can be used
+      // Optionally BigQueryExportName or String can be used
       // String bigQueryExportName = String.format("organizations/%s/locations/%s
       // /bigQueryExports/%s",organizationId,location, bigQueryExportId);
       BigQueryExportName bigQueryExportName = BigQueryExportName.of(organizationId, location,
