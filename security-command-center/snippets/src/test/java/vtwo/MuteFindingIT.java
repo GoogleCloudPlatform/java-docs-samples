@@ -44,6 +44,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import vtwo.findings.CreateFindings;
 import vtwo.muteconfig.BulkMuteFindings;
 import vtwo.muteconfig.CreateMuteRule;
 import vtwo.muteconfig.DeleteMuteRule;
@@ -52,6 +53,7 @@ import vtwo.muteconfig.ListMuteRules;
 import vtwo.muteconfig.SetMuteFinding;
 import vtwo.muteconfig.SetUnmuteFinding;
 import vtwo.muteconfig.UpdateMuteRule;
+import vtwo.source.CreateSource;
 
 // Test v2 Mute config samples.
 @RunWith(JUnit4.class)
@@ -96,15 +98,18 @@ public class MuteFindingIT {
     // Create mute rules.
     CreateMuteRule.createMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_CREATE);
     CreateMuteRule.createMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
+
     // Create source.
-    SOURCE = Util.createSource(ORGANIZATION_ID);
+    SOURCE = CreateSource.createSource(ORGANIZATION_ID);
+
     // Create findings within the source.
     String uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_1 = Util.createFinding(SOURCE.getName(), "testfindingv2" + uuid, LOCATION,
-        Optional.empty());
+    FINDING_1 = CreateFindings.createFinding(ORGANIZATION_ID, LOCATION, "testfindingv2" + uuid,
+        SOURCE.getName().split("/")[3], Optional.of("MEDIUM_RISK_ONE"));
+
     uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_2 = Util.createFinding(SOURCE.getName(), "testfindingv2" + uuid, LOCATION,
-        Optional.empty());
+    FINDING_2 = CreateFindings.createFinding(ORGANIZATION_ID, LOCATION, "testfindingv2" + uuid,
+        SOURCE.getName().split("/")[3], Optional.empty());
 
     stdOut = null;
     System.setOut(out);
