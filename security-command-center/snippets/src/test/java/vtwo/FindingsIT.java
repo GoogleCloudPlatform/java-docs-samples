@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.securitycenter.v2.Finding;
+import com.google.cloud.securitycenter.v2.Finding.State;
 import com.google.cloud.securitycenter.v2.Source;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
@@ -35,10 +36,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import vtwo.findings.CreateFindings;
 import vtwo.findings.GroupFindings;
 import vtwo.findings.GroupFindingsWithFilter;
 import vtwo.findings.ListAllFindings;
 import vtwo.findings.ListFindingsWithFilter;
+import vtwo.findings.SetFindingsByState;
+import vtwo.source.CreateSource;
 
 // Test v2 Findings samples.
 @RunWith(JUnit4.class)
@@ -77,14 +81,16 @@ public class FindingsIT {
     requireEnvVar("SCC_PROJECT_ORG_ID");
 
     // Create source.
-    SOURCE = Util.createSource(ORGANIZATION_ID);
+    SOURCE = CreateSource.createSource(ORGANIZATION_ID);
+
     // Create findings within the source.
     String uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_1 = Util.createFinding(SOURCE.getName(), "testfindingv2" + uuid, LOCATION,
-        Optional.of("MEDIUM_RISK_ONE"));
+    FINDING_1 = CreateFindings.createFinding(ORGANIZATION_ID, LOCATION, "testfindingv2" + uuid,
+        SOURCE.getName().split("/")[3], Optional.of("MEDIUM_RISK_ONE"));
+
     uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_2 = Util.createFinding(SOURCE.getName(), "testfindingv2" + uuid, LOCATION,
-        Optional.empty());
+    FINDING_2 = CreateFindings.createFinding(ORGANIZATION_ID, LOCATION, "testfindingv2" + uuid,
+        SOURCE.getName().split("/")[3], Optional.empty());
 
     stdOut = null;
     System.setOut(out);
@@ -106,6 +112,7 @@ public class FindingsIT {
   @Test
   public void testListAllFindings() throws IOException {
     ListAllFindings.listAllFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION);
+
     assertThat(stdOut.toString()).contains(FINDING_1.getName());
     assertThat(stdOut.toString()).contains(FINDING_2.getName());
   }
@@ -114,6 +121,7 @@ public class FindingsIT {
   public void testListFilteredFindings() throws IOException {
     ListFindingsWithFilter.listFilteredFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3],
         LOCATION);
+
     assertThat(stdOut.toString()).contains(FINDING_1.getName());
     assertThat(stdOut.toString()).doesNotContain(FINDING_2.getName());
   }
@@ -121,6 +129,7 @@ public class FindingsIT {
   @Test
   public void testGroupAllFindings() throws IOException {
     GroupFindings.groupFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION);
+
     assertThat(stdOut.toString()).contains("Listed grouped findings.");
   }
 
@@ -128,6 +137,17 @@ public class FindingsIT {
   public void testGroupFilteredFindings() throws IOException {
     GroupFindingsWithFilter.groupFilteredFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3],
         LOCATION);
+
     assertThat(stdOut.toString()).contains("count: 1");
   }
+
+  @Test
+  public void testSetFindingsByStateInactive() throws IOException {
+    Finding response = SetFindingsByState.setFindingState(ORGANIZATION_ID, LOCATION,
+        SOURCE.getName().split("/")[3],
+        FINDING_1.getName().split("/")[7]);
+
+    assertThat(response.getState()).isEqualTo(State.INACTIVE);
+  }
+
 }
