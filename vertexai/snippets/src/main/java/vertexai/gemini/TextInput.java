@@ -51,7 +51,8 @@ public class TextInput {
     System.out.println(output);
   }
 
-  // Analyzes the provided text input.
+  // Passes the provided text input to the Gemini model and returns the text-only response.
+  // For the specified textPrompt, the model returns a sentiment score for the given movie review.
   public static String textInput(
       String projectId, String location, String modelName, String textPrompt) throws IOException {
     // Initialize client that will be used to send requests. This client only needs
