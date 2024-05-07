@@ -209,7 +209,7 @@ public class SnippetsIT {
             + " classic, and if you ever manage to get it on video, you won't regret it.";
     String output = TextInput.textInput(PROJECT_ID, LOCATION, GEMINI_PRO, textPrompt);
     assertThat(output).isNotEmpty();
-    assertThat(output).contains("Explanation");
+    assertThat(output).contains("positive");
   }
 
   @Test
