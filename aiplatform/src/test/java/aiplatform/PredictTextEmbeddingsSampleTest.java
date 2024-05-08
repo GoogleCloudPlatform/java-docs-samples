@@ -50,9 +50,16 @@ public class PredictTextEmbeddingsSampleTest {
         List.of("banana bread?", "banana muffin?", "banana?", "recipe?", "muffin recipe?");
     List<List<Float>> embeddings =
         PredictTextEmbeddingsSample.predictTextEmbeddings(
-            APIS_ENDPOINT, PROJECT, "textembedding-gecko@003", texts, "RETRIEVAL_DOCUMENT");
+            APIS_ENDPOINT,
+            PROJECT,
+            "text-embedding-004",
+            texts,
+            "QUESTION_ANSWERING",
+            OptionalInt.of(5));
     assertThat(embeddings.size()).isEqualTo(texts.size());
-    assertThat(embeddings.get(0).size()).isEqualTo(768);
+    for (List<Float> embedding : embeddings) {
+      assertThat(embedding.size()).isEqualTo(5);
+    }
   }
 
   @Test
