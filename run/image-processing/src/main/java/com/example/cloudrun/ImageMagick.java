@@ -17,7 +17,6 @@
 package com.example.cloudrun;
 
 // [START cloudrun_imageproc_handler_setup]
-// [START run_imageproc_handler_setup]
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
@@ -44,11 +43,9 @@ public class ImageMagick {
 
   private static final String BLURRED_BUCKET_NAME = System.getenv("BLURRED_BUCKET_NAME");
   private static Storage storage = StorageOptions.getDefaultInstance().getService();
-  // [END run_imageproc_handler_setup]
   // [END cloudrun_imageproc_handler_setup]
 
   // [START cloudrun_imageproc_handler_analyze]
-  // [START run_imageproc_handler_analyze]
   // Blurs uploaded images that are flagged as Adult or Violence.
   public static void blurOffensiveImages(JsonObject data) {
     String fileName = data.get("name").getAsString();
@@ -89,11 +86,9 @@ public class ImageMagick {
       System.out.println(String.format("Error with Vision API: %s", e.getMessage()));
     }
   }
-  // [END run_imageproc_handler_analyze]
   // [END cloudrun_imageproc_handler_analyze]
 
   // [START cloudrun_imageproc_handler_blur]
-  // [START run_imageproc_handler_blur]
   // Blurs the file described by blobInfo using ImageMagick,
   // and uploads it to the blurred bucket.
   public static void blur(BlobInfo blobInfo) throws IOException {
@@ -138,5 +133,4 @@ public class ImageMagick {
     Files.delete(upload);
   }
 }
-// [END run_imageproc_handler_blur]
 // [END cloudrun_imageproc_handler_blur]
