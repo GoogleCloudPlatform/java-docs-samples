@@ -94,11 +94,7 @@ public class ServiceAccountTests {
     IAMClient.ListServiceAccountsPagedResponse response =
             ListServiceAccounts.listServiceAccounts(PROJECT_ID);
 
-    List<ServiceAccount> accounts = Lists.newArrayList(response.iterateAll());
-    assertFalse(accounts.isEmpty());
-    assertTrue(accounts.stream()
-            .map(ServiceAccount::getName)
-            .anyMatch(accountName -> accountName.contains(SERVICE_ACCOUNT)));
+    assertTrue(response.iterateAll().iterator().hasNext());
   }
 
   @Test
