@@ -15,7 +15,6 @@
  */
 
 // [START cloudrun_helloworld_service]
-// [START run_helloworld_service]
 
 package com.example.helloworld;
 
@@ -43,5 +42,4 @@ public class HelloworldApplication {
     SpringApplication.run(HelloworldApplication.class, args);
   }
 }
-// [END run_helloworld_service]
 // [END cloudrun_helloworld_service]

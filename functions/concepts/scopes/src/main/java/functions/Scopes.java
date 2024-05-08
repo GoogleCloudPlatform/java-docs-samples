@@ -18,7 +18,6 @@ package functions;
 
 // [START functions_tips_scopes]
 // [START cloudrun_tips_global_scope]
-// [START run_tips_global_scope]
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
@@ -54,6 +53,5 @@ public class Scopes implements HttpFunction {
     return Arrays.stream(numbers).reduce((t, x) -> t * x).getAsInt();
   }
 }
-// [END run_tips_global_scope]
 // [END cloudrun_tips_global_scope]
 // [END functions_tips_scopes]
