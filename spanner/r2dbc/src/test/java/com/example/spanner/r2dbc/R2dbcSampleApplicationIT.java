@@ -93,7 +93,9 @@ public class R2dbcSampleApplicationIT {
               .build();
       spanner.getInstanceAdminClient().createInstance(instanceInfo).get(60, TimeUnit.SECONDS);
 
-      spanner.getDatabaseAdminClient().createDatabase(instance, this.databaseName, Collections.emptyList()).get(60, TimeUnit.SECONDS);
+      spanner.getDatabaseAdminClient()
+              .createDatabase(instance, this.databaseName, Collections.emptyList())
+              .get(60, TimeUnit.SECONDS);
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
       throw new RuntimeException(e);
     }
