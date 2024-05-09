@@ -41,7 +41,6 @@ limitations under the License.
         <scope>import</scope>
       </dependency>
       <!-- [START cloudrun_imageproc_dep_management] -->
-      <!-- [START run_imageproc_dep_management] -->
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
@@ -49,7 +48,6 @@ limitations under the License.
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- [END run_imageproc_dep_management] -->
       <!-- [END cloudrun_imageproc_dep_management] -->
     </dependencies>
   </dependencyManagement>
@@ -69,7 +67,6 @@ limitations under the License.
       <scope>test</scope>
     </dependency>
     <!-- [START cloudrun_imageproc_dep] -->
-    <!-- [START run_imageproc_dep] -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
@@ -83,7 +80,6 @@ limitations under the License.
       <groupId>com.google.cloud</groupId>
       <artifactId>spring-cloud-gcp-starter-storage</artifactId>
     </dependency>
-    <!-- [END run_imageproc_dep] -->
     <!-- [END cloudrun_imageproc_dep] -->
     <dependency>
       <groupId>junit</groupId>
@@ -99,7 +95,6 @@ limitations under the License.
         <version>${spring-boot.version}</version>
       </plugin>
       <!-- [START cloudrun_imageproc_jib] -->
-      <!-- [START run_imageproc_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
@@ -113,7 +108,6 @@ limitations under the License.
           </to>
         </configuration>
       </plugin>
-      <!-- [END run_imageproc_jib] -->
       <!-- [END cloudrun_imageproc_jib] -->
     </plugins>
   </build>
