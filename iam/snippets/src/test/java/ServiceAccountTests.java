@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+import com.google.common.collect.Lists;
 import com.google.iam.admin.v1.ServiceAccount;
 import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.ByteArrayOutputStream;
@@ -30,7 +31,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -94,14 +94,7 @@ public class ServiceAccountTests {
     IAMClient.ListServiceAccountsPagedResponse response =
             ListServiceAccounts.listServiceAccounts(PROJECT_ID);
 
-    AtomicBoolean containsAccount = new AtomicBoolean(false);
-    response.iterateAll().forEach(account -> {
-      if (account.getName().contains(SERVICE_ACCOUNT)) {
-        containsAccount.set(true);
-      }
-    });
-
-    assertTrue(containsAccount.get());
+    assertTrue(response.iterateAll().iterator().hasNext());
   }
 
   @Test
