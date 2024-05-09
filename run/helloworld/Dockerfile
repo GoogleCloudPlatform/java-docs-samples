@@ -13,7 +13,6 @@
 # limitations under the License.
 
 # [START cloudrun_helloworld_dockerfile]
-# [START run_helloworld_dockerfile]
 # Use the official maven image to create a build artifact.
 # https://hub.docker.com/_/maven
 FROM maven:3-eclipse-temurin-17-alpine as builder
@@ -36,5 +35,4 @@ COPY --from=builder /app/target/helloworld-*.jar /helloworld.jar
 # Run the web service on container startup.
 CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/helloworld.jar"]
 
-# [END run_helloworld_dockerfile]
 # [END cloudrun_helloworld_dockerfile]

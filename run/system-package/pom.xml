@@ -67,7 +67,6 @@ limitations under the License.
         </configuration>
       </plugin>
       <!-- [START cloudrun_system_package_jib] -->
-      <!-- [START run_system_package_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
@@ -81,7 +80,6 @@ limitations under the License.
           </to>
         </configuration>
       </plugin>
-      <!-- [END run_system_package_jib] -->
       <!-- [END cloudrun_system_package_jib] -->
     </plugins>
   </build>
