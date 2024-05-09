@@ -38,7 +38,7 @@ public class FunctionCalling {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro";
+    String modelName = "gemini-1.0-pro-002";
 
     String promptText = "What's the weather like in Paris?";
 
@@ -76,12 +76,8 @@ public class FunctionCalling {
           .build();
 
       // Start a chat session from a model, with the use of the declared function.
-      GenerativeModel model =
-          GenerativeModel.newBuilder()
-              .setModelName(modelName)
-              .setVertexAi(vertexAI)
-              .setTools(Arrays.asList(tool))
-              .build();
+      GenerativeModel model = new GenerativeModel(modelName, vertexAI)
+          .withTools(Arrays.asList(tool));
       ChatSession chat = model.startChat();
 
       System.out.println(String.format("Ask the question: %s", promptText));

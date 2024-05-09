@@ -29,6 +29,7 @@ import com.google.protobuf.Value;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,18 +40,24 @@ public class PredictTextEmbeddingsSample {
     // https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings
     String endpoint = "us-central1-aiplatform.googleapis.com:443";
     String project = "YOUR_PROJECT_ID";
-    String model = "textembedding-gecko@003";
+    String model = "text-embedding-004";
     predictTextEmbeddings(
         endpoint,
         project,
         model,
         List.of("banana bread?", "banana muffins?"),
-        "RETRIEVAL_DOCUMENT");
+        "QUESTION_ANSWERING",
+        OptionalInt.of(256));
   }
 
   // Gets text embeddings from a pretrained, foundational model.
   public static List<List<Float>> predictTextEmbeddings(
-      String endpoint, String project, String model, List<String> texts, String task)
+      String endpoint,
+      String project,
+      String model,
+      List<String> texts,
+      String task,
+      OptionalInt outputDimensionality)
       throws IOException {
     PredictionServiceSettings settings =
         PredictionServiceSettings.newBuilder().setEndpoint(endpoint).build();
@@ -63,6 +70,14 @@ public class PredictTextEmbeddingsSample {
     try (PredictionServiceClient client = PredictionServiceClient.create(settings)) {
       PredictRequest.Builder request =
           PredictRequest.newBuilder().setEndpoint(endpointName.toString());
+      if (outputDimensionality.isPresent()) {
+        request.setParameters(
+            Value.newBuilder()
+                .setStructValue(
+                    Struct.newBuilder()
+                        .putFields("outputDimensionality", valueOf(outputDimensionality.getAsInt()))
+                        .build()));
+      }
       for (int i = 0; i < texts.size(); i++) {
         request.addInstances(
             Value.newBuilder()
@@ -89,6 +104,10 @@ public class PredictTextEmbeddingsSample {
 
   private static Value valueOf(String s) {
     return Value.newBuilder().setStringValue(s).build();
+  }
+
+  private static Value valueOf(int n) {
+    return Value.newBuilder().setNumberValue(n).build();
   }
 }
 // [END aiplatform_sdk_embedding]

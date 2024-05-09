@@ -31,7 +31,6 @@ public class App {
     int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
     port(port);
     // [START cloudrun_system_package_handler]
-    // [START run_system_package_handler]
     get(
         "/diagram.png",
         (req, res) -> {
@@ -53,12 +52,10 @@ public class App {
           }
           return image;
         });
-    // [END run_system_package_handler]
     // [END cloudrun_system_package_handler]
   }
 
   // [START cloudrun_system_package_exec]
-  // [START run_system_package_exec]
   // Generate a diagram based on a graphviz DOT diagram description.
   public static InputStream createDiagram(String dot) {
     if (dot == null || dot.isEmpty()) {
@@ -91,6 +88,5 @@ public class App {
     }
     return stdout;
   }
-  // [END run_system_package_exec]
   // [END cloudrun_system_package_exec]
 }

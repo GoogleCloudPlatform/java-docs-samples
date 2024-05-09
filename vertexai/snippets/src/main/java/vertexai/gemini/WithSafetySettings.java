@@ -33,7 +33,7 @@ public class WithSafetySettings {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-vision";
+    String modelName = "gemini-1.0-pro-vision-001";
     String textPrompt = "your-text-here";
 
     String output = safetyCheck(projectId, location, modelName, textPrompt);
@@ -56,8 +56,6 @@ public class WithSafetySettings {
               .setTopP(1)
               .build();
 
-      GenerativeModel model = new GenerativeModel(modelName, generationConfig, vertexAI);
-
       List<SafetySetting> safetySettings = Arrays.asList(
           SafetySetting.newBuilder()
               .setCategory(HarmCategory.HARM_CATEGORY_HATE_SPEECH)
@@ -69,10 +67,11 @@ public class WithSafetySettings {
               .build()
       );
 
-      GenerateContentResponse response = model.generateContent(
-          textPrompt,
-          safetySettings
-      );
+      GenerativeModel model = new GenerativeModel(modelName, vertexAI)
+          .withGenerationConfig(generationConfig)
+          .withSafetySettings(safetySettings);
+
+      GenerateContentResponse response = model.generateContent(textPrompt);
       output.append(response).append("\n");
 
       // Verifies if the above content has been blocked for safety reasons.

@@ -18,7 +18,6 @@ package functions;
 
 // [START functions_tips_lazy_globals]
 // [START cloudrun_tips_global_lazy]
-// [START run_tips_global_lazy]
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
@@ -67,6 +66,5 @@ public class LazyFields implements HttpFunction {
     return Arrays.stream(numbers).reduce((t, x) -> t * x).getAsInt();
   }
 }
-// [END run_tips_global_lazy]
 // [END cloudrun_tips_global_lazy]
 // [END functions_tips_lazy_globals]

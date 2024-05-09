@@ -34,7 +34,7 @@ public class SingleTurnMultimodal {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-vision";
+    String modelName = "gemini-1.0-pro-vision-001";
     String textPrompt = "What is this image";
     String dataImageBase64 = "your-base64-encoded-image";
 
@@ -58,7 +58,9 @@ public class SingleTurnMultimodal {
               .setTopP(1)
               .build();
 
-      GenerativeModel model = new GenerativeModel(modelName, generationConfig, vertexAI);
+      GenerativeModel model = new GenerativeModel(modelName, vertexAI)
+          .withGenerationConfig(generationConfig);
+
       ResponseStream<GenerateContentResponse> responseStream = model.generateContentStream(
           ContentMaker.fromMultiModalData(
               PartMaker.fromMimeTypeAndData("image/png", decodedImage),
