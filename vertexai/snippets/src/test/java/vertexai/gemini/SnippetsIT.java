@@ -199,14 +199,14 @@ public class SnippetsIT {
   @Test
   public void testTextInput() throws Exception {
     String textPrompt =
-        "Give a score from 1 - 10 to suggest if the following movie review is negative or positive"
-            + " (1 is most negative, 10 is most positive, 5 will be neutral). Include an"
-            + " explanation.\n"
-            + "This era was not just the dawn of sound in cartoons, but of a cartoon character"
-            + " which would go down in history as the world's most famous mouse. Yes, Mickey makes"
-            + " his debut here, in this cheery tale of life on board a steamboat. The animation is"
-            + " good for it's time, and the plot - though a little simple - is quite jolly. A true"
-            + " classic, and if you ever manage to get it on video, you won't regret it.";
+        "Give a score from 1 - 10 to suggest if the following movie review is"
+            + " negative or positive (1 is most negative, 10 is most positive, 5 will be"
+            + " neutral). Include an explanation.\n"
+            + " The movie takes some time to build, but that is part of its beauty. By the"
+            + " time you are hooked, this tale of friendship and hope is thrilling and"
+            + " affecting, until the very last scene. You will find yourself rooting for"
+            + " the hero every step of the way. This is the sharpest, most original"
+            + " animated film I have seen in years. I would give it 8 out of 10 stars.";
     String output = TextInput.textInput(PROJECT_ID, LOCATION, GEMINI_PRO, textPrompt);
     assertThat(output).isNotEmpty();
     assertThat(output).contains("positive");
