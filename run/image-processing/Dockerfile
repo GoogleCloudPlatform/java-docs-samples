@@ -13,7 +13,6 @@
 # limitations under the License.
 
 # [START cloudrun_imageproc_dockerfile]
-# [START run_imageproc_dockerfile]
 # Use eclipse-temurin for base image.
 # It's important to use JDK 8u191 or above that has container support enabled.
 # https://hub.docker.com/_/eclipse-temurin/
@@ -27,5 +26,4 @@ RUN set -ex; \
   apt-get -y update; \
   apt-get -y install imagemagick; \
   rm -rf /var/lib/apt/lists/*
-# [END run_imageproc_dockerfile]
 # [END cloudrun_imageproc_dockerfile]
