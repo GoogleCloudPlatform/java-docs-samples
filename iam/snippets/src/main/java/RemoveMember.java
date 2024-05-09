@@ -13,8 +13,6 @@
  * limitations under the License.
  */
 
-package iam.snippets;
-
 // [START iam_modify_policy_remove_member]
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.Policy;

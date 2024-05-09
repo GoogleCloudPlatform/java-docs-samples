@@ -170,4 +170,13 @@ public class ServiceAccountTests {
     got = bout.toString();
     assertThat(got, !containsString(SERVICE_ACCOUNT).matches(got));
   }
+
+  @Test
+  public void testTestPermissions() {
+    TestPermissions.testPermissions("projects/" + PROJECT_ID);
+    String got = bout.toString();
+    assertThat(
+        got,
+        containsString("Of the permissions listed in the request, the caller has the following: "));
+  }
 }

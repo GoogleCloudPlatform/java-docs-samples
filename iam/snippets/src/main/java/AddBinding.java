@@ -13,8 +13,6 @@
  * limitations under the License.
  */
 
-package iam.snippets;
-
 // [START iam_modify_policy_add_role]
 
 import com.google.iam.v1.Binding;

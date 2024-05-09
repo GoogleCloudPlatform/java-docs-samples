@@ -13,14 +13,14 @@
  * limitations under the License.
  */
 
-package iam.snippets;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.CreateServiceAccountRequest;
 import com.google.iam.admin.v1.DeleteServiceAccountRequest;
+import com.google.iam.admin.v1.ProjectName;
+import com.google.iam.admin.v1.ServiceAccount;
 import com.google.iam.admin.v1.ServiceAccountName;
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.Policy;
@@ -57,7 +57,20 @@ public class AccessTests {
   public static void checkRequirementsAndInitServiceAccount() throws IOException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    CreateServiceAccount.createServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+
+    try (IAMClient iamClient = IAMClient.create()) {
+      ServiceAccount serviceAccount = ServiceAccount
+              .newBuilder()
+              .setDisplayName("test-display-name")
+              .build();
+      CreateServiceAccountRequest request = CreateServiceAccountRequest.newBuilder()
+              .setName(ProjectName.of(PROJECT_ID).toString())
+              .setAccountId(SERVICE_ACCOUNT)
+              .setServiceAccount(serviceAccount)
+              .build();
+
+      iamClient.createServiceAccount(request);
+    }
   }
 
   @AfterClass
@@ -175,14 +188,5 @@ public class AccessTests {
       }
     }
     assertThat("policy should not contain member", memberRemoved);
-  }
-
-  @Test
-  public void testTestPermissions() {
-    TestPermissions.testPermissions("projects/" + PROJECT_ID);
-    String got = bout.toString();
-    assertThat(
-        got,
-        containsString("Of the permissions listed in the request, the caller has the following: "));
   }
 }
