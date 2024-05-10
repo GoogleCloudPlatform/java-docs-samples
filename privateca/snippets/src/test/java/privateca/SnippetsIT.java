@@ -54,14 +54,12 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@Ignore("TODO: Fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8966")
 public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -313,7 +311,7 @@ public class SnippetsIT {
 
   @Test
   public void testDeleteCAPool()
-      throws InterruptedException, ExecutionException, IOException, TimeoutException {
+      throws InterruptedException, ExecutionException, IOException {
     DeleteCaPool.deleteCaPool(PROJECT_ID, LOCATION, CA_poolId_DELETE);
     assertThat(stdOut.toString()).contains("Deleted CA Pool: " + CA_poolId_DELETE);
   }
@@ -344,7 +342,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testMonitorCertificateAuthority() throws IOException, InterruptedException {
+  public void testMonitorCertificateAuthority() throws IOException {
     String policyName = MonitorCertificateAuthority.createCaMonitoringPolicy(PROJECT_ID);
     assertThat(policyName).contains("projects/" + PROJECT_ID + "/alertPolicies/");
 
