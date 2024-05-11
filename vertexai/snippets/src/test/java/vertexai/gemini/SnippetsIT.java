@@ -199,7 +199,8 @@ public class SnippetsIT {
   @Test
   public void testTextInput() throws Exception {
     String textPrompt =
-        "What's a good name for a flower shop that specializes in selling bouquets of dried flowers?";
+        "What's a good name for a flower shop that specializes in selling bouquets of"
+            + " dried flowers?";
     String output = TextInput.textInput(PROJECT_ID, LOCATION, GEMINI_PRO, textPrompt);
     assertThat(output).isNotEmpty();
   }

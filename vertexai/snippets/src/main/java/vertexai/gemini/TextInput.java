@@ -31,7 +31,8 @@ public class TextInput {
     String location = "us-central1";
     String modelName = "gemini-1.0-pro-002";
     String textPrompt =
-        "What's a good name for a flower shop that specializes in selling bouquets of dried flowers?";
+        "What's a good name for a flower shop that specializes in selling bouquets of"
+            + " dried flowers?";
 
     String output = textInput(projectId, location, modelName, textPrompt);
     System.out.println(output);
