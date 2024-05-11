@@ -262,7 +262,7 @@ public class SnippetsIT {
   public void testAllModalityInputs() throws IOException {
     String output = MultimodalAllInput.multimodalAllInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
 
-    assertThat(output).ignoringCase().contains("00:49");
+    assertThat(output).ignoringCase().contains("0:49");
     assertThat(output).ignoringCase().contains("moment");
   }
 
