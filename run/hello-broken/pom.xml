@@ -25,7 +25,7 @@ limitations under the License.
     <artifactId>shared-configuration</artifactId>
     <version>1.2.0</version>
   </parent>
-  
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>11</maven.compiler.target>
@@ -33,7 +33,6 @@ limitations under the License.
   </properties>
   <dependencies>
     <!-- [START cloudrun_broken_service_dep] -->
-    <!-- [START run_broken_service_dep] -->
     <dependency>
       <groupId>com.sparkjava</groupId>
       <artifactId>spark-core</artifactId>
@@ -49,7 +48,6 @@ limitations under the License.
       <artifactId>slf4j-simple</artifactId>
       <version>2.0.12</version>
     </dependency>
-    <!-- [END run_broken_service_dep] -->
     <!-- [END cloudrun_broken_service_dep] -->
     <dependency>
       <groupId>junit</groupId>
@@ -65,11 +63,9 @@ limitations under the License.
     </dependency>
   </dependencies>
   <!-- [START cloudrun_broken_service_build] -->
-  <!-- [START run_broken_service_build] -->
   <build>
     <plugins>
       <!-- [START cloudrun_broken_service_jib] -->
-      <!-- [START run_broken_service_jib] -->
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
@@ -80,10 +76,8 @@ limitations under the License.
           </to>
         </configuration>
       </plugin>
-      <!-- [END run_broken_service_jib] -->
       <!-- [END cloudrun_broken_service_jib] -->
     </plugins>
   </build>
-  <!-- [END run_broken_service_build] -->
   <!-- [END cloudrun_broken_service_build] -->
 </project>

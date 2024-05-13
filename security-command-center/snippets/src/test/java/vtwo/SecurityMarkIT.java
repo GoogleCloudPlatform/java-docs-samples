@@ -16,20 +16,25 @@
 
 package vtwo;
 
+
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 
 import com.google.cloud.securitycenter.v2.Finding;
-import com.google.cloud.securitycenter.v2.Finding.State;
+import com.google.cloud.securitycenter.v2.SecurityMarks;
 import com.google.cloud.securitycenter.v2.Source;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -37,26 +42,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import vtwo.findings.CreateFindings;
-import vtwo.findings.GroupFindings;
-import vtwo.findings.GroupFindingsWithFilter;
-import vtwo.findings.ListAllFindings;
-import vtwo.findings.ListFindingsWithFilter;
-import vtwo.findings.SetFindingsByState;
+import vtwo.marks.AddMarkToFinding;
+import vtwo.marks.DeleteAndUpdateMarks;
+import vtwo.marks.DeleteMarks;
+import vtwo.marks.ListFindingMarksWithFilter;
 import vtwo.source.CreateSource;
 
-// Test v2 Findings samples.
 @RunWith(JUnit4.class)
-public class FindingsIT {
+public class SecurityMarkIT {
 
-  // TODO(Developer): Replace the below variables.
+  // TODO: Replace the below variables.
   private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
   private static final String LOCATION = "global";
+  private static final int MAX_ATTEMPT_COUNT = 3;
+  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static Source SOURCE;
   private static Finding FINDING_1;
-  private static Finding FINDING_2;
-  private static final int MAX_ATTEMPT_COUNT = 3;
-  private static final int INITIAL_BACKOFF_MILLIS = 240000; // 4 minutes
-
   private static ByteArrayOutputStream stdOut;
 
   @Rule
@@ -78,7 +79,6 @@ public class FindingsIT {
     System.setOut(new PrintStream(stdOut));
 
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("SCC_PROJECT_ORG_ID");
 
     // Create source.
     SOURCE = CreateSource.createSource(ORGANIZATION_ID);
@@ -87,10 +87,6 @@ public class FindingsIT {
     String uuid = UUID.randomUUID().toString().split("-")[0];
     FINDING_1 = CreateFindings.createFinding(ORGANIZATION_ID, LOCATION, "testfindingv2" + uuid,
         SOURCE.getName().split("/")[3], Optional.of("MEDIUM_RISK_ONE"));
-
-    uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_2 = CreateFindings.createFinding(ORGANIZATION_ID, LOCATION, "testfindingv2" + uuid,
-        SOURCE.getName().split("/")[3], Optional.empty());
 
     stdOut = null;
     System.setOut(out);
@@ -109,45 +105,51 @@ public class FindingsIT {
     System.setOut(null);
   }
 
-  @Test
-  public void testListAllFindings() throws IOException {
-    ListAllFindings.listAllFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION);
-
-    assertThat(stdOut.toString()).contains(FINDING_1.getName());
-    assertThat(stdOut.toString()).contains(FINDING_2.getName());
+  @AfterClass
+  public static void cleanUp() throws IOException {
+    final PrintStream out = System.out;
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+    stdOut = null;
+    System.setOut(out);
   }
 
   @Test
-  public void testListFilteredFindings() throws IOException {
-    ListFindingsWithFilter.listFilteredFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3],
-        LOCATION);
-
-    assertThat(stdOut.toString()).contains(FINDING_1.getName());
-    assertThat(stdOut.toString()).doesNotContain(FINDING_2.getName());
-  }
-
-  @Test
-  public void testGroupAllFindings() throws IOException {
-    GroupFindings.groupFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION);
-
-    assertThat(stdOut.toString()).contains("Listed grouped findings.");
-  }
-
-  @Test
-  public void testGroupFilteredFindings() throws IOException {
-    GroupFindingsWithFilter.groupFilteredFindings(ORGANIZATION_ID, SOURCE.getName().split("/")[3],
-        LOCATION);
-
-    assertThat(stdOut.toString()).contains("count: 1");
-  }
-
-  @Test
-  public void testSetFindingsByStateInactive() throws IOException {
-    Finding response = SetFindingsByState.setFindingState(ORGANIZATION_ID, LOCATION,
-        SOURCE.getName().split("/")[3],
+  public void testAddMarksToFinding() throws IOException {
+    SecurityMarks response = AddMarkToFinding.addMarksToFinding(
+        ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION,
         FINDING_1.getName().split("/")[7]);
 
-    assertThat(response.getState()).isEqualTo(State.INACTIVE);
+    assertTrue(response.getMarksOrThrow("key_a").contains("value_a"));
   }
 
+  @Test
+  public void testDeleteSecurityMark() throws IOException {
+    SecurityMarks response = DeleteMarks.deleteMarks(
+        ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION,
+        FINDING_1.getName().split("/")[7]);
+
+    assertFalse(response.containsMarks("key_a"));
+  }
+
+  @Test
+  public void testDeleteAndUpdateMarks() throws IOException {
+    SecurityMarks response = DeleteAndUpdateMarks.deleteAndUpdateMarks(
+        ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION,
+        FINDING_1.getName().split("/")[7]);
+
+    // Assert update for key_a
+    assertTrue(response.getMarksOrThrow("key_a").contains("new_value_for_a"));
+
+    // Assert deletion for key_b
+    assertFalse(response.getMarksMap().containsKey("key_b"));
+  }
+
+  @Test
+  public void testListFindingsWithQueryMarks() throws IOException {
+    List<Finding> response = ListFindingMarksWithFilter.listFindingsWithQueryMarks(
+        ORGANIZATION_ID, SOURCE.getName().split("/")[3], LOCATION);
+
+    assertThat(response.stream().map(Finding::getName)).contains(FINDING_1.getName());
+  }
 }

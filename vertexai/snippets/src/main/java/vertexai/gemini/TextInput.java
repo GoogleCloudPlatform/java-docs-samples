@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,47 +16,42 @@
 
 package vertexai.gemini;
 
-// [START aiplatform_gemini_multiturn_chat]
+// [START generativeaionvertexai_gemini_generate_from_text_input]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
-import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import java.io.IOException;
 
-public class ChatDiscussion {
+public class TextInput {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
     String modelName = "gemini-1.0-pro-002";
+    String textPrompt =
+        "What's a good name for a flower shop that specializes in selling bouquets of"
+            + " dried flowers?";
 
-    chatDiscussion(projectId, location, modelName);
+    String output = textInput(projectId, location, modelName, textPrompt);
+    System.out.println(output);
   }
 
-  // Ask interrelated questions in a row using a ChatSession object.
-  public static void chatDiscussion(String projectId, String location, String modelName)
-      throws IOException {
+  // Passes the provided text input to the Gemini model and returns the text-only response.
+  // For the specified textPrompt, the model returns a list of possible store names.
+  public static String textInput(
+      String projectId, String location, String modelName, String textPrompt) throws IOException {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      GenerateContentResponse response;
-
+      String output;
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
-      // Create a chat session to be used for interactive conversation.
-      ChatSession chatSession = new ChatSession(model);
 
-      response = chatSession.sendMessage("Hello.");
-      System.out.println(ResponseHandler.getText(response));
-
-      response = chatSession.sendMessage("What are all the colors in a rainbow?");
-      System.out.println(ResponseHandler.getText(response));
-
-      response = chatSession.sendMessage("Why does it appear when it rains?");
-      System.out.println(ResponseHandler.getText(response));
-      System.out.println("Chat Ended.");
+      GenerateContentResponse response = model.generateContent(textPrompt);
+      output = ResponseHandler.getText(response);
+      return output;
     }
   }
 }
-// [END aiplatform_gemini_multiturn_chat]
+// [END generativeaionvertexai_gemini_generate_from_text_input]

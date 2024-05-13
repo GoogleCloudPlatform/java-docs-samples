@@ -45,15 +45,16 @@ public class SnippetsIT {
   public static final String GEMINI_ULTRA_VISION = "gemini-1.0-ultra-vision";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
-  private static final String GEMINI_PRO_VISION = "gemini-1.0-pro-vision";
-  private static final String GEMINI_PRO = "gemini-1.0-pro";
+  private static final String GEMINI_PRO_VISION = "gemini-1.0-pro-vision-001";
+  private static final String GEMINI_PRO = "gemini-1.0-pro-002";
   private static final String GEMINI_PRO_1_5 = "gemini-1.5-pro-preview-0409";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
+
   @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
-      MAX_ATTEMPT_COUNT,
-      INITIAL_BACKOFF_MILLIS);
+  public final MultipleAttemptsRule multipleAttemptsRule =
+      new MultipleAttemptsRule(MAX_ATTEMPT_COUNT, INITIAL_BACKOFF_MILLIS);
+
   private final PrintStream printStream = System.out;
   private ByteArrayOutputStream bout;
 
@@ -145,10 +146,11 @@ public class SnippetsIT {
 
   @Test
   public void testMultimodalQuery() throws Exception {
-    String imageUri = "https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
+    String imageUri =
+        "https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
     String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
-    String output = MultimodalQuery.multimodalQuery(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
-        dataImageBase64);
+    String output =
+        MultimodalQuery.multimodalQuery(PROJECT_ID, LOCATION, GEMINI_PRO_VISION, dataImageBase64);
     assertThat(output).isNotEmpty();
   }
 
@@ -180,26 +182,35 @@ public class SnippetsIT {
 
   @Test
   public void testSingleTurnMultimodal() throws IOException {
-    String imageUri = "https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
+    String imageUri =
+        "https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
     String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
-    SingleTurnMultimodal.generateContent(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
-        "What is this image", dataImageBase64);
+    SingleTurnMultimodal.generateContent(
+        PROJECT_ID, LOCATION, GEMINI_PRO_VISION, "What is this image", dataImageBase64);
     assertThat(bout.toString()).contains("Colosseum");
   }
 
   @Test
   public void testStreamingQuestions() throws Exception {
-    StreamingQuestionAnswer.streamingQuestion(PROJECT_ID, LOCATION,
-        GEMINI_PRO_VISION);
+    StreamingQuestionAnswer.streamingQuestion(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
     assertThat(bout.toString()).contains("Rayleigh scattering");
+  }
+
+  @Test
+  public void testTextInput() throws Exception {
+    String textPrompt =
+        "What's a good name for a flower shop that specializes in selling bouquets of"
+            + " dried flowers?";
+    String output = TextInput.textInput(PROJECT_ID, LOCATION, GEMINI_PRO, textPrompt);
+    assertThat(output).isNotEmpty();
   }
 
   @Test
   public void testSafetySettings() throws Exception {
     String textPrompt = "Hello World!";
 
-    String output = WithSafetySettings.safetyCheck(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
-        textPrompt);
+    String output =
+        WithSafetySettings.safetyCheck(PROJECT_ID, LOCATION, GEMINI_PRO_VISION, textPrompt);
     assertThat(output).isNotEmpty();
     assertThat(output).contains("reasons?");
   }
@@ -208,8 +219,8 @@ public class SnippetsIT {
   public void testTokenCount() throws Exception {
     String textPrompt = "Why is the sky blue?";
 
-    int tokenCount = GetTokenCount.getTokenCount(PROJECT_ID, LOCATION, GEMINI_PRO_VISION,
-        textPrompt);
+    int tokenCount =
+        GetTokenCount.getTokenCount(PROJECT_ID, LOCATION, GEMINI_PRO_VISION, textPrompt);
     assertThat(tokenCount).isEqualTo(6);
   }
 
@@ -217,8 +228,8 @@ public class SnippetsIT {
   public void testFunctionCalling() throws Exception {
     String textPrompt = "What's the weather in Paris?";
 
-    String answer = FunctionCalling.whatsTheWeatherLike(PROJECT_ID, LOCATION, GEMINI_PRO,
-        textPrompt);
+    String answer =
+        FunctionCalling.whatsTheWeatherLike(PROJECT_ID, LOCATION, GEMINI_PRO, textPrompt);
     assertThat(answer).ignoringCase().contains("Paris");
     assertThat(answer).ignoringCase().contains("sunny");
   }
@@ -251,7 +262,7 @@ public class SnippetsIT {
   public void testAllModalityInputs() throws IOException {
     String output = MultimodalAllInput.multimodalAllInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
 
-    assertThat(output).ignoringCase().contains("00:49");
+    assertThat(output).ignoringCase().contains("0:49");
     assertThat(output).ignoringCase().contains("moment");
   }
 
