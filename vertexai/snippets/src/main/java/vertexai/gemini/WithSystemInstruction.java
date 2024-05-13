@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START generativeaionvertexai_gemini_system_instruction]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ContentMaker;
@@ -53,3 +54,4 @@ public class WithSystemInstruction {
     }
   }
 }
+// [END generativeaionvertexai_gemini_system_instruction]
