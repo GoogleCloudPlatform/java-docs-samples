@@ -35,7 +35,7 @@ public class WithSystemInstruction {
     System.out.println(output);
   }
 
-  // Ask the model to translate from English to French thanks to a system instruction.
+  // Ask the model to translate from English to French with a system instruction.
   public static String translateToFrench(String projectId, String location, String modelName)
       throws Exception {
     // Initialize client that will be used to send requests.
