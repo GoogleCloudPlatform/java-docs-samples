@@ -272,4 +272,12 @@ public class SnippetsIT {
 
     assertThat(output).ignoringCase().contains("Gemini");
   }
+
+  @Test
+  public void testSystemInstruction() throws Exception {
+    String output = WithSystemInstruction.translateToFrench(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+
+    assertThat(output).ignoringCase().contains("bagels");
+    assertThat(output).ignoringCase().contains("aime");
+  }
 }
