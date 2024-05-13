@@ -20,7 +20,9 @@ import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.CreateServiceAccountRequest;
 import com.google.iam.admin.v1.DeleteServiceAccountRequest;
+import com.google.iam.admin.v1.ProjectName;
 import com.google.iam.admin.v1.ServiceAccountName;
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.Policy;
@@ -57,7 +59,14 @@ public class AccessTests {
   public static void checkRequirementsAndInitServiceAccount() throws IOException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    CreateServiceAccount.createServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+
+    CreateServiceAccountRequest request = CreateServiceAccountRequest.newBuilder()
+            .setName(ProjectName.of(PROJECT_ID).toString())
+            .setAccountId(SERVICE_ACCOUNT)
+            .build();
+    try (IAMClient iamClient = IAMClient.create()) {
+      iamClient.createServiceAccount(request);
+    }
   }
 
   @AfterClass

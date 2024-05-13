@@ -13,8 +13,6 @@
  * limitations under the License.
  */
 
-package iam.snippets;
-
 // [START iam_rename_service_account]
 
 import com.google.cloud.iam.admin.v1.IAMClient;
