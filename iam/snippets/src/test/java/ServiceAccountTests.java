@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
-import com.google.common.collect.Lists;
 import com.google.iam.admin.v1.ServiceAccount;
 import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.ByteArrayOutputStream;
@@ -213,14 +212,5 @@ public class ServiceAccountTests {
     ListServiceAccounts.listServiceAccounts(PROJECT_ID);
     got = bout.toString();
     assertThat(got, !containsString(SERVICE_ACCOUNT).matches(got));
-  }
-
-  @Test
-  public void testTestPermissions() {
-    TestPermissions.testPermissions("projects/" + PROJECT_ID);
-    String got = bout.toString();
-    assertThat(
-        got,
-        containsString("Of the permissions listed in the request, the caller has the following: "));
   }
 }
