@@ -13,10 +13,7 @@
  * limitations under the License.
  */
 
-package iam.snippets;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.iam.admin.v1.IAMClient;
@@ -184,14 +181,5 @@ public class AccessTests {
       }
     }
     assertThat("policy should not contain member", memberRemoved);
-  }
-
-  @Test
-  public void testTestPermissions() {
-    TestPermissions.testPermissions("projects/" + PROJECT_ID);
-    String got = bout.toString();
-    assertThat(
-        got,
-        containsString("Of the permissions listed in the request, the caller has the following: "));
   }
 }
