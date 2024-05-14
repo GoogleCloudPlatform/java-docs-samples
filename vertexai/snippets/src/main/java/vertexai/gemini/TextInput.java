@@ -45,11 +45,10 @@ public class TextInput {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      String output;
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
 
       GenerateContentResponse response = model.generateContent(textPrompt);
-      output = ResponseHandler.getText(response);
+      String output = ResponseHandler.getText(response);
       return output;
     }
   }
