@@ -46,6 +46,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -62,6 +64,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class SnippetsIT {
 
+  private static final Logger LOGGER = Logger.getLogger(SnippetsIT.class.getName());
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String LOCATION;
   private static String CA_poolId;
@@ -101,6 +104,7 @@ public class SnippetsIT {
     LOCATION = Util.getRegion();
     CA_poolId = "ca-pool-" + UUID.randomUUID();
     CA_poolId_DELETE = "ca-pool-" + UUID.randomUUID();
+    LOGGER.warning(() -> "CA_poolId_DELETE ::> " + CA_poolId_DELETE);
     CA_NAME = "ca-name-" + UUID.randomUUID();
     CA_NAME_DELETE = "ca-name-" + UUID.randomUUID();
     SUBORDINATE_CA_NAME = "sub-ca-name-" + UUID.randomUUID();
@@ -118,6 +122,16 @@ public class SnippetsIT {
     CreateCaPool.createCaPool(PROJECT_ID, LOCATION, CA_poolId);
     CreateCaPool.createCaPool(PROJECT_ID, LOCATION, CA_poolId_DELETE);
     sleep(5);
+    LOGGER.warning(() -> {
+      try {
+        ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(stdOut));
+        ListCaPools.listCaPools(PROJECT_ID, LOCATION);
+        return "CreateCaPool.createCaPool ::> " + stdOut;
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    });
     // Set the issuance policy for the created CA Pool.
     UpdateCaPoolIssuancePolicy.updateCaPoolIssuancePolicy(PROJECT_ID, LOCATION, CA_poolId);
     // <--- END CA POOL --->
@@ -312,6 +326,16 @@ public class SnippetsIT {
   @Test
   public void testDeleteCAPool()
       throws InterruptedException, ExecutionException, IOException {
+    LOGGER.warning(() -> {
+      try {
+        ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(stdOut));
+        ListCaPools.listCaPools(PROJECT_ID, LOCATION);
+        return "testDeleteCAPool.testDeleteCAPool ::> " + stdOut;
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    });
     DeleteCaPool.deleteCaPool(PROJECT_ID, LOCATION, CA_poolId_DELETE);
     assertThat(stdOut.toString()).contains("Deleted CA Pool: " + CA_poolId_DELETE);
   }
