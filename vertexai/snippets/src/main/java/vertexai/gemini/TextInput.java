@@ -30,23 +30,16 @@ public class TextInput {
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
     String modelName = "gemini-1.0-pro-002";
-    // Does the returned sentiment score match the reviewer's movie rating?
     String textPrompt =
-        "Give a score from 1 - 10 to suggest if the following movie review is"
-            + " negative or positive (1 is most negative, 10 is most positive, 5 will be"
-            + " neutral). Include an explanation.\n"
-            + " The movie takes some time to build, but that is part of its beauty. By the"
-            + " time you are hooked, this tale of friendship and hope is thrilling and"
-            + " affecting, until the very last scene. You will find yourself rooting for"
-            + " the hero every step of the way. This is the sharpest, most original"
-            + " animated film I have seen in years. I would give it 8 out of 10 stars.";
+        "What's a good name for a flower shop that specializes in selling bouquets of"
+            + " dried flowers?";
 
     String output = textInput(projectId, location, modelName, textPrompt);
     System.out.println(output);
   }
 
   // Passes the provided text input to the Gemini model and returns the text-only response.
-  // For the specified textPrompt, the model returns a sentiment score for the given movie review.
+  // For the specified textPrompt, the model returns a list of possible store names.
   public static String textInput(
       String projectId, String location, String modelName, String textPrompt) throws IOException {
     // Initialize client that will be used to send requests. This client only needs

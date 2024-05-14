@@ -13,39 +13,42 @@
  * limitations under the License.
  */
 
-package iam.snippets;
+// [START iam_create_service_account]
 
-// [START iam_delete_service_account]
 import com.google.cloud.iam.admin.v1.IAMClient;
-import com.google.iam.admin.v1.DeleteServiceAccountRequest;
-import com.google.iam.admin.v1.ServiceAccountName;
+import com.google.iam.admin.v1.CreateServiceAccountRequest;
+import com.google.iam.admin.v1.ProjectName;
+import com.google.iam.admin.v1.ServiceAccount;
 import java.io.IOException;
 
-public class DeleteServiceAccount {
-
+public class CreateServiceAccount {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace the variables before running the sample.
     String projectId = "your-project-id";
     String serviceAccountName = "my-service-account-name";
 
-    deleteServiceAccount(projectId, serviceAccountName);
+    createServiceAccount(projectId, serviceAccountName);
   }
 
-  // Deletes a service account.
-  public static void deleteServiceAccount(String projectId, String serviceAccountName)
+  // Creates a service account.
+  public static ServiceAccount createServiceAccount(String projectId, String serviceAccountName)
           throws IOException {
+    ServiceAccount serviceAccount = ServiceAccount
+            .newBuilder()
+            .setDisplayName("your-display-name")
+            .build();
+    CreateServiceAccountRequest request = CreateServiceAccountRequest.newBuilder()
+            .setName(ProjectName.of(projectId).toString())
+            .setAccountId(serviceAccountName)
+            .setServiceAccount(serviceAccount)
+            .build();
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
-    try (IAMClient client = IAMClient.create()) {
-      String accountName = ServiceAccountName.of(projectId, serviceAccountName).toString();
-      String accountEmail = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
-      DeleteServiceAccountRequest request = DeleteServiceAccountRequest.newBuilder()
-              .setName(accountEmail)
-              .build();
-      client.deleteServiceAccount(request);
-
-      System.out.println("Deleted service account: " + serviceAccountName);
+    try (IAMClient iamClient = IAMClient.create()) {
+      serviceAccount = iamClient.createServiceAccount(request);
+      System.out.println("Created service account: " + serviceAccount.getEmail());
     }
+    return serviceAccount;
   }
 }
-// [END iam_delete_service_account]
+// [END iam_create_service_account]
