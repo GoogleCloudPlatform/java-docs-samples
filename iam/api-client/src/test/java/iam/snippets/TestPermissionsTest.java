@@ -36,8 +36,8 @@ public class TestPermissionsTest {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-            System.getenv(varName),
-            String.format("Environment variable '%s' is required to perform these tests.", varName));
+        System.getenv(varName),
+        String.format("Environment variable '%s' is required to perform these tests.", varName));
   }
 
   @BeforeClass
