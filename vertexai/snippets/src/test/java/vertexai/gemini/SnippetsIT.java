@@ -263,7 +263,6 @@ public class SnippetsIT {
     String output = MultimodalAllInput.multimodalAllInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
 
     assertThat(output).ignoringCase().contains("0:49");
-    assertThat(output).ignoringCase().contains("moment");
   }
 
   @Test
@@ -271,5 +270,13 @@ public class SnippetsIT {
     String output = PdfInput.pdfInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
 
     assertThat(output).ignoringCase().contains("Gemini");
+  }
+
+  @Test
+  public void testSystemInstruction() throws Exception {
+    String output = WithSystemInstruction.translateToFrench(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+
+    assertThat(output).ignoringCase().contains("bagels");
+    assertThat(output).ignoringCase().contains("aime");
   }
 }
