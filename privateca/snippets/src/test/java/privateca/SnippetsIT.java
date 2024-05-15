@@ -54,15 +54,12 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String LOCATION;
@@ -273,7 +270,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void atestCreateCAPool() throws IOException {
+  public void testCreateCAPool() throws IOException {
     // Check if the CA pool created during setup is successful.
     try (CertificateAuthorityServiceClient certificateAuthorityServiceClient =
         CertificateAuthorityServiceClient.create()) {
@@ -289,7 +286,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void btestUpdateCAPoolIssuancePolicy() throws IOException {
+  public void testUpdateCAPoolIssuancePolicy() throws IOException {
     try (CertificateAuthorityServiceClient certificateAuthorityServiceClient =
         CertificateAuthorityServiceClient.create()) {
       IssuancePolicy issuancePolicy =
@@ -307,20 +304,20 @@ public class SnippetsIT {
   }
 
   @Test
-  public void ctestListCAPools() throws IOException {
+  public void testListCAPools() throws IOException {
     ListCaPools.listCaPools(PROJECT_ID, LOCATION);
     assertThat(stdOut.toString()).contains(CA_poolId);
   }
 
   @Test
-  public void dtestDeleteCAPool()
+  public void testDeleteCAPool()
       throws InterruptedException, ExecutionException, IOException {
     DeleteCaPool.deleteCaPool(PROJECT_ID, LOCATION, CA_poolId_DELETE);
     assertThat(stdOut.toString()).contains("Deleted CA Pool: " + CA_poolId_DELETE);
   }
 
   @Test
-  public void etestCreateCertificateAuthority() throws IOException {
+  public void testCreateCertificateAuthority() throws IOException {
     // Check if the CA created during setup is successful.
     try (CertificateAuthorityServiceClient certificateAuthorityServiceClient =
         CertificateAuthorityServiceClient.create()) {
@@ -332,20 +329,20 @@ public class SnippetsIT {
   }
 
   @Test
-  public void ftestListCertificateAuthorities() throws IOException {
+  public void testListCertificateAuthorities() throws IOException {
     ListCertificateAuthorities.listCertificateAuthority(PROJECT_ID, LOCATION, CA_poolId);
     assertThat(stdOut.toString()).contains(CA_NAME);
   }
 
   @Test
-  public void gtestUpdateCertificateAuthority()
+  public void testUpdateCertificateAuthority()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     UpdateCertificateAuthority.updateCaLabel(PROJECT_ID, LOCATION, CA_poolId, CA_NAME);
     assertThat(stdOut.toString()).contains("Successfully updated the labels ! ");
   }
 
   @Test
-  public void htestMonitorCertificateAuthority() throws IOException {
+  public void testMonitorCertificateAuthority() throws IOException {
     String policyName = MonitorCertificateAuthority.createCaMonitoringPolicy(PROJECT_ID);
     assertThat(policyName).contains("projects/" + PROJECT_ID + "/alertPolicies/");
 
@@ -357,7 +354,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void itestEnableDisableCertificateAuthority()
+  public void testEnableDisableCertificateAuthority()
       throws InterruptedException, ExecutionException, IOException {
     EnableCertificateAuthority.enableCertificateAuthority(
         PROJECT_ID, LOCATION, CA_poolId, CA_NAME);
@@ -368,7 +365,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void jtestDeleteUndeleteCertificateAuthority()
+  public void testDeleteUndeleteCertificateAuthority()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
     // CA deleted as part of setup(). Undelete the CA.
     // The undelete operation will be executed only if the CA was successfully deleted.
@@ -379,7 +376,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void ktestCreateCertificateTemplate() throws IOException {
+  public void testCreateCertificateTemplate() throws IOException {
     // Check that the Certificate template has been created as part of the setup.
     try (CertificateAuthorityServiceClient certificateAuthorityServiceClient =
         CertificateAuthorityServiceClient.create()) {
@@ -396,14 +393,14 @@ public class SnippetsIT {
   }
 
   @Test
-  public void ltestListCertificateTemplate()
+  public void testListCertificateTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     ListCertificateTemplates.listCertificateTemplates(PROJECT_ID, LOCATION);
     assertThat(stdOut.toString()).contains(CERTIFICATE_TEMPLATE_NAME);
   }
 
   @Test
-  public void mupdateCertificateTemplate()
+  public void updateCertificateTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     UpdateCertificateTemplate.updateCertificateTemplate(
         PROJECT_ID, LOCATION, CERTIFICATE_TEMPLATE_NAME);
@@ -411,7 +408,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void ntestCreateCertificate() throws IOException {
+  public void testCreateCertificate() throws IOException {
     // Check if the certificate created during setup is successful.
     try (CertificateAuthorityServiceClient certificateAuthorityServiceClient =
         CertificateAuthorityServiceClient.create()) {
@@ -423,13 +420,13 @@ public class SnippetsIT {
   }
 
   @Test
-  public void otestListCertificates() throws IOException {
+  public void testListCertificates() throws IOException {
     ListCertificates.listCertificates(PROJECT_ID, LOCATION, CA_poolId);
     assertThat(stdOut.toString()).contains(CERTIFICATE_NAME);
   }
 
   @Test
-  public void ptestFilterCertificates() throws IOException {
+  public void testFilterCertificates() throws IOException {
     // Filter only certificates created using CSR.
     FilterCertificates.filterCertificates(PROJECT_ID, LOCATION, CA_poolId);
     assertThat(stdOut.toString()).contains(CSR_CERTIFICATE_NAME);
@@ -437,7 +434,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void qtestRevokeCertificate() throws InterruptedException, ExecutionException, IOException {
+  public void testRevokeCertificate() throws InterruptedException, ExecutionException, IOException {
     try (CertificateAuthorityServiceClient certificateAuthorityServiceClient =
         CertificateAuthorityServiceClient.create()) {
       // Revoke the certificate.
@@ -454,7 +451,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void rtestCreateSubordinateCertificateAuthority() throws IOException {
+  public void testCreateSubordinateCertificateAuthority() throws IOException {
     try (CertificateAuthorityServiceClient certificateAuthorityServiceClient =
         CertificateAuthorityServiceClient.create()) {
       CertificateAuthority response =
@@ -466,7 +463,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void stestCreateCertificateWithCSR() throws IOException {
+  public void testCreateCertificateWithCSR() throws IOException {
     try (CertificateAuthorityServiceClient certificateAuthorityServiceClient =
         CertificateAuthorityServiceClient.create()) {
       Certificate response =
@@ -477,7 +474,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void ttestActivateSubordinateCertificateAuthority()
+  public void testActivateSubordinateCertificateAuthority()
       throws IOException, ExecutionException, InterruptedException {
     try (CertificateAuthorityServiceClient certificateAuthorityServiceClient =
         CertificateAuthorityServiceClient.create()) {
