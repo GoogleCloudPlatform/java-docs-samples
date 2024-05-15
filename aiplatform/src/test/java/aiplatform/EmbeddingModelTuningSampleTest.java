@@ -53,7 +53,7 @@ public class EmbeddingModelTuningSampleTest {
 
   private static final String API_ENDPOINT = "us-central1-aiplatform.googleapis.com:443";
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
-  private static final String BASE_MODEL_VERSION_ID = "textembedding-gecko@003";
+  private static final String BASE_MODEL_VERSION_ID = "text-embedding-004";
   private static final String TASK_TYPE = "DEFAULT";
   private static final String JOB_DISPLAY_NAME = "embedding-customization-pipeline-sample";
   private static final String QUERIES =
@@ -64,6 +64,8 @@ public class EmbeddingModelTuningSampleTest {
   private static final String TEST_LABEL = "gs://embedding-customization-pipeline/dataset/test.tsv";
   private static final String OUTPUT_DIR =
       "gs://ucaip-samples-us-central1/training_pipeline_output";
+  private static final double LEARNING_RATE_MULTIPLIER = 0.3;
+  private static final int OUTPUT_DIMENSIONALITY = 512;
   private static final int BATCH_SIZE = 50;
   private static final int ITERATIONS = 300;
 
@@ -135,6 +137,8 @@ public class EmbeddingModelTuningSampleTest {
             CORPUS,
             TRAIN_LABEL,
             TEST_LABEL,
+            LEARNING_RATE_MULTIPLIER,
+            OUTPUT_DIMENSIONALITY,
             BATCH_SIZE,
             ITERATIONS);
     assertThat(job.getState()).isNotEqualTo(PipelineState.PIPELINE_STATE_FAILED);
