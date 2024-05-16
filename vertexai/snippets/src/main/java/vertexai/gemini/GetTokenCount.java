@@ -17,10 +17,12 @@
 package vertexai.gemini;
 
 // [START aiplatform_gemini_token_count]
+// [START generativeaionvertexai_gemini_token_count]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.CountTokensResponse;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import java.io.IOException;
+// [END generativeaionvertexai_gemini_token_count]
 // [END aiplatform_gemini_token_count]
 
 public class GetTokenCount {
@@ -28,13 +30,14 @@ public class GetTokenCount {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-vision-001";
+    String modelName = "gemini-1.0-pro-001";
 
     String textPrompt = "Why is the sky blue?";
     getTokenCount(projectId, location, modelName, textPrompt);
   }
 
   // [START aiplatform_gemini_token_count]
+  // [START generativeaionvertexai_gemini_token_count]
   public static int getTokenCount(String projectId, String location, String modelName,
                                   String textPrompt)
       throws IOException {
@@ -48,5 +51,6 @@ public class GetTokenCount {
       return tokenCount;
     }
   }
+  // [END generativeaionvertexai_gemini_token_count]
   // [END aiplatform_gemini_token_count]
 }
