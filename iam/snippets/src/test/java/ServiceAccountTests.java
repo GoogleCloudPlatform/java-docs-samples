@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
-import com.google.common.collect.Lists;
 import com.google.iam.admin.v1.ServiceAccount;
 import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.ByteArrayOutputStream;

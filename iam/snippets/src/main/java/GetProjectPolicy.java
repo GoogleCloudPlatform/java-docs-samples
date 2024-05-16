@@ -13,49 +13,32 @@
  * limitations under the License.
  */
 
-package iam.snippets;
-
-// [START iam_set_policy]
+// [START iam_get_policy]
 import com.google.cloud.resourcemanager.v3.ProjectsClient;
 import com.google.iam.admin.v1.ProjectName;
+import com.google.iam.v1.GetIamPolicyRequest;
 import com.google.iam.v1.Policy;
-import com.google.iam.v1.SetIamPolicyRequest;
-import com.google.protobuf.FieldMask;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
-public class SetProjectPolicy {
+public class GetProjectPolicy {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace the variables before running the sample.
     // TODO: Replace with your project ID.
     String projectId = "your-project-id";
-    // TODO: Replace with your policy, GetPolicy.getPolicy(projectId, serviceAccount).
-    Policy policy = Policy.newBuilder().build();
 
-    setProjectPolicy(policy, projectId);
+    getProjectPolicy(projectId);
   }
 
-  // Sets a project's policy.
-  public static Policy setProjectPolicy(Policy policy, String projectId)
-          throws IOException {
-
+  // Gets a project's policy.
+  public static Policy getProjectPolicy(String projectId) throws IOException {
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (ProjectsClient projectsClient = ProjectsClient.create()) {
-      List<String> paths = Arrays.asList("bindings", "etag");
-      SetIamPolicyRequest request = SetIamPolicyRequest.newBuilder()
+      GetIamPolicyRequest request = GetIamPolicyRequest.newBuilder()
               .setResource(ProjectName.of(projectId).toString())
-              .setPolicy(policy)
-              // A FieldMask specifying which fields of the policy to modify. Only
-              // the fields in the mask will be modified. If no mask is provided, the
-              // following default mask is used:
-              // `paths: "bindings, etag"`
-              .setUpdateMask(FieldMask.newBuilder().addAllPaths(paths).build())
               .build();
-
-      return projectsClient.setIamPolicy(request);
+      return projectsClient.getIamPolicy(request);
     }
   }
 }
-// [END iam_set_policy]
+// [END iam_get_policy]
