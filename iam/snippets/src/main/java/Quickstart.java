@@ -13,8 +13,6 @@
  * limitations under the License.
  */
 
-package iam.snippets;
-
 // [START iam_quickstart]
 
 import com.google.cloud.iam.admin.v1.IAMClient;
