@@ -16,10 +16,12 @@
 
 package vertexai.gemini;
 
+// [START generativeaionvertexai_non_stream_text_basic]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
+// [END generativeaionvertexai_non_stream_text_basic]
 
 public class QuestionAnswer {
 
@@ -34,6 +36,7 @@ public class QuestionAnswer {
   }
 
   // Ask a simple question to the model.
+  // [START generativeaionvertexai_non_stream_text_basic]
   public static String simpleQuestion(String projectId, String location, String modelName)
       throws Exception {
     // Initialize client that will be used to send requests.
@@ -47,4 +50,5 @@ public class QuestionAnswer {
       return output;
     }
   }
+  // [END generativeaionvertexai_non_stream_text_basic]
 }
