@@ -30,7 +30,6 @@ import com.google.cloud.speech.v1p1beta1.StreamingRecognizeRequest;
 import com.google.cloud.speech.v1p1beta1.StreamingRecognizeResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
-
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -101,8 +100,11 @@ public class InfiniteStreamRecognize {
   }
 
   /** Performs infinite streaming speech recognition */
-  public static void infiniteStreamingRecognize(String languageCode, Runnable micBuffer,
-                                                ResponseObserver<StreamingRecognizeResponse> responseObserver) throws Exception {
+  public static void infiniteStreamingRecognize
+                                    (String languageCode,
+                                     Runnable micBuffer,
+                                     ResponseObserver<StreamingRecognizeResponse> responseObserver)
+                                     throws Exception {
     // Creating microphone input buffer thread
     Thread micThread = new Thread(micBuffer);
     try (SpeechClient client = SpeechClient.create()) {
@@ -238,8 +240,7 @@ public class InfiniteStreamRecognize {
         StreamingRecognitionResult result = response.getResultsList().get(0);
         Duration resultEndTime = result.getResultEndTime();
         resultEndTimeInMS =
-                (int)
-                        ((resultEndTime.getSeconds() * 1000) + (resultEndTime.getNanos() / 1000000));
+                (int) ((resultEndTime.getSeconds() * 1000) + (resultEndTime.getNanos() / 1000000));
         double correctedTime =
                 resultEndTimeInMS - bridgingOffset + (STREAMING_LIMIT * restartCounter);
 
@@ -319,7 +320,7 @@ public class InfiniteStreamRecognize {
     try {
       sharedQueue.put(data.clone());
     } catch (InterruptedException e) {
-        System.out.println("Microphone input buffering interrupted : " + e.getMessage());
+      System.out.println("Microphone input buffering interrupted : " + e.getMessage());
     }
   }
 }
