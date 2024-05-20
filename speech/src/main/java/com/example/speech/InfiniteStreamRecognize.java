@@ -30,6 +30,8 @@ import com.google.cloud.speech.v1p1beta1.StreamingRecognizeRequest;
 import com.google.cloud.speech.v1p1beta1.StreamingRecognizeResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
+
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
@@ -39,6 +41,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.DataLine.Info;
+import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
 public class InfiniteStreamRecognize {
@@ -51,7 +54,6 @@ public class InfiniteStreamRecognize {
 
   // Creating shared object
   private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue<byte[]>();
-  private static TargetDataLine targetDataLine;
   private static int BYTES_PER_BUFFER = 6400; // buffer size in bytes
 
   private static int restartCounter = 0;
@@ -63,6 +65,7 @@ public class InfiniteStreamRecognize {
   private static boolean newStream = true;
   private static double bridgingOffset = 0;
   private static boolean lastTranscriptWasFinal = false;
+  private static boolean stopRecognition = false;
   private static StreamController referenceToStreamController;
   private static ByteString tempByteString;
 
@@ -93,81 +96,17 @@ public class InfiniteStreamRecognize {
                 - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))));
   }
 
-  /** Performs infinite streaming speech recognition */
   public static void infiniteStreamingRecognize(String languageCode) throws Exception {
+    infiniteStreamingRecognize(languageCode, new MicBuffer(), getResponseObserver());
+  }
 
-    // Microphone Input buffering
-    class MicBuffer implements Runnable {
-
-      @Override
-      public void run() {
-        System.out.println(YELLOW);
-        System.out.println("Start speaking...Press Ctrl-C to stop");
-        targetDataLine.start();
-        byte[] data = new byte[BYTES_PER_BUFFER];
-        while (targetDataLine.isOpen()) {
-          try {
-            int numBytesRead = targetDataLine.read(data, 0, data.length);
-            if ((numBytesRead <= 0) && (targetDataLine.isOpen())) {
-              continue;
-            }
-            sharedQueue.put(data.clone());
-          } catch (InterruptedException e) {
-            System.out.println("Microphone input buffering interrupted : " + e.getMessage());
-          }
-        }
-      }
-    }
-
+  /** Performs infinite streaming speech recognition */
+  public static void infiniteStreamingRecognize(String languageCode, Runnable micBuffer,
+                                                ResponseObserver<StreamingRecognizeResponse> responseObserver) throws Exception {
     // Creating microphone input buffer thread
-    MicBuffer micrunnable = new MicBuffer();
-    Thread micThread = new Thread(micrunnable);
-    ResponseObserver<StreamingRecognizeResponse> responseObserver = null;
+    Thread micThread = new Thread(micBuffer);
     try (SpeechClient client = SpeechClient.create()) {
       ClientStream<StreamingRecognizeRequest> clientStream;
-      responseObserver =
-          new ResponseObserver<StreamingRecognizeResponse>() {
-
-            ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
-
-            public void onStart(StreamController controller) {
-              referenceToStreamController = controller;
-            }
-
-            public void onResponse(StreamingRecognizeResponse response) {
-              responses.add(response);
-              StreamingRecognitionResult result = response.getResultsList().get(0);
-              Duration resultEndTime = result.getResultEndTime();
-              resultEndTimeInMS =
-                  (int)
-                      ((resultEndTime.getSeconds() * 1000) + (resultEndTime.getNanos() / 1000000));
-              double correctedTime =
-                  resultEndTimeInMS - bridgingOffset + (STREAMING_LIMIT * restartCounter);
-
-              SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-              if (result.getIsFinal()) {
-                System.out.print(GREEN);
-                System.out.print("\033[2K\r");
-                System.out.printf(
-                    "%s: %s [confidence: %.2f]\n",
-                    convertMillisToDate(correctedTime),
-                    alternative.getTranscript(),
-                    alternative.getConfidence());
-                isFinalEndTime = resultEndTimeInMS;
-                lastTranscriptWasFinal = true;
-              } else {
-                System.out.print(RED);
-                System.out.print("\033[2K\r");
-                System.out.printf(
-                    "%s: %s", convertMillisToDate(correctedTime), alternative.getTranscript());
-                lastTranscriptWasFinal = false;
-              }
-            }
-
-            public void onComplete() {}
-
-            public void onError(Throwable t) {}
-          };
       clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
 
       RecognitionConfig recognitionConfig =
@@ -191,28 +130,11 @@ public class InfiniteStreamRecognize {
       clientStream.send(request);
 
       try {
-        // SampleRate:16000Hz, SampleSizeInBits: 16, Number of channels: 1, Signed: true,
-        // bigEndian: false
-        AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, false);
-        DataLine.Info targetInfo =
-            new Info(
-                TargetDataLine.class,
-                audioFormat); // Set the system information to read from the microphone audio
-        // stream
-
-        if (!AudioSystem.isLineSupported(targetInfo)) {
-          System.out.println("Microphone not supported");
-          System.exit(0);
-        }
-        // Target data line captures the audio stream the microphone produces.
-        targetDataLine = (TargetDataLine) AudioSystem.getLine(targetInfo);
-        targetDataLine.open(audioFormat);
+        micThread.setDaemon(true);
         micThread.start();
 
         long startTime = System.currentTimeMillis();
-
-        while (true) {
-
+        while (!stopRecognition) {
           long estimatedTime = System.currentTimeMillis() - startTime;
 
           if (estimatedTime >= STREAMING_LIMIT) {
@@ -285,6 +207,8 @@ public class InfiniteStreamRecognize {
 
             tempByteString = ByteString.copyFrom(sharedQueue.take());
 
+            checkStopRecognitionFlag(tempByteString.toByteArray());
+
             request =
                 StreamingRecognizeRequest.newBuilder().setAudioContent(tempByteString).build();
 
@@ -293,9 +217,109 @@ public class InfiniteStreamRecognize {
 
           clientStream.send(request);
         }
+        clientStream.closeSend();
       } catch (Exception e) {
         System.out.println(e);
       }
+    }
+  }
+
+  public static ResponseObserver<StreamingRecognizeResponse> getResponseObserver() {
+    return new ResponseObserver<StreamingRecognizeResponse>() {
+
+      final ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
+
+      public void onStart(StreamController controller) {
+        referenceToStreamController = controller;
+      }
+
+      public void onResponse(StreamingRecognizeResponse response) {
+        responses.add(response);
+        StreamingRecognitionResult result = response.getResultsList().get(0);
+        Duration resultEndTime = result.getResultEndTime();
+        resultEndTimeInMS =
+                (int)
+                        ((resultEndTime.getSeconds() * 1000) + (resultEndTime.getNanos() / 1000000));
+        double correctedTime =
+                resultEndTimeInMS - bridgingOffset + (STREAMING_LIMIT * restartCounter);
+
+        SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+        if (result.getIsFinal()) {
+          System.out.print(GREEN);
+          System.out.print("\033[2K\r");
+          System.out.printf(
+                  "%s: %s [confidence: %.2f]\n",
+                  convertMillisToDate(correctedTime),
+                  alternative.getTranscript(),
+                  alternative.getConfidence());
+          isFinalEndTime = resultEndTimeInMS;
+          lastTranscriptWasFinal = true;
+        } else {
+          System.out.print(RED);
+          System.out.print("\033[2K\r");
+          System.out.printf(
+                  "%s: %s", convertMillisToDate(correctedTime), alternative.getTranscript());
+          lastTranscriptWasFinal = false;
+        }
+        checkStopRecognitionFlag(alternative.getTranscript().getBytes(StandardCharsets.UTF_8));
+      }
+
+      public void onComplete() {}
+
+      public void onError(Throwable t) {}
+    };
+  }
+
+  private static void checkStopRecognitionFlag(byte[] flag) {
+    if (flag.length < 10) {
+      stopRecognition = new String(flag).trim().equalsIgnoreCase("exit");
+      putDataToSharedQueue("stop".getBytes(StandardCharsets.UTF_8));
+    }
+  }
+
+  // Microphone Input buffering
+  static class MicBuffer implements Runnable {
+    TargetDataLine targetDataLine;
+
+    public MicBuffer() throws LineUnavailableException {
+      // SampleRate:16000Hz, SampleSizeInBits: 16, Number of channels: 1, Signed: true,
+      // bigEndian: false
+      AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, false);
+      DataLine.Info targetInfo =
+              new Info(
+                      TargetDataLine.class,
+                      audioFormat); // Set the system information to read from the microphone audio stream
+
+      if (!AudioSystem.isLineSupported(targetInfo)) {
+        System.out.println("Microphone not supported");
+        System.exit(0);
+      }
+      // Target data line captures the audio stream the microphone produces.
+      targetDataLine = (TargetDataLine) AudioSystem.getLine(targetInfo);
+      targetDataLine.open(audioFormat);
+    }
+
+    @Override
+    public void run() {
+      System.out.println(YELLOW);
+      System.out.println("Start speaking...Say `exit` to stop");
+      targetDataLine.start();
+      byte[] data = new byte[BYTES_PER_BUFFER];
+      while (targetDataLine.isOpen()) {
+        int numBytesRead = targetDataLine.read(data, 0, data.length);
+        if ((numBytesRead <= 0) && (targetDataLine.isOpen())) {
+          continue;
+        }
+        putDataToSharedQueue(data.clone());
+      }
+    }
+  }
+
+  public static void putDataToSharedQueue(byte[] data) {
+    try {
+      sharedQueue.put(data.clone());
+    } catch (InterruptedException e) {
+        System.out.println("Microphone input buffering interrupted : " + e.getMessage());
     }
   }
 }
