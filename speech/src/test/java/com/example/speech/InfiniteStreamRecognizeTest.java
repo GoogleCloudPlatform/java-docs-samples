@@ -40,7 +40,7 @@ public class InfiniteStreamRecognizeTest {
   }
 
   private byte[] readAudioFile() throws UnsupportedAudioFileException, IOException {
-    AudioInputStream stream = AudioSystem.getAudioInputStream(new File("C:\\projects\\java-docs-samples-dev\\speech\\resources\\commercial_mono.wav"));
+    AudioInputStream stream = AudioSystem.getAudioInputStream(new File("resources\\commercial_mono.wav"));
     AudioFormat format = stream.getFormat();
 
     int length = (int)(stream.getFrameLength() * format.getFrameSize());
