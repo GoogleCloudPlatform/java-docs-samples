@@ -16,6 +16,8 @@
 
 package com.example.speech;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -32,7 +34,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public class InfiniteStreamRecognizeTest {
@@ -61,7 +62,7 @@ public class InfiniteStreamRecognizeTest {
     File file = new File("resources/commercial_mono.wav");
     AudioInputStream stream = AudioSystem.getAudioInputStream(file);
     AudioFormat format = stream.getFormat();
-    int length = (int)(stream.getFrameLength() * format.getFrameSize());
+    int length = (int) (stream.getFrameLength() * format.getFrameSize());
     byte[] samples = new byte[length];
     DataInputStream in = new DataInputStream(stream);
     in.readFully(samples);

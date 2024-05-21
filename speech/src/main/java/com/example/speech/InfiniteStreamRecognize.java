@@ -100,8 +100,7 @@ public class InfiniteStreamRecognize {
   }
 
   /** Performs infinite streaming speech recognition */
-  public static void infiniteStreamingRecognize
-                                    (String languageCode,
+  public static void infiniteStreamingRecognize(String languageCode,
                                      Runnable micBuffer,
                                      ResponseObserver<StreamingRecognizeResponse> responseObserver)
                                      throws Exception {
@@ -289,7 +288,8 @@ public class InfiniteStreamRecognize {
       DataLine.Info targetInfo =
               new Info(
                       TargetDataLine.class,
-                      audioFormat); // Set the system information to read from the microphone audio stream
+                      audioFormat); // Set the system information to read from the microphone audio
+      // stream
 
       if (!AudioSystem.isLineSupported(targetInfo)) {
         System.out.println("Microphone not supported");
