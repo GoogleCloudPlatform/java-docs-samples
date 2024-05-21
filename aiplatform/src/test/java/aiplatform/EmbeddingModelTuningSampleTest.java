@@ -56,12 +56,14 @@ public class EmbeddingModelTuningSampleTest {
   private static final String BASE_MODEL_VERSION_ID = "textembedding-gecko@003";
   private static final String TASK_TYPE = "DEFAULT";
   private static final String JOB_DISPLAY_NAME = "embedding-customization-pipeline-sample";
-  private static final String QUERIES =
-      "gs://embedding-customization-pipeline/dataset/queries.jsonl";
-  private static final String CORPUS = "gs://embedding-customization-pipeline/dataset/corpus.jsonl";
+  private static final String CORPUS = 
+      "gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/corpus.jsonl";
+  private static final String QUERIES = 
+      "gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/queries.jsonl";
   private static final String TRAIN_LABEL =
-      "gs://embedding-customization-pipeline/dataset/train.tsv";
-  private static final String TEST_LABEL = "gs://embedding-customization-pipeline/dataset/test.tsv";
+      "gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/train.tsv";
+  private static final String TEST_LABEL = 
+      "gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/test.tsv";
   private static final String OUTPUT_DIR =
       "gs://ucaip-samples-us-central1/training_pipeline_output";
   private static final int BATCH_SIZE = 50;
