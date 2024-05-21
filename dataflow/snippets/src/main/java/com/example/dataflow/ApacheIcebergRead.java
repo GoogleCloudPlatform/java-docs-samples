@@ -83,4 +83,4 @@ public class ApacheIcebergRead {
     pipeline.run().waitUntilFinish();
   }
 }
-// [START dataflow_apache_iceberg_read]
+// [END dataflow_apache_iceberg_read]
