@@ -147,8 +147,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-core</artifactId>
-      <version>1.2.1</version>
+      <artifactId>hadoop-client-runtime</artifactId>
+      <version>3.4.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.iceberg</groupId>
