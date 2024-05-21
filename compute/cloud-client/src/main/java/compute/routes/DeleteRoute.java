@@ -28,7 +28,8 @@ import java.util.concurrent.TimeoutException;
 
 public class DeleteRoute {
 
-  public static void main(String[] args) throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public static void main(String[] args)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "your-project-id";
@@ -38,7 +39,8 @@ public class DeleteRoute {
     deleteRoute(projectId, routeName);
   }
 
-  public static void deleteRoute(String projectId, String routeName) throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public static void deleteRoute(String projectId, String routeName)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (RoutesClient routesClient = RoutesClient.create()) {
       DeleteRouteRequest request = DeleteRouteRequest.newBuilder()
               .setProject(projectId)
