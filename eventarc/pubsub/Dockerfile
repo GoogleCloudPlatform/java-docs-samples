@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START eventarc_pubsub_dockerfile]
-
 # Use the official maven image to create a build artifact.
 # https://hub.docker.com/_/maven
 FROM maven:3-eclipse-temurin-17-alpine as builder
@@ -35,5 +33,3 @@ COPY --from=builder /app/target/events-pubsub-*.jar /events-pubsub.jar
 
 # Run the web service on container startup.
 CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/events-pubsub.jar"]
-
-# [END eventarc_pubsub_dockerfile]
