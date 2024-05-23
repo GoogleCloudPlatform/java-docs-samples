@@ -24,7 +24,11 @@ package aiplatform;
 // [START aiplatform_delete_feature_online_store_sample]
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.aiplatform.v1.*;
+import com.google.cloud.aiplatform.v1.DeleteFeatureOnlineStoreRequest;
+import com.google.cloud.aiplatform.v1.DeleteOperationMetadata;
+import com.google.cloud.aiplatform.v1.FeatureOnlineStoreAdminServiceClient;
+import com.google.cloud.aiplatform.v1.FeatureOnlineStoreAdminServiceSettings;
+import com.google.cloud.aiplatform.v1.FeatureOnlineStoreName;
 import com.google.protobuf.Empty;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;

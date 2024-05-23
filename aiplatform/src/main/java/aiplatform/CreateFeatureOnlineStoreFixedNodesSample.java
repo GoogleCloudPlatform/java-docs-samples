@@ -24,7 +24,12 @@ package aiplatform;
 // [START aiplatform_create_featureOnlineStore_bigtable_sample]
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.aiplatform.v1beta1.*;
+import com.google.cloud.aiplatform.v1beta1.CreateFeatureOnlineStoreOperationMetadata;
+import com.google.cloud.aiplatform.v1beta1.CreateFeatureOnlineStoreRequest;
+import com.google.cloud.aiplatform.v1beta1.FeatureOnlineStore;
+import com.google.cloud.aiplatform.v1beta1.FeatureOnlineStoreAdminServiceClient;
+import com.google.cloud.aiplatform.v1beta1.FeatureOnlineStoreAdminServiceSettings;
+import com.google.cloud.aiplatform.v1beta1.LocationName;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
