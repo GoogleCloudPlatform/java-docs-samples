@@ -49,5 +49,5 @@ public class QuestionAnswer {
       return output;
     }
   }
-  // [END generativeaionvertexai_non_stream_text_basic]
 }
+// [END generativeaionvertexai_non_stream_text_basic]
