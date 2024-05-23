@@ -21,7 +21,6 @@ import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
-// [END generativeaionvertexai_non_stream_text_basic]
 
 public class QuestionAnswer {
 
@@ -35,8 +34,7 @@ public class QuestionAnswer {
     System.out.println(output);
   }
 
-  // Ask a simple question to the model.
-  // [START generativeaionvertexai_non_stream_text_basic]
+  // Asks a question to the specified Vertex AI Gemini model and returns the generated answer.
   public static String simpleQuestion(String projectId, String location, String modelName)
       throws Exception {
     // Initialize client that will be used to send requests.
@@ -44,8 +42,9 @@ public class QuestionAnswer {
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       String output;
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
-
+      // Send the question to the model for processing.
       GenerateContentResponse response = model.generateContent("Why is the sky blue?");
+      // Extract the generated text from the model's response.
       output = ResponseHandler.getText(response);
       return output;
     }
