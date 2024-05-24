@@ -29,7 +29,7 @@ public class WithSystemInstruction {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.5-pro-preview-0409";
+    String modelName = "gemini-1.5-flash-001";
 
     String output = translateToFrench(projectId, location, modelName);
     System.out.println(output);

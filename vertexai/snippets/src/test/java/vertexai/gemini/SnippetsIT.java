@@ -42,14 +42,13 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class SnippetsIT {
 
-  public static final String GEMINI_ULTRA_VISION = "gemini-1.0-ultra-vision";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
   private static final String GEMINI_PRO_VISION = "gemini-1.0-pro-vision-001";
   private static final String GEMINI_PRO = "gemini-1.0-pro-002";
-  private static final String GEMINI_PRO_1_5 = "gemini-1.5-pro-preview-0409";
+  private static final String GEMINI_FLASH = "gemini-1.5-flash-001";
   private static final int MAX_ATTEMPT_COUNT = 3;
-  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
+  private static final int INITIAL_BACKOFF_MILLIS = 12000; // 2 minutes
 
   @Rule
   public final MultipleAttemptsRule multipleAttemptsRule =
@@ -160,10 +159,9 @@ public class SnippetsIT {
     assertThat(bout.toString()).contains("Zoo");
   }
 
-  @Ignore("Don't test until ultra launch")
   @Test
   public void testMultiTurnMultimodal() throws IOException {
-    MultiTurnMultimodal.multiTurnMultimodal(PROJECT_ID, LOCATION, GEMINI_ULTRA_VISION);
+    MultiTurnMultimodal.multiTurnMultimodal(PROJECT_ID, LOCATION, GEMINI_FLASH);
     assertThat(bout.toString()).contains("scones");
   }
 
@@ -236,7 +234,7 @@ public class SnippetsIT {
 
   @Test
   public void testAudioInputSummary() throws IOException {
-    String output = AudioInputSummarization.summarizeAudio(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+    String output = AudioInputSummarization.summarizeAudio(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
     assertThat(output).ignoringCase().contains("Pixel");
     assertThat(output).ignoringCase().contains("feature");
@@ -244,7 +242,7 @@ public class SnippetsIT {
 
   @Test
   public void testAudioInputTranscription() throws IOException {
-    String output = AudioInputTranscription.transcribeAudio(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+    String output = AudioInputTranscription.transcribeAudio(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
     assertThat(output).ignoringCase().contains("Pixel");
     assertThat(output).ignoringCase().contains("feature");
@@ -252,7 +250,7 @@ public class SnippetsIT {
 
   @Test
   public void testVideoAudioInput() throws IOException {
-    String output = VideoInputWithAudio.videoAudioInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+    String output = VideoInputWithAudio.videoAudioInput(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
     assertThat(output).ignoringCase().contains("Pixel");
     assertThat(output).ignoringCase().contains("Tokyo");
@@ -260,21 +258,21 @@ public class SnippetsIT {
 
   @Test
   public void testAllModalityInputs() throws IOException {
-    String output = MultimodalAllInput.multimodalAllInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+    String output = MultimodalAllInput.multimodalAllInput(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
-    assertThat(output).ignoringCase().contains("0:49");
+    assertThat(output).ignoringCase().contains("0:4");
   }
 
   @Test
   public void testPdfInput() throws IOException {
-    String output = PdfInput.pdfInput(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+    String output = PdfInput.pdfInput(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
     assertThat(output).ignoringCase().contains("Gemini");
   }
 
   @Test
   public void testSystemInstruction() throws Exception {
-    String output = WithSystemInstruction.translateToFrench(PROJECT_ID, LOCATION, GEMINI_PRO_1_5);
+    String output = WithSystemInstruction.translateToFrench(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
     assertThat(output).ignoringCase().contains("bagels");
     assertThat(output).ignoringCase().contains("aime");
