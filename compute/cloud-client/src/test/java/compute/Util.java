@@ -114,8 +114,7 @@ public abstract class Util {
   public static ListPagedResponse listFilteredInstanceTemplates(String projectId,
       String instanceTemplatePrefix) throws IOException {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
-      ListInstanceTemplatesRequest listInstanceTemplatesRequest =
-          ListInstanceTemplatesRequest.newBuilder()
+      ListInstanceTemplatesRequest listInstanceTemplatesRequest = ListInstanceTemplatesRequest.newBuilder()
           .setProject(projectId)
           .setFilter(String.format("name:%s", instanceTemplatePrefix))
           .build();
@@ -171,12 +170,12 @@ public abstract class Util {
     if (parsedZones.length == 0) {
       return "unknown";
     }
-    return parsedZones[new Random().nextInt(parsedZones.length)];
+    return parsedZones[new Random().nextInt(parsedZones.length)].trim();
   }
 
   public static String getEnvVar(String envVarName, String defaultValue) {
     String val = System.getenv(envVarName);
-    if (val == "") {
+    if (val == null || val.trim() == "") {
       return defaultValue;
     }
     return val;
