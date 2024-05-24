@@ -48,7 +48,7 @@ public class SnippetsIT {
   private static final String GEMINI_PRO = "gemini-1.0-pro-002";
   private static final String GEMINI_FLASH = "gemini-1.5-flash-001";
   private static final int MAX_ATTEMPT_COUNT = 3;
-  private static final int INITIAL_BACKOFF_MILLIS = 12000; // 2 minutes
+  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
 
   @Rule
   public final MultipleAttemptsRule multipleAttemptsRule =
