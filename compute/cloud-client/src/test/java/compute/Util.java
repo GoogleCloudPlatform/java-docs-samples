@@ -114,7 +114,8 @@ public abstract class Util {
   public static ListPagedResponse listFilteredInstanceTemplates(String projectId,
       String instanceTemplatePrefix) throws IOException {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
-      ListInstanceTemplatesRequest listInstanceTemplatesRequest = ListInstanceTemplatesRequest.newBuilder()
+      ListInstanceTemplatesRequest listInstanceTemplatesRequest =
+          ListInstanceTemplatesRequest.newBuilder()
           .setProject(projectId)
           .setFilter(String.format("name:%s", instanceTemplatePrefix))
           .build();
