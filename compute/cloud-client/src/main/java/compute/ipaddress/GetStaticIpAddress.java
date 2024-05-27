@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-public class GetStaticIPAddress {
+public class GetStaticIpAddress {
 
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -39,11 +39,11 @@ public class GetStaticIPAddress {
     // Name of the address to assign.
     String addressName = "your-addressName";
 
-    getStaticIPAddress(projectId, region, addressName);
+    getStaticIpAddress(projectId, region, addressName);
   }
 
   // Retrieves a static external IP address, either regional or global.
-  public static Address getStaticIPAddress(String projectId, String region, String addressName)
+  public static Address getStaticIpAddress(String projectId, String region, String addressName)
           throws IOException {
     if (region != null) {
       // Use regional client if a region is specified

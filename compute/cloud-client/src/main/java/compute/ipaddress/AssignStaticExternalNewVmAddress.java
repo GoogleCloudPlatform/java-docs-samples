@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class AssignStaticExternalNewVMAddress {
+public class AssignStaticExternalNewVmAddress {
 
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -54,16 +54,16 @@ public class AssignStaticExternalNewVMAddress {
     // external IPv4 address to be assigned to this instance. If you specify
     // an external IP address, it must live in the same region as the zone of the instance.
     // This setting requires `external_access` to be set to True to work.
-    String externalIPv4 = "your-externalIPv4-id";
+    String externalIpv4 = "your-externalIpv4-id";
 
-    assignStaticExternalNewVMAddress(projectId, instanceId, zone,
-            externalAccess, machineType, externalIPv4);
+    assignStaticExternalNewVmAddress(projectId, instanceId, zone,
+            externalAccess, machineType, externalIpv4);
   }
 
   // Create a new VM instance with assigned static external IP address.
-  public static Instance assignStaticExternalNewVMAddress(String projectId, String instanceName,
+  public static Instance assignStaticExternalNewVmAddress(String projectId, String instanceName,
                                                           String zone, boolean externalAccess,
-                                                          String machineType, String externalIPv4)
+                                                          String machineType, String externalIpv4)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String sourceImage;
     try (ImagesClient imagesClient = ImagesClient.create()) {
@@ -71,7 +71,7 @@ public class AssignStaticExternalNewVMAddress {
     }
     AttachedDisk attachedDisk = buildAttachedDisk(sourceImage, zone);
     return createInstance(projectId, instanceName, zone,
-            attachedDisk, machineType, externalAccess, externalIPv4);
+            attachedDisk, machineType, externalAccess, externalIpv4);
   }
 
   private static AttachedDisk buildAttachedDisk(String sourceImage, String zone) {
@@ -94,11 +94,11 @@ public class AssignStaticExternalNewVMAddress {
   private static Instance createInstance(String projectId, String instanceName,
                                          String zone, AttachedDisk disks,
                                          String machineType, boolean externalAccess,
-                                         String externalIPv4)
+                                         String externalIpv4)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (InstancesClient client = InstancesClient.create()) {
       Instance instanceResource =
-              buildInstanceResource(instanceName, disks, machineType, externalAccess, externalIPv4);
+              buildInstanceResource(instanceName, disks, machineType, externalAccess, externalIpv4);
 
       InsertInstanceRequest build = InsertInstanceRequest.newBuilder()
               .setProject(projectId)
@@ -119,9 +119,9 @@ public class AssignStaticExternalNewVMAddress {
 
   private static Instance buildInstanceResource(String instanceName, AttachedDisk disk,
                                                 String machineType, boolean externalAccess,
-                                                String externalIPv4) {
+                                                String externalIpv4) {
     NetworkInterface networkInterface =
-            networkInterface(externalAccess, externalIPv4);
+            networkInterface(externalAccess, externalIpv4);
     return Instance.newBuilder()
             .setName(instanceName)
             .addDisks(disk)
@@ -130,7 +130,7 @@ public class AssignStaticExternalNewVMAddress {
             .build();
   }
 
-  private static NetworkInterface networkInterface(boolean externalAccess, String externalIPv4) {
+  private static NetworkInterface networkInterface(boolean externalAccess, String externalIpv4) {
     NetworkInterface.Builder build = NetworkInterface.newBuilder()
             .setNetwork("global/networks/default");
     if (externalAccess) {
@@ -138,8 +138,8 @@ public class AssignStaticExternalNewVMAddress {
               .setType(AccessConfig.Type.ONE_TO_ONE_NAT.name())
               .setName("External NAT")
               .setNetworkTier(Address.NetworkTier.PREMIUM.name());
-      if (externalIPv4 != null) {
-        accessConfig.setNatIP(externalIPv4);
+      if (externalIpv4 != null) {
+        accessConfig.setNatIP(externalIpv4);
       }
       build.addAccessConfigs(accessConfig.build());
     }

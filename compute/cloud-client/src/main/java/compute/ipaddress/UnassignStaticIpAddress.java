@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class UnassignStaticIPAddress {
+public class UnassignStaticIpAddress {
 
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -41,10 +41,10 @@ public class UnassignStaticIPAddress {
     // Name of the network interface to assign.
     String netInterfaceName = "your-netInterfaceName";
 
-    unassignStaticIPAddress(projectId, instanceId, zone, netInterfaceName);
+    unassignStaticIpAddress(projectId, instanceId, zone, netInterfaceName);
   }
 
-  public static Instance unassignStaticIPAddress(String projectId, String instanceId,
+  public static Instance unassignStaticIpAddress(String projectId, String instanceId,
                                                  String zone, String netInterfaceName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (InstancesClient client = InstancesClient.create()) {

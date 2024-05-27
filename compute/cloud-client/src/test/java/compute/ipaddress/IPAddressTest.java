@@ -19,7 +19,6 @@ package compute.ipaddress;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.gax.rpc.NotFoundException;
-import compute.windows.windowsinstances.CreateWindowsServerInstanceExternalIp;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AccessConfig;
 import com.google.cloud.compute.v1.Address;
@@ -30,6 +29,7 @@ import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import compute.DeleteInstance;
 import compute.Util;
+import compute.windows.windowsinstances.CreateWindowsServerInstanceExternalIp;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +120,7 @@ public class IPAddressTest {
 
   @Test
   public void getVMAddressInternalTest() throws IOException {
-    List<String> vmAddress = GetVMAddress.getVMAddress(PROJECT_ID, MACHINE_NAME, IPType.INTERNAL);
+    List<String> vmAddress = GetVmAddress.getVmAddress(PROJECT_ID, MACHINE_NAME, IPType.INTERNAL);
     Assert.assertNotNull(vmAddress);
     Assert.assertFalse(vmAddress.isEmpty());
     Assert.assertTrue(vmAddress.get(0)
@@ -130,8 +130,8 @@ public class IPAddressTest {
   @Test
   public void getVMAddressExternalTest()
           throws IOException {
-    List<String> vmAddress = GetVMAddress
-            .getVMAddress(PROJECT_ID, EXTERNAL_NEW_VM_INSTANCE_2, IPType.EXTERNAL);
+    List<String> vmAddress = GetVmAddress
+            .getVmAddress(PROJECT_ID, EXTERNAL_NEW_VM_INSTANCE_2, IPType.EXTERNAL);
     Assert.assertNotNull(vmAddress);
     Assert.assertFalse(vmAddress.isEmpty());
     Assert.assertTrue(vmAddress.get(0)
@@ -140,7 +140,7 @@ public class IPAddressTest {
 
   @Test
   public void getVMAddressIPV6Test() throws IOException {
-    List<String> vmAddress = GetVMAddress.getVMAddress(PROJECT_ID, MACHINE_NAME, IPType.IP_V6);
+    List<String> vmAddress = GetVmAddress.getVmAddress(PROJECT_ID, MACHINE_NAME, IPType.IP_V6);
     Assert.assertNotNull(vmAddress);
     Assert.assertTrue(vmAddress.isEmpty());
   }
@@ -149,15 +149,16 @@ public class IPAddressTest {
   public void reserveNewExternalIPAddressTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String addressName = getNewAddressName(true);
-    List<Address> addresses = ReserveNewExternalAddress.
-            reserveNewExternalIPAddress(PROJECT_ID, addressName, false, false, null);
+    List<Address> addresses = ReserveNewExternalAddress
+            .reserveNewExternalIpAddress(PROJECT_ID, addressName, false, false, null);
     Assert.assertNotNull(addresses);
     Assert.assertFalse(addresses.isEmpty());
-    Assert.assertTrue(addresses.stream().anyMatch(address -> address.getName().equals(addressName)));
+    Assert.assertTrue(addresses.stream().anyMatch(address
+            -> address.getName().equals(addressName)));
 
     String regionAddressName = getNewAddressName(false);
-    addresses = ReserveNewExternalAddress.
-            reserveNewExternalIPAddress(PROJECT_ID, regionAddressName, false, true, REGION);
+    addresses = ReserveNewExternalAddress
+            .reserveNewExternalIpAddress(PROJECT_ID, regionAddressName, false, true, REGION);
     Assert.assertNotNull(addresses);
     Assert.assertFalse(addresses.isEmpty());
     Assert.assertTrue(addresses.stream().anyMatch(address
@@ -169,7 +170,7 @@ public class IPAddressTest {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String ipAddress = getExternalIpAddress(getNewAddressName(false), false);
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", ZONE);
-    Instance instance = AssignStaticExternalNewVMAddress.assignStaticExternalNewVMAddress(
+    Instance instance = AssignStaticExternalNewVmAddress.assignStaticExternalNewVmAddress(
             PROJECT_ID, EXTERNAL_NEW_VM_INSTANCE, ZONE, true, machineType, ipAddress);
     Assert.assertNotNull(instance);
     Assert.assertFalse(instance.getNetworkInterfacesList().isEmpty());
@@ -182,7 +183,7 @@ public class IPAddressTest {
   @Test
   public void assignStaticExistingVMAddressTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Instance instance = AssignStaticExistingVm.assignStaticExistingVMAddress(
+    Instance instance = AssignStaticExistingVm.assignStaticExistingVmAddress(
             PROJECT_ID, EXTERNAL_NEW_VM_INSTANCE_2, ZONE, "nic0");
     Assert.assertNotNull(instance);
     Assert.assertFalse(instance.getNetworkInterfacesList().isEmpty());
@@ -212,13 +213,14 @@ public class IPAddressTest {
 
     String addressName = getNewAddressName(false);
     List<Address> addresses = PromoteEphemeralIp
-            .promoteEphemeralId(PROJECT_ID, REGION, ipAddress, addressName);
+            .promoteEphemeralIp(PROJECT_ID, REGION, ipAddress, addressName);
 
     Assert.assertNotNull(addresses);
     Assert.assertFalse(addresses.isEmpty());
 
-    String fIpAddress = ipAddress;
-    Assert.assertTrue(addresses.stream().anyMatch(address -> address.getAddress().equals(fIpAddress)
+    String finalIpAddress = ipAddress;
+    Assert.assertTrue(addresses.stream().anyMatch(address
+            -> address.getAddress().equals(finalIpAddress)
             && address.getStatus().equals(Address.Status.IN_USE.name())));
   }
 
@@ -240,14 +242,14 @@ public class IPAddressTest {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String addressName = getNewAddressName(false);
     getExternalIpAddress(addressName, false);
-    Address address = GetStaticIPAddress.getStaticIPAddress(PROJECT_ID, REGION, addressName);
+    Address address = GetStaticIpAddress.getStaticIpAddress(PROJECT_ID, REGION, addressName);
     Assert.assertNotNull(address);
     Assert.assertEquals(addressName, address.getName());
     Assert.assertTrue(address.getRegion().contains(REGION));
 
     addressName = getNewAddressName(true);
     getExternalIpAddress(addressName, true);
-    address = GetStaticIPAddress.getStaticIPAddress(PROJECT_ID, null, addressName);
+    address = GetStaticIpAddress.getStaticIpAddress(PROJECT_ID, null, addressName);
     Assert.assertNotNull(address);
     Assert.assertEquals(addressName, address.getName());
     Assert.assertFalse(address.hasRegion());
@@ -257,7 +259,7 @@ public class IPAddressTest {
   public void unassignStaticIPAddressTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String netInterfaceName = "nic0";
-    Instance instance = UnassignStaticIPAddress.unassignStaticIPAddress(
+    Instance instance = UnassignStaticIpAddress.unassignStaticIpAddress(
             PROJECT_ID, MACHINE_NAME, ZONE, netInterfaceName);
     Assert.assertNotNull(instance);
     Assert.assertFalse(instance.getNetworkInterfacesList().isEmpty());
@@ -280,14 +282,14 @@ public class IPAddressTest {
     Thread.sleep(2000);
     Assert.assertThrows(".getStaticIPAddress() should throw NotFoundException",
             NotFoundException.class,
-            () -> GetStaticIPAddress
-                    .getStaticIPAddress(PROJECT_ID, REGION, addressName));
+            () -> GetStaticIpAddress
+                    .getStaticIpAddress(PROJECT_ID, REGION, addressName));
   }
 
   private String getExternalIpAddress(String addressName, boolean isGlobal)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    return ReserveNewExternalAddress.
-            reserveNewExternalIPAddress(PROJECT_ID, addressName, false,
+    return ReserveNewExternalAddress
+            .reserveNewExternalIpAddress(PROJECT_ID, addressName, false,
                     true, isGlobal ? null : REGION)
             .get(0).getAddress();
   }

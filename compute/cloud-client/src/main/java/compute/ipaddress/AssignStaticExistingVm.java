@@ -41,7 +41,7 @@ public class AssignStaticExistingVm {
     // Name of the network interface to assign.
     String netInterfaceName = "your-netInterfaceName-id";
 
-    assignStaticExistingVMAddress(projectId, instanceId, zone, netInterfaceName);
+    assignStaticExistingVmAddress(projectId, instanceId, zone, netInterfaceName);
   }
 
   // Updates or creates an access configuration for a VM instance to assign a static external IP.
@@ -49,7 +49,7 @@ public class AssignStaticExistingVm {
   // in case of any assigned ip (static or ephemeral).
   // VM and ip address must be created before calling this function.
   // IMPORTANT: VM and assigned IP must be in the same region.
-  public static Instance assignStaticExistingVMAddress(String projectId, String instanceId,
+  public static Instance assignStaticExistingVmAddress(String projectId, String instanceId,
                                                        String zone, String netInterfaceName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (InstancesClient client = InstancesClient.create()) {
@@ -83,7 +83,7 @@ public class AssignStaticExistingVm {
       // Add a new access configuration with the new IP
       AccessConfig newAccessConfig = AccessConfig.newBuilder()
 // leave this field undefined to use an IP from a shared ephemeral IP address pool
-//              .setNatIP(ipAddress)
+              // .setNatIP(ipAddress)
               .setType(AccessConfig.Type.ONE_TO_ONE_NAT.name())
               .setName("external-nat")
               .build();

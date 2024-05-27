@@ -48,12 +48,12 @@ public class ReserveNewExternalAddress {
     // Must be None if global.
     String region = null;
 
-    reserveNewExternalIPAddress(projectId, addressName, ipV6, isPremium, region);
+    reserveNewExternalIpAddress(projectId, addressName, ipV6, isPremium, region);
   }
 
   // Reserves a new external IP address in the specified project and region.
-  public static List<Address> reserveNewExternalIPAddress(String projectId, String addressName,
-                                                 boolean ipV6, boolean isPremium, String region)
+  public static List<Address> reserveNewExternalIpAddress(String projectId, String addressName,
+                                                          boolean ipV6, boolean isPremium, String region)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     String ipVersion = ipV6 ? "IPV6" : "IPV4";

@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetVMAddress {
+public class GetVmAddress {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -38,12 +38,12 @@ public class GetVMAddress {
     // IPType you want to search.
     IPType ipType = IPType.INTERNAL;
 
-    getVMAddress(projectId, instanceId, ipType);
+    getVmAddress(projectId, instanceId, ipType);
   }
 
   // Retrieves the specified type of IP address
   // (ipv6, internal or external) of a specified Compute Engine instance.
-  public static List<String> getVMAddress(String projectId, String instanceId, IPType ipType)
+  public static List<String> getVmAddress(String projectId, String instanceId, IPType ipType)
           throws IOException {
     List<String> result = new ArrayList<>();
     Instance instance = getInstance(projectId, instanceId);

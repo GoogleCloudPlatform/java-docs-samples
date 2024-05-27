@@ -43,11 +43,11 @@ public class PromoteEphemeralIp {
     // Name of the address to assign.
     String addressName = "your-addressName";
 
-    promoteEphemeralId(projectId, region, ephemeralIp, addressName);
+    promoteEphemeralIp(projectId, region, ephemeralIp, addressName);
   }
 
   // Promote ephemeral IP found on the instance to a static IP.
-  public static List<Address> promoteEphemeralId(String projectId, String region,
+  public static List<Address> promoteEphemeralIp(String projectId, String region,
                                                  String ephemeralIp, String addressName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (AddressesClient client = AddressesClient.create()) {
