@@ -30,13 +30,12 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import com.google.cloud.speech.v1p1beta1.RecognitionConfig;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
 public class InfiniteStreamRecognizeTest {
+  private static final String COMMERCIAL_MONO_FILE = "resources/commercial_mono.wav";
   private ByteArrayOutputStream bout;
 
   @Before
@@ -48,18 +47,19 @@ public class InfiniteStreamRecognizeTest {
   }
 
   @Test
-  public void infiniteStreamingRecognize() throws Exception {
+  public void infiniteStreamingRecognizeTest() throws Exception {
     InfiniteStreamRecognize.putDataToSharedQueue(readAudioFile());
     InfiniteStreamRecognize.putDataToSharedQueue("exit".getBytes(StandardCharsets.UTF_8));
     InfiniteStreamRecognize.infiniteStreamingRecognize("en-US",
-            () -> {}, InfiniteStreamRecognize.getResponseObserver());
+            () -> {}, 16000, RecognitionConfig.AudioEncoding.LINEAR16);
     // wait responses from server
-    Thread.sleep(5000);
+    Thread.sleep(10000);
     assertThat(bout.toString().toLowerCase()).contains("hi i want to");
+    assertThat(bout.toString().toLowerCase()).contains("recognition was stopped");
   }
 
   private byte[] readAudioFile() throws UnsupportedAudioFileException, IOException {
-    File file = new File("resources/commercial_mono.wav");
+    File file = new File(COMMERCIAL_MONO_FILE);
     AudioInputStream stream = AudioSystem.getAudioInputStream(file);
     AudioFormat format = stream.getFormat();
     int length = (int) (stream.getFrameLength() * format.getFrameSize());

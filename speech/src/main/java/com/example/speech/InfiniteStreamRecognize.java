@@ -47,10 +47,6 @@ public class InfiniteStreamRecognize {
 
   private static final int STREAMING_LIMIT = 290000; // ~5 minutes
 
-  public static final String RED = "\033[0;31m";
-  public static final String GREEN = "\033[0;32m";
-  public static final String YELLOW = "\033[0;33m";
-
   // Creating shared object
   private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue<byte[]>();
   private static int BYTES_PER_BUFFER = 6400; // buffer size in bytes
@@ -68,7 +64,7 @@ public class InfiniteStreamRecognize {
   private static StreamController referenceToStreamController;
   private static ByteString tempByteString;
 
-  public static void main(String... args) {
+  public static void main(String... args) throws LineUnavailableException {
     InfiniteStreamRecognizeOptions options = InfiniteStreamRecognizeOptions.fromFlags(args);
     if (options == null) {
       // Could not parse.
@@ -76,8 +72,23 @@ public class InfiniteStreamRecognize {
       System.exit(1);
     }
 
+    // TODO(developer): Replace the variables before running the sample or use default
+    // the number of samples per second
+    int sampleRate = 16000;
+    // the number of bits in each sample
+    int sampleSizeInBits = 16;
+    // the number of channels (1 for mono, 2 for stereo, and so on)
+    int channels = 1;
+    // indicates whether the data is signed or unsigned
+    boolean signed = true;
+    // indicates whether the data for a single sample is stored in big-endian byte
+    // order (false means little-endian)
+    boolean bigEndian = false;
+
+    MicBuffer micBuffer = new MicBuffer(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
     try {
-      infiniteStreamingRecognize(options.langCode);
+      infiniteStreamingRecognize(options.langCode, micBuffer, sampleRate,
+              RecognitionConfig.AudioEncoding.LINEAR16);
     } catch (Exception e) {
       System.out.println("Exception caught: " + e);
     }
@@ -95,26 +106,23 @@ public class InfiniteStreamRecognize {
                 - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))));
   }
 
-  public static void infiniteStreamingRecognize(String languageCode) throws Exception {
-    infiniteStreamingRecognize(languageCode, new MicBuffer(), getResponseObserver());
-  }
-
   /** Performs infinite streaming speech recognition */
-  public static void infiniteStreamingRecognize(String languageCode,
-                                     Runnable micBuffer,
-                                     ResponseObserver<StreamingRecognizeResponse> responseObserver)
-                                     throws Exception {
+  public static void infiniteStreamingRecognize(String languageCode, Runnable micBuffer,
+                                                int sampleRateHertz,
+                                                RecognitionConfig.AudioEncoding encoding)
+          throws Exception {
     // Creating microphone input buffer thread
     Thread micThread = new Thread(micBuffer);
     try (SpeechClient client = SpeechClient.create()) {
-      ClientStream<StreamingRecognizeRequest> clientStream;
-      clientStream = client.streamingRecognizeCallable().splitCall(responseObserver);
+      ResponseObserver<StreamingRecognizeResponse> responseObserver = getResponseObserver();
+      ClientStream<StreamingRecognizeRequest> clientStream = client.streamingRecognizeCallable()
+              .splitCall(responseObserver);
 
       RecognitionConfig recognitionConfig =
           RecognitionConfig.newBuilder()
-              .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
+              .setEncoding(encoding)
               .setLanguageCode(languageCode)
-              .setSampleRateHertz(16000)
+              .setSampleRateHertz(sampleRateHertz)
               .build();
 
       StreamingRecognitionConfig streamingRecognitionConfig =
@@ -167,7 +175,6 @@ public class InfiniteStreamRecognize {
                     .setStreamingConfig(streamingRecognitionConfig)
                     .build();
 
-            System.out.println(YELLOW);
             System.out.printf("%d: RESTARTING REQUEST\n", restartCounter * STREAMING_LIMIT);
 
             startTime = System.currentTimeMillis();
@@ -215,7 +222,7 @@ public class InfiniteStreamRecognize {
 
             audioInput.add(tempByteString);
           }
-
+          Thread.sleep(100);
           clientStream.send(request);
         }
         clientStream.closeSend();
@@ -245,8 +252,7 @@ public class InfiniteStreamRecognize {
 
         SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
         if (result.getIsFinal()) {
-          System.out.print(GREEN);
-          System.out.print("\033[2K\r");
+          System.out.print("\r");
           System.out.printf(
                   "%s: %s [confidence: %.2f]\n",
                   convertMillisToDate(correctedTime),
@@ -255,8 +261,7 @@ public class InfiniteStreamRecognize {
           isFinalEndTime = resultEndTimeInMS;
           lastTranscriptWasFinal = true;
         } else {
-          System.out.print(RED);
-          System.out.print("\033[2K\r");
+          System.out.print("\r");
           System.out.printf(
                   "%s: %s", convertMillisToDate(correctedTime), alternative.getTranscript());
           lastTranscriptWasFinal = false;
@@ -264,7 +269,9 @@ public class InfiniteStreamRecognize {
         checkStopRecognitionFlag(alternative.getTranscript().getBytes(StandardCharsets.UTF_8));
       }
 
-      public void onComplete() {}
+      public void onComplete() {
+        System.out.println("Recognition was stopped");
+      }
 
       public void onError(Throwable t) {}
     };
@@ -273,7 +280,7 @@ public class InfiniteStreamRecognize {
   private static void checkStopRecognitionFlag(byte[] flag) {
     if (flag.length < 10) {
       stopRecognition = new String(flag).trim().equalsIgnoreCase("exit");
-      putDataToSharedQueue("stop".getBytes(StandardCharsets.UTF_8));
+      putDataToSharedQueue("exit".getBytes(StandardCharsets.UTF_8));
     }
   }
 
@@ -281,10 +288,10 @@ public class InfiniteStreamRecognize {
   static class MicBuffer implements Runnable {
     TargetDataLine targetDataLine;
 
-    public MicBuffer() throws LineUnavailableException {
-      // SampleRate:16000Hz, SampleSizeInBits: 16, Number of channels: 1, Signed: true,
-      // bigEndian: false
-      AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, false);
+    public MicBuffer(int sampleRate, int sampleSizeInBits,
+                     int channels, boolean signed, boolean bigEndian)
+            throws LineUnavailableException {
+      AudioFormat audioFormat = new AudioFormat(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
       DataLine.Info targetInfo =
               new Info(
                       TargetDataLine.class,
@@ -302,7 +309,6 @@ public class InfiniteStreamRecognize {
 
     @Override
     public void run() {
-      System.out.println(YELLOW);
       System.out.println("Start speaking...Say `exit` to stop");
       targetDataLine.start();
       byte[] data = new byte[BYTES_PER_BUFFER];
@@ -320,7 +326,8 @@ public class InfiniteStreamRecognize {
     try {
       sharedQueue.put(data.clone());
     } catch (InterruptedException e) {
-      System.out.println("Microphone input buffering interrupted : " + e.getMessage());
+      System.out.printf("Can't insert data to shared queue. Caused by : %s", e.getMessage());
+      throw new RuntimeException(e);
     }
   }
 }
