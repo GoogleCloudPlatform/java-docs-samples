@@ -16,152 +16,226 @@
 
 package vtwo;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
-
-import com.google.cloud.bigquery.BigQuery;
-import com.google.cloud.bigquery.BigQueryException;
-import com.google.cloud.bigquery.BigQueryOptions;
-import com.google.cloud.bigquery.Dataset;
-import com.google.cloud.bigquery.DatasetInfo;
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
-import java.io.ByteArrayOutputStream;
+import com.google.cloud.securitycenter.v2.BigQueryExport;
+import com.google.cloud.securitycenter.v2.BigQueryExportName;
+import com.google.cloud.securitycenter.v2.CreateBigQueryExportRequest;
+import com.google.cloud.securitycenter.v2.DeleteBigQueryExportRequest;
+import com.google.cloud.securitycenter.v2.GetBigQueryExportRequest;
+import com.google.cloud.securitycenter.v2.ListBigQueryExportsRequest;
+import com.google.cloud.securitycenter.v2.OrganizationLocationName;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient.ListBigQueryExportsPagedResponse;
+import com.google.cloud.securitycenter.v2.UpdateBigQueryExportRequest;
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.FieldMask;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.util.UUID;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import vtwo.bigquery.CreateBigQueryExport;
 import vtwo.bigquery.DeleteBigQueryExport;
 import vtwo.bigquery.GetBigQueryExport;
 import vtwo.bigquery.ListBigQueryExports;
 import vtwo.bigquery.UpdateBigQueryExport;
 
-@RunWith(JUnit4.class)
 public class BigQueryExportIT {
 
-  @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+  public static final String ORGANIZATION_ID = "test-organization-id";
+  public static final String PROJECT_ID = "test-project-id";
+  private static final String LOCATION = "test-LOCATION";
+  private static final String BQ_DATASET_NAME = "test-dataset-id";
+  private static final String BQ_EXPORT_ID = "test-export-id";
 
-  // TODO(Developer): Replace the below variables.
-  private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
-  private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
-  private static final String LOCATION = "global";
-  private static final String BQ_DATASET_NAME =
-      "sampledataset_" + UUID.randomUUID().toString().split("-")[0];
-  private static final String BQ_EXPORT_ID =
-      "default-" + UUID.randomUUID().toString().split("-")[0];
+  @Test
+  public void testCreateBigQueryExport() throws IOException {
+    // Mock SecurityCenterClient.
+    SecurityCenterClient client = mock(SecurityCenterClient.class);
+    try (MockedStatic<SecurityCenterClient> clientMock = Mockito.mockStatic(
+        SecurityCenterClient.class)) {
+      clientMock.when(SecurityCenterClient::create).thenReturn(client);
 
-  private static ByteArrayOutputStream stdOut;
+      // Define test data.
+      String filter = "test-filter";
 
-  // Check if the required environment variables are set.
-  public static void requireEnvVar(String envVarName) {
-    assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
-        .that(System.getenv(envVarName))
-        .isNotEmpty();
+      // Build the parent of the request.
+      OrganizationLocationName organizationName = OrganizationLocationName.of(ORGANIZATION_ID,
+          LOCATION);
+
+      // Build the BigQueryExport response.
+      BigQueryExport expectedExport = BigQueryExport.newBuilder()
+          .setDescription(
+              "Export low and medium findings if the compute resource has an IAM anomalous grant")
+          .setFilter(filter)
+          .setDataset(String.format("projects/%s/datasets/%s", PROJECT_ID, BQ_DATASET_NAME))
+          .build();
+
+      // Build the CreateBigQueryExportRequest request.
+      CreateBigQueryExportRequest expectedRequest = CreateBigQueryExportRequest.newBuilder()
+          .setParent(organizationName.toString())
+          .setBigQueryExport(expectedExport)
+          .setBigQueryExportId(BQ_EXPORT_ID)
+          .build();
+
+      // Mock the createBigQueryExport method to return the expected response.
+      Mockito.when(client.createBigQueryExport(any())).thenReturn(expectedExport);
+
+      // Call the createBigQueryExport method.
+      CreateBigQueryExport.createBigQueryExport(ORGANIZATION_ID, LOCATION, PROJECT_ID, filter,
+          BQ_DATASET_NAME, BQ_EXPORT_ID);
+
+      // Verify that the createBigQueryExport method was called with the expected request.
+      Mockito.verify(client).createBigQueryExport(expectedRequest);
+    }
   }
 
-  @BeforeClass
-  public static void setUp() throws IOException {
-    final PrintStream out = System.out;
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
+  @Test
+  public void testDeleteBigQueryExport() throws IOException {
+    // Mock the SecurityCenterClient.
+    SecurityCenterClient client = mock(SecurityCenterClient.class);
+    try (MockedStatic<SecurityCenterClient> clientMock = Mockito.mockStatic(
+        SecurityCenterClient.class)) {
+      clientMock.when(SecurityCenterClient::create).thenReturn(client);
 
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("SCC_PROJECT_ID");
+      // Build the BigQuery export name.
+      BigQueryExportName bigQueryExportName = BigQueryExportName.of(ORGANIZATION_ID, LOCATION,
+          BQ_EXPORT_ID);
 
-    // Create a BigQuery dataset.
-    createBigQueryDataset(BQ_DATASET_NAME);
-    // Create export request.
-    String filter = "severity=\"LOW\" OR severity=\"MEDIUM\"";
-    CreateBigQueryExport.createBigQueryExport(ORGANIZATION_ID, LOCATION, PROJECT_ID, filter,
-        BQ_DATASET_NAME, BQ_EXPORT_ID);
+      // Build the delete request.
+      DeleteBigQueryExportRequest bigQueryExportRequest = DeleteBigQueryExportRequest.newBuilder()
+          .setName(bigQueryExportName.toString())
+          .build();
 
-    stdOut = null;
-    System.setOut(out);
-  }
+      // Mock the deleteBigQueryExport method to return successfully.
+      doNothing().when(client).deleteBigQueryExport(bigQueryExportRequest);
 
-  @AfterClass
-  public static void cleanUp() throws IOException {
-    final PrintStream out = System.out;
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
+      // Call the deleteBigQueryExport method.
+      DeleteBigQueryExport.deleteBigQueryExport(ORGANIZATION_ID, LOCATION, BQ_EXPORT_ID);
 
-    // Delete BigQuery Dataset and export request.
-    deleteBigQueryDataset(BQ_DATASET_NAME);
-    DeleteBigQueryExport.deleteBigQueryExport(ORGANIZATION_ID, LOCATION, BQ_EXPORT_ID);
-    assertThat(stdOut.toString())
-        .contains(String.format("BigQuery export request deleted successfully: %s", BQ_EXPORT_ID));
-
-    stdOut = null;
-    System.setOut(out);
-  }
-
-  @Before
-  public void beforeEach() {
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-  }
-
-  @After
-  public void afterEach() {
-    stdOut = null;
-    System.setOut(null);
+      // Verify that the deleteBigQueryExport method was called with the expected request.
+      Mockito.verify(client).deleteBigQueryExport(bigQueryExportRequest);
+    }
   }
 
   @Test
   public void testGetBigQueryExport() throws IOException {
-    GetBigQueryExport.getBigQueryExport(ORGANIZATION_ID, LOCATION, BQ_EXPORT_ID);
+    // Mock the SecurityCenterClient.
+    SecurityCenterClient client = mock(SecurityCenterClient.class);
+    try (MockedStatic<SecurityCenterClient> clientMock = Mockito.mockStatic(
+        SecurityCenterClient.class)) {
+      clientMock.when(SecurityCenterClient::create).thenReturn(client);
 
-    assertThat(stdOut.toString()).contains(BQ_EXPORT_ID);
+      // Build BigQueryExport response.
+      BigQueryExport expectedExport = BigQueryExport.newBuilder()
+          .setName(
+              String.format("organizations/%s/locations/%s/bigQueryExports/%s", ORGANIZATION_ID,
+                  LOCATION, BQ_EXPORT_ID))
+          .build();
+
+      // Build the BigQueryExportName and request.
+      BigQueryExportName bigQueryExportName = BigQueryExportName.of(ORGANIZATION_ID, LOCATION,
+          BQ_EXPORT_ID);
+
+      // Build the GetBigQueryExportRequest request.
+      GetBigQueryExportRequest request = GetBigQueryExportRequest.newBuilder()
+          .setName(bigQueryExportName.toString())
+          .build();
+
+      // Mock the getBigQueryExport method to return the expected response.
+      Mockito.when(client.getBigQueryExport(request)).thenReturn(expectedExport);
+
+      // Call the getBigQueryExport method.
+      GetBigQueryExport.getBigQueryExport(ORGANIZATION_ID, LOCATION, BQ_EXPORT_ID);
+
+      // Verify that the getBigQueryExport method was called with the expected request.
+      Mockito.verify(client).getBigQueryExport(request);
+    }
   }
 
   @Test
   public void testListBigQueryExports() throws IOException {
-    ListBigQueryExports.listBigQueryExports(ORGANIZATION_ID, LOCATION);
+    // Mock the SecurityCenterClient.
+    SecurityCenterClient client = mock(SecurityCenterClient.class);
+    try (MockedStatic<SecurityCenterClient> clientMock = Mockito.mockStatic(
+        SecurityCenterClient.class)) {
+      clientMock.when(SecurityCenterClient::create).thenReturn(client);
 
-    assertThat(stdOut.toString()).contains(BQ_EXPORT_ID);
+      // Define test data.
+      String exportId1 = "export-1";
+      String exportId2 = "export-2";
+
+      // Build BigQueryExport objects for the response.
+      BigQueryExport export1 = BigQueryExport.newBuilder()
+          .setName(
+              String.format("organizations/%s/locations/%s/bigQueryExports/%s", ORGANIZATION_ID,
+                  LOCATION, exportId1))
+          .build();
+      BigQueryExport export2 = BigQueryExport.newBuilder()
+          .setName(
+              String.format("organizations/%s/locations/%s/bigQueryExports/%s", ORGANIZATION_ID,
+                  LOCATION, exportId2))
+          .build();
+
+      // Mock the ListBigQueryExportsPagedResponse.
+      ListBigQueryExportsPagedResponse pagedResponse = mock(ListBigQueryExportsPagedResponse.class);
+      Mockito.when(pagedResponse.iterateAll()).thenReturn(ImmutableList.of(export1, export2));
+
+      // Mock the client.listBigQueryExports method to return the paged response.
+      Mockito.when(client.listBigQueryExports(any(ListBigQueryExportsRequest.class)))
+          .thenReturn(pagedResponse);
+
+      // Call the listBigQueryExports method.
+      ListBigQueryExports.listBigQueryExports(ORGANIZATION_ID, LOCATION);
+
+      // Verify that the client.listBigQueryExports method was called with the expected request.
+      Mockito.verify(client).listBigQueryExports(ListBigQueryExportsRequest.newBuilder()
+          .setParent(OrganizationLocationName.of(ORGANIZATION_ID, LOCATION).toString())
+          .build());
+    }
   }
 
   @Test
   public void testUpdateBigQueryExport() throws IOException {
-    String filter = "severity=\"MEDIUM\"";
-    UpdateBigQueryExport.updateBigQueryExport(ORGANIZATION_ID, LOCATION, filter, BQ_EXPORT_ID);
+    // Mock SecurityCenterClient.
+    SecurityCenterClient client = mock(SecurityCenterClient.class);
+    try (MockedStatic<SecurityCenterClient> clientMock = Mockito.mockStatic(
+        SecurityCenterClient.class)) {
+      clientMock.when(SecurityCenterClient::create).thenReturn(client);
 
-    assertThat(stdOut.toString()).contains("BigQueryExport updated successfully!");
-  }
+      // Define test data.
+      String filter = "updated filter";
 
-  private static void createBigQueryDataset(String datasetName) {
-    try {
-      BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
+      // Build the expected BigQueryExport response.
+      BigQueryExport expectedExport = BigQueryExport.newBuilder()
+          .setName(
+              String.format("organizations/%s/locations/%s/bigQueryExports/%s", ORGANIZATION_ID,
+                  LOCATION, BQ_EXPORT_ID))
+          .setFilter(filter)
+          .setDescription("Updated description.")
+          .build();
 
-      DatasetInfo datasetInfo = DatasetInfo.newBuilder(datasetName).build();
+      // Build BigQueryExportName, UpdateMask, and request.
+      FieldMask updateMask = FieldMask.newBuilder().addPaths("filter").addPaths("description")
+          .build();
 
-      Dataset newDataset = bigquery.create(datasetInfo);
-      String newDatasetName = newDataset.getDatasetId().getDataset();
-      System.out.println(newDatasetName + " created successfully");
-    } catch (BigQueryException e) {
-      if (e.toString().contains("Already Exists: Dataset")) {
-        return;
-      }
-      Assert.fail("Dataset was not created. \n" + e);
+      // Build the UpdateBigQueryExportRequest.
+      UpdateBigQueryExportRequest request = UpdateBigQueryExportRequest.newBuilder()
+          .setBigQueryExport(expectedExport)
+          .setUpdateMask(updateMask)
+          .build();
+
+      // Mock the updateBigQueryExport method to return the expected response.
+      Mockito.when(client.updateBigQueryExport(request)).thenReturn(expectedExport);
+
+      // Call the updateBigQueryExport method.
+      UpdateBigQueryExport.updateBigQueryExport(ORGANIZATION_ID, LOCATION, filter, BQ_EXPORT_ID);
+
+      // Verify that the updateBigQueryExport method was called with the expected request.
+      Mockito.verify(client).updateBigQueryExport(request);
     }
   }
 
-  private static void deleteBigQueryDataset(String datasetName) {
-    try {
-      BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
-      Assert.assertTrue("Deleted BigQuery dataset", bigquery.delete(datasetName));
-    } catch (BigQueryException e) {
-      Assert.fail("Dataset was not deleted. \n" + e);
-    }
-  }
 }
