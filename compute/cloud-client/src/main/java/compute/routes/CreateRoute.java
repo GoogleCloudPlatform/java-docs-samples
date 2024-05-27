@@ -19,6 +19,7 @@ package compute.routes;
 // [START compute_route_create]
 
 import com.google.cloud.compute.v1.InsertRouteRequest;
+import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Route;
 import com.google.cloud.compute.v1.RoutesClient;
 import java.io.IOException;
@@ -39,8 +40,13 @@ public class CreateRoute {
     createRoute(projectId, routeName);
   }
 
-  public static void createRoute(String projectId, String routeName)
+  // Create route for a project.
+  public static Operation.Status createRoute(String projectId, String routeName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `routesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
     try (RoutesClient routesClient = RoutesClient.create()) {
       String nextHopGateway =
               String.format("projects/%s/global/gateways/default-internet-gateway", projectId);
@@ -58,7 +64,8 @@ public class CreateRoute {
               .setRouteResource(route)
               .build();
 
-      routesClient.insertCallable().futureCall(request).get(30, TimeUnit.SECONDS);
+      return routesClient.insertCallable().futureCall(request)
+              .get(30, TimeUnit.SECONDS).getStatus();
     }
   }
 }

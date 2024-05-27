@@ -18,6 +18,7 @@ package compute.routes;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Route;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.IOException;
@@ -62,7 +63,7 @@ public class RoutesIT {
   @Test
   public void stage1_CreateRoute()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateRoute.createRoute(PROJECT_ID, ROUTE_NAME);
+    Assert.assertEquals(Operation.Status.DONE, CreateRoute.createRoute(PROJECT_ID, ROUTE_NAME));
   }
 
   @Test

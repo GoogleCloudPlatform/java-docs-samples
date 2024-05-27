@@ -39,8 +39,13 @@ public class DeleteRoute {
     deleteRoute(projectId, routeName);
   }
 
+  // Deletes a route from a project.
   public static void deleteRoute(String projectId, String routeName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `routesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
     try (RoutesClient routesClient = RoutesClient.create()) {
       DeleteRouteRequest request = DeleteRouteRequest.newBuilder()
               .setProject(projectId)
