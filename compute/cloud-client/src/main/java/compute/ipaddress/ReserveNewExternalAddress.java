@@ -24,7 +24,6 @@ import com.google.cloud.compute.v1.GlobalAddressesClient;
 import com.google.cloud.compute.v1.InsertAddressRequest;
 import com.google.cloud.compute.v1.InsertGlobalAddressRequest;
 import com.google.common.collect.Lists;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
