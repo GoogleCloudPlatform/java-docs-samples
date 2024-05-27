@@ -16,14 +16,14 @@
 
 package compute.ipaddress;
 
-public enum IPType {
+public enum IpType {
   INTERNAL("internal"),
   EXTERNAL("external"),
   IP_V6("ipv6");
 
   private final String type;
 
-  IPType(String type) {
+  IpType(String type) {
     this.type = type;
   }
 

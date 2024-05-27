@@ -82,7 +82,7 @@ public class AssignStaticExistingVm {
 
       // Add a new access configuration with the new IP
       AccessConfig newAccessConfig = AccessConfig.newBuilder()
-// leave this field undefined to use an IP from a shared ephemeral IP address pool
+              // leave this field undefined to use an IP from a shared ephemeral IP address pool
               // .setNatIP(ipAddress)
               .setType(AccessConfig.Type.ONE_TO_ONE_NAT.name())
               .setName("external-nat")

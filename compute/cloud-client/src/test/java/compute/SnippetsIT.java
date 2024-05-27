@@ -233,6 +233,8 @@ public class SnippetsIT {
 
     // Disable usage exports.
     boolean isDisabled = compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
+    // Wait for the settings to take place.
+    TimeUnit.SECONDS.sleep(2);
     Assert.assertFalse(isDisabled);
   }
 

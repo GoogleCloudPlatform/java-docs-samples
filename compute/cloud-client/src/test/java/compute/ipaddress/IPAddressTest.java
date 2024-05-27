@@ -18,8 +18,8 @@ package compute.ipaddress;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.AccessConfig;
 import com.google.cloud.compute.v1.Address;
 import com.google.cloud.compute.v1.AddressesClient;
@@ -120,7 +120,7 @@ public class IPAddressTest {
 
   @Test
   public void getVMAddressInternalTest() throws IOException {
-    List<String> vmAddress = GetVmAddress.getVmAddress(PROJECT_ID, MACHINE_NAME, IPType.INTERNAL);
+    List<String> vmAddress = GetVmAddress.getVmAddress(PROJECT_ID, MACHINE_NAME, IpType.INTERNAL);
     Assert.assertNotNull(vmAddress);
     Assert.assertFalse(vmAddress.isEmpty());
     Assert.assertTrue(vmAddress.get(0)
@@ -131,7 +131,7 @@ public class IPAddressTest {
   public void getVMAddressExternalTest()
           throws IOException {
     List<String> vmAddress = GetVmAddress
-            .getVmAddress(PROJECT_ID, EXTERNAL_NEW_VM_INSTANCE_2, IPType.EXTERNAL);
+            .getVmAddress(PROJECT_ID, EXTERNAL_NEW_VM_INSTANCE_2, IpType.EXTERNAL);
     Assert.assertNotNull(vmAddress);
     Assert.assertFalse(vmAddress.isEmpty());
     Assert.assertTrue(vmAddress.get(0)
@@ -140,7 +140,7 @@ public class IPAddressTest {
 
   @Test
   public void getVMAddressIPV6Test() throws IOException {
-    List<String> vmAddress = GetVmAddress.getVmAddress(PROJECT_ID, MACHINE_NAME, IPType.IP_V6);
+    List<String> vmAddress = GetVmAddress.getVmAddress(PROJECT_ID, MACHINE_NAME, IpType.IP_V6);
     Assert.assertNotNull(vmAddress);
     Assert.assertTrue(vmAddress.isEmpty());
   }

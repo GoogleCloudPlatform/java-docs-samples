@@ -53,7 +53,8 @@ public class ReserveNewExternalAddress {
 
   // Reserves a new external IP address in the specified project and region.
   public static List<Address> reserveNewExternalIpAddress(String projectId, String addressName,
-                                                          boolean ipV6, boolean isPremium, String region)
+                                                          boolean ipV6, boolean isPremium,
+                                                          String region)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     String ipVersion = ipV6 ? "IPV6" : "IPV4";

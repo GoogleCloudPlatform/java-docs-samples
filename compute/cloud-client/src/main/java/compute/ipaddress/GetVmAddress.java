@@ -36,33 +36,33 @@ public class GetVmAddress {
     // Instance ID of the Cloud project you want to use.
     String instanceId = "your-instance-id";
     // IPType you want to search.
-    IPType ipType = IPType.INTERNAL;
+    IpType ipType = IpType.INTERNAL;
 
     getVmAddress(projectId, instanceId, ipType);
   }
 
   // Retrieves the specified type of IP address
   // (ipv6, internal or external) of a specified Compute Engine instance.
-  public static List<String> getVmAddress(String projectId, String instanceId, IPType ipType)
+  public static List<String> getVmAddress(String projectId, String instanceId, IpType ipType)
           throws IOException {
     List<String> result = new ArrayList<>();
     Instance instance = getInstance(projectId, instanceId);
 
     for (NetworkInterface networkInterface : instance.getNetworkInterfacesList()) {
-      if (ipType == IPType.EXTERNAL) {
+      if (ipType == IpType.EXTERNAL) {
         for (AccessConfig accessConfig : networkInterface.getAccessConfigsList()) {
           if (accessConfig.getType().equals(AccessConfig.Type.ONE_TO_ONE_NAT.name())) {
             result.add(accessConfig.getNatIP());
           }
         }
-      } else if (ipType == IPType.IP_V6) {
+      } else if (ipType == IpType.IP_V6) {
         for (AccessConfig accessConfig : networkInterface.getAccessConfigsList()) {
           if (accessConfig.hasExternalIpv6()
                   && accessConfig.getType().equals(AccessConfig.Type.DIRECT_IPV6.name())) {
             result.add(accessConfig.getExternalIpv6());
           }
         }
-      } else if (ipType == IPType.INTERNAL) {
+      } else if (ipType == IpType.INTERNAL) {
         result.add(networkInterface.getNetworkIP());
       }
     }
