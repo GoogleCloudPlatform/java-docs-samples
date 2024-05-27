@@ -44,19 +44,14 @@ import java.util.stream.IntStream;
 
 public abstract class Util {
   // Cleans existing test resources if any.
-  // If the project contains too many instances, use "filter" when listing resources
+  // If the project contains too many instances, use "filter" when listing
+  // resources
   // and delete the listed resources based on the timestamp.
 
   private static final int DELETION_THRESHOLD_TIME_HOURS = 24;
-  private static final String[] ZONES;
-
-  static {
-    ZONES = new String[]{
-        "us-central1-a",
-        "us-west1-a",
-        "asia-south1-a",
-    };
-  }
+  // comma separate list of zone names
+  private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
+  private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
 
   // Delete templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
@@ -121,9 +116,9 @@ public abstract class Util {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
       ListInstanceTemplatesRequest listInstanceTemplatesRequest =
           ListInstanceTemplatesRequest.newBuilder()
-              .setProject(projectId)
-              .setFilter(String.format("name:%s", instanceTemplatePrefix))
-              .build();
+          .setProject(projectId)
+          .setFilter(String.format("name:%s", instanceTemplatePrefix))
+          .build();
 
       return instanceTemplatesClient.list(listInstanceTemplatesRequest);
     }
@@ -171,7 +166,19 @@ public abstract class Util {
 
   // Returns a random zone.
   public static String getZone() {
-    return ZONES[new Random().nextInt(ZONES.length)];
+    String zones = getEnvVar(TEST_ZONES_NAME, DEFAULT_ZONES);
+    String[] parsedZones = zones.split(",");
+    if (parsedZones.length == 0) {
+      return "unknown";
+    }
+    return parsedZones[new Random().nextInt(parsedZones.length)].trim();
   }
 
+  public static String getEnvVar(String envVarName, String defaultValue) {
+    String val = System.getenv(envVarName);
+    if (val == null || val.trim() == "") {
+      return defaultValue;
+    }
+    return val;
+  }
 }
