@@ -18,6 +18,7 @@ package com.example.speech;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.speech.v1p1beta1.RecognitionConfig;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -29,7 +30,6 @@ import java.util.concurrent.TimeoutException;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import com.google.cloud.speech.v1p1beta1.RecognitionConfig;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import org.junit.Before;
 import org.junit.Test;
