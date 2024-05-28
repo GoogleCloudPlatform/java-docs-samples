@@ -44,9 +44,7 @@ public class CreateRoute {
   public static Operation.Status createRoute(String projectId, String routeName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `routesClient.close()` method on the client to safely
-    // clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (RoutesClient routesClient = RoutesClient.create()) {
       String nextHopGateway =
               String.format("projects/%s/global/gateways/default-internet-gateway", projectId);

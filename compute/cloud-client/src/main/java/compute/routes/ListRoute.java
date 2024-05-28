@@ -38,9 +38,7 @@ public class ListRoute {
   // Lists routes from a project.
   public static List<Route> listRoutes(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `routesClient.close()` method on the client to safely
-    // clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (RoutesClient routesClient = RoutesClient.create()) {
       ListRoutesRequest request = ListRoutesRequest.newBuilder()
               .setProject(projectId)
