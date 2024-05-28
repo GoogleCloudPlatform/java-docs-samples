@@ -291,7 +291,8 @@ public class InfiniteStreamRecognize {
     public MicBuffer(int sampleRate, int sampleSizeInBits,
                      int channels, boolean signed, boolean bigEndian)
             throws LineUnavailableException {
-      AudioFormat audioFormat = new AudioFormat(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
+      AudioFormat audioFormat
+              = new AudioFormat(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
       DataLine.Info targetInfo =
               new Info(
                       TargetDataLine.class,

@@ -29,8 +29,8 @@ import java.util.concurrent.TimeoutException;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import com.google.cloud.speech.v1p1beta1.RecognitionConfig;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import org.junit.Before;
 import org.junit.Test;
 
