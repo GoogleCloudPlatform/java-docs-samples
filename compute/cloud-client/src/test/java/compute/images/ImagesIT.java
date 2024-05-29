@@ -18,13 +18,6 @@ package compute.images;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import com.google.cloud.compute.v1.DeprecationStatus;
 import com.google.cloud.compute.v1.GuestOsFeature;
 import com.google.cloud.compute.v1.Image;
@@ -33,6 +26,13 @@ import compute.disks.CreateDiskFromImage;
 import compute.disks.CreateSnapshot;
 import compute.disks.DeleteDisk;
 import compute.disks.DeleteSnapshot;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -49,13 +49,13 @@ import org.junit.runners.MethodSorters;
 public class ImagesIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private final static String IMAGE_FROM_IMAGE_NAME =
+  private final String IMAGE_FROM_IMAGE_NAME =
           "image-name-" + UUID.randomUUID().toString().substring(0, 8);
-  private final static String IMAGE_FROM_SNAPSHOT_NAME =
+  private final String IMAGE_FROM_SNAPSHOT_NAME =
           "image-name-" + UUID.randomUUID().toString().substring(0, 8);
-  private final static String DISK_NAME =
+  private final String DISK_NAME =
           "test-disk-" + UUID.randomUUID().toString().substring(0, 8);
-  private final static String SNAPSHOT_NAME =
+  private final String SNAPSHOT_NAME =
           "test-snapshot-" + UUID.randomUUID().toString().substring(0, 8);
   private static final String ZONE = "europe-west2-c";
 
