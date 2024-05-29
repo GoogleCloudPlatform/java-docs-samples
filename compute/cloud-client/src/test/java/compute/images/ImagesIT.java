@@ -49,14 +49,10 @@ import org.junit.runners.MethodSorters;
 public class ImagesIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private final String IMAGE_FROM_IMAGE_NAME =
-          "image-name-" + UUID.randomUUID().toString().substring(0, 8);
-  private final String IMAGE_FROM_SNAPSHOT_NAME =
-          "image-name-" + UUID.randomUUID().toString().substring(0, 8);
-  private final String DISK_NAME =
-          "test-disk-" + UUID.randomUUID().toString().substring(0, 8);
-  private final String SNAPSHOT_NAME =
-          "test-snapshot-" + UUID.randomUUID().toString().substring(0, 8);
+  private static String IMAGE_FROM_IMAGE_NAME;
+  private static String IMAGE_FROM_SNAPSHOT_NAME;
+  private static String DISK_NAME;
+  private static String SNAPSHOT_NAME;
   private static final String ZONE = "europe-west2-c";
 
   // Check if the required environment variables are set.
@@ -70,6 +66,11 @@ public class ImagesIT {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
+    IMAGE_FROM_IMAGE_NAME = "image-name-" + UUID.randomUUID().toString().substring(0, 8);
+    IMAGE_FROM_SNAPSHOT_NAME = "image-name-" + UUID.randomUUID().toString().substring(0, 8);
+    DISK_NAME = "test-disk-" + UUID.randomUUID().toString().substring(0, 8);
+    SNAPSHOT_NAME = "test-snapshot-" + UUID.randomUUID().toString().substring(0, 8);
 
     Image imageFromFamily = GetImageFromFamily.getImageFromFamily("debian-cloud", "debian-11");
     CreateDiskFromImage.createDiskFromImage(PROJECT_ID, ZONE, DISK_NAME,
