@@ -71,6 +71,10 @@ public class ApacheIcebergIT {
 
 
   private void createIcebergTable(Catalog catalog, TableIdentifier tableId) {
+
+    // This schema represents an Iceberg table schema. It needs to match the
+    // org.apache.beam.sdk.schemas.Schema that is defined in ApacheIcebergWrite. However, these
+    // are unrelated types so there isn't a straightforward conversion from one to the other.
     var schema = new Schema(
         NestedField.required(1, "id", Types.LongType.get()),
         NestedField.optional(2, "name", Types.StringType.get()));
