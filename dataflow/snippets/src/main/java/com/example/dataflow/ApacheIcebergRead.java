@@ -17,6 +17,7 @@
 package com.example.dataflow;
 
 // [START dataflow_apache_iceberg_read]
+import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
@@ -27,9 +28,10 @@ import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.values.PCollectionRowTuple;
 import org.apache.beam.sdk.values.TypeDescriptors;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.ImmutableMap;
 
 public class ApacheIcebergRead {
+
+  static final String CATALOG_TYPE = "hadoop";
 
   public interface Options extends PipelineOptions {
     @Description("The URI of the Apache Iceberg warehouse location")
@@ -41,25 +43,40 @@ public class ApacheIcebergRead {
     String getOutputPath();
 
     void setOutputPath(String value);
+
+    @Description("The name of the Apache Iceberg catalog")
+    String getCatalogName();
+
+    void setCatalogName(String value);
+
+    @Description("The name of the table to write to")
+    String getTableName();
+
+    void setTableName(String value);
   }
 
   public static void main(String[] args) {
+
+    // Parse the pipeline options passed into the application. Example:
+    //   --runner=DirectRunner --warehouseLocation=$LOCATION --catalogName=$CATALOG \
+    //   -tableName= $TABLE_NAME --outputPath=$OUTPUT_FILE
+    // For more information, see https://beam.apache.org/documentation/programming-guide/#configuring-pipeline-options
     Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
     Pipeline pipeline = Pipeline.create(options);
 
     // Configure the Iceberg source I/O
     Map catalogConfig = ImmutableMap.<String, Object>builder()
-        .put("catalog_name", "local")
+        .put("catalog_name", options.getCatalogName())
         .put("warehouse_location", options.getWarehouseLocation())
-        .put("catalog_type", "hadoop")
+        .put("catalog_type", CATALOG_TYPE)
         .build();
 
     ImmutableMap<String, Object> config = ImmutableMap.<String, Object>builder()
-        .put("table", "db.table1")
+        .put("table", options.getTableName())
         .put("catalog_config", catalogConfig)
         .build();
 
-    // Build the pipeline
+    // Build the pipeline.
     PCollectionRowTuple.empty(pipeline).apply(
             Managed.read(Managed.ICEBERG)
                 .withConfig(config)

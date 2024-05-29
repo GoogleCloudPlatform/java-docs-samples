@@ -18,14 +18,13 @@ package com.example.dataflow;
 
 import static org.junit.Assert.assertTrue;
 
+import com.google.common.collect.ImmutableMap;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.ImmutableList;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.ImmutableMap;
+import java.util.UUID;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.iceberg.CatalogProperties;
@@ -50,25 +49,28 @@ import org.apache.iceberg.types.Types;
 import org.apache.iceberg.types.Types.NestedField;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 public class ApacheIcebergIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  @Rule
-  public TemporaryFolder temporaryFolder = new TemporaryFolder();
-  private String location;
+
+  private static final String CATALOG_NAME = "local";
+  private static final String TABLE_NAME = "table1";
+  private static final TableIdentifier TABLE_IDENTIFIER = TableIdentifier.of(TABLE_NAME);
+
+  // The output file that the Dataflow pipeline writes.
+  private static final String OUTPUT_FILE_NAME_PREFIX = UUID.randomUUID().toString();
+  private static final String OUTPUT_FILE_NAME = OUTPUT_FILE_NAME_PREFIX + "-00000-of-00001.txt";
 
   private Configuration hadoopConf = new Configuration();
+  private java.nio.file.Path warehouseDirectory;
+  private String warehouseLocation;
   private Catalog catalog;
-  private static final TableIdentifier tableId = TableIdentifier.of("db", "table1");
   private Table table;
 
-  private static final String ouputFileName = "output-00000-of-00001.txt";
 
-  private void createIcebergTable(Catalog catalog, TableIdentifier tableId) throws IOException {
+  private void createIcebergTable(Catalog catalog, TableIdentifier tableId) {
     var schema = new Schema(
         NestedField.required(1, "id", Types.LongType.get()),
         NestedField.optional(2, "name", Types.StringType.get()));
@@ -76,16 +78,13 @@ public class ApacheIcebergIT {
     table = catalog.createTable(tableId, schema);
   }
 
-  private void writeRecords()
+  private void writeTableRecord()
       throws IOException {
     GenericRecord record = GenericRecord.create(table.schema());
-    ImmutableList<Record> records =
-        ImmutableList.of(
-            record.copy(ImmutableMap.of("id", 0L, "name", "Person-0")),
-            record.copy(ImmutableMap.of("id", 1L, "name", "Person-1")),
-            record.copy(ImmutableMap.of("id", 2L, "name", "Person-2")));
+    record.setField("id", 0L);
+    record.setField("name", "Person-0");
 
-    Path path = new Path(location, "file1.parquet");
+    Path path = new Path(warehouseLocation, "file1.parquet");
 
     FileAppender<Record> appender =
         Parquet.write(HadoopOutputFile.fromPath(path, hadoopConf))
@@ -93,7 +92,7 @@ public class ApacheIcebergIT {
             .schema(table.schema())
             .overwrite()
             .build();
-    appender.addAll(records);
+    appender.add(record);
     appender.close();
 
     DataFile dataFile = DataFiles.builder(PartitionSpec.unpartitioned())
@@ -112,22 +111,22 @@ public class ApacheIcebergIT {
     out = new PrintStream(bout);
     System.setOut(out);
 
-    // Create an Apache Iceberg catalog with a table and write some test data.
-    File warehouseFolder = temporaryFolder.newFolder();
-    location = "file:" + warehouseFolder.toString();
+    // Create an Apache Iceberg catalog with a table.
+    warehouseDirectory = Files.createTempDirectory("test-warehouse");
+    warehouseLocation = "file:" + warehouseDirectory.toString();
+    System.out.println(warehouseLocation);
     catalog =
         CatalogUtil.loadCatalog(
             CatalogUtil.ICEBERG_CATALOG_HADOOP,
-            "local",
-            ImmutableMap.of(CatalogProperties.WAREHOUSE_LOCATION, location),
+            CATALOG_NAME,
+            ImmutableMap.of(CatalogProperties.WAREHOUSE_LOCATION, warehouseLocation),
             hadoopConf);
-
-    createIcebergTable(catalog, tableId);
+    createIcebergTable(catalog, TABLE_IDENTIFIER);
   }
 
   @After
   public void tearDown() throws IOException {
-    Files.deleteIfExists(Paths.get(ouputFileName));
+    Files.deleteIfExists(Paths.get(OUTPUT_FILE_NAME));
     System.setOut(null);
   }
 
@@ -137,11 +136,13 @@ public class ApacheIcebergIT {
     ApacheIcebergWrite.main(
         new String[] {
             "--runner=DirectRunner",
-            "--warehouseLocation=" + location
+            "--warehouseLocation=" + warehouseLocation,
+            "--catalogName=" + CATALOG_NAME,
+            "--tableName=" + TABLE_NAME
         });
 
     // Verify that the pipeline wrote records to the table.
-    Table table = catalog.loadTable(tableId);
+    Table table = catalog.loadTable(TABLE_IDENTIFIER);
     CloseableIterable<Record> records = IcebergGenerics.read(table)
         .build();
     for (Record r : records) {
@@ -157,20 +158,20 @@ public class ApacheIcebergIT {
   @Test
   public void testApacheIcebergRead() throws IOException {
     // Seed the Apache Iceberg table with data.
-    writeRecords();
+    writeTableRecord();
 
     // Run the Dataflow pipeline.
     ApacheIcebergRead.main(
         new String[] {
             "--runner=DirectRunner",
-            "--warehouseLocation=" + location,
-            "--outputPath=output"
+            "--warehouseLocation=" + warehouseLocation,
+            "--catalogName=" + CATALOG_NAME,
+            "--tableName=" + TABLE_NAME,
+            "--outputPath=" + OUTPUT_FILE_NAME_PREFIX
         });
 
     // Verify the pipeline wrote the table data to a local file.
-    String output = Files.readString(Paths.get(ouputFileName));
+    String output = Files.readString(Paths.get(OUTPUT_FILE_NAME));
     assertTrue(output.contains("0:Person-0"));
-    assertTrue(output.contains("1:Person-1"));
-    assertTrue(output.contains("2:Person-2"));
   }
 }

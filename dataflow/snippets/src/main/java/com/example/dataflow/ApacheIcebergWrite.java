@@ -17,6 +17,7 @@
 package com.example.dataflow;
 
 // [START dataflow_apache_iceberg_write]
+import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,6 @@ import org.apache.beam.sdk.schemas.Schema;
 import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.sdk.transforms.JsonToRow;
 import org.apache.beam.sdk.values.PCollectionRowTuple;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.ImmutableMap;
 
 public class ApacheIcebergWrite {
   static final List<String> TABLE_ROWS = Arrays.asList(
@@ -38,38 +38,56 @@ public class ApacheIcebergWrite {
       "{\"id\":2, \"name\":\"Charles\"}"
   );
 
+  static final String CATALOG_TYPE = "hadoop";
+
+  // The schema for the table rows.
+  public static final Schema SCHEMA = new Schema.Builder()
+      .addStringField("name")
+      .addInt64Field("id")
+      .build();
+
   public interface Options extends PipelineOptions {
     @Description("The URI of the Apache Iceberg warehouse location")
     String getWarehouseLocation();
 
     void setWarehouseLocation(String value);
+
+    @Description("The name of the Apache Iceberg catalog")
+    String getCatalogName();
+
+    void setCatalogName(String value);
+
+    @Description("The name of the table to write to")
+    String getTableName();
+
+    void setTableName(String value);
   }
 
   public static void main(String[] args) {
-    // Create a pipeline
+
+    // Parse the pipeline options passed into the application. Example:
+    //   --runner=DirectRunner --warehouseLocation=$LOCATION --catalogName=$CATALOG \
+    //   --tableName= $TABLE_NAME
+    // For more information, see https://beam.apache.org/documentation/programming-guide/#configuring-pipeline-options
     Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
     Pipeline pipeline = Pipeline.create(options);
 
     // Configure the Iceberg source I/O
     Map catalogConfig = ImmutableMap.<String, Object>builder()
-        .put("catalog_name", "local")
+        .put("catalog_name", options.getCatalogName())
         .put("warehouse_location", options.getWarehouseLocation())
-        .put("catalog_type", "hadoop")
+        .put("catalog_type", CATALOG_TYPE)
         .build();
 
     ImmutableMap<String, Object> config = ImmutableMap.<String, Object>builder()
-        .put("table", "db.table1")
+        .put("table", options.getTableName())
         .put("catalog_config", catalogConfig)
         .build();
 
-    Schema schema = new Schema.Builder()
-        .addStringField("name")
-        .addInt64Field("id")
-        .build();
-
+    // Build the pipeline.
     var input = pipeline
         .apply(Create.of(TABLE_ROWS))
-        .apply(JsonToRow.withSchema(schema));
+        .apply(JsonToRow.withSchema(SCHEMA));
 
     PCollectionRowTuple.of("input", input).apply(
         Managed.write(Managed.ICEBERG)
