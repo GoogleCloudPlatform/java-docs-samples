@@ -25,6 +25,9 @@ import com.google.cloud.compute.v1.InstancesClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -185,4 +188,28 @@ public class InstanceTemplatesIT {
     assertThat(stdOut.toString()).contains(TEMPLATE_NAME_WITH_SUBNET);
   }
 
+  @Test
+  public void testCreateInstanceBulkInsert() {
+    List<Instance> instances = new ArrayList<>();
+    try {
+      String namePattern = "i-##-" + UUID.randomUUID().toString().replace("-", "").substring(0, 5);
+      instances = CreateInstanceBulkInsert
+              .bulkInsertInstance(PROJECT_ID, DEFAULT_ZONE, TEMPLATE_NAME,
+                      3, namePattern, 3, new HashMap<>());
+      Assert.assertEquals(3, instances.size());
+      Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains("i-")));
+    } catch (Exception e) {
+      System.err.println(e.getCause().toString());
+      Assert.fail();
+    } finally {
+      for (Instance instance : instances) {
+        try {
+          DeleteInstance.deleteInstance(PROJECT_ID, DEFAULT_ZONE, instance.getName());
+        } catch (Exception e) {
+          System.err.printf("Can't delete instance - %s. Cause by {%s}",
+                  instance.getName(), e.getMessage());
+        }
+      }
+    }
+  }
 }
