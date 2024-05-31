@@ -106,6 +106,8 @@ public class CreateInstanceBulkInsert {
               .setFilter(createFilter(labels))
               .build();
 
+      // wait server update
+      Thread.sleep(10000);
       return Lists.newArrayList(client.list(build).iterateAll());
     }
   }
