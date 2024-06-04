@@ -19,12 +19,9 @@ package vertexai.gemini;
 // [START aiplatform_gemini_token_count]
 // [START generativeaionvertexai_gemini_token_count_advanced]
 import com.google.cloud.vertexai.VertexAI;
-import com.google.cloud.vertexai.api.Content;
 import com.google.cloud.vertexai.api.CountTokensResponse;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
-import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
-import com.google.cloud.vertexai.generativeai.PartMaker;
 import java.io.IOException;
 // [END aiplatform_gemini_token_count]
 // [END generativeaionvertexai_gemini_token_count_advanced]
@@ -37,7 +34,6 @@ public class GetTokenCount {
     String modelName = "gemini-1.5-flash-001";
 
     getTokenCount(projectId, location, modelName);
-    getMediaTokenCount(projectId, location, modelName);
   }
 
   // [START aiplatform_gemini_token_count]
@@ -69,26 +65,4 @@ public class GetTokenCount {
     }
   }
   // [END aiplatform_gemini_token_count]
-
-  // [START generativeaionvertexai_gemini_token_count_advanced]
-  public static int getMediaTokenCount(String projectId, String location, String modelName)
-      throws IOException {
-    try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      GenerativeModel model = new GenerativeModel(modelName, vertexAI);
-
-      Content content = ContentMaker.fromMultiModalData(
-          "Provide a description of the video.",
-          PartMaker.fromMimeTypeAndData(
-              "video/mp4", "gs://cloud-samples-data/generative-ai/video/pixel8.mp4")
-      );
-
-      CountTokensResponse response = model.countTokens(content);
-
-      int tokenCount = response.getTotalTokens();
-      System.out.println("Token count: " + tokenCount);
-
-      return tokenCount;
-    }
-  }
-  // [END generativeaionvertexai_gemini_token_count_advanced]
 }

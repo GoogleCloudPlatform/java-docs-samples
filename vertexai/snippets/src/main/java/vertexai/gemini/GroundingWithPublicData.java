@@ -16,30 +16,35 @@
 
 package vertexai.gemini;
 
-// [START generativeaionvertexai_grounding_private_data_basic]
 // [START generativeaionvertexai_grounding_public_data_basic]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.GoogleSearchRetrieval;
 import com.google.cloud.vertexai.api.GroundingMetadata;
-import com.google.cloud.vertexai.api.Retrieval;
 import com.google.cloud.vertexai.api.Tool;
-import com.google.cloud.vertexai.api.VertexAISearch;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import java.io.IOException;
 import java.util.Collections;
-// [END generativeaionvertexai_grounding_private_data_basic]
 // [END generativeaionvertexai_grounding_public_data_basic]
 
-public class GroundingWithData {
+public class GroundingWithPublicData {
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-google-cloud-project-id";
+    String location = "us-central1";
+    String modelName = "gemini-1.5-flash-001";
+
+    groundWithPublicData(projectId, location, modelName);
+  }
 
   public static String groundWithPublicData(String projectId, String location, String modelName)
       throws IOException {
     // [START generativeaionvertexai_grounding_public_data_basic]
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       Tool googleSearchTool = Tool.newBuilder()
-          .setGoogleSearchRetrieval(GoogleSearchRetrieval.newBuilder().setDisableAttribution(false))
+          .setGoogleSearchRetrieval(
+              GoogleSearchRetrieval.newBuilder().setDisableAttribution(false))
           .build();
 
       GenerativeModel model = new GenerativeModel(modelName, vertexAI).withTools(
@@ -59,33 +64,4 @@ public class GroundingWithData {
     }
   }
 
-  public static String groundWithPrivateData(String projectId, String location, String modelName,
-                                             String datastoreId)
-      throws IOException {
-    // [START generativeaionvertexai_grounding_private_data_basic]
-    try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      Tool datastoreTool = Tool.newBuilder()
-          .setRetrieval(
-              Retrieval.newBuilder()
-                  .setVertexAiSearch(VertexAISearch.newBuilder().setDatastore(datastoreId))
-                  .setDisableAttribution(false))
-          .build();
-
-      GenerativeModel model = new GenerativeModel(modelName, vertexAI).withTools(
-          Collections.singletonList(datastoreTool)
-      );
-
-      GenerateContentResponse response = model.generateContent(
-          "How do I make an appointment to renew my driver's license?");
-
-      GroundingMetadata groundingMetadata = response.getCandidates(0).getGroundingMetadata();
-      String answer = ResponseHandler.getText(response);
-
-      System.out.println("Answer: " + answer);
-      System.out.println("Grounding metadata: " + groundingMetadata);
-      // [END generativeaionvertexai_grounding_private_data_basic]
-
-      return answer;
-    }
-  }
 }
