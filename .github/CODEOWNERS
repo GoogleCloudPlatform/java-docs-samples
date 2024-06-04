@@ -94,6 +94,7 @@
 /flexible                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/serverless-runtimes
 /healthcare                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/healthcare-life-sciences
 /iot                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-iot
+/managedkafka                    @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-pubsub-and-pubsublite
 /media                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-media-team
 /pubsub                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-pubsub-and-pubsublite
 /pubsublite                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/api-pubsub-and-pubsublite
