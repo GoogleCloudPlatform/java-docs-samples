@@ -31,9 +31,9 @@ public class GetVmAddress {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
-    // Instance ID of the Cloud project you want to use.
+    // Instance ID of the Google Cloud project you want to use.
     String instanceId = "your-instance-id";
     // IPType you want to search.
     IpType ipType = IpType.INTERNAL;
@@ -71,6 +71,10 @@ public class GetVmAddress {
   }
 
   private static Instance getInstance(String projectId, String instanceId) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `instancesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
     try (InstancesClient instancesClient = InstancesClient.create()) {
       GetInstanceRequest request = GetInstanceRequest.newBuilder()
               .setInstance(instanceId)
@@ -78,6 +82,22 @@ public class GetVmAddress {
               .setZone("us-central1-b")
               .build();
       return instancesClient.get(request);
+    }
+  }
+
+  public enum IpType {
+    INTERNAL("internal"),
+    EXTERNAL("external"),
+    IP_V6("ipv6");
+
+    private final String type;
+
+    IpType(String type) {
+      this.type = type;
+    }
+
+    public String getType() {
+      return type;
     }
   }
 }

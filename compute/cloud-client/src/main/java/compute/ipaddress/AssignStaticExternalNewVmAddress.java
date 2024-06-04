@@ -39,9 +39,9 @@ public class AssignStaticExternalNewVmAddress {
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
-    // Instance ID of the Cloud project you want to use.
+    // Instance ID of the Google Cloud project you want to use.
     String instanceId = "your-instance-id";
     // name of the zone to create the instance in. For example: "us-west3-b"
     String zone = "your-zone-id";
@@ -67,9 +67,10 @@ public class AssignStaticExternalNewVmAddress {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String sourceImage;
     try (ImagesClient imagesClient = ImagesClient.create()) {
-      sourceImage = imagesClient.getFromFamily("debian-cloud", "debian-10").getSelfLink();
+      sourceImage = imagesClient.getFromFamily("debian-cloud", "debian-11").getSelfLink();
     }
     AttachedDisk attachedDisk = buildAttachedDisk(sourceImage, zone);
+
     return createInstance(projectId, instanceName, zone,
             attachedDisk, machineType, externalAccess, externalIpv4);
   }
@@ -80,6 +81,7 @@ public class AssignStaticExternalNewVmAddress {
             .setDiskSizeGb(10)
             .setDiskType(String.format("zones/%s/diskTypes/pd-standard", zone))
             .build();
+
     return AttachedDisk.newBuilder()
             .setInitializeParams(initializeParams)
             // Remember to set auto_delete to True if you want the disk to be deleted
@@ -87,7 +89,6 @@ public class AssignStaticExternalNewVmAddress {
             .setAutoDelete(true)
             .setBoot(true)
             .build();
-
   }
 
   // Send an instance creation request to the Compute Engine API and wait for it to complete.
@@ -96,6 +97,10 @@ public class AssignStaticExternalNewVmAddress {
                                          String machineType, boolean externalAccess,
                                          String externalIpv4)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `instancesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
     try (InstancesClient client = InstancesClient.create()) {
       Instance instanceResource =
               buildInstanceResource(instanceName, disks, machineType, externalAccess, externalIpv4);
@@ -113,6 +118,7 @@ public class AssignStaticExternalNewVmAddress {
               .setProject(projectId)
               .setZone(zone)
               .build();
+
       return client.get(getInstanceRequest);
     }
   }
@@ -122,6 +128,7 @@ public class AssignStaticExternalNewVmAddress {
                                                 String externalIpv4) {
     NetworkInterface networkInterface =
             networkInterface(externalAccess, externalIpv4);
+
     return Instance.newBuilder()
             .setName(instanceName)
             .addDisks(disk)

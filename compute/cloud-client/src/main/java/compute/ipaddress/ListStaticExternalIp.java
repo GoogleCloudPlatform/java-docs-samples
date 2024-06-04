@@ -34,7 +34,7 @@ public class ListStaticExternalIp {
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
     // Region where the VM and IP is located.
     String region = "your-region-id";

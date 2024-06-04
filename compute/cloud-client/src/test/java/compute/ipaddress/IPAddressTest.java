@@ -120,7 +120,7 @@ public class IPAddressTest {
 
   @Test
   public void getVMAddressInternalTest() throws IOException {
-    List<String> vmAddress = GetVmAddress.getVmAddress(PROJECT_ID, MACHINE_NAME, IpType.INTERNAL);
+    List<String> vmAddress = GetVmAddress.getVmAddress(PROJECT_ID, MACHINE_NAME, GetVmAddress.IpType.INTERNAL);
     Assert.assertNotNull(vmAddress);
     Assert.assertFalse(vmAddress.isEmpty());
     Assert.assertTrue(vmAddress.get(0)
@@ -131,7 +131,7 @@ public class IPAddressTest {
   public void getVMAddressExternalTest()
           throws IOException {
     List<String> vmAddress = GetVmAddress
-            .getVmAddress(PROJECT_ID, EXTERNAL_NEW_VM_INSTANCE_2, IpType.EXTERNAL);
+            .getVmAddress(PROJECT_ID, EXTERNAL_NEW_VM_INSTANCE_2, GetVmAddress.IpType.EXTERNAL);
     Assert.assertNotNull(vmAddress);
     Assert.assertFalse(vmAddress.isEmpty());
     Assert.assertTrue(vmAddress.get(0)
@@ -140,7 +140,7 @@ public class IPAddressTest {
 
   @Test
   public void getVMAddressIPV6Test() throws IOException {
-    List<String> vmAddress = GetVmAddress.getVmAddress(PROJECT_ID, MACHINE_NAME, IpType.IP_V6);
+    List<String> vmAddress = GetVmAddress.getVmAddress(PROJECT_ID, MACHINE_NAME, GetVmAddress.IpType.IP_V6);
     Assert.assertNotNull(vmAddress);
     Assert.assertTrue(vmAddress.isEmpty());
   }

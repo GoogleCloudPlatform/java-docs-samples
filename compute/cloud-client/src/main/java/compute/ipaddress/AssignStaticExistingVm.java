@@ -32,11 +32,11 @@ public class AssignStaticExistingVm {
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
-    // Instance ID of the Cloud project you want to use.
+    // Instance ID of the Google Cloud project you want to use.
     String instanceId = "your-instance-id";
-    // name of the zone to create the instance in. For example: "us-west3-b"
+    // Name of the zone to create the instance in. For example: "us-west3-b"
     String zone = "your-zone-id";
     // Name of the network interface to assign.
     String netInterfaceName = "your-netInterfaceName-id";
@@ -52,6 +52,10 @@ public class AssignStaticExistingVm {
   public static Instance assignStaticExistingVmAddress(String projectId, String instanceId,
                                                        String zone, String netInterfaceName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `instancesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
     try (InstancesClient client = InstancesClient.create()) {
       Instance instance = client.get(projectId, zone, instanceId);
 
@@ -59,17 +63,22 @@ public class AssignStaticExistingVm {
       for (NetworkInterface netInterface : instance.getNetworkInterfacesList()) {
         if (netInterface.getName().equals(netInterfaceName)) {
           networkInterface = netInterface;
+          break;
         }
       }
 
       if (networkInterface == null) {
-        // No network interface named '{network_interface_name}' found on instance {instance_name}.
-        return null;
+        throw new IllegalArgumentException(
+                String.format(
+                        "No '{network_interface_name}' variable found on instance %s.",
+                        instanceId)
+        );
       }
       AccessConfig accessConfig = null;
       for (AccessConfig config : networkInterface.getAccessConfigsList()) {
         if (config.getType().equals(AccessConfig.Type.ONE_TO_ONE_NAT.name())) {
           accessConfig = config;
+          break;
         }
       }
 
@@ -82,11 +91,12 @@ public class AssignStaticExistingVm {
 
       // Add a new access configuration with the new IP
       AccessConfig newAccessConfig = AccessConfig.newBuilder()
-              // leave this field undefined to use an IP from a shared ephemeral IP address pool
+              // Leave this field undefined to use an IP from a shared ephemeral IP address pool
               // .setNatIP(ipAddress)
               .setType(AccessConfig.Type.ONE_TO_ONE_NAT.name())
               .setName("external-nat")
               .build();
+
       client.addAccessConfigAsync(projectId, zone, instanceId, netInterfaceName, newAccessConfig)
               .get(30, TimeUnit.SECONDS);
 

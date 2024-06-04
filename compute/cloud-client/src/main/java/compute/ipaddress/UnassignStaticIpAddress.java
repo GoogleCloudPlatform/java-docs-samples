@@ -32,9 +32,9 @@ public class UnassignStaticIpAddress {
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
-    // Instance ID of the Cloud project you want to use.
+    // Instance ID of the Google Cloud project you want to use.
     String instanceId = "your-instance-id";
     // name of the zone to create the instance in. For example: "us-west3-b"
     String zone = "your-zone";
@@ -47,27 +47,33 @@ public class UnassignStaticIpAddress {
   public static Instance unassignStaticIpAddress(String projectId, String instanceId,
                                                  String zone, String netInterfaceName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `instancesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
     try (InstancesClient client = InstancesClient.create()) {
       Instance instance = client.get(projectId, zone, instanceId);
       NetworkInterface networkInterface = null;
       for (NetworkInterface netIterface : instance.getNetworkInterfacesList()) {
         if (netIterface.getName().equals(netInterfaceName)) {
           networkInterface = netIterface;
+          break;
         }
       }
 
       if (networkInterface == null) {
-        String errMsg = String
-                .format("No network interface named '%s' found on instance %s.",
-                        netInterfaceName, instanceId);
-        System.out.println(errMsg);
-        return null;
+        throw new IllegalArgumentException(
+                String.format(
+                        "No '{network_interface_name}' variable found on instance %s.",
+                        instanceId)
+        );
       }
 
       AccessConfig accessConfig = null;
       for (AccessConfig config : networkInterface.getAccessConfigsList()) {
         if (config.getType().equals(AccessConfig.Type.ONE_TO_ONE_NAT.name())) {
           accessConfig = config;
+          break;
         }
       }
 

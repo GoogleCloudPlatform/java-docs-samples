@@ -36,7 +36,7 @@ public class ReserveNewExternalAddress {
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
     // Address name you want to use.
     String addressName = "your-address-name";
@@ -57,12 +57,13 @@ public class ReserveNewExternalAddress {
                                                           String region)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
-    String ipVersion = ipV6 ? "IPV6" : "IPV4";
-    String networkTier = !isPremium && region != null ? "STANDARD" : "PREMIUM";
+    String ipVersion = ipV6 ? Address.IpVersion.IPV6.name() : Address.IpVersion.IPV4.name();
+    String networkTier = !isPremium && region != null ?
+            Address.NetworkTier.STANDARD.name() : Address.NetworkTier.PREMIUM.name();
 
     Address.Builder address = Address.newBuilder()
             .setName(addressName)
-            .setAddressType("EXTERNAL")
+            .setAddressType(Address.AddressType.EXTERNAL.name())
             .setNetworkTier(networkTier);
 
     if (region == null) {

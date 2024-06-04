@@ -33,7 +33,7 @@ public class ReleaseStaticAddress {
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
     // The region to reserve the IP address in, if regional. Must be None if global
     String region = "your-region =";
@@ -43,6 +43,8 @@ public class ReleaseStaticAddress {
     releaseStaticAddress(projectId, addressName, region);
   }
 
+  // Releases a static external IP address that is currently reserved.
+  // This action requires that the address is not being used by any forwarding rule.
   public static void releaseStaticAddress(String projectId, String addressName, String region)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Operation operation;
