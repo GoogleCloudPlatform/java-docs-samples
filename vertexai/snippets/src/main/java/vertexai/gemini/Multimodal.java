@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,38 +16,48 @@
 
 package vertexai.gemini;
 
-// [START generativeaionvertexai_non_stream_text_basic]
+// [START generativeaionvertexai_non_stream_multimodality_basic]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
+import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
+import com.google.cloud.vertexai.generativeai.PartMaker;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 
-public class QuestionAnswer {
-
+public class Multimodal {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
     String modelName = "gemini-1.5-flash-001";
 
-    String output = simpleQuestion(projectId, location, modelName);
+    String output = nonStreamingMultimodal(projectId, location, modelName);
     System.out.println(output);
   }
 
-  // Asks a question to the specified Vertex AI Gemini model and returns the generated answer.
-  public static String simpleQuestion(String projectId, String location, String modelName)
+  // Ask a simple question and get the response.
+  public static String nonStreamingMultimodal(String projectId, String location, String modelName)
       throws Exception {
-    // Initialize client that will be used to send requests.
-    // This client only needs to be created once, and can be reused for multiple requests.
+    // Initialize client that will be used to send requests. This client only needs
+    // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      String output;
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
-      // Send the question to the model for processing.
-      GenerateContentResponse response = model.generateContent("Why is the sky blue?");
+
+      String videoUri = "gs://cloud-samples-data/video/animals.mp4";
+      String imgUri = "gs://cloud-samples-data/generative-ai/image/character.jpg";
+
+      // Get the response from the model.
+      GenerateContentResponse response = model.generateContent(
+          ContentMaker.fromMultiModalData(
+              PartMaker.fromMimeTypeAndData("video/mp4", videoUri),
+              PartMaker.fromMimeTypeAndData("image/jpeg", imgUri),
+              "Are this video and image correlated?"
+          ));
+
       // Extract the generated text from the model's response.
-      output = ResponseHandler.getText(response);
+      String output = ResponseHandler.getText(response);
       return output;
     }
   }
 }
-// [END generativeaionvertexai_non_stream_text_basic]
+// [END generativeaionvertexai_non_stream_multimodality_basic]

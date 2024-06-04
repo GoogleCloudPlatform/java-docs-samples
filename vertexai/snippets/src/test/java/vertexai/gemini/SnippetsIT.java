@@ -33,7 +33,6 @@ import javax.net.ssl.HttpsURLConnection;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +46,7 @@ public class SnippetsIT {
   private static final String GEMINI_PRO_VISION = "gemini-1.0-pro-vision-001";
   private static final String GEMINI_PRO = "gemini-1.0-pro-002";
   private static final String GEMINI_FLASH = "gemini-1.5-flash-001";
+  private static final String DATASTORE_ID = "grounding-test-datastore_1716831150046";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
 
@@ -215,11 +215,14 @@ public class SnippetsIT {
 
   @Test
   public void testTokenCount() throws Exception {
-    String textPrompt = "Why is the sky blue?";
-
-    int tokenCount =
-        GetTokenCount.getTokenCount(PROJECT_ID, LOCATION, GEMINI_PRO_VISION, textPrompt);
+    int tokenCount = GetTokenCount.getTokenCount(PROJECT_ID, LOCATION, GEMINI_FLASH);
     assertThat(tokenCount).isEqualTo(6);
+  }
+
+  @Test
+  public void testMediaTokenCount() throws Exception {
+    int tokenCount = GetTokenCount.getMediaTokenCount(PROJECT_ID, LOCATION, GEMINI_FLASH);
+    assertThat(tokenCount).isEqualTo(16822);
   }
 
   @Test
@@ -276,5 +279,36 @@ public class SnippetsIT {
 
     assertThat(output).ignoringCase().contains("bagels");
     assertThat(output).ignoringCase().contains("aime");
+  }
+
+  @Test
+  public void testGroundingWithPublicData() throws Exception {
+    String output = GroundingWithData.groundWithPublicData(PROJECT_ID, LOCATION, GEMINI_FLASH);
+
+    assertThat(output).ignoringCase().contains("Rayleigh");
+  }
+
+  @Test
+  public void testGroundingWithPrivateData() throws Exception {
+    String output = GroundingWithData.groundWithPrivateData(PROJECT_ID, LOCATION, GEMINI_FLASH,
+        String.format(
+            "projects/%s/locations/global/collections/default_collection/dataStores/%s",
+            PROJECT_ID, DATASTORE_ID)
+        );
+
+    assertThat(output).ignoringCase().contains("Rayleigh");
+  }
+
+  @Test
+  public void testMultimodalStreaming() throws Exception {
+    StreamingMultimodal.streamingMultimodal(PROJECT_ID, LOCATION, GEMINI_FLASH);
+    assertThat(bout.toString()).ignoringCase().contains("no");
+  }
+
+  @Test
+  public void testMultimodalNonStreaming() throws Exception {
+    String output = Multimodal.nonStreamingMultimodal(PROJECT_ID, LOCATION, GEMINI_FLASH);
+
+    assertThat(output).ignoringCase().contains("no");
   }
 }

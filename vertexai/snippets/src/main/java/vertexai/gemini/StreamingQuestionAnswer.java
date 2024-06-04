@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START generativeaionvertexai_stream_text_basic]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 
@@ -25,7 +26,7 @@ public class StreamingQuestionAnswer {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-vision-001";
+    String modelName = "gemini-1.5-flash-001";
 
     streamingQuestion(projectId, location, modelName);
   }
@@ -47,3 +48,4 @@ public class StreamingQuestionAnswer {
     }
   }
 }
+// [END generativeaionvertexai_stream_text_basic]

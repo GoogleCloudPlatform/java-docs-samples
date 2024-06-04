@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,44 +16,43 @@
 
 package vertexai.gemini;
 
-// [START aiplatform_gemini_single_turn_video]
+// [START generativeaionvertexai_stream_multimodality_basic]
 import com.google.cloud.vertexai.VertexAI;
-import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.PartMaker;
-import com.google.cloud.vertexai.generativeai.ResponseHandler;
-import java.io.IOException;
 
-public class MultimodalVideoInput {
-
-  public static void main(String[] args) throws IOException {
+public class StreamingMultimodal {
+  public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
     String modelName = "gemini-1.5-flash-001";
 
-    multimodalVideoInput(projectId, location, modelName);
+    streamingMultimodal(projectId, location, modelName);
   }
 
-  // Analyzes the given video input.
-  public static void multimodalVideoInput(String projectId, String location, String modelName)
-      throws IOException {
+  // Ask a simple question and get the response via streaming.
+  public static void streamingMultimodal(String projectId, String location, String modelName)
+      throws Exception {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      String videoUri = "gs://cloud-samples-data/video/animals.mp4";
-
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
-      GenerateContentResponse response = model.generateContent(
-          ContentMaker.fromMultiModalData(
-              "What is in the video?",
-              PartMaker.fromMimeTypeAndData("video/mp4", videoUri)
-          ));
 
-      String output = ResponseHandler.getText(response);
-      System.out.println(output);
+      String videoUri = "gs://cloud-samples-data/video/animals.mp4";
+      String imgUri = "gs://cloud-samples-data/generative-ai/image/character.jpg";
+
+      // Stream the result.
+      model.generateContentStream(
+          ContentMaker.fromMultiModalData(
+              PartMaker.fromMimeTypeAndData("video/mp4", videoUri),
+              PartMaker.fromMimeTypeAndData("image/jpeg", imgUri),
+              "Are this video and image correlated?"
+          ))
+          .stream()
+          .forEach(System.out::println);
     }
   }
 }
-// [END aiplatform_gemini_single_turn_video]
+// [END generativeaionvertexai_stream_multimodality_basic]
