@@ -43,7 +43,7 @@ public class AssignStaticExternalNewVmAddress {
     String projectId = "your-project-id";
     // Instance ID of the Google Cloud project you want to use.
     String instanceId = "your-instance-id";
-    // name of the zone to create the instance in. For example: "us-west3-b"
+    // Name of the zone to create the instance in. For example: "us-west3-b"
     String zone = "your-zone-id";
     // machine type of the VM being created. This value uses the
     // following format: "zones/{zone}/machineTypes/{type_name}".

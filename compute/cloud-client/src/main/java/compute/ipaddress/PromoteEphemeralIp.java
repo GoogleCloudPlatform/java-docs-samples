@@ -57,12 +57,14 @@ public class PromoteEphemeralIp {
               .setAddressType(Address.AddressType.EXTERNAL.name())
               .setAddress(ephemeralIp)
               .build();
+
       InsertAddressRequest addressRequest = InsertAddressRequest.newBuilder()
               .setRegion(region)
               .setProject(projectId)
               .setAddressResource(addressResource)
               .setRequestId(UUID.randomUUID().toString())
               .build();
+
       client.insertCallable().futureCall(addressRequest).get(30, TimeUnit.SECONDS);
 
       return Lists.newArrayList(client.list(projectId, region).iterateAll());

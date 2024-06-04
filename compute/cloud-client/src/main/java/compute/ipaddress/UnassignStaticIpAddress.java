@@ -36,7 +36,7 @@ public class UnassignStaticIpAddress {
     String projectId = "your-project-id";
     // Instance ID of the Google Cloud project you want to use.
     String instanceId = "your-instance-id";
-    // name of the zone to create the instance in. For example: "us-west3-b"
+    // Name of the zone to create the instance in. For example: "us-west3-b"
     String zone = "your-zone";
     // Name of the network interface to assign.
     String netInterfaceName = "your-netInterfaceName";

@@ -37,7 +37,7 @@ public class ReleaseStaticAddress {
     String projectId = "your-project-id";
     // The region to reserve the IP address in, if regional. Must be None if global
     String region = "your-region =";
-    // name of the address to release.
+    // Name of the address to release.
     String addressName = "your-addressName";
 
     releaseStaticAddress(projectId, addressName, region);

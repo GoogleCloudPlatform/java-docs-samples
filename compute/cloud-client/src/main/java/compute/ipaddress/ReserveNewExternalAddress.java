@@ -58,8 +58,8 @@ public class ReserveNewExternalAddress {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     String ipVersion = ipV6 ? Address.IpVersion.IPV6.name() : Address.IpVersion.IPV4.name();
-    String networkTier = !isPremium && region != null ?
-            Address.NetworkTier.STANDARD.name() : Address.NetworkTier.PREMIUM.name();
+    String networkTier = !isPremium && region != null
+            ? Address.NetworkTier.STANDARD.name() : Address.NetworkTier.PREMIUM.name();
 
     Address.Builder address = Address.newBuilder()
             .setName(addressName)
@@ -70,11 +70,13 @@ public class ReserveNewExternalAddress {
       // Use global client if no region is specified
       try (GlobalAddressesClient client = GlobalAddressesClient.create()) {
         address.setIpVersion(ipVersion);
+
         InsertGlobalAddressRequest addressRequest = InsertGlobalAddressRequest.newBuilder()
                 .setProject(projectId)
                 .setRequestId(UUID.randomUUID().toString())
                 .setAddressResource(address.build())
                 .build();
+
         client.insertCallable().futureCall(addressRequest).get(30, TimeUnit.SECONDS);
 
         return Lists.newArrayList(client.list(projectId).iterateAll());
@@ -83,12 +85,14 @@ public class ReserveNewExternalAddress {
       // Use regional client if a region is specified
       try (AddressesClient client = AddressesClient.create()) {
         address.setRegion(region);
+
         InsertAddressRequest addressRequest = InsertAddressRequest.newBuilder()
                 .setProject(projectId)
                 .setRequestId(UUID.randomUUID().toString())
                 .setAddressResource(address.build())
                 .setRegion(region)
                 .build();
+
         client.insertCallable().futureCall(addressRequest).get(30, TimeUnit.SECONDS);
 
         return Lists.newArrayList(client.list(projectId, region).iterateAll());
