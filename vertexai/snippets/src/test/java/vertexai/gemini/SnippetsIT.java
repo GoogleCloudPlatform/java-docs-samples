@@ -296,7 +296,7 @@ public class SnippetsIT {
             PROJECT_ID, DATASTORE_ID)
         );
 
-    assertThat(output).ignoringCase().contains("Rayleigh");
+    assertThat(output).ignoringCase().contains("DMV");
   }
 
   @Test
