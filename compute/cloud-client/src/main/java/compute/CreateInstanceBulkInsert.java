@@ -47,21 +47,11 @@ public class CreateInstanceBulkInsert {
     String templateName = "instance-template";
     // The maximum number of instances to create.
     int count = 3;
-    // The string pattern used for the names of the VMs. The pattern
-    // must contain one continuous sequence of placeholder hash characters (#)
-    // with each character corresponding to one digit of the generated instance
-    // name. Example: a name_pattern of inst-#### generates instance names such
-    // as inst-0001 and inst-0002. If existing instances in the same project and
-    // zone have names that match the name pattern then the generated instance
-    // numbers start after the biggest existing number. For example, if there
-    // exists an instance with name inst-0050, then instance names generated
-    // using the pattern inst-#### begin with inst-0051. The name pattern
-    // placeholder #...# can contain up to 18 characters.
+    // The string pattern used for the names of the VMs. More info
+    // https://cloud.google.com/compute/docs/reference/rest/v1/instances/bulkInsert
     String namePattern = "instance-name-pattern";
-    // (optional): The minimum number of instances to create. If no min_count is
-    // specified then count is used as the default value. If min_count instances
-    // cannot be created, then no instances will be created and instances already
-    // created will be deleted.
+    // (optional): The minimum number of instances to create. More info
+    // https://cloud.google.com/compute/docs/reference/rest/v1/instances/bulkInsert
     int minCount = 2;
     // (optional): A dictionary with labels to be added to the new VMs.
     Map<String, String> labels = new HashMap<>();
@@ -69,49 +59,56 @@ public class CreateInstanceBulkInsert {
     bulkInsertInstance(project, zone, templateName, count, namePattern, minCount, labels);
   }
 
+  // Create multiple VMs based on an Instance Template. The newly created instances will
+  // be returned as a list and will share a label with key `bulk_batch` and a random value.
   public static List<Instance> bulkInsertInstance(String project, String zone, String templateName,
                                                   int count, String namePattern, int minCount,
                                                   Map<String, String> labels)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String sourceInstanceTemplate;
-    try (InstanceTemplatesClient client = InstanceTemplatesClient.create()) {
-      sourceInstanceTemplate = client.get(project, templateName).getSelfLink();
-    }
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the `instancesClient.close()` method on the client to safely
+    // clean up any remaining background resources.
+    try (InstanceTemplatesClient templatesClient = InstanceTemplatesClient.create();
+         InstancesClient instancesClient = InstancesClient.create()) {
+      String sourceInstanceTemplate = templatesClient.get(project, templateName).getSelfLink();
 
-    String labelsValue = UUID.randomUUID().toString().replace("-", "").toLowerCase();
-    labels.put("bulk_batch", labelsValue);
+      String labelsValue = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+      labels.put("bulk_batch", labelsValue);
 
-    InstanceProperties.Builder instanceProperties = InstanceProperties.newBuilder()
-            .putAllLabels(labels);
+      InstanceProperties.Builder instanceProperties = InstanceProperties.newBuilder()
+              .putAllLabels(labels);
 
-    BulkInsertInstanceResource instanceResource = BulkInsertInstanceResource.newBuilder()
-            .setSourceInstanceTemplate(sourceInstanceTemplate)
-            .setCount(count)
-            .setMinCount(minCount)
-            .setNamePattern(namePattern)
-            .setInstanceProperties(instanceProperties)
-            .build();
+      BulkInsertInstanceResource instanceResource = BulkInsertInstanceResource.newBuilder()
+              .setSourceInstanceTemplate(sourceInstanceTemplate)
+              .setCount(count)
+              .setMinCount(minCount)
+              .setNamePattern(namePattern)
+              .setInstanceProperties(instanceProperties)
+              .build();
 
-    try (InstancesClient client = InstancesClient.create()) {
       BulkInsertInstanceRequest request = BulkInsertInstanceRequest.newBuilder()
               .setBulkInsertInstanceResourceResource(instanceResource)
               .setProject(project)
               .setZone(zone)
               .build();
-      client.bulkInsertCallable().futureCall(request).get(60, TimeUnit.SECONDS);
+      instancesClient.bulkInsertCallable().futureCall(request).get(60, TimeUnit.SECONDS);
 
+      // Create request to retrieve all created instances
       ListInstancesRequest build = ListInstancesRequest.newBuilder()
               .setProject(project)
               .setZone(zone)
               .setFilter(createFilter(labels))
               .build();
 
-      // wait server update
+      // Wait for server update
       Thread.sleep(10000);
-      return Lists.newArrayList(client.list(build).iterateAll());
+
+      return Lists.newArrayList(instancesClient.list(build).iterateAll());
     }
   }
 
+  // Filter instances by labels
   private static String createFilter(Map<String, String> labels) {
     StringJoiner joiner = new StringJoiner(" AND ");
 
