@@ -54,8 +54,7 @@ public class UpdateBigQueryExport {
       String bigQueryExportId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Optionally BigQueryExportName or String can be used
       // String bigQueryExportName = String.format("organizations/%s/locations/%s
