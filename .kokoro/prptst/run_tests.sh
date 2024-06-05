@@ -45,8 +45,11 @@ gradle -v
 # Setup required env variables
 export GOOGLE_CLOUD_PROJECT="tpczero-system:java-docs-samples-testing"
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets/prptst-java-docs-samples-service-account.json
+export JAVA_DOCS_COMPUTE_TEST_ZONES="u-us-prp1-a,u-us-prp1-b,u-us-prp1-c"
+export JAVA_DOCS_COMPUTE_TEST_IMAGE_PROJECT="tpczero-system:java-docs-samples-testing" # test will fail anyway because images are not there
 
 mkdir -p "${KOKORO_GFILE_DIR}/secrets"
+# read secrets from GDU project 'java-docs-samples-testing'
 gcloud secrets versions access latest --project="java-docs-samples-testing" --secret="prptst-java-docs-samples-service-account" > "${KOKORO_GFILE_DIR}/secrets/prptst-java-docs-samples-service-account.json"
 
 # Add PRPTST configuration to gcloud CLI (becomes active)
