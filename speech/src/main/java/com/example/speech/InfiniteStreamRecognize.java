@@ -46,6 +46,7 @@ import javax.sound.sampled.TargetDataLine;
 public class InfiniteStreamRecognize {
 
   private static final int STREAMING_LIMIT = 290000; // ~5 minutes
+  private static final String EXIT_WORD = "exit";
 
   // Creating shared object
   private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue<byte[]>();
@@ -87,8 +88,10 @@ public class InfiniteStreamRecognize {
 
     MicBuffer micBuffer = new MicBuffer(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
     try {
+      // Say `exit` to stop application execution
       infiniteStreamingRecognize(options.langCode, micBuffer, sampleRate,
               RecognitionConfig.AudioEncoding.LINEAR16);
+      System.out.println("The application has been stopped.");
     } catch (Exception e) {
       System.out.println("Exception caught: " + e);
     }
@@ -278,9 +281,9 @@ public class InfiniteStreamRecognize {
   }
 
   private static void checkStopRecognitionFlag(byte[] flag) {
-    if (flag.length < 10) {
-      stopRecognition = new String(flag).trim().equalsIgnoreCase("exit");
-      putDataToSharedQueue("exit".getBytes(StandardCharsets.UTF_8));
+    if (flag.length <= (EXIT_WORD.length() + 2)) {
+      stopRecognition = new String(flag).trim().equalsIgnoreCase(EXIT_WORD);
+      putDataToSharedQueue(EXIT_WORD.getBytes(StandardCharsets.UTF_8));
     }
   }
 
