@@ -47,7 +47,7 @@ export GOOGLE_CLOUD_PROJECT="tpczero-system:java-docs-samples-testing"
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets/prptst-java-docs-samples-service-account.json
 
 mkdir -p "${KOKORO_GFILE_DIR}/secrets"
-gcloud secrets versions access latest --project="java-docs-samples-testing" --secret="prptst-java-docs-samples-service-account.json" > "${KOKORO_GFILE_DIR}/secrets/prptst-java-docs-samples-service-account.json"
+gcloud secrets versions access latest --project="java-docs-samples-testing" --secret="prptst-java-docs-samples-service-account" > "${KOKORO_GFILE_DIR}/secrets/prptst-java-docs-samples-service-account.json"
 
 # Add PRPTST configuration to gcloud CLI (becomes active)
 gcloud config configurations create prptst
