@@ -45,6 +45,7 @@ public class GroundingWithPublicData {
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       Tool googleSearchTool = Tool.newBuilder()
           .setGoogleSearchRetrieval(
+              // Enable using the result from this tool in detecting grounding
               GoogleSearchRetrieval.newBuilder().setDisableAttribution(false))
           .build();
 

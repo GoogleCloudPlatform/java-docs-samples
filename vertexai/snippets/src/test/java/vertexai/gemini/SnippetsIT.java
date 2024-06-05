@@ -175,6 +175,7 @@ public class SnippetsIT {
   @Test
   public void testQuickstart() throws IOException {
     String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
+    // Disabled assertion, pending resolution of b/342637034
     // assertThat(output).contains("Colosseum");
   }
 
