@@ -58,6 +58,8 @@ public class App {
           // -- End log correlation code --
 
           // Create a structured log entry using key value pairs.
+          // For instantiating the "logger" variable, see
+          // https://cloud.google.com/run/docs/logging#run_manual_logging-java
           logger.error(
               "This is the default display field.",
               kv("component", "arbitrary-property"),

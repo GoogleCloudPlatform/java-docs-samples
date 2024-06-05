@@ -59,7 +59,7 @@ public class CreateCustomJobSample {
       MachineSpec machineSpec =
           MachineSpec.newBuilder()
               .setMachineType("n1-standard-4")
-              .setAcceleratorType(AcceleratorType.NVIDIA_TESLA_K80)
+              .setAcceleratorType(AcceleratorType.NVIDIA_TESLA_T4)
               .setAcceleratorCount(1)
               .build();
 
