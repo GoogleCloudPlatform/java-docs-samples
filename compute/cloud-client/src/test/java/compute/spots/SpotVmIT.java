@@ -38,7 +38,7 @@ import org.junit.runners.MethodSorters;
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class SpotsIT {
+public class SpotVmIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-b";
   private static String INSTANCE_NAME;
@@ -67,7 +67,7 @@ public class SpotsIT {
   @Test
   public void stage1_CreateSpot()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Instance spotInstance = CreateSpot.createSpotInstance(PROJECT_ID, INSTANCE_NAME, ZONE);
+    Instance spotInstance = CreateSpotVm.createSpotInstance(PROJECT_ID, INSTANCE_NAME, ZONE);
     Assert.assertNotNull(spotInstance);
     Assert.assertTrue(spotInstance.getZone().contains(ZONE));
     Assert.assertEquals(INSTANCE_NAME, spotInstance.getName());
@@ -76,6 +76,6 @@ public class SpotsIT {
 
   @Test
   public void stage2_GetSpot() throws IOException {
-    Assert.assertTrue(CheckSpot.isSpotVm(PROJECT_ID, INSTANCE_NAME, ZONE));
+    Assert.assertTrue(CheckIsSpotVm.isSpotVm(PROJECT_ID, INSTANCE_NAME, ZONE));
   }
 }

@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-public class CheckSpot {
+public class CheckIsSpotVm {
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
@@ -36,12 +36,15 @@ public class CheckSpot {
     // Name of the zone you want to use. For example: "us-west3-b"
     String zone = "your-zone";
 
-    isSpotVm(projectId, instanceName, zone);
+    boolean isSpotVm = isSpotVm(projectId, instanceName, zone);
+    System.out.printf("Is %s spot VM instance - %s", instanceName, isSpotVm);
   }
 
   // Check if a given instance is Spot VM or not.
   public static boolean isSpotVm(String projectId, String instanceName, String zone)
           throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (InstancesClient client = InstancesClient.create()) {
       Instance instance = client.get(projectId, zone, instanceName);
 
