@@ -39,8 +39,8 @@ public class MultimodalVideoInput {
   // Analyzes the given video input.
   public static void multimodalVideoInput(String projectId, String location, String modelName)
       throws IOException {
-    // Initialize client that will be used to send requests. This client only needs
-    // to be created once, and can be reused for multiple requests.
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       String videoUri = "gs://cloud-samples-data/video/animals.mp4";
 

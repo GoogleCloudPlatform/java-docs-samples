@@ -45,10 +45,12 @@ public class FunctionCalling {
     whatsTheWeatherLike(projectId, location, modelName, promptText);
   }
 
+  // A request involving the interaction with an external tool
   public static String whatsTheWeatherLike(String projectId, String location,
                                            String modelName, String promptText)
       throws IOException {
-
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
 
       FunctionDeclaration functionDeclaration = FunctionDeclaration.newBuilder()

@@ -17,14 +17,11 @@
 package vertexai.gemini;
 
 // [START aiplatform_gemini_token_count]
-// [START generativeaionvertexai_gemini_token_count_advanced]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.CountTokensResponse;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import java.io.IOException;
-// [END aiplatform_gemini_token_count]
-// [END generativeaionvertexai_gemini_token_count_advanced]
 
 public class GetTokenCount {
   public static void main(String[] args) throws IOException {
@@ -36,9 +33,11 @@ public class GetTokenCount {
     getTokenCount(projectId, location, modelName);
   }
 
-  // [START aiplatform_gemini_token_count]
+  // Gets the number of tokens for the prompt and the model's response.
   public static int getTokenCount(String projectId, String location, String modelName)
       throws IOException {
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
 
@@ -64,5 +63,5 @@ public class GetTokenCount {
       return promptTokenCount;
     }
   }
-  // [END aiplatform_gemini_token_count]
 }
+// [END aiplatform_gemini_token_count]

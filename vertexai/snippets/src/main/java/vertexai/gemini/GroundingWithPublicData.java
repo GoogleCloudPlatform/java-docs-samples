@@ -26,7 +26,6 @@ import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import java.io.IOException;
 import java.util.Collections;
-// [END generativeaionvertexai_grounding_public_data_basic]
 
 public class GroundingWithPublicData {
   public static void main(String[] args) throws IOException {
@@ -38,9 +37,11 @@ public class GroundingWithPublicData {
     groundWithPublicData(projectId, location, modelName);
   }
 
+  // A request whose response will be "grounded" with information found in Google Search.
   public static String groundWithPublicData(String projectId, String location, String modelName)
       throws IOException {
-    // [START generativeaionvertexai_grounding_public_data_basic]
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       Tool googleSearchTool = Tool.newBuilder()
           .setGoogleSearchRetrieval(
@@ -58,10 +59,9 @@ public class GroundingWithPublicData {
 
       System.out.println("Answer: " + answer);
       System.out.println("Grounding metadata: " + groundingMetadata);
-      // [END generativeaionvertexai_grounding_public_data_basic]
 
       return answer;
     }
   }
-
 }
+// [END generativeaionvertexai_grounding_public_data_basic]

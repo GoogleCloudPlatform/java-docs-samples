@@ -24,7 +24,6 @@ import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.PartMaker;
 import java.io.IOException;
-// [END generativeaionvertexai_gemini_token_count_advanced]
 
 public class GetMediaTokenCount {
   public static void main(String[] args) throws IOException {
@@ -36,9 +35,11 @@ public class GetMediaTokenCount {
     getMediaTokenCount(projectId, location, modelName);
   }
 
-  // [START generativeaionvertexai_gemini_token_count_advanced]
+  // Gets the number of tokens for the prompt with text and video and the model's response.
   public static int getMediaTokenCount(String projectId, String location, String modelName)
       throws IOException {
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
 
@@ -56,5 +57,5 @@ public class GetMediaTokenCount {
       return tokenCount;
     }
   }
-  // [END generativeaionvertexai_gemini_token_count_advanced]
 }
+// [END generativeaionvertexai_gemini_token_count_advanced]

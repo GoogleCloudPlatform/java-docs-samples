@@ -35,8 +35,8 @@ public class StreamingMultimodal {
   // Ask a simple question and get the response via streaming.
   public static void streamingMultimodal(String projectId, String location, String modelName)
       throws Exception {
-    // Initialize client that will be used to send requests. This client only needs
-    // to be created once, and can be reused for multiple requests.
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
 

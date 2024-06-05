@@ -27,7 +27,6 @@ import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import java.io.IOException;
 import java.util.Collections;
-// [END generativeaionvertexai_grounding_private_data_basic]
 
 public class GroundingWithPrivateData {
   public static void main(String[] args) throws IOException {
@@ -42,10 +41,13 @@ public class GroundingWithPrivateData {
     groundWithPrivateData(projectId, location, modelName, datastore);
   }
 
+  // A request whose response will be "grounded"
+  // with information found in Vertex AI Search datastores.
   public static String groundWithPrivateData(String projectId, String location, String modelName,
                                              String datastoreId)
       throws IOException {
-    // [START generativeaionvertexai_grounding_private_data_basic]
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       Tool datastoreTool = Tool.newBuilder()
           .setRetrieval(
@@ -66,9 +68,9 @@ public class GroundingWithPrivateData {
 
       System.out.println("Answer: " + answer);
       System.out.println("Grounding metadata: " + groundingMetadata);
-      // [END generativeaionvertexai_grounding_private_data_basic]
 
       return answer;
     }
   }
 }
+// [END generativeaionvertexai_grounding_private_data_basic]
