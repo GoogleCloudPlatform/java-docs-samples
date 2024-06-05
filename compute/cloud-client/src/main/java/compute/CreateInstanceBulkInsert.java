@@ -47,10 +47,10 @@ public class CreateInstanceBulkInsert {
     String templateName = "instance-template";
     // The maximum number of instances to create.
     int count = 3;
-    // The string pattern used for the names of the VMs. More info
+    // The string pattern used for the names of the VMs. For more info see:
     // https://cloud.google.com/compute/docs/reference/rest/v1/instances/bulkInsert
     String namePattern = "instance-name-pattern";
-    // (optional): The minimum number of instances to create. More info
+    // (optional): The minimum number of instances to create. For more info see:
     // https://cloud.google.com/compute/docs/reference/rest/v1/instances/bulkInsert
     int minCount = 2;
     // (optional): A dictionary with labels to be added to the new VMs.
@@ -66,9 +66,7 @@ public class CreateInstanceBulkInsert {
                                                   Map<String, String> labels)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `instancesClient.close()` method on the client to safely
-    // clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (InstanceTemplatesClient templatesClient = InstanceTemplatesClient.create();
          InstancesClient instancesClient = InstancesClient.create()) {
       String sourceInstanceTemplate = templatesClient.get(project, templateName).getSelfLink();
