@@ -49,6 +49,7 @@ public class DeleteFeatureOnlineStoreSample {
         project, featureOnlineStoreId, useForce, location, endpoint, timeout);
   }
 
+  // [START aiplatform_delete_feature_online_store_sample_delete]
   static void deleteFeatureOnlineStoreSample(
       String project,
       String featureOnlineStoreId,
@@ -80,6 +81,7 @@ public class DeleteFeatureOnlineStoreSample {
       operationFuture.get(timeout, TimeUnit.SECONDS);
     }
   }
+  // [END aiplatform_delete_feature_online_store_sample_delete]
 }
 
 // [END aiplatform_delete_feature_online_store_sample]

@@ -75,15 +75,17 @@
    }
  
    @Test
-   public void testCreateFeaturestoreSample()
+   public void testCreateAndDeleteFeaturestore()
        throws IOException, InterruptedException, ExecutionException, TimeoutException {
      // Create the featureOnlineStore
      String tempUuid = UUID.randomUUID().toString().replaceAll("-", "_").substring(0, 25);
      String id = String.format("temp_fos_samples_test_%s", tempUuid);
      FeatureOnlineStore featureOnlineStoreResponse;
  
-     featureOnlineStoreResponse = CreateFeatureOnlineStoreFixedNodesSample.createFeatureOnlineStoreFixedNodesSample(
-         PROJECT_ID, id, MIN_NODE_COUNT, MAX_NODE_COUNT, TARGET_CPU_UTILIZATION, LOCATION, ENDPOINT, TIMEOUT);
+     featureOnlineStoreResponse =
+         CreateFeatureOnlineStoreFixedNodesSample.createFeatureOnlineStoreFixedNodesSample(
+             PROJECT_ID, id, MIN_NODE_COUNT, MAX_NODE_COUNT, TARGET_CPU_UTILIZATION,
+             LOCATION, ENDPOINT, TIMEOUT);
  
      // Assert
      featureOnlineStoreId =
