@@ -39,8 +39,8 @@ public class ListBigQueryExports {
   }
 
   // List BigQuery exports in the given parent.
-  public static void listBigQueryExports(String organizationId, String location)
-      throws IOException {
+  public static ListBigQueryExportsPagedResponse listBigQueryExports(String organizationId,
+      String location) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -57,6 +57,7 @@ public class ListBigQueryExports {
       for (BigQueryExport bigQueryExport : response.iterateAll()) {
         System.out.println(bigQueryExport.getName());
       }
+      return response;
     }
   }
 }

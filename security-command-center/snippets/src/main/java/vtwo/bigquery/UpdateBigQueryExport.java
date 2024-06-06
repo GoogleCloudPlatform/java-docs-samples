@@ -50,9 +50,8 @@ public class UpdateBigQueryExport {
   }
 
   // Updates an existing BigQuery export.
-  public static void updateBigQueryExport(String organizationId, String location, String filter,
-      String bigQueryExportId)
-      throws IOException {
+  public static BigQueryExport updateBigQueryExport(String organizationId, String location,
+      String filter, String bigQueryExportId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -83,11 +82,8 @@ public class UpdateBigQueryExport {
               .build();
 
       BigQueryExport response = client.updateBigQueryExport(request);
-      if (!response.getFilter().equalsIgnoreCase(filter)) {
-        System.out.println("Failed to update BigQueryExport!");
-        return;
-      }
       System.out.println("BigQueryExport updated successfully!");
+      return response;
     }
   }
 }

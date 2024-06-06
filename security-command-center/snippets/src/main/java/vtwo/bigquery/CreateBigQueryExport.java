@@ -55,7 +55,7 @@ public class CreateBigQueryExport {
 
   // Create export configuration to export findings from a project to a BigQuery dataset.
   // Optionally specify filter to export certain findings only.
-  public static void createBigQueryExport(String organizationId, String location,
+  public static BigQueryExport createBigQueryExport(String organizationId, String location,
       String projectId, String filter, String bigQueryDatasetId, String bigQueryExportId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -84,6 +84,7 @@ public class CreateBigQueryExport {
       BigQueryExport response = client.createBigQueryExport(bigQueryExportRequest);
 
       System.out.printf("BigQuery export request created successfully: %s\n", response.getName());
+      return response;
     }
   }
 }

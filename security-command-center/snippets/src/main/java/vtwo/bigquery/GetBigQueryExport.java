@@ -41,7 +41,7 @@ public class GetBigQueryExport {
   }
 
   // Retrieve an existing BigQuery export.
-  public static void getBigQueryExport(String organizationId, String location,
+  public static BigQueryExport getBigQueryExport(String organizationId, String location,
       String bigQueryExportId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -57,6 +57,7 @@ public class GetBigQueryExport {
 
       BigQueryExport response = client.getBigQueryExport(bigQueryExportRequest);
       System.out.printf("Retrieved the BigQuery export: %s", response.getName());
+      return response;
     }
   }
 }
