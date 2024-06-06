@@ -22,7 +22,6 @@
 package aiplatform;
 
 // [START aiplatform_create_featureOnlineStore_bigtable_sample]
-
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.aiplatform.v1beta1.CreateFeatureOnlineStoreOperationMetadata;
 import com.google.cloud.aiplatform.v1beta1.CreateFeatureOnlineStoreRequest;
@@ -44,18 +43,20 @@ public class CreateFeatureOnlineStoreFixedNodesSample {
     String featureOnlineStoreId = "YOUR_FEATURESTORE_ID";
     int minNodeCount = 1;
     int maxNodeCount = 2;
+    int targetCpuUtilization = 60;
     String location = "us-central1";
-    String endpoint = "us-central1-aiplatform.googleapis.com:443";
-    int timeout = 900;
+    String endpoint = location + "-aiplatform.googleapis.com:443";
+    int timeout = 900; // seconds to wait the response
     createFeatureOnlineStoreFixedNodesSample(
-        project, featureOnlineStoreId, minNodeCount, maxNodeCount, location, endpoint, timeout);
+        project, featureOnlineStoreId, minNodeCount, maxNodeCount,targetCpuUtilization, location, endpoint, timeout);
   }
 
-  static void createFeatureOnlineStoreFixedNodesSample(
+  static FeatureOnlineStore createFeatureOnlineStoreFixedNodesSample(
       String project,
       String featureOnlineStoreId,
       int minNodeCount,
       int maxNodeCount,
+      int targetCpuUtilization,
       String location,
       String endpoint,
       int timeout)
@@ -73,7 +74,7 @@ public class CreateFeatureOnlineStoreFixedNodesSample {
                   FeatureOnlineStore.Bigtable.AutoScaling.newBuilder()
                       .setMinNodeCount(minNodeCount)
                       .setMaxNodeCount(maxNodeCount)
-                      .setCpuUtilizationTarget(60));
+                      .setCpuUtilizationTarget(targetCpuUtilization));
       FeatureOnlineStore featureOnlineStore =
           FeatureOnlineStore.newBuilder().setBigtable(builderValue).build();
 
@@ -88,13 +89,9 @@ public class CreateFeatureOnlineStoreFixedNodesSample {
           featureOnlineStoreFuture =
               featureOnlineStoreAdminServiceClient.createFeatureOnlineStoreAsync(
                   createFeatureOnlineStoreRequest);
-      System.out.format(
-          "Operation name: %s%n", featureOnlineStoreFuture.getInitialFuture().get().getName());
-      System.out.println("Waiting for operation to finish...");
       FeatureOnlineStore featureOnlineStoreResponse =
           featureOnlineStoreFuture.get(timeout, TimeUnit.SECONDS);
-      System.out.println("Create FeatureOnlineStore Response");
-      System.out.format("Name: %s%n", featureOnlineStoreResponse.getName());
+      return featureOnlineStoreResponse;
     }
   }
 }

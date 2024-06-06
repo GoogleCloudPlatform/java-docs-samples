@@ -22,7 +22,6 @@
 package aiplatform;
 
 // [START aiplatform_delete_feature_online_store_sample]
-
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.aiplatform.v1.DeleteFeatureOnlineStoreRequest;
 import com.google.cloud.aiplatform.v1.DeleteOperationMetadata;
@@ -35,7 +34,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/** DeleteFeatureOnlineStoreSample */
 public class DeleteFeatureOnlineStoreSample {
   public static void main(String[] args)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
@@ -44,8 +42,9 @@ public class DeleteFeatureOnlineStoreSample {
     String featureOnlineStoreId = "YOUR_FEATURESTORE_ID";
     boolean useForce = true;
     String location = "us-central1";
-    String endpoint = "us-central1-aiplatform.googleapis.com:443";
-    int timeout = 60;
+    String endpoint = location + "-aiplatform.googleapis.com:443";
+    int timeout = 60; // seconds to wait the response
+
     deleteFeatureOnlineStoreSample(
         project, featureOnlineStoreId, useForce, location, endpoint, timeout);
   }
@@ -76,13 +75,9 @@ public class DeleteFeatureOnlineStoreSample {
               .build();
 
       OperationFuture<Empty, DeleteOperationMetadata> operationFuture =
-          featureOnlineStoreAdminServiceClient.deleteFeatureOnlineStoreAsync(
-              deleteFeatureOnlineStoreRequest);
-      System.out.format("Operation name: %s%n", operationFuture.getInitialFuture().get().getName());
-      System.out.println("Waiting for operation to finish...");
+      featureOnlineStoreAdminServiceClient.deleteFeatureOnlineStoreAsync(
+          deleteFeatureOnlineStoreRequest);
       operationFuture.get(timeout, TimeUnit.SECONDS);
-
-      System.out.format("Deleted FeatureOnlineStore.");
     }
   }
 }
