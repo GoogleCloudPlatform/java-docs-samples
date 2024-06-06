@@ -34,11 +34,18 @@ import com.google.cloud.securitycenter.v2.OrganizationLocationName;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient.ListBigQueryExportsPagedResponse;
 import com.google.cloud.securitycenter.v2.UpdateBigQueryExportRequest;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.FieldMask;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.concurrent.TimeUnit;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -49,7 +56,8 @@ import vtwo.bigquery.ListBigQueryExports;
 import vtwo.bigquery.UpdateBigQueryExport;
 
 public class BigQueryExportIT {
-
+  private static final int MAX_ATTEMPT_COUNT = 3;
+  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static final String ORGANIZATION_ID = "test-organization-id";
   private static final String PROJECT_ID = "test-project-id";
   private static final String LOCATION = "global";
@@ -57,17 +65,39 @@ public class BigQueryExportIT {
   private static final String BQ_EXPORT_ID = "test-export-id";
   private static MockedStatic<SecurityCenterClient> clientMock;
   private static SecurityCenterClient client;
+  private static ByteArrayOutputStream stdOut;
+
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
+      MAX_ATTEMPT_COUNT,
+      INITIAL_BACKOFF_MILLIS);
 
   @BeforeClass
-  public static void setUp() {
+  public static void setUp() throws InterruptedException {
+    final PrintStream out = System.out;
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+
     client = mock(SecurityCenterClient.class);
     clientMock = Mockito.mockStatic(SecurityCenterClient.class);
     clientMock.when(SecurityCenterClient::create).thenReturn(client);
+
+    stdOut = null;
+    System.setOut(out);
+    TimeUnit.MINUTES.sleep(1);
   }
 
   @AfterClass
   public static void cleanUp() {
     clientMock.reset();
+    stdOut = null;
+    System.setOut(null);
+  }
+
+  @Before
+  public void beforeEach() {
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
   }
 
   @Test
