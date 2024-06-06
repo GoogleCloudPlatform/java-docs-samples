@@ -93,10 +93,13 @@ if [[ (",$JAVA_VERSION," =~ "17" || ",$JAVA_VERSION," =~ "21")  && ( "$file" == 
     exit 0
 fi
 
+# Debugging
+echo "DEBUG: Current directory is ${PWD}"
+echo "DEBUG: Project root is ${project_root}"
 
 # Use maven to execute the tests for the project.
 pushd ${project_root}
-make test dir="compute/cloud-client"
+make test dir=compute/cloud-client
 EXIT=$?
 popd
 
