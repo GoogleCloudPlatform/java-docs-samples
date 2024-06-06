@@ -47,6 +47,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import vtwo.bigquery.CreateBigQueryExport;
@@ -64,6 +65,7 @@ public class BigQueryExportIT {
   private static final String BQ_DATASET_NAME = "test-dataset-id";
   private static final String BQ_EXPORT_ID = "test-export-id";
   private static MockedStatic<SecurityCenterClient> clientMock;
+  @Mock
   private static SecurityCenterClient client;
   private static ByteArrayOutputStream stdOut;
 
