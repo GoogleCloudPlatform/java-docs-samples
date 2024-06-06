@@ -17,6 +17,10 @@ assign_issues:
 
 assign_issues_by:
 - labels:
+  - "api: routeoptimization"
+  to:
+  - GoogleCloudPlatform/geo-routeoptimization
+- labels:
   - "api: cloudasset"
   to:
   - GoogleCloudPlatform/cloud-asset-analysis-team
