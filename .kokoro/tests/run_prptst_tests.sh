@@ -45,6 +45,7 @@ gradle -v
 # Setup required env variables
 export GOOGLE_CLOUD_PROJECT="tpczero-system:java-docs-samples-testing"
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets/prptst-java-docs-samples-service-account.json
+export GOOGLE_CLOUD_UNIVERSE_DOMAIN="apis-tpczero.goog"
 export JAVA_DOCS_COMPUTE_TEST_ZONES="u-us-prp1-a,u-us-prp1-b,u-us-prp1-c"
 export JAVA_DOCS_COMPUTE_TEST_IMAGE_PROJECT="tpczero-system:java-docs-samples-testing" # test will fail anyway because images are not there
 
