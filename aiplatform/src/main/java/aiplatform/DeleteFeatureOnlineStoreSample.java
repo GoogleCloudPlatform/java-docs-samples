@@ -76,8 +76,8 @@ public class DeleteFeatureOnlineStoreSample {
               .build();
 
       OperationFuture<Empty, DeleteOperationMetadata> operationFuture =
-      featureOnlineStoreAdminServiceClient.deleteFeatureOnlineStoreAsync(
-          deleteFeatureOnlineStoreRequest);
+          featureOnlineStoreAdminServiceClient.deleteFeatureOnlineStoreAsync(
+              deleteFeatureOnlineStoreRequest);
       operationFuture.get(timeout, TimeUnit.SECONDS);
     }
   }

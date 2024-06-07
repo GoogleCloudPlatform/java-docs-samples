@@ -48,12 +48,17 @@ public class CreateFeatureOnlineStoreFixedNodesSample {
     String endpoint = location + "-aiplatform.googleapis.com:443";
     int timeout = 900; // seconds to wait the response
     createFeatureOnlineStoreFixedNodesSample(
-        project, featureOnlineStoreId, minNodeCount, maxNodeCount,
-        targetCpuUtilization, location, endpoint, timeout);
+        project,
+        featureOnlineStoreId,
+        minNodeCount,
+        maxNodeCount,
+        targetCpuUtilization,
+        location,
+        endpoint,
+        timeout);
   }
 
-
-// [START aiplatform_create_featureOnlineStore_bigtable_sample_create]
+  // [START aiplatform_create_featureOnlineStore_bigtable_sample_create]
   static FeatureOnlineStore createFeatureOnlineStoreFixedNodesSample(
       String project,
       String featureOnlineStoreId,
