@@ -14,7 +14,7 @@
 
 package compute.disks;
 
-// [START compute_create_hyperdisk]
+// [START compute_hyperdisk_create]
 
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
@@ -94,4 +94,4 @@ public class CreateHyperdisk {
   }
 
 }
-// [END compute_create_hyperdisk]
+// [END compute_hyperdisk_create]

@@ -14,7 +14,7 @@
 
 package compute.disks.storagepool;
 
-// [START compute_create_disk_in_storage_pool]
+// [START compute_hyperdisk_create_from_pool]
 
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
@@ -96,4 +96,4 @@ public class CreateDiskInStoragePool {
   }
 
 }
-// [END compute_create_disk_in_storage_pool]
+// [END compute_hyperdisk_create_from_pool]
