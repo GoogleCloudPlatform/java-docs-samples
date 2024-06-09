@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,26 +24,24 @@ import java.io.IOException;
 
 public class DeleteTopic {
 
-    public static void main(String[] args) throws Exception {
-        // TODO(developer): Replace these variables before running the example.
-        String projectId = "my-project-id";
-        String region = "us-central1";
-        String clusterId = "my-cluster";
-        String topicId = "my-topic";
-        deleteTopic(projectId, region, clusterId, topicId);
-    }
+  public static void main(String[] args) throws Exception {
+    // TODO(developer): Replace these variables before running the example.
+    String projectId = "my-project-id";
+    String region = "us-central1";
+    String clusterId = "my-cluster";
+    String topicId = "my-topic";
+    deleteTopic(projectId, region, clusterId, topicId);
+  }
 
-    public static void deleteTopic(
-            String projectId, String region, String clusterId, String topicId)
-            throws Exception {
-        try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {
-            managedKafkaClient.deleteTopic(TopicName.of(projectId, region, clusterId, topicId));
-            System.out.println("Deleted topic");
-        } catch (IOException | ApiException e) {
-            System.err.printf("managedKafkaClient.deleteTopic got err: %s", e.getMessage());
-        }
+  public static void deleteTopic(String projectId, String region, String clusterId, String topicId)
+      throws Exception {
+    try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {
+      managedKafkaClient.deleteTopic(TopicName.of(projectId, region, clusterId, topicId));
+      System.out.println("Deleted topic");
+    } catch (IOException | ApiException e) {
+      System.err.printf("managedKafkaClient.deleteTopic got err: %s", e.getMessage());
     }
+  }
 }
 
 // [END managedkafka_delete_topic]
-

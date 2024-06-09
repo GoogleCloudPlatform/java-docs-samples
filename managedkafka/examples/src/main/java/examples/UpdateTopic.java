@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,44 +29,44 @@ import java.util.Map;
 
 public class UpdateTopic {
 
-    public static void main(String[] args) throws Exception {
-        // TODO(developer): Replace these variables before running the example.
-        String projectId = "my-project-id";
-        String region = "us-central1";
-        String clusterId = "my-cluster";
-        String topicId = "my-topic";
-        int partitionCount = 20;
-        Map<String, String> configs = new HashMap<String,String>(){{
+  public static void main(String[] args) throws Exception {
+    // TODO(developer): Replace these variables before running the example.
+    String projectId = "my-project-id";
+    String region = "us-central1";
+    String clusterId = "my-cluster";
+    String topicId = "my-topic";
+    int partitionCount = 20;
+    Map<String, String> configs =
+        new HashMap<String, String>() {
+          {
             put("min.insync.replicas", "1");
-        }};
-        updateTopic(projectId, region, clusterId, topicId, partitionCount, configs);
-    }
+          }
+        };
+    updateTopic(projectId, region, clusterId, topicId, partitionCount, configs);
+  }
 
-    public static void updateTopic(
-            String projectId, String region, String clusterId, String topicId,
-            int partitionCount, Map<String, String> configs)
-            throws Exception {
-        Topic topic = Topic.newBuilder()
-                .setPartitionCount(partitionCount)
-                .putAllConfigs(configs)
-                .build();
-        String[] paths = {"partition_count", "configs"};
-        FieldMask updateMask = FieldMask.newBuilder()
-                .addAllPaths(Arrays.asList(paths))
-                .build();
+  public static void updateTopic(
+      String projectId,
+      String region,
+      String clusterId,
+      String topicId,
+      int partitionCount,
+      Map<String, String> configs)
+      throws Exception {
+    Topic topic =
+        Topic.newBuilder().setPartitionCount(partitionCount).putAllConfigs(configs).build();
+    String[] paths = {"partition_count", "configs"};
+    FieldMask updateMask = FieldMask.newBuilder().addAllPaths(Arrays.asList(paths)).build();
 
-        try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {
-            UpdateTopicRequest request = UpdateTopicRequest.newBuilder()
-                    .setUpdateMask(updateMask)
-                    .setTopic(topic)
-                    .build();
-            Topic response = managedKafkaClient.updateTopic(request);
-            System.out.printf("Updated topic: %s\n", response.getName());
-        } catch (IOException | ApiException e) {
-            System.err.printf("managedKafkaClient.updateCluster got err: %s", e.getMessage());
-        }
+    try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {
+      UpdateTopicRequest request =
+          UpdateTopicRequest.newBuilder().setUpdateMask(updateMask).setTopic(topic).build();
+      Topic response = managedKafkaClient.updateTopic(request);
+      System.out.printf("Updated topic: %s\n", response.getName());
+    } catch (IOException | ApiException e) {
+      System.err.printf("managedKafkaClient.updateCluster got err: %s", e.getMessage());
     }
+  }
 }
 
 // [END managedkafka_update_topic]
-
