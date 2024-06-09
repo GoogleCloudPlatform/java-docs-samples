@@ -47,4 +47,4 @@ public class ListConsumerGroups {
   }
 }
 
-// [START managedkafka_list_consumergroups]
+// [END managedkafka_list_consumergroups]
