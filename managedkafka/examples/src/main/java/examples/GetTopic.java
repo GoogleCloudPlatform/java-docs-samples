@@ -28,7 +28,7 @@ public class GetTopic {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the example.
     String projectId = "my-project-id";
-    String region = "us-central1";
+    String region = "my-region"; // e.g. us-east1
     String clusterId = "my-cluster";
     String topicId = "my-topic";
     getTopic(projectId, region, clusterId, topicId);
@@ -37,6 +37,7 @@ public class GetTopic {
   public static void getTopic(String projectId, String region, String clusterId, String topicId)
       throws Exception {
     try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {
+      // This operation is being handled synchronously.
       Topic topic =
           managedKafkaClient.getTopic(TopicName.of(projectId, region, clusterId, topicId));
       System.out.println(topic.getAllFields());

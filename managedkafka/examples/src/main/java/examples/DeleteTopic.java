@@ -27,7 +27,7 @@ public class DeleteTopic {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the example.
     String projectId = "my-project-id";
-    String region = "us-central1";
+    String region = "my-region"; // e.g. us-east1
     String clusterId = "my-cluster";
     String topicId = "my-topic";
     deleteTopic(projectId, region, clusterId, topicId);
@@ -36,6 +36,7 @@ public class DeleteTopic {
   public static void deleteTopic(String projectId, String region, String clusterId, String topicId)
       throws Exception {
     try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {
+      // This operation is being handled synchronously.
       managedKafkaClient.deleteTopic(TopicName.of(projectId, region, clusterId, topicId));
       System.out.println("Deleted topic");
     } catch (IOException | ApiException e) {

@@ -18,7 +18,6 @@ package examples;
 
 // [START managedkafka_update_consumergroup]
 import com.google.api.gax.rpc.ApiException;
-import com.google.cloud.managedkafka.v1.ClusterName;
 import com.google.cloud.managedkafka.v1.ConsumerGroup;
 import com.google.cloud.managedkafka.v1.ConsumerGroupName;
 import com.google.cloud.managedkafka.v1.ConsumerPartitionMetadata;
@@ -36,7 +35,7 @@ public class UpdateConsumerGroup {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the example.
     String projectId = "my-project-id";
-    String region = "us-central1";
+    String region = "my-region"; // e.g. us-east1
     String clusterId = "my-cluster";
     String topicId = "my-topic";
     String consumerGroupId = "my-consumer-group";
@@ -59,7 +58,6 @@ public class UpdateConsumerGroup {
       String consumerGroupId,
       Map<Integer, Integer> partitionOffsets)
       throws Exception {
-    ClusterName clusterName = ClusterName.of(projectId, region, clusterId);
     TopicName topicName = TopicName.of(projectId, region, clusterId, topicId);
     ConsumerGroupName consumerGroupName =
         ConsumerGroupName.of(projectId, region, clusterId, consumerGroupId);
@@ -91,6 +89,7 @@ public class UpdateConsumerGroup {
               .setUpdateMask(updateMask)
               .setConsumerGroup(consumerGroup)
               .build();
+      // This operation is being handled synchronously.
       ConsumerGroup response = managedKafkaClient.updateConsumerGroup(request);
       System.out.printf("Updated consumer group: %s\n", response.getName());
     } catch (IOException | ApiException e) {

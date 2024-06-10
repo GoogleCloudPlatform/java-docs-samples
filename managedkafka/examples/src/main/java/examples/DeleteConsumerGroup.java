@@ -27,7 +27,7 @@ public class DeleteConsumerGroup {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the example.
     String projectId = "my-project-id";
-    String region = "us-central1";
+    String region = "my-region"; // e.g. us-east1
     String clusterId = "my-cluster";
     String consumerGroupId = "my-consumer-group";
     deleteConsumerGroup(projectId, region, clusterId, consumerGroupId);
@@ -36,6 +36,7 @@ public class DeleteConsumerGroup {
   public static void deleteConsumerGroup(
       String projectId, String region, String clusterId, String consumerGroupId) throws Exception {
     try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {
+      // This operation is being handled synchronously.
       managedKafkaClient.deleteConsumerGroup(
           ConsumerGroupName.of(projectId, region, clusterId, consumerGroupId));
       System.out.println("Deleted consumer group");

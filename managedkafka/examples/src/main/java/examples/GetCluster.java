@@ -28,7 +28,7 @@ public class GetCluster {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the example.
     String projectId = "my-project-id";
-    String region = "us-central1";
+    String region = "my-region"; // e.g. us-east1
     String clusterId = "my-cluster";
     getCluster(projectId, region, clusterId);
   }
@@ -36,6 +36,7 @@ public class GetCluster {
   public static void getCluster(String projectId, String region, String clusterId)
       throws Exception {
     try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {
+      // This operation is being handled synchronously.
       Cluster cluster = managedKafkaClient.getCluster(ClusterName.of(projectId, region, clusterId));
       System.out.println(cluster.getAllFields());
     } catch (IOException | ApiException e) {

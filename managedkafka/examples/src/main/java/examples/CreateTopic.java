@@ -32,10 +32,10 @@ public class CreateTopic {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the example.
     String projectId = "my-project-id";
-    String region = "us-central1";
+    String region = "my-region"; // e.g. us-east1
     String clusterId = "my-cluster";
     String topicId = "my-topic";
-    int partitionCount = 10;
+    int partitionCount = 100;
     int replicationFactor = 3;
     Map<String, String> configs =
         new HashMap<String, String>() {
@@ -69,6 +69,7 @@ public class CreateTopic {
               .setTopicId(topicId)
               .setTopic(topic)
               .build();
+      // This operation is being handled synchronously.
       Topic response = managedKafkaClient.createTopic(request);
       System.out.printf("Created topic: %s\n", response.getName());
     } catch (IOException | ApiException e) {

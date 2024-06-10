@@ -20,6 +20,7 @@ package examples;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.managedkafka.v1.CapacityConfig;
 import com.google.cloud.managedkafka.v1.Cluster;
+import com.google.cloud.managedkafka.v1.ClusterName;
 import com.google.cloud.managedkafka.v1.ManagedKafkaClient;
 import com.google.cloud.managedkafka.v1.OperationMetadata;
 import com.google.cloud.managedkafka.v1.UpdateClusterRequest;
@@ -31,7 +32,7 @@ public class UpdateCluster {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the example.
     String projectId = "my-project-id";
-    String region = "us-central1";
+    String region = "my-region"; // e.g. us-east1
     String clusterId = "my-cluster";
     long memoryBytes = 4221225472L;
     updateCluster(projectId, region, clusterId, memoryBytes);
@@ -40,7 +41,11 @@ public class UpdateCluster {
   public static void updateCluster(
       String projectId, String region, String clusterId, long memoryBytes) throws Exception {
     CapacityConfig capacityConfig = CapacityConfig.newBuilder().setMemoryBytes(memoryBytes).build();
-    Cluster cluster = Cluster.newBuilder().setCapacityConfig(capacityConfig).build();
+    Cluster cluster =
+        Cluster.newBuilder()
+            .setName(ClusterName.of(projectId, region, clusterId).toString())
+            .setCapacityConfig(capacityConfig)
+            .build();
     FieldMask updateMask = FieldMask.newBuilder().addPaths("capacity_config.memory_bytes").build();
 
     try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {

@@ -28,13 +28,14 @@ public class ListClusters {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the example.
     String projectId = "my-project-id";
-    String region = "us-central1";
+    String region = "my-region"; // e.g. us-east1
     listClusters(projectId, region);
   }
 
   public static void listClusters(String projectId, String region) throws Exception {
     try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {
       LocationName locationName = LocationName.of(projectId, region);
+      // This operation is being handled synchronously.
       for (Cluster cluster : managedKafkaClient.listClusters(locationName).iterateAll()) {
         System.out.println(cluster.getAllFields());
       }

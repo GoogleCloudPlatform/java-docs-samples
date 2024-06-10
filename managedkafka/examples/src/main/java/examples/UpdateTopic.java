@@ -20,6 +20,7 @@ package examples;
 import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.managedkafka.v1.ManagedKafkaClient;
 import com.google.cloud.managedkafka.v1.Topic;
+import com.google.cloud.managedkafka.v1.TopicName;
 import com.google.cloud.managedkafka.v1.UpdateTopicRequest;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
@@ -32,10 +33,10 @@ public class UpdateTopic {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the example.
     String projectId = "my-project-id";
-    String region = "us-central1";
+    String region = "my-region"; // e.g. us-east1
     String clusterId = "my-cluster";
     String topicId = "my-topic";
-    int partitionCount = 20;
+    int partitionCount = 200;
     Map<String, String> configs =
         new HashMap<String, String>() {
           {
@@ -54,13 +55,17 @@ public class UpdateTopic {
       Map<String, String> configs)
       throws Exception {
     Topic topic =
-        Topic.newBuilder().setPartitionCount(partitionCount).putAllConfigs(configs).build();
+        Topic.newBuilder()
+            .setName(TopicName.of(projectId, region, clusterId, topicId).toString())
+            .setPartitionCount(partitionCount)
+            .putAllConfigs(configs)
+            .build();
     String[] paths = {"partition_count", "configs"};
     FieldMask updateMask = FieldMask.newBuilder().addAllPaths(Arrays.asList(paths)).build();
-
     try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {
       UpdateTopicRequest request =
           UpdateTopicRequest.newBuilder().setUpdateMask(updateMask).setTopic(topic).build();
+      // This operation is being handled synchronously.
       Topic response = managedKafkaClient.updateTopic(request);
       System.out.printf("Updated topic: %s\n", response.getName());
     } catch (IOException | ApiException e) {

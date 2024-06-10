@@ -31,7 +31,7 @@ public class DeleteCluster {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the example.
     String projectId = "my-project-id";
-    String region = "us-central1";
+    String region = "my-region"; // e.g. us-east1
     String clusterId = "my-cluster";
     deleteCluster(projectId, region, clusterId);
   }

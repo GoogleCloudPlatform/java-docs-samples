@@ -28,7 +28,7 @@ public class ListConsumerGroups {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the example.
     String projectId = "my-project-id";
-    String region = "us-central1";
+    String region = "my-region"; // e.g. us-east1
     String clusterId = "my-cluster";
     listConsumerGroups(projectId, region, clusterId);
   }
@@ -37,6 +37,7 @@ public class ListConsumerGroups {
       throws Exception {
     try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {
       ClusterName clusterName = ClusterName.of(projectId, region, clusterId);
+      // This operation is being handled synchronously.
       for (ConsumerGroup consumerGroup :
           managedKafkaClient.listConsumerGroups(clusterName).iterateAll()) {
         System.out.println(consumerGroup.getAllFields());
