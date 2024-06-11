@@ -38,17 +38,19 @@ public class FunctionCalling {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-002";
+    String modelName = "gemini-1.5-flash-001";
 
     String promptText = "What's the weather like in Paris?";
 
     whatsTheWeatherLike(projectId, location, modelName, promptText);
   }
 
+  // A request involving the interaction with an external tool
   public static String whatsTheWeatherLike(String projectId, String location,
                                            String modelName, String promptText)
       throws IOException {
-
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
 
       FunctionDeclaration functionDeclaration = FunctionDeclaration.newBuilder()

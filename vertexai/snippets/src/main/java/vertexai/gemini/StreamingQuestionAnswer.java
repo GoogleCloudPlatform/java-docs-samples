@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START generativeaionvertexai_stream_text_basic]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 
@@ -25,7 +26,7 @@ public class StreamingQuestionAnswer {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-vision-001";
+    String modelName = "gemini-1.5-flash-001";
 
     streamingQuestion(projectId, location, modelName);
   }
@@ -33,8 +34,8 @@ public class StreamingQuestionAnswer {
   // Ask a simple question and get the response via streaming.
   public static void streamingQuestion(String projectId, String location, String modelName)
       throws Exception {
-    // Initialize client that will be used to send requests. This client only needs
-    // to be created once, and can be reused for multiple requests.
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
 
@@ -47,3 +48,4 @@ public class StreamingQuestionAnswer {
     }
   }
 }
+// [END generativeaionvertexai_stream_text_basic]
