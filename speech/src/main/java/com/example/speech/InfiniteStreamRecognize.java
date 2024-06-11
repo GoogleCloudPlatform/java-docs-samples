@@ -47,10 +47,10 @@ public class InfiniteStreamRecognize {
 
   private static final int STREAMING_BATCH_LIMIT = 290000; // ~5 minutes
   private static final String EXIT_WORD = "exit";
+  private static final int BYTES_PER_BUFFER = 6000; // buffer size in bytes
+  private static final BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue<byte[]>();
 
   // Creating shared object
-  private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue<byte[]>();
-  private static int BYTES_PER_BUFFER = 6000; // buffer size in bytes
   private static int restartCounter = 0;
   private static ArrayList<ByteString> audioInput = new ArrayList<ByteString>();
   private static ArrayList<ByteString> lastAudioInput = new ArrayList<ByteString>();
