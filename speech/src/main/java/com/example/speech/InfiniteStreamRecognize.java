@@ -45,13 +45,12 @@ import javax.sound.sampled.TargetDataLine;
 
 public class InfiniteStreamRecognize {
 
-  private static final int STREAMING_LIMIT = 290000; // ~5 minutes
+  private static final int STREAMING_BATCH_LIMIT = 290000; // ~5 minutes
   private static final String EXIT_WORD = "exit";
 
   // Creating shared object
   private static volatile BlockingQueue<byte[]> sharedQueue = new LinkedBlockingQueue<byte[]>();
-  private static int BYTES_PER_BUFFER = 6400; // buffer size in bytes
-
+  private static int BYTES_PER_BUFFER = 6000; // buffer size in bytes
   private static int restartCounter = 0;
   private static ArrayList<ByteString> audioInput = new ArrayList<ByteString>();
   private static ArrayList<ByteString> lastAudioInput = new ArrayList<ByteString>();
@@ -63,7 +62,6 @@ public class InfiniteStreamRecognize {
   private static boolean lastTranscriptWasFinal = false;
   private static boolean stopRecognition = false;
   private static StreamController referenceToStreamController;
-  private static ByteString tempByteString;
 
   public static void main(String... args) throws LineUnavailableException {
     InfiniteStreamRecognizeOptions options = InfiniteStreamRecognizeOptions.fromFlags(args);
@@ -91,7 +89,7 @@ public class InfiniteStreamRecognize {
       // Say `exit` to stop application execution
       infiniteStreamingRecognize(options.langCode, micBuffer, sampleRate,
               RecognitionConfig.AudioEncoding.LINEAR16);
-      System.out.println("The application has been stopped.");
+      System.out.println("\nThe application has been stopped.");
     } catch (Exception e) {
       System.out.println("Exception caught: " + e);
     }
@@ -149,7 +147,7 @@ public class InfiniteStreamRecognize {
         while (!stopRecognition) {
           long estimatedTime = System.currentTimeMillis() - startTime;
 
-          if (estimatedTime >= STREAMING_LIMIT) {
+          if (estimatedTime >= STREAMING_BATCH_LIMIT) {
 
             clientStream.closeSend();
             referenceToStreamController.cancel(); // remove Observer
@@ -178,7 +176,7 @@ public class InfiniteStreamRecognize {
                     .setStreamingConfig(streamingRecognitionConfig)
                     .build();
 
-            System.out.printf("%d: RESTARTING REQUEST\n", restartCounter * STREAMING_LIMIT);
+            System.out.printf("%d: RESTARTING REQUEST\n", restartCounter * STREAMING_BATCH_LIMIT);
 
             startTime = System.currentTimeMillis();
 
@@ -188,7 +186,7 @@ public class InfiniteStreamRecognize {
               // if this is the first audio from a new request
               // calculate amount of unfinalized audio from last request
               // resend the audio to the speech client before incoming audio
-              double chunkTime = STREAMING_LIMIT / lastAudioInput.size();
+              double chunkTime = STREAMING_BATCH_LIMIT / lastAudioInput.size();
               // ms length of each chunk in previous request audio arrayList
               if (chunkTime != 0) {
                 if (bridgingOffset < 0) {
@@ -216,7 +214,7 @@ public class InfiniteStreamRecognize {
               newStream = false;
             }
 
-            tempByteString = ByteString.copyFrom(sharedQueue.take());
+            ByteString tempByteString = ByteString.copyFrom(sharedQueue.take());
 
             checkStopRecognitionFlag(tempByteString.toByteArray());
 
@@ -225,7 +223,7 @@ public class InfiniteStreamRecognize {
 
             audioInput.add(tempByteString);
           }
-          Thread.sleep(100);
+
           clientStream.send(request);
         }
         clientStream.closeSend();
@@ -251,7 +249,7 @@ public class InfiniteStreamRecognize {
         resultEndTimeInMS =
                 (int) ((resultEndTime.getSeconds() * 1000) + (resultEndTime.getNanos() / 1000000));
         double correctedTime =
-                resultEndTimeInMS - bridgingOffset + (STREAMING_LIMIT * restartCounter);
+                resultEndTimeInMS - bridgingOffset + (STREAMING_BATCH_LIMIT * restartCounter);
 
         SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
         if (result.getIsFinal()) {
@@ -283,7 +281,9 @@ public class InfiniteStreamRecognize {
   private static void checkStopRecognitionFlag(byte[] flag) {
     if (flag.length <= (EXIT_WORD.length() + 2)) {
       stopRecognition = new String(flag).trim().equalsIgnoreCase(EXIT_WORD);
-      putDataToSharedQueue(EXIT_WORD.getBytes(StandardCharsets.UTF_8));
+      if (stopRecognition) {
+        putDataToSharedQueue(EXIT_WORD.getBytes(StandardCharsets.UTF_8));
+      }
     }
   }
 
