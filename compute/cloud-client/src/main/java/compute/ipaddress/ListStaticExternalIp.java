@@ -45,8 +45,10 @@ public class ListStaticExternalIp {
   // Lists all static external IP addresses, either regional or global.
   public static List<Address> listStaticExternalIp(String projectId, String region)
           throws IOException {
+    // Use regional client if a region is specified
     if (region != null) {
-      // Use regional client if a region is specified
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
       try (AddressesClient client = AddressesClient.create()) {
         ListAddressesRequest request = ListAddressesRequest.newBuilder()
                 .setProject(projectId)
@@ -56,7 +58,8 @@ public class ListStaticExternalIp {
         return Lists.newArrayList(client.list(request).iterateAll());
       }
     } else {
-      // Use global client if no region is specified
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
       try (GlobalAddressesClient client = GlobalAddressesClient.create()) {
         ListGlobalAddressesRequest request = ListGlobalAddressesRequest.newBuilder()
                 .setProject(projectId)

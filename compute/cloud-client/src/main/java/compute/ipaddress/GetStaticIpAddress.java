@@ -45,8 +45,10 @@ public class GetStaticIpAddress {
   // Retrieves a static external IP address, either regional or global.
   public static Address getStaticIpAddress(String projectId, String region, String addressName)
           throws IOException {
+    // Use regional client if a region is specified
     if (region != null) {
-      // Use regional client if a region is specified
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
       try (AddressesClient client = AddressesClient.create()) {
         GetAddressRequest request = GetAddressRequest.newBuilder()
                 .setProject(projectId)
@@ -57,7 +59,8 @@ public class GetStaticIpAddress {
         return client.get(request);
       }
     } else {
-      // Use global client if no region is specified
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
       try (GlobalAddressesClient client = GlobalAddressesClient.create()) {
         GetGlobalAddressRequest request = GetGlobalAddressRequest.newBuilder()
                 .setProject(projectId)

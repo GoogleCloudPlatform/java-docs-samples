@@ -48,8 +48,10 @@ public class ReleaseStaticAddress {
   public static void releaseStaticAddress(String projectId, String addressName, String region)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Operation operation;
+    // Use global client if no region is specified
     if (region == null) {
-      // Use global client if no region is specified
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
       try (GlobalAddressesClient client = GlobalAddressesClient.create()) {
         DeleteGlobalAddressRequest request = DeleteGlobalAddressRequest.newBuilder()
                 .setProject(projectId)
@@ -59,7 +61,8 @@ public class ReleaseStaticAddress {
         operation = client.deleteCallable().futureCall(request).get(30, TimeUnit.SECONDS);
       }
     } else {
-      // Use regional client if a region is specified
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
       try (AddressesClient client = AddressesClient.create()) {
         DeleteAddressRequest request = DeleteAddressRequest.newBuilder()
                 .setProject(projectId)

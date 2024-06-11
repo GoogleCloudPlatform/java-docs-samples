@@ -50,6 +50,8 @@ public class PromoteEphemeralIp {
   public static List<Address> promoteEphemeralIp(String projectId, String region,
                                                  String ephemeralIp, String addressName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (AddressesClient client = AddressesClient.create()) {
       Address addressResource = Address.newBuilder()
               .setName(addressName)

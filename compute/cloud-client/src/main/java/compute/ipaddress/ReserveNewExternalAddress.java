@@ -66,8 +66,10 @@ public class ReserveNewExternalAddress {
             .setAddressType(Address.AddressType.EXTERNAL.name())
             .setNetworkTier(networkTier);
 
+    // Use global client if no region is specified
     if (region == null) {
-      // Use global client if no region is specified
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
       try (GlobalAddressesClient client = GlobalAddressesClient.create()) {
         address.setIpVersion(ipVersion);
 
@@ -82,7 +84,8 @@ public class ReserveNewExternalAddress {
         return Lists.newArrayList(client.list(projectId).iterateAll());
       }
     } else {
-      // Use regional client if a region is specified
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
       try (AddressesClient client = AddressesClient.create()) {
         address.setRegion(region);
 

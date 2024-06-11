@@ -72,9 +72,7 @@ public class GetVmAddress {
 
   private static Instance getInstance(String projectId, String instanceId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `instancesClient.close()` method on the client to safely
-    // clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (InstancesClient instancesClient = InstancesClient.create()) {
       GetInstanceRequest request = GetInstanceRequest.newBuilder()
               .setInstance(instanceId)
