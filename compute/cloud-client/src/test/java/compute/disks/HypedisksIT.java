@@ -17,7 +17,6 @@
 package compute.disks;
 
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.StoragePool;
@@ -97,7 +96,8 @@ public class HypedisksIT {
   @Test
   public void stage1_CreateHyperdiskStoragePoolTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String poolType = String.format("projects/%s/zones/%s/storagePoolTypes/hyperdisk-balanced", PROJECT_ID, ZONE);
+    String poolType = String.format("projects/%s/zones/%s/storagePoolTypes/hyperdisk-balanced",
+            PROJECT_ID, ZONE);
     StoragePool storagePool = CreateHyperdiskStoragePool
             .createHyperdiskStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME, poolType,
                     "advanced", 10240, 20000, 10240);
