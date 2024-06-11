@@ -28,7 +28,7 @@ import java.util.List;
 public class ListImages {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
 
     listImages(projectId);
@@ -42,6 +42,7 @@ public class ListImages {
       ListImagesRequest request = ListImagesRequest.newBuilder()
               .setProject(projectId)
               .build();
+
       return Lists.newArrayList(client.list(request).iterateAll());
     }
   }

@@ -34,21 +34,21 @@ public class CreateFromImage {
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
-    // name of the image you want to copy.
+    // Name of the image you want to copy.
     String sourceImageName = "your-image-name";
-    // name of the image you want to create.
+    // Name of the image you want to create.
     String imageName = "your-image-name";
-    // name of the project that hosts the source image. If left unset, it's assumed to equal
+    // Name of the project that hosts the source image. If left unset, it's assumed to equal
     // the `project_id`.
     String sourceProjectId = "your-source-project-id";
-    // an iterable collection of guest features you want to enable for the bootable image.
+    // An iterable collection of guest features you want to enable for the bootable image.
     // Learn more about Guest OS features here:
     // https://cloud.google.com/compute/docs/images/
     // create-delete-deprecate-private-images#guest-os-features
     List<String> guestOsFeature = new ArrayList<>();
-    // the storage location of your image. For example, specify "us" to store the image in the
+    // The storage location of your image. For example, specify "us" to store the image in the
     // `us` multi-region, or "us-central1" to store it in the `us-central1` region.
     // If you do not make a selection,
     // Compute Engine stores the image in the multi-region closest to your image's source location.
@@ -66,6 +66,7 @@ public class CreateFromImage {
     if (sourceProjectId == null) {
       sourceProjectId = projectId;
     }
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ImagesClient client = ImagesClient.create()) {
@@ -73,6 +74,7 @@ public class CreateFromImage {
       Image.Builder imageResource = Image.newBuilder()
               .setName(imageName)
               .setSourceImage(sourceImage.getSelfLink());
+
       if (storageLocation != null) {
         imageResource.addStorageLocations(storageLocation);
       }
@@ -84,6 +86,7 @@ public class CreateFromImage {
           imageResource.addGuestOsFeatures(build);
         }
       }
+
       InsertImageRequest request = InsertImageRequest.newBuilder()
               .setProject(projectId)
               .setRequestId(UUID.randomUUID().toString())

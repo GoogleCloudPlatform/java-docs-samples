@@ -32,11 +32,11 @@ public class SetImageDeprecationStatus {
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
-    // name of the image you want to create.
+    // Name of the image you want to create.
     String imageName = "your-image-name";
-    // name of the image you want to create.
+    // Name of the image you want to create.
     DeprecationStatus.State status = DeprecationStatus.State.DEPRECATED;
 
     setDeprecationStatus(projectId, imageName, status);

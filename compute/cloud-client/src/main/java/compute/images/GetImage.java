@@ -26,9 +26,9 @@ import java.io.IOException;
 public class GetImage {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
-    // name of the image you want to create.
+    // Name of the image you want to create.
     String imageName = "your-image-name";
 
     getImage(projectId, imageName);
