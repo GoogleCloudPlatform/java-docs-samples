@@ -38,7 +38,7 @@ public class CreateSpotVm {
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
     // Name of the virtual machine to check.
     String instanceName = "your-instance-name";
