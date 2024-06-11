@@ -199,7 +199,7 @@ public class SnippetsIT {
     String textPrompt =
         "What's a good name for a flower shop that specializes in selling bouquets of"
             + " dried flowers?";
-    String output = TextInput.textInput(PROJECT_ID, LOCATION, GEMINI_PRO, textPrompt);
+    String output = TextInput.textInput(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
     assertThat(output).isNotEmpty();
   }
 
