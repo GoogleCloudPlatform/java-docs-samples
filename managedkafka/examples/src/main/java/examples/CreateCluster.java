@@ -38,8 +38,8 @@ public class CreateCluster {
     String region = "my-region"; // e.g. us-east1
     String clusterId = "my-cluster";
     String subnet = "my-subnet"; // e.g. projects/my-project/regions/my-region/subnetworks/my-subnet
-    int cpu = 3; // 3 GiB
-    long memoryBytes = 3221225472L;
+    int cpu = 3;
+    long memoryBytes = 3221225472L; // 3 GiB
     createCluster(projectId, region, clusterId, subnet, cpu, memoryBytes);
   }
 
