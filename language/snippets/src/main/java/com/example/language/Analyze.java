@@ -55,9 +55,7 @@ public class Analyze {
     String text = args[1];
 
     if (command.equals("classify")) {
-      if (text.startsWith("gs://")) {
-        classifyFile(text);
-      } else {
+      if (text.startsWith("gs://")) { classifyFile(text); } else {
         classifyText(text);
       }
     } else if (command.equals("entities")) {
