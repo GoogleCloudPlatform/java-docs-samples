@@ -19,7 +19,8 @@ package compute.spots;
 // [START compute_spot_create]
 
 import com.google.cloud.compute.v1.AccessConfig;
-import com.google.cloud.compute.v1.Address;
+import com.google.cloud.compute.v1.AccessConfig.Type;
+import com.google.cloud.compute.v1.Address.NetworkTier;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
 import com.google.cloud.compute.v1.ImagesClient;
@@ -28,6 +29,7 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Scheduling;
+import com.google.cloud.compute.v1.Scheduling.ProvisioningModel;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -61,7 +63,12 @@ public class CreateSpotVm {
     String machineTypes = String.format("zones/%s/machineTypes/%s", zone, "n1-standard-1");
 
     // Send an instance creation request to the Compute Engine API and wait for it to complete.
-    return createInstance(projectId, zone, instanceName, attachedDisk, true, machineTypes, false);
+    Instance instance =
+            createInstance(projectId, zone, instanceName, attachedDisk, true, machineTypes, false);
+
+    System.out.printf("Spot instance '%s' has been created successfully", instance.getName());
+
+    return instance;
   }
 
   // disks: a list of compute_v1.AttachedDisk objects describing the disks
@@ -109,7 +116,7 @@ public class CreateSpotVm {
       // Set the Spot VM setting
       Scheduling.Builder scheduling = builder.getScheduling()
               .toBuilder()
-              .setProvisioningModel(Scheduling.ProvisioningModel.SPOT.name())
+              .setProvisioningModel(ProvisioningModel.SPOT.name())
               .setInstanceTerminationAction("STOP");
       builder.setScheduling(scheduling);
     }
@@ -123,9 +130,9 @@ public class CreateSpotVm {
 
     if (externalAccess) {
       AccessConfig.Builder accessConfig = AccessConfig.newBuilder()
-              .setType(AccessConfig.Type.ONE_TO_ONE_NAT.name())
+              .setType(Type.ONE_TO_ONE_NAT.name())
               .setName("External NAT")
-              .setNetworkTier(Address.NetworkTier.PREMIUM.name());
+              .setNetworkTier(NetworkTier.PREMIUM.name());
       build.addAccessConfigs(accessConfig.build());
     }
 
