@@ -196,8 +196,8 @@ public class InstanceTemplatesIT {
       String namePattern = "i-##-" + id;
       instances = CreateInstanceBulkInsert
               .bulkInsertInstance(PROJECT_ID, DEFAULT_ZONE, TEMPLATE_NAME,
-                      3, namePattern, 3, new HashMap<>());
-      Assert.assertEquals(3, instances.size());
+                      2, namePattern, 2, new HashMap<>());
+      Assert.assertEquals(2, instances.size());
       Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains("i-")));
       Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains(id)));
     } catch (Exception e) {

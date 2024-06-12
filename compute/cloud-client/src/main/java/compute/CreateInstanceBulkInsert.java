@@ -100,7 +100,7 @@ public class CreateInstanceBulkInsert {
               .build();
 
       // Wait for server update
-      Thread.sleep(10000);
+      TimeUnit.SECONDS.sleep(30);
 
       return Lists.newArrayList(instancesClient.list(build).iterateAll());
     }

@@ -86,11 +86,14 @@ public class CreateHyperdisk {
       }
 
       // Wait for server update
-      Thread.sleep(10000);
+      TimeUnit.SECONDS.sleep(10);
 
-      return client.get(projectId, zone, diskName);
+      Disk hyperdisk = client.get(projectId, zone, diskName);
+
+      System.out.printf("Hyperdisk '%s' has been created successfully", hyperdisk.getName());
+
+      return hyperdisk;
     }
   }
-
 }
 // [END compute_hyperdisk_create]

@@ -88,9 +88,13 @@ public class CreateHyperdiskStoragePool {
       }
 
       // Wait for server update
-      Thread.sleep(10000);
+      TimeUnit.SECONDS.sleep(10);
 
-      return client.get(projectId, zone, storagePoolName);
+      StoragePool storagePool = client.get(projectId, zone, storagePoolName);
+
+      System.out.printf("Storage pool '%s' has been created successfully", storagePool.getName());
+
+      return storagePool;
     }
   }
 }

@@ -35,7 +35,7 @@ public class CreateDiskInStoragePool {
     String zone = "europe-central2-b";
     // Name of the disk you want to create.
     String diskName = "YOUR_DISK_NAME";
-    // Link to the storagePool you want to use. Use next format :
+    // Link to the storagePool you want to use. Use format :
     // https://www.googleapis.com/compute/v1/projects/%s/zones/%s/storagePools/%s"
     String storagePoolName = "YOUR_STORAGE_POOL_LINK";
     // The type of disk you want to create. This value uses the following format:
@@ -54,7 +54,7 @@ public class CreateDiskInStoragePool {
             diskSizeGb, provisionedIops, provisionedThroughput);
   }
 
-  // Creates a hyperdisk in a project
+  // Creates a hyperdisk in the storage pool
   public static Disk createDiskInStoragePool(String projectId, String zone, String diskName,
                                              String storagePoolName, String diskType,
                                              long diskSizeGb, long iops, long throughput)
@@ -88,11 +88,14 @@ public class CreateDiskInStoragePool {
       }
 
       // Wait for server update
-      Thread.sleep(10000);
+      TimeUnit.SECONDS.sleep(10);
 
-      return client.get(projectId, zone, diskName);
+      Disk hyperdisk = client.get(projectId, zone, diskName);
+
+      System.out.printf("Hyperdisk '%s' has been created successfully", hyperdisk.getName());
+
+      return hyperdisk;
     }
   }
-
 }
 // [END compute_hyperdisk_create_from_pool]
