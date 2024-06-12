@@ -62,7 +62,7 @@ public class AnalyzeIT {
             + "based on the Linux kernel and designed primarily for touchscreen "
             + "mobile devices such as smartphones and tablets.");
     String got = bout.toString();
-    assertThat(got).contains("Computers & Electronics");
+    assertThat(got).contains("THIS SHOULD FAIL!");
   }
 
   @Test
