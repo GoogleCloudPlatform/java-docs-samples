@@ -84,9 +84,13 @@ public class CreateEncryptedDisk {
       }
 
       // Wait for server update
-      Thread.sleep(10000);
+      TimeUnit.SECONDS.sleep(10);
 
-      return client.get(projectId, zone, diskName);
+      Disk encrypted = client.get(projectId, zone, diskName);
+
+      System.out.printf("Encrypted disk '%s' has been created successfully", encrypted.getName());
+
+      return encrypted;
     }
   }
 }
