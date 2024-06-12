@@ -19,6 +19,9 @@ package compute.ipaddress;
 // [START compute_ip_address_reserve_new_external]
 
 import com.google.cloud.compute.v1.Address;
+import com.google.cloud.compute.v1.Address.AddressType;
+import com.google.cloud.compute.v1.Address.IpVersion;
+import com.google.cloud.compute.v1.Address.NetworkTier;
 import com.google.cloud.compute.v1.AddressesClient;
 import com.google.cloud.compute.v1.GlobalAddressesClient;
 import com.google.cloud.compute.v1.InsertAddressRequest;
@@ -57,13 +60,13 @@ public class ReserveNewExternalAddress {
                                                           String region)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
-    String ipVersion = ipV6 ? Address.IpVersion.IPV6.name() : Address.IpVersion.IPV4.name();
+    String ipVersion = ipV6 ? IpVersion.IPV6.name() : IpVersion.IPV4.name();
     String networkTier = !isPremium && region != null
-            ? Address.NetworkTier.STANDARD.name() : Address.NetworkTier.PREMIUM.name();
+            ? NetworkTier.STANDARD.name() : NetworkTier.PREMIUM.name();
 
     Address.Builder address = Address.newBuilder()
             .setName(addressName)
-            .setAddressType(Address.AddressType.EXTERNAL.name())
+            .setAddressType(AddressType.EXTERNAL.name())
             .setNetworkTier(networkTier);
 
     // Use global client if no region is specified

@@ -19,6 +19,7 @@ package compute.ipaddress;
 // [START compute_ip_address_unassign_static_address]
 
 import com.google.cloud.compute.v1.AccessConfig;
+import com.google.cloud.compute.v1.AccessConfig.Type;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
@@ -69,7 +70,7 @@ public class UnassignStaticIpAddress {
 
       AccessConfig accessConfig = null;
       for (AccessConfig config : networkInterface.getAccessConfigsList()) {
-        if (config.getType().equals(AccessConfig.Type.ONE_TO_ONE_NAT.name())) {
+        if (config.getType().equals(Type.ONE_TO_ONE_NAT.name())) {
           accessConfig = config;
           break;
         }

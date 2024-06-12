@@ -19,6 +19,7 @@ package compute.ipaddress;
 // [START compute_ip_address_get_vm_address]
 
 import com.google.cloud.compute.v1.AccessConfig;
+import com.google.cloud.compute.v1.AccessConfig.Type;
 import com.google.cloud.compute.v1.GetInstanceRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
@@ -51,14 +52,14 @@ public class GetVmAddress {
     for (NetworkInterface networkInterface : instance.getNetworkInterfacesList()) {
       if (ipType == IpType.EXTERNAL) {
         for (AccessConfig accessConfig : networkInterface.getAccessConfigsList()) {
-          if (accessConfig.getType().equals(AccessConfig.Type.ONE_TO_ONE_NAT.name())) {
+          if (accessConfig.getType().equals(Type.ONE_TO_ONE_NAT.name())) {
             result.add(accessConfig.getNatIP());
           }
         }
       } else if (ipType == IpType.IP_V6) {
         for (AccessConfig accessConfig : networkInterface.getAccessConfigsList()) {
           if (accessConfig.hasExternalIpv6()
-                  && accessConfig.getType().equals(AccessConfig.Type.DIRECT_IPV6.name())) {
+                  && accessConfig.getType().equals(Type.DIRECT_IPV6.name())) {
             result.add(accessConfig.getExternalIpv6());
           }
         }

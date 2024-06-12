@@ -19,7 +19,8 @@ package compute.ipaddress;
 // [START compute_ip_address_assign_static_external_new_vm]
 
 import com.google.cloud.compute.v1.AccessConfig;
-import com.google.cloud.compute.v1.Address;
+import com.google.cloud.compute.v1.AccessConfig.Type;
+import com.google.cloud.compute.v1.Address.NetworkTier;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
 import com.google.cloud.compute.v1.GetInstanceRequest;
@@ -142,9 +143,9 @@ public class AssignStaticExternalNewVmAddress {
             .setNetwork("global/networks/default");
     if (externalAccess) {
       AccessConfig.Builder accessConfig = AccessConfig.newBuilder()
-              .setType(AccessConfig.Type.ONE_TO_ONE_NAT.name())
+              .setType(Type.ONE_TO_ONE_NAT.name())
               .setName("External NAT")
-              .setNetworkTier(Address.NetworkTier.PREMIUM.name());
+              .setNetworkTier(NetworkTier.PREMIUM.name());
       if (externalIpv4 != null) {
         accessConfig.setNatIP(externalIpv4);
       }

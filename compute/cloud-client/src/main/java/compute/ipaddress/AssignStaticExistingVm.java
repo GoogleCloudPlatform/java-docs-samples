@@ -19,6 +19,7 @@ package compute.ipaddress;
 // [START compute_ip_address_assign_static_existing_vm]
 
 import com.google.cloud.compute.v1.AccessConfig;
+import com.google.cloud.compute.v1.AccessConfig.Type;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
@@ -74,7 +75,7 @@ public class AssignStaticExistingVm {
       }
       AccessConfig accessConfig = null;
       for (AccessConfig config : networkInterface.getAccessConfigsList()) {
-        if (config.getType().equals(AccessConfig.Type.ONE_TO_ONE_NAT.name())) {
+        if (config.getType().equals(Type.ONE_TO_ONE_NAT.name())) {
           accessConfig = config;
           break;
         }
@@ -91,7 +92,7 @@ public class AssignStaticExistingVm {
       AccessConfig newAccessConfig = AccessConfig.newBuilder()
               // Leave this field undefined to use an IP from a shared ephemeral IP address pool
               // .setNatIP(ipAddress)
-              .setType(AccessConfig.Type.ONE_TO_ONE_NAT.name())
+              .setType(Type.ONE_TO_ONE_NAT.name())
               .setName("external-nat")
               .build();
 

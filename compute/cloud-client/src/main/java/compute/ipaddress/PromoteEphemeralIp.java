@@ -19,6 +19,7 @@ package compute.ipaddress;
 // [START compute_ip_address_promote_ephemeral]
 
 import com.google.cloud.compute.v1.Address;
+import com.google.cloud.compute.v1.Address.AddressType;
 import com.google.cloud.compute.v1.AddressesClient;
 import com.google.cloud.compute.v1.InsertAddressRequest;
 import com.google.common.collect.Lists;
@@ -56,7 +57,7 @@ public class PromoteEphemeralIp {
       Address addressResource = Address.newBuilder()
               .setName(addressName)
               .setRegion(region)
-              .setAddressType(Address.AddressType.EXTERNAL.name())
+              .setAddressType(AddressType.EXTERNAL.name())
               .setAddress(ephemeralIp)
               .build();
 
