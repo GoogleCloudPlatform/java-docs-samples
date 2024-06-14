@@ -44,7 +44,7 @@ import org.junit.runners.JUnit4;
 public class PreemptibleIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-west1-a";
+  private static final String ZONE = "us-west1-b";
   private static String INSTANCE_NAME;
 
   private ByteArrayOutputStream stdOut;

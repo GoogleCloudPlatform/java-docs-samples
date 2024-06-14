@@ -93,7 +93,7 @@ public abstract class Util {
 
   public static boolean isCreatedBeforeThresholdTime(String timestamp) {
     return OffsetDateTime.parse(timestamp).toInstant()
-        .isBefore(Instant.now().minus(2, ChronoUnit.MINUTES));
+        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.HOURS));
   }
 
   public static AggregatedListPagedResponse listFilteredInstances(String project,

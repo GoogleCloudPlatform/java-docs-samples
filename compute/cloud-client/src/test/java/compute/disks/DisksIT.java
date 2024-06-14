@@ -61,7 +61,7 @@ import org.junit.runners.JUnit4;
 public class DisksIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static String ZONE;
+  private static String ZONE = "us-west1-b";
 
   private static String REGION;
   private static String INSTANCE_NAME;
