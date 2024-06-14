@@ -29,6 +29,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -71,6 +73,11 @@ public class InstanceOperationsIT {
     System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
+    System.out.printf("Cloud Project: %s\n", System.getenv("GOOGLE_CLOUD_PROJECT"));
+    System.out.printf("Default credentials path: %s\n", System.getenv("GOOGLE_CLOUD_PROJECT"));
+    Path path = Paths.get(System.getenv("GOOGLE_CLOUD_PROJECT"));
+    System.out.printf("Default credentials key: %s\n", Files.readAllLines(path).get(0))
 
     ZONE = getZone();
     MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
