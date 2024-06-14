@@ -88,6 +88,7 @@ public class InstanceTemplatesIT {
     // Check for resources created >24hours which haven't been deleted in the project.
     Util.cleanUpExistingInstanceTemplates("test-csam-", PROJECT_ID);
     Util.cleanUpExistingInstances("test-csam-", PROJECT_ID, DEFAULT_ZONE);
+    Util.cleanUpExistingInstances("bulkInsert-", PROJECT_ID, DEFAULT_ZONE);
 
     // Create templates.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
@@ -195,12 +196,12 @@ public class InstanceTemplatesIT {
     List<Instance> instances = new ArrayList<>();
     try {
       String id = UUID.randomUUID().toString().replace("-", "").substring(0, 5);
-      String namePattern = "i-##-" + id;
+      String namePattern = "bulkInsert-##-" + id;
       instances = CreateInstanceBulkInsert
               .bulkInsertInstance(PROJECT_ID, DEFAULT_ZONE, TEMPLATE_NAME,
                       2, namePattern, 2, new HashMap<>());
       Assert.assertEquals(2, instances.size());
-      Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains("i-")));
+      Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains("bulkInsert-")));
       Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains(id)));
     } catch (Exception e) {
       System.err.println(e.getCause().toString());

@@ -98,6 +98,7 @@ public class SnippetsIT {
     Util.cleanUpExistingInstances("my-new-test-instance", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstances("encrypted-test-instance", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance-with-ssd", PROJECT_ID, ZONE);
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
