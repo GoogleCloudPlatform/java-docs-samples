@@ -201,7 +201,8 @@ public class InstanceTemplatesIT {
               .bulkInsertInstance(PROJECT_ID, DEFAULT_ZONE, TEMPLATE_NAME,
                       2, namePattern, 2, new HashMap<>());
       Assert.assertEquals(2, instances.size());
-      Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains("bulkInsert-")));
+      Assert.assertTrue(instances.stream().allMatch(instance
+              -> instance.getName().contains("bulkInsert-")));
       Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains(id)));
     } catch (Exception e) {
       System.err.println(e.getCause().toString());
