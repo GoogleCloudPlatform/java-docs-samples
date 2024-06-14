@@ -69,16 +69,20 @@ public class InstanceOperationsIT {
   @BeforeAll
   public static void setUp()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     System.out.printf("Cloud Project: %s\n", System.getenv("GOOGLE_CLOUD_PROJECT"));
     System.out.printf("Default credentials path: %s\n", System.getenv("GOOGLE_CLOUD_PROJECT"));
-    Path path = Paths.get(System.getenv("GOOGLE_CLOUD_PROJECT"));
-    System.out.printf("Default credentials key: %s\n", Files.readAllLines(path).get(0));
+    try {
+      Path path = Paths.get(System.getenv("GOOGLE_CLOUD_PROJECT"));
+      System.out.printf("Default credentials key: %s\n", Files.readAllLines(path).get(0));
+    } catch (Exception er) {
+      System.out.printf("Failed to read credentials: %s", er.toString());
+    }
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
 
     ZONE = getZone();
     MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
