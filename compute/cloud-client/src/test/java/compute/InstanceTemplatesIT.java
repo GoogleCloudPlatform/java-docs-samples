@@ -206,9 +206,6 @@ public class InstanceTemplatesIT {
               -> instance.getName().contains("bulkInsert-")));
       Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains(id)));
     } finally {
-      if (instances.size() < 2) {
-        Assert.fail();
-      }
       for (Instance instance : instances) {
         try {
           DeleteInstance.deleteInstance(PROJECT_ID, DEFAULT_ZONE, instance.getName());

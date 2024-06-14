@@ -44,7 +44,7 @@ import org.junit.runners.JUnit4;
 public class PreemptibleIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-west1-b";
+  private static final String ZONE = "us-west1-c";
   private static String INSTANCE_NAME;
 
   private ByteArrayOutputStream stdOut;
@@ -67,6 +67,7 @@ public class PreemptibleIT {
 
     // Cleanup existing test instances.
     Util.cleanUpExistingInstances("preemptible-test-instance", PROJECT_ID, ZONE);
+    TimeUnit.SECONDS.sleep(20);
 
     INSTANCE_NAME = "preemptible-test-instance" + UUID.randomUUID().toString().split("-")[0];
 
