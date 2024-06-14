@@ -107,7 +107,7 @@ public class SnippetsIT {
     compute.CreateEncryptedInstance
         .createEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
 
-    TimeUnit.SECONDS.sleep(10);
+    TimeUnit.SECONDS.sleep(30);
 
     // Create a Google Cloud Storage bucket for UsageReports
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();

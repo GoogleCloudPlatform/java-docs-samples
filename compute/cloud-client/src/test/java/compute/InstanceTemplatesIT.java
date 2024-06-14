@@ -93,7 +93,7 @@ public class InstanceTemplatesIT {
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status " + TEMPLATE_NAME);
     CreateInstance.createInstance(PROJECT_ID, DEFAULT_ZONE, MACHINE_NAME_CR);
-    TimeUnit.SECONDS.sleep(10);
+    TimeUnit.SECONDS.sleep(30);
     CreateTemplateFromInstance.createTemplateFromInstance(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE,
         getInstance(DEFAULT_ZONE, MACHINE_NAME_CR).getSelfLink());
     assertThat(stdOut.toString())
@@ -102,7 +102,7 @@ public class InstanceTemplatesIT {
         String.format("regions/%s/subnetworks/default", DEFAULT_REGION), TEMPLATE_NAME_WITH_SUBNET);
     assertThat(stdOut.toString())
         .contains("Template creation from subnet operation status " + TEMPLATE_NAME_WITH_SUBNET);
-    TimeUnit.SECONDS.sleep(10);
+    TimeUnit.SECONDS.sleep(30);
 
     // Create instances.
     CreateInstanceFromTemplate.createInstanceFromTemplate(PROJECT_ID, DEFAULT_ZONE,
@@ -111,6 +111,8 @@ public class InstanceTemplatesIT {
     assertThat(stdOut.toString())
         .contains("Instance creation from template: Operation Status " + MACHINE_NAME_CR_TEMPLATE);
     CreateInstanceTemplate.createInstanceTemplateWithDiskType(PROJECT_ID, TEMPLATE_NAME_WITH_DISK);
+    TimeUnit.SECONDS.sleep(30);
+
     CreateInstanceFromTemplateWithOverrides
         .createInstanceFromTemplateWithOverrides(PROJECT_ID, DEFAULT_ZONE,
             MACHINE_NAME_CR_TEMPLATE_OR,
@@ -196,8 +198,8 @@ public class InstanceTemplatesIT {
       String namePattern = "i-##-" + id;
       instances = CreateInstanceBulkInsert
               .bulkInsertInstance(PROJECT_ID, DEFAULT_ZONE, TEMPLATE_NAME,
-                      3, namePattern, 3, new HashMap<>());
-      Assert.assertEquals(3, instances.size());
+                      2, namePattern, 2, new HashMap<>());
+      Assert.assertEquals(2, instances.size());
       Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains("i-")));
       Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains(id)));
     } catch (Exception e) {

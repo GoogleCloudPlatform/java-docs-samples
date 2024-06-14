@@ -86,7 +86,7 @@ public class InstanceOperationsIT {
     compute.CreateEncryptedInstance
         .createEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
 
-    TimeUnit.SECONDS.sleep(10);
+    TimeUnit.SECONDS.sleep(30);
 
     stdOut.close();
     System.setOut(out);

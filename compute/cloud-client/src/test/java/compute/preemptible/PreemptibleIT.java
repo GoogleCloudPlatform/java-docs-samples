@@ -74,6 +74,7 @@ public class PreemptibleIT {
     // Create Instance with Preemptible setting.
     CreatePreemptibleInstance.createPremptibleInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
     assertThat(stdOut.toString()).contains("Instance created : " + INSTANCE_NAME);
+    TimeUnit.SECONDS.sleep(20);
 
     stdOut.close();
     System.setOut(out);
