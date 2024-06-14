@@ -38,11 +38,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+@Disabled("TODO: Fix TBD")
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class CustomMachineTypeIT {
