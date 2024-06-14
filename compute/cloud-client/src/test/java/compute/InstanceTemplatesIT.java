@@ -47,7 +47,7 @@ import org.junit.runners.JUnit4;
 public class InstanceTemplatesIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String DEFAULT_ZONE = "us-central1-a";
+  private static final String DEFAULT_ZONE = "us-central1-c";
   private static final String DEFAULT_REGION = DEFAULT_ZONE.substring(0, DEFAULT_ZONE.length() - 2);
   private static String TEMPLATE_NAME;
   private static String TEMPLATE_NAME_WITH_DISK;
@@ -192,7 +192,8 @@ public class InstanceTemplatesIT {
   }
 
   @Test
-  public void testCreateInstanceBulkInsert() {
+  public void testCreateInstanceBulkInsert()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     List<Instance> instances = new ArrayList<>();
     try {
       String id = UUID.randomUUID().toString().replace("-", "").substring(0, 5);
@@ -204,10 +205,10 @@ public class InstanceTemplatesIT {
       Assert.assertTrue(instances.stream().allMatch(instance
               -> instance.getName().contains("bulkInsert-")));
       Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains(id)));
-    } catch (Exception e) {
-      System.err.println(e.getCause().toString());
-      Assert.fail();
     } finally {
+      if (instances.size() < 2) {
+        Assert.fail();
+      }
       for (Instance instance : instances) {
         try {
           DeleteInstance.deleteInstance(PROJECT_ID, DEFAULT_ZONE, instance.getName());
