@@ -45,6 +45,7 @@ gradle -v
 # Setup required env variables
 export GOOGLE_CLOUD_PROJECT="tpczero-system:java-docs-samples-testing"
 export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets/prptst-java-docs-samples-service-account.json
+export GOOGLE_CLOUD_UNIVERSE_DOMAIN="apis-tpczero.goog"
 export JAVA_DOCS_COMPUTE_TEST_ZONES="u-us-prp1-a,u-us-prp1-b,u-us-prp1-c"
 export JAVA_DOCS_COMPUTE_TEST_IMAGE_PROJECT="tpczero-system:java-docs-samples-testing" # test will fail anyway because images are not there
 
@@ -66,37 +67,13 @@ git config --global --add safe.directory $PWD
 
 project_root="$(git rev-parse --show-toplevel)"
 
-# Fail the tests if no Java version was found.
-POM_JAVA=$(grep -oP '(?<=<maven.compiler.target>).*?(?=</maven.compiler.target>)' pom.xml)
-ALLOWED_VERSIONS=("1.8" "11" "17" "21")
-# shellcheck disable=SC2199
-# shellcheck disable=SC2076
-if [[ "$POM_JAVA" = "" ]] || [[ ! " ${ALLOWED_VERSIONS[*]} " =~ " ${POM_JAVA} " ]]; then
-    RTN=1
-    echo -e "\n Testing failed: Unable to determine Java version. Please set in pom:"
-    echo -e "\n<properties>"
-    echo -e "  <maven.compiler.target>1.8</maven.compiler.target>"
-    echo -e "  <maven.compiler.source>1.8</maven.compiler.source>"
-    echo -e "</properties>\n"
-    exit 1
-fi
-
-# Skip tests that don't have the correct Java version.
-# shellcheck disable=SC2076
-if ! [[ ",$JAVA_VERSION," =~ ",$POM_JAVA," ]]; then
-    echo -e "\n Skipping tests: Java version ($POM_JAVA) not required ($JAVA_VERSION)\n"
-    exit 0
-fi
-
-if [[ (",$JAVA_VERSION," =~ "17" || ",$JAVA_VERSION," =~ "21")  && ( "$file" == *"run/hello-broken"* || "$file" == *"flexible/java-11/pubsub"* || "$file" == *"flexible/java-11/cloudstorage"*|| "$file" == *"flexible/java-11/datastore"*) ]]; then
-    echo -e "\n Skipping tests: Sample ($file) tests do not work with Java runtimes 17 or greater\n"
-    exit 0
-fi
-
+# Debugging
+echo "DEBUG: Current directory is ${PWD}"
+echo "DEBUG: Project root is ${project_root}"
 
 # Use maven to execute the tests for the project.
 pushd ${project_root}
-make test dir="compute/cloud-client"
+make test dir=compute/cloud-client
 EXIT=$?
 popd
 

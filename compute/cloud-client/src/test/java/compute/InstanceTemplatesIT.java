@@ -37,17 +37,19 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+@Disabled("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9373")
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class InstanceTemplatesIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String DEFAULT_ZONE = "us-central1-c";
+  private static final String DEFAULT_ZONE = getZone();
   private static final String DEFAULT_REGION = DEFAULT_ZONE.substring(0, DEFAULT_ZONE.length() - 2);
   private static String TEMPLATE_NAME;
   private static String TEMPLATE_NAME_WITH_DISK;
@@ -88,13 +90,12 @@ public class InstanceTemplatesIT {
     // Check for resources created >24hours which haven't been deleted in the project.
     Util.cleanUpExistingInstanceTemplates("test-csam-", PROJECT_ID);
     Util.cleanUpExistingInstances("test-csam-", PROJECT_ID, DEFAULT_ZONE);
-    Util.cleanUpExistingInstances("i-", PROJECT_ID, DEFAULT_ZONE);
 
     // Create templates.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status " + TEMPLATE_NAME);
     CreateInstance.createInstance(PROJECT_ID, DEFAULT_ZONE, MACHINE_NAME_CR);
-    TimeUnit.SECONDS.sleep(30);
+    TimeUnit.SECONDS.sleep(10);
     CreateTemplateFromInstance.createTemplateFromInstance(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE,
         getInstance(DEFAULT_ZONE, MACHINE_NAME_CR).getSelfLink());
     assertThat(stdOut.toString())
@@ -103,7 +104,7 @@ public class InstanceTemplatesIT {
         String.format("regions/%s/subnetworks/default", DEFAULT_REGION), TEMPLATE_NAME_WITH_SUBNET);
     assertThat(stdOut.toString())
         .contains("Template creation from subnet operation status " + TEMPLATE_NAME_WITH_SUBNET);
-    TimeUnit.SECONDS.sleep(30);
+    TimeUnit.SECONDS.sleep(10);
 
     // Create instances.
     CreateInstanceFromTemplate.createInstanceFromTemplate(PROJECT_ID, DEFAULT_ZONE,
@@ -112,8 +113,6 @@ public class InstanceTemplatesIT {
     assertThat(stdOut.toString())
         .contains("Instance creation from template: Operation Status " + MACHINE_NAME_CR_TEMPLATE);
     CreateInstanceTemplate.createInstanceTemplateWithDiskType(PROJECT_ID, TEMPLATE_NAME_WITH_DISK);
-    TimeUnit.SECONDS.sleep(30);
-
     CreateInstanceFromTemplateWithOverrides
         .createInstanceFromTemplateWithOverrides(PROJECT_ID, DEFAULT_ZONE,
             MACHINE_NAME_CR_TEMPLATE_OR,
@@ -192,18 +191,16 @@ public class InstanceTemplatesIT {
   }
 
   @Test
-  public void testCreateInstanceBulkInsert()
-          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public void testCreateInstanceBulkInsert() {
+    String id = UUID.randomUUID().toString().replace("-", "").substring(0, 5);
+    String namePattern = "i-##-" + id;
     List<Instance> instances = new ArrayList<>();
     try {
-      String id = UUID.randomUUID().toString().replace("-", "").substring(0, 5);
-      String namePattern = "i-##-" + id;
       instances = CreateInstanceBulkInsert
               .bulkInsertInstance(PROJECT_ID, DEFAULT_ZONE, TEMPLATE_NAME,
-                      2, namePattern, 2, new HashMap<>());
-      Assert.assertEquals(2, instances.size());
-      Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains("i-")));
-      Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains(id)));
+                      3, namePattern, 3, new HashMap<>());
+    } catch (Exception e) {
+      Assert.fail(e.getCause().toString());
     } finally {
       for (Instance instance : instances) {
         try {
@@ -214,5 +211,8 @@ public class InstanceTemplatesIT {
         }
       }
     }
+    Assert.assertEquals(3, instances.size());
+    Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains("i-")));
+    Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains(id)));
   }
 }

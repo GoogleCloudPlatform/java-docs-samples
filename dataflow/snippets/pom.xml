@@ -37,8 +37,10 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <apache_beam.version>2.54.0</apache_beam.version>
+    <apache_beam.version>2.56.0</apache_beam.version>
     <slf4j.version>2.0.12</slf4j.version>
+    <parquet.version>1.14.0</parquet.version>
+    <iceberg.version>1.4.2</iceberg.version>
   </properties>
 
   <build>
@@ -117,6 +119,41 @@
           <artifactId>google-api-services-storage</artifactId>
         </exclusion>
       </exclusions>     
+    </dependency>
+
+
+    <!-- Managed I/O -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-managed</artifactId>
+      <version>${apache_beam.version}</version>
+    </dependency>
+
+    <!-- Apache Iceberg I/O -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-io-iceberg</artifactId>
+      <version>${apache_beam.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-column</artifactId>
+      <version>${parquet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.parquet</groupId>
+      <artifactId>parquet-hadoop</artifactId>
+      <version>${parquet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client-runtime</artifactId>
+      <version>3.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.iceberg</groupId>
+      <artifactId>iceberg-data</artifactId>
+      <version>${iceberg.version}</version>
     </dependency>
 
     <!-- Google Cloud -->
