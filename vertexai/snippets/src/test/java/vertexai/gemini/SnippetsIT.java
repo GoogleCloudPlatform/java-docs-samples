@@ -174,7 +174,7 @@ public class SnippetsIT {
 
   @Test
   public void testQuickstart() throws IOException {
-    String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
+    String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_FLASH);
     // Disabled assertion, pending resolution of b/342637034
     // assertThat(output).contains("Colosseum");
   }
@@ -200,7 +200,7 @@ public class SnippetsIT {
     String textPrompt =
         "What's a good name for a flower shop that specializes in selling bouquets of"
             + " dried flowers?";
-    String output = TextInput.textInput(PROJECT_ID, LOCATION, GEMINI_PRO, textPrompt);
+    String output = TextInput.textInput(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
     assertThat(output).isNotEmpty();
   }
 

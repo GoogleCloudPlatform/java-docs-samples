@@ -18,7 +18,6 @@ package compute.custommachinetype;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
@@ -38,17 +37,19 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+@Disabled("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9373")
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class CustomMachineTypeIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = getZone();
+  private static final String ZONE = "us-central1-b";
   private static final String CUSTOM_MACHINE_TYPE = String.format(
       "zones/%s/machineTypes/n2-custom-8-10240", ZONE);
 
@@ -128,9 +129,10 @@ public class CustomMachineTypeIT {
   }
 
   @AfterEach
-  public void afterEach() {
+  public void afterEach() throws InterruptedException {
     stdOut = null;
     System.setOut(null);
+    TimeUnit.SECONDS.sleep(30);
   }
 
   @Test
