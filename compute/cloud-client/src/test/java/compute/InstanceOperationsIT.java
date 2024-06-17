@@ -18,7 +18,6 @@ package compute;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
@@ -51,7 +50,7 @@ import org.junit.runners.JUnit4;
 public class InstanceOperationsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static String ZONE;
+  private static final String ZONE = "us-central1-a";
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_ENCRYPTED;
   private static String DISK_NAME;
@@ -75,7 +74,6 @@ public class InstanceOperationsIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    ZONE = getZone();
     MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
     MACHINE_NAME_ENCRYPTED = "encrypted-test-instance" + UUID.randomUUID();
     DISK_NAME = "test-clone-disk-enc-" + UUID.randomUUID();
@@ -89,7 +87,7 @@ public class InstanceOperationsIT {
     compute.CreateEncryptedInstance
         .createEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
 
-    TimeUnit.SECONDS.sleep(10);
+    TimeUnit.SECONDS.sleep(30);
 
     stdOut.close();
     System.setOut(out);

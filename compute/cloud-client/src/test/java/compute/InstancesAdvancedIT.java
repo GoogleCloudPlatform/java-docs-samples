@@ -53,7 +53,7 @@ import org.junit.runners.JUnit4;
 public class InstancesAdvancedIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static String ZONE;
+  private static final String ZONE = "us-central1-b";
   private static String MACHINE_NAME_PUBLIC_IMAGE;
   private static String MACHINE_NAME_CUSTOM_IMAGE;
   private static String MACHINE_NAME_ADDITIONAL_DISK;
@@ -85,7 +85,6 @@ public class InstancesAdvancedIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     UUID uuid = UUID.randomUUID();
-    ZONE = getZone();
     MACHINE_NAME_PUBLIC_IMAGE = "test-instance-pub-" + uuid;
     MACHINE_NAME_CUSTOM_IMAGE = "test-instance-cust-" + uuid;
     MACHINE_NAME_ADDITIONAL_DISK = "test-instance-add-" + uuid;
@@ -118,7 +117,7 @@ public class InstancesAdvancedIT {
     CreateInstanceWithExistingDisks.createInstanceWithExistingDisks(PROJECT_ID, ZONE,
         MACHINE_NAME_EXISTING_DISK, List.of(TEST_DISK.getName()));
 
-    TimeUnit.SECONDS.sleep(10);
+    TimeUnit.SECONDS.sleep(60);
     stdOut.close();
     System.setOut(out);
   }

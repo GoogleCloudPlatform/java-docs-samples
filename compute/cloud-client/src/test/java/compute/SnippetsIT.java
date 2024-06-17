@@ -19,7 +19,6 @@ package compute;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getEnvVar;
-import static compute.Util.getZone;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AttachedDisk;
@@ -61,7 +60,7 @@ public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TEST_IMAGE_PROJECT_NAME = "JAVA_DOCS_COMPUTE_TEST_IMAGE_PROJECT";
-  private static String ZONE;
+  private static final String ZONE = "asia-south1-a";
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_LIST_INSTANCE;
   private static String MACHINE_NAME_WAIT_FOR_OP;
@@ -88,7 +87,6 @@ public class SnippetsIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    ZONE = getZone();
     MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
     MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance" + UUID.randomUUID();
     MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance" + UUID.randomUUID();
@@ -102,6 +100,7 @@ public class SnippetsIT {
     Util.cleanUpExistingInstances("my-new-test-instance", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstances("encrypted-test-instance", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance-with-ssd", PROJECT_ID, ZONE);
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
@@ -109,7 +108,7 @@ public class SnippetsIT {
     compute.CreateEncryptedInstance
         .createEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
 
-    TimeUnit.SECONDS.sleep(10);
+    TimeUnit.SECONDS.sleep(30);
 
     // Create a Google Cloud Storage bucket for UsageReports
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();

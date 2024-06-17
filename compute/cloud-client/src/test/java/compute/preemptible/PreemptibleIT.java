@@ -18,7 +18,6 @@ package compute.preemptible;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ZoneOperationsClient.ListPagedResponse;
@@ -47,7 +46,7 @@ import org.junit.runners.JUnit4;
 public class PreemptibleIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = getZone();
+  private static final String ZONE = "us-west1-c";
   private static String INSTANCE_NAME;
 
   private ByteArrayOutputStream stdOut;
@@ -70,12 +69,14 @@ public class PreemptibleIT {
 
     // Cleanup existing test instances.
     Util.cleanUpExistingInstances("preemptible-test-instance", PROJECT_ID, ZONE);
+    TimeUnit.SECONDS.sleep(20);
 
     INSTANCE_NAME = "preemptible-test-instance" + UUID.randomUUID().toString().split("-")[0];
 
     // Create Instance with Preemptible setting.
     CreatePreemptibleInstance.createPremptibleInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
     assertThat(stdOut.toString()).contains("Instance created : " + INSTANCE_NAME);
+    TimeUnit.SECONDS.sleep(20);
 
     stdOut.close();
     System.setOut(out);
