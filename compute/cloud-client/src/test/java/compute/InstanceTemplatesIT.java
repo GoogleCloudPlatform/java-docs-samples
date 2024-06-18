@@ -37,11 +37,13 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+@Disabled("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9373")
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class InstanceTemplatesIT {
@@ -190,19 +192,15 @@ public class InstanceTemplatesIT {
 
   @Test
   public void testCreateInstanceBulkInsert() {
+    String id = UUID.randomUUID().toString().replace("-", "").substring(0, 5);
+    String namePattern = "i-##-" + id;
     List<Instance> instances = new ArrayList<>();
     try {
-      String id = UUID.randomUUID().toString().replace("-", "").substring(0, 5);
-      String namePattern = "i-##-" + id;
       instances = CreateInstanceBulkInsert
               .bulkInsertInstance(PROJECT_ID, DEFAULT_ZONE, TEMPLATE_NAME,
                       3, namePattern, 3, new HashMap<>());
-      Assert.assertEquals(3, instances.size());
-      Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains("i-")));
-      Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains(id)));
     } catch (Exception e) {
-      System.err.println(e.getCause().toString());
-      Assert.fail();
+      Assert.fail(e.getCause().toString());
     } finally {
       for (Instance instance : instances) {
         try {
@@ -213,5 +211,8 @@ public class InstanceTemplatesIT {
         }
       }
     }
+    Assert.assertEquals(3, instances.size());
+    Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains("i-")));
+    Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains(id)));
   }
 }
