@@ -65,7 +65,8 @@ public class SetImageDeprecationStatus {
 
       Image image = client.get(projectId, imageName);
 
-      System.out.printf("Status '%s' has been updated successfully", image.getDeprecated().getState());
+      System.out.printf("Status '%s' has been updated successfully",
+              image.getDeprecated().getState());
 
       return image;
     }

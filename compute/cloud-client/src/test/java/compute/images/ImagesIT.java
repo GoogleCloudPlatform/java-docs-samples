@@ -151,7 +151,7 @@ public class ImagesIT {
   @Test
   public void stage4_setImageDeprecationStatus()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Thread.sleep(100000);
+    TimeUnit.SECONDS.sleep(100);
     Image image = SetImageDeprecationStatus.setDeprecationStatus(PROJECT_ID,
             IMAGE_FROM_IMAGE_NAME, DeprecationStatus.State.DEPRECATED);
     Assert.assertNotNull(image);
