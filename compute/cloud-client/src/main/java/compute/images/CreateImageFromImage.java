@@ -57,7 +57,7 @@ public class CreateImageFromImage {
             sourceProjectId, guestOsFeature, storageLocation);
   }
 
-  // Creates a copy of another image.
+  // Creates a new disk image from an existing image.
   public static Image createImageFromImage(String projectId, String sourceImageName,
                                            String imageName, String sourceProjectId,
                                            List<String> guestOsFeatures, String storageLocation)
@@ -79,10 +79,10 @@ public class CreateImageFromImage {
       }
       if (guestOsFeatures != null) {
         for (String feature : guestOsFeatures) {
-          GuestOsFeature.Builder guestOsFeature = GuestOsFeature.newBuilder()
+          GuestOsFeature.Builder guestOsFeatureBuilder = GuestOsFeature.newBuilder()
                   .setType(feature);
 
-          imageResource.addGuestOsFeatures(guestOsFeature);
+          imageResource.addGuestOsFeatures(guestOsFeatureBuilder);
         }
       }
 

@@ -82,10 +82,10 @@ public class CreateImageFromSnapshot {
       }
       if (guestOsFeatures != null) {
         for (String feature : guestOsFeatures) {
-          GuestOsFeature.Builder guestOsFeature = GuestOsFeature.newBuilder()
+          GuestOsFeature.Builder guestOsFeatureBuilder = GuestOsFeature.newBuilder()
                   .setType(feature);
 
-          imageResource.addGuestOsFeatures(guestOsFeature);
+          imageResource.addGuestOsFeatures(guestOsFeatureBuilder);
         }
       }
 
