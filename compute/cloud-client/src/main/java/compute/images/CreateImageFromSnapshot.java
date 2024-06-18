@@ -16,12 +16,14 @@
 
 package compute.images;
 
-// [START compute_images_create_from_image]
+// [START compute_images_create_from_snapshot]
 
 import com.google.cloud.compute.v1.GuestOsFeature;
 import com.google.cloud.compute.v1.Image;
 import com.google.cloud.compute.v1.ImagesClient;
 import com.google.cloud.compute.v1.InsertImageRequest;
+import com.google.cloud.compute.v1.Snapshot;
+import com.google.cloud.compute.v1.SnapshotsClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,23 +32,22 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateFromImage {
+public class CreateImageFromSnapshot {
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
-    // Name of the image you want to copy.
-    String sourceImageName = "your-image-name";
+    // Name of the snapshot you want to use as a base of your image.
+    String sourceSnapshotName = "your-snapshot-name";
     // Name of the image you want to create.
     String imageName = "your-image-name";
     // Name of the project that hosts the source image. If left unset, it's assumed to equal
-    // the `project_id`.
+    // the `projectId`.
     String sourceProjectId = "your-source-project-id";
     // An iterable collection of guest features you want to enable for the bootable image.
     // Learn more about Guest OS features here:
-    // https://cloud.google.com/compute/docs/images/
-    // create-delete-deprecate-private-images#guest-os-features
+    // https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#guest-os-features
     List<String> guestOsFeature = new ArrayList<>();
     // The storage location of your image. For example, specify "us" to store the image in the
     // `us` multi-region, or "us-central1" to store it in the `us-central1` region.
@@ -54,36 +55,37 @@ public class CreateFromImage {
     // Compute Engine stores the image in the multi-region closest to your image's source location.
     String storageLocation = "your-storage-location";
 
-    createImageFromImage(projectId, sourceImageName, imageName,
+    createImageFromSnapshot(projectId, sourceSnapshotName, imageName,
             sourceProjectId, guestOsFeature, storageLocation);
   }
 
-  // Creates a new disk image.
-  public static Image createImageFromImage(String projectId, String sourceImageName,
-                                           String imageName, String sourceProjectId,
-                                           List<String> guestOsFeature, String storageLocation)
+  // Creates an image based on a snapshot.
+  public static Image createImageFromSnapshot(String projectId, String sourceSnapshotName,
+                                              String imageName, String sourceProjectId,
+                                              List<String> guestOsFeatures, String storageLocation)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     if (sourceProjectId == null) {
       sourceProjectId = projectId;
     }
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (ImagesClient client = ImagesClient.create()) {
-      Image sourceImage = client.get(sourceProjectId, sourceImageName);
+    try (ImagesClient imagesClient = ImagesClient.create();
+         SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
+      Snapshot snapshot = snapshotsClient.get(sourceProjectId, sourceSnapshotName);
+
       Image.Builder imageResource = Image.newBuilder()
               .setName(imageName)
-              .setSourceImage(sourceImage.getSelfLink());
+              .setSourceSnapshot(snapshot.getSelfLink());
 
       if (storageLocation != null) {
         imageResource.addStorageLocations(storageLocation);
       }
-      if (guestOsFeature != null) {
-        for (String feature : guestOsFeature) {
-          GuestOsFeature build = GuestOsFeature.newBuilder()
-                  .setType(feature)
-                  .build();
-          imageResource.addGuestOsFeatures(build);
+      if (guestOsFeatures != null) {
+        for (String feature : guestOsFeatures) {
+          GuestOsFeature.Builder guestOsFeature = GuestOsFeature.newBuilder()
+                  .setType(feature);
+
+          imageResource.addGuestOsFeatures(guestOsFeature);
         }
       }
 
@@ -92,10 +94,14 @@ public class CreateFromImage {
               .setRequestId(UUID.randomUUID().toString())
               .setImageResource(imageResource)
               .build();
-      client.insertCallable().futureCall(request).get(60, TimeUnit.SECONDS);
+      imagesClient.insertCallable().futureCall(request).get(60, TimeUnit.SECONDS);
 
-      return client.get(projectId, imageName);
+      Image image = imagesClient.get(projectId, imageName);
+
+      System.out.printf("Image '%s' has been created successfully", image.getName());
+
+      return image;
     }
   }
 }
-// [END compute_images_create_from_image]
+// [END compute_images_create_from_snapshot]

@@ -23,6 +23,7 @@ import com.google.cloud.compute.v1.ImagesClient;
 import com.google.cloud.compute.v1.ListImagesRequest;
 import com.google.common.collect.Lists;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListImages {
@@ -43,7 +44,11 @@ public class ListImages {
               .setProject(projectId)
               .build();
 
-      return Lists.newArrayList(client.list(request).iterateAll());
+      ArrayList<Image> images = Lists.newArrayList(client.list(request).iterateAll());
+
+      System.out.printf("'%s' images has been retrieved successfully", images.size());
+
+      return images;
     }
   }
 }

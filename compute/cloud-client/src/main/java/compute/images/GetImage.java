@@ -28,7 +28,7 @@ public class GetImage {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
-    // Name of the image you want to create.
+    // Name of the image you want to retrieve.
     String imageName = "your-image-name";
 
     getImage(projectId, imageName);
@@ -43,7 +43,12 @@ public class GetImage {
               .setProject(projectId)
               .setImage(imageName)
               .build();
-      return client.get(request);
+
+      Image image = client.get(request);
+
+      System.out.printf("Image '%s' has been retrieved successfully", image.getName());
+
+      return image;
     }
   }
 }

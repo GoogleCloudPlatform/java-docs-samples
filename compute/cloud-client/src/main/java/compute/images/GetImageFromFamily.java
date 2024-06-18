@@ -27,9 +27,11 @@ public class GetImageFromFamily {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project you want to use.
-    String projectId = "your-project-id";
-    // Name of the image family you want to create.
-    String family = "your-family-name";
+    String projectId = "debian-cloud";
+    // Name of the image family you want to retrieve the image from.
+    // List of public operating system (OS) images:
+    // https://cloud.google.com/compute/docs/images/os-details
+    String family = "debian-11";
 
     getImageFromFamily(projectId, family);
   }
@@ -44,9 +46,11 @@ public class GetImageFromFamily {
               .setFamily(family)
               .build();
 
-      // List of public operating system (OS) images:
-      // https://cloud.google.com/compute/docs/images/os-details
-      return client.getFromFamily(request);
+      Image image = client.getFromFamily(request);
+
+      System.out.printf("Image '%s' has been retrieved successfully", image.getName());
+
+      return image;
     }
   }
 }

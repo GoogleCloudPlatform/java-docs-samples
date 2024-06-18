@@ -34,9 +34,11 @@ public class SetImageDeprecationStatus {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "your-project-id";
-    // Name of the image you want to create.
+    // Name of the image you want to update.
     String imageName = "your-image-name";
-    // Name of the image you want to create.
+    // The status you want to set for the image. Available values are available in
+    // `compute_v1.DeprecationStatus.State` enum. Learn more about image deprecation statuses:
+    // https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#deprecation-states
     DeprecationStatus.State status = DeprecationStatus.State.DEPRECATED;
 
     setDeprecationStatus(projectId, imageName, status);
@@ -61,7 +63,11 @@ public class SetImageDeprecationStatus {
 
       client.deprecateCallable().futureCall(request).get(60, TimeUnit.SECONDS);
 
-      return client.get(projectId, imageName);
+      Image image = client.get(projectId, imageName);
+
+      System.out.printf("Status '%s' has been updated successfully", image.getDeprecated().getState());
+
+      return image;
     }
   }
 }

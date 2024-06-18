@@ -94,7 +94,7 @@ public class ImagesIT {
   public void stage1_createImageFromImageTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Image sourceImage = GetImageFromFamily.getImageFromFamily("ubuntu-os-cloud", "ubuntu-2204-lts");
-    Image image = CreateFromImage.createImageFromImage(PROJECT_ID, sourceImage.getName(),
+    Image image = CreateImageFromImage.createImageFromImage(PROJECT_ID, sourceImage.getName(),
             IMAGE_FROM_IMAGE_NAME, "ubuntu-os-cloud",
             Collections.singletonList(GuestOsFeature.Type.MULTI_IP_SUBNET.name()), "eu");
 
@@ -111,7 +111,7 @@ public class ImagesIT {
   @Test
   public void stage2_createImageFromSnapshotTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Image image = CreateFromSnapshot.createImageFromImage(PROJECT_ID, SNAPSHOT_NAME,
+    Image image = CreateImageFromSnapshot.createImageFromSnapshot(PROJECT_ID, SNAPSHOT_NAME,
             IMAGE_FROM_SNAPSHOT_NAME, PROJECT_ID,
             Collections.singletonList(GuestOsFeature.Type.MULTI_IP_SUBNET.name()), "us-central1");
 
