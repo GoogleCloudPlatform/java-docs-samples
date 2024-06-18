@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START generativeaionvertexai_gemini_safety_settings]
 // [START aiplatform_gemini_safety_settings]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Candidate;
@@ -33,7 +34,7 @@ public class WithSafetySettings {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-vision-001";
+    String modelName = "gemini-1.5-flash-001";
     String textPrompt = "your-text-here";
 
     String output = safetyCheck(projectId, location, modelName, textPrompt);
@@ -85,3 +86,4 @@ public class WithSafetySettings {
   }
 }
 // [END aiplatform_gemini_safety_settings]
+// [END generativeaionvertexai_gemini_safety_settings]

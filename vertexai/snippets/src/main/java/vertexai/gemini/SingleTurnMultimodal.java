@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START generativeaionvertexai_gemini_single_turn_image]
 // [START aiplatform_gemini_pro_config_example]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -34,7 +35,7 @@ public class SingleTurnMultimodal {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-vision-001";
+    String modelName = "gemini-1.5-flash-001";
     String textPrompt = "What is this image";
     String dataImageBase64 = "your-base64-encoded-image";
 
@@ -71,3 +72,4 @@ public class SingleTurnMultimodal {
   }
 }
 // [END aiplatform_gemini_pro_config_example]
+// [END generativeaionvertexai_gemini_single_turn_image]

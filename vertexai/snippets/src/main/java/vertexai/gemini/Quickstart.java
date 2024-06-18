@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START generativeaionvertexai_gemini_get_started]
 // [START aiplatform_gemini_get_started]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -55,3 +56,4 @@ public class Quickstart {
   }
 }
 // [END aiplatform_gemini_get_started]
+// [END generativeaionvertexai_gemini_get_started]
