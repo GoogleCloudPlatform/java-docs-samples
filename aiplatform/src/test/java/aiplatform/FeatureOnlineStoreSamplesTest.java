@@ -66,11 +66,6 @@ public class FeatureOnlineStoreSamplesTest {
     requireEnvVar("UCAIP_PROJECT_ID");
   }
 
-  @Before
-  public void setUp() {}
-
-  @After
-  public void tearDown() {}
 
   @Test
   public void testCreateAndDeleteFeaturestore()
