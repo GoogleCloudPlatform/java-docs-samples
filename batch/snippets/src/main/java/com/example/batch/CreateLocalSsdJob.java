@@ -117,6 +117,7 @@ public class CreateLocalSsdJob {
               // or "pd-standard".
               .setNewDisk(Disk.newBuilder().setSizeGb(ssdSize).setType("local-ssd")))
           .build();
+
       AllocationPolicy allocationPolicy =
           AllocationPolicy.newBuilder()
               .addInstances(

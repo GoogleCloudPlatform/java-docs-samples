@@ -168,9 +168,6 @@ public class CreatePersistentDiskJob {
     String diskPath = String.format("projects/%s/%s/disks/%s", projectId,
             existingPersistentDiskLocation, existingPersistentDiskName);
 
-    String diskName = String.format("projects/%s/%s/disks/%s", projectId,
-            existingPersistentDiskLocation, existingPersistentDiskName);
-
     AttachedDisk existingDisk = AttachedDisk.newBuilder()
             .setDeviceName(existingPersistentDiskName)
             .setExistingDisk(diskPath)
@@ -188,6 +185,7 @@ public class CreatePersistentDiskJob {
             .addMountOptions("rw")
             .addMountOptions("async")
             .build();
+
     Volume existingVolume = Volume.newBuilder()
             .setDeviceName(existingPersistentDiskName)
             .setMountPath("/mnt/disks/" + existingPersistentDiskName)

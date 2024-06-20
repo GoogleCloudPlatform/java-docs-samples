@@ -49,7 +49,7 @@ public class CreateBatchNotification {
     // The name of the job that will be created.
     // It needs to be unique for each project and region pair.
     String jobName = "JOB_NAME";
-    // The email address of your service account.
+    // The Pub/Sub topic ID of the topic you created when you enabled Pub/Sub notifications.
     String topicId = "TOPIC_ID";
 
     createBatchNotification(projectId, region, jobName, topicId);
