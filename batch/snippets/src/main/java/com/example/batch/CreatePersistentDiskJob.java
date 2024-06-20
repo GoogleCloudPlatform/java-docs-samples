@@ -14,7 +14,7 @@
 
 package com.example.batch;
 
-// [START batch_create_gpu_job]
+// [START batch_create_persistent_disk_job]
 
 import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.AllocationPolicy.AttachedDisk;
@@ -67,14 +67,15 @@ public class CreatePersistentDiskJob {
     // pd-balanced, pd-ssd, or pd-extreme. For Batch jobs, the default is pd-balanced.
     String newDiskType = "pd-balanced";
 
-    createLocalSsdJob(projectId, region, jobName, newPersistentDiskName, diskSize, existingPersistentDiskName, location, newDiskType);
+    createPersistentDiskJob(projectId, region, jobName, newPersistentDiskName,
+            diskSize, existingPersistentDiskName, location, newDiskType);
   }
 
-  // Create a job that uses local SSDs
-  public static Job createLocalSsdJob(String projectId, String region, String jobName,
-                                      String newPersistentDiskName, int diskSize,
-                                      String existingPersistentDiskName,
-                                      String location, String newDiskType)
+  // Creates a job that attaches and mounts an existing persistent disk and a new persistent disk
+  public static Job createPersistentDiskJob(String projectId, String region, String jobName,
+                                            String newPersistentDiskName, int diskSize,
+                                            String existingPersistentDiskName,
+                                            String location, String newDiskType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -132,7 +133,7 @@ public class CreatePersistentDiskJob {
               .putLabels("type", "script")
               // We use Cloud Logging as it's an out of the box available option.
               .setLogsPolicy(
-                  LogsPolicy.newBuilder().setDestination(LogsPolicy.Destination.CLOUD_LOGGING).build())
+                  LogsPolicy.newBuilder().setDestination(LogsPolicy.Destination.CLOUD_LOGGING))
               .build();
 
       CreateJobRequest createJobRequest =
@@ -194,4 +195,4 @@ public class CreatePersistentDiskJob {
     return Iterables.cycle(newVolume, existingVolume);
   }
 }
-// [END batch_create_gpu_job]
+// [END batch_create_persistent_disk_job]

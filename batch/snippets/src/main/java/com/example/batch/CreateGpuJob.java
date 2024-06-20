@@ -110,7 +110,7 @@ public class CreateGpuJob {
               .addInstances(
                   InstancePolicyOrTemplate.newBuilder()
                       .setInstallGpuDrivers(installGpuDrivers)
-                      .setPolicy(InstancePolicy.newBuilder().addAccelerators(accelerator).build())
+                      .setPolicy(InstancePolicy.newBuilder().addAccelerators(accelerator))
                       .build())
               .build();
 
@@ -122,7 +122,7 @@ public class CreateGpuJob {
               .putLabels("type", "script")
               // We use Cloud Logging as it's an out of the box available option.
               .setLogsPolicy(
-                  LogsPolicy.newBuilder().setDestination(LogsPolicy.Destination.CLOUD_LOGGING).build())
+                  LogsPolicy.newBuilder().setDestination(LogsPolicy.Destination.CLOUD_LOGGING))
               .build();
 
       CreateJobRequest createJobRequest =

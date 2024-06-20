@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateCustomServiceAccount {
+public class CreateBatchCustomServiceAccount {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -47,8 +47,6 @@ public class CreateCustomServiceAccount {
     // It needs to be unique for each project and region pair.
     String jobName = "JOB_NAME";
     // The email address of your service account.
-    // If the serviceAccount field is not specified,
-    // the value is set to the default Compute Engine service account.
     String serviceAccountEmail = "EMAIL";
 
     createCustomServiceAccount(projectId, region, jobName, serviceAccountEmail);
@@ -91,9 +89,17 @@ public class CreateCustomServiceAccount {
           .setTaskSpec(task)
           .build();
 
+      ServiceAccount.Builder serviceAccount = ServiceAccount.newBuilder();
+
+      // If the serviceAccount field is not specified,
+      // the value is set to the default Compute Engine service account.
+      if (serviceAccountEmail != null) {
+        serviceAccount.setEmail(serviceAccountEmail);
+      }
+
       // Policies are used to attach service account
       AllocationPolicy allocationPolicy = AllocationPolicy.newBuilder()
-              .setServiceAccount(ServiceAccount.newBuilder().setEmail(serviceAccountEmail))
+              .setServiceAccount(serviceAccount)
               .build();
 
       Job job =

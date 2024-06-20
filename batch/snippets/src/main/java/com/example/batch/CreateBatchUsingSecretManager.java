@@ -57,7 +57,8 @@ public class CreateBatchUsingSecretManager {
     // This can be the version number or latest.
     String version = "VERSION";
 
-    createBatchUsingSecretManager(projectId, region, jobName, secretVariableName, secretName, version);
+    createBatchUsingSecretManager(projectId, region,
+            jobName, secretVariableName, secretName, version);
   }
 
   // Create a basic script job that uses a secret variable in the environment for all runnables

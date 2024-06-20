@@ -14,7 +14,7 @@
 
 package com.example.batch;
 
-// [START batch_create_gpu_job]
+// [START batch_create_local_ssd_job]
 
 import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.AllocationPolicy.AttachedDisk;
@@ -53,7 +53,7 @@ public class CreateLocalSsdJob {
     String localSsdName = "SSD-NAME";
     // The machine type, which can be predefined or custom, of the job's VMs.
     // The allowed number of local SSDs depends on the machine type for your job's VMs.
-    String machineType = "nvidia-tesla-t4";
+    String machineType = "c3d-standard-360-lssd";
     // The size of all the local SSDs in GB. Each local SSD is 375 GB,
     // so this value must be a multiple of 375 GB.
     // For example, for 2 local SSDs, set this value to 750 GB.
@@ -85,19 +85,19 @@ public class CreateLocalSsdJob {
               .build();
 
       Volume volume = Volume.newBuilder()
-              .setDeviceName(localSsdName)
-              .setMountPath("/mnt/disks/" + localSsdName)
-              .addMountOptions("rw")
-              .addMountOptions("async")
-              .build();
+          .setDeviceName(localSsdName)
+          .setMountPath("/mnt/disks/" + localSsdName)
+          .addMountOptions("rw")
+          .addMountOptions("async")
+          .build();
 
       TaskSpec task = TaskSpec.newBuilder()
-              // Jobs can be divided into tasks. In this case, we have only one task.
-              .addVolumes(volume)
-              .addRunnables(runnable)
-              .setMaxRetryCount(2)
-              .setMaxRunDuration(Duration.newBuilder().setSeconds(3600).build())
-              .build();
+          // Jobs can be divided into tasks. In this case, we have only one task.
+          .addVolumes(volume)
+          .addRunnables(runnable)
+          .setMaxRetryCount(2)
+          .setMaxRunDuration(Duration.newBuilder().setSeconds(3600).build())
+          .build();
 
       // Tasks are grouped inside a job using TaskGroups.
       // Currently, it's possible to have only one task group.
@@ -109,11 +109,14 @@ public class CreateLocalSsdJob {
 
       // Policies are used to define on what kind of virtual machines the tasks will run on.
       InstancePolicy policy = InstancePolicy.newBuilder()
-              .setMachineType(machineType)
-              .addDisks(AttachedDisk.newBuilder()
-                  .setDeviceName(localSsdName)
-                  .setNewDisk(Disk.newBuilder().setSizeGb(ssdSize).setType("local-ssd")))
-              .build();
+          .setMachineType(machineType)
+          .addDisks(AttachedDisk.newBuilder()
+              .setDeviceName(localSsdName)
+              // For example, local SSD uses type "local-ssd".
+              // Persistent disks and boot disks use "pd-balanced", "pd-extreme", "pd-ssd"
+              // or "pd-standard".
+              .setNewDisk(Disk.newBuilder().setSizeGb(ssdSize).setType("local-ssd")))
+          .build();
       AllocationPolicy allocationPolicy =
           AllocationPolicy.newBuilder()
               .addInstances(
@@ -130,7 +133,7 @@ public class CreateLocalSsdJob {
               .putLabels("type", "script")
               // We use Cloud Logging as it's an out of the box available option.
               .setLogsPolicy(
-                  LogsPolicy.newBuilder().setDestination(LogsPolicy.Destination.CLOUD_LOGGING).build())
+                  LogsPolicy.newBuilder().setDestination(LogsPolicy.Destination.CLOUD_LOGGING))
               .build();
 
       CreateJobRequest createJobRequest =
@@ -153,4 +156,4 @@ public class CreateLocalSsdJob {
     }
   }
 }
-// [END batch_create_gpu_job]
+// [END batch_create_local_ssd_job]
