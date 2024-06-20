@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,9 +31,8 @@ import com.google.cloud.batch.v1.Runnable.Script;
 import com.google.cloud.batch.v1.TaskGroup;
 import com.google.cloud.batch.v1.TaskSpec;
 import com.google.cloud.batch.v1.Volume;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.protobuf.Duration;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -62,7 +61,7 @@ public class CreatePersistentDiskJob {
     String existingPersistentDiskName = "EXISTING-DISK-NAME";
     // The location of an existing persistent disk. For more info :
     // https://cloud.google.com/batch/docs/create-run-job-storage#gcloud
-    String location = "EXISTING-DISK-LOCATION";
+    String location = "regions/us-central1";
     // The disk type of the new persistent disk, either pd-standard,
     // pd-balanced, pd-ssd, or pd-extreme. For Batch jobs, the default is pd-balanced.
     String newDiskType = "pd-balanced";
@@ -81,8 +80,8 @@ public class CreatePersistentDiskJob {
     // once, and can be reused for multiple requests.
     try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {
       // Define what will be done as part of the job.
-      String text = "echo Hello world from task ${BATCH_TASK_INDEX}. " +
-              ">> /mnt/disks/NEW_PERSISTENT_DISK_NAME/output_task_${BATCH_TASK_INDEX}.txt";
+      String text = "echo Hello world from task ${BATCH_TASK_INDEX}. "
+              + ">> /mnt/disks/NEW_PERSISTENT_DISK_NAME/output_task_${BATCH_TASK_INDEX}.txt";
       Runnable runnable =
           Runnable.newBuilder()
               .setScript(
@@ -166,16 +165,18 @@ public class CreatePersistentDiskJob {
             .setNewDisk(Disk.newBuilder().setSizeGb(diskSize).setType(newDiskType))
             .build();
 
-    String diskPath = String
-            .format("projects/%s/%s/disks/%s", projectId,
-                    existingPersistentDiskLocation, existingPersistentDiskName);
+    String diskPath = String.format("projects/%s/%s/disks/%s", projectId,
+            existingPersistentDiskLocation, existingPersistentDiskName);
+
+    String diskName = String.format("projects/%s/%s/disks/%s", projectId,
+            existingPersistentDiskLocation, existingPersistentDiskName);
 
     AttachedDisk existingDisk = AttachedDisk.newBuilder()
             .setDeviceName(existingPersistentDiskName)
             .setExistingDisk(diskPath)
             .build();
 
-    return Iterables.cycle(existingDisk, newDisk);
+    return Lists.newArrayList(existingDisk, newDisk);
   }
 
   // Creates existing and new disk volumes
@@ -192,7 +193,7 @@ public class CreatePersistentDiskJob {
             .setMountPath("/mnt/disks/" + existingPersistentDiskName)
             .build();
 
-    return Iterables.cycle(newVolume, existingVolume);
+    return Lists.newArrayList(newVolume, existingVolume);
   }
 }
 // [END batch_create_persistent_disk_job]

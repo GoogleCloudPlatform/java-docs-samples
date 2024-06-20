@@ -3,11 +3,17 @@ package com.example.batch;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.batch.v1.Job;
+import com.google.cloud.batch.v1.JobNotification.Type;
+import com.google.cloud.batch.v1.TaskStatus.State;
+import com.google.cloud.compute.v1.Disk;
+import com.google.cloud.compute.v1.DisksClient;
+import com.google.cloud.compute.v1.InsertDiskRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -20,12 +26,25 @@ import org.junit.runners.JUnit4;
 public class CreateResourcesIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "us-central1";
-  private static final String SERVICE_ACCOUNT_JOB = "test-job" + UUID.randomUUID().toString().substring(0, 7);
-  private static final String SECRET_MANAGER_JOB = "test-job" + UUID.randomUUID().toString().substring(0, 7);
-  private static final String GPU_JOB = "test-job" + UUID.randomUUID().toString().substring(0, 7);
-  private static final String LOCAL_SSD_JOB = "test-job" + UUID.randomUUID().toString().substring(0, 7);
-  private static final String PERSISTENT_DISK_JOB = "test-job" + UUID.randomUUID().toString().substring(0, 7);
-  private static final String LOCAL_SSD_NAME = "test-disk" + UUID.randomUUID().toString().substring(0, 7);
+  private static final String ZONE = "us-central1-a";
+  private static final String SERVICE_ACCOUNT_JOB = "test-job"
+          + UUID.randomUUID().toString().substring(0, 7);
+  private static final String SECRET_MANAGER_JOB = "test-job"
+          + UUID.randomUUID().toString().substring(0, 7);
+  private static final String GPU_JOB = "test-job"
+          + UUID.randomUUID().toString().substring(0, 7);
+  private static final String LOCAL_SSD_JOB = "test-job"
+          + UUID.randomUUID().toString().substring(0, 7);
+  private static final String PERSISTENT_DISK_JOB = "test-job"
+          + UUID.randomUUID().toString().substring(0, 7);
+  private static final String NOTIFICATION_NAME = "test-job"
+          + UUID.randomUUID().toString().substring(0, 7);
+  private static final String LOCAL_SSD_NAME = "test-disk"
+          + UUID.randomUUID().toString().substring(0, 7);
+  private static final String PERSISTENT_DISK_NAME = "test-disk"
+          + UUID.randomUUID().toString().substring(0, 7);
+  private static final String NEW_PERSISTENT_DISK_NAME = "test-disk"
+          + UUID.randomUUID().toString().substring(0, 7);
   private static final List<Job> ACTIVE_JOBS = new ArrayList<>();
 
   // Check if the required environment variables are set.
@@ -49,11 +68,18 @@ public class CreateResourcesIT {
         System.err.println(e.getMessage());
       }
     }
+    try (DisksClient client = DisksClient.create()) {
+      client.deleteAsync(PROJECT_ID, ZONE, PERSISTENT_DISK_NAME).get(60, TimeUnit.SECONDS);
+    } catch (Exception e) {
+      System.err.println(e.getMessage());
+    }
+
     safeDeleteJob(SERVICE_ACCOUNT_JOB);
     safeDeleteJob(SECRET_MANAGER_JOB);
     safeDeleteJob(GPU_JOB);
     safeDeleteJob(LOCAL_SSD_JOB);
     safeDeleteJob(PERSISTENT_DISK_JOB);
+    safeDeleteJob(NOTIFICATION_NAME);
   }
 
   private static void safeDeleteJob(String jobName) {
@@ -130,21 +156,79 @@ public class CreateResourcesIT {
                     -> attachedDisk.getDeviceName().contains(LOCAL_SSD_NAME))));
   }
 
-//  @Test
+  @Test
   public void createPersistentDiskJobTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String type = "c3d-standard-360-lssd";
+    String diskType = String.format("zones/%s/diskTypes/pd-balanced", ZONE);
+    createEmptyDisk(PROJECT_ID, ZONE, PERSISTENT_DISK_NAME, diskType, 10);
+
     Job job = CreatePersistentDiskJob
-            .createPersistentDiskJob(PROJECT_ID, REGION, PERSISTENT_DISK_JOB, "newDisk", 375, "", "", "");
+            .createPersistentDiskJob(PROJECT_ID, REGION, PERSISTENT_DISK_JOB,
+                NEW_PERSISTENT_DISK_NAME, 10, PERSISTENT_DISK_NAME, "zones/" + ZONE, diskType);
 
     Assert.assertNotNull(job);
     ACTIVE_JOBS.add(job);
 
     Assert.assertTrue(job.getName().contains(PERSISTENT_DISK_JOB));
+    Assert.assertTrue(job.getAllocationPolicy().getLocation()
+            .getAllowedLocationsList().contains("zones/" + ZONE));
     Assert.assertNotNull(job.getAllocationPolicy().getInstancesList());
+
     Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream()
-            .anyMatch(instance -> instance.getPolicy().getMachineType().contains(type)
-                    && instance.getPolicy().getDisksList().stream().anyMatch(attachedDisk
-                    -> attachedDisk.getDeviceName().contains(LOCAL_SSD_NAME))));
+            .anyMatch(policy -> policy.getPolicy().getDisksList().stream()
+                    .anyMatch(attachedDisk
+                            -> attachedDisk.getDeviceName().contains(PERSISTENT_DISK_NAME))));
+
+    Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream()
+            .anyMatch(policy -> policy.getPolicy().getDisksList().stream()
+                    .anyMatch(attachedDisk
+                            -> attachedDisk.getDeviceName().contains(NEW_PERSISTENT_DISK_NAME))));
+  }
+
+  @Test
+  public void createBatchNotificationTest()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String topicId = "newTopic";
+    Job job = CreateBatchNotification
+            .createBatchNotification(PROJECT_ID, REGION, NOTIFICATION_NAME, topicId);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(NOTIFICATION_NAME));
+    Assert.assertNotNull(job.getNotificationsList());
+    Assert.assertTrue(job.getNotificationsList().stream()
+            .anyMatch(jobNotification -> jobNotification.getPubsubTopic().contains(topicId)
+                    && jobNotification.getMessage().getType() == Type.JOB_STATE_CHANGED));
+    Assert.assertTrue(job.getNotificationsList().stream()
+            .anyMatch(jobNotification -> jobNotification.getPubsubTopic().contains(topicId)
+                    && jobNotification.getMessage().getType() == Type.TASK_STATE_CHANGED
+                    && jobNotification.getMessage().getNewTaskState() == State.FAILED));
+  }
+
+  private void createEmptyDisk(String projectId, String zone, String diskName,
+                                     String diskType, long diskSizeGb)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (DisksClient disksClient = DisksClient.create()) {
+      // Set the disk properties.
+      Disk disk = Disk.newBuilder()
+              .setName(diskName)
+              .setZone(zone)
+              .setType(diskType)
+              .setSizeGb(diskSizeGb)
+              .build();
+
+      // Create the Insert disk request.
+      InsertDiskRequest insertDiskRequest = InsertDiskRequest.newBuilder()
+              .setProject(projectId)
+              .setZone(zone)
+              .setDiskResource(disk)
+              .build();
+
+      // Wait for the create disk operation to complete.
+      disksClient.insertAsync(insertDiskRequest).get(3, TimeUnit.MINUTES);
+
+      TimeUnit.SECONDS.sleep(5);
+    }
   }
 }

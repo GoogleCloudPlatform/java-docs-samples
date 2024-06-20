@@ -14,25 +14,29 @@
 
 package com.example.batch;
 
-// [START batch_create_using_secret_manager]
+// [START batch_notifications]
 
 import com.google.cloud.batch.v1.BatchServiceClient;
 import com.google.cloud.batch.v1.CreateJobRequest;
-import com.google.cloud.batch.v1.Environment;
 import com.google.cloud.batch.v1.Job;
+import com.google.cloud.batch.v1.JobNotification;
+import com.google.cloud.batch.v1.JobNotification.Message;
+import com.google.cloud.batch.v1.JobNotification.Type;
 import com.google.cloud.batch.v1.LogsPolicy;
 import com.google.cloud.batch.v1.LogsPolicy.Destination;
 import com.google.cloud.batch.v1.Runnable;
 import com.google.cloud.batch.v1.Runnable.Script;
 import com.google.cloud.batch.v1.TaskGroup;
 import com.google.cloud.batch.v1.TaskSpec;
+import com.google.cloud.batch.v1.TaskStatus.State;
+import com.google.common.collect.Lists;
 import com.google.protobuf.Duration;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateBatchUsingSecretManager {
+public class CreateBatchNotification {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -45,23 +49,15 @@ public class CreateBatchUsingSecretManager {
     // The name of the job that will be created.
     // It needs to be unique for each project and region pair.
     String jobName = "JOB_NAME";
-    // The name of the secret variable.
-    // By convention, environment variable names are capitalized.
-    String secretVariableName = "VARIABLE_NAME";
-    // The name of an existing Secret Manager secret.
-    String secretName = "SECRET_NAME";
-    // The version of the specified secret that contains the data you want to pass to the job.
-    // This can be the version number or latest.
-    String version = "VERSION";
+    // The email address of your service account.
+    String topicId = "TOPIC_ID";
 
-    createBatchUsingSecretManager(projectId, region,
-            jobName, secretVariableName, secretName, version);
+    createBatchNotification(projectId, region, jobName, topicId);
   }
 
-  // Create a basic script job that uses a secret variable in the environment for all runnables
-  public static Job createBatchUsingSecretManager(String projectId, String region,
-                                                  String jobName, String secretVariableName,
-                                                  String secretName, String version)
+  // Create a Batch job that sends Pub/Sub notifications
+  public static Job createBatchNotification(String projectId, String region, String jobName,
+                                            String topicId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -72,7 +68,8 @@ public class CreateBatchUsingSecretManager {
               .setScript(
                   Script.newBuilder()
                       .setText(
-                          String.format("echo This is the secret: ${%s}.", secretVariableName))
+                          "echo Hello world! This is task ${BATCH_TASK_INDEX}. "
+                                  + "This job has a total of ${BATCH_TASK_COUNT} tasks.")
                       // You can also run a script from a file. Just remember, that needs to be a
                       // script that's already on the VM that will be running the job.
                       // Using setText() and setPath() is mutually exclusive.
@@ -80,29 +77,25 @@ public class CreateBatchUsingSecretManager {
                       .build())
               .build();
 
-      String secretValue = String
-              .format("projects/%s/secrets/%s/versions/%s", projectId, secretName, version);
-
-      Environment.Builder environmentVariable = Environment.newBuilder()
-          .putSecretVariables(secretVariableName, secretValue);
-
       TaskSpec task = TaskSpec.newBuilder()
-          // Jobs can be divided into tasks. In this case, we have only one task.
-          .addRunnables(runnable)
-          .setEnvironment(environmentVariable)
-          .setMaxRetryCount(2)
-          .setMaxRunDuration(Duration.newBuilder().setSeconds(3600).build())
-          .build();
+              // Jobs can be divided into tasks. In this case, we have only one task.
+              .addRunnables(runnable)
+              .setMaxRetryCount(2)
+              .setMaxRunDuration(Duration.newBuilder().setSeconds(3600).build())
+              .build();
 
       // Tasks are grouped inside a job using TaskGroups.
       // Currently, it's possible to have only one task group.
       TaskGroup taskGroup = TaskGroup.newBuilder()
+          .setTaskCount(3)
+          .setParallelism(1)
           .setTaskSpec(task)
           .build();
 
       Job job =
           Job.newBuilder()
               .addTaskGroups(taskGroup)
+              .addAllNotifications(buildNotifications(projectId, topicId))
               .putLabels("env", "testing")
               .putLabels("type", "script")
               // We use Cloud Logging as it's an out of the box available option.
@@ -129,5 +122,25 @@ public class CreateBatchUsingSecretManager {
       return result;
     }
   }
+
+  // Specify the following attributes,
+  // which each let you receive notifications about the state of the job or all of its tasks.
+  private static Iterable<JobNotification> buildNotifications(String projectId, String topicId) {
+    String pubsubTopic = String.format("projects/%s/topics/%s", projectId, topicId);
+
+    JobNotification jobStateChanged = JobNotification.newBuilder()
+            .setPubsubTopic(pubsubTopic)
+            .setMessage(Message.newBuilder().setType(Type.JOB_STATE_CHANGED))
+            .build();
+
+    JobNotification taskStateChanged = JobNotification.newBuilder()
+            .setPubsubTopic(pubsubTopic)
+            .setMessage(Message.newBuilder()
+                    .setType(Type.TASK_STATE_CHANGED)
+                    .setNewTaskState(State.FAILED))
+            .build();
+
+    return Lists.newArrayList(jobStateChanged, taskStateChanged);
+  }
 }
-// [END batch_create_using_secret_manager]
+// [END batch_notifications]
