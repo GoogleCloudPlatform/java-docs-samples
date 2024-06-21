@@ -92,6 +92,7 @@ public final class BasicJobSample {
   }
   // [END create_job]
 
+  // [START job_get_job]
   // [START get_job]
 
   /** Get a job. */
@@ -106,6 +107,7 @@ public final class BasicJobSample {
     }
   }
   // [END get_job]
+  // [END job_get_job]
 
   // [START update_job]
 
