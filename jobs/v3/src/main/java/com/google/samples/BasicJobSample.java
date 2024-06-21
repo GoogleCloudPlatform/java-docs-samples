@@ -49,6 +49,7 @@ public final class BasicJobSample {
   private static CloudTalentSolution talentSolutionClient =
       JobServiceQuickstart.getTalentSolutionClient();
 
+  // [START job_basic_job]
   // [START basic_job]
 
   /** Generate a basic job with given companyName. */
@@ -69,7 +70,9 @@ public final class BasicJobSample {
     return job;
   }
   // [END basic_job]
+  // [END job_basic_job]
 
+  // [START job_create_job]
   // [START create_job]
 
   /** Create a job. */
@@ -91,6 +94,7 @@ public final class BasicJobSample {
     }
   }
   // [END create_job]
+  // [END job_create_job]
 
   // [START job_get_job]
   // [START get_job]
@@ -110,6 +114,7 @@ public final class BasicJobSample {
   // [END job_get_job]
 
   // [START update_job]
+  // [START job_update_job]
 
   /** Update a job. */
   public static Job updateJob(String jobName, Job jobToBeUpdated) throws IOException {
@@ -126,7 +131,9 @@ public final class BasicJobSample {
   }
 
   // [END update_job]
+  // [END job_update_job]
 
+  // [START job_update_job_with_field_mask]
   // [START update_job_with_field_mask]
 
   /** Update a job. */
@@ -145,7 +152,9 @@ public final class BasicJobSample {
     }
   }
   // [END update_job_with_field_mask]
+  // [END job_update_job_with_field_mask]
 
+  // [START job_delete_job]
   // [START delete_job]
 
   /** Delete a job. */
@@ -159,6 +168,7 @@ public final class BasicJobSample {
     }
   }
   // [END delete_job]
+  // [END job_delete_job]
 
   public static void main(String... args) throws Exception {
     // Create a company before creating jobs
