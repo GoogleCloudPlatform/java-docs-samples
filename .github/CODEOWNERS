@@ -103,4 +103,3 @@
 /pubsublite                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/api-pubsub-and-pubsublite
 /retail                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-retail-team
 /unittests                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/serverless-runtimes
-/bigquery/bigquerydatatransfer   @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/bigquery-data-connectors
