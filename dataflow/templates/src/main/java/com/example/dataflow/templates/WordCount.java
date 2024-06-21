@@ -100,7 +100,6 @@ public class WordCount {
     Pipeline pipeline = Pipeline.create(options);
     pipeline
         .apply("Read lines", TextIO.read().from(options.getInputFile()))
-        // [END value_provider]
         .apply("Find words", FlatMapElements.into(TypeDescriptors.strings())
             .via((String line) -> Arrays.asList(line.split("[^\\p{L}]+"))))
         .apply("Filter empty words", Filter.by((String word) -> !word.isEmpty()))
@@ -109,7 +108,6 @@ public class WordCount {
         .apply("Count words", Count.perElement())
         .apply("Format results", MapElements.into(TypeDescriptors.strings())
             .via((KV<String, Long> wordCount) -> wordCount.getKey() + ": " + wordCount.getValue()))
-        // [START nested_value_provider]
         .apply("Write results", TextIO.write().to(NestedValueProvider.of(
             options.getOutputBucket(),
             (String bucket) -> String.format("gs://%s/samples/dataflow/wordcount/outputs", bucket)
