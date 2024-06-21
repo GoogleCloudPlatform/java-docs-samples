@@ -35,7 +35,6 @@ import org.apache.beam.sdk.values.TypeDescriptors;
 
 
 public class WordCount {
-  // [START word_count_options]
   public interface WordCountOptions extends PipelineOptions {
     // Optional argument with a default value.
     @Description("Google Cloud Storage file pattern glob of the file(s) to read from")
@@ -64,9 +63,7 @@ public class WordCount {
 
     void setIsCaseSensitive(Boolean value);
   }
-  // [END word_count_options]
 
-  // [START static_value_provider]
   static class FilterWithSubstring extends DoFn<String, String> {
     ValueProvider<String> substring;
     Boolean isCaseSensitive;
@@ -95,9 +92,7 @@ public class WordCount {
       }
     }
   }
-  // [END static_value_provider]
 
-  // [START value_provider]
   public static void main(String[] args) {
     WordCountOptions options = PipelineOptionsFactory.fromArgs(args)
         .withValidation().as(WordCountOptions.class);
@@ -119,7 +114,6 @@ public class WordCount {
             options.getOutputBucket(),
             (String bucket) -> String.format("gs://%s/samples/dataflow/wordcount/outputs", bucket)
         )));
-    // [END nested_value_provider]
     pipeline.run();
   }
 }
