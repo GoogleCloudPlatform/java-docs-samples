@@ -42,6 +42,7 @@ public final class CommuteSearchSample {
   private static CloudTalentSolution talentSolutionClient =
       JobServiceQuickstart.getTalentSolutionClient();
 
+  // [START job_discovery_commute_search]
   // [START commute_search]
 
   public static void commuteSearch(String companyName) throws IOException, InterruptedException {
@@ -83,6 +84,7 @@ public final class CommuteSearchSample {
     System.out.printf("Search jobs for commute results: %s\n", response);
   }
   // [END commute_search]
+  // [END job_discovery_commute_search]
 
   public static void main(String... args) throws Exception {
     Company companyToBeCreated = BasicCompanySample.generateCompany();
