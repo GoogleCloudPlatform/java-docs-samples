@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START generativeaionvertexai_gemini_single_turn_video]
 // [START aiplatform_gemini_single_turn_video]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -31,7 +32,7 @@ public class MultimodalVideoInput {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-vision-001";
+    String modelName = "gemini-1.5-flash-001";
 
     multimodalVideoInput(projectId, location, modelName);
   }
@@ -39,8 +40,8 @@ public class MultimodalVideoInput {
   // Analyzes the given video input.
   public static void multimodalVideoInput(String projectId, String location, String modelName)
       throws IOException {
-    // Initialize client that will be used to send requests. This client only needs
-    // to be created once, and can be reused for multiple requests.
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       String videoUri = "gs://cloud-samples-data/video/animals.mp4";
 
@@ -57,3 +58,4 @@ public class MultimodalVideoInput {
   }
 }
 // [END aiplatform_gemini_single_turn_video]
+// [END generativeaionvertexai_gemini_single_turn_video]

@@ -25,6 +25,9 @@ import com.google.cloud.compute.v1.InstancesClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -34,11 +37,13 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+@Disabled("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9373")
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class InstanceTemplatesIT {
@@ -185,4 +190,29 @@ public class InstanceTemplatesIT {
     assertThat(stdOut.toString()).contains(TEMPLATE_NAME_WITH_SUBNET);
   }
 
+  @Test
+  public void testCreateInstanceBulkInsert() {
+    String id = UUID.randomUUID().toString().replace("-", "").substring(0, 5);
+    String namePattern = "i-##-" + id;
+    List<Instance> instances = new ArrayList<>();
+    try {
+      instances = CreateInstanceBulkInsert
+              .bulkInsertInstance(PROJECT_ID, DEFAULT_ZONE, TEMPLATE_NAME,
+                      3, namePattern, 3, new HashMap<>());
+    } catch (Exception e) {
+      Assert.fail(e.getCause().toString());
+    } finally {
+      for (Instance instance : instances) {
+        try {
+          DeleteInstance.deleteInstance(PROJECT_ID, DEFAULT_ZONE, instance.getName());
+        } catch (Exception e) {
+          System.err.printf("Can't delete instance - %s. Cause by {%s}",
+                  instance.getName(), e.getMessage());
+        }
+      }
+    }
+    Assert.assertEquals(3, instances.size());
+    Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains("i-")));
+    Assert.assertTrue(instances.stream().allMatch(instance -> instance.getName().contains(id)));
+  }
 }

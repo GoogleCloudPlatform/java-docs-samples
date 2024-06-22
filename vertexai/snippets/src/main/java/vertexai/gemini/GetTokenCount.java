@@ -16,37 +16,54 @@
 
 package vertexai.gemini;
 
+// [START generativeaionvertexai_gemini_token_count]
 // [START aiplatform_gemini_token_count]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.CountTokensResponse;
+import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import java.io.IOException;
-// [END aiplatform_gemini_token_count]
 
 public class GetTokenCount {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-vision-001";
+    String modelName = "gemini-1.5-flash-001";
 
-    String textPrompt = "Why is the sky blue?";
-    getTokenCount(projectId, location, modelName, textPrompt);
+    getTokenCount(projectId, location, modelName);
   }
 
-  // [START aiplatform_gemini_token_count]
-  public static int getTokenCount(String projectId, String location, String modelName,
-                                  String textPrompt)
+  // Gets the number of tokens for the prompt and the model's response.
+  public static int getTokenCount(String projectId, String location, String modelName)
       throws IOException {
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
+
+      String textPrompt = "Why is the sky blue?";
       CountTokensResponse response = model.countTokens(textPrompt);
 
-      int tokenCount = response.getTotalTokens();
-      System.out.println("There are " + tokenCount + " tokens in the prompt.");
+      int promptTokenCount = response.getTotalTokens();
+      int promptCharCount = response.getTotalBillableCharacters();
 
-      return tokenCount;
+      System.out.println("Prompt token Count: " + promptTokenCount);
+      System.out.println("Prompt billable character count: " + promptCharCount);
+
+      GenerateContentResponse contentResponse = model.generateContent(textPrompt);
+
+      int tokenCount = contentResponse.getUsageMetadata().getPromptTokenCount();
+      int candidateTokenCount = contentResponse.getUsageMetadata().getCandidatesTokenCount();
+      int totalTokenCount = contentResponse.getUsageMetadata().getTotalTokenCount();
+
+      System.out.println("Prompt token Count: " + tokenCount);
+      System.out.println("Candidate Token Count: " + candidateTokenCount);
+      System.out.println("Total token Count: " + totalTokenCount);
+
+      return promptTokenCount;
     }
   }
-  // [END aiplatform_gemini_token_count]
 }
+// [END aiplatform_gemini_token_count]
+// [END generativeaionvertexai_gemini_token_count]

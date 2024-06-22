@@ -29,7 +29,7 @@ public class TextInput {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-002";
+    String modelName = "gemini-1.5-flash-001";
     String textPrompt =
         "What's a good name for a flower shop that specializes in selling bouquets of"
             + " dried flowers?";
@@ -45,11 +45,10 @@ public class TextInput {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      String output;
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
 
       GenerateContentResponse response = model.generateContent(textPrompt);
-      output = ResponseHandler.getText(response);
+      String output = ResponseHandler.getText(response);
       return output;
     }
   }

@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 )
 public class IdentityServlet extends HttpServlet {
 
-  // [START gae_java8_app_identity_versioned_hostnames]
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     resp.setContentType("text/plain");
@@ -41,5 +40,4 @@ public class IdentityServlet extends HttpServlet {
     resp.getWriter()
         .println(env.getAttributes().get("com.google.appengine.runtime.default_version_hostname"));
   }
-  // [END gae_java8_app_identity_versioned_hostnames]
 }

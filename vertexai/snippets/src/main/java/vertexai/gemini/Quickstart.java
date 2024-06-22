@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START generativeaionvertexai_gemini_get_started]
 // [START aiplatform_gemini_get_started]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -30,7 +31,7 @@ public class Quickstart {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-vision-001";
+    String modelName = "gemini-1.5-flash-001";
 
     String output = quickstart(projectId, location, modelName);
     System.out.println(output);
@@ -55,3 +56,4 @@ public class Quickstart {
   }
 }
 // [END aiplatform_gemini_get_started]
+// [END generativeaionvertexai_gemini_get_started]
