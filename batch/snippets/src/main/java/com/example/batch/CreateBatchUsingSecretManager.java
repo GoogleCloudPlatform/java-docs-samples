@@ -46,7 +46,8 @@ public class CreateBatchUsingSecretManager {
     // It needs to be unique for each project and region pair.
     String jobName = "JOB_NAME";
     // The name of the secret variable.
-    // By convention, environment variable names are capitalized.
+    // This variable name is specified in this job's runnables
+    // and is accessible to all of the runnables that are in the same environment.
     String secretVariableName = "VARIABLE_NAME";
     // The name of an existing Secret Manager secret.
     String secretName = "SECRET_NAME";
@@ -58,7 +59,9 @@ public class CreateBatchUsingSecretManager {
             jobName, secretVariableName, secretName, version);
   }
 
-  // Create a basic script job that uses a secret variable in the environment for all runnables
+  // Create a basic script job to securely pass sensitive data.
+  // The data is obtained from Secret Manager secrets
+  // and set as custom environment variables in the job.
   public static Job createBatchUsingSecretManager(String projectId, String region,
                                                   String jobName, String secretVariableName,
                                                   String secretName, String version)
@@ -80,9 +83,11 @@ public class CreateBatchUsingSecretManager {
                       .build())
               .build();
 
+      // Construct the resource path to the secret's version.
       String secretValue = String
               .format("projects/%s/secrets/%s/versions/%s", projectId, secretName, version);
 
+      // Set the secret as an environment variable.
       Environment.Builder environmentVariable = Environment.newBuilder()
           .putSecretVariables(secretVariableName, secretValue);
 

@@ -107,14 +107,13 @@ public class CreateResourcesIT {
   @Test
   public void createBatchCustomServiceAccountTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Job job = CreateBatchCustomServiceAccount
-            .createCustomServiceAccount(PROJECT_ID, REGION, SERVICE_ACCOUNT_JOB, null);
+    Job job = CreateBatchUsingServiceAccount
+            .createBatchUsingServiceAccount(PROJECT_ID, REGION, SERVICE_ACCOUNT_JOB, null);
 
     Assert.assertNotNull(job);
     ACTIVE_JOBS.add(job);
 
     Assert.assertTrue(job.getName().contains(SERVICE_ACCOUNT_JOB));
-    Assert.assertNotNull(job.getAllocationPolicy().getServiceAccount());
     Assert.assertNotNull(job.getAllocationPolicy().getServiceAccount().getEmail());
   }
 
@@ -163,7 +162,6 @@ public class CreateResourcesIT {
     ACTIVE_JOBS.add(job);
 
     Assert.assertTrue(job.getName().contains(LOCAL_SSD_JOB));
-    Assert.assertNotNull(job.getAllocationPolicy().getInstancesList());
     Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream()
             .anyMatch(instance -> instance.getPolicy().getMachineType().contains(type)
                 && instance.getPolicy().getDisksList().stream().anyMatch(attachedDisk
@@ -186,7 +184,6 @@ public class CreateResourcesIT {
     Assert.assertTrue(job.getName().contains(PERSISTENT_DISK_JOB));
     Assert.assertTrue(job.getAllocationPolicy().getLocation()
             .getAllowedLocationsList().contains("zones/" + ZONE));
-    Assert.assertNotNull(job.getAllocationPolicy().getInstancesList());
 
     Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream()
             .anyMatch(policy -> policy.getPolicy().getDisksList().stream()
@@ -210,7 +207,6 @@ public class CreateResourcesIT {
     ACTIVE_JOBS.add(job);
 
     Assert.assertTrue(job.getName().contains(NOTIFICATION_NAME));
-    Assert.assertNotNull(job.getNotificationsList());
     Assert.assertTrue(job.getNotificationsList().stream()
             .anyMatch(jobNotification -> jobNotification.getPubsubTopic().contains(topicId)
                     && jobNotification.getMessage().getType() == Type.JOB_STATE_CHANGED));

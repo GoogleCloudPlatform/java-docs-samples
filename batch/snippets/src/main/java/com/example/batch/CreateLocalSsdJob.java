@@ -52,7 +52,8 @@ public class CreateLocalSsdJob {
     // The name of a local SSD created for this job.
     String localSsdName = "SSD-NAME";
     // The machine type, which can be predefined or custom, of the job's VMs.
-    // The allowed number of local SSDs depends on the machine type for your job's VMs.
+    // The allowed number of local SSDs depends on the machine type
+    // for your job's VMs are listed on: https://cloud.google.com/compute/docs/disks#localssds
     String machineType = "c3d-standard-360-lssd";
     // The size of all the local SSDs in GB. Each local SSD is 375 GB,
     // so this value must be a multiple of 375 GB.

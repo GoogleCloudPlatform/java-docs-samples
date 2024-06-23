@@ -110,7 +110,7 @@ public class CreatePersistentDiskJob {
           .setTaskSpec(task)
           .build();
 
-      // Policies are used to define on what kind of virtual machines the tasks will run on.
+      // Policies are used to define the type of virtual machines the tasks will run on.
       InstancePolicy policy = InstancePolicy.newBuilder()
               .addAllDisks(attachedDisks(newPersistentDiskName, diskSize, newDiskType,
                   projectId, location, existingPersistentDiskName))
@@ -130,7 +130,7 @@ public class CreatePersistentDiskJob {
               .setAllocationPolicy(allocationPolicy)
               .putLabels("env", "testing")
               .putLabels("type", "script")
-              // We use Cloud Logging as it's an out of the box available option.
+              // We use Cloud Logging as it's an out-of-the-box option.
               .setLogsPolicy(
                   LogsPolicy.newBuilder().setDestination(LogsPolicy.Destination.CLOUD_LOGGING))
               .build();
@@ -155,7 +155,7 @@ public class CreatePersistentDiskJob {
     }
   }
 
-  // Creates existing and new disks
+  // Creates link to existing disk and creates configuration for new disk
   private static Iterable<AttachedDisk> attachedDisks(String newPersistentDiskName, int diskSize,
                                                       String newDiskType, String projectId,
                                                       String existingPersistentDiskLocation,
@@ -176,7 +176,7 @@ public class CreatePersistentDiskJob {
     return Lists.newArrayList(existingDisk, newDisk);
   }
 
-  // Creates existing and new disk volumes
+  // Volume describes a volume and parameters for it to be mounted to a VM.
   private static Iterable<Volume> volumes(String newPersistentDiskName,
                                           String existingPersistentDiskName) {
     Volume newVolume = Volume.newBuilder()

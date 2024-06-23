@@ -53,7 +53,7 @@ public class CreateGpuJob {
     // you need to install GPU drivers manually to use any GPUs for this job.
     boolean installGpuDrivers = false;
     // The GPU type. You can view a list of the available GPU types
-    // by using the gcloud compute accelerator-types list command.
+    // by using the `gcloud compute accelerator-types list` command.
     String gpuType = "nvidia-tesla-t4";
     // The number of GPUs of the specified type.
     int gpuCount = 2;

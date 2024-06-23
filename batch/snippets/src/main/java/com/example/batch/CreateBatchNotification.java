@@ -49,13 +49,13 @@ public class CreateBatchNotification {
     // The name of the job that will be created.
     // It needs to be unique for each project and region pair.
     String jobName = "JOB_NAME";
-    // The Pub/Sub topic ID of the topic you created when you enabled Pub/Sub notifications.
+    // The Pub/Sub topic ID to send the notifications to.
     String topicId = "TOPIC_ID";
 
     createBatchNotification(projectId, region, jobName, topicId);
   }
 
-  // Create a Batch job that sends Pub/Sub notifications
+  // Create a Batch job that sends notifications to Pub/Sub
   public static Job createBatchNotification(String projectId, String region, String jobName,
                                             String topicId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -123,8 +123,7 @@ public class CreateBatchNotification {
     }
   }
 
-  // Specify the following attributes,
-  // which each let you receive notifications about the state of the job or all of its tasks.
+  // Creates notification configurations to send messages to Pub/Sub when the state is changed
   private static Iterable<JobNotification> buildNotifications(String projectId, String topicId) {
     String pubsubTopic = String.format("projects/%s/topics/%s", projectId, topicId);
 

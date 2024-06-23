@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateBatchCustomServiceAccount {
+public class CreateBatchUsingServiceAccount {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -49,12 +49,12 @@ public class CreateBatchCustomServiceAccount {
     // The email address of your service account.
     String serviceAccountEmail = "EMAIL";
 
-    createCustomServiceAccount(projectId, region, jobName, serviceAccountEmail);
+    createBatchUsingServiceAccount(projectId, region, jobName, serviceAccountEmail);
   }
 
   // Create a job that uses a custom service account
-  public static Job createCustomServiceAccount(String projectId, String region, String jobName,
-                                               String serviceAccountEmail)
+  public static Job createBatchUsingServiceAccount(String projectId, String region, String jobName,
+                                                   String serviceAccountEmail)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -97,7 +97,7 @@ public class CreateBatchCustomServiceAccount {
         serviceAccount.setEmail(serviceAccountEmail);
       }
 
-      // Policies are used to attach service account
+      // Attach service account that VMs will run as.
       AllocationPolicy allocationPolicy = AllocationPolicy.newBuilder()
               .setServiceAccount(serviceAccount)
               .build();
