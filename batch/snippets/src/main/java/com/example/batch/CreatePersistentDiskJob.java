@@ -176,7 +176,7 @@ public class CreatePersistentDiskJob {
     return Lists.newArrayList(existingDisk, newDisk);
   }
 
-  // Volume describes a volume and parameters for it to be mounted to a VM.
+  // Describes a volume and parameters for it to be mounted to a VM.
   private static Iterable<Volume> volumes(String newPersistentDiskName,
                                           String existingPersistentDiskName) {
     Volume newVolume = Volume.newBuilder()

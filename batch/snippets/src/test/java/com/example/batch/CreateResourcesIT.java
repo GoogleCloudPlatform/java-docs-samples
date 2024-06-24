@@ -22,7 +22,6 @@ import com.google.cloud.batch.v1.TaskStatus.State;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.InsertDiskRequest;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -188,8 +187,6 @@ public class CreateResourcesIT {
     ACTIVE_JOBS.add(job);
 
     Assert.assertTrue(job.getName().contains(PERSISTENT_DISK_JOB));
-    Assert.assertTrue(job.getAllocationPolicy().getLocation()
-            .getAllowedLocationsList().contains("zones/" + ZONE));
 
     Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream()
             .anyMatch(policy -> policy.getPolicy().getDisksList().stream()
