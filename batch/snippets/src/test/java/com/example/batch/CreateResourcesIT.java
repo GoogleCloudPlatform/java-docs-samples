@@ -26,11 +26,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Stream;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -225,20 +228,21 @@ public class CreateResourcesIT {
   public void createBatchCustomEventTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String displayName1 = "script 1";
-    String displayName2 = "script 2";
+    String displayName2 = "barrier 1";
+    String displayName3 = "script 2";
     Job job = CreateBatchCustomEvent
             .createBatchCustomEvent(PROJECT_ID, REGION, CUSTOM_EVENT_NAME,
-                    displayName1, displayName2);
+                    displayName1, displayName2, displayName3);
 
     Assert.assertNotNull(job);
     ACTIVE_JOBS.add(job);
 
     Assert.assertTrue(job.getName().contains(CUSTOM_EVENT_NAME));
 
-    Assert.assertTrue(job.getTaskGroupsList().stream()
-            .anyMatch(event -> event.getTaskSpec().getRunnablesList()
-                    .stream().allMatch(runnable -> runnable.getDisplayName()
-                            .matches(displayName1 + "|" + displayName2))));
+    Arrays.asList(displayName1, displayName2, displayName3)
+            .forEach(displayName -> Assert.assertTrue(job.getTaskGroupsList().stream()
+                    .flatMap(event -> event.getTaskSpec().getRunnablesList().stream())
+                    .anyMatch(runnable -> runnable.getDisplayName().equals(displayName))));
   }
 
   private void createEmptyDisk(String projectId, String zone, String diskName,
