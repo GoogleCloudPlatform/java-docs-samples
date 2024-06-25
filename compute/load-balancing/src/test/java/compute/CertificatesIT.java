@@ -21,7 +21,8 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import com.google.cloud.compute.v1.RegionSslCertificatesClient;
 import com.google.cloud.compute.v1.SslCertificate;
 import com.google.cloud.compute.v1.SslCertificatesClient;
-
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretVersionName;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,8 +30,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.secretmanager.v1.SecretVersionName;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
