@@ -111,7 +111,8 @@ public class CreateBatchCustomEvent {
   }
 
   // Create runnables with custom scripts
-  private static Iterable<Runnable> buildRunnables(String displayName1, String displayName2, String displayName3) {
+  private static Iterable<Runnable> buildRunnables(String displayName1, String displayName2,
+                                                   String displayName3) {
     List<Runnable> runnables = new ArrayList<>();
 
     // Define what will be done as part of the job.
