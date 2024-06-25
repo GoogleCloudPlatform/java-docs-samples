@@ -82,6 +82,7 @@ public class CertificatesIT {
     Assert.assertNotNull(sslCertificate);
     Assert.assertEquals(CERTIFICATE_NAME, sslCertificate.getName());
     Assert.assertEquals(certificate, sslCertificate.getCertificate());
+    Assert.assertNotNull(sslCertificate.getPrivateKey());
   }
 
   @Test
@@ -98,6 +99,7 @@ public class CertificatesIT {
     Assert.assertEquals(REGION_CERTIFICATE_NAME, sslCertificate.getName());
     Assert.assertEquals(certificate, sslCertificate.getCertificate());
     Assert.assertTrue(sslCertificate.getRegion().contains(REGION));
+    Assert.assertNotNull(sslCertificate.getPrivateKey());
   }
 
   private String getPrivateKey() throws IOException {
