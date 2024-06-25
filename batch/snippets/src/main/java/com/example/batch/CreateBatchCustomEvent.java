@@ -46,27 +46,25 @@ public class CreateBatchCustomEvent {
     // The name of the job that will be created.
     // It needs to be unique for each project and region pair.
     String jobName = "JOB_NAME";
-    // Replace with the name of the runnable, which must be unique
-    // within the job—for example, script 1, barrier 1, and script 2.
+    // Name of the runnable, which must be unique
+    // within the job. For example: script 1, barrier 1, and script 2.
     String displayName1 = "script 1";
-    String displayName2 = "barrier 1";
-    String displayName3 = "script 2";
+    String displayName2 = "script 2";
 
-    createBatchCustomEvent(projectId, region, jobName, displayName1, displayName2, displayName3);
+    createBatchCustomEvent(projectId, region, jobName, displayName1, displayName2);
   }
 
-  // Create a custom status events that describe a runnable's state
-  // by defining a runnable's display name (displayName field)
+  // Configure custom status events, which describe a job's runnables,
+  // when you create and run a Batch job.
   public static Job createBatchCustomEvent(String projectId, String region, String jobName,
-                                           String displayName1, String displayName2,
-                                           String displayName3)
+                                           String displayName1, String displayName2)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {
       TaskSpec task = TaskSpec.newBuilder()
               // Jobs can be divided into tasks. In this case, we have only one task.
-              .addAllRunnables(buildCustomEvents(displayName1, displayName2, displayName3))
+              .addAllRunnables(buildRunnables(displayName1, displayName2))
               .setMaxRetryCount(2)
               .setMaxRunDuration(Duration.newBuilder().setSeconds(3600).build())
               .build();
@@ -109,9 +107,9 @@ public class CreateBatchCustomEvent {
     }
   }
 
-  // Create custom status events
-  private static Iterable<Runnable> buildCustomEvents(String displayName1,
-                                                      String displayName2, String displayName3) {
+  // Create runnables with custom scripts
+  private static Iterable<Runnable> buildRunnables(String displayName1,
+                                                   String displayName2) {
     List<Runnable> runnables = new ArrayList<>();
 
     // Define what will be done as part of the job.
@@ -130,11 +128,6 @@ public class CreateBatchCustomEvent {
 
     runnables.add(Runnable.newBuilder()
         .setDisplayName(displayName2)
-        .setBarrier(Runnable.Barrier.newBuilder().build())
-        .build());
-
-    runnables.add(Runnable.newBuilder()
-        .setDisplayName(displayName3)
         .setScript(
             Script.newBuilder()
                 .setText("echo Hello world from script 2 for task ${BATCH_TASK_INDEX}").build())

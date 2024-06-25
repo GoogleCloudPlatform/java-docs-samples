@@ -225,11 +225,10 @@ public class CreateResourcesIT {
   public void createBatchCustomEventTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String displayName1 = "script 1";
-    String displayName2 = "barrier 1";
-    String displayName3 = "script 2";
+    String displayName2 = "script 2";
     Job job = CreateBatchCustomEvent
             .createBatchCustomEvent(PROJECT_ID, REGION, CUSTOM_EVENT_NAME,
-                    displayName1, displayName2, displayName3);
+                    displayName1, displayName2);
 
     Assert.assertNotNull(job);
     ACTIVE_JOBS.add(job);
@@ -238,18 +237,8 @@ public class CreateResourcesIT {
 
     Assert.assertTrue(job.getTaskGroupsList().stream()
             .anyMatch(event -> event.getTaskSpec().getRunnablesList()
-                    .stream().anyMatch(runnable
-                            -> runnable.getDisplayName().contains(displayName1))));
-
-    Assert.assertTrue(job.getTaskGroupsList().stream()
-            .anyMatch(event -> event.getTaskSpec().getRunnablesList()
-                    .stream().anyMatch(runnable
-                            -> runnable.getDisplayName().contains(displayName2))));
-
-    Assert.assertTrue(job.getTaskGroupsList().stream()
-            .anyMatch(event -> event.getTaskSpec().getRunnablesList()
-                    .stream().anyMatch(runnable
-                            -> runnable.getDisplayName().contains(displayName3))));
+                    .stream().allMatch(runnable -> runnable.getDisplayName()
+                            .matches(displayName1 + "|" + displayName2))));
   }
 
   private void createEmptyDisk(String projectId, String zone, String diskName,
