@@ -55,6 +55,8 @@ public class CreateResourcesIT {
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String NOTIFICATION_NAME = "test-job"
           + UUID.randomUUID().toString().substring(0, 7);
+  private static final String CUSTOM_EVENT_NAME = "test-job"
+          + UUID.randomUUID().toString().substring(0, 7);
   private static final String LOCAL_SSD_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String PERSISTENT_DISK_NAME = "test-disk"
@@ -217,6 +219,37 @@ public class CreateResourcesIT {
             .anyMatch(jobNotification -> jobNotification.getPubsubTopic().contains(topicId)
                     && jobNotification.getMessage().getType() == Type.TASK_STATE_CHANGED
                     && jobNotification.getMessage().getNewTaskState() == State.FAILED));
+  }
+
+  @Test
+  public void createBatchCustomEventTest()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String displayName1 = "script 1";
+    String displayName2 = "barrier 1";
+    String displayName3 = "script 2";
+    Job job = CreateBatchCustomEvent
+            .createBatchCustomEvent(PROJECT_ID, REGION, CUSTOM_EVENT_NAME,
+                    displayName1, displayName2, displayName3);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(CUSTOM_EVENT_NAME));
+
+    Assert.assertTrue(job.getTaskGroupsList().stream()
+            .anyMatch(event -> event.getTaskSpec().getRunnablesList()
+                    .stream().anyMatch(runnable
+                            -> runnable.getDisplayName().contains(displayName1))));
+
+    Assert.assertTrue(job.getTaskGroupsList().stream()
+            .anyMatch(event -> event.getTaskSpec().getRunnablesList()
+                    .stream().anyMatch(runnable
+                            -> runnable.getDisplayName().contains(displayName2))));
+
+    Assert.assertTrue(job.getTaskGroupsList().stream()
+            .anyMatch(event -> event.getTaskSpec().getRunnablesList()
+                    .stream().anyMatch(runnable
+                            -> runnable.getDisplayName().contains(displayName3))));
   }
 
   private void createEmptyDisk(String projectId, String zone, String diskName,
