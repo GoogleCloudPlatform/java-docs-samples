@@ -87,12 +87,8 @@ public class ApacheIcebergWrite {
     // Build the pipeline.
     var input = pipeline
         .apply(Create.of(TABLE_ROWS))
-        .apply(JsonToRow.withSchema(SCHEMA));
-
-    PCollectionRowTuple.of("input", input).apply(
-        Managed.write(Managed.ICEBERG)
-            .withConfig(config)
-    );
+        .apply(JsonToRow.withSchema(SCHEMA))
+        .apply(Managed.write(Managed.ICEBERG).withConfig(config));
 
     pipeline.run().waitUntilFinish();
   }
