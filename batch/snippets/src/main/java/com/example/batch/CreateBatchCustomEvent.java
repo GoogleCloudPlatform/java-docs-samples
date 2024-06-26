@@ -126,7 +126,7 @@ public class CreateBatchCustomEvent {
                 // script that's already on the VM that will be running the job.
                 // Using setText() and setPath() is mutually exclusive.
                 // .setPath("/tmp/test.sh")
-                .build())
+                )
         .build());
 
     runnables.add(Runnable.newBuilder()
@@ -138,7 +138,15 @@ public class CreateBatchCustomEvent {
         .setDisplayName(displayName3)
         .setScript(
             Script.newBuilder()
-                .setText("echo Hello world from script 2 for task ${BATCH_TASK_INDEX}").build())
+                .setText("echo Hello world from script 2 for task ${BATCH_TASK_INDEX}"))
+        .build());
+
+    runnables.add(Runnable.newBuilder()
+        .setScript(
+            Script.newBuilder()
+                // Replace DESCRIPTION with a description
+                // for the custom status event—for example, halfway done.
+                .setText("sleep 30; echo '{\"batch/custom/event\": \"DESCRIPTION\"}'; sleep 30"))
         .build());
 
     return runnables;
