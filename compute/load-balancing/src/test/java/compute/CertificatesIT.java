@@ -21,8 +21,6 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import com.google.cloud.compute.v1.RegionSslCertificatesClient;
 import com.google.cloud.compute.v1.SslCertificate;
 import com.google.cloud.compute.v1.SslCertificatesClient;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.secretmanager.v1.SecretVersionName;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,6 +40,7 @@ import org.junit.runners.JUnit4;
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class CertificatesIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PRIVATE_KEY = System.getenv("PRIVATE_KEY_SELFSIGNED_CERT");
   private static final String CERTIFICATE_NAME =
           "cert-name-" + UUID.randomUUID().toString().substring(0, 8);
   private static final String REGION_CERTIFICATE_NAME =
@@ -59,6 +58,7 @@ public class CertificatesIT {
   public static void setUp() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("PRIVATE_KEY_SELFSIGNED_CERT");
   }
 
   @AfterClass
@@ -74,10 +74,9 @@ public class CertificatesIT {
   public void createCertificateTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String certificate = readFile(CERTIFICATE_FILE);
-    String privateKey = getPrivateKey();
 
     SslCertificate sslCertificate = CreateCertificate
-            .createCertificate(PROJECT_ID, certificate, privateKey, CERTIFICATE_NAME);
+            .createCertificate(PROJECT_ID, certificate, PRIVATE_KEY, CERTIFICATE_NAME);
 
     Assert.assertNotNull(sslCertificate);
     Assert.assertEquals(CERTIFICATE_NAME, sslCertificate.getName());
@@ -89,25 +88,16 @@ public class CertificatesIT {
   public void createRegionCertificateTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String certificate = readFile(CERTIFICATE_FILE);
-    String privateKey = getPrivateKey();
 
     SslCertificate sslCertificate = CreateRegionalCertificate
             .createRegionCertificate(PROJECT_ID, certificate,
-                    REGION, privateKey, REGION_CERTIFICATE_NAME);
+                    REGION, PRIVATE_KEY, REGION_CERTIFICATE_NAME);
 
     Assert.assertNotNull(sslCertificate);
     Assert.assertEquals(REGION_CERTIFICATE_NAME, sslCertificate.getName());
     Assert.assertEquals(certificate, sslCertificate.getCertificate());
     Assert.assertTrue(sslCertificate.getRegion().contains(REGION));
     Assert.assertNotNull(sslCertificate.getPrivateKey());
-  }
-
-  private String getPrivateKey() throws IOException {
-    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-      SecretVersionName versionName = SecretVersionName
-              .of(PROJECT_ID, "java-scc-samples-secrets.txt", "latest");
-      return client.accessSecretVersion(versionName).getPayload().getData().toString();
-    }
   }
 
   private String readFile(String path) throws IOException {
