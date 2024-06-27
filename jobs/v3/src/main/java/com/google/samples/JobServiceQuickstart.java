@@ -32,6 +32,7 @@ import java.util.Collections;
 /** The quickstart for Cloud Job Discovery */
 public class JobServiceQuickstart {
 
+  // [START job_search_quick_start]
   // [START quickstart]
 
   private static final JsonFactory JSON_FACTORY = new GsonFactory();
@@ -92,4 +93,5 @@ public class JobServiceQuickstart {
   }
 
   // [END quickstart]
+  // [END job_search_quick_start]
 }
