@@ -29,11 +29,11 @@ limitations under the License.
   </parent>
 
   <properties>
-    <surefire-plugin.version>3.2.5</surefire-plugin.version>
+    <surefire-plugin.version>3.3.0</surefire-plugin.version>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <quarkus.version>3.6.5</quarkus.version>
+    <quarkus.version>3.12.0</quarkus.version>
   </properties>
 
   <dependencyManagement>

@@ -47,7 +47,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.32.0</version>
+        <version>26.42.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -87,7 +87,7 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>11.0.20</version>
+        <version>11.0.21</version>
       </plugin>
     </plugins>
   </build>
