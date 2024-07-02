@@ -17,6 +17,10 @@ assign_issues:
 
 assign_issues_by:
 - labels:
+  - "api: routeoptimization"
+  to:
+  - GoogleCloudPlatform/geo-routeoptimization
+- labels:
   - "api: cloudasset"
   to:
   - GoogleCloudPlatform/cloud-asset-analysis-team
@@ -93,7 +97,6 @@ assign_issues_by:
   - "api: cloudfunctions"
   to:
   - GoogleCloudPlatform/functions-framework-google
-  - GoogleCloudPlatform/torus-dpe
 - labels:
   - "api: bigquerydatatransfer"
   to:
@@ -180,8 +183,3 @@ assign_prs_by:
   - "api: cloudfunctions"
   to:
   - GoogleCloudPlatform/functions-framework-google
-  - GoogleCloudPlatform/torus-dpe
-- labels:
-  - "api: bigquerydatatransfer"
-  to:
-  - GoogleCloudPlatform/bigquery-data-connectors
