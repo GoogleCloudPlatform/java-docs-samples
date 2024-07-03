@@ -151,7 +151,7 @@ public class SnippetsIT {
                         Replication.newBuilder()
                             .setAutomatic(Replication.Automatic.newBuilder().build())
                             .build())
-		    .putLabels(LABEL_KEY, LABEL_VALUE)
+                    .putLabels(LABEL_KEY, LABEL_VALUE)
                     .build())
             .build();
 
@@ -228,7 +228,8 @@ public class SnippetsIT {
   @Test
   public void testCreateSecretWithLabel() throws IOException {
     SecretName name = TEST_SECRET_WITH_LABEL_TO_CREATE_NAME;
-    CreateSecretWithLabels.createSecretWithLabels(name.getProject(), name.getSecret(), LABEL_KEY, LABEL_VALUE);
+    CreateSecretWithLabels.createSecretWithLabels(
+        name.getProject(), name.getSecret(), LABEL_KEY, LABEL_VALUE);
 
     assertThat(stdOut.toString()).contains("Created secret");
   }
@@ -420,7 +421,8 @@ public class SnippetsIT {
   @Test
   public void testCreateUpdateSecretLabel() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
-    CreateUpdateSecretLabel.createUpdateSecretLabel(name.getProject(), name.getSecret(), UPDATED_LABEL_KEY, UPDATED_LABEL_VALUE);
+    CreateUpdateSecretLabel.createUpdateSecretLabel(
+        name.getProject(), name.getSecret(), UPDATED_LABEL_KEY, UPDATED_LABEL_VALUE);
 
     assertThat(stdOut.toString()).contains("Updated secret");
   }

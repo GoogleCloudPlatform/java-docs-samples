@@ -20,8 +20,8 @@ package secretmanager;
 import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretName;
-import java.util.Map;
 import java.io.IOException;
+import java.util.Map;
 
 public class ViewSecretLabels {
 
@@ -48,7 +48,7 @@ public class ViewSecretLabels {
 
       System.out.printf("Secret %s \n", secret.getName());
 
-      for(Map.Entry<String, String> label: labels.entrySet()){
+      for (Map.Entry<String, String> label : labels.entrySet()) {
         System.out.printf("Label key : %s, Label Value : %s\n", label.getKey(), label.getValue());
       }
 

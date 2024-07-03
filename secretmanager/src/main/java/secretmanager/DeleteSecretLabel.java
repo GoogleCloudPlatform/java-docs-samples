@@ -22,9 +22,9 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.util.FieldMaskUtil;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.IOException;
 
 public class DeleteSecretLabel {
 
@@ -37,7 +37,8 @@ public class DeleteSecretLabel {
   }
 
   // Update an existing secret, to delete an existing label
-  public static void deleteSecretLabel(String projectId, String secretId, String labelKey) throws IOException {
+  public static void deleteSecretLabel(
+                     String projectId, String secretId, String labelKey) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -48,7 +49,8 @@ public class DeleteSecretLabel {
       // Get the existing secret
       Secret existingSecret = client.getSecret(secretName);
 
-      Map<String,String> existingLabelsMap = new HashMap<String, String>(existingSecret.getLabels());
+      Map<String, String> existingLabelsMap = 
+              new HashMap<String, String>(existingSecret.getLabels());
       existingLabelsMap.remove(labelKey);
 
       // Build the updated secret.

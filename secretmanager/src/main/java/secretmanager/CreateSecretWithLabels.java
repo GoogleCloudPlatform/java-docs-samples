@@ -17,10 +17,10 @@
 package secretmanager;
 
 // [START secretmanager_create_secret_with_labels]
-import com.google.cloud.secretmanager.v1.Secret;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Replication;
+import com.google.cloud.secretmanager.v1.Secret;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import java.io.IOException;
 
 public class CreateSecretWithLabels {
@@ -35,7 +35,8 @@ public class CreateSecretWithLabels {
   }
 
   // Create a secret.
-  public static void createSecretWithLabels(String projectId, String secretId, String labelKey, String labelValue) throws IOException {
+  public static void createSecretWithLabels(
+       String projectId, String secretId, String labelKey, String labelValue) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -47,11 +48,11 @@ public class CreateSecretWithLabels {
       // Build the secret to create with labels.
       Secret secret =
           Secret.newBuilder()
-	      .setReplication(
+                  .setReplication(
                   Replication.newBuilder()
                       .setAutomatic(Replication.Automatic.newBuilder().build())
                       .build())
-              .putLabels(labelKey, labelValue)
+                      .putLabels(labelKey, labelValue)
               .build();
 
       // Create the secret.

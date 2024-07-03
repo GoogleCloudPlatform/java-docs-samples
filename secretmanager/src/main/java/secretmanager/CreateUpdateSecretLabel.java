@@ -22,13 +22,13 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.util.FieldMaskUtil;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.IOException;
 
 public class CreateUpdateSecretLabel {
 
-  public static void CreateUpdateSecretLabel() throws IOException {
+  public static void createUpdateSecretLabel() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String secretId = "your-secret-id";
@@ -38,7 +38,8 @@ public class CreateUpdateSecretLabel {
   }
 
   // Update an existing secret, to create a new label or update an existing one.
-  public static void createUpdateSecretLabel(String projectId, String secretId, String labelKey, String labelValue) throws IOException {
+  public static void createUpdateSecretLabel(
+       String projectId, String secretId, String labelKey, String labelValue) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
@@ -49,7 +50,8 @@ public class CreateUpdateSecretLabel {
       // Get the existing secret
       Secret existingSecret = client.getSecret(secretName);
 
-      Map<String, String> existingLabelsMap = new HashMap<String, String>(existingSecret.getLabels());
+      Map<String, String> existingLabelsMap = 
+                      new HashMap<String, String>(existingSecret.getLabels());
 
       existingLabelsMap.put(labelKey, labelValue);
 
