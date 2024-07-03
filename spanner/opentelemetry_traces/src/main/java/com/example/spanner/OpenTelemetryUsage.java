@@ -38,19 +38,26 @@ import io.opentelemetry.sdk.trace.samplers.Sampler;
  */
 public class OpenTelemetryUsage {
 
+  static SdkTracerProvider sdkTracerProvider;
+  static Spanner spanner;
+
   // TODO(developer): Replace these variables before running the sample.
   static String projectId = "my-project";
   static String instanceId = "my-instance";
   static String databaseId = "my-database";
-  public static SdkTracerProvider sdkTracerProvider;
+
+  // Replace these variables to use OTLP Exporter
+  static boolean useCloudTraceExporter = true; // Replace to false for OTLP
+  static String otlpEndpoint = "http://localhost:4317"; // Replace with your OTLP endpoint
+
 
   public static void main(String[] args) {
 
-
-    // Use getSpannerWithCloudTraceExporter instead of getSpannerWithOTLPExporter to directly
-    // export to Observability backend using Cloud Trace exporter.
-    // Spanner spanner = getSpannerWithCloudTraceExporter();
-    Spanner spanner = getSpannerWithOtlpExporter();
+    if (useCloudTraceExporter) {
+      spanner = getSpannerWithCloudTraceExporter();
+    } else {
+      spanner = getSpannerWithOtlpExporter();
+    }
 
     DatabaseClient dbClient = spanner
         .getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
@@ -76,7 +83,7 @@ public class OpenTelemetryUsage {
     OtlpGrpcSpanExporter otlpGrpcSpanExporter =
         OtlpGrpcSpanExporter
             .builder()
-            .setEndpoint("http://localhost:4317") // Replace with your OTLP endpoint
+            .setEndpoint(otlpEndpoint) // Replace with your OTLP endpoint
             .build();
 
     // Using a batch span processor
@@ -140,7 +147,9 @@ public class OpenTelemetryUsage {
     // Enable OpenTelemetry traces before Injecting OpenTelemetry
     SpannerOptions.enableOpenTelemetryTraces();
 
-    // Inject OpenTelemetry object via Spanner options or register as GlobalOpenTelemetry.
+    // Inject OpenTelemetry object via Spanner options or register it as global object.
+    // To register as the global OpenTelemetry object,
+    // use "OpenTelemetrySdk.builder()....buildAndRegisterGlobal()".
     SpannerOptions options = SpannerOptions.newBuilder()
         .setOpenTelemetry(openTelemetry)
         .build();
