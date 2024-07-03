@@ -62,12 +62,17 @@ public class SnippetsIT {
   private static final String IAM_USER =
       "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String LABEL_KEY = "secretmanager";
+  private static final String LABEL_VALUE = "rocks";
+  private static final String UPDATED_LABEL_KEY = "gcp";
+  private static final String UPDATED_LABEL_VALUE = "rock";
 
   private static Secret TEST_SECRET;
   private static Secret TEST_SECRET_TO_DELETE;
   private static Secret TEST_SECRET_TO_DELETE_WITH_ETAG;
   private static Secret TEST_SECRET_WITH_VERSIONS;
   private static SecretName TEST_SECRET_TO_CREATE_NAME;
+  private static SecretName TEST_SECRET_WITH_LABEL_TO_CREATE_NAME;
   private static SecretName TEST_UMMR_SECRET_TO_CREATE_NAME;
   private static SecretVersion TEST_SECRET_VERSION;
   private static SecretVersion TEST_SECRET_VERSION_TO_DESTROY;
@@ -89,6 +94,7 @@ public class SnippetsIT {
     TEST_SECRET_WITH_VERSIONS = createSecret();
     TEST_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_UMMR_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
+    TEST_SECRET_WITH_LABEL_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
 
     TEST_SECRET_VERSION = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
@@ -120,6 +126,7 @@ public class SnippetsIT {
 
     deleteSecret(TEST_SECRET.getName());
     deleteSecret(TEST_SECRET_TO_CREATE_NAME.toString());
+    deleteSecret(TEST_SECRET_WITH_LABEL_TO_CREATE_NAME.toString());
     deleteSecret(TEST_UMMR_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
     deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
@@ -144,6 +151,7 @@ public class SnippetsIT {
                         Replication.newBuilder()
                             .setAutomatic(Replication.Automatic.newBuilder().build())
                             .build())
+		    .putLabels(LABEL_KEY, LABEL_VALUE)
                     .build())
             .build();
 
@@ -218,6 +226,14 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testCreateSecretWithLabel() throws IOException {
+    SecretName name = TEST_SECRET_WITH_LABEL_TO_CREATE_NAME;
+    CreateSecretWithLabels.createSecretWithLabels(name.getProject(), name.getSecret(), LABEL_KEY, LABEL_VALUE);
+
+    assertThat(stdOut.toString()).contains("Created secret");
+  }
+
+  @Test
   public void testCreateSecretWithUserManagedReplication() throws IOException {
     SecretName name = TEST_UMMR_SECRET_TO_CREATE_NAME;
     List<String> locations = Arrays.asList("us-east1", "us-east4", "us-west1");
@@ -233,6 +249,14 @@ public class SnippetsIT {
     DeleteSecret.deleteSecret(name.getProject(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("Deleted secret");
+  }
+
+  @Test
+  public void testDeleteSecretLabel() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    DeleteSecretLabel.deleteSecretLabel(name.getProject(), name.getSecret(), LABEL_KEY);
+
+    assertThat(stdOut.toString()).contains("Updated secret");
   }
 
   @Test
@@ -324,6 +348,16 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testViewSecretLabels() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    ViewSecretLabels.viewSecretLabels(name.getProject(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Secret");
+    assertThat(stdOut.toString()).contains(LABEL_KEY);
+  }
+
+
+  @Test
   public void testIamGrantAccess() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
     IamGrantAccess.iamGrantAccess(name.getProject(), name.getSecret(), IAM_USER);
@@ -379,6 +413,14 @@ public class SnippetsIT {
   public void testUpdateSecret() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
     UpdateSecret.updateSecret(name.getProject(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Updated secret");
+  }
+
+  @Test
+  public void testCreateUpdateSecretLabel() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    CreateUpdateSecretLabel.createUpdateSecretLabel(name.getProject(), name.getSecret(), UPDATED_LABEL_KEY, UPDATED_LABEL_VALUE);
 
     assertThat(stdOut.toString()).contains("Updated secret");
   }
