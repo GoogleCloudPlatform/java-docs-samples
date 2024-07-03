@@ -79,7 +79,7 @@
     <dependency>
       <groupId>com.google.cloud.opentelemetry</groupId>
       <artifactId>exporter-trace</artifactId>
-      <version>0.26.0</version>
+      <version>0.30.0</version>
     </dependency>
     <!-- [END spanner_opentelemetry_traces_cloudtrace_dependencies] -->
   </dependencies>

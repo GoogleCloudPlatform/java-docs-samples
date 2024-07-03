@@ -50,7 +50,6 @@ public class OpenTelemetryUsage {
   static boolean useCloudTraceExporter = true; // Replace to false for OTLP
   static String otlpEndpoint = "http://localhost:4317"; // Replace with your OTLP endpoint
 
-
   public static void main(String[] args) {
 
     if (useCloudTraceExporter) {
