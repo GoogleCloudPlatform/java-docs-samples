@@ -28,9 +28,9 @@ This sample requires [Java](https://www.java.com/en/download/) and [Maven](http:
     String databaseId = "my-database";
     ````
 
-2. Configure trace data export. You can use either the OTEL [Collector](https://opentelemetry.io/docs/collector/quick-start/ with the OTLP Exporter or the Cloud Trace Exporter. By default, the Cloud Trace Exporter is used.
+2. Configure trace data export. You can use either the OpenTelemetry [Collector](https://opentelemetry.io/docs/collector/quick-start/ with the OTLP Exporter or the Cloud Trace Exporter. By default, the Cloud Trace Exporter is used.
 
-- To use OTLP Exporter, Set up the OTEL [Collector](https://opentelemetry.io/docs/collector/quick-start/) and update the OTLP endpoint in `OpenTelemetryUsage.java` class
+- To use OTLP Exporter, Set up the OpenTelemetry [Collector](https://opentelemetry.io/docs/collector/quick-start/) and update the OTLP endpoint in `OpenTelemetryUsage.java` class
     ````
     boolean useCloudTraceExporter = true; // Replace to false for OTLP
     String otlpEndpoint = "http://localhost:4317"; // Replace with your OTLP endpoint
