@@ -42,7 +42,7 @@ public final class CommuteSearchSample {
   private static CloudTalentSolution talentSolutionClient =
       JobServiceQuickstart.getTalentSolutionClient();
 
-  // [START commute_search]
+  // [START job_discovery_commute_search]
 
   public static void commuteSearch(String companyName) throws IOException, InterruptedException {
     // Make sure to set the requestMetadata the same as the associated search request
@@ -82,7 +82,7 @@ public final class CommuteSearchSample {
     Thread.sleep(1000);
     System.out.printf("Search jobs for commute results: %s\n", response);
   }
-  // [END commute_search]
+  // [END job_discovery_commute_search]
 
   public static void main(String... args) throws Exception {
     Company companyToBeCreated = BasicCompanySample.generateCompany();

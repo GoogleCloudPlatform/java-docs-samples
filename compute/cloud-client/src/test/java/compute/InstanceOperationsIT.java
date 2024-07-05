@@ -19,10 +19,12 @@ package compute;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
 import com.google.cloud.compute.v1.InstancesClient;
 import compute.disks.CloneEncryptedDisk;
+import compute.disks.CreateEncryptedDisk;
 import compute.disks.DeleteDisk;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -54,6 +56,7 @@ public class InstanceOperationsIT {
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_ENCRYPTED;
   private static String DISK_NAME;
+  private static String ENCRYPTED_DISK_NAME;
   private static String RAW_KEY;
 
   private ByteArrayOutputStream stdOut;
@@ -77,6 +80,7 @@ public class InstanceOperationsIT {
     MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
     MACHINE_NAME_ENCRYPTED = "encrypted-test-instance" + UUID.randomUUID();
     DISK_NAME = "test-clone-disk-enc-" + UUID.randomUUID();
+    ENCRYPTED_DISK_NAME = "test-disk-enc-" + UUID.randomUUID();
     RAW_KEY = Util.getBase64EncodedKey();
 
     // Cleanup existing stale resources.
@@ -105,6 +109,7 @@ public class InstanceOperationsIT {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, DISK_NAME);
+    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ENCRYPTED_DISK_NAME);
 
     stdOut.close();
     System.setOut(out);
@@ -209,4 +214,18 @@ public class InstanceOperationsIT {
     assertThat(stdOut.toString()).contains("Disk cloned with customer encryption key.");
   }
 
+  @Test
+  public void testCreateEncryptedDisk()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String diskType = String.format("zones/%s/diskTypes/pd-standard", ZONE);
+    byte[] rawKeyBytes = RAW_KEY.getBytes(StandardCharsets.UTF_8);
+
+    Disk encryptedDisk = CreateEncryptedDisk
+            .createEncryptedDisk(PROJECT_ID, ZONE, ENCRYPTED_DISK_NAME, diskType, 10, rawKeyBytes);
+
+    Assert.assertNotNull(encryptedDisk);
+    Assert.assertEquals(ENCRYPTED_DISK_NAME, encryptedDisk.getName());
+    Assert.assertNotNull(encryptedDisk.getDiskEncryptionKey());
+    Assert.assertNotNull(encryptedDisk.getDiskEncryptionKey().getSha256());
+  }
 }

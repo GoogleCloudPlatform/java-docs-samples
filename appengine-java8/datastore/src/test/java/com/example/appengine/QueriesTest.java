@@ -615,7 +615,6 @@ public class QueriesTest {
     datastore.put(ImmutableList.<Entity>of(a, b, c, d));
     long minBirthYear = 1940;
 
-    // [START gae_java8_datastore_inequality_filters_sort_orders_valid]
     Filter birthYearMinFilter =
         new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
 
@@ -624,7 +623,6 @@ public class QueriesTest {
             .setFilter(birthYearMinFilter)
             .addSort("birthYear", SortDirection.ASCENDING)
             .addSort("lastName", SortDirection.ASCENDING);
-    // [END gae_java8_datastore_inequality_filters_sort_orders_valid]
 
     // Assert
     List<Entity> results =

@@ -73,6 +73,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     "java-automl-samples-secrets.txt" \
     "java-bigtable-samples-secrets.txt" \
     "java-cloud-sql-samples-secrets.txt" \
+    "java-compute-samples-secrets.txt" \
     "java-cts-v4-samples-secrets.txt" \
     "java-dlp-samples-secrets.txt" \
     "java-functions-samples-secrets.txt" \

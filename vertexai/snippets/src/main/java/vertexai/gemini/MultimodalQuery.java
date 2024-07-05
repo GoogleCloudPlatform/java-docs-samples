@@ -16,6 +16,7 @@
 
 package vertexai.gemini;
 
+// [START generativeaionvertexai_gemini_pro_example]
 // [START aiplatform_gemini_pro_example]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -31,7 +32,7 @@ public class MultimodalQuery {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.0-pro-vision-001";
+    String modelName = "gemini-1.5-flash-001";
     String dataImageBase64 = "your-base64-encoded-image";
 
     String output = multimodalQuery(projectId, location, modelName, dataImageBase64);
@@ -61,3 +62,4 @@ public class MultimodalQuery {
   }
 }
 // [END aiplatform_gemini_pro_example]
+// [END generativeaionvertexai_gemini_pro_example]

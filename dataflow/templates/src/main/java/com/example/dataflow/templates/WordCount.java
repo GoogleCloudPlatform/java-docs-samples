@@ -35,7 +35,6 @@ import org.apache.beam.sdk.values.TypeDescriptors;
 
 
 public class WordCount {
-  // [START word_count_options]
   public interface WordCountOptions extends PipelineOptions {
     // Optional argument with a default value.
     @Description("Google Cloud Storage file pattern glob of the file(s) to read from")
@@ -64,9 +63,7 @@ public class WordCount {
 
     void setIsCaseSensitive(Boolean value);
   }
-  // [END word_count_options]
 
-  // [START static_value_provider]
   static class FilterWithSubstring extends DoFn<String, String> {
     ValueProvider<String> substring;
     Boolean isCaseSensitive;
@@ -95,9 +92,7 @@ public class WordCount {
       }
     }
   }
-  // [END static_value_provider]
 
-  // [START value_provider]
   public static void main(String[] args) {
     WordCountOptions options = PipelineOptionsFactory.fromArgs(args)
         .withValidation().as(WordCountOptions.class);
@@ -105,7 +100,6 @@ public class WordCount {
     Pipeline pipeline = Pipeline.create(options);
     pipeline
         .apply("Read lines", TextIO.read().from(options.getInputFile()))
-        // [END value_provider]
         .apply("Find words", FlatMapElements.into(TypeDescriptors.strings())
             .via((String line) -> Arrays.asList(line.split("[^\\p{L}]+"))))
         .apply("Filter empty words", Filter.by((String word) -> !word.isEmpty()))
@@ -114,12 +108,10 @@ public class WordCount {
         .apply("Count words", Count.perElement())
         .apply("Format results", MapElements.into(TypeDescriptors.strings())
             .via((KV<String, Long> wordCount) -> wordCount.getKey() + ": " + wordCount.getValue()))
-        // [START nested_value_provider]
         .apply("Write results", TextIO.write().to(NestedValueProvider.of(
             options.getOutputBucket(),
             (String bucket) -> String.format("gs://%s/samples/dataflow/wordcount/outputs", bucket)
         )));
-    // [END nested_value_provider]
     pipeline.run();
   }
 }
