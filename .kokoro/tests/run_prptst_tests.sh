@@ -55,7 +55,6 @@ mkdir -p "${KOKORO_GFILE_DIR}/secrets"
 for SECRET in "${SECRET_FILES[@]}"; do
     # grab latest version of secret
     gcloud secrets versions access latest --secret="${SECRET%.*}" > "${KOKORO_GFILE_DIR}/secrets/$SECRET"
-    fi
 done
 
 # Copy gcloud CLI configuration to configured location
