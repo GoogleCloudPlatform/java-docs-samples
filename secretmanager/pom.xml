@@ -45,7 +45,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.32.0</version>
+        <version>26.42.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -100,6 +100,11 @@
             </path>
           </annotationProcessorPaths>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.12</version>
       </plugin>
     </plugins>
   </build>
