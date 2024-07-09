@@ -14,87 +14,86 @@
  * limitations under the License.
  */
 
- package vertexai.gemini;
+package vertexai.gemini;
 
- // [START generativeaionvertexai_gemini_automatic_function_calling]
- // [START aiplatform_gemini_automatic_function_calling]
- import com.google.cloud.vertexai.VertexAI;
- import com.google.cloud.vertexai.api.FunctionDeclaration;
- import com.google.cloud.vertexai.api.GenerateContentResponse;
- import com.google.cloud.vertexai.api.Tool;
- import com.google.cloud.vertexai.generativeai.AutomaticFunctionCallingResponder;
- import com.google.cloud.vertexai.generativeai.ChatSession;
- import com.google.cloud.vertexai.generativeai.FunctionDeclarationMaker;
- import com.google.cloud.vertexai.generativeai.GenerativeModel;
- import com.google.cloud.vertexai.generativeai.ResponseHandler;
- import java.io.IOException;
- 
- public class AutomaticFunctionCalling {
-   public static void main(String[] args) throws IOException {
-     // TODO(developer): Replace these variables before running the sample.
-     String projectId = "your-google-cloud-project-id";
-     String location = "us-central1";
-     String modelName = "gemini-1.5-flash-001";
- 
-     String promptText = "What's the weather like in Paris?";
- 
-     whatsTheWeatherLike(projectId, location, modelName, promptText);
-   }
+// [START generativeaionvertexai_gemini_automatic_function_calling]
+// [START aiplatform_gemini_automatic_function_calling]ß
+import com.google.cloud.vertexai.VertexAI;
+import com.google.cloud.vertexai.api.FunctionDeclaration;
+import com.google.cloud.vertexai.api.GenerateContentResponse;
+import com.google.cloud.vertexai.api.Tool;
+import com.google.cloud.vertexai.generativeai.AutomaticFunctionCallingResponder;
+import com.google.cloud.vertexai.generativeai.ChatSession;
+import com.google.cloud.vertexai.generativeai.FunctionDeclarationMaker;
+import com.google.cloud.vertexai.generativeai.GenerativeModel;
+import com.google.cloud.vertexai.generativeai.ResponseHandler;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
-   /** Callable function getCurrentWeather. */
-    public static String getCurrentWeather(String location) {
-        if (location.equals("Paris")) {
-        return "raining";
-        } else {
-        return "sunny";
-        }
+public class AutomaticFunctionCalling {
+  public static void main(String[] args) throws IOException, NoSuchMethodException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-google-cloud-project-id";
+    String location = "us-central1";
+    String modelName = "gemini-1.5-flash-001";
+
+    String promptText = "What's the weather like in Paris?";
+
+    whatsTheWeatherLike(projectId, location, modelName, promptText);
+  }
+
+  /** Callable function getCurrentWeather. */
+  public static String getCurrentWeather(String location) {
+    if (location.equals("Paris")) {
+      return "raining";
+    } else {
+      return "sunny";
     }
+  }
 
-   // A request involving the interaction with an external tool
-   public static String whatsTheWeatherLike(String projectId, String location,
-                                            String modelName, String promptText)
-       throws IOException {
-     // Initialize client that will be used to send requests.
-     // This client only needs to be created once, and can be reused for multiple requests.
+  // A request involving the interaction with an external tool
+  public static String whatsTheWeatherLike(
+      String projectId, String location, String modelName, String promptText)
+      throws IOException, NoSuchMethodException {
+    // Initialize client that will be used to send requests.
+    // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-        // Get the callable method instance
-        Method function = Main.class.getMethod("getCurrentWeather", String.class);
-        // Use the fromFunc helper method to create a FunctionDeclaration
-        FunctionDeclaration functionDeclaration = FunctionDeclarationMaker
-            .fromFunc("Get the current weather in a given location", function, "location")
-            .build();
-        System.out.println("Function declaration:");
-        System.out.println(functionDeclaration);
+      // Get the callable method instance
+      Method function = AutomaticFunctionCalling.class.getMethod("getCurrentWeather", String.class);
+      // Use the fromFunc helper method to create a FunctionDeclaration
+      FunctionDeclaration functionDeclaration =
+          FunctionDeclarationMaker.fromFunc(
+              "Get the current weather in a given location", function, "location");
+      System.out.println("Function declaration:");
+      System.out.println(functionDeclaration);
 
-        // Add the function to a "tool"
-        Tool tool = Tool.newBuilder()
-        .addFunctionDeclarations(functionDeclaration)
-        .build();
+      // Add the function to a "tool"
+      Tool tool = Tool.newBuilder().addFunctionDeclarations(functionDeclaration).build();
 
-        // Instantiate an AutomaticFunctionCallingResponder and add the callable method
-        AutomaticFunctionCallingResponder responder = new AutomaticFunctionCallingResponder();
-        responder.addCallableFunction("getCurrentWeather", function, "location");
+      // Instantiate an AutomaticFunctionCallingResponder and add the callable method
+      AutomaticFunctionCallingResponder responder = new AutomaticFunctionCallingResponder();
+      responder.addCallableFunction("getCurrentWeather", function, "location");
 
- 
-        // Start a chat session from a model, with the use of the declared function.
-        GenerativeModel model = new GenerativeModel(modelName, vertexAI)
-            .withTools(Arrays.asList(tool));
-        ChatSession chat = model.startChat();
+      // Start a chat session from a model, with the use of the declared function.
+      GenerativeModel model =
+          new GenerativeModel(modelName, vertexAI).withTools(Arrays.asList(tool));
+      ChatSession chat = model.startChat();
 
-        System.out.println(String.format("Ask the question: %s", promptText));
-        // Send message with the responder, which auto-responds FunctionCalls and
-        // returns the final text result
-        GenerateContentResponse response =
-            chat.withAutomaticFunctionCallingResponder(responder).sendMessage(TEXT);
- 
-        // Check the final response
-        System.out.println("Print response: ");
-        String finalAnswer = ResponseHandler.getText(response);
-        System.out.println(finalAnswer);
- 
-        return finalAnswer;
-     }
-   }
- }
+      System.out.println(String.format("Ask the question: %s", promptText));
+      // Send message with the responder, which auto-responds FunctionCalls and
+      // returns the final text result
+      GenerateContentResponse response =
+          chat.withAutomaticFunctionCallingResponder(responder).sendMessage(promptText);
+
+      // Check the final response
+      System.out.println("Print response: ");
+      String finalAnswer = ResponseHandler.getText(response);
+      System.out.println(finalAnswer);
+
+      return finalAnswer;
+    }
+  }
+}
  // [END aiplatform_gemini_automatic_function_calling]
  // [END generativeaionvertexai_gemini_automatic_function_calling]
