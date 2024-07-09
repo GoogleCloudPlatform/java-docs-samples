@@ -235,6 +235,16 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testAutomaticFunctionCalling() throws Exception {
+    String textPrompt = "What's the weather in Paris?";
+
+    String answer =
+        AutomaticFunctionCalling.whatsTheWeatherLike(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
+    assertThat(answer).ignoringCase().contains("Paris");
+    assertThat(answer).ignoringCase().contains("raining");
+  }
+
+  @Test
   public void testAudioInputSummary() throws IOException {
     String output = AudioInputSummarization.summarizeAudio(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
