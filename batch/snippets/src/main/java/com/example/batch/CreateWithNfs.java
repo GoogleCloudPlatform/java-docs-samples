@@ -80,6 +80,7 @@ public class CreateWithNfs {
                       .build())
               .build();
 
+      // Describes a volume and parameters for it to be mounted to a VM.
       Volume volume = Volume.newBuilder()
           .setNfs(NFS.newBuilder()
               .setServer(serverName)
