@@ -16,7 +16,7 @@
 
 package compute.ipaddress;
 
-// [START compute_ip_address_get_static_external]
+// [START compute_ip_address_get_static_address]
 
 import com.google.cloud.compute.v1.Address;
 import com.google.cloud.compute.v1.AddressesClient;
@@ -72,4 +72,4 @@ public class GetStaticIpAddress {
     }
   }
 }
-// [END compute_ip_address_get_static_external]
+// [END compute_ip_address_get_static_address]
