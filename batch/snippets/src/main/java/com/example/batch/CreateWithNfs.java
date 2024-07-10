@@ -25,16 +25,15 @@ import com.google.cloud.batch.v1.LogsPolicy;
 import com.google.cloud.batch.v1.Runnable;
 import com.google.cloud.batch.v1.TaskGroup;
 import com.google.cloud.batch.v1.TaskSpec;
-import com.google.cloud.batch.v1.Volume;
 import com.google.cloud.batch.v1.NFS;
+import com.google.cloud.batch.v1.Volume;
 import com.google.protobuf.Duration;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateWithNFS {
+public class CreateWithNfs {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -55,11 +54,11 @@ public class CreateWithNFS {
     // The IP address of the Network File System.
     String nfsIpAddress = "SERVER_NAME";
 
-    createScriptJobWithNFS(projectId, region, jobName, nfsName, nfsIpAddress);
+    createScriptJobWithNfs(projectId, region, jobName, nfsName, nfsIpAddress);
   }
 
   // This method shows how to create a job that specifies and mounts a NFS.
-  public static Job createScriptJobWithNFS(String projectId, String region, String jobName,
+  public static Job createScriptJobWithNfs(String projectId, String region, String jobName,
                                             String nfsName, String serverName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -69,17 +68,17 @@ public class CreateWithNFS {
       // Define what will be done as part of the job.
       Runnable runnable =
           Runnable.newBuilder()
-                  .setScript(
-                      Runnable.Script.newBuilder()
-                          .setText(
-                              "echo Hello world from task ${BATCH_TASK_INDEX}. >> "
-                                  + "/mnt/share/output_task_${BATCH_TASK_INDEX}.txt")
-                          // You can also run a script from a file. Just remember, that needs to be a
-                          // script that's already on the VM that will be running the job.
-                          // Using setText() and setPath() is mutually exclusive.
-                          // .setPath("/tmp/test.sh")
-                          .build())
-                  .build();
+              .setScript(
+                  Runnable.Script.newBuilder()
+                      .setText(
+                          "echo Hello world from task ${BATCH_TASK_INDEX}. >> "
+                              + "/mnt/share/output_task_${BATCH_TASK_INDEX}.txt")
+                      // You can also run a script from a file. Just remember, that needs to be a
+                      // script that's already on the VM that will be running the job.
+                      // Using setText() and setPath() is mutually exclusive.
+                      // .setPath("/tmp/test.sh")
+                      .build())
+              .build();
 
       Volume volume = Volume.newBuilder()
           .setNfs(NFS.newBuilder()
@@ -114,13 +113,15 @@ public class CreateWithNFS {
 
       // Policies are used to define on what kind of virtual machines the tasks will run on.
       // In this case, we tell the system to use "e2-standard-4" machine type.
-      // Read more about machine types here: https://cloud.google.com/compute/docs/machine-types
+      // Read more about machine types here:
+      // https://cloud.google.com/compute/docs/machine-types
       AllocationPolicy.InstancePolicy instancePolicy =
           AllocationPolicy.InstancePolicy.newBuilder().setMachineType("e2-standard-4").build();
 
       AllocationPolicy allocationPolicy =
           AllocationPolicy.newBuilder()
-              .addInstances(AllocationPolicy.InstancePolicyOrTemplate.newBuilder().setPolicy(instancePolicy).build())
+              .addInstances(AllocationPolicy.InstancePolicyOrTemplate.newBuilder().
+                  setPolicy(instancePolicy).build())
               .build();
 
       Job job =
@@ -131,8 +132,8 @@ public class CreateWithNFS {
               .putLabels("type", "script")
               .putLabels("mount", "bucket")
               // We use Cloud Logging as it's an out of the box available option.
-              .setLogsPolicy(
-                  LogsPolicy.newBuilder().setDestination(LogsPolicy.Destination.CLOUD_LOGGING).build())
+              .setLogsPolicy(LogsPolicy.newBuilder().
+                  setDestination(LogsPolicy.Destination.CLOUD_LOGGING).build())
               .build();
 
       CreateJobRequest createJobRequest =

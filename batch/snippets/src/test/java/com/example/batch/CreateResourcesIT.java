@@ -32,7 +32,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -250,9 +249,9 @@ public class CreateResourcesIT {
   }
 
   @Test
-  public void createBatchUsingNFSTest() throws IOException, ExecutionException, InterruptedException,
-       TimeoutException {
-    Job job = CreateWithNFS.createScriptJobWithNFS(PROJECT_ID, REGION, NFS_JOB_NAME,
+  public void createBatchUsingNfsTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Job job = CreateWithNfs.createScriptJobWithNfs(PROJECT_ID, REGION, NFS_JOB_NAME,
             NFS_NAME, SERVER_NAME);
 
     Assert.assertNotNull(job);
@@ -261,9 +260,11 @@ public class CreateResourcesIT {
     Assert.assertTrue(job.getName().contains(NFS_JOB_NAME));
 
     Assert.assertTrue(job.getTaskGroupsList().stream().anyMatch(taskGroup
-            -> taskGroup.getTaskSpec().getVolumesList().stream().anyMatch(volume -> volume.getNfs().getRemotePath().equals(NFS_NAME))));
+            -> taskGroup.getTaskSpec().getVolumesList().stream().
+        anyMatch(volume -> volume.getNfs().getRemotePath().equals(NFS_NAME))));
     Assert.assertTrue(job.getTaskGroupsList().stream().anyMatch(taskGroup
-            -> taskGroup.getTaskSpec().getVolumesList().stream().anyMatch(volume -> volume.getNfs().getServer().equals(SERVER_NAME))));
+            -> taskGroup.getTaskSpec().getVolumesList().stream().
+        anyMatch(volume -> volume.getNfs().getServer().equals(SERVER_NAME))));
 
   }
 
