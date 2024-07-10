@@ -50,22 +50,20 @@ public class CreateWithNFS {
     // It needs to be unique for each project and region pair.
     String jobName = "JOB_NAME";
 
-    //The path of the NFS directory that you want this job to access.
+    // The path of the NFS directory that you want this job to access.
     String nfsName = "NFS_NAME";
-    //The IP address of the Network File System.
+    // The IP address of the Network File System.
     String nfsIpAddress = "SERVER_NAME";
 
     createScriptJobWithNFS(projectId, region, jobName, nfsName, nfsIpAddress);
   }
 
   // This method shows how to create a job that specifies and mounts a NFS.
-  public static void createScriptJobWithNFS(String projectId, String region, String jobName,
+  public static Job createScriptJobWithNFS(String projectId, String region, String jobName,
                                             String nfsName, String serverName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `batchServiceClient.close()` method on the client to safely
-    // clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {
 
       // Define what will be done as part of the job.
@@ -152,6 +150,8 @@ public class CreateWithNFS {
               .get(5, TimeUnit.MINUTES);
 
       System.out.printf("Successfully created the job: %s", result.getName());
+
+      return result;
     }
   }
 }

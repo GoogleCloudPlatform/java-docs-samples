@@ -252,11 +252,14 @@ public class CreateResourcesIT {
   @Test
   public void createBatchUsingNFSTest() throws IOException, ExecutionException, InterruptedException,
        TimeoutException {
-    CreateWithNFS.createScriptJobWithNFS(PROJECT_ID, REGION, NFS_JOB_NAME,
+    Job job = CreateWithNFS.createScriptJobWithNFS(PROJECT_ID, REGION, NFS_JOB_NAME,
             NFS_NAME, SERVER_NAME);
-    Job job = Util.getJob(PROJECT_ID, REGION, NFS_JOB_NAME);
-    Util.waitForJobCompletion(job);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
     Assert.assertTrue(job.getName().contains(NFS_JOB_NAME));
+
     Assert.assertTrue(job.getTaskGroupsList().stream().anyMatch(taskGroup
             -> taskGroup.getTaskSpec().getVolumesList().stream().anyMatch(volume -> volume.getNfs().getRemotePath().equals(NFS_NAME))));
     Assert.assertTrue(job.getTaskGroupsList().stream().anyMatch(taskGroup
