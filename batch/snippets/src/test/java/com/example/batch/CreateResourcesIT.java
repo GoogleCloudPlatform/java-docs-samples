@@ -260,11 +260,11 @@ public class CreateResourcesIT {
     Assert.assertTrue(job.getName().contains(NFS_JOB_NAME));
 
     Assert.assertTrue(job.getTaskGroupsList().stream().anyMatch(taskGroup
-            -> taskGroup.getTaskSpec().getVolumesList().stream().
-        anyMatch(volume -> volume.getNfs().getRemotePath().equals(NFS_NAME))));
+            -> taskGroup.getTaskSpec().getVolumesList().stream()
+            .anyMatch(volume -> volume.getNfs().getRemotePath().equals(NFS_NAME))));
     Assert.assertTrue(job.getTaskGroupsList().stream().anyMatch(taskGroup
-            -> taskGroup.getTaskSpec().getVolumesList().stream().
-        anyMatch(volume -> volume.getNfs().getServer().equals(SERVER_NAME))));
+            -> taskGroup.getTaskSpec().getVolumesList().stream()
+            .anyMatch(volume -> volume.getNfs().getServer().equals(SERVER_NAME))));
 
   }
 

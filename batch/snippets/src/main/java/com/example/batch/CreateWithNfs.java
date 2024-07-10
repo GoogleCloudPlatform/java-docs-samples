@@ -120,8 +120,8 @@ public class CreateWithNfs {
 
       AllocationPolicy allocationPolicy =
           AllocationPolicy.newBuilder()
-              .addInstances(AllocationPolicy.InstancePolicyOrTemplate.newBuilder().
-                  setPolicy(instancePolicy).build())
+              .addInstances(AllocationPolicy.InstancePolicyOrTemplate.newBuilder()
+                      .setPolicy(instancePolicy).build())
               .build();
 
       Job job =
@@ -132,8 +132,8 @@ public class CreateWithNfs {
               .putLabels("type", "script")
               .putLabels("mount", "bucket")
               // We use Cloud Logging as it's an out of the box available option.
-              .setLogsPolicy(LogsPolicy.newBuilder().
-                  setDestination(LogsPolicy.Destination.CLOUD_LOGGING).build())
+              .setLogsPolicy(LogsPolicy.newBuilder()
+                      .setDestination(LogsPolicy.Destination.CLOUD_LOGGING).build())
               .build();
 
       CreateJobRequest createJobRequest =
