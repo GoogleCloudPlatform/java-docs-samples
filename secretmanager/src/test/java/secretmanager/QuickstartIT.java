@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.secretmanager.v1.DeleteSecretRequest;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.common.base.Strings;
 import java.io.ByteArrayOutputStream;
@@ -38,16 +39,19 @@ import org.junit.runners.JUnit4;
 public class QuickstartIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String LOCATION_ID = System.getenv("GOOGLE_CLOUD_PROJECT_LOCATION");
   private static final String SECRET_ID = "java-quickstart-" + UUID.randomUUID().toString();
 
   @BeforeClass
   public static void beforeAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
+    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION", Strings.isNullOrEmpty(LOCATION_ID));
   }
 
   @AfterClass
   public static void afterAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
+    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION", Strings.isNullOrEmpty(LOCATION_ID));
 
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
 
@@ -57,6 +61,21 @@ public class QuickstartIT {
           DeleteSecretRequest.newBuilder().setName(name.toString()).build();
 
       client.deleteSecret(deleteRequest);
+    }
+
+    String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", LOCATION_ID);
+    SecretManagerServiceSettings secretManagerServiceSettings =
+        SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    try (SecretManagerServiceClient regionalClient = 
+        SecretManagerServiceClient.create(secretManagerServiceSettings)) {
+
+      // Delete the secret created by regional quickstart
+      SecretName name = SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, SECRET_ID);
+      DeleteSecretRequest deleteRequest =
+          DeleteSecretRequest.newBuilder().setName(name.toString()).build();
+
+      regionalClient.deleteSecret(deleteRequest);
     }
   }
 
@@ -69,6 +88,21 @@ public class QuickstartIT {
 
     try {
       new Quickstart().quickstart(PROJECT_ID, SECRET_ID);
+      assertThat(redirected.toString()).contains("Plaintext: hello world!");
+    } finally {
+      System.setOut(originalOut);
+    }
+  }
+
+  @Test
+  public void regional_quickstart_test() throws Exception {
+    PrintStream originalOut = System.out;
+    ByteArrayOutputStream redirected = new ByteArrayOutputStream();
+
+    System.setOut(new PrintStream(redirected));
+
+    try {
+      new RegionalQuickstart().regionalQuickstart(PROJECT_ID, LOCATION_ID, SECRET_ID);
       assertThat(redirected.toString()).contains("Plaintext: hello world!");
     } finally {
       System.setOut(originalOut);
