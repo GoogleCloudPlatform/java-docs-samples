@@ -153,7 +153,7 @@ public class CreateResourcesIT {
 
     Assert.assertTrue(job.getName().contains(GPU_JOB));
     Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream().anyMatch(instance
-        -> instance.getInstallGpuDrivers() && instance.getPolicy().getMachineType() == machineType);
+        -> instance.getInstallGpuDrivers() && instance.getPolicy().getMachineType() == machineType));
   }
 
   @Test
