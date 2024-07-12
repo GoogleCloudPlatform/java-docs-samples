@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,15 @@
 
 package com.example.stitcher;
 
-// [START videostitcher_create_vod_session]
+// [START videostitcher_get_vod_config]
 
-import com.google.cloud.video.stitcher.v1.AdTracking;
-import com.google.cloud.video.stitcher.v1.CreateVodSessionRequest;
-import com.google.cloud.video.stitcher.v1.LocationName;
+import com.google.cloud.video.stitcher.v1.GetVodConfigRequest;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
+import com.google.cloud.video.stitcher.v1.VodConfig;
 import com.google.cloud.video.stitcher.v1.VodConfigName;
-import com.google.cloud.video.stitcher.v1.VodSession;
 import java.io.IOException;
 
-public class CreateVodSession {
+public class GetVodConfig {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
@@ -34,29 +32,24 @@ public class CreateVodSession {
     String location = "us-central1";
     String vodConfigId = "my-vod-config-id";
 
-    createVodSession(projectId, location, vodConfigId);
+    getVodConfig(projectId, location, vodConfigId);
   }
 
-  public static void createVodSession(String projectId, String location, String vodConfigId)
+  public static void getVodConfig(String projectId, String location, String vodConfigId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. In this example, try-with-resources is used
     // which automatically calls close() on the client to clean up resources.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
-      CreateVodSessionRequest createVodSessionRequest =
-          CreateVodSessionRequest.newBuilder()
-              .setParent(LocationName.of(projectId, location).toString())
-              .setVodSession(
-                  VodSession.newBuilder()
-                      .setVodConfig(VodConfigName.format(projectId, location, vodConfigId))
-                      .setAdTracking(AdTracking.SERVER)
-                      .build())
+      GetVodConfigRequest getVodConfigRequest =
+          GetVodConfigRequest.newBuilder()
+              .setName(VodConfigName.of(projectId, location, vodConfigId).toString())
               .build();
 
-      VodSession response = videoStitcherServiceClient.createVodSession(createVodSessionRequest);
-      System.out.println("Created VOD session: " + response.getName());
+      VodConfig response = videoStitcherServiceClient.getVodConfig(getVodConfigRequest);
+      System.out.println("VOD config: " + response.getName());
     }
   }
 }
-// [END videostitcher_create_vod_session]
+// [END videostitcher_get_vod_config]

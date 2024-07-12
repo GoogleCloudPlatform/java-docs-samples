@@ -24,6 +24,8 @@ import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.After;
@@ -37,8 +39,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class GetVodStitchDetailTest {
 
-  @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+  private static final String VOD_CONFIG_ID = TestUtils.getVodConfigId();
   private static String PROJECT_ID;
   private static String SESSION_ID;
   private static String STITCH_DETAIL_ID;
@@ -60,22 +62,33 @@ public class GetVodStitchDetailTest {
   }
 
   @Before
-  public void beforeTest() throws IOException {
+  public void beforeTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    TestUtils.cleanStaleVodConfigs(PROJECT_ID, TestUtils.LOCATION);
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    CreateVodSession.createVodSession(PROJECT_ID, TestUtils.LOCATION, TestUtils.VOD_URI,
-        TestUtils.VOD_AD_TAG_URI);
-    String output = bout.toString();
-    String[] arr = output.split("/");
-    SESSION_ID = arr[arr.length - 1].replace("\n", "");
-    String sessionName = String.format("locations/%s/vodSessions/%s/", TestUtils.LOCATION,
-        SESSION_ID);
+    CreateVodConfig.createVodConfig(
+        PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID, TestUtils.VOD_URI, TestUtils.VOD_AD_TAG_URI);
+    bout.reset();
+
+    CreateVodSession.createVodSession(PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID);
+    Matcher idMatcher =
+        Pattern.compile(
+                String.format(
+                    "Created VOD session: projects/.*/locations/%s/vodSessions/(.*)",
+                    TestUtils.LOCATION))
+            .matcher(bout.toString());
+    if (idMatcher.find()) {
+      SESSION_ID = idMatcher.group(1);
+    }
+    String sessionName =
+        String.format("locations/%s/vodSessions/%s/", TestUtils.LOCATION, SESSION_ID);
     bout.reset();
 
     ListVodStitchDetails.listVodStitchDetails(PROJECT_ID, TestUtils.LOCATION, SESSION_ID);
-    Matcher idMatcher =
+    idMatcher =
         Pattern.compile("name: \"projects/.*/" + sessionName + "vodStitchDetails/(.*)\"")
             .matcher(bout.toString());
     if (idMatcher.find()) {
@@ -87,15 +100,17 @@ public class GetVodStitchDetailTest {
 
   @Test
   public void test_GetVodStitchDetailTest() throws IOException {
-    GetVodStitchDetail.getVodStitchDetail(PROJECT_ID, TestUtils.LOCATION, SESSION_ID,
-        STITCH_DETAIL_ID);
+    GetVodStitchDetail.getVodStitchDetail(
+        PROJECT_ID, TestUtils.LOCATION, SESSION_ID, STITCH_DETAIL_ID);
     String output = bout.toString();
     assertThat(output, containsString(STITCH_DETAIL_NAME));
     bout.reset();
   }
 
   @After
-  public void tearDown() throws IOException {
+  public void tearDown()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    DeleteVodConfig.deleteVodConfig(PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID);
     // No delete method for a VOD session
     System.setOut(originalOut);
     bout.reset();

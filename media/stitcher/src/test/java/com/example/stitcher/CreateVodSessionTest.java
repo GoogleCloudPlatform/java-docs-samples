@@ -24,6 +24,8 @@ import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -35,8 +37,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CreateVodSessionTest {
 
-  @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+  @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
+  private static final String VOD_CONFIG_ID = TestUtils.getVodConfigId();
   private static String PROJECT_ID;
   private static String SESSION_NAME;
   private static PrintStream originalOut;
@@ -56,26 +58,32 @@ public class CreateVodSessionTest {
   }
 
   @Before
-  public void beforeTest() throws IOException {
+  public void beforeTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    TestUtils.cleanStaleVodConfigs(PROJECT_ID, TestUtils.LOCATION);
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
+
     // Project number is always returned in the VOD session name
     SESSION_NAME = String.format("locations/%s/vodSessions/", TestUtils.LOCATION);
+    CreateVodConfig.createVodConfig(
+        PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID, TestUtils.VOD_URI, TestUtils.VOD_AD_TAG_URI);
     bout.reset();
   }
 
   @Test
   public void test_CreateVodSession() throws IOException {
-    CreateVodSession.createVodSession(PROJECT_ID, TestUtils.LOCATION, TestUtils.VOD_URI,
-        TestUtils.VOD_AD_TAG_URI);
+    CreateVodSession.createVodSession(PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID);
     String output = bout.toString();
     assertThat(output, containsString(SESSION_NAME));
     bout.reset();
   }
 
   @After
-  public void tearDown() throws IOException {
+  public void tearDown()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    DeleteVodConfig.deleteVodConfig(PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID);
     // No delete method for a VOD session
     System.setOut(originalOut);
     bout.reset();

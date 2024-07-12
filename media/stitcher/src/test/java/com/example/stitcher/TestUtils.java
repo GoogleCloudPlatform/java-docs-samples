@@ -20,10 +20,12 @@ import com.google.cloud.video.stitcher.v1.CdnKey;
 import com.google.cloud.video.stitcher.v1.ListCdnKeysRequest;
 import com.google.cloud.video.stitcher.v1.ListLiveConfigsRequest;
 import com.google.cloud.video.stitcher.v1.ListSlatesRequest;
+import com.google.cloud.video.stitcher.v1.ListVodConfigsRequest;
 import com.google.cloud.video.stitcher.v1.LiveConfig;
 import com.google.cloud.video.stitcher.v1.LocationName;
 import com.google.cloud.video.stitcher.v1.Slate;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
+import com.google.cloud.video.stitcher.v1.VodConfig;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,6 +43,7 @@ public class TestUtils {
   public static final String SLATE_ID_PREFIX = "slate-";
   public static final String CDN_KEY_ID_PREFIX = "cdn-key-";
   public static final String LIVE_CONFIG_ID_PREFIX = "live-config-";
+  public static final String VOD_CONFIG_ID_PREFIX = "vod-config-";
 
   public static final String HOSTNAME = "cdn.example.com";
   public static final String UPDATED_HOSTNAME = "updated.example.com";
@@ -142,7 +145,38 @@ public class TestUtils {
           long createEpochSec = Long.parseLong(createTime);
           if (createEpochSec
               < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
-            videoStitcherServiceClient.deleteLiveConfigAsync(liveConfig.getName())
+            videoStitcherServiceClient
+                .deleteLiveConfigAsync(liveConfig.getName())
+                .get(2, TimeUnit.MINUTES);
+          }
+        }
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  // Clean up old test VOD configs.
+  public static void cleanStaleVodConfigs(String projectId, String location) throws IOException {
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
+      ListVodConfigsRequest listVodConfigsRequest =
+          ListVodConfigsRequest.newBuilder()
+              .setParent(LocationName.of(projectId, location).toString())
+              .build();
+
+      VideoStitcherServiceClient.ListVodConfigsPagedResponse response =
+          videoStitcherServiceClient.listVodConfigs(listVodConfigsRequest);
+
+      for (VodConfig vodConfig : response.iterateAll()) {
+        Matcher matcher = Pattern.compile(VOD_CONFIG_ID_PREFIX).matcher(vodConfig.getName());
+        if (matcher.find()) {
+          String createTime = vodConfig.getName().substring(matcher.end()).trim();
+          long createEpochSec = Long.parseLong(createTime);
+          if (createEpochSec
+              < Instant.now().getEpochSecond() - DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS) {
+            videoStitcherServiceClient
+                .deleteVodConfigAsync(vodConfig.getName())
                 .get(2, TimeUnit.MINUTES);
           }
         }
@@ -216,6 +250,16 @@ public class TestUtils {
         "test-%s-%s%s",
         UUID.randomUUID().toString().substring(0, 15),
         LIVE_CONFIG_ID_PREFIX,
+        Instant.now().getEpochSecond());
+  }
+
+  // Get a VOD config ID that includes a creation timestamp. Add some randomness in case tests are
+  // run in parallel.
+  public static String getVodConfigId() {
+    return String.format(
+        "test-%s-%s%s",
+        UUID.randomUUID().toString().substring(0, 15),
+        VOD_CONFIG_ID_PREFIX,
         Instant.now().getEpochSecond());
   }
 }

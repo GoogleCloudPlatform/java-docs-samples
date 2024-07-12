@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,13 +35,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class GetVodSessionTest {
+public class ListVodConfigsTest {
 
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private static final String VOD_CONFIG_ID = TestUtils.getVodConfigId();
+
   private static String PROJECT_ID;
-  private static String SESSION_ID;
-  private static String SESSION_NAME;
+  private static String VOD_CONFIG_NAME;
   private static PrintStream originalOut;
   private ByteArrayOutputStream bout;
 
@@ -68,30 +66,20 @@ public class GetVodSessionTest {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
+    VOD_CONFIG_NAME =
+        String.format(
+            "projects/%s/locations/%s/vodConfigs/%s",
+            PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID);
     CreateVodConfig.createVodConfig(
         PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID, TestUtils.VOD_URI, TestUtils.VOD_AD_TAG_URI);
-    bout.reset();
-
-    CreateVodSession.createVodSession(PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID);
-    Matcher idMatcher =
-        Pattern.compile(
-                String.format(
-                    "Created VOD session: projects/.*/locations/%s/vodSessions/(.*)",
-                    TestUtils.LOCATION))
-            .matcher(bout.toString());
-    if (idMatcher.find()) {
-      SESSION_ID = idMatcher.group(1);
-    }
-    // Project number is always returned in the VOD session name
-    SESSION_NAME = String.format("locations/%s/vodSessions/%s", TestUtils.LOCATION, SESSION_ID);
     bout.reset();
   }
 
   @Test
-  public void test_GetVodSession() throws IOException {
-    GetVodSession.getVodSession(PROJECT_ID, TestUtils.LOCATION, SESSION_ID);
+  public void test_ListVodConfigs() throws IOException {
+    ListVodConfigs.listVodConfigs(PROJECT_ID, TestUtils.LOCATION);
     String output = bout.toString();
-    assertThat(output, containsString(SESSION_NAME));
+    assertThat(output, containsString(VOD_CONFIG_NAME));
     bout.reset();
   }
 
@@ -99,7 +87,6 @@ public class GetVodSessionTest {
   public void tearDown()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     DeleteVodConfig.deleteVodConfig(PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID);
-    // No delete method for a VOD session
     System.setOut(originalOut);
     bout.reset();
   }
