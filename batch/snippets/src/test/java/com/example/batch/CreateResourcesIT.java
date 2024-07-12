@@ -144,9 +144,24 @@ public class CreateResourcesIT {
   @Test
   public void createGpuJobTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String machineType = "g2-standard-4";
+    Job job = CreateGpuJob
+            .createGpuJob(PROJECT_ID, REGION, GPU_JOB, true, machineType);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(GPU_JOB));
+    Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream().anyMatch(instance
+        -> instance.getInstallGpuDrivers() && instance.getPolicy().getMachineType() == machineType);
+  }
+
+  @Test
+  public void createGpuJobN1Test()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String gpuType = "nvidia-tesla-t4";
     int count = 2;
-    Job job = CreateGpuJob
+    Job job = CreateGpuJobN1
             .createGpuJob(PROJECT_ID, REGION, GPU_JOB, true, gpuType, count);
 
     Assert.assertNotNull(job);
