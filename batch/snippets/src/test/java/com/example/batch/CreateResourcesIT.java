@@ -50,6 +50,8 @@ public class CreateResourcesIT {
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String GPU_JOB = "test-job"
           + UUID.randomUUID().toString().substring(0, 7);
+  private static final String GPU_JOB_N1 = "test-job"
+          + UUID.randomUUID().toString().substring(0, 7);
   private static final String LOCAL_SSD_JOB = "test-job"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String PERSISTENT_DISK_JOB = "test-job"
@@ -162,12 +164,12 @@ public class CreateResourcesIT {
     String gpuType = "nvidia-tesla-t4";
     int count = 2;
     Job job = CreateGpuJobN1
-            .createGpuJob(PROJECT_ID, REGION, GPU_JOB, true, gpuType, count);
+            .createGpuJob(PROJECT_ID, REGION, GPU_JOB_N1, true, gpuType, count);
 
     Assert.assertNotNull(job);
     ACTIVE_JOBS.add(job);
 
-    Assert.assertTrue(job.getName().contains(GPU_JOB));
+    Assert.assertTrue(job.getName().contains(GPU_JOB_N1));
     Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream().anyMatch(instance
         -> instance.getInstallGpuDrivers() && instance.getPolicy().getAcceleratorsList().stream()
             .anyMatch(accelerator
