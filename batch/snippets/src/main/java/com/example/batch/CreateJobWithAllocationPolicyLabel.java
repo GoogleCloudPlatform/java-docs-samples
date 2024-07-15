@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateAllocationPolicyLabel {
+public class CreateJobWithAllocationPolicyLabel {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -51,7 +51,7 @@ public class CreateAllocationPolicyLabel {
     // Value for the label2 to be applied for your Job.
     String labelValue2 = "VM_LABEL_VALUE2";
 
-    createAllocationPolicyLabel(projectId, region, jobName, labelName1,
+    createJobWithAllocationPolicyLabel(projectId, region, jobName, labelName1,
         labelValue1, labelName2, labelValue2);
   }
 
@@ -59,8 +59,8 @@ public class CreateAllocationPolicyLabel {
   // for a job's allocation policy, as well as to each GPU (if any),
   // persistent disk (all boot disks and any new storage volumes),
   // and VM created for the job.
-  public static Job createAllocationPolicyLabel(String projectId, String region, String jobName,
-                    String labelName1, String labelValue1, String labelName2, String labelValue2)
+  public static Job createJobWithAllocationPolicyLabel(String projectId, String region, String jobName,
+                                                       String labelName1, String labelValue1, String labelName2, String labelValue2)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {
