@@ -84,7 +84,7 @@ public class PredictTextEmbeddingsSample {
                 .setStructValue(
                     Struct.newBuilder()
                         .putFields("content", valueOf(texts.get(i)))
-                        .putFields("taskType", valueOf(task))
+                        .putFields("task_type", valueOf(task))
                         .build()));
       }
       PredictResponse response = client.predict(request.build());

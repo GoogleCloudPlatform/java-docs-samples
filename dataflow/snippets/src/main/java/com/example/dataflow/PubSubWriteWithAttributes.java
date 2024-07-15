@@ -70,7 +70,7 @@ public class PubSubWriteWithAttributes {
     );
 
     // Parse the pipeline options passed into the application. Example:
-    //   ----runner=DirectRunner --topic=projects/MY_PROJECT/topics/MY_TOPIC"
+    //   --runner=DirectRunner --topic=projects/MY_PROJECT/topics/MY_TOPIC"
     // For more information, see https://beam.apache.org/documentation/programming-guide/#configuring-pipeline-options
     var options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
     var pipeline = Pipeline.create(options);

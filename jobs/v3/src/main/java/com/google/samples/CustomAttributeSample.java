@@ -147,7 +147,7 @@ public final class CustomAttributeSample {
   }
   // [END custom_attribute_filter_long_value]
 
-  // [START custom_attribute_filter_multi_attributes]
+  // [START job_custom_attribute_filter_multi_attributes]
 
   /** CustomAttributeFilter on multiple CustomAttributes */
   public static void filtersOnMultiCustomAttributes() throws IOException, InterruptedException {
@@ -180,7 +180,7 @@ public final class CustomAttributeSample {
     Thread.sleep(1000);
     System.out.printf("Custom search job results (multiple value): %s\n", response);
   }
-  // [END custom_attribute_filter_multi_attributes]
+  // [END job_custom_attribute_filter_multi_attributes]
 
   public static void main(String... args) throws Exception {
     Company companyToBeCreated = BasicCompanySample.generateCompany();

@@ -14,7 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<!-- [START pom] -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -63,12 +63,11 @@
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
     </dependency>
-    <!-- [START dependencies] -->
-    <dependency>
+
+   <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
     </dependency>
-    <!-- [END dependencies] -->
 
     <!-- Test dependencies -->
     <dependency>
@@ -78,4 +77,3 @@
     </dependency>
   </dependencies>
 </project>
-<!-- [END pom] -->

@@ -43,8 +43,6 @@ public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
-  private static final String GEMINI_PRO_VISION = "gemini-1.0-pro-vision-001";
-  private static final String GEMINI_PRO = "gemini-1.0-pro-002";
   private static final String GEMINI_FLASH = "gemini-1.5-flash-001";
   private static final String DATASTORE_ID = "grounding-test-datastore_1716831150046";
   private static final int MAX_ATTEMPT_COUNT = 3;
@@ -133,13 +131,13 @@ public class SnippetsIT {
 
   @Test
   public void testChatSession() throws IOException {
-    ChatDiscussion.chatDiscussion(PROJECT_ID, LOCATION, GEMINI_PRO);
+    ChatDiscussion.chatDiscussion(PROJECT_ID, LOCATION, GEMINI_FLASH);
     assertThat(bout.toString()).contains("Chat Ended.");
   }
 
   @Test
   public void testMultimodalMultiImage() throws IOException {
-    MultimodalMultiImage.multimodalMultiImage(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
+    MultimodalMultiImage.multimodalMultiImage(PROJECT_ID, LOCATION, GEMINI_FLASH);
     assertThat(bout.toString()).contains("city: Rio de Janeiro, Landmark: Christ the Redeemer");
   }
 
@@ -149,13 +147,13 @@ public class SnippetsIT {
         "https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
     String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
     String output =
-        MultimodalQuery.multimodalQuery(PROJECT_ID, LOCATION, GEMINI_PRO_VISION, dataImageBase64);
+        MultimodalQuery.multimodalQuery(PROJECT_ID, LOCATION, GEMINI_FLASH, dataImageBase64);
     assertThat(output).isNotEmpty();
   }
 
   @Test
   public void testMultimodalVideoInput() throws IOException {
-    MultimodalVideoInput.multimodalVideoInput(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
+    MultimodalVideoInput.multimodalVideoInput(PROJECT_ID, LOCATION, GEMINI_FLASH);
     assertThat(bout.toString()).contains("Zoo");
   }
 
@@ -167,14 +165,14 @@ public class SnippetsIT {
 
   @Test
   public void testSimpleQuestionAnswer() throws Exception {
-    String output = QuestionAnswer.simpleQuestion(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
+    String output = QuestionAnswer.simpleQuestion(PROJECT_ID, LOCATION, GEMINI_FLASH);
     assertThat(output).isNotEmpty();
     assertThat(output).contains("Rayleigh scattering");
   }
 
   @Test
   public void testQuickstart() throws IOException {
-    String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
+    String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_FLASH);
     // Disabled assertion, pending resolution of b/342637034
     // assertThat(output).contains("Colosseum");
   }
@@ -185,13 +183,13 @@ public class SnippetsIT {
         "https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
     String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
     SingleTurnMultimodal.generateContent(
-        PROJECT_ID, LOCATION, GEMINI_PRO_VISION, "What is this image", dataImageBase64);
+        PROJECT_ID, LOCATION, GEMINI_FLASH, "What is this image", dataImageBase64);
     assertThat(bout.toString()).contains("Colosseum");
   }
 
   @Test
   public void testStreamingQuestions() throws Exception {
-    StreamingQuestionAnswer.streamingQuestion(PROJECT_ID, LOCATION, GEMINI_PRO_VISION);
+    StreamingQuestionAnswer.streamingQuestion(PROJECT_ID, LOCATION, GEMINI_FLASH);
     assertThat(bout.toString()).contains("Rayleigh scattering");
   }
 
@@ -200,7 +198,7 @@ public class SnippetsIT {
     String textPrompt =
         "What's a good name for a flower shop that specializes in selling bouquets of"
             + " dried flowers?";
-    String output = TextInput.textInput(PROJECT_ID, LOCATION, GEMINI_PRO, textPrompt);
+    String output = TextInput.textInput(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
     assertThat(output).isNotEmpty();
   }
 
@@ -209,7 +207,7 @@ public class SnippetsIT {
     String textPrompt = "Hello World!";
 
     String output =
-        WithSafetySettings.safetyCheck(PROJECT_ID, LOCATION, GEMINI_PRO_VISION, textPrompt);
+        WithSafetySettings.safetyCheck(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
     assertThat(output).isNotEmpty();
     assertThat(output).contains("reasons?");
   }
@@ -231,7 +229,7 @@ public class SnippetsIT {
     String textPrompt = "What's the weather in Paris?";
 
     String answer =
-        FunctionCalling.whatsTheWeatherLike(PROJECT_ID, LOCATION, GEMINI_PRO, textPrompt);
+        FunctionCalling.whatsTheWeatherLike(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
     assertThat(answer).ignoringCase().contains("Paris");
     assertThat(answer).ignoringCase().contains("sunny");
   }
