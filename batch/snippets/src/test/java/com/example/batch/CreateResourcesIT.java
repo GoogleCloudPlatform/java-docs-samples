@@ -249,7 +249,7 @@ public class CreateResourcesIT {
 
 
   @Test
-  public void createJobCustomLabelTest()
+  public void createBatchLabelJobTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
 
