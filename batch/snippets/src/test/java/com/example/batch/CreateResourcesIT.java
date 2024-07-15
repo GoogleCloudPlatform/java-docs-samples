@@ -58,6 +58,8 @@ public class CreateResourcesIT {
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String CUSTOM_EVENT_NAME = "test-job"
           + UUID.randomUUID().toString().substring(0, 7);
+  private static final String BATCH_RUNNABLE_LABEL = "test-job"
+      + UUID.randomUUID().toString().substring(0, 7);
   private static final String LOCAL_SSD_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String PERSISTENT_DISK_NAME = "test-disk"
@@ -102,6 +104,7 @@ public class CreateResourcesIT {
     safeDeleteJob(LOCAL_SSD_JOB);
     safeDeleteJob(PERSISTENT_DISK_JOB);
     safeDeleteJob(NOTIFICATION_NAME);
+    safeDeleteJob(BATCH_RUNNABLE_LABEL);
   }
 
   private static void safeDeleteJob(String jobName) {
@@ -241,6 +244,32 @@ public class CreateResourcesIT {
             .forEach(displayName -> Assert.assertTrue(job.getTaskGroupsList().stream()
                     .flatMap(event -> event.getTaskSpec().getRunnablesList().stream())
                     .anyMatch(runnable -> runnable.getDisplayName().equals(displayName))));
+  }
+
+
+  @Test
+  public void createBatchRunnableLabelTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String labelName1 = "env";
+    String labelValue1 = "env_value";
+    String labelName2 = "test";
+    String labelValue2 = "test_value";
+
+    Job job = CreateBatchRunnableLable.createBatchRunnableLable(PROJECT_ID, REGION,
+        BATCH_RUNNABLE_LABEL, labelName1, labelValue1, labelName2, labelValue2);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(BATCH_RUNNABLE_LABEL));
+    Arrays.asList(labelName1, labelName2)
+        .forEach(labelName -> Assert.assertTrue(job.getTaskGroupsList().stream()
+            .flatMap(event -> event.getTaskSpec().getRunnablesList().stream())
+            .anyMatch(runnable -> runnable.containsLabels(labelName))));
+    Arrays.asList(labelValue1, labelValue2)
+        .forEach(labelValue -> Assert.assertTrue(job.getTaskGroupsList().stream()
+            .flatMap(event -> event.getTaskSpec().getRunnablesList().stream())
+            .anyMatch(runnable -> runnable.getLabelsMap().containsValue(labelValue))));
   }
 
   private void createEmptyDisk(String projectId, String zone, String diskName,
