@@ -58,12 +58,15 @@ public class CreateResourcesIT {
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String CUSTOM_EVENT_NAME = "test-job"
           + UUID.randomUUID().toString().substring(0, 7);
+  private static final String BATCH_LABEL_JOB = "test-job"
+      + UUID.randomUUID().toString().substring(0, 7);
   private static final String LOCAL_SSD_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String PERSISTENT_DISK_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String NEW_PERSISTENT_DISK_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
+
   private static final List<Job> ACTIVE_JOBS = new ArrayList<>();
 
   // Check if the required environment variables are set.
@@ -102,6 +105,7 @@ public class CreateResourcesIT {
     safeDeleteJob(LOCAL_SSD_JOB);
     safeDeleteJob(PERSISTENT_DISK_JOB);
     safeDeleteJob(NOTIFICATION_NAME);
+    safeDeleteJob(BATCH_LABEL_JOB);
   }
 
   private static void safeDeleteJob(String jobName) {
@@ -241,6 +245,32 @@ public class CreateResourcesIT {
             .forEach(displayName -> Assert.assertTrue(job.getTaskGroupsList().stream()
                     .flatMap(event -> event.getTaskSpec().getRunnablesList().stream())
                     .anyMatch(runnable -> runnable.getDisplayName().equals(displayName))));
+  }
+
+
+  @Test
+  public void createJobCustomLabelTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+
+
+    // TODO(developer): Replace these variables before running the sample.
+    // Project ID or project number of the Google Cloud project you want to use.
+    String labelName1 = "env";
+    String labelValue1 = "env_value";
+    String labelName2 = "test";
+    String labelValue2 = "test_value";
+
+    Job job = CreateBatchLabelJob.createBatchLabelJob(PROJECT_ID, REGION,
+        BATCH_LABEL_JOB, labelName1, labelValue1, labelName2, labelValue2);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(BATCH_LABEL_JOB));
+    Assert.assertTrue(job.containsLabels(labelName1));
+    Assert.assertTrue(job.containsLabels(labelName2));
+    Assert.assertTrue(job.getLabelsMap().containsValue(labelValue1));
+    Assert.assertTrue(job.getLabelsMap().containsValue(labelValue2));
   }
 
   private void createEmptyDisk(String projectId, String zone, String diskName,
