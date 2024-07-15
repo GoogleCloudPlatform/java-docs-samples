@@ -64,6 +64,8 @@ public class CreateResourcesIT {
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String NEW_PERSISTENT_DISK_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
+  private static final String JOB_CUSTOM_LABEL_NAME = "example3-job"
+      + UUID.randomUUID().toString().substring(0, 7);
   private static final List<Job> ACTIVE_JOBS = new ArrayList<>();
 
   // Check if the required environment variables are set.
@@ -102,6 +104,7 @@ public class CreateResourcesIT {
     safeDeleteJob(LOCAL_SSD_JOB);
     safeDeleteJob(PERSISTENT_DISK_JOB);
     safeDeleteJob(NOTIFICATION_NAME);
+    safeDeleteJob(JOB_CUSTOM_LABEL_NAME);
   }
 
   private static void safeDeleteJob(String jobName) {
@@ -242,6 +245,32 @@ public class CreateResourcesIT {
                     .flatMap(event -> event.getTaskSpec().getRunnablesList().stream())
                     .anyMatch(runnable -> runnable.getDisplayName().equals(displayName))));
   }
+
+  @Test
+  public void createJobCustomLabelTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+
+
+    // TODO(developer): Replace these variables before running the sample.
+    // Project ID or project number of the Google Cloud project you want to use.
+    String labelName1 = "env";
+    String labelValue1 = "env_value";
+    String labelName2 = "test";
+    String labelValue2 = "test_value";
+
+    Job job = CreateJobCustomLabel.createJobCustomLabel(PROJECT_ID, REGION,
+        JOB_CUSTOM_LABEL_NAME, labelName1, labelValue1, labelName2, labelValue2);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(JOB_CUSTOM_LABEL_NAME));
+    Assert.assertTrue(job.containsLabels(labelName1));
+    Assert.assertTrue(job.containsLabels(labelName2));
+    Assert.assertTrue(job.getLabelsMap().containsValue(labelValue1));
+    Assert.assertTrue(job.getLabelsMap().containsValue(labelValue2));
+  }
+
 
   private void createEmptyDisk(String projectId, String zone, String diskName,
                                      String diskType, long diskSizeGb)
