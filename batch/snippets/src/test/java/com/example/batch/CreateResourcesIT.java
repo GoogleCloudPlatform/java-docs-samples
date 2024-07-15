@@ -251,10 +251,6 @@ public class CreateResourcesIT {
   @Test
   public void createBatchLabelJobTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-
-
-    // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Google Cloud project you want to use.
     String labelName1 = "env";
     String labelValue1 = "env_value";
     String labelName2 = "test";
