@@ -249,7 +249,7 @@ public class CreateResourcesIT {
   }
 
   @Test
-  public void createBatchUsingNfsTest()
+  public void createScriptJobWithNfsTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Job job = CreateScriptJobWithNfs.createScriptJobWithNfs(PROJECT_ID, REGION, NFS_JOB_NAME,
         NFS_PATH, NFS_IP_ADDRESS);
