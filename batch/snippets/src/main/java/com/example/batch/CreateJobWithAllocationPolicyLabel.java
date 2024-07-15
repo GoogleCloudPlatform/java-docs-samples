@@ -59,8 +59,9 @@ public class CreateJobWithAllocationPolicyLabel {
   // for a job's allocation policy, as well as to each GPU (if any),
   // persistent disk (all boot disks and any new storage volumes),
   // and VM created for the job.
-  public static Job createJobWithAllocationPolicyLabel(String projectId, String region, String jobName,
-                                                       String labelName1, String labelValue1, String labelName2, String labelValue2)
+  public static Job createJobWithAllocationPolicyLabel(String projectId, String region,
+                               String jobName, String labelName1,
+                               String labelValue1, String labelName2, String labelValue2)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {

@@ -258,7 +258,8 @@ public class CreateResourcesIT {
     String labelName2 = "test";
     String labelValue2 = "test_value";
 
-    Job job = CreateJobWithAllocationPolicyLabel.createJobWithAllocationPolicyLabel(PROJECT_ID, REGION,
+    Job job = CreateJobWithAllocationPolicyLabel
+        .createJobWithAllocationPolicyLabel(PROJECT_ID, REGION,
         JOB_ALLOCATION_POLICY_LABEL_NAME, labelName1, labelValue1, labelName2, labelValue2);
 
     Assert.assertNotNull(job);
