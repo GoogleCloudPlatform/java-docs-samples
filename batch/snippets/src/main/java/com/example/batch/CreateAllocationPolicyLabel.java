@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateJobCustomLabel {
+public class CreateAllocationPolicyLabel {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -51,7 +51,7 @@ public class CreateJobCustomLabel {
     // Value for the label2 to be applied for your Job.
     String labelValue2 = "VM_LABEL_VALUE2";
 
-    createJobCustomLabel(projectId, region, jobName, labelName1,
+    createAllocationPolicyLabel(projectId, region, jobName, labelName1,
         labelValue1, labelName2, labelValue2);
   }
 
@@ -59,8 +59,8 @@ public class CreateJobCustomLabel {
   // for a job's allocation policy, as well as to each GPU (if any),
   // persistent disk (all boot disks and any new storage volumes),
   // and VM created for the job.
-  public static Job createJobCustomLabel(String projectId, String region, String jobName,
-       String labelName1, String labelValue1, String labelName2, String labelValue2)
+  public static Job createAllocationPolicyLabel(String projectId, String region, String jobName,
+                    String labelName1, String labelValue1, String labelName2, String labelValue2)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {
@@ -111,15 +111,15 @@ public class CreateJobCustomLabel {
           AllocationPolicy.newBuilder()
               .addInstances(AllocationPolicy.InstancePolicyOrTemplate.newBuilder()
                   .setPolicy(instancePolicy).build())
+              // Labels and their value to be applied to the job and its resources
+              .putLabels(labelName1, labelValue1)
+              .putLabels(labelName2, labelValue2)
               .build();
 
       Job job =
           Job.newBuilder()
               .addTaskGroups(taskGroup)
               .setAllocationPolicy(allocationPolicy)
-              // Labels and their value to be applied to the job
-              .putLabels(labelName1, labelValue1)
-              .putLabels(labelName2, labelValue2)
               // We use Cloud Logging as it's an out of the box available option.
               .setLogsPolicy(LogsPolicy.newBuilder()
                       .setDestination(LogsPolicy.Destination.CLOUD_LOGGING).build())

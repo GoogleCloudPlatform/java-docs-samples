@@ -64,7 +64,7 @@ public class CreateResourcesIT {
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String NEW_PERSISTENT_DISK_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String JOB_CUSTOM_LABEL_NAME = "example3-job"
+  private static final String JOB_ALLOCATION_POLICY_LABEL_NAME = "example3-job"
       + UUID.randomUUID().toString().substring(0, 7);
   private static final List<Job> ACTIVE_JOBS = new ArrayList<>();
 
@@ -104,7 +104,7 @@ public class CreateResourcesIT {
     safeDeleteJob(LOCAL_SSD_JOB);
     safeDeleteJob(PERSISTENT_DISK_JOB);
     safeDeleteJob(NOTIFICATION_NAME);
-    safeDeleteJob(JOB_CUSTOM_LABEL_NAME);
+    safeDeleteJob(JOB_ALLOCATION_POLICY_LABEL_NAME);
   }
 
   private static void safeDeleteJob(String jobName) {
@@ -247,7 +247,7 @@ public class CreateResourcesIT {
   }
 
   @Test
-  public void createJobCustomLabelTest()
+  public void createAllocationPolicyLabelTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
 
@@ -258,17 +258,17 @@ public class CreateResourcesIT {
     String labelName2 = "test";
     String labelValue2 = "test_value";
 
-    Job job = CreateJobCustomLabel.createJobCustomLabel(PROJECT_ID, REGION,
-        JOB_CUSTOM_LABEL_NAME, labelName1, labelValue1, labelName2, labelValue2);
+    Job job = CreateAllocationPolicyLabel.createAllocationPolicyLabel(PROJECT_ID, REGION,
+        JOB_ALLOCATION_POLICY_LABEL_NAME, labelName1, labelValue1, labelName2, labelValue2);
 
     Assert.assertNotNull(job);
     ACTIVE_JOBS.add(job);
 
-    Assert.assertTrue(job.getName().contains(JOB_CUSTOM_LABEL_NAME));
-    Assert.assertTrue(job.containsLabels(labelName1));
-    Assert.assertTrue(job.containsLabels(labelName2));
-    Assert.assertTrue(job.getLabelsMap().containsValue(labelValue1));
-    Assert.assertTrue(job.getLabelsMap().containsValue(labelValue2));
+    Assert.assertTrue(job.getName().contains(JOB_ALLOCATION_POLICY_LABEL_NAME));
+    Assert.assertTrue(job.getAllocationPolicy().containsLabels(labelName1));
+    Assert.assertTrue(job.getAllocationPolicy().containsLabels(labelName2));
+    Assert.assertTrue(job.getAllocationPolicy().getLabelsMap().containsValue(labelValue1));
+    Assert.assertTrue(job.getAllocationPolicy().getLabelsMap().containsValue(labelValue2));
   }
 
 
