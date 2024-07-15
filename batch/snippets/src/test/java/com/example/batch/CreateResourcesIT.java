@@ -65,8 +65,8 @@ public class CreateResourcesIT {
   private static final String NEW_PERSISTENT_DISK_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final List<Job> ACTIVE_JOBS = new ArrayList<>();
-  private static final String NFS_NAME = "test-disk";
-  private static final String SERVER_NAME = "test123";
+  private static final String NFS_PATH = "test-disk";
+  private static final String NFS_IP_ADDRESS = "test123";
   private static final String NFS_JOB_NAME = "test-job"
           + UUID.randomUUID().toString().substring(0, 7);
 
@@ -251,8 +251,8 @@ public class CreateResourcesIT {
   @Test
   public void createBatchUsingNfsTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Job job = CreateWithNfs.createScriptJobWithNfs(PROJECT_ID, REGION, NFS_JOB_NAME,
-            NFS_NAME, SERVER_NAME);
+    Job job = CreateScriptJobWithNfs.createScriptJobWithNfs(PROJECT_ID, REGION, NFS_JOB_NAME,
+        NFS_PATH, NFS_IP_ADDRESS);
 
     Assert.assertNotNull(job);
     ACTIVE_JOBS.add(job);
@@ -261,10 +261,10 @@ public class CreateResourcesIT {
 
     Assert.assertTrue(job.getTaskGroupsList().stream().anyMatch(taskGroup
             -> taskGroup.getTaskSpec().getVolumesList().stream()
-            .anyMatch(volume -> volume.getNfs().getRemotePath().equals(NFS_NAME))));
+            .anyMatch(volume -> volume.getNfs().getRemotePath().equals(NFS_PATH))));
     Assert.assertTrue(job.getTaskGroupsList().stream().anyMatch(taskGroup
             -> taskGroup.getTaskSpec().getVolumesList().stream()
-            .anyMatch(volume -> volume.getNfs().getServer().equals(SERVER_NAME))));
+            .anyMatch(volume -> volume.getNfs().getServer().equals(NFS_IP_ADDRESS))));
 
   }
 

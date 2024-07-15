@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateWithNfs {
+public class CreateScriptJobWithNfs {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -50,16 +50,16 @@ public class CreateWithNfs {
     String jobName = "JOB_NAME";
 
     // The path of the NFS directory that you want this job to access.
-    String nfsName = "NFS_NAME";
+    String nfsPath = "NFS_PATH";
     // The IP address of the Network File System.
-    String nfsIpAddress = "SERVER_NAME";
+    String nfsIpAddress = "NFS_IP_ADDRESS";
 
-    createScriptJobWithNfs(projectId, region, jobName, nfsName, nfsIpAddress);
+    createScriptJobWithNfs(projectId, region, jobName, nfsPath, nfsIpAddress);
   }
 
-  // This method shows how to create a job that specifies and mounts a NFS.
+  // This method shows how to create a batch script job that specifies and mounts a NFS.
   public static Job createScriptJobWithNfs(String projectId, String region, String jobName,
-                                            String nfsName, String serverName)
+                                            String nfsPath, String nfsIpAddress)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -83,8 +83,8 @@ public class CreateWithNfs {
       // Describes a volume and parameters for it to be mounted to a VM.
       Volume volume = Volume.newBuilder()
           .setNfs(NFS.newBuilder()
-              .setServer(serverName)
-              .setRemotePath(nfsName)
+              .setServer(nfsIpAddress)
+              .setRemotePath(nfsPath)
               .build())
           .setMountPath("/mnt/share")
           .build();
