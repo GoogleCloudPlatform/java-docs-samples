@@ -111,10 +111,10 @@ public class CreateAllocationPolicyLabel {
           AllocationPolicy.newBuilder()
               .addInstances(AllocationPolicy.InstancePolicyOrTemplate.newBuilder()
                   .setPolicy(instancePolicy).build())
-              // Labels and their value to be applied to the job and its resources
-              .putLabels(labelName1, labelValue1)
-              .putLabels(labelName2, labelValue2)
-              .build();
+                  // Labels and their value to be applied to the job and its resources
+                  .putLabels(labelName1, labelValue1)
+                  .putLabels(labelName2, labelValue2)
+                  .build();
 
       Job job =
           Job.newBuilder()
