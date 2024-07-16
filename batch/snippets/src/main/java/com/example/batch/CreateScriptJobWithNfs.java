@@ -14,7 +14,7 @@
 
 package com.example.batch;
 
-// [START batch_create_script_job_with_bucket]
+// [START batch_create_nfs_job]
 
 import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.BatchServiceClient;
@@ -157,4 +157,4 @@ public class CreateScriptJobWithNfs {
     }
   }
 }
-// [END batch_create_script_job_with_bucket]
+// [END batch_create_nfs_job]
