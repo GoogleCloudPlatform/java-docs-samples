@@ -65,7 +65,8 @@ public class CreateBatchAllocationPolicyLabel {
                                String jobName, String labelName1,
                                String labelValue1, String labelName2, String labelValue2)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {
 
       // Define what will be done as part of the job.
