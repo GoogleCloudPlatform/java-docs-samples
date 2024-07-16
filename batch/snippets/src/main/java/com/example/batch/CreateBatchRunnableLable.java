@@ -14,6 +14,8 @@
 
 package com.example.batch;
 
+// [START batch_labels_runnable]
+
 import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.BatchServiceClient;
 import com.google.cloud.batch.v1.ComputeResource;
@@ -143,3 +145,4 @@ public class CreateBatchRunnableLable {
   }
 
 }
+// [END batch_labels_runnable]
