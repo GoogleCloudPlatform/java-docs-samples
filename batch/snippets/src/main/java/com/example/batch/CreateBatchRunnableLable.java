@@ -16,7 +16,6 @@ package com.example.batch;
 
 // [START batch_labels_runnable]
 
-import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.BatchServiceClient;
 import com.google.cloud.batch.v1.ComputeResource;
 import com.google.cloud.batch.v1.CreateJobRequest;
@@ -61,7 +60,8 @@ public class CreateBatchRunnableLable {
   public static Job createBatchRunnableLable(String projectId, String region, String jobName,
                    String labelName1, String labelValue1, String labelName2, String labelValue2)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (BatchServiceClient batchServiceClient = BatchServiceClient.create()) {
 
       // Define what will be done as part of the job.
@@ -76,8 +76,11 @@ public class CreateBatchRunnableLable {
                           "echo Hello world! This is task ${BATCH_TASK_INDEX}. "
                               + "This job has a total of ${BATCH_TASK_COUNT} tasks.")
                       .build())
-              // Labels and their value to be applied to that runnable.
+              // Label and its value to be applied to the first runnable.
               .putLabels(labelName1, labelValue1)
+              .setScript(Runnable.Script.newBuilder()
+              .setText("echo Hello world! This is task ${BATCH_TASK_INDEX}. ").build())
+              // Label and its value to be applied to the second runnable.
               .putLabels(labelName2, labelValue2)
               .build();
 
@@ -103,22 +106,9 @@ public class CreateBatchRunnableLable {
       // Currently, it's possible to have only one task group.
       TaskGroup taskGroup = TaskGroup.newBuilder().setTaskCount(1).setTaskSpec(task).build();
 
-      // Policies are used to define on what kind of virtual machines the tasks will run on.
-      // In this case, we tell the system to use "e2-standard-4" machine type.
-      // Read more about machine types here: https://cloud.google.com/compute/docs/machine-types
-      AllocationPolicy.InstancePolicy instancePolicy =
-          AllocationPolicy.InstancePolicy.newBuilder().setMachineType("e2-standard-4").build();
-
-      AllocationPolicy allocationPolicy =
-          AllocationPolicy.newBuilder()
-              .addInstances(AllocationPolicy.InstancePolicyOrTemplate.newBuilder()
-              .setPolicy(instancePolicy).build())
-              .build();
-
       Job job =
           Job.newBuilder()
               .addTaskGroups(taskGroup)
-              .setAllocationPolicy(allocationPolicy)
               // We use Cloud Logging as it's an out of the box available option.
               .setLogsPolicy(LogsPolicy.newBuilder()
               .setDestination(LogsPolicy.Destination.CLOUD_LOGGING).build())
