@@ -44,21 +44,21 @@ public class CreateResourcesIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "us-central1";
   private static final String ZONE = "us-central1-a";
-  private static final String SERVICE_ACCOUNT_JOB = "test-job"
+  private static final String SERVICE_ACCOUNT_JOB = "test-job-sa-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String SECRET_MANAGER_JOB = "test-job"
+  private static final String SECRET_MANAGER_JOB = "test-job-sm-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String GPU_JOB = "test-job"
+  private static final String GPU_JOB = "test-job-gpu-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String GPU_JOB_N1 = "test-job"
+  private static final String GPU_JOB_N1 = "test-job-gpun1-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String LOCAL_SSD_JOB = "test-job"
+  private static final String LOCAL_SSD_JOB = "test-job-lssd-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String PERSISTENT_DISK_JOB = "test-job"
+  private static final String PERSISTENT_DISK_JOB = "test-job-pd-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String NOTIFICATION_NAME = "test-job"
+  private static final String NOTIFICATION_NAME = "test-job-notif-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String CUSTOM_EVENT_NAME = "test-job"
+  private static final String CUSTOM_EVENT_NAME = "test-job-event-"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String LOCAL_SSD_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
