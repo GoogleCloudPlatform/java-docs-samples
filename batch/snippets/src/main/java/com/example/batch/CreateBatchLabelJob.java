@@ -14,7 +14,7 @@
 
 package com.example.batch;
 
-// [START batch_create_persistent_disk_job]
+// [START batch_labels_job]
 
 import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.BatchServiceClient;
@@ -146,4 +146,4 @@ public class CreateBatchLabelJob {
   }
 
 }
-// [END batch_create_job_with_template]
+// [END batch_labels_job]
