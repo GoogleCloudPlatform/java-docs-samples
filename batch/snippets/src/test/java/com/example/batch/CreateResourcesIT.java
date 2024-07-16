@@ -101,9 +101,11 @@ public class CreateResourcesIT {
     safeDeleteJob(SERVICE_ACCOUNT_JOB);
     safeDeleteJob(SECRET_MANAGER_JOB);
     safeDeleteJob(GPU_JOB);
+    safeDeleteJob(GPU_JOB_N1);
     safeDeleteJob(LOCAL_SSD_JOB);
     safeDeleteJob(PERSISTENT_DISK_JOB);
     safeDeleteJob(NOTIFICATION_NAME);
+    safeDeleteJob(CUSTOM_EVENT_NAME);
   }
 
   private static void safeDeleteJob(String jobName) {
@@ -180,7 +182,7 @@ public class CreateResourcesIT {
   @Test
   public void createLocalSsdJobTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String type = "c3d-standard-360-lssd";
+    String type = "c3d-standard-8-lssd";
     Job job = CreateLocalSsdJob
             .createLocalSsdJob(PROJECT_ID, REGION, LOCAL_SSD_JOB, LOCAL_SSD_NAME, 375, type);
 
