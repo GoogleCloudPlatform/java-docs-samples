@@ -14,7 +14,8 @@
 
 package com.example.batch;
 
-// [START batch_create_job_with_template]
+// [START batch_labels_allocation]
+
 import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.BatchServiceClient;
 import com.google.cloud.batch.v1.ComputeResource;
@@ -148,4 +149,4 @@ public class CreateBatchAllocationPolicyLabel {
   }
 
 }
-// [END batch_create_job_with_template]
+// [END batch_labels_allocation]
