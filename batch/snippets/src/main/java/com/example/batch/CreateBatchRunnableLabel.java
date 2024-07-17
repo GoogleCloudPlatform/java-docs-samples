@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateBatchRunnableLable {
+public class CreateBatchRunnableLabel {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
@@ -51,13 +51,15 @@ public class CreateBatchRunnableLable {
     // Value for the label2 to be applied for your Job.
     String labelValue2 = "RUNNABLE_LABEL_VALUE2";
 
-    createBatchRunnableLable(projectId, region, jobName, labelName1,
+    createBatchRunnableLabel(projectId, region, jobName, labelName1,
         labelValue1, labelName2, labelValue2);
   }
 
   // Creates a job with labels defined in the labels field
-  // for a runnable are only applied to that runnable
-  public static Job createBatchRunnableLable(String projectId, String region, String jobName,
+  // for a runnable are only applied to that runnable.
+  // In Batch, a runnable represents a single task or unit of work within a job.
+  // It can be a container (like a Docker image) or a script.
+  public static Job createBatchRunnableLabel(String projectId, String region, String jobName,
                    String labelName1, String labelValue1, String labelName2, String labelValue2)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -76,11 +78,13 @@ public class CreateBatchRunnableLable {
                           "echo Hello world! This is task ${BATCH_TASK_INDEX}. "
                               + "This job has a total of ${BATCH_TASK_COUNT} tasks.")
                       .build())
-              // Label and its value to be applied to the first runnable.
+              // Label and its value to be applied to the container
+              // that processes data from a specific region.
               .putLabels(labelName1, labelValue1)
               .setScript(Runnable.Script.newBuilder()
               .setText("echo Hello world! This is task ${BATCH_TASK_INDEX}. ").build())
-              // Label and its value to be applied to the second runnable.
+              // Label and its value to be applied to the script
+              // that performs some analysis on the processed data.
               .putLabels(labelName2, labelValue2)
               .build();
 
@@ -116,7 +120,7 @@ public class CreateBatchRunnableLable {
 
       CreateJobRequest createJobRequest =
           CreateJobRequest.newBuilder()
-              // The job's parent is the region in which the job will run.
+              // The job's parent is the region in which the job will run for the specific project.
               .setParent(String.format("projects/%s/locations/%s", projectId, region))
               .setJob(job)
               .setJobId(jobName)

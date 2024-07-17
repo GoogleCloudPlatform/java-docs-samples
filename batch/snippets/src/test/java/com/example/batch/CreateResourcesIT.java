@@ -255,7 +255,7 @@ public class CreateResourcesIT {
     String labelName2 = "test";
     String labelValue2 = "test_value";
 
-    Job job = CreateBatchRunnableLable.createBatchRunnableLable(PROJECT_ID, REGION,
+    Job job = CreateBatchRunnableLabel.createBatchRunnableLabel(PROJECT_ID, REGION,
         BATCH_RUNNABLE_LABEL, labelName1, labelValue1, labelName2, labelValue2);
 
     Assert.assertNotNull(job);
