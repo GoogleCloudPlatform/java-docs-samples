@@ -16,6 +16,7 @@ package com.example.batch;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.Job;
 import com.google.cloud.batch.v1.JobNotification.Type;
 import com.google.cloud.batch.v1.TaskStatus.State;
@@ -261,12 +262,13 @@ public class CreateResourcesIT {
     ACTIVE_JOBS.add(job);
 
     Assert.assertTrue(job.getName().contains(CUSTOM_NETWORK_NAME));
-
     Assert.assertTrue(job.getAllocationPolicy().getNetwork().getNetworkInterfacesList().stream()
         .anyMatch(networkName -> networkName.getNetwork().equals(network)));
-
     Assert.assertTrue(job.getAllocationPolicy().getNetwork().getNetworkInterfacesList().stream()
         .anyMatch(subnetName -> subnetName.getSubnetwork().equals(subnet)));
+    Assert.assertTrue(job.getAllocationPolicy().getNetwork().getNetworkInterfacesList().stream()
+        .anyMatch(AllocationPolicy.NetworkInterface::getNoExternalIpAddress));
+
   }
 
   private void createEmptyDisk(String projectId, String zone, String diskName,

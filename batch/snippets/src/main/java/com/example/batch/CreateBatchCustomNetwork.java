@@ -98,6 +98,7 @@ public class CreateBatchCustomNetwork {
               .addNetworkInterfaces(AllocationPolicy.NetworkInterface.newBuilder()
                   .setNetwork(network) // Set the network name
                   .setSubnetwork(subnet) // Set the subnet name
+                  .setNoExternalIpAddress(true) // Blocks external access for all VMs
                   .build())
               .build();
 
