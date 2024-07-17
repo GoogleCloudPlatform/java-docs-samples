@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
 // [START secretmanager_delete_regional_secret_with_etag]
 import com.google.cloud.secretmanager.v1.DeleteSecretRequest;
@@ -42,6 +42,8 @@ public class DeleteRegionalSecretWithEtag {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();

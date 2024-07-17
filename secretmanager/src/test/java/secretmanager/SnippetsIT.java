@@ -53,6 +53,27 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import secretmanager.ConsumeEventNotification.PubSubMessage;
+import secretmanager.regionalsamples.AccessRegionalSecretVersion;
+import secretmanager.regionalsamples.AddRegionalSecretVersion;
+import secretmanager.regionalsamples.CreateRegionalSecret;
+import secretmanager.regionalsamples.DeleteRegionalSecret;
+import secretmanager.regionalsamples.DeleteRegionalSecretWithEtag;
+import secretmanager.regionalsamples.DestroyRegionalSecretVersion;
+import secretmanager.regionalsamples.DestroyRegionalSecretVersionWithEtag;
+import secretmanager.regionalsamples.DisableRegionalSecretVersion;
+import secretmanager.regionalsamples.DisableRegionalSecretVersionWithEtag;
+import secretmanager.regionalsamples.EnableRegionalSecretVersion;
+import secretmanager.regionalsamples.EnableRegionalSecretVersionWithEtag;
+import secretmanager.regionalsamples.GetRegionalSecret;
+import secretmanager.regionalsamples.GetRegionalSecretVersion;
+import secretmanager.regionalsamples.IamGrantAccessWithRegionalSecret;
+import secretmanager.regionalsamples.IamRevokeAccessWithRegionalSecret;
+import secretmanager.regionalsamples.ListRegionalSecretVersions;
+import secretmanager.regionalsamples.ListRegionalSecretVersionsWithFilter;
+import secretmanager.regionalsamples.ListRegionalSecrets;
+import secretmanager.regionalsamples.ListRegionalSecretsWithFilter;
+import secretmanager.regionalsamples.UpdateRegionalSecret;
+import secretmanager.regionalsamples.UpdateRegionalSecretWithAlias;
 
 /**
  * Integration (system) tests for {@link Snippets}.

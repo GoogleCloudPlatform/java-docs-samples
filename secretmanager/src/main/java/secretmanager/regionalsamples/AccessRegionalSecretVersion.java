@@ -14,66 +14,68 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_regional_quickstart]
+// [START secretmanager_access_regional_secret_version]
 import com.google.cloud.secretmanager.v1.AccessSecretVersionResponse;
-import com.google.cloud.secretmanager.v1.LocationName;
-import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
-import com.google.cloud.secretmanager.v1.SecretPayload;
-import com.google.cloud.secretmanager.v1.SecretVersion;
-import com.google.protobuf.ByteString;
+import com.google.cloud.secretmanager.v1.SecretVersionName;
+import java.io.IOException;
+import java.util.zip.CRC32C;
+import java.util.zip.Checksum;
 
-public class RegionalQuickstart {
+public class AccessRegionalSecretVersion {
 
-  public void regionalQuickstart() throws Exception {
+  public static void accessRegionalSecretVersion() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
     String secretId = "your-secret-id";
-    regionalQuickstart(projectId, locationId, secretId);
+    String versionId = "your-version-id";
+    accessRegionalSecretVersion(projectId, locationId, secretId, versionId);
   }
 
-  public void regionalQuickstart(
-      String projectId, String locationId, String secretId) 
-      throws Exception {
+  // Access the payload for the given secret version if one exists. The version
+  // can be a version number as a string (e.g. "5") or an alias (e.g. "latest").
+  public static void accessRegionalSecretVersion(
+      String projectId, String locationId, String secretId, String versionId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
-
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
-
+      
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      // Build the parent name from the project.
-      LocationName parent = LocationName.of(projectId, locationId);
-
-      // Create the parent secret.
-      Secret secret =
-          Secret.newBuilder()
-              .build();
-
-      Secret createdSecret = client.createSecret(parent, secretId, secret);
-
-      // Add a secret version.
-      SecretPayload payload =
-          SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("hello world!")).build();
-      SecretVersion addedVersion = client.addSecretVersion(createdSecret.getName(), payload);
-
+      SecretVersionName secretVersionName = 
+          SecretVersionName.ofProjectLocationSecretSecretVersionName(
+              projectId, locationId, secretId, versionId);
       // Access the secret version.
-      AccessSecretVersionResponse response = client.accessSecretVersion(addedVersion.getName());
+      AccessSecretVersionResponse response = client.accessSecretVersion(secretVersionName);
+
+      // Verify checksum. The used library is available in Java 9+.
+      // If using Java 8, you may use the following:
+      // https://github.com/google/guava/blob/e62d6a0456420d295089a9c319b7593a3eae4a83/guava/src/com/google/common/hash/Hashing.java#L395
+      byte[] data = response.getPayload().getData().toByteArray();
+      Checksum checksum = new CRC32C();
+      checksum.update(data, 0, data.length);
+      if (response.getPayload().getDataCrc32C() != checksum.getValue()) {
+        System.out.printf("Data corruption detected.");
+        return;
+      }
 
       // Print the secret payload.
       //
       // WARNING: Do not print the secret in a production environment - this
       // snippet is showing how to access the secret material.
-      String data = response.getPayload().getData().toStringUtf8();
-      System.out.printf("Plaintext: %s\n", data);
+      String payload = response.getPayload().getData().toStringUtf8();
+      System.out.printf("Plaintext: %s\n", payload);
     }
   }
 }
-// [END secretmanager_regional_quickstart]
+// [END secretmanager_access_regional_secret_version]

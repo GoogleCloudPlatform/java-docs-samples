@@ -14,57 +14,61 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_destroy_regional_secret_version_with_etag]
-import com.google.cloud.secretmanager.v1.DestroySecretVersionRequest;
+// [START secretmanager_list_regional_secrets_with_filter]
+import com.google.cloud.secretmanager.v1.ListSecretsRequest;
+import com.google.cloud.secretmanager.v1.LocationName;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretsPagedResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
-import com.google.cloud.secretmanager.v1.SecretVersion;
-import com.google.cloud.secretmanager.v1.SecretVersionName;
 import java.io.IOException;
 
-public class DestroyRegionalSecretVersionWithEtag {
+public class ListRegionalSecretsWithFilter {
 
-  public static void destroyRegionalSecretVersion() throws IOException {
+  public static void listRegionalSecrets() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
-    String secretId = "your-secret-id";
-    String versionId = "your-version-id";
-    // Including the quotes is important.
-    String etag = "\"1234\"";
-    destroyRegionalSecretVersion(projectId, locationId, secretId, versionId, etag);
+    // Follow https://cloud.google.com/secret-manager/docs/filtering
+    // for filter syntax and examples.
+    String filter = "name:your-secret-substring AND expire_time<2022-01-01T00:00:00Z";
+    listRegionalSecrets(projectId, locationId, filter);
   }
 
-  // Destroy an existing secret version.
-  public static void destroyRegionalSecretVersion(
-      String projectId, String locationId, String secretId, String versionId, String etag)
-      throws IOException {
+  // List all secrets for a project
+  public static void listRegionalSecrets(
+      String projectId, String locationId, String filter) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      // Build the name from the version.
-      SecretVersionName secretVersionName = 
-          SecretVersionName.ofProjectLocationSecretSecretVersionName(
-          projectId, locationId, secretId, versionId);
+      // Build the parent name.
+      LocationName parent = LocationName.of(projectId, locationId);
 
-      // Build the request.
-      DestroySecretVersionRequest request =
-          DestroySecretVersionRequest.newBuilder()
-              .setName(secretVersionName.toString())
-              .setEtag(etag)
+      // Get filtered secrets.
+      ListSecretsRequest request =
+          ListSecretsRequest.newBuilder()
+              .setParent(parent.toString())
+              .setFilter(filter)
               .build();
 
-      // Destroy the secret version.
-      SecretVersion version = client.destroySecretVersion(request);
-      System.out.printf("Destroyed regional secret version %s\n", version.getName());
+      ListSecretsPagedResponse pagedResponse = client.listSecrets(request);
+
+      // List all secrets.
+      pagedResponse
+          .iterateAll()
+          .forEach(
+              secret -> {
+                System.out.printf("Regioanl secret %s\n", secret.getName());
+              });
     }
   }
 }
-// [END secretmanager_destroy_regional_secret_version_with_etag]
+// [END secretmanager_list_regional_secrets_with_filter]

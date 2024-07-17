@@ -14,33 +14,35 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_get_regional_secret_version]
+// [START secretmanager_destroy_regional_secret_version]
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.secretmanager.v1.SecretVersion;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import java.io.IOException;
 
-public class GetRegionalSecretVersion {
+public class DestroyRegionalSecretVersion {
 
-  public static void getRegionalSecretVersion() throws IOException {
+  public static void destroySecretVersion() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
     String secretId = "your-secret-id";
     String versionId = "your-version-id";
-    getRegionalSecretVersion(projectId, locationId, secretId, versionId);
+    destroyRegionalSecretVersion(projectId, locationId, secretId, versionId);
   }
 
-  // Get an existing secret version.
-  public static void getRegionalSecretVersion(
+  // Destroy an existing secret version.
+  public static void destroyRegionalSecretVersion(
       String projectId, String locationId, String secretId, String versionId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
@@ -51,11 +53,10 @@ public class GetRegionalSecretVersion {
           SecretVersionName.ofProjectLocationSecretSecretVersionName(
           projectId, locationId, secretId, versionId);
 
-      // Create the secret.
-      SecretVersion version = client.getSecretVersion(secretVersionName);
-      System.out.printf("Regional secret version %s, state %s\n", 
-          version.getName(), version.getState());
+      // Destroy the secret version.
+      SecretVersion version = client.destroySecretVersion(secretVersionName);
+      System.out.printf("Destroyed regional secret version %s\n", version.getName());
     }
   }
 }
-// [END secretmanager_get_regional_secret_version]
+// [END secretmanager_destroy_regional_secret_version]

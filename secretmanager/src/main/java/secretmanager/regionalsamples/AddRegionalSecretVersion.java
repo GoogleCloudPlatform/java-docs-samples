@@ -14,57 +14,65 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_disable_regional_secret_version_with_etag]
-import com.google.cloud.secretmanager.v1.DisableSecretVersionRequest;
+// [START secretmanager_add_regional_secret_version]
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
+import com.google.cloud.secretmanager.v1.SecretName;
+import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersion;
-import com.google.cloud.secretmanager.v1.SecretVersionName;
+import com.google.protobuf.ByteString;
 import java.io.IOException;
+import java.util.zip.CRC32C;
+import java.util.zip.Checksum;
 
-public class DisableRegionalSecretVersionWithEtag {
+public class AddRegionalSecretVersion {
 
-  public static void disableRegionalSecretVersion() throws IOException {
+  public static void addSecretVersion() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
     String secretId = "your-secret-id";
-    String versionId = "your-version-id";
-    // Including the quotes is important.
-    String etag = "\"1234\"";
-    disableRegionalSecretVersion(projectId, locationId, secretId, versionId, etag);
+    addRegionalSecretVersion(projectId, locationId, secretId);
   }
 
-  // Disable an existing secret version.
-  public static void disableRegionalSecretVersion(
-      String projectId, String locationId, String secretId, String versionId, String etag)
+  // Add a new version to the existing regional secret.
+  public static void addRegionalSecretVersion(
+      String projectId, String locationId, String secretId) 
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      // Build the name from the version.
-      SecretVersionName secretVersionName 
-            = SecretVersionName.ofProjectLocationSecretSecretVersionName(
-            projectId, locationId, secretId, versionId);
+      SecretName secretName = 
+          SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
+      byte[] data = "my super secret data".getBytes();
+      // Calculate data checksum. The library is available in Java 9+.
+      // If using Java 8, the following library may be used:
+      // https://cloud.google.com/appengine/docs/standard/java/javadoc/com/google/appengine/api/files/Crc32c
+      Checksum checksum = new CRC32C();
+      checksum.update(data, 0, data.length);
 
-      // Build the request.
-      DisableSecretVersionRequest request =
-          DisableSecretVersionRequest.newBuilder()
-              .setName(secretVersionName.toString())
-              .setEtag(etag)
+      // Create the secret payload.
+      SecretPayload payload =
+          SecretPayload.newBuilder()
+              .setData(ByteString.copyFrom(data))
+              // Providing data checksum is optional.
+              .setDataCrc32C(checksum.getValue())
               .build();
 
-      // Disable the secret version.
-      SecretVersion version = client.disableSecretVersion(request);
-      System.out.printf("Disabled regional secret version %s\n", version.getName());
+      // Add the secret version.
+      SecretVersion version = client.addSecretVersion(secretName, payload);
+      System.out.printf("Added regional secret version %s\n", version.getName());
     }
   }
 }
-// [END secretmanager_disable_regional_secret_version_with_etag]
+// [END secretmanager_add_regional_secret_version]

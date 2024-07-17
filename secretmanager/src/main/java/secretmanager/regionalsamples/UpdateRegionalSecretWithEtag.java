@@ -14,59 +14,62 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_list_regional_secrets_with_filter]
-import com.google.cloud.secretmanager.v1.ListSecretsRequest;
-import com.google.cloud.secretmanager.v1.LocationName;
+// [START secretmanager_update_regional_secret_with_etag]
+import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretsPagedResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
+import com.google.cloud.secretmanager.v1.SecretName;
+import com.google.protobuf.FieldMask;
+import com.google.protobuf.util.FieldMaskUtil;
 import java.io.IOException;
 
-public class ListRegionalSecretsWithFilter {
+public class UpdateRegionalSecretWithEtag {
 
-  public static void listRegionalSecrets() throws IOException {
+  public static void updateRegionalSecret() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
-    // Follow https://cloud.google.com/secret-manager/docs/filtering
-    // for filter syntax and examples.
-    String filter = "name:your-secret-substring AND expire_time<2022-01-01T00:00:00Z";
-    listRegionalSecrets(projectId, locationId, filter);
+    String secretId = "your-secret-id";
+    // Including the quotes is important.
+    String etag = "\"1234\"";
+    updateRegionalSecret(projectId, locationId, secretId, etag);
   }
 
-  // List all secrets for a project
-  public static void listRegionalSecrets(
-      String projectId, String locationId, String filter) throws IOException {
+  // Update an existing secret.
+  public static void updateRegionalSecret(
+      String projectId, String locationId, String secretId, String etag)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      // Build the parent name.
-      LocationName parent = LocationName.of(projectId, locationId);
+      // Build the name.
+      SecretName secretName = 
+          SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
 
-      // Get filtered secrets.
-      ListSecretsRequest request =
-          ListSecretsRequest.newBuilder()
-              .setParent(parent.toString())
-              .setFilter(filter)
+      // Build the updated secret.
+      Secret secret =
+          Secret.newBuilder()
+              .setName(secretName.toString())
+              .setEtag(etag)
+              .putLabels("secretmanager", "rocks")
               .build();
 
-      ListSecretsPagedResponse pagedResponse = client.listSecrets(request);
+      // Build the field mask.
+      FieldMask fieldMask = FieldMaskUtil.fromString("labels");
 
-      // List all secrets.
-      pagedResponse
-          .iterateAll()
-          .forEach(
-              secret -> {
-                System.out.printf("Regioanl secret %s\n", secret.getName());
-              });
+      // Update the secret.
+      Secret updatedSecret = client.updateSecret(secret, fieldMask);
+      System.out.printf("Updated regional secret %s\n", updatedSecret.getName());
     }
   }
 }
-// [END secretmanager_list_regional_secrets_with_filter]
+// [END secretmanager_update_regional_secret_with_etag]

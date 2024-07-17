@@ -14,64 +14,49 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_add_regional_secret_version]
+// [START secretmanager_enable_regional_secret_version]
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
-import com.google.cloud.secretmanager.v1.SecretName;
-import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersion;
-import com.google.protobuf.ByteString;
+import com.google.cloud.secretmanager.v1.SecretVersionName;
 import java.io.IOException;
-import java.util.zip.CRC32C;
-import java.util.zip.Checksum;
 
-public class AddRegionalSecretVersion {
+public class EnableRegionalSecretVersion {
 
-  public static void addSecretVersion() throws IOException {
+  public static void enableRegionalSecretVersion() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
     String secretId = "your-secret-id";
-    addRegionalSecretVersion(projectId, locationId, secretId);
+    String versionId = "your-version-id";
+    enableRegionalSecretVersion(projectId, locationId, secretId, versionId);
   }
 
-  // Add a new version to the existing regional secret.
-  public static void addRegionalSecretVersion(
-      String projectId, String locationId, String secretId) 
+  // Enable an existing secret version.
+  public static void enableRegionalSecretVersion(
+      String projectId, String locationId, String secretId, String versionId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
-
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      SecretName secretName = 
-          SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
-      byte[] data = "my super secret data".getBytes();
-      // Calculate data checksum. The library is available in Java 9+.
-      // If using Java 8, the following library may be used:
-      // https://cloud.google.com/appengine/docs/standard/java/javadoc/com/google/appengine/api/files/Crc32c
-      Checksum checksum = new CRC32C();
-      checksum.update(data, 0, data.length);
+      // Build the name from the version.
+      SecretVersionName secretVersionName =
+          SecretVersionName.ofProjectLocationSecretSecretVersionName(
+          projectId, locationId, secretId, versionId);
 
-      // Create the secret payload.
-      SecretPayload payload =
-          SecretPayload.newBuilder()
-              .setData(ByteString.copyFrom(data))
-              // Providing data checksum is optional.
-              .setDataCrc32C(checksum.getValue())
-              .build();
-
-      // Add the secret version.
-      SecretVersion version = client.addSecretVersion(secretName, payload);
-      System.out.printf("Added regional secret version %s\n", version.getName());
+      // Enable the secret version.
+      SecretVersion version = client.enableSecretVersion(secretVersionName);
+      System.out.printf("Enabled regional secret version %s\n", version.getName());
     }
   }
 }
-// [END secretmanager_add_regional_secret_version]
+// [END secretmanager_enable_regional_secret_version]

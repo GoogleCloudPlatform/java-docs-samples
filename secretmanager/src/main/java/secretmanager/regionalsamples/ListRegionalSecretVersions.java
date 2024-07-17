@@ -14,69 +14,55 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_iam_grant_access_with_regional_secret]
+// [START secretmanager_list_regional_secret_versions]
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretVersionsPagedResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.secretmanager.v1.SecretName;
-import com.google.iam.v1.Binding;
-import com.google.iam.v1.GetIamPolicyRequest;
-import com.google.iam.v1.Policy;
-import com.google.iam.v1.SetIamPolicyRequest;
 import java.io.IOException;
 
-public class IamGrantAccessWithRegionalSecret {
+public class ListRegionalSecretVersions {
 
-  public static void iamGrantAccessWithRegionalSecret() throws IOException {
+  public static void listRegionalSecretVersions() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
     String secretId = "your-secret-id";
-    String member = "user:foo@example.com";
-    iamGrantAccessWithRegionalSecret(projectId, locationId, secretId, member);
+    listRegionalSecretVersions(projectId, locationId, secretId);
   }
 
-  // Grant a member access to a particular secret.
-  public static void iamGrantAccessWithRegionalSecret(
-      String projectId, String locationId, String secretId, String member)
+  // List all secret versions for a secret.
+  public static void listRegionalSecretVersions(
+      String projectId, String locationId, String secretId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      // Build the name from the version.
+      // Build the parent name.
       SecretName secretName = 
           SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
 
-      // Request the current IAM policy.
-      Policy currentPolicy =
-          client.getIamPolicy(
-              GetIamPolicyRequest.newBuilder().setResource(secretName.toString()).build());
+      // Get all versions.
+      ListSecretVersionsPagedResponse pagedResponse = client.listSecretVersions(secretName);
 
-      // Build the new binding.
-      Binding binding =
-          Binding.newBuilder()
-              .setRole("roles/secretmanager.secretAccessor")
-              .addMembers(member)
-              .build();
-
-      // Create a new IAM policy from the current policy, adding the binding.
-      Policy newPolicy = Policy.newBuilder().mergeFrom(currentPolicy).addBindings(binding).build();
-
-      // Save the updated IAM policy.
-      client.setIamPolicy(
-          SetIamPolicyRequest.newBuilder()
-              .setResource(secretName.toString())
-              .setPolicy(newPolicy)
-              .build());
-
-      System.out.printf("Updated IAM policy for %s\n", secretId);
+      // List all versions and their state.
+      pagedResponse
+          .iterateAll()
+          .forEach(
+              version -> {
+                System.out.printf("Regional secret version %s, %s\n", 
+                    version.getName(), version.getState());
+              });
     }
   }
 }
-// [END secretmanager_iam_grant_access_with_regional_secret]
+// [END secretmanager_list_regional_secret_versions]

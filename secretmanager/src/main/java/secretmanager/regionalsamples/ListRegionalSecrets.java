@@ -14,53 +14,50 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_list_regional_secret_versions]
+// [START secretmanager_list_regional_secrets]
+import com.google.cloud.secretmanager.v1.LocationName;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretVersionsPagedResponse;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretsPagedResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
-import com.google.cloud.secretmanager.v1.SecretName;
 import java.io.IOException;
 
-public class ListRegionalSecretVersions {
+public class ListRegionalSecrets {
 
-  public static void listRegionalSecretVersions() throws IOException {
+  public static void listRegionalSecrets() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
-    String secretId = "your-secret-id";
-    listRegionalSecretVersions(projectId, locationId, secretId);
+    listRegionalSecrets(projectId, locationId);
   }
 
-  // List all secret versions for a secret.
-  public static void listRegionalSecretVersions(
-      String projectId, String locationId, String secretId)
-      throws IOException {
+  // List all secrets for a project
+  public static void listRegionalSecrets(String projectId, String locationId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       // Build the parent name.
-      SecretName secretName = 
-          SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
+      LocationName parent = LocationName.of(projectId, locationId);
 
-      // Get all versions.
-      ListSecretVersionsPagedResponse pagedResponse = client.listSecretVersions(secretName);
+      // Get all secrets.
+      ListSecretsPagedResponse pagedResponse = client.listSecrets(parent.toString());
 
-      // List all versions and their state.
+      // List all secrets.
       pagedResponse
           .iterateAll()
           .forEach(
-              version -> {
-                System.out.printf("Regional secret version %s, %s\n", 
-                    version.getName(), version.getState());
+              secret -> {
+                System.out.printf("Regional secret %s\n", secret.getName());
               });
     }
   }
 }
-// [END secretmanager_list_regional_secret_versions]
+// [END secretmanager_list_regional_secrets]

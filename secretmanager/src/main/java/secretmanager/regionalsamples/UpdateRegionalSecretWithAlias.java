@@ -14,57 +14,59 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_enable_regional_secret_version_with_etag]
-import com.google.cloud.secretmanager.v1.EnableSecretVersionRequest;
+// [START secretmanager_update_regional_secret_with_alias]
+import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
-import com.google.cloud.secretmanager.v1.SecretVersion;
-import com.google.cloud.secretmanager.v1.SecretVersionName;
+import com.google.cloud.secretmanager.v1.SecretName;
+import com.google.protobuf.FieldMask;
+import com.google.protobuf.util.FieldMaskUtil;
 import java.io.IOException;
 
-public class EnableRegionalSecretVersionWithEtag {
+public class UpdateRegionalSecretWithAlias {
 
-  public static void enableRegionalSecretVersion() throws IOException {
+  public static void updateRegionalSecret() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
     String secretId = "your-secret-id";
-    String versionId = "your-version-id";
-    // Including the quotes is important.
-    String etag = "\"1234\"";
-    enableRegionalSecretVersion(projectId, locationId, secretId, versionId, etag);
+    updateRegionalSecret(projectId, locationId, secretId);
   }
 
-  // Enable an existing secret version.
-  public static void enableRegionalSecretVersion(
-      String projectId, String locationId, String secretId, String versionId, String etag)
+  // Update an existing secret.
+  public static void updateRegionalSecret(
+      String projectId, String locationId, String secretId) 
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      // Build the name from the version.
-      SecretVersionName secretVersionName = 
-          SecretVersionName.ofProjectLocationSecretSecretVersionName(
-          projectId, locationId, secretId, versionId);
+      // Build the name.
+      SecretName secretName = 
+          SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
 
-      // Build the request.
-      EnableSecretVersionRequest request =
-          EnableSecretVersionRequest.newBuilder()
-              .setName(secretVersionName.toString())
-              .setEtag(etag)
-              .build();
+      // Build the updated secret.
+      Secret.Builder secret =
+          Secret.newBuilder()
+              .setName(secretName.toString());
+      secret.getMutableVersionAliases().put("test", 1L);      
 
-      // Enable the secret version.
-      SecretVersion version = client.enableSecretVersion(request);
-      System.out.printf("Enabled regional secret version %s\n", version.getName());
+      // Build the field mask.
+      FieldMask fieldMask = FieldMaskUtil.fromString("version_aliases");
+
+      // Update the secret.
+      Secret updatedSecret = client.updateSecret(secret.build(), fieldMask);
+      System.out.printf("Updated alias map: %s\n", 
+          updatedSecret.getVersionAliasesMap().toString());
     }
   }
 }
-// [END secretmanager_enable_regional_secret_version_with_etag]
+// [END secretmanager_update_regional_secret_with_alias]

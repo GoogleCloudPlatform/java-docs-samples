@@ -14,36 +14,34 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_update_regional_secret_with_etag]
+// [START secretmanager_get_regional_secret]
 import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.secretmanager.v1.SecretName;
-import com.google.protobuf.FieldMask;
-import com.google.protobuf.util.FieldMaskUtil;
 import java.io.IOException;
 
-public class UpdateRegionalSecretWithEtag {
+public class GetRegionalSecret {
 
-  public static void updateRegionalSecret() throws IOException {
+  public static void getRegionalSecret() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
     String secretId = "your-secret-id";
-    // Including the quotes is important.
-    String etag = "\"1234\"";
-    updateRegionalSecret(projectId, locationId, secretId, etag);
+    getRegionalSecret(projectId, locationId, secretId);
   }
 
-  // Update an existing secret.
-  public static void updateRegionalSecret(
-      String projectId, String locationId, String secretId, String etag)
+  // Get an existing secret.
+  public static void getRegionalSecret(
+      String projectId, String locationId, String secretId) 
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
@@ -53,21 +51,11 @@ public class UpdateRegionalSecretWithEtag {
       SecretName secretName = 
           SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
 
-      // Build the updated secret.
-      Secret secret =
-          Secret.newBuilder()
-              .setName(secretName.toString())
-              .setEtag(etag)
-              .putLabels("secretmanager", "rocks")
-              .build();
-
-      // Build the field mask.
-      FieldMask fieldMask = FieldMaskUtil.fromString("labels");
-
-      // Update the secret.
-      Secret updatedSecret = client.updateSecret(secret, fieldMask);
-      System.out.printf("Updated regional secret %s\n", updatedSecret.getName());
+      // Create the secret.
+      Secret secret = client.getSecret(secretName);
+    
+      System.out.printf("Secret %s \n", secret.getName());
     }
   }
 }
-// [END secretmanager_update_regional_secret_with_etag]
+// [END secretmanager_get_regional_secret]

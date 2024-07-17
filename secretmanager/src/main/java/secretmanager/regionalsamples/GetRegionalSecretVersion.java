@@ -14,43 +14,50 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_delete_regional_secret]
+// [START secretmanager_get_regional_secret_version]
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
-import com.google.cloud.secretmanager.v1.SecretName;
+import com.google.cloud.secretmanager.v1.SecretVersion;
+import com.google.cloud.secretmanager.v1.SecretVersionName;
 import java.io.IOException;
 
-public class DeleteRegionalSecret {
+public class GetRegionalSecretVersion {
 
-  public static void deleteRegionalSecret() throws IOException {
+  public static void getRegionalSecretVersion() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
     String secretId = "your-secret-id";
-    deleteRegionalSecret(projectId, locationId, secretId);
+    String versionId = "your-version-id";
+    getRegionalSecretVersion(projectId, locationId, secretId, versionId);
   }
 
-  // Delete an existing secret with the given name.
-  public static void deleteRegionalSecret(
-      String projectId, String locationId, String secretId) throws IOException {
+  // Get an existing secret version.
+  public static void getRegionalSecretVersion(
+      String projectId, String locationId, String secretId, String versionId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      // Build the secret name.
-      SecretName secretName = 
-          SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
+      // Build the name from the version.
+      SecretVersionName secretVersionName = 
+          SecretVersionName.ofProjectLocationSecretSecretVersionName(
+          projectId, locationId, secretId, versionId);
 
-      // Delete the secret.
-      client.deleteSecret(secretName);
-      System.out.printf("Deleted regional secret %s\n", secretId);
+      // Create the secret.
+      SecretVersion version = client.getSecretVersion(secretVersionName);
+      System.out.printf("Regional secret version %s, state %s\n", 
+          version.getName(), version.getState());
     }
   }
 }
-// [END secretmanager_delete_regional_secret]
+// [END secretmanager_get_regional_secret_version]

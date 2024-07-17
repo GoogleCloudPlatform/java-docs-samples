@@ -14,46 +14,69 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_get_regional_secret]
-import com.google.cloud.secretmanager.v1.Secret;
+// [START secretmanager_iam_revoke_access_with_regional_secret]
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.secretmanager.v1.SecretName;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.GetIamPolicyRequest;
+import com.google.iam.v1.Policy;
+import com.google.iam.v1.SetIamPolicyRequest;
 import java.io.IOException;
 
-public class GetRegionalSecret {
+public class IamRevokeAccessWithRegionalSecret {
 
-  public static void getRegionalSecret() throws IOException {
+  public static void iamRevokeAccessWithRegionalSecret() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
     String secretId = "your-secret-id";
-    getRegionalSecret(projectId, locationId, secretId);
+    String member = "user:foo@example.com";
+    iamRevokeAccessWithRegionalSecret(projectId, locationId, secretId, member);
   }
 
-  // Get an existing secret.
-  public static void getRegionalSecret(
-      String projectId, String locationId, String secretId) 
+  // Revoke a member access to a particular secret.
+  public static void iamRevokeAccessWithRegionalSecret(
+      String projectId, String locationId, String secretId, String member)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      // Build the name.
+      // Build the name from the version.
       SecretName secretName = 
           SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
 
-      // Create the secret.
-      Secret secret = client.getSecret(secretName);
-    
-      System.out.printf("Secret %s \n", secret.getName());
+      // Request the current IAM policy.
+      Policy policy =
+          client.getIamPolicy(
+              GetIamPolicyRequest.newBuilder().setResource(secretName.toString()).build());
+
+      // Search through bindings and remove matches.
+      String roleToFind = "roles/secretmanager.secretAccessor";
+      for (Binding binding : policy.getBindingsList()) {
+        if (binding.getRole() == roleToFind && binding.getMembersList().contains(member)) {
+          binding.getMembersList().remove(member);
+        }
+      }
+
+      // Save the updated IAM policy.
+      client.setIamPolicy(
+          SetIamPolicyRequest.newBuilder()
+              .setResource(secretName.toString())
+              .setPolicy(policy)
+              .build());
+
+      System.out.printf("Updated IAM policy for %s\n", secretId);
     }
   }
 }
-// [END secretmanager_get_regional_secret]
+// [END secretmanager_iam_revoke_access_with_regional_secret]

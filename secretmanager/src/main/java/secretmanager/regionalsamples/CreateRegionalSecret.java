@@ -14,47 +14,50 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_disable_regional_secret_version]
+// [START secretmanager_create_regional_secret]
+import com.google.cloud.secretmanager.v1.LocationName;
+import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
-import com.google.cloud.secretmanager.v1.SecretVersion;
-import com.google.cloud.secretmanager.v1.SecretVersionName;
 import java.io.IOException;
 
-public class DisableRegionalSecretVersion {
+public class CreateRegionalSecret {
 
-  public static void disableRegionalSecretVersion() throws IOException {
+  public static void createRegionalSecret() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
     String secretId = "your-secret-id";
-    String versionId = "your-version-id";
-    disableRegionalSecretVersion(projectId, locationId, secretId, versionId);
+    createRegionalSecret(projectId, locationId, secretId);
   }
 
-  // Disable an existing secret version.
-  public static void disableRegionalSecretVersion(
-      String projectId, String locationId, String secretId, String versionId)
+  // Create a new regional secret 
+  public static void createRegionalSecret(
+      String projectId, String locationId, String secretId) 
       throws IOException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // Initialize the client that will be used to send requests. This client only needs to be
+    // created once, and can be reused for multiple requests. After completing all of your requests,
+    // call the "close" method on the client to safely clean up any remaining background resources.
+    
+    // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      // Build the name from the version.
-      SecretVersionName secretVersionName = 
-          SecretVersionName.ofProjectLocationSecretSecretVersionName(
-          projectId, locationId, secretId, versionId);
+      // Build the parent name from the project.
+      LocationName location = LocationName.of(projectId, locationId);
 
-      // Disable the secret version.
-      SecretVersion version = client.disableSecretVersion(secretVersionName);
-      System.out.printf("Disabled regional secret version %s\n", version.getName());
+      // Build the regional secret to create.
+      Secret secret =
+          Secret.newBuilder().build();
+
+      // Create the regional secret.
+      Secret createdSecret = client.createSecret(location.toString(), secretId, secret);
+      System.out.printf("Created regional secret %s\n", createdSecret.getName());
     }
   }
 }
-// [END secretmanager_disable_regional_secret_version]
+// [END secretmanager_create_regional_secret]

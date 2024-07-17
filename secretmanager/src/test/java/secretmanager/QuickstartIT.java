@@ -32,6 +32,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import secretmanager.regionalsamples.RegionalQuickstart;
 
 /** Integration (system) tests for {@link Quickstart}. */
 @RunWith(JUnit4.class)
