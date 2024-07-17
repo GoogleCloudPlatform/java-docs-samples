@@ -47,8 +47,8 @@ public class ListVodConfigs {
 
       VideoStitcherServiceClient.ListVodConfigsPagedResponse response =
           videoStitcherServiceClient.listVodConfigs(listVodConfigsRequest);
-      System.out.println("VOD configs:");
 
+      System.out.println("VOD configs:");
       for (VodConfig vodConfig : response.iterateAll()) {
         System.out.println(vodConfig.getName());
       }
