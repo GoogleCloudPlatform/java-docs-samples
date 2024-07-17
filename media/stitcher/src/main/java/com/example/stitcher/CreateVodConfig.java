@@ -65,7 +65,6 @@ public class CreateVodConfig {
             .createVodConfigAsync(createVodConfigRequest)
             .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
     System.out.println("Created new VOD config: " + response.getName());
-    videoStitcherServiceClient.close();
   }
 }
 // [END videostitcher_create_vod_config]
