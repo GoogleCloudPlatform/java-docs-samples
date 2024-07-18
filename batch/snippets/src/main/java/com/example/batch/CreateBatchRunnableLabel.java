@@ -56,7 +56,7 @@ public class CreateBatchRunnableLabel {
   }
 
   // Creates a job with labels defined in the labels field
-  // for a runnable are only applied to that runnable.
+  // for a runnable. The labels are only applied to that runnable.
   // In Batch, a runnable represents a single task or unit of work within a job.
   // It can be a container (like a Docker image) or a script.
   public static Job createBatchRunnableLabel(String projectId, String region, String jobName,
