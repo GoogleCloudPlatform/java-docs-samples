@@ -58,7 +58,7 @@ public class CreateResourcesIT {
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String CUSTOM_EVENT_NAME = "test-job"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String BATCH_LABEL_JOB = "test-job"
+  private static final String BATCH_LABEL_JOB = "test-job-label"
       + UUID.randomUUID().toString().substring(0, 7);
   private static final String LOCAL_SSD_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
