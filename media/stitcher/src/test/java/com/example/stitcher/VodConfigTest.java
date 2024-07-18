@@ -104,13 +104,11 @@ public class VodConfigTest {
   @Test
   public void testUpdateVodConfig()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String UPDATED_VOD_URI =
-        "https://storage.googleapis.com/cloud-samples-data/media/hls-vod/manifest.mpd";
     VodConfig response =
         UpdateVodConfig.updateVodConfig(
-            PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID, UPDATED_VOD_URI);
+            PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID, TestUtils.UPDATED_VOD_URI);
     assertThat(response.getName(), containsString(VOD_CONFIG_NAME));
-    assertThat(response.getSourceUri(), containsString(UPDATED_VOD_URI));
+    assertThat(response.getSourceUri(), containsString(TestUtils.UPDATED_VOD_URI));
     bout.reset();
   }
 
