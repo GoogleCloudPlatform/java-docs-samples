@@ -44,6 +44,7 @@ public class CreateResourcesIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "us-central1";
   private static final String ZONE = "us-central1-a";
+  private static final int LOCAL_SSD_SIZE = 375
   private static final String SERVICE_ACCOUNT_JOB = "test-job-sa-"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String SECRET_MANAGER_JOB = "test-job-sm-"
@@ -157,8 +158,9 @@ public class CreateResourcesIT {
 
     Assert.assertTrue(job.getName().contains(GPU_JOB));
     Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream().anyMatch(instance
-        -> instance.getInstallGpuDrivers() 
-                && instance.getPolicy().getMachineType() == machineType));
+        -> instance.getInstallGpuDrivers()));
+    Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream().anyMatch(instance
+        -> instance.getPolicy().getMachineType() == machineType));
   }
 
   @Test
@@ -184,7 +186,7 @@ public class CreateResourcesIT {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String type = "c3d-standard-8-lssd";
     Job job = CreateLocalSsdJob
-            .createLocalSsdJob(PROJECT_ID, REGION, LOCAL_SSD_JOB, LOCAL_SSD_NAME, 375, type);
+            .createLocalSsdJob(PROJECT_ID, REGION, LOCAL_SSD_JOB, LOCAL_SSD_NAME, LOCAL_SSD_SIZE, type);
 
     Assert.assertNotNull(job);
     ACTIVE_JOBS.add(job);
