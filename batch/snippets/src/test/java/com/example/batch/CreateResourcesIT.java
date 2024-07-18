@@ -44,7 +44,7 @@ public class CreateResourcesIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "us-central1";
   private static final String ZONE = "us-central1-a";
-  private static final int LOCAL_SSD_SIZE = 375
+  private static final int LOCAL_SSD_SIZE = 375;
   private static final String SERVICE_ACCOUNT_JOB = "test-job-sa-"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String SECRET_MANAGER_JOB = "test-job-sm-"
