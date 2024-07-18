@@ -66,8 +66,11 @@ public class CreateResourcesIT {
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String NEW_PERSISTENT_DISK_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
-
   private static final List<Job> ACTIVE_JOBS = new ArrayList<>();
+  private static final String NFS_PATH = "test-disk";
+  private static final String NFS_IP_ADDRESS = "test123";
+  private static final String NFS_JOB_NAME = "test-job"
+          + UUID.randomUUID().toString().substring(0, 7);
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -105,6 +108,7 @@ public class CreateResourcesIT {
     safeDeleteJob(LOCAL_SSD_JOB);
     safeDeleteJob(PERSISTENT_DISK_JOB);
     safeDeleteJob(NOTIFICATION_NAME);
+    safeDeleteJob(NFS_JOB_NAME);
     safeDeleteJob(BATCH_LABEL_JOB);
   }
 
@@ -245,6 +249,26 @@ public class CreateResourcesIT {
             .forEach(displayName -> Assert.assertTrue(job.getTaskGroupsList().stream()
                     .flatMap(event -> event.getTaskSpec().getRunnablesList().stream())
                     .anyMatch(runnable -> runnable.getDisplayName().equals(displayName))));
+  }
+
+  @Test
+  public void createScriptJobWithNfsTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Job job = CreateScriptJobWithNfs.createScriptJobWithNfs(PROJECT_ID, REGION, NFS_JOB_NAME,
+        NFS_PATH, NFS_IP_ADDRESS);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(NFS_JOB_NAME));
+
+    Assert.assertTrue(job.getTaskGroupsList().stream().anyMatch(taskGroup
+            -> taskGroup.getTaskSpec().getVolumesList().stream()
+            .anyMatch(volume -> volume.getNfs().getRemotePath().equals(NFS_PATH))));
+    Assert.assertTrue(job.getTaskGroupsList().stream().anyMatch(taskGroup
+            -> taskGroup.getTaskSpec().getVolumesList().stream()
+            .anyMatch(volume -> volume.getNfs().getServer().equals(NFS_IP_ADDRESS))));
+
   }
 
 
