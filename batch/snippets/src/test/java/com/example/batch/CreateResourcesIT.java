@@ -58,7 +58,9 @@ public class CreateResourcesIT {
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String CUSTOM_EVENT_NAME = "test-job"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String JOB_ALLOCATION_POLICY_LABEL = "test-job"
+  private static final String BATCH_LABEL_JOB = "test-job-label"
+      + UUID.randomUUID().toString().substring(0, 7);
+  private static final String JOB_ALLOCATION_POLICY_LABEL = "test-job-allocation-label"
       + UUID.randomUUID().toString().substring(0, 7);
   private static final String LOCAL_SSD_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
@@ -109,6 +111,7 @@ public class CreateResourcesIT {
     safeDeleteJob(PERSISTENT_DISK_JOB);
     safeDeleteJob(NOTIFICATION_NAME);
     safeDeleteJob(NFS_JOB_NAME);
+    safeDeleteJob(BATCH_LABEL_JOB);
     safeDeleteJob(JOB_ALLOCATION_POLICY_LABEL);
   }
 
@@ -269,6 +272,28 @@ public class CreateResourcesIT {
             -> taskGroup.getTaskSpec().getVolumesList().stream()
             .anyMatch(volume -> volume.getNfs().getServer().equals(NFS_IP_ADDRESS))));
 
+  }
+
+
+  @Test
+  public void createBatchLabelJobTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String labelName1 = "env";
+    String labelValue1 = "env_value";
+    String labelName2 = "test";
+    String labelValue2 = "test_value";
+
+    Job job = CreateBatchLabelJob.createBatchLabelJob(PROJECT_ID, REGION,
+        BATCH_LABEL_JOB, labelName1, labelValue1, labelName2, labelValue2);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(BATCH_LABEL_JOB));
+    Assert.assertTrue(job.containsLabels(labelName1));
+    Assert.assertTrue(job.containsLabels(labelName2));
+    Assert.assertTrue(job.getLabelsMap().containsValue(labelValue1));
+    Assert.assertTrue(job.getLabelsMap().containsValue(labelValue2));
   }
 
   @Test
