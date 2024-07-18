@@ -194,7 +194,8 @@ public class CreateResourcesIT {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String type = "c3d-standard-8-lssd";
     Job job = CreateLocalSsdJob
-            .createLocalSsdJob(PROJECT_ID, REGION, LOCAL_SSD_JOB, LOCAL_SSD_NAME, LOCAL_SSD_SIZE, type);
+            .createLocalSsdJob(PROJECT_ID, REGION, LOCAL_SSD_JOB, LOCAL_SSD_NAME, 
+                LOCAL_SSD_SIZE, type);
 
     Assert.assertNotNull(job);
     ACTIVE_JOBS.add(job);
