@@ -16,6 +16,7 @@ package com.example.batch;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.Job;
 import com.google.cloud.batch.v1.JobNotification.Type;
 import com.google.cloud.batch.v1.TaskStatus.State;
@@ -59,6 +60,8 @@ public class CreateResourcesIT {
   private static final String CUSTOM_EVENT_NAME = "test-job"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String BATCH_LABEL_JOB = "test-job-label"
+      + UUID.randomUUID().toString().substring(0, 7);
+  private static final String CUSTOM_NETWORK_NAME = "test-job-network"
       + UUID.randomUUID().toString().substring(0, 7);
   private static final String LOCAL_SSD_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
@@ -110,6 +113,7 @@ public class CreateResourcesIT {
     safeDeleteJob(NOTIFICATION_NAME);
     safeDeleteJob(NFS_JOB_NAME);
     safeDeleteJob(BATCH_LABEL_JOB);
+    safeDeleteJob(CUSTOM_NETWORK_NAME);
   }
 
   private static void safeDeleteJob(String jobName) {
@@ -268,9 +272,7 @@ public class CreateResourcesIT {
     Assert.assertTrue(job.getTaskGroupsList().stream().anyMatch(taskGroup
             -> taskGroup.getTaskSpec().getVolumesList().stream()
             .anyMatch(volume -> volume.getNfs().getServer().equals(NFS_IP_ADDRESS))));
-
   }
-
 
   @Test
   public void createBatchLabelJobTest()
@@ -291,6 +293,28 @@ public class CreateResourcesIT {
     Assert.assertTrue(job.containsLabels(labelName2));
     Assert.assertTrue(job.getLabelsMap().containsValue(labelValue1));
     Assert.assertTrue(job.getLabelsMap().containsValue(labelValue2));
+  }
+
+  @Test
+  public void createBatchCustomNetworkTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String network = "global/networks/test-network";
+    String subnet = "regions/europe-west1/subnetworks/subnet";
+
+    Job job = CreateBatchCustomNetwork
+        .createBatchCustomNetwork(PROJECT_ID, REGION, CUSTOM_NETWORK_NAME,
+            network, subnet);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(CUSTOM_NETWORK_NAME));
+    Assert.assertTrue(job.getAllocationPolicy().getNetwork().getNetworkInterfacesList().stream()
+        .anyMatch(networkName -> networkName.getNetwork().equals(network)));
+    Assert.assertTrue(job.getAllocationPolicy().getNetwork().getNetworkInterfacesList().stream()
+        .anyMatch(subnetName -> subnetName.getSubnetwork().equals(subnet)));
+    Assert.assertTrue(job.getAllocationPolicy().getNetwork().getNetworkInterfacesList().stream()
+        .anyMatch(AllocationPolicy.NetworkInterface::getNoExternalIpAddress));
   }
 
   private void createEmptyDisk(String projectId, String zone, String diskName,
