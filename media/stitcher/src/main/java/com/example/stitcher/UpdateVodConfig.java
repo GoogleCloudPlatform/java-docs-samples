@@ -44,31 +44,33 @@ public class UpdateVodConfig {
     updateVodConfig(projectId, location, vodConfigId, sourceUri);
   }
 
-  public static void updateVodConfig(
+  // Updates the source URI in a video on demand (VOD) config.
+  public static VodConfig updateVodConfig(
       String projectId, String location, String vodConfigId, String sourceUri)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
-    UpdateVodConfigRequest updateVodConfigRequest =
-        UpdateVodConfigRequest.newBuilder()
-            .setVodConfig(
-                VodConfig.newBuilder()
-                    .setName(VodConfigName.of(projectId, location, vodConfigId).toString())
-                    .setSourceUri(sourceUri)
-                    .build())
-            // Set the update mask to the sourceUri field in the existing VOD config. You must set
-            // the mask to the field you want to update.
-            .setUpdateMask(FieldMask.newBuilder().addPaths("sourceUri").build())
-            .build();
+    // once, and can be reused for multiple requests.
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
+      UpdateVodConfigRequest updateVodConfigRequest =
+          UpdateVodConfigRequest.newBuilder()
+              .setVodConfig(
+                  VodConfig.newBuilder()
+                      .setName(VodConfigName.of(projectId, location, vodConfigId).toString())
+                      .setSourceUri(sourceUri)
+                      .build())
+              // Set the update mask to the sourceUri field in the existing VOD config. You must set
+              // the mask to the field you want to update.
+              .setUpdateMask(FieldMask.newBuilder().addPaths("sourceUri").build())
+              .build();
 
-    VodConfig response =
-        videoStitcherServiceClient
-            .updateVodConfigAsync(updateVodConfigRequest)
-            .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-    System.out.println("Updated VOD config: " + response.getName());
-    videoStitcherServiceClient.close();
+      VodConfig response =
+          videoStitcherServiceClient
+              .updateVodConfigAsync(updateVodConfigRequest)
+              .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+      System.out.println("Updated VOD config: " + response.getName());
+      return response;
+    }
   }
 }
 // [END videostitcher_update_vod_config]

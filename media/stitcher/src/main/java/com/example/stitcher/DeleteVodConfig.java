@@ -39,22 +39,23 @@ public class DeleteVodConfig {
     deleteVodConfig(projectId, location, vodConfigId);
   }
 
+  // Deletes a video on demand (VOD) config.
   public static void deleteVodConfig(String projectId, String location, String vodConfigId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
-    DeleteVodConfigRequest deleteVodConfigRequest =
-        DeleteVodConfigRequest.newBuilder()
-            .setName(VodConfigName.of(projectId, location, vodConfigId).toString())
-            .build();
+    // once, and can be reused for multiple requests.
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
+      DeleteVodConfigRequest deleteVodConfigRequest =
+          DeleteVodConfigRequest.newBuilder()
+              .setName(VodConfigName.of(projectId, location, vodConfigId).toString())
+              .build();
 
-    videoStitcherServiceClient
-        .deleteVodConfigAsync(deleteVodConfigRequest)
-        .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-    System.out.println("Deleted VOD config");
-    videoStitcherServiceClient.close();
+      videoStitcherServiceClient
+          .deleteVodConfigAsync(deleteVodConfigRequest)
+          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+      System.out.println("Deleted VOD config");
+    }
   }
 }
 // [END videostitcher_delete_vod_config]

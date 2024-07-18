@@ -46,25 +46,31 @@ public class CreateVodConfig {
     createVodConfig(projectId, location, vodConfigId, sourceUri, adTagUri);
   }
 
-  public static void createVodConfig(
+  // Creates a video on demand (VOD) config. VOD configs are used to configure VOD
+  // sessions. For more information, see
+  // https://cloud.google.com/video-stitcher/docs/how-to/managing-vod-configs.
+  public static VodConfig createVodConfig(
       String projectId, String location, String vodConfigId, String sourceUri, String adTagUri)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
-    CreateVodConfigRequest createVodConfigRequest =
-        CreateVodConfigRequest.newBuilder()
-            .setParent(LocationName.of(projectId, location).toString())
-            .setVodConfigId(vodConfigId)
-            .setVodConfig(
-                VodConfig.newBuilder().setSourceUri(sourceUri).setAdTagUri(adTagUri).build())
-            .build();
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
+      CreateVodConfigRequest createVodConfigRequest =
+          CreateVodConfigRequest.newBuilder()
+              .setParent(LocationName.of(projectId, location).toString())
+              .setVodConfigId(vodConfigId)
+              .setVodConfig(
+                  VodConfig.newBuilder().setSourceUri(sourceUri).setAdTagUri(adTagUri).build())
+              .build();
 
-    VodConfig response =
-        videoStitcherServiceClient
-            .createVodConfigAsync(createVodConfigRequest)
-            .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-    System.out.println("Created new VOD config: " + response.getName());
+      VodConfig response =
+          videoStitcherServiceClient
+              .createVodConfigAsync(createVodConfigRequest)
+              .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+      System.out.println("Created new VOD config: " + response.getName());
+      return response;
+    }
   }
 }
 // [END videostitcher_create_vod_config]

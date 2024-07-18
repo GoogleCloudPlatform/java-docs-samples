@@ -21,6 +21,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient.ListVodConfigsPagedResponse;
+import com.google.cloud.video.stitcher.v1.VodConfig;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -35,10 +37,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class DeleteVodConfigTest {
+public class VodConfigTest {
 
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
   private static final String VOD_CONFIG_ID = TestUtils.getVodConfigId();
+  private static String VOD_CONFIG_NAME;
   private static String PROJECT_ID;
   private static PrintStream originalOut;
   private ByteArrayOutputStream bout;
@@ -64,23 +67,60 @@ public class DeleteVodConfigTest {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
 
-    CreateVodConfig.createVodConfig(
-        PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID, TestUtils.VOD_URI, TestUtils.VOD_AD_TAG_URI);
+    VOD_CONFIG_NAME =
+        String.format("locations/%s/vodConfigs/%s", TestUtils.LOCATION, VOD_CONFIG_ID);
+    VodConfig response =
+        CreateVodConfig.createVodConfig(
+            PROJECT_ID,
+            TestUtils.LOCATION,
+            VOD_CONFIG_ID,
+            TestUtils.VOD_URI,
+            TestUtils.VOD_AD_TAG_URI);
+    assertThat(response.getName(), containsString(VOD_CONFIG_NAME));
     bout.reset();
   }
 
   @Test
-  public void test_DeleteVodConfig()
+  public void testGetVodConfig() throws IOException {
+    VodConfig response = GetVodConfig.getVodConfig(PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID);
+    assertThat(response.getName(), containsString(VOD_CONFIG_NAME));
+    bout.reset();
+  }
+
+  @Test
+  public void testListVodConfigs() throws IOException {
+    ListVodConfigsPagedResponse response =
+        ListVodConfigs.listVodConfigs(PROJECT_ID, TestUtils.LOCATION);
+    Boolean pass = false;
+    for (VodConfig vodConfig : response.iterateAll()) {
+      if (vodConfig.getName().contains(VOD_CONFIG_NAME)) {
+        pass = true;
+      }
+    }
+    assert (pass);
+    bout.reset();
+  }
+
+  @Test
+  public void testUpdateVodConfig()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String UPDATED_VOD_URI =
+        "https://storage.googleapis.com/cloud-samples-data/media/hls-vod/manifest.mpd";
+    VodConfig response =
+        UpdateVodConfig.updateVodConfig(
+            PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID, UPDATED_VOD_URI);
+    assertThat(response.getName(), containsString(VOD_CONFIG_NAME));
+    assertThat(response.getSourceUri(), containsString(UPDATED_VOD_URI));
+    bout.reset();
+  }
+
+  @After
+  public void tearDown()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     DeleteVodConfig.deleteVodConfig(PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID);
     String output = bout.toString();
     assertThat(output, containsString("Deleted VOD config"));
     bout.reset();
-  }
-
-  @After
-  public void tearDown() throws IOException {
     System.setOut(originalOut);
-    bout.reset();
   }
 }

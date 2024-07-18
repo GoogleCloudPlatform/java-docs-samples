@@ -21,6 +21,7 @@ package com.example.stitcher;
 import com.google.cloud.video.stitcher.v1.ListVodConfigsRequest;
 import com.google.cloud.video.stitcher.v1.LocationName;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
+import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient.ListVodConfigsPagedResponse;
 import com.google.cloud.video.stitcher.v1.VodConfig;
 import java.io.IOException;
 
@@ -34,10 +35,11 @@ public class ListVodConfigs {
     listVodConfigs(projectId, location);
   }
 
-  public static void listVodConfigs(String projectId, String location) throws IOException {
+  // Lists all the video on demand (VOD) configs for a given project and locatin.
+  public static ListVodConfigsPagedResponse listVodConfigs(String projectId, String location)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       ListVodConfigsRequest listVodConfigsRequest =
@@ -52,6 +54,7 @@ public class ListVodConfigs {
       for (VodConfig vodConfig : response.iterateAll()) {
         System.out.println(vodConfig.getName());
       }
+      return response;
     }
   }
 }

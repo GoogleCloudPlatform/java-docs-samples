@@ -37,11 +37,11 @@ public class CreateVodSession {
     createVodSession(projectId, location, vodConfigId);
   }
 
-  public static void createVodSession(String projectId, String location, String vodConfigId)
+  // Creates a video on demand (VOD) session using the parameters in the designated VOD config.
+  public static VodSession createVodSession(String projectId, String location, String vodConfigId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       CreateVodSessionRequest createVodSessionRequest =
@@ -56,6 +56,7 @@ public class CreateVodSession {
 
       VodSession response = videoStitcherServiceClient.createVodSession(createVodSessionRequest);
       System.out.println("Created VOD session: " + response.getName());
+      return response;
     }
   }
 }
