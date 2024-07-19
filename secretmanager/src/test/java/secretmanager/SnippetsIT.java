@@ -17,6 +17,8 @@
 package secretmanager;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 import com.google.cloud.secretmanager.v1.AddSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.CreateSecretRequest;
@@ -228,10 +230,10 @@ public class SnippetsIT {
   @Test
   public void testCreateSecretWithLabel() throws IOException {
     SecretName name = TEST_SECRET_WITH_LABEL_TO_CREATE_NAME;
-    CreateSecretWithLabels.createSecretWithLabels(
+    Secret secret = CreateSecretWithLabels.createSecretWithLabels(
         name.getProject(), name.getSecret(), LABEL_KEY, LABEL_VALUE);
 
-    assertThat(stdOut.toString()).contains("Created secret");
+    assertThat(secret.getLabelsMap()).containsEntry(LABEL_KEY, LABEL_VALUE);
   }
 
   @Test
@@ -255,9 +257,10 @@ public class SnippetsIT {
   @Test
   public void testDeleteSecretLabel() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
-    DeleteSecretLabel.deleteSecretLabel(name.getProject(), name.getSecret(), LABEL_KEY);
+    Secret secret = DeleteSecretLabel.deleteSecretLabel(
+        name.getProject(), name.getSecret(), LABEL_KEY);
 
-    assertThat(stdOut.toString()).contains("Updated secret");
+    assertFalse(secret.getLabelsMap().containsKey(LABEL_KEY));
   }
 
   @Test
@@ -351,10 +354,10 @@ public class SnippetsIT {
   @Test
   public void testViewSecretLabels() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
-    ViewSecretLabels.viewSecretLabels(name.getProject(), name.getSecret());
+    Map<String, String> labels = 
+        ViewSecretLabels.viewSecretLabels(name.getProject(), name.getSecret());
 
-    assertThat(stdOut.toString()).contains("Secret");
-    assertThat(stdOut.toString()).contains(LABEL_KEY);
+    assertThat(labels).containsEntry(LABEL_KEY, LABEL_VALUE);
   }
 
 
@@ -421,10 +424,11 @@ public class SnippetsIT {
   @Test
   public void testCreateUpdateSecretLabel() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
-    CreateUpdateSecretLabel.createUpdateSecretLabel(
+    Secret updatedSecret = CreateUpdateSecretLabel.createUpdateSecretLabel(
         name.getProject(), name.getSecret(), UPDATED_LABEL_KEY, UPDATED_LABEL_VALUE);
 
-    assertThat(stdOut.toString()).contains("Updated secret");
+    assertThat(updatedSecret.getLabelsMap()).containsEntry(
+        UPDATED_LABEL_KEY, UPDATED_LABEL_VALUE);
   }
 
   @Test

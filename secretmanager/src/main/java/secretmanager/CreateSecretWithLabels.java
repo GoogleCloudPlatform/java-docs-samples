@@ -27,19 +27,23 @@ public class CreateSecretWithLabels {
 
   public static void createSecretWithLabels() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+    
+    // id of the GCP project
     String projectId = "your-project-id";
+    // id of the secret to act on
     String secretId = "your-secret-id";
+    // key of the label to be added
     String labelKey = "your-label-key";
+    // value of the label to be added
     String labelValue = "your-label-value";
     createSecretWithLabels(projectId, secretId, labelKey, labelValue);
   }
 
-  // Create a secret.
-  public static void createSecretWithLabels(
+  // Create a secret with labels.
+  public static Secret createSecretWithLabels(
        String projectId, String secretId, String labelKey, String labelValue) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
       
       // Build the name.
@@ -58,6 +62,7 @@ public class CreateSecretWithLabels {
       // Create the secret.
       Secret createdSecret = client.createSecret(projectName, secretId, secret);
       System.out.printf("Created secret %s\n", createdSecret.getName());
+      return createdSecret;
     }
   }
 }

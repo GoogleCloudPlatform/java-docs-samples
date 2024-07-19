@@ -21,6 +21,7 @@ import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.protobuf.FieldMask;
+import com.google.protobuf.FieldMaskOrBuilder;
 import com.google.protobuf.util.FieldMaskUtil;
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,18 +31,21 @@ public class DeleteSecretLabel {
 
   public static void deleteSecretLabel() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+    
+    // id of the GCP project
     String projectId = "your-project-id";
+    // id of the secret to act on
     String secretId = "your-secret-id";
+    // key of the label to be deleted
     String labelKey = "your-label-key";
     deleteSecretLabel(projectId, secretId, labelKey);
   }
 
-  // Update an existing secret, to delete an existing label
-  public static void deleteSecretLabel(
+  // Update an existing secret, by deleting a label.
+  public static Secret deleteSecretLabel(
                      String projectId, String secretId, String labelKey) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
       // Build the name.
       SecretName secretName = SecretName.of(projectId, secretId);
@@ -66,6 +70,8 @@ public class DeleteSecretLabel {
       // Update the secret.
       Secret updatedSecret = client.updateSecret(secret, fieldMask);
       System.out.printf("Updated secret %s\n", updatedSecret.getName());
+
+      return updatedSecret;
     }
   }
 }

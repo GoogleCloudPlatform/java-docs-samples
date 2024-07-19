@@ -30,19 +30,23 @@ public class CreateUpdateSecretLabel {
 
   public static void createUpdateSecretLabel() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+    
+    // id of the GCP project
     String projectId = "your-project-id";
+    // id of the secret to act on
     String secretId = "your-secret-id";
+    // key of the label to be added/updated
     String labelKey = "your-label-key";
+    // value of the label to be added/updated
     String labelValue = "your-label-value";
     createUpdateSecretLabel(projectId, secretId, labelKey, labelValue);
   }
 
-  // Update an existing secret, to create a new label or update an existing one.
-  public static void createUpdateSecretLabel(
+  // Update an existing secret, by creating a new label or updating an existing label.
+  public static Secret createUpdateSecretLabel(
        String projectId, String secretId, String labelKey, String labelValue) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
       // Build the name.
       SecretName secretName = SecretName.of(projectId, secretId);
@@ -53,6 +57,7 @@ public class CreateUpdateSecretLabel {
       Map<String, String> existingLabelsMap = 
                       new HashMap<String, String>(existingSecret.getLabels());
 
+      // Add a new label key and value.
       existingLabelsMap.put(labelKey, labelValue);
 
       // Build the updated secret.
@@ -68,6 +73,8 @@ public class CreateUpdateSecretLabel {
       // Update the secret.
       Secret updatedSecret = client.updateSecret(secret, fieldMask);
       System.out.printf("Updated secret %s\n", updatedSecret.getName());
+
+      return updatedSecret;
     }
   }
 }

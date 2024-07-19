@@ -27,16 +27,21 @@ public class ViewSecretLabels {
 
   public static void viewSecretLabels() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+    
+    // id of the GCP project
     String projectId = "your-project-id";
+    // id of the secret whose labels to view
     String secretId = "your-secret-id";
     viewSecretLabels(projectId, secretId);
   }
 
   // View the labels of an existing secret.
-  public static void viewSecretLabels(String projectId, String secretId) throws IOException {
+  public static Map<String, String> viewSecretLabels(
+      String projectId,
+      String secretId
+  ) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
       // Build the name.
       SecretName secretName = SecretName.of(projectId, secretId);
@@ -52,6 +57,7 @@ public class ViewSecretLabels {
         System.out.printf("Label key : %s, Label Value : %s\n", label.getKey(), label.getValue());
       }
 
+      return secret.getLabels();
     }
   }
 }
