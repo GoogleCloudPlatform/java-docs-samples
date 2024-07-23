@@ -25,23 +25,28 @@ import java.io.IOException;
 
 public class ListRegionalSecrets {
 
-  public static void listRegionalSecrets() throws IOException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+    
+    // id of the GCP project
     String projectId = "your-project-id";
+    // id of location where secret is located
     String locationId = "your-location-id";
     listRegionalSecrets(projectId, locationId);
   }
 
   // List all secrets for a project
-  public static void listRegionalSecrets(String projectId, String locationId) throws IOException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+  public static ListSecretsPagedResponse listRegionalSecrets(
+      String projectId, String locationId)
+      throws IOException {
     
     // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    // Initialize the client that will be used to send requests. This client only needs to be
+    // created once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       // Build the parent name.
@@ -57,6 +62,8 @@ public class ListRegionalSecrets {
               secret -> {
                 System.out.printf("Regional secret %s\n", secret.getName());
               });
+
+      return pagedResponse;
     }
   }
 }

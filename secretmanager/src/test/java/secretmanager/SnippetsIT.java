@@ -22,12 +22,10 @@ import com.google.cloud.secretmanager.v1.AddSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.CreateSecretRequest;
 import com.google.cloud.secretmanager.v1.DeleteSecretRequest;
 import com.google.cloud.secretmanager.v1.DisableSecretVersionRequest;
-import com.google.cloud.secretmanager.v1.LocationName;
 import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Replication;
 import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersion;
@@ -53,27 +51,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import secretmanager.ConsumeEventNotification.PubSubMessage;
-import secretmanager.regionalsamples.AccessRegionalSecretVersion;
-import secretmanager.regionalsamples.AddRegionalSecretVersion;
-import secretmanager.regionalsamples.CreateRegionalSecret;
-import secretmanager.regionalsamples.DeleteRegionalSecret;
-import secretmanager.regionalsamples.DeleteRegionalSecretWithEtag;
-import secretmanager.regionalsamples.DestroyRegionalSecretVersion;
-import secretmanager.regionalsamples.DestroyRegionalSecretVersionWithEtag;
-import secretmanager.regionalsamples.DisableRegionalSecretVersion;
-import secretmanager.regionalsamples.DisableRegionalSecretVersionWithEtag;
-import secretmanager.regionalsamples.EnableRegionalSecretVersion;
-import secretmanager.regionalsamples.EnableRegionalSecretVersionWithEtag;
-import secretmanager.regionalsamples.GetRegionalSecret;
-import secretmanager.regionalsamples.GetRegionalSecretVersion;
-import secretmanager.regionalsamples.IamGrantAccessWithRegionalSecret;
-import secretmanager.regionalsamples.IamRevokeAccessWithRegionalSecret;
-import secretmanager.regionalsamples.ListRegionalSecretVersions;
-import secretmanager.regionalsamples.ListRegionalSecretVersionsWithFilter;
-import secretmanager.regionalsamples.ListRegionalSecrets;
-import secretmanager.regionalsamples.ListRegionalSecretsWithFilter;
-import secretmanager.regionalsamples.UpdateRegionalSecret;
-import secretmanager.regionalsamples.UpdateRegionalSecretWithAlias;
 
 /**
  * Integration (system) tests for {@link Snippets}.
@@ -85,35 +62,20 @@ public class SnippetsIT {
   private static final String IAM_USER =
       "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION_ID = System.getenv("GOOGLE_CLOUD_PROJECT_LOCATION");
-  private static final String REGIONAL_ENDPOINT = 
-      String.format("secretmanager.%s.rep.googleapis.com:443", LOCATION_ID);
 
   private static Secret TEST_SECRET;
-  private static Secret TEST_REGIONAL_SECRET;
   private static Secret TEST_SECRET_TO_DELETE;
-  private static Secret TEST_REGIONAL_SECRET_TO_DELETE;
   private static Secret TEST_SECRET_TO_DELETE_WITH_ETAG;
-  private static Secret TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG;
   private static Secret TEST_SECRET_WITH_VERSIONS;
-  private static Secret TEST_REGIONAL_SECRET_WITH_VERSIONS;
   private static SecretName TEST_SECRET_TO_CREATE_NAME;
-  private static SecretName TEST_REGIONAL_SECRET_TO_CREATE_NAME;
   private static SecretName TEST_UMMR_SECRET_TO_CREATE_NAME;
   private static SecretVersion TEST_SECRET_VERSION;
-  private static SecretVersion TEST_REGIONAL_SECRET_VERSION;
   private static SecretVersion TEST_SECRET_VERSION_TO_DESTROY;
-  private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_DESTROY;
   private static SecretVersion TEST_SECRET_VERSION_TO_DESTROY_WITH_ETAG;
-  private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_DESTROY_WITH_ETAG;
   private static SecretVersion TEST_SECRET_VERSION_TO_DISABLE;
-  private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_DISABLE;
   private static SecretVersion TEST_SECRET_VERSION_TO_DISABLE_WITH_ETAG;
-  private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_DISABLE_WITH_ETAG;
   private static SecretVersion TEST_SECRET_VERSION_TO_ENABLE;
-  private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_ENABLE;
   private static SecretVersion TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG;
-  private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_ENABLE_WITH_ETAG;
 
   private ByteArrayOutputStream stdOut;
 
@@ -122,44 +84,22 @@ public class SnippetsIT {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
     TEST_SECRET = createSecret();
-    TEST_REGIONAL_SECRET = createRegionalSecret();
     TEST_SECRET_TO_DELETE = createSecret();
-    TEST_REGIONAL_SECRET_TO_DELETE = createRegionalSecret();
     TEST_SECRET_TO_DELETE_WITH_ETAG = createSecret();
-    TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG = createRegionalSecret();
     TEST_SECRET_WITH_VERSIONS = createSecret();
-    TEST_REGIONAL_SECRET_WITH_VERSIONS = createRegionalSecret();
     TEST_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
-    TEST_REGIONAL_SECRET_TO_CREATE_NAME = 
-        SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
     TEST_UMMR_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
 
     TEST_SECRET_VERSION = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
-    TEST_REGIONAL_SECRET_VERSION = addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
-    TEST_REGIONAL_SECRET_VERSION_TO_DESTROY = 
-        addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY_WITH_ETAG = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
-    TEST_REGIONAL_SECRET_VERSION_TO_DESTROY_WITH_ETAG = 
-        addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DISABLE = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
-    TEST_REGIONAL_SECRET_VERSION_TO_DISABLE = 
-        addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DISABLE_WITH_ETAG = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
-    TEST_REGIONAL_SECRET_VERSION_TO_DISABLE_WITH_ETAG = 
-        addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_ENABLE = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
-    TEST_REGIONAL_SECRET_VERSION_TO_ENABLE = 
-        addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
-    TEST_REGIONAL_SECRET_VERSION_TO_ENABLE_WITH_ETAG = 
-        addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
     disableSecretVersion(TEST_SECRET_VERSION_TO_ENABLE);
-    disableRegionalSecretVersion(TEST_REGIONAL_SECRET_VERSION_TO_ENABLE);
     TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG = disableSecretVersion(
         TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG);
-    TEST_REGIONAL_SECRET_VERSION_TO_ENABLE_WITH_ETAG = disableRegionalSecretVersion(
-      TEST_REGIONAL_SECRET_VERSION_TO_ENABLE_WITH_ETAG);
   }
 
   @Before
@@ -179,16 +119,11 @@ public class SnippetsIT {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
     deleteSecret(TEST_SECRET.getName());
-    deleteRegionalSecret(TEST_REGIONAL_SECRET.getName());
     deleteSecret(TEST_SECRET_TO_CREATE_NAME.toString());
-    deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_UMMR_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
-    deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE.getName());
     deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
-    deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG.getName());
     deleteSecret(TEST_SECRET_WITH_VERSIONS.getName());
-    deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_VERSIONS.getName());
   }
 
   private static String randomSecretId() {
@@ -217,23 +152,6 @@ public class SnippetsIT {
     }
   }
 
-  private static Secret createRegionalSecret() throws IOException {
-    LocationName parent = LocationName.of(PROJECT_ID, LOCATION_ID);
-
-    CreateSecretRequest request =
-        CreateSecretRequest.newBuilder()
-            .setParent(parent.toString())
-            .setSecretId(randomSecretId())
-            .build();
-
-    SecretManagerServiceSettings secretManagerServiceSettings =
-        SecretManagerServiceSettings.newBuilder().setEndpoint(REGIONAL_ENDPOINT).build();
-    try (SecretManagerServiceClient client = 
-        SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      return client.createSecret(request);
-    }
-  }
-
   private static SecretVersion addSecretVersion(Secret secret) throws IOException {
     SecretName parent = SecretName.parse(secret.getName());
 
@@ -247,26 +165,6 @@ public class SnippetsIT {
             .build();
 
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-      return client.addSecretVersion(request);
-    }
-  }
-
-  private static SecretVersion addRegionalSecretVersion(Secret secret) throws IOException {
-    SecretName parent = SecretName.parse(secret.getName());
-
-    AddSecretVersionRequest request =
-        AddSecretVersionRequest.newBuilder()
-            .setParent(parent.toString())
-            .setPayload(
-                SecretPayload.newBuilder()
-                    .setData(ByteString.copyFromUtf8("my super secret data"))
-                    .build())
-            .build();
-
-    SecretManagerServiceSettings secretManagerServiceSettings =
-        SecretManagerServiceSettings.newBuilder().setEndpoint(REGIONAL_ENDPOINT).build();
-    try (SecretManagerServiceClient client = 
-        SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       return client.addSecretVersion(request);
     }
   }
@@ -286,40 +184,10 @@ public class SnippetsIT {
     }
   }
 
-  private static void deleteRegionalSecret(String secretId) throws IOException {
-    DeleteSecretRequest request = DeleteSecretRequest.newBuilder().setName(secretId).build();
-    SecretManagerServiceSettings secretManagerServiceSettings =
-        SecretManagerServiceSettings.newBuilder().setEndpoint(REGIONAL_ENDPOINT).build();
-    try (SecretManagerServiceClient client = 
-        SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      try {
-        client.deleteSecret(request);
-      } catch (com.google.api.gax.rpc.NotFoundException e) {
-        // Ignore not found error - secret was already deleted
-      } catch (io.grpc.StatusRuntimeException e) {
-        if (e.getStatus().getCode() != io.grpc.Status.Code.NOT_FOUND) {
-          throw e;
-        }
-      }
-    }
-  }
-
   private static SecretVersion disableSecretVersion(SecretVersion version) throws IOException {
     DisableSecretVersionRequest request =
         DisableSecretVersionRequest.newBuilder().setName(version.getName()).build();
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
-      return client.disableSecretVersion(request);
-    }
-  }
-
-  private static SecretVersion disableRegionalSecretVersion(
-      SecretVersion version) throws IOException {
-    DisableSecretVersionRequest request =
-        DisableSecretVersionRequest.newBuilder().setName(version.getName()).build();
-    SecretManagerServiceSettings secretManagerServiceSettings =
-        SecretManagerServiceSettings.newBuilder().setEndpoint(REGIONAL_ENDPOINT).build();
-    try (SecretManagerServiceClient client = 
-        SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       return client.disableSecretVersion(request);
     }
   }
@@ -333,14 +201,6 @@ public class SnippetsIT {
     assertThat(stdOut.toString()).contains("my super secret data");
   }
   
-  @Test
-  public void testAccessRegionalSecretVersion() throws IOException {
-    SecretVersionName name = SecretVersionName.parse(TEST_REGIONAL_SECRET_VERSION.getName());
-    AccessRegionalSecretVersion.accessRegionalSecretVersion(
-        name.getProject(), name.getLocation(), name.getSecret(), name.getSecretVersion());
-
-    assertThat(stdOut.toString()).contains("my super secret data");
-  }
 
   @Test
   public void testAddSecretVersion() throws IOException {
@@ -351,29 +211,11 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testAddRegionalSecretVersion() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_WITH_VERSIONS.getName());
-    AddRegionalSecretVersion.addRegionalSecretVersion(
-        name.getProject(), name.getLocation(), name.getSecret());
-
-    assertThat(stdOut.toString()).contains("Added regional secret version");
-  }
-
-  @Test
   public void testCreateSecret() throws IOException {
     SecretName name = TEST_SECRET_TO_CREATE_NAME;
     CreateSecret.createSecret(name.getProject(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("Created secret");
-  }
-  
-  @Test
-  public void testCreateRegionalSecret() throws IOException {
-    SecretName name = TEST_REGIONAL_SECRET_TO_CREATE_NAME;
-    CreateRegionalSecret.createRegionalSecret(
-        name.getProject(), name.getLocation(), name.getSecret());
-
-    assertThat(stdOut.toString()).contains("Created regional secret");
   }
 
   @Test
@@ -395,15 +237,6 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testDeleteRegionalSecret() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_TO_DELETE.getName());
-    DeleteRegionalSecret.deleteRegionalSecret(
-        name.getProject(), name.getLocation(), name.getSecret());
-
-    assertThat(stdOut.toString()).contains("Deleted regional secret");
-  }
-
-  @Test
   public void testDeleteSecretWithEtag() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
     String etag = TEST_SECRET_TO_DELETE_WITH_ETAG.getEtag();
@@ -413,32 +246,12 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testDeleteRegionalSecretWithEtag() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG.getName());
-    String etag = TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG.getEtag();
-    DeleteRegionalSecretWithEtag.deleteRegionalSecret(
-        name.getProject(), name.getLocation(), name.getSecret(), etag);
-
-    assertThat(stdOut.toString()).contains("Deleted regional secret");
-  }
-
-  @Test
   public void testDestroySecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION_TO_DESTROY.getName());
     DestroySecretVersion.destroySecretVersion(
         name.getProject(), name.getSecret(), name.getSecretVersion());
 
     assertThat(stdOut.toString()).contains("Destroyed secret version");
-  }
-
-  @Test
-  public void testDestroyRegionalSecretVersion() throws IOException {
-    SecretVersionName name = SecretVersionName.parse(
-        TEST_REGIONAL_SECRET_VERSION_TO_DESTROY.getName());
-    DestroyRegionalSecretVersion.destroyRegionalSecretVersion(
-        name.getProject(), name.getLocation(), name.getSecret(), name.getSecretVersion());
-
-    assertThat(stdOut.toString()).contains("Destroyed regional secret version");
   }
 
   @Test
@@ -453,33 +266,12 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testDestroyRegionalSecretVersionWithEtag() throws IOException {
-    SecretVersionName name = SecretVersionName.parse(
-        TEST_REGIONAL_SECRET_VERSION_TO_DESTROY_WITH_ETAG.getName());
-    String etag = TEST_REGIONAL_SECRET_VERSION_TO_DESTROY_WITH_ETAG.getEtag();
-    DestroyRegionalSecretVersionWithEtag.destroyRegionalSecretVersion(
-        name.getProject(), name.getLocation(), name.getSecret(), name.getSecretVersion(), etag);
-
-    assertThat(stdOut.toString()).contains("Destroyed regional secret version");
-  }
-
-  @Test
   public void testDisableSecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION_TO_DISABLE.getName());
     DisableSecretVersion.disableSecretVersion(
         name.getProject(), name.getSecret(), name.getSecretVersion());
 
     assertThat(stdOut.toString()).contains("Disabled secret version");
-  }
-
-  @Test
-  public void testRegionalDisableSecretVersion() throws IOException {
-    SecretVersionName name = SecretVersionName.parse(
-        TEST_REGIONAL_SECRET_VERSION_TO_DISABLE.getName());
-    DisableRegionalSecretVersion.disableRegionalSecretVersion(
-        name.getProject(), name.getLocation(), name.getSecret(), name.getSecretVersion());
-
-    assertThat(stdOut.toString()).contains("Disabled regional secret version");
   }
 
   @Test
@@ -492,17 +284,6 @@ public class SnippetsIT {
 
     assertThat(stdOut.toString()).contains("Disabled secret version");
   }
- 
-  @Test
-  public void testDisableRegionalSecretVersionWithEtag() throws IOException {
-    SecretVersionName name = SecretVersionName.parse(
-        TEST_REGIONAL_SECRET_VERSION_TO_DISABLE_WITH_ETAG.getName());
-    String etag = TEST_REGIONAL_SECRET_VERSION_TO_DISABLE_WITH_ETAG.getEtag();
-    DisableRegionalSecretVersionWithEtag.disableRegionalSecretVersion(
-        name.getProject(), name.getLocation(), name.getSecret(), name.getSecretVersion(), etag);
-
-    assertThat(stdOut.toString()).contains("Disabled regional secret version");
-  }
 
   @Test
   public void testEnableSecretVersion() throws IOException {
@@ -511,16 +292,6 @@ public class SnippetsIT {
         name.getProject(), name.getSecret(), name.getSecretVersion());
 
     assertThat(stdOut.toString()).contains("Enabled secret version");
-  }
-
-  @Test
-  public void testRegionalEnableSecretVersion() throws IOException {
-    SecretVersionName name = 
-        SecretVersionName.parse(TEST_REGIONAL_SECRET_VERSION_TO_ENABLE.getName());
-    EnableRegionalSecretVersion.enableRegionalSecretVersion(
-        name.getProject(), name.getLocation(), name.getSecret(), name.getSecretVersion());
-
-    assertThat(stdOut.toString()).contains("Enabled regional secret version");
   }
 
   @Test
@@ -535,33 +306,12 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testEnableRegionalSecretVersionWithEtag() throws IOException {
-    SecretVersionName name = SecretVersionName.parse(
-        TEST_REGIONAL_SECRET_VERSION_TO_ENABLE_WITH_ETAG.getName());
-    String etag = TEST_REGIONAL_SECRET_VERSION_TO_ENABLE_WITH_ETAG.getEtag();
-    EnableRegionalSecretVersionWithEtag.enableRegionalSecretVersion(
-        name.getProject(), name.getLocation(), name.getSecret(), name.getSecretVersion(), etag);
-
-    assertThat(stdOut.toString()).contains("Enabled regional secret version");
-  }
-
-  @Test
   public void testGetSecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION.getName());
     GetSecretVersion.getSecretVersion(
         name.getProject(), name.getSecret(), name.getSecretVersion());
 
     assertThat(stdOut.toString()).contains("Secret version");
-    assertThat(stdOut.toString()).contains("state ENABLED");
-  }
-
-  @Test
-  public void testGetRegionalSecretVersion() throws IOException {
-    SecretVersionName name = SecretVersionName.parse(TEST_REGIONAL_SECRET_VERSION.getName());
-    GetRegionalSecretVersion.getRegionalSecretVersion(
-        name.getProject(), name.getLocation(), name.getSecret(), name.getSecretVersion());
-
-    assertThat(stdOut.toString()).contains("Regional secret version");
     assertThat(stdOut.toString()).contains("state ENABLED");
   }
 
@@ -575,26 +325,9 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testGetRegionalSecret() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
-    GetRegionalSecret.getRegionalSecret(name.getProject(), name.getLocation(), name.getSecret());
-
-    assertThat(stdOut.toString()).contains("Secret");
-  }
-
-  @Test
   public void testIamGrantAccess() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
     IamGrantAccess.iamGrantAccess(name.getProject(), name.getSecret(), IAM_USER);
-
-    assertThat(stdOut.toString()).contains("Updated IAM policy");
-  }
-
-  @Test
-  public void testIamGrantAccessWithRegionalSecret() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
-    IamGrantAccessWithRegionalSecret.iamGrantAccessWithRegionalSecret(
-        name.getProject(), name.getLocation(), name.getSecret(), IAM_USER);
 
     assertThat(stdOut.toString()).contains("Updated IAM policy");
   }
@@ -608,29 +341,11 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testIamRevokeAccessWithRegionalSecret() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
-    IamRevokeAccessWithRegionalSecret.iamRevokeAccessWithRegionalSecret(
-        name.getProject(), name.getLocation(), name.getSecret(), IAM_USER);
-
-    assertThat(stdOut.toString()).contains("Updated IAM policy");
-  }
-
-  @Test
   public void testListSecretVersions() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET_WITH_VERSIONS.getName());
     ListSecretVersions.listSecretVersions(name.getProject(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("Secret version");
-  }
-
-  @Test
-  public void testListRegionalSecretVersions() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_WITH_VERSIONS.getName());
-    ListRegionalSecretVersions.listRegionalSecretVersions(
-        name.getProject(), name.getLocation(), name.getSecret());
-
-    assertThat(stdOut.toString()).contains("Regional secret version");
   }
 
   @Test
@@ -641,15 +356,6 @@ public class SnippetsIT {
 
     assertThat(stdOut.toString()).contains("Secret version");
   }
-
-  @Test
-  public void testListRegionalSecretVersionsWithFilter() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_WITH_VERSIONS.getName());
-    ListRegionalSecretVersionsWithFilter.listRegionalSecretVersions(
-        name.getProject(), name.getLocation(), name.getSecret(), "name:1");
-
-    assertThat(stdOut.toString()).contains("Regional secret version");
-  }  
  
   @Test
   public void testListSecrets() throws IOException {
@@ -657,15 +363,6 @@ public class SnippetsIT {
     ListSecrets.listSecrets(name.getProject());
 
     assertThat(stdOut.toString()).contains("Secret projects/");
-    assertThat(stdOut.toString()).contains(name.getSecret());
-  }
-
-  @Test
-  public void testListRegionalSecrets() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
-    ListRegionalSecrets.listRegionalSecrets(name.getProject(), name.getLocation());
-
-    assertThat(stdOut.toString()).contains("Regional secret projects/");
     assertThat(stdOut.toString()).contains(name.getSecret());
   }
 
@@ -680,16 +377,6 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testListRegionalSecretsWithFilter() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
-    ListRegionalSecretsWithFilter.listRegionalSecrets(
-        name.getProject(), name.getLocation(), String.format("name:%s", name.getSecret()));
-
-    assertThat(stdOut.toString()).contains("Regioanl secret projects/");
-    assertThat(stdOut.toString()).contains(name.getSecret());
-  }
-
-  @Test
   public void testUpdateSecret() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
     UpdateSecret.updateSecret(name.getProject(), name.getSecret());
@@ -698,27 +385,9 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testUpdateRegionalSecret() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
-    UpdateRegionalSecret.updateRegionalSecret(
-        name.getProject(), name.getLocation(), name.getSecret());
-
-    assertThat(stdOut.toString()).contains("Updated regional secret");
-  }
-
-  @Test
   public void testUpdateSecretWithAlias() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET_WITH_VERSIONS.getName());
     UpdateSecretWithAlias.updateSecret(name.getProject(), name.getSecret());
-
-    assertThat(stdOut.toString()).contains("test");
-  }
-
-  @Test
-  public void testUpdateRegionalSecretWithAlias() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_WITH_VERSIONS.getName());
-    UpdateRegionalSecretWithAlias.updateRegionalSecret(
-        name.getProject(), name.getLocation(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("test");
   }

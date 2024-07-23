@@ -29,34 +29,37 @@ import java.util.zip.Checksum;
 
 public class AddRegionalSecretVersion {
 
-  public static void addSecretVersion() throws IOException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+    
+    // id of the GCP project
     String projectId = "your-project-id";
+    // id of location where secret is located
     String locationId = "your-location-id";
+    // id of the secret
     String secretId = "your-secret-id";
     addRegionalSecretVersion(projectId, locationId, secretId);
   }
 
   // Add a new version to the existing regional secret.
-  public static void addRegionalSecretVersion(
+  public static SecretVersion addRegionalSecretVersion(
       String projectId, String locationId, String secretId) 
       throws IOException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
     
     // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       SecretName secretName = 
           SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
       byte[] data = "my super secret data".getBytes();
       // Calculate data checksum. The library is available in Java 9+.
-      // If using Java 8, the following library may be used:
+      // For Java 8, use:
       // https://cloud.google.com/appengine/docs/standard/java/javadoc/com/google/appengine/api/files/Crc32c
       Checksum checksum = new CRC32C();
       checksum.update(data, 0, data.length);
@@ -72,6 +75,8 @@ public class AddRegionalSecretVersion {
       // Add the secret version.
       SecretVersion version = client.addSecretVersion(secretName, payload);
       System.out.printf("Added regional secret version %s\n", version.getName());
+
+      return version;
     }
   }
 }

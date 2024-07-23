@@ -25,27 +25,32 @@ import java.io.IOException;
 
 public class DestroyRegionalSecretVersion {
 
-  public static void destroySecretVersion() throws IOException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+    
+    // id of the GCP project
     String projectId = "your-project-id";
+    // id of location where secret is located
     String locationId = "your-location-id";
+    // id of the secret
     String secretId = "your-secret-id";
+    // id of the secret version
     String versionId = "your-version-id";
     destroyRegionalSecretVersion(projectId, locationId, secretId, versionId);
   }
 
   // Destroy an existing secret version.
-  public static void destroyRegionalSecretVersion(
+  public static SecretVersion destroyRegionalSecretVersion(
       String projectId, String locationId, String secretId, String versionId)
       throws IOException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
     
     // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    // Initialize the client that will be used to send requests. This client only needs to be
+    // created once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       // Build the name from the version.
@@ -56,6 +61,8 @@ public class DestroyRegionalSecretVersion {
       // Destroy the secret version.
       SecretVersion version = client.destroySecretVersion(secretVersionName);
       System.out.printf("Destroyed regional secret version %s\n", version.getName());
+
+      return version;
     }
   }
 }

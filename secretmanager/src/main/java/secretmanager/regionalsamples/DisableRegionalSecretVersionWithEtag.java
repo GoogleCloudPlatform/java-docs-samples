@@ -26,29 +26,34 @@ import java.io.IOException;
 
 public class DisableRegionalSecretVersionWithEtag {
 
-  public static void disableRegionalSecretVersion() throws IOException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+   
+    // id of the GCP project
     String projectId = "your-project-id";
+    // id of location where secret is located
     String locationId = "your-location-id";
+    // id of the secret
     String secretId = "your-secret-id";
+    // id of the secret version
     String versionId = "your-version-id";
     // Including the quotes is important.
     String etag = "\"1234\"";
-    disableRegionalSecretVersion(projectId, locationId, secretId, versionId, etag);
+    disableRegionalSecretVersionWithEtag(projectId, locationId, secretId, versionId, etag);
   }
 
   // Disable an existing secret version.
-  public static void disableRegionalSecretVersion(
+  public static SecretVersion disableRegionalSecretVersionWithEtag(
       String projectId, String locationId, String secretId, String versionId, String etag)
       throws IOException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
     
     // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    // Initialize the client that will be used to send requests. This client only needs to be
+    // created once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       // Build the name from the version.
@@ -66,6 +71,8 @@ public class DisableRegionalSecretVersionWithEtag {
       // Disable the secret version.
       SecretVersion version = client.disableSecretVersion(request);
       System.out.printf("Disabled regional secret version %s\n", version.getName());
+
+      return version;
     }
   }
 }

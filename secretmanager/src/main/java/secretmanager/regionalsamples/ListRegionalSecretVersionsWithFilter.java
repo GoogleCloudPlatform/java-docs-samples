@@ -19,6 +19,7 @@ package secretmanager.regionalsamples;
 // [START secretmanager_list_regional_secret_versions_with_filter]
 import com.google.cloud.secretmanager.v1.ListSecretVersionsRequest;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretVersionsPage;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretVersionsPagedResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.secretmanager.v1.SecretName;
@@ -26,29 +27,33 @@ import java.io.IOException;
 
 public class ListRegionalSecretVersionsWithFilter {
 
-  public static void listRegionalSecretVersions() throws IOException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+    
+    // id of the GCP project
     String projectId = "your-project-id";
+    // id of location where secret is located
     String locationId = "your-location-id";
+    // id of the secret
     String secretId = "your-secret-id";
     // Follow https://cloud.google.com/secret-manager/docs/filtering
     // for filter syntax and examples.
     String filter = "create_time>2021-01-01T00:00:00Z";
-    listRegionalSecretVersions(projectId, locationId, secretId, filter);
+    listRegionalSecretVersionsWithFilter(projectId, locationId, secretId, filter);
   }
 
   // List all secret versions for a secret.
-  public static void listRegionalSecretVersions(
+  public static ListSecretVersionsPage listRegionalSecretVersionsWithFilter(
       String projectId, String locationId, String secretId, String filter)
       throws IOException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
     
     // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    // Initialize the client that will be used to send requests. This client only needs to be
+    // created once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       // Build the parent name.
@@ -72,6 +77,8 @@ public class ListRegionalSecretVersionsWithFilter {
                 System.out.printf("Regional secret version %s, %s\n", 
                     version.getName(), version.getState());
               });
+
+      return pagedResponse.getPage();
     }
   }
 }

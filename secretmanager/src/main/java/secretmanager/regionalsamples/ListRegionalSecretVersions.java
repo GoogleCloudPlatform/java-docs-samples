@@ -25,26 +25,30 @@ import java.io.IOException;
 
 public class ListRegionalSecretVersions {
 
-  public static void listRegionalSecretVersions() throws IOException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+   
+    // id of the GCP project
     String projectId = "your-project-id";
+    // id of location where secret is located
     String locationId = "your-location-id";
+    // id of the secret
     String secretId = "your-secret-id";
     listRegionalSecretVersions(projectId, locationId, secretId);
   }
 
   // List all secret versions for a secret.
-  public static void listRegionalSecretVersions(
+  public static ListSecretVersionsPagedResponse listRegionalSecretVersions(
       String projectId, String locationId, String secretId)
       throws IOException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    
+
     // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    // Initialize the client that will be used to send requests. This client only needs to be
+    // created once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       // Build the parent name.
@@ -62,6 +66,8 @@ public class ListRegionalSecretVersions {
                 System.out.printf("Regional secret version %s, %s\n", 
                     version.getName(), version.getState());
               });
+
+      return pagedResponse;
     }
   }
 }
