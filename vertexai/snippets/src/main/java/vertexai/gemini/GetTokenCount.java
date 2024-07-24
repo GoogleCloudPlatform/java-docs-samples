@@ -16,7 +16,6 @@
 
 package vertexai.gemini;
 
-// [START generativeaionvertexai_gemini_token_count]
 // [START aiplatform_gemini_token_count]
 // [START generativeaionvertexai_gemini_token_count]
 import com.google.cloud.vertexai.VertexAI;
@@ -67,5 +66,4 @@ public class GetTokenCount {
   }
 }
 // [END aiplatform_gemini_token_count]
-// [END generativeaionvertexai_gemini_token_count]
 // [END generativeaionvertexai_gemini_token_count]
