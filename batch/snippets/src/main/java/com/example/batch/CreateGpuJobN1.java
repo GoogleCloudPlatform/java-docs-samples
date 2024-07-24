@@ -14,7 +14,7 @@
 
 package com.example.batch;
 
-// [START batch_create_gpu_job]
+// [START batch_create_gpu_job_n1]
 
 import com.google.cloud.batch.v1.AllocationPolicy;
 import com.google.cloud.batch.v1.AllocationPolicy.Accelerator;
@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateGpuJob {
+public class CreateGpuJobN1 {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -52,16 +52,18 @@ public class CreateGpuJob {
     // and Batch installs them on your behalf. If you set this field to false (default),
     // you need to install GPU drivers manually to use any GPUs for this job.
     boolean installGpuDrivers = false;
-    // Accelerator-optimized machine types are available to Batch jobs. See the list
-    // of available types on: https://cloud.google.com/compute/docs/accelerator-optimized-machines
-    String machineType = "g2-standard-4";
+    // The GPU type. You can view a list of the available GPU types
+    // by using the `gcloud compute accelerator-types list` command.
+    String gpuType = "nvidia-tesla-t4";
+    // The number of GPUs of the specified type.
+    int gpuCount = 2;
 
-    createGpuJob(projectId, region, jobName, installGpuDrivers, machineType);
+    createGpuJob(projectId, region, jobName, installGpuDrivers, gpuType, gpuCount);
   }
 
   // Create a job that uses GPUs
   public static Job createGpuJob(String projectId, String region, String jobName,
-                                  boolean installGpuDrivers, String machineType)
+                                  boolean installGpuDrivers, String gpuType, int gpuCount)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -96,10 +98,11 @@ public class CreateGpuJob {
           .setTaskSpec(task)
           .build();
 
-      // Policies are used to define on what kind of virtual machines the tasks will run.
-      // Read more about machine types here: https://cloud.google.com/compute/docs/machine-types
-      InstancePolicy instancePolicy =
-          InstancePolicy.newBuilder().setMachineType(machineType).build();  
+      // Accelerator describes Compute Engine accelerators to be attached to the VM.
+      Accelerator accelerator = Accelerator.newBuilder()
+          .setType(gpuType)
+          .setCount(gpuCount)
+          .build();
 
       // Policies are used to define on what kind of virtual machines the tasks will run on.
       AllocationPolicy allocationPolicy =
@@ -107,7 +110,7 @@ public class CreateGpuJob {
               .addInstances(
                   InstancePolicyOrTemplate.newBuilder()
                       .setInstallGpuDrivers(installGpuDrivers)
-                      .setPolicy(instancePolicy)
+                      .setPolicy(InstancePolicy.newBuilder().addAccelerators(accelerator))
                       .build())
               .build();
 
@@ -142,4 +145,4 @@ public class CreateGpuJob {
     }
   }
 }
-// [END batch_create_gpu_job]
+// [END batch_create_gpu_job_n1]
