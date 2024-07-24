@@ -68,6 +68,8 @@ public class CreateResourcesIT {
       + UUID.randomUUID().toString().substring(0, 7);
   private static final String JOB_ALLOCATION_POLICY_LABEL = "test-job-allocation-label"
       + UUID.randomUUID().toString().substring(0, 7);
+  private static final String BATCH_RUNNABLE_LABEL = "test-runnable-label"
+      + UUID.randomUUID().toString().substring(0, 7);
   private static final String LOCAL_SSD_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String PERSISTENT_DISK_NAME = "test-disk"
@@ -122,6 +124,7 @@ public class CreateResourcesIT {
     safeDeleteJob(BATCH_LABEL_JOB);
     safeDeleteJob(CUSTOM_NETWORK_NAME);
     safeDeleteJob(JOB_ALLOCATION_POLICY_LABEL);
+    safeDeleteJob(BATCH_RUNNABLE_LABEL);
   }
 
   private static void safeDeleteJob(String jobName) {
@@ -201,7 +204,7 @@ public class CreateResourcesIT {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String type = "c3d-standard-8-lssd";
     Job job = CreateLocalSsdJob
-            .createLocalSsdJob(PROJECT_ID, REGION, LOCAL_SSD_JOB, LOCAL_SSD_NAME, 
+            .createLocalSsdJob(PROJECT_ID, REGION, LOCAL_SSD_JOB, LOCAL_SSD_NAME,
                 LOCAL_SSD_SIZE, type);
 
     Assert.assertNotNull(job);
@@ -363,6 +366,31 @@ public class CreateResourcesIT {
     Assert.assertTrue(job.getAllocationPolicy().containsLabels(labelName2));
     Assert.assertTrue(job.getAllocationPolicy().getLabelsMap().containsValue(labelValue1));
     Assert.assertTrue(job.getAllocationPolicy().getLabelsMap().containsValue(labelValue2));
+  }
+
+  @Test
+  public void createBatchRunnableLabelTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String labelName1 = "env";
+    String labelValue1 = "env_value";
+    String labelName2 = "test";
+    String labelValue2 = "test_value";
+
+    Job job = CreateBatchRunnableLabel.createBatchRunnableLabel(PROJECT_ID, REGION,
+        BATCH_RUNNABLE_LABEL, labelName1, labelValue1, labelName2, labelValue2);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(BATCH_RUNNABLE_LABEL));
+    Arrays.asList(labelName1, labelName2)
+        .forEach(labelName -> Assert.assertTrue(job.getTaskGroupsList().stream()
+            .flatMap(event -> event.getTaskSpec().getRunnablesList().stream())
+            .anyMatch(runnable -> runnable.containsLabels(labelName))));
+    Arrays.asList(labelValue1, labelValue2)
+        .forEach(labelValue -> Assert.assertTrue(job.getTaskGroupsList().stream()
+            .flatMap(event -> event.getTaskSpec().getRunnablesList().stream())
+            .anyMatch(runnable -> runnable.getLabelsMap().containsValue(labelValue))));
   }
 
   private void createEmptyDisk(String projectId, String zone, String diskName,
