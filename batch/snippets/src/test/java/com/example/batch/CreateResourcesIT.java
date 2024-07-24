@@ -66,6 +66,8 @@ public class CreateResourcesIT {
       + UUID.randomUUID().toString().substring(0, 7);
   private static final String CUSTOM_NETWORK_NAME = "test-job-network"
       + UUID.randomUUID().toString().substring(0, 7);
+  private static final String JOB_ALLOCATION_POLICY_LABEL = "test-job-allocation-label"
+      + UUID.randomUUID().toString().substring(0, 7);
   private static final String LOCAL_SSD_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String PERSISTENT_DISK_NAME = "test-disk"
@@ -119,6 +121,7 @@ public class CreateResourcesIT {
     safeDeleteJob(NFS_JOB_NAME);
     safeDeleteJob(BATCH_LABEL_JOB);
     safeDeleteJob(CUSTOM_NETWORK_NAME);
+    safeDeleteJob(JOB_ALLOCATION_POLICY_LABEL);
   }
 
   private static void safeDeleteJob(String jobName) {
@@ -338,6 +341,28 @@ public class CreateResourcesIT {
         .anyMatch(subnetName -> subnetName.getSubnetwork().equals(subnet)));
     Assert.assertTrue(job.getAllocationPolicy().getNetwork().getNetworkInterfacesList().stream()
         .anyMatch(AllocationPolicy.NetworkInterface::getNoExternalIpAddress));
+  }
+
+  @Test
+  public void createJobWithAllocationPolicyLabelTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String labelName1 = "env";
+    String labelValue1 = "env_value";
+    String labelName2 = "test";
+    String labelValue2 = "test_value";
+
+    Job job = CreateBatchAllocationPolicyLabel
+        .createBatchAllocationPolicyLabel(PROJECT_ID, REGION,
+        JOB_ALLOCATION_POLICY_LABEL, labelName1, labelValue1, labelName2, labelValue2);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(JOB_ALLOCATION_POLICY_LABEL));
+    Assert.assertTrue(job.getAllocationPolicy().containsLabels(labelName1));
+    Assert.assertTrue(job.getAllocationPolicy().containsLabels(labelName2));
+    Assert.assertTrue(job.getAllocationPolicy().getLabelsMap().containsValue(labelValue1));
+    Assert.assertTrue(job.getAllocationPolicy().getLabelsMap().containsValue(labelValue2));
   }
 
   private void createEmptyDisk(String projectId, String zone, String diskName,
