@@ -17,6 +17,7 @@
 package aiplatform;
 
 // [START aiplatform_sdk_embedding_model_tuning]
+// [START generativeaionvertexai_sdk_embedding_model_tuning]
 import com.google.cloud.aiplatform.v1.CreatePipelineJobRequest;
 import com.google.cloud.aiplatform.v1.LocationName;
 import com.google.cloud.aiplatform.v1.PipelineJob;
@@ -131,3 +132,4 @@ public class EmbeddingModelTuningSample {
   }
 }
 // [END aiplatform_sdk_embedding_model_tuning]
+// [END generativeaionvertexai_sdk_embedding_model_tuning]

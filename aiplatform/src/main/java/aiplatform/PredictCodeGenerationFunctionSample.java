@@ -17,6 +17,7 @@
 package aiplatform;
 
 // [START aiplatform_sdk_code_generation_function]
+// [START generativeaionvertexai_sdk_code_generation_function]
 
 import com.google.cloud.aiplatform.v1.EndpointName;
 import com.google.cloud.aiplatform.v1.PredictResponse;
@@ -87,3 +88,4 @@ public class PredictCodeGenerationFunctionSample {
   }
 }
 // [END aiplatform_sdk_code_generation_function]
+// [END generativeaionvertexai_sdk_code_generation_function]
