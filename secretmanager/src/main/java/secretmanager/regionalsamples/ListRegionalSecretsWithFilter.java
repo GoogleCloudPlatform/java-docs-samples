@@ -30,12 +30,12 @@ public class ListRegionalSecretsWithFilter {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     
-    // This is the id of the GCP project
+    // Your GCP project ID.
     String projectId = "your-project-id";
-    // This is the id of location where secret is located
+    // Location of the secret.
     String locationId = "your-location-id";
-    // This is the filter to be applied. 
-    // Follow https://cloud.google.com/secret-manager/docs/filtering
+    // Filter to be applied. 
+    // See https://cloud.google.com/secret-manager/docs/filtering
     // for filter syntax and examples.
     String filter = "name:your-secret-substring AND expire_time<2022-01-01T00:00:00Z";
     listRegionalSecretsWithFilter(projectId, locationId, filter);

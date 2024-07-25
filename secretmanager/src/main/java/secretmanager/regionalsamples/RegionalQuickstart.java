@@ -31,11 +31,11 @@ public class RegionalQuickstart {
   public void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     
-    // This is the id of the GCP project
+    // Your GCP project ID.
     String projectId = "your-project-id";
-    // This is the id of location where secret is located
+    // Location of the secret.
     String locationId = "your-location-id";
-    // This is the id of the secret
+    // Resource ID of the secret.
     String secretId = "your-secret-id";
     regionalQuickstart(projectId, locationId, secretId);
   }

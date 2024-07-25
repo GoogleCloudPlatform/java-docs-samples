@@ -29,15 +29,15 @@ public class DestroyRegionalSecretVersionWithEtag {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     
-    // This is the id of the GCP project
+    // Your GCP project ID.
     String projectId = "your-project-id";
-    // This is the id of location where secret is located
+    // Location of the secret.
     String locationId = "your-location-id";
-    // This is the id of the secret
+    // Resource ID of the secret.
     String secretId = "your-secret-id";
-    // This is the id of the secret version
+    // Version of the Secret ID you want to destroy.
     String versionId = "your-version-id";
-    // This is the etag associated with the secret. Including the quotes is important.
+    // Etag associated with the secret. Quotes should be included as part of the string.
     String etag = "\"1234\"";
     destroyRegionalSecretVersionWithEtag(projectId, locationId, secretId, versionId, etag);
   }

@@ -31,13 +31,13 @@ public class IamGrantAccessWithRegionalSecret {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     
-    // This is the id of the GCP project
+    // Your GCP project ID.
     String projectId = "your-project-id";
-    // This is the id of location where secret is located
+    // Location of the secret.
     String locationId = "your-location-id";
-    // This is the id of the secret
+    // Resource ID of the secret to grant access to.
     String secretId = "your-secret-id";
-    // This is the iam member, such as user group or service account you want to grant access
+    // IAM member, such as a user group or service account you want to grant access.
     String member = "user:foo@example.com";
     iamGrantAccessWithRegionalSecret(projectId, locationId, secretId, member);
   }

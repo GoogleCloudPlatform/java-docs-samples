@@ -28,13 +28,13 @@ public class DestroyRegionalSecretVersion {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     
-    // This is the id of the GCP project
+    // Your GCP project ID.
     String projectId = "your-project-id";
-    // This is the id of location where secret is located
+    // Location of the secret.
     String locationId = "your-location-id";
-    // This is the id of the secret
+    // Resource ID of the secret.
     String secretId = "your-secret-id";
-    // This is the id of the secret version
+    // Version of the Secret ID you want to destroy.
     String versionId = "your-version-id";
     destroyRegionalSecretVersion(projectId, locationId, secretId, versionId);
   }
