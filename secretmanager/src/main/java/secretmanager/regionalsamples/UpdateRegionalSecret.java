@@ -30,11 +30,11 @@ public class UpdateRegionalSecret {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     
-    // id of the GCP project
+    // This is the id of the GCP project
     String projectId = "your-project-id";
-    // id of location where secret is located
+    // This is the id of location where secret is located
     String locationId = "your-location-id";
-    // id of the secret
+    // This is the id of the secret
     String secretId = "your-secret-id";
     updateRegionalSecret(projectId, locationId, secretId);
   }

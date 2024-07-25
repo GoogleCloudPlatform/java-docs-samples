@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.secretmanager.v1.AddSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.CreateSecretRequest;
 import com.google.cloud.secretmanager.v1.DeleteSecretRequest;
@@ -140,7 +141,7 @@ public class SnippetsIT {
 
   private static String randomSecretId() {
     Random random = new Random();
-    return "java-" + random.nextLong();
+    return "test-drz-" + random.nextLong();
   }
 
   private static Secret createRegionalSecret() throws IOException {
@@ -188,7 +189,7 @@ public class SnippetsIT {
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       try {
         client.deleteSecret(request);
-      } catch (com.google.api.gax.rpc.NotFoundException e) {
+      } catch (NotFoundException e) {
         // Ignore not found error - secret was already deleted
       } catch (io.grpc.StatusRuntimeException e) {
         if (e.getStatus().getCode() != io.grpc.Status.Code.NOT_FOUND) {
@@ -211,7 +212,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testAccessRegionalSecretVersion() throws IOException {
+  public void testAccessRegionalSecretVersion() throws Exception {
     SecretVersionName name = SecretVersionName.parse(TEST_REGIONAL_SECRET_VERSION.getName());
     SecretPayload secretPayload = AccessRegionalSecretVersion.accessRegionalSecretVersion(
         name.getProject(), name.getLocation(), name.getSecret(), name.getSecretVersion());
@@ -257,7 +258,7 @@ public class SnippetsIT {
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       assertThrows(
-          com.google.api.gax.rpc.NotFoundException.class,
+          NotFoundException.class,
           () -> client.deleteSecret(request));
     }
   }
@@ -278,7 +279,7 @@ public class SnippetsIT {
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       assertThrows(
-          com.google.api.gax.rpc.NotFoundException.class,
+          NotFoundException.class,
           () -> client.deleteSecret(request));
     }
   }

@@ -31,16 +31,16 @@ public class RegionalQuickstart {
   public void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     
-    // id of the GCP project
+    // This is the id of the GCP project
     String projectId = "your-project-id";
-    // id of location where secret is located
+    // This is the id of location where secret is located
     String locationId = "your-location-id";
-    // id of the secret
+    // This is the id of the secret
     String secretId = "your-secret-id";
     regionalQuickstart(projectId, locationId, secretId);
   }
 
-  // Sample quickstart is a basic program that uses Secret Manager.
+  // Demonstrates basic capabilities in the regional Secret Manager API.
   public SecretPayload regionalQuickstart(
       String projectId, String locationId, String secretId) 
       throws Exception {

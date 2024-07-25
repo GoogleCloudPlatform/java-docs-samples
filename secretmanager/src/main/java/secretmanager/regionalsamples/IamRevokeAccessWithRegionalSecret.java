@@ -31,13 +31,13 @@ public class IamRevokeAccessWithRegionalSecret {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     
-    // id of the GCP project
+    // This is the id of the GCP project
     String projectId = "your-project-id";
-    // id of location where secret is located
+    // This is the id of location where secret is located
     String locationId = "your-location-id";
-    // id of the secret
+    // This is the id of the secret
     String secretId = "your-secret-id";
-    // iam member, such as user group or service account you want to grant access
+    // This is the iam member, such as user group or service account you want to grant access
     String member = "user:foo@example.com";
     iamRevokeAccessWithRegionalSecret(projectId, locationId, secretId, member);
   }

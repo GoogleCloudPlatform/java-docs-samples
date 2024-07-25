@@ -22,22 +22,21 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
-import java.io.IOException;
 import java.util.zip.CRC32C;
 import java.util.zip.Checksum;
 
 public class AccessRegionalSecretVersion {
 
-  public static void main(String[] args)throws IOException {
+  public static void main(String[] args)throws Exception {
     // TODO(developer): Replace these variables before running the sample.
 
-    // id of the GCP project
+    // This is the id of the GCP project
     String projectId = "your-project-id";
-    // id of location where secret is located
+    // This is the id of location where secret is located
     String locationId = "your-location-id";
-    // id of the secret
+    // This is the id of the secret
     String secretId = "your-secret-id";
-    // id of the secret version
+    // This is the id of the secret version
     String versionId = "your-version-id";
     accessRegionalSecretVersion(projectId, locationId, secretId, versionId);
   }
@@ -46,7 +45,7 @@ public class AccessRegionalSecretVersion {
   // can be a version number as a string (e.g. "5") or an alias (e.g. "latest").
   public static SecretPayload accessRegionalSecretVersion(
       String projectId, String locationId, String secretId, String versionId)
-      throws IOException {
+      throws Exception {
     
     // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
@@ -71,15 +70,15 @@ public class AccessRegionalSecretVersion {
       checksum.update(data, 0, data.length);
       if (response.getPayload().getDataCrc32C() != checksum.getValue()) {
         System.out.printf("Data corruption detected.");
-        return null;
+        throw new Exception("Data corruption detected.");
       }
 
       // Print the secret payload.
       //
       // WARNING: Do not print the secret in a production environment - this
       // snippet is showing how to access the secret material.
-      //String payload = response.getPayload().getData().toStringUtf8();
-      //System.out.printf("Plaintext: %s\n", payload);
+      // String payload = response.getPayload().getData().toStringUtf8();
+      // System.out.printf("Plaintext: %s\n", payload);
       
       return response.getPayload();
     }
