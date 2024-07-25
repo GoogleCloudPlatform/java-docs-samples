@@ -32,11 +32,11 @@ public class DeleteSecretLabel {
   public static void deleteSecretLabel() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     
-    // id of the GCP project
+    // This is the id of the GCP project
     String projectId = "your-project-id";
-    // id of the secret to act on
+    // This is the id of the secret to act on
     String secretId = "your-secret-id";
-    // key of the label to be deleted
+    // This is the key of the label to be deleted
     String labelKey = "your-label-key";
     deleteSecretLabel(projectId, secretId, labelKey);
   }

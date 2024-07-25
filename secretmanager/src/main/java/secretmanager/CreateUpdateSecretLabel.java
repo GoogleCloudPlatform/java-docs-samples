@@ -31,13 +31,13 @@ public class CreateUpdateSecretLabel {
   public static void createUpdateSecretLabel() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     
-    // id of the GCP project
+    // This is the id of the GCP project
     String projectId = "your-project-id";
-    // id of the secret to act on
+    // This is the id of the secret to act on
     String secretId = "your-secret-id";
-    // key of the label to be added/updated
+    // This is the key of the label to be added/updated
     String labelKey = "your-label-key";
-    // value of the label to be added/updated
+    // This is the value of the label to be added/updated
     String labelValue = "your-label-value";
     createUpdateSecretLabel(projectId, secretId, labelKey, labelValue);
   }

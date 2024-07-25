@@ -28,9 +28,9 @@ public class ViewSecretLabels {
   public static void viewSecretLabels() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     
-    // id of the GCP project
+    // This is the id of the GCP project
     String projectId = "your-project-id";
-    // id of the secret whose labels to view
+    // This is the id of the secret whose labels to view
     String secretId = "your-secret-id";
     viewSecretLabels(projectId, secretId);
   }

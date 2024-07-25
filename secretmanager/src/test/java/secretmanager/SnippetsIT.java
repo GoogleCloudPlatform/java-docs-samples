@@ -64,10 +64,10 @@ public class SnippetsIT {
   private static final String IAM_USER =
       "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LABEL_KEY = "secretmanager";
-  private static final String LABEL_VALUE = "rocks";
-  private static final String UPDATED_LABEL_KEY = "gcp";
-  private static final String UPDATED_LABEL_VALUE = "rock";
+  private static final String LABEL_KEY = "examplelabelkey";
+  private static final String LABEL_VALUE = "examplelabelvalue";
+  private static final String UPDATED_LABEL_KEY = "updatedlabelkey";
+  private static final String UPDATED_LABEL_VALUE = "updatedlabelvalue";
 
   private static Secret TEST_SECRET;
   private static Secret TEST_SECRET_TO_DELETE;
