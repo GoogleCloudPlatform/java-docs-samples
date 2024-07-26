@@ -17,6 +17,7 @@
 package aiplatform;
 
 // [START aiplatform_sdk_embedding]
+// [START generativeaionvertexai_sdk_embedding]
 import static java.util.stream.Collectors.toList;
 
 import com.google.cloud.aiplatform.v1.EndpointName;
@@ -111,3 +112,4 @@ public class PredictTextEmbeddingsSample {
   }
 }
 // [END aiplatform_sdk_embedding]
+// [END generativeaionvertexai_sdk_embedding]
