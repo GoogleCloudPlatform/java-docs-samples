@@ -33,7 +33,7 @@ import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class VodSessionTest {
   private static String STITCH_DETAIL_ID;
   private static String PROJECT_ID;
   private static PrintStream originalOut;
-  private ByteArrayOutputStream bout;
+  private static ByteArrayOutputStream bout;
 
   private static String requireEnvVar(String varName) {
     String varValue = System.getenv(varName);
@@ -65,18 +65,16 @@ public class VodSessionTest {
   }
 
   @BeforeClass
-  public static void checkRequirements() {
+  public static void beforeTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     PROJECT_ID = requireEnvVar("GOOGLE_CLOUD_PROJECT");
-  }
 
-  @Before
-  public void beforeTest()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    TestUtils.cleanStaleVodConfigs(PROJECT_ID, TestUtils.LOCATION);
     originalOut = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
+
+    TestUtils.cleanStaleVodConfigs(PROJECT_ID, TestUtils.LOCATION);
 
     VOD_CONFIG_NAME =
         String.format("locations/%s/vodConfigs/%s", TestUtils.LOCATION, VOD_CONFIG_ID);
@@ -114,29 +112,27 @@ public class VodSessionTest {
     }
     id = STITCH_DETAIL_NAME.split("/");
     STITCH_DETAIL_ID = id[id.length - 1];
-
-    bout.reset();
   }
 
   @Test
   public void testGetVodSession() throws IOException {
     VodSession response = GetVodSession.getVodSession(PROJECT_ID, TestUtils.LOCATION, SESSION_ID);
     assertThat(response.getName(), containsString(VOD_SESSION_NAME));
-    bout.reset();
   }
 
   @Test
   public void testListVodAdTagDetailsTest() throws IOException {
     ListVodAdTagDetailsPagedResponse response =
         ListVodAdTagDetails.listVodAdTagDetails(PROJECT_ID, TestUtils.LOCATION, SESSION_ID);
+
     Boolean pass = false;
     for (VodAdTagDetail vodAdTagDetail : response.iterateAll()) {
       if (vodAdTagDetail.getName().contains(VOD_SESSION_NAME.concat("/vodAdTagDetails/"))) {
         pass = true;
+        break;
       }
     }
     assert (pass);
-    bout.reset();
   }
 
   @Test
@@ -145,7 +141,6 @@ public class VodSessionTest {
         GetVodAdTagDetail.getVodAdTagDetail(
             PROJECT_ID, TestUtils.LOCATION, SESSION_ID, AD_TAG_DETAIL_ID);
     assertThat(response.getName(), containsString(AD_TAG_DETAIL_NAME));
-    bout.reset();
   }
 
   @Test
@@ -156,10 +151,10 @@ public class VodSessionTest {
     for (VodStitchDetail vodStitchDetail : response.iterateAll()) {
       if (vodStitchDetail.getName().contains(VOD_SESSION_NAME.concat("/vodStitchDetails/"))) {
         pass = true;
+        break;
       }
     }
     assert (pass);
-    bout.reset();
   }
 
   @Test
@@ -168,17 +163,21 @@ public class VodSessionTest {
         GetVodStitchDetail.getVodStitchDetail(
             PROJECT_ID, TestUtils.LOCATION, SESSION_ID, STITCH_DETAIL_ID);
     assertThat(response.getName(), containsString(STITCH_DETAIL_NAME));
-    bout.reset();
   }
 
   @After
-  public void tearDown()
+  public void tearDown() {
+    bout.reset();
+  }
+
+  @AfterClass
+  public static void afterTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // No delete method for VOD sessions
     DeleteVodConfig.deleteVodConfig(PROJECT_ID, TestUtils.LOCATION, VOD_CONFIG_ID);
-    String output = bout.toString();
-    assertThat(output, containsString("Deleted VOD config"));
-    bout.reset();
+    String deleteResponse = bout.toString();
+    assertThat(deleteResponse, containsString("Deleted VOD config"));
+    System.out.flush();
     System.setOut(originalOut);
   }
 }
