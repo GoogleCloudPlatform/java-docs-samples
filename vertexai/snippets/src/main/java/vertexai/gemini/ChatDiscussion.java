@@ -17,7 +17,6 @@
 package vertexai.gemini;
 
 // [START generativeaionvertexai_gemini_multiturn_chat]
-// [START aiplatform_gemini_multiturn_chat]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ChatSession;
@@ -60,5 +59,4 @@ public class ChatDiscussion {
     }
   }
 }
-// [END aiplatform_gemini_multiturn_chat]
 // [END generativeaionvertexai_gemini_multiturn_chat]
