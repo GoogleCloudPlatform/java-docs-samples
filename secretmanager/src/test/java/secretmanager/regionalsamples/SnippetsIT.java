@@ -66,7 +66,7 @@ public class SnippetsIT {
   private static final String IAM_USER =
       "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION_ID = System.getenv("GOOGLE_CLOUD_PROJECT_LOCATION");
+  private static final String LOCATION_ID = "us-central1";
   private static final String REGIONAL_ENDPOINT = 
       String.format("secretmanager.%s.rep.googleapis.com:443", LOCATION_ID);
 

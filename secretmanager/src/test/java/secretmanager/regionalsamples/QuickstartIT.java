@@ -24,6 +24,9 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.common.base.Strings;
+
+import secretmanager.Quickstart;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
@@ -40,7 +43,7 @@ import org.junit.runners.JUnit4;
 public class QuickstartIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION_ID = System.getenv("GOOGLE_CLOUD_PROJECT_LOCATION");
+  private static final String LOCATION_ID = "us-central1";
   private static final String SECRET_ID = "java-quickstart-" + UUID.randomUUID().toString();
 
   @BeforeClass
