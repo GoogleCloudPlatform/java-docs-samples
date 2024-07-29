@@ -74,8 +74,7 @@ public class QuickstartIT {
 
     System.setOut(new PrintStream(redirected));
 
-    SecretName secretName = 
-          SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, SECRET_ID);
+    SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, SECRET_ID);
     
     try {
       SecretPayload payload = 
