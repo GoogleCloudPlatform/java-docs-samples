@@ -17,6 +17,7 @@
 package aiplatform;
 
 // [START aiplatform_sdk_chat]
+// [START generativeaionvertexai_sdk_chat]
 
 import com.google.cloud.aiplatform.v1beta1.EndpointName;
 import com.google.cloud.aiplatform.v1beta1.PredictResponse;
@@ -97,3 +98,4 @@ public class PredictChatPromptSample {
   }
 }
 // [END aiplatform_sdk_chat]
+// [END generativeaionvertexai_sdk_chat]
