@@ -201,7 +201,7 @@ public class SnippetsIT {
       return client.disableSecretVersion(request);
     }
   }
-
+ 
   @Test
   public void testAccessSecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_SECRET_VERSION.getName());
@@ -210,6 +210,7 @@ public class SnippetsIT {
 
     assertThat(stdOut.toString()).contains("my super secret data");
   }
+  
 
   @Test
   public void testAddSecretVersion() throws IOException {
@@ -393,7 +394,7 @@ public class SnippetsIT {
 
     assertThat(stdOut.toString()).contains("Secret version");
   }
-
+ 
   @Test
   public void testListSecrets() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
@@ -455,4 +456,5 @@ public class SnippetsIT {
     assertThat(log).isEqualTo(
         "Received SECRET_UPDATE for projects/p/secrets/s. New metadata: hello!");
   }
+        
 }
