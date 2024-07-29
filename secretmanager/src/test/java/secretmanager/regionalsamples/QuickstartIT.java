@@ -24,9 +24,6 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.common.base.Strings;
-
-import secretmanager.Quickstart;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
