@@ -46,8 +46,9 @@ public class GenerateImageSample {
     generateImage(projectId, location, prompt);
   }
 
+  // Generate an image using a text prompt using an Imagen model
   public static PredictResponse generateImage(String projectId, String location, String prompt)
-      throws IOException {
+      throws ApiException, IOException {
     final String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     PredictionServiceSettings predictionServiceSettings =
         PredictionServiceSettings.newBuilder().setEndpoint(endpoint).build();
@@ -89,11 +90,7 @@ public class GenerateImageSample {
         }
       }
       return predictResponse;
-
-    } catch (ApiException e) {
-      System.out.format("Exception: %s\n", e.getLocalizedMessage());
     }
-    return null;
   }
 
   private static Value mapToValue(Map<String, Object> map) throws InvalidProtocolBufferException {
