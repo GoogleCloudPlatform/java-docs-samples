@@ -48,7 +48,7 @@ public class CreateWithLocalSsd {
     createWithLocalSsd(projectId, zone, instanceName);
   }
 
-  // Create a new VM instance with Debian 10 operating system and SSD local disk.
+  // Create a new VM instance with Debian 11 operating system and SSD local disk.
   public static void createWithLocalSsd(String projectId, String zone, String instanceName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
@@ -57,7 +57,7 @@ public class CreateWithLocalSsd {
     boolean autoDelete = true;
     String diskType = String.format("zones/%s/diskTypes/pd-standard", zone);
     // Get the latest debian image.
-    Image newestDebian = getImageFromFamily("debian-cloud", "debian-10");
+    Image newestDebian = getImageFromFamily("debian-cloud", "debian-11");
     List<AttachedDisk> disks = new ArrayList<>();
 
     // Create the disks to be included in the instance.
