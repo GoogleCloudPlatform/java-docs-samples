@@ -46,7 +46,7 @@ public class GenerateImageSample {
     generateImage(projectId, location, prompt);
   }
 
-  static PredictResponse generateImage(String projectId, String location, String prompt)
+  public static PredictResponse generateImage(String projectId, String location, String prompt)
       throws IOException {
     final String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     PredictionServiceSettings predictionServiceSettings =
