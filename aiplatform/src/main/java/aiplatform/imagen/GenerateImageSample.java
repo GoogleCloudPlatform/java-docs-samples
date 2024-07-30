@@ -60,7 +60,7 @@ public class GenerateImageSample {
 
       final EndpointName endpointName =
           EndpointName.ofProjectLocationPublisherModelName(
-              projectId, location, "google", "imagegeneration@005");
+              projectId, location, "google", "imagen-3.0-generate-001");
 
       Map<String, Object> instancesMap = new HashMap<>();
       instancesMap.put("prompt", prompt);
