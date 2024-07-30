@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,19 @@
 
 package com.example.stitcher;
 
-// [START videostitcher_create_vod_session]
+// [START videostitcher_delete_vod_config]
 
-import com.google.cloud.video.stitcher.v1.AdTracking;
-import com.google.cloud.video.stitcher.v1.CreateVodSessionRequest;
-import com.google.cloud.video.stitcher.v1.LocationName;
+import com.google.cloud.video.stitcher.v1.DeleteVodConfigRequest;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
 import com.google.cloud.video.stitcher.v1.VodConfigName;
-import com.google.cloud.video.stitcher.v1.VodSession;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class CreateVodSession {
+public class DeleteVodConfig {
+
+  private static final int TIMEOUT_IN_MINUTES = 2;
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
@@ -34,30 +36,26 @@ public class CreateVodSession {
     String location = "us-central1";
     String vodConfigId = "my-vod-config-id";
 
-    createVodSession(projectId, location, vodConfigId);
+    deleteVodConfig(projectId, location, vodConfigId);
   }
 
-  // Creates a video on demand (VOD) session using the parameters in the designated VOD config.
-  public static VodSession createVodSession(String projectId, String location, String vodConfigId)
-      throws IOException {
+  // Deletes a video on demand (VOD) config.
+  public static void deleteVodConfig(String projectId, String location, String vodConfigId)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
-      CreateVodSessionRequest createVodSessionRequest =
-          CreateVodSessionRequest.newBuilder()
-              .setParent(LocationName.of(projectId, location).toString())
-              .setVodSession(
-                  VodSession.newBuilder()
-                      .setVodConfig(VodConfigName.format(projectId, location, vodConfigId))
-                      .setAdTracking(AdTracking.SERVER)
-                      .build())
+      DeleteVodConfigRequest deleteVodConfigRequest =
+          DeleteVodConfigRequest.newBuilder()
+              .setName(VodConfigName.of(projectId, location, vodConfigId).toString())
               .build();
 
-      VodSession response = videoStitcherServiceClient.createVodSession(createVodSessionRequest);
-      System.out.println("Created VOD session: " + response.getName());
-      return response;
+      videoStitcherServiceClient
+          .deleteVodConfigAsync(deleteVodConfigRequest)
+          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+      System.out.println("Deleted VOD config");
     }
   }
 }
-// [END videostitcher_create_vod_session]
+// [END videostitcher_delete_vod_config]
