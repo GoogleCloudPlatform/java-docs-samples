@@ -43,7 +43,7 @@ public class Quickstart {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      String imageUri = "gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
+      String imageUri = "gs://generativeai-downloads/images/scones.jpg";
 
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
       GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
