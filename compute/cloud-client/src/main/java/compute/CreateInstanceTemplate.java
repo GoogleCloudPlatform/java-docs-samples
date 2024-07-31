@@ -110,7 +110,7 @@ public class CreateInstanceTemplate {
           .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
               .setDiskSizeGb(10)
               .setDiskType("pd-balanced")
-              .setSourceImage("projects/debian-cloud/global/images/family/debian-10").build())
+              .setSourceImage("projects/debian-cloud/global/images/family/debian-11").build())
           .setAutoDelete(true)
           .setBoot(true)
           .setType(AttachedDisk.Type.PERSISTENT.toString()).build();
