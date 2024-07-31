@@ -41,13 +41,13 @@ public class PredictTextEmbeddingsSamplePreview {
     // https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings
     String endpoint = "us-central1-aiplatform.googleapis.com";
     String project = "YOUR_PROJECT_ID";
-    String model = "text-embedding-preview-0409";
+    String model = "text-embedding-preview-0815";
     predictTextEmbeddings(
         endpoint,
         project,
         model,
         List.of("banana bread?", "banana muffins?"),
-        "QUESTION_ANSWERING",
+        "CODE_RETRIEVAL_QUERY",
         OptionalInt.of(256));
   }
 
