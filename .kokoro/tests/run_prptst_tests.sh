@@ -42,20 +42,36 @@ mvn -v
 echo "********** GRADLE INFO ***********"
 gradle -v
 
-# (need review) load secrets from GDU project 'java-docs-samples-testing'
+# Setup required env variables
+export GOOGLE_CLOUD_PROJECT=java-docs-samples-testing
+export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets/prptst-java-docs-samples-service-account.json
+
+## Download secrets
+SECRET_FILES=("prptst-java-docs-samples-service-account.json" \
+"prptst-gcloud-cli-configuration")
+
+# Create secrets dir
 mkdir -p "${KOKORO_GFILE_DIR}/secrets"
+for SECRET in "${SECRET_FILES[@]}"; do
+    # grab latest version of secret
+    gcloud secrets versions access latest --secret="${SECRET%.*}" > "${KOKORO_GFILE_DIR}/secrets/$SECRET"
+done
+
+# Copy gcloud CLI configuration to configured location
 CONFIG_PATH=$(gcloud info --format='value(config.paths.global_config_dir)')
 mkdir -p "${CONFIG_PATH}/configurations"
-gcloud secrets versions access latest --project="java-docs-samples-testing" --secret="tpc-java-docs-samples-service-account" > "${KOKORO_GFILE_DIR}/secrets/tpc-java-docs-samples-service-account.json"
-gcloud secrets versions access latest --project="java-docs-samples-testing" --secret="tpc-configuration" > "${CONFIG_PATH}/configurations/config_tpc"
+cp "${KOKORO_GFILE_DIR}/secrets/prptst-gcloud-cli-configuration" "${CONFIG_PATH}/configurations/config_prptst"
 
-# Setup environment vars required for testing
-gcloud config configurations active tpc
-export GOOGLE_CLOUD_PROJECT="tpczero-system:java-docs-samples-testing"
-export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets/tpc-java-docs-samples-service-account.json
+# Setup env variables to run tests
 export GOOGLE_CLOUD_UNIVERSE_DOMAIN="$(gcloud config get universe_domain)"
 export JAVA_DOCS_COMPUTE_TEST_ZONES="u-us-prp1-a,u-us-prp1-b,u-us-prp1-c"
 export JAVA_DOCS_COMPUTE_TEST_IMAGE_PROJECT="tpczero-system:java-docs-samples-testing" # test will fail anyway because images are not there
+
+# Activate service account
+gcloud config configurations active prptst
+gcloud auth activate-service-account \
+    --key-file="$GOOGLE_APPLICATION_CREDENTIALS" \
+    --project="$GOOGLE_CLOUD_PROJECT"
 
 # Execute compute/cloud-client tests
 git config --global --add safe.directory $PWD

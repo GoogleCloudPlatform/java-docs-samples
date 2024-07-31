@@ -97,7 +97,6 @@ public final class BasicJobSample {
   // [END job_create_job]
 
   // [START job_get_job]
-  // [START get_job]
 
   /** Get a job. */
   public static Job getJob(String jobName) throws IOException {
@@ -110,7 +109,6 @@ public final class BasicJobSample {
       throw e;
     }
   }
-  // [END get_job]
   // [END job_get_job]
 
   // [START update_job]

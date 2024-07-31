@@ -52,18 +52,16 @@ public class CreateGpuJob {
     // and Batch installs them on your behalf. If you set this field to false (default),
     // you need to install GPU drivers manually to use any GPUs for this job.
     boolean installGpuDrivers = false;
-    // The GPU type. You can view a list of the available GPU types
-    // by using the `gcloud compute accelerator-types list` command.
-    String gpuType = "nvidia-tesla-t4";
-    // The number of GPUs of the specified type.
-    int gpuCount = 2;
+    // Accelerator-optimized machine types are available to Batch jobs. See the list
+    // of available types on: https://cloud.google.com/compute/docs/accelerator-optimized-machines
+    String machineType = "g2-standard-4";
 
-    createGpuJob(projectId, region, jobName, installGpuDrivers, gpuType, gpuCount);
+    createGpuJob(projectId, region, jobName, installGpuDrivers, machineType);
   }
 
   // Create a job that uses GPUs
   public static Job createGpuJob(String projectId, String region, String jobName,
-                                  boolean installGpuDrivers, String gpuType, int gpuCount)
+                                  boolean installGpuDrivers, String machineType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -98,11 +96,10 @@ public class CreateGpuJob {
           .setTaskSpec(task)
           .build();
 
-      // Accelerator describes Compute Engine accelerators to be attached to the VM.
-      Accelerator accelerator = Accelerator.newBuilder()
-          .setType(gpuType)
-          .setCount(gpuCount)
-          .build();
+      // Policies are used to define on what kind of virtual machines the tasks will run.
+      // Read more about machine types here: https://cloud.google.com/compute/docs/machine-types
+      InstancePolicy instancePolicy =
+          InstancePolicy.newBuilder().setMachineType(machineType).build();  
 
       // Policies are used to define on what kind of virtual machines the tasks will run on.
       AllocationPolicy allocationPolicy =
@@ -110,7 +107,7 @@ public class CreateGpuJob {
               .addInstances(
                   InstancePolicyOrTemplate.newBuilder()
                       .setInstallGpuDrivers(installGpuDrivers)
-                      .setPolicy(InstancePolicy.newBuilder().addAccelerators(accelerator))
+                      .setPolicy(instancePolicy)
                       .build())
               .build();
 

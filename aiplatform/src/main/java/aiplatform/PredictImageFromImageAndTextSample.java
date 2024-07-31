@@ -17,6 +17,7 @@
 package aiplatform;
 
 // [START aiplatform_sdk_text_image_embedding]
+// [START generativeaionvertexai_sdk_text_image_embedding]
 
 import com.google.cloud.aiplatform.v1beta1.EndpointName;
 import com.google.cloud.aiplatform.v1beta1.PredictResponse;
@@ -115,3 +116,4 @@ public class PredictImageFromImageAndTextSample {
   }
 }
 // [END aiplatform_sdk_text_image_embedding]
+// [END generativeaionvertexai_sdk_text_image_embedding]

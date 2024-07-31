@@ -35,11 +35,11 @@ public class GetVodSession {
     getVodSession(projectId, location, sessionId);
   }
 
-  public static void getVodSession(String projectId, String location, String sessionId)
+  // Gets a video on demand (VOD) session.
+  public static VodSession getVodSession(String projectId, String location, String sessionId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       GetVodSessionRequest getVodSessionRequest =
@@ -49,6 +49,7 @@ public class GetVodSession {
 
       VodSession response = videoStitcherServiceClient.getVodSession(getVodSessionRequest);
       System.out.println("VOD session: " + response.getName());
+      return response;
     }
   }
 }
