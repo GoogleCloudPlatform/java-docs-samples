@@ -172,9 +172,8 @@ public class SnippetsIT {
 
   @Test
   public void testQuickstart() throws IOException {
-    String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    // Disabled assertion, pending resolution of b/342637034
-    // assertThat(output).contains("Colosseum");
+    Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_FLASH);
+    assertThat(bout.toString()).contains("scones");
   }
 
   @Test
