@@ -59,7 +59,7 @@ public class ControlledGenerationSchema4 {
           .putProperties("condition", Schema.newBuilder()
               .setType(Type.STRING)
               .addAllEnum(Arrays.asList(
-                  "new in package", "like new", "gently used", "used", "damanged", "soiled"))
+                  "new in package", "like new", "gently used", "used", "damaged", "soiled"))
               .build())
           .build();
 
