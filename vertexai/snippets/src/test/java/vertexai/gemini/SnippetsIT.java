@@ -172,8 +172,8 @@ public class SnippetsIT {
 
   @Test
   public void testQuickstart() throws IOException {
-    Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    assertThat(bout.toString()).contains("scones");
+    String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_FLASH);
+    assertThat(output).contains("scones");
   }
 
   @Test
