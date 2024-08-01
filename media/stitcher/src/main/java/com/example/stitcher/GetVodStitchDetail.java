@@ -36,12 +36,12 @@ public class GetVodStitchDetail {
     getVodStitchDetail(projectId, location, sessionId, stitchDetailId);
   }
 
-  public static void getVodStitchDetail(
+  // Gets a stitch detail for a video on demand (VOD) session.
+  public static VodStitchDetail getVodStitchDetail(
       String projectId, String location, String sessionId, String stitchDetailId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       GetVodStitchDetailRequest getVodStitchDetailRequest =
@@ -53,6 +53,7 @@ public class GetVodStitchDetail {
       VodStitchDetail response =
           videoStitcherServiceClient.getVodStitchDetail(getVodStitchDetailRequest);
       System.out.println("VOD stitch detail: " + response.getName());
+      return response;
     }
   }
 }

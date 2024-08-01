@@ -45,23 +45,30 @@ public class CreateResourcesIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "us-central1";
   private static final String ZONE = "us-central1-a";
-  private static final String SERVICE_ACCOUNT_JOB = "test-job"
+  private static final int LOCAL_SSD_SIZE = 375;
+  private static final String SERVICE_ACCOUNT_JOB = "test-job-sa-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String SECRET_MANAGER_JOB = "test-job"
+  private static final String SECRET_MANAGER_JOB = "test-job-sm-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String GPU_JOB = "test-job"
+  private static final String GPU_JOB = "test-job-gpu-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String LOCAL_SSD_JOB = "test-job"
+  private static final String GPU_JOB_N1 = "test-job-gpun1-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String PERSISTENT_DISK_JOB = "test-job"
+  private static final String LOCAL_SSD_JOB = "test-job-lssd-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String NOTIFICATION_NAME = "test-job"
+  private static final String PERSISTENT_DISK_JOB = "test-job-pd-"
           + UUID.randomUUID().toString().substring(0, 7);
-  private static final String CUSTOM_EVENT_NAME = "test-job"
+  private static final String NOTIFICATION_NAME = "test-job-notif-"
+          + UUID.randomUUID().toString().substring(0, 7);
+  private static final String CUSTOM_EVENT_NAME = "test-job-event-"
           + UUID.randomUUID().toString().substring(0, 7);
   private static final String BATCH_LABEL_JOB = "test-job-label"
       + UUID.randomUUID().toString().substring(0, 7);
   private static final String CUSTOM_NETWORK_NAME = "test-job-network"
+      + UUID.randomUUID().toString().substring(0, 7);
+  private static final String JOB_ALLOCATION_POLICY_LABEL = "test-job-allocation-label"
+      + UUID.randomUUID().toString().substring(0, 7);
+  private static final String BATCH_RUNNABLE_LABEL = "test-runnable-label"
       + UUID.randomUUID().toString().substring(0, 7);
   private static final String LOCAL_SSD_NAME = "test-disk"
           + UUID.randomUUID().toString().substring(0, 7);
@@ -108,12 +115,16 @@ public class CreateResourcesIT {
     safeDeleteJob(SERVICE_ACCOUNT_JOB);
     safeDeleteJob(SECRET_MANAGER_JOB);
     safeDeleteJob(GPU_JOB);
+    safeDeleteJob(GPU_JOB_N1);
     safeDeleteJob(LOCAL_SSD_JOB);
     safeDeleteJob(PERSISTENT_DISK_JOB);
     safeDeleteJob(NOTIFICATION_NAME);
+    safeDeleteJob(CUSTOM_EVENT_NAME);
     safeDeleteJob(NFS_JOB_NAME);
     safeDeleteJob(BATCH_LABEL_JOB);
     safeDeleteJob(CUSTOM_NETWORK_NAME);
+    safeDeleteJob(JOB_ALLOCATION_POLICY_LABEL);
+    safeDeleteJob(BATCH_RUNNABLE_LABEL);
   }
 
   private static void safeDeleteJob(String jobName) {
@@ -156,15 +167,32 @@ public class CreateResourcesIT {
   @Test
   public void createGpuJobTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String gpuType = "nvidia-tesla-t4";
-    int count = 2;
+    String machineType = "g2-standard-4";
     Job job = CreateGpuJob
-            .createGpuJob(PROJECT_ID, REGION, GPU_JOB, true, gpuType, count);
+            .createGpuJob(PROJECT_ID, REGION, GPU_JOB, true, machineType);
 
     Assert.assertNotNull(job);
     ACTIVE_JOBS.add(job);
 
     Assert.assertTrue(job.getName().contains(GPU_JOB));
+    Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream().anyMatch(instance
+        -> instance.getInstallGpuDrivers()));
+    Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream().anyMatch(instance
+        -> instance.getPolicy().getMachineType().contains(machineType)));
+  }
+
+  @Test
+  public void createGpuJobN1Test()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String gpuType = "nvidia-tesla-t4";
+    int count = 2;
+    Job job = CreateGpuJobN1
+            .createGpuJob(PROJECT_ID, REGION, GPU_JOB_N1, true, gpuType, count);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(GPU_JOB_N1));
     Assert.assertTrue(job.getAllocationPolicy().getInstancesList().stream().anyMatch(instance
         -> instance.getInstallGpuDrivers() && instance.getPolicy().getAcceleratorsList().stream()
             .anyMatch(accelerator
@@ -174,9 +202,10 @@ public class CreateResourcesIT {
   @Test
   public void createLocalSsdJobTest()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String type = "c3d-standard-360-lssd";
+    String type = "c3d-standard-8-lssd";
     Job job = CreateLocalSsdJob
-            .createLocalSsdJob(PROJECT_ID, REGION, LOCAL_SSD_JOB, LOCAL_SSD_NAME, 375, type);
+            .createLocalSsdJob(PROJECT_ID, REGION, LOCAL_SSD_JOB, LOCAL_SSD_NAME,
+                LOCAL_SSD_SIZE, type);
 
     Assert.assertNotNull(job);
     ACTIVE_JOBS.add(job);
@@ -315,6 +344,53 @@ public class CreateResourcesIT {
         .anyMatch(subnetName -> subnetName.getSubnetwork().equals(subnet)));
     Assert.assertTrue(job.getAllocationPolicy().getNetwork().getNetworkInterfacesList().stream()
         .anyMatch(AllocationPolicy.NetworkInterface::getNoExternalIpAddress));
+  }
+
+  @Test
+  public void createJobWithAllocationPolicyLabelTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String labelName1 = "env";
+    String labelValue1 = "env_value";
+    String labelName2 = "test";
+    String labelValue2 = "test_value";
+
+    Job job = CreateBatchAllocationPolicyLabel
+        .createBatchAllocationPolicyLabel(PROJECT_ID, REGION,
+        JOB_ALLOCATION_POLICY_LABEL, labelName1, labelValue1, labelName2, labelValue2);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(JOB_ALLOCATION_POLICY_LABEL));
+    Assert.assertTrue(job.getAllocationPolicy().containsLabels(labelName1));
+    Assert.assertTrue(job.getAllocationPolicy().containsLabels(labelName2));
+    Assert.assertTrue(job.getAllocationPolicy().getLabelsMap().containsValue(labelValue1));
+    Assert.assertTrue(job.getAllocationPolicy().getLabelsMap().containsValue(labelValue2));
+  }
+
+  @Test
+  public void createBatchRunnableLabelTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String labelName1 = "env";
+    String labelValue1 = "env_value";
+    String labelName2 = "test";
+    String labelValue2 = "test_value";
+
+    Job job = CreateBatchRunnableLabel.createBatchRunnableLabel(PROJECT_ID, REGION,
+        BATCH_RUNNABLE_LABEL, labelName1, labelValue1, labelName2, labelValue2);
+
+    Assert.assertNotNull(job);
+    ACTIVE_JOBS.add(job);
+
+    Assert.assertTrue(job.getName().contains(BATCH_RUNNABLE_LABEL));
+    Arrays.asList(labelName1, labelName2)
+        .forEach(labelName -> Assert.assertTrue(job.getTaskGroupsList().stream()
+            .flatMap(event -> event.getTaskSpec().getRunnablesList().stream())
+            .anyMatch(runnable -> runnable.containsLabels(labelName))));
+    Arrays.asList(labelValue1, labelValue2)
+        .forEach(labelValue -> Assert.assertTrue(job.getTaskGroupsList().stream()
+            .flatMap(event -> event.getTaskSpec().getRunnablesList().stream())
+            .anyMatch(runnable -> runnable.getLabelsMap().containsValue(labelValue))));
   }
 
   private void createEmptyDisk(String projectId, String zone, String diskName,

@@ -22,6 +22,7 @@ import com.google.cloud.video.stitcher.v1.AdTracking;
 import com.google.cloud.video.stitcher.v1.CreateVodSessionRequest;
 import com.google.cloud.video.stitcher.v1.LocationName;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
+import com.google.cloud.video.stitcher.v1.VodConfigName;
 import com.google.cloud.video.stitcher.v1.VodSession;
 import java.io.IOException;
 
@@ -31,20 +32,16 @@ public class CreateVodSession {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
-    // Uri of the media to stitch; this URI must reference either an MPEG-DASH
-    // manifest (.mpd) file or an M3U playlist manifest (.m3u8) file.
-    String sourceUri = "https://storage.googleapis.com/my-bucket/main.mpd";
-    // See VMAP Pre-roll
-    // (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
-    String adTagUri = "https://pubads.g.doubleclick.net/gampad/ads...";
-    createVodSession(projectId, location, sourceUri, adTagUri);
+    String vodConfigId = "my-vod-config-id";
+
+    createVodSession(projectId, location, vodConfigId);
   }
 
-  public static void createVodSession(
-      String projectId, String location, String sourceUri, String adTagUri) throws IOException {
+  // Creates a video on demand (VOD) session using the parameters in the designated VOD config.
+  public static VodSession createVodSession(String projectId, String location, String vodConfigId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       CreateVodSessionRequest createVodSessionRequest =
@@ -52,14 +49,14 @@ public class CreateVodSession {
               .setParent(LocationName.of(projectId, location).toString())
               .setVodSession(
                   VodSession.newBuilder()
-                      .setSourceUri(sourceUri)
-                      .setAdTagUri(adTagUri)
+                      .setVodConfig(VodConfigName.format(projectId, location, vodConfigId))
                       .setAdTracking(AdTracking.SERVER)
                       .build())
               .build();
 
       VodSession response = videoStitcherServiceClient.createVodSession(createVodSessionRequest);
       System.out.println("Created VOD session: " + response.getName());
+      return response;
     }
   }
 }
