@@ -33,7 +33,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class GenerateImageSampleTest {
 
-  private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
+  private static final String PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String PROMPT = "a dog reading a newspaper";
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -48,7 +48,7 @@ public class GenerateImageSampleTest {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("UCAIP_PROJECT_ID");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
   @Before
