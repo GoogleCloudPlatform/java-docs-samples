@@ -240,6 +240,17 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testFunctionCallingAdvanced() throws Exception {
+    String textPrompt =   "I need to know if the Pixel 8 Pro is in stock "
+        + "and the location of the closest store.";
+
+    String answer = FunctionCallingAdvanced
+        .functionCallingAdvanced(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
+    assertThat(answer).ignoringCase().contains("San Francisco");
+    assertThat(answer).ignoringCase().contains("Pixel 8 Pro");
+  }
+
+  @Test
   public void testAudioInputSummary() throws IOException {
     String output = AudioInputSummarization.summarizeAudio(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
