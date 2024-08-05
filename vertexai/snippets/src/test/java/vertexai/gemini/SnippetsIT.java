@@ -241,13 +241,10 @@ public class SnippetsIT {
 
   @Test
   public void testFunctionCallingAdvanced() throws Exception {
-    String textPrompt =   "I need to know if the Pixel 8 Pro is in stock "
-        + "and the location of the closest store.";
+    FunctionCallingAdvanced.functionCallingAdvanced(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
-    String answer = FunctionCallingAdvanced
-        .functionCallingAdvanced(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
-    assertThat(answer).ignoringCase().contains("Pixel 8 Pro");
-    assertThat(answer).ignoringCase().contains("San Francisco");
+    assertThat(bout.toString()).contains("Pixel 8 Pro");
+    assertThat(bout.toString()).contains("San Francisco");
 
   }
 

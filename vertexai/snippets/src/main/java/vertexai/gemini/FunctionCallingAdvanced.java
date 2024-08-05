@@ -39,17 +39,17 @@ public class FunctionCallingAdvanced {
     String projectId =  "PROJECT_ID";
     String location = "us-central1";
     String modelName = "gemini-1.5-flash-001";
-    String promptText = "I need to know if the Pixel 8 Pro is in stock"
-        + " and the location of the closest store.";
 
-    functionCallingAdvanced(projectId, location, modelName, promptText);
+    functionCallingAdvanced(projectId, location, modelName);
   }
 
   // Function calling lets developers create descriptions of functions in their code, then pass
   // these descriptions to a language model in a request.
-  public static String functionCallingAdvanced(String projectId, String location,
-                                               String modelName, String promptText)
+  public static void functionCallingAdvanced(String projectId, String location, String modelName)
       throws IOException {
+    String firstTextPrompt = "I need to know if the Pixel 8 Pro is in stock";
+    String secondTextPrompt = "Get the location of the closest store.";
+
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
@@ -104,18 +104,19 @@ public class FunctionCallingAdvanced {
           .withTools(List.of(tool));
       ChatSession chat = model.startChat();
 
-      System.out.printf("Ask the question: %s%n", promptText);
-      GenerateContentResponse response = chat.sendMessage(promptText);
+      System.out.printf("Ask the question: %s%n", firstTextPrompt);
+      GenerateContentResponse response = chat.sendMessage(ContentMaker.fromMultiModalData(
+          firstTextPrompt,
+          PartMaker.fromMimeTypeAndData(
+                  "getProductSku",
+                  Collections.singletonMap("sku", "Pixel 8 Pro - SKU: 12345")
+      )));
 
       System.out.println("\nPrint response: ");
       System.out.println(ResponseHandler.getContent(response));
 
-      response = chat.sendMessage(
-          ContentMaker.fromMultiModalData(
-              PartMaker.fromFunctionResponse(
-                  "getProductSku",
-                  Collections.singletonMap("sku", "Pixel 8 Pro - SKU: 12345")
-              ),
+      response = chat.sendMessage(ContentMaker.fromMultiModalData(
+            secondTextPrompt,
               PartMaker.fromFunctionResponse(
                   "getStoreLocation",
                   Collections.singletonMap("store address", "123 Main Street, San Francisco CA")
@@ -126,8 +127,6 @@ public class FunctionCallingAdvanced {
       System.out.println("Print response: ");
       String finalAnswer = ResponseHandler.getText(response);
       System.out.println(finalAnswer);
-
-      return finalAnswer;
     }
   }
 }
