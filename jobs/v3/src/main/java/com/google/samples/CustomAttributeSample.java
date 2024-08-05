@@ -46,7 +46,7 @@ public final class CustomAttributeSample {
   private static CloudTalentSolution talentSolutionClient =
       JobServiceQuickstart.getTalentSolutionClient();
 
-  // [START custom_attribute_job]
+  // [START job_custom_attribute_job]
 
   /** Generate a job with a custom attribute. */
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
@@ -77,7 +77,7 @@ public final class CustomAttributeSample {
     System.out.println("Job generated: " + job);
     return job;
   }
-  // [END custom_attribute_job]
+  // [END job_custom_attribute_job]
 
   // [START custom_attribute_filter_string_value]
 
