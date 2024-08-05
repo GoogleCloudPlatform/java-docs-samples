@@ -19,7 +19,6 @@ package vertexai.gemini;
 //[START generativeaionvertexai_gemini_function_calling_advanced]
 
 import com.google.cloud.vertexai.VertexAI;
-import com.google.cloud.vertexai.api.Content;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Schema;
@@ -90,7 +89,7 @@ public class FunctionCallingAdvanced {
           )
           .build();
 
-      System.out.println("Function declaration:");
+      System.out.println("Functions declaration:");
       System.out.println(functionDeclaration1);
       System.out.println(functionDeclaration2);
 
@@ -111,7 +110,7 @@ public class FunctionCallingAdvanced {
       System.out.println("\nPrint response: ");
       System.out.println(ResponseHandler.getContent(response));
 
-      Content content =
+      response = chat.sendMessage(
           ContentMaker.fromMultiModalData(
               PartMaker.fromFunctionResponse(
                   "getProductSku",
@@ -120,11 +119,9 @@ public class FunctionCallingAdvanced {
               PartMaker.fromFunctionResponse(
                   "getStoreLocation",
                   Collections.singletonMap("store_address", "123 Main Street, San Francisco CA")
-      ));
-
-      System.out.println("Provide the function response: ");
-      System.out.println(content);
-      response = chat.sendMessage(content);
+              )
+          )
+      );
 
       System.out.println("Print response: ");
       String finalAnswer = ResponseHandler.getText(response);
