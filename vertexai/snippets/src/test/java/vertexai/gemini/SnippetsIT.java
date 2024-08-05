@@ -246,8 +246,9 @@ public class SnippetsIT {
 
     String answer = FunctionCallingAdvanced
         .functionCallingAdvanced(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
-    assertThat(answer).ignoringCase().contains("San Francisco");
     assertThat(answer).ignoringCase().contains("Pixel 8 Pro");
+    assertThat(answer).ignoringCase().contains("San Francisco");
+
   }
 
   @Test

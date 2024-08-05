@@ -118,7 +118,7 @@ public class FunctionCallingAdvanced {
               ),
               PartMaker.fromFunctionResponse(
                   "getStoreLocation",
-                  Collections.singletonMap("store_address", "123 Main Street, San Francisco CA")
+                  Collections.singletonMap("store address", "123 Main Street, San Francisco CA")
               )
           )
       );
