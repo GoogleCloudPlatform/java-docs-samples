@@ -16,8 +16,12 @@
 
 package vertexai.gemini;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
 // [START generativeaionvertexai_gemini_automatic_function_calling]
-// [START aiplatform_gemini_automatic_function_calling]ß
+// [START aiplatform_gemini_automatic_function_calling]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -27,9 +31,6 @@ import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.FunctionDeclarationMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
 
 public class AutomaticFunctionCalling {
   public static void main(String[] args) throws IOException, NoSuchMethodException {
@@ -40,9 +41,10 @@ public class AutomaticFunctionCalling {
 
     String promptText = "What's the weather like in Paris?";
 
-    whatsTheWeatherLike(projectId, location, modelName, promptText);
+    automaticFunctionCalling(projectId, location, modelName, promptText);
   }
 
+  // This is just a stub and can be substituted with any external functions with http calls.
   /** Callable function getCurrentWeather. */
   public static String getCurrentWeather(String location) {
     if (location.equals("Paris")) {
@@ -52,8 +54,8 @@ public class AutomaticFunctionCalling {
     }
   }
 
-  // A request involving the interaction with an external tool
-  public static String whatsTheWeatherLike(
+  // Use the Automatic Function Calling feature to auto-response Function Call requests from the model.
+  public static String automaticFunctionCalling(
       String projectId, String location, String modelName, String promptText)
       throws IOException, NoSuchMethodException {
     // Initialize client that will be used to send requests.
@@ -65,8 +67,7 @@ public class AutomaticFunctionCalling {
       FunctionDeclaration functionDeclaration =
           FunctionDeclarationMaker.fromFunc(
               "Get the current weather in a given location", function, "location");
-      System.out.println("Function declaration:");
-      System.out.println(functionDeclaration);
+      System.out.printf("Function declaration: %s\n", functionDeclaration);
 
       // Add the function to a "tool"
       Tool tool = Tool.newBuilder().addFunctionDeclarations(functionDeclaration).build();
@@ -87,9 +88,8 @@ public class AutomaticFunctionCalling {
           chat.withAutomaticFunctionCallingResponder(responder).sendMessage(promptText);
 
       // Check the final response
-      System.out.println("Print response: ");
       String finalAnswer = ResponseHandler.getText(response);
-      System.out.println(finalAnswer);
+      System.out.printf("Response: %s\n", finalAnswer);
 
       return finalAnswer;
     }
