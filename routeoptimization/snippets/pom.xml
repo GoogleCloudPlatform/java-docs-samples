@@ -37,23 +37,11 @@
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <artifactId>google-maps-routeoptimization-bom</artifactId>
-        <groupId>com.google.maps</groupId>
-        <scope>import</scope>
-        <type>pom</type>
-        <version>0.1.0</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>com.google.maps</groupId>
       <artifactId>google-maps-routeoptimization</artifactId>
-      <scope>compile</scope>
+      <version>0.5.0</version>
     </dependency>
 
     <!-- Test dependencies -->
