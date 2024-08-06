@@ -117,4 +117,4 @@ public class FunctionCallingAdvanced {
     }
   }
 }
-//[END generativeaionvertexai_gemini_function_calling]
+//[END generativeaionvertexai_gemini_function_calling_advanced]
