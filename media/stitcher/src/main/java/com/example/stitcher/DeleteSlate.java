@@ -39,22 +39,22 @@ public class DeleteSlate {
     deleteSlate(projectId, location, slateId);
   }
 
+  // Deletes a slate.
   public static void deleteSlate(String projectId, String location, String slateId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
-    DeleteSlateRequest deleteSlateRequest =
-        DeleteSlateRequest.newBuilder()
-            .setName(SlateName.of(projectId, location, slateId).toString())
-            .build();
+    // once, and can be reused for multiple requests.
+    try (VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create()) {
+      DeleteSlateRequest deleteSlateRequest =
+          DeleteSlateRequest.newBuilder()
+              .setName(SlateName.of(projectId, location, slateId).toString())
+              .build();
 
-    videoStitcherServiceClient
-        .deleteSlateAsync(deleteSlateRequest)
-        .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-    System.out.println("Deleted slate");
-    videoStitcherServiceClient.close();
+      videoStitcherServiceClient
+          .deleteSlateAsync(deleteSlateRequest)
+          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+      System.out.println("Deleted slate");
+    }
   }
 }
 // [END videostitcher_delete_slate]

@@ -22,6 +22,7 @@ import com.google.cloud.video.stitcher.v1.ListLiveConfigsRequest;
 import com.google.cloud.video.stitcher.v1.LiveConfig;
 import com.google.cloud.video.stitcher.v1.LocationName;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
+import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient.ListLiveConfigsPagedResponse;
 import java.io.IOException;
 
 public class ListLiveConfigs {
@@ -34,10 +35,10 @@ public class ListLiveConfigs {
     listLiveConfigs(projectId, location);
   }
 
-  public static void listLiveConfigs(String projectId, String location) throws IOException {
+  // Lists the live configs for a given project and location.
+  public static ListLiveConfigsPagedResponse listLiveConfigs(String projectId, String location) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       ListLiveConfigsRequest listLiveConfigsRequest =
@@ -47,11 +48,12 @@ public class ListLiveConfigs {
 
       VideoStitcherServiceClient.ListLiveConfigsPagedResponse response =
           videoStitcherServiceClient.listLiveConfigs(listLiveConfigsRequest);
-      System.out.println("Live configs:");
 
+      System.out.println("Live configs:");
       for (LiveConfig liveConfig : response.iterateAll()) {
         System.out.println(liveConfig.getName());
       }
+      return response;
     }
   }
 }

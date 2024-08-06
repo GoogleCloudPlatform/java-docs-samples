@@ -22,6 +22,7 @@ import com.google.cloud.video.stitcher.v1.ListLiveAdTagDetailsRequest;
 import com.google.cloud.video.stitcher.v1.LiveAdTagDetail;
 import com.google.cloud.video.stitcher.v1.LiveSessionName;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
+import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient.ListLiveAdTagDetailsPagedResponse;
 import java.io.IOException;
 
 public class ListLiveAdTagDetails {
@@ -35,11 +36,11 @@ public class ListLiveAdTagDetails {
     listLiveAdTagDetails(projectId, location, sessionId);
   }
 
-  public static void listLiveAdTagDetails(String projectId, String location, String sessionId)
+  // Lists the live ad tag details for a given live session.
+  public static ListLiveAdTagDetailsPagedResponse listLiveAdTagDetails(String projectId, String location, String sessionId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       ListLiveAdTagDetailsRequest listLiveAdTagDetailsRequest =
@@ -49,11 +50,12 @@ public class ListLiveAdTagDetails {
 
       VideoStitcherServiceClient.ListLiveAdTagDetailsPagedResponse response =
           videoStitcherServiceClient.listLiveAdTagDetails(listLiveAdTagDetailsRequest);
-      System.out.println("Live ad tag details:");
 
+      System.out.println("Live ad tag details:");
       for (LiveAdTagDetail adTagDetail : response.iterateAll()) {
         System.out.println(adTagDetail.toString());
       }
+      return response;
     }
   }
 }

@@ -50,7 +50,10 @@ public class CreateLiveConfig {
     createLiveConfig(projectId, location, liveConfigId, sourceUri, adTagUri, slateId);
   }
 
-  public static void createLiveConfig(
+  // Creates a live config. Live configs are used to configure live sessions.
+  // For more information, see
+  // https://cloud.google.com/video-stitcher/docs/how-to/managing-live-configs.
+  public static LiveConfig createLiveConfig(
       String projectId,
       String location,
       String liveConfigId,
@@ -59,29 +62,29 @@ public class CreateLiveConfig {
       String slateId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
-    CreateLiveConfigRequest createLiveConfigRequest =
-        CreateLiveConfigRequest.newBuilder()
-            .setParent(LocationName.of(projectId, location).toString())
-            .setLiveConfigId(liveConfigId)
-            .setLiveConfig(
-                LiveConfig.newBuilder()
-                    .setSourceUri(sourceUri)
-                    .setAdTagUri(adTagUri)
-                    .setDefaultSlate(SlateName.format(projectId, location, slateId))
-                    .setAdTracking(AdTracking.SERVER)
-                    .setStitchingPolicy(StitchingPolicy.CUT_CURRENT)
-                    .build())
-            .build();
+    // once, and can be reused for multiple requests.
+    try (VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create()) {
+      CreateLiveConfigRequest createLiveConfigRequest =
+          CreateLiveConfigRequest.newBuilder()
+              .setParent(LocationName.of(projectId, location).toString())
+              .setLiveConfigId(liveConfigId)
+              .setLiveConfig(
+                  LiveConfig.newBuilder()
+                      .setSourceUri(sourceUri)
+                      .setAdTagUri(adTagUri)
+                      .setDefaultSlate(SlateName.format(projectId, location, slateId))
+                      .setAdTracking(AdTracking.SERVER)
+                      .setStitchingPolicy(StitchingPolicy.CUT_CURRENT)
+                      .build())
+              .build();
 
-    LiveConfig response =
-        videoStitcherServiceClient
-            .createLiveConfigAsync(createLiveConfigRequest)
-            .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-    System.out.println("Created new live config: " + response.getName());
-    videoStitcherServiceClient.close();
+      LiveConfig response =
+          videoStitcherServiceClient
+              .createLiveConfigAsync(createLiveConfigRequest)
+              .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+      System.out.println("Created new live config: " + response.getName());
+      return response;
+    }
   }
 }
 // [END videostitcher_create_live_config]

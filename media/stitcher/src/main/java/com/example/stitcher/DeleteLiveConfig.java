@@ -39,22 +39,22 @@ public class DeleteLiveConfig {
     deleteLiveConfig(projectId, location, liveConfigId);
   }
 
+  // Deletes a live config.
   public static void deleteLiveConfig(String projectId, String location, String liveConfigId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
-    DeleteLiveConfigRequest deleteLiveConfigRequest =
-        DeleteLiveConfigRequest.newBuilder()
-            .setName(LiveConfigName.of(projectId, location, liveConfigId).toString())
-            .build();
+    // once, and can be reused for multiple requests.
+    try (VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create()) {
+      DeleteLiveConfigRequest deleteLiveConfigRequest =
+          DeleteLiveConfigRequest.newBuilder()
+              .setName(LiveConfigName.of(projectId, location, liveConfigId).toString())
+              .build();
 
-    videoStitcherServiceClient
-        .deleteLiveConfigAsync(deleteLiveConfigRequest)
-        .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-    System.out.println("Deleted live config");
-    videoStitcherServiceClient.close();
+      videoStitcherServiceClient
+          .deleteLiveConfigAsync(deleteLiveConfigRequest)
+          .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+      System.out.println("Deleted live config");
+    }
   }
 }
 // [END videostitcher_delete_live_config]

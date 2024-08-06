@@ -36,11 +36,13 @@ public class CreateLiveSession {
     createLiveSession(projectId, location, liveConfigId);
   }
 
-  public static void createLiveSession(String projectId, String location, String liveConfigId)
+  // Creates a live session given the parameters in the supplied live config.
+  // For more information, see
+  // https://cloud.google.com/video-stitcher/docs/how-to/managing-live-sessions.
+  public static LiveSession createLiveSession(String projectId, String location, String liveConfigId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       CreateLiveSessionRequest createLiveSessionRequest =
@@ -54,6 +56,7 @@ public class CreateLiveSession {
       LiveSession response = videoStitcherServiceClient.createLiveSession(createLiveSessionRequest);
       System.out.println("Created live session: " + response.getName());
       System.out.println("Play URI: " + response.getPlayUri());
+      return response;
     }
   }
 }
