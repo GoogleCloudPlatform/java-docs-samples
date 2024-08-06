@@ -36,7 +36,8 @@ public class ListSlates {
   }
 
   // Lists the slates for a given project and location.
-  public static ListSlatesPagedResponse listSlates(String projectId, String location) throws IOException {
+  public static ListSlatesPagedResponse listSlates(String projectId, String location)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =

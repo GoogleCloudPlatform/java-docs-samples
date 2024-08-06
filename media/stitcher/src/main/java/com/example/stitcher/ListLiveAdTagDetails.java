@@ -37,8 +37,8 @@ public class ListLiveAdTagDetails {
   }
 
   // Lists the live ad tag details for a given live session.
-  public static ListLiveAdTagDetailsPagedResponse listLiveAdTagDetails(String projectId, String location, String sessionId)
-      throws IOException {
+  public static ListLiveAdTagDetailsPagedResponse listLiveAdTagDetails(
+      String projectId, String location, String sessionId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =

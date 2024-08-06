@@ -45,11 +45,13 @@ public class CreateSlate {
   // Creates a slate. Slates are content that can be served when there are gaps in a livestream
   // ad break that cannot be filled with a dynamically served ad. For more information, see
   // https://cloud.google.com/video-stitcher/docs/how-to/managing-slates.
-  public static Slate createSlate(String projectId, String location, String slateId, String slateUri)
+  public static Slate createSlate(
+      String projectId, String location, String slateId, String slateUri)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create()) {
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
       CreateSlateRequest createSlateRequest =
           CreateSlateRequest.newBuilder()
               .setParent(LocationName.of(projectId, location).toString())

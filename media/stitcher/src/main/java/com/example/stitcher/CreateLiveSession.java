@@ -39,8 +39,8 @@ public class CreateLiveSession {
   // Creates a live session given the parameters in the supplied live config.
   // For more information, see
   // https://cloud.google.com/video-stitcher/docs/how-to/managing-live-sessions.
-  public static LiveSession createLiveSession(String projectId, String location, String liveConfigId)
-      throws IOException {
+  public static LiveSession createLiveSession(
+      String projectId, String location, String liveConfigId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =

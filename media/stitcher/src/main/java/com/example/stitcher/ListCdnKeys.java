@@ -36,7 +36,8 @@ public class ListCdnKeys {
   }
 
   // Lists the CDN keys for a given project and location.
-  public static ListCdnKeysPagedResponse listCdnKeys(String projectId, String location) throws IOException {
+  public static ListCdnKeysPagedResponse listCdnKeys(String projectId, String location)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =

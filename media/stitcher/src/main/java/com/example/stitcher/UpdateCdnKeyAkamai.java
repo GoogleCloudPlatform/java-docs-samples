@@ -45,13 +45,14 @@ public class UpdateCdnKeyAkamai {
     updateCdnKeyAkamai(projectId, location, cdnKeyId, hostname, akamaiTokenKey);
   }
 
-  // updateCdnKeyAkamai u/**/pdates the hostname and key fields for an existing CDN key.
+  // updateCdnKeyAkamai updates the hostname and key fields for an existing CDN key.
   public static CdnKey updateCdnKeyAkamai(
       String projectId, String location, String cdnKeyId, String hostname, String akamaiTokenKey)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create()) {
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
       CdnKey cdnKey =
           CdnKey.newBuilder()
               .setName(CdnKeyName.of(projectId, location, cdnKeyId).toString())

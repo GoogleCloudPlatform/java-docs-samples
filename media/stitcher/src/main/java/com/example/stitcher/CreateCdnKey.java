@@ -62,7 +62,8 @@ public class CreateCdnKey {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create()) {
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
       CdnKey cdnKey;
       if (isMediaCdn) {
         cdnKey =

@@ -44,7 +44,8 @@ public class DeleteLiveConfig {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create()) {
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
       DeleteLiveConfigRequest deleteLiveConfigRequest =
           DeleteLiveConfigRequest.newBuilder()
               .setName(LiveConfigName.of(projectId, location, liveConfigId).toString())

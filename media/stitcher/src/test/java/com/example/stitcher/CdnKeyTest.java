@@ -130,12 +130,12 @@ public class CdnKeyTest {
     Boolean media = false;
     Boolean akamai = false;
 
-    for (CdnKey CdnKey : response.iterateAll()) {
-      if (CdnKey.getName().contains(CLOUD_CDN_KEY_NAME)) {
+    for (CdnKey cdnKey : response.iterateAll()) {
+      if (cdnKey.getName().contains(CLOUD_CDN_KEY_NAME)) {
         cloud = true;
-      } else if (CdnKey.getName().contains(MEDIA_CDN_KEY_NAME)) {
+      } else if (cdnKey.getName().contains(MEDIA_CDN_KEY_NAME)) {
         media = true;
-      } else if (CdnKey.getName().contains(AKAMAI_KEY_NAME)) {
+      } else if (cdnKey.getName().contains(AKAMAI_KEY_NAME)) {
         akamai = true;
       }
     }

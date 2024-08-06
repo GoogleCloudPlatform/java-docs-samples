@@ -44,11 +44,13 @@ public class UpdateSlate {
   }
 
   // updateSlate updates the slate URI for an existing slate.
-  public static Slate updateSlate(String projectId, String location, String slateId, String slateUri)
+  public static Slate updateSlate(
+      String projectId, String location, String slateId, String slateUri)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create()) {
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
       UpdateSlateRequest updateSlateRequest =
           UpdateSlateRequest.newBuilder()
               .setSlate(

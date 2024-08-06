@@ -44,7 +44,8 @@ public class DeleteSlate {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create()) {
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
       DeleteSlateRequest deleteSlateRequest =
           DeleteSlateRequest.newBuilder()
               .setName(SlateName.of(projectId, location, slateId).toString())
