@@ -36,12 +36,12 @@ public class GetVodAdTagDetail {
     getVodAdTagDetail(projectId, location, sessionId, adTagDetailId);
   }
 
-  public static void getVodAdTagDetail(
+  // Gets an ad tag detail for a video on demand (VOD) session.
+  public static VodAdTagDetail getVodAdTagDetail(
       String projectId, String location, String sessionId, String adTagDetailId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       GetVodAdTagDetailRequest getVodAdTagDetailRequest =
@@ -53,6 +53,7 @@ public class GetVodAdTagDetail {
       VodAdTagDetail response =
           videoStitcherServiceClient.getVodAdTagDetail(getVodAdTagDetailRequest);
       System.out.println("VOD ad tag detail: " + response.getName());
+      return response;
     }
   }
 }

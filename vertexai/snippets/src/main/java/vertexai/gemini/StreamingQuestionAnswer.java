@@ -40,7 +40,7 @@ public class StreamingQuestionAnswer {
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
 
       // Stream the result.
-      model.generateContentStream("Why is the sky blue?")
+      model.generateContentStream("Write a story about a magic backpack.")
           .stream()
           .forEach(System.out::println);
 

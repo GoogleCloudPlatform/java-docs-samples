@@ -59,7 +59,7 @@ public class ApacheIcebergRead {
 
     // Parse the pipeline options passed into the application. Example:
     //   --runner=DirectRunner --warehouseLocation=$LOCATION --catalogName=$CATALOG \
-    //   -tableName= $TABLE_NAME --outputPath=$OUTPUT_FILE
+    //   --tableName= $TABLE_NAME --outputPath=$OUTPUT_FILE
     // For more information, see https://beam.apache.org/documentation/programming-guide/#configuring-pipeline-options
     Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
     Pipeline pipeline = Pipeline.create(options);
@@ -77,11 +77,8 @@ public class ApacheIcebergRead {
         .build();
 
     // Build the pipeline.
-    PCollectionRowTuple.empty(pipeline).apply(
-            Managed.read(Managed.ICEBERG)
-                .withConfig(config)
-        )
-        .get("output")
+    pipeline.apply(Managed.read(Managed.ICEBERG).withConfig(config))
+        .getSinglePCollection()
         // Format each record as a string with the format 'id:name'.
         .apply(MapElements
             .into(TypeDescriptors.strings())
