@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-public class FunctionCallingAdvanced {
+public class ComplexFunctionCalling {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
@@ -43,12 +43,12 @@ public class FunctionCallingAdvanced {
 
     String promptText = "What is the weather like in Boston?";
 
-    functionCallingAdvanced(projectId, location, modelName, promptText);
+    complexFunctionCalling(projectId, location, modelName, promptText);
   }
 
   // A request involving the interaction with an external tool
-  public static String functionCallingAdvanced(String projectId, String location,
-                                           String modelName, String promptText)
+  public static String complexFunctionCalling(String projectId, String location,
+                                              String modelName, String promptText)
       throws IOException {
     //In this example, we'll use synthetic data to simulate a response payload from an external API
     String jsonString = "{ \"location\": \"Boston, MA\", \"temperature\": 38, \"description\": "

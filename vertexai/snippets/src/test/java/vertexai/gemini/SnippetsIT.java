@@ -240,11 +240,11 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testFunctionCallingAdvanced() throws Exception {
+  public void testComplexFunctionCalling() throws Exception {
     String textPrompt = "What is the weather like in Boston?";
 
     String answer =
-        FunctionCallingAdvanced.functionCallingAdvanced(
+        ComplexFunctionCalling.complexFunctionCalling(
             PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
     assertThat(answer).ignoringCase().contains("Boston");
     assertThat(answer).ignoringCase().contains("Partly Cloudy");
