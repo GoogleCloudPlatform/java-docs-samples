@@ -19,6 +19,7 @@ package vertexai.gemini;
 //[START generativeaionvertexai_gemini_function_calling_advanced]
 
 import com.google.cloud.vertexai.VertexAI;
+import com.google.cloud.vertexai.api.Content;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Schema;
@@ -36,29 +37,31 @@ import java.util.List;
 public class FunctionCallingAdvanced {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId =  "PROJECT_ID";
+    String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
     String modelName = "gemini-1.5-flash-001";
 
-    functionCallingAdvanced(projectId, location, modelName);
+    String promptText = "What is the weather like in Boston?";
+
+    functionCallingAdvanced(projectId, location, modelName, promptText);
   }
 
-  // Function calling lets developers create descriptions of functions in their code, then pass
-  // these descriptions to a language model in a request.
-  public static void functionCallingAdvanced(String projectId, String location, String modelName)
+  // A request involving the interaction with an external tool
+  public static String functionCallingAdvanced(String projectId, String location,
+                                           String modelName, String promptText)
       throws IOException {
-    String firstTextPrompt = "I need to know if the Pixel 8 Pro is in stock";
-    String secondTextPrompt = "Get the location of the closest store.";
+    //In this example, we'll use synthetic data to simulate a response payload from an external API
+    String jsonString = "{ \"location\": \"Boston, MA\", \"temperature\": 38, \"description\": "
+        + "\"Partly Cloudy\", \"icon\": \"partly-cloudy\", \"humidity\": 65, \"wind\": "
+        + "{ \"speed\": 10, \"direction\": \"NW\" } }";
 
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
 
-      // Specify a function declaration and parameters for an API request
-      FunctionDeclaration functionDeclaration1 = FunctionDeclaration.newBuilder()
-          .setName("getProductSku")
-          .setDescription("Get the available inventory for a Google products, e.g: Pixel phones,"
-              + " Pixel Watches, Google Home etc")
+      FunctionDeclaration functionDeclaration = FunctionDeclaration.newBuilder()
+          .setName("getCurrentWeather")
+          .setDescription("Get the current weather in a given location")
           .setParameters(
               Schema.newBuilder()
                   .setType(Type.OBJECT)
@@ -72,62 +75,46 @@ public class FunctionCallingAdvanced {
           )
           .build();
 
-      // Specify another function declaration and parameters for an API request
-      FunctionDeclaration functionDeclaration2 = FunctionDeclaration.newBuilder()
-          .setName("getStoreLocation")
-          .setDescription("Get the location of the closest store")
-          .setParameters(
-              Schema.newBuilder()
-                  .setType(Type.OBJECT)
-                  .putProperties("location", Schema.newBuilder()
-                      .setType(Type.STRING)
-                      .setDescription("location")
-                      .build()
-                  )
-                  .addRequired("location")
-                  .build()
-          )
-          .build();
+      System.out.println("Function declaration:");
+      System.out.println(functionDeclaration);
 
-      System.out.println("Functions declaration:");
-      System.out.println(functionDeclaration1);
-      System.out.println(functionDeclaration2);
-
-      // Add functions to a "tool"
+      // Add the function to a "tool"
       Tool tool = Tool.newBuilder()
-          .addFunctionDeclarations(functionDeclaration1)
-          .addFunctionDeclarations(functionDeclaration2)
+          .addFunctionDeclarations(functionDeclaration)
           .build();
 
-      // Start a chat session from a model, with the use of the declared functions.
+      // Start a chat session from a model, with the use of the declared function.
       GenerativeModel model = new GenerativeModel(modelName, vertexAI)
           .withTools(List.of(tool));
       ChatSession chat = model.startChat();
 
-      System.out.printf("Ask the question: %s%n", firstTextPrompt);
-      GenerateContentResponse response = chat.sendMessage(ContentMaker.fromMultiModalData(
-          firstTextPrompt,
-          PartMaker.fromMimeTypeAndData(
-                  "getProductSku",
-                  Collections.singletonMap("sku", "Pixel 8 Pro - SKU: 12345")
-      )));
+      System.out.printf("Ask the question: %s%n", promptText);
+      GenerateContentResponse response = chat.sendMessage(promptText);
 
+      // The model will most likely return a function call to the declared
+      // function `getCurrentWeather` with "Boston" as the value for the
+      // argument `location`.
       System.out.println("\nPrint response: ");
       System.out.println(ResponseHandler.getContent(response));
 
-      response = chat.sendMessage(ContentMaker.fromMultiModalData(
-            secondTextPrompt,
+      // Provide an answer to the model so that it knows what the result
+      // of a "function call" is.
+      Content content =
+          ContentMaker.fromMultiModalData(
               PartMaker.fromFunctionResponse(
-                  "getStoreLocation",
-                  Collections.singletonMap("store address", "123 Main Street, San Francisco CA")
-              )
-          )
-      );
+                  "getCurrentWeather",
+                  Collections.singletonMap("currentWeather", jsonString)));
+      System.out.println("Provide the function response: ");
+      System.out.println(content);
+      response = chat.sendMessage(content);
 
+      // See what the model replies now
       System.out.println("Print response: ");
       String finalAnswer = ResponseHandler.getText(response);
       System.out.println(finalAnswer);
+
+      return finalAnswer;
     }
   }
 }
-//[END generativeaionvertexai_gemini_function_calling_advanced]
+//[END generativeaionvertexai_gemini_function_calling]

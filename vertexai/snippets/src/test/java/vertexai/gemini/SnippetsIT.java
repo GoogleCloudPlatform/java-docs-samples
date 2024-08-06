@@ -241,11 +241,15 @@ public class SnippetsIT {
 
   @Test
   public void testFunctionCallingAdvanced() throws Exception {
-    FunctionCallingAdvanced.functionCallingAdvanced(PROJECT_ID, LOCATION, GEMINI_FLASH);
+    String textPrompt = "What is the weather like in Boston?";
 
-    assertThat(bout.toString()).contains("Pixel 8 Pro");
-    assertThat(bout.toString()).contains("San Francisco");
-
+    String answer =
+        FunctionCallingAdvanced.functionCallingAdvanced(
+            PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
+    assertThat(answer).ignoringCase().contains("Boston");
+    assertThat(answer).ignoringCase().contains("Partly Cloudy");
+    assertThat(answer).ignoringCase().contains("temperature");
+    assertThat(answer).ignoringCase().contains("65");
   }
 
   @Test
