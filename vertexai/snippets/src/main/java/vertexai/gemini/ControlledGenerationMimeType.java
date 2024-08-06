@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,44 +16,48 @@
 
 package vertexai.gemini;
 
-// [START generativeaionvertexai_gemini_get_started]
-// [START aiplatform_gemini_get_started]
+// [START generativeaionvertexai_gemini_controlled_generation_response_mime_type]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
-import com.google.cloud.vertexai.generativeai.ContentMaker;
+import com.google.cloud.vertexai.api.GenerationConfig;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
-import com.google.cloud.vertexai.generativeai.PartMaker;
+import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import java.io.IOException;
 
-public class Quickstart {
-
+public class ControlledGenerationMimeType {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "your-google-cloud-project-id";
+    String projectId = "genai-java-demos";
     String location = "us-central1";
     String modelName = "gemini-1.5-flash-001";
 
-    String output = quickstart(projectId, location, modelName);
-    System.out.println(output);
+    controlGenerationWithMimeType(projectId, location, modelName);
   }
 
-  // Analyzes the provided Multimodal input.
-  public static String quickstart(String projectId, String location, String modelName)
+  // Generate responses that are always valid JSON
+  public static String controlGenerationWithMimeType(
+      String projectId, String location, String modelName)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      String imageUri = "gs://generativeai-downloads/images/scones.jpg";
+      GenerationConfig generationConfig = GenerationConfig.newBuilder()
+          .setResponseMimeType("application/json")
+          .build();
 
-      GenerativeModel model = new GenerativeModel(modelName, vertexAI);
-      GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
-          PartMaker.fromMimeTypeAndData("image/png", imageUri),
-          "What's in this photo"
-      ));
+      GenerativeModel model = new GenerativeModel(modelName, vertexAI)
+          .withGenerationConfig(generationConfig);
 
-      return response.toString();
+      GenerateContentResponse response = model.generateContent(
+          "List a few popular cookie recipes using this JSON schema:\n"
+               + "Recipe = {\"recipe_name\": str}\n"
+               + "Return: list[Recipe]"
+      );
+
+      String output = ResponseHandler.getText(response);
+      System.out.println(output);
+      return output;
     }
   }
 }
-// [END aiplatform_gemini_get_started]
-// [END generativeaionvertexai_gemini_get_started]
+// [END generativeaionvertexai_gemini_controlled_generation_response_mime_type]
