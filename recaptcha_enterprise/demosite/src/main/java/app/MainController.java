@@ -104,50 +104,6 @@ public class MainController {
   }
 
   /**
-   * On homepage load, execute reCAPTCHA Enterprise assessment and take action according to the
-   * score.
-   */
-  @PostMapping(value = "/on_homepage_load", produces = "application/json")
-  public static @ResponseBody ResponseEntity<HashMap<String, HashMap<String, String>>> onHomepageLoad(
-      @RequestBody Map<String, String> jsonData) {
-    final HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-    String recaptchaAction = PROPERTIES.getProperty("recaptcha_action.home");
-    HashMap<String, HashMap<String, String>> data = new HashMap<>();
-    Assessment assessmentResponse;
-
-    try {
-      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
-      assessmentResponse = CreateAssessment.createAssessment(
-          CONTEXT.get("project_id"), CONTEXT.get("site_key"),
-          jsonData.get("token"), recaptchaAction);
-
-      // Check if the token is valid, score is above threshold score and the action equals expected.
-      // Take action based on the result (BAD / NOT_BAD).
-      //
-      // If result.get("label") is NOT_BAD:
-      // Load the home page.
-      // Business logic.
-      //
-      // If result.get("label") is BAD:
-      // Trigger email/ phone verification flow.
-      HashMap<String, String> result = checkForBadAction(assessmentResponse, recaptchaAction);
-      // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
-
-      // Below code is only used to send response to the client for demo purposes.
-      // DO NOT send scores or other assessment response to the client.
-      // Return the response.
-      result.put("score", String.valueOf(assessmentResponse.getRiskAnalysis().getScore()));
-      data.put("data", result);
-      return new ResponseEntity<>(data, httpHeaders, HttpStatus.OK);
-    } catch (Exception e) {
-      HashMap<String, String> dataMap = data.computeIfAbsent("data", x -> new HashMap<>());
-      dataMap.put("error_msg", e.toString());
-      return new ResponseEntity<>(data, httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  /**
    * Return signup template.
    */
   @GetMapping(value = "/signup")
