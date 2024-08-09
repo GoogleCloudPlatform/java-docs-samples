@@ -43,14 +43,16 @@ public class GroundingWithPublicData {
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      Tool googleSearchTool = Tool.newBuilder()
-          .setGoogleSearchRetrieval(
-              GoogleSearchRetrieval.newBuilder())
-          .build();
+      Tool googleSearchTool =
+          Tool.newBuilder()
+              .setGoogleSearchRetrieval(
+                  // Enable using the result from this tool in detecting grounding
+                  GoogleSearchRetrieval.newBuilder())
+              .build();
 
-      GenerativeModel model = new GenerativeModel(modelName, vertexAI).withTools(
-          Collections.singletonList(googleSearchTool)
-      );
+      GenerativeModel model =
+          new GenerativeModel(modelName, vertexAI)
+              .withTools(Collections.singletonList(googleSearchTool));
 
       GenerateContentResponse response = model.generateContent("Why is the sky blue?");
 
