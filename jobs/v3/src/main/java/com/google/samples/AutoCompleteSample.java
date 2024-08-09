@@ -38,7 +38,7 @@ public final class AutoCompleteSample {
   private static CloudTalentSolution talentSolutionClient =
       JobServiceQuickstart.getTalentSolutionClient();
 
-  // [START auto_complete_job_title]
+  // [START job_auto_complete_job_title]
 
   /** Auto completes job titles within given companyName. */
   public static void jobTitleAutoComplete(String companyName, String query) throws IOException {
@@ -59,9 +59,9 @@ public final class AutoCompleteSample {
 
     System.out.println(results);
   }
-  // [END auto_complete_job_title]
+  // [END job_auto_complete_job_title]
 
-  // [START auto_complete_default]
+  // [START job_auto_complete_default]
   /** Auto completes job titles within given companyName. */
   public static void defaultAutoComplete(String companyName, String query) throws IOException {
     Complete complete =
@@ -79,7 +79,7 @@ public final class AutoCompleteSample {
 
     System.out.println(results);
   }
-  // [END auto_complete_default]
+  // [END job_auto_complete_default]
 
   public static void main(String... args) throws Exception {
     Company companyToBeCreated = BasicCompanySample.generateCompany().setDisplayName("Google");
