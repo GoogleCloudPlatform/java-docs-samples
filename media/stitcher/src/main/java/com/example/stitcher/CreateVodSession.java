@@ -38,6 +38,8 @@ public class CreateVodSession {
   }
 
   // Creates a video on demand (VOD) session using the parameters in the designated VOD config.
+  // For more information, see
+  // https://cloud.google.com/video-stitcher/docs/how-to/creating-vod-sessions.
   public static VodSession createVodSession(String projectId, String location, String vodConfigId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created

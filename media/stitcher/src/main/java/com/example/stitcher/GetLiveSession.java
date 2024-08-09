@@ -35,11 +35,11 @@ public class GetLiveSession {
     getLiveSession(projectId, location, sessionId);
   }
 
-  public static void getLiveSession(String projectId, String location, String sessionId)
+  // Gets a live session.
+  public static LiveSession getLiveSession(String projectId, String location, String sessionId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       GetLiveSessionRequest getLiveSessionRequest =
@@ -49,6 +49,7 @@ public class GetLiveSession {
 
       LiveSession response = videoStitcherServiceClient.getLiveSession(getLiveSessionRequest);
       System.out.println("Live session: " + response.getName());
+      return response;
     }
   }
 }

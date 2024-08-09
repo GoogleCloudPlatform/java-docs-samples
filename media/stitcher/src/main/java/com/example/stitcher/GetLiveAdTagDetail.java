@@ -36,12 +36,12 @@ public class GetLiveAdTagDetail {
     getLiveAdTagDetail(projectId, location, sessionId, adTagDetailId);
   }
 
-  public static void getLiveAdTagDetail(
+  // Gets a live ad tag detail in a live session.
+  public static LiveAdTagDetail getLiveAdTagDetail(
       String projectId, String location, String sessionId, String adTagDetailId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       GetLiveAdTagDetailRequest getLiveAdTagDetailRequest =
@@ -53,6 +53,7 @@ public class GetLiveAdTagDetail {
       LiveAdTagDetail response =
           videoStitcherServiceClient.getLiveAdTagDetail(getLiveAdTagDetailRequest);
       System.out.println("Live ad tag detail: " + response.getName());
+      return response;
     }
   }
 }

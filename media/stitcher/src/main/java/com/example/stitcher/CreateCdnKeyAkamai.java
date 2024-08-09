@@ -45,35 +45,36 @@ public class CreateCdnKeyAkamai {
   }
 
   // createCdnKeyAkamai creates an Akamai CDN key. A CDN key is used to retrieve protected media.
-  public static void createCdnKeyAkamai(
+  public static CdnKey createCdnKeyAkamai(
       String projectId, String location, String cdnKeyId, String hostname, String akamaiTokenKey)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
-    CdnKey cdnKey =
-        CdnKey.newBuilder()
-            .setHostname(hostname)
-            .setAkamaiCdnKey(
-                AkamaiCdnKey.newBuilder()
-                    .setTokenKey(ByteString.copyFromUtf8(akamaiTokenKey))
-                    .build())
-            .build();
+    // once, and can be reused for multiple requests.
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
+      CdnKey cdnKey =
+          CdnKey.newBuilder()
+              .setHostname(hostname)
+              .setAkamaiCdnKey(
+                  AkamaiCdnKey.newBuilder()
+                      .setTokenKey(ByteString.copyFromUtf8(akamaiTokenKey))
+                      .build())
+              .build();
 
-    CreateCdnKeyRequest createCdnKeyRequest =
-        CreateCdnKeyRequest.newBuilder()
-            .setParent(LocationName.of(projectId, location).toString())
-            .setCdnKeyId(cdnKeyId)
-            .setCdnKey(cdnKey)
-            .build();
+      CreateCdnKeyRequest createCdnKeyRequest =
+          CreateCdnKeyRequest.newBuilder()
+              .setParent(LocationName.of(projectId, location).toString())
+              .setCdnKeyId(cdnKeyId)
+              .setCdnKey(cdnKey)
+              .build();
 
-    CdnKey result =
-        videoStitcherServiceClient
-            .createCdnKeyAsync(createCdnKeyRequest)
-            .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-    System.out.println("Created new CDN key: " + result.getName());
-    videoStitcherServiceClient.close();
+      CdnKey result =
+          videoStitcherServiceClient
+              .createCdnKeyAsync(createCdnKeyRequest)
+              .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+      System.out.println("Created new CDN key: " + result.getName());
+      return result;
+    }
   }
 }
 // [END videostitcher_create_cdn_key_akamai]

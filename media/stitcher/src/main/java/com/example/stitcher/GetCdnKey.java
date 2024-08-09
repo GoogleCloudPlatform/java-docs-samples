@@ -35,11 +35,11 @@ public class GetCdnKey {
     getCdnKey(projectId, location, cdnKeyId);
   }
 
-  public static void getCdnKey(String projectId, String location, String cdnKeyId)
+  // Gets a CDN key.
+  public static CdnKey getCdnKey(String projectId, String location, String cdnKeyId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       GetCdnKeyRequest getCdnKeyRequest =
@@ -49,6 +49,7 @@ public class GetCdnKey {
 
       CdnKey response = videoStitcherServiceClient.getCdnKey(getCdnKeyRequest);
       System.out.println("CDN key: " + response.getName());
+      return response;
     }
   }
 }

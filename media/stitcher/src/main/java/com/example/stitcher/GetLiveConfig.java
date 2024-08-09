@@ -35,11 +35,11 @@ public class GetLiveConfig {
     getLiveConfig(projectId, location, liveConfigId);
   }
 
-  public static void getLiveConfig(String projectId, String location, String liveConfigId)
+  // Gets a live config.
+  public static LiveConfig getLiveConfig(String projectId, String location, String liveConfigId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       GetLiveConfigRequest getLiveConfigRequest =
@@ -49,6 +49,7 @@ public class GetLiveConfig {
 
       LiveConfig response = videoStitcherServiceClient.getLiveConfig(getLiveConfigRequest);
       System.out.println("Live config: " + response.getName());
+      return response;
     }
   }
 }
