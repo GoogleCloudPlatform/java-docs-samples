@@ -16,7 +16,7 @@
 
 package aiplatform.imagen;
 
-// [START generativeaionvertexai_imagen_generate_image]
+// [START generativeaionvertexai_imagen_edit_image_mask_free]
 
 import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.aiplatform.v1.EndpointName;
@@ -28,26 +28,31 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GenerateImageSample {
+public class EditImageMaskFreeSample {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
+    String inputPath = "/path/to/my-input.png";
     String prompt = ""; // The text prompt describing what you want to see.
 
-    generateImage(projectId, location, prompt);
+    editImageMaskFree(projectId, location, inputPath, prompt);
   }
 
-  // Generate an image using a text prompt using an Imagen model
-  public static PredictResponse generateImage(String projectId, String location, String prompt)
+  // Edit an image without using a mask. The edit is applied to the entire image and is saved to a
+  // new file.
+  public static PredictResponse editImageMaskFree(
+      String projectId, String location, String inputPath, String prompt)
       throws ApiException, IOException {
     final String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     PredictionServiceSettings predictionServiceSettings =
@@ -60,20 +65,26 @@ public class GenerateImageSample {
 
       final EndpointName endpointName =
           EndpointName.ofProjectLocationPublisherModelName(
-              projectId, location, "google", "imagen-3.0-generate-001");
+              projectId, location, "google", "imagegeneration@002");
+
+      // Convert the image to Base64.
+      byte[] imageData = Base64.getEncoder().encode(Files.readAllBytes(Paths.get(inputPath)));
+      String image = new String(imageData, StandardCharsets.UTF_8);
+      Map<String, String> imageMap = new HashMap<>();
+      imageMap.put("bytesBase64Encoded", image);
 
       Map<String, Object> instancesMap = new HashMap<>();
       instancesMap.put("prompt", prompt);
+      instancesMap.put("image", imageMap);
       Value instances = mapToValue(instancesMap);
 
       Map<String, Object> paramsMap = new HashMap<>();
+      // Optional parameters
+      paramsMap.put("seed", 1);
+      // Controls the strength of the prompt.
+      // 0-9 (low strength), 10-20 (medium strength), 21+ (high strength)
+      paramsMap.put("guidanceScale", 21);
       paramsMap.put("sampleCount", 1);
-      // You can't use a seed value and watermark at the same time.
-      // paramsMap.put("seed", 100);
-      // paramsMap.put("addWatermark", false);
-      paramsMap.put("aspectRatio", "1:1");
-      paramsMap.put("safetyFilterLevel", "block_some");
-      paramsMap.put("personGeneration", "allow_adult");
       Value parameters = mapToValue(paramsMap);
 
       PredictResponse predictResponse =
@@ -102,4 +113,4 @@ public class GenerateImageSample {
   }
 }
 
-// [END generativeaionvertexai_imagen_generate_image]
+// [END generativeaionvertexai_imagen_edit_image_mask_free]

@@ -33,10 +33,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class GenerateImageSampleTest {
+public class EditImageMaskFreeSampleTest {
 
   private static final String PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String PROMPT = "a dog reading a newspaper";
+  private static final String INPUT_FILE = "resources/cat.png";
+  private static final String PROMPT = "a dog";
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -68,8 +69,9 @@ public class GenerateImageSampleTest {
   }
 
   @Test
-  public void testGenerateImageSample() throws IOException {
-    PredictResponse response = GenerateImageSample.generateImage(PROJECT, "us-central1", PROMPT);
+  public void testEditImageMaskFreeSample() throws IOException {
+    PredictResponse response =
+        EditImageMaskFreeSample.editImageMaskFree(PROJECT, "us-central1", INPUT_FILE, PROMPT);
     assertThat(response).isNotNull();
 
     Boolean imageBytes = false;
