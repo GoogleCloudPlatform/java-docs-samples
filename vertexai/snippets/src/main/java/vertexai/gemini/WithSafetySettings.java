@@ -17,7 +17,6 @@
 package vertexai.gemini;
 
 // [START generativeaionvertexai_gemini_safety_settings]
-// [START aiplatform_gemini_safety_settings]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Candidate;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -85,5 +84,4 @@ public class WithSafetySettings {
     }
   }
 }
-// [END aiplatform_gemini_safety_settings]
 // [END generativeaionvertexai_gemini_safety_settings]
