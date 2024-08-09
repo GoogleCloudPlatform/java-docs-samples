@@ -66,14 +66,14 @@ public class ApacheIcebergRead {
 
     // Configure the Iceberg source I/O
     Map catalogConfig = ImmutableMap.<String, Object>builder()
-        .put("catalog_name", options.getCatalogName())
-        .put("warehouse_location", options.getWarehouseLocation())
-        .put("catalog_type", CATALOG_TYPE)
+        .put("warehouse", options.getWarehouseLocation())
+        .put("type", CATALOG_TYPE)
         .build();
 
     ImmutableMap<String, Object> config = ImmutableMap.<String, Object>builder()
         .put("table", options.getTableName())
-        .put("catalog_config", catalogConfig)
+        .put("catalog_name", options.getCatalogName())
+        .put("catalog_properties", catalogConfig)
         .build();
 
     // Build the pipeline.
