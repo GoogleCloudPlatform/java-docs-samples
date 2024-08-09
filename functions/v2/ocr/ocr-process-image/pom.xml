@@ -41,7 +41,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.32.0</version>
+        <version>26.43.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -63,7 +63,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.30</version>
+      <version>1.18.34</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -84,7 +84,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloudevent-types</artifactId>
-      <version>0.14.0</version>
+      <version>0.15.0</version>
     </dependency>
 
     <!-- The following dependencies are only required for testing -->
@@ -97,7 +97,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.4.0</version>
+      <version>1.4.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -131,7 +131,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.5</version>
+        <version>3.3.1</version>
         <configuration>
           <skipTests>${skipTests}</skipTests>
           <reportNameSuffix>sponge_log</reportNameSuffix>
