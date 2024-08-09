@@ -239,6 +239,19 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testComplexFunctionCalling() throws Exception {
+    String textPrompt = "What is the weather like in Boston?";
+
+    String answer =
+        ComplexFunctionCalling.complexFunctionCalling(
+            PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
+    assertThat(answer).ignoringCase().contains("Boston");
+    assertThat(answer).ignoringCase().contains("Partly Cloudy");
+    assertThat(answer).ignoringCase().contains("temperature");
+    assertThat(answer).ignoringCase().contains("65");
+  }
+
+  @Test
   public void testAudioInputSummary() throws IOException {
     String output = AudioInputSummarization.summarizeAudio(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
