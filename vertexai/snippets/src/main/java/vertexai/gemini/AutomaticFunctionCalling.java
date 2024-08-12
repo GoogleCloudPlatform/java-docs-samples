@@ -16,10 +16,6 @@
 
 package vertexai.gemini;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
 // [START generativeaionvertexai_gemini_automatic_function_calling]
 // [START aiplatform_gemini_automatic_function_calling]
 import com.google.cloud.vertexai.VertexAI;
@@ -31,6 +27,9 @@ import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.FunctionDeclarationMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class AutomaticFunctionCalling {
   public static void main(String[] args) throws IOException, NoSuchMethodException {
@@ -54,7 +53,7 @@ public class AutomaticFunctionCalling {
     }
   }
 
-  // Use the Automatic Function Calling feature to auto-respond to Function Call requests from the model.
+  // Use the Automatic Function Calling feature to auto-respond to model's Function Call requests.
   public static String automaticFunctionCalling(
       String projectId, String location, String modelName, String promptText)
       throws IOException, NoSuchMethodException {

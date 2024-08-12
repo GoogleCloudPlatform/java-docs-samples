@@ -242,7 +242,7 @@ public class SnippetsIT {
     String textPrompt = "What's the weather in Paris?";
 
     String answer =
-        AutomaticFunctionCalling.whatsTheWeatherLike(
+        AutomaticFunctionCalling.automaticFunctionCalling(
             PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
     assertThat(answer).ignoringCase().contains("Paris");
     assertThat(answer).ignoringCase().contains("raining");
