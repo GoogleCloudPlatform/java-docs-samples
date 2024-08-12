@@ -35,11 +35,11 @@ public class GetSlate {
     getSlate(projectId, location, slateId);
   }
 
-  public static void getSlate(String projectId, String location, String slateId)
+  // Gets a slate.
+  public static Slate getSlate(String projectId, String location, String slateId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       GetSlateRequest getSlateRequest =
@@ -49,6 +49,7 @@ public class GetSlate {
 
       Slate response = videoStitcherServiceClient.getSlate(getSlateRequest);
       System.out.println("Slate: " + response.getName());
+      return response;
     }
   }
 }
