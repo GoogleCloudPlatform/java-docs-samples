@@ -16,6 +16,7 @@
 
 package com.example.dataflow;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -26,6 +27,8 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import org.apache.beam.sdk.PipelineResult;
+import org.apache.beam.sdk.PipelineResult.State;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -76,12 +79,14 @@ public class KafkaReadIT {
 
   @Test
   public void testApacheKafkaRead() throws IOException {
-    KafkaRead.main(new String[] {
+    PipelineResult.State state = KafkaRead.main(new String[] {
         "--runner=DirectRunner",
         "--bootstrapServer=" + bootstrapServer,
         "--topic=" + TOPIC_NAME,
         "--outputPath=" + OUTPUT_FILE_NAME_PREFIX
     });
+    assertEquals(PipelineResult.State.DONE, state);
+
     // Verify the pipeline wrote the output.
     String output = Files.readString(Paths.get(OUTPUT_FILE_NAME));
     assertTrue(output.contains("event-0"));

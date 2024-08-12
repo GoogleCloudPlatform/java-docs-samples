@@ -20,6 +20,7 @@ package com.example.dataflow;
 import com.google.common.collect.ImmutableMap;
 import java.io.UnsupportedEncodingException;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.managed.Managed;
 import org.apache.beam.sdk.options.Description;
@@ -47,7 +48,7 @@ public class KafkaRead {
     void setOutputPath(String value);
   }
 
-  public static void main(String[] args) {
+  public static PipelineResult.State main(String[] args) {
     // Parse the pipeline options passed into the application. Example:
     //   --bootstrap_servers=$BOOTSTRAP_SERVERS --topic=$KAFKA_TOPIC --outputPath=$OUTPUT_FILE
     // For more information, see https://beam.apache.org/documentation/programming-guide/#configuring-pipeline-options
@@ -85,7 +86,7 @@ public class KafkaRead {
             .withSuffix(".txt")
             .withNumShards(1)
     );
-    pipeline.run().waitUntilFinish();
+    return pipeline.run().waitUntilFinish();
   }
 }
 // [END dataflow_kafka_read]
