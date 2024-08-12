@@ -54,7 +54,7 @@ public class AutomaticFunctionCalling {
     }
   }
 
-  // Use the Automatic Function Calling feature to auto-response Function Call requests from the model.
+  // Use the Automatic Function Calling feature to auto-respond to Function Call requests from the model.
   public static String automaticFunctionCalling(
       String projectId, String location, String modelName, String promptText)
       throws IOException, NoSuchMethodException {
