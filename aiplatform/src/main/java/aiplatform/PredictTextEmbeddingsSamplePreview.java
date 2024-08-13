@@ -46,7 +46,7 @@ public class PredictTextEmbeddingsSamplePreview {
         endpoint,
         project,
         model,
-        List.of("banana bread?", "banana muffins?"),
+        List.of("Retrieve a function that adds two numbers", "def func(a, b): return a + b"),
         "CODE_RETRIEVAL_QUERY",
         OptionalInt.of(256));
   }
