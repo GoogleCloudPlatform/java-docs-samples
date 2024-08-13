@@ -36,7 +36,7 @@ public class SetMuteUndefinedFinding {
     //  - folders/{folder_id}/sources/{source_id}/finding/{finding_id}
     //  - projects/{project_id}/sources/{source_id}/finding/{finding_id}
     String findingPath = "{path-to-the-finding}";
-    setUnmute(findingPath);
+    setMuteUndefined(findingPath);
   }
 
   // Reset mute state of an individual finding.
