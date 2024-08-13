@@ -188,16 +188,6 @@ public class TestUtils {
     }
   }
 
-  // Finds the play URI in the given output.
-  public static String getPlayUri(String output) {
-    Matcher uriMatcher = Pattern.compile("Play URI: (.*)").matcher(output);
-    String playUri = null;
-    if (uriMatcher.find()) {
-      playUri = uriMatcher.group(1);
-    }
-    return playUri;
-  }
-
   // Connects to the play URI and returns the renditions information.
   public static String getRenditions(String playUri) throws IOException {
     URL url = new URL(playUri);
