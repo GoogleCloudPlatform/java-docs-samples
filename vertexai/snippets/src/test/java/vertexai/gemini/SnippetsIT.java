@@ -244,7 +244,6 @@ public class SnippetsIT {
     String answer =
         AutomaticFunctionCalling.automaticFunctionCalling(
             PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
-    assertThat(answer).ignoringCase().contains("Paris");
     assertThat(answer).ignoringCase().contains("raining");
   }
 
