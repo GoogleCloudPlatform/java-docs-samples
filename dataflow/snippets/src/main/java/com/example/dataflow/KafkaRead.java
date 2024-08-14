@@ -31,7 +31,7 @@ import org.apache.beam.sdk.values.TypeDescriptors;
 
 public class KafkaRead {
 
-// [END dataflow_kafka_read]
+  // [END dataflow_kafka_read]
   public interface Options extends StreamingOptions {
     @Description("The Kafka bootstrap server. Example: localhost:9092")
     String getBootstrapServer();
@@ -93,8 +93,7 @@ public class KafkaRead {
             .write()
             .to(options.getOutputPath())
             .withSuffix(".txt")
-            .withNumShards(1)
-        );
+            .withNumShards(1));
     return pipeline;
   }
 }
