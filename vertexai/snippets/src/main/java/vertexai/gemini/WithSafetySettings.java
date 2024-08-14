@@ -53,8 +53,6 @@ public class WithSafetySettings {
           GenerationConfig.newBuilder()
               .setMaxOutputTokens(2048)
               .setTemperature(0.4F)
-              .setTopK(32)
-              .setTopP(1)
               .build();
 
       List<SafetySetting> safetySettings = Arrays.asList(
@@ -64,7 +62,7 @@ public class WithSafetySettings {
               .build(),
           SafetySetting.newBuilder()
               .setCategory(HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT)
-              .setThreshold(SafetySetting.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE)
+              .setThreshold(SafetySetting.HarmBlockThreshold.BLOCK_LOW_AND_ABOVE)
               .build()
       );
 
