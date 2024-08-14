@@ -31,6 +31,7 @@ import org.apache.beam.sdk.values.TypeDescriptors;
 
 public class KafkaRead {
 
+// [END dataflow_kafka_read]
   public interface Options extends StreamingOptions {
     @Description("The Kafka bootstrap server. Example: localhost:9092")
     String getBootstrapServer();
@@ -55,7 +56,14 @@ public class KafkaRead {
     var options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
     options.setStreaming(true);
 
-    var pipeline = Pipeline.create(options);
+    Pipeline pipeline = createPipeline(options);
+    return pipeline.run().waitUntilFinish();
+  }
+
+  // [START dataflow_kafka_read]
+  public static Pipeline createPipeline(Options options) {
+
+    // Create configuration parameters for the Managed I/O transform.
     ImmutableMap<String, Object> config = ImmutableMap.<String, Object>builder()
         .put("bootstrap_servers", options.getBootstrapServer())
         .put("topic", options.getTopic())
@@ -65,6 +73,7 @@ public class KafkaRead {
         .build();
 
     // Build the pipeline.
+    var pipeline = Pipeline.create(options);
     pipeline
         // Read messages from Kafka.
         .apply(Managed.read(Managed.KAFKA).withConfig(config)).getSinglePCollection()
@@ -85,8 +94,8 @@ public class KafkaRead {
             .to(options.getOutputPath())
             .withSuffix(".txt")
             .withNumShards(1)
-    );
-    return pipeline.run().waitUntilFinish();
+        );
+    return pipeline;
   }
 }
 // [END dataflow_kafka_read]
