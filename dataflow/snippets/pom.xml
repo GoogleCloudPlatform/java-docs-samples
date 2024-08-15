@@ -156,6 +156,27 @@
       <version>${iceberg.version}</version>
     </dependency>
 
+    <!-- Kafka -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-io-kafka</artifactId>
+      <version>${apache_beam.version}</version>
+    </dependency>
+    <dependency>
+      <!-- For sending Kafka messages in the integration test -->
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>3.8.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <!-- For running containerized Kafka instance in the integration test -->
+      <groupId>org.testcontainers</groupId>
+      <artifactId>kafka</artifactId>
+      <version>1.20.0</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Google Cloud -->
     <dependency>
       <groupId>com.google.cloud</groupId>
