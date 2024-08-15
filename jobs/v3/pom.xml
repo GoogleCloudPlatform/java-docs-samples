@@ -40,7 +40,7 @@
   </dependencyManagement>
 
   <dependencies>
-    <!-- [START job_dependencies] -->
+    <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-jobs</artifactId>
@@ -54,9 +54,9 @@
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
     </dependency>
-    <!-- [END job_dependencies] -->
+    <!-- [END dependencies] -->
 
-    <!-- Test job_dependencies -->
+    <!-- Test dependencies -->
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
