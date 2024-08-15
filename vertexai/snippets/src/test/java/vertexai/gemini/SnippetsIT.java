@@ -210,8 +210,7 @@ public class SnippetsIT {
   public void testSafetySettings() throws Exception {
     String textPrompt = "Hello World!";
 
-    String output =
-        WithSafetySettings.safetyCheck(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
+    String output = WithSafetySettings.safetyCheck(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
     assertThat(output).isNotEmpty();
     assertThat(output).contains("reasons?");
   }
@@ -236,6 +235,16 @@ public class SnippetsIT {
         FunctionCalling.whatsTheWeatherLike(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
     assertThat(answer).ignoringCase().contains("Paris");
     assertThat(answer).ignoringCase().contains("sunny");
+  }
+
+  @Test
+  public void testAutomaticFunctionCalling() throws Exception {
+    String textPrompt = "What's the weather in Paris?";
+
+    String answer =
+        AutomaticFunctionCalling.automaticFunctionCalling(
+            PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
+    assertThat(answer).ignoringCase().contains("raining");
   }
 
   @Test
@@ -286,20 +295,22 @@ public class SnippetsIT {
 
   @Test
   public void testGroundingWithPublicData() throws Exception {
-    String output = GroundingWithPublicData.groundWithPublicData(
-        PROJECT_ID, LOCATION, GEMINI_FLASH);
+    String output =
+        GroundingWithPublicData.groundWithPublicData(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
     assertThat(output).ignoringCase().contains("Rayleigh");
   }
 
   @Test
   public void testGroundingWithPrivateData() throws Exception {
-    String output = GroundingWithPrivateData.groundWithPrivateData(
-        PROJECT_ID, LOCATION, GEMINI_FLASH,
-        String.format(
-            "projects/%s/locations/global/collections/default_collection/dataStores/%s",
-            PROJECT_ID, DATASTORE_ID)
-        );
+    String output =
+        GroundingWithPrivateData.groundWithPrivateData(
+            PROJECT_ID,
+            LOCATION,
+            GEMINI_FLASH,
+            String.format(
+                "projects/%s/locations/global/collections/default_collection/dataStores/%s",
+                PROJECT_ID, DATASTORE_ID));
 
     assertThat(output).ignoringCase().contains("DMV");
   }
