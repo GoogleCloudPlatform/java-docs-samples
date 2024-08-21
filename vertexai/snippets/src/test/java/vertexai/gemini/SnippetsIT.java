@@ -178,8 +178,7 @@ public class SnippetsIT {
   @Test
   public void testQuickstart() throws IOException {
     String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    // Disabled assertion, pending resolution of b/342637034
-    // assertThat(output).contains("Colosseum");
+    assertThat(output).contains("scones");
   }
 
   @Test
@@ -211,8 +210,7 @@ public class SnippetsIT {
   public void testSafetySettings() throws Exception {
     String textPrompt = "Hello World!";
 
-    String output =
-        WithSafetySettings.safetyCheck(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
+    String output = WithSafetySettings.safetyCheck(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
     assertThat(output).isNotEmpty();
     assertThat(output).contains("reasons?");
   }
@@ -250,6 +248,16 @@ public class SnippetsIT {
     assertThat(answer).ignoringCase().contains("Partly Cloudy");
     assertThat(answer).ignoringCase().contains("temperature");
     assertThat(answer).ignoringCase().contains("65");
+}
+  
+  @Test
+  public void testAutomaticFunctionCalling() throws Exception {
+    String textPrompt = "What's the weather in Paris?";
+
+    String answer =
+        AutomaticFunctionCalling.automaticFunctionCalling(
+            PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
+    assertThat(answer).ignoringCase().contains("raining");
   }
 
   @Test
@@ -300,20 +308,22 @@ public class SnippetsIT {
 
   @Test
   public void testGroundingWithPublicData() throws Exception {
-    String output = GroundingWithPublicData.groundWithPublicData(
-        PROJECT_ID, LOCATION, GEMINI_FLASH);
+    String output =
+        GroundingWithPublicData.groundWithPublicData(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
     assertThat(output).ignoringCase().contains("Rayleigh");
   }
 
   @Test
   public void testGroundingWithPrivateData() throws Exception {
-    String output = GroundingWithPrivateData.groundWithPrivateData(
-        PROJECT_ID, LOCATION, GEMINI_FLASH,
-        String.format(
-            "projects/%s/locations/global/collections/default_collection/dataStores/%s",
-            PROJECT_ID, DATASTORE_ID)
-        );
+    String output =
+        GroundingWithPrivateData.groundWithPrivateData(
+            PROJECT_ID,
+            LOCATION,
+            GEMINI_FLASH,
+            String.format(
+                "projects/%s/locations/global/collections/default_collection/dataStores/%s",
+                PROJECT_ID, DATASTORE_ID));
 
     assertThat(output).ignoringCase().contains("DMV");
   }
