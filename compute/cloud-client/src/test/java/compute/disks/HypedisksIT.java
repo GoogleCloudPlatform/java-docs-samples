@@ -100,7 +100,7 @@ public class HypedisksIT {
             PROJECT_ID, ZONE);
     StoragePool storagePool = CreateHyperdiskStoragePool
             .createHyperdiskStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME, poolType,
-                "advanced", 10240, 20000, 10240);
+                  "advanced", 10240, 20000, 10240);
 
     Assert.assertNotNull(storagePool);
     Assert.assertEquals(STORAGE_POOL_NAME, storagePool.getName());
@@ -120,8 +120,8 @@ public class HypedisksIT {
             .format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/storagePools/%s",
                     PROJECT_ID, ZONE, STORAGE_POOL_NAME);
     Disk disk = CreateDiskInStoragePool
-           .createDiskInStoragePool(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME, storagePoolLink,
-                   diskType, 10, 3000, 140);
+            .createDiskInStoragePool(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME, storagePoolLink,
+                    diskType, 10, 3000, 140);
 
     Assert.assertNotNull(disk);
     Assert.assertEquals(HYPERDISK_IN_POOL_NAME, disk.getName());
