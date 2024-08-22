@@ -51,7 +51,7 @@ public class HypedisksIT {
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
-          .that(System.getenv(envVarName)).isNotEmpty();
+            .that(System.getenv(envVarName)).isNotEmpty();
   }
 
   @BeforeAll
@@ -66,7 +66,7 @@ public class HypedisksIT {
 
   @AfterAll
   public static void cleanup()
-        throws IOException, InterruptedException, ExecutionException, TimeoutException {
+          throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Delete all disks created for testing.
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
@@ -78,11 +78,11 @@ public class HypedisksIT {
 
   @Test
   public void stage1_CreateHyperdiskTest()
-        throws IOException, ExecutionException, InterruptedException, TimeoutException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType = String.format("zones/%s/diskTypes/hyperdisk-balanced", ZONE);
 
     Disk hyperdisk = CreateHyperdisk
-          .createHyperdisk(PROJECT_ID, ZONE, HYPERDISK_NAME, diskType, 10, 3000, 140);
+            .createHyperdisk(PROJECT_ID, ZONE, HYPERDISK_NAME, diskType, 10, 3000, 140);
 
     Assert.assertNotNull(hyperdisk);
     Assert.assertEquals(HYPERDISK_NAME, hyperdisk.getName());
@@ -95,11 +95,11 @@ public class HypedisksIT {
 
   @Test
   public void stage1_CreateHyperdiskStoragePoolTest()
-        throws IOException, ExecutionException, InterruptedException, TimeoutException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String poolType = String.format("projects/%s/zones/%s/storagePoolTypes/hyperdisk-balanced",
-        PROJECT_ID, ZONE);
+            PROJECT_ID, ZONE);
     StoragePool storagePool = CreateHyperdiskStoragePool
-          .createHyperdiskStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME, poolType,
+            .createHyperdiskStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME, poolType,
                 "advanced", 10240, 20000, 10240);
 
     Assert.assertNotNull(storagePool);
@@ -114,14 +114,14 @@ public class HypedisksIT {
 
   @Test
   public void stage2_CreateHyperdiskStoragePoolTest()
-        throws IOException, ExecutionException, InterruptedException, TimeoutException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType = String.format("zones/%s/diskTypes/hyperdisk-balanced", ZONE);
     String storagePoolLink = String
-        .format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/storagePools/%s",
-            PROJECT_ID, ZONE, STORAGE_POOL_NAME);
+            .format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/storagePools/%s",
+                    PROJECT_ID, ZONE, STORAGE_POOL_NAME);
     Disk disk = CreateDiskInStoragePool
-          .createDiskInStoragePool(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME, storagePoolLink,
-                diskType, 10, 3000, 140);
+           .createDiskInStoragePool(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME, storagePoolLink,
+                   diskType, 10, 3000, 140);
 
     Assert.assertNotNull(disk);
     Assert.assertEquals(HYPERDISK_IN_POOL_NAME, disk.getName());
