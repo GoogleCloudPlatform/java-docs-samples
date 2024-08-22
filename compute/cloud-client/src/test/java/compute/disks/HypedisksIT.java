@@ -100,7 +100,7 @@ public class HypedisksIT {
             PROJECT_ID, ZONE);
     StoragePool storagePool = CreateHyperdiskStoragePool
             .createHyperdiskStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME, poolType,
-                  "advanced", 10240, 20000, 10240);
+                    "advanced", 10240, 20000, 10240);
 
     Assert.assertNotNull(storagePool);
     Assert.assertEquals(STORAGE_POOL_NAME, storagePool.getName());
