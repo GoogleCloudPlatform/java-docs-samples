@@ -33,7 +33,7 @@ public class DeleteReservation {
     // TODO(developer): Replace these variables before running the sample.
     // projectId: project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
-    // reservationName: name of the reservation you want to delete.
+    // Name of the reservation you want to delete.
     String reservationName = "YOUR_RESERVATION_NAME";
     // Name of the zone.
     String zone = "us-central1-a";
@@ -45,9 +45,7 @@ public class DeleteReservation {
   public static void deleteReservation(String projectId, String zone, String reservationName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     /* Initialize client that will be used to send requests. This client only needs to be created
-       once, and can be reused for multiple requests. After completing all of your requests, call
-       the `reservationsClient.close()` method on the client to safely
-       clean up any remaining background resources. */
+       once, and can be reused for multiple requests. */
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
 
       DeleteReservationRequest deleteReservationRequest = DeleteReservationRequest.newBuilder()
