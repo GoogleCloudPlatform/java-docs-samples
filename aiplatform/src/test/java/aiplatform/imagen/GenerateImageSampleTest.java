@@ -21,12 +21,8 @@ import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.aiplatform.v1.PredictResponse;
 import com.google.protobuf.Value;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Map;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,9 +33,6 @@ public class GenerateImageSampleTest {
 
   private static final String PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String PROMPT = "a dog reading a newspaper";
-  private ByteArrayOutputStream bout;
-  private PrintStream out;
-  private PrintStream originalPrintStream;
 
   private static void requireEnvVar(String varName) {
     String errorMessage =
@@ -51,20 +44,6 @@ public class GenerateImageSampleTest {
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-  }
-
-  @Before
-  public void setUp() {
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    originalPrintStream = System.out;
-    System.setOut(out);
-  }
-
-  @After
-  public void tearDown() {
-    System.out.flush();
-    System.setOut(originalPrintStream);
   }
 
   @Test
@@ -79,6 +58,6 @@ public class GenerateImageSampleTest {
         imageBytes = true;
       }
     }
-    assert (imageBytes);
+    assertThat(imageBytes).isTrue();
   }
 }
