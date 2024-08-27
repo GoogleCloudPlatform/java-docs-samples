@@ -248,7 +248,7 @@ public class SnippetsIT {
     assertThat(answer).ignoringCase().contains("Partly Cloudy");
     assertThat(answer).ignoringCase().contains("temperature");
     assertThat(answer).ignoringCase().contains("65");
-}
+  }
   
   @Test
   public void testAutomaticFunctionCalling() throws Exception {
