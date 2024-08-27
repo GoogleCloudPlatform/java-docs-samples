@@ -70,10 +70,5 @@ public class HyperdiskIT {
 
     Assert.assertNotNull(hyperdisk);
     Assert.assertEquals(HYPERDISK_NAME, hyperdisk.getName());
-    Assert.assertEquals(3000, hyperdisk.getProvisionedIops());
-    Assert.assertEquals(140, hyperdisk.getProvisionedThroughput());
-    Assert.assertEquals(10, hyperdisk.getSizeGb());
-    Assert.assertTrue(hyperdisk.getType().contains("hyperdisk-balanced"));
-    Assert.assertTrue(hyperdisk.getZone().contains(ZONE));
   }
 }

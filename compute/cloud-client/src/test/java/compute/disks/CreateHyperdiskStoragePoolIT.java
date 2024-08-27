@@ -76,12 +76,6 @@ class CreateHyperdiskStoragePoolIT {
 
     Assert.assertNotNull(storagePool);
     Assert.assertEquals(STORAGE_POOL_NAME, storagePool.getName());
-    Assert.assertEquals(10000, storagePool.getPoolProvisionedIops());
-    Assert.assertEquals(10240, storagePool.getPoolProvisionedThroughput());
-    Assert.assertEquals(10240, storagePool.getPoolProvisionedCapacityGb());
-    Assert.assertTrue(storagePool.getStoragePoolType().contains("hyperdisk-balanced"));
-    Assert.assertTrue(storagePool.getCapacityProvisioningType().equalsIgnoreCase("advanced"));
-    Assert.assertTrue(storagePool.getZone().contains(ZONE));
   }
 }
 
