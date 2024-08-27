@@ -9,7 +9,8 @@ sourceSets {
     // In Gradle 8, the default location is app/src/java, which does not match
     // Maven's directory structure.
     main.java.srcDirs = ['src/main/java']
-    main.resources.srcDirs = ['src/resources']
+    main.resources.srcDirs = ['src/main/resources', 'src/main/webapp']
+    test.java.srcDirs = ['src/test/java']
 }
 
 dependencies {
