@@ -56,6 +56,7 @@ public class GenerateImageSampleTest {
       Map<String, Value> fieldsMap = prediction.getStructValue().getFieldsMap();
       if (fieldsMap.containsKey("bytesBase64Encoded")) {
         imageBytes = true;
+        break;
       }
     }
     assertThat(imageBytes).isTrue();
