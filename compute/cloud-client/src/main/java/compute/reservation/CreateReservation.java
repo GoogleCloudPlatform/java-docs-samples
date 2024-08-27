@@ -20,11 +20,9 @@ import com.google.cloud.compute.v1.AcceleratorConfig;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationReservedInstanceProperties;
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
-import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
-import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -42,25 +40,30 @@ public class CreateReservation {
     // Name of the zone in which you want to create the disk.
     String zone = "us-central1-a";
     // Name of the reservation you want to create.
-    String reservationName = "test-disk-name";
+    String reservationName = "test-reservation-name";
     // Machine type of the instances in the reservation.
-    String machineType = "n2-standard-4";
-    int numberOfAccelerators = 2;
-    String acceleratorType = "nvidia-tesla-k80";
-    String minCpuPlatform = "Intel Cascade Lake";
-    long localSsdSizeGb = 375;
+    String machineType = "n1-standard-2";
+    // Number of accelerators to be attached to the instances in the reservation.
+    int numberOfAccelerators = 1;
+    // Accelerator type to be attached to the instances in the reservation.
+    String acceleratorType = "nvidia-tesla-t4";
+    // Minimum CPU platform to be attached to the instances in the reservation.
+    String minCpuPlatform = "Intel Skylake";
+    // Local SSD size in GB to be attached to the instances in the reservation.
+    int localSsdSize = 375;
+    // Local SSD interfaces to be attached to the instances in the reservation.
     String localSsdInterface1 = "NVME";
     String localSsdInterface2 = "SCSI";
-
+    // Number of instances in the reservation.
     long numberOfVms = 3;
 
-    createReservationWithRegion(projectId, reservationName, machineType, numberOfVms, zone, numberOfAccelerators, acceleratorType, minCpuPlatform, localSsdSizeGb,
-        localSsdInterface1,
-        localSsdInterface2);
+    createReservation(projectId, reservationName, machineType, numberOfVms, zone,
+        numberOfAccelerators, acceleratorType, minCpuPlatform,
+        localSsdSize, localSsdInterface1, localSsdInterface2);
   }
 
-  // Creates a reservation in a project for the Instance Template with regional location.
-  public static void createReservationWithRegion(
+  // Creates reservation with optional flags
+  public static void createReservation(
       String projectId,
       String reservationName,
       String machineType,
@@ -68,7 +71,8 @@ public class CreateReservation {
       String zone,
       int numberOfAccelerators,
       String acceleratorType,
-      String minCpuPlatform, long localSsdSizeGb,
+      String minCpuPlatform,
+      int localSsdSizeGb,
       String localSsdInterface1,
       String localSsdInterface2)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -81,7 +85,15 @@ public class CreateReservation {
       String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
 
 
-      // Create the reservation.
+      // Create the reservation with optional properties:
+      // machineType,
+      // numberOfAccelerators,
+      // acceleratorType,
+      // minCpuPlatform,
+      // localSsdSize,
+      // localSsdInterface1,
+      // localSsdInterface2
+
       Reservation reservation =
           Reservation.newBuilder()
               .setName(reservationName)
@@ -98,23 +110,20 @@ public class CreateReservation {
                               .addGuestAccelerators(
                                   AcceleratorConfig.newBuilder()
                                       .setAcceleratorCount(numberOfAccelerators)
-                                      .setAcceleratorType(
-                                          String.format(
-                                              "projects/%s/zones/%s/acceleratorTypes/%s",
-                                              projectId, zone, acceleratorType))
+                                      .setAcceleratorType(acceleratorType)
                                       .build())
-                              .build())
-                      .addLocalSsds(
-                          AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk
-                              .newBuilder()
-                              .setDiskSizeGb(localSsdSizeGb)
-                              .setInterface(localSsdInterface1)
-                              .build())
-                      .addLocalSsds(
-                          AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk
-                              .newBuilder()
-                              .setDiskSizeGb(localSsdSizeGb)
-                              .setInterface(localSsdInterface2)
+                              .addLocalSsds(
+                            AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk
+                                      .newBuilder()
+                                      .setDiskSizeGb(localSsdSizeGb)
+                                      .setInterface(localSsdInterface1)
+                                      .build())
+                              .addLocalSsds(
+                            AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk
+                                      .newBuilder()
+                                      .setDiskSizeGb(localSsdSizeGb)
+                                      .setInterface(localSsdInterface2)
+                                      .build())
                               .build())
                       .build())
               .build();
