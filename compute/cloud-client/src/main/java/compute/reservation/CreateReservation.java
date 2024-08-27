@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package compute;
+package compute.reservation;
 
+import com.google.cloud.compute.v1.AcceleratorConfig;
+import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationReservedInstanceProperties;
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
-import com.google.cloud.compute.v1.MachineType;
-import com.google.cloud.compute.v1.MachineTypesClient;
 import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-// [START compute_reservation_create_with_region_template]
-public class CreateReservationWithRegion {
+// [START compute_reservation_create]
+public class CreateReservation {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -39,33 +39,47 @@ public class CreateReservationWithRegion {
 
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
-
     // Name of the zone in which you want to create the disk.
     String zone = "us-central1-a";
-
-    // Name of the disk you want to create.
+    // Name of the reservation you want to create.
     String reservationName = "test-disk-name";
-    String instanceTemplateName = "INSTANCE_TEMPLATE_NAME";
-    long numberOfVMs = 3;
+    // Machine type of the instances in the reservation.
+    String machineType = "n2-standard-4";
+    int numberOfAccelerators = 2;
+    String acceleratorType = "nvidia-tesla-k80";
+    String minCpuPlatform = "Intel Cascade Lake";
+    long localSsdSizeGb = 375;
+    String localSsdInterface1 = "NVME";
+    String localSsdInterface2 = "SCSI";
 
-    createReservationWithRegion(projectId, reservationName, instanceTemplateName, numberOfVMs, zone);
+    long numberOfVms = 3;
+
+    createReservationWithRegion(projectId, reservationName, machineType, numberOfVms, zone, numberOfAccelerators, acceleratorType, minCpuPlatform, localSsdSizeGb,
+        localSsdInterface1,
+        localSsdInterface2);
   }
 
   // Creates a reservation in a project for the Instance Template with regional location.
-  public static void createReservationWithRegion(String projectId, String reservationName,
-                                                 String instanceTemplateName, long numberOfVMs, String zone)
+  public static void createReservationWithRegion(
+      String projectId,
+      String reservationName,
+      String machineType,
+      long numberOfVms,
+      String zone,
+      int numberOfAccelerators,
+      String acceleratorType,
+      String minCpuPlatform, long localSsdSizeGb,
+      String localSsdInterface1,
+      String localSsdInterface2)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the `reservationsClient.close()` method on the client to safely
     // clean up any remaining background resources.
-    try (ReservationsClient reservationsClient = ReservationsClient.create();
-         RegionInstanceTemplatesClient templatesClientRegion = RegionInstanceTemplatesClient.create()) {
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
 
       String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
-      // Get the instance template using the regional client
-      InstanceTemplate instanceTemplate =
-          templatesClientRegion.get(projectId, region, instanceTemplateName);
+
 
       // Create the reservation.
       Reservation reservation =
@@ -75,13 +89,36 @@ public class CreateReservationWithRegion {
               .setSpecificReservation(
                   AllocationSpecificSKUReservation.newBuilder()
                       // Set the number of instances
-                      .setCount(numberOfVMs)
+                      .setCount(numberOfVms)
                       // Set instance properties
-                      .setInstanceProperties(AllocationSpecificSKUAllocationReservedInstanceProperties.newBuilder()
-                          .setMachineType("n1-standard-1")
-                          .build())
+                      .setInstanceProperties(
+                          AllocationSpecificSKUAllocationReservedInstanceProperties.newBuilder()
+                              .setMachineType(machineType)
+                              .setMinCpuPlatform(minCpuPlatform)
+                              .addGuestAccelerators(
+                                  AcceleratorConfig.newBuilder()
+                                      .setAcceleratorCount(numberOfAccelerators)
+                                      .setAcceleratorType(
+                                          String.format(
+                                              "projects/%s/zones/%s/acceleratorTypes/%s",
+                                              projectId, zone, acceleratorType))
+                                      .build())
+                              .build())
+                      .addLocalSsds(
+                          AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk
+                              .newBuilder()
+                              .setDiskSizeGb(localSsdSizeGb)
+                              .setInterface(localSsdInterface1)
+                              .build())
+                      .addLocalSsds(
+                          AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk
+                              .newBuilder()
+                              .setDiskSizeGb(localSsdSizeGb)
+                              .setInterface(localSsdInterface2)
+                              .build())
                       .build())
               .build();
+
       // Wait for the create reservation operation to complete.
       Operation response =
           reservationsClient.insertAsync(projectId, zone, reservation).get(3, TimeUnit.MINUTES);
@@ -94,4 +131,4 @@ public class CreateReservationWithRegion {
     }
   }
 }
-// [END compute_reservation_create_with_region_template]
+// [END compute_reservation_create]
