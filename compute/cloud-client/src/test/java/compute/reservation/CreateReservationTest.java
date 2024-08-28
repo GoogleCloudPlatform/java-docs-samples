@@ -75,7 +75,7 @@ class CreateReservationTest {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    RESERVATION_NAME = "test-reserv-reg-" + UUID.randomUUID().toString();
+    RESERVATION_NAME = "test-reserv-reg-" + UUID.randomUUID();
 
     stdOut.close();
     System.setOut(out);
@@ -136,7 +136,6 @@ class CreateReservationTest {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       Reservation reservation = reservationsClient.get(PROJECT_ID, DEFAULT_ZONE, RESERVATION_NAME);
 
-
       assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
       Assert.assertEquals(RESERVATION_NAME, reservation.getName());
       Assert.assertEquals(MACHINE_TYPE,
@@ -153,7 +152,7 @@ class CreateReservationTest {
           reservation.getSpecificReservation().getInstanceProperties().getMinCpuPlatform());
       Assert.assertEquals(2,
           reservation.getSpecificReservation().getInstanceProperties().getLocalSsdsCount());
-      Assert.assertEquals("NVME",
+      Assert.assertEquals(LOCAL_SSD_INTERFACE1,
           reservation.getSpecificReservation().getInstanceProperties()
               .getLocalSsds(0).getInterface());
 
