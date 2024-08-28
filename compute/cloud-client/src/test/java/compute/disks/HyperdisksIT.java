@@ -54,7 +54,7 @@ public class HyperdisksIT {
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
-         .that(System.getenv(envVarName)).isNotEmpty();
+        .that(System.getenv(envVarName)).isNotEmpty();
   }
 
   @BeforeAll
@@ -69,7 +69,7 @@ public class HyperdisksIT {
 
   @AfterAll
   public static void cleanup()
-       throws IOException, InterruptedException, ExecutionException, TimeoutException {
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Delete all disks created for testing.
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE_1, HYPERDISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE_2, HYPERDISK_IN_POOL_NAME);
@@ -103,8 +103,8 @@ public class HyperdisksIT {
     String poolType = String.format("projects/%s/zones/%s/storagePoolTypes/hyperdisk-balanced",
         PROJECT_ID, ZONE_2);
     StoragePool storagePool = CreateHyperdiskStoragePool
-         .createHyperdiskStoragePool(PROJECT_ID, ZONE_2, STORAGE_POOL_NAME, poolType,
-         "advanced", 10240, 10000, 10240);
+        .createHyperdiskStoragePool(PROJECT_ID, ZONE_2, STORAGE_POOL_NAME, poolType,
+            "advanced", 10240, 10000, 10240);
 
     Assert.assertNotNull(storagePool);
     Assert.assertEquals(STORAGE_POOL_NAME, storagePool.getName());
@@ -122,10 +122,10 @@ public class HyperdisksIT {
     String diskType = String.format("zones/%s/diskTypes/hyperdisk-balanced", ZONE_2);
     String storagePoolLink = String
         .format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/storagePools/%s",
-           PROJECT_ID, ZONE_2, STORAGE_POOL_NAME);
+            PROJECT_ID, ZONE_2, STORAGE_POOL_NAME);
     Disk disk = CreateDiskInStoragePool
         .createDiskInStoragePool(PROJECT_ID, ZONE_2, HYPERDISK_IN_POOL_NAME, storagePoolLink,
-           diskType, 10, 3000, 140);
+            diskType, 10, 3000, 140);
 
     Assert.assertNotNull(disk);
     Assert.assertEquals(HYPERDISK_IN_POOL_NAME, disk.getName());
