@@ -57,9 +57,11 @@ public class CreateReservation {
     // Number of instances in the reservation.
     long numberOfVms = 3;
 
+    boolean specificReservationRequired = true;
+
     createReservation(projectId, reservationName, machineType, numberOfVms, zone,
         numberOfAccelerators, acceleratorType, minCpuPlatform,
-        localSsdSize, localSsdInterface1, localSsdInterface2);
+        localSsdSize, localSsdInterface1, localSsdInterface2, specificReservationRequired);
   }
 
   // Creates reservation with optional flags
@@ -74,12 +76,11 @@ public class CreateReservation {
       String minCpuPlatform,
       int localSsdSizeGb,
       String localSsdInterface1,
-      String localSsdInterface2)
+      String localSsdInterface2,
+      boolean specificReservationRequired)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `reservationsClient.close()` method on the client to safely
-    // clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
 
       String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
@@ -93,11 +94,13 @@ public class CreateReservation {
       // localSsdSize,
       // localSsdInterface1,
       // localSsdInterface2
+      // specificReservationRequired
 
       Reservation reservation =
           Reservation.newBuilder()
               .setName(reservationName)
               .setZone(zone)
+              .setSpecificReservationRequired(specificReservationRequired)
               .setSpecificReservation(
                   AllocationSpecificSKUReservation.newBuilder()
                       // Set the number of instances

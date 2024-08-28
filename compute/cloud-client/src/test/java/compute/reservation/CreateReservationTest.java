@@ -56,7 +56,7 @@ class CreateReservationTest {
   private static final int LOCAL_SSD_SIZE = 375;
   private static final String LOCAL_SSD_INTERFACE1 = "NVME";
   private static final String LOCAL_SSD_INTERFACE2 = "SCSI";
-
+  private static final boolean SPECIFIC_RESERVATION_REQUIRED = true;
 
   private ByteArrayOutputStream stdOut;
 
@@ -131,7 +131,7 @@ class CreateReservationTest {
         MACHINE_TYPE, NUMBER_OF_VMS,
         DEFAULT_ZONE, NUMBER_OF_ACCELERATORS,
         ACCELERATOR_TYPE, MIN_CPU_PLATFORM,
-        LOCAL_SSD_SIZE, LOCAL_SSD_INTERFACE1, LOCAL_SSD_INTERFACE2);
+        LOCAL_SSD_SIZE, LOCAL_SSD_INTERFACE1, LOCAL_SSD_INTERFACE2, SPECIFIC_RESERVATION_REQUIRED);
 
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       Reservation reservation = reservationsClient.get(PROJECT_ID, DEFAULT_ZONE, RESERVATION_NAME);
@@ -155,7 +155,8 @@ class CreateReservationTest {
       Assert.assertEquals(LOCAL_SSD_INTERFACE1,
           reservation.getSpecificReservation().getInstanceProperties()
               .getLocalSsds(0).getInterface());
-
+      Assert.assertEquals(SPECIFIC_RESERVATION_REQUIRED,
+          reservation.getSpecificReservationRequired());
     }
   }
 }
