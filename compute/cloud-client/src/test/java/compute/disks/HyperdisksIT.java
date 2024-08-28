@@ -54,7 +54,7 @@ public class HyperdisksIT {
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
-        .that(System.getenv(envVarName)).isNotEmpty();
+         .that(System.getenv(envVarName)).isNotEmpty();
   }
 
   @BeforeAll
@@ -69,7 +69,7 @@ public class HyperdisksIT {
 
   @AfterAll
   public static void cleanup()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Delete all disks created for testing.
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE_1, HYPERDISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE_2, HYPERDISK_IN_POOL_NAME);
@@ -103,8 +103,8 @@ public class HyperdisksIT {
     String poolType = String.format("projects/%s/zones/%s/storagePoolTypes/hyperdisk-balanced",
         PROJECT_ID, ZONE_2);
     StoragePool storagePool = CreateHyperdiskStoragePool
-        .createHyperdiskStoragePool(PROJECT_ID, ZONE_2, STORAGE_POOL_NAME, poolType,
-            "advanced", 10240, 10000, 10240);
+         .createHyperdiskStoragePool(PROJECT_ID, ZONE_2, STORAGE_POOL_NAME, poolType,
+          "advanced", 10240, 10000, 10240);
 
     Assert.assertNotNull(storagePool);
     Assert.assertEquals(STORAGE_POOL_NAME, storagePool.getName());
