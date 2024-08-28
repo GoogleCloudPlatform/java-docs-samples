@@ -31,7 +31,7 @@ public class DeleteReservation {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // projectId: project ID or project number of the Cloud project you want to use.
+    // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
     // Name of the reservation you want to delete.
     String reservationName = "YOUR_RESERVATION_NAME";
