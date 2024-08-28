@@ -104,7 +104,7 @@ public class HyperdisksIT {
         PROJECT_ID, ZONE_2);
     StoragePool storagePool = CreateHyperdiskStoragePool
          .createHyperdiskStoragePool(PROJECT_ID, ZONE_2, STORAGE_POOL_NAME, poolType,
-          "advanced", 10240, 10000, 10240);
+           "advanced", 10240, 10000, 10240);
 
     Assert.assertNotNull(storagePool);
     Assert.assertEquals(STORAGE_POOL_NAME, storagePool.getName());
@@ -125,7 +125,7 @@ public class HyperdisksIT {
             PROJECT_ID, ZONE_2, STORAGE_POOL_NAME);
     Disk disk = CreateDiskInStoragePool
         .createDiskInStoragePool(PROJECT_ID, ZONE_2, HYPERDISK_IN_POOL_NAME, storagePoolLink,
-            diskType, 10, 3000, 140);
+          diskType, 10, 3000, 140);
 
     Assert.assertNotNull(disk);
     Assert.assertEquals(HYPERDISK_IN_POOL_NAME, disk.getName());
