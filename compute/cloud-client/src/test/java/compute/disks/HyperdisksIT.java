@@ -104,7 +104,7 @@ public class HyperdisksIT {
         PROJECT_ID, ZONE_2);
     StoragePool storagePool = CreateHyperdiskStoragePool
          .createHyperdiskStoragePool(PROJECT_ID, ZONE_2, STORAGE_POOL_NAME, poolType,
-           "advanced", 10240, 10000, 10240);
+         "advanced", 10240, 10000, 10240);
 
     Assert.assertNotNull(storagePool);
     Assert.assertEquals(STORAGE_POOL_NAME, storagePool.getName());
@@ -122,7 +122,7 @@ public class HyperdisksIT {
     String diskType = String.format("zones/%s/diskTypes/hyperdisk-balanced", ZONE_2);
     String storagePoolLink = String
         .format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/storagePools/%s",
-            PROJECT_ID, ZONE_2, STORAGE_POOL_NAME);
+          PROJECT_ID, ZONE_2, STORAGE_POOL_NAME);
     Disk disk = CreateDiskInStoragePool
         .createDiskInStoragePool(PROJECT_ID, ZONE_2, HYPERDISK_IN_POOL_NAME, storagePoolLink,
           diskType, 10, 3000, 140);
