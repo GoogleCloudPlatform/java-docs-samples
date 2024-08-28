@@ -20,6 +20,7 @@ import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
+
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -42,9 +43,12 @@ public class CreateReservationWithRegionalInstanceTemplate {
     String instanceTemplateName = "INSTANCE_TEMPLATE_NAME";
     // The number of virtual machines you want to create.
     int numberOfVms = 3;
+    // Optional flag --require-specific-reservation
+    // Whether the reservation requires specific reservation.
+    boolean specificReservationRequired = true;
 
     createReservationWithRegionalInstanceTemplate(
-        projectId, reservationName, instanceTemplateName, numberOfVms, zone);
+        projectId, reservationName, instanceTemplateName, numberOfVms, zone, specificReservationRequired);
   }
 
   // Creates a reservation in a project for the instance template with regional location.
@@ -53,7 +57,8 @@ public class CreateReservationWithRegionalInstanceTemplate {
       String reservationName,
       String instanceTemplateName,
       int numberOfVms,
-      String zone)
+      String zone,
+      boolean specificReservationRequired)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -69,6 +74,7 @@ public class CreateReservationWithRegionalInstanceTemplate {
           Reservation.newBuilder()
               .setName(reservationName)
               .setZone(zone)
+              .setSpecificReservationRequired(specificReservationRequired)
               .setSpecificReservation(
                   AllocationSpecificSKUReservation.newBuilder()
                       // Set the number of instances

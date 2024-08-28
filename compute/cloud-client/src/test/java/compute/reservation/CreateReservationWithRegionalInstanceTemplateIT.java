@@ -52,6 +52,7 @@ class CreateReservationWithRegionalInstanceTemplateIT {
   private static String INSTANCE_TEMPLATE;
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
+  private static final boolean SPECIFIC_RESERVATION_REQUIRED = true;
 
   private ByteArrayOutputStream stdOut;
 
@@ -70,8 +71,8 @@ class CreateReservationWithRegionalInstanceTemplateIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    INSTANCE_TEMPLATE = "test-instance-" + UUID.randomUUID().toString();
-    RESERVATION_NAME = "test-reserv-" + UUID.randomUUID().toString();
+    INSTANCE_TEMPLATE = "test-instance-" + UUID.randomUUID();
+    RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
 
     // Create templates.
     CreateReservationWithRegionalInstanceTemplateIT.createInstanceTemplate(
@@ -121,7 +122,7 @@ class CreateReservationWithRegionalInstanceTemplateIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationWithRegionalInstanceTemplate.createReservationWithRegionalInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME,
-        INSTANCE_TEMPLATE, NUMBER_OF_VMS, DEFAULT_ZONE);
+        INSTANCE_TEMPLATE, NUMBER_OF_VMS, DEFAULT_ZONE, SPECIFIC_RESERVATION_REQUIRED);
     assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
   }
 

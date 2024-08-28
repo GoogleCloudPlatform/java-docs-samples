@@ -22,6 +22,7 @@ import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.DeleteReservationRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.CreateInstanceTemplate;
 import compute.DeleteInstanceTemplate;
@@ -32,6 +33,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -49,6 +52,8 @@ class CreateReservationForGlobalInstanceTemplateIT {
   private static String INSTANCE_TEMPLATE;
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
+  private static final boolean SPECIFIC_RESERVATION_REQUIRED = true;
+
 
   private ByteArrayOutputStream stdOut;
 
@@ -67,8 +72,8 @@ class CreateReservationForGlobalInstanceTemplateIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    INSTANCE_TEMPLATE = "test-reserv-reg-" + UUID.randomUUID().toString();
-    RESERVATION_NAME = "test-reserv-reg-" + UUID.randomUUID().toString();
+    INSTANCE_TEMPLATE = "test-reserv-reg-" + UUID.randomUUID();
+    RESERVATION_NAME = "test-reserv-reg-" + UUID.randomUUID();
 
     // Create templates.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, INSTANCE_TEMPLATE);
@@ -129,7 +134,20 @@ class CreateReservationForGlobalInstanceTemplateIT {
   public void testCrateReservationWithRegionInstanceTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForGlobalInstanceTemplate.createReservationForGlobalInstanceTemplate(
-        PROJECT_ID, RESERVATION_NAME, INSTANCE_TEMPLATE, NUMBER_OF_VMS, DEFAULT_ZONE);
-    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+        PROJECT_ID, RESERVATION_NAME, INSTANCE_TEMPLATE, NUMBER_OF_VMS, DEFAULT_ZONE, SPECIFIC_RESERVATION_REQUIRED);
+
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      Reservation reservation = reservationsClient.get(PROJECT_ID, DEFAULT_ZONE, RESERVATION_NAME);
+
+      assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+      Assert.assertEquals(NUMBER_OF_VMS,
+          reservation.getSpecificReservation().getCount());
+      Assert.assertEquals(INSTANCE_TEMPLATE,
+          reservation.getSpecificReservation().getSourceInstanceTemplate());
+      Assert.assertTrue(reservation.getZone().contains(DEFAULT_ZONE));
+      Assert.assertEquals(RESERVATION_NAME, reservation.getName());
+      Assert.assertEquals(SPECIFIC_RESERVATION_REQUIRED,reservation.getSpecificReservationRequired());
+    }
+
   }
 }

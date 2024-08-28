@@ -42,9 +42,12 @@ public class CreateReservationForGlobalInstanceTemplate {
     String instanceTemplateName = "INSTANCE_TEMPLATE_NAME";
     // The number of virtual machines you want to create.
     int numberOfVms = 3;
+    // Optional flag --require-specific-reservation
+    // Whether the reservation requires specific reservation.
+    boolean specificReservationRequired = true;
 
     createReservationForGlobalInstanceTemplate(
-        projectId, reservationName, instanceTemplateName, numberOfVms, zone);
+        projectId, reservationName, instanceTemplateName, numberOfVms, zone, specificReservationRequired);
   }
 
   // Creates a reservation in a project for the global instance template.
@@ -53,7 +56,8 @@ public class CreateReservationForGlobalInstanceTemplate {
       String reservationName,
       String instanceTemplateName,
       int numberOfVms,
-      String zone)
+      String zone,
+      boolean specificReservationRequired)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -69,6 +73,7 @@ public class CreateReservationForGlobalInstanceTemplate {
           Reservation.newBuilder()
               .setName(reservationName)
               .setZone(zone)
+              .setSpecificReservationRequired(specificReservationRequired)
               .setSpecificReservation(
                   AllocationSpecificSKUReservation.newBuilder()
                       // Set the number of instances
