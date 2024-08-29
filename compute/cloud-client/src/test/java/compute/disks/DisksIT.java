@@ -19,7 +19,6 @@ package compute.disks;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getZone;
-import static org.junit.Assert.assertEquals;
 
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
@@ -291,7 +290,7 @@ public class DisksIT {
     TimeUnit.SECONDS.sleep(5);
 
     instance = Util.getInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
-    assertEquals(3, instance.getDisksCount());
+    assertThat(instance.getDisksCount() == 3);
 
     // Test Disk resize.
     ResizeDisk.resizeDisk(PROJECT_ID, zonalDisk.getZone().split("zones/")[1], zonalDisk.getName(),

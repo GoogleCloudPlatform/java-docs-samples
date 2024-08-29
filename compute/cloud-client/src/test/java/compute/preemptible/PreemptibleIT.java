@@ -18,7 +18,6 @@ package compute.preemptible;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ZoneOperationsClient.ListPagedResponse;
@@ -110,7 +109,7 @@ public class PreemptibleIT {
   @Test
   public void testIsPreemptible() throws IOException {
     IsPreemptible.isPreemptible(PROJECT_ID, ZONE, INSTANCE_NAME);
-    assertTrue(stdOut.toString().contains("Preemptible status: true"));
+    assertThat(stdOut.toString().contains("Preemptible status: true"));
   }
 
   @Test

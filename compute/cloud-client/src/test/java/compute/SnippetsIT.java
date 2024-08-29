@@ -19,8 +19,6 @@ package compute;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getEnvVar;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AttachedDisk;
@@ -184,7 +182,7 @@ public class SnippetsIT {
     try (InstancesClient instancesClient = InstancesClient.create()) {
       Instance instance = instancesClient.get(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
       // Assert that atleast one of the disks has the type "SCRATCH".
-      assertTrue(instance.getDisksList().stream()
+      Assert.assertTrue(instance.getDisksList().stream()
           .anyMatch(disk -> disk.getType().equalsIgnoreCase(AttachedDisk.Type.SCRATCH.name())));
       // Assert that there are only 2 disks present.
       Assert.assertEquals(instance.getDisksList().size(), 2);
@@ -221,8 +219,8 @@ public class SnippetsIT {
     // Set custom Report Name Prefix.
     String customPrefix = "my-custom-prefix";
     compute.SetUsageExportBucket.setUsageExportBucket(PROJECT_ID, BUCKET_NAME, customPrefix);
-    assertFalse(stdOut.toString().contains("default value of `usage_gce`"));
-    assertTrue(stdOut.toString().contains("Operation Status: DONE"));
+    assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
+    assertThat(stdOut.toString().contains("Operation Status: DONE"));
 
     // Wait for the settings to take place.
     TimeUnit.SECONDS.sleep(10);
@@ -246,14 +244,14 @@ public class SnippetsIT {
     // =================== Flat list of images ===================
     ListImages.listImages(IMAGE_PROJECT_NAME);
     int imageCount = Integer.parseInt(stdOut.toString().split(":")[1].trim());
-    assertTrue(imageCount > 2);
+    Assert.assertTrue(imageCount > 2);
   }
 
   @Test
   public void testListImagesByPage() throws IOException {
     // ================= Paginated list of images ================
     ListImages.listImagesByPage(IMAGE_PROJECT_NAME, 2);
-    assertTrue(stdOut.toString().contains("Page Number: 1"));
+    Assert.assertTrue(stdOut.toString().contains("Page Number: 1"));
   }
 
 }
