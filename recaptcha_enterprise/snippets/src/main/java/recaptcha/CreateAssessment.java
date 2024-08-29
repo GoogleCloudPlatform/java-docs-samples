@@ -64,7 +64,13 @@ public class CreateAssessment {
     try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
 
       // Set the properties of the event to be tracked.
-      Event event = Event.newBuilder().setSiteKey(recaptchaSiteKey).setToken(token).setUserIpAddress(userIpAddress).setJa3(ja3).setUserAgent(userAgent).build();
+      Event event = Event.newBuilder()
+          .setSiteKey(recaptchaSiteKey)
+          .setToken(token)
+          .setUserIpAddress(userIpAddress)
+          .setJa3(ja3)
+          .setUserAgent(userAgent)
+          .build();
 
       // Build the assessment request.
       CreateAssessmentRequest createAssessmentRequest =
