@@ -85,7 +85,6 @@ public class CreateReservation {
 
       String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
 
-
       // Create the reservation with optional properties:
       // machineType,
       // numberOfAccelerators,

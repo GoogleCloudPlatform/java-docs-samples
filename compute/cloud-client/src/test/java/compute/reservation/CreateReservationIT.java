@@ -44,7 +44,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 
-class CreateReservationTest {
+class CreateReservationIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String DEFAULT_ZONE = getZone();
   private static String RESERVATION_NAME;
