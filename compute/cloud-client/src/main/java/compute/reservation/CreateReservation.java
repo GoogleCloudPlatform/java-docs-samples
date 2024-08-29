@@ -83,8 +83,6 @@ public class CreateReservation {
     // once, and can be reused for multiple requests.
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
 
-      String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
-
       // Create the reservation with optional properties:
       // machineType,
       // numberOfAccelerators,
