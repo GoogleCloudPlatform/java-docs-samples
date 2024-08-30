@@ -49,11 +49,11 @@ import org.junit.runners.JUnit4;
 class CreateReservationForGlobalInstanceTemplateIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String DEFAULT_ZONE = getZone();
-  private static String INSTANCE_TEMPLATE;
+  private static String INSTANCE_TEMPLATE_NAME;
+  private static String INSTANCE_TEMPLATE_URI;
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
   private static final boolean SPECIFIC_RESERVATION_REQUIRED = true;
-
 
   private ByteArrayOutputStream stdOut;
 
@@ -71,14 +71,15 @@ class CreateReservationForGlobalInstanceTemplateIT {
     System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    INSTANCE_TEMPLATE = "test-reserv-reg-" + UUID.randomUUID();
-    RESERVATION_NAME = "test-reserv-reg-" + UUID.randomUUID();
+    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
+    INSTANCE_TEMPLATE_NAME = "test-instance-" + UUID.randomUUID();
+    INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
+        PROJECT_ID, INSTANCE_TEMPLATE_NAME);
 
     // Create templates.
-    CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, INSTANCE_TEMPLATE);
+    CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString())
-        .contains("Instance Template Operation Status " + INSTANCE_TEMPLATE);
+        .contains("Instance Template Operation Status " + INSTANCE_TEMPLATE_NAME);
 
     stdOut.close();
     System.setOut(out);
@@ -90,9 +91,9 @@ class CreateReservationForGlobalInstanceTemplateIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, INSTANCE_TEMPLATE);
+    DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString())
-        .contains("Instance template deletion operation status for " + INSTANCE_TEMPLATE);
+        .contains("Instance template deletion operation status for " + INSTANCE_TEMPLATE_NAME);
 
     // Verify reservation is deleted
 
@@ -131,10 +132,10 @@ class CreateReservationForGlobalInstanceTemplateIT {
   }
 
   @Test
-  public void testCrateReservationWithRegionInstanceTemplate()
+  public void testCrateReservationWithGlobalInstanceTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateReservationForGlobalInstanceTemplate.createReservationForGlobalInstanceTemplate(
-        PROJECT_ID, RESERVATION_NAME, INSTANCE_TEMPLATE, NUMBER_OF_VMS, DEFAULT_ZONE, SPECIFIC_RESERVATION_REQUIRED);
+    CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
+        PROJECT_ID, RESERVATION_NAME, INSTANCE_TEMPLATE_URI, NUMBER_OF_VMS, DEFAULT_ZONE, SPECIFIC_RESERVATION_REQUIRED);
 
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       Reservation reservation = reservationsClient.get(PROJECT_ID, DEFAULT_ZONE, RESERVATION_NAME);
@@ -142,8 +143,7 @@ class CreateReservationForGlobalInstanceTemplateIT {
       assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
       Assert.assertEquals(NUMBER_OF_VMS,
           reservation.getSpecificReservation().getCount());
-      Assert.assertEquals(INSTANCE_TEMPLATE,
-          reservation.getSpecificReservation().getSourceInstanceTemplate());
+      Assert.assertTrue(reservation.getSpecificReservation().getSourceInstanceTemplate().contains(INSTANCE_TEMPLATE_NAME));
       Assert.assertTrue(reservation.getZone().contains(DEFAULT_ZONE));
       Assert.assertEquals(RESERVATION_NAME, reservation.getName());
       Assert.assertEquals(SPECIFIC_RESERVATION_REQUIRED,reservation.getSpecificReservationRequired());

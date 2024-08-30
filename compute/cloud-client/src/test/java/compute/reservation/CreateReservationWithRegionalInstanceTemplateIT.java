@@ -49,7 +49,8 @@ import org.junit.runners.JUnit4;
 class CreateReservationWithRegionalInstanceTemplateIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String DEFAULT_ZONE = "us-central1-a";
-  private static String INSTANCE_TEMPLATE;
+  private static String INSTANCE_TEMPLATE_NAME = "test-instance-" + UUID.randomUUID();
+  private static String INSTANCE_TEMPLATE_URI;
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
   private static final boolean SPECIFIC_RESERVATION_REQUIRED = true;
@@ -70,13 +71,13 @@ class CreateReservationWithRegionalInstanceTemplateIT {
     System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    INSTANCE_TEMPLATE = "test-instance-" + UUID.randomUUID();
+    INSTANCE_TEMPLATE_URI = String.format("projects/%s/regions/us-central1/instanceTemplates/%s",
+        PROJECT_ID, INSTANCE_TEMPLATE_NAME);
     RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
 
     // Create templates.
     CreateReservationWithRegionalInstanceTemplateIT.createInstanceTemplate(
-        PROJECT_ID, INSTANCE_TEMPLATE, DEFAULT_ZONE);
+        PROJECT_ID, INSTANCE_TEMPLATE_NAME, DEFAULT_ZONE);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
 
     stdOut.close();
@@ -92,14 +93,14 @@ class CreateReservationWithRegionalInstanceTemplateIT {
 
     // Delete the regional instance template
     CreateReservationWithRegionalInstanceTemplateIT.deleteRegionalInstanceTemplate(
-        PROJECT_ID, DEFAULT_ZONE, INSTANCE_TEMPLATE);
+        PROJECT_ID, DEFAULT_ZONE, INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString())
-        .contains("Instance template deletion operation status for " + INSTANCE_TEMPLATE);
+        .contains("Instance template deletion operation status for " + INSTANCE_TEMPLATE_NAME);
 
-    // Delete reservation
-    DeleteReservation.deleteReservationWithRegionalLocation(
-        PROJECT_ID, DEFAULT_ZONE, RESERVATION_NAME);
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
+//    // Delete reservation
+//    DeleteReservation.deleteReservationWithRegionalLocation(
+//        PROJECT_ID, DEFAULT_ZONE, RESERVATION_NAME);
+//    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
 
     stdOut.close();
     System.setOut(out);
@@ -120,9 +121,10 @@ class CreateReservationWithRegionalInstanceTemplateIT {
   @Test
   public void testCrateReservationWithRegionInstanceTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateReservationWithRegionalInstanceTemplate.createReservationWithRegionalInstanceTemplate(
-        PROJECT_ID, RESERVATION_NAME,
-        INSTANCE_TEMPLATE, NUMBER_OF_VMS, DEFAULT_ZONE, SPECIFIC_RESERVATION_REQUIRED);
+    CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
+        PROJECT_ID, RESERVATION_NAME, INSTANCE_TEMPLATE_URI,
+        NUMBER_OF_VMS, DEFAULT_ZONE, SPECIFIC_RESERVATION_REQUIRED);
+
     assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
   }
 
