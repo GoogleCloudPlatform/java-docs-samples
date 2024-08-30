@@ -14,7 +14,6 @@
 
 package compute.windows.osimage;
 
-import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getZone;
 
@@ -155,9 +154,9 @@ public class WindowsOsImageIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateImage.createImage(
         PROJECT_ID, ZONE, getBootDiskName(testInstanceName), testImageName, "us", true);
-    assertThat(stdOut.toString()).contains("Image created.");
+    Assert.assertTrue(stdOut.toString().contains("Image created."));
     DeleteImage.deleteImage(PROJECT_ID, testImageName);
-    assertThat(stdOut.toString()).contains("Operation Status for Image Name");
+    Assert.assertTrue(stdOut.toString().contains("Operation Status for Image Name"));
   }
 
   @Test

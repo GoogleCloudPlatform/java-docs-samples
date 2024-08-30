@@ -16,7 +16,6 @@
 
 package compute;
 
-import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getZone;
 
@@ -91,33 +90,34 @@ public class InstanceTemplatesIT {
 
     // Create templates.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
-    assertThat(stdOut.toString()).contains("Instance Template Operation Status " + TEMPLATE_NAME);
+    Assert.assertTrue(stdOut.toString()
+        .contains("Instance Template Operation Status " + TEMPLATE_NAME));
     CreateInstance.createInstance(PROJECT_ID, DEFAULT_ZONE, MACHINE_NAME_CR);
     TimeUnit.SECONDS.sleep(10);
     CreateTemplateFromInstance.createTemplateFromInstance(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE,
         getInstance(DEFAULT_ZONE, MACHINE_NAME_CR).getSelfLink());
-    assertThat(stdOut.toString())
-        .contains("Instance Template creation operation status " + TEMPLATE_NAME_FROM_INSTANCE);
+    Assert.assertTrue(stdOut.toString()
+        .contains("Instance Template creation operation status " + TEMPLATE_NAME_FROM_INSTANCE));
     CreateTemplateWithSubnet.createTemplateWithSubnet(PROJECT_ID, "global/networks/default",
         String.format("regions/%s/subnetworks/default", DEFAULT_REGION), TEMPLATE_NAME_WITH_SUBNET);
-    assertThat(stdOut.toString())
-        .contains("Template creation from subnet operation status " + TEMPLATE_NAME_WITH_SUBNET);
+    Assert.assertTrue(stdOut.toString()
+        .contains("Template creation from subnet operation status " + TEMPLATE_NAME_WITH_SUBNET));
     TimeUnit.SECONDS.sleep(10);
 
     // Create instances.
     CreateInstanceFromTemplate.createInstanceFromTemplate(PROJECT_ID, DEFAULT_ZONE,
         MACHINE_NAME_CR_TEMPLATE,
         TEMPLATE_NAME);
-    assertThat(stdOut.toString())
-        .contains("Instance creation from template: Operation Status " + MACHINE_NAME_CR_TEMPLATE);
+    Assert.assertTrue(stdOut.toString()
+        .contains("Instance creation from template: Operation Status " + MACHINE_NAME_CR_TEMPLATE));
     CreateInstanceTemplate.createInstanceTemplateWithDiskType(PROJECT_ID, TEMPLATE_NAME_WITH_DISK);
     CreateInstanceFromTemplateWithOverrides
         .createInstanceFromTemplateWithOverrides(PROJECT_ID, DEFAULT_ZONE,
             MACHINE_NAME_CR_TEMPLATE_OR,
             TEMPLATE_NAME_WITH_DISK);
-    assertThat(stdOut.toString()).contains(
-        "Instance creation from template with overrides: Operation Status "
-            + MACHINE_NAME_CR_TEMPLATE_OR);
+    Assert.assertTrue(stdOut.toString()
+        .contains("Instance creation from template with overrides: Operation Status "
+            + MACHINE_NAME_CR_TEMPLATE_OR));
     Assert.assertEquals(
         getInstance(DEFAULT_ZONE, MACHINE_NAME_CR_TEMPLATE_OR).getDisksCount(), 2);
     stdOut.close();
@@ -136,17 +136,19 @@ public class InstanceTemplatesIT {
     DeleteInstance.deleteInstance(PROJECT_ID, DEFAULT_ZONE, MACHINE_NAME_CR_TEMPLATE_OR);
     // Delete instance templates.
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
-    assertThat(stdOut.toString())
-        .contains("Instance template deletion operation status for " + TEMPLATE_NAME);
+    Assert.assertTrue(stdOut.toString()
+        .contains("Instance template deletion operation status for " + TEMPLATE_NAME));
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_WITH_DISK);
-    assertThat(stdOut.toString())
-        .contains("Instance template deletion operation status for " + TEMPLATE_NAME_WITH_DISK);
-    DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE);
-    assertThat(stdOut.toString())
-        .contains("Instance template deletion operation status for " + TEMPLATE_NAME_FROM_INSTANCE);
+    Assert.assertTrue(stdOut.toString()
+        .contains("Instance template deletion operation status for " + TEMPLATE_NAME_WITH_DISK));
+    DeleteInstanceTemplate.deleteInstanceTemplate(
+        PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE);
+    Assert.assertTrue(stdOut.toString()
+        .contains("Instance template deletion operation status for "
+            + TEMPLATE_NAME_FROM_INSTANCE));
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_WITH_SUBNET);
-    assertThat(stdOut.toString())
-        .contains("Instance template deletion operation status for " + TEMPLATE_NAME_WITH_SUBNET);
+    Assert.assertTrue(stdOut.toString()
+        .contains("Instance template deletion operation status for " + TEMPLATE_NAME_WITH_SUBNET));
     stdOut.close();
     System.setOut(out);
   }
@@ -173,19 +175,19 @@ public class InstanceTemplatesIT {
   @Test
   public void testGetInstanceTemplate() throws IOException {
     GetInstanceTemplate.getInstanceTemplate(PROJECT_ID, TEMPLATE_NAME);
-    assertThat(stdOut.toString()).contains(TEMPLATE_NAME);
+    Assert.assertTrue(stdOut.toString().contains(TEMPLATE_NAME));
     GetInstanceTemplate.getInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_FROM_INSTANCE);
-    assertThat(stdOut.toString()).contains(TEMPLATE_NAME_FROM_INSTANCE);
+    Assert.assertTrue(stdOut.toString().contains(TEMPLATE_NAME_FROM_INSTANCE));
     GetInstanceTemplate.getInstanceTemplate(PROJECT_ID, TEMPLATE_NAME_WITH_SUBNET);
-    assertThat(stdOut.toString()).contains(TEMPLATE_NAME_WITH_SUBNET);
+    Assert.assertTrue(stdOut.toString().contains(TEMPLATE_NAME_WITH_SUBNET));
   }
 
   @Test
   public void testListInstanceTemplates() throws IOException {
     ListInstanceTemplates.listInstanceTemplates(PROJECT_ID);
-    assertThat(stdOut.toString()).contains(TEMPLATE_NAME);
-    assertThat(stdOut.toString()).contains(TEMPLATE_NAME_FROM_INSTANCE);
-    assertThat(stdOut.toString()).contains(TEMPLATE_NAME_WITH_SUBNET);
+    Assert.assertTrue(stdOut.toString().contains(TEMPLATE_NAME));
+    Assert.assertTrue(stdOut.toString().contains(TEMPLATE_NAME_FROM_INSTANCE));
+    Assert.assertTrue(stdOut.toString().contains(TEMPLATE_NAME_WITH_SUBNET));
   }
 
   @Test
