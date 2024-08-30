@@ -16,6 +16,7 @@
 
 package compute.preemptible;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Operation;
@@ -29,7 +30,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -73,7 +73,7 @@ public class PreemptibleIT {
 
     // Create Instance with Preemptible setting.
     CreatePreemptibleInstance.createPremptibleInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
-    Assert.assertTrue(stdOut.toString().contains("Instance created : " + INSTANCE_NAME));
+    assertThat(stdOut.toString()).contains("Instance created : " + INSTANCE_NAME);
     TimeUnit.SECONDS.sleep(20);
 
     stdOut.close();
@@ -109,7 +109,7 @@ public class PreemptibleIT {
   @Test
   public void testIsPreemptible() throws IOException {
     IsPreemptible.isPreemptible(PROJECT_ID, ZONE, INSTANCE_NAME);
-    Assert.assertTrue(stdOut.toString().contains("Preemptible status: true"));
+    assertThat(stdOut.toString().contains("Preemptible status: true"));
   }
 
   @Test

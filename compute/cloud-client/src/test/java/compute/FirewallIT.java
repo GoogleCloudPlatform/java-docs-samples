@@ -16,6 +16,7 @@
 
 package compute;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.gax.rpc.InvalidArgumentException;

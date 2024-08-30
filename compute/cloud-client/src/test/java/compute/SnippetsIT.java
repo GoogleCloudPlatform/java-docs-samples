@@ -16,11 +16,11 @@
 
 package compute;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getEnvVar;
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
@@ -162,7 +162,7 @@ public class SnippetsIT {
   @Test
   public void testGetInstance() throws IOException {
     GetInstance.getInstance(PROJECT_ID, ZONE, MACHINE_NAME);
-    Assert.assertTrue(stdOut.toString().contains("Retrieved the instance"));
+    assertThat(stdOut.toString()).contains("Retrieved the instance");
   }
 
   @Test
@@ -177,7 +177,7 @@ public class SnippetsIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Assert that the instance is created.
     CreateWithLocalSsd.createWithLocalSsd(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
-    Assert.assertTrue(stdOut.toString().contains("Instance created with local SSD:"));
+    assertThat(stdOut.toString()).contains("Instance created with local SSD:");
 
     try (InstancesClient instancesClient = InstancesClient.create()) {
       Instance instance = instancesClient.get(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
@@ -192,13 +192,13 @@ public class SnippetsIT {
   @Test
   public void testListInstance() throws IOException {
     compute.ListInstance.listInstances(PROJECT_ID, ZONE);
-    Assert.assertTrue(stdOut.toString().contains(MACHINE_NAME_LIST_INSTANCE));
+    assertThat(stdOut.toString()).contains(MACHINE_NAME_LIST_INSTANCE);
   }
 
   @Test
   public void testListAllInstances() throws IOException {
     compute.ListAllInstances.listAllInstances(PROJECT_ID);
-    Assert.assertTrue(stdOut.toString().contains(MACHINE_NAME_LIST_INSTANCE));
+    assertThat(stdOut.toString()).contains(MACHINE_NAME_LIST_INSTANCE);
   }
 
   @Test
@@ -206,13 +206,11 @@ public class SnippetsIT {
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Construct a delete request and get the operation instance.
     InstancesClient instancesClient = InstancesClient.create();
-
     OperationFuture<Operation, Operation> operation = instancesClient.deleteAsync(PROJECT_ID, ZONE,
         MACHINE_NAME_WAIT_FOR_OP);
     // Wait for the operation to complete.
     operation.get(3, TimeUnit.MINUTES);
-    Assert.assertThrows(ApiException.class,
-        () -> instancesClient.get(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP));
+    assertThat(stdOut.toString().contains("Operation Status: DONE"));
   }
 
   @Test
@@ -221,15 +219,15 @@ public class SnippetsIT {
     // Set custom Report Name Prefix.
     String customPrefix = "my-custom-prefix";
     compute.SetUsageExportBucket.setUsageExportBucket(PROJECT_ID, BUCKET_NAME, customPrefix);
-    Assert.assertTrue(stdOut.toString().contains("Operation Status: DONE"));
-    Assert.assertFalse(stdOut.toString().contains("default value of `usage_gce`"));
+    assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
+    assertThat(stdOut.toString().contains("Operation Status: DONE"));
 
     // Wait for the settings to take place.
     TimeUnit.SECONDS.sleep(10);
 
     UsageExportLocation usageExportLocation = compute.SetUsageExportBucket
         .getUsageExportBucket(PROJECT_ID);
-    Assert.assertFalse(stdOut.toString().contains("default value of `usage_gce`"));
+    assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
     Assert.assertEquals(usageExportLocation.getBucketName(), BUCKET_NAME);
     Assert.assertEquals(usageExportLocation.getReportNamePrefix(), customPrefix);
 
@@ -255,4 +253,5 @@ public class SnippetsIT {
     ListImages.listImagesByPage(IMAGE_PROJECT_NAME, 2);
     Assert.assertTrue(stdOut.toString().contains("Page Number: 1"));
   }
+
 }

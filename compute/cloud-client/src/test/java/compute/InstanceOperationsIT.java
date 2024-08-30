@@ -16,6 +16,7 @@
 
 package compute;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Disk;
@@ -208,7 +209,7 @@ public class InstanceOperationsIT {
     CloneEncryptedDisk.createDiskFromCustomerEncryptedKey(PROJECT_ID, ZONE, DISK_NAME, diskType, 10,
         instance.getDisks(0).getSource(), RAW_KEY.getBytes(
             StandardCharsets.UTF_8));
-    Assert.assertTrue(stdOut.toString().contains("Disk cloned with customer encryption key."));
+    assertThat(stdOut.toString()).contains("Disk cloned with customer encryption key.");
   }
 
   @Test

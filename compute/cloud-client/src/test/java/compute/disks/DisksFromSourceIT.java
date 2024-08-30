@@ -16,6 +16,7 @@
 
 package compute.disks;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getZone;
 
@@ -44,7 +45,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.StreamSupport;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -120,8 +120,8 @@ public class DisksFromSourceIT {
     CRYPTO_KEY = createKmsKey();
     CreateKmsEncryptedDisk.createKmsEncryptedDisk(PROJECT_ID, ZONE, KMS_ENCRYPTED_DISK_NAME,
         DISK_TYPE, 25, CRYPTO_KEY.getName(), "", DEBIAN_IMAGE.getSelfLink());
-    Assert.assertTrue(stdOut.toString().contains(
-        "Disk created with KMS encryption key. Operation Status: "));
+    assertThat(stdOut.toString()).contains(
+        "Disk created with KMS encryption key. Operation Status: ");
 
     // Create Regional disk.
     CreateDiskFromImage.createDiskFromImage(PROJECT_ID, ZONE, DISK_FROM_IMAGE, DISK_TYPE, 20,
@@ -134,7 +134,7 @@ public class DisksFromSourceIT {
     RegionalCreateFromSource.createRegionalDisk(PROJECT_ID, REGION, replicaZones,
         DISK_NAME_REGIONAL, String.format("regions/%s/diskTypes/pd-balanced", REGION), 25,
         Optional.empty(), Optional.of(getSnapshot(SNAPSHOT_NAME_REGIONAL).getSelfLink()));
-    Assert.assertTrue(stdOut.toString().contains("Regional disk created."));
+    assertThat(stdOut.toString()).contains("Regional disk created.");
 
     stdOut.close();
     System.setOut(out);
@@ -255,8 +255,8 @@ public class DisksFromSourceIT {
     CloneEncryptedDiskManagedKey.createDiskFromKmsEncryptedDisk(PROJECT_ID, ZONE,
         KMS_CLONE_ENCRYPTED_DISK_NAME, DISK_TYPE, 25,
         getDisk(KMS_ENCRYPTED_DISK_NAME).getSelfLink(), CRYPTO_KEY.getName());
-    Assert.assertTrue(stdOut.toString().contains(
-        "Disk cloned with KMS encryption key. Operation Status: "));
+    assertThat(stdOut.toString()).contains(
+        "Disk cloned with KMS encryption key. Operation Status: ");
   }
 
   @Test
@@ -264,8 +264,7 @@ public class DisksFromSourceIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateFromSource.createDiskFromDisk(PROJECT_ID, ZONE, DISK_FROM_DISK, DISK_TYPE, 24,
         getDisk(DISK_FROM_IMAGE).getSelfLink());
-    Assert.assertTrue(stdOut.toString().contains(
-        "Disk created from source. Operation Status: "));
+    assertThat(stdOut.toString()).contains("Disk created from source. Operation Status: ");
   }
 
 }

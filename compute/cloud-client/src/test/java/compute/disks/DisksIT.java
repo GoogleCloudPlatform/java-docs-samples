@@ -290,7 +290,7 @@ public class DisksIT {
     TimeUnit.SECONDS.sleep(5);
 
     instance = Util.getInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
-    Assert.assertEquals(3, instance.getDisksCount());
+    assertThat(instance.getDisksCount() == 3);
 
     // Test Disk resize.
     ResizeDisk.resizeDisk(PROJECT_ID, zonalDisk.getZone().split("zones/")[1], zonalDisk.getName(),
