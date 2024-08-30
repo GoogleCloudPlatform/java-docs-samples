@@ -49,7 +49,7 @@ import org.junit.runners.JUnit4;
 class CreateReservationForGlobalInstanceTemplateIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String DEFAULT_ZONE = getZone();
-  private static String INSTANCE_TEMPLATE_NAME;
+  private static final String INSTANCE_TEMPLATE_NAME = "test-instance-" + UUID.randomUUID();;
   private static String INSTANCE_TEMPLATE_URI;
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
@@ -72,7 +72,6 @@ class CreateReservationForGlobalInstanceTemplateIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
-    INSTANCE_TEMPLATE_NAME = "test-instance-" + UUID.randomUUID();
     INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
         PROJECT_ID, INSTANCE_TEMPLATE_NAME);
 
