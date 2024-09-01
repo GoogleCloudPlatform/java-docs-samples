@@ -21,18 +21,20 @@ import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationReservedInstanceProperties;
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
-import com.google.cloud.compute.v1.InsertReservationRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,48 +44,47 @@ public class ReservationIT {
   private static String PROJECT_ID;
   private static String ZONE;
   private static String RESERVATION_NAME;
+  private static String RESERVATION_NAME_1;
+  private static String RESERVATION_NAME_2;
 
   private ByteArrayOutputStream stdOut;
 
   @BeforeAll
   public static void setUp()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
     PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
     ZONE = getZone();
     RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
+    RESERVATION_NAME_1 = "test-reservation1-" + UUID.randomUUID();
+    RESERVATION_NAME_2 = "test-reservation2-" + UUID.randomUUID();
 
-    // Create the reservation.
-    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+    // Create the reservations.
+    ReservationIT.createReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
+    ReservationIT.createReservation(PROJECT_ID, ZONE, RESERVATION_NAME_1);
+    ReservationIT.createReservation(PROJECT_ID, ZONE, RESERVATION_NAME_2);
 
-      Reservation reservation = Reservation.newBuilder()
-          .setName(RESERVATION_NAME)
-          .setSpecificReservation(
-              AllocationSpecificSKUReservation.newBuilder()
-                  .setCount(1)
-                  .setInstanceProperties(
-                      AllocationSpecificSKUAllocationReservedInstanceProperties.newBuilder()
-                          .setMachineType("n1-standard-1")
-                          .build())
-                  .build())
-          .build();
+    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
 
-      InsertReservationRequest reservationRequest = InsertReservationRequest.newBuilder()
-          .setProject(PROJECT_ID)
-          .setZone(ZONE)
-          .setReservationResource(reservation)
-          .build();
+    stdOut.close();
+    System.setOut(out);
+  }
 
-      Operation response = reservationsClient.insertAsync(reservationRequest)
-          .get(3, TimeUnit.MINUTES);
-
-      if (response.getStatus() == Operation.Status.DONE) {
-        System.out.println("Reservation created.");
-      } else {
-        System.out.println("Reservation creation failed!");
-      }
-
-      assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME);
-    }
+  @AfterAll
+  public static void cleanup()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+    // Delete all instances created for testing.
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
+    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
+    stdOut.close();
+    System.setOut(out);
   }
 
   @BeforeEach
@@ -99,10 +100,39 @@ public class ReservationIT {
   }
 
   @Test
-  public void testDeleteReservation()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
+  public void testListReservations() throws IOException {
+    List<Reservation> reservations =
+        ListReservations.listReservations(PROJECT_ID, ZONE);
+    assertThat(reservations).isNotNull();
+    Assertions.assertEquals(RESERVATION_NAME, reservations.get(0).getName());
+    Assertions.assertEquals(RESERVATION_NAME_1, reservations.get(1).getName());
+    Assertions.assertEquals(RESERVATION_NAME_2, reservations.get(2).getName());
+  }
 
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
+  public static void createReservation(String projectId, String zone, String reservationName)
+      throws ExecutionException, InterruptedException, TimeoutException, IOException {
+    // Create the reservation.
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+
+      Reservation reservation = Reservation.newBuilder()
+          .setName(reservationName)
+          .setSpecificReservation(
+              AllocationSpecificSKUReservation.newBuilder()
+                  .setCount(1)
+                  .setInstanceProperties(
+                      AllocationSpecificSKUAllocationReservedInstanceProperties.newBuilder()
+                          .setMachineType("n1-standard-1")
+                          .build())
+                  .build())
+          .build();
+
+      Operation response =
+          reservationsClient.insertAsync(projectId, zone, reservation).get(3, TimeUnit.MINUTES);
+
+      if (response.hasError()) {
+        System.out.println("Reservation creation failed!" + response);
+      }
+      System.out.println("Reservation created. Operation Status: " + response.getStatus());
+    }
   }
 }

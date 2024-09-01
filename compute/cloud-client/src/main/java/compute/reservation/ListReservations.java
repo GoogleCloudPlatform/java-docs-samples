@@ -20,7 +20,6 @@ import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 // [START compute_reservation_list]
@@ -41,20 +40,20 @@ public class ListReservations {
   public static List<Reservation> listReservations(String project, String zone) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    List<Reservation> list = new ArrayList<>();
+    List<Reservation> listOfReservations = new ArrayList<>();
 
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       // List all reservations.
       for (Reservation reservation : reservationsClient.list(project, zone).iterateAll()) {
-        list.add(reservation);
+        listOfReservations.add(reservation);
         System.out.println("Reservation: " + reservation.getName());
       }
     }
-     if (list.isEmpty()) {
-       list = null;
-       System.out.println("No reservations found.");
-     }
-    return list;
+    if (listOfReservations.isEmpty()) {
+      listOfReservations = null;
+      System.out.println("No reservations found.");
+    }
+    return listOfReservations;
   }
 }
 // [END compute_reservation_list]
