@@ -41,11 +41,8 @@ public class GetComputeReservation {
 
   // Describe a reservation with the given name in the given zone.
   public static Reservation getReservation(
-      String projectId,
-      String reservationName,
-      String zone
-      )
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+      String projectId, String reservationName, String zone)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {

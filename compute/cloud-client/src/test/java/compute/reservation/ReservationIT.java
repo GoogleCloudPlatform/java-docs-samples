@@ -18,10 +18,10 @@ package compute.reservation;
 
 import static com.google.common.truth.Truth.assertThat;
 import static compute.Util.getZone;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationReservedInstanceProperties;
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
-import com.google.cloud.compute.v1.InsertReservationRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
@@ -32,11 +32,17 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
+@Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class ReservationIT {
 
   private static String PROJECT_ID;
@@ -48,42 +54,34 @@ public class ReservationIT {
   @BeforeAll
   public static void setUp()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
     PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
     ZONE = getZone();
     RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
 
-    // Create the reservation.
-    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+    // Create a reservation
+    ReservationIT.createReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
 
-      Reservation reservation = Reservation.newBuilder()
-          .setName(RESERVATION_NAME)
-          .setSpecificReservation(
-              AllocationSpecificSKUReservation.newBuilder()
-                  .setCount(1)
-                  .setInstanceProperties(
-                      AllocationSpecificSKUAllocationReservedInstanceProperties.newBuilder()
-                          .setMachineType("n1-standard-1")
-                          .build())
-                  .build())
-          .build();
+    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+    stdOut.close();
+    System.setOut(out);
+  }
 
-      InsertReservationRequest reservationRequest = InsertReservationRequest.newBuilder()
-          .setProject(PROJECT_ID)
-          .setZone(ZONE)
-          .setReservationResource(reservation)
-          .build();
+  @AfterAll
+  public static void cleanup()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
 
-      Operation response = reservationsClient.insertAsync(reservationRequest)
-          .get(3, TimeUnit.MINUTES);
+    // Delete all instances created for testing.
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
+    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
 
-      if (response.getStatus() == Operation.Status.DONE) {
-        System.out.println("Reservation created.");
-      } else {
-        System.out.println("Reservation creation failed!");
-      }
-
-      assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME);
-    }
+    stdOut.close();
+    System.setOut(out);
   }
 
   @BeforeEach
@@ -99,10 +97,39 @@ public class ReservationIT {
   }
 
   @Test
-  public void testDeleteReservation()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
+  public void testGetReservation()
+      throws IOException {
+    Reservation reservation = GetComputeReservation.getReservation(
+        PROJECT_ID, RESERVATION_NAME, ZONE);
 
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
+    assertNotNull(reservation);
+    assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME);
+  }
+
+  public static void createReservation(String projectId, String zone, String reservationName)
+      throws ExecutionException, InterruptedException, TimeoutException, IOException {
+    // Create the reservation.
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+
+      Reservation reservation = Reservation.newBuilder()
+          .setName(reservationName)
+          .setSpecificReservation(
+              AllocationSpecificSKUReservation.newBuilder()
+                  .setCount(1)
+                  .setInstanceProperties(
+                      AllocationSpecificSKUAllocationReservedInstanceProperties.newBuilder()
+                          .setMachineType("n1-standard-1")
+                          .build())
+                  .build())
+          .build();
+
+      Operation response =
+          reservationsClient.insertAsync(projectId, zone, reservation).get(3, TimeUnit.MINUTES);
+
+      if (response.hasError()) {
+        System.out.println("Reservation creation failed!" + response);
+      }
+      System.out.println("Reservation created. Operation Status: " + response.getStatus());
+    }
   }
 }
