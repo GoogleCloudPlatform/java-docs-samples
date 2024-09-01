@@ -209,7 +209,7 @@ public class SnippetsIT {
     OperationFuture<Operation, Operation> operation = instancesClient.deleteAsync(PROJECT_ID, ZONE,
         MACHINE_NAME_WAIT_FOR_OP);
     // Wait for the operation to complete.
-    operation.get(3, TimeUnit.MINUTES);
+    operation.get(5, TimeUnit.MINUTES);
     assertThat(stdOut.toString().contains("Operation Status: DONE"));
   }
 
