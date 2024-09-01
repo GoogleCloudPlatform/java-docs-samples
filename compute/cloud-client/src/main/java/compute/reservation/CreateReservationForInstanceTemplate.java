@@ -16,7 +16,7 @@
 
 package compute.reservation;
 
-// [START compute_reservation_create_for_global_instance_template]
+// [START compute_reservation_create_for_existing_instance_template]
 
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.Operation;
@@ -33,26 +33,31 @@ public class CreateReservationForInstanceTemplate {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
-    String projectId = "tyaho-softserve-project";//"YOUR_PROJECT_ID";
+    String projectId = "YOUR_PROJECT_ID";
     // Name of the zone in which you want to create the reservation.
     String zone = "us-central1-a";
     // Name of the reservation you want to create.
-    String reservationName ="test-reservation-1"; // "YOUR_RESERVATION_NAME";
+    String reservationName = "YOUR_RESERVATION_NAME";
     // The number of virtual machines you want to create.
     int numberOfVms = 3;
     // Name of your instance template.
-    // The URI of the instance template with GLOBAL Location to be used for creating the reservation.
-    String instanceTemplateUri = "projects/YOUR_PROJECT_ID/global/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME";
+    // The URI of the instance template with GLOBAL Location
+    // to be used for creating the reservation.
+    String instanceTemplateUri =
+        "projects/YOUR_PROJECT_ID/global/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME";
 
-    // The URI of the instance template with REGIONAL Location to be used for creating the reservation. For us-central1 region in this case.
-    // String instanceTemplateUri = "projects/YOUR_PROJECT_ID/regions/us-central1/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME"
+    // The URI of the instance template with REGIONAL Location
+    // to be used for creating the reservation. For us-central1 region in this case.
+    // String instanceTemplateUri =
+    // "projects/YOUR_PROJECT_ID/regions/us-central1/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME"
 
     // Optional flag --require-specific-reservation
     // Whether the reservation requires specific reservation.
     boolean specificReservationRequired = true;
 
     createReservationForInstanceTemplate(
-        projectId, reservationName, instanceTemplateUri, numberOfVms, zone, specificReservationRequired);
+        projectId, reservationName, instanceTemplateUri,
+        numberOfVms, zone, specificReservationRequired);
   }
 
   // Creates a reservation in a project for the global instance template.
@@ -95,4 +100,4 @@ public class CreateReservationForInstanceTemplate {
     }
   }
 }
-// [END compute_reservation_create_for_global_instance_template]
+// [END compute_reservation_create_for_existing_instance_template]
