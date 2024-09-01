@@ -16,7 +16,8 @@
 
 package vertexai.gemini;
 
-// [START generativeaionvertexai_gemini_function_calling]
+//[START generativeaionvertexai_gemini_complex_function_calling]
+
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Content;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
@@ -30,25 +31,30 @@ import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.PartMaker;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
-public class FunctionCalling {
+public class ComplexFunctionCalling {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
     String modelName = "gemini-1.5-flash-001";
 
-    String promptText = "What's the weather like in Paris?";
+    String promptText = "What is the weather like in Boston?";
 
-    whatsTheWeatherLike(projectId, location, modelName, promptText);
+    complexFunctionCalling(projectId, location, modelName, promptText);
   }
 
   // A request involving the interaction with an external tool
-  public static String whatsTheWeatherLike(String projectId, String location,
-                                           String modelName, String promptText)
+  public static String complexFunctionCalling(String projectId, String location,
+                                              String modelName, String promptText)
       throws IOException {
+    //In this example, we'll use synthetic data to simulate a response payload from an external API
+    String jsonString = "{ \"location\": \"Boston, MA\", \"temperature\": 38, \"description\": "
+        + "\"Partly Cloudy\", \"icon\": \"partly-cloudy\", \"humidity\": 65, \"wind\": "
+        + "{ \"speed\": 10, \"direction\": \"NW\" } }";
+
     // Initialize client that will be used to send requests.
     // This client only needs to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
@@ -79,14 +85,14 @@ public class FunctionCalling {
 
       // Start a chat session from a model, with the use of the declared function.
       GenerativeModel model = new GenerativeModel(modelName, vertexAI)
-          .withTools(Arrays.asList(tool));
+          .withTools(List.of(tool));
       ChatSession chat = model.startChat();
 
-      System.out.println(String.format("Ask the question: %s", promptText));
+      System.out.printf("Ask the question: %s%n", promptText);
       GenerateContentResponse response = chat.sendMessage(promptText);
 
       // The model will most likely return a function call to the declared
-      // function `getCurrentWeather` with "Paris" as the value for the
+      // function `getCurrentWeather` with "Boston" as the value for the
       // argument `location`.
       System.out.println("\nPrint response: ");
       System.out.println(ResponseHandler.getContent(response));
@@ -97,7 +103,7 @@ public class FunctionCalling {
           ContentMaker.fromMultiModalData(
               PartMaker.fromFunctionResponse(
                   "getCurrentWeather",
-                  Collections.singletonMap("currentWeather", "sunny")));
+                  Collections.singletonMap("currentWeather", jsonString)));
       System.out.println("Provide the function response: ");
       System.out.println(content);
       response = chat.sendMessage(content);
@@ -111,4 +117,4 @@ public class FunctionCalling {
     }
   }
 }
-// [END generativeaionvertexai_gemini_function_calling]
+//[END generativeaionvertexai_gemini_complex_function_calling]

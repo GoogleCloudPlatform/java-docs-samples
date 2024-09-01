@@ -17,7 +17,6 @@
 package vertexai.gemini;
 
 // [START generativeaionvertexai_gemini_single_turn_image]
-// [START aiplatform_gemini_pro_config_example]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.GenerationConfig;
@@ -71,5 +70,4 @@ public class SingleTurnMultimodal {
     }
   }
 }
-// [END aiplatform_gemini_pro_config_example]
 // [END generativeaionvertexai_gemini_single_turn_image]
