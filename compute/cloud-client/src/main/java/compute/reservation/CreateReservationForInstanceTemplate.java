@@ -33,31 +33,27 @@ public class CreateReservationForInstanceTemplate {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
-    String projectId = "YOUR_PROJECT_ID";
+    String projectId = "tyaho-softserve-project"; //.."YOUR_PROJECT_ID";
     // Name of the zone in which you want to create the reservation.
     String zone = "us-central1-a";
     // Name of the reservation you want to create.
-    String reservationName = "YOUR_RESERVATION_NAME";
+    String reservationName = "tese-reser";//"YOUR_RESERVATION_NAME";
     // The number of virtual machines you want to create.
     int numberOfVms = 3;
     // Name of your instance template.
     // The URI of the instance template with GLOBAL Location
     // to be used for creating the reservation.
-    String instanceTemplateUri =
-        "projects/YOUR_PROJECT_ID/global/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME";
+    String instanceTemplateUri =   "projects/tyaho-softserve-project/global/instanceTemplates/instance-template-20240902-093505";
+//        "projects/YOUR_PROJECT_ID/global/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME";
 
     // The URI of the instance template with REGIONAL Location
     // to be used for creating the reservation. For us-central1 region in this case.
     // String instanceTemplateUri =
     // "projects/YOUR_PROJECT_ID/regions/us-central1/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME"
 
-    // Optional flag --require-specific-reservation
-    // Whether the reservation requires specific reservation.
-    boolean specificReservationRequired = true;
-
     createReservationForInstanceTemplate(
         projectId, reservationName, instanceTemplateUri,
-        numberOfVms, zone, specificReservationRequired);
+        numberOfVms, zone);
   }
 
   // Creates a reservation in a project for the global instance template.
@@ -66,8 +62,7 @@ public class CreateReservationForInstanceTemplate {
       String reservationName,
       String instanceTemplateUri,
       int numberOfVms,
-      String zone,
-      boolean specificReservationRequired)
+      String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -78,7 +73,6 @@ public class CreateReservationForInstanceTemplate {
           Reservation.newBuilder()
               .setName(reservationName)
               .setZone(zone)
-              .setSpecificReservationRequired(specificReservationRequired)
               .setSpecificReservation(
                   AllocationSpecificSKUReservation.newBuilder()
                       // Set the number of instances

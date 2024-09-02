@@ -64,7 +64,6 @@ public class ReservationIT {
   private static String GLOBAL_INSTANCE_TEMPLATE_URI;
   private static String REGIONAL_INSTANCE_TEMPLATE_URI;
   private static final int NUMBER_OF_VMS = 3;
-  private static final boolean SPECIFIC_RESERVATION_REQUIRED = true;
 
   private ByteArrayOutputStream stdOut;
 
@@ -150,8 +149,7 @@ public class ReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_1,
-        GLOBAL_INSTANCE_TEMPLATE_URI, NUMBER_OF_VMS, ZONE,
-        SPECIFIC_RESERVATION_REQUIRED);
+        GLOBAL_INSTANCE_TEMPLATE_URI, NUMBER_OF_VMS, ZONE);
 
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_1);
@@ -163,8 +161,6 @@ public class ReservationIT {
           .getSourceInstanceTemplate().contains(GLOBAL_INSTANCE_TEMPLATE_NAME));
       Assert.assertTrue(reservation.getZone().contains(ZONE));
       Assert.assertEquals(RESERVATION_NAME_1, reservation.getName());
-      Assert.assertEquals(SPECIFIC_RESERVATION_REQUIRED,
-          reservation.getSpecificReservationRequired());
     }
   }
 
@@ -173,9 +169,17 @@ public class ReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_2, REGIONAL_INSTANCE_TEMPLATE_URI,
-        NUMBER_OF_VMS, ZONE, SPECIFIC_RESERVATION_REQUIRED);
-
-    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+        NUMBER_OF_VMS, ZONE);
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_2);
+      assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+      Assert.assertEquals(NUMBER_OF_VMS,
+          reservation.getSpecificReservation().getCount());
+      Assert.assertTrue(reservation.getSpecificReservation()
+          .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
+      Assert.assertTrue(reservation.getZone().contains(ZONE));
+      Assert.assertEquals(RESERVATION_NAME_2, reservation.getName());
+    }
   }
 
   // Creates a new instance template with the REGIONAL location.
