@@ -106,11 +106,13 @@ public class ReservationIT {
   }
 
   @Test
-  public void testListReservations() throws IOException {
+  public void testListReservations() throws IOException, InterruptedException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
+    // Wait for server update
+    TimeUnit.MINUTES.sleep(5);
     assertThat(reservations).isNotNull();
-    Assertions.assertEquals(RESERVATION_NAME, reservations.get(0).getName());
+    Assertions.assertEquals(RESERVATION_NAME, reservations .get(0).getName());
     Assertions.assertEquals(RESERVATION_NAME_1, reservations.get(1).getName());
     Assertions.assertEquals(RESERVATION_NAME_2, reservations.get(2).getName());
   }
