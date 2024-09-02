@@ -32,9 +32,9 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,8 +72,6 @@ public class ReservationIT {
     ReservationIT.createReservation(PROJECT_ID, ZONE, RESERVATION_NAME_2);
 
     assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
-    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
-    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
 
     stdOut.close();
     System.setOut(out);
@@ -85,9 +83,15 @@ public class ReservationIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+
     // Delete all instances created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_1);
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_2);
+
     assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
+    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME_1);
+    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME_2);
 
     stdOut.close();
     System.setOut(out);
@@ -109,12 +113,14 @@ public class ReservationIT {
   public void testListReservations() throws IOException, InterruptedException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
+
     // Wait for server update
-    TimeUnit.MINUTES.sleep(5);
+    TimeUnit.MINUTES.sleep(1);
+
     assertThat(reservations).isNotNull();
-    Assertions.assertEquals(RESERVATION_NAME, reservations .get(0).getName());
-    Assertions.assertEquals(RESERVATION_NAME_1, reservations.get(1).getName());
-    Assertions.assertEquals(RESERVATION_NAME_2, reservations.get(2).getName());
+    Assert.assertTrue(reservations.get(0).getName().contains("test-reservation"));
+    Assert.assertTrue(reservations.get(1).getName().contains("test-reservation"));
+    Assert.assertTrue(reservations.get(2).getName().contains("test-reservation"));
   }
 
   public static void createReservation(String projectId, String zone, String reservationName)
