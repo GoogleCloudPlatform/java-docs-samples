@@ -123,6 +123,10 @@ public class HyperdisksIT {
     String storagePoolLink = String
         .format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/storagePools/%s",
            PROJECT_ID, ZONE_2, STORAGE_POOL_NAME);
+
+    // Wait for server update
+    TimeUnit.MINUTES.sleep(3);
+
     Disk disk = CreateDiskInStoragePool
         .createDiskInStoragePool(PROJECT_ID, ZONE_2, HYPERDISK_IN_POOL_NAME, storagePoolLink,
            diskType, 10, 3000, 140);
