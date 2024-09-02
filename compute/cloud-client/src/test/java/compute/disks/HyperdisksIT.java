@@ -106,6 +106,9 @@ public class HyperdisksIT {
          .createHyperdiskStoragePool(PROJECT_ID, ZONE_2, STORAGE_POOL_NAME, poolType,
          "advanced", 10240, 10000, 10240);
 
+    // Wait for server update
+    TimeUnit.MINUTES.sleep(3);
+
     Assert.assertNotNull(storagePool);
     Assert.assertEquals(STORAGE_POOL_NAME, storagePool.getName());
     Assert.assertEquals(10000, storagePool.getPoolProvisionedIops());
@@ -124,12 +127,12 @@ public class HyperdisksIT {
         .format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/storagePools/%s",
            PROJECT_ID, ZONE_2, STORAGE_POOL_NAME);
 
-    // Wait for server update
-    TimeUnit.MINUTES.sleep(3);
-
     Disk disk = CreateDiskInStoragePool
         .createDiskInStoragePool(PROJECT_ID, ZONE_2, HYPERDISK_IN_POOL_NAME, storagePoolLink,
            diskType, 10, 3000, 140);
+
+    // Wait for server update
+    TimeUnit.MINUTES.sleep(3);
 
     Assert.assertNotNull(disk);
     Assert.assertEquals(HYPERDISK_IN_POOL_NAME, disk.getName());
