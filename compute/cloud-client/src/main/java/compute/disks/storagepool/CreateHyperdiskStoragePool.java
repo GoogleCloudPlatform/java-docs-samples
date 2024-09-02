@@ -80,7 +80,7 @@ public class CreateHyperdiskStoragePool {
               .build();
 
       // Wait for the insert disk operation to complete.
-      Operation operation = client.insertAsync(request).get(1, TimeUnit.MINUTES);
+      Operation operation = client.insertAsync(request).get(3, TimeUnit.MINUTES);
 
       if (operation.hasError()) {
         System.out.println("StoragePool creation failed!");

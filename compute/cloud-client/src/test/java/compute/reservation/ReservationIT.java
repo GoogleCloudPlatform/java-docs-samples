@@ -38,7 +38,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
+@Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class ReservationIT {
 
   private static String PROJECT_ID;
@@ -83,6 +88,7 @@ public class ReservationIT {
     // Delete all instances created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
     assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
+
     stdOut.close();
     System.setOut(out);
   }
