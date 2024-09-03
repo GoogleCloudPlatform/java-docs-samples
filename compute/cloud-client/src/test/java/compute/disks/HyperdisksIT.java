@@ -46,7 +46,7 @@ public class HyperdisksIT {
   // Zone in which the hyperdisk will be created.
   private static final String ZONE_1 = "us-central1-a";
   // Zone in which the storage pool will be created.
-  private static final String ZONE_2 = "europe-west9-b";
+  private static final String ZONE_2 = "me-central1-a";
   private static String HYPERDISK_NAME;
   private static String HYPERDISK_IN_POOL_NAME;
   private static String STORAGE_POOL_NAME;
