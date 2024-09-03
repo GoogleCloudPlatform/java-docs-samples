@@ -37,52 +37,40 @@ public class CreateSharedReservation {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Cloud project you want to use.
-    String project = "YOUR_PROJECT_ID";
+    // List of projects that are allowed to use the reservation.
+    String[] consumerProjectIds = {"CONSUMER_PROJECT_ID_1", "CONSUMER_PROJECT_ID_2"};
     // Zone in which the reservation resides.
     String zone = "us-central1-a";
     // Name of the reservation to be created.
     String reservationName = "YOUR_RESERVATION_NAME";
-    // The location of the instance template.
-    String location = "global";
-    // Name of the instance template to be used for creating the reservation.
-    String instanceTemplateName = "YOUR_INSTANCE_TEMPLATE_NAME";
+    // The URI of the instance template with GLOBAL Location
+    // to be used for creating the reservation.
+    String instanceTemplateUri =
+        "projects/YOUR_PROJECT_ID/global/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME";
     // Number of instances for which capacity needs to be reserved.
-    int vmCount = 1;
-    // List of projects that are allowed to use the reservation.
-    String[] consumerProjectIds = {"CONSUMER_PROJECT_ID_1", "CONSUMER_PROJECT_ID_2"};
+    int vmCount = 3;
 
     createSharedReservation(
-        project,
+        consumerProjectIds,
         zone,
         reservationName,
-        location,
-        instanceTemplateName,
-        vmCount,
-        consumerProjectIds);
+        instanceTemplateUri,
+        vmCount
+        );
   }
 
   // Creates a shared reservation with the given name in the given zone.
   public static void createSharedReservation(
-      String project,
+      String[] consumerProjectIds,
       String zone,
       String reservationName,
-      String location,
-      String instanceTemplateName,
-      int vmCount,
-      String[] consumerProjectIds)
+      String instanceTemplateUri,
+      int vmCount
+      )
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-
-      // Construct the instance template URI.
-      PathTemplate instanceTemplatePath =
-          PathTemplate.createWithoutUrlEncoding(
-              "projects/{project}/global/instanceTemplates/{instanceTemplate}");
-      String instanceTemplateUri =
-          instanceTemplatePath
-              .instantiate("project", project, "instanceTemplate", instanceTemplateName);
 
       // Create a Map to hold the project IDs
       Map<String, ShareSettingsProjectConfig> projectMap = new HashMap<>();
@@ -109,7 +97,7 @@ public class CreateSharedReservation {
 
       // Wait for the create reservation operation to complete.
       Operation response =
-          reservationsClient.insertAsync(project, zone, reservation).get(3, TimeUnit.MINUTES);
+          reservationsClient.insertAsync(consumerProjectIds[0], zone, reservation).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Reservation creation failed!" + response);
