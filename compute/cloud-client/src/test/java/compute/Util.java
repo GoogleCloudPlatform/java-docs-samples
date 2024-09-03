@@ -29,6 +29,7 @@ import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
 import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
+import compute.disks.DeleteDisk;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -180,5 +181,18 @@ public abstract class Util {
       return defaultValue;
     }
     return val;
+  }
+
+  // Delete disks which starts with the given prefixToDelete and
+  public static void cleanUpExistingDisks(String projectId, String zone, String prefixToDelete)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (DisksClient disksClient = DisksClient.create()) {
+      for (Disk disk : disksClient.list(projectId, zone).iterateAll()) {
+        if (!disk.getName().contains(prefixToDelete)) {
+          continue;
+        }
+        DeleteDisk.deleteDisk(projectId, zone, disk.getName());
+      }
+    }
   }
 }
