@@ -24,6 +24,7 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
+import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.UsageExportLocation;
@@ -67,6 +68,7 @@ public class SnippetsIT {
   private static String BUCKET_NAME;
   private static String IMAGE_PROJECT_NAME;
   private static String RAW_KEY;
+  private static String REGIONAL_LOCATION_NAME;
 
   private ByteArrayOutputStream stdOut;
 
@@ -90,6 +92,7 @@ public class SnippetsIT {
     MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance" + UUID.randomUUID();
     MACHINE_NAME_ENCRYPTED = "encrypted-test-instance" + UUID.randomUUID();
     MACHINE_NAME_WITH_SSD = "test-instance-with-ssd" + UUID.randomUUID();
+    REGIONAL_LOCATION_NAME = "test-instance-regional" + UUID.randomUUID();
     BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID();
     IMAGE_PROJECT_NAME = getEnvVar(TEST_IMAGE_PROJECT_NAME, "windows-sql-cloud");
     RAW_KEY = Util.getBase64EncodedKey();
@@ -105,6 +108,10 @@ public class SnippetsIT {
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
     compute.CreateEncryptedInstance
         .createEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
+    compute.CreateInstanceWithRegionalLocation
+        .createInstance(PROJECT_ID, ZONE, REGIONAL_LOCATION_NAME);
+    assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
+
 
     TimeUnit.SECONDS.sleep(30);
 
@@ -130,6 +137,11 @@ public class SnippetsIT {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
+    compute.DeleteInstanceTemplateWithRegionalLocation
+        .deleteInstanceTemplate(PROJECT_ID, ZONE, REGIONAL_LOCATION_NAME);
+    assertThat(stdOut.toString())
+        .contains("Instance template deletion operation status for "
+            + REGIONAL_LOCATION_NAME);
 
     // Delete the Google Cloud Storage bucket created for usage reports.
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
@@ -252,6 +264,15 @@ public class SnippetsIT {
     // ================= Paginated list of images ================
     ListImages.listImagesByPage(IMAGE_PROJECT_NAME, 2);
     Assert.assertTrue(stdOut.toString().contains("Page Number: 1"));
+  }
+
+  @Test
+  public void testCreateInstanceTemplateWithRegionalLocation() throws IOException {
+    // Check if the instance was successfully created during the setup.
+    InstanceTemplate instanceTemplate = compute.GetInstanceTemplateWithRegionalLocation
+        .getInstanceTemplate(PROJECT_ID, ZONE,
+        REGIONAL_LOCATION_NAME);
+    Assert.assertEquals(REGIONAL_LOCATION_NAME, instanceTemplate.getName());
   }
 
 }
