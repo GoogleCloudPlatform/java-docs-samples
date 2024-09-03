@@ -43,7 +43,6 @@ public class SetServiceAccountPolicy {
     // Construct the service account email.
     // You can modify the ".iam.gserviceaccount.com" to match the name of the service account
     // whose allow policy you want to set.
-
     String accountEmail = String.format("%s@%s.iam.gserviceaccount.com", serviceAccount, projectId);
 
     // Initialize client that will be used to send requests.
