@@ -32,7 +32,6 @@ import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -45,9 +44,9 @@ import org.junit.runners.MethodSorters;
 public class HyperdisksIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   // Zone in which the hyperdisk will be created.
-  private static final String ZONE_1 = "us-central1-a";
+  private static final String ZONE_1 = "europe-north1-a";
   // Zone in which the storage pool will be created.
-  private static final String ZONE_2 = "me-central1-a";
+  private static final String ZONE_2 = "us-central1-a";
   private static String HYPERDISK_NAME;
   private static String HYPERDISK_IN_POOL_NAME;
   private static String STORAGE_POOL_NAME;
@@ -59,7 +58,8 @@ public class HyperdisksIT {
   }
 
   @BeforeAll
-  public static void setUp() throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public static void setUp()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
@@ -67,7 +67,7 @@ public class HyperdisksIT {
     HYPERDISK_IN_POOL_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
     STORAGE_POOL_NAME = "test-storage-pool-enc-" + UUID.randomUUID();
     try (StoragePoolsClient client = StoragePoolsClient.create()) {
-      for (StoragePool pool : client.list(PROJECT_ID, ZONE_1).iterateAll()) {
+      for (StoragePool pool : client.list(PROJECT_ID, ZONE_2).iterateAll()) {
         client.deleteAsync(PROJECT_ID, ZONE_2, pool.getName()).get(3, TimeUnit.MINUTES);
       }
     }
@@ -125,7 +125,6 @@ public class HyperdisksIT {
     Assert.assertTrue(storagePool.getZone().contains(ZONE_2));
   }
 
-  @Disabled
   @Test
   public void stage2_CreateHyperdiskStoragePoolTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
