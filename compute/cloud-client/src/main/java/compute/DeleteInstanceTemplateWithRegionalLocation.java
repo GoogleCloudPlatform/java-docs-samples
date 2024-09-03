@@ -44,6 +44,8 @@ public class DeleteInstanceTemplateWithRegionalLocation {
   public static void deleteInstanceTemplate(
       String projectId, String zone, String templateName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (RegionInstanceTemplatesClient regionInstanceTemplatesClient =
              RegionInstanceTemplatesClient.create()) {
       String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone

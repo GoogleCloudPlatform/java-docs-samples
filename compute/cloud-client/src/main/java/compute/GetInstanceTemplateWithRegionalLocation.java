@@ -41,6 +41,8 @@ public class GetInstanceTemplateWithRegionalLocation {
   // Get an instance template with the REGIONAL location.
   public static InstanceTemplate getInstanceTemplate(
       String project, String zone, String instanceName) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
 
     try (RegionInstanceTemplatesClient instancesClient = RegionInstanceTemplatesClient.create()) {

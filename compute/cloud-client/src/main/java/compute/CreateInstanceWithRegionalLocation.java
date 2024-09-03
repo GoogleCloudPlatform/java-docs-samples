@@ -49,6 +49,8 @@ public class CreateInstanceWithRegionalLocation {
   public static void createInstance(
       String projectId, String zone, String templateName)
       throws  IOException, InterruptedException, ExecutionException, TimeoutException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (RegionInstanceTemplatesClient templatesClientRegion =
              RegionInstanceTemplatesClient.create()) {
 
