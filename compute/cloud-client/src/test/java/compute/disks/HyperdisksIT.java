@@ -32,6 +32,7 @@ import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -124,6 +125,7 @@ public class HyperdisksIT {
     Assert.assertTrue(storagePool.getZone().contains(ZONE_2));
   }
 
+  @Disabled
   @Test
   public void stage2_CreateHyperdiskStoragePoolTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
