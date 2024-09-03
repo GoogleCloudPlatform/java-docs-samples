@@ -58,18 +58,13 @@ public class HyperdisksIT {
   }
 
   @BeforeAll
-  public static void setUp() throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public static void setUp() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     HYPERDISK_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
     HYPERDISK_IN_POOL_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
     STORAGE_POOL_NAME = "test-storage-pool-enc-" + UUID.randomUUID();
-    try (StoragePoolsClient client = StoragePoolsClient.create()) {
-      for (StoragePool pool : client.list(PROJECT_ID, ZONE_2).iterateAll()) {
-        client.deleteAsync(PROJECT_ID, ZONE_2, pool.getName()).get(3, TimeUnit.MINUTES);
-      }
-    }
   }
 
   @AfterAll
@@ -78,7 +73,6 @@ public class HyperdisksIT {
     // Delete all disks created for testing.
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE_1, HYPERDISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE_2, HYPERDISK_IN_POOL_NAME);
-
 
     try (StoragePoolsClient client = StoragePoolsClient.create()) {
       client.deleteAsync(PROJECT_ID, ZONE_2, STORAGE_POOL_NAME);
