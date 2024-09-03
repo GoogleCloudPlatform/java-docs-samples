@@ -16,8 +16,6 @@
 
 package compute.reservation;
 
-// [START create_reservation_from_template]
-
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Reservation;
@@ -94,4 +92,3 @@ public class CreateReservationForInstanceTemplate {
     }
   }
 }
-// [END create_reservation_from_template]
