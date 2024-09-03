@@ -16,6 +16,8 @@
 
 package compute;
 
+// [START compute_regional_template_get]
+
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import java.io.IOException;
@@ -38,11 +40,12 @@ public class GetInstanceTemplateWithRegionalLocation {
 
   // Get an instance template with the REGIONAL location.
   public static InstanceTemplate getInstanceTemplate(
-      String project, String zone, String instanceName)
-      throws IOException {
+      String project, String zone, String instanceName) throws IOException {
     String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
+
     try (RegionInstanceTemplatesClient instancesClient = RegionInstanceTemplatesClient.create()) {
       return instancesClient.get(project, region, instanceName);
     }
   }
 }
+// [END compute_regional_template_get]

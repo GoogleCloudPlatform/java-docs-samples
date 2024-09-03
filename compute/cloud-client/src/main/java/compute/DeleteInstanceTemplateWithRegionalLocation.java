@@ -16,6 +16,8 @@
 
 package compute;
 
+// [START compute_regional_template_delete]
+
 import com.google.cloud.compute.v1.DeleteRegionInstanceTemplateRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
@@ -66,3 +68,5 @@ public class DeleteInstanceTemplateWithRegionalLocation {
     }
   }
 }
+// [END compute_regional_template_delete]
+
