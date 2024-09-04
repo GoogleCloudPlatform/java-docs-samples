@@ -35,7 +35,7 @@ public class CreateReservation {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
-    String projectId = "tyaho-softserve-project";//"YOUR_PROJECT_ID";
+    String projectId = "YOUR_PROJECT_ID";
     // Name of the zone in which you want to create the disk.
     String zone = "us-central1-a";
     // Name of the reservation you want to create.
