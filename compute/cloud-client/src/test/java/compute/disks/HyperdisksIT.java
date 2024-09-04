@@ -44,7 +44,10 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HyperdisksIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  // Zone in which the hyperdisk will be created.
+  private static final String ZONE_1 = "me-central1-a";
+  // Zone in which the storage pool will be created.
+  private static final String ZONE_2 = "us-central1-a";
   private static String HYPERDISK_NAME;
   private static String HYPERDISK_IN_POOL_NAME;
   private static String STORAGE_POOL_NAME;
@@ -66,11 +69,13 @@ public class HyperdisksIT {
     STORAGE_POOL_NAME = "test-storage-pool-enc-" + UUID.randomUUID();
 
     // Cleanup existing disks.
-    Util.cleanUpExistingDisks(PROJECT_ID, ZONE, "test-hyperdisk-enc-");
+    Util.cleanUpExistingDisks(PROJECT_ID, ZONE_1, "test-hyperdisk-enc-");
+    Util.cleanUpExistingDisks(PROJECT_ID, ZONE_2, "test-hyperdisk-enc-");
+
     // Cleanup existing Storage Pool
     try (StoragePoolsClient client = StoragePoolsClient.create()) {
-      for (StoragePool pool : client.list(PROJECT_ID, ZONE).iterateAll()) {
-        client.deleteAsync(PROJECT_ID, ZONE, pool.getName()).get(3, TimeUnit.MINUTES);
+      for (StoragePool pool : client.list(PROJECT_ID, ZONE_2).iterateAll()) {
+        client.deleteAsync(PROJECT_ID, ZONE_2, pool.getName()).get(3, TimeUnit.MINUTES);
       }
     }
   }
@@ -79,21 +84,21 @@ public class HyperdisksIT {
   public static void cleanup()
        throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Delete all disks created for testing.
-    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_NAME);
-    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
+    DeleteDisk.deleteDisk(PROJECT_ID, ZONE_1, HYPERDISK_NAME);
+    DeleteDisk.deleteDisk(PROJECT_ID, ZONE_2, HYPERDISK_IN_POOL_NAME);
 
     try (StoragePoolsClient client = StoragePoolsClient.create()) {
-      client.deleteAsync(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
+      client.deleteAsync(PROJECT_ID, ZONE_2, STORAGE_POOL_NAME);
     }
   }
 
   @Test
   public void stage1_CreateHyperdiskTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String diskType = String.format("zones/%s/diskTypes/hyperdisk-balanced", ZONE);
+    String diskType = String.format("zones/%s/diskTypes/hyperdisk-balanced", ZONE_1);
 
     Disk hyperdisk = CreateHyperdisk
-        .createHyperdisk(PROJECT_ID, ZONE, HYPERDISK_NAME, diskType,
+        .createHyperdisk(PROJECT_ID, ZONE_1, HYPERDISK_NAME, diskType,
             10, 3000, 140);
 
     Assert.assertNotNull(hyperdisk);
@@ -102,16 +107,16 @@ public class HyperdisksIT {
     Assert.assertEquals(140, hyperdisk.getProvisionedThroughput());
     Assert.assertEquals(10, hyperdisk.getSizeGb());
     Assert.assertTrue(hyperdisk.getType().contains("hyperdisk-balanced"));
-    Assert.assertTrue(hyperdisk.getZone().contains(ZONE));
+    Assert.assertTrue(hyperdisk.getZone().contains(ZONE_1));
   }
 
   @Test
   public void stage1_CreateHyperdiskStoragePoolTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String poolType = String.format("projects/%s/zones/%s/storagePoolTypes/hyperdisk-balanced",
-        PROJECT_ID, ZONE);
+        PROJECT_ID, ZONE_2);
     StoragePool storagePool = CreateHyperdiskStoragePool
-         .createHyperdiskStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME, poolType,
+         .createHyperdiskStoragePool(PROJECT_ID, ZONE_2, STORAGE_POOL_NAME, poolType,
          "advanced", 10240, 10000, 10240);
 
     // Wait for server update
@@ -124,19 +129,19 @@ public class HyperdisksIT {
     Assert.assertEquals(10240, storagePool.getPoolProvisionedCapacityGb());
     Assert.assertTrue(storagePool.getStoragePoolType().contains("hyperdisk-balanced"));
     Assert.assertTrue(storagePool.getCapacityProvisioningType().equalsIgnoreCase("advanced"));
-    Assert.assertTrue(storagePool.getZone().contains(ZONE));
+    Assert.assertTrue(storagePool.getZone().contains(ZONE_2));
   }
 
   @Test
   public void stage2_CreateHyperdiskStoragePoolTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String diskType = String.format("zones/%s/diskTypes/hyperdisk-balanced", ZONE);
+    String diskType = String.format("zones/%s/diskTypes/hyperdisk-balanced", ZONE_2);
     String storagePoolLink = String
         .format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/storagePools/%s",
-           PROJECT_ID, ZONE, STORAGE_POOL_NAME);
+           PROJECT_ID, ZONE_2, STORAGE_POOL_NAME);
 
     Disk disk = CreateDiskInStoragePool
-        .createDiskInStoragePool(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME, storagePoolLink,
+        .createDiskInStoragePool(PROJECT_ID, ZONE_2, HYPERDISK_IN_POOL_NAME, storagePoolLink,
            diskType, 10, 3000, 140);
 
     // Wait for server update
@@ -149,6 +154,6 @@ public class HyperdisksIT {
     Assert.assertEquals(140, disk.getProvisionedThroughput());
     Assert.assertEquals(10, disk.getSizeGb());
     Assert.assertTrue(disk.getType().contains("hyperdisk-balanced"));
-    Assert.assertTrue(disk.getZone().contains(ZONE));
+    Assert.assertTrue(disk.getZone().contains(ZONE_2));
   }
 }
