@@ -47,14 +47,6 @@ public class ReservationIT {
   private static final String ZONE = getZone();
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
-  private static final String MACHINE_TYPE = "n1-standard-2";
-  private static final int NUMBER_OF_ACCELERATORS = 1;
-  private static final String ACCELERATOR_TYPE = "nvidia-tesla-t4";
-  private static final String MIN_CPU_PLATFORM = "Intel Skylake";
-  private static final int LOCAL_SSD_SIZE = 375;
-  private static final String LOCAL_SSD_INTERFACE1 = "NVME";
-  private static final String LOCAL_SSD_INTERFACE2 = "SCSI";
-  private static final boolean SPECIFIC_RESERVATION_REQUIRED = true;
 
   private ByteArrayOutputStream stdOut;
 
@@ -101,39 +93,19 @@ public class ReservationIT {
   }
 
   @Test
-  public void testCrateReservation()
+  public void testCreateReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateReservation.createReservation(PROJECT_ID, RESERVATION_NAME,
-        MACHINE_TYPE, NUMBER_OF_VMS,
-        ZONE, NUMBER_OF_ACCELERATORS,
-        ACCELERATOR_TYPE, MIN_CPU_PLATFORM,
-        LOCAL_SSD_SIZE, LOCAL_SSD_INTERFACE1,
-        LOCAL_SSD_INTERFACE2, SPECIFIC_RESERVATION_REQUIRED);
+    CreateReservation.createReservation(
+        PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
 
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME);
 
       assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
       Assert.assertEquals(RESERVATION_NAME, reservation.getName());
-      Assert.assertEquals(MACHINE_TYPE,
-          reservation.getSpecificReservation().getInstanceProperties().getMachineType());
       Assert.assertEquals(NUMBER_OF_VMS,
           reservation.getSpecificReservation().getCount());
       Assert.assertTrue(reservation.getZone().contains(ZONE));
-      Assert.assertEquals(1,
-          reservation.getSpecificReservation().getInstanceProperties().getGuestAcceleratorsCount());
-      Assert.assertEquals(ACCELERATOR_TYPE,
-          reservation.getSpecificReservation().getInstanceProperties().getGuestAcceleratorsList()
-              .get(0).getAcceleratorType());
-      Assert.assertEquals(MIN_CPU_PLATFORM,
-          reservation.getSpecificReservation().getInstanceProperties().getMinCpuPlatform());
-      Assert.assertEquals(2,
-          reservation.getSpecificReservation().getInstanceProperties().getLocalSsdsCount());
-      Assert.assertEquals(LOCAL_SSD_INTERFACE1,
-          reservation.getSpecificReservation().getInstanceProperties()
-              .getLocalSsds(0).getInterface());
-      Assert.assertEquals(SPECIFIC_RESERVATION_REQUIRED,
-          reservation.getSpecificReservationRequired());
     }
   }
 }
