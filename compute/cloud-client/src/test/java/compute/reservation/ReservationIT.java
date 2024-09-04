@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getZone;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import java.io.ByteArrayOutputStream;
@@ -32,6 +33,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,6 +89,12 @@ public class ReservationIT {
     // Verify reservation is deleted
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
     assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      // Get the reservation.
+      Assertions.assertThrows(
+          NotFoundException.class,
+          () -> reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME));
+    }
 
     stdOut.close();
     System.setOut(out);
