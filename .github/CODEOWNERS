@@ -3,7 +3,6 @@
 
 ########################################################################
 #                   Updating CODEOWNERS file guide
-# - Add new entry under respective DEE team name
 # - Add new entry in alphabatical order under the team name
 # - Add common Github team owners first followed by specific ones
 # - Always add Github teams as owners instead of individual usernames
