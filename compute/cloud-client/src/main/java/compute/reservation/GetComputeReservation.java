@@ -39,7 +39,7 @@ public class GetComputeReservation {
     getReservation(projectId, reservationName, zone);
   }
 
-  // Describe a reservation with the given name in the given zone.
+  // Get a reservation with the given name in the given zone.
   public static Reservation getReservation(
       String projectId, String reservationName, String zone)
       throws IOException {
