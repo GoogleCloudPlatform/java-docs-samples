@@ -17,6 +17,7 @@
 package compute.disks;
 
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.StoragePool;
@@ -45,7 +46,7 @@ import org.junit.runners.MethodSorters;
 public class HyperdiskStoragePoolIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "europe-west2-c";
+  private static final String ZONE = getZone();
   private static String HYPERDISK_IN_POOL_NAME;
   private static String STORAGE_POOL_NAME;
 
