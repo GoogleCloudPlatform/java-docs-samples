@@ -29,6 +29,8 @@ import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
 import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.StoragePool;
+import com.google.cloud.compute.v1.StoragePoolsClient;
 import compute.disks.DeleteDisk;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -40,6 +42,7 @@ import java.util.Base64;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 
@@ -183,7 +186,7 @@ public abstract class Util {
     return val;
   }
 
-  // Delete disks which starts with the given prefixToDelete and
+  // Delete disks which starts with the given prefixToDelete
   public static void cleanUpExistingDisks(String projectId, String zone, String prefixToDelete)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (DisksClient disksClient = DisksClient.create()) {
@@ -192,6 +195,18 @@ public abstract class Util {
           continue;
         }
         DeleteDisk.deleteDisk(projectId, zone, disk.getName());
+      }
+    }
+  }
+
+  // Delete Storage Pool which starts with the given prefixToDelete
+  public static void cleanUpExistingStoragePools(
+      String projectId, String zone, String prefixToDelete)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Cleanup existing Storage Pool
+    try (StoragePoolsClient client = StoragePoolsClient.create()) {
+      for (StoragePool pool : client.list(projectId, zone).iterateAll()) {
+        client.deleteAsync(projectId, zone, pool.getName()).get(3, TimeUnit.MINUTES);
       }
     }
   }
