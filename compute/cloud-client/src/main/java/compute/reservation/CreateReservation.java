@@ -53,8 +53,8 @@ public class CreateReservation {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-
       // Create the reservation with optional properties:
+
       // Machine type of the instances in the reservation.
       String machineType = "n1-standard-2";
       // Number of accelerators to be attached to the instances in the reservation.
