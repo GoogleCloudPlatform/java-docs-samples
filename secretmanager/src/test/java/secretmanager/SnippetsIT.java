@@ -18,7 +18,6 @@ package secretmanager;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 
 import com.google.cloud.secretmanager.v1.AddSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.CreateSecretRequest;
@@ -68,6 +67,10 @@ public class SnippetsIT {
   private static final String LABEL_VALUE = "examplelabelvalue";
   private static final String UPDATED_LABEL_KEY = "updatedlabelkey";
   private static final String UPDATED_LABEL_VALUE = "updatedlabelvalue";
+  private static final String ANNOTATION_KEY = "exampleannotationkey";
+  private static final String ANNOTATION_VALUE = "exampleannotationvalue";
+  private static final String UPDATED_ANNOTATION_KEY = "updatedannotationkey";
+  private static final String UPDATED_ANNOTATION_VALUE = "updatedannotationvalue";
 
   private static Secret TEST_SECRET;
   private static Secret TEST_SECRET_TO_DELETE;
@@ -75,6 +78,7 @@ public class SnippetsIT {
   private static Secret TEST_SECRET_WITH_VERSIONS;
   private static SecretName TEST_SECRET_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_LABEL_TO_CREATE_NAME;
+  private static SecretName TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME;
   private static SecretName TEST_UMMR_SECRET_TO_CREATE_NAME;
   private static SecretVersion TEST_SECRET_VERSION;
   private static SecretVersion TEST_SECRET_VERSION_TO_DESTROY;
@@ -97,6 +101,7 @@ public class SnippetsIT {
     TEST_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_UMMR_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_LABEL_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
+    TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
 
     TEST_SECRET_VERSION = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
@@ -129,6 +134,7 @@ public class SnippetsIT {
     deleteSecret(TEST_SECRET.getName());
     deleteSecret(TEST_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_WITH_LABEL_TO_CREATE_NAME.toString());
+    deleteSecret(TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME.toString());
     deleteSecret(TEST_UMMR_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
     deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
@@ -154,6 +160,7 @@ public class SnippetsIT {
                             .setAutomatic(Replication.Automatic.newBuilder().build())
                             .build())
                     .putLabels(LABEL_KEY, LABEL_VALUE)
+                    .putAnnotations(ANNOTATION_KEY, ANNOTATION_VALUE)
                     .build())
             .build();
 
@@ -235,6 +242,15 @@ public class SnippetsIT {
         name.getProject(), name.getSecret(), LABEL_KEY, LABEL_VALUE);
 
     assertThat(secret.getLabelsMap()).containsEntry(LABEL_KEY, LABEL_VALUE);
+  }
+
+  @Test
+  public void testCreateSecretWithAnnotations() throws IOException {
+    SecretName name = TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME;
+    Secret secret = CreateSecretWithAnnotations.createSecretWithAnnotations(
+        name.getProject(), name.getSecret(), ANNOTATION_KEY, ANNOTATION_VALUE);
+
+    assertThat(secret.getAnnotationsMap()).containsEntry(ANNOTATION_KEY, ANNOTATION_VALUE);
   }
 
   @Test
@@ -361,6 +377,15 @@ public class SnippetsIT {
     assertThat(labels).containsEntry(LABEL_KEY, LABEL_VALUE);
   }
 
+  @Test
+  public void testViewSecretAnnotations() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    Map<String, String> annotations = 
+        ViewSecretAnnotations.viewSecretAnnotations(name.getProject(), name.getSecret());
+
+    assertThat(annotations).containsEntry(ANNOTATION_KEY, ANNOTATION_VALUE);
+  }
+
 
   @Test
   public void testIamGrantAccess() throws IOException {
@@ -430,6 +455,16 @@ public class SnippetsIT {
 
     assertThat(updatedSecret.getLabelsMap()).containsEntry(
         UPDATED_LABEL_KEY, UPDATED_LABEL_VALUE);
+  }
+
+  @Test
+  public void testEditSecretAnnotations() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    Secret updatedSecret = EditSecretAnnotations.editSecretAnnotations(
+        name.getProject(), name.getSecret(), UPDATED_ANNOTATION_KEY, UPDATED_ANNOTATION_VALUE);
+
+    assertThat(updatedSecret.getAnnotationsMap()).containsEntry(
+      UPDATED_ANNOTATION_KEY, UPDATED_ANNOTATION_VALUE);
   }
 
   @Test
