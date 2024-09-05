@@ -55,7 +55,7 @@ public class DeleteReservation {
           .build();
 
       Operation response = reservationsClient.deleteAsync(
-          deleteReservationRequest).get(5, TimeUnit.MINUTES);
+          deleteReservationRequest).get(7, TimeUnit.MINUTES);
 
       if (response.getStatus() == Operation.Status.DONE) {
         System.out.println("Deleted reservation: " + reservationName);

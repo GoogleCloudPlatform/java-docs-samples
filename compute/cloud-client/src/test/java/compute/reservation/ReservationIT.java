@@ -17,12 +17,10 @@
 package compute.reservation;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getZone;
 
-import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationReservedInstanceProperties;
-import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
-import com.google.cloud.compute.v1.InsertReservationRequest;
-import com.google.cloud.compute.v1.Operation;
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import java.io.ByteArrayOutputStream;
@@ -32,58 +30,41 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.junit.Assert;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
+@Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class ReservationIT {
 
-  private static String PROJECT_ID;
-  private static String ZONE;
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String ZONE = getZone();
   private static String RESERVATION_NAME;
+  private static final int NUMBER_OF_VMS = 3;
 
   private ByteArrayOutputStream stdOut;
+
+  // Check if the required environment variables are set.
+  public static void requireEnvVar(String envVarName) {
+    assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
+        .that(System.getenv(envVarName)).isNotEmpty();
+  }
 
   @BeforeAll
   public static void setUp()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-    ZONE = getZone();
-    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    // Create the reservation.
-    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-
-      Reservation reservation = Reservation.newBuilder()
-          .setName(RESERVATION_NAME)
-          .setSpecificReservation(
-              AllocationSpecificSKUReservation.newBuilder()
-                  .setCount(1)
-                  .setInstanceProperties(
-                      AllocationSpecificSKUAllocationReservedInstanceProperties.newBuilder()
-                          .setMachineType("n1-standard-1")
-                          .build())
-                  .build())
-          .build();
-
-      InsertReservationRequest reservationRequest = InsertReservationRequest.newBuilder()
-          .setProject(PROJECT_ID)
-          .setZone(ZONE)
-          .setReservationResource(reservation)
-          .build();
-
-      Operation response = reservationsClient.insertAsync(reservationRequest)
-          .get(3, TimeUnit.MINUTES);
-
-      if (response.getStatus() == Operation.Status.DONE) {
-        System.out.println("Reservation created.");
-      } else {
-        System.out.println("Reservation creation failed!");
-      }
-
-      assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME);
-    }
+    RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
   }
 
   @BeforeEach
@@ -98,11 +79,41 @@ public class ReservationIT {
     System.setOut(null);
   }
 
-  @Test
-  public void testDeleteReservation()
+  @AfterAll
+  public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
 
+    // Verify reservation is deleted
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
     assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      // Get the reservation.
+      Assertions.assertThrows(
+          NotFoundException.class,
+          () -> reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME));
+    }
+
+    stdOut.close();
+    System.setOut(out);
+  }
+
+  @Test
+  public void testCreateReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    CreateReservation.createReservation(
+        PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
+
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME);
+
+      assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+      Assert.assertEquals(RESERVATION_NAME, reservation.getName());
+      Assert.assertEquals(NUMBER_OF_VMS,
+          reservation.getSpecificReservation().getCount());
+      Assert.assertTrue(reservation.getZone().contains(ZONE));
+    }
   }
 }
