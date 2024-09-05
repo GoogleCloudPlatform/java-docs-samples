@@ -7,13 +7,24 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.8.1'
         classpath 'org.gretty:gretty:4.1.5'
     }
 }
 apply plugin: 'org.gretty'
+apply plugin: 'com.google.cloud.tools.appengine'
 
 repositories {
     mavenCentral()
+}
+
+appengine {
+    deploy {   // deploy configuration
+        stopPreviousVersion = true  // default - stop the current version
+        promote = true              // default - & make this the current version
+        projectId = 'GCLOUD_CONFIG'
+        version = 'GCLOUD_CONFIG'
+    }
 }
 
 sourceSets {
