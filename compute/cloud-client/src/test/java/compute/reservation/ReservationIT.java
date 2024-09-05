@@ -63,6 +63,7 @@ public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = getZone();
+  String region = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static String RESERVATION_NAME;
   private static String RESERVATION_NAME_GLOBAL;
   private static String RESERVATION_NAME_REGIONAL;
@@ -97,9 +98,10 @@ public class ReservationIT {
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
         PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
+    String region = ZONE.substring(0, ZONE.lastIndexOf('-'));
     REGIONAL_INSTANCE_TEMPLATE_URI =
-        String.format("projects/%s/regions/us-central1/instanceTemplates/%s",
-            PROJECT_ID, REGIONAL_INSTANCE_TEMPLATE_NAME);
+        String.format("projects/%s/regions/%s/instanceTemplates/%s",
+            PROJECT_ID, region, REGIONAL_INSTANCE_TEMPLATE_NAME);
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
