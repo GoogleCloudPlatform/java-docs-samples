@@ -72,11 +72,11 @@ public class HyperdisksIT {
        throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Delete all disks created for testing.
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE_1, HYPERDISK_NAME);
-//    DeleteDisk.deleteDisk(PROJECT_ID, ZONE_2, HYPERDISK_IN_POOL_NAME);
+    //    DeleteDisk.deleteDisk(PROJECT_ID, ZONE_2, HYPERDISK_IN_POOL_NAME);
 
-//    try (StoragePoolsClient client = StoragePoolsClient.create()) {
-//      client.deleteAsync(PROJECT_ID, ZONE_2, STORAGE_POOL_NAME);
-//    }
+    //    try (StoragePoolsClient client = StoragePoolsClient.create()) {
+    //      client.deleteAsync(PROJECT_ID, ZONE_2, STORAGE_POOL_NAME);
+    //    }
   }
 
   @Test
