@@ -22,6 +22,7 @@ import static compute.Util.getZone;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationReservedInstanceProperties;
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.InsertReservationRequest;
+import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
@@ -32,6 +33,9 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import compute.CreateInstanceTemplate;
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +46,8 @@ public class ReservationIT {
   private static String PROJECT_ID;
   private static String ZONE;
   private static String RESERVATION_NAME;
+  private static String[] CONSUMER_PROJECT_IDS;
+  private static String INSTANCE_TEMPLATE_URI;
 
   private ByteArrayOutputStream stdOut;
 
@@ -51,39 +57,12 @@ public class ReservationIT {
     PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
     ZONE = getZone();
     RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
-
-    // Create the reservation.
-    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-
-      Reservation reservation = Reservation.newBuilder()
-          .setName(RESERVATION_NAME)
-          .setSpecificReservation(
-              AllocationSpecificSKUReservation.newBuilder()
-                  .setCount(1)
-                  .setInstanceProperties(
-                      AllocationSpecificSKUAllocationReservedInstanceProperties.newBuilder()
-                          .setMachineType("n1-standard-1")
-                          .build())
-                  .build())
-          .build();
-
-      InsertReservationRequest reservationRequest = InsertReservationRequest.newBuilder()
-          .setProject(PROJECT_ID)
-          .setZone(ZONE)
-          .setReservationResource(reservation)
-          .build();
-
-      Operation response = reservationsClient.insertAsync(reservationRequest)
-          .get(3, TimeUnit.MINUTES);
-
-      if (response.getStatus() == Operation.Status.DONE) {
-        System.out.println("Reservation created.");
-      } else {
-        System.out.println("Reservation creation failed!");
-      }
-
-      assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME);
-    }
+    CONSUMER_PROJECT_IDS = new String[]{PROJECT_ID, "CONSUMER_PROJECT_ID_1", "CONSUMER_PROJECT_ID_2"};
+    String instanceTemplateName = "test-inst-for-shared-res" + UUID.randomUUID();
+        CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID,  instanceTemplateName);
+    try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
+       Assert.assertTrue(instanceTemplatesClient.get(PROJECT_ID,instanceTemplateName).getName().contains(instanceTemplateName));}
+    INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",PROJECT_ID, instanceTemplateName);
   }
 
   @BeforeEach
@@ -99,10 +78,12 @@ public class ReservationIT {
   }
 
   @Test
-  public void testDeleteReservation()
+  public void testCreateSharedReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
+    CreateSharedReservation.createSharedReservation(
+        CONSUMER_PROJECT_IDS, ZONE, RESERVATION_NAME,
+        INSTANCE_TEMPLATE_URI, 3);
 
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
+    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
   }
 }

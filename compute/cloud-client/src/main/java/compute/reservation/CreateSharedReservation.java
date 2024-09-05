@@ -38,7 +38,7 @@ public class CreateSharedReservation {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // List of projects that are allowed to use the reservation.
-    String[] consumerProjectIds = {"CONSUMER_PROJECT_ID_1", "CONSUMER_PROJECT_ID_2"};
+    String[] consumerProjectIds = {"YOUR_PROJECT_ID", "CONSUMER_PROJECT_ID_1", "CONSUMER_PROJECT_ID_2"};
     // Zone in which the reservation resides.
     String zone = "us-central1-a";
     // Name of the reservation to be created.
@@ -51,22 +51,13 @@ public class CreateSharedReservation {
     int vmCount = 3;
 
     createSharedReservation(
-        consumerProjectIds,
-        zone,
-        reservationName,
-        instanceTemplateUri,
-        vmCount
-        );
+        consumerProjectIds, zone, reservationName, instanceTemplateUri, vmCount);
   }
 
   // Creates a shared reservation with the given name in the given zone.
   public static void createSharedReservation(
-      String[] consumerProjectIds,
-      String zone,
-      String reservationName,
-      String instanceTemplateUri,
-      int vmCount
-      )
+      String[] consumerProjectIds, String zone,
+      String reservationName, String instanceTemplateUri, int vmCount)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -75,6 +66,9 @@ public class CreateSharedReservation {
       // Create a Map to hold the project IDs
       Map<String, ShareSettingsProjectConfig> projectMap = new HashMap<>();
       for (String projectId : consumerProjectIds) {
+        if(projectId.contains("YOUR_PROJECT_ID")) {
+          continue;
+        }
         // Add each project ID with an empty string value
         projectMap.put(projectId, ShareSettingsProjectConfig.newBuilder().build());
       }
@@ -83,6 +77,7 @@ public class CreateSharedReservation {
           Reservation.newBuilder()
               .setName(reservationName)
               .setZone(zone)
+              .setSpecificReservationRequired(true)
               .setShareSettings(
                   ShareSettings.newBuilder()
                       .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
