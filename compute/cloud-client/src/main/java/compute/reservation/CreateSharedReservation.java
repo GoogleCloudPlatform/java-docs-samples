@@ -37,8 +37,8 @@ public class CreateSharedReservation {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // List of projects that are allowed to use the reservation.
-    String[] consumerProjectIds = {"YOUR_PROJECT_ID", "CONSUMER_PROJECT_ID_1", "CONSUMER_PROJECT_ID_2"};
+    // The ID of the project where you want to reserve resources and where the instance template exists.
+    String projectId = "YOUR_PROJECT_ID";
     // Zone in which the reservation resides.
     String zone = "us-central1-a";
     // Name of the reservation to be created.
@@ -51,38 +51,31 @@ public class CreateSharedReservation {
     int vmCount = 3;
 
     createSharedReservation(
-        consumerProjectIds, zone, reservationName, instanceTemplateUri, vmCount);
+        projectId, zone, reservationName, instanceTemplateUri, vmCount);
   }
 
   // Creates a shared reservation with the given name in the given zone.
   public static void createSharedReservation(
-      String[] consumerProjectIds, String zone,
+      String projectId, String zone,
       String reservationName, String instanceTemplateUri, int vmCount)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
 
-      // Create a Map to hold the project IDs
-      Map<String, ShareSettingsProjectConfig> projectMap = new HashMap<>();
-      for (String projectId : consumerProjectIds) {
-        if(projectId.contains("YOUR_PROJECT_ID")) {
-          continue;
-        }
-        // Add each project ID with an empty string value
-        projectMap.put(projectId, ShareSettingsProjectConfig.newBuilder().build());
-      }
+      ShareSettings shareSettings = ShareSettings.newBuilder()
+          .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
+          .putProjectMap("CONSUMER_PROJECT_ID_1", ShareSettingsProjectConfig.newBuilder().build())
+          .putProjectMap("CONSUMER_PROJECT_ID_2", ShareSettingsProjectConfig.newBuilder().build())
+          .build();
+
       // Create the reservation.
       Reservation reservation =
           Reservation.newBuilder()
               .setName(reservationName)
               .setZone(zone)
               .setSpecificReservationRequired(true)
-              .setShareSettings(
-                  ShareSettings.newBuilder()
-                      .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
-                      .putAllProjectMap(projectMap)
-                      .build())
+              .setShareSettings(shareSettings)
               .setSpecificReservation(
                   AllocationSpecificSKUReservation.newBuilder()
                       .setCount(vmCount)
@@ -92,7 +85,7 @@ public class CreateSharedReservation {
 
       // Wait for the create reservation operation to complete.
       Operation response =
-          reservationsClient.insertAsync(consumerProjectIds[0], zone, reservation).get(3, TimeUnit.MINUTES);
+          reservationsClient.insertAsync(projectId, zone, reservation).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Reservation creation failed!" + response);
