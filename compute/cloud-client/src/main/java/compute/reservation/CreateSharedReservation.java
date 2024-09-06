@@ -18,7 +18,6 @@ package compute.reservation;
 
 // [START compute_reservation_create_shared]
 
-import com.google.api.pathtemplate.PathTemplate;
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Reservation;
@@ -26,8 +25,6 @@ import com.google.cloud.compute.v1.ReservationsClient;
 import com.google.cloud.compute.v1.ShareSettings;
 import com.google.cloud.compute.v1.ShareSettingsProjectConfig;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
