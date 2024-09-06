@@ -72,7 +72,6 @@ public class ReservationIT {
       "test-global-instance-" + UUID.randomUUID();
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
       "test-regional-instance-" + UUID.randomUUID();
-
   private static final int NUMBER_OF_VMS = 3;
 
   private ByteArrayOutputStream stdOut;
@@ -203,7 +202,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void firstCrateReservationWithGlobalInstanceTemplateTest()
+  public void firstCreateReservationWithGlobalInstanceTemplateTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_GLOBAL,
@@ -220,7 +219,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void firstCrateReservationWithRegionInstanceTemplateTest()
+  public void firstCreateReservationWithRegionInstanceTemplateTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_REGIONAL, REGIONAL_INSTANCE_TEMPLATE_URI,

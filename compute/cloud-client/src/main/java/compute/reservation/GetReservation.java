@@ -16,13 +16,14 @@
 
 package compute.reservation;
 
+// [START compute_reservation_get]
+
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-// [START compute_reservation_get]
 public class GetReservation {
 
   public static void main(String[] args)
@@ -38,7 +39,7 @@ public class GetReservation {
     getReservation(projectId, reservationName, zone);
   }
 
-  // Get a reservation with the given name in the given zone.
+  // Retrieve a reservation with the given name in the given zone.
   public static Reservation getReservation(
       String projectId, String reservationName, String zone)
       throws IOException {

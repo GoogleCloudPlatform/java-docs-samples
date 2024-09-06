@@ -16,13 +16,13 @@
 
 package compute.reservation;
 
+// [START compute_reservation_list]
+
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-// [START compute_reservation_list]
 
 public class ListReservations {
 
@@ -47,10 +47,6 @@ public class ListReservations {
         listOfReservations.add(reservation);
         System.out.println("Reservation: " + reservation.getName());
       }
-    }
-    if (listOfReservations.isEmpty()) {
-      listOfReservations = null;
-      System.out.println("No reservations found.");
     }
     return listOfReservations;
   }

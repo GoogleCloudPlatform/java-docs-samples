@@ -40,12 +40,12 @@ public class CreateReservationForInstanceTemplate {
     String reservationName = "YOUR_RESERVATION_NAME";
     // The number of virtual machines you want to create.
     int numberOfVms = 3;
-    // The URI of the instance template with GLOBAL Location
+    // The URI of the instance template with GLOBAL location
     // to be used for creating the reservation.
     String instanceTemplateUri =
         "projects/YOUR_PROJECT_ID/global/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME";
 
-    // The URI of the instance template with REGIONAL Location
+    // The URI of the instance template with REGIONAL location
     // to be used for creating the reservation. For us-central1 region in this case.
     // String instanceTemplateUri =
     // "projects/YOUR_PROJECT_ID/regions/us-central1/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME"
