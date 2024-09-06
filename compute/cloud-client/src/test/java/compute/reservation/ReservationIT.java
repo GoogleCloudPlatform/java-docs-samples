@@ -140,11 +140,12 @@ public class ReservationIT {
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
 
     assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
+    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME_GLOBAL);
+    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME_REGIONAL);
+    // Test that the reservation is deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME_GLOBAL);
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME_REGIONAL);
 
     stdOut.close();
     System.setOut(out);
