@@ -51,17 +51,13 @@ public class CreateReservationForInstanceTemplate {
     // "projects/YOUR_PROJECT_ID/regions/us-central1/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME"
 
     createReservationForInstanceTemplate(
-        projectId, reservationName, instanceTemplateUri,
-        numberOfVms, zone);
+        projectId, reservationName, instanceTemplateUri, numberOfVms, zone);
   }
 
   // Creates a reservation in a project for the instance template.
   public static void createReservationForInstanceTemplate(
-      String projectId,
-      String reservationName,
-      String instanceTemplateUri,
-      int numberOfVms,
-      String zone)
+      String projectId, String reservationName, String instanceTemplateUri,
+      int numberOfVms, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.

@@ -30,7 +30,7 @@ public class ListReservations {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String project = "YOUR_PROJECT_ID";
-    // Zone in which the reservation resides.
+    // Zone in which reservations are located.
     String zone = "us-central1-a";
 
     listReservations(project, zone);

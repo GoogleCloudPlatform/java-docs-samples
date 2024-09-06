@@ -28,10 +28,9 @@ public class GetReservation {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
-    // Name of the zone in which you want to create the disk.
+    // Name of the zone in which you want to create the reservation.
     String zone = "us-central1-a";
     // Name of the reservation you want to create.
     String reservationName = "test-reservation-name";
@@ -39,7 +38,7 @@ public class GetReservation {
     getReservation(projectId, reservationName, zone);
   }
 
-  // Describe a reservation with the given name in the given zone.
+  // Get a reservation with the given name in the given zone.
   public static Reservation getReservation(
       String projectId, String reservationName, String zone)
       throws IOException {
