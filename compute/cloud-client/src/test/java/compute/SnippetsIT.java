@@ -268,7 +268,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testCreateRegionalInstanceTemplate() throws IOException {
+  public void testGetRegionalInstanceTemplate() throws IOException {
     // Check if the instance was successfully created during the setup.
     InstanceTemplate instanceTemplate = GetRegionalInstanceTemplate
         .getRegionalInstanceTemplate(PROJECT_ID, REGION,
