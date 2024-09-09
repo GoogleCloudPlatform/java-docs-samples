@@ -41,10 +41,8 @@ public class SetServiceAccountPolicy {
                                                String serviceAccount) throws IOException {
 
     // Construct the service account email.
-    // You can modify the ".iam.gserviceaccount.com" to match the service account name in which
-    // you want to delete the key.
-    // See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
-
+    // You can modify the ".iam.gserviceaccount.com" to match the name of the service account
+    // whose allow policy you want to set.
     String accountEmail = String.format("%s@%s.iam.gserviceaccount.com", serviceAccount, projectId);
 
     // Initialize client that will be used to send requests.
