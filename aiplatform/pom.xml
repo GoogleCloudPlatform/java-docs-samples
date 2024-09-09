@@ -8,11 +8,23 @@
   <packaging>jar</packaging>
   <name>Google Cloud Vertex AI Snippets</name>
   <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/aiplatform</url>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>9</source>
+                    <target>9</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-  <!--
-    The parent pom defines common style checks and testing strategies for our samples.
-    Removing or replacing it should not affect the execution of the samples in anyway.
-  -->
+    <!--
+      The parent pom defines common style checks and testing strategies for our samples.
+      Removing or replacing it should not affect the execution of the samples in anyway.
+    -->
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
