@@ -63,6 +63,7 @@ public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = getZone();
+  private static ReservationsClient reservationsClient;
   private static String RESERVATION_NAME;
   private static String RESERVATION_NAME_GLOBAL;
   private static String RESERVATION_NAME_REGIONAL;
@@ -90,6 +91,8 @@ public class ReservationIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+    // Initialize the client once for all tests
+    reservationsClient = ReservationsClient.create();
 
     RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
@@ -147,6 +150,9 @@ public class ReservationIT {
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
 
+    // Close the client after all tests
+    reservationsClient.close();
+
     stdOut.close();
     System.setOut(out);
   }
@@ -169,15 +175,13 @@ public class ReservationIT {
     CreateReservation.createReservation(
         PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
 
-    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-      Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME);
+    Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME);
 
-      assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
-      Assert.assertEquals(RESERVATION_NAME, reservation.getName());
-      Assert.assertEquals(NUMBER_OF_VMS,
-          reservation.getSpecificReservation().getCount());
-      Assert.assertTrue(reservation.getZone().contains(ZONE));
-    }
+    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+    Assert.assertEquals(RESERVATION_NAME, reservation.getName());
+    Assert.assertEquals(NUMBER_OF_VMS,
+        reservation.getSpecificReservation().getCount());
+    Assert.assertTrue(reservation.getZone().contains(ZONE));
   }
 
   @Test
@@ -208,14 +212,12 @@ public class ReservationIT {
         PROJECT_ID, RESERVATION_NAME_GLOBAL,
         GLOBAL_INSTANCE_TEMPLATE_URI, NUMBER_OF_VMS, ZONE);
 
-    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-      Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
+    Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
 
-      assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
-      Assert.assertTrue(reservation.getSpecificReservation()
-          .getSourceInstanceTemplate().contains(GLOBAL_INSTANCE_TEMPLATE_NAME));
-      Assert.assertEquals(RESERVATION_NAME_GLOBAL, reservation.getName());
-    }
+    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+    Assert.assertTrue(reservation.getSpecificReservation()
+        .getSourceInstanceTemplate().contains(GLOBAL_INSTANCE_TEMPLATE_NAME));
+    Assert.assertEquals(RESERVATION_NAME_GLOBAL, reservation.getName());
   }
 
   @Test
@@ -224,14 +226,12 @@ public class ReservationIT {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_REGIONAL, REGIONAL_INSTANCE_TEMPLATE_URI,
         NUMBER_OF_VMS, ZONE);
-    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-      Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
-      assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
-      Assert.assertTrue(reservation.getSpecificReservation()
-          .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
-      Assert.assertTrue(reservation.getZone().contains(ZONE));
-      Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
-    }
+    Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
+    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+    Assert.assertTrue(reservation.getSpecificReservation()
+        .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
+    Assert.assertTrue(reservation.getZone().contains(ZONE));
+    Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
   }
 
   // Creates a new instance template with the REGIONAL location.
