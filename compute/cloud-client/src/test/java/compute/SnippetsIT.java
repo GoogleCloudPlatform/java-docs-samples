@@ -60,6 +60,7 @@ public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TEST_IMAGE_PROJECT_NAME = "JAVA_DOCS_COMPUTE_TEST_IMAGE_PROJECT";
   private static final String ZONE = "asia-south1-a";
+  private static final String REGION = "us-central1";
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_LIST_INSTANCE;
   private static String MACHINE_NAME_WAIT_FOR_OP;
@@ -108,8 +109,8 @@ public class SnippetsIT {
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
     compute.CreateEncryptedInstance
         .createEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
-    compute.CreateInstanceWithRegionalLocation
-        .createInstance(PROJECT_ID, ZONE, REGIONAL_LOCATION_NAME);
+    CreateRegionalInstanceTemplate
+        .createRegionalInstanceTemplate(PROJECT_ID, REGION, REGIONAL_LOCATION_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
 
 
@@ -137,8 +138,8 @@ public class SnippetsIT {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
-    compute.DeleteInstanceTemplateWithRegionalLocation
-        .deleteInstanceTemplate(PROJECT_ID, ZONE, REGIONAL_LOCATION_NAME);
+    DeleteRegionalInstanceTemplate
+        .deleteRegionalInstanceTemplate(PROJECT_ID, REGION, REGIONAL_LOCATION_NAME);
     assertThat(stdOut.toString())
         .contains("Instance template deletion operation status for "
             + REGIONAL_LOCATION_NAME);
@@ -267,10 +268,10 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testCreateInstanceTemplateWithRegionalLocation() throws IOException {
+  public void testCreateRegionalInstanceTemplate() throws IOException {
     // Check if the instance was successfully created during the setup.
-    InstanceTemplate instanceTemplate = compute.GetInstanceTemplateWithRegionalLocation
-        .getInstanceTemplate(PROJECT_ID, ZONE,
+    InstanceTemplate instanceTemplate = GetRegionalInstanceTemplate
+        .getRegionalInstanceTemplate(PROJECT_ID, REGION,
         REGIONAL_LOCATION_NAME);
     Assert.assertEquals(REGIONAL_LOCATION_NAME, instanceTemplate.getName());
   }

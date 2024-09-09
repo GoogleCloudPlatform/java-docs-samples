@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateInstanceWithRegionalLocation {
+public class CreateRegionalInstanceTemplate {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -40,14 +40,16 @@ public class CreateInstanceWithRegionalLocation {
     String projectId = "YOUR_PROJECT_ID";
     // Name of the instance you want to delete.
     String instanceName = "YOUR_INSTANCE_NAME";
-    // Name of the zone.
-    String zone = "us-central1-a";
+    // Name of the region.
+    String region = "us-central1";
 
-    createInstance(projectId, zone, instanceName);
+    createRegionalInstanceTemplate(projectId, region, instanceName);
   }
 
-  public static void createInstance(
-      String projectId, String zone, String templateName)
+  //  Create a new regional instance template with the provided name and a specific
+  //  instance configuration.
+  public static void createRegionalInstanceTemplate(
+      String projectId, String region, String templateName)
       throws  IOException, InterruptedException, ExecutionException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -56,7 +58,6 @@ public class CreateInstanceWithRegionalLocation {
 
       String machineType = "n1-standard-1"; // Example machine type
       String sourceImage = "projects/debian-cloud/global/images/family/debian-11"; // Example image
-      String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
 
       // Define the boot disk for the instance template
       AttachedDisk attachedDisk = AttachedDisk.newBuilder()

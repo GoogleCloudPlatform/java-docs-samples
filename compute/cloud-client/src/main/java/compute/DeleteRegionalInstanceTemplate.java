@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class DeleteInstanceTemplateWithRegionalLocation {
+public class DeleteRegionalInstanceTemplate {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
@@ -34,21 +34,20 @@ public class DeleteInstanceTemplateWithRegionalLocation {
     String projectId = "YOUR_PROJECT_ID";
     // Name of the instance you want to delete.
     String instanceName = "YOUR_INSTANCE_NAME";
-    // Name of the zone.
-    String zone = "us-central1-a";
+    // Name of the region.
+    String region = "us-central1";
 
-    deleteInstanceTemplate(projectId, zone, instanceName);
+    deleteRegionalInstanceTemplate(projectId, region, instanceName);
   }
 
-  // Delete an instance template with the REGIONAL location.
-  public static void deleteInstanceTemplate(
-      String projectId, String zone, String templateName)
+  // Delete a regional instance template.
+  public static void deleteRegionalInstanceTemplate(
+      String projectId, String region, String templateName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (RegionInstanceTemplatesClient regionInstanceTemplatesClient =
              RegionInstanceTemplatesClient.create()) {
-      String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
 
       DeleteRegionInstanceTemplateRequest deleteInstanceTemplateRequest =
           DeleteRegionInstanceTemplateRequest
