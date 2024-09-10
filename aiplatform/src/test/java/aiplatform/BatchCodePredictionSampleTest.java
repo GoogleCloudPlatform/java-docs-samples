@@ -42,6 +42,11 @@ public class BatchCodePredictionSampleTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
   private static String BUCKET_NAME;
+  private static final String GCS_SOURCE_URI =
+      "gs://cloud-samples-data/batch/prompt_for_batch_code_predict.jsonl";
+  private static final String GCS_DESTINATION_OUTPUT_PREFIX =
+      String.format("gs://%s/ucaip-test-output/", BUCKET_NAME);
+  private static final String MODEL_ID = "code-bison";
   private ByteArrayOutputStream stdOut;
 
   private static void requireEnvVar(String varName) {
@@ -83,14 +88,10 @@ public class BatchCodePredictionSampleTest {
 
   @Test
   public void testBatchCodePredictionSample() throws IOException {
-    String gcsSourceUri =
-        "gs://cloud-samples-data/batch/prompt_for_batch_code_predict.jsonl";
-    String gcsDestinationOutputUriPrefix =
-        String.format("gs://%s/ucaip-test-output/", BUCKET_NAME);
-    String modelId = "code-bison";
 
     BatchCodePredictionSample.batchCodePredictionSample(
-        PROJECT_ID, LOCATION, gcsSourceUri, gcsDestinationOutputUriPrefix, modelId);
+        PROJECT_ID, LOCATION, GCS_SOURCE_URI,
+        GCS_DESTINATION_OUTPUT_PREFIX, MODEL_ID);
 
     assertThat(stdOut.toString()).contains("publishers/google/models/code-bison");
     assertThat(stdOut.toString()).contains("my batch code prediction job");
