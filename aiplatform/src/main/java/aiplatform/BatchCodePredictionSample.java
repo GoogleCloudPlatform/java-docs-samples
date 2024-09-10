@@ -50,11 +50,11 @@ public class BatchCodePredictionSample {
     LocationName parent = LocationName.of(project, location);
     String modelName = String.format(
         "projects/%s/locations/%s/publishers/google/models/%s", project, location, modelId);
+    JobServiceSettings jobServiceSettings =
+        JobServiceSettings.newBuilder().setEndpoint(endpoint).build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    JobServiceSettings jobServiceSettings =
-        JobServiceSettings.newBuilder().setEndpoint(endpoint).build();
     try (JobServiceClient client = JobServiceClient.create(jobServiceSettings)) {
 
       GcsSource gcsSource = GcsSource.newBuilder().addUris(gcsSourceUri).build();
