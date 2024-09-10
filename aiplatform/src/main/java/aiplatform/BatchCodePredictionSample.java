@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BatchCodePrediction {
+public class BatchCodePredictionSample {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
@@ -39,23 +39,27 @@ public class BatchCodePrediction {
     String gcsDestinationOutputUriPrefix = "gs://YOUR_BUCKET/batch_code_predict_output";
     String modelId = "code-bison";
 
-    batchCodePrediction(project, location, gcsSourceUri, gcsDestinationOutputUriPrefix, modelId);
+    batchCodePredictionSample(project, location, gcsSourceUri,
+        gcsDestinationOutputUriPrefix, modelId);
   }
 
-  static void batchCodePrediction(
-      String project, String location, String gcsSourceUri, String gcsDestinationOutputUriPrefix, String modelId)
-      throws IOException, InterruptedException {
+  //Example of using Google Cloud Storage bucket as the input and output data source
+  public static void batchCodePredictionSample(
+      String project, String location, String gcsSourceUri,
+      String gcsDestinationOutputUriPrefix, String modelId)
+      throws IOException {
+
     String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     LocationName parent = LocationName.of(project, location);
-    String modelName = String.format("projects/%s/locations/%s/publishers/google/models/%s", project, location, modelId);
-
-    //String modelName = ModelName.of(project, location, modelId).toString();
+    String modelName = String.format(
+        "projects/%s/locations/%s/publishers/google/models/%s", project, location, modelId);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     JobServiceSettings jobServiceSettings =
         JobServiceSettings.newBuilder().setEndpoint(endpoint).build();
     try (JobServiceClient client = JobServiceClient.create(jobServiceSettings)) {
+      // Optional model parameters for the batch prediction job
       Map<String, Value> parameters = new HashMap<>();
       parameters.put(
           "maxOutputTokens", Value.newBuilder().setNumberValue(200).build());
