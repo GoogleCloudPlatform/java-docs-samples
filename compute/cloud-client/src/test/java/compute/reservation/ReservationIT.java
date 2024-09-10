@@ -19,14 +19,21 @@ package compute.reservation;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getZone;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
-import com.google.cloud.compute.v1.ShareSettings;
-import com.google.cloud.compute.v1.ShareSettingsProjectConfig;
-import org.mockito.Mockito;
+import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
+import com.google.cloud.compute.v1.ShareSettings;
+import com.google.cloud.compute.v1.ShareSettingsProjectConfig;
+import compute.CreateInstanceTemplate;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -36,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
-import compute.CreateInstanceTemplate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -54,7 +60,6 @@ public class ReservationIT {
   private static final String ZONE = getZone();
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
-  private static String[] CONSUMER_PROJECT_IDS;
   private static String INSTANCE_TEMPLATE_URI;
 
   private ByteArrayOutputStream stdOut;
@@ -74,10 +79,13 @@ public class ReservationIT {
     RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
 
     String instanceTemplateName = "test-inst-for-shared-res" + UUID.randomUUID();
-        CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID,  instanceTemplateName);
+    CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, instanceTemplateName);
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
-       Assert.assertTrue(instanceTemplatesClient.get(PROJECT_ID,instanceTemplateName).getName().contains(instanceTemplateName));}
-    INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",PROJECT_ID, instanceTemplateName);
+      Assert.assertTrue(instanceTemplatesClient.get(PROJECT_ID, instanceTemplateName)
+          .getName().contains(instanceTemplateName));
+    }
+    INSTANCE_TEMPLATE_URI = String.format(
+        "projects/%s/global/instanceTemplates/%s", PROJECT_ID, instanceTemplateName);
   }
 
   @BeforeEach
@@ -130,21 +138,50 @@ public class ReservationIT {
     }
   }
 
-    @Test
-    public void testCreateSharedReservation()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  @Test
+  public void testCreateSharedReservation()
+      throws ExecutionException, InterruptedException, TimeoutException {
 
-      // Create a mock ReservationsClient
-      ReservationsClient mockReservationsClient = Mockito.mock(ReservationsClient.class);
-      ShareSettings shareSettings = Mockito.mock(ShareSettings.class);
-      ShareSettingsProjectConfig shareSettingsProjectConfig = Mockito.mock(ShareSettingsProjectConfig.class);
+    // Mock the ReservationsClient
+    ReservationsClient mockReservationsClient = mock(ReservationsClient.class);
 
+    ShareSettings shareSettings = ShareSettings.newBuilder()
+        .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
+        .putProjectMap("CONSUMER_PROJECT_ID_1", ShareSettingsProjectConfig.newBuilder().build())
+        .putProjectMap("CONSUMER_PROJECT_ID_2", ShareSettingsProjectConfig.newBuilder().build())
+        .build();
 
-      CreateSharedReservation.createSharedReservation(
-        PROJECT_ID, ZONE, RESERVATION_NAME,
-        INSTANCE_TEMPLATE_URI, 3);
+    Reservation reservation =
+        Reservation.newBuilder()
+            .setName(RESERVATION_NAME)
+            .setZone(ZONE)
+            .setSpecificReservationRequired(true)
+            .setShareSettings(shareSettings)
+            .setSpecificReservation(
+                AllocationSpecificSKUReservation.newBuilder()
+                    .setCount(NUMBER_OF_VMS)
+                    .setSourceInstanceTemplate(INSTANCE_TEMPLATE_URI)
+                    .build())
+            .build();
 
+    OperationFuture mockFuture = mock(OperationFuture.class);
+    when(mockReservationsClient.insertAsync(PROJECT_ID, ZONE, reservation))
+        .thenReturn(mockFuture);
 
+    // Mock the Operation
+    Operation mockOperation = mock(Operation.class);
+    when(mockFuture.get(3, TimeUnit.MINUTES)).thenReturn(mockOperation);
+    when(mockOperation.hasError()).thenReturn(false);
+    when(mockOperation.getStatus()).thenReturn(Operation.Status.DONE);
+
+    // Create an instance, passing in the mock client
+    CreateSharedReservation creator = new CreateSharedReservation(mockReservationsClient);
+
+    creator.createSharedReservation(PROJECT_ID, ZONE,
+        RESERVATION_NAME, INSTANCE_TEMPLATE_URI, NUMBER_OF_VMS);
+
+    verify(mockReservationsClient, times(1))
+        .insertAsync(PROJECT_ID, ZONE, reservation);
     assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
   }
 }

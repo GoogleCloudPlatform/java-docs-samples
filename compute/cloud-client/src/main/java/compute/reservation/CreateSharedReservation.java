@@ -30,66 +30,71 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class CreateSharedReservation {
+  private final ReservationsClient reservationsClient;
+
+  // Constructor to inject the ReservationsClient
+  public CreateSharedReservation(ReservationsClient reservationsClient) {
+    this.reservationsClient = reservationsClient;
+  }
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // The ID of the project where you want to reserve resources and where the instance template exists.
+    // The ID of the project where you want to reserve resources
+    // and where the instance template exists.
     String projectId = "YOUR_PROJECT_ID";
     // Zone in which the reservation resides.
     String zone = "us-central1-a";
     // Name of the reservation to be created.
     String reservationName = "YOUR_RESERVATION_NAME";
-    // The URI of the instance template with GLOBAL Location
-    // to be used for creating the reservation.
-    String instanceTemplateUri =
-        "projects/YOUR_PROJECT_ID/global/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME";
+    // The URI of the global instance template to be used for creating the reservation.
+    String instanceTemplateUri = String.format(
+        "projects/%s/global/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME", projectId);
     // Number of instances for which capacity needs to be reserved.
     int vmCount = 3;
+    // In your main method, create a real ReservationsClient
+    ReservationsClient client = ReservationsClient.create();
+    // Create an instance of your class, passing in the real client
+    CreateSharedReservation creator = new CreateSharedReservation(client);
 
-    createSharedReservation(
-        projectId, zone, reservationName, instanceTemplateUri, vmCount);
+    creator.createSharedReservation(projectId, zone, reservationName, instanceTemplateUri, vmCount);
   }
 
   // Creates a shared reservation with the given name in the given zone.
-  public static void createSharedReservation(
+  public void createSharedReservation(
       String projectId, String zone,
       String reservationName, String instanceTemplateUri, int vmCount)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      throws ExecutionException, InterruptedException, TimeoutException {
 
-      ShareSettings shareSettings = ShareSettings.newBuilder()
-          .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
-          .putProjectMap("CONSUMER_PROJECT_ID_1", ShareSettingsProjectConfig.newBuilder().build())
-          .putProjectMap("CONSUMER_PROJECT_ID_2", ShareSettingsProjectConfig.newBuilder().build())
-          .build();
+    ShareSettings shareSettings = ShareSettings.newBuilder()
+        .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
+        .putProjectMap("CONSUMER_PROJECT_ID_1", ShareSettingsProjectConfig.newBuilder().build())
+        .putProjectMap("CONSUMER_PROJECT_ID_2", ShareSettingsProjectConfig.newBuilder().build())
+        .build();
 
-      // Create the reservation.
-      Reservation reservation =
-          Reservation.newBuilder()
-              .setName(reservationName)
-              .setZone(zone)
-              .setSpecificReservationRequired(true)
-              .setShareSettings(shareSettings)
-              .setSpecificReservation(
-                  AllocationSpecificSKUReservation.newBuilder()
-                      .setCount(vmCount)
-                      .setSourceInstanceTemplate(instanceTemplateUri)
-                      .build())
-              .build();
+    // Create the reservation.
+    Reservation reservation =
+        Reservation.newBuilder()
+            .setName(reservationName)
+            .setZone(zone)
+            .setSpecificReservationRequired(true)
+            .setShareSettings(shareSettings)
+            .setSpecificReservation(
+                AllocationSpecificSKUReservation.newBuilder()
+                    .setCount(vmCount)
+                    .setSourceInstanceTemplate(instanceTemplateUri)
+                    .build())
+            .build();
 
-      // Wait for the create reservation operation to complete.
-      Operation response =
-          reservationsClient.insertAsync(projectId, zone, reservation).get(3, TimeUnit.MINUTES);
+    // Wait for the create reservation operation to complete.
+    Operation response =
+        this.reservationsClient.insertAsync(projectId, zone, reservation).get(3, TimeUnit.MINUTES);
 
-      if (response.hasError()) {
-        System.out.println("Reservation creation failed!" + response);
-        return;
-      }
-      System.out.println("Reservation created. Operation Status: " + response.getStatus());
+    if (response.hasError()) {
+      System.out.println("Reservation creation failed!" + response);
+      return;
     }
+    System.out.println("Reservation created. Operation Status: " + response.getStatus());
   }
 }
 // [END compute_reservation_create_shared]
