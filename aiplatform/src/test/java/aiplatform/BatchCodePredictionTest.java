@@ -34,7 +34,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class BatchCodePredictionTest {
 
-  private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
+  private static final String PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
   private static String BUCKET ;
   private static String OPERATION;
@@ -52,8 +52,7 @@ public class BatchCodePredictionTest {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("UCAIP_PROJECT_ID");
-
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
   @Before
@@ -67,18 +66,11 @@ public class BatchCodePredictionTest {
   @After
   public void tearDown()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
-//    // Delete the created data labeling
-//    DeleteDataLabelingJobSample.deleteDataLabelingJob(PROJECT, dataLabelingJobId);
-
-//    // Assert
-//    String deleteResponse = bout.toString();
-//    assertThat(deleteResponse).contains("Deleted Data Labeling Job.");
     System.out.flush();
     System.setOut(originalPrintStream);
   }
 
   @Test
-  @SuppressWarnings("checkstyle:abbreviationaswordinname")
   public void testBatchCodePrediction() throws IOException, InterruptedException {
     try {
       String gcsSourceUri =
@@ -89,11 +81,11 @@ public class BatchCodePredictionTest {
 
       BatchCodePrediction.batchCodePrediction(
           PROJECT, LOCATION, gcsSourceUri, gcsDestinationOutputUriPrefix, modelId);
-      OPERATION = "YOUR_OPERATION_ID";
-      assertThat(OPERATION).isNotNull();
+      String operationName = "YOUR_OPERATION_ID"; // Update with a valid operation name or ID
+      assertThat(operationName).isNotNull();
     } catch (ApiException ex) {
       System.out.println(ex.getMessage());
-      // Example of expected exeption:
+      // Example of expected exception:
       assertThat(ex.getMessage())
           .contains("The model projects/ucaip-sample-tests/locations/us-central1/publishers/google/models/text-bison@001 is not available for online prediction.");
     }
