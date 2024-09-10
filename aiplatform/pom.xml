@@ -8,6 +8,7 @@
   <packaging>jar</packaging>
   <name>Google Cloud Vertex AI Snippets</name>
   <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/aiplatform</url>
+
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
     Removing or replacing it should not affect the execution of the samples in anyway.
@@ -88,11 +89,5 @@
       <version>1.7.1</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>org.testng</groupId>
-          <artifactId>testng</artifactId>
-          <version>7.10.2</version>
-          <scope>test</scope>
-      </dependency>
   </dependencies>
 </project>
