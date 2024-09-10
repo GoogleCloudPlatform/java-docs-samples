@@ -24,10 +24,7 @@ import com.google.cloud.aiplatform.v1.GcsSource;
 import com.google.cloud.aiplatform.v1.JobServiceClient;
 import com.google.cloud.aiplatform.v1.JobServiceSettings;
 import com.google.cloud.aiplatform.v1.LocationName;
-import com.google.protobuf.Value;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class BatchCodePredictionSample {
 
@@ -59,11 +56,6 @@ public class BatchCodePredictionSample {
     JobServiceSettings jobServiceSettings =
         JobServiceSettings.newBuilder().setEndpoint(endpoint).build();
     try (JobServiceClient client = JobServiceClient.create(jobServiceSettings)) {
-      // Optional model parameters for the batch prediction job
-      Map<String, Value> parameters = new HashMap<>();
-      parameters.put(
-          "maxOutputTokens", Value.newBuilder().setNumberValue(200).build());
-      parameters.put("temperature", Value.newBuilder().setNumberValue(0.2).build());
 
       GcsSource gcsSource = GcsSource.newBuilder().addUris(gcsSourceUri).build();
       BatchPredictionJob.InputConfig inputConfig =
