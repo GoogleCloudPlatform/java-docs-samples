@@ -16,6 +16,8 @@
 
 package compute.reservation;
 
+// [START compute_reservation_create]
+
 import com.google.cloud.compute.v1.AcceleratorConfig;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationReservedInstanceProperties;
@@ -28,7 +30,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-// [START compute_reservation_create]
 public class CreateReservation {
 
   public static void main(String[] args)
@@ -39,7 +40,7 @@ public class CreateReservation {
     // Name of the zone in which you want to create the disk.
     String zone = "us-central1-a";
     // Name of the reservation you want to create.
-    String reservationName = "test-reservation-name";
+    String reservationName = "YOUR_RESERVATION_NAME";
     // Number of instances in the reservation.
     int numberOfVms = 3;
 

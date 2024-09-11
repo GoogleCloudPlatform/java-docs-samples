@@ -16,11 +16,16 @@
 
 package compute.reservation;
 
+import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.ANY_RESERVATION;
+import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.SPECIFIC_RESERVATION;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getZone;
+import static org.junit.Assert.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.compute.v1.Instance;
+import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import java.io.ByteArrayOutputStream;
@@ -48,7 +53,14 @@ public class ReservationIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = getZone();
   private static String RESERVATION_NAME;
+  private static String INSTANCE_FOR_SPR;
+  private static String INSTANCE_NAME;
+  private static String SHARED_RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
+  private static String MACHINE_TYPE;
+  private static String MIN_CPU_PLATFORM;
+  private static InstancesClient instancesClient;
+
 
   private ByteArrayOutputStream stdOut;
 
@@ -63,8 +75,25 @@ public class ReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+    // Initialize the client once for all tests
+    instancesClient = InstancesClient.create();
 
     RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
+    SHARED_RESERVATION_NAME = "test-shared-reserv-" + UUID.randomUUID();
+    //Instance for Single Project Reservation consuming
+    INSTANCE_FOR_SPR = "test-instance-for-spr-" + UUID.randomUUID().toString().substring(0, 8);
+    INSTANCE_NAME = "test-instance-" + UUID.randomUUID().toString().substring(0, 8);
+    MACHINE_TYPE = "n2-standard-32";
+    MIN_CPU_PLATFORM = "Intel Cascade Lake";
+
+    // Create the reservation
+    ConsumeSingleProjectReservation.createReservation(
+        PROJECT_ID, SHARED_RESERVATION_NAME, NUMBER_OF_VMS,
+        ZONE, MACHINE_TYPE, MIN_CPU_PLATFORM, true);
+    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
   }
 
   @BeforeEach
@@ -86,9 +115,16 @@ public class ReservationIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
+    // Clean up the instances
+    compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_FOR_SPR);
+    compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
+
     // Verify reservation is deleted
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, SHARED_RESERVATION_NAME);
+
     assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
+    assertThat(stdOut.toString()).contains("Deleted reservation: " + SHARED_RESERVATION_NAME);
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       // Get the reservation.
       Assertions.assertThrows(
@@ -115,5 +151,39 @@ public class ReservationIT {
           reservation.getSpecificReservation().getCount());
       Assert.assertTrue(reservation.getZone().contains(ZONE));
     }
+  }
+
+  @Test
+  public void testConsumeAnyMatchingReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    ConsumeAnyMatchingReservation.createInstance(
+        PROJECT_ID, ZONE, INSTANCE_NAME, MACHINE_TYPE, MIN_CPU_PLATFORM);
+
+    String output = stdOut.toString();
+    assertThat(output).contains("Operation Status: DONE");
+
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_NAME);
+    assertNotNull(instance);
+    Assert.assertEquals(ANY_RESERVATION.toString(),
+        instance.getReservationAffinity().getConsumeReservationType());
+  }
+
+  @Test
+  public void testConsumeSingleProjectReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    ConsumeSingleProjectReservation.createInstance(
+        PROJECT_ID, ZONE, INSTANCE_FOR_SPR, MACHINE_TYPE,
+        MIN_CPU_PLATFORM, SHARED_RESERVATION_NAME);
+
+    String output = stdOut.toString();
+    assertThat(output).contains("Operation Status: DONE");
+
+    // Verify that the instance was created in the correct reservation
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_FOR_SPR);
+    assertNotNull(instance);
+    assertThat(instance.getReservationAffinity().getValuesList())
+        .contains(SHARED_RESERVATION_NAME);
+    Assert.assertEquals(SPECIFIC_RESERVATION.toString(),
+        instance.getReservationAffinity().getConsumeReservationType());
   }
 }
