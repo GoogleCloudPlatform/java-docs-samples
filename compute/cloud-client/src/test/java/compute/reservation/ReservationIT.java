@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -40,9 +41,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.runners.MethodSorters;
+
 
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -101,7 +105,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void testCreateReservation()
+  public void firstCreateReservationTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservation.createReservation(
         PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
@@ -118,15 +122,15 @@ public class ReservationIT {
   }
 
   @Test
-  public void testUpdateVmsForReservation()
+  public void secondUpdateVmsForReservationTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     int newNumberOfVms = 5;
     UpdateVmsForReservation.updateVmsForReservation(
         PROJECT_ID, ZONE, RESERVATION_NAME, newNumberOfVms);
+    assertThat(stdOut.toString()).contains("Reservation updated successfully: DONE");
+
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME);
-
-      assertThat(stdOut.toString()).contains("Reservation updated successfully: DONE");
       Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
     }
   }
