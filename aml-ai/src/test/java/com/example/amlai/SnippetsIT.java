@@ -16,8 +16,7 @@
 
 package com.example.amlai;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
@@ -29,7 +28,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class ListLocationsTest {
+public class SnippetsIT {
 
   @Rule public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(5);
 
@@ -52,6 +51,6 @@ public class ListLocationsTest {
   @Test
   public void test_ListLocations() throws IOException {
     String output = ListLocations.listLocations(PROJECT_ID);
-    assertThat(output, containsString(LOCATION));
+    assertThat(output).contains(LOCATION);
   }
 }

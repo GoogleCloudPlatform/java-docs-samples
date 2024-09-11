@@ -36,6 +36,7 @@ public class ListLocations {
     listLocations(projectId);
   }
 
+  // Lists all the AML AI API locations for a given Cloud project.
   public static String listLocations(String projectId) throws IOException {
     // Use Application Default Credentials (ADC) to authenticate the requests
     // For more information, see https://cloud.google.com/docs/authentication/production
