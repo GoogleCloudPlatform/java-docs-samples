@@ -116,4 +116,18 @@ public class ReservationIT {
       Assert.assertTrue(reservation.getZone().contains(ZONE));
     }
   }
+
+  @Test
+  public void testUpdateVmsForReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    int newNumberOfVms = 5;
+    UpdateVmsForReservation.updateVmsForReservation(
+        PROJECT_ID, ZONE, RESERVATION_NAME, newNumberOfVms);
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME);
+
+      assertThat(stdOut.toString()).contains("Reservation updated successfully: DONE");
+      Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
+    }
+  }
 }
