@@ -24,8 +24,8 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.healthcare.v1.CloudHealthcare;
 import com.google.api.services.healthcare.v1.CloudHealthcare.Projects.Locations.Datasets.FhirStores;
 import com.google.api.services.healthcare.v1.CloudHealthcareScopes;
-import com.google.api.services.healthcare.v1.model.FhirStore;
 import com.google.api.services.healthcare.v1.model.FhirNotificationConfig;
+import com.google.api.services.healthcare.v1.model.FhirStore;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
@@ -47,13 +47,19 @@ public class FhirStorePatch {
     CloudHealthcare client = createClient();
 
     // Fetch the initial state of the FHIR store.
-    FhirStores.Get getRequest = client.projects().locations().datasets().fhirStores().get(fhirStoreName);
+    FhirStores.Get getRequest = client
+        .projects()
+        .locations()
+        .datasets()
+        .fhirStores()
+        .get(fhirStoreName);
     FhirStore store = getRequest.execute();
 
     // Update the FhirStore fields as needed as needed. For a full list of FhirStore
     // fields, see:
     // https://cloud.google.com/healthcare/docs/reference/rest/v1/projects.locations.datasets.fhirStores#FhirStore
-    FhirNotificationConfig notificationConfig = new FhirNotificationConfig().setPubsubTopic(pubsubTopic);
+    FhirNotificationConfig notificationConfig = new FhirNotificationConfig()
+        .setPubsubTopic(pubsubTopic);
     store.setNotificationConfigs(Collections.singletonList(notificationConfig));
 
     // Create request and configure any parameters.

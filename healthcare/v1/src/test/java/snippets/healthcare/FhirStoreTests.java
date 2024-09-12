@@ -76,7 +76,11 @@ public class FhirStoreTests {
   @BeforeClass
   public static void setUp() throws IOException {
     String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    datasetName = String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
+    datasetName = String.format(
+        "projects/%s/locations/%s/datasets/%s",
+        PROJECT_ID,
+        REGION_ID,
+        datasetId);
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
   }
 
