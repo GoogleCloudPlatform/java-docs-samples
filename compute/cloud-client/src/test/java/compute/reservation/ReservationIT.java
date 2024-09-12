@@ -22,19 +22,12 @@ import static compute.Util.getZone;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.compute.v1.AttachedDisk;
-import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
-import com.google.cloud.compute.v1.DeleteRegionInstanceTemplateRequest;
-import com.google.cloud.compute.v1.InsertRegionInstanceTemplateRequest;
-import com.google.cloud.compute.v1.InstanceProperties;
-import com.google.cloud.compute.v1.InstanceTemplate;
-import com.google.cloud.compute.v1.NetworkInterface;
-import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.CreateInstanceTemplate;
+import compute.CreateRegionalInstanceTemplate;
 import compute.DeleteInstanceTemplate;
+import compute.DeleteRegionalInstanceTemplate;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -63,6 +56,7 @@ public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = getZone();
+  private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static ReservationsClient reservationsClient;
   private static String RESERVATION_NAME;
   private static String RESERVATION_NAME_GLOBAL;
@@ -99,18 +93,17 @@ public class ReservationIT {
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
         PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
-    String region = ZONE.substring(0, ZONE.lastIndexOf('-'));
     REGIONAL_INSTANCE_TEMPLATE_URI =
         String.format("projects/%s/regions/%s/instanceTemplates/%s",
-            PROJECT_ID, region, REGIONAL_INSTANCE_TEMPLATE_NAME);
+            PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString())
         .contains("Instance Template Operation Status " + GLOBAL_INSTANCE_TEMPLATE_NAME);
     // Create instance template with REGIONAL location.
-    ReservationIT.createRegionalInstanceTemplate(
-        PROJECT_ID, REGIONAL_INSTANCE_TEMPLATE_NAME, ZONE);
+    CreateRegionalInstanceTemplate.createRegionalInstanceTemplate(
+        PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
 
     stdOut.close();
@@ -131,8 +124,8 @@ public class ReservationIT {
             + GLOBAL_INSTANCE_TEMPLATE_NAME);
 
     // Delete instance template with REGIONAL location.
-    ReservationIT.deleteRegionalInstanceTemplate(
-        PROJECT_ID, ZONE, REGIONAL_INSTANCE_TEMPLATE_NAME);
+    DeleteRegionalInstanceTemplate.deleteRegionalInstanceTemplate(
+        PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString())
         .contains("Instance template deletion operation status for "
             + REGIONAL_INSTANCE_TEMPLATE_NAME);
@@ -232,97 +225,5 @@ public class ReservationIT {
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
     Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
-  }
-
-  // Creates a new instance template with the REGIONAL location.
-  public static void createRegionalInstanceTemplate(
-      String projectId, String templateName, String zone)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (RegionInstanceTemplatesClient templatesClientRegion =
-             RegionInstanceTemplatesClient.create()) {
-
-      String machineType = "n1-standard-1"; // Example machine type
-      String sourceImage = "projects/debian-cloud/global/images/family/debian-11"; // Example image
-      String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
-
-      // Define the boot disk for the instance template
-      AttachedDisk attachedDisk = AttachedDisk.newBuilder()
-          .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
-              .setSourceImage(sourceImage)
-              .setDiskType("pd-balanced") // Example disk type
-              .setDiskSizeGb(100L) // Example disk size
-              .build())
-          .setAutoDelete(true)
-          .setBoot(true)
-          .build();
-
-      // Define the network interface for the instance template
-      // Note: The subnetwork must be in the same region as the instance template.
-      NetworkInterface networkInterface = NetworkInterface.newBuilder()
-          .setName("my-network-test")
-          .setSubnetwork(String.format("projects/%s/regions/%s/subnetworks/default",
-              PROJECT_ID, region))
-          .build();
-
-      // Define the instance properties for the template
-      InstanceProperties instanceProperties = InstanceProperties.newBuilder()
-          .addDisks(attachedDisk)
-          .setMachineType(machineType)
-          .addNetworkInterfaces(networkInterface)
-          .build();
-
-      // Build the instance template object
-      InstanceTemplate instanceTemplate = InstanceTemplate.newBuilder()
-          .setName(templateName)
-          .setProperties(instanceProperties)
-          .build();
-
-      // Create the request to insert the instance template
-      InsertRegionInstanceTemplateRequest insertInstanceTemplateRequest =
-          InsertRegionInstanceTemplateRequest
-              .newBuilder()
-              .setProject(projectId)
-              .setRegion(region)
-              .setInstanceTemplateResource(instanceTemplate)
-              .build();
-
-      // Send the request and wait for the operation to complete
-      Operation response = templatesClientRegion.insertAsync(insertInstanceTemplateRequest)
-          .get(3, TimeUnit.MINUTES);
-
-      if (response.hasError()) {
-        System.out.println("Instance Template creation failed! " + response);
-        return;
-      }
-      System.out.printf("Instance Template Operation Status: %s%n", response.getStatus());
-    }
-  }
-
-  // Delete an instance template with the REGIONAL location.
-  private static void deleteRegionalInstanceTemplate(
-      String projectId, String zone, String templateName)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (RegionInstanceTemplatesClient regionInstanceTemplatesClient =
-             RegionInstanceTemplatesClient.create()) {
-      String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
-
-      DeleteRegionInstanceTemplateRequest deleteInstanceTemplateRequest =
-          DeleteRegionInstanceTemplateRequest
-              .newBuilder()
-              .setProject(projectId)
-              .setRegion(region)
-              .setInstanceTemplate(templateName)
-              .build();
-
-      Operation response = regionInstanceTemplatesClient.deleteAsync(
-          deleteInstanceTemplateRequest).get(3, TimeUnit.MINUTES);
-
-      if (response.hasError()) {
-        System.out.println("Instance template deletion failed ! ! " + response);
-        return;
-      }
-      System.out.printf("Instance template deletion operation status for %s: %s ", templateName,
-          response.getStatus());
-    }
   }
 }
