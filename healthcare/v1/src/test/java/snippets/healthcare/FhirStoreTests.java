@@ -76,8 +76,7 @@ public class FhirStoreTests {
   @BeforeClass
   public static void setUp() throws IOException {
     String datasetId = "dataset-" + UUID.randomUUID().toString().replaceAll("-", "_");
-    datasetName =
-        String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
+    datasetName = String.format("projects/%s/locations/%s/datasets/%s", PROJECT_ID, REGION_ID, datasetId);
     DatasetCreate.datasetCreate(PROJECT_ID, REGION_ID, datasetId);
   }
 
@@ -159,7 +158,7 @@ public class FhirStoreTests {
     FhirStorePatch.fhirStorePatch(fhirStoreName, GCLOUD_PUBSUB_TOPIC);
 
     String output = bout.toString();
-    assertThat(output, containsString("Fhir store patched:"));
+    assertThat(output, containsString("FHIR store patched:"));
   }
 
   @Test
