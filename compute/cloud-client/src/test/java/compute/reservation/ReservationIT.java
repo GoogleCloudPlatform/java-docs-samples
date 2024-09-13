@@ -22,10 +22,13 @@ import static compute.Util.getZone;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.compute.v1.InstanceTemplatesClient;
+import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.CreateInstanceTemplate;
 import compute.CreateRegionalInstanceTemplate;
+import compute.DeleteInstance;
 import compute.DeleteInstanceTemplate;
 import compute.DeleteRegionalInstanceTemplate;
 import java.io.ByteArrayOutputStream;
@@ -58,6 +61,8 @@ public class ReservationIT {
   private static final String ZONE = getZone();
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static ReservationsClient reservationsClient;
+  private static InstanceTemplatesClient instanceTemplatesClient;
+  private static InstancesClient instancesClient;
   private static String RESERVATION_NAME;
   private static String RESERVATION_NAME_GLOBAL;
   private static String RESERVATION_NAME_REGIONAL;
@@ -87,6 +92,40 @@ public class ReservationIT {
     System.setOut(new PrintStream(stdOut));
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
+
+
+    instancesClient = InstancesClient.create();
+    instanceTemplatesClient = InstanceTemplatesClient.create();
+
+    reservationsClient.list(PROJECT_ID, ZONE).iterateAll()
+        .forEach(reservation -> {
+          try {
+            // Delete each reservation.
+            DeleteReservation.deleteReservation(
+                PROJECT_ID, ZONE, reservation.getName());
+          } catch (IOException | ExecutionException
+                       | InterruptedException | TimeoutException e) {
+            System.err.println("Error deleting reservation: " + e.getMessage());
+          }
+        });
+    instancesClient.list(PROJECT_ID, ZONE).iterateAll()
+        .forEach(instance -> {
+          try {
+            // Delete each instance.
+            DeleteInstance.deleteInstance(PROJECT_ID, ZONE, instance.getName());
+          } catch (Exception e) {
+            System.err.println("Error deleting instance: " + e.getMessage());
+          }
+        });
+    instanceTemplatesClient.list(PROJECT_ID).iterateAll()
+        .forEach(instance -> {
+          try {
+            // Delete each instance.
+            DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, instance.getName());
+          } catch (Exception e) {
+            System.err.println("Error deleting instance: " + e.getMessage());
+          }
+        });
 
     RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
@@ -145,6 +184,8 @@ public class ReservationIT {
 
     // Close the client after all tests
     reservationsClient.close();
+    instancesClient.close();
+    instanceTemplatesClient.close();
 
     stdOut.close();
     System.setOut(out);
