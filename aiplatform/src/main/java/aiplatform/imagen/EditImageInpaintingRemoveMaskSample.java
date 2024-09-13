@@ -41,19 +41,11 @@ public class EditImageInpaintingRemoveMaskSample {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    // String projectId = "my-project-id";
-    // String location = "us-central1";
-    // String inputPath = "/path/to/my-input.png";
-    // String maskPath = "/path/to/my-mask.png";
-    // String prompt = ""; // The text prompt describing the entire image.
-
-    String projectId = "nickcook";
+    String projectId = "my-project-id";
     String location = "us-central1";
-    String inputPath =
-        "/Users/nickcook/projects/imagen/java-docs-samples/aiplatform/resources/volleyball_game.png";
-    String maskPath =
-        "/Users/nickcook/projects/imagen/java-docs-samples/aiplatform/resources/volleyball_game_inpainting_remove_mask.png";
-    String prompt = "hat"; // The text prompt describing what you want to see inserted.
+    String inputPath = "/path/to/my-input.png";
+    String maskPath = "/path/to/my-mask.png";
+    String prompt = ""; // The text prompt describing the entire image.
 
     editImageInpaintingRemoveMask(projectId, location, inputPath, maskPath, prompt);
   }
