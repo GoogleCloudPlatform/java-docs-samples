@@ -16,6 +16,7 @@
 
 package compute.reservation;
 
+import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.SPECIFIC_RESERVATION;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getZone;
@@ -26,8 +27,10 @@ import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
 import com.google.cloud.compute.v1.DeleteRegionInstanceTemplateRequest;
 import com.google.cloud.compute.v1.InsertRegionInstanceTemplateRequest;
+import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstanceProperties;
 import com.google.cloud.compute.v1.InstanceTemplate;
+import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
@@ -39,6 +42,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -67,13 +71,20 @@ public class ReservationIT {
   private static String RESERVATION_NAME;
   private static String RESERVATION_NAME_GLOBAL;
   private static String RESERVATION_NAME_REGIONAL;
+  private static String SHARED_RESERVATION_NAME;
   private static String GLOBAL_INSTANCE_TEMPLATE_URI;
   private static String REGIONAL_INSTANCE_TEMPLATE_URI;
+  private static String SPECIFIC_SHARED_INSTANCE_URI;
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
       "test-global-instance-" + UUID.randomUUID();
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
       "test-regional-instance-" + UUID.randomUUID();
+  private static final String SPECIFIC_SHARED_INSTANCE_NAME =
+      "test-shared-instance-" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
+  private static String MACHINE_TYPE = "n2-standard-32";
+  private static String MIN_CPU_PLATFORM = "Intel Cascade Lake";
+  private static InstancesClient instancesClient;
 
   private ByteArrayOutputStream stdOut;
 
@@ -91,18 +102,24 @@ public class ReservationIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    // Initialize the client once for all tests
+    // Initialize the clients once for all tests
     reservationsClient = ReservationsClient.create();
+    instancesClient = InstancesClient.create();
 
     RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
+    SHARED_RESERVATION_NAME = "test-shared-reserv-" + UUID.randomUUID();
+
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
         PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
     String region = ZONE.substring(0, ZONE.lastIndexOf('-'));
     REGIONAL_INSTANCE_TEMPLATE_URI =
         String.format("projects/%s/regions/%s/instanceTemplates/%s",
             PROJECT_ID, region, REGIONAL_INSTANCE_TEMPLATE_NAME);
+    SPECIFIC_SHARED_INSTANCE_URI =
+        String.format("projects/%s/zones/%s/instanceTemplates/%s",
+            PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME);
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
@@ -232,6 +249,30 @@ public class ReservationIT {
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
     Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
+  }
+
+  @Test
+  public void testConsumeSpecificSharedReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+ConsumeSpecificSharedReservation.createReservation(PROJECT_ID,
+    SHARED_RESERVATION_NAME,
+    NUMBER_OF_VMS, ZONE,
+    MACHINE_TYPE,MIN_CPU_PLATFORM,
+    true);
+    Assert.assertEquals(SHARED_RESERVATION_NAME,
+        reservationsClient.get(PROJECT_ID, ZONE, SHARED_RESERVATION_NAME).getName());
+
+    ConsumeSpecificSharedReservation.createInstance(
+        PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME, MACHINE_TYPE,
+        MIN_CPU_PLATFORM, SHARED_RESERVATION_NAME);
+
+    // Verify that the instance was created with the correct reservation and consumeReservationType
+   Instance instance = instancesClient.get(PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME);
+
+    Assert.assertTrue(instance.getReservationAffinity()
+        .getValuesList().get(0).contains(SHARED_RESERVATION_NAME));
+    Assert.assertEquals(SPECIFIC_RESERVATION.toString(),
+        instance.getReservationAffinity().getConsumeReservationType());
   }
 
   // Creates a new instance template with the REGIONAL location.
