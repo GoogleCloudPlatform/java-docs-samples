@@ -26,36 +26,52 @@ import com.google.cloud.aiplatform.v1.GcsSource;
 import com.google.cloud.aiplatform.v1.JobServiceClient;
 import com.google.cloud.aiplatform.v1.JobServiceSettings;
 import com.google.cloud.aiplatform.v1.LocationName;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Value;
+import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
+
 
 public class BatchTextPredictionSample {
 
   public static void main(String[] args) throws IOException {
+    // TODO (Developer): Replace the input_uri and output_uri with your own GCS paths
     String project = "YOUR_PROJECT_ID";
     String location = "us-central1";
-    String gcsSourceUri = "gs://cloud-samples-data/batch/prompt_for_batch_text_predict.jsonl";
-    String gcsDestinationOutputUriPrefix = "gs://batch-bucket-testing/batch_text_predict_output";
-    String modelId = "text-bison";
+    // input_uri (str, optional): URI of the input dataset.
+    // Could be a BigQuery table or a Google Cloud Storage file.
+    // E.g. "gs://[BUCKET]/[DATASET].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
+    String inputUri = "gs://cloud-samples-data/batch/prompt_for_batch_text_predict.jsonl";
+    // outputUri (str, optional): URI where the output will be stored.
+    // Could be a BigQuery table or a Google Cloud Storage file.
+    // E.g. "gs://[BUCKET]/[OUTPUT].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
+    String outputUri = "gs://batch-bucket-testing/batch_text_predict_output";
+    String codeModel = "text-bison";
 
-    batchTextPrediction(project, location, gcsSourceUri, gcsDestinationOutputUriPrefix, modelId);
+    batchTextPrediction(project, location, inputUri, outputUri, codeModel);
   }
 
+  // Perform batch text prediction using a pre-trained text generation model.
   // Example of using Google Cloud Storage bucket as the input and output data source
   public static void batchTextPrediction(
-      String project, String location, String gcsSourceUri,
-      String gcsDestinationOutputUriPrefix, String modelId) throws IOException {
+      String project, String location, String inputUri,
+      String outputUri, String codeModel) throws IOException {
     String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     JobServiceSettings jobServiceSettings =
         JobServiceSettings.newBuilder().setEndpoint(endpoint).build();
+    // Construct your modelParameters
+    String parameters =
+        "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 200\n" + "}";
+    Value parameterValue = stringToValue(parameters);
+    String modelName = String.format(
+        "projects/%s/locations/%s/publishers/google/models/%s", project, location, codeModel);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (JobServiceClient jobServiceClient = JobServiceClient.create(jobServiceSettings)) {
-      String modelName = String.format(
-          "projects/%s/locations/%s/publishers/google/models/%s", project, location, modelId);
 
       GcsSource.Builder gcsSource = GcsSource.newBuilder();
-      gcsSource.addUris(gcsSourceUri);
+      gcsSource.addUris(inputUri);
       InputConfig inputConfig =
           InputConfig.newBuilder()
               .setGcsSource(gcsSource)
@@ -63,7 +79,7 @@ public class BatchTextPredictionSample {
               .build();
 
       GcsDestination.Builder gcsDestination = GcsDestination.newBuilder();
-      gcsDestination.setOutputUriPrefix(gcsDestinationOutputUriPrefix);
+      gcsDestination.setOutputUriPrefix(outputUri);
       OutputConfig outputConfig =
           OutputConfig.newBuilder()
               .setGcsDestination(gcsDestination)
@@ -75,7 +91,8 @@ public class BatchTextPredictionSample {
               .setDisplayName("my batch text prediction job " + System.currentTimeMillis())
               .setModel(modelName)
               .setInputConfig(inputConfig)
-              .setOutputConfig(outputConfig);
+              .setOutputConfig(outputConfig)
+              .setModelParameters(parameterValue);
 
       LocationName parent = LocationName.of(project, location);
       BatchPredictionJob response =
@@ -84,6 +101,13 @@ public class BatchTextPredictionSample {
       System.out.format("response: %s\n", response);
       System.out.format("\tName: %s\n", response.getName());
     }
+  }
+
+  // Convert a Json string to a protobuf.Value
+  static Value stringToValue(String value) throws InvalidProtocolBufferException {
+    Value.Builder builder = Value.newBuilder();
+    JsonFormat.parser().merge(value, builder);
+    return builder.build();
   }
 }
 // [END aiplatform_batch_text_predict]
