@@ -24,26 +24,36 @@ import com.google.cloud.aiplatform.v1.GcsSource;
 import com.google.cloud.aiplatform.v1.JobServiceClient;
 import com.google.cloud.aiplatform.v1.JobServiceSettings;
 import com.google.cloud.aiplatform.v1.LocationName;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Value;
+import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
 
 public class BatchCodePredictionSample {
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    // TODO(developer): Replace these variables before running the sample.
+    // TODO(developer): Replace the input_uri and outputUri with your own GCS paths
     String project = "YOUR_PROJECT_ID";
     String location = "us-central1";
-    String gcsSourceUri = "gs://cloud-samples-data/batch/prompt_for_batch_code_predict.jsonl";
-    String gcsDestinationOutputUriPrefix = "gs://YOUR_BUCKET/batch_code_predict_output";
-    String modelId = "code-bison";
+    // input_uri (str, optional): URI of the input dataset.
+    // Could be a BigQuery table or a Google Cloud Storage file.
+    // E.g. "gs://[BUCKET]/[DATASET].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
+    String inputUri = "gs://cloud-samples-data/batch/prompt_for_batch_code_predict.jsonl";
+    // outputUri (str, optional): URI where the output will be stored.
+    // Could be a BigQuery table or a Google Cloud Storage file.
+    // E.g. "gs://[BUCKET]/[OUTPUT].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
+    String outputUri = "gs://YOUR_BUCKET/batch_code_predict_output";
+    String codeModel = "code-bison";
 
-    batchCodePredictionSample(project, location, gcsSourceUri,
-        gcsDestinationOutputUriPrefix, modelId);
+    batchCodePredictionSample(project, location, inputUri,
+        outputUri, codeModel);
   }
 
-  //Example of using Google Cloud Storage bucket as the input and output data source
+  // Perform batch code prediction using a pre-trained code generation model.
+  // Example of using Google Cloud Storage bucket as the input and output data source
   public static void batchCodePredictionSample(
-      String project, String location, String gcsSourceUri,
-      String gcsDestinationOutputUriPrefix, String modelId)
+      String project, String location, String inputUri,
+      String outputUri, String modelId)
       throws IOException {
 
     String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
@@ -56,15 +66,21 @@ public class BatchCodePredictionSample {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (JobServiceClient client = JobServiceClient.create(jobServiceSettings)) {
+      // Construct your modelParameters
+      String parameters =
+          "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 200\n" + "}";
+      Value parameterValue = stringToValue(parameters);
 
-      GcsSource gcsSource = GcsSource.newBuilder().addUris(gcsSourceUri).build();
+      GcsSource gcsSource = GcsSource.newBuilder().addUris(inputUri).build();
       BatchPredictionJob.InputConfig inputConfig =
-          com.google.cloud.aiplatform.v1.BatchPredictionJob.InputConfig.newBuilder()
+          BatchPredictionJob.InputConfig.newBuilder()
               .setGcsSource(gcsSource)
               .setInstancesFormat("jsonl")
               .build();
       GcsDestination gcsDestination =
-          GcsDestination.newBuilder().setOutputUriPrefix(gcsDestinationOutputUriPrefix).build();
+          GcsDestination.newBuilder()
+              .setOutputUriPrefix(outputUri)
+              .build();
       BatchPredictionJob.OutputConfig outputConfig =
           BatchPredictionJob.OutputConfig.newBuilder()
               .setGcsDestination(gcsDestination)
@@ -77,12 +93,19 @@ public class BatchCodePredictionSample {
               .setInputConfig(inputConfig)
               .setModel(modelName)
               .setOutputConfig(outputConfig)
+              .setModelParameters(parameterValue)
               .build();
-
       BatchPredictionJob response = client.createBatchPredictionJob(parent, batchPredictionJob);
       System.out.format("response: %s\n", response);
       System.out.format("\tName: %s\n", response.getName());
     }
+  }
+
+  // Convert a Json string to a protobuf.Value
+  static Value stringToValue(String value) throws InvalidProtocolBufferException {
+    Value.Builder builder = Value.newBuilder();
+    JsonFormat.parser().merge(value, builder);
+    return builder.build();
   }
 }
 // [END aiplatform_batch_code_predict]
