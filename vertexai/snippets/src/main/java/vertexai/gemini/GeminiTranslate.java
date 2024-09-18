@@ -79,7 +79,6 @@ public class GeminiTranslate {
             .setTopK(32)
             .setTopP(1)
             .build();
-    String output;
     String question = String.format(
         "Your mission is to translate text in English to %s.", targetLanguageCode);
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
@@ -89,8 +88,7 @@ public class GeminiTranslate {
           .withSystemInstruction(ContentMaker.fromString(question));
 
       GenerateContentResponse response = model.generateContent(text);
-      output = ResponseHandler.getText(response);
-      return output;
+      return ResponseHandler.getText(response);
     }
   }
 }
