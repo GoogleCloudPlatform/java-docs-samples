@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,7 @@
 package aiplatform;
 
 import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
@@ -35,9 +35,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-
 @RunWith(JUnit4.class)
-public class BatchCodePredictionSampleTest {
+public class BatchTextPredictionSampleTest {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
@@ -46,7 +45,7 @@ public class BatchCodePredictionSampleTest {
       "gs://cloud-samples-data/batch/prompt_for_batch_code_predict.jsonl";
   private static final String GCS_DESTINATION_OUTPUT_PREFIX =
       String.format("gs://%s/ucaip-test-output/", BUCKET_NAME);
-  private static final String MODEL_ID = "code-bison";
+  private static final String MODEL_ID = "text-bison";
   private ByteArrayOutputStream stdOut;
 
   private static void requireEnvVar(String varName) {
@@ -87,13 +86,10 @@ public class BatchCodePredictionSampleTest {
   }
 
   @Test
-  public void testBatchCodePredictionSample() throws IOException {
-
-    BatchCodePredictionSample.batchCodePrediction(
-        PROJECT_ID, LOCATION, GCS_SOURCE_URI,
+  public void testBatchTextPredictionSample() throws IOException {
+    BatchTextPredictionSample.batchTextPrediction(PROJECT_ID, LOCATION, GCS_SOURCE_URI,
         GCS_DESTINATION_OUTPUT_PREFIX, MODEL_ID);
-
-    assertThat(stdOut.toString()).contains("publishers/google/models/code-bison");
-    assertThat(stdOut.toString()).contains("my batch code prediction job");
+    assertThat(stdOut.toString()).contains("publishers/google/models/text-bison");
+    assertThat(stdOut.toString()).contains("my batch text prediction job");
   }
 }
