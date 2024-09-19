@@ -35,7 +35,7 @@ public class BatchCodePredictionSample {
     // TODO(developer): Replace the input_uri and outputUri with your own GCS paths
     String project = "YOUR_PROJECT_ID";
     String location = "us-central1";
-    // input_uri (str, optional): URI of the input dataset.
+    // inputUri (str, optional): URI of the input dataset.
     // Could be a BigQuery table or a Google Cloud Storage file.
     // E.g. "gs://[BUCKET]/[DATASET].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
     String inputUri = "gs://cloud-samples-data/batch/prompt_for_batch_code_predict.jsonl";
@@ -62,14 +62,14 @@ public class BatchCodePredictionSample {
         "projects/%s/locations/%s/publishers/google/models/%s", project, location, modelId);
     JobServiceSettings jobServiceSettings =
         JobServiceSettings.newBuilder().setEndpoint(endpoint).build();
+    // Construct your modelParameters
+    String parameters =
+        "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 200\n" + "}";
+    Value parameterValue = stringToValue(parameters);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (JobServiceClient client = JobServiceClient.create(jobServiceSettings)) {
-      // Construct your modelParameters
-      String parameters =
-          "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 200\n" + "}";
-      Value parameterValue = stringToValue(parameters);
 
       GcsSource gcsSource = GcsSource.newBuilder().addUris(inputUri).build();
       BatchPredictionJob.InputConfig inputConfig =
