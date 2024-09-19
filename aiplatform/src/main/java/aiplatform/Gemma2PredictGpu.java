@@ -56,16 +56,17 @@ public class Gemma2PredictGpu {
             .setEndpoint(String.format("%s-aiplatform.googleapis.com:443", region))
             .build();
     // Prompt used in the prediction
-    String prompt = "Why is the sky blue?";
+     String instance = "{ \"content\": \"Why is the sky blue?\"}";
 
     Value.Builder parameterValueBuilder = Value.newBuilder();
     JsonFormat.parser().merge(parameters, parameterValueBuilder);
     Value parameterValue = parameterValueBuilder.build();
 
-    Value promptValue = Value.newBuilder().setStringValue(prompt).build();
+    Value.Builder instanceValue = Value.newBuilder();
+    JsonFormat.parser().merge(instance, instanceValue);
 
     List<Value> instances = new ArrayList<>();
-    instances.add(promptValue);
+    instances.add(instanceValue.build());
     instances.add(parameterValue);
 
     try (PredictionServiceClient predictionServiceClient =
