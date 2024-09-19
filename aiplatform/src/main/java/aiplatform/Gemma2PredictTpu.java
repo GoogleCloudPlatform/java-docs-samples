@@ -56,28 +56,25 @@ public class Gemma2PredictTpu {
             .setEndpoint(String.format("%s-aiplatform.googleapis.com:443", region))
             .build();
     // Prompt used in the prediction
-    String prompt = "Why is the sky blue?";
+    String instance = "{ \"prompt\": \"Why is the sky blue?\"}";
 
     Value.Builder parameterValueBuilder = Value.newBuilder();
     JsonFormat.parser().merge(parameters, parameterValueBuilder);
     Value parameterValue = parameterValueBuilder.build();
 
-    Value promptValue = Value.newBuilder().setStringValue(prompt).build();
+    Value.Builder instanceValue = Value.newBuilder();
+    JsonFormat.parser().merge(instance, instanceValue);
 
     List<Value> instances = new ArrayList<>();
-    instances.add(promptValue);
-    instances.add(parameterValue);
+    instances.add(instanceValue.build());
 
     try (PredictionServiceClient predictionServiceClient =
              PredictionServiceClient.create(predictionServiceSettings)) {
       // Call the Gemma2 endpoint
       EndpointName endpointName = EndpointName.of(projectId, region, endpointId);
-      PredictRequest predictRequest =
-          PredictRequest.newBuilder()
-              .setEndpoint(endpointName.toString())
-              .addAllInstances(instances)
-              .build();
-      PredictResponse predictResponse = predictionServiceClient.predict(predictRequest);
+
+      PredictResponse predictResponse = predictionServiceClient
+          .predict(endpointName, instances, parameterValue);
       String textResponse = predictResponse.getPredictions(0).getStringValue();
       System.out.println(textResponse);
       return textResponse;
