@@ -45,14 +45,16 @@ public class BatchCodePredictionSample {
     String outputUri = "gs://YOUR_BUCKET/batch_code_predict_output";
     String codeModel = "code-bison";
 
-    batchCodePrediction(project, location, inputUri, outputUri, codeModel);
+    batchCodePredictionSample(project, location, inputUri,
+        outputUri, codeModel);
   }
 
   // Perform batch code prediction using a pre-trained code generation model.
   // Example of using Google Cloud Storage bucket as the input and output data source
-  public static void batchCodePrediction(
+  public static void batchCodePredictionSample(
       String project, String location, String inputUri,
-      String outputUri, String modelId) throws IOException {
+      String outputUri, String modelId)
+      throws IOException {
 
     String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     LocationName parent = LocationName.of(project, location);
@@ -60,14 +62,14 @@ public class BatchCodePredictionSample {
         "projects/%s/locations/%s/publishers/google/models/%s", project, location, modelId);
     JobServiceSettings jobServiceSettings =
         JobServiceSettings.newBuilder().setEndpoint(endpoint).build();
-    // Construct your modelParameters
-    String parameters =
-        "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 200\n" + "}";
-    Value parameterValue = stringToValue(parameters);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (JobServiceClient client = JobServiceClient.create(jobServiceSettings)) {
+      // Construct your modelParameters
+      String parameters =
+          "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 200\n" + "}";
+      Value parameterValue = stringToValue(parameters);
 
       GcsSource gcsSource = GcsSource.newBuilder().addUris(inputUri).build();
       BatchPredictionJob.InputConfig inputConfig =
@@ -94,7 +96,6 @@ public class BatchCodePredictionSample {
               .setModelParameters(parameterValue)
               .build();
       BatchPredictionJob response = client.createBatchPredictionJob(parent, batchPredictionJob);
-
       System.out.format("response: %s\n", response);
       System.out.format("\tName: %s\n", response.getName());
     }

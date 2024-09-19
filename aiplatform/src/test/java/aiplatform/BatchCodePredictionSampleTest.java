@@ -89,7 +89,7 @@ public class BatchCodePredictionSampleTest {
   @Test
   public void testBatchCodePredictionSample() throws IOException {
 
-    BatchCodePredictionSample.batchCodePrediction(
+    BatchCodePredictionSample.batchCodePredictionSample(
         PROJECT_ID, LOCATION, GCS_SOURCE_URI,
         GCS_DESTINATION_OUTPUT_PREFIX, MODEL_ID);
 
