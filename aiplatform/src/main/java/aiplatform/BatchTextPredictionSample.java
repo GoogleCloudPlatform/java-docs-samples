@@ -38,7 +38,7 @@ public class BatchTextPredictionSample {
     // TODO (Developer): Replace the input_uri and output_uri with your own GCS paths
     String project = "YOUR_PROJECT_ID";
     String location = "us-central1";
-    // input_uri (str, optional): URI of the input dataset.
+    // inputUri (str, optional): URI of the input dataset.
     // Could be a BigQuery table or a Google Cloud Storage file.
     // E.g. "gs://[BUCKET]/[DATASET].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
     String inputUri = "gs://cloud-samples-data/batch/prompt_for_batch_text_predict.jsonl";
