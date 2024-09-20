@@ -52,8 +52,7 @@ public class GeminiTranslate {
   public static String geminiTranslate(
       String projectId, String location, String modelName, String text, String targetLanguageCode)
       throws IOException {
-    // Initialize client that will be used to send requests. This client only needs
-    // to be created once, and can be reused for multiple requests.
+
     List<SafetySetting> safetySettings = Arrays.asList(
         SafetySetting.newBuilder()
             .setCategory(HarmCategory.HARM_CATEGORY_HATE_SPEECH)
@@ -81,6 +80,8 @@ public class GeminiTranslate {
             .build();
     String question = String.format(
         "Your mission is to translate text in English to %s.", targetLanguageCode);
+    // Initialize client that will be used to send requests. This client only needs
+    // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
       GenerativeModel model = new GenerativeModel(modelName, vertexAI)
           .withGenerationConfig(generationConfig)
