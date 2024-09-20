@@ -37,7 +37,7 @@ public class Gemma2PredictTpu {
   }
 
   public static void main(String[] args) throws IOException {
-    // TODO(developer): Update & uncomment line below
+    // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
     String region = "us-west1";
     String endpointId = "YOUR_ENDPOINT_ID";
@@ -48,14 +48,15 @@ public class Gemma2PredictTpu {
             + "  \"topP\": 0.8,\n"
             + "  \"topK\": 40\n"
             + "}";
+
     PredictionServiceSettings predictionServiceSettings =
         PredictionServiceSettings.newBuilder()
             .setEndpoint(String.format("%s-aiplatform.googleapis.com:443", region))
             .build();
-
     PredictionServiceClient predictionServiceClient =
         PredictionServiceClient.create(predictionServiceSettings);
     Gemma2PredictTpu creator = new Gemma2PredictTpu(predictionServiceClient);
+
     creator.gemma2PredictTpu(projectId, region, endpointId, parameters);
   }
 
@@ -76,7 +77,6 @@ public class Gemma2PredictTpu {
     List<Value> instances = new ArrayList<>();
     instances.add(instanceValue.build());
 
-    // Call the Gemma2 endpoint
     EndpointName endpointName = EndpointName.of(projectId, region, endpointId);
 
     PredictResponse predictResponse = this.predictionServiceClient

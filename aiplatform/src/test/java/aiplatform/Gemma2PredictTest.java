@@ -51,8 +51,7 @@ public class Gemma2PredictTest {
         PredictResponse.newBuilder()
             .addPredictions(Value.newBuilder().setStringValue(mockedResponse).build())
             .build();
-    Mockito.when(
-            mockPredictionServiceClient.predict(
+    Mockito.when(mockPredictionServiceClient.predict(
                 Mockito.any(EndpointName.class),
                 Mockito.any(List.class),
                 Mockito.any(Value.class)))
