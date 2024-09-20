@@ -19,7 +19,6 @@ package aiplatform;
 // [START generativeaionvertexai_gemma2_predict_gpu]
 
 import com.google.cloud.aiplatform.v1.EndpointName;
-import com.google.cloud.aiplatform.v1.PredictRequest;
 import com.google.cloud.aiplatform.v1.PredictResponse;
 import com.google.cloud.aiplatform.v1.PredictionServiceClient;
 import com.google.cloud.aiplatform.v1.PredictionServiceSettings;
@@ -31,12 +30,18 @@ import java.util.List;
 
 public class Gemma2PredictGpu {
 
+  private final PredictionServiceClient predictionServiceClient;
+
+  // Constructor to inject the PredictionServiceClient
+  public Gemma2PredictGpu(PredictionServiceClient predictionServiceClient) {
+    this.predictionServiceClient = predictionServiceClient;
+  }
+
   public static void main(String[] args) throws IOException {
     // TODO(developer): Update & uncomment line below
-    // String projectId = "your-project-id";
-    String projectId = "rsamborski-ai-hypercomputer";
+    String projectId = "YOUR_PROJECT_ID";
     String region = "us-east4";
-    String endpointId = "323876543124209664";
+    String endpointId = "YOUR_ENDPOINT_ID";
     String parameters =
         "{\n"
             + "  \"temperature\": 0.3,\n"
@@ -44,19 +49,24 @@ public class Gemma2PredictGpu {
             + "  \"topP\": 0.8,\n"
             + "  \"topK\": 40\n"
             + "}";
-
-    gemma2PredictGpu(projectId, region, endpointId, parameters);
-  }
-
-  //     Sample to run interference on a Gemma2 model deployed to a Vertex AI endpoint with GPU accellerators.
-  public static String gemma2PredictGpu(String projectId, String region, String endpointId, String parameters)
-      throws IOException {
     PredictionServiceSettings predictionServiceSettings =
         PredictionServiceSettings.newBuilder()
             .setEndpoint(String.format("%s-aiplatform.googleapis.com:443", region))
             .build();
+
+    PredictionServiceClient predictionServiceClient =
+        PredictionServiceClient.create(predictionServiceSettings);
+    Gemma2PredictGpu creator = new Gemma2PredictGpu(predictionServiceClient);
+
+    creator.gemma2PredictGpu(projectId, region, endpointId, parameters);
+  }
+
+  // Demonstrates how to run interference on a Gemma2 model
+  // deployed to a Vertex AI endpoint with GPU accelerators.
+  public String gemma2PredictGpu(String projectId, String region,
+               String endpointId, String parameters) throws IOException {
     // Prompt used in the prediction
-     String instance = "{ \"inputs\": \"Why is the sky blue?\"}";
+    String instance = "{ \"inputs\": \"Why is the sky blue?\"}";
 
     Value.Builder parameterValueBuilder = Value.newBuilder();
     JsonFormat.parser().merge(parameters, parameterValueBuilder);
@@ -68,17 +78,14 @@ public class Gemma2PredictGpu {
     List<Value> instances = new ArrayList<>();
     instances.add(instanceValue.build());
 
-    try (PredictionServiceClient predictionServiceClient =
-             PredictionServiceClient.create(predictionServiceSettings)) {
-      // Call the Gemma2 endpoint
-      EndpointName endpointName = EndpointName.of(projectId, region, endpointId);
+    // Call the Gemma2 endpoint
+    EndpointName endpointName = EndpointName.of(projectId, region, endpointId);
 
-      PredictResponse predictResponse = predictionServiceClient
-          .predict(endpointName, instances, parameterValue);
-      String textResponse = predictResponse.getPredictions(0).getStringValue();
-      System.out.println(textResponse);
-      return textResponse;
-    }
+    PredictResponse predictResponse = this.predictionServiceClient
+        .predict(endpointName, instances, parameterValue);
+    String textResponse = predictResponse.getPredictions(0).getStringValue();
+    System.out.println(textResponse);
+    return textResponse;
   }
 }
 // [END generativeaionvertexai_gemma2_predict_gpu]

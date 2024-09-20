@@ -1,108 +1,77 @@
+/*
+ * Copyright 2024 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package aiplatform;
 
-import com.google.cloud.aiplatform.v1.PredictRequest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import com.google.cloud.aiplatform.v1.EndpointName;
 import com.google.cloud.aiplatform.v1.PredictResponse;
 import com.google.cloud.aiplatform.v1.PredictionServiceClient;
 import com.google.protobuf.Value;
-
 import java.io.IOException;
-import java.util.Map;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 
-import static aiplatform.Gemma2PredictGpu.gemma2PredictGpu;
-import static aiplatform.Gemma2PredictTpu.gemma2PredictTpu;
-
-@RunWith(MockitoJUnitRunner.class)
 public class Gemma2PredictTest {
+  static String mockedResponse = "The sky appears blue due to a phenomenon "
+      + "called **Rayleigh scattering**.\n"
+      + "**Here's how it works:**\n"
+      + "* **Sunlight is white:**  Sunlight actually contains all the colors of the rainbow.\n"
+      + "* **Scattering:** When sunlight enters the Earth's atmosphere, it collides with tiny gas"
+      + " molecules (mostly nitrogen and oxygen). These collisions cause the light to scatter "
+      + "in different directions.\n"
+      + "* **Blue light scatters most:**  Blue light has a shorter wavelength";
+  String projectId = "your-project-id";
+  String region = "us-central1";
+  String endpointId = "your-endpoint-id";
+  String parameters = "{}";
+  static PredictionServiceClient mockPredictionServiceClient;
 
-  // Global variables
-  private static final String PROJECT_ID = "rsamborski-ai-hypercomputer";
-  private static final String GPU_ENDPOINT_REGION = "us-east1";
-  private static final String GPU_ENDPOINT_ID = "123456789"; // Mock ID used to check if GPU was called
-  private static final String TPU_ENDPOINT_REGION = "us-west1";
-  private static final String TPU_ENDPOINT_ID = "987654321"; // Mock ID used to check if TPU was called
-  private static final String PARAMETERS =
-      "{\n"
-          + "  \"temperature\": 0.3,\n"
-          + "  \"maxDecodeSteps\": 200,\n"
-          + "  \"topP\": 0.8,\n"
-          + "  \"topK\": 40\n"
-          + "}";
-
-  // MOCKED RESPONSE
-  private static final String MODEL_RESPONSES =
-      "The sky appears blue due to a phenomenon called **Rayleigh scattering**.\n"
-          + "**Here's how it works:**\n"
-          + "1. **Sunlight:** Sunlight is composed of all the colors of the rainbow.\n"
-          + "2. **Earth's Atmosphere:** When sunlight enters the Earth's atmosphere, it collides with tiny particles like nitrogen and oxygen molecules.\n"
-          + "3. **Scattering:** These particles scatter the sunlight in all directions. However, blue light (which has a shorter wavelength) is scattered more effectively than other colors.\n"
-          + "4. **Our Perception:** As a result, we see a blue sky because the scattered blue light reaches our eyes from all directions.\n"
-          + "**Why not other colors?**\n"
-          + "* **Violet light** has an even shorter wavelength than blue and is scattered even more. However, our eyes are less sensitive to violet light, so we perceive the sky as blue.\n"
-          + "* **Longer wavelengths** like red, orange, and yellow are scattered less and travel more directly through the atmosphere. This is why we see these colors during sunrise and sunset, when sunlight has to travel through more of the atmosphere.\n";
-
-  private PredictResponse mockPredict(String endpoint, Value instance) {
-    String gpuEndpoint =
-        String.format(
-            "projects/%s/locations/%s/endpoints/%s",
-            PROJECT_ID, GPU_ENDPOINT_REGION, GPU_ENDPOINT_ID);
-    String tpuEndpoint =
-        String.format(
-            "projects/%s/locations/%s/endpoints/%s",
-            PROJECT_ID, TPU_ENDPOINT_REGION, TPU_ENDPOINT_ID);
-
-    Map<String, Value> instanceFields =
-        instance.getStructValue().getFieldsMap();
-
-    if (endpoint.equals(gpuEndpoint)) {
-      Assert.assertTrue(instanceFields.containsKey("inputs") && instanceFields.get("inputs").hasStringValue());
-    } else if (endpoint.equals(tpuEndpoint)) {
-      Assert.assertTrue(instanceFields.containsKey("prompt") && instanceFields.get("prompt").hasStringValue());
-    } else {
-      Assert.fail("Unexpected endpoint: " + endpoint);
-    }
-
-    PredictResponse response =
+  @BeforeAll
+  public static void setUp() {
+    // Mock PredictionServiceClient and its response
+    mockPredictionServiceClient = Mockito.mock(PredictionServiceClient.class);
+    PredictResponse predictResponse =
         PredictResponse.newBuilder()
-            .addPredictions(Value.newBuilder().setStringValue(MODEL_RESPONSES).build())
+            .addPredictions(Value.newBuilder().setStringValue(mockedResponse).build())
             .build();
-    return response;
-  }
-
-  @Test
-  public void testGemma2PredictGpu() throws IOException {
-    PredictionServiceClient mockClient = Mockito.mock(PredictionServiceClient.class);
-    Mockito.when(mockClient.predict(Mockito.any(PredictRequest.class)))
-        .thenAnswer(
-            invocation -> {
-              PredictRequest request = invocation.getArgument(0);
-              return mockPredict(request.getEndpoint(), request.getInstances(0));
-            });
-
-    String response =
-        gemma2PredictGpu(
-             PROJECT_ID, GPU_ENDPOINT_REGION, GPU_ENDPOINT_ID, PARAMETERS);
-    Assert.assertTrue(response.contains("Rayleigh scattering"));
+    Mockito.when(
+            mockPredictionServiceClient.predict(
+                Mockito.any(EndpointName.class),
+                Mockito.any(List.class),
+                Mockito.any(Value.class)))
+        .thenReturn(predictResponse);
   }
 
   @Test
   public void testGemma2PredictTpu() throws IOException {
-    PredictionServiceClient mockClient = Mockito.mock(PredictionServiceClient.class);
-    Mockito.when(mockClient.predict(Mockito.any(PredictRequest.class)))
-        .thenAnswer(
-            invocation -> {
-              PredictRequest request = invocation.getArgument(0);
-              return mockPredict(request.getEndpoint(), request.getInstances(0));
-            });
+    Gemma2PredictTpu creator = new Gemma2PredictTpu(mockPredictionServiceClient);
+    String response = creator.gemma2PredictTpu(projectId, region, endpointId, parameters);
 
-    String response =
-        gemma2PredictTpu(
-           PROJECT_ID, TPU_ENDPOINT_REGION, TPU_ENDPOINT_ID, PARAMETERS);
-    Assert.assertTrue(response.contains("Rayleigh scattering"));
+    assertEquals(mockedResponse, response);
   }
 
+  @Test
+  public void testGemma2PredictGpu() throws IOException {
+    Gemma2PredictGpu creator = new Gemma2PredictGpu(mockPredictionServiceClient);
+    String response = creator.gemma2PredictGpu(projectId, region, endpointId, parameters);
+
+    assertEquals(mockedResponse, response);
+  }
 }

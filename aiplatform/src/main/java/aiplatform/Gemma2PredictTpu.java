@@ -19,7 +19,6 @@ package aiplatform;
 // [START generativeaionvertexai_gemma2_predict_tpu]
 
 import com.google.cloud.aiplatform.v1.EndpointName;
-import com.google.cloud.aiplatform.v1.PredictRequest;
 import com.google.cloud.aiplatform.v1.PredictResponse;
 import com.google.cloud.aiplatform.v1.PredictionServiceClient;
 import com.google.cloud.aiplatform.v1.PredictionServiceSettings;
@@ -30,13 +29,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Gemma2PredictTpu {
+  private final PredictionServiceClient predictionServiceClient;
+
+  // Constructor to inject the PredictionServiceClient
+  public Gemma2PredictTpu(PredictionServiceClient predictionServiceClient) {
+    this.predictionServiceClient = predictionServiceClient;
+  }
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Update & uncomment line below
-    // String projectId = "your-project-id";
-    String projectId = "rsamborski-ai-hypercomputer";
+    String projectId = "YOUR_PROJECT_ID";
     String region = "us-west1";
-    String endpointId = "9194824316951199744";
+    String endpointId = "YOUR_ENDPOINT_ID";
     String parameters =
         "{\n"
             + "  \"temperature\": 0.3,\n"
@@ -44,17 +48,21 @@ public class Gemma2PredictTpu {
             + "  \"topP\": 0.8,\n"
             + "  \"topK\": 40\n"
             + "}";
-
-    gemma2PredictTpu(projectId, region, endpointId, parameters);
-  }
-
-  //     Sample to run interference on a Gemma2 model deployed to a Vertex AI endpoint with GPU accellerators.
-  public static String gemma2PredictTpu(String projectId, String region, String endpointId, String parameters)
-      throws IOException {
     PredictionServiceSettings predictionServiceSettings =
         PredictionServiceSettings.newBuilder()
             .setEndpoint(String.format("%s-aiplatform.googleapis.com:443", region))
             .build();
+
+    PredictionServiceClient predictionServiceClient =
+        PredictionServiceClient.create(predictionServiceSettings);
+    Gemma2PredictTpu creator = new Gemma2PredictTpu(predictionServiceClient);
+    creator.gemma2PredictTpu(projectId, region, endpointId, parameters);
+  }
+
+  // Demonstrates how to run interference on a Gemma2 model
+  // deployed to a Vertex AI endpoint with TPU accelerators.
+  public String gemma2PredictTpu(String projectId, String region,
+           String endpointId, String parameters) throws IOException {
     // Prompt used in the prediction
     String instance = "{ \"prompt\": \"Why is the sky blue?\"}";
 
@@ -68,17 +76,14 @@ public class Gemma2PredictTpu {
     List<Value> instances = new ArrayList<>();
     instances.add(instanceValue.build());
 
-    try (PredictionServiceClient predictionServiceClient =
-             PredictionServiceClient.create(predictionServiceSettings)) {
-      // Call the Gemma2 endpoint
-      EndpointName endpointName = EndpointName.of(projectId, region, endpointId);
+    // Call the Gemma2 endpoint
+    EndpointName endpointName = EndpointName.of(projectId, region, endpointId);
 
-      PredictResponse predictResponse = predictionServiceClient
-          .predict(endpointName, instances, parameterValue);
-      String textResponse = predictResponse.getPredictions(0).getStringValue();
-      System.out.println(textResponse);
-      return textResponse;
-    }
+    PredictResponse predictResponse = this.predictionServiceClient
+        .predict(endpointName, instances, parameterValue);
+    String textResponse = predictResponse.getPredictions(0).getStringValue();
+    System.out.println(textResponse);
+    return textResponse;
   }
 }
 // [END generativeaionvertexai_gemma2_predict_tpu]
