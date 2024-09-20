@@ -275,5 +275,4 @@ public class SnippetsIT {
         REGIONAL_LOCATION_NAME);
     Assert.assertEquals(REGIONAL_LOCATION_NAME, instanceTemplate.getName());
   }
-
 }
