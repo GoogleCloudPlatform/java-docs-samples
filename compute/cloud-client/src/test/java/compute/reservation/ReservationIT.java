@@ -43,6 +43,7 @@ import com.google.cloud.compute.v1.ShareSettings;
 import com.google.cloud.compute.v1.ShareSettingsProjectConfig;
 import compute.CreateInstanceTemplate;
 import compute.DeleteInstanceTemplate;
+import compute.GetInstanceTemplate;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -148,35 +149,39 @@ public class ReservationIT {
 
     // Delete instance template with GLOBAL location.
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
-    assertThat(stdOut.toString())
-        .contains("Instance template deletion operation status for "
-            + GLOBAL_INSTANCE_TEMPLATE_NAME);
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetInstanceTemplate.getInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME));
 
     // Delete instance template with REGIONAL location.
     ReservationIT.deleteRegionalInstanceTemplate(
         PROJECT_ID, ZONE, REGIONAL_INSTANCE_TEMPLATE_NAME);
-    assertThat(stdOut.toString())
-        .contains("Instance template deletion operation status for "
-            + REGIONAL_INSTANCE_TEMPLATE_NAME);
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetInstanceTemplate.getInstanceTemplate(PROJECT_ID, REGIONAL_INSTANCE_TEMPLATE_NAME));
 
     // Delete instance template for shared reservation
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, INSTANCE_TEMPLATE_NAME_SHARED_RESERV);
-    assertThat(stdOut.toString())
-        .contains("Instance template deletion operation status for "
-            + INSTANCE_TEMPLATE_NAME_SHARED_RESERV);
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetInstanceTemplate
+            .getInstanceTemplate(PROJECT_ID, INSTANCE_TEMPLATE_NAME_SHARED_RESERV));
 
     // Delete all reservations created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
 
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME_GLOBAL);
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME_REGIONAL);
-    // Test that the reservation is deleted
+    // Test that reservations are deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_GLOBAL, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
 
     // Close the client after all tests
     reservationsClient.close();
