@@ -35,6 +35,7 @@ import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.CreateInstanceTemplate;
 import compute.DeleteInstanceTemplate;
+import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -91,6 +92,13 @@ public class ReservationIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingReservations("test-reserv", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-global", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-regional", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstanceTemplates("test-global-instance", PROJECT_ID);
+    Util.cleanUpExistingInstanceTemplates("test-regional-instance", PROJECT_ID);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();

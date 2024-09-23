@@ -29,6 +29,9 @@ import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
 import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.Reservation;
+import com.google.cloud.compute.v1.ReservationsClient;
+import compute.reservation.DeleteReservation;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -180,5 +183,24 @@ public abstract class Util {
       return defaultValue;
     }
     return val;
+  }
+
+  // Delete reservations which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingReservations(String prefixToDelete, String projectId,
+                                              String zone)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
+        if (!reservation.hasCreationTimestamp()) {
+          continue;
+        }
+        if (reservation.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())
+            && reservation.getStatus().equalsIgnoreCase(Status.RUNNING.toString())) {
+          DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
+        }
+      }
+    }
   }
 }
