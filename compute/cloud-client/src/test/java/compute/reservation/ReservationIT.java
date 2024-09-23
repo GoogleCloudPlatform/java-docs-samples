@@ -52,6 +52,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import compute.Util;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
@@ -106,6 +107,11 @@ public class ReservationIT {
 
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("test-global-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-regional-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-inst-for-shared-res", PROJECT_ID, ZONE);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
