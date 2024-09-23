@@ -43,13 +43,13 @@ public class ConsumeSpecificSharedReservation {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
-    String projectId = "tyaho-softserve-project";//"YOUR_PROJECT_ID";
+    String projectId = "YOUR_PROJECT_ID";
     // Name of the zone in which you want to create the disk.
     String zone = "us-central1-a";
     // Name of the reservation you want to create.
-    String reservationName = "test-reserv";//"YOUR_RESERVATION_NAME";
+    String reservationName = "YOUR_RESERVATION_NAME";
     // Name of the VM instance you want to query.
-    String instanceName = "test-instance";//"YOUR_INSTANCE_NAME";
+    String instanceName = "YOUR_INSTANCE_NAME";
     // Number of instances in the reservation.
     int numberOfVms = 3;
     // Machine type of the instances in the reservation.
@@ -63,7 +63,7 @@ public class ConsumeSpecificSharedReservation {
     createInstance(projectId, zone, instanceName, machineType, minCpuPlatform, reservationName);
   }
 
-  // Creates reservation
+  // Creates reservation with the given parameters.
   public static void createReservation(
       String projectId, String reservationName, int numberOfVms, String zone,
       String machineType, String minCpuPlatform, boolean specificReservationRequired)
@@ -90,7 +90,7 @@ public class ConsumeSpecificSharedReservation {
 
       // Wait for the create reservation operation to complete.
       Operation response =
-          reservationsClient.insertAsync(projectId, zone, reservation).get(3, TimeUnit.MINUTES);
+          reservationsClient.insertAsync(projectId, zone, reservation).get(4, TimeUnit.MINUTES);
       System.out.println(response.getStatus());
       if (response.hasError()) {
         System.out.println("Reservation creation failed!" + response);
@@ -105,9 +105,6 @@ public class ConsumeSpecificSharedReservation {
                                     String machineType, String minCpuPlatform, String reservationName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Below are sample values that can be replaced.
-    // machineType: machine type of the VM being created.
-    // *   This value uses the format zones/{zone}/machineTypes/{type_name}.
-    // *   For a list of machine types, see https://cloud.google.com/compute/docs/machine-types
     // sourceImage: path to the operating system image to mount.
     // *   For details about images you can mount, see https://cloud.google.com/compute/docs/images
     // diskSizeGb: storage size of the boot disk to attach to the instance.
@@ -116,13 +113,12 @@ public class ConsumeSpecificSharedReservation {
         .format("projects/debian-cloud/global/images/family/%s", "debian-11");
     long diskSizeGb = 10L;
     String networkName = "default";
-    // The path to the reservation.
+    // To consume this reservation from any consumer projects that this reservation is shared with,
+    // you must also specify the owner project of the reservation - the path to the reservation.
     String reservationPath = String.format( "projects/%s/reservations/%s", projectId, reservationName);
 
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `instancesClient.close()` method on the client to safely
-    // clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (InstancesClient instancesClient = InstancesClient.create()) {
       // Instance creation requires at least one persistent disk and one network interface.
       AttachedDisk disk =
