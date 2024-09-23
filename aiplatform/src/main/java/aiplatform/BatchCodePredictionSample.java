@@ -16,7 +16,7 @@
 
 package aiplatform;
 
-// [START aiplatform_batch_code_predict]
+// [START generativeaionvertexai_batch_code_predict]
 
 import com.google.cloud.aiplatform.v1.BatchPredictionJob;
 import com.google.cloud.aiplatform.v1.GcsDestination;
@@ -108,4 +108,4 @@ public class BatchCodePredictionSample {
     return builder.build();
   }
 }
-// [END aiplatform_batch_code_predict]
+// [END generativeaionvertexai_batch_code_predict]
