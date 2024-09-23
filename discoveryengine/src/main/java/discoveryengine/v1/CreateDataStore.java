@@ -18,6 +18,7 @@ package discoveryengine.v1;
 
 // [START genappbuilder_create_data_store]
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.discoveryengine.v1.CollectionName;
 import com.google.cloud.discoveryengine.v1.CreateDataStoreMetadata;
 import com.google.cloud.discoveryengine.v1.CreateDataStoreRequest;
