@@ -35,6 +35,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import compute.Util;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
@@ -84,6 +86,11 @@ public class ReservationIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("test-global-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-regional-instance", PROJECT_ID, ZONE);
+
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
 
