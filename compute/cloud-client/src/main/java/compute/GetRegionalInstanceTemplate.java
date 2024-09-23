@@ -30,7 +30,7 @@ public class GetRegionalInstanceTemplate {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
-    // Name of the instance you want to delete.
+    // Name of the instance you want to get.
     String instanceName = "YOUR_INSTANCE_NAME";
     // Name of the region.
     String region = "us-central1";

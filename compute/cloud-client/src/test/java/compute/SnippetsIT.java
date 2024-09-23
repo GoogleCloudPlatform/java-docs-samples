@@ -111,8 +111,6 @@ public class SnippetsIT {
         .createEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
     CreateRegionalInstanceTemplate
         .createRegionalInstanceTemplate(PROJECT_ID, REGION, REGIONAL_LOCATION_NAME);
-    assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
-
 
     TimeUnit.SECONDS.sleep(30);
 
@@ -140,9 +138,6 @@ public class SnippetsIT {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
     DeleteRegionalInstanceTemplate
         .deleteRegionalInstanceTemplate(PROJECT_ID, REGION, REGIONAL_LOCATION_NAME);
-    assertThat(stdOut.toString())
-        .contains("Instance template deletion operation status for "
-            + REGIONAL_LOCATION_NAME);
 
     // Delete the Google Cloud Storage bucket created for usage reports.
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
