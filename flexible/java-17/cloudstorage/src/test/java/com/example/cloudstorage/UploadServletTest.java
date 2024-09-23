@@ -49,13 +49,11 @@ public class UploadServletTest {
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
 
-    try (BufferedReader reader = mock(BufferedReader.class)) {
-      when(request.getReader()).thenReturn(reader);
-    }
     Part filePart = mock(Part.class);
+    when(request.getPart("file")).thenReturn(filePart);
     when(filePart.getSubmittedFileName()).thenReturn("testfile.txt");
     when(filePart.getInputStream()).thenReturn(mock(InputStream.class));
-    when(request.getPart("file")).thenReturn(filePart);
+
     Storage mockStorage = mock(Storage.class);
     Blob mockBlob = mock(Blob.class);
     when(mockBlob.getMediaLink()).thenReturn("test blob data");
@@ -70,5 +68,9 @@ public class UploadServletTest {
 
     servlet.doPost(request, response);
     assertTrue(stringWriter.toString().contains("test blob data"));
+
+    if (writer != null) { 
+      writer.close();
+    }
   }
 }
