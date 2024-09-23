@@ -62,7 +62,7 @@ public class ConsumeAnyMatchingReservation {
     createInstance(projectId, zone, instanceName, machineType, minCpuPlatform);
   }
 
-  // Creates reservation
+  // Creates reservation with properties that match the VM properties.
   public static void createReservation(String projectId, String reservationName,
       int numberOfVms, String zone, String machineType, String minCpuPlatform)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -99,13 +99,12 @@ public class ConsumeAnyMatchingReservation {
   }
 
   // Create a new instance with the provided "instanceName" value in the specified project and zone.
+  // In this consumption model, existing and new VMs automatically consume a reservation
+  // if their properties match the VM properties specified in the reservation.
   public static void createInstance(String project, String zone, String instanceName,
                                      String machineType, String minCpuPlatform)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Below are sample values that can be replaced.
-    // machineType: machine type of the VM being created.
-    // *   This value uses the format zones/{zone}/machineTypes/{type_name}.
-    // *   For a list of machine types, see https://cloud.google.com/compute/docs/machine-types
     // sourceImage: path to the operating system image to mount.
     // *   For details about images you can mount, see https://cloud.google.com/compute/docs/images
     // diskSizeGb: storage size of the boot disk to attach to the instance.
@@ -116,9 +115,7 @@ public class ConsumeAnyMatchingReservation {
     String networkName = "default";
 
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the `instancesClient.close()` method on the client to safely
-    // clean up any remaining background resources.
+    // once, and can be reused for multiple requests.
     try (InstancesClient instancesClient = InstancesClient.create()) {
       // Instance creation requires at least one persistent disk and one network interface.
       AttachedDisk disk =
