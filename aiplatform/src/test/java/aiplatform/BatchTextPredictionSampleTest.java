@@ -16,8 +16,6 @@
 
 package aiplatform;
 
-// [START generativeaionvertexai_batch_text_predict]
-
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
@@ -95,4 +93,3 @@ public class BatchTextPredictionSampleTest {
     assertThat(stdOut.toString()).contains("my batch text prediction job");
   }
 }
-// [END generativeaionvertexai_batch_text_predict]

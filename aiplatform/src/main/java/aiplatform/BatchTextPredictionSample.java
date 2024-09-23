@@ -16,7 +16,7 @@
 
 package aiplatform;
 
-// [START aiplatform_batch_text_predict]
+// [START generativeaionvertexai_batch_text_predict]
 
 import com.google.cloud.aiplatform.v1.BatchPredictionJob;
 import com.google.cloud.aiplatform.v1.BatchPredictionJob.InputConfig;
@@ -30,7 +30,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
-
 
 public class BatchTextPredictionSample {
 
@@ -110,4 +109,4 @@ public class BatchTextPredictionSample {
     return builder.build();
   }
 }
-// [END aiplatform_batch_text_predict]
+// [END generativeaionvertexai_batch_text_predict]
