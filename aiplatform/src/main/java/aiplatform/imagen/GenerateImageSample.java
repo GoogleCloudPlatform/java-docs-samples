@@ -70,7 +70,7 @@ public class GenerateImageSample {
       paramsMap.put("sampleCount", 1);
       // You can't use a seed value and watermark at the same time.
       // paramsMap.put("seed", 100);
-      // paramsMap.put("addWatermark", true);
+      // paramsMap.put("addWatermark", false);
       paramsMap.put("aspectRatio", "1:1");
       paramsMap.put("safetyFilterLevel", "block_some");
       paramsMap.put("personGeneration", "allow_adult");

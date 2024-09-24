@@ -40,6 +40,7 @@ import muteconfig.DeleteMuteRule;
 import muteconfig.GetMuteRule;
 import muteconfig.ListMuteRules;
 import muteconfig.SetMuteFinding;
+import muteconfig.SetMuteUndefinedFinding;
 import muteconfig.SetUnmuteFinding;
 import muteconfig.UpdateMuteRule;
 import org.junit.After;
@@ -225,6 +226,8 @@ public class MuteFindingIT {
     assertThat(finding.getMute()).isEqualTo(Mute.MUTED);
     finding = SetUnmuteFinding.setUnmute(FINDING_1.getName());
     assertThat(finding.getMute()).isEqualTo(Mute.UNMUTED);
+    finding = SetMuteUndefinedFinding.setMuteUndefined(FINDING_1.getName());
+    assertThat(finding.getMute()).isEqualTo(Mute.UNDEFINED);
   }
 
   @Test

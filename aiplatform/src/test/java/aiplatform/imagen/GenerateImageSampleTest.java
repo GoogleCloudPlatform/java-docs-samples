@@ -20,11 +20,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.aiplatform.v1.PredictResponse;
-import java.io.ByteArrayOutputStream;
+import com.google.protobuf.Value;
 import java.io.IOException;
-import java.io.PrintStream;
-import org.junit.After;
-import org.junit.Before;
+import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,9 +33,6 @@ public class GenerateImageSampleTest {
 
   private static final String PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String PROMPT = "a dog reading a newspaper";
-  private ByteArrayOutputStream bout;
-  private PrintStream out;
-  private PrintStream originalPrintStream;
 
   private static void requireEnvVar(String varName) {
     String errorMessage =
@@ -51,23 +46,19 @@ public class GenerateImageSampleTest {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
-  @Before
-  public void setUp() {
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    originalPrintStream = System.out;
-    System.setOut(out);
-  }
-
-  @After
-  public void tearDown() {
-    System.out.flush();
-    System.setOut(originalPrintStream);
-  }
-
   @Test
   public void testGenerateImageSample() throws IOException {
     PredictResponse response = GenerateImageSample.generateImage(PROJECT, "us-central1", PROMPT);
     assertThat(response).isNotNull();
+
+    Boolean imageBytes = false;
+    for (Value prediction : response.getPredictionsList()) {
+      Map<String, Value> fieldsMap = prediction.getStructValue().getFieldsMap();
+      if (fieldsMap.containsKey("bytesBase64Encoded")) {
+        imageBytes = true;
+        break;
+      }
+    }
+    assertThat(imageBytes).isTrue();
   }
 }

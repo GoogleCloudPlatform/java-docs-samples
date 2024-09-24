@@ -45,39 +45,40 @@ public class UpdateCdnKeyAkamai {
     updateCdnKeyAkamai(projectId, location, cdnKeyId, hostname, akamaiTokenKey);
   }
 
-  // updateCdnKeyAkamai u/**/pdates the hostname and key fields for an existing CDN key.
-  public static void updateCdnKeyAkamai(
+  // updateCdnKeyAkamai updates the hostname and key fields for an existing CDN key.
+  public static CdnKey updateCdnKeyAkamai(
       String projectId, String location, String cdnKeyId, String hostname, String akamaiTokenKey)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    VideoStitcherServiceClient videoStitcherServiceClient = VideoStitcherServiceClient.create();
-    CdnKey cdnKey =
-        CdnKey.newBuilder()
-            .setName(CdnKeyName.of(projectId, location, cdnKeyId).toString())
-            .setHostname(hostname)
-            .setAkamaiCdnKey(
-                AkamaiCdnKey.newBuilder()
-                    .setTokenKey(ByteString.copyFromUtf8(akamaiTokenKey))
-                    .build())
-            .build();
+    // once, and can be reused for multiple requests.
+    try (VideoStitcherServiceClient videoStitcherServiceClient =
+        VideoStitcherServiceClient.create()) {
+      CdnKey cdnKey =
+          CdnKey.newBuilder()
+              .setName(CdnKeyName.of(projectId, location, cdnKeyId).toString())
+              .setHostname(hostname)
+              .setAkamaiCdnKey(
+                  AkamaiCdnKey.newBuilder()
+                      .setTokenKey(ByteString.copyFromUtf8(akamaiTokenKey))
+                      .build())
+              .build();
 
-    UpdateCdnKeyRequest updateCdnKeyRequest =
-        UpdateCdnKeyRequest.newBuilder()
-            .setCdnKey(cdnKey)
-            // Update the hostname field and token key field. You must set the mask to the fields
-            // you want to update.
-            .setUpdateMask(
-                FieldMask.newBuilder().addPaths("hostname").addPaths("akamai_cdn_key").build())
-            .build();
+      UpdateCdnKeyRequest updateCdnKeyRequest =
+          UpdateCdnKeyRequest.newBuilder()
+              .setCdnKey(cdnKey)
+              // Update the hostname field and token key field. You must set the mask to the fields
+              // you want to update.
+              .setUpdateMask(
+                  FieldMask.newBuilder().addPaths("hostname").addPaths("akamai_cdn_key").build())
+              .build();
 
-    CdnKey response =
-        videoStitcherServiceClient
-            .updateCdnKeyAsync(updateCdnKeyRequest)
-            .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-    System.out.println("Updated CDN key: " + response.getName());
-    videoStitcherServiceClient.close();
+      CdnKey response =
+          videoStitcherServiceClient
+              .updateCdnKeyAsync(updateCdnKeyRequest)
+              .get(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+      System.out.println("Updated CDN key: " + response.getName());
+      return response;
+    }
   }
 }
 // [END videostitcher_update_cdn_key_akamai]
