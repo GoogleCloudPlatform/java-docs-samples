@@ -24,7 +24,6 @@ assign_issues_by:
   - "api: cloudasset"
   to:
   - GoogleCloudPlatform/cloud-asset-analysis-team
-  - GoogleCloudPlatform/cloud-asset-platform-team
 - labels:
   - 'api: logging'
   - 'api: clouderrorreporting'
@@ -63,10 +62,6 @@ assign_issues_by:
   to:
   - GoogleCloudPlatform/cloud-storage-dpes
 - labels:
-  - "api: cloudiot"
-  to:
-  - GoogleCloudPlatform/api-iot
-- labels:
   - "api: pubsub"
   - "api: pubsublite"
   to:
@@ -93,10 +88,6 @@ assign_issues_by:
   - "api: appengine"
   to:
   - GoogleCloudPlatform/serverless-runtimes
-- labels:
-  - "api: cloudfunctions"
-  to:
-  - GoogleCloudPlatform/functions-framework-google
 - labels:
   - "api: bigquerydatatransfer"
   to:
@@ -110,7 +101,6 @@ assign_prs_by:
   - "api: cloudasset"
   to:
   - GoogleCloudPlatform/cloud-asset-analysis-team
-  - GoogleCloudPlatform/cloud-asset-platform-team
 - labels:
   - 'api: logging'
   - 'api: clouderrorreporting'
@@ -149,10 +139,6 @@ assign_prs_by:
   to:
   - GoogleCloudPlatform/cloud-storage-dpes
 - labels:
-  - "api: cloudiot"
-  to:
-  - GoogleCloudPlatform/api-iot
-- labels:
   - "api: pubsub"
   - "api: pubsublite"
   to:
@@ -179,7 +165,3 @@ assign_prs_by:
   - "api: appengine"
   to:
   - GoogleCloudPlatform/serverless-runtimes
-- labels:
-  - "api: cloudfunctions"
-  to:
-  - GoogleCloudPlatform/functions-framework-google
