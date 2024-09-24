@@ -18,7 +18,6 @@ package compute.reservation;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -72,7 +71,7 @@ import org.junit.runners.MethodSorters;
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = getZone();
+  private static final String ZONE = "us-west1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static ReservationsClient reservationsClient;
   private static String RESERVATION_NAME;
