@@ -18,7 +18,6 @@ package compute.reservation;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -43,6 +42,7 @@ import com.google.cloud.compute.v1.ShareSettings;
 import com.google.cloud.compute.v1.ShareSettingsProjectConfig;
 import compute.CreateInstanceTemplate;
 import compute.DeleteInstanceTemplate;
+import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -70,7 +70,7 @@ import org.junit.runners.MethodSorters;
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = getZone();
+  private static final String ZONE = "us-central1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static ReservationsClient reservationsClient;
   private static String RESERVATION_NAME;
@@ -105,6 +105,15 @@ public class ReservationIT {
 
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("test-global-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-regional-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-inst-for-shared-res", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-global", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-regional", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-shared", PROJECT_ID, ZONE);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
@@ -213,7 +222,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void secondGetReservationTest()
+  public void thirdGetReservationTest()
       throws IOException {
     Reservation reservation = GetReservation.getReservation(
         PROJECT_ID, RESERVATION_NAME, ZONE);
@@ -223,7 +232,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void thirdListReservationTest() throws IOException {
+  public void fourthListReservationTest() throws IOException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
 
@@ -234,7 +243,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void firstCreateReservationWithGlobalInstanceTemplateTest()
+  public void secondCreateReservationWithGlobalInstanceTemplateTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_GLOBAL,
@@ -249,7 +258,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void firstCreateReservationWithRegionInstanceTemplateTest()
+  public void secondCreateReservationWithRegionInstanceTemplateTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_REGIONAL, REGIONAL_INSTANCE_TEMPLATE_URI,
@@ -263,7 +272,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void testCreateSharedReservation()
+  public void firstCreateSharedReservationTest()
       throws ExecutionException, InterruptedException, TimeoutException {
 
     // Mock the ReservationsClient
