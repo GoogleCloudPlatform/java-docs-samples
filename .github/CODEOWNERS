@@ -16,9 +16,9 @@
 
 # Repo owner. cloud-samples-reviewer is limited to samples ownership.
 * @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
-/* @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
-.github @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
-.kokoro @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/* @GoogleCloudPlatform/java-samples-reviewers @GoogleCloudPlatform/cloud-samples-infra @yoshi-approver
+.github @GoogleCloudPlatform/java-samples-reviewers @GoogleCloudPlatform/cloud-samples-infra @yoshi-approver
+.kokoro @GoogleCloudPlatform/java-samples-reviewers @GoogleCloudPlatform/cloud-samples-infra @yoshi-approver
 
 # Serverless, Orchestration, DevOps
 /container-registry              @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
