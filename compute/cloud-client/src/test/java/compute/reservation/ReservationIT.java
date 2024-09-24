@@ -193,7 +193,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void secondGetReservationTest()
+  public void thirdGetReservationTest()
       throws IOException {
     Reservation reservation = GetReservation.getReservation(
         PROJECT_ID, RESERVATION_NAME, ZONE);
@@ -203,7 +203,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void thirdListReservationTest() throws IOException {
+  public void fourthListReservationTest() throws IOException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
 
@@ -214,7 +214,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void firstCreateReservationWithGlobalInstanceTemplateTest()
+  public void secondCreateReservationWithGlobalInstanceTemplateTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_GLOBAL,
@@ -229,7 +229,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void firstCreateReservationWithRegionInstanceTemplateTest()
+  public void secondCreateReservationWithRegionInstanceTemplateTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_REGIONAL, REGIONAL_INSTANCE_TEMPLATE_URI,
