@@ -243,7 +243,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void secondUpdateVmsForReservationTest()
+  public void thirdUpdateVmsForReservationTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     int newNumberOfVms = 5;
     UpdateVmsForReservation.updateVmsForReservation(
