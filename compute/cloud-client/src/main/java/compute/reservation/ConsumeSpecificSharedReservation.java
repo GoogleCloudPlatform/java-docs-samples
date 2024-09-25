@@ -100,9 +100,10 @@ public class ConsumeSpecificSharedReservation {
     }
   }
 
-  // Create a new instance with specified shared reservation.
+  // Create a virtual machine targeted with the reserveAffinity field.
+  // Ensure that the VM's properties match the reservation's VM properties.
   public static void createInstance(String projectId, String zone, String instanceName,
-                                    String machineType, String minCpuPlatform, String reservationName)
+                      String machineType, String minCpuPlatform, String reservationName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Below are sample values that can be replaced.
     // sourceImage: path to the operating system image to mount.
@@ -115,7 +116,8 @@ public class ConsumeSpecificSharedReservation {
     String networkName = "default";
     // To consume this reservation from any consumer projects that this reservation is shared with,
     // you must also specify the owner project of the reservation - the path to the reservation.
-    String reservationPath = String.format( "projects/%s/reservations/%s", projectId, reservationName);
+    String reservationPath =
+        String.format("projects/%s/reservations/%s", projectId, reservationName);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.

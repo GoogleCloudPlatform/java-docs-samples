@@ -29,6 +29,9 @@ import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
 import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.Reservation;
+import com.google.cloud.compute.v1.ReservationsClient;
+import compute.reservation.DeleteReservation;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -48,7 +51,7 @@ public abstract class Util {
   // resources
   // and delete the listed resources based on the timestamp.
 
-  private static final int DELETION_THRESHOLD_TIME_HOURS = 24;
+  private static final int DELETION_THRESHOLD_TIME_HOURS = 5;
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
   private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
@@ -68,7 +71,18 @@ public abstract class Util {
         DeleteInstanceTemplate.deleteInstanceTemplate(projectId, template.getName());
       }
     }
+  }
 
+  public static void cleanUpExistingInstanceTemplatesNew(String projectId)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (InstanceTemplatesClient client = InstanceTemplatesClient.create()) {
+      for (InstanceTemplate instance : client.list(projectId).iterateAll()) {
+        if (!instance.hasCreationTimestamp()) {
+          continue;
+        }
+        DeleteInstanceTemplate.deleteInstanceTemplate(projectId, instance.getName());
+      }
+    }
   }
 
   // Delete instances which starts with the given prefixToDelete and
@@ -87,6 +101,19 @@ public abstract class Util {
             && instance.getStatus().equalsIgnoreCase(Status.RUNNING.toString())) {
           DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
         }
+      }
+    }
+  }
+
+  public static void cleanUpExistingInstancesNew(String projectId,
+                                              String instanceZone)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (InstancesClient client = InstancesClient.create()) {
+      for (Instance instance : client.list(projectId, instanceZone).iterateAll()) {
+        if (!instance.hasCreationTimestamp()) {
+          continue;
+        }
+        DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
       }
     }
   }
@@ -180,5 +207,23 @@ public abstract class Util {
       return defaultValue;
     }
     return val;
+  }
+
+  // Delete reservations which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingReservations(String prefixToDelete, String projectId,
+                                                 String zone)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
+        if (!reservation.hasCreationTimestamp()) {
+          continue;
+        }
+        if (reservation.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
+          DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
+        }
+      }
+    }
   }
 }
