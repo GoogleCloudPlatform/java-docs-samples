@@ -28,7 +28,9 @@ import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
 import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
+import com.google.cloud.compute.v1.ListRegionInstanceTemplatesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.reservation.DeleteReservation;
@@ -73,14 +75,19 @@ public abstract class Util {
     }
   }
 
-  public static void cleanUpExistingInstanceTemplatesNew(String projectId)
+  // Delete templates with regional location which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingRegionalInstanceTemplates(String prefixToDelete, String projectId, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (InstanceTemplatesClient client = InstanceTemplatesClient.create()) {
-      for (InstanceTemplate instance : client.list(projectId).iterateAll()) {
-        if (!instance.hasCreationTimestamp()) {
-          continue;
-        }
-        DeleteInstanceTemplate.deleteInstanceTemplate(projectId, instance.getName());
+    for (InstanceTemplate template : listFilteredRegionalInstanceTemplates(projectId, prefixToDelete, zone)
+        .iterateAll()) {
+      if (!template.hasCreationTimestamp()) {
+        continue;
+      }
+      if (template.getName().contains(prefixToDelete)
+          && isCreatedBeforeThresholdTime(template.getCreationTimestamp())
+          && template.isInitialized()) {
+        DeleteInstanceTemplate.deleteInstanceTemplate(projectId, template.getName());
       }
     }
   }
@@ -101,19 +108,6 @@ public abstract class Util {
             && instance.getStatus().equalsIgnoreCase(Status.RUNNING.toString())) {
           DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
         }
-      }
-    }
-  }
-
-  public static void cleanUpExistingInstancesNew(String projectId,
-                                              String instanceZone)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (InstancesClient client = InstancesClient.create()) {
-      for (Instance instance : client.list(projectId, instanceZone).iterateAll()) {
-        if (!instance.hasCreationTimestamp()) {
-          continue;
-        }
-        DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
       }
     }
   }
@@ -148,6 +142,22 @@ public abstract class Util {
           .build();
 
       return instanceTemplatesClient.list(listInstanceTemplatesRequest);
+    }
+  }
+
+  public static RegionInstanceTemplatesClient.ListPagedResponse listFilteredRegionalInstanceTemplates(String projectId,
+                                                                                                      String instanceTemplatePrefix, String zone) throws IOException {
+    String region = zone.substring(0, zone.lastIndexOf('-'));
+    try (RegionInstanceTemplatesClient client =
+             RegionInstanceTemplatesClient.create()) {
+      ListRegionInstanceTemplatesRequest listRegionInstanceTemplatesRequest =
+          ListRegionInstanceTemplatesRequest.newBuilder()
+              .setProject(projectId)
+              .setRegion(region)
+              .setFilter(String.format("name:%s", instanceTemplatePrefix))
+              .build();
+
+      return client.list(listRegionInstanceTemplatesRequest);
     }
   }
 

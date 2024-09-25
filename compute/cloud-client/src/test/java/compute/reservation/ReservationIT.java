@@ -103,8 +103,9 @@ public class ReservationIT {
     instancesClient = InstancesClient.create();
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstancesNew(PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstanceTemplatesNew(PROJECT_ID);
+    Util.cleanUpExistingInstances("test-shared-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp", PROJECT_ID);
+    Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv-global-", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv-regional-", PROJECT_ID, ZONE);
