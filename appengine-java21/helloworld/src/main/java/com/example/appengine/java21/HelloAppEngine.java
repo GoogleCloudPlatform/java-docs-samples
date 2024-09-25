@@ -17,12 +17,12 @@
 package com.example.appengine.java21;
 
 import com.google.appengine.api.utils.SystemProperty;
-import java.io.IOException;
-import java.util.Properties;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Properties;
 
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "HelloAppEngine", value = "/hello")
@@ -37,12 +37,6 @@ public class HelloAppEngine extends HttpServlet {
     response.getWriter().println("Hello App Engine - Standard using "
             + SystemProperty.version.get() + " Java "
             + properties.get("java.specification.version"));
-  }
-
-  public static String getInfo() {
-    return "Version: " + System.getProperty("java.version")
-          + " OS: " + System.getProperty("os.name")
-          + " User: " + System.getProperty("user.name");
   }
 
 }
