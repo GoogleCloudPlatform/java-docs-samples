@@ -232,7 +232,7 @@ public abstract class Util {
         if (!reservation.hasCreationTimestamp()) {
           continue;
         }
-          DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
+        DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
       }
     }
   }
