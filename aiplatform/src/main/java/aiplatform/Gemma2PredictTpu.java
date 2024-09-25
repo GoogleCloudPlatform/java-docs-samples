@@ -39,25 +39,25 @@ public class Gemma2PredictTpu {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
-    String region = "us-west1";
+    String endpointRegion = "us-west1";
     String endpointId = "YOUR_ENDPOINT_ID";
     String parameters =
         "{\n"
-            + "  \"temperature\": 0.3,\n"
-            + "  \"maxDecodeSteps\": 200,\n"
-            + "  \"topP\": 0.8,\n"
-            + "  \"topK\": 40\n"
+            + "  \"temperature\": 0.9,\n"
+            + "  \"maxOutputTokens\": 1024,\n"
+            + "  \"topP\": 1.0,\n"
+            + "  \"topK\": 1\n"
             + "}";
 
     PredictionServiceSettings predictionServiceSettings =
         PredictionServiceSettings.newBuilder()
-            .setEndpoint(String.format("%s-aiplatform.googleapis.com:443", region))
+            .setEndpoint(String.format("%s-aiplatform.googleapis.com:443", endpointRegion))
             .build();
     PredictionServiceClient predictionServiceClient =
         PredictionServiceClient.create(predictionServiceSettings);
     Gemma2PredictTpu creator = new Gemma2PredictTpu(predictionServiceClient);
 
-    creator.gemma2PredictTpu(projectId, region, endpointId, parameters);
+    creator.gemma2PredictTpu(projectId, endpointRegion, endpointId, parameters);
   }
 
   // Demonstrates how to run interference on a Gemma2 model
@@ -74,6 +74,8 @@ public class Gemma2PredictTpu {
     Value.Builder instanceValue = Value.newBuilder();
     JsonFormat.parser().merge(instance, instanceValue);
 
+    // Encapsulate the prompt in a correct format for TPUs
+    // Example format: [{'prompt': 'Why is the sky blue?', 'parameters': {'temperature': 0.8}}]
     List<Value> instances = new ArrayList<>();
     instances.add(instanceValue.build());
 

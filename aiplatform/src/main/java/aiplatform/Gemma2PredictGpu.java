@@ -40,25 +40,25 @@ public class Gemma2PredictGpu {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "YOUR_PROJECT_ID";
-    String region = "us-east4";
+    String endpointRegion = "us-east4";
     String endpointId = "YOUR_ENDPOINT_ID";
     String parameters =
         "{\n"
-            + "  \"temperature\": 0.3,\n"
-            + "  \"maxDecodeSteps\": 200,\n"
-            + "  \"topP\": 0.8,\n"
-            + "  \"topK\": 40\n"
+            + "  \"temperature\": 0.9,\n"
+            + "  \"maxOutputTokens\": 1024,\n"
+            + "  \"topP\": 1.0,\n"
+            + "  \"topK\": 1\n"
             + "}";
 
     PredictionServiceSettings predictionServiceSettings =
         PredictionServiceSettings.newBuilder()
-            .setEndpoint(String.format("%s-aiplatform.googleapis.com:443", region))
+            .setEndpoint(String.format("%s-aiplatform.googleapis.com:443", endpointRegion))
             .build();
     PredictionServiceClient predictionServiceClient =
         PredictionServiceClient.create(predictionServiceSettings);
     Gemma2PredictGpu creator = new Gemma2PredictGpu(predictionServiceClient);
 
-    creator.gemma2PredictGpu(projectId, region, endpointId, parameters);
+    creator.gemma2PredictGpu(projectId, endpointRegion, endpointId, parameters);
   }
 
   // Demonstrates how to run interference on a Gemma2 model
@@ -75,6 +75,8 @@ public class Gemma2PredictGpu {
     Value.Builder instanceValue = Value.newBuilder();
     JsonFormat.parser().merge(instance, instanceValue);
 
+    // Encapsulate the prompt in a correct format for GPUs
+    // Example format: [{'prompt': 'Why is the sky blue?', 'parameters': {'temperature': 0.8}}]
     List<Value> instances = new ArrayList<>();
     instances.add(instanceValue.build());
 
