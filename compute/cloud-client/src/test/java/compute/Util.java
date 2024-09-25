@@ -77,9 +77,11 @@ public abstract class Util {
 
   // Delete templates with regional location which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
-  public static void cleanUpExistingRegionalInstanceTemplates(String prefixToDelete, String projectId, String zone)
+  public static void cleanUpExistingRegionalInstanceTemplates(
+      String prefixToDelete, String projectId, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    for (InstanceTemplate template : listFilteredRegionalInstanceTemplates(projectId, prefixToDelete, zone)
+    for (InstanceTemplate template :
+        listFilteredRegionalInstanceTemplates(projectId, prefixToDelete, zone)
         .iterateAll()) {
       if (!template.hasCreationTimestamp()) {
         continue;
@@ -145,8 +147,9 @@ public abstract class Util {
     }
   }
 
-  public static RegionInstanceTemplatesClient.ListPagedResponse listFilteredRegionalInstanceTemplates(String projectId,
-                                                                                                      String instanceTemplatePrefix, String zone) throws IOException {
+  public static RegionInstanceTemplatesClient.ListPagedResponse
+          listFilteredRegionalInstanceTemplates(
+      String projectId, String instanceTemplatePrefix, String zone) throws IOException {
     String region = zone.substring(0, zone.lastIndexOf('-'));
     try (RegionInstanceTemplatesClient client =
              RegionInstanceTemplatesClient.create()) {
