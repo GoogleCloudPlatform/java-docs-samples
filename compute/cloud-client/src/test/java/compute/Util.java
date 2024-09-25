@@ -224,7 +224,7 @@ public abstract class Util {
 
   // Delete reservations which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
-  public static void cleanUpExistingReservations(String prefixToDelete, String projectId,
+  public static void cleanUpExistingReservations(String projectId,
                                                  String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
@@ -232,10 +232,7 @@ public abstract class Util {
         if (!reservation.hasCreationTimestamp()) {
           continue;
         }
-        if (reservation.getName().contains(prefixToDelete)
-            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
           DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
-        }
       }
     }
   }

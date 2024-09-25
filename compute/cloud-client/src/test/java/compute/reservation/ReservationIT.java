@@ -106,10 +106,7 @@ public class ReservationIT {
     Util.cleanUpExistingInstances("test-shared-instance", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstanceTemplates("test-global-inst-temp", PROJECT_ID);
     Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-global-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-regional-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-shared-reserv-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations(PROJECT_ID, ZONE);
 
     RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
