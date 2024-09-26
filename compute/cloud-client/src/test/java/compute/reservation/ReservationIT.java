@@ -107,6 +107,7 @@ public class ReservationIT {
     Util.cleanUpExistingInstanceTemplates("test-global-inst-temp", PROJECT_ID);
     Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations(PROJECT_ID, ZONE);
+    TimeUnit.SECONDS.sleep(20);
 
     RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
@@ -153,7 +154,7 @@ public class ReservationIT {
         .contains("Instance template deletion operation status for "
             + REGIONAL_INSTANCE_TEMPLATE_NAME);
 
-    // Delete instance template created for consume shared reservation.
+    // Delete instance created for consume shared reservation.
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME);
 
     // Delete all reservations created for testing.
