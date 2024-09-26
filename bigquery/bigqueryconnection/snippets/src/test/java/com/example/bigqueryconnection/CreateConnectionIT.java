@@ -89,6 +89,7 @@ public class CreateConnectionIT {
   @Test
   public void testCreateConnection() throws IOException {
     String instanceId = String.format("%s:%s:%s", PROJECT_ID, REGION, MY_SQL_INSTANCE);
+    System.out.println("CreateConnectionIT instanceId: " + instanceId);
     CloudSqlCredential cloudSqlCredential =
         CloudSqlCredential.newBuilder().setUsername(DB_USER).setPassword(DB_PWD).build();
     CloudSqlProperties cloudSqlProperties =
