@@ -72,7 +72,7 @@ public class Gemma2PredictTpu {
     Value.Builder instanceValue = Value.newBuilder();
     JsonFormat.parser().merge(instance, instanceValue);
     // Encapsulate the prompt in a correct format for TPUs
-    // Example format: [{'prompt': 'Why is the sky blue?', 'parameters': {'temperature': 0.8}}]
+    // Example format: [{'prompt': 'Why is the sky blue?', 'temperature': 0.9}]
     List<Value> instances = new ArrayList<>();
     instances.add(instanceValue.build());
 
