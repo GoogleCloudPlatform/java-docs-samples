@@ -22,11 +22,15 @@ import com.google.cloud.aiplatform.v1.EndpointName;
 import com.google.cloud.aiplatform.v1.PredictResponse;
 import com.google.cloud.aiplatform.v1.PredictionServiceClient;
 import com.google.cloud.aiplatform.v1.PredictionServiceSettings;
+import com.google.gson.Gson;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Gemma2PredictGpu {
 
@@ -42,13 +46,6 @@ public class Gemma2PredictGpu {
     String projectId = "YOUR_PROJECT_ID";
     String endpointRegion = "us-east4";
     String endpointId = "YOUR_ENDPOINT_ID";
-    String parameters =
-        "{\n"
-            + "  \"temperature\": 0.9,\n"
-            + "  \"maxOutputTokens\": 1024,\n"
-            + "  \"topP\": 1.0,\n"
-            + "  \"topK\": 1\n"
-            + "}";
 
     PredictionServiceSettings predictionServiceSettings =
         PredictionServiceSettings.newBuilder()
@@ -58,23 +55,24 @@ public class Gemma2PredictGpu {
         PredictionServiceClient.create(predictionServiceSettings);
     Gemma2PredictGpu creator = new Gemma2PredictGpu(predictionServiceClient);
 
-    creator.gemma2PredictGpu(projectId, endpointRegion, endpointId, parameters);
+    creator.gemma2PredictGpu(projectId, endpointRegion, endpointId);
   }
 
   // Demonstrates how to run interference on a Gemma2 model
   // deployed to a Vertex AI endpoint with GPU accelerators.
   public String gemma2PredictGpu(String projectId, String region,
-               String endpointId, String parameters) throws IOException {
+               String endpointId) throws IOException {
+    Map<String, Object> paramsMap = new HashMap<>();
+    paramsMap.put("temperature", 0.9);
+    paramsMap.put("maxOutputTokens", 1024);
+    paramsMap.put("topP", 1.0);
+    paramsMap.put("topK", 1);
+    Value parameters = mapToValue(paramsMap);
+
     // Prompt used in the prediction
     String instance = "{ \"inputs\": \"Why is the sky blue?\"}";
-
-    Value.Builder parameterValueBuilder = Value.newBuilder();
-    JsonFormat.parser().merge(parameters, parameterValueBuilder);
-    Value parameterValue = parameterValueBuilder.build();
-
     Value.Builder instanceValue = Value.newBuilder();
     JsonFormat.parser().merge(instance, instanceValue);
-
     // Encapsulate the prompt in a correct format for GPUs
     // Example format: [{'prompt': 'Why is the sky blue?', 'parameters': {'temperature': 0.8}}]
     List<Value> instances = new ArrayList<>();
@@ -83,10 +81,18 @@ public class Gemma2PredictGpu {
     EndpointName endpointName = EndpointName.of(projectId, region, endpointId);
 
     PredictResponse predictResponse = this.predictionServiceClient
-        .predict(endpointName, instances, parameterValue);
+        .predict(endpointName, instances, parameters);
     String textResponse = predictResponse.getPredictions(0).getStringValue();
     System.out.println(textResponse);
     return textResponse;
+  }
+
+  private static Value mapToValue(Map<String, Object> map) throws InvalidProtocolBufferException {
+    Gson gson = new Gson();
+    String json = gson.toJson(map);
+    Value.Builder builder = Value.newBuilder();
+    JsonFormat.parser().merge(json, builder);
+    return builder.build();
   }
 }
 // [END generativeaionvertexai_gemma2_predict_gpu]

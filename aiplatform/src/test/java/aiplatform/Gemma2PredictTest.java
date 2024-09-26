@@ -40,7 +40,6 @@ public class Gemma2PredictTest {
   String projectId = "your-project-id";
   String region = "us-central1";
   String endpointId = "your-endpoint-id";
-  String parameters = "{}";
   static PredictionServiceClient mockPredictionServiceClient;
 
   @BeforeAll
@@ -61,7 +60,7 @@ public class Gemma2PredictTest {
   @Test
   public void testGemma2PredictTpu() throws IOException {
     Gemma2PredictTpu creator = new Gemma2PredictTpu(mockPredictionServiceClient);
-    String response = creator.gemma2PredictTpu(projectId, region, endpointId, parameters);
+    String response = creator.gemma2PredictTpu(projectId, region, endpointId);
 
     assertEquals(mockedResponse, response);
   }
@@ -69,7 +68,7 @@ public class Gemma2PredictTest {
   @Test
   public void testGemma2PredictGpu() throws IOException {
     Gemma2PredictGpu creator = new Gemma2PredictGpu(mockPredictionServiceClient);
-    String response = creator.gemma2PredictGpu(projectId, region, endpointId, parameters);
+    String response = creator.gemma2PredictGpu(projectId, region, endpointId);
 
     assertEquals(mockedResponse, response);
   }
