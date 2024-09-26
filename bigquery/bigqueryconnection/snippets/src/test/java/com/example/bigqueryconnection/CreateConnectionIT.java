@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/* Test for creating BigQuery connection */
 public class CreateConnectionIT {
 
   private static final Logger LOG = Logger.getLogger(CreateConnectionIT.class.getName());
