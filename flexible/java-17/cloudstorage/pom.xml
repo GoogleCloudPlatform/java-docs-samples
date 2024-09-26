@@ -27,7 +27,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
   </parent>
 
   <properties>
@@ -106,12 +106,6 @@
         <artifactId>byte-buddy</artifactId>
         <version>1.14.17</version>
     </dependency>
-    <dependency>
-      <groupId>org.jacoco</groupId>
-      <artifactId>jacoco-maven-plugin</artifactId>
-      <version>0.8.12</version>
-    </dependency>
-
   </dependencies>
   <!-- [END gae_flex_storage_dependencies] -->
   <build>
