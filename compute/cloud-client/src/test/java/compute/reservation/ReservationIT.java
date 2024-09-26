@@ -81,11 +81,11 @@ public class ReservationIT {
   private static String REGIONAL_INSTANCE_TEMPLATE_URI;
   private static String INSTANCE_TEMPLATE_URI_SHARED_RESERV;
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
-      "test-global-instance-" + UUID.randomUUID();
+      "test-global-inst-temp-" + UUID.randomUUID();
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
-      "test-regional-instance-" + UUID.randomUUID();
-  private static final String INSTANCE_TEMPLATE_NAME_SHARED_RESERV =
-      "test-inst-for-shared-res-" + UUID.randomUUID();
+      "test-regional-inst-temp-" + UUID.randomUUID();
+  private static final String SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME =
+      "test-shared-inst-temp-" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
 
   private ByteArrayOutputStream stdOut;
@@ -99,21 +99,15 @@ public class ReservationIT {
   @BeforeAll
   public static void setUp()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
 
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-global-instance", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-regional-instance", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-inst-for-shared-res", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-global", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-regional", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-shared", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-global-inst-temp-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-regional-inst-temp-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-shared-inst-temp-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations(PROJECT_ID, ZONE);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
@@ -128,24 +122,18 @@ public class ReservationIT {
         String.format("projects/%s/regions/%s/instanceTemplates/%s",
             PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
     INSTANCE_TEMPLATE_URI_SHARED_RESERV = String.format("projects/%s/global/instanceTemplates/%s",
-        PROJECT_ID, INSTANCE_TEMPLATE_NAME_SHARED_RESERV);
+        PROJECT_ID, SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
 
     // Create instance template for shares reservation.
     CreateInstanceTemplate.createInstanceTemplate(
-        PROJECT_ID, INSTANCE_TEMPLATE_NAME_SHARED_RESERV);
-    assertThat(stdOut.toString())
-        .contains("Instance Template Operation Status " + INSTANCE_TEMPLATE_NAME_SHARED_RESERV);
+        PROJECT_ID, SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
+
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
-    assertThat(stdOut.toString())
-        .contains("Instance Template Operation Status " + GLOBAL_INSTANCE_TEMPLATE_NAME);
+
     // Create instance template with REGIONAL location.
     ReservationIT.createRegionalInstanceTemplate(
         PROJECT_ID, REGIONAL_INSTANCE_TEMPLATE_NAME, ZONE);
-    assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
-
-    stdOut.close();
-    System.setOut(out);
   }
 
   @AfterAll
@@ -169,23 +157,31 @@ public class ReservationIT {
             + REGIONAL_INSTANCE_TEMPLATE_NAME);
 
     // Delete instance template for shared reservation
-    DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, INSTANCE_TEMPLATE_NAME_SHARED_RESERV);
+    DeleteInstanceTemplate.deleteInstanceTemplate(
+        PROJECT_ID, SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString())
         .contains("Instance template deletion operation status for "
-            + INSTANCE_TEMPLATE_NAME_SHARED_RESERV);
+            + SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
 
     // Delete all reservations created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_SHARED);
 
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME_GLOBAL);
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME_REGIONAL);
-    // Test that the reservation is deleted
+    // Test that the reservations are deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_GLOBAL, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_SHARED, ZONE));
 
     // Close the client after all tests
     reservationsClient.close();
@@ -214,7 +210,6 @@ public class ReservationIT {
 
     Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME);
 
-    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
     Assert.assertEquals(RESERVATION_NAME, reservation.getName());
     Assert.assertEquals(NUMBER_OF_VMS,
         reservation.getSpecificReservation().getCount());
@@ -222,8 +217,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void thirdGetReservationTest()
-      throws IOException {
+  public void thirdGetReservationTest() throws IOException {
     Reservation reservation = GetReservation.getReservation(
         PROJECT_ID, RESERVATION_NAME, ZONE);
 
@@ -248,10 +242,8 @@ public class ReservationIT {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_GLOBAL,
         GLOBAL_INSTANCE_TEMPLATE_URI, NUMBER_OF_VMS, ZONE);
-
     Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
 
-    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
     Assert.assertTrue(reservation.getSpecificReservation()
         .getSourceInstanceTemplate().contains(GLOBAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertEquals(RESERVATION_NAME_GLOBAL, reservation.getName());
@@ -264,7 +256,7 @@ public class ReservationIT {
         PROJECT_ID, RESERVATION_NAME_REGIONAL, REGIONAL_INSTANCE_TEMPLATE_URI,
         NUMBER_OF_VMS, ZONE);
     Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
-    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+
     Assert.assertTrue(reservation.getSpecificReservation()
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
