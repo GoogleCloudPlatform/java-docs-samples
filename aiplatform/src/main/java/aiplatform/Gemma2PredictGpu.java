@@ -58,7 +58,7 @@ public class Gemma2PredictGpu {
     creator.gemma2PredictGpu(projectId, endpointRegion, endpointId);
   }
 
-  // Demonstrates how to run interference on a Gemma2 model
+  // Demonstrates how to run inference on a Gemma2 model
   // deployed to a Vertex AI endpoint with GPU accelerators.
   public String gemma2PredictGpu(String projectId, String region,
                String endpointId) throws IOException {

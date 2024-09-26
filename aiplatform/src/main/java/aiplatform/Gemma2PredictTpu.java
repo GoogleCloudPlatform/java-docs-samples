@@ -57,7 +57,7 @@ public class Gemma2PredictTpu {
     creator.gemma2PredictTpu(projectId, endpointRegion, endpointId);
   }
 
-  // Demonstrates how to run interference on a Gemma2 model
+  // Demonstrates how to run inference on a Gemma2 model
   // deployed to a Vertex AI endpoint with TPU accelerators.
   public String gemma2PredictTpu(String projectId, String region,
            String endpointId) throws IOException {
