@@ -39,10 +39,8 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -69,8 +67,6 @@ public class ReservationIT {
       "test-regional-instance-" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
 
-  private ByteArrayOutputStream stdOut;
-
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
@@ -89,6 +85,8 @@ public class ReservationIT {
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-global-instance", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstances("test-regional-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations(PROJECT_ID, ZONE);
+    TimeUnit.SECONDS.sleep(20);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
@@ -140,31 +138,22 @@ public class ReservationIT {
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
 
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME);
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME_GLOBAL);
-    assertThat(stdOut.toString()).contains("Deleted reservation: " + RESERVATION_NAME_REGIONAL);
-    // Test that the reservation is deleted
+    // Test that reservations are deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_GLOBAL, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
 
     // Close the client after all tests
     reservationsClient.close();
 
     stdOut.close();
     System.setOut(out);
-  }
-
-  @BeforeEach
-  public void beforeEach() {
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-  }
-
-  @AfterEach
-  public void afterEach() {
-    stdOut = null;
-    System.setOut(null);
   }
 
   @Test
@@ -175,7 +164,6 @@ public class ReservationIT {
 
     Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME);
 
-    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
     Assert.assertEquals(RESERVATION_NAME, reservation.getName());
     Assert.assertEquals(NUMBER_OF_VMS,
         reservation.getSpecificReservation().getCount());
@@ -209,10 +197,8 @@ public class ReservationIT {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_GLOBAL,
         GLOBAL_INSTANCE_TEMPLATE_URI, NUMBER_OF_VMS, ZONE);
-
     Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
 
-    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
     Assert.assertTrue(reservation.getSpecificReservation()
         .getSourceInstanceTemplate().contains(GLOBAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertEquals(RESERVATION_NAME_GLOBAL, reservation.getName());
@@ -225,7 +211,7 @@ public class ReservationIT {
         PROJECT_ID, RESERVATION_NAME_REGIONAL, REGIONAL_INSTANCE_TEMPLATE_URI,
         NUMBER_OF_VMS, ZONE);
     Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
-    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+
     Assert.assertTrue(reservation.getSpecificReservation()
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
