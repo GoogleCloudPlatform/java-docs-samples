@@ -72,6 +72,10 @@ assign_issues_by:
   to:
   - GoogleCloudPlatform/cloud-media-team
 - labels:
+    - "api: aml-ai"
+  to:
+  - GoogleCloudPlatform/aml-ai
+- labels:
   - "api: retail"
   to:
   - GoogleCloudPlatform/cloud-retail-team

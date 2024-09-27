@@ -90,7 +90,7 @@
 /datacatalog                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/googleapi-dataplex
 /functions                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
 # ---* Fully Eng Owned
-
+/aml-ai                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/aml-ai
 /appengine-*                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/serverless-runtimes
 /asset                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-asset-analysis-team
 /dlp                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/googleapis-dlp
