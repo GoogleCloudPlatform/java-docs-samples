@@ -16,22 +16,20 @@
 
 package aiplatform;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.cloud.aiplatform.v1.JobState.JOB_STATE_PENDING;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.aiplatform.v1.BatchPredictionJob;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.UUID;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -46,7 +44,8 @@ public class BatchCodePredictionSampleTest {
   private static final String GCS_DESTINATION_OUTPUT_PREFIX =
       String.format("gs://%s/ucaip-test-output/", BUCKET_NAME);
   private static final String MODEL_ID = "code-bison";
-  private ByteArrayOutputStream stdOut;
+  static Storage storage;
+  static Bucket bucket;
 
   private static void requireEnvVar(String varName) {
     String errorMessage =
@@ -61,38 +60,26 @@ public class BatchCodePredictionSampleTest {
     BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID();
 
     // Create a Google Cloud Storage bucket for UsageReports
-    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
+    storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
     storage.create(BucketInfo.of(BUCKET_NAME));
   }
 
   @AfterClass
   public static void afterClass() {
     // Delete the Google Cloud Storage bucket created for usage reports.
-    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
-    Bucket bucket = storage.get(BUCKET_NAME);
+    storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
+    bucket = storage.get(BUCKET_NAME);
     bucket.delete();
-  }
-
-  @Before
-  public void beforeEach() {
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-  }
-
-  @After
-  public void afterEach() {
-    stdOut = null;
-    System.setOut(null);
   }
 
   @Test
   public void testBatchCodePredictionSample() throws IOException {
 
-    BatchCodePredictionSample.batchCodePredictionSample(
-        PROJECT_ID, LOCATION, GCS_SOURCE_URI,
+    BatchPredictionJob batchPredictionJob =
+        BatchCodePredictionSample.batchCodePredictionSample(PROJECT_ID, LOCATION, GCS_SOURCE_URI,
         GCS_DESTINATION_OUTPUT_PREFIX, MODEL_ID);
 
-    assertThat(stdOut.toString()).contains("publishers/google/models/code-bison");
-    assertThat(stdOut.toString()).contains("my batch code prediction job");
+    Assertions.assertNotNull(batchPredictionJob);
+    assert (batchPredictionJob.getState().equals(JOB_STATE_PENDING));
   }
 }

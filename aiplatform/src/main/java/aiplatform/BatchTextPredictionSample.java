@@ -26,10 +26,13 @@ import com.google.cloud.aiplatform.v1.GcsSource;
 import com.google.cloud.aiplatform.v1.JobServiceClient;
 import com.google.cloud.aiplatform.v1.JobServiceSettings;
 import com.google.cloud.aiplatform.v1.LocationName;
+import com.google.gson.Gson;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BatchTextPredictionSample {
 
@@ -44,7 +47,7 @@ public class BatchTextPredictionSample {
     // outputUri (str, optional): URI where the output will be stored.
     // Could be a BigQuery table or a Google Cloud Storage file.
     // E.g. "gs://[BUCKET]/[OUTPUT].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
-    String outputUri = "gs://batch-bucket-testing/batch_text_predict_output";
+    String outputUri = "gs://YOUR_BUCKET/batch_text_predict_output";
     String codeModel = "text-bison";
 
     batchTextPrediction(project, location, inputUri, outputUri, codeModel);
@@ -52,16 +55,17 @@ public class BatchTextPredictionSample {
 
   // Perform batch text prediction using a pre-trained text generation model.
   // Example of using Google Cloud Storage bucket as the input and output data source
-  public static void batchTextPrediction(
+  public static BatchPredictionJob batchTextPrediction(
       String project, String location, String inputUri,
       String outputUri, String codeModel) throws IOException {
     String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     JobServiceSettings jobServiceSettings =
         JobServiceSettings.newBuilder().setEndpoint(endpoint).build();
     // Construct your modelParameters
-    String parameters =
-        "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 200\n" + "}";
-    Value parameterValue = stringToValue(parameters);
+    Map<String, Object> paramsMap = new HashMap<>();
+    paramsMap.put("temperature", 0.2);
+    paramsMap.put("maxOutputTokens", 200);
+    Value parameterValue = mapToValue(paramsMap);
     String modelName = String.format(
         "projects/%s/locations/%s/publishers/google/models/%s", project, location, codeModel);
 
@@ -97,15 +101,16 @@ public class BatchTextPredictionSample {
       BatchPredictionJob response =
           jobServiceClient.createBatchPredictionJob(parent, batchPredictionJob.build());
 
-      System.out.format("response: %s\n", response);
-      System.out.format("\tName: %s\n", response.getName());
+      return response;
     }
   }
 
   // Convert a Json string to a protobuf.Value
-  static Value stringToValue(String value) throws InvalidProtocolBufferException {
+  private static Value mapToValue(Map<String, Object> map) throws InvalidProtocolBufferException {
+    Gson gson = new Gson();
+    String json = gson.toJson(map);
     Value.Builder builder = Value.newBuilder();
-    JsonFormat.parser().merge(value, builder);
+    JsonFormat.parser().merge(json, builder);
     return builder.build();
   }
 }

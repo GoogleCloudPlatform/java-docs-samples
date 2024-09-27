@@ -24,10 +24,13 @@ import com.google.cloud.aiplatform.v1.GcsSource;
 import com.google.cloud.aiplatform.v1.JobServiceClient;
 import com.google.cloud.aiplatform.v1.JobServiceSettings;
 import com.google.cloud.aiplatform.v1.LocationName;
+import com.google.gson.Gson;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BatchCodePredictionSample {
 
@@ -35,11 +38,11 @@ public class BatchCodePredictionSample {
     // TODO(developer): Replace the input_uri and outputUri with your own GCS paths
     String project = "YOUR_PROJECT_ID";
     String location = "us-central1";
-    // inputUri (str, optional): URI of the input dataset.
+    // inputUri: URI of the input dataset.
     // Could be a BigQuery table or a Google Cloud Storage file.
     // E.g. "gs://[BUCKET]/[DATASET].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
     String inputUri = "gs://cloud-samples-data/batch/prompt_for_batch_code_predict.jsonl";
-    // outputUri (str, optional): URI where the output will be stored.
+    // outputUri: URI where the output will be stored.
     // Could be a BigQuery table or a Google Cloud Storage file.
     // E.g. "gs://[BUCKET]/[OUTPUT].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
     String outputUri = "gs://YOUR_BUCKET/batch_code_predict_output";
@@ -51,7 +54,7 @@ public class BatchCodePredictionSample {
 
   // Perform batch code prediction using a pre-trained code generation model.
   // Example of using Google Cloud Storage bucket as the input and output data source
-  public static void batchCodePredictionSample(
+  public static BatchPredictionJob batchCodePredictionSample(
       String project, String location, String inputUri,
       String outputUri, String modelId)
       throws IOException {
@@ -63,9 +66,10 @@ public class BatchCodePredictionSample {
     JobServiceSettings jobServiceSettings =
         JobServiceSettings.newBuilder().setEndpoint(endpoint).build();
     // Construct your modelParameters
-    String parameters =
-        "{\n" + "  \"temperature\": 0.2,\n" + "  \"maxOutputTokens\": 200\n" + "}";
-    Value parameterValue = stringToValue(parameters);
+    Map<String, Object> paramsMap = new HashMap<>();
+    paramsMap.put("temperature", 0.2);
+    paramsMap.put("maxOutputTokens", 200);
+    Value parameterValue = mapToValue(paramsMap);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -96,15 +100,15 @@ public class BatchCodePredictionSample {
               .setModelParameters(parameterValue)
               .build();
       BatchPredictionJob response = client.createBatchPredictionJob(parent, batchPredictionJob);
-      System.out.format("response: %s\n", response);
-      System.out.format("\tName: %s\n", response.getName());
+      return response;
     }
   }
 
-  // Convert a Json string to a protobuf.Value
-  static Value stringToValue(String value) throws InvalidProtocolBufferException {
+  private static Value mapToValue(Map<String, Object> map) throws InvalidProtocolBufferException {
+    Gson gson = new Gson();
+    String json = gson.toJson(map);
     Value.Builder builder = Value.newBuilder();
-    JsonFormat.parser().merge(value, builder);
+    JsonFormat.parser().merge(json, builder);
     return builder.build();
   }
 }
