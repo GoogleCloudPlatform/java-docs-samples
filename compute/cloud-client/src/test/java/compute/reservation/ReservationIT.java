@@ -92,7 +92,7 @@ public class ReservationIT {
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
 
-    RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
+    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
