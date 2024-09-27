@@ -18,6 +18,7 @@ package compute.reservation;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
@@ -48,12 +49,12 @@ import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 10, unit = TimeUnit.MINUTES)
+@Timeout(value = 15, unit = TimeUnit.MINUTES)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  private static final String ZONE = getZone();
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static ReservationsClient reservationsClient;
   private static String RESERVATION_NAME;
@@ -62,9 +63,9 @@ public class ReservationIT {
   private static String GLOBAL_INSTANCE_TEMPLATE_URI;
   private static String REGIONAL_INSTANCE_TEMPLATE_URI;
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
-      "test-global-instance-" + UUID.randomUUID();
+      "test-global-inst-temp" + UUID.randomUUID();
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
-      "test-regional-instance-" + UUID.randomUUID();
+      "test-regional-inst-temp" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
 
   // Check if the required environment variables are set.
@@ -83,10 +84,10 @@ public class ReservationIT {
     System.setOut(new PrintStream(stdOut));
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-global-instance", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-regional-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-global-inst-temp", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-regional-inst-temp", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations(PROJECT_ID, ZONE);
-    TimeUnit.SECONDS.sleep(20);
+    TimeUnit.SECONDS.sleep(50);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
@@ -133,6 +134,7 @@ public class ReservationIT {
         .contains("Instance template deletion operation status for "
             + REGIONAL_INSTANCE_TEMPLATE_NAME);
 
+    TimeUnit.SECONDS.sleep(30);
     // Delete all reservations created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);

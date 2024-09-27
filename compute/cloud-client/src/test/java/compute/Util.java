@@ -192,7 +192,7 @@ public abstract class Util {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
-        if (!reservation.hasName()) {
+        if (!reservation.hasCreationTimestamp()) {
           continue;
         }
         DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
