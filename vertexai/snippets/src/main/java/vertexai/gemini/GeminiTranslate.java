@@ -16,7 +16,7 @@
 
 package vertexai.gemini;
 
-// [START aiplatform_gemini_translate]
+// [START generativeaionvertexai_gemini_translate]
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -93,4 +93,4 @@ public class GeminiTranslate {
     }
   }
 }
-// [END aiplatform_gemini_translate]
+// [END generativeaionvertexai_gemini_translate]
