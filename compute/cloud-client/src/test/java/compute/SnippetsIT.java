@@ -242,10 +242,11 @@ public class SnippetsIT {
     Assert.assertEquals(usageExportLocation.getReportNamePrefix(), customPrefix);
 
     // Wait for the settings to take place.
-    TimeUnit.SECONDS.sleep(70);
+    TimeUnit.SECONDS.sleep(30);
 
     // Disable usage exports.
     boolean isDisabled = compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
+    TimeUnit.SECONDS.sleep(30);
     Assert.assertFalse(isDisabled);
   }
 

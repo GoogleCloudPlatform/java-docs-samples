@@ -39,7 +39,7 @@ public class CreateReservation {
     // Name of the zone in which you want to create the disk.
     String zone = "us-central1-a";
     // Name of the reservation you want to create.
-    String reservationName = "test-reservation-name";
+    String reservationName = "YOUR_RESERVATION_NAME";
     // Number of instances in the reservation.
     int numberOfVms = 3;
 
@@ -107,7 +107,7 @@ public class CreateReservation {
 
       // Wait for the create reservation operation to complete.
       Operation response =
-          reservationsClient.insertAsync(projectId, zone, reservation).get(7, TimeUnit.MINUTES);
+          reservationsClient.insertAsync(projectId, zone, reservation).get(10, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Reservation creation failed!" + response);

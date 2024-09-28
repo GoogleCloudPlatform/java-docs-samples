@@ -89,7 +89,7 @@ public class ReservationIT {
     Util.cleanUpExistingReservations("test-reserv-regional-", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv-global-", PROJECT_ID, ZONE);
 
-    TimeUnit.MINUTES.sleep(2);
+    TimeUnit.MINUTES.sleep(10);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
