@@ -51,7 +51,6 @@ import org.junit.runners.MethodSorters;
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservationIT {
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
