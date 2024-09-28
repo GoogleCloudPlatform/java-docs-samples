@@ -122,7 +122,7 @@ public class ReservationIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    TimeUnit.MINUTES.sleep(3);
+    TimeUnit.MINUTES.sleep(7);
 
     // Delete instance template with GLOBAL location.
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
