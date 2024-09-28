@@ -165,6 +165,7 @@ public class ReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservation.createReservation(
         PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
+    TimeUnit.MINUTES.sleep(2);
 
     Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME);
 
