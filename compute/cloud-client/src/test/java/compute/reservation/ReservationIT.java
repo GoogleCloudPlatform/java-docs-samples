@@ -85,16 +85,16 @@ public class ReservationIT {
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-global-inst-temp", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstances("test-regional-inst-temp", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-regional-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-global-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-regional", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-global", PROJECT_ID, ZONE);
 
     TimeUnit.MINUTES.sleep(10);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
 
-    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
+    RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
