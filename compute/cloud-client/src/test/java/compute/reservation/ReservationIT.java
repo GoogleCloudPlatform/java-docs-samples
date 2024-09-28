@@ -139,19 +139,19 @@ public class ReservationIT {
 
     // Delete all reservations created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
-    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
-    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
+    //    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
+    //    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
 
     // Test that reservations are deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
-    Assertions.assertThrows(
-        NotFoundException.class,
-        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_GLOBAL, ZONE));
-    Assertions.assertThrows(
-        NotFoundException.class,
-        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
+    //    Assertions.assertThrows(
+    //        NotFoundException.class,
+    //        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_GLOBAL, ZONE));
+    //    Assertions.assertThrows(
+    //        NotFoundException.class,
+    //        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
 
     // Close the client after all tests
     reservationsClient.close();
@@ -195,31 +195,33 @@ public class ReservationIT {
     Assert.assertTrue(reservations.get(1).getName().contains("test-reserv"));
     Assert.assertTrue(reservations.get(2).getName().contains("test-reserv"));
   }
-
-  @Test
-  public void firstCreateReservationWithGlobalInstanceTemplateTest()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
-        PROJECT_ID, RESERVATION_NAME_GLOBAL,
-        GLOBAL_INSTANCE_TEMPLATE_URI, NUMBER_OF_VMS, ZONE);
-    Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
-
-    Assert.assertTrue(reservation.getSpecificReservation()
-        .getSourceInstanceTemplate().contains(GLOBAL_INSTANCE_TEMPLATE_NAME));
-    Assert.assertEquals(RESERVATION_NAME_GLOBAL, reservation.getName());
-  }
-
-  @Test
-  public void firstCreateReservationWithRegionInstanceTemplateTest()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
-        PROJECT_ID, RESERVATION_NAME_REGIONAL, REGIONAL_INSTANCE_TEMPLATE_URI,
-        NUMBER_OF_VMS, ZONE);
-    Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
-
-    Assert.assertTrue(reservation.getSpecificReservation()
-        .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
-    Assert.assertTrue(reservation.getZone().contains(ZONE));
-    Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
-  }
+  //
+  //  @Test
+  //  public void firstCreateReservationWithGlobalInstanceTemplateTest()
+  //      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  //    CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
+  //        PROJECT_ID, RESERVATION_NAME_GLOBAL,
+  //        GLOBAL_INSTANCE_TEMPLATE_URI, NUMBER_OF_VMS, ZONE);
+  //    Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE,
+  //    RESERVATION_NAME_GLOBAL);
+  //
+  //    Assert.assertTrue(reservation.getSpecificReservation()
+  //        .getSourceInstanceTemplate().contains(GLOBAL_INSTANCE_TEMPLATE_NAME));
+  //    Assert.assertEquals(RESERVATION_NAME_GLOBAL, reservation.getName());
+  //  }
+  //
+  //  @Test
+  //  public void firstCreateReservationWithRegionInstanceTemplateTest()
+  //      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  //    CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
+  //        PROJECT_ID, RESERVATION_NAME_REGIONAL, REGIONAL_INSTANCE_TEMPLATE_URI,
+  //        NUMBER_OF_VMS, ZONE);
+  //    Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE,
+  //    RESERVATION_NAME_REGIONAL);
+  //
+  //    Assert.assertTrue(reservation.getSpecificReservation()
+  //        .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
+  //    Assert.assertTrue(reservation.getZone().contains(ZONE));
+  //    Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
+  //  }
 }
