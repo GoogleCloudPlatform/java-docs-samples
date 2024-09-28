@@ -48,12 +48,12 @@ import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 15, unit = TimeUnit.MINUTES)
+@Timeout(value = 25, unit = TimeUnit.MINUTES)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-west2-a";
+  private static final String ZONE = "us-central1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static ReservationsClient reservationsClient;
   private static String RESERVATION_NAME;
