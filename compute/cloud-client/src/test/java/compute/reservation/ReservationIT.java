@@ -89,8 +89,6 @@ public class ReservationIT {
     Util.cleanUpExistingReservations("test-reserv-regional", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv-global", PROJECT_ID, ZONE);
 
-    TimeUnit.MINUTES.sleep(10);
-
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
 
@@ -111,6 +109,8 @@ public class ReservationIT {
     CreateRegionalInstanceTemplate.createRegionalInstanceTemplate(
         PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
+
+    TimeUnit.MINUTES.sleep(3);
 
     stdOut.close();
     System.setOut(out);

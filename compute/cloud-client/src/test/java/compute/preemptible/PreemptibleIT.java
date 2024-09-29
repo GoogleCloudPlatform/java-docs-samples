@@ -70,7 +70,7 @@ public class PreemptibleIT {
     Util.cleanUpExistingInstances("preemptible-test-instance", PROJECT_ID, ZONE);
     TimeUnit.SECONDS.sleep(20);
 
-    INSTANCE_NAME = "preemptible-test-instance" + UUID.randomUUID().toString().split("-")[0];
+    INSTANCE_NAME = "preemptible-test-instance-" + UUID.randomUUID().toString().split("-")[0];
 
     // Create Instance with Preemptible setting.
     CreatePreemptibleInstance.createPremptibleInstance(PROJECT_ID, ZONE, INSTANCE_NAME);

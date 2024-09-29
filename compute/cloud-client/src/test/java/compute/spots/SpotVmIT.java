@@ -22,6 +22,7 @@ import static compute.Util.getZone;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import compute.DeleteInstance;
+import compute.Util;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -60,9 +61,13 @@ public class SpotVmIT {
   }
 
   @BeforeClass
-  public static void setUp() {
+  public static void setUp()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("my-new-spot-instance-", PROJECT_ID, ZONE);
 
     INSTANCE_NAME = "my-new-spot-instance-" + UUID.randomUUID();
   }

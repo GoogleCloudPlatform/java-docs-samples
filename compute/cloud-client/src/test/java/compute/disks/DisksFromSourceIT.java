@@ -104,8 +104,9 @@ public class DisksFromSourceIT {
     SNAPSHOT_NAME_REGIONAL = "test-snapshot-name-from-source" + uuid;
     DISK_TYPE = String.format("zones/%s/diskTypes/pd-standard", ZONE);
 
-    // Cleanup existing stale instances.
+    // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-disk", PROJECT_ID, ZONE);
+    Util.cleanUpExistingSnapshots("test-snapshot-name-from-source", PROJECT_ID);
 
     // Create disk from image.
     DEBIAN_IMAGE = null;

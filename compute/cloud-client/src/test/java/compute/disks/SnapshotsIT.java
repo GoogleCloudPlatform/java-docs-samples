@@ -28,6 +28,7 @@ import com.google.cloud.compute.v1.InsertDiskRequest;
 import com.google.cloud.compute.v1.InsertRegionDiskRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
+import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -74,6 +75,9 @@ public class SnapshotsIT {
     System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingSnapshots("gcloud-test-", PROJECT_ID);
 
     ZONE = getZone();
     LOCATION = ZONE.substring(0, ZONE.length() - 2);
