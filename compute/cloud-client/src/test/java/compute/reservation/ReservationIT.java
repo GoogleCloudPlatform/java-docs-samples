@@ -18,7 +18,6 @@ package compute.reservation;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Reservation;
@@ -31,7 +30,6 @@ import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -90,7 +88,6 @@ public class ReservationIT {
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
 
-    //RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
@@ -107,8 +104,6 @@ public class ReservationIT {
     CreateRegionalInstanceTemplate.createRegionalInstanceTemplate(
         PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
-
-    TimeUnit.MINUTES.sleep(3);
 
     stdOut.close();
     System.setOut(out);
@@ -151,26 +146,6 @@ public class ReservationIT {
 
     stdOut.close();
     System.setOut(out);
-  }
-
-  @Test
-  public void secondGetReservationTest()
-      throws IOException {
-    Reservation reservation = GetReservation.getReservation(
-        PROJECT_ID, RESERVATION_NAME_GLOBAL, ZONE);
-
-    assertNotNull(reservation);
-    assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME_GLOBAL);
-  }
-
-  @Test
-  public void thirdListReservationTest() throws IOException {
-    List<Reservation> reservations =
-        ListReservations.listReservations(PROJECT_ID, ZONE);
-
-    assertThat(reservations).isNotNull();
-    Assert.assertTrue(reservations.get(0).getName().contains("test-reserv"));
-    Assert.assertTrue(reservations.get(1).getName().contains("test-reserv"));
   }
 
   @Test

@@ -53,7 +53,7 @@ public abstract class Util {
   private static final int DELETION_THRESHOLD_TIME_HOURS = 10;
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
-  private static final String DEFAULT_ZONES = "asia-south1-a";
+  private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
 
   // Delete templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.

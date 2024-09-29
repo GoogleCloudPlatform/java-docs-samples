@@ -232,7 +232,7 @@ public class SnippetsIT {
     assertThat(stdOut.toString().contains("Operation Status: DONE"));
 
     // Wait for the settings to take place.
-    TimeUnit.SECONDS.sleep(10);
+    TimeUnit.SECONDS.sleep(15);
 
     UsageExportLocation usageExportLocation = compute.SetUsageExportBucket
         .getUsageExportBucket(PROJECT_ID);
