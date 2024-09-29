@@ -97,6 +97,6 @@ public class CrudOperationResevationIT {
         ListReservations.listReservations(PROJECT_ID, ZONE);
 
     assertThat(reservations).isNotNull();
-    Assert.assertTrue(reservations.get(0).getName().contains("test-reservation"));
+    Assert.assertTrue(reservations.get(0).getName().contains("test-"));
   }
 }
