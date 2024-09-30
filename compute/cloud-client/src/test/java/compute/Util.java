@@ -167,7 +167,7 @@ public abstract class Util {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
         if (!reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
-          continue;
+          break;
         }
         if (reservation.getName().contains(prefixToDelete)) {
           DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
@@ -182,7 +182,7 @@ public abstract class Util {
     try (DisksClient disksClient = DisksClient.create()) {
       for (Disk disk : disksClient.list(projectId, zone).iterateAll()) {
         if (!disksClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
-          continue;
+          break;
         }
         if (disk.getName().contains(prefixToDelete)) {
           DeleteDisk.deleteDisk(projectId, zone, disk.getName());
@@ -196,7 +196,7 @@ public abstract class Util {
     try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
       for (Snapshot snapshot : snapshotsClient.list(projectId).iterateAll()) {
         if (!snapshotsClient.list(projectId).iterateAll().iterator().hasNext()) {
-          continue;
+          break;
         }
         if (snapshot.getName().contains(prefixToDelete)) {
           DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
