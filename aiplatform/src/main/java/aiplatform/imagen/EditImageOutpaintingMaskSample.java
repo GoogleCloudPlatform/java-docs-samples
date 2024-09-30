@@ -28,7 +28,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -68,26 +67,32 @@ public class EditImageOutpaintingMaskSample {
           EndpointName.ofProjectLocationPublisherModelName(
               projectId, location, "google", "imagegeneration@006");
 
-      // Convert the image to Base64.
-      byte[] imageData = Base64.getEncoder().encode(Files.readAllBytes(Paths.get(inputPath)));
-      String image = new String(imageData, StandardCharsets.UTF_8);
-      Map<String, String> imageMap = new HashMap<>();
-      imageMap.put("bytesBase64Encoded", image);
+      // Encode image and mask to Base64
+      String imageBase64 =
+          Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(inputPath)));
+      String maskBase64 =
+          Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(maskPath)));
 
-      // Convert the image mask to Base64.
-      byte[] maskData = Base64.getEncoder().encode(Files.readAllBytes(Paths.get(maskPath)));
-      String mask = new String(maskData, StandardCharsets.UTF_8);
+      // Create the image and image mask maps
+      Map<String, String> imageMap = new HashMap<>();
+      imageMap.put("bytesBase64Encoded", imageBase64);
+
       Map<String, String> maskMap = new HashMap<>();
-      maskMap.put("bytesBase64Encoded", mask);
-      Map<String, Map> maskImageMap = new HashMap<>();
-      maskImageMap.put("image", maskMap);
+      maskMap.put("bytesBase64Encoded", maskBase64);
+      Map<String, Map> imageMaskMap = new HashMap<>();
+      imageMaskMap.put("image", maskMap);
 
       Map<String, Object> instancesMap = new HashMap<>();
       instancesMap.put("prompt", prompt);
       instancesMap.put("image", imageMap);
-      instancesMap.put("mask", maskImageMap);
+      instancesMap.put("mask", imageMaskMap);
       instancesMap.put("editMode", "outpainting");
       Value instances = mapToValue(instancesMap);
+      // instancesMap contents:
+      // [ "image", [ "bytesBase64Encoded", "iVBORw0KGgo...==" ] ]
+      // [ "editMode", "outpainting" ]
+      // [ "prompt", "<my-prompt>" ]
+      // [ "mask", [ "image", [ "bytesBase64Encoded", "iJKDF0KGpl...==" ] ] ]
 
       // Optional parameters
       Map<String, Object> paramsMap = new HashMap<>();

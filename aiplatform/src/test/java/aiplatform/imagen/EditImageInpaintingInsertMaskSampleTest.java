@@ -44,7 +44,6 @@ public class EditImageInpaintingInsertMaskSampleTest {
 
   @BeforeClass
   public static void checkRequirements() {
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
