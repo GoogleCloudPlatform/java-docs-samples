@@ -169,7 +169,8 @@ public abstract class Util {
         if (!reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
           break;
         }
-        if (reservation.getName().contains(prefixToDelete)) {
+        if (reservation.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
           DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
         }
       }
@@ -184,7 +185,8 @@ public abstract class Util {
         if (!disksClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
           break;
         }
-        if (disk.getName().contains(prefixToDelete)) {
+        if (disk.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
           DeleteDisk.deleteDisk(projectId, zone, disk.getName());
         }
       }
@@ -198,7 +200,8 @@ public abstract class Util {
         if (!snapshotsClient.list(projectId).iterateAll().iterator().hasNext()) {
           break;
         }
-        if (snapshot.getName().contains(prefixToDelete)) {
+        if (snapshot.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
           DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
         }
       }
