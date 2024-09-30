@@ -33,11 +33,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import org.junit.Test;
-import org.mockito.MockedStatic;
 import org.mockito.InjectMocks;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
