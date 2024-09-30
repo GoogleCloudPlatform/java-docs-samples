@@ -218,7 +218,7 @@ public class SnippetsIT {
         MACHINE_NAME_WAIT_FOR_OP);
     // Wait for the operation to complete.
     operation.get(5, TimeUnit.MINUTES);
-//    assertThat(stdOut.toString().contains("Operation Status: DONE"));
+    assertThat(stdOut.toString().contains("Operation Status: DONE"));
   }
 
   @Test
@@ -227,8 +227,8 @@ public class SnippetsIT {
     // Set custom Report Name Prefix.
     String customPrefix = "my-custom-prefix";
     compute.SetUsageExportBucket.setUsageExportBucket(PROJECT_ID, BUCKET_NAME, customPrefix);
-//    assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
-//    assertThat(stdOut.toString().contains("Operation Status: DONE"));
+    assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
+    assertThat(stdOut.toString().contains("Operation Status: DONE"));
 
     // Wait for the settings to take place.
     TimeUnit.SECONDS.sleep(10);
