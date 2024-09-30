@@ -68,7 +68,7 @@ public class DeleteProtectionIT {
     // Cleanup existing test instances.
     Util.cleanUpExistingInstances("delete-protect-test-instance", PROJECT_ID, ZONE);
 
-    INSTANCE_NAME = "delete-protect-test-instance" + UUID.randomUUID().toString().split("-")[0];
+    INSTANCE_NAME = "delete-protect-test-instance-" + UUID.randomUUID().toString().split("-")[0];
     // Create Instance with Delete Protection.
     CreateInstanceDeleteProtection.createInstanceDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME,
         true);

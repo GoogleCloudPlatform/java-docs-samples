@@ -17,7 +17,6 @@
 package compute;
 
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.Disk;
@@ -85,13 +84,13 @@ public class InstancesAdvancedIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     UUID uuid = UUID.randomUUID();
-    MACHINE_NAME_PUBLIC_IMAGE = "test-instance-pub-" + uuid;
-    MACHINE_NAME_CUSTOM_IMAGE = "test-instance-cust-" + uuid;
-    MACHINE_NAME_ADDITIONAL_DISK = "test-instance-add-" + uuid;
-    MACHINE_NAME_SNAPSHOT = "test-instance-snap-" + uuid;
-    MACHINE_NAME_SNAPSHOT_ADDITIONAL = "test-instance-snapa-" + uuid;
-    MACHINE_NAME_SUBNETWORK = "test-instance-subnet-" + uuid;
-    MACHINE_NAME_EXISTING_DISK = "test-instance-exis" + uuid;
+    MACHINE_NAME_PUBLIC_IMAGE = "test-instance-advanced-pub-" + uuid;
+    MACHINE_NAME_CUSTOM_IMAGE = "test-instance-advanced-cust-" + uuid;
+    MACHINE_NAME_ADDITIONAL_DISK = "test-instance-advanced-add-" + uuid;
+    MACHINE_NAME_SNAPSHOT = "test-instance-advanced-snap-" + uuid;
+    MACHINE_NAME_SNAPSHOT_ADDITIONAL = "test-instance-advanced-snapa-" + uuid;
+    MACHINE_NAME_SUBNETWORK = "test-instance-advanced-subnet-" + uuid;
+    MACHINE_NAME_EXISTING_DISK = "test-instance-advanced-exis" + uuid;
     NETWORK_NAME = "global/networks/default";
     SUBNETWORK_NAME = String.format("regions/%s/subnetworks/default",
         ZONE.substring(0, ZONE.length() - 2));
@@ -100,7 +99,7 @@ public class InstancesAdvancedIT {
     TEST_SNAPSHOT = createSnapshot(TEST_DISK);
     TEST_IMAGE = createImage(TEST_DISK);
 
-    Util.cleanUpExistingInstances("test-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance-advanced-", PROJECT_ID, ZONE);
 
     compute.CreateInstancesAdvanced.createFromPublicImage(PROJECT_ID, ZONE,
         MACHINE_NAME_PUBLIC_IMAGE);

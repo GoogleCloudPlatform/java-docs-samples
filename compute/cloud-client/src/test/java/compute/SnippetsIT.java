@@ -85,20 +85,19 @@ public class SnippetsIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_ENCRYPTED = "encrypted-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_WITH_SSD = "test-instance-with-ssd" + UUID.randomUUID();
+    MACHINE_NAME = "my-new-test-instance-" + UUID.randomUUID();
+    MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance-" + UUID.randomUUID();
+    MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance-" + UUID.randomUUID();
+    MACHINE_NAME_ENCRYPTED = "encrypted-test-instance-" + UUID.randomUUID();
+    MACHINE_NAME_WITH_SSD = "test-instance-with-ssd-" + UUID.randomUUID();
     BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID();
     IMAGE_PROJECT_NAME = getEnvVar(TEST_IMAGE_PROJECT_NAME, "windows-sql-cloud");
     RAW_KEY = Util.getBase64EncodedKey();
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("my-new-test-instance", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("encrypted-test-instance", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-instance-with-ssd", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("my-new-test-instance-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("encrypted-test-instance-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance-with-ssd-", PROJECT_ID, ZONE);
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);

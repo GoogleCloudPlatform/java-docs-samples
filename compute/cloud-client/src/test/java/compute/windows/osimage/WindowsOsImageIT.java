@@ -27,6 +27,7 @@ import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import compute.DeleteInstance;
+import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -120,6 +121,9 @@ public class WindowsOsImageIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("images-test-help-instance-", PROJECT_ID, ZONE);
+
     String randomUUID = UUID.randomUUID().toString().split("-")[0];
     testInstanceName = "images-test-help-instance-" + randomUUID;
     testImageName = "test-image-" + randomUUID;
@@ -161,8 +165,7 @@ public class WindowsOsImageIT {
   }
 
   @Test
-  public void testUnforcedCreateImage()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public void testUnforcedCreateImage() {
     Assertions.assertThrows(
         IllegalStateException.class,
         () -> CreateImage.createImage(

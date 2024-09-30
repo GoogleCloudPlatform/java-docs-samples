@@ -16,6 +16,7 @@
 
 package compute;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.AggregatedListInstancesRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
@@ -29,6 +30,14 @@ import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
 import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.Reservation;
+import com.google.cloud.compute.v1.ReservationsClient;
+import com.google.cloud.compute.v1.Snapshot;
+import com.google.cloud.compute.v1.SnapshotsClient;
+import compute.deleteprotection.SetDeleteProtection;
+import compute.disks.DeleteDisk;
+import compute.disks.DeleteSnapshot;
+import compute.reservation.DeleteReservation;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -41,6 +50,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
+
 
 public abstract class Util {
   // Cleans existing test resources if any.
@@ -62,13 +72,15 @@ public abstract class Util {
       if (!template.hasCreationTimestamp()) {
         continue;
       }
-      if (template.getName().contains(prefixToDelete)
-          && isCreatedBeforeThresholdTime(template.getCreationTimestamp())
+      if (isCreatedBeforeThresholdTime(template.getCreationTimestamp())
           && template.isInitialized()) {
-        DeleteInstanceTemplate.deleteInstanceTemplate(projectId, template.getName());
+        try {
+          DeleteInstanceTemplate.deleteInstanceTemplate(projectId, template.getName());
+        } catch (NotFoundException e) {
+          System.err.println("InstanceTemplate not found, skipping deletion:" + template.getName());
+        }
       }
     }
-
   }
 
   // Delete instances which starts with the given prefixToDelete and
@@ -82,10 +94,17 @@ public abstract class Util {
         if (!instance.hasCreationTimestamp()) {
           continue;
         }
-        if (instance.getName().contains(prefixToDelete)
-            && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())
+        if (instance.getDeletionProtection()) {
+          SetDeleteProtection.setDeleteProtection(
+              projectId, instanceZone, instance.getName(), false);
+        }
+        if (isCreatedBeforeThresholdTime(instance.getCreationTimestamp())
             && instance.getStatus().equalsIgnoreCase(Status.RUNNING.toString())) {
-          DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
+          try {
+            DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
+          } catch (NotFoundException e) {
+            System.err.println("Instance not found, skipping deletion: " + instance.getName());
+          }
         }
       }
     }
@@ -180,5 +199,70 @@ public abstract class Util {
       return defaultValue;
     }
     return val;
+  }
+
+  // Delete reservations which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingReservations(String prefixToDelete, String projectId,
+                                                 String zone)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
+        if (!reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
+          break;
+        }
+        if (reservation.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
+          try {
+            DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
+          } catch (NotFoundException e) {
+            System.err.println("Reservation not found, skipping deletion:" + reservation.getName());
+          }
+        }
+      }
+    }
+  }
+
+  // Delete disks which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingDisks(String prefixToDelete, String projectId,
+                                          String zone)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (DisksClient disksClient = DisksClient.create()) {
+      for (Disk disk : disksClient.list(projectId, zone).iterateAll()) {
+        if (!disksClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
+          break;
+        }
+        if (disk.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
+          try {
+            DeleteDisk.deleteDisk(projectId, zone, disk.getName());
+          } catch (NotFoundException e) {
+            System.err.println("Disk not found, skipping deletion: " + disk.getName());
+          }
+        }
+      }
+    }
+  }
+
+  // Delete snapshots which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingSnapshots(String prefixToDelete, String projectId)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
+      for (Snapshot snapshot : snapshotsClient.list(projectId).iterateAll()) {
+        if (!snapshotsClient.list(projectId).iterateAll().iterator().hasNext()) {
+          break;
+        }
+        if (snapshot.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
+          try {
+            DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
+          } catch (NotFoundException e) {
+            System.err.println("Snapshot not found, skipping deletion: " + snapshot.getName());
+          }
+        }
+      }
+    }
   }
 }
