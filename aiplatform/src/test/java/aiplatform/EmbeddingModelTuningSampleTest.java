@@ -125,25 +125,25 @@ public class EmbeddingModelTuningSampleTest {
     }
   }
 
-  // @Test
-  // public void createPipelineJobEmbeddingModelTuningSample() throws IOException {
-  //   PipelineJob job =
-  //       EmbeddingModelTuningSample.createEmbeddingModelTuningPipelineJob(
-  //           API_ENDPOINT,
-  //           PROJECT,
-  //           BASE_MODEL_VERSION_ID,
-  //           TASK_TYPE,
-  //           JOB_DISPLAY_NAME,
-  //           OUTPUT_DIR,
-  //           QUERIES,
-  //           CORPUS,
-  //           TRAIN_LABEL,
-  //           TEST_LABEL,
-  //           LEARNING_RATE_MULTIPLIER,
-  //           OUTPUT_DIMENSIONALITY,
-  //           BATCH_SIZE,
-  //           ITERATIONS);
-  //   assertThat(job.getState()).isNotEqualTo(PipelineState.PIPELINE_STATE_FAILED);
-  //   JobNames.add(job.getName());
-  // }
+  @Test
+  public void createPipelineJobEmbeddingModelTuningSample() throws IOException {
+    PipelineJob job =
+        EmbeddingModelTuningSample.createEmbeddingModelTuningPipelineJob(
+            API_ENDPOINT,
+            PROJECT,
+            BASE_MODEL_VERSION_ID,
+            TASK_TYPE,
+            JOB_DISPLAY_NAME,
+            OUTPUT_DIR,
+            QUERIES,
+            CORPUS,
+            TRAIN_LABEL,
+            TEST_LABEL,
+            LEARNING_RATE_MULTIPLIER,
+            OUTPUT_DIMENSIONALITY,
+            BATCH_SIZE,
+            ITERATIONS);
+    assertThat(job.getState()).isNotEqualTo(PipelineState.PIPELINE_STATE_FAILED);
+    JobNames.add(job.getName());
+  }
 }
