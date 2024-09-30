@@ -18,7 +18,6 @@ package compute;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.Instance;
@@ -51,7 +50,7 @@ import org.junit.runners.JUnit4;
 public class InstanceOperationsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = getZone();
+  private static final String ZONE = "us-central1-a";
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_ENCRYPTED;
   private static String DISK_NAME;

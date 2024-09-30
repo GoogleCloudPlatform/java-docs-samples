@@ -17,7 +17,6 @@
 package compute;
 
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.Disk;
@@ -53,7 +52,7 @@ import org.junit.runners.JUnit4;
 public class InstancesAdvancedIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = getZone();
+  private static final String ZONE = "us-central1-b";
   private static String MACHINE_NAME_PUBLIC_IMAGE;
   private static String MACHINE_NAME_CUSTOM_IMAGE;
   private static String MACHINE_NAME_ADDITIONAL_DISK;

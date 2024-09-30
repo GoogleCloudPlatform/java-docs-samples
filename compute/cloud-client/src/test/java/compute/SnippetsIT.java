@@ -232,7 +232,7 @@ public class SnippetsIT {
     assertThat(stdOut.toString().contains("Operation Status: DONE"));
 
     // Wait for the settings to take place.
-    TimeUnit.SECONDS.sleep(15);
+    TimeUnit.SECONDS.sleep(10);
 
     UsageExportLocation usageExportLocation = compute.SetUsageExportBucket
         .getUsageExportBucket(PROJECT_ID);
@@ -241,11 +241,10 @@ public class SnippetsIT {
     Assert.assertEquals(usageExportLocation.getReportNamePrefix(), customPrefix);
 
     // Wait for the settings to take place.
-    TimeUnit.SECONDS.sleep(30);
+    TimeUnit.SECONDS.sleep(50);
 
     // Disable usage exports.
     boolean isDisabled = compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
-    TimeUnit.SECONDS.sleep(30);
     Assert.assertFalse(isDisabled);
   }
 
