@@ -16,11 +16,8 @@
 
 package compute.reservation;
 
-// Uncomment appropriate imports.
-
-//import com.google.cloud.compute.v1.AcceleratorConfig;
-//import com.google.cloud.compute.v1.
-// AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk;
+import com.google.cloud.compute.v1.AcceleratorConfig;
+import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationReservedInstanceProperties;
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.Operation;
@@ -60,25 +57,23 @@ public class CreateReservation {
       // Create the reservation with optional properties:
       // Machine type of the instances in the reservation.
       String machineType = "n1-standard-2";
-      // If you want to these parameters to your reserved,
-      // update and uncomment appropriate line of code.
-
       // Number of accelerators to be attached to the instances in the reservation.
-      // int numberOfAccelerators = 1;
+      int numberOfAccelerators = 1;
       // Accelerator type to be attached to the instances in the reservation.
-      // String acceleratorType = "nvidia-tesla-t4";
+      String acceleratorType = "nvidia-tesla-t4";
       // Minimum CPU platform to be attached to the instances in the reservation.
-      // String minCpuPlatform = "Intel Skylake";
+      String minCpuPlatform = "Intel Skylake";
       // Local SSD size in GB to be attached to the instances in the reservation.
-      // int localSsdSize = 375;
+      int localSsdSize = 375;
       // Local SSD interfaces to be attached to the instances in the reservation.
-      // String localSsdInterface1 = "NVME";
-      // String localSsdInterface2 = "SCSI";
+      String localSsdInterface1 = "NVME";
+      String localSsdInterface2 = "SCSI";
       boolean specificReservationRequired = true;
 
       Reservation reservation =
           Reservation.newBuilder()
               .setName(reservationName)
+              .setZone(zone)
               .setSpecificReservationRequired(specificReservationRequired)
               .setSpecificReservation(
                   AllocationSpecificSKUReservation.newBuilder()
@@ -87,26 +82,26 @@ public class CreateReservation {
                       // Set instance properties
                       .setInstanceProperties(
                           AllocationSpecificSKUAllocationReservedInstanceProperties.newBuilder()
-                            .setMachineType(machineType)
-                        //.setMinCpuPlatform(minCpuPlatform)
-                        //.addGuestAccelerators(
-                        //AcceleratorConfig.newBuilder()
-                        //.setAcceleratorCount(numberOfAccelerators)
-                        //.setAcceleratorType(acceleratorType)
-                        //.build())
-                        //.addLocalSsds(
-                        //AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk
-                        //.newBuilder()
-                        //.setDiskSizeGb(localSsdSize)
-                        //.setInterface(localSsdInterface1)
-                        //.build())
-                        //.addLocalSsds(
-                        // AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk
-                        //.newBuilder()
-                        //.setDiskSizeGb(localSsdSize)
-                        //.setInterface(localSsdInterface2)
-                        //.build())
-                        .build())
+                              .setMachineType(machineType)
+                              .setMinCpuPlatform(minCpuPlatform)
+                              .addGuestAccelerators(
+                                  AcceleratorConfig.newBuilder()
+                                      .setAcceleratorCount(numberOfAccelerators)
+                                      .setAcceleratorType(acceleratorType)
+                                      .build())
+                              .addLocalSsds(
+                            AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk
+                                      .newBuilder()
+                                      .setDiskSizeGb(localSsdSize)
+                                      .setInterface(localSsdInterface1)
+                                      .build())
+                              .addLocalSsds(
+                            AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk
+                                      .newBuilder()
+                                      .setDiskSizeGb(localSsdSize)
+                                      .setInterface(localSsdInterface2)
+                                      .build())
+                              .build())
                       .build())
               .build();
 
