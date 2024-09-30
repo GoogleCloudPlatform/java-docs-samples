@@ -75,17 +75,15 @@ public class InstanceOperationsIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    MACHINE_NAME = "test-instance-operation-" + UUID.randomUUID();
-    MACHINE_NAME_ENCRYPTED = "test-instance-encrypted" + UUID.randomUUID();
+    MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
+    MACHINE_NAME_ENCRYPTED = "encrypted-test-instance" + UUID.randomUUID();
     DISK_NAME = "test-clone-disk-enc-" + UUID.randomUUID();
     ENCRYPTED_DISK_NAME = "test-disk-enc-" + UUID.randomUUID();
     RAW_KEY = Util.getBase64EncodedKey();
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-instance-operation-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-instance-encrypted", PROJECT_ID, ZONE);
-    Util.cleanUpExistingDisks("test-clone-disk-enc-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingDisks("test-disk-enc-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("my-new-test-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("encrypted-test-instance", PROJECT_ID, ZONE);
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateEncryptedInstance

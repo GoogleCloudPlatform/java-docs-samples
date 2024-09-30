@@ -84,13 +84,13 @@ public class InstancesAdvancedIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     UUID uuid = UUID.randomUUID();
-    MACHINE_NAME_PUBLIC_IMAGE = "test-instance-advanc-pub-" + uuid;
-    MACHINE_NAME_CUSTOM_IMAGE = "test-instance-advanc-cust-" + uuid;
-    MACHINE_NAME_ADDITIONAL_DISK = "test-instance-advanc-add-" + uuid;
-    MACHINE_NAME_SNAPSHOT = "test-instance-advanc-snap-" + uuid;
-    MACHINE_NAME_SNAPSHOT_ADDITIONAL = "test-instance-advanc-snapa-" + uuid;
-    MACHINE_NAME_SUBNETWORK = "test-instance-advanc-subnet-" + uuid;
-    MACHINE_NAME_EXISTING_DISK = "test-instance-advanc-exis" + uuid;
+    MACHINE_NAME_PUBLIC_IMAGE = "test-instance-pub-" + uuid;
+    MACHINE_NAME_CUSTOM_IMAGE = "test-instance-cust-" + uuid;
+    MACHINE_NAME_ADDITIONAL_DISK = "test-instance-add-" + uuid;
+    MACHINE_NAME_SNAPSHOT = "test-instance-snap-" + uuid;
+    MACHINE_NAME_SNAPSHOT_ADDITIONAL = "test-instance-snapa-" + uuid;
+    MACHINE_NAME_SUBNETWORK = "test-instance-subnet-" + uuid;
+    MACHINE_NAME_EXISTING_DISK = "test-instance-exis" + uuid;
     NETWORK_NAME = "global/networks/default";
     SUBNETWORK_NAME = String.format("regions/%s/subnetworks/default",
         ZONE.substring(0, ZONE.length() - 2));
@@ -99,8 +99,7 @@ public class InstancesAdvancedIT {
     TEST_SNAPSHOT = createSnapshot(TEST_DISK);
     TEST_IMAGE = createImage(TEST_DISK);
 
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-instance-advanc-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance", PROJECT_ID, ZONE);
 
     compute.CreateInstancesAdvanced.createFromPublicImage(PROJECT_ID, ZONE,
         MACHINE_NAME_PUBLIC_IMAGE);
