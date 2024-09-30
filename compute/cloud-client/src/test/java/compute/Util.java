@@ -16,6 +16,7 @@
 
 package compute;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.AggregatedListInstancesRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
@@ -29,6 +30,10 @@ import com.google.cloud.compute.v1.InstancesScopedList;
 import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
 import com.google.cloud.compute.v1.InstanceTemplatesClient.ListPagedResponse;
 import com.google.cloud.compute.v1.Instance.Status;
+import com.google.cloud.compute.v1.Reservation;
+import com.google.cloud.compute.v1.ReservationsClient;
+import compute.reservation.DeleteReservation;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -178,5 +183,26 @@ public static ListPagedResponse listFilteredInstanceTemplates(String projectId,
       return defaultValue;
     }
     return val;
+  }
+  // Delete reservations which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingReservations(String prefixToDelete, String projectId,
+                                                 String zone)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
+        if (!reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
+          break;
+        }
+        if (reservation.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
+          try {
+            DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
+          } catch (NotFoundException e) {
+            System.err.println("Reservation not found, skipping deletion:" + reservation.getName());
+          }
+        }
+      }
+    }
   }
 }

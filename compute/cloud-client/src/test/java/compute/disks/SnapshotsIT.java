@@ -76,9 +76,6 @@ public class SnapshotsIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingSnapshots("gcloud-test-", PROJECT_ID);
-
     ZONE = getZone();
     LOCATION = ZONE.substring(0, ZONE.length() - 2);
     String uuid = UUID.randomUUID().toString().split("-")[0];

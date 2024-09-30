@@ -106,7 +106,6 @@ public class DisksFromSourceIT {
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-disk", PROJECT_ID, ZONE);
-    Util.cleanUpExistingSnapshots("test-snapshot-name-from-source", PROJECT_ID);
 
     // Create disk from image.
     DEBIAN_IMAGE = null;
