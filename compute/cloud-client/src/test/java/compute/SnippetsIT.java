@@ -45,7 +45,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -213,20 +212,20 @@ public class SnippetsIT {
     assertThat(stdOut.toString().contains("Operation Status: DONE"));
   }
 
-  @RepeatedTest(3)
+  @Test
   public void testSetUsageBucketExportCustomPrefix()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Set custom Report Name Prefix.
     String customPrefix = "my-custom-prefix";
     compute.SetUsageExportBucket.setUsageExportBucket(PROJECT_ID, BUCKET_NAME, customPrefix);
-    assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
-    assertThat(stdOut.toString().contains("Operation Status: DONE"));
-
-    // Wait for the settings to take place.
-    TimeUnit.SECONDS.sleep(30);
+    Assert.assertFalse(stdOut.toString().contains("default value of `usage_gce`"));
+    Assert.assertTrue(stdOut.toString().contains("Operation Status: DONE"));
 
     UsageExportLocation usageExportLocation = compute.SetUsageExportBucket
         .getUsageExportBucket(PROJECT_ID);
+
+    // Wait for the settings to take place.
+    TimeUnit.SECONDS.sleep(60);
     assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
     Assert.assertEquals(usageExportLocation.getBucketName(), BUCKET_NAME);
     Assert.assertEquals(usageExportLocation.getReportNamePrefix(), customPrefix);
@@ -234,11 +233,9 @@ public class SnippetsIT {
     // Wait for the settings to take place.
     TimeUnit.SECONDS.sleep(30);
 
-    // Disabled due to continuing failing in the pipeline
-
     // Disable usage exports.
-    // boolean isDisabled = compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
-    // Assert.assertFalse(isDisabled);
+    boolean isDisabled = compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
+    Assert.assertFalse(isDisabled);
   }
 
   @Test
