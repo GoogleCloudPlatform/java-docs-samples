@@ -45,6 +45,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -212,7 +213,7 @@ public class SnippetsIT {
     assertThat(stdOut.toString().contains("Operation Status: DONE"));
   }
 
-  @Test
+  @RepeatedTest(3)
   public void testSetUsageBucketExportCustomPrefix()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Set custom Report Name Prefix.
@@ -222,7 +223,7 @@ public class SnippetsIT {
     assertThat(stdOut.toString().contains("Operation Status: DONE"));
 
     // Wait for the settings to take place.
-    TimeUnit.SECONDS.sleep(10);
+    TimeUnit.SECONDS.sleep(30);
 
     UsageExportLocation usageExportLocation = compute.SetUsageExportBucket
         .getUsageExportBucket(PROJECT_ID);
@@ -231,7 +232,7 @@ public class SnippetsIT {
     Assert.assertEquals(usageExportLocation.getReportNamePrefix(), customPrefix);
 
     // Wait for the settings to take place.
-    TimeUnit.SECONDS.sleep(10);
+    TimeUnit.SECONDS.sleep(30);
 
     // Disable usage exports.
     boolean isDisabled = compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);

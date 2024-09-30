@@ -33,7 +33,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -80,7 +80,7 @@ public class CrudOperationResevationIT {
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
   }
 
-  @Test
+  @RepeatedTest(3)
   public void testGetReservation()
       throws IOException {
     Reservation reservation = GetReservation.getReservation(
@@ -90,7 +90,7 @@ public class CrudOperationResevationIT {
     assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME);
   }
 
-  @Test
+  @RepeatedTest(3)
   public void testListReservation() throws IOException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
