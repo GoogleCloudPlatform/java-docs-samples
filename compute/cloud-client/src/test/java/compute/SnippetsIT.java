@@ -226,7 +226,7 @@ public class SnippetsIT {
         .getUsageExportBucket(PROJECT_ID);
 
     // Wait for the settings to take place.
-    TimeUnit.SECONDS.sleep(60);
+    TimeUnit.MINUTES.sleep(2);
     assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
     Assert.assertEquals(usageExportLocation.getBucketName(), BUCKET_NAME);
     Assert.assertEquals(usageExportLocation.getReportNamePrefix(), customPrefix);
@@ -234,7 +234,7 @@ public class SnippetsIT {
     // Disable usage exports.
     boolean isDisabled = compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
     // Wait for the settings to take place.
-    TimeUnit.SECONDS.sleep(30);
+    TimeUnit.MINUTES.sleep(2);
 
     Assert.assertFalse(isDisabled);
   }
