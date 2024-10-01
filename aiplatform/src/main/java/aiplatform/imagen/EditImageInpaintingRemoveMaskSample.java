@@ -82,16 +82,14 @@ public class EditImageInpaintingRemoveMaskSample {
       imageMaskMap.put("image", maskMap);
 
       Map<String, Object> instancesMap = new HashMap<>();
-      instancesMap.put("prompt", prompt);
-      instancesMap.put("image", imageMap);
-      instancesMap.put("mask", imageMaskMap);
-      instancesMap.put("editMode", "inpainting-remove");
+      instancesMap.put("prompt", prompt); // [ "prompt", "<my-prompt>" ]
+      instancesMap.put(
+          "image", imageMap); // [ "image", [ "bytesBase64Encoded", "iVBORw0KGgo...==" ] ]
+      instancesMap.put(
+          "mask",
+          imageMaskMap); // [ "mask", [ "image", [ "bytesBase64Encoded", "iJKDF0KGpl...==" ] ] ]
+      instancesMap.put("editMode", "inpainting-remove"); // [ "editMode", "inpainting-remove" ]
       Value instances = mapToValue(instancesMap);
-      // instancesMap contents:
-      // [ "image", [ "bytesBase64Encoded", "iVBORw0KGgo...==" ] ]
-      // [ "editMode", "inpainting-remove" ]
-      // [ "prompt", "<my-prompt>" ]
-      // [ "mask", [ "image", [ "bytesBase64Encoded", "iJKDF0KGpl...==" ] ] ]
 
       // Optional parameters
       Map<String, Object> paramsMap = new HashMap<>();
