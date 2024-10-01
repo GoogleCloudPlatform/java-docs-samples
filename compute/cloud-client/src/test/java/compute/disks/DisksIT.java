@@ -61,8 +61,7 @@ import org.junit.runners.JUnit4;
 public class DisksIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static String ZONE = "asia-south1-a";
-
+  private static String ZONE = getZone();
   private static String REGION;
   private static String INSTANCE_NAME;
   private static String DISK_NAME;
@@ -108,6 +107,8 @@ public class DisksIT {
 
     // Cleanup existing stale instances.
     Util.cleanUpExistingInstances("test-disks", PROJECT_ID, ZONE);
+    Util.cleanUpExistingDisks("gcloud-test-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingSnapshots("gcloud-test-snapshot-", PROJECT_ID);
 
     // Create disk from image.
     Image debianImage = null;

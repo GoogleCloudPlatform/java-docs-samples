@@ -40,13 +40,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-@Disabled("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9373")
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class InstancesAdvancedIT {
@@ -84,13 +82,13 @@ public class InstancesAdvancedIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     UUID uuid = UUID.randomUUID();
-    MACHINE_NAME_PUBLIC_IMAGE = "test-instance-advanced-pub-" + uuid;
-    MACHINE_NAME_CUSTOM_IMAGE = "test-instance-advanced-cust-" + uuid;
-    MACHINE_NAME_ADDITIONAL_DISK = "test-instance-advanced-add-" + uuid;
-    MACHINE_NAME_SNAPSHOT = "test-instance-advanced-snap-" + uuid;
-    MACHINE_NAME_SNAPSHOT_ADDITIONAL = "test-instance-advanced-snapa-" + uuid;
-    MACHINE_NAME_SUBNETWORK = "test-instance-advanced-subnet-" + uuid;
-    MACHINE_NAME_EXISTING_DISK = "test-instance-advanced-exis" + uuid;
+    MACHINE_NAME_PUBLIC_IMAGE = "test-inst-advanc-pub-" + uuid;
+    MACHINE_NAME_CUSTOM_IMAGE = "test-inst-advanc-cust-" + uuid;
+    MACHINE_NAME_ADDITIONAL_DISK = "test-inst-advanc-add-" + uuid;
+    MACHINE_NAME_SNAPSHOT = "test-inst-advanc-snap-" + uuid;
+    MACHINE_NAME_SNAPSHOT_ADDITIONAL = "test-inst-advanc-snapa-" + uuid;
+    MACHINE_NAME_SUBNETWORK = "test-inst-advanc-subnet-" + uuid;
+    MACHINE_NAME_EXISTING_DISK = "test-inst-advanc-exis" + uuid;
     NETWORK_NAME = "global/networks/default";
     SUBNETWORK_NAME = String.format("regions/%s/subnetworks/default",
         ZONE.substring(0, ZONE.length() - 2));
@@ -99,7 +97,9 @@ public class InstancesAdvancedIT {
     TEST_SNAPSHOT = createSnapshot(TEST_DISK);
     TEST_IMAGE = createImage(TEST_DISK);
 
-    Util.cleanUpExistingInstances("test-instance-advanced-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-inst-advanc-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingSnapshots("test-inst", PROJECT_ID);
+    Util.cleanUpExistingDisks("test-disk-", PROJECT_ID, ZONE);
 
     compute.CreateInstancesAdvanced.createFromPublicImage(PROJECT_ID, ZONE,
         MACHINE_NAME_PUBLIC_IMAGE);

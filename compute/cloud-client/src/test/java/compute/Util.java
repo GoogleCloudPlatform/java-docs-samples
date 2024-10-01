@@ -17,19 +17,16 @@
 package compute;
 
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.compute.v1.AggregatedListInstancesRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Instance;
-import com.google.cloud.compute.v1.Instance.Status;
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.InstanceTemplatesClient.ListPagedResponse;
 import com.google.cloud.compute.v1.InstancesClient;
-import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
-import com.google.cloud.compute.v1.InstancesScopedList;
-import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
+import com.google.cloud.compute.v1.ListRegionInstanceTemplatesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import com.google.cloud.compute.v1.Snapshot;
@@ -38,6 +35,7 @@ import compute.deleteprotection.SetDeleteProtection;
 import compute.disks.DeleteDisk;
 import compute.disks.DeleteSnapshot;
 import compute.reservation.DeleteReservation;
+import compute.reservation.ReservationIT;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -45,7 +43,6 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -58,26 +55,53 @@ public abstract class Util {
   // resources
   // and delete the listed resources based on the timestamp.
 
-  private static final int DELETION_THRESHOLD_TIME_HOURS = 24;
+  private static final int DELETION_THRESHOLD_TIME_HOURS = 10;
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
-  private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
+  private static final String DEFAULT_ZONES = "us-central1-a";
 
   // Delete templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
   public static void cleanUpExistingInstanceTemplates(String prefixToDelete, String projectId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    for (InstanceTemplate template : listFilteredInstanceTemplates(projectId, prefixToDelete)
-        .iterateAll()) {
-      if (!template.hasCreationTimestamp()) {
-        continue;
+    try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
+      ListPagedResponse templates = instanceTemplatesClient.list(projectId);
+      for (InstanceTemplate instanceTemplate : templates.iterateAll()) {
+        if (!instanceTemplate.hasCreationTimestamp()) {
+          continue;
+        }
+        if (instanceTemplate.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
+            && instanceTemplate.isInitialized()) {
+          DeleteInstanceTemplate.deleteInstanceTemplate(projectId, instanceTemplate.getName());
+        }
       }
-      if (isCreatedBeforeThresholdTime(template.getCreationTimestamp())
-          && template.isInitialized()) {
-        try {
-          DeleteInstanceTemplate.deleteInstanceTemplate(projectId, template.getName());
-        } catch (NotFoundException e) {
-          System.err.println("InstanceTemplate not found, skipping deletion:" + template.getName());
+    }
+  }
+
+  // Delete templates which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingRegionalInstanceTemplates(
+      String prefixToDelete, String projectId, String zone)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (RegionInstanceTemplatesClient instanceTemplatesClient =
+             RegionInstanceTemplatesClient.create()) {
+      String region = zone.substring(0, zone.lastIndexOf('-'));
+      ListRegionInstanceTemplatesRequest request =
+          ListRegionInstanceTemplatesRequest.newBuilder()
+              .setProject(projectId)
+              .setRegion(region)
+              .build();
+
+      for (InstanceTemplate instanceTemplate :
+          instanceTemplatesClient.list(request).iterateAll()) {
+        if (!instanceTemplate.hasCreationTimestamp()) {
+          continue;
+        }
+        if (instanceTemplate.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
+            && instanceTemplate.isInitialized()) {
+          ReservationIT.deleteRegionalInstanceTemplate(projectId, zone, instanceTemplate.getName());
         }
       }
     }
@@ -88,9 +112,8 @@ public abstract class Util {
   public static void cleanUpExistingInstances(String prefixToDelete, String projectId,
       String instanceZone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    for (Entry<String, InstancesScopedList> instanceGroup : listFilteredInstances(
-        projectId, prefixToDelete).iterateAll()) {
-      for (Instance instance : instanceGroup.getValue().getInstancesList()) {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+      for (Instance instance : instancesClient.list(projectId, instanceZone).iterateAll()) {
         if (!instance.hasCreationTimestamp()) {
           continue;
         }
@@ -98,13 +121,9 @@ public abstract class Util {
           SetDeleteProtection.setDeleteProtection(
               projectId, instanceZone, instance.getName(), false);
         }
-        if (isCreatedBeforeThresholdTime(instance.getCreationTimestamp())
-            && instance.getStatus().equalsIgnoreCase(Status.RUNNING.toString())) {
-          try {
-            DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
-          } catch (NotFoundException e) {
-            System.err.println("Instance not found, skipping deletion: " + instance.getName());
-          }
+        if (instance.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
+          DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
         }
       }
     }
@@ -112,35 +131,7 @@ public abstract class Util {
 
   public static boolean isCreatedBeforeThresholdTime(String timestamp) {
     return OffsetDateTime.parse(timestamp).toInstant()
-        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.HOURS));
-  }
-
-  public static AggregatedListPagedResponse listFilteredInstances(String project,
-      String instanceNamePrefix) throws IOException {
-    try (InstancesClient instancesClient = InstancesClient.create()) {
-
-      AggregatedListInstancesRequest aggregatedListInstancesRequest = AggregatedListInstancesRequest
-          .newBuilder()
-          .setProject(project)
-          .setFilter(String.format("name:%s", instanceNamePrefix))
-          .build();
-
-      return instancesClient
-          .aggregatedList(aggregatedListInstancesRequest);
-    }
-  }
-
-  public static ListPagedResponse listFilteredInstanceTemplates(String projectId,
-      String instanceTemplatePrefix) throws IOException {
-    try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
-      ListInstanceTemplatesRequest listInstanceTemplatesRequest =
-          ListInstanceTemplatesRequest.newBuilder()
-          .setProject(projectId)
-          .setFilter(String.format("name:%s", instanceTemplatePrefix))
-          .build();
-
-      return instanceTemplatesClient.list(listInstanceTemplatesRequest);
-    }
+        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.MINUTES));
   }
 
   public static String getBase64EncodedKey() {

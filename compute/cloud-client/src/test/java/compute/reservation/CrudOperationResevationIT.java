@@ -18,6 +18,7 @@ package compute.reservation;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
@@ -50,7 +51,7 @@ import org.junit.runners.MethodSorters;
 public class CrudOperationResevationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  private static final String ZONE = getZone();
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
   private ByteArrayOutputStream stdOut;

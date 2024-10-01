@@ -90,8 +90,8 @@ public class ReservationIT {
     reservationsClient = ReservationsClient.create();
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-global-inst-temp", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-regional-inst-temp", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp", PROJECT_ID);
+    Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv-regional", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv-global", PROJECT_ID, ZONE);
 
@@ -264,7 +264,7 @@ public class ReservationIT {
   }
 
   // Delete an instance template with the REGIONAL location.
-  private static void deleteRegionalInstanceTemplate(
+  public static void deleteRegionalInstanceTemplate(
       String projectId, String zone, String templateName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (RegionInstanceTemplatesClient regionInstanceTemplatesClient =
