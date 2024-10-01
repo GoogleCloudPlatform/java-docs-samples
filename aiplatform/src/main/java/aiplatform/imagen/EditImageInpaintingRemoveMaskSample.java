@@ -16,7 +16,7 @@
 
 package aiplatform.imagen;
 
-// [START generativeaionvertexai_imagen_edit_image_mask_free]
+// [START generativeaionvertexai_imagen_edit_image_inpainting_remove_mask]
 
 import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.aiplatform.v1.EndpointName;
@@ -28,7 +28,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,22 +36,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EditImageMaskFreeSample {
+public class EditImageInpaintingRemoveMaskSample {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
     String inputPath = "/path/to/my-input.png";
-    String prompt = ""; // The text prompt describing what you want to see.
+    String maskPath = "/path/to/my-mask.png";
+    String prompt = ""; // The text prompt describing the entire image.
 
-    editImageMaskFree(projectId, location, inputPath, prompt);
+    editImageInpaintingRemoveMask(projectId, location, inputPath, maskPath, prompt);
   }
 
-  // Edit an image without using a mask. The edit is applied to the entire image and is saved to a
-  // new file.
-  public static PredictResponse editImageMaskFree(
-      String projectId, String location, String inputPath, String prompt)
+  // Edit an image using a mask file. Inpainting can remove an object from the masked area.
+  public static PredictResponse editImageInpaintingRemoveMask(
+      String projectId, String location, String inputPath, String maskPath, String prompt)
       throws ApiException, IOException {
     final String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
     PredictionServiceSettings predictionServiceSettings =
@@ -65,25 +64,35 @@ public class EditImageMaskFreeSample {
 
       final EndpointName endpointName =
           EndpointName.ofProjectLocationPublisherModelName(
-              projectId, location, "google", "imagegeneration@002");
+              projectId, location, "google", "imagegeneration@006");
 
-      // Convert the image to Base64.
-      byte[] imageData = Base64.getEncoder().encode(Files.readAllBytes(Paths.get(inputPath)));
-      String image = new String(imageData, StandardCharsets.UTF_8);
+      // Encode image and mask to Base64
+      String imageBase64 =
+          Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(inputPath)));
+      String maskBase64 =
+          Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(maskPath)));
+
+      // Create the image and image mask maps
       Map<String, String> imageMap = new HashMap<>();
-      imageMap.put("bytesBase64Encoded", image);
+      imageMap.put("bytesBase64Encoded", imageBase64);
+
+      Map<String, String> maskMap = new HashMap<>();
+      maskMap.put("bytesBase64Encoded", maskBase64);
+      Map<String, Map> imageMaskMap = new HashMap<>();
+      imageMaskMap.put("image", maskMap);
 
       Map<String, Object> instancesMap = new HashMap<>();
-      instancesMap.put("prompt", prompt);
-      instancesMap.put("image", imageMap);
+      instancesMap.put("prompt", prompt); // [ "prompt", "<my-prompt>" ]
+      instancesMap.put(
+          "image", imageMap); // [ "image", [ "bytesBase64Encoded", "iVBORw0KGgo...==" ] ]
+      instancesMap.put(
+          "mask",
+          imageMaskMap); // [ "mask", [ "image", [ "bytesBase64Encoded", "iJKDF0KGpl...==" ] ] ]
+      instancesMap.put("editMode", "inpainting-remove"); // [ "editMode", "inpainting-remove" ]
       Value instances = mapToValue(instancesMap);
 
-      Map<String, Object> paramsMap = new HashMap<>();
       // Optional parameters
-      paramsMap.put("seed", 1);
-      // Controls the strength of the prompt.
-      // 0-9 (low strength), 10-20 (medium strength), 21+ (high strength)
-      paramsMap.put("guidanceScale", 21);
+      Map<String, Object> paramsMap = new HashMap<>();
       paramsMap.put("sampleCount", 1);
       Value parameters = mapToValue(paramsMap);
 
@@ -113,4 +122,4 @@ public class EditImageMaskFreeSample {
   }
 }
 
-// [END generativeaionvertexai_imagen_edit_image_mask_free]
+// [END generativeaionvertexai_imagen_edit_image_inpainting_remove_mask]
