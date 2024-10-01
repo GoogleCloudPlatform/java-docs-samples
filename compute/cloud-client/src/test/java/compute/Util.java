@@ -16,7 +16,6 @@
 
 package compute;
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Instance;
@@ -54,10 +53,10 @@ public abstract class Util {
   // resources
   // and delete the listed resources based on the timestamp.
 
-  private static final int DELETION_THRESHOLD_TIME_HOURS = 10;
+  private static final int DELETION_THRESHOLD_TIME_HOURS = 30;
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
-  private static final String DEFAULT_ZONES = "asia-south1-a";
+  private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
 
   // Delete templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
@@ -263,11 +262,7 @@ public abstract class Util {
         }
         if (snapshotContainPrefixToDelete(snapshot, prefixToDelete)
             && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
-          try {
-            DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
-          } catch (NotFoundException e) {
-            System.err.println("Snapshot not found, skipping deletion: " + snapshot.getName());
-          }
+          DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
         }
       }
     }
