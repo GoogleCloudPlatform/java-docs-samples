@@ -124,7 +124,7 @@ public abstract class Util {
 
   public static boolean isCreatedBeforeThresholdTime(String timestamp) {
     return OffsetDateTime.parse(timestamp).toInstant()
-        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.MINUTES));
+        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.HOURS));
   }
 
   public static String getBase64EncodedKey() {
