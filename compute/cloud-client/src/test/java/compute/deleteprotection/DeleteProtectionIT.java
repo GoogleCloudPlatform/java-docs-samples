@@ -68,6 +68,7 @@ public class DeleteProtectionIT {
     CreateInstanceDeleteProtection.createInstanceDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME,
         true);
     assertThat(stdOut.toString()).contains("Instance created : " + INSTANCE_NAME);
+    Assert.assertTrue(GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME));
 
     stdOut.close();
     System.setOut(out);
@@ -87,7 +88,6 @@ public class DeleteProtectionIT {
   @Test
   public void testDeleteProtection()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Assert.assertTrue(GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME));
     SetDeleteProtection.setDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME, false);
     Assert.assertFalse(GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME));
   }
