@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vtwo.endpoint;
+package vtwo.client;
 
 // [START securitycenter_set_client_endpoint_v2]
 

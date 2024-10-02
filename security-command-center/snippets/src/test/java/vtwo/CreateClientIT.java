@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import vtwo.endpoint.CreateClientWithEndpoint;
+import vtwo.client.CreateClientWithEndpoint;
 
 // Test v2 Create Client samples.
 @RunWith(JUnit4.class)
