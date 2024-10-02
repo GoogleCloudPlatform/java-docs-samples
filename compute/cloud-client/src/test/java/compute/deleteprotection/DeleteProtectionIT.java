@@ -34,7 +34,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -107,12 +107,11 @@ public class DeleteProtectionIT {
     System.setOut(null);
   }
 
-  @Test
+  @RepeatedTest(3)
   public void testDeleteProtection()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Assert.assertTrue(GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME));
     SetDeleteProtection.setDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME, false);
     Assert.assertFalse(GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME));
   }
-
 }
