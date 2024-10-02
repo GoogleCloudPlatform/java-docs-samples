@@ -248,24 +248,24 @@ public abstract class Util {
       Object resource, String prefixToDelete) {
     boolean containPrefixToDelete = false;
     try {
-      if(resource instanceof Instance) {
-        containPrefixToDelete = ((Instance)resource).getName().contains(prefixToDelete);
+      if (resource instanceof Instance) {
+        containPrefixToDelete = ((Instance) resource).getName().contains(prefixToDelete);
       }
-      if(resource instanceof InstanceTemplate) {
-        containPrefixToDelete = ((InstanceTemplate)resource).getName().contains(prefixToDelete);
+      if (resource instanceof InstanceTemplate) {
+        containPrefixToDelete = ((InstanceTemplate) resource).getName().contains(prefixToDelete);
       }
-      if(resource instanceof Reservation) {
-        containPrefixToDelete = ((Reservation)resource).getName().contains(prefixToDelete);
+      if (resource instanceof Reservation) {
+        containPrefixToDelete = ((Reservation) resource).getName().contains(prefixToDelete);
       }
-      if(resource instanceof Snapshot) {
-        containPrefixToDelete = ((Snapshot)resource).getName().contains(prefixToDelete);
+      if (resource instanceof Snapshot) {
+        containPrefixToDelete = ((Snapshot) resource).getName().contains(prefixToDelete);
       }
-      if(resource instanceof Disk) {
-        containPrefixToDelete = ((Disk)resource).getName().contains(prefixToDelete);
+      if (resource instanceof Disk) {
+        containPrefixToDelete = ((Disk) resource).getName().contains(prefixToDelete);
       }
-      } catch (NullPointerException e) {
-        System.err.println("Resource not found, skipping deletion:" );
-      }
+    } catch (NullPointerException e) {
+      System.err.println("Resource not found, skipping deletion:");
+    }
     return containPrefixToDelete;
   }
 }
