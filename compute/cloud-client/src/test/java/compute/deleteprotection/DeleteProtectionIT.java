@@ -53,9 +53,6 @@ public class DeleteProtectionIT {
   @BeforeAll
   public static void setup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
 
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
@@ -64,14 +61,6 @@ public class DeleteProtectionIT {
     Util.cleanUpExistingInstances("delete-protect-test-instance", PROJECT_ID, ZONE);
 
     INSTANCE_NAME = "delete-protect-test-instance" + UUID.randomUUID().toString().split("-")[0];
-    // Create Instance with Delete Protection.
-    CreateInstanceDeleteProtection.createInstanceDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME,
-        true);
-    assertThat(stdOut.toString()).contains("Instance created : " + INSTANCE_NAME);
-    Assert.assertTrue(GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME));
-
-    stdOut.close();
-    System.setOut(out);
   }
 
   @AfterAll
@@ -88,8 +77,20 @@ public class DeleteProtectionIT {
   @Test
   public void testDeleteProtection()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+
+    // Create Instance with Delete Protection.
+    CreateInstanceDeleteProtection.createInstanceDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME,
+        true);
+
+    assertThat(stdOut.toString()).contains("Instance created : " + INSTANCE_NAME);
+    Assert.assertTrue(GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME));
     SetDeleteProtection.setDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME, false);
     Assert.assertFalse(GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME));
-  }
 
+    stdOut.close();
+    System.setOut(out);
+  }
 }
