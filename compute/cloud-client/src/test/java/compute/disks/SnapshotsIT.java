@@ -28,7 +28,6 @@ import com.google.cloud.compute.v1.InsertDiskRequest;
 import com.google.cloud.compute.v1.InsertRegionDiskRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
-import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;

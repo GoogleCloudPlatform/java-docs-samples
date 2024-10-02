@@ -50,7 +50,7 @@ public class GetReservation {
       // Get the reservation.
       Reservation reservation = reservationsClient.get(projectId, zone, reservationName);
 
-      System.out.println("Reservation: " + reservation.getName());
+      System.out.println("Reservation: " + reservation.toString());
       return reservation;
     }
   }
