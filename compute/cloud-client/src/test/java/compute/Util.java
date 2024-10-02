@@ -69,15 +69,14 @@ public abstract class Util {
         if (!instanceTemplate.hasCreationTimestamp() || !instanceTemplate.hasId()) {
           continue;
         }
-
-          if (containPrefixToDelete(instanceTemplate, prefixToDelete)
-              && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
-              && instanceTemplate.isInitialized()) {
-            DeleteInstanceTemplate.deleteInstanceTemplate(projectId, instanceTemplate.getName());
-          }
+        if (containPrefixToDelete(instanceTemplate, prefixToDelete)
+            && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
+            && instanceTemplate.isInitialized()) {
+          DeleteInstanceTemplate.deleteInstanceTemplate(projectId, instanceTemplate.getName());
         }
       }
     }
+  }
 
   // Delete regional instance templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
@@ -113,29 +112,29 @@ public abstract class Util {
   public static void cleanUpExistingInstances(String prefixToDelete, String projectId,
       String instanceZone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-      try (InstancesClient instancesClient = InstancesClient.create()) {
-        for (Instance instance : instancesClient.list(projectId, instanceZone).iterateAll()) {
-          if (!instance.hasCreationTimestamp() || !instance.hasId()) {
-            continue;
+    try (InstancesClient instancesClient = InstancesClient.create()) {
+      for (Instance instance : instancesClient.list(projectId, instanceZone).iterateAll()) {
+        if (!instance.hasCreationTimestamp() || !instance.hasId()) {
+          continue;
+        }
+        if (instance.getDeletionProtection()) {
+          SetDeleteProtection.setDeleteProtection(
+              projectId, instanceZone, instance.getName(), false);
+        }
+        deletionLock.lock();
+        try {
+          if (containPrefixToDelete(instance, prefixToDelete)
+              && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
+            DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
+          } else {
+            System.out.println("Instance template already deleted: " + instance.getName());
           }
-          if (instance.getDeletionProtection()) {
-            SetDeleteProtection.setDeleteProtection(
-                projectId, instanceZone, instance.getName(), false);
-          }
-          deletionLock.lock();
-          try {
-            if (containPrefixToDelete(instance, prefixToDelete)
-                && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
-              DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
-            } else {
-              System.out.println("Instance template already deleted: " + instance.getName());
-            }
-          } finally {
-            deletionLock.unlock();
-          }
+        } finally {
+          deletionLock.unlock();
         }
       }
     }
+  }
 
   public static boolean isCreatedBeforeThresholdTime(String timestamp) {
     return OffsetDateTime.parse(timestamp).toInstant()
