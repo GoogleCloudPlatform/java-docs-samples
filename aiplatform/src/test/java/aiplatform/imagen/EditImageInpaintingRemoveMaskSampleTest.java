@@ -29,11 +29,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class EditImageMaskFreeSampleTest {
+public class EditImageInpaintingRemoveMaskSampleTest {
 
   private static final String PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String INPUT_FILE = "resources/cat.png";
-  private static final String PROMPT = "a dog";
+  private static final String INPUT_FILE = "resources/volleyball_game.png";
+  private static final String MASK_FILE = "resources/volleyball_game_inpainting_remove_mask.png";
+  private static final String PROMPT = "volleyball game";
 
   private static void requireEnvVar(String varName) {
     String errorMessage =
@@ -48,9 +49,10 @@ public class EditImageMaskFreeSampleTest {
   }
 
   @Test
-  public void testEditImageMaskFreeSample() throws IOException {
+  public void testEditImageInpaintingRemoveMaskSample() throws IOException {
     PredictResponse response =
-        EditImageMaskFreeSample.editImageMaskFree(PROJECT, "us-central1", INPUT_FILE, PROMPT);
+        EditImageInpaintingRemoveMaskSample.editImageInpaintingRemoveMask(
+            PROJECT, "us-central1", INPUT_FILE, MASK_FILE, PROMPT);
     assertThat(response).isNotNull();
 
     Boolean imageBytes = false;
