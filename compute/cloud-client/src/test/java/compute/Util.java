@@ -34,7 +34,6 @@ import compute.deleteprotection.SetDeleteProtection;
 import compute.disks.DeleteDisk;
 import compute.disks.DeleteSnapshot;
 import compute.reservation.DeleteReservation;
-import compute.reservation.ReservationIT;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -77,7 +76,7 @@ public abstract class Util {
     }
   }
 
-  // Delete templates which starts with the given prefixToDelete and
+  // Delete regional instance templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
   public static void cleanUpExistingRegionalInstanceTemplates(
       String prefixToDelete, String projectId, String zone)
@@ -99,10 +98,12 @@ public abstract class Util {
         if (containPrefixToDelete(instanceTemplate, prefixToDelete)
             && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
             && instanceTemplate.isInitialized()) {
-          ReservationIT.deleteRegionalInstanceTemplate(projectId, zone, instanceTemplate.getName());
+          DeleteRegionalInstanceTemplate.deleteRegionalInstanceTemplate(
+              projectId, zone, instanceTemplate.getName());
         }
       }
     }
+
   }
 
   // Delete instances which starts with the given prefixToDelete and
@@ -130,7 +131,7 @@ public abstract class Util {
 
   public static boolean isCreatedBeforeThresholdTime(String timestamp) {
     return OffsetDateTime.parse(timestamp).toInstant()
-        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.HOURS));
+        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.MINUTES));
   }
 
   public static String getBase64EncodedKey() {

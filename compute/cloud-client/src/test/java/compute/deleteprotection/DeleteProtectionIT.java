@@ -31,9 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -42,12 +40,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class DeleteProtectionIT {
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = getZone();
   private static String INSTANCE_NAME;
-
-  private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -68,7 +63,11 @@ public class DeleteProtectionIT {
     // Cleanup existing test instances.
     Util.cleanUpExistingInstances("delete-protect-test-instance", PROJECT_ID, ZONE);
 
-    INSTANCE_NAME = "delete-protect-test-instance-" + UUID.randomUUID().toString().split("-")[0];
+    INSTANCE_NAME = "delete-protect-test-instance" + UUID.randomUUID().toString().split("-")[0];
+    // Create Instance with Delete Protection.
+    CreateInstanceDeleteProtection.createInstanceDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME,
+        true);
+    assertThat(stdOut.toString()).contains("Instance created : " + INSTANCE_NAME);
 
     stdOut.close();
     System.setOut(out);
@@ -77,42 +76,20 @@ public class DeleteProtectionIT {
   @AfterAll
   public static void cleanUp()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
 
     // If cleanup is pre-maturely executed, then manually unset Delete Protection bit.
     if (GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME)) {
       SetDeleteProtection.setDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME, false);
     }
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
-
-    stdOut.close();
-    System.setOut(out);
-  }
-
-  @BeforeEach
-  public void beforeEach() {
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-  }
-
-  @AfterEach
-  public void afterEach() {
-    stdOut = null;
-    System.setOut(null);
   }
 
   @Test
   public void testDeleteProtection()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Create Instance with Delete Protection.
-    CreateInstanceDeleteProtection.createInstanceDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME,
-        true);
-
-    assertThat(stdOut.toString()).contains("Instance created : " + INSTANCE_NAME);
     Assert.assertTrue(GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME));
     SetDeleteProtection.setDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME, false);
     Assert.assertFalse(GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME));
   }
+
 }
