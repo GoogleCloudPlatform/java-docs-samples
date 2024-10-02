@@ -18,7 +18,6 @@ package compute.disks;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
@@ -51,8 +50,8 @@ import org.junit.runners.JUnit4;
 public class SnapshotsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static String ZONE;
-  private static String LOCATION;
+  private static final String ZONE = "europe-west1-b";
+  private static final String  LOCATION = ZONE.substring(0, ZONE.length() - 2);
   private static String DISK_NAME;
   private static String REGIONAL_DISK_NAME;
   private static String SNAPSHOT_NAME;
@@ -79,8 +78,6 @@ public class SnapshotsIT {
     // Cleanup existing stale resources.
     Util.cleanUpExistingSnapshots("gcloud-test-", PROJECT_ID);
 
-    ZONE = getZone();
-    LOCATION = ZONE.substring(0, ZONE.length() - 2);
     String uuid = UUID.randomUUID().toString().split("-")[0];
     DISK_NAME = "gcloud-test-disk-" + uuid;
     REGIONAL_DISK_NAME = "gcloud-regional-test-disk-" + uuid;

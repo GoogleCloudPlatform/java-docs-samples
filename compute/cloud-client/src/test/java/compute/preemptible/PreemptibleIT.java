@@ -67,7 +67,6 @@ public class PreemptibleIT {
 
     // Cleanup existing test instances.
     Util.cleanUpExistingInstances("preemptible-test-instance", PROJECT_ID, ZONE);
-    TimeUnit.SECONDS.sleep(20);
 
     INSTANCE_NAME = "preemptible-test-instance-" + UUID.randomUUID().toString().split("-")[0];
 

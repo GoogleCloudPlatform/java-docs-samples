@@ -18,7 +18,6 @@ package compute.deleteprotection;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import compute.DeleteInstance;
 import compute.Util;
@@ -41,7 +40,7 @@ import org.junit.runners.JUnit4;
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class DeleteProtectionIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = getZone();
+  private static final String ZONE = "asia-south1-a";
   private static String INSTANCE_NAME;
 
   // Check if the required environment variables are set.

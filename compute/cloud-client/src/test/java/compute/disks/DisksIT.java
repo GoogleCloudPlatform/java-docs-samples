@@ -18,7 +18,6 @@ package compute.disks;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
@@ -61,8 +60,8 @@ import org.junit.runners.JUnit4;
 public class DisksIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static String ZONE = getZone();
-  private static String REGION;
+  private static final String ZONE = "us-west1-a";
+  private static final String REGION = ZONE.substring(0, ZONE.length() - 2);
   private static String INSTANCE_NAME;
   private static String DISK_NAME;
   private static String DISK_NAME_2;
@@ -92,8 +91,6 @@ public class DisksIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    ZONE = getZone();
-    REGION = ZONE.substring(0, ZONE.length() - 2);
     String uuid = UUID.randomUUID().toString().split("-")[0];
     INSTANCE_NAME = "test-disks-" + uuid;
     DISK_NAME = "gcloud-test-disk-" + uuid;
