@@ -21,19 +21,18 @@ import com.google.cloud.compute.v1.AggregatedListInstancesRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Instance;
+import com.google.cloud.compute.v1.Instance.Status;
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
+import com.google.cloud.compute.v1.InstanceTemplatesClient.ListPagedResponse;
 import com.google.cloud.compute.v1.InstancesClient;
-import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
 import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
-import com.google.cloud.compute.v1.InstanceTemplatesClient.ListPagedResponse;
-import com.google.cloud.compute.v1.Instance.Status;
+import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.reservation.DeleteReservation;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -71,9 +70,9 @@ public abstract class Util {
           && isCreatedBeforeThresholdTime(template.getCreationTimestamp())
           && template.isInitialized()) {
         DeleteInstanceTemplate.deleteInstanceTemplate(projectId, template.getName());
-        }
       }
     }
+  }
 
   // Delete instances which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
@@ -94,33 +93,34 @@ public abstract class Util {
       }
     }
   }
-public static AggregatedListPagedResponse listFilteredInstances(String project,
-                                                                String instanceNamePrefix) throws IOException {
-  try (InstancesClient instancesClient = InstancesClient.create()) {
 
-    AggregatedListInstancesRequest aggregatedListInstancesRequest = AggregatedListInstancesRequest
-        .newBuilder()
-        .setProject(project)
-        .setFilter(String.format("name:%s", instanceNamePrefix))
-        .build();
+  public static AggregatedListPagedResponse listFilteredInstances(
+      String project, String instanceNamePrefix) throws IOException {
+    try (InstancesClient instancesClient = InstancesClient.create()) {
 
-    return instancesClient
-        .aggregatedList(aggregatedListInstancesRequest);
+      AggregatedListInstancesRequest aggregatedListInstancesRequest = AggregatedListInstancesRequest
+          .newBuilder()
+          .setProject(project)
+          .setFilter(String.format("name:%s", instanceNamePrefix))
+          .build();
+
+      return instancesClient
+          .aggregatedList(aggregatedListInstancesRequest);
+    }
   }
-}
 
-public static ListPagedResponse listFilteredInstanceTemplates(String projectId,
-                                                              String instanceTemplatePrefix) throws IOException {
-  try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
-    ListInstanceTemplatesRequest listInstanceTemplatesRequest =
-        ListInstanceTemplatesRequest.newBuilder()
-            .setProject(projectId)
-            .setFilter(String.format("name:%s", instanceTemplatePrefix))
-            .build();
+  public static ListPagedResponse listFilteredInstanceTemplates(
+      String projectId, String instanceTemplatePrefix) throws IOException {
+    try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
+      ListInstanceTemplatesRequest listInstanceTemplatesRequest =
+          ListInstanceTemplatesRequest.newBuilder()
+              .setProject(projectId)
+              .setFilter(String.format("name:%s", instanceTemplatePrefix))
+              .build();
 
-    return instanceTemplatesClient.list(listInstanceTemplatesRequest);
+      return instanceTemplatesClient.list(listInstanceTemplatesRequest);
+    }
   }
-}
 
   public static boolean isCreatedBeforeThresholdTime(String timestamp) {
     return OffsetDateTime.parse(timestamp).toInstant()
@@ -184,10 +184,11 @@ public static ListPagedResponse listFilteredInstanceTemplates(String projectId,
     }
     return val;
   }
+
   // Delete reservations which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
-  public static void cleanUpExistingReservations(String prefixToDelete, String projectId,
-                                                 String zone)
+  public static void cleanUpExistingReservations(
+      String prefixToDelete, String projectId, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
