@@ -20,7 +20,6 @@ package dataplex;
 import com.google.cloud.dataplex.v1.AspectType;
 import com.google.cloud.dataplex.v1.AspectTypeName;
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
-
 import java.io.IOException;
 
 // Sample to get Aspect Type

@@ -16,18 +16,17 @@
 
 package dataplex;
 
+import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
+
 import com.google.cloud.dataplex.v1.AspectTypeName;
 import com.google.cloud.dataplex.v1.LocationName;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
-
-import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.TestCase.assertNotNull;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class DeleteAspectTypeIT {
 

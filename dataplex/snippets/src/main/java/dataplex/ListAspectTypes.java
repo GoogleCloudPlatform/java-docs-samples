@@ -19,7 +19,6 @@ package dataplex;
 // [START dataplex_list_aspect_types]
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import com.google.cloud.dataplex.v1.LocationName;
-
 import java.io.IOException;
 
 // Sample to list Aspect Types

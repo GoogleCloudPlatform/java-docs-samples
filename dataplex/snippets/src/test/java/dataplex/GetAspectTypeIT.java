@@ -16,19 +16,18 @@
 
 package dataplex;
 
+import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
+
 import com.google.cloud.dataplex.v1.AspectTypeName;
 import com.google.cloud.dataplex.v1.LocationName;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
-
-import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.TestCase.assertNotNull;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class GetAspectTypeIT {
 
@@ -81,6 +80,7 @@ public class GetAspectTypeIT {
             "projects/%s/locations/%s/aspectTypes/%s", PROJECT_ID, LOCATION, aspectTypeId);
     AspectTypeName aspectTypeName = AspectTypeName.of(PROJECT_ID, LOCATION, aspectTypeId);
     GetAspectType.getAspectType(aspectTypeName);
-    assertThat(bout.toString()).isEqualTo("Aspect type retrieved successfully: " + expectedAspectType + "\n");
+    assertThat(bout.toString())
+        .isEqualTo("Aspect type retrieved successfully: " + expectedAspectType + "\n");
   }
 }
