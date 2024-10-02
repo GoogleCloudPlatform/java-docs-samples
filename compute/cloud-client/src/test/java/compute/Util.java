@@ -44,6 +44,7 @@ import java.util.Base64;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.IntStream;
 
 public abstract class Util {
@@ -56,6 +57,7 @@ public abstract class Util {
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
   private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
+  private static final ReentrantLock deletionLock = new ReentrantLock();
 
   // Delete templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
@@ -67,14 +69,15 @@ public abstract class Util {
         if (!instanceTemplate.hasCreationTimestamp() || !instanceTemplate.hasId()) {
           continue;
         }
-        if (containPrefixToDelete(instanceTemplate, prefixToDelete)
-            && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
-            && instanceTemplate.isInitialized()) {
-          DeleteInstanceTemplate.deleteInstanceTemplate(projectId, instanceTemplate.getName());
+
+          if (containPrefixToDelete(instanceTemplate, prefixToDelete)
+              && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
+              && instanceTemplate.isInitialized()) {
+            DeleteInstanceTemplate.deleteInstanceTemplate(projectId, instanceTemplate.getName());
+          }
         }
       }
     }
-  }
 
   // Delete regional instance templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
@@ -103,7 +106,6 @@ public abstract class Util {
         }
       }
     }
-
   }
 
   // Delete instances which starts with the given prefixToDelete and
@@ -111,23 +113,29 @@ public abstract class Util {
   public static void cleanUpExistingInstances(String prefixToDelete, String projectId,
       String instanceZone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (InstancesClient instancesClient = InstancesClient.create()) {
-      for (Instance instance : instancesClient.list(projectId, instanceZone).iterateAll()) {
-        if (!instance.hasCreationTimestamp() || !instance.hasId()) {
-          continue;
-        }
-        if (instance.getDeletionProtection()) {
-          SetDeleteProtection.setDeleteProtection(
-              projectId, instanceZone, instance.getName(), false);
-        }
-
-        if (containPrefixToDelete(instance, prefixToDelete)
-            && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
-          DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
+      try (InstancesClient instancesClient = InstancesClient.create()) {
+        for (Instance instance : instancesClient.list(projectId, instanceZone).iterateAll()) {
+          if (!instance.hasCreationTimestamp() || !instance.hasId()) {
+            continue;
+          }
+          if (instance.getDeletionProtection()) {
+            SetDeleteProtection.setDeleteProtection(
+                projectId, instanceZone, instance.getName(), false);
+          }
+          deletionLock.lock();
+          try {
+            if (containPrefixToDelete(instance, prefixToDelete)
+                && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
+              DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
+            } else {
+              System.out.println("Instance template already deleted: " + instance.getName());
+            }
+          } finally {
+            deletionLock.unlock();
+          }
         }
       }
     }
-  }
 
   public static boolean isCreatedBeforeThresholdTime(String timestamp) {
     return OffsetDateTime.parse(timestamp).toInstant()

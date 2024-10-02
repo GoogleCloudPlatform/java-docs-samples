@@ -83,8 +83,7 @@ public class InstanceOperationsIT {
     RAW_KEY = Util.getBase64EncodedKey();
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-instance-operation-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-instance-encrypted-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
     Util.cleanUpExistingDisks("test-clone-disk-enc-", PROJECT_ID, ZONE);
     Util.cleanUpExistingDisks("test-disk-enc-", PROJECT_ID, ZONE);
 
