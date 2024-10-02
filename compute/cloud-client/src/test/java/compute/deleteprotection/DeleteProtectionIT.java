@@ -34,7 +34,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -69,10 +69,6 @@ public class DeleteProtectionIT {
     Util.cleanUpExistingInstances("delete-protect-test-instance", PROJECT_ID, ZONE);
 
     INSTANCE_NAME = "delete-protect-test-instance-" + UUID.randomUUID().toString().split("-")[0];
-    // Create Instance with Delete Protection.
-    CreateInstanceDeleteProtection.createInstanceDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME,
-        true);
-    assertThat(stdOut.toString()).contains("Instance created : " + INSTANCE_NAME);
 
     stdOut.close();
     System.setOut(out);
@@ -107,9 +103,14 @@ public class DeleteProtectionIT {
     System.setOut(null);
   }
 
-  @RepeatedTest(3)
+  @Test
   public void testDeleteProtection()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Create Instance with Delete Protection.
+    CreateInstanceDeleteProtection.createInstanceDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME,
+        true);
+
+    assertThat(stdOut.toString()).contains("Instance created : " + INSTANCE_NAME);
     Assert.assertTrue(GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME));
     SetDeleteProtection.setDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME, false);
     Assert.assertFalse(GetDeleteProtection.getDeleteProtection(PROJECT_ID, ZONE, INSTANCE_NAME));

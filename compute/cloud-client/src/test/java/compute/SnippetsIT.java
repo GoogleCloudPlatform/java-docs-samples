@@ -46,6 +46,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -213,7 +214,7 @@ public class SnippetsIT {
     assertThat(stdOut.toString().contains("Operation Status: DONE"));
   }
 
-  @Test
+  @RepeatedTest(3)
   public void testSetUsageBucketExportCustomPrefix()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Set custom Report Name Prefix.
@@ -226,8 +227,9 @@ public class SnippetsIT {
         .getUsageExportBucket(PROJECT_ID);
 
     // Wait for the settings to take place.
-    TimeUnit.MINUTES.sleep(2);
+    TimeUnit.MINUTES.sleep(3);
     assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
+    Assert.assertNotNull(usageExportLocation.getBucketName());
     Assert.assertEquals(usageExportLocation.getBucketName(), BUCKET_NAME);
     Assert.assertEquals(usageExportLocation.getReportNamePrefix(), customPrefix);
 
