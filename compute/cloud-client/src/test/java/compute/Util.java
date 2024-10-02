@@ -117,20 +117,14 @@ public abstract class Util {
         if (!instance.hasCreationTimestamp() || !instance.hasId()) {
           continue;
         }
-        if (instance.getDeletionProtection()) {
+        if (instance.getDeletionProtection()
+            && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
           SetDeleteProtection.setDeleteProtection(
               projectId, instanceZone, instance.getName(), false);
         }
-        deletionLock.lock();
-        try {
-          if (containPrefixToDelete(instance, prefixToDelete)
-              && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
-            DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
-          } else {
-            System.out.println("Instance template already deleted: " + instance.getName());
-          }
-        } finally {
-          deletionLock.unlock();
+        if (containPrefixToDelete(instance, prefixToDelete)
+            && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
+          DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
         }
       }
     }
