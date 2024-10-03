@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getZone;
 
 import compute.DeleteInstance;
+import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -61,6 +62,9 @@ public class CustomHostnameInstanceIT {
     System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
+    // Clean up existing stale resources.
+    Util.cleanUpExistingInstances("my-custom-hostname-test-instance", PROJECT_ID, ZONE);
 
     INSTANCE_NAME = "my-custom-hostname-test-instance" + UUID.randomUUID().toString().split("-")[0];
     ZONE = getZone();

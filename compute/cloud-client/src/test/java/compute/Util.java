@@ -28,9 +28,15 @@ import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
 import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
+import com.google.cloud.compute.v1.ListRegionInstanceTemplatesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
+import com.google.cloud.compute.v1.Snapshot;
+import com.google.cloud.compute.v1.SnapshotsClient;
+import compute.disks.DeleteDisk;
+import compute.disks.DeleteSnapshot;
 import compute.reservation.DeleteReservation;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -39,7 +45,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -71,7 +77,35 @@ public abstract class Util {
         DeleteInstanceTemplate.deleteInstanceTemplate(projectId, template.getName());
       }
     }
+  }
 
+  // Delete regional instance templates which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingRegionalInstanceTemplates(
+      String prefixToDelete, String projectId, String zone)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (RegionInstanceTemplatesClient instanceTemplatesClient =
+             RegionInstanceTemplatesClient.create()) {
+      String region = zone.substring(0, zone.lastIndexOf('-'));
+      ListRegionInstanceTemplatesRequest request =
+          ListRegionInstanceTemplatesRequest.newBuilder()
+              .setProject(projectId)
+              .setRegion(region)
+              .build();
+
+      for (InstanceTemplate instanceTemplate :
+          instanceTemplatesClient.list(request).iterateAll()) {
+        if (!instanceTemplate.hasCreationTimestamp() || !instanceTemplate.hasId()) {
+          continue;
+        }
+        if (containPrefixToDelete(instanceTemplate, prefixToDelete)
+            && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
+            && instanceTemplate.isInitialized()) {
+          DeleteRegionalInstanceTemplate.deleteRegionalInstanceTemplate(
+              projectId, zone, instanceTemplate.getName());
+        }
+      }
+    }
   }
 
   // Delete instances which starts with the given prefixToDelete and
@@ -79,7 +113,7 @@ public abstract class Util {
   public static void cleanUpExistingInstances(String prefixToDelete, String projectId,
       String instanceZone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    for (Entry<String, InstancesScopedList> instanceGroup : listFilteredInstances(
+    for (Map.Entry<String, InstancesScopedList> instanceGroup : listFilteredInstances(
         projectId, prefixToDelete).iterateAll()) {
       for (Instance instance : instanceGroup.getValue().getInstancesList()) {
         if (!instance.hasCreationTimestamp()) {
@@ -94,13 +128,8 @@ public abstract class Util {
     }
   }
 
-  public static boolean isCreatedBeforeThresholdTime(String timestamp) {
-    return OffsetDateTime.parse(timestamp).toInstant()
-        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.MINUTES));
-  }
-
-  public static AggregatedListPagedResponse listFilteredInstances(String project,
-      String instanceNamePrefix) throws IOException {
+  public static AggregatedListPagedResponse listFilteredInstances(
+      String project, String instanceNamePrefix) throws IOException {
     try (InstancesClient instancesClient = InstancesClient.create()) {
 
       AggregatedListInstancesRequest aggregatedListInstancesRequest = AggregatedListInstancesRequest
@@ -114,17 +143,22 @@ public abstract class Util {
     }
   }
 
-  public static ListPagedResponse listFilteredInstanceTemplates(String projectId,
-      String instanceTemplatePrefix) throws IOException {
+  public static ListPagedResponse listFilteredInstanceTemplates(
+      String projectId, String instanceTemplatePrefix) throws IOException {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
       ListInstanceTemplatesRequest listInstanceTemplatesRequest =
           ListInstanceTemplatesRequest.newBuilder()
-          .setProject(projectId)
-          .setFilter(String.format("name:%s", instanceTemplatePrefix))
-          .build();
+              .setProject(projectId)
+              .setFilter(String.format("name:%s", instanceTemplatePrefix))
+              .build();
 
       return instanceTemplatesClient.list(listInstanceTemplatesRequest);
     }
+  }
+
+  public static boolean isCreatedBeforeThresholdTime(String timestamp) {
+    return OffsetDateTime.parse(timestamp).toInstant()
+        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.MINUTES));
   }
 
   public static String getBase64EncodedKey() {
@@ -187,20 +221,79 @@ public abstract class Util {
 
   // Delete reservations which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
-  public static void cleanUpExistingReservations(String prefixToDelete, String projectId,
-                                              String zone)
+  public static void cleanUpExistingReservations(
+      String prefixToDelete, String projectId, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
-        if (!reservation.hasCreationTimestamp()) {
-          continue;
+        if (!reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
+          break;
         }
         if (reservation.getName().contains(prefixToDelete)
-            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())
-            && reservation.getStatus().equalsIgnoreCase(Status.RUNNING.toString())) {
+            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
           DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
         }
       }
     }
+  }
+
+  // Delete disks which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingDisks(String prefixToDelete, String projectId,
+                                          String zone)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (DisksClient disksClient = DisksClient.create()) {
+      for (Disk disk : disksClient.list(projectId, zone).iterateAll()) {
+        if (!disksClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
+          break;
+        }
+        if (containPrefixToDelete(disk, prefixToDelete)
+            && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
+          DeleteDisk.deleteDisk(projectId, zone, disk.getName());
+        }
+      }
+    }
+  }
+
+  // Delete snapshots which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingSnapshots(String prefixToDelete, String projectId)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
+      for (Snapshot snapshot : snapshotsClient.list(projectId).iterateAll()) {
+        if (!snapshotsClient.list(projectId).iterateAll().iterator().hasNext()) {
+          break;
+        }
+        if (containPrefixToDelete(snapshot, prefixToDelete)
+            && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
+          DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
+        }
+      }
+    }
+  }
+
+  public static boolean containPrefixToDelete(
+      Object resource, String prefixToDelete) {
+    boolean containPrefixToDelete = false;
+    try {
+      if (resource instanceof Instance) {
+        containPrefixToDelete = ((Instance) resource).getName().contains(prefixToDelete);
+      }
+      if (resource instanceof InstanceTemplate) {
+        containPrefixToDelete = ((InstanceTemplate) resource).getName().contains(prefixToDelete);
+      }
+      if (resource instanceof Reservation) {
+        containPrefixToDelete = ((Reservation) resource).getName().contains(prefixToDelete);
+      }
+      if (resource instanceof Snapshot) {
+        containPrefixToDelete = ((Snapshot) resource).getName().contains(prefixToDelete);
+      }
+      if (resource instanceof Disk) {
+        containPrefixToDelete = ((Disk) resource).getName().contains(prefixToDelete);
+      }
+    } catch (NullPointerException e) {
+      System.err.println("Resource not found, skipping deletion:");
+    }
+    return containPrefixToDelete;
   }
 }
