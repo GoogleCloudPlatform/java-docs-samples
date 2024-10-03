@@ -69,7 +69,7 @@ public class ListAspectTypesIT {
     // Restore print statements
     System.out.flush();
     System.setOut(originalPrintStream);
-    // Clean-up deleted aspect type
+    // Clean-up previously created aspect type
     AspectTypeName aspectTypeName = AspectTypeName.of(PROJECT_ID, LOCATION, aspectTypeId);
     DeleteAspectType.deleteAspectType(aspectTypeName);
   }
