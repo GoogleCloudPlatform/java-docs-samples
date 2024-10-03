@@ -22,19 +22,25 @@ import static junit.framework.TestCase.assertNotNull;
 import com.google.cloud.dataplex.v1.AspectTypeName;
 import com.google.cloud.dataplex.v1.LocationName;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
-public class UpdateAspectTypeIT {
-
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class AspectTypeIT {
   private static final String ID = UUID.randomUUID().toString().substring(0, 8);
   private static final String LOCATION = "us-central1";
   private static String aspectTypeId;
   private static ByteArrayOutputStream bout;
   private static PrintStream originalPrintStream;
+  private static LocationName locationName;
+  private static AspectTypeName aspectTypeName;
+  private static String expectedAspectType;
 
   private static final String PROJECT_ID = requireProjectIdEnvVar();
 
@@ -51,35 +57,54 @@ public class UpdateAspectTypeIT {
   }
 
   @BeforeClass
-  public static void setUp() throws Exception {
-    // Create temporary aspect type for testing purpose
+  public static void setUp() {
     aspectTypeId = "test-aspect-type" + ID;
-    LocationName locationName = LocationName.of(PROJECT_ID, LOCATION);
-    CreateAspectType.createAspectType(locationName, aspectTypeId);
+    locationName = LocationName.of(PROJECT_ID, LOCATION);
+    aspectTypeName = AspectTypeName.of(PROJECT_ID, LOCATION, aspectTypeId);
+    expectedAspectType =
+        String.format(
+            "projects/%s/locations/%s/aspectTypes/%s", PROJECT_ID, LOCATION, aspectTypeId);
     // Redirect print statements
     bout = new ByteArrayOutputStream();
     originalPrintStream = System.out;
     System.setOut(new PrintStream(bout));
   }
 
-  @AfterClass
-  public static void tearDown() throws Exception {
-    // Restore print statements
-    System.out.flush();
-    System.setOut(originalPrintStream);
-    // Clean-up previously created aspect type
-    AspectTypeName aspectTypeName = AspectTypeName.of(PROJECT_ID, LOCATION, aspectTypeId);
-    DeleteAspectType.deleteAspectType(aspectTypeName);
+  @Test
+  public void test1_createAspectTypes() throws Exception {
+    CreateAspectType.createAspectType(locationName, aspectTypeId);
+    assertThat(bout.toString()).contains("Successfully created aspect type: " + expectedAspectType);
   }
 
   @Test
-  public void testUpdateAspectType() throws Exception {
-    String expectedAspectType =
-        String.format(
-            "projects/%s/locations/%s/aspectTypes/%s", PROJECT_ID, LOCATION, aspectTypeId);
-    AspectTypeName aspectTypeName = AspectTypeName.of(PROJECT_ID, LOCATION, aspectTypeId);
+  public void test2_updateAspectTypes() throws Exception {
     UpdateAspectType.updateAspectType(aspectTypeName);
+    assertThat(bout.toString()).contains("Successfully updated aspect type: " + expectedAspectType);
+  }
+
+  @Test
+  public void test3_listAspectTypes() throws IOException {
+    ListAspectTypes.listAspectTypes(locationName);
+    assertThat(bout.toString()).contains("Aspect type name: " + expectedAspectType);
+  }
+
+  @Test
+  public void test4_getAspectType() throws IOException {
+    GetAspectType.getAspectType(aspectTypeName);
     assertThat(bout.toString())
-        .isEqualTo("Successfully updated aspect type: " + expectedAspectType + "\n");
+        .contains("Aspect type retrieved successfully: " + expectedAspectType);
+  }
+
+  @Test
+  public void test5_deleteAspectType() throws Exception {
+    DeleteAspectType.deleteAspectType(aspectTypeName);
+    assertThat(bout.toString()).contains("Successfully deleted aspect type");
+  }
+
+  @AfterClass
+  public static void tearDown() {
+    // Restore print statements
+    System.out.flush();
+    System.setOut(originalPrintStream);
   }
 }
