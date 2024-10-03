@@ -92,7 +92,7 @@ public class VerifyImageWatermarkSample {
           // "ACCEPT" if the image contains a digital watermark
           // "REJECT" if the image does not contain a digital watermark
         }
-      }
+      } // only 1 prediction returned
       return predictResponse;
     }
   }
