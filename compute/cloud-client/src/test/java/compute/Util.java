@@ -198,13 +198,14 @@ public abstract class Util {
       String prefixToDelete, String projectId, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-      for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
-        if (!reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
-          break;
-        }
-        if (containPrefixToDeleteAndZone(reservation, prefixToDelete, zone)
-            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
-          DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
+      if (reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
+        System.out.println("No reservation found");
+      } else {
+        for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
+          if (containPrefixToDeleteAndZone(reservation, prefixToDelete, zone)
+              && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
+            DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
+          }
         }
       }
     }
@@ -216,13 +217,14 @@ public abstract class Util {
       String prefixToDelete, String projectId, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (DisksClient disksClient = DisksClient.create()) {
-      for (Disk disk : disksClient.list(projectId, zone).iterateAll()) {
-        if (!disksClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
-          break;
-        }
-        if (containPrefixToDeleteAndZone(disk, prefixToDelete, zone)
-            && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
-          DeleteDisk.deleteDisk(projectId, zone, disk.getName());
+      if (!disksClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
+        System.out.println("No disks found");
+      } else {
+        for (Disk disk : disksClient.list(projectId, zone).iterateAll()) {
+          if (containPrefixToDeleteAndZone(disk, prefixToDelete, zone)
+              && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
+            DeleteDisk.deleteDisk(projectId, zone, disk.getName());
+          }
         }
       }
     }
@@ -233,13 +235,14 @@ public abstract class Util {
   public static void cleanUpExistingSnapshots(String prefixToDelete, String projectId)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
-      for (Snapshot snapshot : snapshotsClient.list(projectId).iterateAll()) {
-        if (!snapshotsClient.list(projectId).iterateAll().iterator().hasNext()) {
-          break;
-        }
-        if (containPrefixToDelete(snapshot, prefixToDelete)
-            && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
-          DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
+      if (!snapshotsClient.list(projectId).iterateAll().iterator().hasNext()) {
+        System.out.println("No snapshots found");
+      } else {
+        for (Snapshot snapshot : snapshotsClient.list(projectId).iterateAll()) {
+          if (containPrefixToDelete(snapshot, prefixToDelete)
+              && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
+            DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
+          }
         }
       }
     }
