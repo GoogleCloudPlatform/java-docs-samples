@@ -44,7 +44,8 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HyperdisksIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  private static final String ZONE = "us-east1-c";
+
   private static String HYPERDISK_NAME;
   private static String HYPERDISK_IN_POOL_NAME;
   private static String STORAGE_POOL_NAME;
@@ -60,12 +61,11 @@ public class HyperdisksIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, ZONE);
     HYPERDISK_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
     HYPERDISK_IN_POOL_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
     STORAGE_POOL_NAME = "test-storage-pool-enc-" + UUID.randomUUID();
+
+    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
   }
 
   @AfterAll

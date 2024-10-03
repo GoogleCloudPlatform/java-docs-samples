@@ -31,7 +31,6 @@ import com.google.cloud.compute.v1.ReservationsClient;
 import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
 import com.google.cloud.compute.v1.StoragePool;
-import com.google.cloud.compute.v1.StoragePoolsClient;
 import compute.deleteprotection.SetDeleteProtection;
 import compute.disks.DeleteDisk;
 import compute.disks.DeleteSnapshot;
@@ -54,7 +53,7 @@ public abstract class Util {
   // resources
   // and delete the listed resources based on the timestamp.
 
-  private static final int DELETION_THRESHOLD_TIME_HOURS = 5;
+  private static final int DELETION_THRESHOLD_TIME_HOURS = 30;
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
   private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
@@ -132,7 +131,7 @@ public abstract class Util {
 
   public static boolean isCreatedBeforeThresholdTime(String timestamp) {
     return OffsetDateTime.parse(timestamp).toInstant()
-        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.HOURS));
+        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.MINUTES));
   }
 
   public static String getBase64EncodedKey() {
@@ -213,8 +212,8 @@ public abstract class Util {
 
   // Delete disk which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
-  public static void cleanUpExistingDisks(String prefixToDelete, String projectId,
-                                          String zone)
+  public static void cleanUpExistingDisks(
+      String prefixToDelete, String projectId, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (DisksClient disksClient = DisksClient.create()) {
       for (Disk disk : disksClient.list(projectId, zone).iterateAll()) {
@@ -241,25 +240,6 @@ public abstract class Util {
         if (containPrefixToDelete(snapshot, prefixToDelete)
             && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
           DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
-        }
-      }
-    }
-  }
-
-  // Delete StoragePool which starts with the given prefixToDelete and
-  // has creation timestamp >24 hours.
-  public static void cleanUpExistingStoragePool(
-      String prefixToDelete, String projectId, String zone)
-      throws IOException {
-    try (StoragePoolsClient client = StoragePoolsClient.create()) {
-
-      for (StoragePool storagePool : client.list(projectId, zone).iterateAll()) {
-        if (!client.list(projectId, zone).iterateAll().iterator().hasNext()) {
-          break;
-        }
-        if (containPrefixToDelete(storagePool, prefixToDelete)
-            && isCreatedBeforeThresholdTime(storagePool.getCreationTimestamp())) {
-          client.deleteAsync(projectId, zone, storagePool.getName());
         }
       }
     }
