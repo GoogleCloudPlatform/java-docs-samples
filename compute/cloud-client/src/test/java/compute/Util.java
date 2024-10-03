@@ -95,7 +95,7 @@ public abstract class Util {
         if (!instanceTemplate.hasCreationTimestamp() || !instanceTemplate.hasId()) {
           continue;
         }
-        if (containPrefixToDelete(instanceTemplate, prefixToDelete)
+        if (containPrefixToDeleteAndZone(instanceTemplate, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
             && instanceTemplate.isInitialized()) {
           DeleteRegionalInstanceTemplate.deleteRegionalInstanceTemplate(
@@ -120,7 +120,7 @@ public abstract class Util {
           SetDeleteProtection.setDeleteProtection(
               projectId, instanceZone, instance.getName(), false);
         }
-        if (containPrefixToDelete(instance, prefixToDelete)
+        if (containPrefixToDeleteAndZone(instance, prefixToDelete, instanceZone)
             && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
           DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
         }
@@ -201,7 +201,7 @@ public abstract class Util {
         if (!reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
           break;
         }
-        if (containPrefixToDelete(reservation, prefixToDelete)
+        if (containPrefixToDeleteAndZone(reservation, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
           DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
         }
@@ -219,7 +219,7 @@ public abstract class Util {
         if (!disksClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
           break;
         }
-        if (containPrefixToDelete(disk, prefixToDelete)
+        if (containPrefixToDeleteAndZone(disk, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
           DeleteDisk.deleteDisk(projectId, zone, disk.getName());
         }
@@ -244,24 +244,42 @@ public abstract class Util {
     }
   }
 
+  public static boolean containPrefixToDeleteAndZone(
+      Object resource, String prefixToDelete, String zone) {
+    boolean containPrefixAndZone = false;
+    try {
+      if (resource instanceof Instance) {
+        containPrefixAndZone = ((Instance) resource).getName().contains(prefixToDelete)
+            && ((Instance) resource).getZone().contains(zone);
+      }
+      if (resource instanceof InstanceTemplate) {
+        containPrefixAndZone = ((InstanceTemplate) resource).getName().contains(prefixToDelete)
+          && ((InstanceTemplate) resource).getRegion()
+            .contains(zone.substring(0, zone.lastIndexOf('-')));
+      }
+      if (resource instanceof Reservation) {
+        containPrefixAndZone = ((Reservation) resource).getName().contains(prefixToDelete)
+            && ((Reservation) resource).getZone().contains(zone);
+      }
+      if (resource instanceof Disk) {
+        containPrefixAndZone = ((Disk) resource).getName().contains(prefixToDelete)
+            && ((Disk) resource).getZone().contains(zone);
+      }
+    } catch (NullPointerException e) {
+      System.err.println("Resource not found, skipping deletion:");
+    }
+    return containPrefixAndZone;
+  }
+
   public static boolean containPrefixToDelete(
       Object resource, String prefixToDelete) {
     boolean containPrefixToDelete = false;
     try {
-      if (resource instanceof Instance) {
-        containPrefixToDelete = ((Instance) resource).getName().contains(prefixToDelete);
-      }
       if (resource instanceof InstanceTemplate) {
         containPrefixToDelete = ((InstanceTemplate) resource).getName().contains(prefixToDelete);
       }
-      if (resource instanceof Reservation) {
-        containPrefixToDelete = ((Reservation) resource).getName().contains(prefixToDelete);
-      }
       if (resource instanceof Snapshot) {
         containPrefixToDelete = ((Snapshot) resource).getName().contains(prefixToDelete);
-      }
-      if (resource instanceof Disk) {
-        containPrefixToDelete = ((Disk) resource).getName().contains(prefixToDelete);
       }
     } catch (NullPointerException e) {
       System.err.println("Resource not found, skipping deletion:");
