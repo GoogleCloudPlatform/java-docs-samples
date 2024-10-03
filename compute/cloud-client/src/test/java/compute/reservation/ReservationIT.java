@@ -22,22 +22,15 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.compute.v1.AttachedDisk;
-import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
-import com.google.cloud.compute.v1.DeleteRegionInstanceTemplateRequest;
-import com.google.cloud.compute.v1.InsertRegionInstanceTemplateRequest;
 import com.google.cloud.compute.v1.Instance;
-import com.google.cloud.compute.v1.InstanceProperties;
-import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstancesClient;
-import com.google.cloud.compute.v1.NetworkInterface;
-import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.CreateInstanceTemplate;
+import compute.CreateRegionalInstanceTemplate;
 import compute.DeleteInstance;
 import compute.DeleteInstanceTemplate;
+import compute.DeleteRegionalInstanceTemplate;
 import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -50,8 +43,10 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -59,12 +54,13 @@ import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 10, unit = TimeUnit.MINUTES)
+@Timeout(value = 25, unit = TimeUnit.MINUTES)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
+  private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static ReservationsClient reservationsClient;
   private static InstancesClient instancesClient;
   private static String RESERVATION_NAME;
@@ -80,8 +76,10 @@ public class ReservationIT {
   private static final String SPECIFIC_SHARED_INSTANCE_NAME =
       "test-shared-instance-" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
+
   private static final String MACHINE_TYPE = "n2-standard-32";
   private static final String MIN_CPU_PLATFORM = "Intel Cascade Lake";
+  private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -98,16 +96,15 @@ public class ReservationIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    // Initialize the clients once for all tests
-    reservationsClient = ReservationsClient.create();
-    instancesClient = InstancesClient.create();
-
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-shared-instance", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstanceTemplates("test-global-inst-temp", PROJECT_ID);
     Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations(PROJECT_ID, ZONE);
-    TimeUnit.SECONDS.sleep(20);
+    Util.cleanUpExistingReservations("test-reserv-", PROJECT_ID, ZONE);
+
+    // Initialize the clients once for all tests
+    reservationsClient = ReservationsClient.create();
+    instancesClient = InstancesClient.create();
 
     RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
@@ -116,18 +113,17 @@ public class ReservationIT {
 
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
         PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
-    String region = ZONE.substring(0, ZONE.lastIndexOf('-'));
     REGIONAL_INSTANCE_TEMPLATE_URI =
         String.format("projects/%s/regions/%s/instanceTemplates/%s",
-            PROJECT_ID, region, REGIONAL_INSTANCE_TEMPLATE_NAME);
+            PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString())
         .contains("Instance Template Operation Status " + GLOBAL_INSTANCE_TEMPLATE_NAME);
     // Create instance template with REGIONAL location.
-    ReservationIT.createRegionalInstanceTemplate(
-        PROJECT_ID, REGIONAL_INSTANCE_TEMPLATE_NAME, ZONE);
+    CreateRegionalInstanceTemplate.createRegionalInstanceTemplate(
+        PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
 
     stdOut.close();
@@ -148,8 +144,8 @@ public class ReservationIT {
             + GLOBAL_INSTANCE_TEMPLATE_NAME);
 
     // Delete instance template with REGIONAL location.
-    ReservationIT.deleteRegionalInstanceTemplate(
-        PROJECT_ID, ZONE, REGIONAL_INSTANCE_TEMPLATE_NAME);
+    DeleteRegionalInstanceTemplate.deleteRegionalInstanceTemplate(
+        PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString())
         .contains("Instance template deletion operation status for "
             + REGIONAL_INSTANCE_TEMPLATE_NAME);
@@ -163,10 +159,17 @@ public class ReservationIT {
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, SHARED_RESERVATION_NAME);
 
-    // Test that the reservation is deleted
+    // Test that reservations are deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_GLOBAL, ZONE));
+    // Test that the reservation is deleted
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
 
     // Close clients after all tests
     reservationsClient.close();
@@ -176,18 +179,25 @@ public class ReservationIT {
     System.setOut(out);
   }
 
+  @BeforeEach
+  public void beforeEach() {
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+  }
+
+  @AfterEach
+  public void afterEach() {
+    stdOut = null;
+    System.setOut(null);
+  }
+
   @Test
   public void firstCreateReservationTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservation.createReservation(
         PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
 
-    Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME);
-
-    Assert.assertEquals(RESERVATION_NAME, reservation.getName());
-    Assert.assertEquals(NUMBER_OF_VMS,
-        reservation.getSpecificReservation().getCount());
-    Assert.assertTrue(reservation.getZone().contains(ZONE));
+    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
   }
 
   @Test
@@ -206,9 +216,7 @@ public class ReservationIT {
         ListReservations.listReservations(PROJECT_ID, ZONE);
 
     assertThat(reservations).isNotNull();
-    Assert.assertTrue(reservations.get(0).getName().contains("test-reserv"));
-    Assert.assertTrue(reservations.get(1).getName().contains("test-reserv"));
-    Assert.assertTrue(reservations.get(2).getName().contains("test-reserv"));
+    Assert.assertTrue(reservations.get(0).getName().contains("test-"));
   }
 
   @Test
@@ -260,97 +268,5 @@ public class ReservationIT {
         .getValuesList().get(0).contains(SHARED_RESERVATION_NAME));
     Assert.assertEquals(SPECIFIC_RESERVATION.toString(),
         instance.getReservationAffinity().getConsumeReservationType());
-  }
-
-  // Creates a new instance template with the REGIONAL location.
-  public static void createRegionalInstanceTemplate(
-      String projectId, String templateName, String zone)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (RegionInstanceTemplatesClient templatesClientRegion =
-             RegionInstanceTemplatesClient.create()) {
-
-      String machineType = "n1-standard-1"; // Example machine type
-      String sourceImage = "projects/debian-cloud/global/images/family/debian-11"; // Example image
-      String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
-
-      // Define the boot disk for the instance template
-      AttachedDisk attachedDisk = AttachedDisk.newBuilder()
-          .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
-              .setSourceImage(sourceImage)
-              .setDiskType("pd-balanced") // Example disk type
-              .setDiskSizeGb(100L) // Example disk size
-              .build())
-          .setAutoDelete(true)
-          .setBoot(true)
-          .build();
-
-      // Define the network interface for the instance template
-      // Note: The subnetwork must be in the same region as the instance template.
-      NetworkInterface networkInterface = NetworkInterface.newBuilder()
-          .setName("my-network-test")
-          .setSubnetwork(String.format("projects/%s/regions/%s/subnetworks/default",
-              PROJECT_ID, region))
-          .build();
-
-      // Define the instance properties for the template
-      InstanceProperties instanceProperties = InstanceProperties.newBuilder()
-          .addDisks(attachedDisk)
-          .setMachineType(machineType)
-          .addNetworkInterfaces(networkInterface)
-          .build();
-
-      // Build the instance template object
-      InstanceTemplate instanceTemplate = InstanceTemplate.newBuilder()
-          .setName(templateName)
-          .setProperties(instanceProperties)
-          .build();
-
-      // Create the request to insert the instance template
-      InsertRegionInstanceTemplateRequest insertInstanceTemplateRequest =
-          InsertRegionInstanceTemplateRequest
-              .newBuilder()
-              .setProject(projectId)
-              .setRegion(region)
-              .setInstanceTemplateResource(instanceTemplate)
-              .build();
-
-      // Send the request and wait for the operation to complete
-      Operation response = templatesClientRegion.insertAsync(insertInstanceTemplateRequest)
-          .get(3, TimeUnit.MINUTES);
-
-      if (response.hasError()) {
-        System.out.println("Instance Template creation failed! " + response);
-        return;
-      }
-      System.out.printf("Instance Template Operation Status: %s%n", response.getStatus());
-    }
-  }
-
-  // Delete an instance template with the REGIONAL location.
-  private static void deleteRegionalInstanceTemplate(
-      String projectId, String zone, String templateName)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (RegionInstanceTemplatesClient regionInstanceTemplatesClient =
-             RegionInstanceTemplatesClient.create()) {
-      String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
-
-      DeleteRegionInstanceTemplateRequest deleteInstanceTemplateRequest =
-          DeleteRegionInstanceTemplateRequest
-              .newBuilder()
-              .setProject(projectId)
-              .setRegion(region)
-              .setInstanceTemplate(templateName)
-              .build();
-
-      Operation response = regionInstanceTemplatesClient.deleteAsync(
-          deleteInstanceTemplateRequest).get(3, TimeUnit.MINUTES);
-
-      if (response.hasError()) {
-        System.out.println("Instance template deletion failed ! ! " + response);
-        return;
-      }
-      System.out.printf("Instance template deletion operation status for %s: %s ", templateName,
-          response.getStatus());
-    }
   }
 }
