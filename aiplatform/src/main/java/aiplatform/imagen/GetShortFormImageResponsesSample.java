@@ -79,7 +79,6 @@ public class GetShortFormImageResponsesSample {
 
       // Optional parameters
       Map<String, Object> paramsMap = new HashMap<>();
-      paramsMap.put("language", "en");
       paramsMap.put("sampleCount", 2);
       Value parameters = mapToValue(paramsMap);
 
