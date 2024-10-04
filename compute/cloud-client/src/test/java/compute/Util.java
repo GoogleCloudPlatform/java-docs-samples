@@ -31,7 +31,6 @@ import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
-import com.google.cloud.compute.v1.Snapshot;
 import compute.reservation.DeleteReservation;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -77,7 +76,7 @@ public abstract class Util {
   // Delete instances which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
   public static void cleanUpExistingInstances(String prefixToDelete, String projectId,
-                                              String instanceZone)
+      String instanceZone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     for (Map.Entry<String, InstancesScopedList> instanceGroup : listFilteredInstances(
         projectId, prefixToDelete).iterateAll()) {
@@ -191,40 +190,43 @@ public abstract class Util {
       String prefixToDelete, String projectId, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-      for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
-        if (!reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
-          break;
-        }
-        if (containPrefixToDelete(reservation, prefixToDelete)
-            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
-          DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
+      if (reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
+        System.out.println("No reservation found");
+      } else {
+        for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
+          if (containPrefixToDeleteAndZone(reservation, prefixToDelete, zone)
+              && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
+            DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
+          }
         }
       }
     }
   }
 
-  public static boolean containPrefixToDelete(
-      Object resource, String prefixToDelete) {
-    boolean containPrefixToDelete = false;
+  public static boolean containPrefixToDeleteAndZone(
+      Object resource, String prefixToDelete, String zone) {
+    boolean containPrefixAndZone = false;
     try {
       if (resource instanceof Instance) {
-        containPrefixToDelete = ((Instance) resource).getName().contains(prefixToDelete);
+        containPrefixAndZone = ((Instance) resource).getName().contains(prefixToDelete)
+            && ((Instance) resource).getZone().contains(zone);
       }
       if (resource instanceof InstanceTemplate) {
-        containPrefixToDelete = ((InstanceTemplate) resource).getName().contains(prefixToDelete);
+        containPrefixAndZone = ((InstanceTemplate) resource).getName().contains(prefixToDelete)
+            && ((InstanceTemplate) resource).getRegion()
+            .contains(zone.substring(0, zone.lastIndexOf('-')));
       }
       if (resource instanceof Reservation) {
-        containPrefixToDelete = ((Reservation) resource).getName().contains(prefixToDelete);
-      }
-      if (resource instanceof Snapshot) {
-        containPrefixToDelete = ((Snapshot) resource).getName().contains(prefixToDelete);
+        containPrefixAndZone = ((Reservation) resource).getName().contains(prefixToDelete)
+            && ((Reservation) resource).getZone().contains(zone);
       }
       if (resource instanceof Disk) {
-        containPrefixToDelete = ((Disk) resource).getName().contains(prefixToDelete);
+        containPrefixAndZone = ((Disk) resource).getName().contains(prefixToDelete)
+            && ((Disk) resource).getZone().contains(zone);
       }
     } catch (NullPointerException e) {
       System.err.println("Resource not found, skipping deletion:");
     }
-    return containPrefixToDelete;
+    return containPrefixAndZone;
   }
 }
