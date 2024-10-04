@@ -34,9 +34,6 @@ import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import com.google.cloud.compute.v1.Snapshot;
-import com.google.cloud.compute.v1.SnapshotsClient;
-import compute.disks.DeleteDisk;
-import compute.disks.DeleteSnapshot;
 import compute.reservation.DeleteReservation;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -225,48 +222,14 @@ public abstract class Util {
       String prefixToDelete, String projectId, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-      for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
-        if (!reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
-          break;
-        }
-        if (containPrefixToDelete(reservation, prefixToDelete)
-            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
-          DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
-        }
-      }
-    }
-  }
-
-  // Delete disks which starts with the given prefixToDelete and
-  // has creation timestamp >24 hours.
-  public static void cleanUpExistingDisks(String prefixToDelete, String projectId,
-                                          String zone)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (DisksClient disksClient = DisksClient.create()) {
-      for (Disk disk : disksClient.list(projectId, zone).iterateAll()) {
-        if (!disksClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
-          break;
-        }
-        if (containPrefixToDelete(disk, prefixToDelete)
-            && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
-          DeleteDisk.deleteDisk(projectId, zone, disk.getName());
-        }
-      }
-    }
-  }
-
-  // Delete snapshots which starts with the given prefixToDelete and
-  // has creation timestamp >24 hours.
-  public static void cleanUpExistingSnapshots(String prefixToDelete, String projectId)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
-      for (Snapshot snapshot : snapshotsClient.list(projectId).iterateAll()) {
-        if (!snapshotsClient.list(projectId).iterateAll().iterator().hasNext()) {
-          break;
-        }
-        if (containPrefixToDelete(snapshot, prefixToDelete)
-            && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
-          DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
+      if (reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
+        System.out.println("No reservation found");
+      } else {
+        for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
+          if (containPrefixToDelete(reservation, prefixToDelete)
+              && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
+            DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
+          }
         }
       }
     }

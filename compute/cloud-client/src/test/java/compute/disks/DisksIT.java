@@ -108,8 +108,6 @@ public class DisksIT {
 
     // Cleanup existing stale instances.
     Util.cleanUpExistingInstances("test-disks", PROJECT_ID, ZONE);
-    Util.cleanUpExistingDisks("gcloud-test-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingSnapshots("gcloud-test-snapshot-", PROJECT_ID);
 
     // Create disk from image.
     Image debianImage = null;

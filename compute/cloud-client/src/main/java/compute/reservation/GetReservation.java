@@ -34,7 +34,7 @@ public class GetReservation {
     // Name of the zone in which you want to create the reservation.
     String zone = "us-central1-a";
     // Name of the reservation you want to create.
-    String reservationName = "YOUR_RESERVATION_NAME";
+    String reservationName = "test-reservation-name";
 
     getReservation(projectId, reservationName, zone);
   }
