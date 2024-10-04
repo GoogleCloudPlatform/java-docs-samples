@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package com.example.appengine.java21;
 
@@ -20,10 +20,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,12 +37,15 @@ import org.mockito.MockitoAnnotations;
  */
 @RunWith(JUnit4.class)
 public class HelloAppEngineTest {
+
   private static final String FAKE_URL = "fake.fk/hello";
   // Set up a helper so that the ApiProxy returns a valid environment for local testing.
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper();
 
-  @Mock private HttpServletRequest mockRequest;
-  @Mock private HttpServletResponse mockResponse;
+  @Mock
+  private HttpServletRequest mockRequest;
+  @Mock
+  private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private HelloAppEngine servletUnderTest;
 
@@ -61,7 +64,8 @@ public class HelloAppEngineTest {
     servletUnderTest = new HelloAppEngine();
   }
 
-  @After public void tearDown() {
+  @After
+  public void tearDown() {
     helper.tearDown();
   }
 

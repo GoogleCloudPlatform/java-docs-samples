@@ -41,13 +41,26 @@ public class PredictTextEmbeddingsSamplePreview {
     // https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings
     String endpoint = "us-central1-aiplatform.googleapis.com";
     String project = "YOUR_PROJECT_ID";
-    String model = "text-embedding-preview-0409";
+    String model = "text-embedding-preview-0815";
+    // Calculate the embedding for a code retrieval query. Using 'CODE_RETRIEVAL_QUERY' for query.
     predictTextEmbeddings(
         endpoint,
         project,
         model,
-        List.of("banana bread?", "banana muffins?"),
-        "QUESTION_ANSWERING",
+        List.of("Retrieve a function that adds two numbers"),
+        "CODE_RETRIEVAL_QUERY",
+        OptionalInt.of(256));
+
+    // Calculate the embedding for code blocks. Using 'RETRIEVAL_DOCUMENT' for corpus.
+    predictTextEmbeddings(
+        endpoint,
+        project,
+        model,
+        List.of(
+            "def func(a, b): return a + b",
+            "def func(a, b): return a - b",
+            "def func(a, b): return (a ** 2 + b ** 2) ** 0.5"),
+        "RETRIEVAL_DOCUMENT",
         OptionalInt.of(256));
   }
 

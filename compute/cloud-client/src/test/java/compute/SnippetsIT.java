@@ -24,6 +24,7 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
+import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.UsageExportLocation;
@@ -45,13 +46,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-@Disabled("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9373")
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class SnippetsIT {
@@ -61,6 +60,7 @@ public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TEST_IMAGE_PROJECT_NAME = "JAVA_DOCS_COMPUTE_TEST_IMAGE_PROJECT";
   private static final String ZONE = "asia-south1-a";
+  private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_LIST_INSTANCE;
   private static String MACHINE_NAME_WAIT_FOR_OP;
@@ -69,6 +69,7 @@ public class SnippetsIT {
   private static String BUCKET_NAME;
   private static String IMAGE_PROJECT_NAME;
   private static String RAW_KEY;
+  private static String REGIONAL_LOCATION_NAME;
 
   private ByteArrayOutputStream stdOut;
 
@@ -92,6 +93,7 @@ public class SnippetsIT {
     MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance" + UUID.randomUUID();
     MACHINE_NAME_ENCRYPTED = "encrypted-test-instance" + UUID.randomUUID();
     MACHINE_NAME_WITH_SSD = "test-instance-with-ssd" + UUID.randomUUID();
+    REGIONAL_LOCATION_NAME = "test-inst-temp-regional-" + UUID.randomUUID();
     BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID();
     IMAGE_PROJECT_NAME = getEnvVar(TEST_IMAGE_PROJECT_NAME, "windows-sql-cloud");
     RAW_KEY = Util.getBase64EncodedKey();
@@ -99,14 +101,16 @@ public class SnippetsIT {
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("my-new-test-instance", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstances("encrypted-test-instance", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstances("test-instance-with-ssd", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstanceTemplates("test-inst-temp-regional", PROJECT_ID);
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
     compute.CreateEncryptedInstance
         .createEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
+    CreateRegionalInstanceTemplate
+        .createRegionalInstanceTemplate(PROJECT_ID, REGION, REGIONAL_LOCATION_NAME);
 
     TimeUnit.SECONDS.sleep(30);
 
@@ -132,6 +136,8 @@ public class SnippetsIT {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
+    DeleteRegionalInstanceTemplate
+        .deleteRegionalInstanceTemplate(PROJECT_ID, REGION, REGIONAL_LOCATION_NAME);
 
     // Delete the Google Cloud Storage bucket created for usage reports.
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
@@ -211,7 +217,7 @@ public class SnippetsIT {
     OperationFuture<Operation, Operation> operation = instancesClient.deleteAsync(PROJECT_ID, ZONE,
         MACHINE_NAME_WAIT_FOR_OP);
     // Wait for the operation to complete.
-    operation.get(3, TimeUnit.MINUTES);
+    operation.get(5, TimeUnit.MINUTES);
     assertThat(stdOut.toString().contains("Operation Status: DONE"));
   }
 
@@ -256,4 +262,12 @@ public class SnippetsIT {
     Assert.assertTrue(stdOut.toString().contains("Page Number: 1"));
   }
 
+  @Test
+  public void testGetRegionalInstanceTemplate() throws IOException {
+    // Check if the instance was successfully created during the setup.
+    InstanceTemplate instanceTemplate = GetRegionalInstanceTemplate
+        .getRegionalInstanceTemplate(PROJECT_ID, REGION,
+        REGIONAL_LOCATION_NAME);
+    Assert.assertEquals(REGIONAL_LOCATION_NAME, instanceTemplate.getName());
+  }
 }

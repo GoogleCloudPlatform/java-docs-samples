@@ -41,7 +41,7 @@ public class DeleteServiceAccountKey {
       //Construct the service account email.
       //You can modify the ".iam.gserviceaccount.com" to match the service account name in which
       //you want to delete the key.
-      //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys?hl=en#deleting
+      //See, https://cloud.google.com/iam/docs/creating-managing-service-account-keys#deleting
 
       String accountEmail = String.format("%s@%s.iam.gserviceaccount.com", accountName, projectId);
 

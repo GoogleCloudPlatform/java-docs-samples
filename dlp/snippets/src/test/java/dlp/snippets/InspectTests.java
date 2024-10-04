@@ -147,6 +147,15 @@ public class InspectTests extends TestBase {
   }
 
   @Test
+  public void testInspectStringRep() throws Exception {
+    InspectStringRep.inspectString(
+        PROJECT_ID, "us-east1", "I'm Gary and my email is gary@example.com");
+
+    String output = bout.toString();
+    assertThat(output).contains("Info type: EMAIL_ADDRESS");
+  }
+
+  @Test
   public void testInspectWithCustomRegex() throws Exception {
     InspectWithCustomRegex.inspectWithCustomRegex(
         PROJECT_ID, "Patients MRN 444-5-22222", "[1-9]{3}-[1-9]{1}-[1-9]{5}");

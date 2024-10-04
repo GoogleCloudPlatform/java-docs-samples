@@ -114,7 +114,8 @@ public class DisksFromSourceIT {
     }
 
     // Create KMS Encrypted disk.
-    // The service account needs to have the cloudkms.cryptoKeyVersions.useToEncrypt
+    // The service account service-{PROJECT_ID}@compute-system.iam.gserviceaccount.com
+    // needs to have the cloudkms.cryptoKeyVersions.useToEncrypt
     // permission to execute this test.
     CRYPTO_KEY = createKmsKey();
     CreateKmsEncryptedDisk.createKmsEncryptedDisk(PROJECT_ID, ZONE, KMS_ENCRYPTED_DISK_NAME,
