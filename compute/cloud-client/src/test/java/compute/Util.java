@@ -20,7 +20,6 @@ import com.google.cloud.compute.v1.AggregatedListInstancesRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Instance;
-import com.google.cloud.compute.v1.Instance.Status;
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.InstanceTemplatesClient.ListPagedResponse;
@@ -68,7 +67,7 @@ public abstract class Util {
       if (!template.hasCreationTimestamp()) {
         continue;
       }
-      if (template.getName().contains(prefixToDelete)
+      if (containPrefixToDelete(template, prefixToDelete)
           && isCreatedBeforeThresholdTime(template.getCreationTimestamp())
           && template.isInitialized()) {
         DeleteInstanceTemplate.deleteInstanceTemplate(projectId, template.getName());
@@ -95,11 +94,11 @@ public abstract class Util {
         if (!instanceTemplate.hasCreationTimestamp() || !instanceTemplate.hasId()) {
           continue;
         }
-        if (containPrefixToDelete(instanceTemplate, prefixToDelete)
+        if (containPrefixToDeleteAndZone(instanceTemplate, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
             && instanceTemplate.isInitialized()) {
           DeleteRegionalInstanceTemplate.deleteRegionalInstanceTemplate(
-              projectId, zone, instanceTemplate.getName());
+              projectId, region, instanceTemplate.getName());
         }
       }
     }
@@ -116,9 +115,8 @@ public abstract class Util {
         if (!instance.hasCreationTimestamp()) {
           continue;
         }
-        if (instance.getName().contains(prefixToDelete)
-            && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())
-            && instance.getStatus().equalsIgnoreCase(Status.RUNNING.toString())) {
+        if (containPrefixToDeleteAndZone(instance, prefixToDelete, instanceZone)
+            && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
           DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
         }
       }
@@ -222,37 +220,51 @@ public abstract class Util {
       String prefixToDelete, String projectId, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-      if (reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
-        System.out.println("No reservation found");
-      } else {
-        for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
-          if (containPrefixToDelete(reservation, prefixToDelete)
-              && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
-            DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
-          }
+      for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
+        if (containPrefixToDeleteAndZone(reservation, prefixToDelete, zone)
+            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
+          DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
         }
       }
     }
+  }
+
+  public static boolean containPrefixToDeleteAndZone(
+      Object resource, String prefixToDelete, String zone) {
+    boolean containPrefixAndZone = false;
+    try {
+      if (resource instanceof Instance) {
+        containPrefixAndZone = ((Instance) resource).getName().contains(prefixToDelete)
+            && ((Instance) resource).getZone().contains(zone);
+      }
+      if (resource instanceof InstanceTemplate) {
+        containPrefixAndZone = ((InstanceTemplate) resource).getName().contains(prefixToDelete)
+            && ((InstanceTemplate) resource).getRegion()
+            .contains(zone.substring(0, zone.lastIndexOf('-')));
+      }
+      if (resource instanceof Reservation) {
+        containPrefixAndZone = ((Reservation) resource).getName().contains(prefixToDelete)
+            && ((Reservation) resource).getZone().contains(zone);
+      }
+      if (resource instanceof Disk) {
+        containPrefixAndZone = ((Disk) resource).getName().contains(prefixToDelete)
+            && ((Disk) resource).getZone().contains(zone);
+      }
+    } catch (NullPointerException e) {
+      System.err.println("Resource not found, skipping deletion:");
+    }
+    return containPrefixAndZone;
   }
 
   public static boolean containPrefixToDelete(
       Object resource, String prefixToDelete) {
     boolean containPrefixToDelete = false;
     try {
-      if (resource instanceof Instance) {
-        containPrefixToDelete = ((Instance) resource).getName().contains(prefixToDelete);
-      }
       if (resource instanceof InstanceTemplate) {
         containPrefixToDelete = ((InstanceTemplate) resource).getName().contains(prefixToDelete);
       }
-      if (resource instanceof Reservation) {
-        containPrefixToDelete = ((Reservation) resource).getName().contains(prefixToDelete);
-      }
       if (resource instanceof Snapshot) {
         containPrefixToDelete = ((Snapshot) resource).getName().contains(prefixToDelete);
-      }
-      if (resource instanceof Disk) {
-        containPrefixToDelete = ((Disk) resource).getName().contains(prefixToDelete);
       }
     } catch (NullPointerException e) {
       System.err.println("Resource not found, skipping deletion:");
