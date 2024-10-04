@@ -49,7 +49,7 @@ public abstract class Util {
   // resources
   // and delete the listed resources based on the timestamp.
 
-  private static final int DELETION_THRESHOLD_TIME_HOURS = 5;
+  private static final int DELETION_THRESHOLD_TIME_MINUTES = 25;
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
   private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
@@ -61,9 +61,6 @@ public abstract class Util {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
       ListPagedResponse templates = instanceTemplatesClient.list(projectId);
       for (InstanceTemplate instanceTemplate : templates.iterateAll()) {
-        if (!instanceTemplate.hasCreationTimestamp() || !instanceTemplate.hasId()) {
-          continue;
-        }
         if (containPrefixToDelete(instanceTemplate, prefixToDelete)
             && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
             && instanceTemplate.isInitialized()) {
@@ -89,14 +86,11 @@ public abstract class Util {
 
       for (InstanceTemplate instanceTemplate :
           instanceTemplatesClient.list(request).iterateAll()) {
-        if (!instanceTemplate.hasCreationTimestamp() || !instanceTemplate.hasId()) {
-          continue;
-        }
-        if (containPrefixToDelete(instanceTemplate, prefixToDelete)
+        if (containPrefixToDeleteAndZone(instanceTemplate, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
             && instanceTemplate.isInitialized()) {
           DeleteRegionalInstanceTemplate.deleteRegionalInstanceTemplate(
-              projectId, zone, instanceTemplate.getName());
+              projectId, region, instanceTemplate.getName());
         }
       }
     }
@@ -109,15 +103,12 @@ public abstract class Util {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (InstancesClient instancesClient = InstancesClient.create()) {
       for (Instance instance : instancesClient.list(projectId, instanceZone).iterateAll()) {
-        if (!instance.hasCreationTimestamp() || !instance.hasId()) {
-          continue;
-        }
         if (instance.getDeletionProtection()
             && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
           SetDeleteProtection.setDeleteProtection(
               projectId, instanceZone, instance.getName(), false);
         }
-        if (containPrefixToDelete(instance, prefixToDelete)
+        if (containPrefixToDeleteAndZone(instance, prefixToDelete, instanceZone)
             && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
           DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
         }
@@ -127,7 +118,7 @@ public abstract class Util {
 
   public static boolean isCreatedBeforeThresholdTime(String timestamp) {
     return OffsetDateTime.parse(timestamp).toInstant()
-        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.HOURS));
+        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_MINUTES, ChronoUnit.MINUTES));
   }
 
   public static String getBase64EncodedKey() {
@@ -188,20 +179,16 @@ public abstract class Util {
     return val;
   }
 
-  // Delete reservations which starts with the given prefixToDelete and
+  // Delete reservation which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
   public static void cleanUpExistingReservations(
       String prefixToDelete, String projectId, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-      if (reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
-        System.out.println("No reservation found");
-      } else {
-        for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
-          if (containPrefixToDeleteAndZone(reservation, prefixToDelete, zone)
-              && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
-            DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
-          }
+      for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
+        if (containPrefixToDeleteAndZone(reservation, prefixToDelete, zone)
+            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
+          DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
         }
       }
     }
