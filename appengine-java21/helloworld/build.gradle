@@ -3,7 +3,7 @@ apply plugin: 'war'
 
 buildscript {
     repositories {
-        // gretty plugin is published to Maven Central
+        // gretty plugin is in Maven Central
         mavenCentral()
     }
     dependencies {
