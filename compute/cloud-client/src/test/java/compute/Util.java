@@ -53,7 +53,7 @@ public abstract class Util {
   // resources
   // and delete the listed resources based on the timestamp.
 
-  private static final int DELETION_THRESHOLD_TIME_HOURS = 30;
+  private static final int DELETION_THRESHOLD_TIME_MINUTES = 30;
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
   private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
@@ -122,7 +122,7 @@ public abstract class Util {
 
   public static boolean isCreatedBeforeThresholdTime(String timestamp) {
     return OffsetDateTime.parse(timestamp).toInstant()
-        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.MINUTES));
+        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_MINUTES, ChronoUnit.MINUTES));
   }
 
   public static String getBase64EncodedKey() {
@@ -253,7 +253,7 @@ public abstract class Util {
             && ((StoragePool) resource).getZone().contains(zone);
       }
     } catch (NullPointerException e) {
-      System.err.println("Resource not found, skipping deletion:");
+      System.out.println("Resource not found, skipping deletion:");
     }
     return containPrefixAndZone;
   }
@@ -269,7 +269,7 @@ public abstract class Util {
         containPrefixToDelete = ((Snapshot) resource).getName().contains(prefixToDelete);
       }
     } catch (NullPointerException e) {
-      System.err.println("Resource not found, skipping deletion:");
+      System.out.println("Resource not found, skipping deletion:");
     }
     return containPrefixToDelete;
   }
