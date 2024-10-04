@@ -60,9 +60,7 @@ public class CrudOperationReservationIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingReservations("test-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-", PROJECT_ID, "us-west1-a");
-    Util.cleanUpExistingReservations("test-", PROJECT_ID, "asia-south1-a");
+    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
 
     RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
     CreateReservation.createReservation(
