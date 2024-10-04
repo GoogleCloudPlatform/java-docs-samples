@@ -100,7 +100,6 @@ public class CustomMachineTypeIT {
     System.setOut(out);
   }
 
-
   @AfterAll
   public static void cleanup()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
