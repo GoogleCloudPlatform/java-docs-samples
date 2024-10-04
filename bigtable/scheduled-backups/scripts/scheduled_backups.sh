@@ -1,5 +1,5 @@
 #!/bin/bash
-#    Copyright 2020 Google LLC.
+#    Copyright 2020 Google LLC
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ case $COMMAND in
     exit
     ;;
 
-create-schedule) 
+create-schedule)
 
   JSON_FMT='{"projectId":"%s", "instanceId":"%s", "tableId":"%s", "clusterId":"%s", "expireHours":%d}'
   SCHEDULE_MESSAGE_BODY="$(printf "$JSON_FMT" "$PROJECT_ID" "$BIGTABLE_INSTANCE_ID" "$BIGTABLE_BACKUP_TABLE_NAME" "$BIGTABLE_BACKUP_CLUSTER_ID" "$BIGTABLE_BACKUP_EXPIRE_HOURS")"
@@ -58,7 +58,7 @@ create-schedule)
 
   ;;
 
-update-schedule) 
+update-schedule)
 
   JSON_FMT='{"projectId":"%s", "instanceId":"%s", "tableId":"%s", "clusterId":"%s", "expireHours":%d}'
   SCHEDULE_MESSAGE_BODY="$(printf "$JSON_FMT" "$PROJECT_ID"
@@ -72,7 +72,7 @@ update-schedule)
     --project "$PROJECT_ID"
   ;;
 
-deploy-backup-function)  
+deploy-backup-function)
 
   gcloud functions deploy "$FUNCTION_CREATE_BACKUP_NAME" \
     --entry-point "$FUNCTION_CREATE_BACKUP_CLASS" \
@@ -80,7 +80,7 @@ deploy-backup-function)
     --runtime "$FUNCTION_RUNTIME" \
     --service-account "$SERVICE_ACCOUNT" \
     --project "$PROJECT_ID"
-    
+
   ;;
 
 add-metrics)
