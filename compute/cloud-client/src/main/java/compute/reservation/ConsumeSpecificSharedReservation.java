@@ -90,7 +90,7 @@ public class ConsumeSpecificSharedReservation {
 
       // Wait for the create reservation operation to complete.
       Operation response =
-          reservationsClient.insertAsync(projectId, zone, reservation).get(4, TimeUnit.MINUTES);
+          reservationsClient.insertAsync(projectId, zone, reservation).get(3, TimeUnit.MINUTES);
       System.out.println(response.getStatus());
       if (response.hasError()) {
         System.out.println("Reservation creation failed!" + response);

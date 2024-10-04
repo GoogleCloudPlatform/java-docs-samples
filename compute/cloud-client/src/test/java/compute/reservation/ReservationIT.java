@@ -66,7 +66,7 @@ public class ReservationIT {
   private static String RESERVATION_NAME;
   private static String RESERVATION_NAME_GLOBAL;
   private static String RESERVATION_NAME_REGIONAL;
-  private static String SHARED_RESERVATION_NAME;
+  private static String RESERVATION_SHARED_NAME;
   private static String GLOBAL_INSTANCE_TEMPLATE_URI;
   private static String REGIONAL_INSTANCE_TEMPLATE_URI;
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
@@ -109,7 +109,7 @@ public class ReservationIT {
     RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
-    SHARED_RESERVATION_NAME = "test-shared-reserv-" + UUID.randomUUID();
+    RESERVATION_SHARED_NAME = "test-shared-reserv-" + UUID.randomUUID();
 
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
         PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
@@ -157,7 +157,7 @@ public class ReservationIT {
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
-    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, SHARED_RESERVATION_NAME);
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_SHARED_NAME);
 
     // Test that reservations are deleted
     Assertions.assertThrows(
@@ -251,21 +251,21 @@ public class ReservationIT {
   public void testConsumeSpecificSharedReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     ConsumeSpecificSharedReservation.createReservation(PROJECT_ID,
-        SHARED_RESERVATION_NAME, NUMBER_OF_VMS, ZONE,
+        RESERVATION_SHARED_NAME, NUMBER_OF_VMS, ZONE,
         MACHINE_TYPE, MIN_CPU_PLATFORM, true);
 
-    Assert.assertEquals(SHARED_RESERVATION_NAME,
-        reservationsClient.get(PROJECT_ID, ZONE, SHARED_RESERVATION_NAME).getName());
+    Assert.assertEquals(RESERVATION_SHARED_NAME,
+        reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_SHARED_NAME).getName());
 
     ConsumeSpecificSharedReservation.createInstance(
         PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME, MACHINE_TYPE,
-        MIN_CPU_PLATFORM, SHARED_RESERVATION_NAME);
+        MIN_CPU_PLATFORM, RESERVATION_SHARED_NAME);
 
     // Verify that the instance was created with the correct reservation and consumeReservationType
     Instance instance = instancesClient.get(PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME);
 
     Assert.assertTrue(instance.getReservationAffinity()
-        .getValuesList().get(0).contains(SHARED_RESERVATION_NAME));
+        .getValuesList().get(0).contains(RESERVATION_SHARED_NAME));
     Assert.assertEquals(SPECIFIC_RESERVATION.toString(),
         instance.getReservationAffinity().getConsumeReservationType());
   }
