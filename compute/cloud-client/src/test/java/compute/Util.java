@@ -65,9 +65,6 @@ public abstract class Util {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
       ListPagedResponse templates = instanceTemplatesClient.list(projectId);
       for (InstanceTemplate instanceTemplate : templates.iterateAll()) {
-        if (!instanceTemplate.hasCreationTimestamp() || !instanceTemplate.hasId()) {
-          continue;
-        }
         if (containPrefixToDelete(instanceTemplate, prefixToDelete)
             && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
             && instanceTemplate.isInitialized()) {
@@ -93,9 +90,6 @@ public abstract class Util {
 
       for (InstanceTemplate instanceTemplate :
           instanceTemplatesClient.list(request).iterateAll()) {
-        if (!instanceTemplate.hasCreationTimestamp() || !instanceTemplate.hasId()) {
-          continue;
-        }
         if (containPrefixToDeleteAndZone(instanceTemplate, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
             && instanceTemplate.isInitialized()) {
@@ -113,9 +107,6 @@ public abstract class Util {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (InstancesClient instancesClient = InstancesClient.create()) {
       for (Instance instance : instancesClient.list(projectId, instanceZone).iterateAll()) {
-        if (!instance.hasCreationTimestamp() || !instance.hasId()) {
-          continue;
-        }
         if (instance.getDeletionProtection()
             && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
           SetDeleteProtection.setDeleteProtection(
