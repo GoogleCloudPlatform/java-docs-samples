@@ -161,7 +161,8 @@ public class WindowsOsImageIT {
   }
 
   @Test
-  public void testUnforcedCreateImage() {
+  public void testUnforcedCreateImage()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Assertions.assertThrows(
         IllegalStateException.class,
         () -> CreateImage.createImage(
