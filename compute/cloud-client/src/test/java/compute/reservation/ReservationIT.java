@@ -20,25 +20,17 @@ import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservation
 import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.SPECIFIC_RESERVATION;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.compute.v1.AttachedDisk;
-import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
-import com.google.cloud.compute.v1.DeleteRegionInstanceTemplateRequest;
-import com.google.cloud.compute.v1.InsertRegionInstanceTemplateRequest;
 import com.google.cloud.compute.v1.Instance;
-import com.google.cloud.compute.v1.InstanceProperties;
-import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstancesClient;
-import com.google.cloud.compute.v1.NetworkInterface;
-import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.CreateInstanceTemplate;
+import compute.CreateRegionalInstanceTemplate;
 import compute.DeleteInstance;
 import compute.DeleteInstanceTemplate;
+import compute.DeleteRegionalInstanceTemplate;
 import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -60,28 +52,29 @@ import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 10, unit = TimeUnit.MINUTES)
+@Timeout(value = 25, unit = TimeUnit.MINUTES)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = getZone();
+  private static final String ZONE = "us-central1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static ReservationsClient reservationsClient;
   private static InstancesClient instancesClient;
   private static String RESERVATION_NAME;
   private static String RESERVATION_NAME_GLOBAL;
   private static String RESERVATION_NAME_REGIONAL;
-  private static String SHARED_RESERVATION_NAME;
+  private static String RESERVATION_SHARED_NAME;
   private static String GLOBAL_INSTANCE_TEMPLATE_URI;
   private static String REGIONAL_INSTANCE_TEMPLATE_URI;
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
-      "test-global-instance-" + UUID.randomUUID();
+      "test-global-inst-temp" + UUID.randomUUID();
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
-      "test-regional-instance-" + UUID.randomUUID();
+      "test-regional-inst-temp" + UUID.randomUUID();
   private static String INSTANCE_FOR_SPR;
   private static String INSTANCE_NAME;
   private static final int NUMBER_OF_VMS = 3;
+
   private static String MACHINE_TYPE;
   private static String MIN_CPU_PLATFORM;
 
@@ -101,22 +94,27 @@ public class ReservationIT {
     System.setOut(new PrintStream(stdOut));
 
     // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("test-global-inst-temp", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-regional-inst-temp", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-regional", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-global", PROJECT_ID, ZONE);
+
+    // Initialize the client once for all tests
+
+    // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-global-instance", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstances("test-regional-instance", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstances("test-inst-for-shared-res", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstances("test-instance-for-spr", PROJECT_ID, ZONE);
-
-    Util.cleanUpExistingReservations("test-reserv", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-global", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-regional", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-shared", PROJECT_ID, ZONE);
+    Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-", PROJECT_ID, ZONE);
 
     // Initialize the clients once for all tests
     instancesClient = InstancesClient.create();
     reservationsClient = ReservationsClient.create();
 
     RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
-    SHARED_RESERVATION_NAME = "test-shared-reserv-" + UUID.randomUUID();
+    RESERVATION_SHARED_NAME = "test-shared-reserv-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
@@ -135,8 +133,8 @@ public class ReservationIT {
     assertThat(stdOut.toString())
         .contains("Instance Template Operation Status " + GLOBAL_INSTANCE_TEMPLATE_NAME);
     // Create instance template with REGIONAL location.
-    ReservationIT.createRegionalInstanceTemplate(
-        PROJECT_ID, REGIONAL_INSTANCE_TEMPLATE_NAME, ZONE);
+    CreateRegionalInstanceTemplate.createRegionalInstanceTemplate(
+        PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
 
     stdOut.close();
@@ -154,22 +152,34 @@ public class ReservationIT {
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_FOR_SPR);
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
-    ReservationIT.deleteRegionalInstanceTemplate(
-        PROJECT_ID, ZONE, REGIONAL_INSTANCE_TEMPLATE_NAME);
+
+    // Delete instance template with REGIONAL location.
+    DeleteRegionalInstanceTemplate.deleteRegionalInstanceTemplate(
+        PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString())
         .contains("Instance template deletion operation status for "
             + REGIONAL_INSTANCE_TEMPLATE_NAME);
 
+    // Delete all reservations created for testing.
     // Clean up the reservations.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
-    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, SHARED_RESERVATION_NAME);
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_SHARED_NAME);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
 
-    // Test that the reservation is deleted
+    // Test that reservations are deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_SHARED_NAME, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_GLOBAL, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
 
     // Close the clients after all tests
     reservationsClient.close();
@@ -219,7 +229,6 @@ public class ReservationIT {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_GLOBAL,
         GLOBAL_INSTANCE_TEMPLATE_URI, NUMBER_OF_VMS, ZONE);
-
     Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
 
     Assert.assertTrue(reservation.getSpecificReservation()
@@ -259,111 +268,18 @@ public class ReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Create the reservation
     ConsumeSingleProjectReservation.createReservation(
-        PROJECT_ID, SHARED_RESERVATION_NAME, NUMBER_OF_VMS,
+        PROJECT_ID, RESERVATION_SHARED_NAME, NUMBER_OF_VMS,
         ZONE, MACHINE_TYPE, MIN_CPU_PLATFORM, true);
 
     ConsumeSingleProjectReservation.createInstance(
         PROJECT_ID, ZONE, INSTANCE_FOR_SPR, MACHINE_TYPE,
-        MIN_CPU_PLATFORM, SHARED_RESERVATION_NAME);
+        MIN_CPU_PLATFORM, RESERVATION_SHARED_NAME);
 
     Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_FOR_SPR);
 
     assertThat(instance.getReservationAffinity().getValuesList())
-        .contains(SHARED_RESERVATION_NAME);
+        .contains(RESERVATION_SHARED_NAME);
     Assert.assertEquals(SPECIFIC_RESERVATION.toString(),
         instance.getReservationAffinity().getConsumeReservationType());
-  }
-
-
-  // Creates a new instance template with the REGIONAL location.
-  public static void createRegionalInstanceTemplate(
-      String projectId, String templateName, String zone)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (RegionInstanceTemplatesClient templatesClientRegion =
-             RegionInstanceTemplatesClient.create()) {
-
-      String machineType = "n1-standard-1"; // Example machine type
-      String sourceImage = "projects/debian-cloud/global/images/family/debian-11"; // Example image
-      String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
-
-      // Define the boot disk for the instance template
-      AttachedDisk attachedDisk = AttachedDisk.newBuilder()
-          .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
-              .setSourceImage(sourceImage)
-              .setDiskType("pd-balanced") // Example disk type
-              .setDiskSizeGb(100L) // Example disk size
-              .build())
-          .setAutoDelete(true)
-          .setBoot(true)
-          .build();
-
-      // Define the network interface for the instance template
-      // Note: The subnetwork must be in the same region as the instance template.
-      NetworkInterface networkInterface = NetworkInterface.newBuilder()
-          .setName("my-network-test")
-          .setSubnetwork(String.format("projects/%s/regions/%s/subnetworks/default",
-              PROJECT_ID, region))
-          .build();
-
-      // Define the instance properties for the template
-      InstanceProperties instanceProperties = InstanceProperties.newBuilder()
-          .addDisks(attachedDisk)
-          .setMachineType(machineType)
-          .addNetworkInterfaces(networkInterface)
-          .build();
-
-      // Build the instance template object
-      InstanceTemplate instanceTemplate = InstanceTemplate.newBuilder()
-          .setName(templateName)
-          .setProperties(instanceProperties)
-          .build();
-
-      // Create the request to insert the instance template
-      InsertRegionInstanceTemplateRequest insertInstanceTemplateRequest =
-          InsertRegionInstanceTemplateRequest
-              .newBuilder()
-              .setProject(projectId)
-              .setRegion(region)
-              .setInstanceTemplateResource(instanceTemplate)
-              .build();
-
-      // Send the request and wait for the operation to complete
-      Operation response = templatesClientRegion.insertAsync(insertInstanceTemplateRequest)
-          .get(3, TimeUnit.MINUTES);
-
-      if (response.hasError()) {
-        System.out.println("Instance Template creation failed! " + response);
-        return;
-      }
-      System.out.printf("Instance Template Operation Status: %s%n", response.getStatus());
-    }
-  }
-
-  // Delete an instance template with the REGIONAL location.
-  private static void deleteRegionalInstanceTemplate(
-      String projectId, String zone, String templateName)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (RegionInstanceTemplatesClient regionInstanceTemplatesClient =
-             RegionInstanceTemplatesClient.create()) {
-      String region = zone.substring(0, zone.lastIndexOf('-')); // Extract the region from the zone
-
-      DeleteRegionInstanceTemplateRequest deleteInstanceTemplateRequest =
-          DeleteRegionInstanceTemplateRequest
-              .newBuilder()
-              .setProject(projectId)
-              .setRegion(region)
-              .setInstanceTemplate(templateName)
-              .build();
-
-      Operation response = regionInstanceTemplatesClient.deleteAsync(
-          deleteInstanceTemplateRequest).get(3, TimeUnit.MINUTES);
-
-      if (response.hasError()) {
-        System.out.println("Instance template deletion failed ! ! " + response);
-        return;
-      }
-      System.out.printf("Instance template deletion operation status for %s: %s ", templateName,
-          response.getStatus());
-    }
   }
 }

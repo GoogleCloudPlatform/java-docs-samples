@@ -17,7 +17,6 @@
 package compute;
 
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.Disk;
