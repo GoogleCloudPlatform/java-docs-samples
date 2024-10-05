@@ -18,6 +18,7 @@ package compute;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.AggregatedListInstancesRequest;
+import com.google.cloud.compute.v1.DeleteStoragePoolRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Instance;
@@ -29,9 +30,12 @@ import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.InstancesClient.AggregatedListPagedResponse;
 import com.google.cloud.compute.v1.InstancesScopedList;
 import com.google.cloud.compute.v1.ListInstanceTemplatesRequest;
+import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
+import com.google.cloud.compute.v1.StoragePool;
+import com.google.cloud.compute.v1.StoragePoolsClient;
 import compute.reservation.DeleteReservation;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -43,6 +47,7 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 
@@ -204,6 +209,39 @@ public abstract class Util {
           }
         }
       }
+    }
+  }
+
+  public static void cleanUpExistingStoragePool(
+      String prefixToDelete, String projectId, String zone)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (StoragePoolsClient storagePoolsClient = StoragePoolsClient.create()) {
+      for (StoragePool storagePool : storagePoolsClient.list(projectId, zone).iterateAll()) {
+        if (storagePool.getName().contains(prefixToDelete)
+            && isCreatedBeforeThresholdTime(storagePool.getCreationTimestamp())) {
+          deleteStoragePool(projectId, zone, storagePool.getName());
+        }
+      }
+    }
+  }
+
+  public static void deleteStoragePool(String project, String zone, String storagePoolName)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (StoragePoolsClient storagePoolsClient = StoragePoolsClient.create()) {
+      DeleteStoragePoolRequest request =
+          DeleteStoragePoolRequest.newBuilder()
+              .setProject(project)
+              .setZone(zone)
+              .setStoragePool(storagePoolName)
+              .build();
+      Operation operation = storagePoolsClient.deleteAsync(request).get(1, TimeUnit.MINUTES);
+      if (operation.hasError()) {
+        System.out.println("StoragePool deletion failed!");
+        throw new Error(operation.getError().toString());
+      }
+      // Wait for server update
+      TimeUnit.SECONDS.sleep(50);
+      System.out.println("Deleted storage pool: " + storagePoolName);
     }
   }
 }
