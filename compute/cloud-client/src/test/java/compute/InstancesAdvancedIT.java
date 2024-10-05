@@ -27,9 +27,7 @@ import com.google.cloud.compute.v1.Instance.Status;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -37,9 +35,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -61,10 +57,9 @@ public class InstancesAdvancedIT {
   private static Disk TEST_DISK;
   private static Image TEST_IMAGE;
   private static Snapshot TEST_SNAPSHOT;
-  private static String NETWORK_NAME;
-  private static String SUBNETWORK_NAME;
-
-  private ByteArrayOutputStream stdOut;
+  private static final String NETWORK_NAME = "global/networks/default";
+  private static final String SUBNETWORK_NAME = String.format("regions/%s/subnetworks/default",
+      ZONE.substring(0, ZONE.length() - 2));
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -75,9 +70,6 @@ public class InstancesAdvancedIT {
   @BeforeAll
   public static void setup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
@@ -89,10 +81,6 @@ public class InstancesAdvancedIT {
     MACHINE_NAME_SNAPSHOT_ADDITIONAL = "test-inst-advanc-snapa-" + uuid;
     MACHINE_NAME_SUBNETWORK = "test-inst-advanc-subnet-" + uuid;
     MACHINE_NAME_EXISTING_DISK = "test-inst-advanc-exis" + uuid;
-    NETWORK_NAME = "global/networks/default";
-    SUBNETWORK_NAME = String.format("regions/%s/subnetworks/default",
-        ZONE.substring(0, ZONE.length() - 2));
-
     TEST_DISK = createSourceDisk();
     TEST_SNAPSHOT = createSnapshot(TEST_DISK);
     TEST_IMAGE = createImage(TEST_DISK);
@@ -117,16 +105,11 @@ public class InstancesAdvancedIT {
         MACHINE_NAME_EXISTING_DISK, List.of(TEST_DISK.getName()));
 
     TimeUnit.SECONDS.sleep(60);
-    stdOut.close();
-    System.setOut(out);
   }
 
   @AfterAll
   public static void cleanup()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
     // Delete all instances created for testing.
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_PUBLIC_IMAGE);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_CUSTOM_IMAGE);
@@ -139,9 +122,6 @@ public class InstancesAdvancedIT {
     deleteImage(TEST_IMAGE);
     deleteSnapshot(TEST_SNAPSHOT);
     deleteDisk(TEST_DISK);
-
-    stdOut.close();
-    System.setOut(out);
   }
 
   private static Image getActiveDebian()
@@ -225,19 +205,6 @@ public class InstancesAdvancedIT {
           image.getName());
       operation.get(3, TimeUnit.MINUTES);
     }
-  }
-
-
-  @BeforeEach
-  public void beforeEach() {
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-  }
-
-  @AfterEach
-  public void afterEach() {
-    stdOut = null;
-    System.setOut(null);
   }
 
   @Test
