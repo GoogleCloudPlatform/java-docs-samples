@@ -16,7 +16,7 @@
 
 package compute.reservation;
 
-import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.SPECIFIC_RESERVATION;
+import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.NO_RESERVATION;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
@@ -63,18 +63,16 @@ public class ReservationIT {
   private static InstancesClient instancesClient;
   private static String RESERVATION_NAME_GLOBAL;
   private static String RESERVATION_NAME_REGIONAL;
-  private static String RESERVATION_SHARED_NAME;
   private static String GLOBAL_INSTANCE_TEMPLATE_URI;
   private static String REGIONAL_INSTANCE_TEMPLATE_URI;
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
       "test-global-inst-temp-" + UUID.randomUUID();
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
       "test-regional-inst-temp-" + UUID.randomUUID();
-  private static final String SPECIFIC_SHARED_INSTANCE_NAME =
-      "test-shared-instance-" + UUID.randomUUID();
+  private static final String INSTANCE_NOT_CONSUME_RESERVATION_NAME =
+      "test-instance-not-consume" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
   private static final String MACHINE_TYPE = "n2-standard-32";
-  private static final String MIN_CPU_PLATFORM = "Intel Cascade Lake";
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
@@ -104,7 +102,6 @@ public class ReservationIT {
 
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
-    RESERVATION_SHARED_NAME = "test-shared-reserv-" + UUID.randomUUID();
 
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
         PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
@@ -145,13 +142,11 @@ public class ReservationIT {
         .contains("Instance template deletion operation status for "
             + REGIONAL_INSTANCE_TEMPLATE_NAME);
 
-    // Delete instance created for consume shared reservation.
-    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME);
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
 
     // Delete all reservations created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
-    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_SHARED_NAME);
 
     // Test that reservations are deleted
     Assertions.assertThrows(
@@ -211,25 +206,17 @@ public class ReservationIT {
   }
 
   @Test
-  public void testConsumeSpecificSharedReservation()
+  public void testCreateInstanceNotConsumeReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    ConsumeSpecificSharedReservation.createReservation(PROJECT_ID,
-        RESERVATION_SHARED_NAME, NUMBER_OF_VMS, ZONE,
-        MACHINE_TYPE, MIN_CPU_PLATFORM, true);
 
-    Assert.assertEquals(RESERVATION_SHARED_NAME,
-        reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_SHARED_NAME).getName());
-
-    ConsumeSpecificSharedReservation.createInstance(
-        PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME, MACHINE_TYPE,
-        MIN_CPU_PLATFORM, RESERVATION_SHARED_NAME);
+    CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
+        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
 
     // Verify that the instance was created with the correct reservation and consumeReservationType
-    Instance instance = instancesClient.get(PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME);
+    Instance instance = instancesClient.get(
+        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
 
-    Assert.assertTrue(instance.getReservationAffinity()
-        .getValuesList().get(0).contains(RESERVATION_SHARED_NAME));
-    Assert.assertEquals(SPECIFIC_RESERVATION.toString(),
+    Assert.assertEquals(NO_RESERVATION.toString(),
         instance.getReservationAffinity().getConsumeReservationType());
   }
 }
