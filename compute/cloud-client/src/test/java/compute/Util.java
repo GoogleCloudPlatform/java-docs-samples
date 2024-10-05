@@ -90,14 +90,11 @@ public abstract class Util {
 
       for (InstanceTemplate instanceTemplate :
           instanceTemplatesClient.list(request).iterateAll()) {
-        if (!instanceTemplate.hasCreationTimestamp() || !instanceTemplate.hasId()) {
-          continue;
-        }
         if (containPrefixToDeleteAndZone(instanceTemplate, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
             && instanceTemplate.isInitialized()) {
           DeleteRegionalInstanceTemplate.deleteRegionalInstanceTemplate(
-              projectId, zone, instanceTemplate.getName());
+              projectId, region, instanceTemplate.getName());
         }
       }
     }
@@ -196,9 +193,6 @@ public abstract class Util {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
       for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
-        if (!reservationsClient.list(projectId, zone).iterateAll().iterator().hasNext()) {
-          break;
-        }
         if (containPrefixToDeleteAndZone(reservation, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
           DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
@@ -233,7 +227,7 @@ public abstract class Util {
             && ((StoragePool) resource).getZone().contains(zone);
       }
     } catch (NullPointerException e) {
-      System.err.println("Resource not found, skipping deletion:");
+      System.out.println("Resource not found, skipping deletion:");
     }
     return containPrefixAndZone;
   }
@@ -249,7 +243,7 @@ public abstract class Util {
         containPrefixToDelete = ((Snapshot) resource).getName().contains(prefixToDelete);
       }
     } catch (NullPointerException e) {
-      System.err.println("Resource not found, skipping deletion:");
+      System.out.println("Resource not found, skipping deletion:");
     }
     return containPrefixToDelete;
   }

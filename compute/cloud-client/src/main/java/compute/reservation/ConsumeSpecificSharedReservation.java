@@ -20,7 +20,6 @@ package compute.reservation;
 
 import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.SPECIFIC_RESERVATION;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationReservedInstanceProperties;
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.AttachedDisk;
@@ -169,11 +168,9 @@ public class ConsumeSpecificSharedReservation {
           .setInstanceResource(instanceResource)
           .build();
 
-      OperationFuture<Operation, Operation> operation = instancesClient.insertAsync(
-          insertInstanceRequest);
-
       // Wait for the operation to complete.
-      Operation response = operation.get(3, TimeUnit.MINUTES);
+      Operation response = instancesClient.insertAsync(
+          insertInstanceRequest).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);
