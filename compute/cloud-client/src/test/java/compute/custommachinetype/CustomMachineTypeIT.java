@@ -86,9 +86,6 @@ public class CustomMachineTypeIT {
 
     instancesClient = InstancesClient.create();
 
-    // Clean up existing stale resources.
-    Util.cleanUpExistingInstances("cmt-test-", PROJECT_ID, ZONE);
-
     String randomUUID = UUID.randomUUID().toString().split("-")[0];
     CUSTOM_MACHINE_TYPE_INSTANCE = "cmt-test-" + randomUUID;
     CUSTOM_MACHINE_TYPE_INSTANCE_WITH_HELPER = "cmt-test-with-helper" + randomUUID;
@@ -96,6 +93,9 @@ public class CustomMachineTypeIT {
     CUSTOM_MACHINE_TYPE_INSTANCE_WITHOUT_HELPER = "cmt-test-without-helper" + randomUUID;
     EXTRA_MEM_INSTANCE_WITHOUT_HELPER = "cmt-test-extra-mem-without-helper" + randomUUID;
     CUSTOM_MACHINE_TYPE_INSTANCE_EXT_MEMORY = "cmt-test-ext-mem" + randomUUID;
+
+    // Clean up existing stale resources.
+    Util.cleanUpExistingInstances("cmt-test-", PROJECT_ID, ZONE);
 
     stdOut.close();
     System.setOut(out);

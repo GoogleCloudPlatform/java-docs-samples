@@ -68,9 +68,6 @@ public class CreatingManagingWindowsInstancesIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    // Cleanup existing test instances.
-    Util.cleanUpExistingInstances("windows-test-instance", PROJECT_ID, ZONE);
-
     String uuid = UUID.randomUUID().toString().split("-")[0];
     INSTANCE_NAME_EXTERNAL = "windows-test-instance-external-" + uuid;
     INSTANCE_NAME_INTERNAL = "windows-test-instance-internal-" + uuid;
@@ -79,6 +76,9 @@ public class CreatingManagingWindowsInstancesIT {
     SUBNETWORK_NAME = String.format("regions/%s/subnetworks/default",
         ZONE.substring(0, ZONE.length() - 2));
     ROUTE_NAME = "windows-test-route-" + uuid;
+
+    // Cleanup existing test instances.
+    Util.cleanUpExistingInstances("windows-test-instance", PROJECT_ID, ZONE);
 
     stdOut.close();
     System.setOut(out);

@@ -75,15 +75,15 @@ public class SnapshotsIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingSnapshots("gcloud-test-", PROJECT_ID);
-
     String uuid = UUID.randomUUID().toString().split("-")[0];
     DISK_NAME = "gcloud-test-disk-" + uuid;
     REGIONAL_DISK_NAME = "gcloud-regional-test-disk-" + uuid;
     SNAPSHOT_NAME = "gcloud-test-snapshot-" + uuid;
     SNAPSHOT_NAME_DELETE_BY_FILTER = "gcloud-test-snapshot-dbf-" + uuid;
     SNAPSHOT_NAME_REGIONAL = "gcloud-test-regional-snap-" + uuid;
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingSnapshots("gcloud-test-", PROJECT_ID);
 
     Image debianImage = null;
     try (ImagesClient imagesClient = ImagesClient.create()) {

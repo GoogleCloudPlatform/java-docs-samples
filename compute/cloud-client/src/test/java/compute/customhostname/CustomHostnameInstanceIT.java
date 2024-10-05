@@ -62,10 +62,11 @@ public class CustomHostnameInstanceIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    Util.cleanUpExistingInstances("my-custom-hostname-test-instance", PROJECT_ID, ZONE);
-
     INSTANCE_NAME = "my-custom-hostname-test-instance" + UUID.randomUUID().toString().split("-")[0];
     CUSTOM_HOSTNAME = "host.domain.com";
+
+    // Clean up existing stale resources.
+    Util.cleanUpExistingInstances("my-custom-hostname-test-instance", PROJECT_ID, ZONE);
 
     // Create Instance with a custom hostname.
     CreateInstanceWithCustomHostname.createInstanceWithCustomHostname(PROJECT_ID, ZONE,

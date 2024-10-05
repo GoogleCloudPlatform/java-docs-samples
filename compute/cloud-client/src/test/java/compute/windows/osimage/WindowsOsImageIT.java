@@ -121,12 +121,12 @@ public class WindowsOsImageIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("images-test-help-instance-", PROJECT_ID, ZONE);
-
     String randomUUID = UUID.randomUUID().toString().split("-")[0];
     testInstanceName = "images-test-help-instance-" + randomUUID;
     testImageName = "test-image-" + randomUUID;
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("images-test-help-instance-", PROJECT_ID, ZONE);
 
     // Create a VM with a smallest possible disk that can be used for testing
     Assert.assertTrue("Failed to setup instance for image create/delete testing",

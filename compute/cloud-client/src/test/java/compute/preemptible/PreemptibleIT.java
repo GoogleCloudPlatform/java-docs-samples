@@ -65,10 +65,10 @@ public class PreemptibleIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
+    INSTANCE_NAME = "preemptible-test-instance-" + UUID.randomUUID().toString().split("-")[0];
+
     // Cleanup existing test instances.
     Util.cleanUpExistingInstances("preemptible-test-instance", PROJECT_ID, ZONE);
-
-    INSTANCE_NAME = "preemptible-test-instance-" + UUID.randomUUID().toString().split("-")[0];
 
     // Create Instance with Preemptible setting.
     CreatePreemptibleInstance.createPremptibleInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
