@@ -21,13 +21,13 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.compute.v1.Instance;
+import com.google.cloud.compute.v1.InstanceTemplate;
+import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.CreateInstanceTemplate;
 import compute.CreateRegionalInstanceTemplate;
-import compute.DeleteInstance;
 import compute.DeleteInstanceTemplate;
 import compute.DeleteRegionalInstanceTemplate;
 import compute.Util;
@@ -39,7 +39,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -49,11 +48,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -61,6 +58,7 @@ public class ReservationIT {
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static ReservationsClient reservationsClient;
   private static InstancesClient instancesClient;
+  private static InstanceTemplatesClient templatesClient;
   private static String RESERVATION_NAME_GLOBAL;
   private static String RESERVATION_NAME_REGIONAL;
   private static String GLOBAL_INSTANCE_TEMPLATE_URI;
@@ -69,8 +67,8 @@ public class ReservationIT {
       "test-global-inst-temp-" + UUID.randomUUID();
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
       "test-regional-inst-temp-" + UUID.randomUUID();
-  private static final String INSTANCE_NOT_CONSUME_RESERVATION_NAME =
-      "test-instance-not-consume" + UUID.randomUUID();
+  private static final String TEMPLATE_NOT_CONSUME_RESERVATION_NAME =
+      "test-template-not-consume-" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
   private static final String MACHINE_TYPE = "n2-standard-32";
   private ByteArrayOutputStream stdOut;
@@ -91,7 +89,7 @@ public class ReservationIT {
     System.setOut(new PrintStream(stdOut));
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-shared-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstanceTemplates("test-template-not-consume", PROJECT_ID);
     Util.cleanUpExistingInstanceTemplates("test-global-inst-temp", PROJECT_ID);
     Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv-", PROJECT_ID, ZONE);
@@ -99,6 +97,7 @@ public class ReservationIT {
     // Initialize the clients once for all tests
     reservationsClient = ReservationsClient.create();
     instancesClient = InstancesClient.create();
+    templatesClient = InstanceTemplatesClient.create();
 
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
@@ -142,7 +141,7 @@ public class ReservationIT {
         .contains("Instance template deletion operation status for "
             + REGIONAL_INSTANCE_TEMPLATE_NAME);
 
-    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
+    DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
 
     // Delete all reservations created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
@@ -160,6 +159,7 @@ public class ReservationIT {
     // Close clients after all tests
     reservationsClient.close();
     instancesClient.close();
+    templatesClient.close();
 
     stdOut.close();
     System.setOut(out);
@@ -206,17 +206,16 @@ public class ReservationIT {
   }
 
   @Test
-  public void testCreateInstanceNotConsumeReservation()
+  public void testCreateTemplateNotConsumeReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-
-    CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
-        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
+    CreateTemplateNotConsumeReservation.createTemplateNotConsumeReservation(
+        PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
 
     // Verify that the instance was created with the correct reservation and consumeReservationType
-    Instance instance = instancesClient.get(
-        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
+    InstanceTemplate template = templatesClient.get(
+        PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
 
     Assert.assertEquals(NO_RESERVATION.toString(),
-        instance.getReservationAffinity().getConsumeReservationType());
+        template.getPropertiesOrBuilder().getReservationAffinity().getConsumeReservationType());
   }
 }
