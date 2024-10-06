@@ -43,17 +43,17 @@ public class ConsumeSpecificSharedReservation {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
-    // Name of the zone in which you want to create the reservation.
+    // Name of the zone the reservation is located.
     String zone = "us-central1-a";
-    // Name of the reservation you want to create.
+    // Name of the reservation you want to query.
     String reservationName = "YOUR_RESERVATION_NAME";
     // Name of the VM instance you want to query.
     String instanceName = "YOUR_INSTANCE_NAME";
-    // Number of instances in the reservation.
+    // Number of instances.
     int numberOfVms = 3;
-    // Machine type of the instances in the reservation.
+    // Machine type of the instances.
     String machineType = "n2-standard-32";
-    // Minimum CPU platform to be attached to the instances in the reservation.
+    // Minimum CPU platform of the instances.
     String minCpuPlatform = "Intel Cascade Lake";
     boolean specificReservationRequired = true;
 

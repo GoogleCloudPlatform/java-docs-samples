@@ -58,11 +58,11 @@ public class CrudOperationReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
 
-    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
     CreateReservation.createReservation(
         PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
   }
