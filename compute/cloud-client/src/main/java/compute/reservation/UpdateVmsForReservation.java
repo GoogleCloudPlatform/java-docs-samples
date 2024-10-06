@@ -44,7 +44,7 @@ public class UpdateVmsForReservation {
     updateVmsForReservation(projectId, zone, reservationName, numberOfVms);
   }
 
-  // Updates a reservation with new VM Capacity.
+  // Updates a reservation with new VM capacity.
   public static void updateVmsForReservation(
       String projectId, String zone, String reservationName, int numberOfVms)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
