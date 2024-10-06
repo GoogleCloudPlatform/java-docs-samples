@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,10 +39,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
+import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CrudOperationReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -89,7 +91,7 @@ public class CrudOperationReservationIT {
   }
 
   @Test
-  public void testGetReservation()
+  public void firstGetReservationTest()
       throws IOException {
     Reservation reservation = GetReservation.getReservation(
         PROJECT_ID, RESERVATION_NAME, ZONE);
@@ -99,7 +101,7 @@ public class CrudOperationReservationIT {
   }
 
   @Test
-  public void testListReservation() throws IOException {
+  public void secondListReservationTest() throws IOException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
 
@@ -108,7 +110,7 @@ public class CrudOperationReservationIT {
   }
 
   @Test
-  public void testUpdateVmsForReservation()
+  public void thirdUpdateVmsForReservationTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     TimeUnit.MINUTES.sleep(2);
     int newNumberOfVms = 5;
