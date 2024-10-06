@@ -105,7 +105,7 @@ public class CreateReservationFromVm {
               .setName(reservationName)
               .setSpecificReservation(
                   AllocationSpecificSKUReservation.newBuilder()
-                      .setCount(3) // Number of resources that are allocated
+                      .setCount(3)
                       .setInstanceProperties(instanceProperties)
                       .build())
               .setSpecificReservationRequired(true)

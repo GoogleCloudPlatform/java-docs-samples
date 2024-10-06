@@ -56,7 +56,6 @@ public class CrudOperationResevationIT {
   private static ReservationsClient reservationsClient;
   private static InstancesClient instancesClient;
 
-
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
@@ -71,14 +70,14 @@ public class CrudOperationResevationIT {
 
     reservationsClient = ReservationsClient.create();
     instancesClient = InstancesClient.create();
+    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
+    RESERVATION_NAME_FROM_VM = "test-reservation-from-vm-" + UUID.randomUUID();
+    INSTANCE_FOR_RESERVATION = "test-instance-for-reserv-" + UUID.randomUUID();
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
     Util.cleanUpExistingInstances("test-instance-for-reserv-", PROJECT_ID, ZONE);
 
-    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
-    RESERVATION_NAME_FROM_VM = "test-reservation-from-vm-" + UUID.randomUUID();
-    INSTANCE_FOR_RESERVATION = "test-instance-for-reserv-" + UUID.randomUUID();
     CreateInstance.createInstance(PROJECT_ID, ZONE, INSTANCE_FOR_RESERVATION);
     CreateReservation.createReservation(
         PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
