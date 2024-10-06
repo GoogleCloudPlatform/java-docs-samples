@@ -35,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,9 +43,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -145,7 +148,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void testCreateReservationWithGlobalInstanceTemplate()
+  public void firstCreateReservationWithGlobalInstanceTemplateTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_GLOBAL,
@@ -158,7 +161,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void testCreateReservationWithRegionInstanceTemplate()
+  public void firstCreateReservationWithRegionInstanceTemplateTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_REGIONAL, REGIONAL_INSTANCE_TEMPLATE_URI,
@@ -169,5 +172,16 @@ public class ReservationIT {
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
     Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
+  }
+
+  @Test
+  public void secondUpdateVmsForReservationTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    int newNumberOfVms = 5;
+    UpdateVmsForReservation.updateVmsForReservation(
+        PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL, newNumberOfVms);
+    Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
+
+    Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
   }
 }
