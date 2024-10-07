@@ -150,7 +150,7 @@ public class SnippetsIT {
     ProjectName parent = ProjectName.of(PROJECT_ID);
 
     Secret secret;
-    if(addAnnotation){
+    if (addAnnotation) {
       secret = Secret.newBuilder()
       .setReplication(
         Replication.newBuilder()
@@ -159,7 +159,7 @@ public class SnippetsIT {
       .putLabels(LABEL_KEY, LABEL_VALUE)
       .putAnnotations(ANNOTATION_KEY, ANNOTATION_VALUE)
       .build();
-    }else{
+    } else {
       secret = Secret.newBuilder()
       .setReplication(
         Replication.newBuilder()
@@ -477,7 +477,7 @@ public class SnippetsIT {
         name.getProject(), name.getSecret(), UPDATED_ANNOTATION_KEY, UPDATED_ANNOTATION_VALUE);
 
     assertThat(updatedSecret.getAnnotationsMap()).containsEntry(
-      UPDATED_ANNOTATION_KEY, UPDATED_ANNOTATION_VALUE);
+        UPDATED_ANNOTATION_KEY, UPDATED_ANNOTATION_VALUE);
   }
 
   @Test

@@ -44,7 +44,12 @@ public class EditSecretAnnotations {
 
   // Update an existing secret, by creating a new annotation or updating an existing annotation.
   public static Secret editSecretAnnotations(
-       String projectId, String secretId, String annotationKey, String annotationValue) throws IOException {
+       String projectId,
+       String secretId,
+       String annotationKey,
+       String annotationValue
+  ) throws IOException {
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {

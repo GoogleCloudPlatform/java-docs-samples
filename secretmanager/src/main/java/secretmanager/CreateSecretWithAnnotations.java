@@ -41,7 +41,12 @@ public class CreateSecretWithAnnotations {
 
   // Create a secret with annotations.
   public static Secret createSecretWithAnnotations(
-       String projectId, String secretId, String annotationKey, String annotationValue) throws IOException {
+       String projectId,
+       String secretId,
+       String annotationKey,
+       String annotationValue
+  ) throws IOException {
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
