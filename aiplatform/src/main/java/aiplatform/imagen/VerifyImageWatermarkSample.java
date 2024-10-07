@@ -87,10 +87,10 @@ public class VerifyImageWatermarkSample {
       for (Value prediction : predictResponse.getPredictionsList()) {
         Map<String, Value> fieldsMap = prediction.getStructValue().getFieldsMap();
         if (fieldsMap.containsKey("decision")) {
-          System.out.format(
-              "Watermark verification result: %s", fieldsMap.get("decision").getStringValue());
           // "ACCEPT" if the image contains a digital watermark
           // "REJECT" if the image does not contain a digital watermark
+          System.out.format(
+              "Watermark verification result: %s", fieldsMap.get("decision").getStringValue());
         }
       } // only 1 prediction returned
       return predictResponse;
