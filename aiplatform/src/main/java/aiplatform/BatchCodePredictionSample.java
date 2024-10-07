@@ -35,7 +35,7 @@ import java.util.Map;
 public class BatchCodePredictionSample {
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    // TODO(developer): Replace the input_uri and outputUri with your own GCS paths
+    // TODO(developer): Replace these variables before running the sample.
     String project = "YOUR_PROJECT_ID";
     String location = "us-central1";
     // inputUri: URI of the input dataset.
