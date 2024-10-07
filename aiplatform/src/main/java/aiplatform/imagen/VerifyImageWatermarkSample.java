@@ -92,7 +92,7 @@ public class VerifyImageWatermarkSample {
           System.out.format(
               "Watermark verification result: %s", fieldsMap.get("decision").getStringValue());
         }
-      } // only 1 prediction returned
+      }
       return predictResponse;
     }
   }
