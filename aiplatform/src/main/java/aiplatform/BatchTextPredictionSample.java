@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,13 +19,10 @@ package aiplatform;
 // [START generativeaionvertexai_batch_text_predict]
 
 import com.google.cloud.aiplatform.v1.BatchPredictionJob;
-import com.google.cloud.aiplatform.v1.BatchPredictionJob.InputConfig;
-import com.google.cloud.aiplatform.v1.BatchPredictionJob.OutputConfig;
 import com.google.cloud.aiplatform.v1.GcsDestination;
 import com.google.cloud.aiplatform.v1.GcsSource;
 import com.google.cloud.aiplatform.v1.JobServiceClient;
 import com.google.cloud.aiplatform.v1.JobServiceSettings;
-import com.google.cloud.aiplatform.v1.LocationName;
 import com.google.gson.Gson;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
@@ -33,80 +30,81 @@ import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class BatchTextPredictionSample {
 
-  public static void main(String[] args) throws IOException {
-    // TODO (Developer): Replace the input_uri and output_uri with your own GCS paths
+  public static void main(String[] args)
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    // TODO(developer): Replace these variables before running the sample.
     String project = "YOUR_PROJECT_ID";
     String location = "us-central1";
-    // inputUri (str, optional): URI of the input dataset.
+    // inputUri: URI of the input dataset.
     // Could be a BigQuery table or a Google Cloud Storage file.
     // E.g. "gs://[BUCKET]/[DATASET].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
     String inputUri = "gs://cloud-samples-data/batch/prompt_for_batch_text_predict.jsonl";
-    // outputUri (str, optional): URI where the output will be stored.
+    // outputUri: URI where the output will be stored.
     // Could be a BigQuery table or a Google Cloud Storage file.
     // E.g. "gs://[BUCKET]/[OUTPUT].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
     String outputUri = "gs://YOUR_BUCKET/batch_text_predict_output";
-    String codeModel = "text-bison";
+    String textModel = "text-bison";
 
-    batchTextPrediction(project, location, inputUri, outputUri, codeModel);
+    batchTextPrediction(project, inputUri, outputUri, textModel, location);
   }
 
   // Perform batch text prediction using a pre-trained text generation model.
   // Example of using Google Cloud Storage bucket as the input and output data source
-  public static BatchPredictionJob batchTextPrediction(
-      String project, String location, String inputUri,
-      String outputUri, String codeModel) throws IOException {
-    String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
-    JobServiceSettings jobServiceSettings =
-        JobServiceSettings.newBuilder().setEndpoint(endpoint).build();
-    // Construct your modelParameters
-    Map<String, Object> paramsMap = new HashMap<>();
-    paramsMap.put("temperature", 0.2);
-    paramsMap.put("maxOutputTokens", 200);
-    Value parameterValue = mapToValue(paramsMap);
+  static BatchPredictionJob batchTextPrediction(
+      String projectId, String inputUri, String outputUri, String textModel, String location)
+      throws IOException {
+    BatchPredictionJob response;
+    JobServiceSettings jobServiceSettings =  JobServiceSettings.newBuilder()
+        .setEndpoint("us-central1-aiplatform.googleapis.com:443").build();
+    String parent = String.format("projects/%s/locations/%s", projectId, location);
     String modelName = String.format(
-        "projects/%s/locations/%s/publishers/google/models/%s", project, location, codeModel);
+        "projects/%s/locations/%s/publishers/google/models/%s", projectId, location, textModel);
+    // Construct model parameters
+    Map<String, String> modelParameters = new HashMap<>();
+    modelParameters.put("maxOutputTokens", "200");
+    modelParameters.put("temperature", "0.2");
+    modelParameters.put("topP", "0.95");
+    modelParameters.put("topK", "40");
+    Value parameterValue = mapToValue(modelParameters);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (JobServiceClient jobServiceClient = JobServiceClient.create(jobServiceSettings)) {
 
-      GcsSource.Builder gcsSource = GcsSource.newBuilder();
-      gcsSource.addUris(inputUri);
-      InputConfig inputConfig =
-          InputConfig.newBuilder()
-              .setGcsSource(gcsSource)
-              .setInstancesFormat("jsonl")
-              .build();
-
-      GcsDestination.Builder gcsDestination = GcsDestination.newBuilder();
-      gcsDestination.setOutputUriPrefix(outputUri);
-      OutputConfig outputConfig =
-          OutputConfig.newBuilder()
-              .setGcsDestination(gcsDestination)
-              .setPredictionsFormat("jsonl")
-              .build();
-
-      BatchPredictionJob.Builder batchPredictionJob =
+      BatchPredictionJob batchPredictionJob =
           BatchPredictionJob.newBuilder()
               .setDisplayName("my batch text prediction job " + System.currentTimeMillis())
               .setModel(modelName)
-              .setInputConfig(inputConfig)
-              .setOutputConfig(outputConfig)
-              .setModelParameters(parameterValue);
+              .setInputConfig(
+                  BatchPredictionJob.InputConfig.newBuilder()
+                      .setGcsSource(GcsSource.newBuilder().addUris(inputUri).build())
+                      .setInstancesFormat("jsonl")
+                      .build())
+              .setOutputConfig(
+                  BatchPredictionJob.OutputConfig.newBuilder()
+                      .setGcsDestination(GcsDestination.newBuilder()
+                          .setOutputUriPrefix(outputUri).build())
+                      .setPredictionsFormat("jsonl")
+                      .build())
+              .setModelParameters(parameterValue)
+              .build();
 
-      LocationName parent = LocationName.of(project, location);
-      BatchPredictionJob response =
-          jobServiceClient.createBatchPredictionJob(parent, batchPredictionJob.build());
+      // Create the batch prediction job
+      response =
+          jobServiceClient.createBatchPredictionJob(parent, batchPredictionJob);
 
-      return response;
+      System.out.format("response: %s\n", response);
+      System.out.format("\tName: %s\n", response.getName());
     }
+    return response;
   }
 
-  // Convert a Json string to a protobuf.Value
-  private static Value mapToValue(Map<String, Object> map) throws InvalidProtocolBufferException {
+  private static Value mapToValue(Map<String, String> map) throws InvalidProtocolBufferException {
     Gson gson = new Gson();
     String json = gson.toJson(map);
     Value.Builder builder = Value.newBuilder();

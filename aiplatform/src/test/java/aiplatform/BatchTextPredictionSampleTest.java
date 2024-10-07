@@ -16,8 +16,8 @@
 
 package aiplatform;
 
-import static com.google.cloud.aiplatform.v1.JobState.JOB_STATE_PENDING;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.aiplatform.v1.BatchPredictionJob;
 import com.google.cloud.storage.Bucket;
@@ -42,7 +42,7 @@ public class BatchTextPredictionSampleTest {
   private static final String GCS_SOURCE_URI =
       "gs://cloud-samples-data/batch/prompt_for_batch_code_predict.jsonl";
   private static final String GCS_DESTINATION_OUTPUT_PREFIX =
-      String.format("gs://%s/ucaip-test-output/", BUCKET_NAME);
+      String.format("gs://%s/batch-text-predict", BUCKET_NAME);
   private static final String MODEL_ID = "text-bison";
   static Storage storage;
   static Bucket bucket;
@@ -75,10 +75,11 @@ public class BatchTextPredictionSampleTest {
   @Test
   public void testBatchTextPredictionSample() throws IOException {
     BatchPredictionJob batchPredictionJob =
-        BatchTextPredictionSample.batchTextPrediction(PROJECT_ID, LOCATION, GCS_SOURCE_URI,
-        GCS_DESTINATION_OUTPUT_PREFIX, MODEL_ID);
+        BatchTextPredictionSample.batchTextPrediction(PROJECT_ID, GCS_SOURCE_URI,
+        GCS_DESTINATION_OUTPUT_PREFIX, MODEL_ID, LOCATION);
 
     Assertions.assertNotNull(batchPredictionJob);
-    assert (batchPredictionJob.getState().equals(JOB_STATE_PENDING));
+    assertTrue(batchPredictionJob.getDisplayName().contains("my batch text prediction job"));
+    assertTrue(batchPredictionJob.getModel().contains("publishers/google/models/text-bison"));
   }
 }

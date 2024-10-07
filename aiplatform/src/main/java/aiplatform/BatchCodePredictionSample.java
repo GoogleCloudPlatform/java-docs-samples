@@ -48,63 +48,58 @@ public class BatchCodePredictionSample {
     String outputUri = "gs://YOUR_BUCKET/batch_code_predict_output";
     String codeModel = "code-bison";
 
-    batchCodePredictionSample(project, location, inputUri,
-        outputUri, codeModel);
+    batchCodePredictionSample(project, location, inputUri, outputUri, codeModel);
   }
 
   // Perform batch code prediction using a pre-trained code generation model.
   // Example of using Google Cloud Storage bucket as the input and output data source
   public static BatchPredictionJob batchCodePredictionSample(
-      String project, String location, String inputUri,
-      String outputUri, String modelId)
+      String project, String location, String inputUri, String outputUri, String codeModel)
       throws IOException {
-
-    String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
+    BatchPredictionJob response;
+    JobServiceSettings jobServiceSettings =  JobServiceSettings.newBuilder()
+        .setEndpoint("us-central1-aiplatform.googleapis.com:443").build();
     LocationName parent = LocationName.of(project, location);
     String modelName = String.format(
-        "projects/%s/locations/%s/publishers/google/models/%s", project, location, modelId);
-    JobServiceSettings jobServiceSettings =
-        JobServiceSettings.newBuilder().setEndpoint(endpoint).build();
+        "projects/%s/locations/%s/publishers/google/models/%s", project, location, codeModel);
     // Construct your modelParameters
-    Map<String, Object> paramsMap = new HashMap<>();
-    paramsMap.put("temperature", 0.2);
-    paramsMap.put("maxOutputTokens", 200);
-    Value parameterValue = mapToValue(paramsMap);
+    Map<String, String> modelParameters = new HashMap<>();
+    modelParameters.put("maxOutputTokens", "200");
+    modelParameters.put("temperature", "0.2");
+    modelParameters.put("topP", "0.95");
+    modelParameters.put("topK", "40");
+    Value parameterValue = mapToValue(modelParameters);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (JobServiceClient client = JobServiceClient.create(jobServiceSettings)) {
-
-      GcsSource gcsSource = GcsSource.newBuilder().addUris(inputUri).build();
-      BatchPredictionJob.InputConfig inputConfig =
-          BatchPredictionJob.InputConfig.newBuilder()
-              .setGcsSource(gcsSource)
-              .setInstancesFormat("jsonl")
-              .build();
-      GcsDestination gcsDestination =
-          GcsDestination.newBuilder()
-              .setOutputUriPrefix(outputUri)
-              .build();
-      BatchPredictionJob.OutputConfig outputConfig =
-          BatchPredictionJob.OutputConfig.newBuilder()
-              .setGcsDestination(gcsDestination)
-              .setPredictionsFormat("jsonl")
-              .build();
-
       BatchPredictionJob batchPredictionJob =
           BatchPredictionJob.newBuilder()
-              .setDisplayName("my batch code prediction job" + System.currentTimeMillis())
-              .setInputConfig(inputConfig)
+              .setDisplayName("my batch code prediction job " + System.currentTimeMillis())
               .setModel(modelName)
-              .setOutputConfig(outputConfig)
+              .setInputConfig(
+                  BatchPredictionJob.InputConfig.newBuilder()
+                      .setGcsSource(GcsSource.newBuilder().addUris(inputUri).build())
+                      .setInstancesFormat("jsonl")
+                      .build())
+              .setOutputConfig(
+                  BatchPredictionJob.OutputConfig.newBuilder()
+                      .setGcsDestination(GcsDestination.newBuilder()
+                          .setOutputUriPrefix(outputUri).build())
+                      .setPredictionsFormat("jsonl")
+                      .build())
               .setModelParameters(parameterValue)
               .build();
-      BatchPredictionJob response = client.createBatchPredictionJob(parent, batchPredictionJob);
-      return response;
+
+      response = client.createBatchPredictionJob(parent, batchPredictionJob);
+
+      System.out.format("response: %s\n", response);
+      System.out.format("\tName: %s\n", response.getName());
     }
+    return response;
   }
 
-  private static Value mapToValue(Map<String, Object> map) throws InvalidProtocolBufferException {
+  private static Value mapToValue(Map<String, String> map) throws InvalidProtocolBufferException {
     Gson gson = new Gson();
     String json = gson.toJson(map);
     Value.Builder builder = Value.newBuilder();

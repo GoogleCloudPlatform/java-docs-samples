@@ -16,8 +16,8 @@
 
 package aiplatform;
 
-import static com.google.cloud.aiplatform.v1.JobState.JOB_STATE_PENDING;
 import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.aiplatform.v1.BatchPredictionJob;
 import com.google.cloud.storage.Bucket;
@@ -42,7 +42,7 @@ public class BatchCodePredictionSampleTest {
   private static final String GCS_SOURCE_URI =
       "gs://cloud-samples-data/batch/prompt_for_batch_code_predict.jsonl";
   private static final String GCS_DESTINATION_OUTPUT_PREFIX =
-      String.format("gs://%s/ucaip-test-output/", BUCKET_NAME);
+      String.format("gs://%s/batch-code-predict", BUCKET_NAME);
   private static final String MODEL_ID = "code-bison";
   static Storage storage;
   static Bucket bucket;
@@ -80,6 +80,7 @@ public class BatchCodePredictionSampleTest {
         GCS_DESTINATION_OUTPUT_PREFIX, MODEL_ID);
 
     Assertions.assertNotNull(batchPredictionJob);
-    assert (batchPredictionJob.getState().equals(JOB_STATE_PENDING));
+    assertTrue(batchPredictionJob.getDisplayName().contains("my batch code prediction job"));
+    assertTrue(batchPredictionJob.getModel().contains("publishers/google/models/code-bison"));
   }
 }
