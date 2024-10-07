@@ -94,10 +94,10 @@ public class SnippetsIT {
   public static void beforeAll() throws IOException {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
-    TEST_SECRET = createSecret();
-    TEST_SECRET_TO_DELETE = createSecret();
-    TEST_SECRET_TO_DELETE_WITH_ETAG = createSecret();
-    TEST_SECRET_WITH_VERSIONS = createSecret();
+    TEST_SECRET = createSecret(true);
+    TEST_SECRET_TO_DELETE = createSecret(false);
+    TEST_SECRET_TO_DELETE_WITH_ETAG = createSecret(false);
+    TEST_SECRET_WITH_VERSIONS = createSecret(false);
     TEST_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_UMMR_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_LABEL_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
@@ -146,28 +146,41 @@ public class SnippetsIT {
     return "java-" + random.nextLong();
   }
 
-  private static Secret createSecret() throws IOException {
+  private static Secret createSecret(boolean addAnnotation) throws IOException {
     ProjectName parent = ProjectName.of(PROJECT_ID);
+
+    Secret secret;
+    if(addAnnotation){
+      secret = Secret.newBuilder()
+      .setReplication(
+        Replication.newBuilder()
+            .setAutomatic(Replication.Automatic.newBuilder().build())
+            .build())
+      .putLabels(LABEL_KEY, LABEL_VALUE)
+      .putAnnotations(ANNOTATION_KEY, ANNOTATION_VALUE)
+      .build();
+    }else{
+      secret = Secret.newBuilder()
+      .setReplication(
+        Replication.newBuilder()
+            .setAutomatic(Replication.Automatic.newBuilder().build())
+            .build())
+      .putLabels(LABEL_KEY, LABEL_VALUE)
+      .build();
+    }
 
     CreateSecretRequest request =
         CreateSecretRequest.newBuilder()
             .setParent(parent.toString())
             .setSecretId(randomSecretId())
-            .setSecret(
-                Secret.newBuilder()
-                    .setReplication(
-                        Replication.newBuilder()
-                            .setAutomatic(Replication.Automatic.newBuilder().build())
-                            .build())
-                    .putLabels(LABEL_KEY, LABEL_VALUE)
-                    .putAnnotations(ANNOTATION_KEY, ANNOTATION_VALUE)
-                    .build())
+            .setSecret(secret)
             .build();
 
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
       return client.createSecret(request);
     }
   }
+
 
   private static SecretVersion addSecretVersion(Secret secret) throws IOException {
     SecretName parent = SecretName.parse(secret.getName());
