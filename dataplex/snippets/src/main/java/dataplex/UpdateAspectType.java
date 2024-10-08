@@ -21,6 +21,7 @@ import com.google.cloud.dataplex.v1.AspectType;
 import com.google.cloud.dataplex.v1.AspectTypeName;
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import com.google.protobuf.FieldMask;
+import java.util.List;
 
 // Sample to update Aspect Type
 public class UpdateAspectType {
@@ -32,10 +33,34 @@ public class UpdateAspectType {
     String aspectTypeId = "MY_ASPECT_TYPE_ID";
 
     AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
-    updateAspectType(aspectTypeName);
+    AspectType.MetadataTemplate aspectField =
+        AspectType.MetadataTemplate.newBuilder()
+            // The name must follow regex ^(([a-zA-Z]{1})([\\w\\-_]{0,62}))$
+            // That means name must only contain alphanumeric character or dashes or underscores,
+            // start with an alphabet, and must be less than 63 characters.
+            .setName("name_of_the_field")
+            // Metadata Template is recursive structure,
+            // primitive types such as "string" or "integer" indicate leaf node,
+            // complex types such as "record" or "array" would require nested Metadata Template
+            .setType("string")
+            .setIndex(1)
+            .setAnnotations(
+                AspectType.MetadataTemplate.Annotations.newBuilder()
+                    .setDescription("updated description of the field")
+                    .build())
+            .setConstraints(
+                AspectType.MetadataTemplate.Constraints.newBuilder()
+                    // Specifies if field will be required in Aspect Type
+                    .setRequired(true)
+                    .build())
+            .build();
+    List<AspectType.MetadataTemplate> aspectFields = List.of(aspectField);
+    updateAspectType(aspectTypeName, aspectFields);
   }
 
-  public static void updateAspectType(AspectTypeName aspectTypeName) throws Exception {
+  public static void updateAspectType(
+      AspectTypeName aspectTypeName, List<AspectType.MetadataTemplate> aspectFields)
+      throws Exception {
     AspectType aspectType =
         AspectType.newBuilder()
             .setName(aspectTypeName.toString())
@@ -44,22 +69,7 @@ public class UpdateAspectType {
                 AspectType.MetadataTemplate.newBuilder()
                     // Because Record Fields is an array, it needs to be fully replaced.
                     // It is because you do not have a way to specify array elements in update mask.
-                    .addRecordFields(
-                        AspectType.MetadataTemplate.newBuilder()
-                            // Name cannot have spaces.
-                            .setName("name_of_the_field")
-                            .setType("string")
-                            .setIndex(1)
-                            .setAnnotations(
-                                AspectType.MetadataTemplate.Annotations.newBuilder()
-                                    .setDescription("updated description of the field")
-                                    .build())
-                            .setConstraints(
-                                AspectType.MetadataTemplate.Constraints.newBuilder()
-                                    // Specified, if field will be required in Aspect Type
-                                    .setRequired(true)
-                                    .build())
-                            .build())
+                    .addAllRecordFields(aspectFields)
                     .build())
             .build();
 

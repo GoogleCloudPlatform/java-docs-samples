@@ -20,6 +20,7 @@ package dataplex;
 import com.google.cloud.dataplex.v1.AspectType;
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import com.google.cloud.dataplex.v1.LocationName;
+import java.util.List;
 
 // Sample to create Aspect Type
 public class CreateAspectType {
@@ -31,38 +32,48 @@ public class CreateAspectType {
     String aspectTypeId = "MY_ASPECT_TYPE_ID";
 
     LocationName locationName = LocationName.of(projectId, location);
-    createAspectType(locationName, aspectTypeId);
+    AspectType.MetadataTemplate aspectField =
+        AspectType.MetadataTemplate.newBuilder()
+            // The name must follow regex ^(([a-zA-Z]{1})([\\w\\-_]{0,62}))$
+            // That means name must only contain alphanumeric character or dashes or underscores,
+            // start with an alphabet, and must be less than 63 characters.
+            .setName("name_of_the_field")
+            // Metadata Template is recursive structure,
+            // primitive types such as "string" or "integer" indicate leaf node,
+            // complex types such as "record" or "array" would require nested Metadata Template
+            .setType("string")
+            .setIndex(1)
+            .setAnnotations(
+                AspectType.MetadataTemplate.Annotations.newBuilder()
+                    .setDescription("description of the field")
+                    .build())
+            .setConstraints(
+                AspectType.MetadataTemplate.Constraints.newBuilder()
+                    // Specifies if field will be required in Aspect Type.
+                    .setRequired(true)
+                    .build())
+            .build();
+    List<AspectType.MetadataTemplate> aspectFields = List.of(aspectField);
+    createAspectType(locationName, aspectTypeId, aspectFields);
   }
 
-  public static void createAspectType(LocationName locationName, String aspectTypeId)
+  public static void createAspectType(
+      LocationName locationName,
+      String aspectTypeId,
+      List<AspectType.MetadataTemplate> aspectFields)
       throws Exception {
     AspectType aspectType =
         AspectType.newBuilder()
             .setDescription("description of the aspect type")
             .setMetadataTemplate(
                 AspectType.MetadataTemplate.newBuilder()
-                    // Name cannot have spaces.
+                    // The name must follow regex ^(([a-zA-Z]{1})([\\w\\-_]{0,62}))$
+                    // That means name must only contain alphanumeric character or dashes or
+                    // underscores, start with an alphabet, and must be less than 63 characters.
                     .setName("name_of_the_template")
-                    // Metadata Template is recursive structure,
-                    // Type "record" indicates it is not a leaf field.
                     .setType("record")
-                    // Aspect Type fields, that themselves are Metadata Template
-                    .addRecordFields(
-                        AspectType.MetadataTemplate.newBuilder()
-                            // Name cannot have spaces.
-                            .setName("name_of_the_field")
-                            .setType("string")
-                            .setIndex(1)
-                            .setAnnotations(
-                                AspectType.MetadataTemplate.Annotations.newBuilder()
-                                    .setDescription("description of the field")
-                                    .build())
-                            .setConstraints(
-                                AspectType.MetadataTemplate.Constraints.newBuilder()
-                                    // Specified, if field will be required in Aspect Type
-                                    .setRequired(true)
-                                    .build())
-                            .build())
+                    // Aspect Type fields, that themselves are Metadata Templates
+                    .addAllRecordFields(aspectFields)
                     .build())
             .build();
 
