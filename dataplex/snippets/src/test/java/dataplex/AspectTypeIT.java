@@ -24,6 +24,7 @@ import com.google.cloud.dataplex.v1.LocationName;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.UUID;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -72,13 +73,13 @@ public class AspectTypeIT {
 
   @Test
   public void test1_createAspectTypes() throws Exception {
-    CreateAspectType.createAspectType(locationName, aspectTypeId);
+    CreateAspectType.createAspectType(locationName, aspectTypeId, new ArrayList<>());
     assertThat(bout.toString()).contains("Successfully created aspect type: " + expectedAspectType);
   }
 
   @Test
   public void test2_updateAspectTypes() throws Exception {
-    UpdateAspectType.updateAspectType(aspectTypeName);
+    UpdateAspectType.updateAspectType(aspectTypeName, new ArrayList<>());
     assertThat(bout.toString()).contains("Successfully updated aspect type: " + expectedAspectType);
   }
 
