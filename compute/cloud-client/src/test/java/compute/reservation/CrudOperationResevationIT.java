@@ -76,8 +76,6 @@ public class CrudOperationResevationIT {
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingReservations("test-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-", PROJECT_ID, "asia-south1-a");
-    Util.cleanUpExistingReservations("test-", PROJECT_ID, "us-west1-a");
     Util.cleanUpExistingInstances("test-instance-for-reserv-", PROJECT_ID, ZONE);
 
     CreateInstance.createInstance(PROJECT_ID, ZONE, INSTANCE_FOR_RESERVATION);
