@@ -16,7 +16,7 @@
 
 package compute.reservation;
 
-// [START create_compute_reservation_from_vm]
+// [START compute_reservation_create_from_vm]
 
 import com.google.cloud.compute.v1.AcceleratorConfig;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk;
@@ -129,4 +129,4 @@ public class CreateReservationFromVm {
     }
   }
 }
-// [END create_compute_reservation_from_vm]
+// [END compute_reservation_create_from_vm]
