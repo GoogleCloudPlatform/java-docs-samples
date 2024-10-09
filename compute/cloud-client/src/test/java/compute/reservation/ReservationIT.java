@@ -59,15 +59,20 @@ public class ReservationIT {
   private static InstancesClient instancesClient;
   private static String RESERVATION_NAME_GLOBAL;
   private static String RESERVATION_NAME_REGIONAL;
+  private static String RESERVATION_NAME;
   private static String RESERVATION_SHARED_NAME;
   private static String GLOBAL_INSTANCE_TEMPLATE_URI;
   private static String REGIONAL_INSTANCE_TEMPLATE_URI;
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
-      "test-global-inst-temp" + UUID.randomUUID();
+      "test-global-inst-temp-" + UUID.randomUUID();
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
-      "test-regional-inst-temp" + UUID.randomUUID();
-  private static String INSTANCE_FOR_SPR;
-  private static String INSTANCE_NAME;
+      "test-regional-inst-temp-" + UUID.randomUUID();
+  private static final String INSTANCE_FOR_SPR =
+      "test-instance-for-spr-" + UUID.randomUUID().toString().substring(0, 8);
+  private static final String INSTANCE_NAME =
+      "test-instance-" + UUID.randomUUID().toString().substring(0, 8);
+  private static final String SPECIFIC_SHARED_INSTANCE_NAME =
+      "test-instance-shared-" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
   private static final String MACHINE_TYPE = "n2-standard-32";
   private static final String MIN_CPU_PLATFORM = "Intel Cascade Lake";
@@ -91,13 +96,13 @@ public class ReservationIT {
     Util.cleanUpExistingInstanceTemplates("test-global-inst-temp", PROJECT_ID);
     Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-inst-for-shared-res", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-instance-for-spr", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
 
     // Initialize the clients once for all tests
     instancesClient = InstancesClient.create();
     reservationsClient = ReservationsClient.create();
 
+    RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
     RESERVATION_SHARED_NAME = "test-reserv-shared-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
@@ -106,8 +111,6 @@ public class ReservationIT {
     REGIONAL_INSTANCE_TEMPLATE_URI =
         String.format("projects/%s/regions/%s/instanceTemplates/%s",
             PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
-    INSTANCE_FOR_SPR = "test-instance-for-spr-" + UUID.randomUUID().toString().substring(0, 8);
-    INSTANCE_NAME = "test-instance-" + UUID.randomUUID().toString().substring(0, 8);
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
@@ -132,6 +135,7 @@ public class ReservationIT {
     // Clean up the instances
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_FOR_SPR);
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME);
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
 
     // Delete instance template with REGIONAL location.
@@ -142,7 +146,7 @@ public class ReservationIT {
             + REGIONAL_INSTANCE_TEMPLATE_NAME);
 
     // Delete all reservations created for testing.
-    // Clean up the reservations.
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_SHARED_NAME);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
@@ -211,17 +215,40 @@ public class ReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Create the reservation
     ConsumeSingleProjectReservation.createReservation(
-        PROJECT_ID, RESERVATION_SHARED_NAME, NUMBER_OF_VMS,
+        PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS,
         ZONE, MACHINE_TYPE, MIN_CPU_PLATFORM, true);
 
     ConsumeSingleProjectReservation.createInstance(
         PROJECT_ID, ZONE, INSTANCE_FOR_SPR, MACHINE_TYPE,
-        MIN_CPU_PLATFORM, RESERVATION_SHARED_NAME);
+        MIN_CPU_PLATFORM, RESERVATION_NAME);
 
     Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_FOR_SPR);
 
     assertThat(instance.getReservationAffinity().getValuesList())
-        .contains(RESERVATION_SHARED_NAME);
+        .contains(RESERVATION_NAME);
+    Assert.assertEquals(SPECIFIC_RESERVATION.toString(),
+        instance.getReservationAffinity().getConsumeReservationType());
+  }
+
+  @Test
+  public void testConsumeSpecificSharedReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    ConsumeSpecificSharedReservation.createReservation(PROJECT_ID,
+        RESERVATION_SHARED_NAME, NUMBER_OF_VMS, ZONE,
+        MACHINE_TYPE, MIN_CPU_PLATFORM, true);
+
+    Assert.assertEquals(RESERVATION_SHARED_NAME,
+        reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_SHARED_NAME).getName());
+
+    ConsumeSpecificSharedReservation.createInstance(
+        PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME, MACHINE_TYPE,
+        MIN_CPU_PLATFORM, RESERVATION_SHARED_NAME);
+
+    // Verify that the instance was created with the correct reservation and consumeReservationType
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME);
+
+    Assert.assertTrue(instance.getReservationAffinity()
+        .getValuesList().get(0).contains(RESERVATION_SHARED_NAME));
     Assert.assertEquals(SPECIFIC_RESERVATION.toString(),
         instance.getReservationAffinity().getConsumeReservationType());
   }
