@@ -18,6 +18,7 @@ package secretmanager.regionalsamples;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
@@ -46,6 +47,7 @@ import com.google.protobuf.ByteString;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Map;
 import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -66,6 +68,10 @@ public class SnippetsIT {
   private static final String IAM_USER =
       "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String LABEL_KEY = "examplelabelkey";
+  private static final String LABEL_VALUE = "examplelabelvalue";
+  private static final String UPDATED_LABEL_KEY = "updatedlabelkey";
+  private static final String UPDATED_LABEL_VALUE = "updatedlabelvalue";
   private static final String LOCATION_ID = "us-central1";
   private static final String REGIONAL_ENDPOINT = 
       String.format("secretmanager.%s.rep.googleapis.com:443", LOCATION_ID);
@@ -75,6 +81,7 @@ public class SnippetsIT {
   private static Secret TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG;
   private static Secret TEST_REGIONAL_SECRET_WITH_VERSIONS;
   private static SecretName TEST_REGIONAL_SECRET_TO_CREATE_NAME;
+  private static SecretName TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME;
   private static SecretVersion TEST_REGIONAL_SECRET_VERSION;
   private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_DESTROY;
   private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_DESTROY_WITH_ETAG;
@@ -98,6 +105,8 @@ public class SnippetsIT {
     TEST_REGIONAL_SECRET_TO_CREATE_NAME = 
         SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
 
+    TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME =
+        SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
     TEST_REGIONAL_SECRET_VERSION = addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
     TEST_REGIONAL_SECRET_VERSION_TO_DESTROY = 
         addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
@@ -134,6 +143,7 @@ public class SnippetsIT {
 
     deleteRegionalSecret(TEST_REGIONAL_SECRET.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_CREATE_NAME.toString());
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_VERSIONS.getName());
@@ -151,6 +161,10 @@ public class SnippetsIT {
         CreateSecretRequest.newBuilder()
             .setParent(parent.toString())
             .setSecretId(randomSecretId())
+            .setSecret(
+                Secret.newBuilder()
+                    .putLabels(LABEL_KEY, LABEL_VALUE)
+                    .build())
             .build();
 
     SecretManagerServiceSettings secretManagerServiceSettings =
@@ -221,6 +235,15 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testCreateRegionalSecretWithLabel() throws IOException {
+    SecretName name = TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME;
+    Secret secret = CreateRegionalSecretWithLabels.createRegionalSecretWithLabels(
+        name.getProject(), name.getLocation(), name.getSecret(), LABEL_KEY, LABEL_VALUE);
+
+    assertThat(secret.getLabelsMap()).containsEntry(LABEL_KEY, LABEL_VALUE);
+  }
+
+  @Test
   public void testAddRegionalSecretVersion() throws IOException {
     SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_WITH_VERSIONS.getName());
     SecretVersion secretVersion = AddRegionalSecretVersion.addRegionalSecretVersion(
@@ -241,6 +264,15 @@ public class SnippetsIT {
         name.getProject(), name.getLocation(), name.getSecret());
     SecretName createdSecretName = SecretName.parse(secret.getName());
     assertEquals(name.getSecret(), createdSecretName.getSecret());
+  }
+
+  @Test
+  public void testDeleteRegionalSecretLabel() throws IOException {
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
+    Secret secret = DeleteRegionalSecretLabel.deleteRegionalSecretLabel(
+        name.getProject(), name.getLocation(), name.getSecret(), LABEL_KEY);
+
+    assertFalse(secret.getLabelsMap().containsKey(LABEL_KEY));
   }
 
   @Test
@@ -351,6 +383,16 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testViewRegionalSecretLabels() throws IOException {
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
+    Map<String, String> labels = 
+        ViewRegionalSecretLabels.viewRegionalSecretLabels(
+          name.getProject(), name.getLocation(), name.getSecret());
+
+    assertThat(labels).containsEntry(LABEL_KEY, LABEL_VALUE);
+  }
+
+  @Test
   public void testGetRegionalSecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_REGIONAL_SECRET_VERSION.getName());
     SecretVersion version = GetRegionalSecretVersion.getRegionalSecretVersion(
@@ -457,6 +499,16 @@ public class SnippetsIT {
       }
     }
     assertTrue(secretPresentInList);
+  }
+
+  @Test
+  public void testCreateUpdateRegionalSecretLabel() throws IOException {
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
+    Secret updatedSecret = CreateUpdateRegionalSecretLabel.createUpdateRegionalSecretLabel(
+        name.getProject(), name.getLocation() ,name.getSecret(), UPDATED_LABEL_KEY, UPDATED_LABEL_VALUE);
+
+    assertThat(updatedSecret.getLabelsMap()).containsEntry(
+        UPDATED_LABEL_KEY, UPDATED_LABEL_VALUE);
   }
 
   @Test
