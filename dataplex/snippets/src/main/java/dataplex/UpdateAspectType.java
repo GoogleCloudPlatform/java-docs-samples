@@ -29,6 +29,7 @@ public class UpdateAspectType {
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "MY_PROJECT_ID";
+    // Available locations: https://cloud.google.com/dataplex/docs/locations
     String location = "MY_LOCATION";
     String aspectTypeId = "MY_ASPECT_TYPE_ID";
 
