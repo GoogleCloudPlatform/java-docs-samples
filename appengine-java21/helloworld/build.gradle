@@ -52,13 +52,13 @@ sourceSets {
 }
 
 dependencies {
-    implementation 'com.google.appengine:appengine-api-1.0-sdk:2.0.23'
+    implementation 'com.google.appengine:appengine-api-1.0-sdk:2.0.30'
     implementation 'jakarta.servlet:jakarta.servlet-api:6.1.0'
 
     // Test Dependencies
-    testImplementation 'com.google.appengine:appengine-testing:2.0.23'
-    testImplementation 'com.google.appengine:appengine-api-stubs:2.0.23'
-    testImplementation 'com.google.appengine:appengine-tools-sdk:2.0.23'
+    testImplementation 'com.google.appengine:appengine-testing:2.0.30'
+    testImplementation 'com.google.appengine:appengine-api-stubs:2.0.30'
+    testImplementation 'com.google.appengine:appengine-tools-sdk:2.0.30'
 
     testImplementation 'com.google.truth:truth:1.1.5'
     testImplementation 'junit:junit:4.13.2'
