@@ -64,11 +64,11 @@ public class ReservationIT {
   private static String GLOBAL_INSTANCE_TEMPLATE_URI;
   private static String REGIONAL_INSTANCE_TEMPLATE_URI;
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
-      "test-global-inst-temp" + UUID.randomUUID();
+      "test-global-inst-temp-" + UUID.randomUUID();
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
-      "test-regional-inst-temp" + UUID.randomUUID();
+      "test-regional-inst-temp-" + UUID.randomUUID();
   private static final String INSTANCE_NOT_CONSUME_RESERVATION_NAME =
-      "test-instance-not-consume" + UUID.randomUUID();
+      "test-instance-not-consume-" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
   private static final String MACHINE_TYPE = "n2-standard-32";
 
@@ -100,9 +100,9 @@ public class ReservationIT {
     instancesClient = InstancesClient.create();
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-instance", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp", PROJECT_ID);
-    Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp-", PROJECT_ID);
+    Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp-", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv-", PROJECT_ID, ZONE);
     TimeUnit.MINUTES.sleep(5);
 
