@@ -52,6 +52,7 @@ public class AspectTypeIT {
   }
 
   @BeforeClass
+  // Set-up code that will be executed before all tests
   public static void setUp() throws Exception {
     String aspectTypeId = "test-aspect-type" + ID;
     locationName = LocationName.of(PROJECT_ID, LOCATION);
@@ -111,6 +112,7 @@ public class AspectTypeIT {
   }
 
   @AfterClass
+  // Clean-up code that will be executed after all tests
   public static void tearDown() throws Exception {
     // Clean-up Aspect Type resource created in setUp()
     DeleteAspectType.deleteAspectType(aspectTypeName);
