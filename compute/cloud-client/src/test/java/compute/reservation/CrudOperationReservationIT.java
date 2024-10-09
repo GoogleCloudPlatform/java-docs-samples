@@ -38,10 +38,9 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
-public class CrudOperationResevationIT {
+public class CrudOperationReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
@@ -59,11 +58,11 @@ public class CrudOperationResevationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
 
-    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
     CreateReservation.createReservation(
         PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
   }
@@ -71,10 +70,10 @@ public class CrudOperationResevationIT {
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Delete all reservations created for testing.
+    // Delete the reservation created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
 
-    // Test that reservations are deleted
+    // Test that reservation is deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));

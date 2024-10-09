@@ -16,6 +16,8 @@
 
 package compute.reservation;
 
+// [START compute_reservation_create]
+
 import com.google.cloud.compute.v1.AcceleratorConfig;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationReservedInstanceProperties;
@@ -28,7 +30,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-// [START compute_reservation_create]
 public class CreateReservation {
 
   public static void main(String[] args)
