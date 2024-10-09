@@ -59,6 +59,11 @@
       <groupId>com.google.cloud</groupId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-tpu</artifactId>
+      <version>2.52.0</version>
+    </dependency>
 
     <dependency>
       <artifactId>truth</artifactId>
