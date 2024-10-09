@@ -17,9 +17,12 @@
 package dataplex;
 
 // [START dataplex_list_aspect_types]
+import com.google.cloud.dataplex.v1.AspectType;
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import com.google.cloud.dataplex.v1.LocationName;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
+import java.util.List;
 
 // Sample to list Aspect Types
 public class ListAspectTypes {
@@ -31,10 +34,12 @@ public class ListAspectTypes {
     String location = "MY_LOCATION";
 
     LocationName locationName = LocationName.of(projectId, location);
-    listAspectTypes(locationName);
+    List<AspectType> aspectTypes = listAspectTypes(locationName);
+    aspectTypes.forEach(
+        aspectType -> System.out.println("Aspect type name: " + aspectType.getName()));
   }
 
-  public static void listAspectTypes(LocationName locationName) throws IOException {
+  public static List<AspectType> listAspectTypes(LocationName locationName) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources,
@@ -42,9 +47,7 @@ public class ListAspectTypes {
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       CatalogServiceClient.ListAspectTypesPagedResponse listAspectTypesResponse =
           client.listAspectTypes(locationName);
-      listAspectTypesResponse
-          .iterateAll()
-          .forEach(aspectType -> System.out.println("Aspect type name: " + aspectType.getName()));
+      return ImmutableList.copyOf(listAspectTypesResponse.iterateAll());
     }
   }
 }

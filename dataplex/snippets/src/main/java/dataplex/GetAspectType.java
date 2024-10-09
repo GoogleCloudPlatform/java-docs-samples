@@ -33,17 +33,17 @@ public class GetAspectType {
     String aspectTypeId = "MY_ASPECT_TYPE_ID";
 
     AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
-    getAspectType(aspectTypeName);
+    AspectType aspectType = getAspectType(aspectTypeName);
+    System.out.println("Aspect type retrieved successfully: " + aspectType.getName());
   }
 
-  public static void getAspectType(AspectTypeName aspectTypeName) throws IOException {
+  public static AspectType getAspectType(AspectTypeName aspectTypeName) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources,
     // or use "try-with-close" statement to do this automatically.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
-      AspectType aspectType = client.getAspectType(aspectTypeName);
-      System.out.println("Aspect type retrieved successfully: " + aspectType.getName());
+      return client.getAspectType(aspectTypeName);
     }
   }
 }

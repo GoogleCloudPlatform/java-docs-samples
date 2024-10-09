@@ -55,10 +55,11 @@ public class CreateAspectType {
                     .build())
             .build();
     List<AspectType.MetadataTemplate> aspectFields = List.of(aspectField);
-    createAspectType(locationName, aspectTypeId, aspectFields);
+    AspectType createdAspectType = createAspectType(locationName, aspectTypeId, aspectFields);
+    System.out.println("Successfully created aspect type: " + createdAspectType.getName());
   }
 
-  public static void createAspectType(
+  public static AspectType createAspectType(
       LocationName locationName,
       String aspectTypeId,
       List<AspectType.MetadataTemplate> aspectFields)
@@ -83,9 +84,7 @@ public class CreateAspectType {
     // the "close" method on the client to safely clean up any remaining background resources,
     // or use "try-with-close" statement to do this automatically.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
-      AspectType createdAspectType =
-          client.createAspectTypeAsync(locationName, aspectType, aspectTypeId).get();
-      System.out.println("Successfully created aspect type: " + createdAspectType.getName());
+      return client.createAspectTypeAsync(locationName, aspectType, aspectTypeId).get();
     }
   }
 }

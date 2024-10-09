@@ -32,6 +32,7 @@ public class DeleteAspectType {
 
     AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
     deleteAspectType(aspectTypeName);
+    System.out.println("Successfully deleted aspect type");
   }
 
   public static void deleteAspectType(AspectTypeName aspectTypeName) throws Exception {
@@ -41,7 +42,6 @@ public class DeleteAspectType {
     // or use "try-with-close" statement to do this automatically.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       client.deleteAspectTypeAsync(aspectTypeName).get();
-      System.out.println("Successfully deleted aspect type");
     }
   }
 }

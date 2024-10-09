@@ -56,10 +56,11 @@ public class UpdateAspectType {
                     .build())
             .build();
     List<AspectType.MetadataTemplate> aspectFields = List.of(aspectField);
-    updateAspectType(aspectTypeName, aspectFields);
+    AspectType updatedAspectType = updateAspectType(aspectTypeName, aspectFields);
+    System.out.println("Successfully updated aspect type: " + updatedAspectType.getName());
   }
 
-  public static void updateAspectType(
+  public static AspectType updateAspectType(
       AspectTypeName aspectTypeName, List<AspectType.MetadataTemplate> aspectFields)
       throws Exception {
     AspectType aspectType =
@@ -89,8 +90,7 @@ public class UpdateAspectType {
     // the "close" method on the client to safely clean up any remaining background resources,
     // or use "try-with-close" statement to do this automatically.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
-      AspectType updatedAspectType = client.updateAspectTypeAsync(aspectType, updateMask).get();
-      System.out.println("Successfully updated aspect type: " + updatedAspectType.getName());
+      return client.updateAspectTypeAsync(aspectType, updateMask).get();
     }
   }
 }
