@@ -87,16 +87,6 @@ public class ReservationIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-instance", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp", PROJECT_ID);
-    Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-", PROJECT_ID, ZONE);
-
-    // Initialize the clients once for all tests
-    reservationsClient = ReservationsClient.create();
-    instancesClient = InstancesClient.create();
-
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
@@ -104,6 +94,17 @@ public class ReservationIT {
     REGIONAL_INSTANCE_TEMPLATE_URI =
         String.format("projects/%s/regions/%s/instanceTemplates/%s",
             PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
+
+    // Initialize the clients once for all tests
+    reservationsClient = ReservationsClient.create();
+    instancesClient = InstancesClient.create();
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("test-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp", PROJECT_ID);
+    Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-", PROJECT_ID, ZONE);
+    TimeUnit.MINUTES.sleep(5);
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);

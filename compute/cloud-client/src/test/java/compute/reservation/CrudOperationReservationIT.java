@@ -62,6 +62,7 @@ public class CrudOperationReservationIT {
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
+    TimeUnit.MINUTES.sleep(5);
 
     CreateReservation.createReservation(
         PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
