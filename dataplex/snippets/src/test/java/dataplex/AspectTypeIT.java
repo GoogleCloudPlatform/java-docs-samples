@@ -65,25 +65,25 @@ public class AspectTypeIT {
   }
 
   @Test
-  public void listAspectTypes_shouldReturnListContainingExpectedAspectType() throws IOException {
+  public void listAspectTypes_returnsListContainingAspectTypeCreatedInSetUp() throws IOException {
     List<AspectType> aspectTypes = ListAspectTypes.listAspectTypes(locationName);
     assertThat(aspectTypes.stream().map(AspectType::getName)).contains(expectedAspectType);
   }
 
   @Test
-  public void getAspectType_shouldReturnExpectedAspectType() throws IOException {
+  public void getAspectType_returnsAspectTypeCreatedInSetUp() throws IOException {
     AspectType aspectType = GetAspectType.getAspectType(aspectTypeName);
     assertThat(aspectType.getName()).isEqualTo(expectedAspectType);
   }
 
   @Test
-  public void updateAspectType_shouldReturnUpdatedAspectType() throws Exception {
+  public void updateAspectType_returnsUpdatedAspectType() throws Exception {
     AspectType aspectType = UpdateAspectType.updateAspectType(aspectTypeName, new ArrayList<>());
     assertThat(aspectType.getName()).isEqualTo(expectedAspectType);
   }
 
   @Test
-  public void createAspectType_shouldReturnCreatedAspectType() throws Exception {
+  public void createAspectType_returnsCreatedAspectType() throws Exception {
     String aspectTypeIdToCreate = "test-aspect-type" + UUID.randomUUID().toString().substring(0, 8);
     AspectTypeName aspectTypeNameToCreate =
         AspectTypeName.of(PROJECT_ID, LOCATION, aspectTypeIdToCreate);
@@ -100,7 +100,7 @@ public class AspectTypeIT {
   }
 
   @Test
-  public void deleteAspectType_shouldExecuteTheCallWithoutException() throws Exception {
+  public void deleteAspectType_executesTheCallWithoutException() throws Exception {
     String aspectTypeIdToDelete = "test-aspect-type" + UUID.randomUUID().toString().substring(0, 8);
     AspectTypeName aspectTypeNameToDelete =
         AspectTypeName.of(PROJECT_ID, LOCATION, aspectTypeIdToDelete);
