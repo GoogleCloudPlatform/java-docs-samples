@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Reservation;
+import com.google.cloud.compute.v1.ReservationsClient;
 import compute.Util;
 import java.io.IOException;
 import java.util.List;
@@ -38,15 +39,15 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
-public class CrudOperationResevationIT {
+public class CrudOperationReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
+  private static ReservationsClient reservationsClient;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -60,10 +61,13 @@ public class CrudOperationResevationIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
+    // Initialize the client once for all tests
+    reservationsClient = ReservationsClient.create();
+    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
+
     // Cleanup existing stale resources.
     Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
 
-    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
     CreateReservation.createReservation(
         PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
   }
@@ -71,13 +75,16 @@ public class CrudOperationResevationIT {
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Delete all reservations created for testing.
+    // Delete the reservation created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
 
     // Test that reservations are deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
+
+    // Close the client after all tests
+    reservationsClient.close();
   }
 
   @Test

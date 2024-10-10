@@ -51,7 +51,7 @@ import org.junit.runners.MethodSorters;
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "asia-south1-a";
+  private static final String ZONE = "us-central1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static ReservationsClient reservationsClient;
   private static String RESERVATION_NAME_GLOBAL;
@@ -59,9 +59,9 @@ public class ReservationIT {
   private static String GLOBAL_INSTANCE_TEMPLATE_URI;
   private static String REGIONAL_INSTANCE_TEMPLATE_URI;
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
-      "test-global-inst-temp" + UUID.randomUUID();
+      "test-global-inst-temp-" + UUID.randomUUID();
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
-      "test-regional-inst-temp" + UUID.randomUUID();
+      "test-regional-inst-temp-" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
 
   // Check if the required environment variables are set.
@@ -80,10 +80,9 @@ public class ReservationIT {
     System.setOut(new PrintStream(stdOut));
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-global-inst-temp", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-regional-inst-temp", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-regional", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-global", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp", PROJECT_ID);
+    Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-", PROJECT_ID, ZONE);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
@@ -173,5 +172,16 @@ public class ReservationIT {
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
     Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
+  }
+
+  @Test
+  public void secondUpdateVmsForReservationTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    int newNumberOfVms = 5;
+    UpdateVmsForReservation.updateVmsForReservation(
+        PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL, newNumberOfVms);
+    Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
+
+    Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
   }
 }
