@@ -2,10 +2,11 @@ package compute.tpu;
 
 //[START tpu_vm_create]
 
-import com.google.cloud.tpu.v1.CreateNodeRequest;
-import com.google.cloud.tpu.v1.Node;
-import com.google.cloud.tpu.v1.TpuClient;
+import com.google.cloud.tpu.v2.CreateNodeRequest;
+import com.google.cloud.tpu.v2.Node;
+import com.google.cloud.tpu.v2.TpuClient;
 import java.io.IOException;
+
 import java.util.concurrent.ExecutionException;
 
 public class CreateTpuVm {
@@ -14,7 +15,7 @@ public class CreateTpuVm {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "tyaho-softserve-project";//"YOUR_PROJECT_ID";
     String zone = "europe-west4-a";
-    String tpuVmName = "my-tpu-vm111";
+    String tpuVmName = "test-tpu-name1";
     String acceleratorType = "v2-8";
     String version = "tpu-vm-tf-2.14.1";
 
@@ -28,11 +29,20 @@ public class CreateTpuVm {
     try (TpuClient tpuClient = TpuClient.create()) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
 
+      // Create metadata map
+//      Map<String, String> metadata = new HashMap<>();
+//      metadata.put("startup-script", "pip3 install --upgrade numpy");
+      String topology = "8x8x1";
       Node tpuVm =
           Node.newBuilder()
               .setName(tpuVmName)
               .setAcceleratorType(acceleratorType)
-              .setTensorflowVersion(version)
+              .setAcceleratorConfig(Node.newBuilder()
+                  .getAcceleratorConfigBuilder()
+                  .setTopology(topology)
+                  .build())
+              .setRuntimeVersion(version)
+//              .putAllLabels(metadata)
               .build();
 
       CreateNodeRequest request =
