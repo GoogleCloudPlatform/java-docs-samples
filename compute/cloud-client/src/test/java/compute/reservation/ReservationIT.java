@@ -39,7 +39,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -47,11 +46,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -104,7 +101,6 @@ public class ReservationIT {
     Util.cleanUpExistingInstanceTemplates("test-global-inst-temp-", PROJECT_ID);
     Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp-", PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv-", PROJECT_ID, ZONE);
-    TimeUnit.MINUTES.sleep(5);
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
@@ -163,7 +159,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void firstCreateReservationWithGlobalInstanceTemplateTest()
+  public void testCreateReservationWithGlobalInstanceTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_GLOBAL,
@@ -176,7 +172,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void firstCreateReservationWithRegionInstanceTemplateTest()
+  public void testCreateReservationWithRegionInstanceTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_REGIONAL, REGIONAL_INSTANCE_TEMPLATE_URI,
@@ -196,7 +192,7 @@ public class ReservationIT {
     CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
         PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
 
-    // Verify that the instance was created with the correct reservation and consumeReservationType
+    // Verify that the instance was created with the correct consumeReservationType
     Instance instance = instancesClient.get(
         PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
 
