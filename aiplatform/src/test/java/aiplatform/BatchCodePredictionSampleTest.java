@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,7 @@
 
 package aiplatform;
 
-import static org.junit.Assert.assertNotNull;
+import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.aiplatform.v1.BatchPredictionJob;
@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class BatchTextPredictionSampleTest {
+public class BatchCodePredictionSampleTest {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
@@ -42,8 +42,8 @@ public class BatchTextPredictionSampleTest {
   private static final String GCS_SOURCE_URI =
       "gs://cloud-samples-data/batch/prompt_for_batch_code_predict.jsonl";
   private static final String GCS_DESTINATION_OUTPUT_PREFIX =
-      String.format("gs://%s/batch-text-predict", BUCKET_NAME);
-  private static final String MODEL_ID = "text-bison";
+      String.format("gs://%s/batch-code-predict", BUCKET_NAME);
+  private static final String MODEL_ID = "code-bison";
   static Storage storage;
   static Bucket bucket;
 
@@ -73,13 +73,14 @@ public class BatchTextPredictionSampleTest {
   }
 
   @Test
-  public void testBatchTextPredictionSample() throws IOException {
+  public void testBatchCodePredictionSample() throws IOException {
+
     BatchPredictionJob batchPredictionJob =
-        BatchTextPredictionSample.batchTextPrediction(PROJECT_ID, GCS_SOURCE_URI,
-        GCS_DESTINATION_OUTPUT_PREFIX, MODEL_ID, LOCATION);
+        BatchCodePredictionSample.batchCodePredictionSample(PROJECT_ID, LOCATION, GCS_SOURCE_URI,
+        GCS_DESTINATION_OUTPUT_PREFIX, MODEL_ID);
 
     Assertions.assertNotNull(batchPredictionJob);
-    assertTrue(batchPredictionJob.getDisplayName().contains("my batch text prediction job"));
-    assertTrue(batchPredictionJob.getModel().contains("publishers/google/models/text-bison"));
+    assertTrue(batchPredictionJob.getDisplayName().contains("my batch code prediction job"));
+    assertTrue(batchPredictionJob.getModel().contains("publishers/google/models/code-bison"));
   }
 }
