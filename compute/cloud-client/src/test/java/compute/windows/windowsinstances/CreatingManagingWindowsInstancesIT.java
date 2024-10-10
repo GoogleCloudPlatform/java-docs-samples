@@ -16,6 +16,7 @@ package compute.windows.windowsinstances;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.RoutesClient;
 import compute.DeleteFirewallRule;
@@ -41,7 +42,7 @@ import org.junit.runners.JUnit4;
 public class CreatingManagingWindowsInstancesIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "asia-south1-a";
+  private static final String ZONE = getZone();
   private static String INSTANCE_NAME_EXTERNAL;
   private static String INSTANCE_NAME_INTERNAL;
   private static String FIREWALL_RULE_NAME;
@@ -67,9 +68,6 @@ public class CreatingManagingWindowsInstancesIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    // Cleanup existing test instances.
-    Util.cleanUpExistingInstances("windows-test-instance", PROJECT_ID, ZONE);
-
     String uuid = UUID.randomUUID().toString().split("-")[0];
     INSTANCE_NAME_EXTERNAL = "windows-test-instance-external-" + uuid;
     INSTANCE_NAME_INTERNAL = "windows-test-instance-internal-" + uuid;
@@ -78,6 +76,9 @@ public class CreatingManagingWindowsInstancesIT {
     SUBNETWORK_NAME = String.format("regions/%s/subnetworks/default",
         ZONE.substring(0, ZONE.length() - 2));
     ROUTE_NAME = "windows-test-route-" + uuid;
+
+    // Cleanup existing test instances.
+    Util.cleanUpExistingInstances("windows-test-instance", PROJECT_ID, ZONE);
 
     stdOut.close();
     System.setOut(out);

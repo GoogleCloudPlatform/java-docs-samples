@@ -18,7 +18,6 @@ package compute.disks;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
@@ -28,6 +27,7 @@ import com.google.cloud.compute.v1.InsertDiskRequest;
 import com.google.cloud.compute.v1.InsertRegionDiskRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
+import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -50,8 +50,8 @@ import org.junit.runners.JUnit4;
 public class SnapshotsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static String ZONE;
-  private static String LOCATION;
+  private static final String ZONE = "europe-west1-b";
+  private static final String  LOCATION = ZONE.substring(0, ZONE.length() - 2);
   private static String DISK_NAME;
   private static String REGIONAL_DISK_NAME;
   private static String SNAPSHOT_NAME;
@@ -75,14 +75,16 @@ public class SnapshotsIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    ZONE = getZone();
-    LOCATION = ZONE.substring(0, ZONE.length() - 2);
     String uuid = UUID.randomUUID().toString().split("-")[0];
     DISK_NAME = "gcloud-test-disk-" + uuid;
     REGIONAL_DISK_NAME = "gcloud-regional-test-disk-" + uuid;
     SNAPSHOT_NAME = "gcloud-test-snapshot-" + uuid;
     SNAPSHOT_NAME_DELETE_BY_FILTER = "gcloud-test-snapshot-dbf-" + uuid;
     SNAPSHOT_NAME_REGIONAL = "gcloud-test-regional-snap-" + uuid;
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingSnapshots("gcloud-test-", PROJECT_ID);
+    Util.cleanUpExistingDisks("gcloud-", PROJECT_ID, ZONE);
 
     Image debianImage = null;
     try (ImagesClient imagesClient = ImagesClient.create()) {

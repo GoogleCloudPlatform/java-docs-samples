@@ -18,6 +18,7 @@ package compute;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.Instance;
@@ -50,7 +51,7 @@ import org.junit.runners.JUnit4;
 public class InstanceOperationsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  private static final String ZONE = getZone();
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_ENCRYPTED;
   private static String DISK_NAME;
@@ -75,15 +76,16 @@ public class InstanceOperationsIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_ENCRYPTED = "encrypted-test-instance" + UUID.randomUUID();
+    MACHINE_NAME = "test-instance-operation-" + UUID.randomUUID();
+    MACHINE_NAME_ENCRYPTED = "test-instance-encrypted-" + UUID.randomUUID();
     DISK_NAME = "test-clone-disk-enc-" + UUID.randomUUID();
     ENCRYPTED_DISK_NAME = "test-disk-enc-" + UUID.randomUUID();
     RAW_KEY = Util.getBase64EncodedKey();
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("my-new-test-instance", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("encrypted-test-instance", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingDisks("test-clone-disk-enc-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingDisks("test-disk-enc-", PROJECT_ID, ZONE);
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateEncryptedInstance

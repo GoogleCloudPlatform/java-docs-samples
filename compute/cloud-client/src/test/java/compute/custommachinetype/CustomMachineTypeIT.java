@@ -18,6 +18,7 @@ package compute.custommachinetype;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
@@ -47,7 +48,7 @@ import org.junit.runners.JUnit4;
 public class CustomMachineTypeIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-b";
+  private static final String ZONE = getZone();
   private static final String CUSTOM_MACHINE_TYPE = String.format(
       "zones/%s/machineTypes/n2-custom-8-10240", ZONE);
 
@@ -85,9 +86,6 @@ public class CustomMachineTypeIT {
 
     instancesClient = InstancesClient.create();
 
-    // Clean up existing stale resources.
-    Util.cleanUpExistingInstances("cmt-test-", PROJECT_ID, ZONE);
-
     String randomUUID = UUID.randomUUID().toString().split("-")[0];
     CUSTOM_MACHINE_TYPE_INSTANCE = "cmt-test-" + randomUUID;
     CUSTOM_MACHINE_TYPE_INSTANCE_WITH_HELPER = "cmt-test-with-helper" + randomUUID;
@@ -95,6 +93,9 @@ public class CustomMachineTypeIT {
     CUSTOM_MACHINE_TYPE_INSTANCE_WITHOUT_HELPER = "cmt-test-without-helper" + randomUUID;
     EXTRA_MEM_INSTANCE_WITHOUT_HELPER = "cmt-test-extra-mem-without-helper" + randomUUID;
     CUSTOM_MACHINE_TYPE_INSTANCE_EXT_MEMORY = "cmt-test-ext-mem" + randomUUID;
+
+    // Clean up existing stale resources.
+    Util.cleanUpExistingInstances("cmt-test-", PROJECT_ID, ZONE);
 
     stdOut.close();
     System.setOut(out);
