@@ -39,7 +39,7 @@ public class EmbeddingBatchSampleTest extends TestCase {
   private static String BUCKET_NAME;
   private static final String GCS_SOURCE_URI =
       "gs://cloud-samples-data/generative-ai/embeddings/embeddings_input.jsonl";
-  private static final String GCS_DESTINATION_OUTPUT_PREFIX =
+  private static final String GCS_OUTPUT_URI =
       String.format("gs://%s/embedding_batch_output", BUCKET_NAME);
   private static final String MODEL_ID = "textembedding-gecko@003";
   static Storage storage;
@@ -75,7 +75,7 @@ public class EmbeddingBatchSampleTest extends TestCase {
 
     BatchPredictionJob batchPredictionJob =
         EmbeddingBatchSample.embeddingBatchSample(PROJECT_ID, LOCATION, GCS_SOURCE_URI,
-            GCS_DESTINATION_OUTPUT_PREFIX, MODEL_ID);
+            GCS_OUTPUT_URI, MODEL_ID);
 
     Assertions.assertNotNull(batchPredictionJob);
     assertTrue(batchPredictionJob.getDisplayName().contains("my embedding batch job "));
