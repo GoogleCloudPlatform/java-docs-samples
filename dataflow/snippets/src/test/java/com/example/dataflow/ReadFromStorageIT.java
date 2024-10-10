@@ -84,7 +84,6 @@ public class ReadFromStorageIT {
     assertEquals(PipelineResult.State.DONE, state);
 
     String got = bout.toString();
-    System.out.println(got);
 
     // Very the file contents were logged.
     // The order of the lines in the log is not guaranteed.
