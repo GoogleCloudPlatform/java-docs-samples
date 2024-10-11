@@ -20,8 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.dataplex.v1.EntryGroup;
-import com.google.cloud.dataplex.v1.EntryGroupName;
-import com.google.cloud.dataplex.v1.LocationName;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -32,8 +30,7 @@ import org.junit.Test;
 public class EntryGroupIT {
   private static final String ID = UUID.randomUUID().toString().substring(0, 8);
   private static final String LOCATION = "us-central1";
-  private static LocationName locationName;
-  private static EntryGroupName entryGroupName;
+  private static final String entryGroupId = "test-entry-group" + ID;
   private static String expectedEntryGroup;
 
   private static final String PROJECT_ID = requireProjectIdEnvVar();
@@ -53,46 +50,42 @@ public class EntryGroupIT {
   @BeforeClass
   // Set-up code that will be executed before all tests
   public static void setUp() throws Exception {
-    String entryGroupId = "test-entry-group" + ID;
-    locationName = LocationName.of(PROJECT_ID, LOCATION);
-    entryGroupName = EntryGroupName.of(PROJECT_ID, LOCATION, entryGroupId);
     expectedEntryGroup =
         String.format(
             "projects/%s/locations/%s/entryGroups/%s", PROJECT_ID, LOCATION, entryGroupId);
     // Create Entry Group resource that will be used in tests for "get", "list" and "update" methods
-    CreateEntryGroup.createEntryGroup(locationName, entryGroupId);
+    CreateEntryGroup.createEntryGroup(PROJECT_ID, LOCATION, entryGroupId);
   }
 
   @Test
   public void listEntryGroups_returnsListContainingEntryGroupCreatedInSetUp() throws IOException {
-    List<EntryGroup> entryGroups = ListEntryGroups.listEntryGroups(locationName);
+    List<EntryGroup> entryGroups = ListEntryGroups.listEntryGroups(PROJECT_ID, LOCATION);
     assertThat(entryGroups.stream().map(EntryGroup::getName)).contains(expectedEntryGroup);
   }
 
   @Test
   public void getEntryGroup_returnsEntryGroupCreatedInSetUp() throws IOException {
-    EntryGroup entryGroup = GetEntryGroup.getEntryGroup(entryGroupName);
+    EntryGroup entryGroup = GetEntryGroup.getEntryGroup(PROJECT_ID, LOCATION, entryGroupId);
     assertThat(entryGroup.getName()).isEqualTo(expectedEntryGroup);
   }
 
   @Test
   public void updateEntryGroup_returnsUpdatedEntryGroup() throws Exception {
-    EntryGroup entryGroup = UpdateEntryGroup.updateEntryGroup(entryGroupName);
+    EntryGroup entryGroup = UpdateEntryGroup.updateEntryGroup(PROJECT_ID, LOCATION, entryGroupId);
     assertThat(entryGroup.getName()).isEqualTo(expectedEntryGroup);
   }
 
   @Test
   public void createEntryGroup_returnsCreatedEntryGroup() throws Exception {
     String entryGroupIdToCreate = "test-entry-group" + UUID.randomUUID().toString().substring(0, 8);
-    EntryGroupName entryGroupNameToCreate =
-        EntryGroupName.of(PROJECT_ID, LOCATION, entryGroupIdToCreate);
     String expectedEntryGroupToCreate =
         String.format(
             "projects/%s/locations/%s/entryGroups/%s", PROJECT_ID, LOCATION, entryGroupIdToCreate);
 
-    EntryGroup entryGroup = CreateEntryGroup.createEntryGroup(locationName, entryGroupIdToCreate);
+    EntryGroup entryGroup =
+        CreateEntryGroup.createEntryGroup(PROJECT_ID, LOCATION, entryGroupIdToCreate);
     // Clean-up created Entry Group
-    DeleteEntryGroup.deleteEntryGroup(entryGroupNameToCreate);
+    DeleteEntryGroup.deleteEntryGroup(PROJECT_ID, LOCATION, entryGroupIdToCreate);
 
     assertThat(entryGroup.getName()).isEqualTo(expectedEntryGroupToCreate);
   }
@@ -100,19 +93,17 @@ public class EntryGroupIT {
   @Test
   public void deleteEntryGroup_executesTheCallWithoutException() throws Exception {
     String entryGroupIdToDelete = "test-entry-group" + UUID.randomUUID().toString().substring(0, 8);
-    EntryGroupName entryGroupNameToDelete =
-        EntryGroupName.of(PROJECT_ID, LOCATION, entryGroupIdToDelete);
     // Create Entry Group to be deleted
-    CreateEntryGroup.createEntryGroup(locationName, entryGroupIdToDelete);
+    CreateEntryGroup.createEntryGroup(PROJECT_ID, LOCATION, entryGroupIdToDelete);
 
     // No exception means successful call
-    DeleteEntryGroup.deleteEntryGroup(entryGroupNameToDelete);
+    DeleteEntryGroup.deleteEntryGroup(PROJECT_ID, LOCATION, entryGroupIdToDelete);
   }
 
   @AfterClass
   // Clean-up code that will be executed after all tests
   public static void tearDown() throws Exception {
     // Clean-up Entry Group resource created in setUp()
-    DeleteEntryGroup.deleteEntryGroup(entryGroupName);
+    DeleteEntryGroup.deleteEntryGroup(PROJECT_ID, LOCATION, entryGroupId);
   }
 }
