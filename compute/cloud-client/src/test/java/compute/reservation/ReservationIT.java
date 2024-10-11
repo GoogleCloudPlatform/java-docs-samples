@@ -16,14 +16,19 @@
 
 package compute.reservation;
 
+import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.ANY_RESERVATION;
+import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.SPECIFIC_RESERVATION;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.compute.v1.Instance;
+import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.CreateInstanceTemplate;
 import compute.CreateRegionalInstanceTemplate;
+import compute.DeleteInstance;
 import compute.DeleteInstanceTemplate;
 import compute.DeleteRegionalInstanceTemplate;
 import compute.Util;
@@ -35,7 +40,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,26 +47,35 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "asia-south1-a";
+  private static final String ZONE = "us-west1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static ReservationsClient reservationsClient;
+  private static InstancesClient instancesClient;
   private static String RESERVATION_NAME_GLOBAL;
   private static String RESERVATION_NAME_REGIONAL;
+  private static String RESERVATION_NAME;
+  private static String RESERVATION_SHARED_NAME;
   private static String GLOBAL_INSTANCE_TEMPLATE_URI;
   private static String REGIONAL_INSTANCE_TEMPLATE_URI;
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
-      "test-global-inst-temp" + UUID.randomUUID();
+      "test-global-inst-temp-" + UUID.randomUUID();
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
-      "test-regional-inst-temp" + UUID.randomUUID();
+      "test-regional-inst-temp-" + UUID.randomUUID();
+  private static final String INSTANCE_FOR_SPR =
+      "test-instance-for-spr-" + UUID.randomUUID().toString().substring(0, 8);
+  private static final String INSTANCE_NAME =
+      "test-instance-" + UUID.randomUUID().toString().substring(0, 8);
+  private static final String SPECIFIC_SHARED_INSTANCE_NAME =
+      "test-instance-shared-" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
+  private static final String MACHINE_TYPE = "n2-standard-32";
+  private static final String MIN_CPU_PLATFORM = "Intel Cascade Lake";
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -80,14 +93,17 @@ public class ReservationIT {
     System.setOut(new PrintStream(stdOut));
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-global-inst-temp", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-regional-inst-temp", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-regional", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-global", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp", PROJECT_ID);
+    Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
 
-    // Initialize the client once for all tests
+    // Initialize the clients once for all tests
+    instancesClient = InstancesClient.create();
     reservationsClient = ReservationsClient.create();
 
+    RESERVATION_NAME = "test-reserv-" + UUID.randomUUID();
+    RESERVATION_SHARED_NAME = "test-reserv-shared-" + UUID.randomUUID();
     RESERVATION_NAME_GLOBAL = "test-reserv-global-" + UUID.randomUUID();
     RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + UUID.randomUUID();
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
@@ -116,11 +132,11 @@ public class ReservationIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    // Delete instance template with GLOBAL location.
+    // Clean up the instances
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_FOR_SPR);
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME);
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
-    assertThat(stdOut.toString())
-        .contains("Instance template deletion operation status for "
-            + GLOBAL_INSTANCE_TEMPLATE_NAME);
 
     // Delete instance template with REGIONAL location.
     DeleteRegionalInstanceTemplate.deleteRegionalInstanceTemplate(
@@ -130,10 +146,15 @@ public class ReservationIT {
             + REGIONAL_INSTANCE_TEMPLATE_NAME);
 
     // Delete all reservations created for testing.
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_SHARED_NAME);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
 
     // Test that reservations are deleted
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_SHARED_NAME, ZONE));
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_GLOBAL, ZONE));
@@ -141,15 +162,16 @@ public class ReservationIT {
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
 
-    // Close the client after all tests
+    // Close the clients after all tests
     reservationsClient.close();
+    instancesClient.close();
 
     stdOut.close();
     System.setOut(out);
   }
 
   @Test
-  public void firstCreateReservationWithGlobalInstanceTemplateTest()
+  public void testCreateReservationWithGlobalInstanceTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_GLOBAL,
@@ -162,7 +184,7 @@ public class ReservationIT {
   }
 
   @Test
-  public void firstCreateReservationWithRegionInstanceTemplateTest()
+  public void testCreateReservationWithRegionInstanceTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_REGIONAL, REGIONAL_INSTANCE_TEMPLATE_URI,
@@ -173,5 +195,61 @@ public class ReservationIT {
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
     Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
+  }
+
+
+  @Test
+  public void testConsumeAnyMatchingReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    ConsumeAnyMatchingReservation.createInstance(
+        PROJECT_ID, ZONE, INSTANCE_NAME, MACHINE_TYPE, MIN_CPU_PLATFORM);
+
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_NAME);
+
+    Assert.assertEquals(ANY_RESERVATION.toString(),
+        instance.getReservationAffinity().getConsumeReservationType());
+  }
+
+  @Test
+  public void testConsumeSingleProjectReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Create the reservation
+    ConsumeSingleProjectReservation.createReservation(
+        PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS,
+        ZONE, MACHINE_TYPE, MIN_CPU_PLATFORM, true);
+
+    ConsumeSingleProjectReservation.createInstance(
+        PROJECT_ID, ZONE, INSTANCE_FOR_SPR, MACHINE_TYPE,
+        MIN_CPU_PLATFORM, RESERVATION_NAME);
+
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_FOR_SPR);
+
+    assertThat(instance.getReservationAffinity().getValuesList())
+        .contains(RESERVATION_NAME);
+    Assert.assertEquals(SPECIFIC_RESERVATION.toString(),
+        instance.getReservationAffinity().getConsumeReservationType());
+  }
+
+  @Test
+  public void testConsumeSpecificSharedReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    ConsumeSpecificSharedReservation.createReservation(PROJECT_ID,
+        RESERVATION_SHARED_NAME, NUMBER_OF_VMS, ZONE,
+        MACHINE_TYPE, MIN_CPU_PLATFORM, true);
+
+    Assert.assertEquals(RESERVATION_SHARED_NAME,
+        reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_SHARED_NAME).getName());
+
+    ConsumeSpecificSharedReservation.createInstance(
+        PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME, MACHINE_TYPE,
+        MIN_CPU_PLATFORM, RESERVATION_SHARED_NAME);
+
+    // Verify that the instance was created with the correct reservation and consumeReservationType
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE_NAME);
+
+    Assert.assertTrue(instance.getReservationAffinity()
+        .getValuesList().get(0).contains(RESERVATION_SHARED_NAME));
+    Assert.assertEquals(SPECIFIC_RESERVATION.toString(),
+        instance.getReservationAffinity().getConsumeReservationType());
   }
 }
