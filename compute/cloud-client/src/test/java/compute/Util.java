@@ -62,7 +62,7 @@ public abstract class Util {
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
   private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
   private static final String[] zones = new String[]
-      {"us-central1-a", "us-west1-a", "asia-south1-a", "us-central1-b"};
+    {"us-central1-a", "us-west1-a", "asia-south1-a", "us-central1-b"};
 
   // Delete templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
