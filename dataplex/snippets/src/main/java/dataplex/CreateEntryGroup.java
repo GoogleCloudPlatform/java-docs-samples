@@ -31,13 +31,13 @@ public class CreateEntryGroup {
     String location = "MY_LOCATION";
     String entryGroupId = "MY_ENTRY_GROUP_ID";
 
-    LocationName locationName = LocationName.of(projectId, location);
-    EntryGroup createdEntryGroup = createEntryGroup(locationName, entryGroupId);
+    EntryGroup createdEntryGroup = createEntryGroup(projectId, location, entryGroupId);
     System.out.println("Successfully created entry group: " + createdEntryGroup.getName());
   }
 
-  public static EntryGroup createEntryGroup(LocationName locationName, String entryGroupId)
+  public static EntryGroup createEntryGroup(String projectId, String location, String entryGroupId)
       throws Exception {
+    LocationName locationName = LocationName.of(projectId, location);
     EntryGroup entryGroup =
         EntryGroup.newBuilder().setDescription("description of the entry group").build();
 

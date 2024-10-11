@@ -30,12 +30,14 @@ public class DeleteEntryGroup {
     String location = "MY_LOCATION";
     String entryGroupId = "MY_ENTRY_GROUP_ID";
 
-    EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
-    deleteEntryGroup(entryGroupName);
+    deleteEntryGroup(projectId, location, entryGroupId);
     System.out.println("Successfully deleted entry group");
   }
 
-  public static void deleteEntryGroup(EntryGroupName entryGroupName) throws Exception {
+  public static void deleteEntryGroup(String projectId, String location, String entryGroupId)
+      throws Exception {
+    EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources,

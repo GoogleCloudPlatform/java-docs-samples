@@ -32,15 +32,15 @@ public class UpdateEntryGroup {
     String location = "MY_LOCATION";
     String entryGroupId = "MY_ENTRY_GROUP_ID";
 
-    EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
-    EntryGroup updatedEntryGroup = updateEntryGroup(entryGroupName);
+    EntryGroup updatedEntryGroup = updateEntryGroup(projectId, location, entryGroupId);
     System.out.println("Successfully updated entry group: " + updatedEntryGroup.getName());
   }
 
-  public static EntryGroup updateEntryGroup(EntryGroupName entryGroupName) throws Exception {
+  public static EntryGroup updateEntryGroup(String projectId, String location, String entryGroupId)
+      throws Exception {
     EntryGroup entryGroup =
         EntryGroup.newBuilder()
-            .setName(entryGroupName.toString())
+            .setName(EntryGroupName.of(projectId, location, entryGroupId).toString())
             .setDescription("updated description of the entry group")
             .build();
 

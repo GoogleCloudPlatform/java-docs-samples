@@ -32,12 +32,14 @@ public class GetEntryGroup {
     String location = "MY_LOCATION";
     String entryGroupId = "MY_ENTRY_GROUP_ID";
 
-    EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
-    EntryGroup entryGroup = getEntryGroup(entryGroupName);
+    EntryGroup entryGroup = getEntryGroup(projectId, location, entryGroupId);
     System.out.println("Entry group retrieved successfully: " + entryGroup.getName());
   }
 
-  public static EntryGroup getEntryGroup(EntryGroupName entryGroupName) throws IOException {
+  public static EntryGroup getEntryGroup(String projectId, String location, String entryGroupId)
+      throws IOException {
+    EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources,

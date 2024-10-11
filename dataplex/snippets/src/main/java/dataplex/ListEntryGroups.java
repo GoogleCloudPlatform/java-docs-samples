@@ -33,13 +33,15 @@ public class ListEntryGroups {
     // Available locations: https://cloud.google.com/dataplex/docs/locations
     String location = "MY_LOCATION";
 
-    LocationName locationName = LocationName.of(projectId, location);
-    List<EntryGroup> entryGroups = listEntryGroups(locationName);
+    List<EntryGroup> entryGroups = listEntryGroups(projectId, location);
     entryGroups.forEach(
         entryGroup -> System.out.println("Entry group name: " + entryGroup.getName()));
   }
 
-  public static List<EntryGroup> listEntryGroups(LocationName locationName) throws IOException {
+  public static List<EntryGroup> listEntryGroups(String projectId, String location)
+      throws IOException {
+    LocationName locationName = LocationName.of(projectId, location);
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources,
