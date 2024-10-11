@@ -25,7 +25,7 @@ import java.io.IOException;
 public class CreateNotificationConfigSnippets {
 
   public static void main(String[] args) throws IOException {
-    // parentId: must be in one of the following formats:
+    //  parentId: must be in one of the following formats:
     //    "organizations/{organization_id}"
     //    "projects/{project_id}"
     //    "folders/{folder_id}"
