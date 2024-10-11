@@ -53,7 +53,7 @@ public abstract class Util {
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
   private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
-
+private static final String[] zones = new String[] {"us-central1-a", "us-west1-a", "asia-south1-a", "us-central1-b"};
   // Delete templates which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
   public static void cleanUpExistingInstanceTemplates(String prefixToDelete, String projectId)
@@ -77,7 +77,8 @@ public abstract class Util {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (RegionInstanceTemplatesClient instanceTemplatesClient =
              RegionInstanceTemplatesClient.create()) {
-      String region = zone.substring(0, zone.lastIndexOf('-'));
+      for (String zoneItem : zones) {
+      String region = zoneItem.substring(0, zoneItem.lastIndexOf('-'));
       ListRegionInstanceTemplatesRequest request =
           ListRegionInstanceTemplatesRequest.newBuilder()
               .setProject(projectId)
@@ -86,12 +87,13 @@ public abstract class Util {
 
       for (InstanceTemplate instanceTemplate :
           instanceTemplatesClient.list(request).iterateAll()) {
-        if (containPrefixToDeleteAndZone(instanceTemplate, prefixToDelete, zone)
+        if (containPrefixToDeleteAndZone(instanceTemplate, prefixToDelete, zoneItem)
             && isCreatedBeforeThresholdTime(instanceTemplate.getCreationTimestamp())
             && instanceTemplate.isInitialized()) {
           DeleteRegionalInstanceTemplate.deleteRegionalInstanceTemplate(
               projectId, region, instanceTemplate.getName());
-        }
+        }}
+
       }
     }
   }
@@ -102,16 +104,18 @@ public abstract class Util {
                                               String instanceZone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (InstancesClient instancesClient = InstancesClient.create()) {
-      for (Instance instance : instancesClient.list(projectId, instanceZone).iterateAll()) {
+      for (String zoneItem : zones) {
+
+        for (Instance instance : instancesClient.list(projectId, zoneItem).iterateAll()) {
         if (instance.getDeletionProtection()
             && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
           SetDeleteProtection.setDeleteProtection(
-              projectId, instanceZone, instance.getName(), false);
+              projectId, zoneItem, instance.getName(), false);
         }
-        if (containPrefixToDeleteAndZone(instance, prefixToDelete, instanceZone)
+        if (containPrefixToDeleteAndZone(instance, prefixToDelete, zoneItem)
             && isCreatedBeforeThresholdTime(instance.getCreationTimestamp())) {
-          DeleteInstance.deleteInstance(projectId, instanceZone, instance.getName());
-        }
+          DeleteInstance.deleteInstance(projectId, zoneItem, instance.getName());
+        }}
       }
     }
   }
@@ -185,10 +189,12 @@ public abstract class Util {
       String prefixToDelete, String projectId, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-      for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
-        if (containPrefixToDeleteAndZone(reservation, prefixToDelete, zone)
-            && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
-          DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
+      for (String zoneItem : zones) {
+        for (Reservation reservation : reservationsClient.list(projectId, zoneItem).iterateAll()) {
+          if (containPrefixToDeleteAndZone(reservation, prefixToDelete, zoneItem)
+              && isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
+            DeleteReservation.deleteReservation(projectId, zoneItem, reservation.getName());
+          }
         }
       }
     }
