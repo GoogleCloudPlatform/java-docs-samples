@@ -58,25 +58,25 @@ public class EntryGroupIT {
   }
 
   @Test
-  public void listEntryGroups_returnsListContainingEntryGroupCreatedInSetUp() throws IOException {
+  public void testListEntryGroups() throws IOException {
     List<EntryGroup> entryGroups = ListEntryGroups.listEntryGroups(PROJECT_ID, LOCATION);
     assertThat(entryGroups.stream().map(EntryGroup::getName)).contains(expectedEntryGroup);
   }
 
   @Test
-  public void getEntryGroup_returnsEntryGroupCreatedInSetUp() throws IOException {
+  public void testGetEntryGroup() throws IOException {
     EntryGroup entryGroup = GetEntryGroup.getEntryGroup(PROJECT_ID, LOCATION, entryGroupId);
     assertThat(entryGroup.getName()).isEqualTo(expectedEntryGroup);
   }
 
   @Test
-  public void updateEntryGroup_returnsUpdatedEntryGroup() throws Exception {
+  public void testUpdateEntryGroup() throws Exception {
     EntryGroup entryGroup = UpdateEntryGroup.updateEntryGroup(PROJECT_ID, LOCATION, entryGroupId);
     assertThat(entryGroup.getName()).isEqualTo(expectedEntryGroup);
   }
 
   @Test
-  public void createEntryGroup_returnsCreatedEntryGroup() throws Exception {
+  public void testCreateEntryGroup() throws Exception {
     String entryGroupIdToCreate = "test-entry-group" + UUID.randomUUID().toString().substring(0, 8);
     String expectedEntryGroupToCreate =
         String.format(
@@ -91,7 +91,7 @@ public class EntryGroupIT {
   }
 
   @Test
-  public void deleteEntryGroup_executesTheCallWithoutException() throws Exception {
+  public void testDeleteEntryGroup() throws Exception {
     String entryGroupIdToDelete = "test-entry-group" + UUID.randomUUID().toString().substring(0, 8);
     // Create Entry Group to be deleted
     CreateEntryGroup.createEntryGroup(PROJECT_ID, LOCATION, entryGroupIdToDelete);
