@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,9 +16,6 @@
 
 package aiplatform;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import com.google.cloud.aiplatform.v1.BatchPredictionJob;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
@@ -26,6 +23,7 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import java.io.IOException;
 import java.util.UUID;
+import junit.framework.TestCase;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,16 +32,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class BatchTextPredictionSampleTest {
+public class EmbeddingBatchSampleTest extends TestCase {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
   private static String BUCKET_NAME;
   private static final String GCS_SOURCE_URI =
-      "gs://cloud-samples-data/batch/prompt_for_batch_code_predict.jsonl";
-  private static final String GCS_DESTINATION_OUTPUT_PREFIX =
-      String.format("gs://%s/batch-text-predict", BUCKET_NAME);
-  private static final String MODEL_ID = "text-bison";
+      "gs://cloud-samples-data/generative-ai/embeddings/embeddings_input.jsonl";
+  private static final String GCS_OUTPUT_URI =
+      String.format("gs://%s/embedding_batch_output", BUCKET_NAME);
+  private static final String MODEL_ID = "textembedding-gecko@003";
   static Storage storage;
   static Bucket bucket;
 
@@ -73,13 +71,15 @@ public class BatchTextPredictionSampleTest {
   }
 
   @Test
-  public void testBatchTextPredictionSample() throws IOException {
+  public void testEmbeddingBatchSample() throws IOException {
+
     BatchPredictionJob batchPredictionJob =
-        BatchTextPredictionSample.batchTextPrediction(PROJECT_ID, GCS_SOURCE_URI,
-        GCS_DESTINATION_OUTPUT_PREFIX, MODEL_ID, LOCATION);
+        EmbeddingBatchSample.embeddingBatchSample(PROJECT_ID, LOCATION, GCS_SOURCE_URI,
+            GCS_OUTPUT_URI, MODEL_ID);
 
     Assertions.assertNotNull(batchPredictionJob);
-    assertTrue(batchPredictionJob.getDisplayName().contains("my batch text prediction job"));
-    assertTrue(batchPredictionJob.getModel().contains("publishers/google/models/text-bison"));
+    assertTrue(batchPredictionJob.getDisplayName().contains("my embedding batch job "));
+    assertTrue(batchPredictionJob.getModel()
+        .contains("publishers/google/models/textembedding-gecko"));
   }
 }

@@ -16,69 +16,53 @@
 
 package aiplatform;
 
-// [START generativeaionvertexai_batch_text_predict]
+// [START generativeaionvertexai_embedding_batch]
 
 import com.google.cloud.aiplatform.v1.BatchPredictionJob;
 import com.google.cloud.aiplatform.v1.GcsDestination;
 import com.google.cloud.aiplatform.v1.GcsSource;
 import com.google.cloud.aiplatform.v1.JobServiceClient;
 import com.google.cloud.aiplatform.v1.JobServiceSettings;
-import com.google.gson.Gson;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.Value;
-import com.google.protobuf.util.JsonFormat;
+import com.google.cloud.aiplatform.v1.LocationName;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
-public class BatchTextPredictionSample {
+public class EmbeddingBatchSample {
 
-  public static void main(String[] args)
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String project = "YOUR_PROJECT_ID";
     String location = "us-central1";
     // inputUri: URI of the input dataset.
     // Could be a BigQuery table or a Google Cloud Storage file.
     // E.g. "gs://[BUCKET]/[DATASET].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
-    String inputUri = "gs://cloud-samples-data/batch/prompt_for_batch_text_predict.jsonl";
+    String inputUri = "gs://cloud-samples-data/generative-ai/embeddings/embeddings_input.jsonl";
     // outputUri: URI where the output will be stored.
     // Could be a BigQuery table or a Google Cloud Storage file.
     // E.g. "gs://[BUCKET]/[OUTPUT].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
-    String outputUri = "gs://YOUR_BUCKET/batch_text_predict_output";
-    String textModel = "text-bison";
+    String outputUri = "gs://YOUR_BUCKET/embedding_batch_output";
+    String textEmbeddingModel = "textembedding-gecko@003";
 
-    batchTextPrediction(project, inputUri, outputUri, textModel, location);
+    embeddingBatchSample(project, location, inputUri, outputUri, textEmbeddingModel);
   }
 
-  // Perform batch text prediction using a pre-trained text generation model.
-  // Example of using Google Cloud Storage bucket as the input and output data source
-  static BatchPredictionJob batchTextPrediction(
-      String projectId, String inputUri, String outputUri, String textModel, String location)
+  // Generates embeddings from text using batch processing.
+  // Read more: https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/batch-prediction-genai-embeddings
+  public static BatchPredictionJob embeddingBatchSample(
+      String project, String location, String inputUri, String outputUri, String textEmbeddingModel)
       throws IOException {
     BatchPredictionJob response;
     JobServiceSettings jobServiceSettings =  JobServiceSettings.newBuilder()
         .setEndpoint("us-central1-aiplatform.googleapis.com:443").build();
-    String parent = String.format("projects/%s/locations/%s", projectId, location);
-    String modelName = String.format(
-        "projects/%s/locations/%s/publishers/google/models/%s", projectId, location, textModel);
-    // Construct model parameters
-    Map<String, String> modelParameters = new HashMap<>();
-    modelParameters.put("maxOutputTokens", "200");
-    modelParameters.put("temperature", "0.2");
-    modelParameters.put("topP", "0.95");
-    modelParameters.put("topK", "40");
-    Value parameterValue = mapToValue(modelParameters);
+    LocationName parent = LocationName.of(project, location);
+    String modelName = String.format("projects/%s/locations/%s/publishers/google/models/%s",
+        project, location, textEmbeddingModel);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (JobServiceClient jobServiceClient = JobServiceClient.create(jobServiceSettings)) {
-
+    try (JobServiceClient client = JobServiceClient.create(jobServiceSettings)) {
       BatchPredictionJob batchPredictionJob =
           BatchPredictionJob.newBuilder()
-              .setDisplayName("my batch text prediction job " + System.currentTimeMillis())
+              .setDisplayName("my embedding batch job " + System.currentTimeMillis())
               .setModel(modelName)
               .setInputConfig(
                   BatchPredictionJob.InputConfig.newBuilder()
@@ -91,25 +75,14 @@ public class BatchTextPredictionSample {
                           .setOutputUriPrefix(outputUri).build())
                       .setPredictionsFormat("jsonl")
                       .build())
-              .setModelParameters(parameterValue)
               .build();
 
-      // Create the batch prediction job
-      response =
-          jobServiceClient.createBatchPredictionJob(parent, batchPredictionJob);
+      response = client.createBatchPredictionJob(parent, batchPredictionJob);
 
       System.out.format("response: %s\n", response);
       System.out.format("\tName: %s\n", response.getName());
     }
     return response;
   }
-
-  private static Value mapToValue(Map<String, String> map) throws InvalidProtocolBufferException {
-    Gson gson = new Gson();
-    String json = gson.toJson(map);
-    Value.Builder builder = Value.newBuilder();
-    JsonFormat.parser().merge(json, builder);
-    return builder.build();
-  }
 }
-// [END generativeaionvertexai_batch_text_predict]
+// [END generativeaionvertexai_embedding_batch]

@@ -348,33 +348,39 @@ public static void exampleSnippet(String projectId, String filePath) {
     // Snippet content ...
 }
 ```
+
 ### Method Structure
+
 Method arguments should be limited to what is absolutely required for testing (ideally having at
 most 4 arguments). In most cases, this is project specific information or the path to an external
 file. For example, project specific information (such as `projectId`) or a `filePath` for an
 external file is acceptable, while an argument for the type of a file or a specific action is not.
- 
+
 Any declared function arguments should include a no-arg, main method with examples for how
 the user can initialize the method arguments and call the entrypoint for the snippet. If the
 values for these variables need to be replaced by the user, be explicit that
 they are example values only.
 
-Snippet methods should specify a return type of `void` and avoid returning any value wherever
-possible. Instead, show the user how to interact with a returned object programmatically by printing
-some example attributes to the console. 
+Snippet methods should return data that can be used in the calling method to show the user how to
+interact with a returned object programmatically.
+
 ```java
 public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String filePath = "path/to/image.png";
-    inspectImageFile(projectId, filePath);
+    List<String> results = inspectImageFile(projectId, filePath);
+    for (String result : results) {
+      // process result ...
+    }
 }
 
 // This is an example snippet for showing best practices.
-public static void exampleSnippet(String projectId, String filePath) {
+public static List<String> exampleSnippet(String projectId, String filePath) {
     // Snippet content ...
 }
 ```
+
 ### Exception Handling
 Samples should include examples and details of how to catch and handle common `Exceptions` that are
 the result of improper interactions with the client or service. Lower level exceptions that are 
