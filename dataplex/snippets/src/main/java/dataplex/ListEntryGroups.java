@@ -49,6 +49,7 @@ public class ListEntryGroups {
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       CatalogServiceClient.ListEntryGroupsPagedResponse listEntryGroupsResponse =
           client.listEntryGroups(locationName);
+      // Paging is implicitly handled by .iterateAll(), all results will be returned
       return ImmutableList.copyOf(listEntryGroupsResponse.iterateAll());
     }
   }
