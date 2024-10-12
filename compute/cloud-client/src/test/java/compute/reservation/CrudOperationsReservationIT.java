@@ -46,6 +46,7 @@ public class CrudOperationsReservationIT {
   private static final String ZONE = "us-central1-a";
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
+  static String javaVersion = System.getProperty("java.version").substring(0, 2);
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -58,10 +59,10 @@ public class CrudOperationsReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
+    RESERVATION_NAME = "test-reservation-" + javaVersion + "-" + UUID.randomUUID().toString().substring(0, 8);
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingReservations("test", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
 
     CreateReservation.createReservation(
         PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
