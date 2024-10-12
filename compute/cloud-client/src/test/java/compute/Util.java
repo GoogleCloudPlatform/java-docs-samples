@@ -223,8 +223,7 @@ public abstract class Util {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
       for (Snapshot snapshot : snapshotsClient.list(projectId).iterateAll()) {
-        if (containPrefixToDelete(snapshot, prefixToDelete)
-            && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
+        if (isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
           DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
         }
       }
