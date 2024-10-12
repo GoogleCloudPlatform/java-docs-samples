@@ -238,7 +238,7 @@ public abstract class Util {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (StoragePoolsClient storagePoolsClient = StoragePoolsClient.create()) {
       for (StoragePool storagePool : storagePoolsClient.list(projectId, zone).iterateAll()) {
-        if (containPrefixToDeleteAndZone(projectId, prefixToDelete, zone)
+        if (containPrefixToDeleteAndZone(storagePool, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(storagePool.getCreationTimestamp())) {
           deleteStoragePool(projectId, zone, storagePool.getName());
         }
