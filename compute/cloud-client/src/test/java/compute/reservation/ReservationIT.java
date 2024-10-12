@@ -59,7 +59,8 @@ public class ReservationIT {
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
       "test-global-inst-temp-" + javaVersion + "-" + UUID.randomUUID().toString().substring(0, 8);
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
-      "test-regional-inst-temp-" + javaVersion  + "-" + UUID.randomUUID().toString().substring(0, 8);
+      "test-regional-inst-temp-" + javaVersion  + "-"
+          + UUID.randomUUID().toString().substring(0, 8);
   private static final int NUMBER_OF_VMS = 3;
 
   // Check if the required environment variables are set.
@@ -79,15 +80,19 @@ public class ReservationIT {
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstanceTemplates("test-global-inst-temp-" + javaVersion, PROJECT_ID);
-    Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp-" + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-global-" + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingRegionalInstanceTemplates(
+        "test-regional-inst-temp-" + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations(
+        "test-reserv-global-" + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv-regional-" + javaVersion, PROJECT_ID, ZONE);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
 
-    RESERVATION_NAME_GLOBAL = "test-reserv-global-" + javaVersion  + "-" + UUID.randomUUID().toString().substring(0, 8);
-    RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + javaVersion  + "-" + UUID.randomUUID().toString().substring(0, 8);
+    RESERVATION_NAME_GLOBAL = "test-reserv-global-" + javaVersion  + "-"
+        + UUID.randomUUID().toString().substring(0, 8);
+    RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + javaVersion  + "-"
+        + UUID.randomUUID().toString().substring(0, 8);
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
         PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
     REGIONAL_INSTANCE_TEMPLATE_URI =
