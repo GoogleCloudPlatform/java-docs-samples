@@ -223,7 +223,8 @@ public abstract class Util {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
       for (Snapshot snapshot : snapshotsClient.list(projectId).iterateAll()) {
-        if (isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
+        if (containPrefixToDelete(snapshot, prefixToDelete)
+            && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
           DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
         }
       }
@@ -237,7 +238,8 @@ public abstract class Util {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (StoragePoolsClient storagePoolsClient = StoragePoolsClient.create()) {
       for (StoragePool storagePool : storagePoolsClient.list(projectId, zone).iterateAll()) {
-        if (isCreatedBeforeThresholdTime(storagePool.getCreationTimestamp())) {
+        if (containPrefixToDelete(storagePool, prefixToDelete)
+            && isCreatedBeforeThresholdTime(storagePool.getCreationTimestamp())) {
           deleteStoragePool(projectId, zone, storagePool.getName());
         }
       }

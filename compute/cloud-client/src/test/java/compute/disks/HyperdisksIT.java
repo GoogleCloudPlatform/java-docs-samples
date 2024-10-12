@@ -64,7 +64,10 @@ public class HyperdisksIT {
     STORAGE_POOL_NAME = "test-storage-pool-enc-" + UUID.randomUUID();
 
     Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingStoragePool("test-storage-pool-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingStoragePool("test-storage-pool-", PROJECT_ID, "us-central1-a");
+    Util.cleanUpExistingStoragePool("test-storage-pool-", PROJECT_ID, "asia-south1-a");
+
   }
 
   @AfterAll
