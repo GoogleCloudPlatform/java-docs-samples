@@ -84,7 +84,6 @@ public class SnapshotsIT {
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingSnapshots("gcloud-test-", PROJECT_ID);
-    Util.cleanUpExistingSnapshots("test-", PROJECT_ID);
     Util.cleanUpExistingDisks("gcloud-", PROJECT_ID, ZONE);
 
     Image debianImage = null;
