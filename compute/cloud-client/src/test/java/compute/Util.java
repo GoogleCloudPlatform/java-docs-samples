@@ -16,6 +16,7 @@
 
 package compute;
 
+import com.google.cloud.compute.v1.DeleteStoragePoolRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Instance;
@@ -24,12 +25,18 @@ import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.InstanceTemplatesClient.ListPagedResponse;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.ListRegionInstanceTemplatesRequest;
+import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import com.google.cloud.compute.v1.Snapshot;
+import com.google.cloud.compute.v1.SnapshotsClient;
+import com.google.cloud.compute.v1.StoragePool;
+import com.google.cloud.compute.v1.StoragePoolsClient;
 import compute.deleteprotection.SetDeleteProtection;
+import compute.disks.DeleteDisk;
+import compute.disks.DeleteSnapshot;
 import compute.reservation.DeleteReservation;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -40,6 +47,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 
@@ -49,7 +57,7 @@ public abstract class Util {
   // resources
   // and delete the listed resources based on the timestamp.
 
-  private static final int DELETION_THRESHOLD_TIME_MINUTES = 20;
+  private static final int DELETION_THRESHOLD_TIME_MINUTES = 45;
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
   private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
@@ -179,7 +187,7 @@ public abstract class Util {
     return val;
   }
 
-  // Delete reservation which starts with the given prefixToDelete and
+  // Delete reservations which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
   public static void cleanUpExistingReservations(
       String prefixToDelete, String projectId, String zone)
@@ -191,6 +199,70 @@ public abstract class Util {
           DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
         }
       }
+    }
+  }
+
+  // Delete disks which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingDisks(
+      String prefixToDelete, String projectId, String zone)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (DisksClient disksClient = DisksClient.create()) {
+      for (Disk disk : disksClient.list(projectId, zone).iterateAll()) {
+        if (containPrefixToDeleteAndZone(disk, prefixToDelete, zone)
+            && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
+          DeleteDisk.deleteDisk(projectId, zone, disk.getName());
+        }
+      }
+    }
+  }
+
+  // Delete snapshots which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingSnapshots(String prefixToDelete, String projectId)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
+      for (Snapshot snapshot : snapshotsClient.list(projectId).iterateAll()) {
+        if (containPrefixToDelete(snapshot, prefixToDelete)
+            && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
+          DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
+        }
+      }
+    }
+  }
+
+  // Delete storagePools which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingStoragePool(
+      String prefixToDelete, String projectId, String zone)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (StoragePoolsClient storagePoolsClient = StoragePoolsClient.create()) {
+      for (StoragePool storagePool : storagePoolsClient.list(projectId, zone).iterateAll()) {
+        if (containPrefixToDeleteAndZone(projectId, prefixToDelete, zone)
+            && isCreatedBeforeThresholdTime(storagePool.getCreationTimestamp())) {
+          deleteStoragePool(projectId, zone, storagePool.getName());
+        }
+      }
+    }
+  }
+
+  public static void deleteStoragePool(String project, String zone, String storagePoolName)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (StoragePoolsClient storagePoolsClient = StoragePoolsClient.create()) {
+      DeleteStoragePoolRequest request =
+          DeleteStoragePoolRequest.newBuilder()
+              .setProject(project)
+              .setZone(zone)
+              .setStoragePool(storagePoolName)
+              .build();
+      Operation operation = storagePoolsClient.deleteAsync(request).get(1, TimeUnit.MINUTES);
+      if (operation.hasError()) {
+        System.out.println("StoragePool deletion failed!");
+        throw new Error(operation.getError().toString());
+      }
+      // Wait for server update
+      TimeUnit.SECONDS.sleep(50);
+      System.out.println("Deleted storage pool: " + storagePoolName);
     }
   }
 
@@ -214,6 +286,10 @@ public abstract class Util {
       if (resource instanceof Disk) {
         containPrefixAndZone = ((Disk) resource).getName().contains(prefixToDelete)
             && ((Disk) resource).getZone().contains(zone);
+      }
+      if (resource instanceof StoragePool) {
+        containPrefixAndZone = ((StoragePool) resource).getName().contains(prefixToDelete)
+            && ((StoragePool) resource).getZone().contains(zone);
       }
     } catch (NullPointerException e) {
       System.out.println("Resource not found, skipping deletion:");

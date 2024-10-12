@@ -38,15 +38,15 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
-public class CrudOperationReservationIT {
+class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
+  static String javaVersion = System.getProperty("java.version").substring(0, 2);
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -59,11 +59,12 @@ public class CrudOperationReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    RESERVATION_NAME = "test-reservation-" + javaVersion + "-"
+        + UUID.randomUUID().toString().substring(0, 8);
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
 
-    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
     CreateReservation.createReservation(
         PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
   }

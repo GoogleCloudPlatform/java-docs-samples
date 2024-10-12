@@ -8,8 +8,6 @@ In this repository, we are looking for patches that:
 * Fix bugs
 * Improve clarity and understandability
 
-If you want to contribute a full sample / tutorial, please consider contributing to our [community pages](https://cloud.google.com/community) [[How To](https://cloud.google.com/community/tutorials/write)] ([code](https://github.com/GoogleCloudPlatform/community)).
-
 ## Contributor License Agreement
 
 Contributions to this project must be accompanied by a Contributor License
