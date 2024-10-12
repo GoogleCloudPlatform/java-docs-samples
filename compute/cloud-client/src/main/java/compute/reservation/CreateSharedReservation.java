@@ -52,7 +52,7 @@ public class CreateSharedReservation {
         "projects/%s/global/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME", projectId);
     // Number of instances for which capacity needs to be reserved.
     int vmCount = 3;
-    // In your main method, create a real ReservationsClient
+    // In your main method, create ReservationsClient
     ReservationsClient client = ReservationsClient.create();
     // Create an instance of your class, passing in the client
     CreateSharedReservation creator = new CreateSharedReservation(client);
