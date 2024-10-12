@@ -47,6 +47,7 @@ public class HyperdisksIT {
   private static String HYPERDISK_NAME;
   private static String HYPERDISK_IN_POOL_NAME;
   private static String STORAGE_POOL_NAME;
+  static String javaVersion = System.getProperty("java.version").substring(0, 2);
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -61,13 +62,11 @@ public class HyperdisksIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     HYPERDISK_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
     HYPERDISK_IN_POOL_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
-    STORAGE_POOL_NAME = "test-storage-pool-enc-" + UUID.randomUUID();
+    STORAGE_POOL_NAME = "test-storage-pool-enc-" + javaVersion  + "-"
+        + UUID.randomUUID().toString().substring(0, 8);
 
     Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingStoragePool("test-storage-pool-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingStoragePool("test-storage-pool-", PROJECT_ID, "us-central1-a");
-    Util.cleanUpExistingStoragePool("test-storage-pool-", PROJECT_ID, "asia-south1-a");
-
+    Util.cleanUpExistingStoragePool("test-storage-pool-" + javaVersion, PROJECT_ID, ZONE);
   }
 
   @AfterAll
