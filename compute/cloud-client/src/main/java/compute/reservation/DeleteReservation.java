@@ -57,6 +57,11 @@ public class DeleteReservation {
       Operation response = reservationsClient.deleteAsync(
           deleteReservationRequest).get(5, TimeUnit.MINUTES);
 
+      if (response.getStatus() == Operation.Status.PENDING) {
+        // Wait for server update
+        TimeUnit.MINUTES.sleep(2);
+        System.out.println("Operation.Status = PENDING");
+      }
       if (response.getStatus() == Operation.Status.DONE) {
         System.out.println("Deleted reservation: " + reservationName);
       }
