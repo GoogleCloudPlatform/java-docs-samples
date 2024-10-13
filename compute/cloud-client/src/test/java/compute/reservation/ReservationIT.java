@@ -78,13 +78,6 @@ public class ReservationIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp-" + javaVersion, PROJECT_ID);
-    Util.cleanUpExistingRegionalInstanceTemplates(
-        "test-regional-inst-temp-" + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations(
-        "test-reserv-global-" + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-regional-" + javaVersion, PROJECT_ID, ZONE);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
@@ -143,6 +136,14 @@ public class ReservationIT {
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp-" + javaVersion, PROJECT_ID);
+    Util.cleanUpExistingRegionalInstanceTemplates(
+        "test-regional-inst-temp-" + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations(
+        "test-reserv-global-" + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-regional-" + javaVersion, PROJECT_ID, ZONE);
 
     // Close the client after all tests
     reservationsClient.close();

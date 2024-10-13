@@ -78,8 +78,6 @@ public class CrudOperationsReservationIT {
     INSTANCE_FOR_RESERVATION = "test-instance-for-reserv-" + javaVersion + "-"
         + UUID.randomUUID().toString().substring(0, 8);
 
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingReservations("test-reservation-" + javaVersion, PROJECT_ID, ZONE);
 
     CreateInstance.createInstance(PROJECT_ID, ZONE, INSTANCE_FOR_RESERVATION);
     CreateReservation.createReservation(
@@ -101,6 +99,9 @@ public class CrudOperationsReservationIT {
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_FROM_VM, ZONE));
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingReservations("test-reservation-" + javaVersion, PROJECT_ID, ZONE);
 
     reservationsClient.close();
     instancesClient.close();

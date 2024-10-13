@@ -65,8 +65,7 @@ public class HyperdisksIT {
     STORAGE_POOL_NAME = "test-storage-pool-enc-" + javaVersion  + "-"
         + UUID.randomUUID().toString().substring(0, 8);
 
-    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingStoragePool("test-storage-pool-" + javaVersion, PROJECT_ID, ZONE);
+
   }
 
   @AfterAll
@@ -77,6 +76,8 @@ public class HyperdisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
 
     Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
+    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingStoragePool("test-" , PROJECT_ID, ZONE);
   }
 
   @Test
