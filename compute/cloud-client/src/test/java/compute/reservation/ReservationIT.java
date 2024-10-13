@@ -83,7 +83,7 @@ public class ReservationIT {
     Util.cleanUpExistingRegionalInstanceTemplates(
         "test-regional-inst-temp-" + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations(
-       "test-reserv-global-" + javaVersion, PROJECT_ID, ZONE);
+        "test-reserv-global-" + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reserv-regional-" + javaVersion, PROJECT_ID, ZONE);
 
     // Initialize the client once for all tests
