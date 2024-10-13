@@ -18,7 +18,6 @@ package compute.reservation;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.isCreatedBeforeThresholdTime;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Reservation;
@@ -83,10 +82,9 @@ public class ReservationIT {
     Util.cleanUpExistingInstanceTemplates("test-global-inst-temp-" + javaVersion, PROJECT_ID);
     Util.cleanUpExistingRegionalInstanceTemplates(
         "test-regional-inst-temp-" + javaVersion, PROJECT_ID, ZONE);
-    cleanUpExistingReservations(PROJECT_ID, ZONE);
     //Util.cleanUpExistingReservations(
-    //    "test-reserv-global-" + javaVersion, PROJECT_ID, ZONE);
-    //Util.cleanUpExistingReservations("test-reserv-regional-" + javaVersion, PROJECT_ID, ZONE);
+    //   "test-reserv-global-" + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reserv-regional-" + javaVersion, PROJECT_ID, ZONE);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
@@ -178,17 +176,5 @@ public class ReservationIT {
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
     Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
-  }
-
-  public static void cleanUpExistingReservations(
-      String projectId, String zone)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-      for (Reservation reservation : reservationsClient.list(projectId, zone).iterateAll()) {
-        if (isCreatedBeforeThresholdTime(reservation.getCreationTimestamp())) {
-          DeleteReservation.deleteReservation(projectId, zone, reservation.getName());
-        }
-      }
-    }
   }
 }
