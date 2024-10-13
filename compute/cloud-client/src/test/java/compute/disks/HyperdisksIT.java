@@ -95,6 +95,7 @@ public class HyperdisksIT {
     Assert.assertTrue(hyperdisk.getType().contains("hyperdisk-balanced"));
     Assert.assertTrue(hyperdisk.getZone().contains(ZONE));
   }
+
   @Disabled
   @Test
   public void stage1_CreateHyperdiskStoragePoolTest()
