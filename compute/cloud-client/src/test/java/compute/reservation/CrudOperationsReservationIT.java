@@ -21,7 +21,12 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.compute.v1.Instance;
+import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Reservation;
+import com.google.cloud.compute.v1.ReservationsClient;
+import compute.CreateInstance;
+import compute.DeleteInstance;
 import compute.Util;
 import java.io.IOException;
 import java.util.List;
@@ -44,7 +49,11 @@ public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
+  private static ReservationsClient reservationsClient;
+  private static InstancesClient instancesClient;
   private static String RESERVATION_NAME;
+  private static String RESERVATION_NAME_FROM_VM;
+  private static String INSTANCE_FOR_RESERVATION;
   private static final int NUMBER_OF_VMS = 3;
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
 
@@ -59,12 +68,22 @@ public class CrudOperationsReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    reservationsClient = ReservationsClient.create();
+    instancesClient = InstancesClient.create();
+
     RESERVATION_NAME = "test-reservation-" + javaVersion + "-"
+        + UUID.randomUUID().toString().substring(0, 8);
+    RESERVATION_NAME_FROM_VM = "test-reservation-from-vm-" + javaVersion + "-"
+        + UUID.randomUUID().toString().substring(0, 8);
+    INSTANCE_FOR_RESERVATION = "test-instance-for-reserv-" + javaVersion + "-"
         + UUID.randomUUID().toString().substring(0, 8);
 
     // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("test-instance-for-reserv-"  + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reservation-from-vm-"  + javaVersion, PROJECT_ID, ZONE);
 
+    CreateInstance.createInstance(PROJECT_ID, ZONE, INSTANCE_FOR_RESERVATION);
     CreateReservation.createReservation(
         PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
   }
@@ -72,13 +91,21 @@ public class CrudOperationsReservationIT {
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Delete all reservations created for testing.
+    // Delete resources created for testing.
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_FOR_RESERVATION);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_FROM_VM);
 
     // Test that reservations are deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_FROM_VM, ZONE));
+
+    reservationsClient.close();
+    instancesClient.close();
   }
 
   @Test
@@ -97,6 +124,25 @@ public class CrudOperationsReservationIT {
         ListReservations.listReservations(PROJECT_ID, ZONE);
 
     assertThat(reservations).isNotNull();
-    Assert.assertTrue(reservations.get(0).getName().contains("test-"));
+    Assert.assertTrue(reservations.get(0).getName().contains("test-reservation-"));
+    Assert.assertTrue(reservations.get(1).getName().contains("test-reservation-"));
+  }
+
+  @Test
+  public void testCreateComputeReservationFromVm()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    CreateReservationFromVm.createComputeReservationFromVm(
+        PROJECT_ID, ZONE, RESERVATION_NAME_FROM_VM, INSTANCE_FOR_RESERVATION);
+
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_FOR_RESERVATION);
+    Reservation reservation =
+        reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_FROM_VM);
+
+    Assert.assertNotNull(reservation);
+    assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME_FROM_VM);
+    Assert.assertEquals(instance.getMinCpuPlatform(),
+        reservation.getSpecificReservation().getInstanceProperties().getMinCpuPlatform());
+    Assert.assertEquals(instance.getGuestAcceleratorsList(),
+        reservation.getSpecificReservation().getInstanceProperties().getGuestAcceleratorsList());
   }
 }

@@ -107,7 +107,7 @@ public class CreateReservation {
 
       // Wait for the create reservation operation to complete.
       Operation response =
-          reservationsClient.insertAsync(projectId, zone, reservation).get(5, TimeUnit.MINUTES);
+          reservationsClient.insertAsync(projectId, zone, reservation).get(7, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Reservation creation failed!" + response);
