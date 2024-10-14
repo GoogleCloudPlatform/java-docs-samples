@@ -16,7 +16,7 @@
 
  package secretmanager.regionalsamples;
 
-// [START secretmanager_create_update_regional_secret_label]
+// [START secretmanager_e_regional_secret_label]
 import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CreateUpdateRegionalSecretLabel {
+public class EditRegionalSecretLabel {
 
-  public static void createUpdateRegionalSecretLabel() throws IOException {
+  public static void editRegionalSecretLabel() throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     
     // This is the id of the GCP project
@@ -42,11 +42,11 @@ public class CreateUpdateRegionalSecretLabel {
     String labelKey = "your-label-key";
     // This is the value of the label to be added/updated
     String labelValue = "your-label-value";
-    createUpdateRegionalSecretLabel(projectId, locationId, secretId, labelKey, labelValue);
+    editRegionalSecretLabel(projectId, locationId, secretId, labelKey, labelValue);
   }
 
   // Update an existing secret, by creating a new label or updating an existing label.
-  public static Secret createUpdateRegionalSecretLabel(
+  public static Secret editRegionalSecretLabel(
        String projectId, String locationId, String secretId, String labelKey, String labelValue)
     throws IOException {
 

@@ -502,9 +502,9 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testCreateUpdateRegionalSecretLabel() throws IOException {
+  public void testEditRegionalSecretLabel() throws IOException {
     SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
-    Secret updatedSecret = CreateUpdateRegionalSecretLabel.createUpdateRegionalSecretLabel(
+    Secret updatedSecret = EditRegionalSecretLabel.editRegionalSecretLabel(
         name.getProject(), name.getLocation() ,name.getSecret(), UPDATED_LABEL_KEY, UPDATED_LABEL_VALUE);
 
     assertThat(updatedSecret.getLabelsMap()).containsEntry(
