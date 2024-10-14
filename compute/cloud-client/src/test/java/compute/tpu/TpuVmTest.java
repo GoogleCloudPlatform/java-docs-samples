@@ -86,7 +86,7 @@ public class TpuVmTest {
   }
 
   @Test
-  public void thirdStopTpuVmTest() throws IOException, ExecutionException, InterruptedException {
+  public void secondStopTpuVmTest() throws IOException, ExecutionException, InterruptedException {
 
    StopTpuVm.stopTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
     Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
@@ -95,7 +95,7 @@ public class TpuVmTest {
   }
 
   @Test
-  public void fourthStartTpuVmTest() throws IOException, ExecutionException, InterruptedException {
+  public void thirdStartTpuVmTest() throws IOException, ExecutionException, InterruptedException {
 
     StartTpuVm.startTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
     Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
