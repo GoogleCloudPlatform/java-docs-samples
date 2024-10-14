@@ -65,7 +65,6 @@ public class HyperdisksIT {
 
     Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
     Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, ZONE);
-    TimeUnit.MINUTES.sleep(2);
   }
 
   @AfterAll
