@@ -6,7 +6,6 @@ import com.google.cloud.tpu.v2.CreateNodeRequest;
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.TpuClient;
 import java.io.IOException;
-
 import java.util.concurrent.ExecutionException;
 
 public class CreateTpuVm {
@@ -29,20 +28,14 @@ public class CreateTpuVm {
     try (TpuClient tpuClient = TpuClient.create()) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
 
-      // Create metadata map
-//      Map<String, String> metadata = new HashMap<>();
-//      metadata.put("startup-script", "pip3 install --upgrade numpy");
-      String topology = "8x8x1";
       Node tpuVm =
           Node.newBuilder()
               .setName(tpuVmName)
               .setAcceleratorType(acceleratorType)
               .setAcceleratorConfig(Node.newBuilder()
                   .getAcceleratorConfigBuilder()
-                  .setTopology(topology)
                   .build())
               .setRuntimeVersion(version)
-//              .putAllLabels(metadata)
               .build();
 
       CreateNodeRequest request =

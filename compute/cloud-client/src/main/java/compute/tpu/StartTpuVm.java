@@ -1,12 +1,11 @@
 package compute.tpu;
 
-import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.tpu.v1.Node;
-import com.google.cloud.tpu.v1.NodeName;
-import com.google.cloud.tpu.v1.OperationMetadata;
-import com.google.cloud.tpu.v1.StartNodeRequest;
-import com.google.cloud.tpu.v1.TpuClient;
+//[START tpu_vm_start]
 
+import com.google.cloud.tpu.v2.Node;
+import com.google.cloud.tpu.v2.NodeName;
+import com.google.cloud.tpu.v2.StartNodeRequest;
+import com.google.cloud.tpu.v2.TpuClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -32,11 +31,9 @@ public class StartTpuVm {
       StartNodeRequest request =
           StartNodeRequest.newBuilder().setName(nodeName).build();
 
-      OperationFuture<Node, OperationMetadata> future =
-          tpuClient.startNodeAsync(request);
-      future.get();
-
-      System.out.printf("TPU VM started: %s\n", nodeName);
+      Node response = tpuClient.startNodeAsync(request).get();
+      System.out.printf("TPU VM started: %s\n", response.getName());
     }
   }
 }
+//[END tpu_vm_start]

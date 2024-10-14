@@ -1,5 +1,7 @@
 package compute.tpu;
 
+import static com.google.cloud.tpu.v2.Node.State.READY;
+import static com.google.cloud.tpu.v2.Node.State.STOPPED;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
@@ -81,5 +83,23 @@ public class TpuVmTest {
     for (Node node : nodesList.iterateAll()) {
       Assert.assertTrue(node.getName().contains("test-tpu"));
     }
+  }
+
+  @Test
+  public void thirdStopTpuVmTest() throws IOException, ExecutionException, InterruptedException {
+
+   StopTpuVm.stopTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+    assertThat(node.getName()).isEqualTo(TPU_VM_PATH_NAME);
+    assertThat(node.getState()).isEqualTo(STOPPED);
+  }
+
+  @Test
+  public void fourthStartTpuVmTest() throws IOException, ExecutionException, InterruptedException {
+
+    StartTpuVm.startTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+    assertThat(node.getName()).isEqualTo(TPU_VM_PATH_NAME);
+    assertThat(node.getState()).isEqualTo(READY);
   }
 }

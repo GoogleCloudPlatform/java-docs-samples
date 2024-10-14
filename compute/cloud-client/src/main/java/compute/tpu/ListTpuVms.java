@@ -1,9 +1,10 @@
 package compute.tpu;
 
+//[START tpu_vm_list]
+
 import com.google.cloud.tpu.v2.ListNodesRequest;
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.TpuClient;
-
 import java.io.IOException;
 
 public class ListTpuVms {
@@ -35,3 +36,4 @@ public class ListTpuVms {
     return response;
   }
 }
+//[END tpu_vm_list]
