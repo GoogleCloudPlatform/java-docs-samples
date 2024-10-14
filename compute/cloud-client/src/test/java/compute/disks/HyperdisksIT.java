@@ -66,8 +66,6 @@ public class HyperdisksIT {
 
     Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
     Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, "us-central1-a");
-    Util.cleanUpExistingStoragePool("test-storage-pool-", PROJECT_ID, "us-central1-a");
     TimeUnit.MINUTES.sleep(2);
   }
 
@@ -76,9 +74,9 @@ public class HyperdisksIT {
        throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Delete all disks created for testing.
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_NAME);
-    //DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
+    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
 
-    //Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
+    Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
   }
 
   @Test
@@ -99,7 +97,6 @@ public class HyperdisksIT {
     Assert.assertTrue(hyperdisk.getZone().contains(ZONE));
   }
 
-  @Disabled
   @Test
   public void stage1_CreateHyperdiskStoragePoolTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -119,7 +116,6 @@ public class HyperdisksIT {
     Assert.assertTrue(storagePool.getZone().contains(ZONE));
   }
 
-  @Disabled
   @Test
   public void stage2_CreateHyperdiskStoragePoolTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
