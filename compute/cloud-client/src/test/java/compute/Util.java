@@ -34,15 +34,21 @@ import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
 import com.google.cloud.compute.v1.StoragePool;
 import com.google.cloud.compute.v1.StoragePoolsClient;
+import com.google.cloud.tpu.v2.Node;
+import com.google.cloud.tpu.v2.TpuClient;
+import com.google.protobuf.Timestamp;
 import compute.deleteprotection.SetDeleteProtection;
 import compute.disks.DeleteDisk;
 import compute.disks.DeleteSnapshot;
 import compute.reservation.DeleteReservation;
+import compute.tpu.DeleteTpuVm;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Random;
@@ -57,7 +63,7 @@ public abstract class Util {
   // resources
   // and delete the listed resources based on the timestamp.
 
-  private static final int DELETION_THRESHOLD_TIME_MINUTES = 45;
+  private static final int DELETION_THRESHOLD_TIME_MINUTES = 3;
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
   private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
@@ -231,6 +237,23 @@ public abstract class Util {
     }
   }
 
+  // Delete tpu which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingTpu(String prefixToDelete, String projectId, String zone)
+      throws IOException, ExecutionException, InterruptedException {
+    try (TpuClient tpuClient = TpuClient.create()) {
+      String parent = String.format("projects/%s/locations/%s", projectId, zone);
+      for (Node node : tpuClient.listNodes(parent).iterateAll()) {
+        String creationTime = formatTimestamp(node.getCreateTime());
+        String name = node.getName().substring(node.getName().lastIndexOf("/") + 1);
+        if (containPrefixToDeleteAndZone(node, prefixToDelete, zone)
+            && isCreatedBeforeThresholdTime(creationTime)) {
+          DeleteTpuVm.deleteTpuVm(projectId, zone, name);
+        }
+      }
+    }
+  }
+
   // Delete storagePools which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
   public static void cleanUpExistingStoragePool(
@@ -238,7 +261,7 @@ public abstract class Util {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (StoragePoolsClient storagePoolsClient = StoragePoolsClient.create()) {
       for (StoragePool storagePool : storagePoolsClient.list(projectId, zone).iterateAll()) {
-        if (containPrefixToDeleteAndZone(projectId, prefixToDelete, zone)
+        if (containPrefixToDeleteAndZone(storagePool, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(storagePool.getCreationTimestamp())) {
           deleteStoragePool(projectId, zone, storagePool.getName());
         }
@@ -291,6 +314,10 @@ public abstract class Util {
         containPrefixAndZone = ((StoragePool) resource).getName().contains(prefixToDelete)
             && ((StoragePool) resource).getZone().contains(zone);
       }
+      if (resource instanceof Node) {
+        containPrefixAndZone = ((Node) resource).getName().contains(prefixToDelete)
+            && ((Node) resource).getName().split("/")[3].contains(zone);
+      }
     } catch (NullPointerException e) {
       System.out.println("Resource not found, skipping deletion:");
     }
@@ -311,5 +338,13 @@ public abstract class Util {
       System.out.println("Resource not found, skipping deletion:");
     }
     return containPrefixToDelete;
+  }
+
+  private static String formatTimestamp(Timestamp timestamp) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    OffsetDateTime offsetDateTime = OffsetDateTime.ofInstant(
+        Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos()),
+        ZoneOffset.UTC);
+    return formatter.format(offsetDateTime);
   }
 }
