@@ -57,7 +57,7 @@ public abstract class Util {
   // resources
   // and delete the listed resources based on the timestamp.
 
-  private static final int DELETION_THRESHOLD_TIME_MINUTES = 30;
+  private static final int DELETION_THRESHOLD_TIME_MINUTES = 25;
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
   private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
@@ -255,7 +255,7 @@ public abstract class Util {
               .setZone(zone)
               .setStoragePool(storagePoolName)
               .build();
-      Operation operation = storagePoolsClient.deleteAsync(request).get(1, TimeUnit.MINUTES);
+      Operation operation = storagePoolsClient.deleteAsync(request).get(3, TimeUnit.MINUTES);
       if (operation.hasError()) {
         System.out.println("StoragePool deletion failed!");
         throw new Error(operation.getError().toString());
