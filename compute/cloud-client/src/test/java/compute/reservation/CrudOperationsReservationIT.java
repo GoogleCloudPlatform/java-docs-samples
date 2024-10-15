@@ -48,7 +48,7 @@ import org.junit.runners.MethodSorters;
 public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-b";
+  private static final String ZONE = "us-central1-c";
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
