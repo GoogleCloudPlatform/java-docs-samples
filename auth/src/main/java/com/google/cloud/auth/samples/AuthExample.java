@@ -31,7 +31,7 @@ import com.google.common.collect.Lists;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-/** Demonstrate various ways to authenticate requests using Cloud Storage as an example call. */
+/** Demonstrate various ways to authenticate requests using Cloud Storage/Language as an example call. */
 public class AuthExample {
   // [START auth_cloud_implicit]
   static void authImplicit() {
@@ -97,13 +97,12 @@ public class AuthExample {
     LanguageServiceSettings settings =
         LanguageServiceSettings.newBuilder().setApiKey(apiKey).build();
     LanguageServiceClient client = LanguageServiceClient.create(settings);
-
     Document document =
         Document.newBuilder().setContent("Hello World!").setType(Document.Type.PLAIN_TEXT).build();
 
     AnalyzeSentimentResponse actualResponse = client.analyzeSentiment(document);
-    System.out.println("response " + actualResponse.getDocumentSentiment().toString());
-    System.exit(0);
+
+    System.out.println(actualResponse.getDocumentSentiment().toString());
   }
   // [END auth_cloud_api_keys]
 
