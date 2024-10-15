@@ -30,12 +30,14 @@ public class DeleteAspectType {
     String location = "MY_LOCATION";
     String aspectTypeId = "MY_ASPECT_TYPE_ID";
 
-    AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
-    deleteAspectType(aspectTypeName);
+    deleteAspectType(projectId, location, aspectTypeId);
     System.out.println("Successfully deleted aspect type");
   }
 
-  public static void deleteAspectType(AspectTypeName aspectTypeName) throws Exception {
+  public static void deleteAspectType(String projectId, String location, String aspectTypeId)
+      throws Exception {
+    AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources,
