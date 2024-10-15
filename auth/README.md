@@ -35,6 +35,11 @@ You can then run a given `ClassName` via:
     mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.AuthExample
         -Dexec.args="compute"
 
+### Authenticating using an api key
+
+    mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.AuthExample
+        -Dexec.args="apikey [api key]"
+
 ## Downscoping with Credential Access Boundaries
 
 The same configuration above applies. 
@@ -44,7 +49,7 @@ you must provide both a bucket name and object name under the TODO(developer): i
 
 You can then run `DownscopingExample` via:
 
-	mvn exec:exec
+	mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.DownscopingExample
 
 ## Tests
 Run all tests:

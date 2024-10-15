@@ -26,6 +26,10 @@ import com.google.cloud.storage.StorageOptions;
 import com.google.common.collect.Lists;
 import java.io.FileInputStream;
 import java.io.IOException;
+import com.google.cloud.language.v2.AnalyzeSentimentResponse;
+import com.google.cloud.language.v2.Document;
+import com.google.cloud.language.v2.LanguageServiceClient;
+import com.google.cloud.language.v2.LanguageServiceSettings;
 
 /**
  * Demonstrate various ways to authenticate requests using Cloud Storage as an example call.
@@ -89,6 +93,21 @@ public class AuthExample {
   }
   // [END auth_cloud_explicit_app_engine]
 
+  // [START auth_cloud_api_key]
+  static void authApiKey(String apiKey) throws IOException {
+    LanguageServiceSettings settings =
+        LanguageServiceSettings.newBuilder().setApiKey(apiKey).build();
+    LanguageServiceClient client = LanguageServiceClient.create(settings);
+
+    Document document =
+        Document.newBuilder().setContent("Hello World!").setType(Document.Type.PLAIN_TEXT).build();
+
+    AnalyzeSentimentResponse actualResponse = client.analyzeSentiment(document);
+    System.out.println("response " + actualResponse.getDocumentSentiment().toString());
+    System.exit(0);
+  }
+  // [END auth_cloud_api_keys]
+
   public static void main(String[] args) throws IOException {
     if (args.length == 0) {
       authImplicit();
@@ -110,6 +129,15 @@ public class AuthExample {
       authAppEngineStandard();
       return;
     }
+    if ("apikey".equals(args[0])) {
+        if (args.length >= 2) {
+          authApiKey(args[1]);
+        } else {
+          throw new IllegalArgumentException("Api key is required with 'apikey'.");
+        }
+        return;
+      }
+
     authImplicit();
   }
 }
