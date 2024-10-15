@@ -31,7 +31,9 @@ import com.google.common.collect.Lists;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-/** Demonstrate various ways to authenticate requests using Cloud Storage/Language as an example call. */
+/** Demonstrate various ways to authenticate requests using Cloud Storage/Language APIs as
+ * examples.
+ */
 public class AuthExample {
   // [START auth_cloud_implicit]
   static void authImplicit() {
