@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Reservation;
 import compute.Util;
 import java.io.ByteArrayOutputStream;
@@ -33,8 +34,8 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -63,26 +64,25 @@ public class CrudOperationsReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    RESERVATION_NAME = "test-reservation" + javaVersion + "-"
+    RESERVATION_NAME = "test-reservation-" + javaVersion + "-"
         + UUID.randomUUID().toString().substring(0, 8);
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingReservations("test-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
   }
 
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Delete all reservations created for testing.
-    //DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
 
     // Test that reservations are deleted
-    //Assertions.assertThrows(
-    //    NotFoundException.class,
-    //    () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
   }
 
-  @Disabled
   @Test
   public void firstCreateReservationTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -98,7 +98,6 @@ public class CrudOperationsReservationIT {
     System.setOut(out);
   }
 
-  @Disabled
   @Test
   public void secondGetReservationTest()
       throws IOException {
@@ -109,7 +108,6 @@ public class CrudOperationsReservationIT {
     assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME);
   }
 
-  @Disabled
   @Test
   public void thirdListReservationTest() throws IOException {
     List<Reservation> reservations =
