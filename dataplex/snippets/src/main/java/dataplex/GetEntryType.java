@@ -16,42 +16,37 @@
 
 package dataplex;
 
-// [START dataplex_list_aspect_types]
-import com.google.cloud.dataplex.v1.AspectType;
+// [START dataplex_get_entry_type]
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
-import com.google.cloud.dataplex.v1.LocationName;
-import com.google.common.collect.ImmutableList;
+import com.google.cloud.dataplex.v1.EntryType;
+import com.google.cloud.dataplex.v1.EntryTypeName;
 import java.io.IOException;
-import java.util.List;
 
-// Sample to list Aspect Types
-public class ListAspectTypes {
+// Sample to get Entry Type
+public class GetEntryType {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "MY_PROJECT_ID";
     // Available locations: https://cloud.google.com/dataplex/docs/locations
     String location = "MY_LOCATION";
+    String entryTypeId = "MY_ENTRY_TYPE_ID";
 
-    List<AspectType> aspectTypes = listAspectTypes(projectId, location);
-    aspectTypes.forEach(
-        aspectType -> System.out.println("Aspect type name: " + aspectType.getName()));
+    EntryType entryType = getEntryType(projectId, location, entryTypeId);
+    System.out.println("Entry type retrieved successfully: " + entryType.getName());
   }
 
-  public static List<AspectType> listAspectTypes(String projectId, String location)
+  public static EntryType getEntryType(String projectId, String location, String entryTypeId)
       throws IOException {
-    LocationName locationName = LocationName.of(projectId, location);
+    EntryTypeName entryTypeName = EntryTypeName.of(projectId, location, entryTypeId);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources,
     // or use "try-with-close" statement to do this automatically.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
-      CatalogServiceClient.ListAspectTypesPagedResponse listAspectTypesResponse =
-          client.listAspectTypes(locationName);
-      // Paging is implicitly handled by .iterateAll(), all results will be returned
-      return ImmutableList.copyOf(listAspectTypesResponse.iterateAll());
+      return client.getEntryType(entryTypeName);
     }
   }
 }
-// [END dataplex_list_aspect_types]
+// [END dataplex_get_entry_type]

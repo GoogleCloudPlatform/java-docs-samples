@@ -16,35 +16,47 @@
 
 package dataplex;
 
-// [START dataplex_delete_aspect_type]
-import com.google.cloud.dataplex.v1.AspectTypeName;
+// [START dataplex_update_entry_type]
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
+import com.google.cloud.dataplex.v1.EntryType;
+import com.google.cloud.dataplex.v1.EntryTypeName;
+import com.google.protobuf.FieldMask;
 
-// Sample to delete Aspect Type
-public class DeleteAspectType {
+// Sample to update Entry Type
+public class UpdateEntryType {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "MY_PROJECT_ID";
     // Available locations: https://cloud.google.com/dataplex/docs/locations
     String location = "MY_LOCATION";
-    String aspectTypeId = "MY_ASPECT_TYPE_ID";
+    String entryTypeId = "MY_ENTRY_TYPE_ID";
 
-    deleteAspectType(projectId, location, aspectTypeId);
-    System.out.println("Successfully deleted aspect type");
+    EntryType updatedEntryType = updateEntryType(projectId, location, entryTypeId);
+    System.out.println("Successfully updated entry type: " + updatedEntryType.getName());
   }
 
-  public static void deleteAspectType(String projectId, String location, String aspectTypeId)
+  public static EntryType updateEntryType(String projectId, String location, String entryTypeId)
       throws Exception {
-    AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
+    EntryType entryType =
+        EntryType.newBuilder()
+            .setName(EntryTypeName.of(projectId, location, entryTypeId).toString())
+            .setDescription("updated description of the entry type")
+            .build();
+
+    // Update mask specifies which fields will be updated.
+    // If empty mask is given, all modifiable fields from the request will be used for update.
+    // If update mask is specified as "*" it is treated as full update,
+    // that means fields not present in the request will be emptied.
+    FieldMask updateMask = FieldMask.newBuilder().addPaths("description").build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources,
     // or use "try-with-close" statement to do this automatically.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
-      client.deleteAspectTypeAsync(aspectTypeName).get();
+      return client.updateEntryTypeAsync(entryType, updateMask).get();
     }
   }
 }
-// [END dataplex_delete_aspect_type]
+// [END dataplex_update_entry_type]
