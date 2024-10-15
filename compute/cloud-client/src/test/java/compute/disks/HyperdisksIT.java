@@ -78,7 +78,6 @@ public class HyperdisksIT {
     //Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
   }
 
-  @Disabled
   @Test
   public void stage1_CreateHyperdiskTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -117,6 +116,7 @@ public class HyperdisksIT {
     Assert.assertTrue(storagePool.getZone().contains(ZONE));
   }
 
+  @Disabled
   @Test
   public void stage2_CreateHyperdiskStoragePoolTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
