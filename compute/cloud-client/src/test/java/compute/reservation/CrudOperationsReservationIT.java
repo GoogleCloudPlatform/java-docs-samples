@@ -48,7 +48,7 @@ import org.junit.runners.MethodSorters;
 public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "asia-south1-a";
+  private static final String ZONE = "us-central1-a";
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
@@ -68,7 +68,6 @@ public class CrudOperationsReservationIT {
         + UUID.randomUUID().toString().substring(0, 8);
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingReservations("test-", PROJECT_ID, "us-central1-a");
     Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
   }
 
