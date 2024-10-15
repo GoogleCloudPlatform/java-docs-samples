@@ -92,23 +92,26 @@ public class ReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstanceTemplates("test-global-inst-temp-" + javaVersion, PROJECT_ID);
     Util.cleanUpExistingRegionalInstanceTemplates(
         "test-regional-inst-temp-" + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-global-" + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-regional-" + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reservation-global-" + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reservation-regional-" + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingInstanceTemplates("test-shared-inst-temp-" + javaVersion, PROJECT_ID);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
 
-    RESERVATION_NAME_GLOBAL = "test-reserv-global-" + javaVersion  + "-"
+    RESERVATION_NAME_GLOBAL = "test-reservation-global-" + javaVersion  + "-"
         + UUID.randomUUID().toString().substring(0, 8);
-    RESERVATION_NAME_REGIONAL = "test-reserv-regional-" + javaVersion  + "-"
+    RESERVATION_NAME_REGIONAL = "test-reservation-regional-" + javaVersion  + "-"
         + UUID.randomUUID().toString().substring(0, 8);
-    RESERVATION_NAME_SHARED = "test-reserv-shared-" + javaVersion  + "-"
+    RESERVATION_NAME_SHARED = "test-reservation-shared-" + javaVersion  + "-"
         + UUID.randomUUID().toString().substring(0, 8);
 
     GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
@@ -125,10 +128,15 @@ public class ReservationIT {
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
-
+    assertThat(stdOut.toString())
+        .contains("Instance Template Operation Status " + GLOBAL_INSTANCE_TEMPLATE_NAME);
     // Create instance template with REGIONAL location.
     CreateRegionalInstanceTemplate.createRegionalInstanceTemplate(
         PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
+    assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
+
+    stdOut.close();
+    System.setOut(out);
   }
 
   @AfterAll
@@ -219,7 +227,6 @@ public class ReservationIT {
   @Test
   public void testCreateSharedReservation()
       throws ExecutionException, InterruptedException, TimeoutException {
-
     // Mock the ReservationsClient
     ReservationsClient mockReservationsClient = mock(ReservationsClient.class);
 
