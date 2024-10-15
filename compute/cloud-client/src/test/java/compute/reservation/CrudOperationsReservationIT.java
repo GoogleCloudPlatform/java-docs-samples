@@ -28,13 +28,16 @@ import com.google.cloud.compute.v1.ReservationsClient;
 import compute.CreateInstance;
 import compute.DeleteInstance;
 import compute.Util;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,13 +45,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  private static final String ZONE = "us-west1-a";
   private static ReservationsClient reservationsClient;
   private static InstancesClient instancesClient;
   private static String RESERVATION_NAME;
@@ -84,8 +89,7 @@ public class CrudOperationsReservationIT {
     Util.cleanUpExistingReservations("test-reservation-from-vm-"  + javaVersion, PROJECT_ID, ZONE);
 
     CreateInstance.createInstance(PROJECT_ID, ZONE, INSTANCE_FOR_RESERVATION);
-    CreateReservation.createReservation(
-        PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
+
   }
 
   @AfterAll
@@ -109,7 +113,22 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
-  public void testGetReservation()
+  public void firstCreateReservationTest()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+    CreateReservation.createReservation(
+        PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
+
+    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+
+    stdOut.close();
+    System.setOut(out);
+  }
+
+  @Test
+  public void secondGetReservationTest()
       throws IOException {
     Reservation reservation = GetReservation.getReservation(
         PROJECT_ID, RESERVATION_NAME, ZONE);
@@ -119,7 +138,7 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
-  public void testListReservation() throws IOException {
+  public void thirdListReservationTest() throws IOException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
 

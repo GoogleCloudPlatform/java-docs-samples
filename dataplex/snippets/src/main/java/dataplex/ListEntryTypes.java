@@ -16,16 +16,16 @@
 
 package dataplex;
 
-// [START dataplex_list_aspect_types]
-import com.google.cloud.dataplex.v1.AspectType;
+// [START dataplex_list_entry_types]
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
+import com.google.cloud.dataplex.v1.EntryType;
 import com.google.cloud.dataplex.v1.LocationName;
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.util.List;
 
-// Sample to list Aspect Types
-public class ListAspectTypes {
+// Sample to list Entry Types
+public class ListEntryTypes {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -33,12 +33,11 @@ public class ListAspectTypes {
     // Available locations: https://cloud.google.com/dataplex/docs/locations
     String location = "MY_LOCATION";
 
-    List<AspectType> aspectTypes = listAspectTypes(projectId, location);
-    aspectTypes.forEach(
-        aspectType -> System.out.println("Aspect type name: " + aspectType.getName()));
+    List<EntryType> entryTypes = listEntryTypes(projectId, location);
+    entryTypes.forEach(entryType -> System.out.println("Entry type name: " + entryType.getName()));
   }
 
-  public static List<AspectType> listAspectTypes(String projectId, String location)
+  public static List<EntryType> listEntryTypes(String projectId, String location)
       throws IOException {
     LocationName locationName = LocationName.of(projectId, location);
 
@@ -47,11 +46,11 @@ public class ListAspectTypes {
     // the "close" method on the client to safely clean up any remaining background resources,
     // or use "try-with-close" statement to do this automatically.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
-      CatalogServiceClient.ListAspectTypesPagedResponse listAspectTypesResponse =
-          client.listAspectTypes(locationName);
+      CatalogServiceClient.ListEntryTypesPagedResponse listEntryTypesResponse =
+          client.listEntryTypes(locationName);
       // Paging is implicitly handled by .iterateAll(), all results will be returned
-      return ImmutableList.copyOf(listAspectTypesResponse.iterateAll());
+      return ImmutableList.copyOf(listEntryTypesResponse.iterateAll());
     }
   }
 }
-// [END dataplex_list_aspect_types]
+// [END dataplex_list_entry_types]

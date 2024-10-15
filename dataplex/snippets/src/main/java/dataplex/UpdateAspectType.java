@@ -33,7 +33,6 @@ public class UpdateAspectType {
     String location = "MY_LOCATION";
     String aspectTypeId = "MY_ASPECT_TYPE_ID";
 
-    AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
     AspectType.MetadataTemplate aspectField =
         AspectType.MetadataTemplate.newBuilder()
             // The name must follow regex ^(([a-zA-Z]{1})([\\w\\-_]{0,62}))$
@@ -56,16 +55,20 @@ public class UpdateAspectType {
                     .build())
             .build();
     List<AspectType.MetadataTemplate> aspectFields = List.of(aspectField);
-    AspectType updatedAspectType = updateAspectType(aspectTypeName, aspectFields);
+    AspectType updatedAspectType =
+        updateAspectType(projectId, location, aspectTypeId, aspectFields);
     System.out.println("Successfully updated aspect type: " + updatedAspectType.getName());
   }
 
   public static AspectType updateAspectType(
-      AspectTypeName aspectTypeName, List<AspectType.MetadataTemplate> aspectFields)
+      String projectId,
+      String location,
+      String aspectTypeId,
+      List<AspectType.MetadataTemplate> aspectFields)
       throws Exception {
     AspectType aspectType =
         AspectType.newBuilder()
-            .setName(aspectTypeName.toString())
+            .setName(AspectTypeName.of(projectId, location, aspectTypeId).toString())
             .setDescription("updated description of the aspect type")
             .setMetadataTemplate(
                 AspectType.MetadataTemplate.newBuilder()
