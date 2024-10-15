@@ -68,6 +68,7 @@ public class CrudOperationsReservationIT {
         + UUID.randomUUID().toString().substring(0, 8);
 
     // Cleanup existing stale resources.
+    Util.cleanUpExistingReservations("test-", PROJECT_ID, "us-central1-a");
     Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
   }
 
