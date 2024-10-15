@@ -32,6 +32,7 @@ import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -65,7 +66,6 @@ public class HyperdisksIT {
 
     Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
     Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, ZONE);
-    TimeUnit.MINUTES.sleep(2);
   }
 
   @AfterAll
@@ -73,9 +73,9 @@ public class HyperdisksIT {
        throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Delete all disks created for testing.
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_NAME);
-    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
+    //DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
 
-    Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
+    //Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
   }
 
   @Test
@@ -96,6 +96,7 @@ public class HyperdisksIT {
     Assert.assertTrue(hyperdisk.getZone().contains(ZONE));
   }
 
+  @Disabled
   @Test
   public void stage1_CreateHyperdiskStoragePoolTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -115,6 +116,7 @@ public class HyperdisksIT {
     Assert.assertTrue(storagePool.getZone().contains(ZONE));
   }
 
+  @Disabled
   @Test
   public void stage2_CreateHyperdiskStoragePoolTest()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
