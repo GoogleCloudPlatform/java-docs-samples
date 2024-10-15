@@ -33,13 +33,15 @@ public class ListAspectTypes {
     // Available locations: https://cloud.google.com/dataplex/docs/locations
     String location = "MY_LOCATION";
 
-    LocationName locationName = LocationName.of(projectId, location);
-    List<AspectType> aspectTypes = listAspectTypes(locationName);
+    List<AspectType> aspectTypes = listAspectTypes(projectId, location);
     aspectTypes.forEach(
         aspectType -> System.out.println("Aspect type name: " + aspectType.getName()));
   }
 
-  public static List<AspectType> listAspectTypes(LocationName locationName) throws IOException {
+  public static List<AspectType> listAspectTypes(String projectId, String location)
+      throws IOException {
+    LocationName locationName = LocationName.of(projectId, location);
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources,
@@ -47,6 +49,7 @@ public class ListAspectTypes {
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       CatalogServiceClient.ListAspectTypesPagedResponse listAspectTypesResponse =
           client.listAspectTypes(locationName);
+      // Paging is implicitly handled by .iterateAll(), all results will be returned
       return ImmutableList.copyOf(listAspectTypesResponse.iterateAll());
     }
   }

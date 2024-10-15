@@ -20,8 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.dataplex.v1.AspectType;
-import com.google.cloud.dataplex.v1.AspectTypeName;
-import com.google.cloud.dataplex.v1.LocationName;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +31,7 @@ import org.junit.Test;
 public class AspectTypeIT {
   private static final String ID = UUID.randomUUID().toString().substring(0, 8);
   private static final String LOCATION = "us-central1";
-  private static LocationName locationName;
-  private static AspectTypeName aspectTypeName;
+  private static final String aspectTypeId = "test-aspect-type" + ID;
   private static String expectedAspectType;
 
   private static final String PROJECT_ID = requireProjectIdEnvVar();
@@ -54,67 +51,63 @@ public class AspectTypeIT {
   @BeforeClass
   // Set-up code that will be executed before all tests
   public static void setUp() throws Exception {
-    String aspectTypeId = "test-aspect-type" + ID;
-    locationName = LocationName.of(PROJECT_ID, LOCATION);
-    aspectTypeName = AspectTypeName.of(PROJECT_ID, LOCATION, aspectTypeId);
     expectedAspectType =
         String.format(
             "projects/%s/locations/%s/aspectTypes/%s", PROJECT_ID, LOCATION, aspectTypeId);
     // Create Aspect Type resource that will be used in tests for "get", "list" and "update" methods
-    CreateAspectType.createAspectType(locationName, aspectTypeId, new ArrayList<>());
+    CreateAspectType.createAspectType(PROJECT_ID, LOCATION, aspectTypeId, new ArrayList<>());
   }
 
   @Test
-  public void listAspectTypes_returnsListContainingAspectTypeCreatedInSetUp() throws IOException {
-    List<AspectType> aspectTypes = ListAspectTypes.listAspectTypes(locationName);
+  public void testListAspectTypes() throws IOException {
+    List<AspectType> aspectTypes = ListAspectTypes.listAspectTypes(PROJECT_ID, LOCATION);
     assertThat(aspectTypes.stream().map(AspectType::getName)).contains(expectedAspectType);
   }
 
   @Test
-  public void getAspectType_returnsAspectTypeCreatedInSetUp() throws IOException {
-    AspectType aspectType = GetAspectType.getAspectType(aspectTypeName);
+  public void testGetAspectType() throws IOException {
+    AspectType aspectType = GetAspectType.getAspectType(PROJECT_ID, LOCATION, aspectTypeId);
     assertThat(aspectType.getName()).isEqualTo(expectedAspectType);
   }
 
   @Test
-  public void updateAspectType_returnsUpdatedAspectType() throws Exception {
-    AspectType aspectType = UpdateAspectType.updateAspectType(aspectTypeName, new ArrayList<>());
+  public void testUpdateAspectType() throws Exception {
+    AspectType aspectType =
+        UpdateAspectType.updateAspectType(PROJECT_ID, LOCATION, aspectTypeId, new ArrayList<>());
     assertThat(aspectType.getName()).isEqualTo(expectedAspectType);
   }
 
   @Test
-  public void createAspectType_returnsCreatedAspectType() throws Exception {
+  public void testCreateAspectType() throws Exception {
     String aspectTypeIdToCreate = "test-aspect-type" + UUID.randomUUID().toString().substring(0, 8);
-    AspectTypeName aspectTypeNameToCreate =
-        AspectTypeName.of(PROJECT_ID, LOCATION, aspectTypeIdToCreate);
     String expectedAspectTypeToCreate =
         String.format(
             "projects/%s/locations/%s/aspectTypes/%s", PROJECT_ID, LOCATION, aspectTypeIdToCreate);
 
     AspectType aspectType =
-        CreateAspectType.createAspectType(locationName, aspectTypeIdToCreate, new ArrayList<>());
+        CreateAspectType.createAspectType(
+            PROJECT_ID, LOCATION, aspectTypeIdToCreate, new ArrayList<>());
     // Clean-up created Aspect Type
-    DeleteAspectType.deleteAspectType(aspectTypeNameToCreate);
+    DeleteAspectType.deleteAspectType(PROJECT_ID, LOCATION, aspectTypeIdToCreate);
 
     assertThat(aspectType.getName()).isEqualTo(expectedAspectTypeToCreate);
   }
 
   @Test
-  public void deleteAspectType_executesTheCallWithoutException() throws Exception {
+  public void testDeleteAspectType() throws Exception {
     String aspectTypeIdToDelete = "test-aspect-type" + UUID.randomUUID().toString().substring(0, 8);
-    AspectTypeName aspectTypeNameToDelete =
-        AspectTypeName.of(PROJECT_ID, LOCATION, aspectTypeIdToDelete);
     // Create Aspect Type to be deleted
-    CreateAspectType.createAspectType(locationName, aspectTypeIdToDelete, new ArrayList<>());
+    CreateAspectType.createAspectType(
+        PROJECT_ID, LOCATION, aspectTypeIdToDelete, new ArrayList<>());
 
     // No exception means successful call
-    DeleteAspectType.deleteAspectType(aspectTypeNameToDelete);
+    DeleteAspectType.deleteAspectType(PROJECT_ID, LOCATION, aspectTypeIdToDelete);
   }
 
   @AfterClass
   // Clean-up code that will be executed after all tests
   public static void tearDown() throws Exception {
     // Clean-up Aspect Type resource created in setUp()
-    DeleteAspectType.deleteAspectType(aspectTypeName);
+    DeleteAspectType.deleteAspectType(PROJECT_ID, LOCATION, aspectTypeId);
   }
 }
