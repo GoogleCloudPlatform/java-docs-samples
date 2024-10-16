@@ -253,7 +253,8 @@ public class ReservationIT {
     when(mockReservationsClient.insertAsync(PROJECT_ID, ZONE, reservation))
         .thenReturn(mockFuture);
 
-    // Mock the Operation
+    // We should mock this operation as we don't have another project to share with.
+    // Without mocking these test will fail.
     Operation mockOperation = mock(Operation.class);
     when(mockFuture.get(3, TimeUnit.MINUTES)).thenReturn(mockOperation);
     when(mockOperation.hasError()).thenReturn(false);

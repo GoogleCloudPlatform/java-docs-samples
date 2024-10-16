@@ -42,6 +42,12 @@ public class CreateSharedReservation {
     // TODO(developer): Replace these variables before running the sample.
     // The ID of the project where you want to reserve resources
     // and where the instance template exists.
+    // By default, no projects are allowed to create or modify shared reservations
+    // in an organization. Add projects to the Shared Reservations Owner Projects
+    // (compute.sharedReservationsOwnerProjects) organization policy constraint
+    // to allow them to create and modify shared reservations.
+    // For more information visit this page:
+    // https://cloud.google.com/compute/docs/instances/reservations-shared#shared_reservation_constraint
     String projectId = "YOUR_PROJECT_ID";
     // Zone in which the reservation resides.
     String zone = "us-central1-a";
@@ -68,6 +74,10 @@ public class CreateSharedReservation {
 
     ShareSettings shareSettings = ShareSettings.newBuilder()
         .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
+        // The IDs of projects that can consume this reservation. You can include up to 100
+        // consumer projects. These projects must be in the same organization as
+        // the owner project. Don't include the owner project. By default, it is already allowed
+        // to consume the reservation.
         .putProjectMap("CONSUMER_PROJECT_ID_1", ShareSettingsProjectConfig.newBuilder().build())
         .putProjectMap("CONSUMER_PROJECT_ID_2", ShareSettingsProjectConfig.newBuilder().build())
         .build();
