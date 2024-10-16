@@ -20,10 +20,6 @@ import com.google.api.gax.paging.Page;
 import com.google.auth.appengine.AppEngineCredentials;
 import com.google.auth.oauth2.ComputeEngineCredentials;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.language.v2.AnalyzeSentimentResponse;
-import com.google.cloud.language.v2.Document;
-import com.google.cloud.language.v2.LanguageServiceClient;
-import com.google.cloud.language.v2.LanguageServiceSettings;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
@@ -32,7 +28,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
- * Demonstrate various ways to authenticate requests using Cloud Storage/Language APIs as examples.
+ * Demonstrate various ways to authenticate requests using Cloud Storage as an example call.
  */
 public class AuthExample {
   // [START auth_cloud_implicit]
@@ -93,20 +89,6 @@ public class AuthExample {
   }
   // [END auth_cloud_explicit_app_engine]
 
-  // [START auth_cloud_api_key]
-  static void authApiKey(String apiKey) throws IOException {
-    LanguageServiceSettings settings =
-        LanguageServiceSettings.newBuilder().setApiKey(apiKey).build();
-    LanguageServiceClient client = LanguageServiceClient.create(settings);
-    Document document =
-        Document.newBuilder().setContent("Hello World!").setType(Document.Type.PLAIN_TEXT).build();
-
-    AnalyzeSentimentResponse actualResponse = client.analyzeSentiment(document);
-
-    System.out.println(actualResponse.getDocumentSentiment().toString());
-  }
-  // [END auth_cloud_api_keys]
-
   public static void main(String[] args) throws IOException {
     if (args.length == 0) {
       authImplicit();
@@ -128,15 +110,6 @@ public class AuthExample {
       authAppEngineStandard();
       return;
     }
-    if ("apikey".equals(args[0])) {
-      if (args.length >= 2) {
-        authApiKey(args[1]);
-      } else {
-        throw new IllegalArgumentException("Api key is required with 'apikey'.");
-      }
-      return;
-    }
-
     authImplicit();
   }
 }

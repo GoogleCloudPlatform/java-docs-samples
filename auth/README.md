@@ -35,10 +35,14 @@ You can then run a given `ClassName` via:
     mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.AuthExample
         -Dexec.args="compute"
 
-### Authenticating using an api key
+### Analyze text sentiment using LanguageService API with API key authentication
 
-    mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.AuthExample
-        -Dexec.args="apikey [api key]"
+Create an API key via the Google Cloud console: https://developers.google.com/workspace/guides/create-credentials#api-key
+
+Once you have an API key you can run the command below replacing [api key] with your API key
+
+    mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.ApiKeyAuthExample
+        -Dexec.args=[api key]
 
 ## Downscoping with Credential Access Boundaries
 
