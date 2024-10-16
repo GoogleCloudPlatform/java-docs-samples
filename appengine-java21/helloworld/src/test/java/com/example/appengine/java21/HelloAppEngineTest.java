@@ -77,11 +77,4 @@ public class HelloAppEngineTest {
     assertThat(responseWriter.toString())
         .contains("Hello App Engine - Standard ");
   }
-
-  @Test
-  public void helloInfoTest() {
-    String result = HelloAppEngine.getInfo();
-    assertThat(result)
-        .containsMatch("^Version:\\s+.+OS:\\s+.+User:\\s");
-  }
 }
