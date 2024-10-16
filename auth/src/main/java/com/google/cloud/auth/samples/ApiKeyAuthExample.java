@@ -49,7 +49,6 @@ public class ApiKeyAuthExample {
   public static void main(String[] args) throws IOException {
     if (args.length >= 1) {
       authApiKey(args[0]);
-      return;
     } else {
       throw new IllegalArgumentException("Api key is required for this test");
     }
