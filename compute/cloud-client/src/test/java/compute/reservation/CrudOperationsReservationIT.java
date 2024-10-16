@@ -32,19 +32,20 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer. OrderAnnotation. class)
 public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -84,7 +85,8 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
-  public void firstCreateReservationTest()
+  @Order(1)
+  public void testCreateReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
@@ -99,7 +101,8 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
-  public void secondGetReservationTest()
+  @Order(3)
+  public void testGetReservation()
       throws IOException {
     Reservation reservation = GetReservation.getReservation(
         PROJECT_ID, RESERVATION_NAME, ZONE);
@@ -109,11 +112,25 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
-  public void thirdListReservationTest() throws IOException {
+  @Order(4)
+  public void testListReservation() throws IOException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
 
     assertThat(reservations).isNotNull();
     Assert.assertTrue(reservations.get(0).getName().contains("test-"));
+  }
+
+  @Test
+  @Order(2)
+  public void testUpdateVmsForReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    int newNumberOfVms = 5;
+    UpdateVmsForReservation.updateVmsForReservation(
+        PROJECT_ID, ZONE, RESERVATION_NAME, newNumberOfVms);
+    Reservation reservation = GetReservation.getReservation(
+        PROJECT_ID, RESERVATION_NAME, ZONE);
+
+    Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
   }
 }
