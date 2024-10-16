@@ -99,8 +99,7 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
-  public void secondGetReservationTest()
-      throws IOException {
+  public void secondGetReservationTest() throws IOException {
     Reservation reservation = GetReservation.getReservation(
         PROJECT_ID, RESERVATION_NAME, ZONE);
 
