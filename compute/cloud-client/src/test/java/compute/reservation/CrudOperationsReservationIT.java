@@ -76,7 +76,7 @@ public class CrudOperationsReservationIT {
     reservationsClient = ReservationsClient.create();
     instancesClient = InstancesClient.create();
 
-    RESERVATION_NAME = "test-reservation" + javaVersion + "-"
+    RESERVATION_NAME = "test-reservat" + javaVersion + "-"
         + UUID.randomUUID().toString().substring(0, 8);
     RESERVATION_NAME_FROM_VM = "test-reservation-from-vm-" + javaVersion + "-"
         + UUID.randomUUID().toString().substring(0, 8);
@@ -85,7 +85,7 @@ public class CrudOperationsReservationIT {
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-instance-for-reserv-"  + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reservation"  + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reservat"  + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reservation-from-vm-"  + javaVersion, PROJECT_ID, ZONE);
 
     CreateInstance.createInstance(PROJECT_ID, ZONE, INSTANCE_FOR_RESERVATION);
