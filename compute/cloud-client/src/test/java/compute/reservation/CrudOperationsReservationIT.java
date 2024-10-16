@@ -101,7 +101,7 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
-  @Order(2)
+  @Order(3)
   public void testGetReservation()
       throws IOException {
     Reservation reservation = GetReservation.getReservation(
@@ -112,7 +112,7 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
-  @Order(3)
+  @Order(4)
   public void testListReservation() throws IOException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
@@ -122,7 +122,7 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
-  @Order(3)
+  @Order(2)
   public void testUpdateVmsForReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     int newNumberOfVms = 5;
