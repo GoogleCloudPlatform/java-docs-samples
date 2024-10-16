@@ -38,5 +38,4 @@ public class HelloAppEngine extends HttpServlet {
             + SystemProperty.version.get() + " Java "
             + properties.get("java.specification.version"));
   }
-
 }
