@@ -87,11 +87,15 @@ public class CrudOperationsReservationIT {
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-instance-for-reserv-"  + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, "us-central1-a");
-    Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, "asia-south1-a");
+    Util.cleanUpExistingReservations(
+        "test-reservation-"  + javaVersion, PROJECT_ID, "us-central1-a");
+    Util.cleanUpExistingReservations(
+        "test-reservation-"  + javaVersion, PROJECT_ID, "asia-south1-a");
     Util.cleanUpExistingReservations("test-reservation-from-vm-"  + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reservation-from-vm-"  + javaVersion, PROJECT_ID, "us-central1-a");
-    Util.cleanUpExistingReservations("test-reservation-from-vm-"  + javaVersion, PROJECT_ID, "asia-south1-a");
+    Util.cleanUpExistingReservations(
+        "test-reservation-from-vm-"  + javaVersion, PROJECT_ID, "us-central1-a");
+    Util.cleanUpExistingReservations(
+        "test-reservation-from-vm-"  + javaVersion, PROJECT_ID, "asia-south1-a");
 
     //CreateInstance.createInstance(PROJECT_ID, ZONE, INSTANCE_FOR_RESERVATION);
 
