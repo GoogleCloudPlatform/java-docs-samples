@@ -42,21 +42,28 @@ public class DeleteNotification {
   public static boolean deleteNotificationConfig(String parentId, String location,
       String notificationConfigId)
       throws IOException {
+    return deleteNotificationConfig(String.format("projects/%s/locations/%s/notificationConfigs/%s",
+        parentId,
+        location,
+        notificationConfigId));
+  }
+
+  // Delete a notification config.
+  // Ensure the ServiceAccount has the "securitycenter.notification.delete" permission
+  public static boolean deleteNotificationConfig(String name)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
       DeleteNotificationConfigRequest request = DeleteNotificationConfigRequest.newBuilder()
-          .setName(String.format("projects/%s/locations/%s/notificationConfigs/%s",
-              parentId,
-              location,
-              notificationConfigId))
+          .setName(name)
           .build();
 
       client.deleteNotificationConfig(request);
 
-      System.out.printf("Deleted Notification config: %s%n", notificationConfigId);
+      System.out.printf("Deleted Notification config: %s%n", name);
     }
     return true;
   }

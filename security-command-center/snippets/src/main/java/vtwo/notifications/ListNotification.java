@@ -52,6 +52,7 @@ public class ListNotification {
           .setParent(String.format("projects/%s/locations/%s",
               parentId,
               location))
+          .setPageSize(500)
           .build();
 
       ListNotificationConfigsPagedResponse response = client.listNotificationConfigs(
