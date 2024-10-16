@@ -96,6 +96,7 @@ public class TpuVmIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     CreateTpuVm.createTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME, ACCELERATOR_TYPE, VERSION);
+    TimeUnit.MINUTES.sleep(3);
 
     assertThat(stdOut.toString()).contains("TPU VM created: " + TPU_VM_PATH_NAME);
     stdOut.close();
@@ -106,6 +107,7 @@ public class TpuVmIT {
   @Order(2)
   public void testGetTpuVm() throws IOException {
     Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+
     assertNotNull(node);
     assertThat(node.getName()).isEqualTo(TPU_VM_PATH_NAME);
   }
@@ -114,6 +116,7 @@ public class TpuVmIT {
   @Order(2)
   public void testListTpuVm() throws IOException {
     TpuClient.ListNodesPagedResponse nodesList = ListTpuVms.listTpuVms(PROJECT_ID, ZONE);
+
     assertNotNull(nodesList);
     for (Node node : nodesList.iterateAll()) {
       Assert.assertTrue(node.getName().contains("test-tpu"));
@@ -125,6 +128,7 @@ public class TpuVmIT {
   public void testStopTpuVm() throws IOException, ExecutionException, InterruptedException {
     StopTpuVm.stopTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
     Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+
     assertThat(node.getState()).isEqualTo(STOPPED);
   }
 
@@ -133,6 +137,7 @@ public class TpuVmIT {
   public void testStartTpuVm() throws IOException, ExecutionException, InterruptedException {
     StartTpuVm.startTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
     Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+
     assertThat(node.getState()).isEqualTo(READY);
   }
 
