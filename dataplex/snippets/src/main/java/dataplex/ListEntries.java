@@ -20,6 +20,7 @@ package dataplex;
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import com.google.cloud.dataplex.v1.Entry;
 import com.google.cloud.dataplex.v1.EntryGroupName;
+import com.google.cloud.dataplex.v1.ListEntriesRequest;
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.util.List;
@@ -39,7 +40,19 @@ public class ListEntries {
 
   public static List<Entry> listEntries(String projectId, String location, String entryGroupId)
       throws IOException {
-    EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
+    ListEntriesRequest listEntriesRequest =
+        ListEntriesRequest.newBuilder()
+            .setParent(EntryGroupName.of(projectId, location, entryGroupId).toString())
+            // A filter on the entries to return. Filters are case-sensitive.
+            // You can filter the request by the following fields:
+            // * entry_type
+            // * entry_source.display_name
+            // The comparison operators are =, !=, <, >, <=, >=, with lexical order.
+            // You can use the logical operators AND, OR, NOT in the filter.
+            // You can use wildcard "*", but for entry_type full project id or number is needed
+            .setFilter(
+                "entry_type=projects/dataplex-types/locations/global/entryTypes/generic")
+            .build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -47,7 +60,7 @@ public class ListEntries {
     // or use "try-with-close" statement to do this automatically.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       CatalogServiceClient.ListEntriesPagedResponse listEntriesResponse =
-          client.listEntries(entryGroupName);
+          client.listEntries(listEntriesRequest);
       // Paging is implicitly handled by .iterateAll(), all results will be returned
       return ImmutableList.copyOf(listEntriesResponse.iterateAll());
     }
