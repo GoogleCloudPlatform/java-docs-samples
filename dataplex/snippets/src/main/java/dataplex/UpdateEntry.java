@@ -51,8 +51,6 @@ public class UpdateEntry {
                 Map.of(
                     "dataplex-types.global.generic",
                     Aspect.newBuilder()
-                        // This is required Aspect Type for "generic" Entry Type.
-                        // For custom Aspect Type required Entry Type would be different.
                         .setAspectType(
                             "projects/dataplex-types/locations/global/aspectTypes/generic")
                         .setData(
