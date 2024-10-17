@@ -28,23 +28,28 @@ public class GetTpuVm {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+    // Project ID or project number of the Google Cloud project you want to create a node.
     String projectId = "YOUR_PROJECT_ID";
+    // The zone in which to create the TPU.
+    // For more information about supported TPU types for specific zones,
+    // see https://cloud.google.com/tpu/docs/regions-zones
     String zone = "europe-west4-a";
-    String tpuVmName = "YOUR_TPU_NAME";
+    // The name for your TPU.
+    String nodeName = "YOUR_TPY_NAME";
 
-    getTpuVm(projectId, zone, tpuVmName);
+    getTpuVm(projectId, zone, nodeName);
   }
 
   // Describes a TPU VM with the specified name in the given project and zone.
-  public static Node getTpuVm(String projectId, String zone, String tpuVmName)
+  public static Node getTpuVm(String projectId, String zone, String nodeName)
       throws IOException {
     Node node;
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create()) {
-      String nodeName = NodeName.of(projectId, zone, tpuVmName).toString();
+      String name = NodeName.of(projectId, zone, nodeName).toString();
 
-      GetNodeRequest request = GetNodeRequest.newBuilder().setName(nodeName).build();
+      GetNodeRequest request = GetNodeRequest.newBuilder().setName(name).build();
       node = tpuClient.getNode(request);
     }
     return node;

@@ -18,35 +18,60 @@ package tpu;
 
 //[START tpu_vm_delete]
 
+import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2.DeleteNodeRequest;
 import com.google.cloud.tpu.v2.NodeName;
 import com.google.cloud.tpu.v2.TpuClient;
+import com.google.cloud.tpu.v2.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import org.threeten.bp.Duration;
 
 public class DeleteTpuVm {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
+    // Project ID or project number of the Google Cloud project you want to create a node.
     String projectId = "YOUR_PROJECT_ID";
+    // The zone in which to create the TPU.
+    // For more information about supported TPU types for specific zones,
+    // see https://cloud.google.com/tpu/docs/regions-zones
     String zone = "europe-west4-a";
-    String tpuVmName = "YOUR_TPU_NAME";
+    // The name for your TPU.
+    String nodeName = "YOUR_TPY_NAME";
 
-    deleteTpuVm(projectId, zone, tpuVmName);
+    deleteTpuVm(projectId, zone, nodeName);
   }
 
   // Deletes a TPU VM with the specified name in the given project and zone.
-  public static void deleteTpuVm(String projectId, String zone, String tpuVmName)
+  public static void deleteTpuVm(String projectId, String zone, String nodeName)
       throws IOException, ExecutionException, InterruptedException {
+    TpuSettings.Builder clientSettings =
+        TpuSettings.newBuilder();
+    clientSettings
+        .deleteNodeOperationSettings()
+        .setPollingAlgorithm(
+            OperationTimedPollAlgorithm.create(
+                RetrySettings.newBuilder()
+                    .setInitialRetryDelay(Duration.ofMillis(5000L))
+                    .setRetryDelayMultiplier(1.5)
+                    .setMaxRetryDelay(Duration.ofMillis(45000L))
+                    .setInitialRpcTimeout(Duration.ZERO)
+                    .setRpcTimeoutMultiplier(1.0)
+                    .setMaxRpcTimeout(Duration.ZERO)
+                    .setTotalTimeout(Duration.ofHours(24L))
+                    .build()));
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create()) {
-      String nodeName = NodeName.of(projectId, zone, tpuVmName).toString();
+    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
+      String name = NodeName.of(projectId, zone, nodeName).toString();
 
-      DeleteNodeRequest request = DeleteNodeRequest.newBuilder().setName(nodeName).build();
+      DeleteNodeRequest request = DeleteNodeRequest.newBuilder().setName(name).build();
+
       tpuClient.deleteNodeAsync(request).get();
-
       System.out.println("TPU VM deleted");
     }
   }

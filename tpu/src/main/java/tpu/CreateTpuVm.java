@@ -29,18 +29,28 @@ public class CreateTpuVm {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
+    // Project ID or project number of the Google Cloud project you want to create a node.
     String projectId = "YOUR_PROJECT_ID";
+    // The zone in which to create the TPU.
+    // For more information about supported TPU types for specific zones,
+    // see https://cloud.google.com/tpu/docs/regions-zones
     String zone = "europe-west4-a";
-    String tpuVmName = "YOUR_TPU_NAME";
-    String acceleratorType = "v2-8";
-    String version = "tpu-vm-tf-2.14.1";
+    // The name for your TPU.
+    String nodeName = "YOUR_TPY_NAME";
+    // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
+    // For more information about supported accelerator types for each TPU version,
+    // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
+    String tpuType = "v2-8";
+    // Software version that specifies the version of the TPU runtime to install.
+    // For more information see https://cloud.google.com/tpu/docs/runtimes
+    String tpuSoftwareVersion = "tpu-vm-tf-2.14.1";
 
-    createTpuVm(projectId, zone, tpuVmName, acceleratorType, version);
+    createTpuVm(projectId, zone, nodeName, tpuType, tpuSoftwareVersion);
   }
 
   // Creates a TPU VM with the specified name, zone, accelerator type, and version.
   public static void createTpuVm(
-      String projectId, String zone, String tpuVmName, String acceleratorType, String version)
+      String projectId, String zone, String nodeName, String tpuType, String tpuSoftwareVersion)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -48,14 +58,14 @@ public class CreateTpuVm {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
 
       Node tpuVm = Node.newBuilder()
-              .setName(tpuVmName)
-              .setAcceleratorType(acceleratorType)
-              .setRuntimeVersion(version)
+              .setName(nodeName)
+              .setAcceleratorType(tpuType)
+              .setRuntimeVersion(tpuSoftwareVersion)
               .build();
 
       CreateNodeRequest request = CreateNodeRequest.newBuilder()
               .setParent(parent)
-              .setNodeId(tpuVmName)
+              .setNodeId(nodeName)
               .setNode(tpuVm)
               .build();
 
