@@ -59,11 +59,11 @@ public class CreateBatchPredictionGeminiBigqueryJobSample {
       String predictionsFormat,
       String bigqueryDestinationOutputUri)
       throws IOException {
+    String location = "us-central1";
     JobServiceSettings settings =
         JobServiceSettings.newBuilder()
-            .setEndpoint("us-central1-aiplatform.googleapis.com:443")
+            .setEndpoint(String.format("%s-aiplatform.googleapis.com:443", location))
             .build();
-    String location = "us-central1";
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
