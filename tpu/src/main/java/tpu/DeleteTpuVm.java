@@ -48,6 +48,8 @@ public class DeleteTpuVm {
   // Deletes a TPU VM with the specified name in the given project and zone.
   public static void deleteTpuVm(String projectId, String zone, String nodeName)
       throws IOException, ExecutionException, InterruptedException {
+    // With these settings the client library handles the Operation's polling mechanism
+    // and prevent CancellationException error
     TpuSettings.Builder clientSettings =
         TpuSettings.newBuilder();
     clientSettings

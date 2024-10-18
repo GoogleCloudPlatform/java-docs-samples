@@ -25,15 +25,9 @@ import static org.junit.Assert.assertNotNull;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.TpuClient;
-import com.google.protobuf.Timestamp;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -75,13 +69,12 @@ public class TpuVmIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     // Cleanup existing stale resources.
-    cleanUpExistingTpu("test-tpu-" + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingTpu("test-tpu-" + javaVersion, PROJECT_ID, ZONE);
   }
 
   @AfterAll
   public static void cleanup() throws Exception {
     DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
-    TimeUnit.MINUTES.sleep(5);
 
     // Test that TPUs is deleted
     Assertions.assertThrows(
@@ -96,7 +89,6 @@ public class TpuVmIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     CreateTpuVm.createTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME, ACCELERATOR_TYPE, VERSION);
-    TimeUnit.MINUTES.sleep(3);
 
     assertThat(stdOut.toString()).contains("TPU VM created: " + TPU_VM_PATH_NAME);
     stdOut.close();
@@ -139,46 +131,5 @@ public class TpuVmIT {
     Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
 
     assertThat(node.getState()).isEqualTo(READY);
-  }
-
-  public static void cleanUpExistingTpu(String prefixToDelete, String projectId, String zone)
-      throws IOException, ExecutionException, InterruptedException {
-    try (TpuClient tpuClient = TpuClient.create()) {
-      String parent = String.format("projects/%s/locations/%s", projectId, zone);
-      for (Node node : tpuClient.listNodes(parent).iterateAll()) {
-        String creationTime = formatTimestamp(node.getCreateTime());
-        String name = node.getName().substring(node.getName().lastIndexOf("/") + 1);
-        if (containPrefixToDeleteAndZone(node, prefixToDelete, zone)
-            && isCreatedBeforeThresholdTime(creationTime)) {
-          DeleteTpuVm.deleteTpuVm(projectId, zone, name);
-        }
-      }
-    }
-  }
-
-  public static boolean containPrefixToDeleteAndZone(
-      Node node, String prefixToDelete, String zone) {
-    boolean containPrefixAndZone = false;
-    try {
-      containPrefixAndZone = node.getName().contains(prefixToDelete)
-          && node.getName().split("/")[3].contains(zone);
-
-    } catch (NullPointerException e) {
-      System.out.println("Resource not found, skipping deletion:");
-    }
-    return containPrefixAndZone;
-  }
-
-  public static boolean isCreatedBeforeThresholdTime(String timestamp) {
-    return OffsetDateTime.parse(timestamp).toInstant()
-        .isBefore(Instant.now().minus(30, ChronoUnit.MINUTES));
-  }
-
-  private static String formatTimestamp(Timestamp timestamp) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-    OffsetDateTime offsetDateTime = OffsetDateTime.ofInstant(
-        Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos()),
-        ZoneOffset.UTC);
-    return formatter.format(offsetDateTime);
   }
 }
