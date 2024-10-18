@@ -49,7 +49,7 @@ import org.junit.runners.JUnit4;
 public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static  String zone;
+  private static final String ZONE = "us-west1-a";
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
@@ -65,25 +65,23 @@ public class CrudOperationsReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    zone = javaVersion.equals("17") ? "us-central1-a" : "us-central1-b";
-
     RESERVATION_NAME = "test-reservation-" + javaVersion + "-"
         + UUID.randomUUID().toString().substring(0, 8);
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, zone);
+    Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
   }
 
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Delete all reservations created for testing.
-    DeleteReservation.deleteReservation(PROJECT_ID, zone, RESERVATION_NAME);
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
 
     // Test that reservations are deleted
     Assertions.assertThrows(
         NotFoundException.class,
-        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, zone));
+        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
   }
 
   @Test
@@ -94,7 +92,7 @@ public class CrudOperationsReservationIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     CreateReservation.createReservation(
-        PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, zone);
+        PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
 
     assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
 
@@ -107,7 +105,7 @@ public class CrudOperationsReservationIT {
   public void testGetReservation()
       throws IOException {
     Reservation reservation = GetReservation.getReservation(
-        PROJECT_ID, RESERVATION_NAME, zone);
+        PROJECT_ID, RESERVATION_NAME, ZONE);
 
     assertNotNull(reservation);
     assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME);
@@ -117,7 +115,7 @@ public class CrudOperationsReservationIT {
   @Order(4)
   public void testListReservation() throws IOException {
     List<Reservation> reservations =
-        ListReservations.listReservations(PROJECT_ID, zone);
+        ListReservations.listReservations(PROJECT_ID, ZONE);
 
     assertThat(reservations).isNotNull();
     Assert.assertTrue(reservations.get(0).getName().contains("test-"));
@@ -129,9 +127,9 @@ public class CrudOperationsReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     int newNumberOfVms = 5;
     UpdateVmsForReservation.updateVmsForReservation(
-        PROJECT_ID, zone, RESERVATION_NAME, newNumberOfVms);
+        PROJECT_ID, ZONE, RESERVATION_NAME, newNumberOfVms);
     Reservation reservation = GetReservation.getReservation(
-        PROJECT_ID, RESERVATION_NAME, zone);
+        PROJECT_ID, RESERVATION_NAME, ZONE);
 
     Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
   }
