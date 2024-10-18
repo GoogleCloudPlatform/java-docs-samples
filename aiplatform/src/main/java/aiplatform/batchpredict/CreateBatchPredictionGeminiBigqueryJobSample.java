@@ -16,7 +16,7 @@
 
 package aiplatform.batchpredict;
 
-// [START aiplatform_create_batch_prediction_gemini_job_bigquery_sample]
+// [START generativeaionvertexai_batch_predict_gemini_createjob]
 import com.google.cloud.aiplatform.util.ValueConverter;
 import com.google.cloud.aiplatform.v1.BatchPredictionJob;
 import com.google.cloud.aiplatform.v1.BigQueryDestination;
@@ -105,4 +105,4 @@ public class CreateBatchPredictionGeminiBigqueryJobSample {
   }
 }
 
-// [END aiplatform_create_batch_prediction_gemini_job_bigquery_sample]
+// [END generativeaionvertexai_batch_predict_gemini_createjob]
