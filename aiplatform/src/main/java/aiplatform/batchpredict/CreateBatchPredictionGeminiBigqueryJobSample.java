@@ -89,6 +89,7 @@ public class CreateBatchPredictionGeminiBigqueryJobSample {
       String modelName =
           String.format(
               "projects/%s/locations/%s/publishers/google/models/%s", project, location, model);
+
       BatchPredictionJob batchPredictionJob =
           BatchPredictionJob.newBuilder()
               .setDisplayName(displayName)
