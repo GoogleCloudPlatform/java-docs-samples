@@ -38,17 +38,13 @@ import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
-@TestMethodOrder(MethodOrderer. OrderAnnotation. class)
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -156,7 +152,6 @@ public class ReservationIT {
   }
 
   @Test
-  @Order(1)
   public void testCreateReservationWithGlobalInstanceTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
@@ -181,18 +176,5 @@ public class ReservationIT {
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
     Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
-  }
-
-  @Test
-  @Order(2)
-  public void testUpdateVmsForReservation()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    int newNumberOfVms = 5;
-    UpdateVmsForReservation.updateVmsForReservation(
-        PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL, newNumberOfVms);
-    Reservation reservation = GetReservation.getReservation(
-        PROJECT_ID, RESERVATION_NAME_GLOBAL, ZONE);
-
-    Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
   }
 }

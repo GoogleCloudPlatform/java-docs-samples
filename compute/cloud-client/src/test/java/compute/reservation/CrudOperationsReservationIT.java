@@ -49,7 +49,7 @@ import org.junit.runners.JUnit4;
 public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-west1-a";
+  private static final String ZONE = "us-east4-c";
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
@@ -119,5 +119,18 @@ public class CrudOperationsReservationIT {
 
     assertThat(reservations).isNotNull();
     Assert.assertTrue(reservations.get(0).getName().contains("test-"));
+  }
+
+  @Test
+  @Order(2)
+  public void testUpdateVmsForReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    int newNumberOfVms = 5;
+    UpdateVmsForReservation.updateVmsForReservation(
+        PROJECT_ID, ZONE, RESERVATION_NAME, newNumberOfVms);
+    Reservation reservation = GetReservation.getReservation(
+        PROJECT_ID, RESERVATION_NAME, ZONE);
+
+    Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
   }
 }
