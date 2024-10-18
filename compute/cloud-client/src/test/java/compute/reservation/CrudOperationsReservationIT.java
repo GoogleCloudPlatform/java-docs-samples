@@ -102,6 +102,17 @@ public class CrudOperationsReservationIT {
 
   @Test
   @Order(3)
+  public void testGetReservation()
+      throws IOException {
+    Reservation reservation = GetReservation.getReservation(
+        PROJECT_ID, RESERVATION_NAME, ZONE);
+
+    assertNotNull(reservation);
+    assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME);
+  }
+
+  @Test
+  @Order(4)
   public void testListReservation() throws IOException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
@@ -120,8 +131,6 @@ public class CrudOperationsReservationIT {
     Reservation reservation = GetReservation.getReservation(
         PROJECT_ID, RESERVATION_NAME, ZONE);
 
-    assertNotNull(reservation);
-    assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME);
     Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
   }
 }
