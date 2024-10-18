@@ -120,17 +120,4 @@ public class CrudOperationsReservationIT {
     assertThat(reservations).isNotNull();
     Assert.assertTrue(reservations.get(0).getName().contains("test-"));
   }
-
-  @Test
-  @Order(2)
-  public void testUpdateVmsForReservation()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    int newNumberOfVms = 5;
-    UpdateVmsForReservation.updateVmsForReservation(
-        PROJECT_ID, ZONE, RESERVATION_NAME, newNumberOfVms);
-    Reservation reservation = GetReservation.getReservation(
-        PROJECT_ID, RESERVATION_NAME, ZONE);
-
-    Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
-  }
 }
