@@ -71,7 +71,7 @@ public class LookupEntry {
               // Their purpose is to demonstrate how to filter the Aspects returned for Entry
               // when "View" is set to CUSTOM.
               .addAspectTypes("projects/dataplex-types/locations/global/aspectTypes/generic")
-              .addPaths("generic")
+              .addPaths("my_path")
               .build();
       return client.lookupEntry(lookupEntryRequest);
     }
