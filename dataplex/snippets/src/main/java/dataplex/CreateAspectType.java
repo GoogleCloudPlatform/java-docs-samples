@@ -32,7 +32,6 @@ public class CreateAspectType {
     String location = "MY_LOCATION";
     String aspectTypeId = "MY_ASPECT_TYPE_ID";
 
-    LocationName locationName = LocationName.of(projectId, location);
     AspectType.MetadataTemplate aspectField =
         AspectType.MetadataTemplate.newBuilder()
             // The name must follow regex ^(([a-zA-Z]{1})([\\w\\-_]{0,62}))$
@@ -55,15 +54,18 @@ public class CreateAspectType {
                     .build())
             .build();
     List<AspectType.MetadataTemplate> aspectFields = List.of(aspectField);
-    AspectType createdAspectType = createAspectType(locationName, aspectTypeId, aspectFields);
+    AspectType createdAspectType =
+        createAspectType(projectId, location, aspectTypeId, aspectFields);
     System.out.println("Successfully created aspect type: " + createdAspectType.getName());
   }
 
   public static AspectType createAspectType(
-      LocationName locationName,
+      String projectId,
+      String location,
       String aspectTypeId,
       List<AspectType.MetadataTemplate> aspectFields)
       throws Exception {
+    LocationName locationName = LocationName.of(projectId, location);
     AspectType aspectType =
         AspectType.newBuilder()
             .setDescription("description of the aspect type")

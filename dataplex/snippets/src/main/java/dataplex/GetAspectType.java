@@ -32,12 +32,14 @@ public class GetAspectType {
     String location = "MY_LOCATION";
     String aspectTypeId = "MY_ASPECT_TYPE_ID";
 
-    AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
-    AspectType aspectType = getAspectType(aspectTypeName);
+    AspectType aspectType = getAspectType(projectId, location, aspectTypeId);
     System.out.println("Aspect type retrieved successfully: " + aspectType.getName());
   }
 
-  public static AspectType getAspectType(AspectTypeName aspectTypeName) throws IOException {
+  public static AspectType getAspectType(String projectId, String location, String aspectTypeId)
+      throws IOException {
+    AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources,

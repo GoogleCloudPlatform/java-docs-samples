@@ -32,7 +32,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -89,7 +88,6 @@ public class CreateTrainingPipelineTextClassificationSampleTest {
     System.setOut(originalPrintStream);
   }
 
-  @Disabled // Sample should be migrated to Vertex AI https://softserve-jirasw.atlassian.net/browse/DSAM-173
   @Test
   public void testCreateTrainingPipelineTextClassificationSample() throws IOException {
     // Act
