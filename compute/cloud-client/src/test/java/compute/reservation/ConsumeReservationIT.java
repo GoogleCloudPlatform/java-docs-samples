@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 public class ConsumeReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-west1-a";
+  private static final String ZONE = "us-east4-b";
   private static InstancesClient instancesClient;
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
   private static final String INSTANCE_NOT_CONSUME_RESERVATION_NAME =
