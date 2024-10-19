@@ -48,7 +48,7 @@ public class HyperdisksIT {
   private static String HYPERDISK_NAME;
   private static String HYPERDISK_IN_POOL_NAME;
   private static String STORAGE_POOL_NAME;
-
+  private static final String PERFORMANCE_PROVISIONING_TYPE = "advanced";
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
@@ -104,7 +104,8 @@ public class HyperdisksIT {
         PROJECT_ID, ZONE);
     StoragePool storagePool = CreateHyperdiskStoragePool
          .createHyperdiskStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME, poolType,
-         "advanced", 10240, 10000, 10240);
+         "advanced", 10240, 10000, 10240,
+             PERFORMANCE_PROVISIONING_TYPE);
 
     Assert.assertNotNull(storagePool);
     Assert.assertEquals(STORAGE_POOL_NAME, storagePool.getName());
@@ -113,6 +114,7 @@ public class HyperdisksIT {
     Assert.assertEquals(10240, storagePool.getPoolProvisionedCapacityGb());
     Assert.assertTrue(storagePool.getStoragePoolType().contains("hyperdisk-balanced"));
     Assert.assertTrue(storagePool.getCapacityProvisioningType().equalsIgnoreCase("advanced"));
+    Assert.assertTrue(storagePool.getPerformanceProvisioningType().equalsIgnoreCase("advanced"));
     Assert.assertTrue(storagePool.getZone().contains(ZONE));
   }
 
