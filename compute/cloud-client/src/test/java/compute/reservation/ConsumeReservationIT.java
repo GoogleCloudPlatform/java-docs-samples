@@ -43,7 +43,7 @@ import org.junit.runners.JUnit4;
 public class ConsumeReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "europe-southwest1-a";
+  private static final String ZONE = "asia-south1-a";
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
   private static ReservationsClient reservationsClient;
   private static InstancesClient instancesClient;
