@@ -144,6 +144,7 @@ public class ReservationIT {
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
 
+    // Close the client after all tests
     reservationsClient.close();
 
     stdOut.close();

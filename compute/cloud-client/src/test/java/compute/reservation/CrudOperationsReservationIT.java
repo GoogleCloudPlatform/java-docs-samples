@@ -48,7 +48,7 @@ import org.junit.runners.MethodSorters;
 public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-east4-c";
+  private static final String ZONE = "us-west1-a";
   private static String RESERVATION_NAME;
   private static final int NUMBER_OF_VMS = 3;
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
@@ -74,10 +74,10 @@ public class CrudOperationsReservationIT {
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Delete the reservation created for testing.
+    // Delete all reservations created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
 
-    // Test that reservation is deleted
+    // Test that reservations are deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
