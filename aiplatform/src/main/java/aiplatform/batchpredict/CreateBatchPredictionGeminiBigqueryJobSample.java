@@ -16,15 +16,13 @@
 
 package aiplatform.batchpredict;
 
-// [START generativeaionvertexai_batch_predict_gemini_createjob]
-import com.google.cloud.aiplatform.util.ValueConverter;
+// [START generativeaionvertexai_batch_predict_gemini_createjob_bigquery]
 import com.google.cloud.aiplatform.v1.BatchPredictionJob;
 import com.google.cloud.aiplatform.v1.BigQueryDestination;
 import com.google.cloud.aiplatform.v1.BigQuerySource;
 import com.google.cloud.aiplatform.v1.JobServiceClient;
 import com.google.cloud.aiplatform.v1.JobServiceSettings;
 import com.google.cloud.aiplatform.v1.LocationName;
-import com.google.protobuf.Value;
 import java.io.IOException;
 
 public class CreateBatchPredictionGeminiBigqueryJobSample {
@@ -32,33 +30,14 @@ public class CreateBatchPredictionGeminiBigqueryJobSample {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Update these variables before running the sample.
     String project = "PROJECT_ID";
-    String displayName = "my-display-name";
-    String modelName = "gemini-1.5-flash-002";
-    String instancesFormat = "bigquery";
-    String bigquerySourceInputUri =
-        "bq://storage-samples.generative_ai.batch_requests_for_multimodal_input";
-    String predictionsFormat = "bigquery";
     String bigqueryDestinationOutputUri = "bq://PROJECT_ID.MY_DATASET.MY_TABLE";
 
-    createBatchPredictionGeminiBigqueryJobSample(
-        project,
-        displayName,
-        modelName,
-        instancesFormat,
-        bigquerySourceInputUri,
-        predictionsFormat,
-        bigqueryDestinationOutputUri);
+    createBatchPredictionGeminiBigqueryJobSample(project, bigqueryDestinationOutputUri);
   }
 
-  public static void createBatchPredictionGeminiBigqueryJobSample(
-      String project,
-      String displayName,
-      String model,
-      String instancesFormat,
-      String bigquerySourceInputUri,
-      String predictionsFormat,
-      String bigqueryDestinationOutputUri)
-      throws IOException {
+  // Create a batch prediction job using BigQuery input and output datasets.
+  public static BatchPredictionJob createBatchPredictionGeminiBigqueryJobSample(
+      String project, String bigqueryDestinationOutputUri) throws IOException {
     String location = "us-central1";
     JobServiceSettings settings =
         JobServiceSettings.newBuilder()
@@ -68,43 +47,41 @@ public class CreateBatchPredictionGeminiBigqueryJobSample {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (JobServiceClient client = JobServiceClient.create(settings)) {
-      // Passing in an empty Value object for model parameters;
-      // Add model parameters per request in the input BigQuery table.
-      Value modelParameters = ValueConverter.EMPTY_VALUE;
-
       BigQuerySource bigquerySource =
-          BigQuerySource.newBuilder().setInputUri(bigquerySourceInputUri).build();
+          BigQuerySource.newBuilder()
+              .setInputUri("bq://storage-samples.generative_ai.batch_requests_for_multimodal_input")
+              .build();
       BatchPredictionJob.InputConfig inputConfig =
           BatchPredictionJob.InputConfig.newBuilder()
-              .setInstancesFormat(instancesFormat)
+              .setInstancesFormat("bigquery")
               .setBigquerySource(bigquerySource)
               .build();
       BigQueryDestination bigqueryDestination =
           BigQueryDestination.newBuilder().setOutputUri(bigqueryDestinationOutputUri).build();
       BatchPredictionJob.OutputConfig outputConfig =
           BatchPredictionJob.OutputConfig.newBuilder()
-              .setPredictionsFormat(predictionsFormat)
+              .setPredictionsFormat("bigquery")
               .setBigqueryDestination(bigqueryDestination)
               .build();
       String modelName =
           String.format(
-              "projects/%s/locations/%s/publishers/google/models/%s", project, location, model);
+              "projects/%s/locations/%s/publishers/google/models/%s",
+              project, location, "gemini-1.5-flash-002");
 
       BatchPredictionJob batchPredictionJob =
           BatchPredictionJob.newBuilder()
-              .setDisplayName(displayName)
-              .setModel(modelName)
-              .setModelParameters(modelParameters)
+              .setDisplayName("my-display-name")
+              .setModel(modelName) // Add model parameters per request in the input BigQuery table.
               .setInputConfig(inputConfig)
               .setOutputConfig(outputConfig)
               .build();
 
       LocationName parent = LocationName.of(project, location);
       BatchPredictionJob response = client.createBatchPredictionJob(parent, batchPredictionJob);
-      System.out.format("response: %s\n", response);
       System.out.format("\tName: %s\n", response.getName());
+      return response;
     }
   }
 }
 
-// [END generativeaionvertexai_batch_predict_gemini_createjob]
+// [END generativeaionvertexai_batch_predict_gemini_createjob_bigquery]

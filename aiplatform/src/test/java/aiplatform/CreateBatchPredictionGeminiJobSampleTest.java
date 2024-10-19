@@ -16,14 +16,16 @@
 
 package aiplatform;
 
-import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 
+import aiplatform.batchpredict.CreateBatchPredictionGeminiBigqueryJobSample;
 import aiplatform.batchpredict.CreateBatchPredictionGeminiJobSample;
+import com.google.cloud.aiplatform.v1.BatchPredictionJob;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -34,14 +36,13 @@ import org.junit.Test;
 
 public class CreateBatchPredictionGeminiJobSampleTest {
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
-  private static final String MODEL_ID = "gemini-1.5-flash-002";
-  private static final String GCS_SOURCE_URI =
-      "gs://cloud-samples-data/generative-ai/batch/batch_requests_for_multimodal_input.jsonl";
   private static final String GCS_OUTPUT_URI = "gs://ucaip-samples-test-output/";
+  private static final String BIGQUERY_DESTINATION_OUTPUT_URI_PREFIX = "bq://ucaip-sample-tests";
+
   private ByteArrayOutputStream bout;
-  private PrintStream out;
   private PrintStream originalPrintStream;
-  private String batchPredictionJobId;
+  private String batchPredictionGcsJobId;
+  private String batchPredictionBqJobId;
 
   private static void requireEnvVar(String varName) {
     String errorMessage =
@@ -58,7 +59,7 @@ public class CreateBatchPredictionGeminiJobSampleTest {
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
   }
@@ -66,44 +67,64 @@ public class CreateBatchPredictionGeminiJobSampleTest {
   @After
   public void tearDown()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
-    CancelBatchPredictionJobSample.cancelBatchPredictionJobSample(PROJECT, batchPredictionJobId);
+    // Cloud Storage job
+    CancelBatchPredictionJobSample.cancelBatchPredictionJobSample(PROJECT, batchPredictionGcsJobId);
 
     // Assert
     String cancelResponse = bout.toString();
-    assertThat(cancelResponse).contains("Cancelled the Batch Prediction Job");
+    assertThat(cancelResponse, containsString("Cancelled the Batch Prediction Job"));
     TimeUnit.MINUTES.sleep(2);
 
     // Delete the Batch Prediction Job
-    DeleteBatchPredictionJobSample.deleteBatchPredictionJobSample(PROJECT, batchPredictionJobId);
+    DeleteBatchPredictionJobSample.deleteBatchPredictionJobSample(PROJECT, batchPredictionGcsJobId);
 
     // Assert
     String deleteResponse = bout.toString();
-    assertThat(deleteResponse).contains("Deleted Batch");
+    assertThat(deleteResponse, containsString("Deleted Batch"));
+
+    // BigQuery job
+    CancelBatchPredictionJobSample.cancelBatchPredictionJobSample(PROJECT, batchPredictionBqJobId);
+
+    // Assert
+    cancelResponse = bout.toString();
+    assertThat(cancelResponse, containsString("Cancelled the Batch Prediction Job"));
+    TimeUnit.MINUTES.sleep(2);
+
+    // Delete the Batch Prediction Job
+    DeleteBatchPredictionJobSample.deleteBatchPredictionJobSample(PROJECT, batchPredictionBqJobId);
+
+    // Assert
+    deleteResponse = bout.toString();
+    assertThat(deleteResponse, containsString("Deleted Batch"));
+
     System.out.flush();
     System.setOut(originalPrintStream);
   }
 
   @Test
   public void testCreateBatchPredictionGeminiJobSampleTest() throws IOException {
+    // Cloud Storage job
     // Act
-    String batchPredictionDisplayName =
-        String.format(
-            "batch_prediction_gemini_gcs_display_name_%s",
-            UUID.randomUUID().toString().replaceAll("-", "_").substring(0, 26));
-
-    CreateBatchPredictionGeminiJobSample.createBatchPredictionGeminiJobSample(
-        PROJECT,
-        batchPredictionDisplayName,
-        MODEL_ID,
-        "jsonl",
-        GCS_SOURCE_URI,
-        "jsonl",
-        GCS_OUTPUT_URI);
+    BatchPredictionJob job =
+        CreateBatchPredictionGeminiJobSample.createBatchPredictionGeminiJobSample(
+            PROJECT, GCS_OUTPUT_URI);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains(batchPredictionDisplayName);
-    assertThat(got).contains("response:");
-    batchPredictionJobId = got.split("Name: ")[1].split("batchPredictionJobs/")[1].split("\n")[0];
+    assertThat(job.getName(), containsString("batchPredictionJobs"));
+
+    String[] id = job.getName().split("/");
+    batchPredictionGcsJobId = id[id.length - 1];
+
+    // BigQuery job
+    // Act
+    job =
+        CreateBatchPredictionGeminiBigqueryJobSample.createBatchPredictionGeminiBigqueryJobSample(
+            PROJECT, BIGQUERY_DESTINATION_OUTPUT_URI_PREFIX);
+
+    // Assert
+    assertThat(job.getName(), containsString("batchPredictionJobs"));
+
+    id = job.getName().split("/");
+    batchPredictionBqJobId = id[id.length - 1];
   }
 }

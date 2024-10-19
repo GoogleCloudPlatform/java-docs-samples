@@ -16,15 +16,13 @@
 
 package aiplatform.batchpredict;
 
-// [START generativeaionvertexai_batch_predict_gemini_createjob]
-import com.google.cloud.aiplatform.util.ValueConverter;
+// [START generativeaionvertexai_batch_predict_gemini_createjob_gcs]
 import com.google.cloud.aiplatform.v1.BatchPredictionJob;
 import com.google.cloud.aiplatform.v1.GcsDestination;
 import com.google.cloud.aiplatform.v1.GcsSource;
 import com.google.cloud.aiplatform.v1.JobServiceClient;
 import com.google.cloud.aiplatform.v1.JobServiceSettings;
 import com.google.cloud.aiplatform.v1.LocationName;
-import com.google.protobuf.Value;
 import java.io.IOException;
 
 public class CreateBatchPredictionGeminiJobSample {
@@ -32,78 +30,63 @@ public class CreateBatchPredictionGeminiJobSample {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Update these variables before running the sample.
     String project = "PROJECT_ID";
-    String displayName = "my-display-name";
-    String modelName = "gemini-1.5-flash-002";
-    String instancesFormat = "jsonl";
-    String gcsSourceUri =
-        "gs://cloud-samples-data/generative-ai/batch/batch_requests_for_multimodal_input.jsonl";
-    // Or try "gs://cloud-samples-data/generative-ai/batch/gemini_multimodal_batch_predict.jsonl"
-    // for a batch prediction that uses audio, video, and an image.
-    String predictionsFormat = "jsonl";
     String gcsDestinationOutputUriPrefix = "gs://MY_BUCKET/";
 
-    createBatchPredictionGeminiJobSample(
-        project,
-        displayName,
-        modelName,
-        instancesFormat,
-        gcsSourceUri,
-        predictionsFormat,
-        gcsDestinationOutputUriPrefix);
+    createBatchPredictionGeminiJobSample(project, gcsDestinationOutputUriPrefix);
   }
 
-  public static void createBatchPredictionGeminiJobSample(
-      String project,
-      String displayName,
-      String model,
-      String instancesFormat,
-      String gcsSourceUri,
-      String predictionsFormat,
-      String gcsDestinationOutputUriPrefix)
-      throws IOException {
+  // Create a batch prediction job using a JSONL input file and output URI, both in Cloud
+  // Storage.
+  public static BatchPredictionJob createBatchPredictionGeminiJobSample(
+      String project, String gcsDestinationOutputUriPrefix) throws IOException {
+    String location = "us-central1";
     JobServiceSettings settings =
         JobServiceSettings.newBuilder()
-            .setEndpoint("us-central1-aiplatform.googleapis.com:443")
+            .setEndpoint(String.format("%s-aiplatform.googleapis.com:443", location))
             .build();
-    String location = "us-central1";
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (JobServiceClient client = JobServiceClient.create(settings)) {
-      // Passing in an empty Value object for model parameters;
-      // Add model parameters per request in the input jsonl file.
-      Value modelParameters = ValueConverter.EMPTY_VALUE;
-
-      GcsSource gcsSource = GcsSource.newBuilder().addUris(gcsSourceUri).build();
+      GcsSource gcsSource =
+          GcsSource.newBuilder()
+              .addUris(
+                  "gs://cloud-samples-data/generative-ai/batch/batch_requests_for_multimodal_input.jsonl")
+              // Or try
+              // "gs://cloud-samples-data/generative-ai/batch/gemini_multimodal_batch_predict.jsonl"
+              // for a batch prediction that uses audio, video, and an image.
+              .build();
       BatchPredictionJob.InputConfig inputConfig =
           BatchPredictionJob.InputConfig.newBuilder()
-              .setInstancesFormat(instancesFormat)
+              .setInstancesFormat("jsonl")
               .setGcsSource(gcsSource)
               .build();
       GcsDestination gcsDestination =
           GcsDestination.newBuilder().setOutputUriPrefix(gcsDestinationOutputUriPrefix).build();
       BatchPredictionJob.OutputConfig outputConfig =
           BatchPredictionJob.OutputConfig.newBuilder()
-              .setPredictionsFormat(predictionsFormat)
+              .setPredictionsFormat("jsonl")
               .setGcsDestination(gcsDestination)
               .build();
       String modelName =
           String.format(
-              "projects/%s/locations/%s/publishers/google/models/%s", project, location, model);
+              "projects/%s/locations/%s/publishers/google/models/%s",
+              project, location, "gemini-1.5-flash-002");
+
       BatchPredictionJob batchPredictionJob =
           BatchPredictionJob.newBuilder()
-              .setDisplayName(displayName)
-              .setModel(modelName)
-              .setModelParameters(modelParameters)
+              .setDisplayName("my-display-name")
+              .setModel(modelName) // Add model parameters per request in the input jsonl file.
               .setInputConfig(inputConfig)
               .setOutputConfig(outputConfig)
               .build();
+
       LocationName parent = LocationName.of(project, location);
       BatchPredictionJob response = client.createBatchPredictionJob(parent, batchPredictionJob);
-      System.out.format("response: %s\n", response);
       System.out.format("\tName: %s\n", response.getName());
+      return response;
     }
   }
 }
 
-// [END generativeaionvertexai_batch_predict_gemini_createjob]
+// [END generativeaionvertexai_batch_predict_gemini_createjob_gcs]
