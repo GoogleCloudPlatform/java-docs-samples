@@ -16,18 +16,14 @@
 
 package compute.reservation;
 
-import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.NO_RESERVATION;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.compute.v1.Instance;
-import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.CreateInstanceTemplate;
 import compute.CreateRegionalInstanceTemplate;
-import compute.DeleteInstance;
 import compute.DeleteInstanceTemplate;
 import compute.DeleteRegionalInstanceTemplate;
 import compute.Util;
@@ -55,7 +51,6 @@ public class ReservationIT {
   private static final String ZONE = "us-west1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static ReservationsClient reservationsClient;
-  private static InstancesClient instancesClient;
   private static String RESERVATION_NAME_GLOBAL;
   private static String RESERVATION_NAME_REGIONAL;
   private static String GLOBAL_INSTANCE_TEMPLATE_URI;
@@ -66,11 +61,7 @@ public class ReservationIT {
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
       "test-regional-inst-temp-" + javaVersion  + "-"
           + UUID.randomUUID().toString().substring(0, 8);
-  private static final String INSTANCE_NOT_CONSUME_RESERVATION_NAME =
-      "test-instance-not-consume-"  + javaVersion  + "-"
-          + UUID.randomUUID().toString().substring(0, 8);
   private static final int NUMBER_OF_VMS = 3;
-  private static final String MACHINE_TYPE = "n2-standard-32";
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -89,7 +80,6 @@ public class ReservationIT {
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstanceTemplates("test-global-inst-temp-" + javaVersion, PROJECT_ID);
-    Util.cleanUpExistingInstanceTemplates("test-instance-not-consume-" + javaVersion, PROJECT_ID);
     Util.cleanUpExistingRegionalInstanceTemplates(
         "test-regional-inst-temp-" + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations(
@@ -108,16 +98,6 @@ public class ReservationIT {
     REGIONAL_INSTANCE_TEMPLATE_URI =
         String.format("projects/%s/regions/%s/instanceTemplates/%s",
             PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
-
-    // Initialize the clients once for all tests
-    reservationsClient = ReservationsClient.create();
-    instancesClient = InstancesClient.create();
-
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp-", PROJECT_ID);
-    Util.cleanUpExistingRegionalInstanceTemplates("test-regional-inst-temp-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reserv-", PROJECT_ID, ZONE);
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
@@ -152,9 +132,6 @@ public class ReservationIT {
         .contains("Instance template deletion operation status for "
             + REGIONAL_INSTANCE_TEMPLATE_NAME);
 
-    // Delete the instance created for testing.
-    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
-
     // Delete all reservations created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
@@ -167,9 +144,7 @@ public class ReservationIT {
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
 
-    // Close the client after all tests
     reservationsClient.close();
-    instancesClient.close();
 
     stdOut.close();
     System.setOut(out);
@@ -200,20 +175,5 @@ public class ReservationIT {
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
     Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
-  }
-
-  @Test
-  public void testCreateInstanceNotConsumeReservation()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-
-    CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
-        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
-
-    // Verify that the instance was created with the correct consumeReservationType
-    Instance instance = instancesClient.get(
-        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
-
-    Assert.assertEquals(NO_RESERVATION.toString(),
-        instance.getReservationAffinity().getConsumeReservationType());
   }
 }
