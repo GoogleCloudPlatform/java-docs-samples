@@ -20,27 +20,40 @@ import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservation
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Instance;
+import com.google.cloud.compute.v1.InstanceTemplate;
+import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.InstancesClient;
 import compute.DeleteInstance;
+import compute.DeleteInstanceTemplate;
 import compute.Util;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
+@Timeout(value = 25, unit = TimeUnit.MINUTES)
 public class ConsumeReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "europe-southwest1-a";
   private static InstancesClient instancesClient;
+  private static InstanceTemplatesClient instanceTemplatesClient;
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
   private static final String INSTANCE_NOT_CONSUME_RESERVATION_NAME =
       "test-instance-not-consume-"  + javaVersion  + "-"
           + UUID.randomUUID().toString().substring(0, 8);
+  private static final String TEMPLATE_NOT_CONSUME_RESERVATION_NAME =
+      "test-template-not-consume-"  + javaVersion  + "-"
+      + UUID.randomUUID().toString().substring(0, 8);
   private static final String MACHINE_TYPE = "n2-standard-32";
 
   // Check if the required environment variables are set.
@@ -55,11 +68,19 @@ public class ConsumeReservationIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    // Initialize the clients once for all tests
+    // Initialize clients once for all tests
     instancesClient = InstancesClient.create();
+    instanceTemplatesClient = InstanceTemplatesClient.create();
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-instance-not-consume-"  + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstanceTemplates("test-template-not-consume-"  + javaVersion, PROJECT_ID);
+
+    // Create resources for testing.
+    CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
+        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
+    CreateTemplateNotConsumeReservation.createTemplateNotConsumeReservation(
+        PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
   }
 
   @AfterAll
@@ -67,23 +88,31 @@ public class ConsumeReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Delete the instance created for testing.
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
+    DeleteInstanceTemplate.deleteInstanceTemplate(
+        PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
 
-    // Close the client after all tests
+    // Close clients after all tests
     instancesClient.close();
+    instanceTemplatesClient.close();
   }
 
   @Test
-  public void testCreateInstanceNotConsumeReservation()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-
-    CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
-        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
-
-    // Verify that the instance was created with the correct consumeReservationType
+  public void testCreateInstanceNotConsumeReservation() {
     Instance instance = instancesClient.get(
         PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
 
+    // Verify that the instance was created with the correct consumeReservationType
     Assertions.assertEquals(NO_RESERVATION.toString(),
         instance.getReservationAffinity().getConsumeReservationType());
+  }
+
+  @Test
+  public void testCreateTemplateNotConsumeReservation() {
+    InstanceTemplate template = instanceTemplatesClient.get(
+        PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
+
+    // Verify that the instance was created with the correct reservation and consumeReservationType
+    Assertions.assertEquals(NO_RESERVATION.toString(),
+        template.getPropertiesOrBuilder().getReservationAffinity().getConsumeReservationType());
   }
 }
