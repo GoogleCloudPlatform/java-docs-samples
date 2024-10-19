@@ -53,7 +53,7 @@ import org.junit.runners.MethodSorters;
 public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  private static final String ZONE = "us-east4-c";
   private static ReservationsClient reservationsClient;
   private static InstancesClient instancesClient;
   private static String RESERVATION_NAME;
