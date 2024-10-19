@@ -51,7 +51,8 @@ public class CreateBatchPredictionGeminiJobSample {
       GcsSource gcsSource =
           GcsSource.newBuilder()
               .addUris(
-                  "gs://cloud-samples-data/generative-ai/batch/batch_requests_for_multimodal_input.jsonl")
+                  "gs://cloud-samples-data/generative-ai/batch/"
+                      + "batch_requests_for_multimodal_input.jsonl")
               // Or try
               // "gs://cloud-samples-data/generative-ai/batch/gemini_multimodal_batch_predict.jsonl"
               // for a batch prediction that uses audio, video, and an image.
@@ -84,6 +85,8 @@ public class CreateBatchPredictionGeminiJobSample {
       LocationName parent = LocationName.of(project, location);
       BatchPredictionJob response = client.createBatchPredictionJob(parent, batchPredictionJob);
       System.out.format("\tName: %s\n", response.getName());
+      // Example response:
+      //   Name: projects/<project>/locations/us-central1/batchPredictionJobs/<job-id>
       return response;
     }
   }

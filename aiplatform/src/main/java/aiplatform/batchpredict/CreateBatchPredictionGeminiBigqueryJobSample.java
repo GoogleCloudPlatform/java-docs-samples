@@ -79,6 +79,8 @@ public class CreateBatchPredictionGeminiBigqueryJobSample {
       LocationName parent = LocationName.of(project, location);
       BatchPredictionJob response = client.createBatchPredictionJob(parent, batchPredictionJob);
       System.out.format("\tName: %s\n", response.getName());
+      // Example response:
+      //   Name: projects/<project>/locations/us-central1/batchPredictionJobs/<job-id>
       return response;
     }
   }
