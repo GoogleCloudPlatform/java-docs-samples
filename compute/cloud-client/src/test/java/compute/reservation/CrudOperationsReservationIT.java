@@ -40,19 +40,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-<<<<<<<< HEAD:compute/cloud-client/src/test/java/compute/reservation/CrudOperationReservationIT.java
-
-@RunWith(JUnit4.class)
-@Timeout(value = 25, unit = TimeUnit.MINUTES)
-public class CrudOperationReservationIT {
-========
 import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CrudOperationsReservationIT {
->>>>>>>> main:compute/cloud-client/src/test/java/compute/reservation/CrudOperationsReservationIT.java
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-west1-a";
@@ -71,21 +64,12 @@ public class CrudOperationsReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-<<<<<<<< HEAD:compute/cloud-client/src/test/java/compute/reservation/CrudOperationReservationIT.java
-    RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
 
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
-
-    CreateReservation.createReservation(
-        PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
-========
     RESERVATION_NAME = "test-reservation-" + javaVersion + "-"
         + UUID.randomUUID().toString().substring(0, 8);
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
->>>>>>>> main:compute/cloud-client/src/test/java/compute/reservation/CrudOperationsReservationIT.java
   }
 
   @AfterAll
