@@ -48,6 +48,7 @@ public class HyperdisksIT {
   private static String HYPERDISK_IN_POOL_NAME;
   private static String STORAGE_POOL_NAME;
   private static final String PERFORMANCE_PROVISIONING_TYPE = "advanced";
+
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
