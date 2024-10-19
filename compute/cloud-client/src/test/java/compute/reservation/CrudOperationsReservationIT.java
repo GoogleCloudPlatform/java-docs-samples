@@ -64,7 +64,6 @@ public class CrudOperationsReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
     RESERVATION_NAME = "test-reservation-" + javaVersion + "-"
         + UUID.randomUUID().toString().substring(0, 8);
 
@@ -75,7 +74,7 @@ public class CrudOperationsReservationIT {
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Delete the reservation created for testing.
+    // Delete all reservations created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
 
     // Test that reservations are deleted
@@ -104,6 +103,7 @@ public class CrudOperationsReservationIT {
       throws IOException {
     Reservation reservation = GetReservation.getReservation(
         PROJECT_ID, RESERVATION_NAME, ZONE);
+
     assertNotNull(reservation);
     assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME);
   }
@@ -112,6 +112,7 @@ public class CrudOperationsReservationIT {
   public void thirdListReservationTest() throws IOException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
+
     assertThat(reservations).isNotNull();
     Assert.assertTrue(reservations.get(0).getName().contains("test-"));
   }

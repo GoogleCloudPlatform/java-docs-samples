@@ -86,6 +86,9 @@ public class ReservationIT {
         "test-reservation-global-" + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reservation-regional-" + javaVersion, PROJECT_ID, ZONE);
 
+    // Initialize the client once for all tests
+    reservationsClient = ReservationsClient.create();
+
     RESERVATION_NAME_GLOBAL = "test-reservation-global-" + javaVersion  + "-"
         + UUID.randomUUID().toString().substring(0, 8);
     RESERVATION_NAME_REGIONAL = "test-reservation-regional-" + javaVersion  + "-"
@@ -104,9 +107,6 @@ public class ReservationIT {
     CreateRegionalInstanceTemplate.createRegionalInstanceTemplate(
         PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
-
-    // Initialize the client once for all tests
-    reservationsClient = ReservationsClient.create();
 
     stdOut.close();
     System.setOut(out);
@@ -144,6 +144,9 @@ public class ReservationIT {
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
 
+    // Close the client after all tests
+    reservationsClient.close();
+
     stdOut.close();
     System.setOut(out);
   }
@@ -154,7 +157,6 @@ public class ReservationIT {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_GLOBAL,
         GLOBAL_INSTANCE_TEMPLATE_URI, NUMBER_OF_VMS, ZONE);
-
     Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
 
     Assert.assertTrue(reservation.getSpecificReservation()

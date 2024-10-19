@@ -174,7 +174,7 @@ public class ConsumeSpecificSharedReservation {
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);
-     }
+      }
       System.out.println("Operation Status: " + response.getStatus());
     }
   }
