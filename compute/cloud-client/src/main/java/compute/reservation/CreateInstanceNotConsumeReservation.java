@@ -101,7 +101,6 @@ public class CreateInstanceNotConsumeReservation {
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);
-        return;
       }
       System.out.println("Operation Status: " + response.getStatus());
     }
