@@ -56,8 +56,6 @@ public class ConsumeReservationsIT {
   private static  String INSTANCE_FOR_ANY_MATCHING;
   private static  String SPECIFIC_SHARED_INSTANCE;
   private static final int NUMBER_OF_VMS = 3;
-  private static final String MACHINE_TYPE = "n2-standard-32";
-  private static final String MIN_CPU_PLATFORM = "Intel Cascade Lake";
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -122,9 +120,8 @@ public class ConsumeReservationsIT {
   @Test
   public void testConsumeAnyMatchingReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    ConsumeAnyMatchingReservation.createInstance(
-        PROJECT_ID, ZONE, INSTANCE_FOR_ANY_MATCHING, MACHINE_TYPE, MIN_CPU_PLATFORM);
-
+    ConsumeAnyMatchingReservation.createInstance(PROJECT_ID, ZONE, INSTANCE_FOR_ANY_MATCHING);
+    TimeUnit.SECONDS.sleep(30);
     Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_FOR_ANY_MATCHING);
 
     Assert.assertEquals(ANY_RESERVATION.toString(),
@@ -136,12 +133,12 @@ public class ConsumeReservationsIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Create the reservation
     ConsumeSingleProjectReservation.createReservation(
-        PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS,
-        ZONE, MACHINE_TYPE, MIN_CPU_PLATFORM, true);
+        PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
+    TimeUnit.SECONDS.sleep(30);
 
     ConsumeSingleProjectReservation.createInstance(
-        PROJECT_ID, ZONE, INSTANCE_FOR_SPR, MACHINE_TYPE,
-        MIN_CPU_PLATFORM, RESERVATION_NAME);
+        PROJECT_ID, ZONE, INSTANCE_FOR_SPR, RESERVATION_NAME);
+    TimeUnit.SECONDS.sleep(30);
 
     Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_FOR_SPR);
 
@@ -155,15 +152,15 @@ public class ConsumeReservationsIT {
   public void testConsumeSpecificSharedReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     ConsumeSpecificSharedReservation.createReservation(PROJECT_ID,
-        RESERVATION_SHARED_NAME, NUMBER_OF_VMS, ZONE,
-        MACHINE_TYPE, MIN_CPU_PLATFORM, true);
+        RESERVATION_SHARED_NAME, NUMBER_OF_VMS, ZONE);
+    TimeUnit.SECONDS.sleep(30);
 
     Assert.assertEquals(RESERVATION_SHARED_NAME,
         reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_SHARED_NAME).getName());
 
     ConsumeSpecificSharedReservation.createInstance(
-        PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE, MACHINE_TYPE,
-        MIN_CPU_PLATFORM, RESERVATION_SHARED_NAME);
+        PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE, RESERVATION_SHARED_NAME);
+    TimeUnit.SECONDS.sleep(30);
 
     // Verify that the instance was created with the correct reservation and consumeReservationType
     Instance instance = instancesClient.get(PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE);
