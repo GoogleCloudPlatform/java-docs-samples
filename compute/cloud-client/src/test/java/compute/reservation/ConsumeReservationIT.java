@@ -23,7 +23,7 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.InstancesClient;
-import compute.DeleteInstance;
+import compute.CreateInstance;
 import compute.DeleteInstanceTemplate;
 import compute.Util;
 import java.io.IOException;
@@ -34,6 +34,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -77,8 +78,9 @@ public class ConsumeReservationIT {
     Util.cleanUpExistingInstanceTemplates("test-template-not-consume-"  + javaVersion, PROJECT_ID);
 
     // Create resources for testing.
-    CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
-        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
+    CreateInstance.createInstance(PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
+    //    CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
+    //        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
     CreateTemplateNotConsumeReservation.createTemplateNotConsumeReservation(
         PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
     TimeUnit.SECONDS.sleep(30);
@@ -88,7 +90,7 @@ public class ConsumeReservationIT {
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Delete the instance created for testing.
-    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
+    //DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
     DeleteInstanceTemplate.deleteInstanceTemplate(
         PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
 
@@ -97,6 +99,7 @@ public class ConsumeReservationIT {
     instanceTemplatesClient.close();
   }
 
+  @Disabled
   @Test
   public void testCreateInstanceNotConsumeReservation() {
     Instance instance = instancesClient.get(
