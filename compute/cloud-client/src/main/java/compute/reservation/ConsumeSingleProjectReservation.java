@@ -114,7 +114,7 @@ public class ConsumeSingleProjectReservation {
         .format("projects/debian-cloud/global/images/family/%s", "debian-11");
     long diskSizeGb = 10L;
     String networkName = "default";
-  String machineType = String.format("zones/%s/machineTypes/n1-standard-4", zone);
+    String machineType = String.format("zones/%s/machineTypes/n1-standard-4", zone);
     String minCpuPlatform = "Intel Skylake";
 
     // Initialize client that will be used to send requests. This client only needs to be created
