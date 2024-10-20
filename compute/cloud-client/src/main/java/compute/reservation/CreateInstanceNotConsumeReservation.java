@@ -44,34 +44,38 @@ public class CreateInstanceNotConsumeReservation {
     String zone = "us-central1-a";
     // Name of the VM instance you want to query.
     String instanceName = "YOUR_INSTANCE_NAME";
-    // Machine type of the instances in the reservation.
-    String machineType = "n2-standard-32";
 
-    createInstanceNotConsumeReservation(projectId, zone, instanceName, machineType);
+    createInstanceNotConsumeReservation(projectId, zone, instanceName);
   }
 
   // Create a virtual machine that explicitly doesn't consume reservations
   public static void createInstanceNotConsumeReservation(
-      String projectId, String zone, String instanceName, String machineType)
+      String project, String zone, String instanceName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Below are sample values that can be replaced.
+    // machineType: machine type of the VM being created.
+    // *   This value uses the format zones/{zone}/machineTypes/{type_name}.
+    // *   For a list of machine types, see https://cloud.google.com/compute/docs/machine-types
     // sourceImage: path to the operating system image to mount.
     // *   For details about images you can mount, see https://cloud.google.com/compute/docs/images
-    // Network interface to associate with the instance.
+    // diskSizeGb: storage size of the boot disk to attach to the instance.
+    // networkName: network interface to associate with the instance.
+    String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
     String sourceImage = String
         .format("projects/debian-cloud/global/images/family/%s", "debian-11");
-    String network = "global/networks/default"; // Example network
     long diskSizeGb = 10L;
+    String networkName = "default";
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (InstancesClient instancesClient = InstancesClient.create()) {
-
-      // Create the attached disk object
-      AttachedDisk attachedDisk =
+      // Instance creation requires at least one persistent disk and one network interface.
+      AttachedDisk disk =
           AttachedDisk.newBuilder()
               .setBoot(true)
               .setAutoDelete(true)
               .setType(AttachedDisk.Type.PERSISTENT.toString())
+              .setDeviceName("disk-1")
               .setInitializeParams(
                   AttachedDiskInitializeParams.newBuilder()
                       .setSourceImage(sourceImage)
@@ -79,9 +83,10 @@ public class CreateInstanceNotConsumeReservation {
                       .build())
               .build();
 
-      // Create the network interface object
-      NetworkInterface networkInterface =
-          NetworkInterface.newBuilder().setName(network).build();
+      // Use the network interface provided in the networkName argument.
+      NetworkInterface networkInterface = NetworkInterface.newBuilder()
+          .setName(networkName)
+          .build();
 
       // Set reservation affinity to "none"
       ReservationAffinity reservationAffinity =
@@ -89,21 +94,23 @@ public class CreateInstanceNotConsumeReservation {
               .setConsumeReservationType(NO_RESERVATION.toString())
               .build();
 
-      // Create the instance object
-      Instance instance =
+      // Bind `instanceName`, `machineType`, `disk`, and `networkInterface` to an instance.
+      Instance instanceResource =
           Instance.newBuilder()
               .setName(instanceName)
-              .setMachineType("zones/" + zone + "/machineTypes/" + machineType)
-              .addDisks(attachedDisk)
+              .setMachineType(machineType)
+              .addDisks(disk)
               .addNetworkInterfaces(networkInterface)
               .setReservationAffinity(reservationAffinity)
               .build();
 
+      System.out.printf("Creating instance: %s at %s %n", instanceName, zone);
+
       // Insert the instance in the specified project and zone.
       InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
-          .setProject(projectId)
+          .setProject(project)
           .setZone(zone)
-          .setInstanceResource(instance)
+          .setInstanceResource(instanceResource)
           .build();
 
       OperationFuture<Operation, Operation> operation = instancesClient.insertAsync(
@@ -114,6 +121,7 @@ public class CreateInstanceNotConsumeReservation {
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);
+        return;
       }
       System.out.println("Operation Status: " + response.getStatus());
     }

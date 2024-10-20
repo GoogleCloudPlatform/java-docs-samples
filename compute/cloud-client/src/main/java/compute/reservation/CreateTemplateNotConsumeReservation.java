@@ -43,23 +43,18 @@ public class CreateTemplateNotConsumeReservation {
     String projectId = "YOUR_PROJECT_ID";
     // Name of the template you want to query.
     String templateName = "YOUR_INSTANCE_TEMPLATE_NAME";
-    // Machine type of the template.
-    String machineType = "n2-standard-32";
 
-    createTemplateNotConsumeReservation(projectId, templateName, machineType);
+    createTemplateNotConsumeReservation(projectId, templateName);
   }
 
+
   // Create a template that explicitly doesn't consume any reservations.
-  public static void createTemplateNotConsumeReservation(
-      String projectId, String templateName, String machineType)
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public static void createTemplateNotConsumeReservation(String projectId, String templateName)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
-      // Below are sample values that can be replaced.
-      // sourceImage: path to the operating system image to mount.
-      // *   For details about images you can mount, see https://cloud.google.com/compute/docs/images
-      // Network interface to associate with the instance.
-      String sourceImage = String
-          .format("projects/debian-cloud/global/images/family/%s", "debian-11");
+
+      String machineType = "e2-standard-4";
+      String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
 
       // The template describes the size and source image of the boot disk
       // to attach to the instance.
@@ -106,6 +101,7 @@ public class CreateTemplateNotConsumeReservation {
 
       if (response.hasError()) {
         System.out.println("Instance Template creation failed ! ! " + response);
+        return;
       }
       System.out
           .printf("Instance Template Operation Status %s: %s", templateName, response.getStatus());

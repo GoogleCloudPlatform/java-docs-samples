@@ -23,7 +23,7 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.InstancesClient;
-import compute.CreateInstance;
+import compute.DeleteInstance;
 import compute.DeleteInstanceTemplate;
 import compute.Util;
 import java.io.IOException;
@@ -34,7 +34,6 @@ import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -45,7 +44,7 @@ import org.junit.runners.JUnit4;
 public class ConsumeReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "europe-southwest1-a";
+  private static final String ZONE = "us-central1-a";
   private static InstancesClient instancesClient;
   private static InstanceTemplatesClient instanceTemplatesClient;
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
@@ -55,7 +54,6 @@ public class ConsumeReservationIT {
   private static final String TEMPLATE_NOT_CONSUME_RESERVATION_NAME =
       "test-template-not-consume-"  + javaVersion  + "-"
       + UUID.randomUUID().toString().substring(0, 8);
-  private static final String MACHINE_TYPE = "n2-standard-32";
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -78,11 +76,10 @@ public class ConsumeReservationIT {
     Util.cleanUpExistingInstanceTemplates("test-template-not-consume-"  + javaVersion, PROJECT_ID);
 
     // Create resources for testing.
-    CreateInstance.createInstance(PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
-    //    CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
-    //        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
+    CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
+        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
     CreateTemplateNotConsumeReservation.createTemplateNotConsumeReservation(
-        PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
+        PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
     TimeUnit.SECONDS.sleep(30);
   }
 
@@ -90,7 +87,7 @@ public class ConsumeReservationIT {
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Delete the instance created for testing.
-    //DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
     DeleteInstanceTemplate.deleteInstanceTemplate(
         PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
 
@@ -99,7 +96,6 @@ public class ConsumeReservationIT {
     instanceTemplatesClient.close();
   }
 
-  @Disabled
   @Test
   public void testCreateInstanceNotConsumeReservation() {
     Instance instance = instancesClient.get(
