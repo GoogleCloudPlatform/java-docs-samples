@@ -71,6 +71,7 @@ public class CreateInstanceNotConsumeReservation {
           AttachedDisk.newBuilder()
               .setBoot(true)
               .setAutoDelete(true)
+              .setType(AttachedDisk.Type.PERSISTENT.toString())
               .setInitializeParams(
                   AttachedDiskInitializeParams.newBuilder()
                       .setSourceImage(sourceImage)
