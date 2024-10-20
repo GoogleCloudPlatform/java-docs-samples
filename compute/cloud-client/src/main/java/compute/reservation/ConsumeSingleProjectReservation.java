@@ -62,9 +62,9 @@ public class ConsumeSingleProjectReservation {
       String projectId, String reservationName, int numberOfVms, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Machine type of the instances.
-    String machineType = "n2-standard-32";
+    String machineType = "n1-standard-4";
     // Minimum CPU platform of the instances.
-    String minCpuPlatform = "Intel Cascade Lake";
+    String minCpuPlatform = "Intel Skylake";
     boolean specificReservationRequired = true;
 
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -114,8 +114,8 @@ public class ConsumeSingleProjectReservation {
         .format("projects/debian-cloud/global/images/family/%s", "debian-11");
     long diskSizeGb = 10L;
     String networkName = "default";
-    String machineType = String.format("zones/%s/machineTypes/n2-standard-32", zone);
-    String minCpuPlatform = "Intel Cascade Lake";
+  String machineType = String.format("zones/%s/machineTypes/n1-standard-4", zone);
+    String minCpuPlatform = "Intel Skylake";
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.

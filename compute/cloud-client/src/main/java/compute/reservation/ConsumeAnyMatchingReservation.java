@@ -63,9 +63,9 @@ public class ConsumeAnyMatchingReservation {
            int numberOfVms, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Minimum CPU platform of the instances.
-    String minCpuPlatform = "Intel Cascade Lake";
+    String minCpuPlatform = "Intel Skylake";
     // Machine type of the instances.
-    String machineType = "n2-standard-32";
+    String machineType = "n1-standard-4";
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
@@ -112,12 +112,12 @@ public class ConsumeAnyMatchingReservation {
     // diskSizeGb: storage size of the boot disk to attach to the instance.
     // networkName: network interface to associate with the instance.
     // Minimum CPU platform of the instances.
-    String machineType = String.format("zones/%s/machineTypes/n2-standard-32", zone);
+    String machineType = String.format("zones/%s/machineTypes/n1-standard-4", zone);
     String sourceImage = String
         .format("projects/debian-cloud/global/images/family/%s", "debian-11");
     long diskSizeGb = 10L;
     String networkName = "default";
-    String minCpuPlatform = "Intel Cascade Lake";
+    String minCpuPlatform = "Intel Skylake";
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.

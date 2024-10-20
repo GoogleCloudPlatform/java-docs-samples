@@ -62,9 +62,9 @@ public class ConsumeSpecificSharedReservation {
       String projectId, String reservationName, int numberOfVms, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Machine type of the instances.
-    String machineType = "n2-standard-32";
+    String machineType = "n1-standard-4";
     // Minimum CPU platform of the instances.
-    String minCpuPlatform = "Intel Cascade Lake";
+    String minCpuPlatform = "Intel Skylake";
     boolean specificReservationRequired = true;
 
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -115,8 +115,8 @@ public class ConsumeSpecificSharedReservation {
         .format("projects/debian-cloud/global/images/family/%s", "debian-11");
     long diskSizeGb = 10L;
     String networkName = "default";
-    String machineType = String.format("zones/%s/machineTypes/n2-standard-32", zone);
-    String minCpuPlatform = "Intel Cascade Lake";
+    String machineType = String.format("zones/%s/machineTypes/n1-standard-4", zone);
+    String minCpuPlatform = "Intel Skylake";
     // To consume this reservation from any consumer projects that this reservation is shared with,
     // you must also specify the owner project of the reservation - the path to the reservation.
     String reservationPath =
