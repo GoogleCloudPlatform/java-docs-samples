@@ -40,7 +40,6 @@ public class CreateInstanceNotConsumeReservation {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
-    // Name of the zone in which you want to create the reservation.
     String zone = "us-central1-a";
     // Name of the VM instance you want to query.
     String instanceName = "YOUR_INSTANCE_NAME";

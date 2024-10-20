@@ -111,7 +111,7 @@ public class ConsumeReservationIT {
     InstanceTemplate template = instanceTemplatesClient.get(
         PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
 
-    // Verify that the instance was created with the correct reservation and consumeReservationType
+    // Verify that the instance template was created with the correct consumeReservationType
     Assertions.assertEquals(NO_RESERVATION.toString(),
         template.getPropertiesOrBuilder().getReservationAffinity().getConsumeReservationType());
   }
