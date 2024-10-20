@@ -69,7 +69,7 @@ public class ConsumeReservationsIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    // Initialize the clients once for all tests
+    // Initialize clients once for all tests
     instancesClient = InstancesClient.create();
     reservationsClient = ReservationsClient.create();
 
@@ -95,7 +95,7 @@ public class ConsumeReservationsIT {
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Clean up the instances
+    // Delete all instances created for testing.
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_FOR_SPR);
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_FOR_ANY_MATCHING);
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE);
@@ -112,7 +112,7 @@ public class ConsumeReservationsIT {
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_SHARED_NAME, ZONE));
 
-    // Close the clients after all tests
+    // Close clients after all tests
     reservationsClient.close();
     instancesClient.close();
   }

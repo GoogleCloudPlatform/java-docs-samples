@@ -66,6 +66,7 @@ public class ConsumeAnyMatchingReservation {
     String minCpuPlatform = "Intel Skylake";
     // Machine type of the instances.
     String machineType = "n1-standard-4";
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
@@ -141,7 +142,7 @@ public class ConsumeAnyMatchingReservation {
           .setName(networkName)
           .build();
 
-      // Set Reservation Affinity to "ANY"
+      // Set Reservation Affinity
       ReservationAffinity reservationAffinity =
           ReservationAffinity.newBuilder()
               .setConsumeReservationType(ANY_RESERVATION.toString())

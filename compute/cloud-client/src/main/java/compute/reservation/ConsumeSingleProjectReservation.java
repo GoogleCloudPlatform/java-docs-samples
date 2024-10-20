@@ -51,7 +51,7 @@ public class ConsumeSingleProjectReservation {
     // Name of the VM instance you want to query.
     String instanceName = "YOUR_INSTANCE_NAME";
     // Number of the instances.
-    int numberOfVms = 10;
+    int numberOfVms = 2;
 
     createReservation(projectId, reservationName, numberOfVms, zone);
     createInstance(projectId, zone, instanceName, reservationName);
@@ -100,6 +100,7 @@ public class ConsumeSingleProjectReservation {
   }
 
   // Create a new instance with the provided "instanceName" value in the specified project and zone.
+  // Ensure that the VM's properties match the reservation's VM properties.
   public static void createInstance(
       String projectId, String zone, String instanceName, String reservationName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {

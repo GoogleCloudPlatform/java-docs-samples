@@ -51,7 +51,7 @@ public class ConsumeSpecificSharedReservation {
     // Name of the VM instance you want to query.
     String instanceName = "YOUR_INSTANCE_NAME";
     // Number of instances.
-    int numberOfVms = 3;
+    int numberOfVms = 2;
 
     createReservation(projectId, reservationName, numberOfVms, zone);
     createInstance(projectId, zone, instanceName, reservationName);
