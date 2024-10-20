@@ -20,8 +20,10 @@ package compute.reservation;
 
 import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.NO_RESERVATION;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
+import com.google.cloud.compute.v1.InsertInstanceRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
@@ -59,7 +61,7 @@ public class CreateInstanceNotConsumeReservation {
     String sourceImage = String
         .format("projects/debian-cloud/global/images/family/%s", "debian-11");
     String network = "global/networks/default"; // Example network
-
+    long diskSizeGb = 10L;
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (InstancesClient instancesClient = InstancesClient.create()) {
@@ -72,6 +74,7 @@ public class CreateInstanceNotConsumeReservation {
               .setInitializeParams(
                   AttachedDiskInitializeParams.newBuilder()
                       .setSourceImage(sourceImage)
+                      .setDiskSizeGb(diskSizeGb)
                       .build())
               .build();
 
@@ -95,9 +98,18 @@ public class CreateInstanceNotConsumeReservation {
               .setReservationAffinity(reservationAffinity)
               .build();
 
+      // Insert the instance in the specified project and zone.
+      InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
+          .setProject(projectId)
+          .setZone(zone)
+          .setInstanceResource(instance)
+          .build();
+
+      OperationFuture<Operation, Operation> operation = instancesClient.insertAsync(
+          insertInstanceRequest);
+
       // Wait for the operation to complete.
-      Operation response = instancesClient.insertAsync(
-          projectId, zone, instance).get(3, TimeUnit.MINUTES);
+      Operation response = operation.get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);

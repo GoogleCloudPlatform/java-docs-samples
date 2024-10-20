@@ -79,9 +79,9 @@ public class ConsumeReservationIT {
     // Create resources for testing.
     CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
         PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
-    TimeUnit.SECONDS.sleep(30);
     CreateTemplateNotConsumeReservation.createTemplateNotConsumeReservation(
         PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE);
+    TimeUnit.SECONDS.sleep(30);
   }
 
   @AfterAll
