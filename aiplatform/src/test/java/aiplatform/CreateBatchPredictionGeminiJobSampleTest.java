@@ -26,23 +26,29 @@ import com.google.cloud.aiplatform.v1.BatchPredictionJob;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
 public class CreateBatchPredictionGeminiJobSampleTest {
+
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
   private static final String GCS_OUTPUT_URI = "gs://ucaip-samples-test-output/";
-  private static final String BIGQUERY_DESTINATION_OUTPUT_URI_PREFIX = "bq://ucaip-sample-tests";
+  private static final String now = String.valueOf(Instant.now().getEpochSecond());
+  private static final String BIGQUERY_DESTINATION_OUTPUT_URI_PREFIX =
+      String.format("bq://%s.gen_ai_batch_prediction.predictions_%s", PROJECT, now);
 
-  private ByteArrayOutputStream bout;
-  private PrintStream originalPrintStream;
-  private String batchPredictionGcsJobId;
-  private String batchPredictionBqJobId;
+  private static ByteArrayOutputStream bout;
+  private static PrintStream originalPrintStream;
+  private static String batchPredictionGcsJobId;
+  private static String batchPredictionBqJobId;
 
   private static void requireEnvVar(String varName) {
     String errorMessage =
@@ -56,17 +62,15 @@ public class CreateBatchPredictionGeminiJobSampleTest {
     requireEnvVar("UCAIP_PROJECT_ID");
   }
 
-  @Before
-  public void setUp() {
+  @AfterClass
+  public static void tearDown()
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    // Set up
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
-  }
 
-  @After
-  public void tearDown()
-      throws InterruptedException, ExecutionException, IOException, TimeoutException {
     // Cloud Storage job
     CancelBatchPredictionJobSample.cancelBatchPredictionJobSample(PROJECT, batchPredictionGcsJobId);
 
@@ -114,17 +118,20 @@ public class CreateBatchPredictionGeminiJobSampleTest {
 
     String[] id = job.getName().split("/");
     batchPredictionGcsJobId = id[id.length - 1];
+  }
 
+  @Test
+  public void testCreateBatchPredictionGeminiBigqueryJobSampleTest() throws IOException {
     // BigQuery job
     // Act
-    job =
+    BatchPredictionJob job =
         CreateBatchPredictionGeminiBigqueryJobSample.createBatchPredictionGeminiBigqueryJobSample(
             PROJECT, BIGQUERY_DESTINATION_OUTPUT_URI_PREFIX);
 
     // Assert
     assertThat(job.getName(), containsString("batchPredictionJobs"));
 
-    id = job.getName().split("/");
+    String[] id = job.getName().split("/");
     batchPredictionBqJobId = id[id.length - 1];
   }
 }
