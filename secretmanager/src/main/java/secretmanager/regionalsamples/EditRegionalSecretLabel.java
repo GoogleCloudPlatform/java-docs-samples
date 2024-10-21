@@ -16,7 +16,7 @@
 
  package secretmanager.regionalsamples;
 
-// [START secretmanager_e_regional_secret_label]
+// [START secretmanager_edit_regional_secret_label]
 import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
@@ -90,4 +90,4 @@ public class EditRegionalSecretLabel {
     }
   }
 }
-// [END secretmanager_create_update_regional_secret_label]
+// [END secretmanager_edit_regional_secret_label]
