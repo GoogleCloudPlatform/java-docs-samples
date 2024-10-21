@@ -21,27 +21,36 @@ package vtwo.client;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.SecurityCenterSettings;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateClientWithEndpoint {
 
   public static void main(String[] args) throws IOException {
-    // TODO: Replace the value with your regional endpoint.
+    // TODO: Replace the value with the endpoint for the region in which your
+    // Security Command Center data resides.
     String regionalEndpoint = "securitycenter.REGION.rep.googleapis.com:443";
-
-    createClientWithEndpoint(regionalEndpoint);
+    Map<String, SecurityCenterClient> clients = createClientWithEndpoint(regionalEndpoint);
+    for (Map.Entry<String, SecurityCenterClient> entry : clients.entrySet()) {
+      String clientName = entry.getKey();
+      SecurityCenterClient client = entry.getValue();
+      System.out.println(
+          clientName + " initiated with endpoint: " + client.getSettings().getEndpoint());
+    }
   }
 
   // Creates Security Command Center clients for the default endpoint and for a
   // regional endpoint.
-  public static void createClientWithEndpoint(String regionalEndpoint) throws java.io.IOException {
+  public static Map<String, SecurityCenterClient> createClientWithEndpoint(String regionalEndpoint)
+      throws java.io.IOException {
+    Map<String, SecurityCenterClient> clients = new HashMap<>();
     SecurityCenterSettings regionalSettings =
         SecurityCenterSettings.newBuilder().setEndpoint(regionalEndpoint).build();
-
     try (SecurityCenterClient client = SecurityCenterClient.create();
         SecurityCenterClient regionalClient = SecurityCenterClient.create(regionalSettings)) {
-      System.out.println("Client initiated with endpoint: " + client.getSettings().getEndpoint());
-      System.out.println(
-          "Regional client initiated with endpoint: " + regionalClient.getSettings().getEndpoint());
+      clients.put("client", client);
+      clients.put("regionalClient", regionalClient);
+      return clients;
     }
   }
 }

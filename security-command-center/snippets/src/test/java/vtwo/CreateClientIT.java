@@ -18,11 +18,9 @@ package vtwo;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import java.io.ByteArrayOutputStream;
+import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import java.io.IOException;
-import java.io.PrintStream;
-import org.junit.After;
-import org.junit.Before;
+import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -32,25 +30,14 @@ import vtwo.client.CreateClientWithEndpoint;
 @RunWith(JUnit4.class)
 public class CreateClientIT {
 
-  private static ByteArrayOutputStream stdOut;
-
-  @Before
-  public void beforeEach() {
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-  }
-
-  @After
-  public void afterEach() {
-    stdOut = null;
-    System.setOut(null);
-  }
-
   @Test
   public void testCreateClientWithEndpoint() throws IOException {
-    CreateClientWithEndpoint.createClientWithEndpoint(
-        "securitycenter.me-central2.rep.googleapis.com:443");
-    assertThat(stdOut.toString()).contains("securitycenter.googleapis.com:443");
-    assertThat(stdOut.toString()).contains("securitycenter.me-central2.rep.googleapis.com:443");
+    Map<String, SecurityCenterClient> clients =
+        CreateClientWithEndpoint.createClientWithEndpoint(
+            "securitycenter.me-central2.rep.googleapis.com:443");
+    assertThat(clients.get("client").getSettings().getEndpoint())
+        .isEqualTo("securitycenter.googleapis.com:443");
+    assertThat(clients.get("regionalClient").getSettings().getEndpoint())
+        .isEqualTo("securitycenter.me-central2.rep.googleapis.com:443");
   }
 }
