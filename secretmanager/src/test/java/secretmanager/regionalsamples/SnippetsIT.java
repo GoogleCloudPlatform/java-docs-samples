@@ -515,7 +515,12 @@ public class SnippetsIT {
   public void testEditSecretAnnotations() throws IOException {
     SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
     Secret updatedSecret = EditRegionalSecretAnnotations.editRegionalSecretAnnotations(
-        name.getProject(), name.getLocation(), name.getSecret(), UPDATED_ANNOTATION_KEY, UPDATED_ANNOTATION_VALUE);
+        name.getProject(),
+        name.getLocation(),
+        name.getSecret(),
+        UPDATED_ANNOTATION_KEY,
+        UPDATED_ANNOTATION_VALUE
+    );
 
     assertThat(updatedSecret.getAnnotationsMap()).containsEntry(
         UPDATED_ANNOTATION_KEY, UPDATED_ANNOTATION_VALUE);

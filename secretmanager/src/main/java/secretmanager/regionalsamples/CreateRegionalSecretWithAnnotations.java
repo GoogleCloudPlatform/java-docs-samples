@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- package secretmanager.regionalsamples;
+package secretmanager.regionalsamples;
 
 
 // [START secretmanager_create_regional_secret_with_annotations]
@@ -22,7 +22,6 @@ import com.google.cloud.secretmanager.v1.LocationName;
 import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
-
 import java.io.IOException;
  
 public class CreateRegionalSecretWithAnnotations {
@@ -41,28 +40,28 @@ public class CreateRegionalSecretWithAnnotations {
     // This is the value of the annotation to be added
     String annotationValue = "your-annotation-value";
     createRegionalSecretWithAnnotations(
-       projectId, locationId, secretId, annotationKey, annotationValue
+        projectId, locationId, secretId, annotationKey, annotationValue
     );
   }
  
   // Create a secret with annotations.
   public static Secret createRegionalSecretWithAnnotations(
-       String projectId,
-       String locationId,
-       String secretId,
-       String annotationKey,
-       String annotationValue
+        String projectId,
+        String locationId,
+        String secretId,
+        String annotationKey,
+        String annotationValue
   ) throws IOException {
 
     // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
-      SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
+        SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
 
     // Initialize the client that will be used to send requests. This client only needs to be
     // created once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = 
-      SecretManagerServiceClient.create(secretManagerServiceSettings)) {
+        SecretManagerServiceClient.create(secretManagerServiceSettings)) {
 
       // Build the parent name from the project.
       LocationName location = LocationName.of(projectId, locationId);
