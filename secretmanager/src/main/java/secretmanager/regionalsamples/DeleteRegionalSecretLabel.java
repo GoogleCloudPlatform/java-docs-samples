@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- package secretmanager.regionalsamples;
+package secretmanager.regionalsamples;
 
 // [START secretmanager_delete_regional_secret_label]
 import com.google.cloud.secretmanager.v1.Secret;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- package secretmanager.regionalsamples;
+package secretmanager.regionalsamples;
 
 // [START secretmanager_create_regional_secret_with_labels]
 import com.google.cloud.secretmanager.v1.LocationName;
@@ -48,7 +48,7 @@ public class CreateRegionalSecretWithLabels {
        String secretId,
        String labelKey,
        String labelValue)
-    throws IOException {
+      throws IOException {
     
     // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);

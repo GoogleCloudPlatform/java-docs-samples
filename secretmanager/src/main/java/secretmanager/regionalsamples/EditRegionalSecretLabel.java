@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- package secretmanager.regionalsamples;
+package secretmanager.regionalsamples;
 
 // [START secretmanager_edit_regional_secret_label]
 import com.google.cloud.secretmanager.v1.Secret;
@@ -48,7 +48,7 @@ public class EditRegionalSecretLabel {
   // Update an existing secret, by creating a new label or updating an existing label.
   public static Secret editRegionalSecretLabel(
        String projectId, String locationId, String secretId, String labelKey, String labelValue)
-    throws IOException {
+      throws IOException {
 
     // Endpoint to call the regional secret manager sever
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
