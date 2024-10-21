@@ -48,7 +48,7 @@ limitations under the License.
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.32.0</version>
+        <version>26.49.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -71,6 +71,10 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-apikeys</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-language</artifactId>
     </dependency>
     <!-- END dependencies -->
     <dependency>
@@ -104,11 +108,6 @@ limitations under the License.
         </executions>
         <configuration>
           <executable>java</executable>
-          <arguments>
-            <argument>-classpath</argument>
-            <classpath />
-            <argument>com.google.cloud.auth.samples.DownscopingExample</argument>
-          </arguments>
         </configuration>
       </plugin>
     </plugins>

@@ -35,6 +35,15 @@ You can then run a given `ClassName` via:
     mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.AuthExample
         -Dexec.args="compute"
 
+### Analyze text sentiment using LanguageService API with API key authentication
+
+Create an API key via the Google Cloud console: https://developers.google.com/workspace/guides/create-credentials#api-key
+
+Once you have an API key you can run the command below replacing [api key] with your API key
+
+    mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.ApiKeyAuthExample
+        -Dexec.args=[api key]
+
 ## Downscoping with Credential Access Boundaries
 
 The same configuration above applies. 
@@ -44,7 +53,7 @@ you must provide both a bucket name and object name under the TODO(developer): i
 
 You can then run `DownscopingExample` via:
 
-	mvn exec:exec
+	mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.DownscopingExample
 
 ## Tests
 Run all tests:
