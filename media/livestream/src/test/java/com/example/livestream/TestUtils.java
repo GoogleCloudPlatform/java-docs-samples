@@ -42,7 +42,7 @@ import java.util.concurrent.TimeoutException;
 
 public class TestUtils {
 
-  private static final int DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS = 1;//10800; // 3 hours
+  private static final int DELETION_THRESHOLD_TIME_HOURS_IN_SECONDS = 10800; // 3 hours
 
   public static void cleanAllStale(String projectId, String location) {
     cleanStaleChannels(projectId, location);
