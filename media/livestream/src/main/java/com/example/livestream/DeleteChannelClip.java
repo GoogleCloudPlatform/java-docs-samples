@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,48 +16,42 @@
 
 package com.example.livestream;
 
-// [START livestream_create_input]
+// [START livestream_delete_channel_clip]
 
-import com.google.cloud.video.livestream.v1.CreateInputRequest;
-import com.google.cloud.video.livestream.v1.Input;
+import com.google.cloud.video.livestream.v1.ClipName;
+import com.google.cloud.video.livestream.v1.DeleteClipRequest;
 import com.google.cloud.video.livestream.v1.LivestreamServiceClient;
-import com.google.cloud.video.livestream.v1.LocationName;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateInput {
+public class DeleteChannelClip {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "my-project-id";
     String location = "us-central1";
-    String inputId = "my-input-id";
+    String channelId = "my-channel-id";
+    String clipId = "my-channel-clip-id";
 
-    createInput(projectId, location, inputId);
+    deleteChannelClip(projectId, location, channelId, clipId);
   }
 
-  // Creates an input endpoint. You send an input video stream to this
-  // endpoint.
-  public static Input createInput(String projectId, String location, String inputId)
+  public static void deleteChannelClip(
+      String projectId, String location, String channelId, String clipId)
       throws InterruptedException, ExecutionException, TimeoutException, IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (LivestreamServiceClient livestreamServiceClient = LivestreamServiceClient.create()) {
-      CreateInputRequest createInputRequest =
-          CreateInputRequest.newBuilder()
-              .setParent(LocationName.of(projectId, location).toString())
-              .setInputId(inputId)
-              .setInput(Input.newBuilder().setType(Input.Type.RTMP_PUSH).build())
+      DeleteClipRequest deleteClipRequest =
+          DeleteClipRequest.newBuilder()
+              .setName(ClipName.of(projectId, location, channelId, clipId).toString())
               .build();
-      // First API call in a project can take up to 15 minutes.
-      Input result =
-          livestreamServiceClient.createInputAsync(createInputRequest).get(15, TimeUnit.MINUTES);
-      System.out.println("Input: " + result.getName());
-      System.out.println("Uri: " + result.getUri());
-      return result;
+
+      livestreamServiceClient.deleteClipAsync(deleteClipRequest).get(10, TimeUnit.MINUTES);
+      System.out.println("Deleted channel clip");
     }
   }
 }
-// [END livestream_create_input]
+// [END livestream_delete_channel_clip]
