@@ -19,11 +19,13 @@ package compute;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static compute.Util.getEnvVar;
+import static compute.Util.getZone;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
+import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.UsageExportLocation;
@@ -58,7 +60,8 @@ public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String TEST_IMAGE_PROJECT_NAME = "JAVA_DOCS_COMPUTE_TEST_IMAGE_PROJECT";
-  private static final String ZONE = "asia-south1-a";
+  private static final String ZONE = getZone();
+  private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_LIST_INSTANCE;
   private static String MACHINE_NAME_WAIT_FOR_OP;
@@ -67,6 +70,7 @@ public class SnippetsIT {
   private static String BUCKET_NAME;
   private static String IMAGE_PROJECT_NAME;
   private static String RAW_KEY;
+  private static String REGIONAL_LOCATION_NAME;
 
   private ByteArrayOutputStream stdOut;
 
@@ -85,26 +89,29 @@ public class SnippetsIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_ENCRYPTED = "encrypted-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_WITH_SSD = "test-instance-with-ssd" + UUID.randomUUID();
+    MACHINE_NAME = "my-new-test-instance-" + UUID.randomUUID();
+    MACHINE_NAME_LIST_INSTANCE = "my-new-test-instance-" + UUID.randomUUID();
+    MACHINE_NAME_WAIT_FOR_OP = "my-new-test-instance-" + UUID.randomUUID();
+    MACHINE_NAME_ENCRYPTED = "encrypted-test-instance-" + UUID.randomUUID();
+    MACHINE_NAME_WITH_SSD = "test-instance-with-ssd-" + UUID.randomUUID();
+    REGIONAL_LOCATION_NAME = "test-inst-temp-regional-" + UUID.randomUUID();
     BUCKET_NAME = "my-new-test-bucket" + UUID.randomUUID();
     IMAGE_PROJECT_NAME = getEnvVar(TEST_IMAGE_PROJECT_NAME, "windows-sql-cloud");
     RAW_KEY = Util.getBase64EncodedKey();
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("my-new-test-instance", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("encrypted-test-instance", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-instance-with-ssd", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("my-new-test-instance-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("encrypted-test-instance-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingInstances("test-instance-with-ssd-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingRegionalInstanceTemplates("test-inst-temp-regional", PROJECT_ID, ZONE);
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME_WAIT_FOR_OP);
     compute.CreateEncryptedInstance
         .createEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
+    CreateRegionalInstanceTemplate
+        .createRegionalInstanceTemplate(PROJECT_ID, REGION, REGIONAL_LOCATION_NAME);
 
     TimeUnit.SECONDS.sleep(30);
 
@@ -130,6 +137,8 @@ public class SnippetsIT {
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_LIST_INSTANCE);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_WITH_SSD);
+    DeleteRegionalInstanceTemplate
+        .deleteRegionalInstanceTemplate(PROJECT_ID, REGION, REGIONAL_LOCATION_NAME);
 
     // Delete the Google Cloud Storage bucket created for usage reports.
     Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
@@ -219,23 +228,24 @@ public class SnippetsIT {
     // Set custom Report Name Prefix.
     String customPrefix = "my-custom-prefix";
     compute.SetUsageExportBucket.setUsageExportBucket(PROJECT_ID, BUCKET_NAME, customPrefix);
-    assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
-    assertThat(stdOut.toString().contains("Operation Status: DONE"));
-
-    // Wait for the settings to take place.
-    TimeUnit.SECONDS.sleep(10);
+    Assert.assertFalse(stdOut.toString().contains("default value of `usage_gce`"));
+    Assert.assertTrue(stdOut.toString().contains("Operation Status: DONE"));
 
     UsageExportLocation usageExportLocation = compute.SetUsageExportBucket
         .getUsageExportBucket(PROJECT_ID);
+
+    // Wait for the settings to take place.
+    TimeUnit.MINUTES.sleep(3);
     assertThat(stdOut.toString()).doesNotContain("default value of `usage_gce`");
+    Assert.assertNotNull(usageExportLocation.getBucketName());
     Assert.assertEquals(usageExportLocation.getBucketName(), BUCKET_NAME);
     Assert.assertEquals(usageExportLocation.getReportNamePrefix(), customPrefix);
 
-    // Wait for the settings to take place.
-    TimeUnit.SECONDS.sleep(10);
-
     // Disable usage exports.
     boolean isDisabled = compute.SetUsageExportBucket.disableUsageExportBucket(PROJECT_ID);
+    // Wait for the settings to take place.
+    TimeUnit.MINUTES.sleep(2);
+
     Assert.assertFalse(isDisabled);
   }
 
@@ -254,4 +264,12 @@ public class SnippetsIT {
     Assert.assertTrue(stdOut.toString().contains("Page Number: 1"));
   }
 
+  @Test
+  public void testGetRegionalInstanceTemplate() throws IOException {
+    // Check if the instance was successfully created during the setup.
+    InstanceTemplate instanceTemplate = GetRegionalInstanceTemplate
+        .getRegionalInstanceTemplate(PROJECT_ID, REGION,
+        REGIONAL_LOCATION_NAME);
+    Assert.assertEquals(REGIONAL_LOCATION_NAME, instanceTemplate.getName());
+  }
 }

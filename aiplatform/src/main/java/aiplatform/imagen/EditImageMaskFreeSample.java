@@ -28,7 +28,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,15 +66,16 @@ public class EditImageMaskFreeSample {
           EndpointName.ofProjectLocationPublisherModelName(
               projectId, location, "google", "imagegeneration@002");
 
-      // Convert the image to Base64.
-      byte[] imageData = Base64.getEncoder().encode(Files.readAllBytes(Paths.get(inputPath)));
-      String image = new String(imageData, StandardCharsets.UTF_8);
+      // Convert the image to Base64 and create the image map
+      String imageBase64 =
+          Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(inputPath)));
       Map<String, String> imageMap = new HashMap<>();
-      imageMap.put("bytesBase64Encoded", image);
+      imageMap.put("bytesBase64Encoded", imageBase64);
 
       Map<String, Object> instancesMap = new HashMap<>();
-      instancesMap.put("prompt", prompt);
-      instancesMap.put("image", imageMap);
+      instancesMap.put("prompt", prompt); // [ "prompt", "<my-prompt>" ]
+      instancesMap.put(
+          "image", imageMap); // [ "image", [ "bytesBase64Encoded", "iVBORw0KGgo...==" ] ]
       Value instances = mapToValue(instancesMap);
 
       Map<String, Object> paramsMap = new HashMap<>();
