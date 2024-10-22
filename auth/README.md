@@ -37,12 +37,11 @@ You can then run a given `ClassName` via:
 
 ### Analyze text sentiment using LanguageService API with API key authentication
 
-Create an API key via the Google Cloud console: https://developers.google.com/workspace/guides/create-credentials#api-key
+Create an API key via the [Google Cloud console:](https://developers.google.com/workspace/guides/create-credentials#api-key)
 
-Once you have an API key you can run the command below replacing [api key] with your API key
+Once you have an API key replace it in the main function in ApiKeyAuthExample and run the following command
 
     mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.ApiKeyAuthExample
-        -Dexec.args=[api key]
 
 ## Downscoping with Credential Access Boundaries
 

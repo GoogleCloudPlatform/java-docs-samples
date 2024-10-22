@@ -31,26 +31,28 @@ import java.io.IOException;
 public class ApiKeyAuthExample {
 
   // [START auth_cloud_api_key]
-  static void authApiKey(String apiKey) throws IOException {
+  static String authenticateUsingApiKey(String apiKey) throws IOException {
     LanguageServiceSettings settings =
         LanguageServiceSettings.newBuilder().setApiKey(apiKey).build();
-    LanguageServiceClient client = LanguageServiceClient.create(settings);
-    Document document =
-        Document.newBuilder().setContent("Hello World!").setType(Document.Type.PLAIN_TEXT).build();
+    try (LanguageServiceClient client = LanguageServiceClient.create(settings)) {
+      Document document =
+          Document.newBuilder()
+              .setContent("Hello World!")
+              .setType(Document.Type.PLAIN_TEXT)
+              .build();
 
-    AnalyzeSentimentResponse actualResponse = client.analyzeSentiment(document);
+      AnalyzeSentimentResponse actualResponse = client.analyzeSentiment(document);
 
-    System.out.println(actualResponse.getDocumentSentiment().toString());
-
-    client.close();
+      return actualResponse.getDocumentSentiment().toString();
+    }
   }
-  // [END auth_cloud_api_keys]
+  // [END auth_cloud_api_key]
 
   public static void main(String[] args) throws IOException {
-    if (args.length >= 1) {
-      authApiKey(args[0]);
-    } else {
-      throw new IllegalArgumentException("Api key is required for this test");
-    }
+    // TODO(Developer): Before running this sample, replace the variable(s) below.
+    // API key created in developer's project.
+    String apiKey = "api-key";
+
+    authenticateUsingApiKey(apiKey);
   }
 }
