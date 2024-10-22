@@ -25,6 +25,9 @@ import com.google.api.apikeys.v2.Restrictions;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Utility methods to setup data for IT auth tests.
+ */
 public class AuthTestUtils {
 
   public static Key createTestApiKey(
