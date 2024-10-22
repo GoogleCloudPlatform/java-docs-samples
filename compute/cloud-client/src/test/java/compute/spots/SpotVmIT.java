@@ -17,11 +17,11 @@
 package compute.spots;
 
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import compute.DeleteInstance;
+import compute.Util;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -43,7 +43,7 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SpotVmIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = getZone();
+  private static final String ZONE = "us-west1-a";
   private static String INSTANCE_NAME;
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 180000; // 3 minutes
@@ -60,9 +60,13 @@ public class SpotVmIT {
   }
 
   @BeforeClass
-  public static void setUp() {
+  public static void setUp()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("my-new-spot-instance-", PROJECT_ID, ZONE);
 
     INSTANCE_NAME = "my-new-spot-instance-" + UUID.randomUUID();
   }
