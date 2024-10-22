@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
 
 import io.opentelemetry.api.internal.StringUtils;
@@ -39,7 +40,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
 	private static final String ORGANIZATION_ID = System.getenv("ORGANIZATION_ID");
 	private static final String LOCATION = "global";
-	private static final String CUSTOM_MODULE_DISPLAY_NAME = "custom_module_test";
+	private static final String CUSTOM_MODULE_DISPLAY_NAME = "java_sample_custom_module_test";
 	private static ByteArrayOutputStream stdOut;
 
 	// Check if the required environment variables are set.
@@ -49,12 +50,15 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 	}
 
 	@BeforeClass
-	public static void setUp() {
+	public static void setUp() throws IOException {
 		final PrintStream out = System.out;
 		stdOut = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(stdOut));
 
 		requireEnvVar("ORGANIZATION_ID");
+		
+		// Perform cleanup before running tests
+		cleanupExistingCustomModules();
 
 		stdOut = null;
 		System.setOut(out);
@@ -78,6 +82,25 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 		System.setOut(null);
 	}
 
+	// cleanupExistingCustomModules clean up all the existing custom module
+	public static void cleanupExistingCustomModules() throws IOException {
+		
+		String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
+
+		ListSecurityHealthAnalyticsCustomModulesPagedResponse response = ListSecurityHealthAnalyticsCustomModules
+				.listSecurityHealthAnalyticsCustomModules(parent);
+
+		for (SecurityHealthAnalyticsCustomModule module : response.iterateAll()) {
+
+			if (module.getDisplayName().startsWith("java_sample_custom_module")) {
+				String customModuleId = extractCustomModuleId(module.getName());
+
+				// deletes the custom module
+				deleteCustomModule(parent, customModuleId);
+			}
+		}
+	}
+	
 	// extractCustomModuleID extracts the custom module Id from the full name
 	public static String extractCustomModuleId(String customModuleFullName) {
 		if (!StringUtils.isNullOrEmpty(customModuleFullName)) {
@@ -121,12 +144,6 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
 		// assert that created module display name is matching with the name passed
 		assertThat(response.getDisplayName()).isEqualTo(CUSTOM_MODULE_DISPLAY_NAME);
-
-		// extracting the custom module id from the full name
-		String customModuleId = extractCustomModuleId(response.getName());
-
-		// deleting the custom module for cleanup
-		deleteCustomModule(parent, customModuleId);
 	}
 
 	@Test
@@ -145,5 +162,24 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
 		// assert that std output is matching with the string passed
 		assertThat(stdOut.toString()).contains("SecurityHealthAnalyticsCustomModule deleted : " + customModuleId);
+	}
+	
+	@Test
+	public void testListSecurityHealthAnalyticsCustomModules() throws IOException {
+		
+		String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
+
+		// create the custom module
+		createCustomModule(parent, CUSTOM_MODULE_DISPLAY_NAME);
+
+		// call the API, list all the custom modules
+		ListSecurityHealthAnalyticsCustomModulesPagedResponse response = ListSecurityHealthAnalyticsCustomModules
+				.listSecurityHealthAnalyticsCustomModules(parent);
+
+		// assert that response is not null
+		assertNotNull(response);
+
+		// list should have the custom module which we have created
+		assertThat(stdOut.toString()).contains("Custom module name : " + CUSTOM_MODULE_DISPLAY_NAME);
 	}
 }
