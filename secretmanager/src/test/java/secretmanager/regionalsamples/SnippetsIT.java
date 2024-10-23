@@ -171,13 +171,10 @@ public class SnippetsIT {
             .setSecret(
               Secret.newBuilder()
               .putAnnotations(ANNOTATION_KEY, ANNOTATION_VALUE)
+              .putLabels(LABEL_KEY, LABEL_VALUE)
               .build()
             )
             .setSecretId(randomSecretId())
-            .setSecret(
-                Secret.newBuilder()
-                    .putLabels(LABEL_KEY, LABEL_VALUE)
-                    .build())
             .build();
 
     SecretManagerServiceSettings secretManagerServiceSettings =
@@ -415,6 +412,17 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testViewRegionalSecretAnnotations() throws IOException {
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
+    Map<String, String> annotations = 
+        ViewRegionalSecretAnnotations.viewRegionalSecretAnnotations(
+          name.getProject(), name.getLocation(), name.getSecret()
+        );
+
+    assertThat(annotations).containsEntry(ANNOTATION_KEY, ANNOTATION_VALUE);
+  }
+
+  @Test
   public void testGetRegionalSecretVersion() throws IOException {
     SecretVersionName name = SecretVersionName.parse(TEST_REGIONAL_SECRET_VERSION.getName());
     SecretVersion version = GetRegionalSecretVersion.getRegionalSecretVersion(
@@ -535,17 +543,6 @@ public class SnippetsIT {
 
     assertThat(updatedSecret.getLabelsMap()).containsEntry(
         UPDATED_LABEL_KEY, UPDATED_LABEL_VALUE);
-  }
-
-  @Test
-  public void testViewRegionalSecretAnnotations() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
-    Map<String, String> annotations = 
-        ViewRegionalSecretAnnotations.viewRegionalSecretAnnotations(
-          name.getProject(), name.getLocation(), name.getSecret()
-        );
-
-    assertThat(annotations).containsEntry(ANNOTATION_KEY, ANNOTATION_VALUE);
   }
 
   @Test
