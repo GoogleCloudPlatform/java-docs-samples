@@ -33,9 +33,9 @@ import org.apache.beam.sdk.values.PCollectionRowTuple;
 
 public class ApacheIcebergWrite {
   static final List<String> TABLE_ROWS = Arrays.asList(
-      "{\"id\":0, \"name\":\"Alice\"}",
-      "{\"id\":1, \"name\":\"Bob\"}",
-      "{\"id\":2, \"name\":\"Charles\"}"
+      "{\"id\":0, \"name\":\"Alice\", \"extra_field\": \"field1\" }",
+      "{\"id\":1, \"name\":\"Bob\", \"extra_field\": \"field2\" }",
+      "{\"id\":2, \"name\":\"Charles\", \"extra_field\": \"field3\" }"
   );
 
   static final String CATALOG_TYPE = "hadoop";
@@ -44,6 +44,7 @@ public class ApacheIcebergWrite {
   public static final Schema SCHEMA = new Schema.Builder()
       .addStringField("name")
       .addInt64Field("id")
+      .addStringField("extra_field")
       .build();
 
   public interface Options extends PipelineOptions {
@@ -82,6 +83,8 @@ public class ApacheIcebergWrite {
         .put("table", options.getTableName())
         .put("catalog_name", options.getCatalogName())
         .put("catalog_properties", catalogConfig)
+        // Specify which fields to keep from the input data.
+        .put("keep", Arrays.asList("name", "id"))
         .build();
 
     // Build the pipeline.

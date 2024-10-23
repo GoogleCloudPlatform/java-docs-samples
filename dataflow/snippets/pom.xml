@@ -37,7 +37,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <apache_beam.version>2.58.0</apache_beam.version>
+    <apache_beam.version>2.60.0</apache_beam.version>
     <slf4j.version>2.0.12</slf4j.version>
     <parquet.version>1.14.0</parquet.version>
     <iceberg.version>1.4.2</iceberg.version>
