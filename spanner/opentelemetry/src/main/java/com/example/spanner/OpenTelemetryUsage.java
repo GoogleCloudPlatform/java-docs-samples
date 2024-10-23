@@ -16,6 +16,7 @@
 
 package com.example.spanner;
 
+import com.google.cloud.opentelemetry.metric.GoogleCloudMetricExporter;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.ReadContext.QueryAnalyzeMode;
@@ -24,6 +25,7 @@ import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import com.google.protobuf.Value;
+import io.grpc.opentelemetry.GrpcOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.metrics.DoubleHistogram;
 import io.opentelemetry.api.metrics.Meter;
@@ -34,6 +36,9 @@ import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.lang.InterruptedException;
 
 /**
  * This sample demonstrates how to configure OpenTelemetry and inject via Spanner Options.
@@ -42,14 +47,13 @@ public class OpenTelemetryUsage {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "my-project";
-    String instanceId = "my-instance";
-    String databaseId = "my-database";
+    String projectId = "span-cloud-testing";
+    String instanceId = "harsha-test-gcloud";
+    String databaseId = "multiplexed_session_java";
 
     // [START spanner_opentelemetry_usage]
     // Enable OpenTelemetry metrics and traces before Injecting OpenTelemetry
     SpannerOptions.enableOpenTelemetryMetrics();
-    SpannerOptions.enableOpenTelemetryTraces();
 
     // Create a new meter provider
     SdkMeterProvider sdkMeterProvider = SdkMeterProvider.builder()
@@ -57,6 +61,13 @@ public class OpenTelemetryUsage {
         .registerMetricReader(
             PeriodicMetricReader.builder(OtlpGrpcMetricExporter.builder().build()).build())
         .build();
+
+    // SdkMeterProvider sdkMeterProvider = SdkMeterProvider.builder()
+    // // Use Otlp exporter or any other exporter of your choice.
+    // .registerMetricReader(
+    //     PeriodicMetricReader.builder(GoogleCloudMetricExporter.createWithDefaultConfiguration())
+    //         .build())
+    // .build();
 
     // Create a new tracer provider
     SdkTracerProvider sdkTracerProvider = SdkTracerProvider.builder()
@@ -68,12 +79,19 @@ public class OpenTelemetryUsage {
     // Configure OpenTelemetry object using Meter Provider and Tracer Provider
     OpenTelemetry openTelemetry = OpenTelemetrySdk.builder()
         .setMeterProvider(sdkMeterProvider)
-        .setTracerProvider(sdkTracerProvider)
+        // .setTracerProvider(sdkTracerProvider)
         .build();
+    System.out.println("initializing grpc");
 
+    GrpcOpenTelemetry grpcOpenTelemetry = GrpcOpenTelemetry.newBuilder().enableMetrics(new HashSet<>(
+        Arrays.asList("grpc.client.attempt.duration"))).sdk(openTelemetry).build();
+    grpcOpenTelemetry.registerGlobal();
+
+    System.out.println("finish initializing grpc");
     // Inject OpenTelemetry object via Spanner options or register as GlobalOpenTelemetry.
     SpannerOptions options = SpannerOptions.newBuilder()
         .setOpenTelemetry(openTelemetry)
+        .setBuiltInMetricsEnabled(false)
         .build();
     Spanner spanner = options.getService();
 
@@ -82,8 +100,13 @@ public class OpenTelemetryUsage {
         .getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
 
     captureGfeMetric(dbClient);
-    captureQueryStatsMetric(openTelemetry, dbClient);
-    sdkMeterProvider.forceFlush();
+    // captureQueryStatsMetric(openTelemetry, dbClient);
+    // sdkMeterProvider.forceFlush();
+    try {
+      Thread.sleep(80000); // Sleep for 80,000 milliseconds (80 seconds)
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
     sdkTracerProvider.forceFlush();
   }
 
@@ -126,13 +149,15 @@ public class OpenTelemetryUsage {
     // GFE_latency and other Spanner metrics are automatically collected
     // when OpenTelemetry metrics are enabled.
 
-    try (ResultSet resultSet =
-        dbClient
-            .singleUse() // Execute a single read or query against Cloud Spanner.
-            .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"))) {
-      while (resultSet.next()) {
-        System.out.printf(
-            "%d %d %s", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
+    for(int i=0; i< 10000; i++) {
+      try (ResultSet resultSet =
+          dbClient
+              .singleUse() // Execute a single read or query against Cloud Spanner.
+              .executeQuery(Statement.of("SELECT * FROM FOO"))) {
+        while (resultSet.next()) {
+          System.out.printf(
+              "%d", resultSet.getLong(0));
+        }
       }
     }
   }

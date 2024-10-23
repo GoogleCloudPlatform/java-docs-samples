@@ -22,6 +22,8 @@ import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
+import com.google.cloud.spanner.spi.v1.SpannerRpcViews;
+
 import io.opencensus.contrib.grpc.metrics.RpcViews;
 import io.opencensus.exporter.stats.stackdriver.StackdriverStatsExporter;
 import java.io.IOException;
@@ -33,15 +35,16 @@ public class CaptureGrpcMetric {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "my-project";
-    String instanceId = "my-instance";
-    String databaseId = "my-database";
+    String projectId = "span-cloud-testing";
+    String instanceId = "harsha-test-gcloud";
+    String databaseId = "multiplexed_session_java";
 
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
     DatabaseClient dbClient = spanner
         .getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
     captureGrpcMetric(dbClient);
+    
   }
 
   // [START spanner_opencensus_capture_grpc_metric]
@@ -51,6 +54,7 @@ public class CaptureGrpcMetric {
     
     // Register basic gRPC views.
     RpcViews.registerClientGrpcBasicViews();
+    SpannerRpcViews.registerGfeLatencyView();
 
     // Enable OpenCensus exporters to export metrics to Stackdriver Monitoring.
     // Exporters use Application Default Credentials to authenticate.
@@ -62,13 +66,16 @@ public class CaptureGrpcMetric {
       System.out.println("Error during StackdriverStatsExporter");
     }
 
-    try (ResultSet resultSet =
-        dbClient
-            .singleUse() // Execute a single read or query against Cloud Spanner.
-            .executeQuery(Statement.of("SELECT SingerId, AlbumId, AlbumTitle FROM Albums"))) {
-      while (resultSet.next()) {
-        System.out.printf(
-            "%d %d %s", resultSet.getLong(0), resultSet.getLong(1), resultSet.getString(2));
+    for(int i=0; i< 10000 ; i++) {
+
+      try (ResultSet resultSet =
+          dbClient
+              .singleUse() // Execute a single read or query against Cloud Spanner.
+              .executeQuery(Statement.of("SELECT * FROM FOO"))) {
+        while (resultSet.next()) {
+          System.out.printf(
+              "%d", resultSet.getLong(0));
+        }
       }
     }
   }
