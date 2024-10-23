@@ -66,12 +66,17 @@ public class AuthExampleIT {
     String keyDisplayName = "Test API Key";
     String service = "language.googleapis.com";
     String method = "google.cloud.language.v2.LanguageService.AnalyzeSentiment";
-    Key apiKey = AuthTestUtils.createTestApiKey(projectId, keyDisplayName, service, method);
+    Key apiKey = null;
+    try {
+      apiKey = AuthTestUtils.createTestApiKey(projectId, keyDisplayName, service, method);
 
-    String output = ApiKeyAuthExample.authenticateUsingApiKey(apiKey.getKeyString());
+      String output = ApiKeyAuthExample.authenticateUsingApiKey(apiKey.getKeyString());
 
-    assertTrue(output.contains("magnitude:"));
-
-    AuthTestUtils.deleteTestApiKey(apiKey.getName());
+      assertTrue(output.contains("magnitude:"));
+    } finally {
+      if (apiKey != null) {
+        AuthTestUtils.deleteTestApiKey(apiKey.getName());
+      }
+    }
   }
 }
