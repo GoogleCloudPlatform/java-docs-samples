@@ -81,6 +81,8 @@ public class CreateQueuedResource {
                               .setNodeId(nodeName)
                               .build())
                       .build())
+              // You can request a queued resource using a reservation by specifying it in code
+              //.setReservationName("projects/YOUR_PROJECT_ID/locations/YOUR_ZONE/reservations/YOUR_RESERVATION_NAME")
               .build();
 
       CreateQueuedResourceRequest request =
