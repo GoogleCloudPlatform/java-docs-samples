@@ -18,6 +18,7 @@ package tpu;
 
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.TpuClient;
+import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
@@ -28,7 +29,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutionException;
 
 public class Util {
-  private static final int DELETION_THRESHOLD_TIME_MINUTES = 30;
+  private static final int DELETION_THRESHOLD_TIME_MINUTES = 10;
 
   // Delete TPU VMs which starts with the given prefixToDelete and
   // has creation timestamp >30 minutes.
@@ -47,13 +48,42 @@ public class Util {
     }
   }
 
+  // Delete TPU VMs which starts with the given prefixToDelete and
+  // has creation timestamp >30 minutes.
+  public static void cleanUpExistingQueuedResources(
+      String prefixToDelete, String projectId, String zone)
+      throws IOException {
+    try (com.google.cloud.tpu.v2alpha1.TpuClient tpuClient =
+             com.google.cloud.tpu.v2alpha1.TpuClient.create()) {
+      String parent = String.format("projects/%s/locations/%s", projectId, zone);
+
+      for (QueuedResource queuedResource : tpuClient.listQueuedResources(parent).iterateAll()) {
+
+        com.google.cloud.tpu.v2alpha1.Node node = queuedResource.getTpu().getNodeSpec(0).getNode();
+        String creationTime = formatTimestamp(node.getCreateTime());
+        String name = queuedResource.getName().substring(node.getName().lastIndexOf("/") + 1);
+        if (containPrefixToDeleteAndZone(queuedResource, prefixToDelete, zone)
+            && isCreatedBeforeThresholdTime(creationTime)) {
+          DeleteQueuedResource.deleteQueuedResource(projectId, zone, name);
+        }
+      }
+    } catch (ExecutionException | InterruptedException e) {
+      System.out.println("Exception for deleting QueuedResource: " + e.getMessage());
+    }
+  }
+
   public static boolean containPrefixToDeleteAndZone(
-      Node node, String prefixToDelete, String zone) {
+      Object resource, String prefixToDelete, String zone) {
     boolean containPrefixAndZone = false;
     try {
-      containPrefixAndZone = node.getName().contains(prefixToDelete)
-          && node.getName().split("/")[3].contains(zone);
-
+      if (resource instanceof Node) {
+        containPrefixAndZone = ((Node) resource).getName().contains(prefixToDelete)
+            && ((Node) resource).getName().split("/")[3].contains(zone);
+      }
+      if (resource instanceof QueuedResource) {
+        containPrefixAndZone = ((QueuedResource) resource).getName().contains(prefixToDelete)
+            && ((QueuedResource) resource).getName().split("/")[3].contains(zone);
+      }
     } catch (NullPointerException e) {
       System.out.println("Resource not found, skipping deletion:");
     }
