@@ -20,7 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import java.io.IOException;
-import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -32,12 +31,10 @@ public class CreateClientIT {
 
   @Test
   public void testCreateClientWithEndpoint() throws IOException {
-    Map<String, SecurityCenterClient> clients =
+    SecurityCenterClient client =
         CreateClientWithEndpoint.createClientWithEndpoint(
             "securitycenter.me-central2.rep.googleapis.com:443");
-    assertThat(clients.get("client").getSettings().getEndpoint())
-        .isEqualTo("securitycenter.googleapis.com:443");
-    assertThat(clients.get("regionalClient").getSettings().getEndpoint())
+    assertThat(client.getSettings().getEndpoint())
         .isEqualTo("securitycenter.me-central2.rep.googleapis.com:443");
   }
 }
