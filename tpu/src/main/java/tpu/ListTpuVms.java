@@ -40,16 +40,14 @@ public class ListTpuVms {
   // Lists TPU VMs in the specified zone.
   public static ListNodesPagedResponse listTpuVms(String projectId, String zone)
       throws IOException {
-    ListNodesPagedResponse response;
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create()) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
 
       ListNodesRequest request = ListNodesRequest.newBuilder().setParent(parent).build();
-      response = tpuClient.listNodes(request);
+      return tpuClient.listNodes(request);
     }
-    return response;
   }
 }
 //[END tpu_vm_list]

@@ -43,16 +43,15 @@ public class GetTpuVm {
   // Describes a TPU VM with the specified name in the given project and zone.
   public static Node getTpuVm(String projectId, String zone, String nodeName)
       throws IOException {
-    Node node;
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create()) {
       String name = NodeName.of(projectId, zone, nodeName).toString();
 
       GetNodeRequest request = GetNodeRequest.newBuilder().setName(name).build();
-      node = tpuClient.getNode(request);
+
+      return tpuClient.getNode(request);
     }
-    return node;
   }
 }
 //[END tpu_vm_get]

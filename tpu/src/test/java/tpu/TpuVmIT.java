@@ -50,12 +50,12 @@ public class TpuVmIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "europe-west4-a";
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
-  private static final String TPU_VM_NAME = "test-tpu-" + javaVersion + "-"
+  private static final String NODE_NAME = "test-tpu-" + javaVersion + "-"
       + UUID.randomUUID().toString().substring(0, 8);
-  private static final String ACCELERATOR_TYPE = "v2-8";
-  private static final String VERSION = "tpu-vm-tf-2.14.1";
-  private static final String TPU_VM_PATH_NAME =
-      String.format("projects/%s/locations/%s/nodes/%s", PROJECT_ID, ZONE, TPU_VM_NAME);
+  private static final String TPU_TYPE = "v2-8";
+  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
+  private static final String NODE_PATH_NAME =
+      String.format("projects/%s/locations/%s/nodes/%s", PROJECT_ID, ZONE, NODE_NAME);
 
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
@@ -74,12 +74,12 @@ public class TpuVmIT {
 
   @AfterAll
   public static void cleanup() throws Exception {
-    DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+    DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_NAME);
 
     // Test that TPUs is deleted
     Assertions.assertThrows(
         NotFoundException.class,
-        () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME));
+        () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME));
   }
 
   @Test
@@ -88,9 +88,9 @@ public class TpuVmIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    CreateTpuVm.createTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME, ACCELERATOR_TYPE, VERSION);
+    CreateTpuVm.createTpuVm(PROJECT_ID, ZONE, NODE_NAME, TPU_TYPE , TPU_SOFTWARE_VERSION);
 
-    assertThat(stdOut.toString()).contains("TPU VM created: " + TPU_VM_PATH_NAME);
+    assertThat(stdOut.toString()).contains("TPU VM created: " + NODE_PATH_NAME);
     stdOut.close();
     System.setOut(out);
   }
@@ -98,10 +98,10 @@ public class TpuVmIT {
   @Test
   @Order(2)
   public void testGetTpuVm() throws IOException {
-    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
 
     assertNotNull(node);
-    assertThat(node.getName()).isEqualTo(TPU_VM_PATH_NAME);
+    assertThat(node.getName()).isEqualTo(NODE_PATH_NAME);
   }
 
   @Test
@@ -118,8 +118,8 @@ public class TpuVmIT {
   @Test
   @Order(2)
   public void testStopTpuVm() throws IOException, ExecutionException, InterruptedException {
-    StopTpuVm.stopTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
-    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+    StopTpuVm.stopTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
 
     assertThat(node.getState()).isEqualTo(STOPPED);
   }
@@ -127,8 +127,8 @@ public class TpuVmIT {
   @Test
   @Order(3)
   public void testStartTpuVm() throws IOException, ExecutionException, InterruptedException {
-    StartTpuVm.startTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
-    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+    StartTpuVm.startTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
 
     assertThat(node.getState()).isEqualTo(READY);
   }
