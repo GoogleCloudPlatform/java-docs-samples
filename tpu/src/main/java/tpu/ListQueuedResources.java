@@ -16,6 +16,8 @@
 
 package tpu;
 
+//[START tpu_queued_resources_list]
+
 import com.google.cloud.tpu.v2alpha1.ListQueuedResourcesRequest;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import java.io.IOException;
@@ -45,3 +47,4 @@ public class ListQueuedResources {
     }
   }
 }
+//[END tpu_queued_resources_list]
