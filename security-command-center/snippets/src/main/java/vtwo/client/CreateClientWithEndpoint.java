@@ -29,7 +29,7 @@ public class CreateClientWithEndpoint {
   public static void main(String[] args) throws IOException {
     // TODO: Replace the value with the endpoint for the region in which your
     // Security Command Center data resides.
-    String regionalEndpoint = "securitycenter.REGION.rep.googleapis.com:443";
+    String regionalEndpoint = "securitycenter.me-central2.rep.googleapis.com:443";
     Map<String, SecurityCenterClient> clients = createClientWithEndpoint(regionalEndpoint);
     for (Map.Entry<String, SecurityCenterClient> entry : clients.entrySet()) {
       String clientName = entry.getKey();
@@ -46,9 +46,7 @@ public class CreateClientWithEndpoint {
     Map<String, SecurityCenterClient> clients = new HashMap<>();
     SecurityCenterSettings regionalSettings =
         SecurityCenterSettings.newBuilder().setEndpoint(regionalEndpoint).build();
-    try (SecurityCenterClient client = SecurityCenterClient.create();
-        SecurityCenterClient regionalClient = SecurityCenterClient.create(regionalSettings)) {
-      clients.put("client", client);
+    try (SecurityCenterClient regionalClient = SecurityCenterClient.create(regionalSettings)) {
       clients.put("regionalClient", regionalClient);
       return clients;
     }
