@@ -57,7 +57,6 @@ public class CreateQueuedResource {
       throws IOException, ExecutionException, InterruptedException {
     try (TpuClient tpuClient = TpuClient.create()) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
-
       Node node =
           Node.newBuilder()
               .setName(nodeName)
@@ -82,7 +81,8 @@ public class CreateQueuedResource {
                               .build())
                       .build())
               // You can request a queued resource using a reservation by specifying it in code
-              //.setReservationName("projects/YOUR_PROJECT_ID/locations/YOUR_ZONE/reservations/YOUR_RESERVATION_NAME")
+              //.setReservationName(
+              // "projects/YOUR_PROJECT_ID/locations/YOUR_ZONE/reservations/YOUR_RESERVATION_NAME")
               .build();
 
       CreateQueuedResourceRequest request =
