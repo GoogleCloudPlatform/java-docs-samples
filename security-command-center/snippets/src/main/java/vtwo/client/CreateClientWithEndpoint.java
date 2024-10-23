@@ -32,8 +32,7 @@ public class CreateClientWithEndpoint {
     System.out.println("Client initiated with endpoint: " + client.getSettings().getEndpoint());
   }
 
-  // Creates Security Command Center clients for the default endpoint and for a
-  // regional endpoint.
+  // Creates Security Command Center client for a regional endpoint.
   public static SecurityCenterClient createClientWithEndpoint(String regionalEndpoint)
       throws java.io.IOException {
     SecurityCenterSettings regionalSettings =
