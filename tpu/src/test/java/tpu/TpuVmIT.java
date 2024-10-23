@@ -88,7 +88,7 @@ public class TpuVmIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    CreateTpuVm.createTpuVm(PROJECT_ID, ZONE, NODE_NAME, TPU_TYPE , TPU_SOFTWARE_VERSION);
+    CreateTpuVm.createTpuVm(PROJECT_ID, ZONE, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
 
     assertThat(stdOut.toString()).contains("TPU VM created: " + NODE_PATH_NAME);
     stdOut.close();
