@@ -18,8 +18,10 @@ package tpu;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.Assert.assertTrue;
 
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.tpu.v2.Node;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -79,6 +81,9 @@ public class CreateSpotTpuVmIT {
     System.setOut(new PrintStream(stdOut));
     CreateSpotTpuVm.createSpotTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME, ACCELERATOR_TYPE, VERSION);
 
+    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+    assertThat(node.getName()).isEqualTo(TPU_VM_PATH_NAME);
+    assertTrue(node.getSchedulingConfig().getPreemptible());
     assertThat(stdOut.toString()).contains("TPU VM created: " + TPU_VM_PATH_NAME);
     stdOut.close();
     System.setOut(out);
