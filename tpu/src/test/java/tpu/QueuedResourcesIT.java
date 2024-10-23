@@ -78,7 +78,7 @@ public class QueuedResourcesIT {
   @AfterAll
   public static void cleanup() throws InterruptedException {
     DeleteForceQueuedResource.deleteForceQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
-    TimeUnit.MINUTES.sleep(5);
+    TimeUnit.MINUTES.sleep(7);
 
     // Test that Queued Resource is deleted
     Assertions.assertThrows(
