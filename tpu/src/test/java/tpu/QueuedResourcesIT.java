@@ -56,7 +56,6 @@ public class QueuedResourcesIT {
       + UUID.randomUUID().toString().substring(0, 8);
   private static final String QUEUED_RESOURCE_PATH_NAME =
       String.format("projects/%s/locations/%s/queuedResources/%s",
-
           PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
 
   public static void requireEnvVar(String envVarName) {
@@ -72,13 +71,14 @@ public class QueuedResourcesIT {
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingTpu("test-tpu-queued-resource-" + javaVersion, PROJECT_ID, ZONE);
-    TimeUnit.MINUTES.sleep(3);
+    TimeUnit.MINUTES.sleep(5);
     Util.cleanUpExistingQueuedResources("queued-resource-", PROJECT_ID, ZONE);
   }
 
   @AfterAll
-  public static void cleanup() {
+  public static void cleanup() throws InterruptedException {
     DeleteForceQueuedResource.deleteForceQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
+    TimeUnit.MINUTES.sleep(5);
 
     // Test that Queued Resource is deleted
     Assertions.assertThrows(
