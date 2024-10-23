@@ -61,14 +61,13 @@ public class Util {
 
         com.google.cloud.tpu.v2alpha1.Node node = queuedResource.getTpu().getNodeSpec(0).getNode();
         String creationTime = formatTimestamp(node.getCreateTime());
-        String name = queuedResource.getName().substring(node.getName().lastIndexOf("/") + 1);
+        String name = queuedResource.getName()
+            .substring(queuedResource.getName().lastIndexOf("/") + 1);
         if (containPrefixToDeleteAndZone(queuedResource, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(creationTime)) {
           DeleteQueuedResource.deleteQueuedResource(projectId, zone, name);
         }
       }
-    } catch (ExecutionException | InterruptedException e) {
-      System.out.println("Exception for deleting QueuedResource: " + e.getMessage());
     }
   }
 

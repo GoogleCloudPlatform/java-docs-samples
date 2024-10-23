@@ -19,9 +19,12 @@ package tpu;
 //[START tpu_queued_resources_delete_force]
 
 import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.UnknownException;
 import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import org.threeten.bp.Duration;
 
 public class DeleteForceQueuedResource {
@@ -37,7 +40,7 @@ public class DeleteForceQueuedResource {
     deleteForceQueuedResource(projectId, zone, queuedResourceId);
   }
 
-  // Deletes a Queued Resource asynchronously with force=true flag.
+  // Deletes a Queued Resource asynchronously with --force flag.
   public static void deleteForceQueuedResource(
       String projectId, String zone, String queuedResourceId) {
     String name = String.format("projects/%s/locations/%s/queuedResources/%s",
@@ -66,8 +69,8 @@ public class DeleteForceQueuedResource {
 
       tpuClient.deleteQueuedResourceAsync(request).get();
 
-    } catch (Exception e) {
-      System.out.println("Error unpacking QueuedResource: " + e.getMessage());
+    } catch (UnknownException | InterruptedException | ExecutionException | IOException e) {
+      System.out.println(e.getMessage());
     }
     System.out.printf("Deleted Queued Resource: %s\n", name);
   }

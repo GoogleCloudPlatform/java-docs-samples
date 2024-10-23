@@ -19,7 +19,10 @@ package tpu;
 //[START tpu_queued_resources_delete]
 
 import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.UnknownException;
 import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
+import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
+import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
@@ -27,8 +30,7 @@ import java.util.concurrent.ExecutionException;
 import org.threeten.bp.Duration;
 
 public class DeleteQueuedResource {
-  public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+  public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project.
     String projectId = "YOUR_PROJECT_ID";
@@ -41,8 +43,7 @@ public class DeleteQueuedResource {
   }
 
   // Deletes a Queued Resource asynchronously.
-  public static void deleteQueuedResource(String projectId, String zone, String queuedResourceId)
-      throws ExecutionException, InterruptedException {
+  public static void deleteQueuedResource(String projectId, String zone, String queuedResourceId) {
     String name = String.format("projects/%s/locations/%s/queuedResources/%s",
             projectId, zone, queuedResourceId);
     // With these settings the client library handles the Operation's polling mechanism
@@ -63,13 +64,21 @@ public class DeleteQueuedResource {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
+      // Retrive node name
+      GetQueuedResourceRequest getRequest =
+          GetQueuedResourceRequest.newBuilder().setName(name).build();
+      QueuedResource queuedResource = tpuClient.getQueuedResource(getRequest);
+      String nodeName = queuedResource.getTpu().getNodeSpec(0).getNode().getName();
+      // Before deleting the queued resource it is required to delete the TPU VM.
+      DeleteTpuVm.deleteTpuVm(projectId, zone, nodeName);
+
       DeleteQueuedResourceRequest request =
           DeleteQueuedResourceRequest.newBuilder().setName(name).build();
 
       tpuClient.deleteQueuedResourceAsync(request).get();
 
-    } catch (Exception e) {
-      System.out.println("Error unpacking QueuedResource: " + e.getMessage());
+    } catch (UnknownException | InterruptedException | ExecutionException | IOException e) {
+      System.out.println(e.getMessage());
     }
     System.out.printf("Deleted Queued Resource: %s\n", name);
   }
