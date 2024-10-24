@@ -79,9 +79,7 @@ public class UpdateEntry {
               .build();
 
       // Update mask specifies which fields will be updated.
-      // If empty mask is given, all modifiable fields from the request will be used for update.
-      // If update mask is specified as "*" it is treated as full update,
-      // that means fields not present in the request will be emptied.
+      // For more information on update masks, see: https://google.aip.dev/161
       FieldMask updateMask =
           FieldMask.newBuilder().addPaths("aspects").addPaths("entry_source.description").build();
       return client.updateEntry(entry, updateMask);
