@@ -27,12 +27,10 @@ import java.util.Date;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * Samples to create a signed URL for a Cloud CDN endpoint
- */
+// [START cloudcdn_sign_url]
+/** Samples to create a signed URL for a Cloud CDN endpoint */
 public class SignedUrls {
 
-  // [START cloudcdn_sign_url]
   /**
    * Creates a signed URL for a Cloud CDN endpoint with the given key
    * URL must start with http:// or https://, and must contain a forward
