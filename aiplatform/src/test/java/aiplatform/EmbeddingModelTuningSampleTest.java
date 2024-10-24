@@ -53,7 +53,7 @@ public class EmbeddingModelTuningSampleTest {
 
   private static final String API_ENDPOINT = "us-central1-aiplatform.googleapis.com:443";
   private static final String PROJECT = System.getenv("UCAIP_PROJECT_ID");
-  private static final String BASE_MODEL_VERSION_ID = "text-embedding-004";
+  private static final String BASE_MODEL_VERSION_ID = "text-embedding-005";
   private static final String TASK_TYPE = "DEFAULT";
   private static final String JOB_DISPLAY_NAME = "embedding-customization-pipeline-sample";
   private static final String CORPUS = 

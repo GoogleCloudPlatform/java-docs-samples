@@ -41,7 +41,7 @@ public class EmbeddingBatchSampleTest extends TestCase {
       "gs://cloud-samples-data/generative-ai/embeddings/embeddings_input.jsonl";
   private static final String GCS_OUTPUT_URI =
       String.format("gs://%s/embedding_batch_output", BUCKET_NAME);
-  private static final String MODEL_ID = "textembedding-gecko@003";
+  private static final String MODEL_ID = "text-embedding-005";
   static Storage storage;
   static Bucket bucket;
 
