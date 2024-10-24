@@ -48,7 +48,7 @@ import org.junit.runners.JUnit4;
 @TestMethodOrder(MethodOrderer. OrderAnnotation. class)
 public class TpuVmIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "europe-west4-a";
+  private static final String ZONE = "us-central1-c";
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
   private static final String TPU_VM_NAME = "test-tpu-" + javaVersion + "-"
       + UUID.randomUUID().toString().substring(0, 8);

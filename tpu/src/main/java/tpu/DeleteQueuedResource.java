@@ -27,6 +27,7 @@ import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import org.threeten.bp.Duration;
 
 public class DeleteQueuedResource {
@@ -71,6 +72,8 @@ public class DeleteQueuedResource {
       String nodeName = queuedResource.getTpu().getNodeSpec(0).getNode().getName();
       // Before deleting the queued resource it is required to delete the TPU VM.
       DeleteTpuVm.deleteTpuVm(projectId, zone, nodeName);
+      // Wait until TpuVm is deleted
+      TimeUnit.MINUTES.sleep(3);
 
       DeleteQueuedResourceRequest request =
           DeleteQueuedResourceRequest.newBuilder().setName(name).build();

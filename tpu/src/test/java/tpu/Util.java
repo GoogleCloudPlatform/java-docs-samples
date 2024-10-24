@@ -29,7 +29,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutionException;
 
 public class Util {
-  private static final int DELETION_THRESHOLD_TIME_MINUTES = 10;
+  private static final int DELETION_THRESHOLD_TIME_MINUTES = 30;
 
   // Delete TPU VMs which starts with the given prefixToDelete and
   // has creation timestamp >30 minutes.
@@ -65,7 +65,7 @@ public class Util {
             .substring(queuedResource.getName().lastIndexOf("/") + 1);
         if (containPrefixToDeleteAndZone(queuedResource, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(creationTime)) {
-          DeleteQueuedResource.deleteQueuedResource(projectId, zone, name);
+          DeleteForceQueuedResource.deleteForceQueuedResource(projectId, zone, name);
         }
       }
     }
