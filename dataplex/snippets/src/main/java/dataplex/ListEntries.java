@@ -50,9 +50,8 @@ public class ListEntries {
               // You can filter the request by the following fields:
               // * entry_type
               // * entry_source.display_name
-              // The comparison operators are =, !=, <, >, <=, >=, with lexical order.
-              // You can use the logical operators AND, OR, NOT in the filter.
-              // You can use wildcard "*", but for entry_type full project id or number is needed
+              // To learn more about filters in general, see:
+              // https://cloud.google.com/sdk/gcloud/reference/topic/filters
               .setFilter("entry_type=projects/dataplex-types/locations/global/entryTypes/generic")
               .build();
       CatalogServiceClient.ListEntriesPagedResponse listEntriesResponse =
