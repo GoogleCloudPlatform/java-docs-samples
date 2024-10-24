@@ -53,7 +53,7 @@ import org.junit.Test;
 
 public class ApacheIcebergIT {
   private ByteArrayOutputStream bout;
-  private PrintStream out;
+  private final PrintStream originalOut = System.out;
 
   private static final String CATALOG_NAME = "local";
   private static final String TABLE_NAME = "table1";
@@ -112,8 +112,7 @@ public class ApacheIcebergIT {
   @Before
   public void setUp() throws IOException {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
+    System.setOut(new PrintStream(bout));
 
     // Create an Apache Iceberg catalog with a table.
     warehouseDirectory = Files.createTempDirectory("test-warehouse");
@@ -131,7 +130,7 @@ public class ApacheIcebergIT {
   @After
   public void tearDown() throws IOException {
     Files.deleteIfExists(Paths.get(OUTPUT_FILE_NAME));
-    System.setOut(null);
+    System.setOut(originalOut);
   }
 
   @Test
