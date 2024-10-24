@@ -47,27 +47,25 @@ public class GetEntry {
   // Please also refer how to lookup an Entry,  which checks permissions in source system.
   public static Entry getEntry(
       String projectId, String location, String entryGroupId, String entryId) throws IOException {
-
-    GetEntryRequest getEntryRequest =
-        GetEntryRequest.newBuilder()
-            .setName(EntryName.of(projectId, location, entryGroupId, entryId).toString())
-            // View determines which Aspects are returned with the Entry, available options:
-            // not set - Defaults to FULL
-            // BASIC - Returns entry only, without aspects
-            // FULL - Returns all required aspects as well as the keys of all non-required aspects
-            // CUSTOM - Returns Aspects matching custom fields in GetEntryRequest (max 100)
-            // ALL - Returns all aspects (max 100)
-            .setView(EntryView.FULL)
-            // Following 2 lines will be ignored, because "View" is set to FULL.
-            // Their purpose is to demonstrate how to filter the Aspects returned for Entry
-            // when "View" is set to CUSTOM.
-            .addAspectTypes("projects/dataplex-types/locations/global/aspectTypes/generic")
-            .addPaths("my_path")
-            .build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      GetEntryRequest getEntryRequest =
+          GetEntryRequest.newBuilder()
+              .setName(EntryName.of(projectId, location, entryGroupId, entryId).toString())
+              // View determines which Aspects are returned with the Entry, available options:
+              // not set - Defaults to FULL
+              // BASIC - Returns entry only, without aspects
+              // FULL - Returns all required aspects as well as the keys of all non-required aspects
+              // CUSTOM - Returns Aspects matching custom fields in GetEntryRequest (max 100)
+              // ALL - Returns all aspects (max 100)
+              .setView(EntryView.FULL)
+              // Following 2 lines will be ignored, because "View" is set to FULL.
+              // Their purpose is to demonstrate how to filter the Aspects returned for Entry
+              // when "View" is set to CUSTOM.
+              .addAspectTypes("projects/dataplex-types/locations/global/aspectTypes/generic")
+              .addPaths("my_path")
+              .build();
       return client.getEntry(getEntryRequest);
     }
   }

@@ -42,39 +42,38 @@ public class CreateEntry {
   // Method to create Entry
   public static Entry createEntry(
       String projectId, String location, String entryGroupId, String entryId) throws Exception {
-    EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
-    Entry entry =
-        Entry.newBuilder()
-            // Example of system Entry Type.
-            // It is also possible to specify custom Entry Type.
-            .setEntryType("projects/dataplex-types/locations/global/entryTypes/generic")
-            .setEntrySource(
-                EntrySource.newBuilder().setDescription("description of the entry").build())
-            .putAllAspects(
-                Map.of(
-                    "dataplex-types.global.generic",
-                    Aspect.newBuilder()
-                        // This is required Aspect Type for "generic" Entry Type.
-                        // For custom Aspect Type required Entry Type would be different.
-                        .setAspectType(
-                            "projects/dataplex-types/locations/global/aspectTypes/generic")
-                        .setData(
-                            Struct.newBuilder()
-                                // "Generic" Aspect Type have fields called "type" and "system.
-                                // The values below are a sample of possible options.
-                                .putFields(
-                                    "type",
-                                    Value.newBuilder().setStringValue("example value").build())
-                                .putFields(
-                                    "system",
-                                    Value.newBuilder().setStringValue("example system").build())
-                                .build())
-                        .build()))
-            .build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
+      Entry entry =
+          Entry.newBuilder()
+              // Example of system Entry Type.
+              // It is also possible to specify custom Entry Type.
+              .setEntryType("projects/dataplex-types/locations/global/entryTypes/generic")
+              .setEntrySource(
+                  EntrySource.newBuilder().setDescription("description of the entry").build())
+              .putAllAspects(
+                  Map.of(
+                      "dataplex-types.global.generic",
+                      Aspect.newBuilder()
+                          // This is required Aspect Type for "generic" Entry Type.
+                          // For custom Aspect Type required Entry Type would be different.
+                          .setAspectType(
+                              "projects/dataplex-types/locations/global/aspectTypes/generic")
+                          .setData(
+                              Struct.newBuilder()
+                                  // "Generic" Aspect Type have fields called "type" and "system.
+                                  // The values below are a sample of possible options.
+                                  .putFields(
+                                      "type",
+                                      Value.newBuilder().setStringValue("example value").build())
+                                  .putFields(
+                                      "system",
+                                      Value.newBuilder().setStringValue("example system").build())
+                                  .build())
+                          .build()))
+              .build();
       return client.createEntry(entryGroupName, entry, entryId);
     }
   }

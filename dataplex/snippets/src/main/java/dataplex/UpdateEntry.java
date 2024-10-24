@@ -43,45 +43,47 @@ public class UpdateEntry {
   // Method to update Entry
   public static Entry updateEntry(
       String projectId, String location, String entryGroupId, String entryId) throws Exception {
-    Entry entry =
-        Entry.newBuilder()
-            .setName(EntryName.of(projectId, location, entryGroupId, entryId).toString())
-            .setEntrySource(
-                EntrySource.newBuilder().setDescription("updated description of the entry").build())
-            .putAllAspects(
-                Map.of(
-                    "dataplex-types.global.generic",
-                    Aspect.newBuilder()
-                        .setAspectType(
-                            "projects/dataplex-types/locations/global/aspectTypes/generic")
-                        .setData(
-                            Struct.newBuilder()
-                                // "Generic" Aspect Type have fields called "type" and "system,
-                                // it is just illustration how to fill in the fields of the Aspect.
-                                .putFields(
-                                    "type",
-                                    Value.newBuilder()
-                                        .setStringValue("updated example value")
-                                        .build())
-                                .putFields(
-                                    "system",
-                                    Value.newBuilder()
-                                        .setStringValue("updated example system")
-                                        .build())
-                                .build())
-                        .build()))
-            .build();
-
-    // Update mask specifies which fields will be updated.
-    // If empty mask is given, all modifiable fields from the request will be used for update.
-    // If update mask is specified as "*" it is treated as full update,
-    // that means fields not present in the request will be emptied.
-    FieldMask updateMask =
-        FieldMask.newBuilder().addPaths("aspects").addPaths("entry_source.description").build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      Entry entry =
+          Entry.newBuilder()
+              .setName(EntryName.of(projectId, location, entryGroupId, entryId).toString())
+              .setEntrySource(
+                  EntrySource.newBuilder()
+                      .setDescription("updated description of the entry")
+                      .build())
+              .putAllAspects(
+                  Map.of(
+                      "dataplex-types.global.generic",
+                      Aspect.newBuilder()
+                          .setAspectType(
+                              "projects/dataplex-types/locations/global/aspectTypes/generic")
+                          .setData(
+                              Struct.newBuilder()
+                                  // "Generic" Aspect Type have fields called "type" and "system,
+                                  // it is just illustration how to fill in the fields of the
+                                  // Aspect.
+                                  .putFields(
+                                      "type",
+                                      Value.newBuilder()
+                                          .setStringValue("updated example value")
+                                          .build())
+                                  .putFields(
+                                      "system",
+                                      Value.newBuilder()
+                                          .setStringValue("updated example system")
+                                          .build())
+                                  .build())
+                          .build()))
+              .build();
+
+      // Update mask specifies which fields will be updated.
+      // If empty mask is given, all modifiable fields from the request will be used for update.
+      // If update mask is specified as "*" it is treated as full update,
+      // that means fields not present in the request will be emptied.
+      FieldMask updateMask =
+          FieldMask.newBuilder().addPaths("aspects").addPaths("entry_source.description").build();
       return client.updateEntry(entry, updateMask);
     }
   }

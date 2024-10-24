@@ -36,11 +36,10 @@ public class DeleteEntry {
   // Method to delete Entry
   public static void deleteEntry(
       String projectId, String location, String entryGroupId, String entryId) throws Exception {
-    EntryName entryName = EntryName.of(projectId, location, entryGroupId, entryId);
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      EntryName entryName = EntryName.of(projectId, location, entryGroupId, entryId);
       client.deleteEntry(entryName);
     }
   }

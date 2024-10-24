@@ -40,22 +40,21 @@ public class ListEntries {
   // Method to list Entries
   public static List<Entry> listEntries(String projectId, String location, String entryGroupId)
       throws IOException {
-    ListEntriesRequest listEntriesRequest =
-        ListEntriesRequest.newBuilder()
-            .setParent(EntryGroupName.of(projectId, location, entryGroupId).toString())
-            // A filter on the entries to return. Filters are case-sensitive.
-            // You can filter the request by the following fields:
-            // * entry_type
-            // * entry_source.display_name
-            // The comparison operators are =, !=, <, >, <=, >=, with lexical order.
-            // You can use the logical operators AND, OR, NOT in the filter.
-            // You can use wildcard "*", but for entry_type full project id or number is needed
-            .setFilter("entry_type=projects/dataplex-types/locations/global/entryTypes/generic")
-            .build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      ListEntriesRequest listEntriesRequest =
+          ListEntriesRequest.newBuilder()
+              .setParent(EntryGroupName.of(projectId, location, entryGroupId).toString())
+              // A filter on the entries to return. Filters are case-sensitive.
+              // You can filter the request by the following fields:
+              // * entry_type
+              // * entry_source.display_name
+              // The comparison operators are =, !=, <, >, <=, >=, with lexical order.
+              // You can use the logical operators AND, OR, NOT in the filter.
+              // You can use wildcard "*", but for entry_type full project id or number is needed
+              .setFilter("entry_type=projects/dataplex-types/locations/global/entryTypes/generic")
+              .build();
       CatalogServiceClient.ListEntriesPagedResponse listEntriesResponse =
           client.listEntries(listEntriesRequest);
       // Paging is implicitly handled by .iterateAll(), all results will be returned
