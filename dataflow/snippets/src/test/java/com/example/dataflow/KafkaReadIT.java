@@ -39,10 +39,13 @@ import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 public class KafkaReadIT {
-  private static final String TOPIC_NAME = "topic-" + UUID.randomUUID();
+  private static final String[] TOPIC_NAMES = {
+      "topic-" + UUID.randomUUID(),
+      "topic-" + UUID.randomUUID()
+  };
 
-  private static final String OUTPUT_FILE_NAME_PREFIX = UUID.randomUUID().toString();
-  private static final String OUTPUT_FILE_NAME = OUTPUT_FILE_NAME_PREFIX + "-00000-of-00001.txt";
+  // The TextIO connector appends this suffix to the pipeline output file.
+  private static final String OUTPUT_FILE_SUFFIX = "-00000-of-00001.txt";
 
   private static KafkaContainer kafka;
   private static String bootstrapServer;
@@ -54,26 +57,32 @@ public class KafkaReadIT {
     kafka.start();
     bootstrapServer = kafka.getBootstrapServers();
 
-    // Create a topic.
+    // Create topics.
     Properties properties = new Properties();
     properties.put("bootstrap.servers", bootstrapServer);
     AdminClient adminClient = AdminClient.create(properties);
-    var topic = new NewTopic(TOPIC_NAME, 1, (short) 1);
-    adminClient.createTopics(Arrays.asList(topic));
+    for (String topicName : TOPIC_NAMES) {
+      var topic = new NewTopic(topicName, 1, (short) 1);
+      adminClient.createTopics(Arrays.asList(topic));
+    }
 
-    // Send a message to the topic.
-    properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+    // Send messages to the topics.
+    properties.put("key.serializer", "org.apache.kafka.common.serialization.LongSerializer");
     properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-    KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
-    ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC_NAME, "key-0", "event-0");
-    Future future = producer.send(record);
-    future.get();
+    KafkaProducer<Long, String> producer = new KafkaProducer<>(properties);
+    for (String topicName : TOPIC_NAMES) {
+      var record = new ProducerRecord<>(topicName, 0L, topicName + "-event-0");
+      Future future = producer.send(record);
+      future.get();
+    }
   }
 
   @After
   public void tearDown() throws IOException {
     kafka.stop();
-    Files.deleteIfExists(Paths.get(OUTPUT_FILE_NAME));
+    for (String topicName : TOPIC_NAMES) {
+      Files.deleteIfExists(Paths.get(topicName + OUTPUT_FILE_SUFFIX));
+    }
   }
 
   @Test
@@ -81,13 +90,28 @@ public class KafkaReadIT {
     PipelineResult.State state = KafkaRead.main(new String[] {
         "--runner=DirectRunner",
         "--bootstrapServer=" + bootstrapServer,
-        "--topic=" + TOPIC_NAME,
-        "--outputPath=" + OUTPUT_FILE_NAME_PREFIX
+        "--topic=" + TOPIC_NAMES[0],
+        "--outputPath=" + TOPIC_NAMES[0] // Use the topic name as the output file name.
     });
     assertEquals(PipelineResult.State.DONE, state);
+    verifyOutput(TOPIC_NAMES[0]);
+  }
 
-    // Verify the pipeline wrote the output.
-    String output = Files.readString(Paths.get(OUTPUT_FILE_NAME));
-    assertTrue(output.contains("event-0"));
+  @Test
+  public void testApacheKafkaReadTopics() throws IOException {
+    PipelineResult.State state = KafkaReadTopics.main(new String[] {
+        "--runner=DirectRunner",
+        "--bootstrapServer=" + bootstrapServer,
+        "--topic1=" + TOPIC_NAMES[0],
+        "--topic2=" + TOPIC_NAMES[1]
+    });
+    assertEquals(PipelineResult.State.DONE, state);
+    verifyOutput(TOPIC_NAMES[0]);
+    verifyOutput(TOPIC_NAMES[1]);
+  }
+
+  private void verifyOutput(String topic) throws IOException {
+    String output = Files.readString(Paths.get(topic + OUTPUT_FILE_SUFFIX));
+    assertTrue(output.contains(topic + "-event-0"));
   }
 }
