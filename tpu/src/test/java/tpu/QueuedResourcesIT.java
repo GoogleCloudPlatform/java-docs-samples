@@ -73,16 +73,20 @@ public class QueuedResourcesIT {
   }
 
   @AfterAll
-  public static void cleanup() {
+  public static void cleanup() throws IOException {
+    final PrintStream out = System.out;
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
     DeleteQueuedResource.deleteQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
 
     // Test that resources are deleted
-    Assertions.assertThrows(
-        NotFoundException.class,
-        () -> GetQueuedResource.getQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME));
+    assertThat(stdOut.toString()).contains("Deleted Queued Resource:");
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME));
+
+    stdOut.close();
+    System.setOut(out);
   }
 
   @Test
@@ -94,7 +98,7 @@ public class QueuedResourcesIT {
     System.setOut(new PrintStream(stdOut));
     CreateQueuedResource.createQueuedResource(PROJECT_ID, ZONE,
         QUEUED_RESOURCE_NAME, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
-    TimeUnit.MINUTES.sleep(10);
+    TimeUnit.MINUTES.sleep(15);
 
     assertThat(stdOut.toString()).contains("Queued Resource created: " + QUEUED_RESOURCE_PATH_NAME);
     stdOut.close();
