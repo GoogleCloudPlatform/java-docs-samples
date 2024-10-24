@@ -33,14 +33,13 @@ public class DeleteEntry {
     System.out.println("Successfully deleted entry");
   }
 
+  // Method to delete Entry
   public static void deleteEntry(
       String projectId, String location, String entryGroupId, String entryId) throws Exception {
     EntryName entryName = EntryName.of(projectId, location, entryGroupId, entryId);
 
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       client.deleteEntry(entryName);
     }

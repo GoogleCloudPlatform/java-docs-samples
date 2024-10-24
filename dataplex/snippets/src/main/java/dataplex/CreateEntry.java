@@ -39,6 +39,7 @@ public class CreateEntry {
     System.out.println("Successfully created entry: " + createdEntry.getName());
   }
 
+  // Method to create Entry
   public static Entry createEntry(
       String projectId, String location, String entryGroupId, String entryId) throws Exception {
     EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
@@ -59,8 +60,8 @@ public class CreateEntry {
                             "projects/dataplex-types/locations/global/aspectTypes/generic")
                         .setData(
                             Struct.newBuilder()
-                                // "Generic" Aspect Type have fields called "type" and "system,
-                                // it is just illustration how to fill in the fields of the Aspect.
+                                // "Generic" Aspect Type have fields called "type" and "system.
+                                // The values below are a sample of possible options.
                                 .putFields(
                                     "type",
                                     Value.newBuilder().setStringValue("example value").build())
@@ -72,9 +73,7 @@ public class CreateEntry {
             .build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       return client.createEntry(entryGroupName, entry, entryId);
     }

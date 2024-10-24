@@ -40,6 +40,7 @@ public class UpdateEntry {
     System.out.println("Successfully updated entry: " + createdEntry.getName());
   }
 
+  // Method to update Entry
   public static Entry updateEntry(
       String projectId, String location, String entryGroupId, String entryId) throws Exception {
     Entry entry =
@@ -79,9 +80,7 @@ public class UpdateEntry {
         FieldMask.newBuilder().addPaths("aspects").addPaths("entry_source.description").build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       return client.updateEntry(entry, updateMask);
     }

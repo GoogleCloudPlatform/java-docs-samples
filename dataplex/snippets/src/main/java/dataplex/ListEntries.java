@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.util.List;
 
-// Sample to list Entries
 public class ListEntries {
 
   public static void main(String[] args) throws IOException {
@@ -38,6 +37,7 @@ public class ListEntries {
     entries.forEach(aspectType -> System.out.println("Entry name: " + aspectType.getName()));
   }
 
+  // Method to list Entries
   public static List<Entry> listEntries(String projectId, String location, String entryGroupId)
       throws IOException {
     ListEntriesRequest listEntriesRequest =
@@ -50,14 +50,11 @@ public class ListEntries {
             // The comparison operators are =, !=, <, >, <=, >=, with lexical order.
             // You can use the logical operators AND, OR, NOT in the filter.
             // You can use wildcard "*", but for entry_type full project id or number is needed
-            .setFilter(
-                "entry_type=projects/dataplex-types/locations/global/entryTypes/generic")
+            .setFilter("entry_type=projects/dataplex-types/locations/global/entryTypes/generic")
             .build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       CatalogServiceClient.ListEntriesPagedResponse listEntriesResponse =
           client.listEntries(listEntriesRequest);

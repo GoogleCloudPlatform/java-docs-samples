@@ -24,7 +24,6 @@ import com.google.cloud.dataplex.v1.EntryView;
 import com.google.cloud.dataplex.v1.GetEntryRequest;
 import java.io.IOException;
 
-// Sample to get Entry
 public class GetEntry {
 
   public static void main(String[] args) throws IOException {
@@ -44,8 +43,8 @@ public class GetEntry {
 
   // When Entry is created in Dataplex for example for BigQuery table,
   // access permissions might differ between Dataplex and source system.
-  // Get method checks permissions in Dataplex.
-  // Please also refer to LookupEntry code sample, which checks permissions in source system.
+  // "Get" method checks permissions in Dataplex.
+  // Please also refer how to lookup an Entry,  which checks permissions in source system.
   public static Entry getEntry(
       String projectId, String location, String entryGroupId, String entryId) throws IOException {
 
@@ -67,9 +66,7 @@ public class GetEntry {
             .build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       return client.getEntry(getEntryRequest);
     }

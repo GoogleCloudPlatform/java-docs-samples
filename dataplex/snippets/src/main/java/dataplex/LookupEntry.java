@@ -24,7 +24,6 @@ import com.google.cloud.dataplex.v1.EntryView;
 import com.google.cloud.dataplex.v1.LookupEntryRequest;
 import java.io.IOException;
 
-// Sample to lookup Entry
 public class LookupEntry {
 
   public static void main(String[] args) throws IOException {
@@ -44,14 +43,12 @@ public class LookupEntry {
 
   // When Entry is created in Dataplex for example for BigQuery table,
   // access permissions might differ between Dataplex and source system.
-  // Lookup method checks permissions in source system.
-  // Please also refer to GetEntry code sample, which checks permissions in Dataplex.
+  // "Lookup" method checks permissions in source system.
+  // Please also refer how to get an Entry, which checks permissions in Dataplex.
   public static Entry lookupEntry(
       String projectId, String location, String entryGroupId, String entryId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       String projectLocation = String.format("projects/%s/locations/%s", projectId, location);
       LookupEntryRequest lookupEntryRequest =
