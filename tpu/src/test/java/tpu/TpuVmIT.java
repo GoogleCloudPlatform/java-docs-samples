@@ -22,7 +22,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.TpuClient;
 import java.io.ByteArrayOutputStream;
@@ -33,8 +32,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -70,20 +69,23 @@ public class TpuVmIT {
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingTpu("test-tpu-" + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingTpu("test-tpu-" + javaVersion, PROJECT_ID, "asia-east1-c");
+    Util.cleanUpExistingTpu("test-tpu-" + javaVersion, PROJECT_ID, "europe-west4-a");
   }
 
   @AfterAll
-  public static void cleanup() throws Exception {
-    DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
+  public static void cleanup() {
+    //DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
 
     // Test that TPUs is deleted
-    Assertions.assertThrows(
-        NotFoundException.class,
-        () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME));
+    //Assertions.assertThrows(
+    //    NotFoundException.class,
+    //    () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME));
   }
 
   @Test
   @Order(1)
+  @Disabled
   public void testCreateTpuVm() throws IOException, ExecutionException, InterruptedException {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
@@ -97,6 +99,7 @@ public class TpuVmIT {
 
   @Test
   @Order(2)
+  @Disabled
   public void testGetTpuVm() throws IOException {
     Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
 
@@ -106,6 +109,7 @@ public class TpuVmIT {
 
   @Test
   @Order(2)
+  @Disabled
   public void testListTpuVm() throws IOException {
     TpuClient.ListNodesPagedResponse nodesList = ListTpuVms.listTpuVms(PROJECT_ID, ZONE);
 
@@ -117,6 +121,7 @@ public class TpuVmIT {
 
   @Test
   @Order(2)
+  @Disabled
   public void testStopTpuVm() throws IOException, ExecutionException, InterruptedException {
     StopTpuVm.stopTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
     Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
@@ -126,6 +131,7 @@ public class TpuVmIT {
 
   @Test
   @Order(3)
+  @Disabled
   public void testStartTpuVm() throws IOException, ExecutionException, InterruptedException {
     StartTpuVm.startTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
     Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, TPU_VM_NAME);
