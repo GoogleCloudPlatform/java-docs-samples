@@ -57,12 +57,9 @@ public class LookupEntry {
               .setName(projectLocation)
               // The resource name of the Entry
               .setEntry(EntryName.of(projectId, location, entryGroupId, entryId).toString())
-              // View determines which Aspects are returned with the Entry, available options:
-              // not set - Defaults to FULL
-              // BASIC - Returns entry only, without aspects
-              // FULL - Returns all required aspects as well as the keys of all non-required aspects
-              // CUSTOM - Returns Aspects matching custom fields in GetEntryRequest (max 100)
-              // ALL - Returns all aspects (max 100)
+              // View determines which Aspects are returned with the Entry.
+              // For all available options, see:
+              // https://cloud.google.com/sdk/gcloud/reference/dataplex/entries/lookup#--view
               .setView(EntryView.FULL)
               // Following 2 lines will be ignored, because "View" is set to FULL.
               // Their purpose is to demonstrate how to filter the Aspects returned for Entry
