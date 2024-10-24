@@ -48,16 +48,17 @@ public class CreateHyperdiskStoragePool {
     long provisionedIops = 3000;
     // the throughput in MBps to provision for the storage pool.
     long provisionedThroughput = 140;
+    String performanceProvisioningType = "advanced";
 
     createHyperdiskStoragePool(projectId, zone, storagePoolName, storagePoolType,
-            capacityProvisioningType, provisionedCapacity, provisionedIops, provisionedThroughput);
+            capacityProvisioningType, provisionedCapacity, provisionedIops,
+        provisionedThroughput, performanceProvisioningType);
   }
 
   // Creates a hyperdisk storagePool in a project
   public static StoragePool createHyperdiskStoragePool(String projectId, String zone,
-                                                String storagePoolName, String storagePoolType,
-                                                String capacityProvisioningType, long capacity,
-                                                long iops, long throughput)
+        String storagePoolName, String storagePoolType, String capacityProvisioningType,
+        long capacity, long iops, long throughput, String performanceProvisioningType)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -71,6 +72,7 @@ public class CreateHyperdiskStoragePool {
               .setPoolProvisionedCapacityGb(capacity)
               .setPoolProvisionedIops(iops)
               .setPoolProvisionedThroughput(throughput)
+              .setPerformanceProvisioningType(performanceProvisioningType)
               .build();
 
       InsertStoragePoolRequest request = InsertStoragePoolRequest.newBuilder()
