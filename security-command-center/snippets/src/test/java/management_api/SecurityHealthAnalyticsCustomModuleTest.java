@@ -182,4 +182,27 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 		// list should have the custom module which we have created
 		assertThat(stdOut.toString()).contains("Custom module name : " + CUSTOM_MODULE_DISPLAY_NAME);
 	}
+	
+	@Test
+	public void testGetSecurityHealthAnalyticsCustomModule() throws IOException {
+
+		String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
+
+		// create the custom module
+		SecurityHealthAnalyticsCustomModule createCustomModuleResponse = createCustomModule(parent,
+				CUSTOM_MODULE_DISPLAY_NAME);
+
+		// extracting the custom module id from the full name
+		String customModuleId = extractCustomModuleId(createCustomModuleResponse.getName());
+
+		// get the custom module with the custom module id
+		SecurityHealthAnalyticsCustomModule getCustomModuleResponse = GetSecurityHealthAnalyticsCustomModule
+				.getSecurityHealthAnalyticsCustomModule(parent, customModuleId);
+
+		// assert that custom module name is matching with the name passed
+		assertThat(getCustomModuleResponse.getDisplayName()).isEqualTo(CUSTOM_MODULE_DISPLAY_NAME);
+
+		// assert that custom module id is matching with the id passed
+		assertThat(extractCustomModuleId(getCustomModuleResponse.getName())).isEqualTo(customModuleId);
+	}
 }
