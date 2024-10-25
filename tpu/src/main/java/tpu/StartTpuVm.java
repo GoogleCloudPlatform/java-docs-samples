@@ -18,12 +18,16 @@ package tpu;
 
 //[START tpu_vm_start]
 
+import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.NodeName;
 import com.google.cloud.tpu.v2.StartNodeRequest;
 import com.google.cloud.tpu.v2.TpuClient;
+import com.google.cloud.tpu.v2.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import org.threeten.bp.Duration;
 
 public class StartTpuVm {
 
@@ -45,9 +49,27 @@ public class StartTpuVm {
   // Starts a TPU VM with the specified name in the given project and zone.
   public static void startTpuVm(String projectId, String zone, String nodeName)
       throws IOException, ExecutionException, InterruptedException {
+    // With these settings the client library handles the Operation's polling mechanism
+    // and prevent CancellationException error
+    TpuSettings.Builder clientSettings =
+        TpuSettings.newBuilder();
+    clientSettings
+        .startNodeOperationSettings()
+        .setPollingAlgorithm(
+            OperationTimedPollAlgorithm.create(
+                RetrySettings.newBuilder()
+                    .setInitialRetryDelay(Duration.ofMillis(5000L))
+                    .setRetryDelayMultiplier(1.5)
+                    .setMaxRetryDelay(Duration.ofMillis(45000L))
+                    .setInitialRpcTimeout(Duration.ZERO)
+                    .setRpcTimeoutMultiplier(1.0)
+                    .setMaxRpcTimeout(Duration.ZERO)
+                    .setTotalTimeout(Duration.ofHours(24L))
+                    .build()));
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create()) {
+    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
       String name = NodeName.of(projectId, zone, nodeName).toString();
 
       StartNodeRequest request = StartNodeRequest.newBuilder().setName(name).build();

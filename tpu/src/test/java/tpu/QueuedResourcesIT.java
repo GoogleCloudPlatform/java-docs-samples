@@ -46,12 +46,12 @@ import org.junit.runners.JUnit4;
 @TestMethodOrder(MethodOrderer. OrderAnnotation. class)
 public class QueuedResourcesIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "asia-east1-c";
+  private static final String ZONE = "us-central1-f";
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
   private static final String NODE_NAME = "test-tpu-queued-resource-" + javaVersion + "-"
       + UUID.randomUUID().toString().substring(0, 8);
   private static final String TPU_TYPE = "v2-8";
-  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-base";
+  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.17.0-pjrt";
   private static final String QUEUED_RESOURCE_NAME = "queued-resource-" + javaVersion + "-"
       + UUID.randomUUID().toString().substring(0, 8);
   private static final String QUEUED_RESOURCE_PATH_NAME =
@@ -98,7 +98,6 @@ public class QueuedResourcesIT {
     System.setOut(new PrintStream(stdOut));
     CreateQueuedResource.createQueuedResource(PROJECT_ID, ZONE,
         QUEUED_RESOURCE_NAME, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
-    TimeUnit.MINUTES.sleep(15);
 
     assertThat(stdOut.toString()).contains("Queued Resource created: " + QUEUED_RESOURCE_PATH_NAME);
     stdOut.close();

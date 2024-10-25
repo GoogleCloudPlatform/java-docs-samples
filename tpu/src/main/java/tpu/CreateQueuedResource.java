@@ -18,12 +18,15 @@ package tpu;
 
 //[START tpu_queued_resources_create]
 
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.Node;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
+import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import org.threeten.bp.Duration;
 
 public class CreateQueuedResource {
   public static void main(String[] args)
@@ -55,7 +58,24 @@ public class CreateQueuedResource {
   public static void createQueuedResource(String projectId, String zone,
       String queuedResourceId, String nodeName, String tpuType, String tpuSoftwareVersion)
       throws IOException, ExecutionException, InterruptedException {
-    try (TpuClient tpuClient = TpuClient.create()) {
+    // With these settings the client library handles the Operation's polling mechanism
+    // and prevent CancellationException error
+    TpuSettings.Builder clientSettings =
+        TpuSettings.newBuilder();
+    clientSettings
+        .createQueuedResourceSettings()
+        .setRetrySettings(
+            RetrySettings.newBuilder()
+                .setInitialRetryDelay(Duration.ofMillis(5000L))
+                .setRetryDelayMultiplier(2.0)
+                .setInitialRpcTimeout(Duration.ZERO)
+                .setRpcTimeoutMultiplier(1.0)
+                .setMaxRetryDelay(Duration.ofMillis(45000L))
+                .setTotalTimeout(Duration.ofHours(24L))
+                .build());
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
+    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
       Node node =
           Node.newBuilder()
