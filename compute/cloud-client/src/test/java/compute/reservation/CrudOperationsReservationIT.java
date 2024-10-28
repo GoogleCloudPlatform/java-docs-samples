@@ -45,7 +45,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 25, unit = TimeUnit.MINUTES)
-@TestMethodOrder(MethodOrderer. OrderAnnotation. class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
