@@ -55,7 +55,7 @@ public class CreateQueuedResource {
   }
 
   // Creates a Queued Resource
-  public static void createQueuedResource(String projectId, String zone,
+  public static QueuedResource createQueuedResource(String projectId, String zone,
       String queuedResourceId, String nodeName, String tpuType, String tpuSoftwareVersion)
       throws IOException, ExecutionException, InterruptedException {
     // With these settings the client library handles the Operation's polling mechanism
@@ -116,6 +116,7 @@ public class CreateQueuedResource {
       // You can wait until TPU Node is READY,
       // and check its status using getTpuVm() from "tpu_vm_get" sample.
       System.out.printf("Queued Resource created: %s\n", response.getName());
+      return response;
     }
   }
 }

@@ -93,15 +93,11 @@ public class QueuedResourcesIT {
   @Order(1)
   public void testCreateQueuedResource()
       throws IOException, ExecutionException, InterruptedException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-    CreateQueuedResource.createQueuedResource(PROJECT_ID, ZONE,
+    QueuedResource queuedResource = CreateQueuedResource.createQueuedResource(PROJECT_ID, ZONE,
         QUEUED_RESOURCE_NAME, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
 
-    assertThat(stdOut.toString()).contains("Queued Resource created: " + QUEUED_RESOURCE_PATH_NAME);
-    stdOut.close();
-    System.setOut(out);
+    assertThat(queuedResource.getName()).isEqualTo(QUEUED_RESOURCE_PATH_NAME);
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getName()).isEqualTo(NODE_NAME);
   }
 
   @Test
