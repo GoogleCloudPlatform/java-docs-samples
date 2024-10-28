@@ -61,9 +61,8 @@ public class UpdateEntry {
                               "projects/dataplex-types/locations/global/aspectTypes/generic")
                           .setData(
                               Struct.newBuilder()
-                                  // "Generic" Aspect Type have fields called "type" and "system,
-                                  // it is just illustration how to fill in the fields of the
-                                  // Aspect.
+                                  // "Generic" Aspect Type have fields called "type" and "system.
+                                  // The values below are a sample of possible options.
                                   .putFields(
                                       "type",
                                       Value.newBuilder()

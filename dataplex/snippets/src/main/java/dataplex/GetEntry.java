@@ -44,7 +44,7 @@ public class GetEntry {
   // When Entry is created in Dataplex for example for BigQuery table,
   // access permissions might differ between Dataplex and source system.
   // "Get" method checks permissions in Dataplex.
-  // Please also refer how to lookup an Entry,  which checks permissions in source system.
+  // Please also refer how to lookup an Entry, which checks permissions in source system.
   public static Entry getEntry(
       String projectId, String location, String entryGroupId, String entryId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
