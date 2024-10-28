@@ -16,6 +16,7 @@
 
 package tpu;
 
+// [START tpu_queued_resources_create_spot]
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.Node;
@@ -53,14 +54,10 @@ public class CreateSpotQueuedResource {
         projectId, zone, queuedResourceId, nodeName, tpuType, tpuSoftwareVersion);
   }
 
-  // Creates a Queued Resource
+  // Creates a Queued Resource with --preemptible flag.
   public static QueuedResource createQueuedResource(
-      String projectId,
-      String zone,
-      String queuedResourceId,
-      String nodeName,
-      String tpuType,
-      String tpuSoftwareVersion)
+      String projectId, String zone, String queuedResourceId,
+      String nodeName, String tpuType, String tpuSoftwareVersion)
       throws IOException, ExecutionException, InterruptedException {
     // With these settings the client library handles the Operation's polling mechanism
     // and prevent CancellationException error
@@ -126,3 +123,4 @@ public class CreateSpotQueuedResource {
     }
   }
 }
+// [END tpu_queued_resources_create_spot]
