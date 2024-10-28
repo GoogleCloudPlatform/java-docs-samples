@@ -30,20 +30,26 @@ import compute.Util;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
+@Timeout(value = 3, unit = TimeUnit.MINUTES)
 public class CreateReservationFromVmIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-east4-c";
   private static ReservationsClient reservationsClient;
   private static InstancesClient instancesClient;
-  private static String RESERVATION_NAME;
-  private static String INSTANCE_FOR_RESERVATION;
+  private static String reservationName;
+  private static String instanceForReservation;
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
 
   // Check if the required environment variables are set.
@@ -60,29 +66,23 @@ public class CreateReservationFromVmIT {
     reservationsClient = ReservationsClient.create();
     instancesClient = InstancesClient.create();
 
-    RESERVATION_NAME = "test-reservation-from-vm-" + javaVersion + "-"
+    reservationName = "test-reservation-from-vm-" + javaVersion + "-"
         + UUID.randomUUID().toString().substring(0, 8);
-    INSTANCE_FOR_RESERVATION = "test-instance-for-reserv-" + javaVersion + "-"
+    instanceForReservation = "test-instance-for-reserv-" + javaVersion + "-"
         + UUID.randomUUID().toString().substring(0, 8);
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-instance-for-reserv-"  + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reservation-from-vm-"  + javaVersion, PROJECT_ID, ZONE);
 
-    CreateInstance.createInstance(PROJECT_ID, ZONE, INSTANCE_FOR_RESERVATION);
+    CreateInstance.createInstance(PROJECT_ID, ZONE, instanceForReservation);
   }
 
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Delete resources created for testing.
-    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_FOR_RESERVATION);
-    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
-
-    // Test that reservation is deleted
-    Assertions.assertThrows(
-        NotFoundException.class,
-        () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
+    DeleteInstance.deleteInstance(PROJECT_ID, ZONE, instanceForReservation);
 
     reservationsClient.close();
     instancesClient.close();
@@ -92,17 +92,24 @@ public class CreateReservationFromVmIT {
   public void testCreateComputeReservationFromVm()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationFromVm.createComputeReservationFromVm(
-        PROJECT_ID, ZONE, RESERVATION_NAME, INSTANCE_FOR_RESERVATION);
+        PROJECT_ID, ZONE, reservationName, instanceForReservation);
 
-    Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_FOR_RESERVATION);
+    Instance instance = instancesClient.get(PROJECT_ID, ZONE, instanceForReservation);
     Reservation reservation =
-        reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME);
+        reservationsClient.get(PROJECT_ID, ZONE, reservationName);
 
     Assertions.assertNotNull(reservation);
-    assertThat(reservation.getName()).isEqualTo(RESERVATION_NAME);
+    assertThat(reservation.getName()).isEqualTo(reservationName);
     Assertions.assertEquals(instance.getMinCpuPlatform(),
         reservation.getSpecificReservation().getInstanceProperties().getMinCpuPlatform());
     Assertions.assertEquals(instance.getGuestAcceleratorsList(),
         reservation.getSpecificReservation().getInstanceProperties().getGuestAcceleratorsList());
+
+    DeleteReservation.deleteReservation(PROJECT_ID, ZONE, reservationName);
+
+    // Test that reservation is deleted
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetReservation.getReservation(PROJECT_ID, reservationName, ZONE));
   }
 }

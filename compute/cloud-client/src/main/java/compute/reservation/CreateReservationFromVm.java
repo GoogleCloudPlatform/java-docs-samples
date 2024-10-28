@@ -66,12 +66,12 @@ public class CreateReservationFromVm {
       // Extract properties from the existing VM
       List<AcceleratorConfig> guestAccelerators = new ArrayList<>();
       if (!existingVm.getGuestAcceleratorsList().isEmpty()) {
-        for (AcceleratorConfig a : existingVm.getGuestAcceleratorsList()) {
+        for (AcceleratorConfig accelatorConfig : existingVm.getGuestAcceleratorsList()) {
           guestAccelerators.add(
               AcceleratorConfig.newBuilder()
-                  .setAcceleratorCount(a.getAcceleratorCount())
-                  .setAcceleratorType(a.getAcceleratorType()
-                      .substring(a.getAcceleratorType().lastIndexOf('/') + 1))
+                  .setAcceleratorCount(accelatorConfig.getAcceleratorCount())
+                  .setAcceleratorType(accelatorConfig.getAcceleratorType()
+                      .substring(accelatorConfig.getAcceleratorType().lastIndexOf('/') + 1))
                   .build());
         }
       }
