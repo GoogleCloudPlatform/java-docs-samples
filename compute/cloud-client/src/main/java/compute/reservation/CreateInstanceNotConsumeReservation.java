@@ -17,7 +17,6 @@
 package compute.reservation;
 
 // [START compute_instance_not_consume_reservation]
-
 import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.NO_RESERVATION;
 
 import com.google.api.gax.longrunning.OperationFuture;
@@ -40,6 +39,7 @@ public class CreateInstanceNotConsumeReservation {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
+    // Name of the zone you want to use.
     String zone = "us-central1-a";
     // Name of the VM instance you want to query.
     String instanceName = "YOUR_INSTANCE_NAME";
@@ -48,7 +48,7 @@ public class CreateInstanceNotConsumeReservation {
   }
 
   // Create a virtual machine that explicitly doesn't consume reservations
-  public static void createInstanceNotConsumeReservation(
+  public static Instance createInstanceNotConsumeReservation(
       String project, String zone, String instanceName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Below are sample values that can be replaced.
@@ -60,15 +60,13 @@ public class CreateInstanceNotConsumeReservation {
     // diskSizeGb: storage size of the boot disk to attach to the instance.
     // networkName: network interface to associate with the instance.
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
-    String sourceImage = String
-        .format("projects/debian-cloud/global/images/family/%s", "debian-11");
+    String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
     long diskSizeGb = 10L;
     String networkName = "default";
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (InstancesClient instancesClient = InstancesClient.create()) {
-      // Instance creation requires at least one persistent disk and one network interface.
       AttachedDisk disk =
           AttachedDisk.newBuilder()
               .setBoot(true)
@@ -82,18 +80,15 @@ public class CreateInstanceNotConsumeReservation {
                       .build())
               .build();
 
-      // Use the network interface provided in the networkName argument.
       NetworkInterface networkInterface = NetworkInterface.newBuilder()
           .setName(networkName)
           .build();
 
-      // Set reservation affinity to "none"
       ReservationAffinity reservationAffinity =
           ReservationAffinity.newBuilder()
               .setConsumeReservationType(NO_RESERVATION.toString())
               .build();
 
-      // Bind `instanceName`, `machineType`, `disk`, and `networkInterface` to an instance.
       Instance instanceResource =
           Instance.newBuilder()
               .setName(instanceName)
@@ -103,9 +98,6 @@ public class CreateInstanceNotConsumeReservation {
               .setReservationAffinity(reservationAffinity)
               .build();
 
-      System.out.printf("Creating instance: %s at %s %n", instanceName, zone);
-
-      // Insert the instance in the specified project and zone.
       InsertInstanceRequest insertInstanceRequest = InsertInstanceRequest.newBuilder()
           .setProject(project)
           .setZone(zone)
@@ -120,9 +112,10 @@ public class CreateInstanceNotConsumeReservation {
 
       if (response.hasError()) {
         System.out.println("Instance creation failed ! ! " + response);
-        return;
+        return null;
       }
       System.out.println("Operation Status: " + response.getStatus());
+      return instancesClient.get(project, zone, instanceName);
     }
   }
 }

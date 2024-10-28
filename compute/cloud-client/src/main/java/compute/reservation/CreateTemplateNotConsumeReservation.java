@@ -17,7 +17,6 @@
 package compute.reservation;
 
 // [START compute_template_not_consume_reservation]
-
 import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.NO_RESERVATION;
 
 import com.google.cloud.compute.v1.AccessConfig;
@@ -49,34 +48,33 @@ public class CreateTemplateNotConsumeReservation {
 
 
   // Create a template that explicitly doesn't consume any reservations.
-  public static void createTemplateNotConsumeReservation(String projectId, String templateName)
+  public static InstanceTemplate createTemplateNotConsumeReservation(
+      String projectId, String templateName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
 
       String machineType = "e2-standard-4";
       String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
 
-      // The template describes the size and source image of the boot disk
-      // to attach to the instance.
       AttachedDisk attachedDisk = AttachedDisk.newBuilder()
           .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
               .setSourceImage(sourceImage)
               .setDiskType("pd-balanced")
-              .setDiskSizeGb(250).build())
+              .setDiskSizeGb(250)
+              .build())
           .setAutoDelete(true)
-          .setBoot(true).build();
+          .setBoot(true)
+          .build();
 
-      // The template connects the instance to the `default` network,
-      // without specifying a subnetwork.
       NetworkInterface networkInterface = NetworkInterface.newBuilder()
           .setName("global/networks/default")
-          // The template lets the instance use an external IP address.
           .addAccessConfigs(AccessConfig.newBuilder()
               .setName("External NAT")
               .setType(AccessConfig.Type.ONE_TO_ONE_NAT.toString())
-              .setNetworkTier(AccessConfig.NetworkTier.PREMIUM.toString()).build()).build();
+              .setNetworkTier(AccessConfig.NetworkTier.PREMIUM.toString())
+              .build())
+          .build();
 
-      // Set reservation affinity to "none"
       ReservationAffinity reservationAffinity =
           ReservationAffinity.newBuilder()
               .setConsumeReservationType(NO_RESERVATION.toString())
@@ -86,25 +84,28 @@ public class CreateTemplateNotConsumeReservation {
           .addDisks(attachedDisk)
           .setMachineType(machineType)
           .setReservationAffinity(reservationAffinity)
-          .addNetworkInterfaces(networkInterface).build();
+          .addNetworkInterfaces(networkInterface)
+          .build();
 
       InsertInstanceTemplateRequest insertInstanceTemplateRequest = InsertInstanceTemplateRequest
           .newBuilder()
           .setProject(projectId)
           .setInstanceTemplateResource(InstanceTemplate.newBuilder()
               .setName(templateName)
-              .setProperties(instanceProperties).build()).build();
+              .setProperties(instanceProperties)
+              .build())
+          .build();
 
-      // Create the Instance Template.
       Operation response = instanceTemplatesClient.insertAsync(insertInstanceTemplateRequest)
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.println("Instance Template creation failed ! ! " + response);
-        return;
+        return null;
       }
-      System.out
-          .printf("Instance Template Operation Status %s: %s", templateName, response.getStatus());
+      System.out.printf("Instance Template Operation Status %s: %s",
+          templateName, response.getStatus());
+      return instanceTemplatesClient.get(projectId, templateName);
     }
   }
 }

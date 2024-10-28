@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 25, unit = TimeUnit.MINUTES)
+@Timeout(value = 3, unit = TimeUnit.MINUTES)
 public class ConsumeReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -74,13 +74,6 @@ public class ConsumeReservationIT {
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-instance-not-consume-"  + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingInstanceTemplates("test-template-not-consume-"  + javaVersion, PROJECT_ID);
-
-    // Create resources for testing.
-    CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
-        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
-    CreateTemplateNotConsumeReservation.createTemplateNotConsumeReservation(
-        PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
-    TimeUnit.SECONDS.sleep(30);
   }
 
   @AfterAll
@@ -97,21 +90,24 @@ public class ConsumeReservationIT {
   }
 
   @Test
-  public void testCreateInstanceNotConsumeReservation() {
-    Instance instance = instancesClient.get(
-        PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
+  public void testCreateInstanceNotConsumeReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Instance instance = CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
+            PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
 
-    // Verify that the instance was created with the correct consumeReservationType
+    Assertions.assertNotNull(instance);
     Assertions.assertEquals(NO_RESERVATION.toString(),
         instance.getReservationAffinity().getConsumeReservationType());
   }
 
   @Test
-  public void testCreateTemplateNotConsumeReservation() {
-    InstanceTemplate template = instanceTemplatesClient.get(
+  public void testCreateTemplateNotConsumeReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    InstanceTemplate template =
+        CreateTemplateNotConsumeReservation.createTemplateNotConsumeReservation(
         PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
 
-    // Verify that the instance template was created with the correct consumeReservationType
+    Assertions.assertNotNull(template);
     Assertions.assertEquals(NO_RESERVATION.toString(),
         template.getPropertiesOrBuilder().getReservationAffinity().getConsumeReservationType());
   }
