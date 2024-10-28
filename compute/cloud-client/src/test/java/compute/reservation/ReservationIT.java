@@ -58,14 +58,14 @@ public class ReservationIT {
   private static ReservationsClient reservationsClient;
   private static final String RESERVATION_NAME_GLOBAL = "test-reservation-global-" + javaVersion
       + "-" + UUID.randomUUID().toString().substring(0, 8);
-  private static final String  RESERVATION_NAME_REGIONAL = "test-reservation-regional-" + javaVersion
-      + "-" + UUID.randomUUID().toString().substring(0, 8);
+  private static final String  RESERVATION_NAME_REGIONAL = "test-reservation-regional-"
+      + javaVersion + "-" + UUID.randomUUID().toString().substring(0, 8);
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
       "test-global-inst-temp-" + javaVersion + "-" + UUID.randomUUID().toString().substring(0, 8);
-  private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
-      "test-regional-inst-temp-" + javaVersion  + "-" + UUID.randomUUID().toString().substring(0, 8);
-  private static final String GLOBAL_INSTANCE_TEMPLATE_URI =
-      String.format("projects/%s/global/instanceTemplates/%s", PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
+  private static final String REGIONAL_INSTANCE_TEMPLATE_NAME = "test-regional-inst-temp-"
+      + javaVersion  + "-" + UUID.randomUUID().toString().substring(0, 8);
+  private static final String GLOBAL_INSTANCE_TEMPLATE_URI = String.format(
+      "projects/%s/global/instanceTemplates/%s", PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
   private static final String REGIONAL_INSTANCE_TEMPLATE_URI =
       String.format("projects/%s/regions/%s/instanceTemplates/%s",
           PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
