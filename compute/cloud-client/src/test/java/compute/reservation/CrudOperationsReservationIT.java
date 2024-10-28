@@ -44,15 +44,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 25, unit = TimeUnit.MINUTES)
+@Timeout(value = 6, unit = TimeUnit.MINUTES)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-east4-c";
-  private static String RESERVATION_NAME;
-  private static final int NUMBER_OF_VMS = 3;
+  private static final String ZONE = "us-central1-a";
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
+  private static final String RESERVATION_NAME = "test-reservation-" + javaVersion + "-"
+      + UUID.randomUUID().toString().substring(0, 8);
+  private static final int NUMBER_OF_VMS = 3;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -65,8 +66,6 @@ public class CrudOperationsReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    RESERVATION_NAME = "test-reservation-" + javaVersion + "-"
-        + UUID.randomUUID().toString().substring(0, 8);
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
