@@ -59,13 +59,8 @@ public class CreateQueuedResourceWithNetwork {
 
   // Creates a Queued Resource with network configuration.
   public static QueuedResource createQueuedResourceWithNetwork(
-      String projectId,
-      String zone,
-      String queuedResourceId,
-      String nodeName,
-      String tpuType,
-      String tpuSoftwareVersion,
-      String networkName)
+      String projectId, String zone, String queuedResourceId, String nodeName,
+      String tpuType, String tpuSoftwareVersion, String networkName)
       throws IOException, ExecutionException, InterruptedException {
     // With these settings the client library handles the Operation's polling mechanism
     // and prevent CancellationException error
