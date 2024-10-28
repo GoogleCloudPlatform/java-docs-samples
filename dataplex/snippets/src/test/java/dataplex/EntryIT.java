@@ -94,7 +94,7 @@ public class EntryIT {
             PROJECT_ID, LOCATION, entryGroupId, entryIdToCreate);
 
     Entry entry = CreateEntry.createEntry(PROJECT_ID, LOCATION, entryGroupId, entryIdToCreate);
-    // Clean-up created Entry Group
+    // Clean-up created Entry
     DeleteEntry.deleteEntry(PROJECT_ID, LOCATION, entryGroupId, entryIdToCreate);
 
     assertThat(entry.getName()).isEqualTo(expectedEntryToCreate);
@@ -103,7 +103,7 @@ public class EntryIT {
   @Test
   public void testDeleteEntry() throws Exception {
     String entryIdToDelete = "test-entry-" + UUID.randomUUID().toString().substring(0, 8);
-    // Create Entry Group to be deleted
+    // Create Entry to be deleted
     CreateEntry.createEntry(PROJECT_ID, LOCATION, entryGroupId, entryIdToDelete);
 
     // No exception means successful call
