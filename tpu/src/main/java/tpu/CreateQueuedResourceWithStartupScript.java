@@ -16,6 +16,7 @@
 
 package tpu;
 
+//[START tpu_queued_resources_startup_script]
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.Node;
@@ -131,3 +132,4 @@ public class CreateQueuedResourceWithStartupScript {
     }
   }
 }
+// [END tpu_queued_resources_startup_script]
