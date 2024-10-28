@@ -23,6 +23,8 @@ import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -49,19 +51,17 @@ public class CreateQueuedResourceWithStartupScript {
     String tpuSoftwareVersion = "tpu-vm-tf-2.14.1";
     // The name for your Queued Resource.
     String queuedResourceId = "QUEUED_RESOURCE_ID";
+    // Path to the startup script file.
+    String startupScriptPath = "YOUR_STARTUP_SCRIPT_PATH";
 
     createQueuedResource(
-        projectId, zone, queuedResourceId, nodeName, tpuType, tpuSoftwareVersion);
+        projectId, zone, queuedResourceId, nodeName, tpuType, tpuSoftwareVersion, startupScriptPath);
   }
 
-  // Creates a Queued Resource
+  // Creates a Queued Resource with startup script.
   public static QueuedResource createQueuedResource(
-      String projectId,
-      String zone,
-      String queuedResourceId,
-      String nodeName,
-      String tpuType,
-      String tpuSoftwareVersion)
+      String projectId, String zone, String queuedResourceId,
+      String nodeName, String tpuType, String tpuSoftwareVersion, String startupScriptPath)
       throws IOException, ExecutionException, InterruptedException {
     // With these settings the client library handles the Operation's polling mechanism
     // and prevent CancellationException error
@@ -82,11 +82,12 @@ public class CreateQueuedResourceWithStartupScript {
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
-      String startupScript = "your-startup-script";
+      // Read the startup script content from the file
+      String startupScriptContent = new String(Files.readAllBytes(Paths.get(startupScriptPath)));
 
       // Add startup script to metadata
       Map<String, String> metadata = new HashMap<>();
-      metadata.put("startup-script", startupScript);
+      metadata.put("startup-script", startupScriptContent);
 
       Node node =
           Node.newBuilder()

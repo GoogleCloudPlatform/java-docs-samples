@@ -47,6 +47,7 @@ public class CreateQueuedResourceWithStartupScriptIT {
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
   private static final String QUEUED_RESOURCE_NAME = "queued-resource-script-" + javaVersion + "-"
       + UUID.randomUUID().toString().substring(0, 8);
+  private static final String STARTUP_SCRIPT_PATH = "src/test/java/tpu/startup-script.sh";
 
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
@@ -79,12 +80,8 @@ public class CreateQueuedResourceWithStartupScriptIT {
     System.setOut(new PrintStream(stdOut));
 
     QueuedResource queuedResource = CreateQueuedResourceWithStartupScript.createQueuedResource(
-        PROJECT_ID,
-        ZONE,
-        QUEUED_RESOURCE_NAME,
-        NODE_NAME,
-        TPU_TYPE,
-        TPU_SOFTWARE_VERSION);
+        PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME, NODE_NAME,
+        TPU_TYPE, TPU_SOFTWARE_VERSION, STARTUP_SCRIPT_PATH);
 
     assertThat(stdOut.toString()).contains("Queued Resource created: " + QUEUED_RESOURCE_NAME);
     assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().containsLabels("startup-script"));
