@@ -40,7 +40,7 @@ public class UpdateEntry {
     System.out.println("Successfully updated entry: " + createdEntry.getName());
   }
 
-  // Method to update Entry
+  // Method to update Entry located in projectId, location, entryGroupId and with entryId
   public static Entry updateEntry(
       String projectId, String location, String entryGroupId, String entryId) throws Exception {
     // Initialize client that will be used to send requests. This client only needs to be created

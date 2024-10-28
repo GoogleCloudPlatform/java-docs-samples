@@ -37,7 +37,7 @@ public class ListEntries {
     entries.forEach(aspectType -> System.out.println("Entry name: " + aspectType.getName()));
   }
 
-  // Method to list Entries
+  // Method to list Entries located in projectId, location and entryGroupId
   public static List<Entry> listEntries(String projectId, String location, String entryGroupId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created

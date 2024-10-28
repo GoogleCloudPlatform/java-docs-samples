@@ -39,7 +39,7 @@ public class CreateEntry {
     System.out.println("Successfully created entry: " + createdEntry.getName());
   }
 
-  // Method to create Entry
+  // Method to create Entry located in projectId, location, entryGroupId and with entryId
   public static Entry createEntry(
       String projectId, String location, String entryGroupId, String entryId) throws Exception {
     // Initialize client that will be used to send requests. This client only needs to be created

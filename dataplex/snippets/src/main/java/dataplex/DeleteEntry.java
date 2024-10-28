@@ -33,7 +33,7 @@ public class DeleteEntry {
     System.out.println("Successfully deleted entry");
   }
 
-  // Method to delete Entry
+  // Method to delete Entry located in projectId, location, entryGroupId and with entryId
   public static void deleteEntry(
       String projectId, String location, String entryGroupId, String entryId) throws Exception {
     // Initialize client that will be used to send requests. This client only needs to be created

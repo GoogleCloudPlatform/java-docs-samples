@@ -41,6 +41,7 @@ public class LookupEntry {
         .forEach(aspectKey -> System.out.println("Retrieved aspect for entry: " + aspectKey));
   }
 
+  // Method to retrieve Entry located in projectId, location, entryGroupId and with entryId
   // When Entry is created in Dataplex for example for BigQuery table,
   // access permissions might differ between Dataplex and source system.
   // "Lookup" method checks permissions in source system.
