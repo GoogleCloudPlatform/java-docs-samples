@@ -19,13 +19,12 @@ package tpu;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import com.google.cloud.tpu.v2.Node;
+import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 25, unit = TimeUnit.MINUTES)
+@Timeout(value = 6, unit = TimeUnit.MINUTES)
 public class CreateQueuedResourceWithStartupScriptIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -80,20 +79,18 @@ public class CreateQueuedResourceWithStartupScriptIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    CreateQueuedResourceWithStartupScript.createQueuedResource(
+    QueuedResource queuedResource = CreateQueuedResourceWithStartupScript.createQueuedResource(
         PROJECT_ID,
         ZONE,
         QUEUED_RESOURCE_NAME,
         NODE_NAME,
         TPU_TYPE,
         TPU_SOFTWARE_VERSION);
-    TimeUnit.MINUTES.sleep(10);
 
-    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-
-    assertThat(stdOut.toString()).contains(" Queued Resource created: " + QUEUED_RESOURCE_NAME);
-    Assert.assertTrue(node.containsLabels("startup-script"));
-    Assert.assertTrue(node.getLabelsMap().containsValue("your-script-here"));
+    assertThat(stdOut.toString()).contains("Queued Resource created: " + QUEUED_RESOURCE_NAME);
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().containsLabels("startup-script"));
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getLabelsMap()
+        .containsValue("your-script-here"));
 
     stdOut.close();
     System.setOut(out);
