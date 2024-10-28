@@ -55,7 +55,8 @@ public class CreateQueuedResourceWithStartupScript {
     String startupScriptPath = "YOUR_STARTUP_SCRIPT_PATH";
 
     createQueuedResource(
-        projectId, zone, queuedResourceId, nodeName, tpuType, tpuSoftwareVersion, startupScriptPath);
+        projectId, zone, queuedResourceId, nodeName,
+        tpuType, tpuSoftwareVersion, startupScriptPath);
   }
 
   // Creates a Queued Resource with startup script.
