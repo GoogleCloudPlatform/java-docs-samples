@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertTrue;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -34,7 +36,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 25, unit = TimeUnit.MINUTES)
+@Timeout(value = 6, unit = TimeUnit.MINUTES)
 public class CreateSpotQueuedResourceIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -62,17 +64,13 @@ public class CreateSpotQueuedResourceIT {
   }
 
   @AfterAll
-  public static void cleanup() throws IOException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
+  public static void cleanup() {
     DeleteForceQueuedResource.deleteForceQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
 
-    // Test that resources are deleted
-    assertThat(stdOut.toString()).contains("Deleted Queued Resource:");
-
-    stdOut.close();
-    System.setOut(out);
+    // Test that resource is deleted
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetQueuedResource.getQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME));
   }
 
   @Test
@@ -80,6 +78,7 @@ public class CreateSpotQueuedResourceIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+
     QueuedResource queuedResource = CreateSpotQueuedResource.createQueuedResource(
         PROJECT_ID,
         ZONE,
@@ -91,6 +90,7 @@ public class CreateSpotQueuedResourceIT {
     assertThat(stdOut.toString()).contains("Queued Resource created: " + QUEUED_RESOURCE_NAME);
     assertTrue(queuedResource.getTpu().getNodeSpec(0).getNode()
         .getSchedulingConfig().getPreemptible());
+
     stdOut.close();
     System.setOut(out);
   }

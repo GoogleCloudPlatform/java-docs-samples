@@ -19,6 +19,7 @@ package tpu;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -61,17 +63,13 @@ public class CreateQueuedResourceWithStartupScriptIT {
   }
 
   @AfterAll
-  public static void cleanup() throws IOException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
+  public static void cleanup() {
     DeleteForceQueuedResource.deleteForceQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
 
-    // Test that resources are deleted
-    assertThat(stdOut.toString()).contains("Deleted Queued Resource:");
-
-    stdOut.close();
-    System.setOut(out);
+    // Test that resource is deleted
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetQueuedResource.getQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME));
   }
 
   @Test
@@ -79,6 +77,7 @@ public class CreateQueuedResourceWithStartupScriptIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+
     QueuedResource queuedResource = CreateQueuedResourceWithStartupScript.createQueuedResource(
         PROJECT_ID,
         ZONE,
