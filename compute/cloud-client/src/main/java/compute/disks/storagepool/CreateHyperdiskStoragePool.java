@@ -48,6 +48,8 @@ public class CreateHyperdiskStoragePool {
     long provisionedIops = 3000;
     // the throughput in MBps to provision for the storage pool.
     long provisionedThroughput = 140;
+    // Optional: the performance provisioning type of the storage pool.
+    // The allowed values are advanced and standard. If not specified, the value advanced is used.
     String performanceProvisioningType = "advanced";
 
     createHyperdiskStoragePool(projectId, zone, storagePoolName, storagePoolType,

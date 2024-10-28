@@ -113,7 +113,8 @@ public class HyperdisksIT {
     Assert.assertEquals(10240, storagePool.getPoolProvisionedCapacityGb());
     Assert.assertTrue(storagePool.getStoragePoolType().contains("hyperdisk-balanced"));
     Assert.assertTrue(storagePool.getCapacityProvisioningType().equalsIgnoreCase("advanced"));
-    Assert.assertTrue(storagePool.getPerformanceProvisioningType().equalsIgnoreCase("advanced"));
+    Assert.assertTrue(storagePool.getPerformanceProvisioningType()
+        .equalsIgnoreCase(PERFORMANCE_PROVISIONING_TYPE));
     Assert.assertTrue(storagePool.getZone().contains(ZONE));
   }
 
