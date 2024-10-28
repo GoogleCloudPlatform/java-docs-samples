@@ -49,7 +49,7 @@ import org.junit.runners.JUnit4;
 public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  private static final String ZONE = "us-central1-b";
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
   private static final String RESERVATION_NAME = "test-reservation-" + javaVersion + "-"
       + UUID.randomUUID().toString().substring(0, 8);

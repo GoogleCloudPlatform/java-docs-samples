@@ -52,7 +52,7 @@ import org.junit.runners.JUnit4;
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-west1-a";
+  private static final String ZONE = "asia-south1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
   private static ReservationsClient reservationsClient;
