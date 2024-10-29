@@ -88,9 +88,7 @@ public class ReservationIT {
       PROJECT_ID, SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
   private static final String RESERVATION_NAME_SHARED = "test-reservation-shared-" + javaVersion
       + "-" + UUID.randomUUID().toString().substring(0, 8);
-
   private static final int NUMBER_OF_VMS = 3;
-
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
@@ -128,10 +126,10 @@ public class ReservationIT {
     CreateRegionalInstanceTemplate.createRegionalInstanceTemplate(
         PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
-
     // Create instance template for shares reservation.
     CreateInstanceTemplate.createInstanceTemplate(
         PROJECT_ID, SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
+
     stdOut.close();
     System.setOut(out);
   }
@@ -241,6 +239,11 @@ public class ReservationIT {
     // Mock the ReservationsClient
     ReservationsClient mockReservationsClient = mock(ReservationsClient.class);
 
+    // This test require projects in the test environment to share reservation with,
+    // therefore the operation should be mocked. If you want to make a real test,
+    // please set the CONSUMER_PROJECT_ID_1 and CONSUMER_PROJECT_ID_2 accordingly.
+    // Make sure that base project has proper permissions to share reservations.
+    // See: https://cloud.google.com/compute/docs/instances/reservations-shared#shared_reservation_constraint
     ShareSettings shareSettings = ShareSettings.newBuilder()
         .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
         .putProjectMap("CONSUMER_PROJECT_ID_1", ShareSettingsProjectConfig.newBuilder().build())
@@ -263,9 +266,6 @@ public class ReservationIT {
     OperationFuture mockFuture = mock(OperationFuture.class);
     when(mockReservationsClient.insertAsync(PROJECT_ID, ZONE, reservation))
         .thenReturn(mockFuture);
-
-    // We should mock this operation as we don't have another project to share with.
-    // Without mocking these test will fail.
     Operation mockOperation = mock(Operation.class);
     when(mockFuture.get(3, TimeUnit.MINUTES)).thenReturn(mockOperation);
     when(mockOperation.hasError()).thenReturn(false);
