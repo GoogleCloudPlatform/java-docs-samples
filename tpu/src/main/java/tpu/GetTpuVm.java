@@ -17,7 +17,6 @@
 package tpu;
 
 //[START tpu_vm_get]
-
 import com.google.cloud.tpu.v2.GetNodeRequest;
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.NodeName;

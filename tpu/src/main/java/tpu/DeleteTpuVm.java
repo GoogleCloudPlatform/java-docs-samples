@@ -17,7 +17,6 @@
 package tpu;
 
 //[START tpu_vm_delete]
-
 import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2.DeleteNodeRequest;

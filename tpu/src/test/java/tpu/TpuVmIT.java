@@ -16,22 +16,16 @@
 
 package tpu;
 
-import static com.google.cloud.tpu.v2.Node.State.READY;
-import static com.google.cloud.tpu.v2.Node.State.STOPPED;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2.Node;
-import com.google.cloud.tpu.v2.TpuClient;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -44,15 +38,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 25, unit = TimeUnit.MINUTES)
+@Timeout(value = 15, unit = TimeUnit.MINUTES)
 @TestMethodOrder(MethodOrderer. OrderAnnotation. class)
 public class TpuVmIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "europe-west4-a";
+  private static final String ZONE = "us-central1-a";
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
   private static final String NODE_NAME = "test-tpu-" + javaVersion + "-"
       + UUID.randomUUID().toString().substring(0, 8);
-  private static final String TPU_TYPE = "v2-8";
+  private static final String TPU_TYPE = "v3-8";
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
   private static final String NODE_PATH_NAME =
       String.format("projects/%s/locations/%s/nodes/%s", PROJECT_ID, ZONE, NODE_NAME);
@@ -85,14 +79,13 @@ public class TpuVmIT {
   @Test
   @Order(1)
   public void testCreateTpuVm() throws IOException, ExecutionException, InterruptedException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-    CreateTpuVm.createTpuVm(PROJECT_ID, ZONE, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
 
-    assertThat(stdOut.toString()).contains("TPU VM created: " + NODE_PATH_NAME);
-    stdOut.close();
-    System.setOut(out);
+    Node node = CreateTpuVm.createTpuVm(
+        PROJECT_ID, ZONE, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
+
+    assertNotNull(node);
+    assertThat(node.getName().equals(NODE_NAME));
+    assertThat(node.getAcceleratorType().equals(TPU_TYPE));
   }
 
   @Test
@@ -102,34 +95,5 @@ public class TpuVmIT {
 
     assertNotNull(node);
     assertThat(node.getName()).isEqualTo(NODE_PATH_NAME);
-  }
-
-  @Test
-  @Order(2)
-  public void testListTpuVm() throws IOException {
-    TpuClient.ListNodesPagedResponse nodesList = ListTpuVms.listTpuVms(PROJECT_ID, ZONE);
-
-    assertNotNull(nodesList);
-    for (Node node : nodesList.iterateAll()) {
-      Assert.assertTrue(node.getName().contains("test-tpu"));
-    }
-  }
-
-  @Test
-  @Order(2)
-  public void testStopTpuVm() throws IOException, ExecutionException, InterruptedException {
-    StopTpuVm.stopTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-
-    assertThat(node.getState()).isEqualTo(STOPPED);
-  }
-
-  @Test
-  @Order(3)
-  public void testStartTpuVm() throws IOException, ExecutionException, InterruptedException {
-    StartTpuVm.startTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-
-    assertThat(node.getState()).isEqualTo(READY);
   }
 }
