@@ -22,10 +22,12 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2.Node;
+import com.google.cloud.tpu.v2.TpuClient;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -95,5 +97,16 @@ public class TpuVmIT {
 
     assertNotNull(node);
     assertThat(node.getName()).isEqualTo(NODE_PATH_NAME);
+  }
+
+  @Test
+  @Order(2)
+  public void testListTpuVm() throws IOException {
+    TpuClient.ListNodesPagedResponse nodesList = ListTpuVms.listTpuVms(PROJECT_ID, ZONE);
+
+    assertNotNull(nodesList);
+    for (Node node : nodesList.iterateAll()) {
+      Assert.assertTrue(node.getName().contains("test-tpu"));
+    }
   }
 }
