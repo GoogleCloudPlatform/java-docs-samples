@@ -49,34 +49,46 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 25, unit = TimeUnit.MINUTES)
+@Timeout(value = 6, unit = TimeUnit.MINUTES)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-west1-a";
+  private static final String ZONE = "asia-south1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
-  private static ReservationsClient reservationsClient;
-  private static String RESERVATION_NAME_GLOBAL;
-  private static String RESERVATION_NAME_REGIONAL;
-  private static String RESERVATION_NAME_SHARED;
-  private static String INSTANCE_TEMPLATE_SHARED_RESERV_URI;
-  private static String GLOBAL_INSTANCE_TEMPLATE_URI;
-  private static String REGIONAL_INSTANCE_TEMPLATE_URI;
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
+  private static ReservationsClient reservationsClient;
+  private static final String RESERVATION_NAME_GLOBAL = "test-reservation-global-" + javaVersion
+      + "-" + UUID.randomUUID().toString().substring(0, 8);
+  private static final String  RESERVATION_NAME_REGIONAL = "test-reservation-regional-"
+      + javaVersion + "-" + UUID.randomUUID().toString().substring(0, 8);
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
       "test-global-inst-temp-" + javaVersion + "-" + UUID.randomUUID().toString().substring(0, 8);
-  private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
-      "test-regional-inst-temp-" + javaVersion  + "-"
-          + UUID.randomUUID().toString().substring(0, 8);
+  private static final String REGIONAL_INSTANCE_TEMPLATE_NAME = "test-regional-inst-temp-"
+      + javaVersion  + "-" + UUID.randomUUID().toString().substring(0, 8);
+  private static final String GLOBAL_INSTANCE_TEMPLATE_URI = String.format(
+      "projects/%s/global/instanceTemplates/%s", PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
+  private static final String REGIONAL_INSTANCE_TEMPLATE_URI =
+      String.format("projects/%s/regions/%s/instanceTemplates/%s",
+          PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
   private static final String SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME =
       "test-shared-inst-temp-"  + javaVersion  + "-"
           + UUID.randomUUID().toString().substring(0, 8);
+  private static final String  INSTANCE_TEMPLATE_SHARED_RESERV_URI =
+      String.format("projects/%s/global/instanceTemplates/%s",
+      PROJECT_ID, SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
+  private static final String RESERVATION_NAME_SHARED = "test-reservation-shared-" + javaVersion
+      + "-" + UUID.randomUUID().toString().substring(0, 8);
+
   private static final int NUMBER_OF_VMS = 3;
 
   private ByteArrayOutputStream stdOut;
@@ -100,31 +112,13 @@ public class ReservationIT {
     Util.cleanUpExistingInstanceTemplates("test-global-inst-temp-" + javaVersion, PROJECT_ID);
     Util.cleanUpExistingRegionalInstanceTemplates(
         "test-regional-inst-temp-" + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reservation-global-" + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations(
+        "test-reservation-global-" + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingReservations("test-reservation-regional-" + javaVersion, PROJECT_ID, ZONE);
     Util.cleanUpExistingInstanceTemplates("test-shared-inst-temp-" + javaVersion, PROJECT_ID);
 
     // Initialize the client once for all tests
     reservationsClient = ReservationsClient.create();
-
-    RESERVATION_NAME_GLOBAL = "test-reservation-global-" + javaVersion  + "-"
-        + UUID.randomUUID().toString().substring(0, 8);
-    RESERVATION_NAME_REGIONAL = "test-reservation-regional-" + javaVersion  + "-"
-        + UUID.randomUUID().toString().substring(0, 8);
-    RESERVATION_NAME_SHARED = "test-reservation-shared-" + javaVersion  + "-"
-        + UUID.randomUUID().toString().substring(0, 8);
-
-    GLOBAL_INSTANCE_TEMPLATE_URI = String.format("projects/%s/global/instanceTemplates/%s",
-        PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
-    REGIONAL_INSTANCE_TEMPLATE_URI =
-        String.format("projects/%s/regions/%s/instanceTemplates/%s",
-            PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
-    INSTANCE_TEMPLATE_SHARED_RESERV_URI = String.format("projects/%s/global/instanceTemplates/%s",
-        PROJECT_ID, SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
-
-    // Create instance template for shares reservation.
-    CreateInstanceTemplate.createInstanceTemplate(
-        PROJECT_ID, SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
@@ -135,6 +129,9 @@ public class ReservationIT {
         PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
     assertThat(stdOut.toString()).contains("Instance Template Operation Status: DONE");
 
+    // Create instance template for shares reservation.
+    CreateInstanceTemplate.createInstanceTemplate(
+        PROJECT_ID, SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
     stdOut.close();
     System.setOut(out);
   }
@@ -198,6 +195,7 @@ public class ReservationIT {
   }
 
   @Test
+  @Order(1)
   public void testCreateReservationWithGlobalInstanceTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
@@ -222,6 +220,19 @@ public class ReservationIT {
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
     Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
+  }
+
+  @Test
+  @Order(2)
+  public void testUpdateVmsForReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    int newNumberOfVms = 5;
+    UpdateVmsForReservation.updateVmsForReservation(
+        PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL, newNumberOfVms);
+    Reservation reservation = GetReservation.getReservation(
+        PROJECT_ID, RESERVATION_NAME_GLOBAL, ZONE);
+
+    Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
   }
 
   @Test
