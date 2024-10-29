@@ -42,7 +42,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 10, unit = TimeUnit.MINUTES)
+@Timeout(value = 15, unit = TimeUnit.MINUTES)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class QueuedResourcesIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
