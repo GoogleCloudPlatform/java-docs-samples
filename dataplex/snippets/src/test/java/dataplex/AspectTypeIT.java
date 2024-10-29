@@ -31,7 +31,7 @@ import org.junit.Test;
 public class AspectTypeIT {
   private static final String ID = UUID.randomUUID().toString().substring(0, 8);
   private static final String LOCATION = "us-central1";
-  private static final String aspectTypeId = "test-aspect-type" + ID;
+  private static final String aspectTypeId = "test-aspect-type-" + ID;
   private static String expectedAspectType;
 
   private static final String PROJECT_ID = requireProjectIdEnvVar();
@@ -79,7 +79,7 @@ public class AspectTypeIT {
 
   @Test
   public void testCreateAspectType() throws Exception {
-    String aspectTypeIdToCreate = "test-aspect-type" + UUID.randomUUID().toString().substring(0, 8);
+    String aspectTypeIdToCreate = "test-aspect-type-" + UUID.randomUUID().toString().substring(0, 8);
     String expectedAspectTypeToCreate =
         String.format(
             "projects/%s/locations/%s/aspectTypes/%s", PROJECT_ID, LOCATION, aspectTypeIdToCreate);
@@ -95,7 +95,7 @@ public class AspectTypeIT {
 
   @Test
   public void testDeleteAspectType() throws Exception {
-    String aspectTypeIdToDelete = "test-aspect-type" + UUID.randomUUID().toString().substring(0, 8);
+    String aspectTypeIdToDelete = "test-aspect-type-" + UUID.randomUUID().toString().substring(0, 8);
     // Create Aspect Type to be deleted
     CreateAspectType.createAspectType(
         PROJECT_ID, LOCATION, aspectTypeIdToDelete, new ArrayList<>());
