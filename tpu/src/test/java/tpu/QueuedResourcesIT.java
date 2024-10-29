@@ -22,12 +22,14 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
+import com.google.cloud.tpu.v2alpha1.TpuClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -106,5 +108,19 @@ public class QueuedResourcesIT {
 
     assertNotNull(queuedResource);
     assertThat(queuedResource.getName()).isEqualTo(QUEUED_RESOURCE_PATH_NAME);
+  }
+
+  @Test
+  @Order(2)
+  public void testListQueuedResources() throws IOException {
+    TpuClient.ListQueuedResourcesPagedResponse listQueuedResources =
+        ListQueuedResources.listQueuedResources(PROJECT_ID, ZONE);
+
+    assertNotNull(listQueuedResources);
+    for (QueuedResource queuedResource : listQueuedResources.iterateAll()) {
+      Assert.assertTrue((queuedResource.getName()
+          .substring(queuedResource.getName().lastIndexOf("/") + 1))
+          .contains("queued-resource-"));
+    }
   }
 }
