@@ -39,7 +39,7 @@ public class CreateQueuedResourceWithNetwork {
     // see https://cloud.google.com/tpu/docs/regions-zones
     String zone = "europe-west4-a";
     // The name for your TPU.
-    String nodeName = "YOUR_TPY_NAME";
+    String nodeName = "YOUR_TPU_NAME";
     // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
     // For more information about supported accelerator types for each TPU version,
     // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
