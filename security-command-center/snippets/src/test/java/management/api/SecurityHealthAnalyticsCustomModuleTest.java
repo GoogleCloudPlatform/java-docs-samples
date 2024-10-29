@@ -55,6 +55,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("SCC_PROJECT_ORG_ID");
 
     // Perform cleanup before running tests
