@@ -16,6 +16,8 @@
 
 package tpu;
 
+import static com.google.cloud.tpu.v2.Node.State.READY;
+import static com.google.cloud.tpu.v2.Node.State.STOPPED;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
@@ -95,5 +97,24 @@ public class TpuVmIT {
 
     assertNotNull(node);
     assertThat(node.getName()).isEqualTo(NODE_PATH_NAME);
+  }
+
+
+  @Test
+  @Order(2)
+  public void testStopTpuVm() throws IOException, ExecutionException, InterruptedException {
+    StopTpuVm.stopTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+
+    assertThat(node.getState()).isEqualTo(STOPPED);
+  }
+
+  @Test
+  @Order(3)
+  public void testStartTpuVm() throws IOException, ExecutionException, InterruptedException {
+    StartTpuVm.startTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+
+    assertThat(node.getState()).isEqualTo(READY);
   }
 }
