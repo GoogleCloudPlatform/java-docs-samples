@@ -77,7 +77,8 @@ public class EntryGroupIT {
 
   @Test
   public void testCreateEntryGroup() throws Exception {
-    String entryGroupIdToCreate = "test-entry-group-" + UUID.randomUUID().toString().substring(0, 8);
+    String entryGroupIdToCreate =
+        "test-entry-group-" + UUID.randomUUID().toString().substring(0, 8);
     String expectedEntryGroupToCreate =
         String.format(
             "projects/%s/locations/%s/entryGroups/%s", PROJECT_ID, LOCATION, entryGroupIdToCreate);
@@ -92,7 +93,8 @@ public class EntryGroupIT {
 
   @Test
   public void testDeleteEntryGroup() throws Exception {
-    String entryGroupIdToDelete = "test-entry-group-" + UUID.randomUUID().toString().substring(0, 8);
+    String entryGroupIdToDelete =
+        "test-entry-group-" + UUID.randomUUID().toString().substring(0, 8);
     // Create Entry Group to be deleted
     CreateEntryGroup.createEntryGroup(PROJECT_ID, LOCATION, entryGroupIdToDelete);
 
