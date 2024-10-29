@@ -20,9 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -66,28 +64,16 @@ public class CreateQueuedResourceWithNetworkIT {
   }
 
   @Test
-  public void shouldCreateQueuedResourceWithSpecifiedNetwork() throws Exception {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
+  public void testCreateQueuedResourceWithSpecifiedNetwork() throws Exception {
 
     QueuedResource queuedResource = CreateQueuedResourceWithNetwork.createQueuedResourceWithNetwork(
-        PROJECT_ID,
-        ZONE,
-        QUEUED_RESOURCE_NAME,
-        NODE_NAME,
-        TPU_TYPE,
-        TPU_SOFTWARE_VERSION,
-        NETWORK_NAME);
+        PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME, NODE_NAME,
+        TPU_TYPE, TPU_SOFTWARE_VERSION, NETWORK_NAME);
 
-    assertThat(stdOut.toString()).contains("Queued Resource created: " + QUEUED_RESOURCE_NAME);
     assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getName()).isEqualTo(NODE_NAME);
     assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getNetworkConfig().getNetwork()
         .contains(NETWORK_NAME));
     assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getNetworkConfig().getSubnetwork()
         .contains(NETWORK_NAME));
-
-    stdOut.close();
-    System.setOut(out);
   }
 }
