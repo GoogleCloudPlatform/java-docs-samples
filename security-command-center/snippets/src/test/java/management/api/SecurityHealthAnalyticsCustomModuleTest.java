@@ -66,8 +66,11 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
   @AfterClass
   public static void cleanUp() {
+    final PrintStream out = System.out;
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
     stdOut = null;
-    System.setOut(null);
+    System.setOut(out);
   }
 
   @Before
