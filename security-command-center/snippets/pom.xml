@@ -31,7 +31,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.48.0</version>
+        <version>26.33.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -50,6 +50,12 @@
       <artifactId>google-cloud-securitycentermanagement</artifactId>
       <version>0.20.0</version>
     </dependency>
+
+	<dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-cloud-securitycentermanagement-v1</artifactId>
+      <version>0.20.0</version>
+	</dependency>
 
     <dependency>
       <groupId>com.google.cloud</groupId>

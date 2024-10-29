@@ -60,7 +60,8 @@ public class CreateSecurityHealthAnalyticsCustomModule {
       Expr expr =
           Expr.newBuilder()
               .setExpression(
-                  "has(resource.rotationPeriod) && (resource.rotationPeriod > duration('2592000s'))")
+                  "has(resource.rotationPeriod) && (resource.rotationPeriod > "
+                      + "duration('2592000s'))")
               .build();
 
       // define the resource selector

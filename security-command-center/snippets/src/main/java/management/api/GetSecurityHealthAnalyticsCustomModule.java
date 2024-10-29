@@ -18,9 +18,9 @@ package management.api;
 
 // [START securitycenter_management_api_get_security_health_analytics_custom_module]
 
-import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
 import com.google.cloud.securitycentermanagement.v1.GetSecurityHealthAnalyticsCustomModuleRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
+import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
 import java.io.IOException;
 
 public class GetSecurityHealthAnalyticsCustomModule {

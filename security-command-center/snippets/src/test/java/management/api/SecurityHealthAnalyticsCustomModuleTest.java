@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
-import io.opentelemetry.api.internal.StringUtils;
+import com.google.common.base.Strings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -103,7 +103,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
   // extractCustomModuleID extracts the custom module Id from the full name
   public static String extractCustomModuleId(String customModuleFullName) {
-    if (!StringUtils.isNullOrEmpty(customModuleFullName)) {
+    if (!Strings.isNullOrEmpty(customModuleFullName)) {
       String[] result = customModuleFullName.split("/");
       if (result.length > 0) {
         return result[result.length - 1];
@@ -115,7 +115,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   // createCustomModule method is for creating the custom module
   public static SecurityHealthAnalyticsCustomModule createCustomModule(
       String parent, String customModuleDisplayName) throws IOException {
-    if (!StringUtils.isNullOrEmpty(parent) && !StringUtils.isNullOrEmpty(customModuleDisplayName)) {
+    if (!Strings.isNullOrEmpty(parent) && !Strings.isNullOrEmpty(customModuleDisplayName)) {
       SecurityHealthAnalyticsCustomModule response =
           CreateSecurityHealthAnalyticsCustomModule.createSecurityHealthAnalyticsCustomModule(
               parent, customModuleDisplayName);
@@ -126,7 +126,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
   // deleteCustomModule method is for deleting the custom module
   public static void deleteCustomModule(String parent, String customModuleId) throws IOException {
-    if (!StringUtils.isNullOrEmpty(parent) && !StringUtils.isNullOrEmpty(customModuleId)) {
+    if (!Strings.isNullOrEmpty(parent) && !Strings.isNullOrEmpty(customModuleId)) {
       DeleteSecurityHealthAnalyticsCustomModule.deleteSecurityHealthAnalyticsCustomModule(
           parent, customModuleId);
     }
