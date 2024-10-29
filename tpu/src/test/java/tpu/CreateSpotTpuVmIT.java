@@ -38,11 +38,11 @@ import org.junit.runners.JUnit4;
 @Timeout(value = 6, unit = TimeUnit.MINUTES)
 public class CreateSpotTpuVmIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  private static final String ZONE = "us-east5-a";
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
   private static final String NODE_NAME = "test-spot-tpu-" + javaVersion + "-"
       + UUID.randomUUID().toString().substring(0, 8);
-  private static final String TPU_TYPE = "v3-8";
+  private static final String TPU_TYPE = "v5p-8";
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
   private static final String NODE_PATH_NAME =
       String.format("projects/%s/locations/%s/nodes/%s", PROJECT_ID, ZONE, NODE_NAME);

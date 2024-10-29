@@ -77,7 +77,7 @@ public class CreateSpotTpuVm {
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
-
+      // TODO: Wait for update of library to change preemptible to spot=True
       SchedulingConfig schedulingConfig = SchedulingConfig.newBuilder()
           .setPreemptible(true)
           .build();
