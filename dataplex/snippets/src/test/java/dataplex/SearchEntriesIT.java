@@ -20,9 +20,12 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.dataplex.v1.Entry;
+import com.google.cloud.dataplex.v1.SearchEntriesResponse;
+import com.google.cloud.dataplex.v1.SearchEntriesResult;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -64,7 +67,12 @@ public class SearchEntriesIT {
   @Test
   public void testSearchEntries() throws IOException {
     String query = "name:test-entry- AND description:description AND aspect:generic";
-    List<Entry> entries = SearchEntries.searchEntries(PROJECT_ID, query);
+    SearchEntriesResponse searchEntriesResponse =
+        SearchEntries.searchEntries(PROJECT_ID, query, 3, "");
+    List<Entry> entries =
+        searchEntriesResponse.getResultsList().stream()
+            .map(SearchEntriesResult::getDataplexEntry)
+            .collect(Collectors.toList());
     assertThat(
             entries.stream()
                 .map(Entry::getName)
