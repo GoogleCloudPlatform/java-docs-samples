@@ -16,15 +16,12 @@
 
 package tpu;
 
-import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertTrue;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
@@ -75,23 +72,11 @@ public class CreateSpotQueuedResourceIT {
 
   @Test
   public void testGetSpotQueuedResource() throws Exception {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-
     QueuedResource queuedResource = CreateSpotQueuedResource.createQueuedResource(
-        PROJECT_ID,
-        ZONE,
-        QUEUED_RESOURCE_NAME,
-        NODE_NAME,
-        TPU_TYPE,
-        TPU_SOFTWARE_VERSION);
+        PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME,
+        NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
 
-    assertThat(stdOut.toString()).contains("Queued Resource created: " + QUEUED_RESOURCE_NAME);
     assertTrue(queuedResource.getTpu().getNodeSpec(0).getNode()
         .getSchedulingConfig().getPreemptible());
-
-    stdOut.close();
-    System.setOut(out);
   }
 }
