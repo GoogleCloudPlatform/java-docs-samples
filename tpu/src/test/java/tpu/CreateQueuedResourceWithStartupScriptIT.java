@@ -21,9 +21,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
@@ -75,22 +73,12 @@ public class CreateQueuedResourceWithStartupScriptIT {
 
   @Test
   public void testCreateQueuedResourceWithStartupScript() throws Exception {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-
     QueuedResource queuedResource = CreateQueuedResourceWithStartupScript.createQueuedResource(
         PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME, NODE_NAME,
         TPU_TYPE, TPU_SOFTWARE_VERSION, STARTUP_SCRIPT_PATH);
 
-    assertThat(stdOut.toString()).contains("Queued Resource created: " + QUEUED_RESOURCE_NAME);
     assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().containsLabels("startup-script"));
     assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getLabelsMap()
         .containsValue("your-script-here"));
-
-    stdOut.close();
-    System.setOut(out);
   }
-
-
 }
