@@ -37,7 +37,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class SecurityHealthAnalyticsCustomModuleTest {
 
-  private static final String ORGANIZATION_ID = "1081635000895";
+  private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
   private static final String LOCATION = "global";
   private static final String CUSTOM_MODULE_DISPLAY_NAME = "java_sample_custom_module_test";
   private static ByteArrayOutputStream stdOut;
@@ -55,8 +55,8 @@ public class SecurityHealthAnalyticsCustomModuleTest {
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-//    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-//    requireEnvVar("SCC_PROJECT_ORG_ID");
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("SCC_PROJECT_ORG_ID");
 
     // Perform cleanup before running tests
     cleanupExistingCustomModules();
