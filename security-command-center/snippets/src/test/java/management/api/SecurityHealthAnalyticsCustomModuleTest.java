@@ -20,19 +20,14 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.api.gax.core.FixedExecutorProvider;
-import com.google.cloud.securitycentermanagement.v1.ListSecurityHealthAnalyticsCustomModulesRequest;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementSettings;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.base.Strings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -53,10 +48,9 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   private static ByteArrayOutputStream stdOut;
 
   @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
-      MAX_ATTEMPT_COUNT,
-      INITIAL_BACKOFF_MILLIS);
-  
+  public final MultipleAttemptsRule multipleAttemptsRule =
+      new MultipleAttemptsRule(MAX_ATTEMPT_COUNT, INITIAL_BACKOFF_MILLIS);
+
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
@@ -78,6 +72,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
     stdOut = null;
     System.setOut(out);
+    TimeUnit.MINUTES.sleep(1);
   }
 
   @AfterClass
@@ -105,7 +100,8 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   public static void cleanupExistingCustomModules() throws IOException, InterruptedException {
 
     String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
-    ListSecurityHealthAnalyticsCustomModulesPagedResponse response = getAllCustomModules(parent);
+    ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
+        ListSecurityHealthAnalyticsCustomModules.listSecurityHealthAnalyticsCustomModules(parent);
     for (SecurityHealthAnalyticsCustomModule module : response.iterateAll()) {
 
       if (module.getDisplayName().startsWith("java_sample_custom_module")) {
@@ -115,27 +111,6 @@ public class SecurityHealthAnalyticsCustomModuleTest {
         deleteCustomModule(parent, customModuleId);
       }
     }
-  }
-
-  // get all the security health analytics custom modules
-  public static ListSecurityHealthAnalyticsCustomModulesPagedResponse getAllCustomModules(
-      String parent) throws IOException {
-
-    ScheduledExecutorService executorService = Executors.newScheduledThreadPool(20);
-    SecurityCenterManagementSettings settings =
-        SecurityCenterManagementSettings.newBuilder()
-            .setExecutorProvider(FixedExecutorProvider.create(executorService))
-            .build();
-    try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create(settings)) {
-      ListSecurityHealthAnalyticsCustomModulesRequest request =
-          ListSecurityHealthAnalyticsCustomModulesRequest.newBuilder().setParent(parent).build();
-      return client.listSecurityHealthAnalyticsCustomModules(request);
-    } catch (Exception e) {
-      e.printStackTrace();
-    } finally {
-      executorService.shutdown();
-    }
-    return null;
   }
 
   // extractCustomModuleID extracts the custom module Id from the full name
