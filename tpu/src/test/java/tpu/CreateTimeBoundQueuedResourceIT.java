@@ -18,10 +18,10 @@ package tpu;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static org.junit.Assert.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.tpu.v2.Node;
+import com.google.cloud.tpu.v2alpha1.QueuedResource;
+import com.google.protobuf.Duration;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -29,27 +29,26 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 15, unit = TimeUnit.MINUTES)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TpuVmIT {
+@Timeout(value = 6, unit = TimeUnit.MINUTES)
+public class CreateTimeBoundQueuedResourceIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-east5-a";
+  private static final String ZONE = "us-central1-f";
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
-  private static final String NODE_NAME = "test-tpu-" + javaVersion + "-"
+  private static final String NODE_NAME = "test-tpu-time-bound-queued-resource-" + javaVersion + "-"
       + UUID.randomUUID().toString().substring(0, 8);
-  private static final String TPU_TYPE = "v5p-8";
-  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
-  private static final String NODE_PATH_NAME =
-      String.format("projects/%s/locations/%s/nodes/%s", PROJECT_ID, ZONE, NODE_NAME);
+  private static final String TPU_TYPE = "v2-8";
+  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.17.0-pjrt";
+  private static final String QUEUED_RESOURCE_NAME = "queued-resource-time-bound-" + javaVersion
+      + "-" + UUID.randomUUID().toString().substring(0, 8);
+  private static final String QUEUED_RESOURCE_PATH_NAME =
+      String.format("projects/%s/locations/%s/queuedResources/%s",
+          PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
 
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
@@ -57,43 +56,33 @@ public class TpuVmIT {
   }
 
   @BeforeAll
-  public static void setUp()
-      throws IOException, ExecutionException, InterruptedException {
+  public static void setUp() throws IOException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     // Cleanup existing stale resources.
-    Util.cleanUpExistingTpu("test-tpu-" + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingQueuedResources("queued-resource-time-bound-", PROJECT_ID, ZONE);
   }
 
   @AfterAll
-  public static void cleanup() throws Exception {
-    DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+  public static void cleanup() {
+    DeleteForceQueuedResource.deleteForceQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
 
-    // Test that TPUs is deleted
+    // Test that resources are deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME));
   }
 
   @Test
-  @Order(1)
-  public void testCreateTpuVm() throws IOException, ExecutionException, InterruptedException {
+  public void testCreateTimeBoundQueuedResource()
+      throws IOException, ExecutionException, InterruptedException {
+    QueuedResource queuedResource = CreateTimeBoundQueuedResource.createTimeBoundQueuedResource(
+        PROJECT_ID, NODE_NAME, QUEUED_RESOURCE_NAME, ZONE, TPU_TYPE, TPU_SOFTWARE_VERSION);
+    Duration validAfterDuration = Duration.newBuilder().setSeconds(6 * 3600).build();
 
-    Node node = CreateTpuVm.createTpuVm(
-        PROJECT_ID, ZONE, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
-
-    assertNotNull(node);
-    assertThat(node.getName().equals(NODE_NAME));
-    assertThat(node.getAcceleratorType().equals(TPU_TYPE));
-  }
-
-  @Test
-  @Order(2)
-  public void testGetTpuVm() throws IOException {
-    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-
-    assertNotNull(node);
-    assertThat(node.getName()).isEqualTo(NODE_PATH_NAME);
+    assertThat(queuedResource.getName()).isEqualTo(QUEUED_RESOURCE_PATH_NAME);
+    assertThat(queuedResource.getQueueingPolicy().getValidAfterDuration()
+        .equals(validAfterDuration));
   }
 }
