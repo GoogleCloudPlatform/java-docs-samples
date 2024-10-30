@@ -24,8 +24,6 @@ import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -52,18 +50,15 @@ public class CreateQueuedResourceWithStartupScript {
     String tpuSoftwareVersion = "tpu-vm-tf-2.14.1";
     // The name for your Queued Resource.
     String queuedResourceId = "QUEUED_RESOURCE_ID";
-    // Path to the startup script file.
-    String startupScriptPath = "YOUR_STARTUP_SCRIPT_PATH";
 
-    createQueuedResource(
-        projectId, zone, queuedResourceId, nodeName,
-        tpuType, tpuSoftwareVersion, startupScriptPath);
+    createQueuedResource(projectId, zone, queuedResourceId, nodeName,
+        tpuType, tpuSoftwareVersion);
   }
 
   // Creates a Queued Resource with startup script.
   public static QueuedResource createQueuedResource(
       String projectId, String zone, String queuedResourceId,
-      String nodeName, String tpuType, String tpuSoftwareVersion, String startupScriptPath)
+      String nodeName, String tpuType, String tpuSoftwareVersion)
       throws IOException, ExecutionException, InterruptedException {
     // With these settings the client library handles the Operation's polling mechanism
     // and prevent CancellationException error
@@ -80,13 +75,14 @@ public class CreateQueuedResourceWithStartupScript {
                 .setMaxRetryDelay(Duration.ofMillis(45000L))
                 .setTotalTimeout(Duration.ofHours(24L))
                 .build());
-      String parent = String.format("projects/%s/locations/%s", projectId, zone);
-      // Read the startup script content from the file
-      String startupScriptContent = new String(Files.readAllBytes(Paths.get(startupScriptPath)));
-      // Add startup script to metadata
-      Map<String, String> metadata = new HashMap<>();
-      metadata.put("startup-script", startupScriptContent);
-
+    String parent = String.format("projects/%s/locations/%s", projectId, zone);
+    // Read the startup script content from the file
+    String startupScriptContent = "#!/bin/bash\necho \"Hello from the startup script!\"";
+    // Add startup script to metadata
+    Map<String, String> metadata = new HashMap<>();
+    metadata.put("startup-script", startupScriptContent);
+    String queuedResourceForTpu =  String.format("projects/%s/locations/%s/queuedResources/%s",
+            projectId, zone, queuedResourceId);
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
@@ -95,10 +91,7 @@ public class CreateQueuedResourceWithStartupScript {
               .setName(nodeName)
               .setAcceleratorType(tpuType)
               .setRuntimeVersion(tpuSoftwareVersion)
-              .setQueuedResource(
-                  String.format(
-                      "projects/%s/locations/%s/queuedResources/%s",
-                      projectId, zone, queuedResourceId))
+              .setQueuedResource(queuedResourceForTpu)
               .putAllMetadata(metadata)
               .build();
 
@@ -122,12 +115,10 @@ public class CreateQueuedResourceWithStartupScript {
               .setQueuedResourceId(queuedResourceId)
               .setQueuedResource(queuedResource)
               .build();
-
-      QueuedResource response = tpuClient.createQueuedResourceAsync(request).get();
       // You can wait until TPU Node is READY,
       // and check its status using getTpuVm() from "tpu_vm_get" sample.
-      System.out.printf("Queued Resource created: %s\n", queuedResourceId);
-      return response;
+
+      return tpuClient.createQueuedResourceAsync(request).get();
     }
   }
 }
