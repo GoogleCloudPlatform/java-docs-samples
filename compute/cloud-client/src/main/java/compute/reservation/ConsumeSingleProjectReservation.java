@@ -58,13 +58,13 @@ public class ConsumeSingleProjectReservation {
     // Minimum CPU platform of the instances.
     String minCpuPlatform = "Intel Skylake";
 
-    createInstance(projectId, zone, instanceName, reservationName, machineTypeName, sourceImage,
-        diskSizeGb, networkName, minCpuPlatform);
+    createInstanceAsync(projectId, zone, instanceName, reservationName, machineTypeName,
+        sourceImage, diskSizeGb, networkName, minCpuPlatform);
   }
 
   // Create a virtual machine targeted with the reserveAffinity field.
   // Ensure that the VM's properties match the reservation's VM properties.
-  public static Operation createInstance(String projectId, String zone, String instanceName,
+  public static Instance createInstanceAsync(String projectId, String zone, String instanceName,
       String reservationName, String machineTypeName, String sourceImage, long diskSizeGb,
       String networkName, String minCpuPlatform)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
@@ -120,7 +120,7 @@ public class ConsumeSingleProjectReservation {
       if (response.hasError()) {
         return null;
       }
-      return response;
+      return instancesClient.get(projectId, zone, instanceName);
     }
   }
 }

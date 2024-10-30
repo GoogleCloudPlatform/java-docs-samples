@@ -20,12 +20,12 @@ import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservation
 import static com.google.cloud.compute.v1.ReservationAffinity.ConsumeReservationType.SPECIFIC_RESERVATION;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.Assert.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationReservedInstanceProperties;
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.Instance;
-import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.DeleteInstance;
@@ -49,7 +49,6 @@ public class ConsumeReservationsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
-  private static InstancesClient instancesClient;
   private static final String  RESERVATION_NAME = "test-reservaton-" + UUID.randomUUID();
   private static final String INSTANCE_FOR_SPR = "test-instance-for-spr-" + UUID.randomUUID();
   private static final String INSTANCE_FOR_ANY_MATCHING = "test-instance-" + UUID.randomUUID();
@@ -72,8 +71,6 @@ public class ConsumeReservationsIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    // Initialize client once for all tests
-    instancesClient = InstancesClient.create();
 
     ConsumeReservationsIT.createReservation(
         PROJECT_ID, RESERVATION_NAME, ZONE);
@@ -94,18 +91,16 @@ public class ConsumeReservationsIT {
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
-
-    // Close client after all tests
-    instancesClient.close();
   }
 
   @Test
   public void testConsumeAnyMatchingReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    ConsumeAnyMatchingReservation.createInstance(PROJECT_ID, ZONE, INSTANCE_FOR_ANY_MATCHING,
+    Instance instance = ConsumeAnyMatchingReservation
+        .createInstanceAsync(PROJECT_ID, ZONE, INSTANCE_FOR_ANY_MATCHING,
         MACHINE_TYPE, SOURCE_IMAGE, DISK_SIZE_GB, NETWORK_NAME, MIN_CPU_PLATFORM);
-    Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_FOR_ANY_MATCHING);
 
+    assertNotNull(instance);
     Assert.assertEquals(ANY_RESERVATION.toString(),
         instance.getReservationAffinity().getConsumeReservationType());
   }
@@ -113,11 +108,11 @@ public class ConsumeReservationsIT {
   @Test
   public void testConsumeSingleProjectReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    ConsumeSingleProjectReservation.createInstance(
+    Instance instance = ConsumeSingleProjectReservation.createInstanceAsync(
         PROJECT_ID, ZONE, INSTANCE_FOR_SPR, RESERVATION_NAME, MACHINE_TYPE,
         SOURCE_IMAGE, DISK_SIZE_GB, NETWORK_NAME, MIN_CPU_PLATFORM);
-    Instance instance = instancesClient.get(PROJECT_ID, ZONE, INSTANCE_FOR_SPR);
 
+    assertNotNull(instance);
     assertThat(instance.getReservationAffinity().getValuesList())
         .contains(RESERVATION_NAME);
     Assert.assertEquals(SPECIFIC_RESERVATION.toString(),
@@ -127,11 +122,11 @@ public class ConsumeReservationsIT {
   @Test
   public void testConsumeSpecificSharedReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    ConsumeSpecificSharedReservation.createInstance(
+    Instance instance = ConsumeSpecificSharedReservation.createInstanceAsync(
         PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE, RESERVATION_NAME, MACHINE_TYPE,
         SOURCE_IMAGE, DISK_SIZE_GB, NETWORK_NAME, MIN_CPU_PLATFORM);
-    Instance instance = instancesClient.get(PROJECT_ID, ZONE, SPECIFIC_SHARED_INSTANCE);
 
+    assertNotNull(instance);
     Assert.assertTrue(instance.getReservationAffinity()
         .getValuesList().get(0).contains(RESERVATION_NAME));
     Assert.assertEquals(SPECIFIC_RESERVATION.toString(),

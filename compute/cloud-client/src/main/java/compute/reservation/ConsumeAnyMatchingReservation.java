@@ -57,14 +57,14 @@ public class ConsumeAnyMatchingReservation {
     // Minimum CPU platform of the instances.
     String minCpuPlatform = "Intel Skylake";
 
-    createInstance(projectId, zone, instanceName, machineTypeName, sourceImage,
+    createInstanceAsync(projectId, zone, instanceName, machineTypeName, sourceImage,
         diskSizeGb, networkName, minCpuPlatform);
   }
 
   // Create a virtual machine targeted with the reserveAffinity field.
   // In this consumption model, existing and new VMs automatically consume a reservation
   // if their properties match the VM properties specified in the reservation.
-  public static Operation createInstance(String projectId, String zone,
+  public static Instance createInstanceAsync(String projectId, String zone,
       String instanceName, String machineTypeName, String sourceImage,
       long diskSizeGb, String networkName, String minCpuPlatform)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
@@ -118,7 +118,7 @@ public class ConsumeAnyMatchingReservation {
       if (response.hasError()) {
         return null;
       }
-      return response;
+      return instancesClient.get(projectId, zone, instanceName);
     }
   }
 }
