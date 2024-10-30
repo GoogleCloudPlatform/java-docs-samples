@@ -21,7 +21,6 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
-import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
@@ -38,13 +37,10 @@ public class CreateQueuedResourceWithStartupScriptIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "europe-west4-a";
-  static String javaVersion = System.getProperty("java.version").substring(0, 2);
-  private static final String NODE_NAME = "test-tpu-queued-resource-script-" + javaVersion + "-"
-      + UUID.randomUUID().toString().substring(0, 8);
+  private static final String NODE_NAME = "test-tpu-queued-resource-script-" + UUID.randomUUID();
   private static final String TPU_TYPE = "v2-8";
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
-  private static final String QUEUED_RESOURCE_NAME = "queued-resource-script-" + javaVersion + "-"
-      + UUID.randomUUID().toString().substring(0, 8);
+  private static final String QUEUED_RESOURCE_NAME = "queued-resource-script-" + UUID.randomUUID();
   private static final String STARTUP_SCRIPT_PATH = "src/test/java/tpu/startup-script.sh";
 
   public static void requireEnvVar(String envVarName) {
@@ -53,19 +49,15 @@ public class CreateQueuedResourceWithStartupScriptIT {
   }
 
   @BeforeAll
-  public static void setUp() throws IOException {
+  public static void setUp() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingQueuedResources("queued-resource-script-", PROJECT_ID, ZONE);
   }
 
   @AfterAll
   public static void cleanup() {
     DeleteForceQueuedResource.deleteForceQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
 
-    // Test that resource is deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetQueuedResource.getQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME));

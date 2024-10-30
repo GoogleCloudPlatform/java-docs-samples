@@ -80,17 +80,16 @@ public class CreateQueuedResourceWithStartupScript {
                 .setMaxRetryDelay(Duration.ofMillis(45000L))
                 .setTotalTimeout(Duration.ofHours(24L))
                 .build());
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
       // Read the startup script content from the file
       String startupScriptContent = new String(Files.readAllBytes(Paths.get(startupScriptPath)));
-
       // Add startup script to metadata
       Map<String, String> metadata = new HashMap<>();
       metadata.put("startup-script", startupScriptContent);
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
+    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
       Node node =
           Node.newBuilder()
               .setName(nodeName)
