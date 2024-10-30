@@ -15,7 +15,6 @@
 package compute.disks.storagepool;
 
 // [START compute_hyperdisk_pool_create]
-
 import com.google.cloud.compute.v1.InsertStoragePoolRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.StoragePool;
@@ -32,7 +31,7 @@ public class CreateHyperdiskStoragePool {
     // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
     // Name of the zone in which you want to create the storagePool.
-    String zone = "europe-central2-b";
+    String zone = "us-central1-a";
     // Name of the storagePool you want to create.
     String storagePoolName = "YOUR_STORAGE_POOL_NAME";
     // The type of disk you want to create. This value uses the following format:
@@ -48,8 +47,8 @@ public class CreateHyperdiskStoragePool {
     long provisionedIops = 3000;
     // the throughput in MBps to provision for the storage pool.
     long provisionedThroughput = 140;
-    // Optional: the performance provisioning type of the storage pool.
-    // The allowed values are advanced and standard. If not specified, the value advanced is used.
+    // The allowed values are low-casing strings "advanced" and "standard".
+    // If not specified, "advanced" is used.
     String performanceProvisioningType = "advanced";
 
     createHyperdiskStoragePool(projectId, zone, storagePoolName, storagePoolType,
