@@ -27,7 +27,6 @@ import com.google.common.base.Strings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -59,7 +58,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   }
 
   @BeforeClass
-  public static void setUp() throws IOException, InterruptedException {
+  public static void setUp() throws IOException {
     final PrintStream out = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
@@ -72,7 +71,6 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
     stdOut = null;
     System.setOut(out);
-    TimeUnit.MINUTES.sleep(1);
   }
 
   @AfterClass
@@ -97,7 +95,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   }
 
   // cleanupExistingCustomModules clean up all the existing custom module
-  public static void cleanupExistingCustomModules() throws IOException, InterruptedException {
+  public static void cleanupExistingCustomModules() throws IOException {
 
     String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
     ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
