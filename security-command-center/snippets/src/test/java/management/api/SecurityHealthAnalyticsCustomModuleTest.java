@@ -98,10 +98,11 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   }
 
   // cleanupExistingCustomModules clean up all the existing custom module
-  public static void cleanupExistingCustomModules() throws IOException {
+  public static void cleanupExistingCustomModules() throws IOException, InterruptedException {
 
     String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
     ListSecurityHealthAnalyticsCustomModulesPagedResponse response = getAllCustomModules(parent);
+    Thread.sleep(120000);
     for (SecurityHealthAnalyticsCustomModule module : response.iterateAll()) {
 
       if (module.getDisplayName().startsWith("java_sample_custom_module")) {
@@ -117,10 +118,8 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   public static ListSecurityHealthAnalyticsCustomModulesPagedResponse getAllCustomModules(
       String parent) throws IOException {
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
-    	
       ListSecurityHealthAnalyticsCustomModulesRequest request =
           ListSecurityHealthAnalyticsCustomModulesRequest.newBuilder().setParent(parent).build();
-
       return client.listSecurityHealthAnalyticsCustomModules(request);
     }
   }
