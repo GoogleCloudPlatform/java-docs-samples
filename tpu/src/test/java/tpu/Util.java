@@ -48,7 +48,7 @@ public class Util {
     }
   }
 
-  // Delete TPU VMs which starts with the given prefixToDelete and
+  // Delete QueuedResources which starts with the given prefixToDelete and
   // has creation timestamp >30 minutes.
   public static void cleanUpExistingQueuedResources(
       String prefixToDelete, String projectId, String zone)
@@ -58,7 +58,6 @@ public class Util {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
 
       for (QueuedResource queuedResource : tpuClient.listQueuedResources(parent).iterateAll()) {
-
         com.google.cloud.tpu.v2alpha1.Node node = queuedResource.getTpu().getNodeSpec(0).getNode();
         String creationTime = formatTimestamp(node.getCreateTime());
         String name = queuedResource.getName()

@@ -48,12 +48,12 @@ import org.junit.runners.JUnit4;
 @TestMethodOrder(MethodOrderer. OrderAnnotation. class)
 public class TpuVmIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-c";
+  private static final String ZONE = "asia-east1-c";
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
   private static final String TPU_VM_NAME = "test-tpu-" + javaVersion + "-"
       + UUID.randomUUID().toString().substring(0, 8);
   private static final String ACCELERATOR_TYPE = "v2-8";
-  private static final String VERSION = "tpu-vm-tf-2.14.1";
+  private static final String VERSION = "tpu-vm-tf-2.12.1";
   private static final String TPU_VM_PATH_NAME =
       String.format("projects/%s/locations/%s/nodes/%s", PROJECT_ID, ZONE, TPU_VM_NAME);
 

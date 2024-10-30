@@ -17,7 +17,6 @@
 package tpu;
 
 //[START tpu_queued_resources_get]
-
 import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
@@ -40,7 +39,7 @@ public class GetQueuedResource {
   public static QueuedResource getQueuedResource(
       String projectId, String zone, String queuedResourceId) throws IOException {
     String name = String.format("projects/%s/locations/%s/queuedResources/%s",
-              projectId, zone, queuedResourceId);
+        projectId, zone, queuedResourceId);
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create()) {

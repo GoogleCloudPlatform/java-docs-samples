@@ -17,7 +17,6 @@
 package tpu;
 
 //[START tpu_queued_resources_delete_force]
-
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.UnknownException;
 import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
@@ -44,7 +43,7 @@ public class DeleteForceQueuedResource {
   public static void deleteForceQueuedResource(
       String projectId, String zone, String queuedResourceId) {
     String name = String.format("projects/%s/locations/%s/queuedResources/%s",
-              projectId, zone, queuedResourceId);
+        projectId, zone, queuedResourceId);
     // With these settings the client library handles the Operation's polling mechanism
     // and prevent CancellationException error
     TpuSettings.Builder clientSettings =
