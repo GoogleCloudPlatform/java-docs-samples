@@ -40,7 +40,7 @@ public class EmbeddingBatchSample {
     // Could be a BigQuery table or a Google Cloud Storage file.
     // E.g. "gs://[BUCKET]/[OUTPUT].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
     String outputUri = "gs://YOUR_BUCKET/embedding_batch_output";
-    String textEmbeddingModel = "textembedding-gecko@003";
+    String textEmbeddingModel = "text-embedding-005";
 
     embeddingBatchSample(project, location, inputUri, outputUri, textEmbeddingModel);
   }

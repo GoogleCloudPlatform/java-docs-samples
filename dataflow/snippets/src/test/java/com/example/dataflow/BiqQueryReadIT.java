@@ -45,7 +45,7 @@ public class BiqQueryReadIT {
   private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private ByteArrayOutputStream bout;
-  private PrintStream out;
+  private final PrintStream originalOut = System.out;
   private BigQuery bigquery;
   private String datasetName;
   private String tableName;
@@ -53,8 +53,7 @@ public class BiqQueryReadIT {
   @Before
   public void setUp() throws InterruptedException {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
+    System.setOut(new PrintStream(bout));
 
     bigquery = BigQueryOptions.getDefaultInstance().getService();
 
@@ -81,7 +80,7 @@ public class BiqQueryReadIT {
   public void tearDown() {
     bigquery.delete(
         DatasetId.of(projectId, datasetName), DatasetDeleteOption.deleteContents());
-    System.setOut(null);
+    System.setOut(originalOut);
   }
 
   @Test
