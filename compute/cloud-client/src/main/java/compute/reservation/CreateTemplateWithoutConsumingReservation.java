@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateTemplateNotConsumeReservation {
+public class CreateTemplateWithoutConsumingReservation {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
@@ -42,20 +42,21 @@ public class CreateTemplateNotConsumeReservation {
     String projectId = "YOUR_PROJECT_ID";
     // Name of the template you want to query.
     String templateName = "YOUR_INSTANCE_TEMPLATE_NAME";
+    String machineType = "e2-standard-4";
+    String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
 
-    createTemplateNotConsumeReservation(projectId, templateName);
+    createTemplateWithoutConsumingReservationAsync(
+        projectId, templateName, machineType, sourceImage);
   }
 
 
   // Create a template that explicitly doesn't consume any reservations.
-  public static InstanceTemplate createTemplateNotConsumeReservation(
-      String projectId, String templateName)
+  public static InstanceTemplate createTemplateWithoutConsumingReservationAsync(
+      String projectId, String templateName, String machineType, String sourceImage)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
-
-      String machineType = "e2-standard-4";
-      String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
-
       AttachedDisk attachedDisk = AttachedDisk.newBuilder()
           .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
               .setSourceImage(sourceImage)
@@ -100,11 +101,8 @@ public class CreateTemplateNotConsumeReservation {
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Instance Template creation failed ! ! " + response);
         return null;
       }
-      System.out.printf("Instance Template Operation Status %s: %s",
-          templateName, response.getStatus());
       return instanceTemplatesClient.get(projectId, templateName);
     }
   }

@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateInstanceNotConsumeReservation {
+public class CreateInstanceWithoutConsumingReservation {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
@@ -43,26 +43,28 @@ public class CreateInstanceNotConsumeReservation {
     String zone = "us-central1-a";
     // Name of the VM instance you want to query.
     String instanceName = "YOUR_INSTANCE_NAME";
-
-    createInstanceNotConsumeReservation(projectId, zone, instanceName);
-  }
-
-  // Create a virtual machine that explicitly doesn't consume reservations
-  public static Instance createInstanceNotConsumeReservation(
-      String project, String zone, String instanceName)
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    // Below are sample values that can be replaced.
     // machineType: machine type of the VM being created.
     // *   This value uses the format zones/{zone}/machineTypes/{type_name}.
     // *   For a list of machine types, see https://cloud.google.com/compute/docs/machine-types
+    String machineTypeName = "n1-standard-1";
     // sourceImage: path to the operating system image to mount.
     // *   For details about images you can mount, see https://cloud.google.com/compute/docs/images
-    // diskSizeGb: storage size of the boot disk to attach to the instance.
-    // networkName: network interface to associate with the instance.
-    String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
     String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
+    // diskSizeGb: storage size of the boot disk to attach to the instance.
     long diskSizeGb = 10L;
+    // networkName: network interface to associate with the instance.
     String networkName = "default";
+
+    createInstanceWithoutConsumingReservationAsync(projectId, zone, instanceName,
+        machineTypeName, sourceImage, diskSizeGb, networkName);
+  }
+
+  // Create a virtual machine that explicitly doesn't consume reservations
+  public static Instance createInstanceWithoutConsumingReservationAsync(
+      String project, String zone, String instanceName,
+      String machineTypeName, String sourceImage, long diskSizeGb, String networkName)
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    String machineType = String.format("zones/%s/machineTypes/%s", zone, machineTypeName);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -111,10 +113,8 @@ public class CreateInstanceNotConsumeReservation {
       Operation response = operation.get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Instance creation failed ! ! " + response);
         return null;
       }
-      System.out.println("Operation Status: " + response.getStatus());
       return instancesClient.get(project, zone, instanceName);
     }
   }

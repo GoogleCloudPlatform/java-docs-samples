@@ -21,11 +21,8 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstanceTemplate;
-import com.google.cloud.compute.v1.InstanceTemplatesClient;
-import com.google.cloud.compute.v1.InstancesClient;
 import compute.DeleteInstance;
 import compute.DeleteInstanceTemplate;
-import compute.Util;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -45,15 +42,14 @@ public class ConsumeReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
-  private static InstancesClient instancesClient;
-  private static InstanceTemplatesClient instanceTemplatesClient;
-  static String javaVersion = System.getProperty("java.version").substring(0, 2);
   private static final String INSTANCE_NOT_CONSUME_RESERVATION_NAME =
-      "test-instance-not-consume-"  + javaVersion  + "-"
-          + UUID.randomUUID().toString().substring(0, 8);
+      "test-instance-not-consume-" + UUID.randomUUID().toString().substring(0, 8);
   private static final String TEMPLATE_NOT_CONSUME_RESERVATION_NAME =
-      "test-template-not-consume-"  + javaVersion  + "-"
-      + UUID.randomUUID().toString().substring(0, 8);
+      "test-template-not-consume-"  + UUID.randomUUID().toString().substring(0, 8);
+  private static final String MACHINE_TYPE_NAME = "n1-standard-1";
+  private static final String SOURCE_IMAGE = "projects/debian-cloud/global/images/family/debian-11";
+  private static final String NETWORK_NAME = "default";
+  private static final long DISK_SIZE_GD = 10L;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -66,14 +62,6 @@ public class ConsumeReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    // Initialize clients once for all tests
-    instancesClient = InstancesClient.create();
-    instanceTemplatesClient = InstanceTemplatesClient.create();
-
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-instance-not-consume-"  + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstanceTemplates("test-template-not-consume-"  + javaVersion, PROJECT_ID);
   }
 
   @AfterAll
@@ -83,17 +71,15 @@ public class ConsumeReservationIT {
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
     DeleteInstanceTemplate.deleteInstanceTemplate(
         PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
-
-    // Close clients after all tests
-    instancesClient.close();
-    instanceTemplatesClient.close();
   }
 
   @Test
   public void testCreateInstanceNotConsumeReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Instance instance = CreateInstanceNotConsumeReservation.createInstanceNotConsumeReservation(
-            PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
+    Instance instance = CreateInstanceWithoutConsumingReservation
+        .createInstanceWithoutConsumingReservationAsync(
+            PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME, MACHINE_TYPE_NAME,
+        SOURCE_IMAGE, DISK_SIZE_GD, NETWORK_NAME);
 
     Assertions.assertNotNull(instance);
     Assertions.assertEquals(NO_RESERVATION.toString(),
@@ -104,8 +90,9 @@ public class ConsumeReservationIT {
   public void testCreateTemplateNotConsumeReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     InstanceTemplate template =
-        CreateTemplateNotConsumeReservation.createTemplateNotConsumeReservation(
-        PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
+        CreateTemplateWithoutConsumingReservation.createTemplateWithoutConsumingReservationAsync(
+        PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME,
+            MACHINE_TYPE_NAME, SOURCE_IMAGE);
 
     Assertions.assertNotNull(template);
     Assertions.assertEquals(NO_RESERVATION.toString(),
