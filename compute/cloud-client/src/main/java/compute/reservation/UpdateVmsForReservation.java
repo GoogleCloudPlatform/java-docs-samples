@@ -19,6 +19,7 @@ package compute.reservation;
 // [START compute_reservation_vms_update]
 
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import com.google.cloud.compute.v1.ReservationsResizeRequest;
 import com.google.cloud.compute.v1.ResizeReservationRequest;
@@ -45,7 +46,7 @@ public class UpdateVmsForReservation {
   }
 
   // Updates a reservation with new VM capacity.
-  public static void updateVmsForReservation(
+  public static Reservation updateVmsForReservation(
       String projectId, String zone, String reservationName, int numberOfVms)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -66,10 +67,9 @@ public class UpdateVmsForReservation {
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Reservation update failed !!" + response);
-        return;
+        return null;
       }
-      System.out.println("Reservation updated successfully: " + response.getStatus());
+      return reservationsClient.get(projectId, zone, reservationName);
     }
   }
 }
