@@ -38,14 +38,14 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 3, unit = TimeUnit.MINUTES)
-public class WithoutConsumeReservationIT {
+public class WithoutConsumingReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
   private static final String INSTANCE_NOT_CONSUME_RESERVATION_NAME =
-      "test-instance-not-consume-" + UUID.randomUUID().toString().substring(0, 8);
+      "test-instance-not-consume-" + UUID.randomUUID();
   private static final String TEMPLATE_NOT_CONSUME_RESERVATION_NAME =
-      "test-template-not-consume-"  + UUID.randomUUID().toString().substring(0, 8);
+      "test-template-not-consume-"  + UUID.randomUUID();
   private static final String MACHINE_TYPE_NAME = "n1-standard-1";
   private static final String SOURCE_IMAGE = "projects/debian-cloud/global/images/family/debian-11";
   private static final String NETWORK_NAME = "default";

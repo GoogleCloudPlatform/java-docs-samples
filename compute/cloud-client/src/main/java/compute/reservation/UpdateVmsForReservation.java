@@ -17,7 +17,6 @@
 package compute.reservation;
 
 // [START compute_reservation_vms_update]
-
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
