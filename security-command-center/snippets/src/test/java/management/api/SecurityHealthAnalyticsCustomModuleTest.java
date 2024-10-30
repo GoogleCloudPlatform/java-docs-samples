@@ -27,6 +27,7 @@ import com.google.common.base.Strings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -59,7 +60,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   }
 
   @BeforeClass
-  public static void setUp() throws IOException {
+  public static void setUp() throws IOException, InterruptedException {
     final PrintStream out = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
@@ -72,6 +73,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
     stdOut = null;
     System.setOut(out);
+    TimeUnit.MINUTES.sleep(3);
   }
 
   @AfterClass
