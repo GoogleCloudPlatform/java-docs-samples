@@ -20,6 +20,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.cloud.securitycentermanagement.v1.ListSecurityHealthAnalyticsCustomModulesRequest;
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
@@ -27,7 +29,6 @@ import com.google.common.base.Strings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -73,7 +74,6 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
     stdOut = null;
     System.setOut(out);
-    TimeUnit.MINUTES.sleep(3);
   }
 
   @AfterClass
@@ -101,10 +101,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   public static void cleanupExistingCustomModules() throws IOException {
 
     String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
-
-    ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
-        ListSecurityHealthAnalyticsCustomModules.listSecurityHealthAnalyticsCustomModules(parent);
-
+    ListSecurityHealthAnalyticsCustomModulesPagedResponse response = getAllCustomModules(parent);
     for (SecurityHealthAnalyticsCustomModule module : response.iterateAll()) {
 
       if (module.getDisplayName().startsWith("java_sample_custom_module")) {
@@ -113,6 +110,18 @@ public class SecurityHealthAnalyticsCustomModuleTest {
         // deletes the custom module
         deleteCustomModule(parent, customModuleId);
       }
+    }
+  }
+
+  // get all the security health analytics custom modules
+  public static ListSecurityHealthAnalyticsCustomModulesPagedResponse getAllCustomModules(
+      String parent) throws IOException {
+    try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
+    	
+      ListSecurityHealthAnalyticsCustomModulesRequest request =
+          ListSecurityHealthAnalyticsCustomModulesRequest.newBuilder().setParent(parent).build();
+
+      return client.listSecurityHealthAnalyticsCustomModules(request);
     }
   }
 
