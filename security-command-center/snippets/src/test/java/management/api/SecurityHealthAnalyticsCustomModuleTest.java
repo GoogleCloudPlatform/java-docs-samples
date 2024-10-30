@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.base.Strings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -40,8 +42,15 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
   private static final String LOCATION = "global";
   private static final String CUSTOM_MODULE_DISPLAY_NAME = "java_sample_custom_module_test";
+  private static final int MAX_ATTEMPT_COUNT = 3;
+  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static ByteArrayOutputStream stdOut;
 
+  @Rule
+  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
+      MAX_ATTEMPT_COUNT,
+      INITIAL_BACKOFF_MILLIS);
+  
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
