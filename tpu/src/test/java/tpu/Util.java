@@ -58,6 +58,7 @@ public class Util {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
 
       for (QueuedResource queuedResource : tpuClient.listQueuedResources(parent).iterateAll()) {
+
         com.google.cloud.tpu.v2alpha1.Node node = queuedResource.getTpu().getNodeSpec(0).getNode();
         String creationTime = formatTimestamp(node.getCreateTime());
         String name = queuedResource.getName()
