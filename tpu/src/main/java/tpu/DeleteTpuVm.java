@@ -39,7 +39,7 @@ public class DeleteTpuVm {
     // see https://cloud.google.com/tpu/docs/regions-zones
     String zone = "europe-west4-a";
     // The name for your TPU.
-    String nodeName = "YOUR_TPY_NAME";
+    String nodeName = "YOUR_TPU_NAME";
 
     deleteTpuVm(projectId, zone, nodeName);
   }

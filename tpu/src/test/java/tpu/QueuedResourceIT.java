@@ -17,10 +17,10 @@
 package tpu;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
-import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 6, unit = TimeUnit.MINUTES)
-public class CreateQueuedResourceWithNetworkIT {
+public class QueuedResourceIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "europe-west4-a";
@@ -46,11 +46,15 @@ public class CreateQueuedResourceWithNetworkIT {
       + UUID.randomUUID().toString().substring(0, 8);
   private static final String NETWORK_NAME = "default";
 
-  @BeforeAll
-  public static void setUp() throws IOException {
+  public static void requireEnvVar(String envVarName) {
+    assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
+        .that(System.getenv(envVarName)).isNotEmpty();
+  }
 
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingQueuedResources("queued-resource-network-", PROJECT_ID, ZONE);
+  @BeforeAll
+  public static void setUp() {
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
   @AfterAll
