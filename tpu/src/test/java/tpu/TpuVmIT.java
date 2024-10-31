@@ -57,13 +57,9 @@ public class TpuVmIT {
   }
 
   @BeforeAll
-  public static void setUp()
-      throws IOException, ExecutionException, InterruptedException {
+  public static void setUp() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingTpu("test-tpu-" + javaVersion, PROJECT_ID, ZONE);
   }
 
   @AfterAll

@@ -17,7 +17,6 @@
 package tpu;
 
 //[START tpu_queued_resources_delete_force]
-
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.UnknownException;
 import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
