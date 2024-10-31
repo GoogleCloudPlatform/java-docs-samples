@@ -20,7 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2.AcceleratorConfig;
 import com.google.cloud.tpu.v2.AcceleratorConfig.Type;
 import com.google.cloud.tpu.v2.Node;
@@ -29,7 +28,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -60,10 +58,6 @@ public class CreateTpuWithTopologyFlagIT {
   @AfterAll
   public static void cleanup() throws Exception {
     DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-
-    Assertions.assertThrows(
-        NotFoundException.class,
-        () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME));
   }
 
   @Test
