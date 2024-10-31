@@ -41,7 +41,7 @@ public class CreateTpuWithTopologyFlag {
     // see https://cloud.google.com/tpu/docs/regions-zones
     String zone = "europe-west4-a";
     // The name for your TPU.
-    String nodeName = "YOUR_TPY_NAME";
+    String nodeName = "YOUR_TPU_NAME";
     // The version of the Cloud TPU you want to create.
     // Available options: TYPE_UNSPECIFIED = 0, V2 = 2, V3 = 4, V4 = 7
     Type tpuVersion = AcceleratorConfig.Type.V2;
@@ -101,9 +101,7 @@ public class CreateTpuWithTopologyFlag {
               .setNode(tpuVm)
               .build();
 
-      Node response = tpuClient.createNodeAsync(request).get();
-      System.out.printf("TPU VM created: %s\n", response.getName());
-      return response;
+      return tpuClient.createNodeAsync(request).get();
     }
   }
 }

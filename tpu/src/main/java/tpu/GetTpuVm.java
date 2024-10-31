@@ -34,7 +34,7 @@ public class GetTpuVm {
     // see https://cloud.google.com/tpu/docs/regions-zones
     String zone = "europe-west4-a";
     // The name for your TPU.
-    String nodeName = "YOUR_TPY_NAME";
+    String nodeName = "YOUR_TPU_NAME";
 
     getTpuVm(projectId, zone, nodeName);
   }
@@ -46,7 +46,6 @@ public class GetTpuVm {
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create()) {
       String name = NodeName.of(projectId, zone, nodeName).toString();
-
       GetNodeRequest request = GetNodeRequest.newBuilder().setName(name).build();
 
       return tpuClient.getNode(request);

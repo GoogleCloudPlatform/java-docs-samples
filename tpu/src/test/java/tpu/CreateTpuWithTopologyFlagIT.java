@@ -41,9 +41,7 @@ import org.junit.runners.JUnit4;
 public class CreateTpuWithTopologyFlagIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "europe-west4-a";
-  static String javaVersion = System.getProperty("java.version").substring(0, 2);
-  private static final String NODE_NAME = "test-tpu-topology-" + javaVersion + "-"
-      + UUID.randomUUID().toString().substring(0, 8);
+  private static final String NODE_NAME = "test-tpu-topology-" + UUID.randomUUID();
   private static final Type ACCELERATOR_TYPE = AcceleratorConfig.Type.V2;
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
   private static final String TOPOLOGY = "2x2";
@@ -54,20 +52,15 @@ public class CreateTpuWithTopologyFlagIT {
   }
 
   @BeforeAll
-  public static void setUp()
-      throws IOException, ExecutionException, InterruptedException {
+  public static void setUp() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingTpu("test-tpu-topology-" + javaVersion, PROJECT_ID, ZONE);
   }
 
   @AfterAll
   public static void cleanup() throws Exception {
     DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_NAME);
 
-    // Test that TPUs is deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME));
