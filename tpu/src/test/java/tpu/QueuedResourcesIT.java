@@ -23,9 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -33,27 +31,20 @@ import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 15, unit = TimeUnit.MINUTES)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class QueuedResourcesIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-f";
-  static String javaVersion = System.getProperty("java.version").substring(0, 2);
-  private static final String NODE_NAME = "test-tpu-queued-resource-" + javaVersion + "-"
-      + UUID.randomUUID().toString().substring(0, 8);
+  private static final String NODE_NAME = "test-tpu-queued-resource-" + UUID.randomUUID();
   private static final String TPU_TYPE = "v2-8";
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.17.0-pjrt";
-  private static final String QUEUED_RESOURCE_NAME = "queued-resource-" + javaVersion + "-"
-      + UUID.randomUUID().toString().substring(0, 8);
+  private static final String QUEUED_RESOURCE_NAME = "queued-resource-" + UUID.randomUUID();
   private static final String QUEUED_RESOURCE_PATH_NAME =
       String.format("projects/%s/locations/%s/queuedResources/%s",
           PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
@@ -64,35 +55,10 @@ public class QueuedResourcesIT {
   }
 
   @BeforeAll
-  public static void setUp() throws IOException {
+  public static void setUp() throws IOException, ExecutionException, InterruptedException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingQueuedResources("queued-resource-", PROJECT_ID, ZONE);
-  }
-
-  @AfterAll
-  public static void cleanup() throws IOException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-    DeleteQueuedResource.deleteQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
-
-    // Test that resources are deleted
-    assertThat(stdOut.toString()).contains("Deleted Queued Resource:");
-    Assertions.assertThrows(
-        NotFoundException.class,
-        () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME));
-
-    stdOut.close();
-    System.setOut(out);
-  }
-
-  @Test
-  @Order(1)
-  public void testCreateQueuedResource()
-      throws IOException, ExecutionException, InterruptedException {
     QueuedResource queuedResource = CreateQueuedResource.createQueuedResource(PROJECT_ID, ZONE,
         QUEUED_RESOURCE_NAME, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
 
@@ -100,8 +66,16 @@ public class QueuedResourcesIT {
     assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getName()).isEqualTo(NODE_NAME);
   }
 
+  @AfterAll
+  public static void cleanup() {
+    DeleteQueuedResource.deleteQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
+
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME));
+  }
+
   @Test
-  @Order(2)
   public void testGetQueuedResource() throws IOException {
     QueuedResource queuedResource = GetQueuedResource.getQueuedResource(
         PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
@@ -111,7 +85,6 @@ public class QueuedResourcesIT {
   }
 
   @Test
-  @Order(2)
   public void testListQueuedResources() throws IOException {
     TpuClient.ListQueuedResourcesPagedResponse listQueuedResources =
         ListQueuedResources.listQueuedResources(PROJECT_ID, ZONE);
