@@ -87,8 +87,10 @@ public class QueuedResourceIT {
         PROJECT_ID, ZONE, QUEUED_RESOURCE_FOR_SCRIPT, NODE_FOR_SCRIPT,
         TPU_TYPE, TPU_SOFTWARE_VERSION);
 
-    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().containsLabels("startup-script"));
-    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getLabelsMap()
-        .containsValue("Hello from the startup script!"));
+    System.out.println(queuedResource.getTpu().getNodeSpec(0).getNode().getMetadataMap());
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().containsMetadata("startup-script"));
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getMetadataMap()
+        .containsValue("#!/bin/bash\n"
+        + "echo \"Hello from the startup script!\""));
   }
 }

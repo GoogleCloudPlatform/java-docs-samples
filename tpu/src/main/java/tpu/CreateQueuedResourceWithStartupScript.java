@@ -76,7 +76,6 @@ public class CreateQueuedResourceWithStartupScript {
                 .setTotalTimeout(Duration.ofHours(24L))
                 .build());
     String parent = String.format("projects/%s/locations/%s", projectId, zone);
-    // Read the startup script content from the file
     String startupScriptContent = "#!/bin/bash\necho \"Hello from the startup script!\"";
     // Add startup script to metadata
     Map<String, String> metadata = new HashMap<>();
