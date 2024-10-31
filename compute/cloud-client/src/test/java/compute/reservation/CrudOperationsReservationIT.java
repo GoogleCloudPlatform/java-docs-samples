@@ -74,10 +74,10 @@ public class CrudOperationsReservationIT {
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Delete all reservations created for testing.
+    // Delete resources created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
 
-    // Test that reservations are deleted
+    // Test that reservation is deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
