@@ -18,34 +18,30 @@ package tpu;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static org.junit.Assert.assertTrue;
 
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.tpu.v2.Node;
-import java.io.IOException;
+import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 6, unit = TimeUnit.MINUTES)
-public class CreateSpotTpuVmIT {
+public class QueuedResourceIT {
+
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-east5-a";
-  static String javaVersion = System.getProperty("java.version").substring(0, 2);
-  private static final String NODE_NAME = "test-spot-tpu-" + javaVersion + "-"
-      + UUID.randomUUID().toString().substring(0, 8);
-  private static final String TPU_TYPE = "v5p-8";
+  private static final String ZONE = "europe-west4-a";
+  private static final String NODE_NAME = "test-tpu-queued-resource-network-" + UUID.randomUUID();
+  private static final String TPU_TYPE = "v2-8";
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
-  private static final String NODE_PATH_NAME =
-      String.format("projects/%s/locations/%s/nodes/%s", PROJECT_ID, ZONE, NODE_NAME);
+  private static final String QUEUED_RESOURCE_NAME = "queued-resource-network-" + UUID.randomUUID();
+  private static final String NETWORK_NAME = "default";
 
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
@@ -53,32 +49,32 @@ public class CreateSpotTpuVmIT {
   }
 
   @BeforeAll
-  public static void setUp()
-      throws IOException, ExecutionException, InterruptedException {
+  public static void setUp() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingTpu("test-spot-tpu-" + javaVersion, PROJECT_ID, ZONE);
   }
 
   @AfterAll
-  public static void cleanup() throws Exception {
-    DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+  public static void cleanup() {
+    DeleteForceQueuedResource.deleteForceQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
 
-    // Test that TPUs is deleted
+    // Test that resource is deleted
     Assertions.assertThrows(
         NotFoundException.class,
-        () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME));
+        () -> GetQueuedResource.getQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME));
   }
 
   @Test
-  public void testCreateSpotTpuVm() throws IOException, ExecutionException, InterruptedException {
-    Node node = CreateSpotTpuVm.createSpotTpuVm(
-        PROJECT_ID, ZONE, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
+  public void testCreateQueuedResourceWithSpecifiedNetwork() throws Exception {
 
-    assertThat(node.getName()).isEqualTo(NODE_PATH_NAME);
-    assertTrue(node.getSchedulingConfig().getPreemptible());
+    QueuedResource queuedResource = CreateQueuedResourceWithNetwork.createQueuedResourceWithNetwork(
+        PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME, NODE_NAME,
+        TPU_TYPE, TPU_SOFTWARE_VERSION, NETWORK_NAME);
 
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getName()).isEqualTo(NODE_NAME);
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getNetworkConfig().getNetwork()
+        .contains(NETWORK_NAME));
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getNetworkConfig().getSubnetwork()
+        .contains(NETWORK_NAME));
   }
 }

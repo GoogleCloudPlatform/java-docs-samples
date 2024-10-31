@@ -19,6 +19,7 @@ package tpu;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.tpu.v2.Node;
@@ -43,13 +44,14 @@ import org.junit.runners.JUnit4;
 public class TpuVmIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-c";
-  static String javaVersion = System.getProperty("java.version").substring(0, 2);
-  private static final String NODE_NAME = "test-tpu-" + javaVersion + "-"
-      + UUID.randomUUID().toString().substring(0, 8);
+  private static final String NODE_NAME = "test-tpu-" + UUID.randomUUID();
+  private static final String NODE_SPOT_NAME = "test-spot-tpu-" + UUID.randomUUID();
   private static final String TPU_TYPE = "v2-8";
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-base";
   private static final String NODE_PATH_NAME =
       String.format("projects/%s/locations/%s/nodes/%s", PROJECT_ID, ZONE, NODE_NAME);
+  private static final String NODE_SPOT_PATH_NAME =
+      String.format("projects/%s/locations/%s/nodes/%s", PROJECT_ID, ZONE, NODE_SPOT_NAME);
 
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
@@ -57,29 +59,28 @@ public class TpuVmIT {
   }
 
   @BeforeAll
-  public static void setUp()
-      throws IOException, ExecutionException, InterruptedException {
+  public static void setUp() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingTpu("test-tpu-" + javaVersion, PROJECT_ID, ZONE);
   }
 
   @AfterAll
   public static void cleanup() throws Exception {
     DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+    DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_SPOT_NAME);
 
-    // Test that TPUs is deleted
+    // Test that TPUs are deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME));
+    Assertions.assertThrows(
+        NotFoundException.class,
+        () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_SPOT_NAME));
   }
 
   @Test
   @Order(1)
   public void testCreateTpuVm() throws IOException, ExecutionException, InterruptedException {
-
     Node node = CreateTpuVm.createTpuVm(
         PROJECT_ID, ZONE, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
 
@@ -95,5 +96,14 @@ public class TpuVmIT {
 
     assertNotNull(node);
     assertThat(node.getName()).isEqualTo(NODE_PATH_NAME);
+  }
+
+  @Test
+  public void testCreateSpotTpuVm() throws IOException, ExecutionException, InterruptedException {
+    Node node = CreateSpotTpuVm.createSpotTpuVm(
+        PROJECT_ID, ZONE, NODE_SPOT_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
+
+    assertThat(node.getName()).isEqualTo(NODE_SPOT_PATH_NAME);
+    assertTrue(node.getSchedulingConfig().getPreemptible());
   }
 }
