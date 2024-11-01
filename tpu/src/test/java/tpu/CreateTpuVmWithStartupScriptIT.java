@@ -37,10 +37,10 @@ import org.junit.runners.JUnit4;
 @Timeout(value = 6, unit = TimeUnit.MINUTES)
 public class CreateTpuVmWithStartupScriptIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "europe-west4-a";
+  private static final String ZONE = "asia-east1-c";
   private static final String NODE_NAME = "test-tpu-with-script-" + UUID.randomUUID();
   private static final String TPU_TYPE = "v2-8";
-  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
+  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.12.1";
 
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
