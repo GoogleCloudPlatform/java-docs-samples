@@ -43,11 +43,11 @@ import org.junit.runners.JUnit4;
 @TestMethodOrder(MethodOrderer. OrderAnnotation. class)
 public class TpuVmIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-c";
+  private static final String ZONE = "asia-east1-c";
   private static final String NODE_NAME = "test-tpu-" + UUID.randomUUID();
   private static final String NODE_SPOT_NAME = "test-spot-tpu-" + UUID.randomUUID();
   private static final String TPU_TYPE = "v2-8";
-  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-base";
+  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.12.1";
   private static final String NODE_PATH_NAME =
       String.format("projects/%s/locations/%s/nodes/%s", PROJECT_ID, ZONE, NODE_NAME);
   private static final String NODE_SPOT_PATH_NAME =
