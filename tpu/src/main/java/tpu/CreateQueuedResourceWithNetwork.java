@@ -16,9 +16,10 @@
 
 package tpu;
 
-//[START tpu_queued_resources_create]
+//[START tpu_queued_resources_network]
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
+import com.google.cloud.tpu.v2alpha1.NetworkConfig;
 import com.google.cloud.tpu.v2alpha1.Node;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
@@ -27,7 +28,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import org.threeten.bp.Duration;
 
-public class CreateQueuedResource {
+public class CreateQueuedResourceWithNetwork {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
@@ -38,7 +39,7 @@ public class CreateQueuedResource {
     // see https://cloud.google.com/tpu/docs/regions-zones
     String zone = "europe-west4-a";
     // The name for your TPU.
-    String nodeName = "YOUR_NODE_ID";
+    String nodeName = "YOUR_TPU_NAME";
     // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
     // For more information about supported accelerator types for each TPU version,
     // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
@@ -48,14 +49,18 @@ public class CreateQueuedResource {
     String tpuSoftwareVersion = "tpu-vm-tf-2.14.1";
     // The name for your Queued Resource.
     String queuedResourceId = "QUEUED_RESOURCE_ID";
+    // The name of the network you want the node to connect to.
+    // The network should be assigned to your project.
+    String networkName = "YOUR_COMPUTE_TPU_NETWORK";
 
-    createQueuedResource(
-        projectId, zone, queuedResourceId, nodeName, tpuType, tpuSoftwareVersion);
+    createQueuedResourceWithNetwork(projectId, zone, queuedResourceId, nodeName,
+        tpuType, tpuSoftwareVersion, networkName);
   }
 
-  // Creates a Queued Resource
-  public static QueuedResource createQueuedResource(String projectId, String zone,
-      String queuedResourceId, String nodeName, String tpuType, String tpuSoftwareVersion)
+  // Creates a Queued Resource with network configuration.
+  public static QueuedResource createQueuedResourceWithNetwork(
+      String projectId, String zone, String queuedResourceId, String nodeName,
+      String tpuType, String tpuSoftwareVersion, String networkName)
       throws IOException, ExecutionException, InterruptedException {
     // With these settings the client library handles the Operation's polling mechanism
     // and prevent CancellationException error
@@ -76,17 +81,32 @@ public class CreateQueuedResource {
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
+      String region = zone.substring(0, zone.length() - 2);
+
+      // Specify the network and subnetwork that you want to connect your TPU to.
+      NetworkConfig networkConfig =
+          NetworkConfig.newBuilder()
+              .setEnableExternalIps(true)
+              .setNetwork(String.format("projects/%s/global/networks/%s", projectId, networkName))
+              .setSubnetwork(
+                  String.format(
+                      "projects/%s/regions/%s/subnetworks/%s", projectId, region, networkName))
+              .build();
+
+      // Create a node
       Node node =
           Node.newBuilder()
               .setName(nodeName)
               .setAcceleratorType(tpuType)
               .setRuntimeVersion(tpuSoftwareVersion)
+              .setNetworkConfig(networkConfig)
               .setQueuedResource(
                   String.format(
                       "projects/%s/locations/%s/queuedResources/%s",
                       projectId, zone, queuedResourceId))
               .build();
 
+      // Create queued resource
       QueuedResource queuedResource =
           QueuedResource.newBuilder()
               .setName(queuedResourceId)
@@ -99,16 +119,13 @@ public class CreateQueuedResource {
                               .setNodeId(nodeName)
                               .build())
                       .build())
-              // You can request a queued resource using a reservation by specifying it in code
-              //.setReservationName(
-              // "projects/YOUR_PROJECT_ID/locations/YOUR_ZONE/reservations/YOUR_RESERVATION_NAME")
               .build();
 
       CreateQueuedResourceRequest request =
           CreateQueuedResourceRequest.newBuilder()
               .setParent(parent)
-              .setQueuedResourceId(queuedResourceId)
               .setQueuedResource(queuedResource)
+              .setQueuedResourceId(queuedResourceId)
               .build();
 
       // You can wait until TPU Node is READY,
@@ -118,4 +135,4 @@ public class CreateQueuedResource {
     }
   }
 }
-//[END tpu_queued_resources_create]
+//[END tpu_queued_resources_network]

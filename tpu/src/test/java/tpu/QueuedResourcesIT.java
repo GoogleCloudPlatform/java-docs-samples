@@ -31,30 +31,28 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 10, unit = TimeUnit.MINUTES)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Timeout(value = 6, unit = TimeUnit.MINUTES)
 public class QueuedResourcesIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-f";
-  static String javaVersion = System.getProperty("java.version").substring(0, 2);
-  private static final String NODE_NAME = "test-tpu-queued-resource-" + javaVersion + "-"
-      + UUID.randomUUID().toString().substring(0, 8);
+  private static final String NODE_NAME = "test-tpu-queued-resource-" + UUID.randomUUID();
+  private static final String NODE_WITH_NETWORK_NAME =
+      "test-tpu-queued-resource-network-" + UUID.randomUUID();
   private static final String TPU_TYPE = "v2-8";
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.17.0-pjrt";
-  private static final String QUEUED_RESOURCE_NAME = "queued-resource-" + javaVersion + "-"
-      + UUID.randomUUID().toString().substring(0, 8);
+  private static final String QUEUED_RESOURCE_NAME = "queued-resource-" + UUID.randomUUID();
   private static final String QUEUED_RESOURCE_PATH_NAME =
       String.format("projects/%s/locations/%s/queuedResources/%s",
           PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
+  private static final String QUEUED_RESOURCE_WITH_NETWORK =
+      "queued-resource-network-" + UUID.randomUUID();
+  private static final String NETWORK_NAME = "default";
 
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
@@ -62,12 +60,15 @@ public class QueuedResourcesIT {
   }
 
   @BeforeAll
-  public static void setUp() throws IOException {
+  public static void setUp() throws IOException, ExecutionException, InterruptedException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingQueuedResources("queued-resource-", PROJECT_ID, ZONE);
+    QueuedResource queuedResource = CreateQueuedResource.createQueuedResource(PROJECT_ID, ZONE,
+        QUEUED_RESOURCE_NAME, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
+
+    assertThat(queuedResource.getName()).isEqualTo(QUEUED_RESOURCE_PATH_NAME);
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getName()).isEqualTo(NODE_NAME);
   }
 
   @AfterAll
@@ -76,6 +77,8 @@ public class QueuedResourcesIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     DeleteQueuedResource.deleteQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
+    DeleteForceQueuedResource.deleteForceQueuedResource(
+        PROJECT_ID, ZONE, QUEUED_RESOURCE_WITH_NETWORK);
 
     // Test that resources are deleted
     assertThat(stdOut.toString()).contains("Deleted Queued Resource:");
@@ -88,23 +91,25 @@ public class QueuedResourcesIT {
   }
 
   @Test
-  @Order(1)
-  public void testCreateQueuedResource()
-      throws IOException, ExecutionException, InterruptedException {
-    QueuedResource queuedResource = CreateQueuedResource.createQueuedResource(PROJECT_ID, ZONE,
-        QUEUED_RESOURCE_NAME, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
-
-    assertThat(queuedResource.getName()).isEqualTo(QUEUED_RESOURCE_PATH_NAME);
-    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getName()).isEqualTo(NODE_NAME);
-  }
-
-  @Test
-  @Order(2)
   public void testGetQueuedResource() throws IOException {
     QueuedResource queuedResource = GetQueuedResource.getQueuedResource(
         PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
 
     assertNotNull(queuedResource);
     assertThat(queuedResource.getName()).isEqualTo(QUEUED_RESOURCE_PATH_NAME);
+  }
+
+  @Test
+  public void testCreateQueuedResourceWithSpecifiedNetwork() throws Exception {
+    QueuedResource queuedResource = CreateQueuedResourceWithNetwork.createQueuedResourceWithNetwork(
+        PROJECT_ID, ZONE, QUEUED_RESOURCE_WITH_NETWORK, NODE_WITH_NETWORK_NAME,
+        TPU_TYPE, TPU_SOFTWARE_VERSION, NETWORK_NAME);
+
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getName())
+        .isEqualTo(NODE_WITH_NETWORK_NAME);
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getNetworkConfig().getNetwork()
+        .contains(NETWORK_NAME));
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getNetworkConfig().getSubnetwork()
+        .contains(NETWORK_NAME));
   }
 }
