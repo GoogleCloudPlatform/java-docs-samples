@@ -69,7 +69,8 @@ public class CrudOperationsReservationIT {
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, "us-central1-b");
+    Util.cleanUpExistingReservations(
+        "test-reservation-"  + javaVersion, PROJECT_ID, "us-central1-b");
   }
 
   @AfterAll
