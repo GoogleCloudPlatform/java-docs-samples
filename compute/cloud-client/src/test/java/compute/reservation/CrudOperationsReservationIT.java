@@ -49,7 +49,7 @@ import org.junit.runners.JUnit4;
 public class CrudOperationsReservationIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-b";
+  private static final String ZONE = "asia-south1-a";
   static String javaVersion = System.getProperty("java.version").substring(0, 2);
   private static final String RESERVATION_NAME = "test-reservation-" + javaVersion + "-"
       + UUID.randomUUID().toString().substring(0, 8);
@@ -69,6 +69,7 @@ public class CrudOperationsReservationIT {
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, "us-central1-b");
   }
 
   @AfterAll
