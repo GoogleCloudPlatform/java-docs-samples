@@ -31,7 +31,6 @@ public class CreateSecondaryRegionalDisk {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-
     // The project that contains the primary disk.
     String projectId = "YOUR_PROJECT_ID";
     // Name of the region in which you want to create the secondary disk.
@@ -52,7 +51,7 @@ public class CreateSecondaryRegionalDisk {
           diskSizeGb, primaryDiskName,  diskType);
   }
 
-  // Creates a secondary disk in a specified region.
+  // Creates a secondary disk in a specified region with the source disk information.
   public static Disk createSecondaryRegionalDisk(String projectId, String secondaryDiskName,
       String disksRegion, long diskSizeGb, String primaryDiskName, String diskType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -62,6 +61,9 @@ public class CreateSecondaryRegionalDisk {
     List<String> replicaZones = Arrays.asList(
         String.format("projects/%s/zones/%s-a", projectId, disksRegion),
         String.format("projects/%s/zones/%s-b", projectId, disksRegion));
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (RegionDisksClient disksClient = RegionDisksClient.create()) {
       String primaryDiskSource = String.format("projects/%s/regions/%s/disks/%s",
           projectId, disksRegion, primaryDiskName);

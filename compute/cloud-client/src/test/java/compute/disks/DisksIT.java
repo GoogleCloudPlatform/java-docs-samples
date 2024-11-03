@@ -175,6 +175,7 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, SECONDARY_DISK_NAME);
 
     stdOut.close();
     System.setOut(out);
