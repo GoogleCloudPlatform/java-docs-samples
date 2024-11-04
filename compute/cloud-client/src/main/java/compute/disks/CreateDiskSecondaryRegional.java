@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateSecondaryRegionalDisk {
+public class CreateDiskSecondaryRegional {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
@@ -47,13 +47,13 @@ public class CreateSecondaryRegionalDisk {
     String diskType = String.format(
         "projects/%s/regions/%s/diskTypes/pd-balanced", projectId, disksRegion);
 
-    createSecondaryRegionalDisk(projectId, secondaryDiskName, disksRegion,
+    createDiskSecondaryRegional(projectId, secondaryDiskName, disksRegion,
           diskSizeGb, primaryDiskName,  diskType);
   }
 
   // Creates a secondary disk in a specified region with the source disk information.
-  public static Disk createSecondaryRegionalDisk(String projectId, String secondaryDiskName,
-      String disksRegion, long diskSizeGb, String primaryDiskName, String diskType)
+  public static Disk createDiskSecondaryRegional(String projectId, String secondaryDiskName,
+                                                 String disksRegion, long diskSizeGb, String primaryDiskName, String diskType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // An iterable collection of zone names in which you want to keep
     // the new disks' replicas. One of the replica zones of the clone must match

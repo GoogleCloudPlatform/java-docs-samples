@@ -72,7 +72,7 @@ public class DisksIT {
   private static String DISK_TYPE;
   private static String ZONAL_BLANK_DISK;
   private static String REGIONAL_BLANK_DISK;
-  private static String SECONDARY_DISK_NAME;
+  private static String SECONDARY_REGIONAL_DISK_NAME;
   private static List<String> replicaZones;
   private static final long DISK_SIZE = 10;
   private ByteArrayOutputStream stdOut;
@@ -102,7 +102,7 @@ public class DisksIT {
     DISK_TYPE = String.format("zones/%s/diskTypes/pd-ssd", ZONE);
     ZONAL_BLANK_DISK = "gcloud-test-disk-zattach-" + uuid;
     REGIONAL_BLANK_DISK = "gcloud-test-disk-rattach-" + uuid;
-    SECONDARY_DISK_NAME = "gcloud-test-secondary-disk-" + uuid;
+    SECONDARY_REGIONAL_DISK_NAME = "gcloud-test-disk-secondary-regional" + uuid;
     replicaZones = Arrays.asList(
         String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
         String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
@@ -175,7 +175,7 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
-    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, SECONDARY_DISK_NAME);
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, SECONDARY_REGIONAL_DISK_NAME);
 
     stdOut.close();
     System.setOut(out);
@@ -306,12 +306,12 @@ public class DisksIT {
   }
 
   @Test
-  public void testCreateSecondaryDisk()
+  public void testCreateDiskSecondaryRegional()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType =  String.format(
         "projects/%s/regions/%s/diskTypes/pd-balanced", PROJECT_ID, REGION);
-    Disk disk = CreateSecondaryRegionalDisk.createSecondaryRegionalDisk(
-        PROJECT_ID, SECONDARY_DISK_NAME, REGION,
+    Disk disk = CreateDiskSecondaryRegional.createDiskSecondaryRegional(
+        PROJECT_ID, SECONDARY_REGIONAL_DISK_NAME, REGION,
         DISK_SIZE, REGIONAL_BLANK_DISK, diskType);
 
     // Verify that the secondary disk was created.
