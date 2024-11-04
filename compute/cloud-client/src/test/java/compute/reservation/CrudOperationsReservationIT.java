@@ -93,7 +93,7 @@ public class CrudOperationsReservationIT {
   @Test
   public void testUpdateVmsForReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    int newNumberOfVms = 5;
+    int newNumberOfVms = 2;
     Reservation reservation = UpdateVmsForReservation.updateVmsForReservation(
         PROJECT_ID, ZONE, RESERVATION_NAME, newNumberOfVms);
 
