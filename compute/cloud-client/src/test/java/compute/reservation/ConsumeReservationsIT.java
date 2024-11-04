@@ -46,14 +46,13 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @Timeout(value = 6, unit = TimeUnit.MINUTES)
 public class ConsumeReservationsIT {
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-a";
-  private static final String  RESERVATION_NAME = "test-reservaton-" + UUID.randomUUID();
-  private static final String INSTANCE_FOR_SPR = "test-instance-for-spr-" + UUID.randomUUID();
-  private static final String INSTANCE_FOR_ANY_MATCHING = "test-instance-" + UUID.randomUUID();
-  private static final String SPECIFIC_SHARED_INSTANCE =
-      "test-instance-shared-" + UUID.randomUUID();
+  static String templateUUID = UUID.randomUUID().toString();
+  private static final String  RESERVATION_NAME = "test-reservaton-" + templateUUID;
+  private static final String INSTANCE_FOR_SPR = "test-instance-for-spr-" + templateUUID;
+  private static final String INSTANCE_FOR_ANY_MATCHING = "test-instance-" + templateUUID;
+  private static final String SPECIFIC_SHARED_INSTANCE = "test-instance-shared-" + templateUUID;
   private static final String MACHINE_TYPE = "n1-standard-4";
   private static final String SOURCE_IMAGE = "projects/debian-cloud/global/images/family/debian-11";
   private static final String NETWORK_NAME = "default";

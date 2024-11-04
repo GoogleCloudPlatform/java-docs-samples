@@ -47,41 +47,37 @@ import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 6, unit = TimeUnit.MINUTES)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ReservationIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "asia-south1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
-  private static final String RESERVATION_NAME_GLOBAL =
-      "test-reservation-global-" + UUID.randomUUID();
+  static String templateUUID = UUID.randomUUID().toString();
+  private static final String RESERVATION_NAME_GLOBAL = "test-reservation-global-" + templateUUID;
   private static final String  RESERVATION_NAME_REGIONAL =
-      "test-reservation-regional-" + UUID.randomUUID();
+      "test-reservation-regional-" + templateUUID;
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
-      "test-global-inst-temp-" + UUID.randomUUID();
+      "test-global-inst-temp-" + templateUUID;
   private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
-      "test-regional-inst-temp-" + UUID.randomUUID();
+      "test-regional-inst-temp-" + templateUUID;
   private static final String GLOBAL_INSTANCE_TEMPLATE_URI = String.format(
       "projects/%s/global/instanceTemplates/%s", PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
   private static final String REGIONAL_INSTANCE_TEMPLATE_URI =
       String.format("projects/%s/regions/%s/instanceTemplates/%s",
           PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
   private static final String SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME =
-      "test-shared-inst-temp-"  + UUID.randomUUID();
+      "test-shared-inst-temp-"  + templateUUID;
   private static final String  INSTANCE_TEMPLATE_SHARED_RESERV_URI =
       String.format("projects/%s/global/instanceTemplates/%s",
       PROJECT_ID, SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
-  private static final String RESERVATION_NAME_SHARED =
-      "test-reservation-shared-" + UUID.randomUUID();
+  private static final String RESERVATION_NAME_SHARED = "test-reservation-shared-" + templateUUID;
   private static final int NUMBER_OF_VMS = 3;
   private static ByteArrayOutputStream stdOut;
 
@@ -155,7 +151,6 @@ public class ReservationIT {
   }
 
   @Test
-  @Order(1)
   public void testCreateReservationWithGlobalInstanceTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Reservation reservation = CreateReservationForInstanceTemplate

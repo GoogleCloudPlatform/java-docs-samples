@@ -40,7 +40,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @Timeout(value = 6, unit = TimeUnit.MINUTES)
 public class CrudOperationsReservationIT {
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-central1-b";
   private static final String RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
@@ -89,5 +88,16 @@ public class CrudOperationsReservationIT {
 
     assertThat(reservations).isNotNull();
     Assert.assertTrue(reservations.get(0).getName().contains("test-"));
+  }
+
+  @Test
+  public void testUpdateVmsForReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    int newNumberOfVms = 5;
+    Reservation reservation = UpdateVmsForReservation.updateVmsForReservation(
+        PROJECT_ID, ZONE, RESERVATION_NAME, newNumberOfVms);
+
+    Assert.assertNotNull(reservation);
+    Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
   }
 }
