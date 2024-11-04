@@ -34,9 +34,10 @@ public class CreateHyperdiskStoragePool {
     String zone = "us-central1-a";
     // Name of the storagePool you want to create.
     String storagePoolName = "YOUR_STORAGE_POOL_NAME";
-    // The type of disk you want to create. This value uses the following format:
-    // "projects/%s/zones/%s/storagePoolTypes/hyperdisk-throughput|hyperdisk-balanced"
-    String storagePoolType = "hyperdisk-balanced";
+    // The type of disk you want to create.
+    // Storage types can be "hyperdisk-throughput" or "hyperdisk-balanced"
+    String storagePoolType = String.format( "projects/%s/zones/%s/storagePoolTypes/hyperdisk-balanced",
+        projectId, zone);
     // Optional: the capacity provisioning type of the storage pool.
     // The allowed values are advanced and standard. If not specified, the value advanced is used.
     String capacityProvisioningType = "advanced";
