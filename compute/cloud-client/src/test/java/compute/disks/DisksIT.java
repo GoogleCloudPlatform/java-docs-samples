@@ -18,6 +18,7 @@ package compute.disks;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
@@ -69,10 +70,10 @@ public class DisksIT {
   private static String EMPTY_DISK_NAME;
   private static String SNAPSHOT_NAME;
   private static String DISK_TYPE;
-
   private static String ZONAL_BLANK_DISK;
-
   private static String REGIONAL_BLANK_DISK;
+  private static String SECONDARY_DISK_CUSTOM_NAME;
+  private static final long DISK_SIZE = 10;
 
   private ByteArrayOutputStream stdOut;
 
@@ -101,6 +102,7 @@ public class DisksIT {
     DISK_TYPE = String.format("zones/%s/diskTypes/pd-ssd", ZONE);
     ZONAL_BLANK_DISK = "gcloud-test-disk-zattach-" + uuid;
     REGIONAL_BLANK_DISK = "gcloud-test-disk-rattach-" + uuid;
+    SECONDARY_DISK_CUSTOM_NAME = "gcloud-test-disk-custom-" + uuid;
 
     // Cleanup existing stale instances.
     Util.cleanUpExistingInstances("test-disks", PROJECT_ID, ZONE);
@@ -170,6 +172,7 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
+    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, SECONDARY_DISK_CUSTOM_NAME);
 
     stdOut.close();
     System.setOut(out);
@@ -301,4 +304,22 @@ public class DisksIT {
         Util.getRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK).getSizeGb());
   }
 
+  @Test
+  public void testCreateDiskSecondaryCustom()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String diskType =  String.format(
+        "projects/%s/zones/%s/diskTypes/pd-ssd", PROJECT_ID, ZONE);
+    Disk disk = CreateDiskSecondaryCustom.createDiskSecondaryCustom(
+        PROJECT_ID, SECONDARY_DISK_CUSTOM_NAME, ZONE,
+        DISK_SIZE, EMPTY_DISK_NAME, diskType);
+
+    // Verify that the secondary disk was created.
+    assertNotNull(disk);
+    assertThat(disk.getSizeGb()).isEqualTo(DISK_SIZE);
+    assertThat(disk.getSourceDisk()).isEqualTo(
+        String.format("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/disks/%s",
+            PROJECT_ID, ZONE, EMPTY_DISK_NAME));
+    assertThat(disk.getLabelsMap().get("secondary-disk-for-replication")).isEqualTo("yes");
+    assertThat(disk.getGuestOsFeaturesCount()).isEqualTo(3);
+  }
 }
