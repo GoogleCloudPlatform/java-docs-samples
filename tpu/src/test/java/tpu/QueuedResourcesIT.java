@@ -68,6 +68,7 @@ public class QueuedResourcesIT {
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingQueuedResources("queued-resource-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingQueuedResources("queued-resource-", PROJECT_ID, "europe-west4-a");
   }
 
   @AfterAll
@@ -75,7 +76,7 @@ public class QueuedResourcesIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    DeleteQueuedResource.deleteQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
+    DeleteForceQueuedResource.deleteForceQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
 
     // Test that resources are deleted
     assertThat(stdOut.toString()).contains("Deleted Queued Resource:");
