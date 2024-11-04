@@ -27,7 +27,6 @@ import com.google.common.base.Strings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -72,7 +71,6 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
     stdOut = null;
     System.setOut(out);
-    TimeUnit.MINUTES.sleep(3);
   }
 
   @AfterClass
@@ -102,13 +100,15 @@ public class SecurityHealthAnalyticsCustomModuleTest {
     String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
     ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
         ListSecurityHealthAnalyticsCustomModules.listSecurityHealthAnalyticsCustomModules(parent);
-    for (SecurityHealthAnalyticsCustomModule module : response.iterateAll()) {
+    if (response != null && response.iterateAll().iterator().hasNext()) {
+      for (SecurityHealthAnalyticsCustomModule module : response.iterateAll()) {
 
-      if (module.getDisplayName().startsWith("java_sample_custom_module")) {
-        String customModuleId = extractCustomModuleId(module.getName());
+        if (module.getDisplayName().startsWith("java_sample_custom_module")) {
+          String customModuleId = extractCustomModuleId(module.getName());
 
-        // deletes the custom module
-        deleteCustomModule(parent, customModuleId);
+          // deletes the custom module
+          deleteCustomModule(parent, customModuleId);
+        }
       }
     }
   }
