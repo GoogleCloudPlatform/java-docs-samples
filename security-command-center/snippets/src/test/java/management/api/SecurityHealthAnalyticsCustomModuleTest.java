@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPage;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
@@ -103,12 +104,10 @@ public class SecurityHealthAnalyticsCustomModuleTest {
     try {
       ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
           ListSecurityHealthAnalyticsCustomModules.listSecurityHealthAnalyticsCustomModules(parent);
-      if (response != null && response.iterateAll().iterator().hasNext()) {
-        for (SecurityHealthAnalyticsCustomModule module : response.iterateAll()) {
-
+      for (ListSecurityHealthAnalyticsCustomModulesPage page : response.iteratePages()) {
+        for (SecurityHealthAnalyticsCustomModule module : page.getValues()) {
           if (module.getDisplayName().startsWith("java_sample_custom_module")) {
             String customModuleId = extractCustomModuleId(module.getName());
-
             // deletes the custom module
             deleteCustomModule(parent, customModuleId);
           }
