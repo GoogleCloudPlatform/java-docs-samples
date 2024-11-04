@@ -47,6 +47,9 @@ public class Quickstart {
     quickstart(projectId, location);
   }
 
+  // Method to demonstrate lifecycle of different Dataplex resources and their interactions.
+  // Method creates Aspect Type, Entry Type, Entry Group and Entry, retrieves Entry
+  // and cleans up created resources.
   public static void quickstart(String projectId, String location) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
