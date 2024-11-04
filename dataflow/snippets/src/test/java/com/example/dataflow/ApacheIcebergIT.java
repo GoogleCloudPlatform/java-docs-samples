@@ -59,8 +59,8 @@ public class ApacheIcebergIT {
   private Catalog catalog;
   private static final String CATALOG_NAME = "local";
 
-  String OUTPUT_FILE_NAME_PREFIX = UUID.randomUUID().toString();
-  String OUTPUT_FILE_NAME = OUTPUT_FILE_NAME_PREFIX + "-00000-of-00001.txt";
+  String outputFileNamePrefix = UUID.randomUUID().toString();
+  String outputFileName = outputFileNamePrefix + "-00000-of-00001.txt";
 
   private Table createIcebergTable(String name) {
 
@@ -129,13 +129,13 @@ public class ApacheIcebergIT {
 
   @After
   public void tearDown() throws IOException {
-    Files.deleteIfExists(Paths.get(OUTPUT_FILE_NAME));
+    Files.deleteIfExists(Paths.get(outputFileName));
   }
 
   @Test
   public void testApacheIcebergWrite() {
     String tableName = "write_table";
-    Table table = createIcebergTable("write_table");
+    final Table table = createIcebergTable("write_table");
 
     // Run the Dataflow pipeline.
     ApacheIcebergWrite.main(
@@ -147,15 +147,15 @@ public class ApacheIcebergIT {
         });
 
     // Verify that the pipeline wrote records to the table.
-    assertTrue(tableContainsRecord(table,"0, Alice"));
-    assertTrue(tableContainsRecord(table,"1, Bob"));
-    assertTrue(tableContainsRecord(table,"2, Charles"));
+    assertTrue(tableContainsRecord(table, "0, Alice"));
+    assertTrue(tableContainsRecord(table, "1, Bob"));
+    assertTrue(tableContainsRecord(table, "2, Charles"));
   }
 
   @Test
   public void testApacheIcebergDynamicDestinations() {
-    Table tableORD = createIcebergTable("flights-ORD");
-    Table tableSYD = createIcebergTable("flights-SYD");
+    final Table tableORD = createIcebergTable("flights-ORD");
+    final Table tableSYD = createIcebergTable("flights-SYD");
 
     // Run the Dataflow pipeline.
     PipelineResult.State state = ApacheIcebergDynamicDestinations.main(
@@ -175,7 +175,7 @@ public class ApacheIcebergIT {
   @Test
   public void testApacheIcebergRead() throws IOException {
     String tableName = "read_table";
-    Table table = createIcebergTable(tableName);
+    final Table table = createIcebergTable(tableName);
 
     // Seed the Apache Iceberg table with data.
     writeTableRecord(table);
@@ -187,11 +187,11 @@ public class ApacheIcebergIT {
             "--warehouseLocation=" + warehouseLocation,
             "--catalogName=" + CATALOG_NAME,
             "--tableName=" + tableName,
-            "--outputPath=" + OUTPUT_FILE_NAME_PREFIX
+            "--outputPath=" + outputFileNamePrefix
         });
 
     // Verify the pipeline wrote the table data to a text file.
-    String output = Files.readString(Paths.get(OUTPUT_FILE_NAME));
+    String output = Files.readString(Paths.get(outputFileName));
     assertTrue(output.contains("0:Person-0"));
   }
 }
