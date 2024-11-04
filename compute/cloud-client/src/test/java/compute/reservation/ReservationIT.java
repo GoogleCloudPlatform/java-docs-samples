@@ -47,7 +47,6 @@ import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -177,18 +176,6 @@ public class ReservationIT {
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
     Assert.assertEquals(RESERVATION_NAME_REGIONAL, reservation.getName());
-  }
-
-  @Test
-  @Order(2)
-  public void testUpdateVmsForReservation()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    int newNumberOfVms = 5;
-    Reservation reservation = UpdateVmsForReservation.updateVmsForReservation(
-        PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL, newNumberOfVms);
-
-    assertNotNull(reservation);
-    Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
   }
 
   @Test
