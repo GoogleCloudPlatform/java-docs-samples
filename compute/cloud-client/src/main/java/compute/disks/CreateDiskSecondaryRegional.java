@@ -53,7 +53,7 @@ public class CreateDiskSecondaryRegional {
 
   // Creates a secondary disk in a specified region with the source disk information.
   public static Disk createDiskSecondaryRegional(String projectId, String secondaryDiskName,
-                                                 String disksRegion, long diskSizeGb, String primaryDiskName, String diskType)
+       String disksRegion, long diskSizeGb, String primaryDiskName, String diskType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // An iterable collection of zone names in which you want to keep
     // the new disks' replicas. One of the replica zones of the clone must match
