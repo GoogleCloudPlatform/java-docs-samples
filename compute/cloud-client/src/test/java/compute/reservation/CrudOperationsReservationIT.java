@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Reservation;
-import compute.Util;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +41,7 @@ import org.junit.runners.JUnit4;
 @Timeout(value = 6, unit = TimeUnit.MINUTES)
 public class CrudOperationsReservationIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-c";
+  private static final String ZONE = "us-central1-a";
   private static final String RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
 
@@ -57,9 +56,6 @@ public class CrudOperationsReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    Util.cleanUpExistingReservations("test-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-", PROJECT_ID, "us-central1-a");
-    Util.cleanUpExistingReservations("test-", PROJECT_ID, "us-central1-b");
 
     CreateReservation.createReservation(PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
   }
@@ -97,7 +93,7 @@ public class CrudOperationsReservationIT {
   @Test
   public void testUpdateVmsForReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    int newNumberOfVms = 2;
+    int newNumberOfVms = 1;
     Reservation reservation = UpdateVmsForReservation.updateVmsForReservation(
         PROJECT_ID, ZONE, RESERVATION_NAME, newNumberOfVms);
 
