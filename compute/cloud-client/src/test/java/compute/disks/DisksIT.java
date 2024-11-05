@@ -72,7 +72,7 @@ public class DisksIT {
   private static String DISK_TYPE;
   private static String ZONAL_BLANK_DISK;
   private static String REGIONAL_BLANK_DISK;
-  private static String SECONDARY_REGIONAL_DISK_NAME;
+  private static String SECONDARY_REGIONAL_DISK;
   private static List<String> replicaZones;
   private static final long DISK_SIZE = 10;
   private ByteArrayOutputStream stdOut;
@@ -102,7 +102,7 @@ public class DisksIT {
     DISK_TYPE = String.format("zones/%s/diskTypes/pd-ssd", ZONE);
     ZONAL_BLANK_DISK = "gcloud-test-disk-zattach-" + uuid;
     REGIONAL_BLANK_DISK = "gcloud-test-disk-rattach-" + uuid;
-    SECONDARY_REGIONAL_DISK_NAME = "gcloud-test-disk-secondary-regional" + uuid;
+    SECONDARY_REGIONAL_DISK = "gcloud-test-disk-secondary-regional-" + uuid;
     replicaZones = Arrays.asList(
         String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
         String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
@@ -175,7 +175,6 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
-    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, SECONDARY_REGIONAL_DISK_NAME);
 
     stdOut.close();
     System.setOut(out);
@@ -311,14 +310,12 @@ public class DisksIT {
     String diskType =  String.format(
         "projects/%s/regions/%s/diskTypes/pd-balanced", PROJECT_ID, REGION);
     Disk disk = CreateDiskSecondaryRegional.createDiskSecondaryRegional(
-        PROJECT_ID, SECONDARY_REGIONAL_DISK_NAME, REGION,
-        DISK_SIZE, REGIONAL_BLANK_DISK, diskType);
-
+        PROJECT_ID, REGIONAL_BLANK_DISK, SECONDARY_REGIONAL_DISK, REGION,
+        "us-central1", DISK_SIZE,  diskType);
     // Verify that the secondary disk was created.
     assertNotNull(disk);
-    assertThat(disk.getSizeGb()).isEqualTo(DISK_SIZE);
-    assertThat(disk.getSourceDisk()).isEqualTo(
-        String.format("https://www.googleapis.com/compute/v1/projects/%s/regions/%s/disks/%s",
-            PROJECT_ID, REGION, REGIONAL_BLANK_DISK));
+    assertThat(disk.getAsyncPrimaryDisk().getDisk().contains(REGIONAL_BLANK_DISK));
+
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, "us-central1", SECONDARY_REGIONAL_DISK);
   }
 }
