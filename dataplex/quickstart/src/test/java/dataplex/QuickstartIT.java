@@ -77,7 +77,10 @@ public class QuickstartIT {
                 "Step 5: Retrieved entry -> projects/%s/locations/%s/entryGroups"
                     + "/dataplex-quickstart-entry-group/entries/dataplex-quickstart-entry",
                 PROJECT_ID, LOCATION),
-            "Step 6: Successfully cleaned up resources");
+            // Step 6 - result from Search
+            "locations/us-central1/entryGroups/dataplex-quickstart-entry-group"
+                + "/entries/dataplex-quickstart-entry",
+            "Step 7: Successfully cleaned up resources");
 
     Quickstart.quickstart(PROJECT_ID, LOCATION);
     String output = bout.toString();

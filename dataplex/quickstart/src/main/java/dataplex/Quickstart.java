@@ -29,12 +29,15 @@ import com.google.cloud.dataplex.v1.EntryType;
 import com.google.cloud.dataplex.v1.EntryView;
 import com.google.cloud.dataplex.v1.GetEntryRequest;
 import com.google.cloud.dataplex.v1.LocationName;
+import com.google.cloud.dataplex.v1.SearchEntriesRequest;
+import com.google.cloud.dataplex.v1.SearchEntriesResult;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 public class Quickstart {
 
@@ -195,7 +198,27 @@ public class Quickstart {
                             .getStringValue());
               });
 
-      // 6) Clean created resources
+      // 6) Use Search capabilities to find Entry
+      // Wait 30 second to allow resources to propagate to Search
+      System.out.println("Step 6: Waiting for resources to propagate to Search...");
+      Thread.sleep(30000);
+      SearchEntriesRequest searchEntriesRequest =
+          SearchEntriesRequest.newBuilder()
+              .setName(globalLocationName.toString())
+              .setQuery("name:dataplex-quickstart-entry")
+              .build();
+      CatalogServiceClient.SearchEntriesPagedResponse searchEntriesResponse =
+          client.searchEntries(searchEntriesRequest);
+      List<Entry> entriesFromSearch =
+          searchEntriesResponse.getPage().getResponse().getResultsList().stream()
+              .map(SearchEntriesResult::getDataplexEntry)
+              .collect(Collectors.toList());
+      System.out.println("Entries found in Search:");
+      // Please note in log outputs that Entry Group and Entry Type are also represented as Entries
+      entriesFromSearch.forEach(
+          entryFromSearch -> System.out.println(" * " + entryFromSearch.getName()));
+
+      // 7) Clean created resources
       client
           .deleteEntryGroupAsync(
               String.format(
@@ -209,7 +232,7 @@ public class Quickstart {
           .deleteAspectTypeAsync(
               String.format("projects/%s/locations/global/aspectTypes/%s", projectId, aspectTypeId))
           .get();
-      System.out.println("Step 6: Successfully cleaned up resources");
+      System.out.println("Step 7: Successfully cleaned up resources");
 
     } catch (IOException | InterruptedException | ExecutionException e) {
       System.err.println("Error during quickstart execution: " + e);
