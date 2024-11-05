@@ -28,6 +28,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import compute.Util;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -56,6 +58,9 @@ public class CrudOperationsReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    Util.cleanUpExistingReservations("test-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-", PROJECT_ID, "us-central1-a");
+    Util.cleanUpExistingReservations("test-", PROJECT_ID, "us-central1-b");
 
     CreateReservation.createReservation(PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
   }
