@@ -20,7 +20,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPage;
+import com.google.cloud.securitycentermanagement.v1.ListSecurityHealthAnalyticsCustomModulesRequest;
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
@@ -99,23 +100,26 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
   // cleanupExistingCustomModules clean up all the existing custom module
   public static void cleanupExistingCustomModules() throws IOException {
-
     String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
-    try {
+
+    try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
+
+      // create the request
+      ListSecurityHealthAnalyticsCustomModulesRequest request =
+          ListSecurityHealthAnalyticsCustomModulesRequest.newBuilder().setParent(parent).build();
+
+      // calls the API
       ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
-          ListSecurityHealthAnalyticsCustomModules.listSecurityHealthAnalyticsCustomModules(parent);
-      for (ListSecurityHealthAnalyticsCustomModulesPage page : response.iteratePages()) {
-        for (SecurityHealthAnalyticsCustomModule module : page.getValues()) {
-          if (module.getDisplayName().startsWith("java_sample_custom_module")) {
-            String customModuleId = extractCustomModuleId(module.getName());
-            // deletes the custom module
-            deleteCustomModule(parent, customModuleId);
-          }
+          client.listSecurityHealthAnalyticsCustomModules(request);
+
+      // Iterate over the response and delete custom module one by one which start with
+      // java_sample_custom_module
+      for (SecurityHealthAnalyticsCustomModule module : response.iterateAll()) {
+        if (module.getDisplayName().startsWith("java_sample_custom_module")) {
+          String customModuleId = extractCustomModuleId(module.getName());
+          deleteCustomModule(parent, customModuleId);
         }
       }
-    } catch (Exception e) {
-      System.err.println("Error during list iteration: " + e.getMessage());
-      e.printStackTrace();
     }
   }
 
