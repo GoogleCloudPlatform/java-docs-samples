@@ -84,10 +84,10 @@ public class CreateDiskSecondaryRegional {
       Disk disk = Disk.newBuilder()
           .addAllReplicaZones(replicaZones)
           .setName(secondaryDiskName)
-              .setSizeGb(diskSizeGb)
-              .setType(diskType)
-              .setRegion(secondaryDiskRegion)
-              .setAsyncPrimaryDisk(asyncReplication)
+          .setSizeGb(diskSizeGb)
+          .setType(diskType)
+          .setRegion(secondaryDiskRegion)
+          .setAsyncPrimaryDisk(asyncReplication)
           .build();
 
       // Wait for the create disk operation to complete.
