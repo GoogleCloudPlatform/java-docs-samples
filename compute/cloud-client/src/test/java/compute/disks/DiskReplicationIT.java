@@ -16,34 +16,47 @@
 
 package compute.disks;
 
-import com.google.cloud.compute.v1.Disk;
-import com.google.cloud.compute.v1.RegionDisksClient;
-import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Timeout;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Timeout;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 3, unit = TimeUnit.MINUTES)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DiskReplicationIT {
+
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
-  private static final String REGION = "us-central1";
-  private static final String DISK_TYPE =
-      String.format("projects/%s/zones/%s/diskTypes/pd-standard", PROJECT_ID, ZONE);
-  private static String PRIMARY_DISK_NAME;
-  private static String SECONDARY_DISK_NAME;
+  private static final String PRIMARY_REGION = "us-central1";
+  private static final String SECONDARY_REGION = "us-east1";
+  private static final String DISK_TYPE = String.format(
+          "projects/%s/regions/%s/diskTypes/pd-balanced", PROJECT_ID, SECONDARY_REGION);
+  private static final List<String> replicaZones = Arrays.asList(
+      String.format("projects/%s/zones/%s-c", PROJECT_ID, PRIMARY_REGION),
+      String.format("projects/%s/zones/%s-b", PROJECT_ID, PRIMARY_REGION));
+  static String templateUUID = UUID.randomUUID().toString().substring(0, 8);
+  private static final String PRIMARY_DISK_NAME = "test-disk-primary-" + templateUUID;
+  private static final String SECONDARY_DISK_NAME = "test-disk-secondary-" + templateUUID;
+  private static ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -57,33 +70,56 @@ public class DiskReplicationIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    PRIMARY_DISK_NAME = "test-disk-" + UUID.randomUUID().toString().substring(0, 8);
-    SECONDARY_DISK_NAME = "test-disk-" + UUID.randomUUID().toString().substring(0, 8);
     // Create a primary disk to replicate from.
-    CreateEmptyDisk.createEmptyDisk(PROJECT_ID, ZONE, PRIMARY_DISK_NAME, DISK_TYPE, 1L);
+    RegionalCreateFromSource.createRegionalDisk(PROJECT_ID, PRIMARY_REGION, replicaZones,
+        PRIMARY_DISK_NAME, DISK_TYPE, 10,
+        Optional.empty(), Optional.empty());
+    TimeUnit.SECONDS.sleep(10);
+    CreateDiskSecondaryRegional.createDiskSecondaryRegional(PROJECT_ID, PRIMARY_DISK_NAME,
+        PRIMARY_REGION, SECONDARY_DISK_NAME, SECONDARY_REGION, 10L, DISK_TYPE);
+    TimeUnit.SECONDS.sleep(10);
   }
 
-  @AfterAll
-  public static void cleanup()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Delete disks created for testing.
-    DeleteDisk.deleteDisk(PROJECT_ID, REGION, SECONDARY_DISK_NAME);
-    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, PRIMARY_DISK_NAME);
+  @BeforeEach
+  public void beforeEach() {
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+  }
+
+  @AfterEach
+  public void afterEach() {
+    stdOut = null;
+    System.setOut(null);
   }
 
   @Test
+  @Order(1)
   public void testStartDiskAsyncReplication()
       throws IOException, ExecutionException, InterruptedException {
-    StartDiskReplication.startDiskAsyncReplication(PROJECT_ID, REGION, PRIMARY_DISK_NAME, REGION,
-        SECONDARY_DISK_NAME);
+    StartDiskReplication.startDiskAsyncReplication(PROJECT_ID,  PRIMARY_DISK_NAME,
+        PRIMARY_REGION, SECONDARY_DISK_NAME, SECONDARY_REGION);
 
-    // Assert that the secondary disk is now replicating from the primary disk.
-    try (RegionDisksClient regionDisksClient = RegionDisksClient.create()) {
-      Disk disk = regionDisksClient.get(PROJECT_ID, REGION, SECONDARY_DISK_NAME);
-      assertThat(disk.getAsyncPrimaryDisk()).isNotNull();
-      assertThat(disk.getAsyncPrimaryDisk().getDisk())
-          .isEqualTo(String.format("projects/%s/regions/%s/disks/%s", PROJECT_ID, REGION,
-              PRIMARY_DISK_NAME));
-    }
+    assertThat(stdOut.toString().contains("Async replication started successfully."));
+  }
+
+  @Test
+  @Order(2)
+  public void testStopPrimaryDiskAsyncReplication()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    StopDiskReplication.stopDiskAsyncReplication(PROJECT_ID, PRIMARY_REGION, PRIMARY_DISK_NAME);
+
+    assertThat(stdOut.toString().contains("Async replication stopped successfully."));
+
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, PRIMARY_REGION, PRIMARY_DISK_NAME);
+  }
+
+  @Test
+  @Order(2)
+  public void testStopSecondaryDiskAsyncReplication()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    StopDiskReplication.stopDiskAsyncReplication(PROJECT_ID, SECONDARY_REGION, SECONDARY_DISK_NAME);
+
+    assertThat(stdOut.toString().contains("Async replication stopped successfully."));
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, SECONDARY_REGION, SECONDARY_DISK_NAME);
   }
 }

@@ -22,14 +22,14 @@ import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-public class StopDiskAsyncReplication {
+public class StopDiskReplication {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // The project that contains the primary disk.
     String projectId = "YOUR_PROJECT_ID";
-    // Name of the zone in which your secondary disk is located.
+    // Name of the region in which your secondary disk is located.
     String secondaryDiskRegion = "us-east1";
     // Name of the secondary disk.
     String secondaryDiskName = "SECONDARY_DISK_NAME";

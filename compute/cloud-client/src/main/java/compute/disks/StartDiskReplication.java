@@ -34,20 +34,20 @@ public class StartDiskReplication {
     String primaryDiskName = "PRIMARY_DISK_NAME";
     // Name of the secondary disk.
     String secondaryDiskName = "SECONDARY_DISK_NAME";
-    // Name of the zone in which your primary disk is located.
+    // Name of the region in which your primary disk is located.
     // Learn more about zones and regions:
     // https://cloud.google.com/compute/docs/disks/async-pd/about#supported_region_pairs
-    String primaryDiskRegion = "us-central1";
-    // Name of the zone in which your secondary disk is located.
-    String secondaryDiskRegion = "us-east1";
+    String primaryDiskRegion = "us-central1-a";
+    // Name of the region in which your secondary disk is located.
+    String secondaryDiskRegion = "us-east1-c";
 
-    startDiskAsyncReplication(projectId, primaryDiskRegion,
-        primaryDiskName, secondaryDiskRegion, secondaryDiskName);
+    startDiskAsyncReplication(projectId, primaryDiskName, primaryDiskRegion,
+        secondaryDiskName, secondaryDiskRegion);
   }
 
   // Starts asynchronous replication for the specified disk.
-  public static void startDiskAsyncReplication(String projectId, String primaryDiskRegion,
-      String primaryDiskName, String secondaryDiskRegion, String secondaryDiskName)
+  public static void startDiskAsyncReplication(String projectId, String primaryDiskName,
+      String primaryDiskRegion, String secondaryDiskName, String secondaryDiskRegion)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
