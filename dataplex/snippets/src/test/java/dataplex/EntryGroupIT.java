@@ -30,7 +30,7 @@ import org.junit.Test;
 public class EntryGroupIT {
   private static final String ID = UUID.randomUUID().toString().substring(0, 8);
   private static final String LOCATION = "us-central1";
-  private static final String entryGroupId = "test-entry-group" + ID;
+  private static final String entryGroupId = "test-entry-group-" + ID;
   private static String expectedEntryGroup;
 
   private static final String PROJECT_ID = requireProjectIdEnvVar();
@@ -77,7 +77,8 @@ public class EntryGroupIT {
 
   @Test
   public void testCreateEntryGroup() throws Exception {
-    String entryGroupIdToCreate = "test-entry-group" + UUID.randomUUID().toString().substring(0, 8);
+    String entryGroupIdToCreate =
+        "test-entry-group-" + UUID.randomUUID().toString().substring(0, 8);
     String expectedEntryGroupToCreate =
         String.format(
             "projects/%s/locations/%s/entryGroups/%s", PROJECT_ID, LOCATION, entryGroupIdToCreate);
@@ -92,7 +93,8 @@ public class EntryGroupIT {
 
   @Test
   public void testDeleteEntryGroup() throws Exception {
-    String entryGroupIdToDelete = "test-entry-group" + UUID.randomUUID().toString().substring(0, 8);
+    String entryGroupIdToDelete =
+        "test-entry-group-" + UUID.randomUUID().toString().substring(0, 8);
     // Create Entry Group to be deleted
     CreateEntryGroup.createEntryGroup(PROJECT_ID, LOCATION, entryGroupIdToDelete);
 
