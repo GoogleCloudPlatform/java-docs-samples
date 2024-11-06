@@ -74,7 +74,7 @@ public class DisksIT {
   private static String REGIONAL_BLANK_DISK;
   private static String SECONDARY_REGIONAL_DISK;
   private static List<String> replicaZones;
-  private static final long DISK_SIZE = 10;
+  private static final long DISK_SIZE = 10L;
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.

@@ -47,7 +47,7 @@ public class CreateDiskSecondaryRegional {
     // Size of the new disk in gigabytes.
     // Learn more about disk requirements:
     // https://cloud.google.com/compute/docs/disks/async-pd/configure?authuser=0#disk_requirements
-    long diskSizeGb = 30;
+    long diskSizeGb = 30L;
     // The type of the disk you want to create. This value uses the following format:
     // "projects/{projectId}/zones/{zone}/diskTypes/
     // (pd-standard|pd-ssd|pd-balanced|pd-extreme)".
