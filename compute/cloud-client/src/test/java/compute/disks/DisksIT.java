@@ -73,7 +73,7 @@ public class DisksIT {
   private static String ZONAL_BLANK_DISK;
   private static String REGIONAL_BLANK_DISK;
   private static String SECONDARY_DISK_CUSTOM;
-  private static final long DISK_SIZE = 10;
+  private static final long DISK_SIZE = 10L;
 
   private ByteArrayOutputStream stdOut;
 
