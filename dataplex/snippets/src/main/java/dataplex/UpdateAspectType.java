@@ -23,7 +23,6 @@ import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import com.google.protobuf.FieldMask;
 import java.util.List;
 
-// Sample to update Aspect Type
 public class UpdateAspectType {
 
   public static void main(String[] args) throws Exception {
@@ -60,39 +59,37 @@ public class UpdateAspectType {
     System.out.println("Successfully updated aspect type: " + updatedAspectType.getName());
   }
 
+  // Method to update Aspect Type located in projectId, location and with aspectTypeId and
+  // aspectFields specifying schema of the Aspect Type
   public static AspectType updateAspectType(
       String projectId,
       String location,
       String aspectTypeId,
       List<AspectType.MetadataTemplate> aspectFields)
       throws Exception {
-    AspectType aspectType =
-        AspectType.newBuilder()
-            .setName(AspectTypeName.of(projectId, location, aspectTypeId).toString())
-            .setDescription("updated description of the aspect type")
-            .setMetadataTemplate(
-                AspectType.MetadataTemplate.newBuilder()
-                    // Because Record Fields is an array, it needs to be fully replaced.
-                    // It is because you do not have a way to specify array elements in update mask.
-                    .addAllRecordFields(aspectFields)
-                    .build())
-            .build();
-
-    // Update mask specifies which fields will be updated.
-    // If empty mask is given, all modifiable fields from the request will be used for update.
-    // If update mask is specified as "*" it is treated as full update,
-    // that means fields not present in the request will be emptied.
-    FieldMask updateMask =
-        FieldMask.newBuilder()
-            .addPaths("description")
-            .addPaths("metadata_template.record_fields")
-            .build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      AspectType aspectType =
+          AspectType.newBuilder()
+              .setName(AspectTypeName.of(projectId, location, aspectTypeId).toString())
+              .setDescription("updated description of the aspect type")
+              .setMetadataTemplate(
+                  AspectType.MetadataTemplate.newBuilder()
+                      // Because Record Fields is an array, it needs to be fully replaced.
+                      // It is because you do not have a way to specify array elements in update
+                      // mask.
+                      .addAllRecordFields(aspectFields)
+                      .build())
+              .build();
+
+      // Update mask specifies which fields will be updated.
+      // For more information on update masks, see: https://google.aip.dev/161
+      FieldMask updateMask =
+          FieldMask.newBuilder()
+              .addPaths("description")
+              .addPaths("metadata_template.record_fields")
+              .build();
       return client.updateAspectTypeAsync(aspectType, updateMask).get();
     }
   }
