@@ -43,7 +43,7 @@ public class CreateDiskSecondary {
     // Name of the zone in which you want to create the secondary disk.
     String secondaryDiskZone = "us-east1-c";
     // Size of the new disk in gigabytes.
-    long diskSizeGb = 100;
+    long diskSizeGb = 10L;
     // The type of the disk you want to create. This value uses the following format:
     // "projects/{projectId}/zones/{zone}/diskTypes/
     // (pd-standard|pd-ssd|pd-balanced|pd-extreme)".
