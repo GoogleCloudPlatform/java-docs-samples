@@ -59,6 +59,7 @@ public class QueuedResourceIT {
 
   @Test
   public void testCreateQueuedResourceWithSpecifiedNetwork() throws Exception {
+
     QueuedResource queuedResource = CreateQueuedResourceWithNetwork.createQueuedResourceWithNetwork(
         PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME, NODE_NAME,
         TPU_TYPE, TPU_SOFTWARE_VERSION, NETWORK_NAME);

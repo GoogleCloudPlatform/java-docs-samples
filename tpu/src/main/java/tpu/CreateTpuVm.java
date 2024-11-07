@@ -90,9 +90,7 @@ public class CreateTpuVm {
               .setNode(tpuVm)
               .build();
 
-      Node response = tpuClient.createNodeAsync(request).get();
-      System.out.printf("TPU VM created: %s\n", response.getName());
-      return response;
+      return tpuClient.createNodeAsync(request).get();
     }
   }
 }
