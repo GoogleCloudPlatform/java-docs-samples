@@ -127,6 +127,7 @@ public class CreateQueuedResourceWithNetwork {
               .setQueuedResource(queuedResource)
               .setQueuedResourceId(queuedResourceId)
               .build();
+
       // You can wait until TPU Node is READY,
       // and check its status using getTpuVm() from "tpu_vm_get" sample.
 

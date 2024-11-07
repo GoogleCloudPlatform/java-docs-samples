@@ -20,7 +20,6 @@ package dataplex;
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import com.google.cloud.dataplex.v1.EntryTypeName;
 
-// Sample to delete Entry Type
 public class DeleteEntryType {
 
   public static void main(String[] args) throws Exception {
@@ -34,15 +33,13 @@ public class DeleteEntryType {
     System.out.println("Successfully deleted entry type");
   }
 
+  // Method to delete Entry Type located in projectId, location and with entryTypeId
   public static void deleteEntryType(String projectId, String location, String entryTypeId)
       throws Exception {
-    EntryTypeName entryTypeName = EntryTypeName.of(projectId, location, entryTypeId);
-
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      EntryTypeName entryTypeName = EntryTypeName.of(projectId, location, entryTypeId);
       client.deleteEntryTypeAsync(entryTypeName).get();
     }
   }
