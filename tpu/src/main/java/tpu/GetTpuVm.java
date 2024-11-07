@@ -46,6 +46,7 @@ public class GetTpuVm {
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create()) {
       String name = NodeName.of(projectId, zone, nodeName).toString();
+
       GetNodeRequest request = GetNodeRequest.newBuilder().setName(name).build();
 
       return tpuClient.getNode(request);
