@@ -70,8 +70,11 @@ public class HyperdisksIT {
     // Delete all disks created for testing.
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
-
     Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
+
+    // Cleanup stale resources.
+    Util.cleanUpExistingDisks("test-hyperdisk-enc", PROJECT_ID, ZONE);
+    Util.cleanUpExistingStoragePool("test-storage-pool-enc", PROJECT_ID, ZONE);
   }
 
   @Test
