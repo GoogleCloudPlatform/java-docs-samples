@@ -22,7 +22,6 @@ import com.google.cloud.dataplex.v1.EntryType;
 import com.google.cloud.dataplex.v1.EntryTypeName;
 import java.io.IOException;
 
-// Sample to get Entry Type
 public class GetEntryType {
 
   public static void main(String[] args) throws IOException {
@@ -36,15 +35,13 @@ public class GetEntryType {
     System.out.println("Entry type retrieved successfully: " + entryType.getName());
   }
 
+  // Method to retrieve Entry Type located in projectId, location and with entryTypeId
   public static EntryType getEntryType(String projectId, String location, String entryTypeId)
       throws IOException {
-    EntryTypeName entryTypeName = EntryTypeName.of(projectId, location, entryTypeId);
-
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      EntryTypeName entryTypeName = EntryTypeName.of(projectId, location, entryTypeId);
       return client.getEntryType(entryTypeName);
     }
   }
