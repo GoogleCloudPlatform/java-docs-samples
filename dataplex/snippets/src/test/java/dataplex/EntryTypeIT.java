@@ -30,7 +30,7 @@ import org.junit.Test;
 public class EntryTypeIT {
   private static final String ID = UUID.randomUUID().toString().substring(0, 8);
   private static final String LOCATION = "us-central1";
-  private static final String entryTypeId = "test-entry-type" + ID;
+  private static final String entryTypeId = "test-entry-type-" + ID;
   private static String expectedEntryType;
 
   private static final String PROJECT_ID = requireProjectIdEnvVar();
@@ -48,6 +48,7 @@ public class EntryTypeIT {
   }
 
   @BeforeClass
+  // Set-up code that will be executed before all tests
   public static void setUp() throws Exception {
     expectedEntryType =
         String.format("projects/%s/locations/%s/entryTypes/%s", PROJECT_ID, LOCATION, entryTypeId);
@@ -75,7 +76,7 @@ public class EntryTypeIT {
 
   @Test
   public void testCreateEntryType() throws Exception {
-    String entryTypeIdToCreate = "test-entry-type" + UUID.randomUUID().toString().substring(0, 8);
+    String entryTypeIdToCreate = "test-entry-type-" + UUID.randomUUID().toString().substring(0, 8);
     String expectedEntryTypeToCreate =
         String.format(
             "projects/%s/locations/%s/entryTypes/%s", PROJECT_ID, LOCATION, entryTypeIdToCreate);
@@ -90,8 +91,8 @@ public class EntryTypeIT {
 
   @Test
   public void testDeleteEntryType() throws Exception {
-    String entryTypeIdToDelete = "test-entry-type" + UUID.randomUUID().toString().substring(0, 8);
-    // Create Entry Group to be deleted
+    String entryTypeIdToDelete = "test-entry-type-" + UUID.randomUUID().toString().substring(0, 8);
+    // Create Entry Type to be deleted
     CreateEntryType.createEntryType(PROJECT_ID, LOCATION, entryTypeIdToDelete);
 
     // No exception means successful call.
@@ -99,8 +100,9 @@ public class EntryTypeIT {
   }
 
   @AfterClass
+  // Clean-up code that will be executed after all tests
   public static void tearDown() throws Exception {
-    // Clean-up Entry Group resource created in setUp()
+    // Clean-up Entry Type resource created in setUp()
     DeleteEntryType.deleteEntryType(PROJECT_ID, LOCATION, entryTypeId);
   }
 }
