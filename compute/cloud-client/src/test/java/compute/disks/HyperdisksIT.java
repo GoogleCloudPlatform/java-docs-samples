@@ -72,6 +72,8 @@ public class HyperdisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
 
     Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
+    Util.cleanUpExistingStoragePool("test-storage-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
   }
 
   @Test

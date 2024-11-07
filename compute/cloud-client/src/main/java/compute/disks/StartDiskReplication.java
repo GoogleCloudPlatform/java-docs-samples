@@ -37,9 +37,9 @@ public class StartDiskReplication {
     // Name of the region in which your primary disk is located.
     // Learn more about zones and regions:
     // https://cloud.google.com/compute/docs/disks/async-pd/about#supported_region_pairs
-    String primaryDiskRegion = "us-central1-a";
+    String primaryDiskRegion = "us-central1";
     // Name of the region in which your secondary disk is located.
-    String secondaryDiskRegion = "us-east1-c";
+    String secondaryDiskRegion = "us-east1";
 
     startDiskAsyncReplication(projectId, primaryDiskName, primaryDiskRegion,
         secondaryDiskName, secondaryDiskRegion);
