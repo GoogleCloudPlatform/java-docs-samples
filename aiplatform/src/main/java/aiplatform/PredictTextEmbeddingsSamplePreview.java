@@ -41,7 +41,7 @@ public class PredictTextEmbeddingsSamplePreview {
     // https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings
     String endpoint = "us-central1-aiplatform.googleapis.com";
     String project = "YOUR_PROJECT_ID";
-    String model = "text-embedding-preview-0815";
+    String model = "text-embedding-005";
     // Calculate the embedding for a code retrieval query. Using 'CODE_RETRIEVAL_QUERY' for query.
     predictTextEmbeddings(
         endpoint,

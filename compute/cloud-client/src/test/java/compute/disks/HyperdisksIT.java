@@ -29,25 +29,27 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 40, unit = TimeUnit.MINUTES)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Timeout(value = 6, unit = TimeUnit.MINUTES)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class HyperdisksIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-east1-c";
-  private static String HYPERDISK_NAME;
-  private static String HYPERDISK_IN_POOL_NAME;
-  private static String STORAGE_POOL_NAME;
+  private static final String ZONE = "us-central1-a";
+  private static final String  HYPERDISK_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
+  private static final String  HYPERDISK_IN_POOL_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
+  private static final String STORAGE_POOL_NAME = "test-storage-pool-enc-" + UUID.randomUUID();
+  private static final String PERFORMANCE_PROVISIONING_TYPE = "advanced";
+  private static final String CAPACITY_PROVISIONING_TYPE = "advanced";
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -60,12 +62,6 @@ public class HyperdisksIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    HYPERDISK_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
-    HYPERDISK_IN_POOL_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
-    STORAGE_POOL_NAME = "test-storage-pool-enc-" + UUID.randomUUID();
-
-    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, ZONE);
   }
 
   @AfterAll
@@ -73,13 +69,14 @@ public class HyperdisksIT {
        throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Delete all disks created for testing.
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_NAME);
-    //DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
+    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
 
-    //Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
+    Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
   }
 
   @Test
-  public void stage1_CreateHyperdiskTest()
+  @Order(1)
+  public void testCreateHyperdisk()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType = String.format("zones/%s/diskTypes/hyperdisk-balanced", ZONE);
 
@@ -96,29 +93,33 @@ public class HyperdisksIT {
     Assert.assertTrue(hyperdisk.getZone().contains(ZONE));
   }
 
-  @Disabled
   @Test
-  public void stage1_CreateHyperdiskStoragePoolTest()
+  @Order(1)
+  public void testCreateHyperdiskStoragePool()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String poolType = String.format("projects/%s/zones/%s/storagePoolTypes/hyperdisk-balanced",
         PROJECT_ID, ZONE);
     StoragePool storagePool = CreateHyperdiskStoragePool
          .createHyperdiskStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME, poolType,
-         "advanced", 10240, 10000, 10240);
+             CAPACITY_PROVISIONING_TYPE, 10240, 10000, 1024,
+             PERFORMANCE_PROVISIONING_TYPE);
 
     Assert.assertNotNull(storagePool);
     Assert.assertEquals(STORAGE_POOL_NAME, storagePool.getName());
     Assert.assertEquals(10000, storagePool.getPoolProvisionedIops());
-    Assert.assertEquals(10240, storagePool.getPoolProvisionedThroughput());
+    Assert.assertEquals(1024, storagePool.getPoolProvisionedThroughput());
     Assert.assertEquals(10240, storagePool.getPoolProvisionedCapacityGb());
     Assert.assertTrue(storagePool.getStoragePoolType().contains("hyperdisk-balanced"));
-    Assert.assertTrue(storagePool.getCapacityProvisioningType().equalsIgnoreCase("advanced"));
+    Assert.assertTrue(storagePool.getCapacityProvisioningType()
+        .equalsIgnoreCase(CAPACITY_PROVISIONING_TYPE));
+    Assert.assertTrue(storagePool.getPerformanceProvisioningType()
+        .equalsIgnoreCase(PERFORMANCE_PROVISIONING_TYPE));
     Assert.assertTrue(storagePool.getZone().contains(ZONE));
   }
 
-  @Disabled
   @Test
-  public void stage2_CreateHyperdiskStoragePoolTest()
+  @Order(2)
+  public void testCreateDiskInStoragePool()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType = String.format("zones/%s/diskTypes/hyperdisk-balanced", ZONE);
     String storagePoolLink = String

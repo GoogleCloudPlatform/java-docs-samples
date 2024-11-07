@@ -20,7 +20,6 @@ package dataplex;
 import com.google.cloud.dataplex.v1.AspectTypeName;
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
 
-// Sample to delete Aspect Type
 public class DeleteAspectType {
 
   public static void main(String[] args) throws Exception {
@@ -34,15 +33,13 @@ public class DeleteAspectType {
     System.out.println("Successfully deleted aspect type");
   }
 
+  // Method to delete Aspect Type located in projectId, location and with aspectTypeId
   public static void deleteAspectType(String projectId, String location, String aspectTypeId)
       throws Exception {
-    AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
-
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
       client.deleteAspectTypeAsync(aspectTypeName).get();
     }
   }
