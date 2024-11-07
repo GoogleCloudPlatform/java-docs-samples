@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.util.List;
 
-// Sample to list Aspect Types
 public class ListAspectTypes {
 
   public static void main(String[] args) throws IOException {
@@ -38,15 +37,13 @@ public class ListAspectTypes {
         aspectType -> System.out.println("Aspect type name: " + aspectType.getName()));
   }
 
+  // Method to list Aspect Types located in projectId and location
   public static List<AspectType> listAspectTypes(String projectId, String location)
       throws IOException {
-    LocationName locationName = LocationName.of(projectId, location);
-
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      LocationName locationName = LocationName.of(projectId, location);
       CatalogServiceClient.ListAspectTypesPagedResponse listAspectTypesResponse =
           client.listAspectTypes(locationName);
       // Paging is implicitly handled by .iterateAll(), all results will be returned

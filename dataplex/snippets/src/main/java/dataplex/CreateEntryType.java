@@ -21,7 +21,6 @@ import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import com.google.cloud.dataplex.v1.EntryType;
 import com.google.cloud.dataplex.v1.LocationName;
 
-// Samples to create Entry Type
 public class CreateEntryType {
 
   public static void main(String[] args) throws Exception {
@@ -35,27 +34,26 @@ public class CreateEntryType {
     System.out.println("Successfully created entry type: " + createdEntryType.getName());
   }
 
+  // Method to create Entry Type located in projectId, location and with entryTypeId
   public static EntryType createEntryType(String projectId, String location, String entryTypeId)
       throws Exception {
-    LocationName locationName = LocationName.of(projectId, location);
-    EntryType entryType =
-        EntryType.newBuilder()
-            .setDescription("description of the entry type")
-            // Required aspects will need to be attached to every entry created for this entry type.
-            // You cannot change required aspects for entry type once it is created.
-            .addRequiredAspects(
-                EntryType.AspectInfo.newBuilder()
-                    // Example of system aspect type.
-                    // It is also possible to specify custom aspect type.
-                    .setType("projects/dataplex-types/locations/global/aspectTypes/schema")
-                    .build())
-            .build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      LocationName locationName = LocationName.of(projectId, location);
+      EntryType entryType =
+          EntryType.newBuilder()
+              .setDescription("description of the entry type")
+              // Required aspects will need to be attached to every entry created for this entry
+              // type.
+              // You cannot change required aspects for entry type once it is created.
+              .addRequiredAspects(
+                  EntryType.AspectInfo.newBuilder()
+                      // Example of system aspect type.
+                      // It is also possible to specify custom aspect type.
+                      .setType("projects/dataplex-types/locations/global/aspectTypes/schema")
+                      .build())
+              .build();
       return client.createEntryTypeAsync(locationName, entryType, entryTypeId).get();
     }
   }

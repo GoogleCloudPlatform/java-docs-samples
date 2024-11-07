@@ -22,7 +22,6 @@ import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import com.google.cloud.dataplex.v1.LocationName;
 import java.util.List;
 
-// Sample to create Aspect Type
 public class CreateAspectType {
 
   public static void main(String[] args) throws Exception {
@@ -59,33 +58,32 @@ public class CreateAspectType {
     System.out.println("Successfully created aspect type: " + createdAspectType.getName());
   }
 
+  // Method to create Aspect Type located in projectId, location and with aspectTypeId and
+  // aspectFields specifying schema of the Aspect Type
   public static AspectType createAspectType(
       String projectId,
       String location,
       String aspectTypeId,
       List<AspectType.MetadataTemplate> aspectFields)
       throws Exception {
-    LocationName locationName = LocationName.of(projectId, location);
-    AspectType aspectType =
-        AspectType.newBuilder()
-            .setDescription("description of the aspect type")
-            .setMetadataTemplate(
-                AspectType.MetadataTemplate.newBuilder()
-                    // The name must follow regex ^(([a-zA-Z]{1})([\\w\\-_]{0,62}))$
-                    // That means name must only contain alphanumeric character or dashes or
-                    // underscores, start with an alphabet, and must be less than 63 characters.
-                    .setName("name_of_the_template")
-                    .setType("record")
-                    // Aspect Type fields, that themselves are Metadata Templates
-                    .addAllRecordFields(aspectFields)
-                    .build())
-            .build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      LocationName locationName = LocationName.of(projectId, location);
+      AspectType aspectType =
+          AspectType.newBuilder()
+              .setDescription("description of the aspect type")
+              .setMetadataTemplate(
+                  AspectType.MetadataTemplate.newBuilder()
+                      // The name must follow regex ^(([a-zA-Z]{1})([\\w\\-_]{0,62}))$
+                      // That means name must only contain alphanumeric character or dashes or
+                      // underscores, start with an alphabet, and must be less than 63 characters.
+                      .setName("name_of_the_template")
+                      .setType("record")
+                      // Aspect Type fields, that themselves are Metadata Templates
+                      .addAllRecordFields(aspectFields)
+                      .build())
+              .build();
       return client.createAspectTypeAsync(locationName, aspectType, aspectTypeId).get();
     }
   }
