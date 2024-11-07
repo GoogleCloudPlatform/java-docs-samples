@@ -22,7 +22,6 @@ import com.google.cloud.dataplex.v1.EntryType;
 import com.google.cloud.dataplex.v1.EntryTypeName;
 import com.google.protobuf.FieldMask;
 
-// Sample to update Entry Type
 public class UpdateEntryType {
 
   public static void main(String[] args) throws Exception {
@@ -36,25 +35,21 @@ public class UpdateEntryType {
     System.out.println("Successfully updated entry type: " + updatedEntryType.getName());
   }
 
+  // Method to update Entry Type located in projectId, location and with entryTypeId
   public static EntryType updateEntryType(String projectId, String location, String entryTypeId)
       throws Exception {
-    EntryType entryType =
-        EntryType.newBuilder()
-            .setName(EntryTypeName.of(projectId, location, entryTypeId).toString())
-            .setDescription("updated description of the entry type")
-            .build();
-
-    // Update mask specifies which fields will be updated.
-    // If empty mask is given, all modifiable fields from the request will be used for update.
-    // If update mask is specified as "*" it is treated as full update,
-    // that means fields not present in the request will be emptied.
-    FieldMask updateMask = FieldMask.newBuilder().addPaths("description").build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      EntryType entryType =
+          EntryType.newBuilder()
+              .setName(EntryTypeName.of(projectId, location, entryTypeId).toString())
+              .setDescription("updated description of the entry type")
+              .build();
+
+      // Update mask specifies which fields will be updated.
+      // For more information on update masks, see: https://google.aip.dev/161
+      FieldMask updateMask = FieldMask.newBuilder().addPaths("description").build();
       return client.updateEntryTypeAsync(entryType, updateMask).get();
     }
   }
