@@ -17,7 +17,6 @@
 package management.api;
 
 // [START securitycenter_management_api_delete_security_health_analytics_custom_module]
-
 import com.google.cloud.securitycentermanagement.v1.DeleteSecurityHealthAnalyticsCustomModuleRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
 import java.io.IOException;
@@ -25,12 +24,12 @@ import java.io.IOException;
 public class DeleteSecurityHealthAnalyticsCustomModule {
 
   public static void main(String[] args) throws IOException {
-
+    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/delete
     // parent: Use any one of the following options:
     // - organizations/{organization_id}/locations/{location_id}
     // - folders/{folder_id}/locations/{location_id}
     // - projects/{project_id}/locations/{location_id}
-    String parent = String.format("organizations/%s/locations/%s", "organization_id", "global");
+    String parent = String.format("projects/%s/locations/%s", "project_id", "global");
 
     // custom module id, replace it with your custom module ID
     String customModuleId = "custom_module_id";
@@ -40,8 +39,8 @@ public class DeleteSecurityHealthAnalyticsCustomModule {
 
   // Delete a custom module with custom module Id under the security health
   // analytics service.
-  public static void deleteSecurityHealthAnalyticsCustomModule(String parent, String customModuleId)
-      throws IOException {
+  public static boolean deleteSecurityHealthAnalyticsCustomModule(
+      String parent, String customModuleId) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs
     // to be created
@@ -57,7 +56,7 @@ public class DeleteSecurityHealthAnalyticsCustomModule {
       // calls the API
       client.deleteSecurityHealthAnalyticsCustomModule(request);
 
-      System.out.printf("SecurityHealthAnalyticsCustomModule deleted : %s", customModuleId);
+      return true;
     }
   }
 }

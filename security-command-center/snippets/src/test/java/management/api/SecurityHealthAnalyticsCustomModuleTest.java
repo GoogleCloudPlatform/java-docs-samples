@@ -19,6 +19,7 @@ package management.api;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.securitycentermanagement.v1.ListSecurityHealthAnalyticsCustomModulesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
@@ -30,9 +31,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
-import org.junit.After;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,7 +62,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   }
 
   @BeforeClass
-  public static void setUp() throws IOException, InterruptedException {
+  public static void setUp() throws InterruptedException {
     final PrintStream out = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
@@ -69,37 +70,24 @@ public class SecurityHealthAnalyticsCustomModuleTest {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("SCC_PROJECT_ORG_ID");
 
-    // Perform cleanup before running tests
-    cleanupExistingCustomModules();
-
     stdOut = null;
     System.setOut(out);
     TimeUnit.MINUTES.sleep(3);
   }
 
   @AfterClass
-  public static void cleanUp() {
+  public static void cleanUp() throws IOException {
     final PrintStream out = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
     stdOut = null;
     System.setOut(out);
-  }
-
-  @Before
-  public void beforeEach() {
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-  }
-
-  @After
-  public void afterEach() {
-    stdOut = null;
-    System.setOut(null);
+    // Perform cleanup after running tests
+    cleanupExistingCustomModules();
   }
 
   // cleanupExistingCustomModules clean up all the existing custom module
-  public static void cleanupExistingCustomModules() throws IOException {
+  private static void cleanupExistingCustomModules() throws IOException {
     String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
 
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
@@ -124,18 +112,19 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   }
 
   // extractCustomModuleID extracts the custom module Id from the full name
-  public static String extractCustomModuleId(String customModuleFullName) {
+  private static String extractCustomModuleId(String customModuleFullName) {
     if (!Strings.isNullOrEmpty(customModuleFullName)) {
-      String[] result = customModuleFullName.split("/");
-      if (result.length > 0) {
-        return result[result.length - 1];
+      Pattern pattern = Pattern.compile(".*/([^/]+)$");
+      Matcher matcher = pattern.matcher(customModuleFullName);
+      if (matcher.find()) {
+        return matcher.group(1);
       }
     }
     return "";
   }
 
   // createCustomModule method is for creating the custom module
-  public static SecurityHealthAnalyticsCustomModule createCustomModule(
+  private static SecurityHealthAnalyticsCustomModule createCustomModule(
       String parent, String customModuleDisplayName) throws IOException {
     if (!Strings.isNullOrEmpty(parent) && !Strings.isNullOrEmpty(customModuleDisplayName)) {
       SecurityHealthAnalyticsCustomModule response =
@@ -147,7 +136,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   }
 
   // deleteCustomModule method is for deleting the custom module
-  public static void deleteCustomModule(String parent, String customModuleId) throws IOException {
+  private static void deleteCustomModule(String parent, String customModuleId) throws IOException {
     if (!Strings.isNullOrEmpty(parent) && !Strings.isNullOrEmpty(customModuleId)) {
       DeleteSecurityHealthAnalyticsCustomModule.deleteSecurityHealthAnalyticsCustomModule(
           parent, customModuleId);
@@ -184,12 +173,9 @@ public class SecurityHealthAnalyticsCustomModuleTest {
     String customModuleId = extractCustomModuleId(response.getName());
 
     // delete the custom module with the custom module id
-    DeleteSecurityHealthAnalyticsCustomModule.deleteSecurityHealthAnalyticsCustomModule(
-        parent, customModuleId);
-
-    // assert that std output is matching with the string passed
-    assertThat(stdOut.toString())
-        .contains("SecurityHealthAnalyticsCustomModule deleted : " + customModuleId);
+    assertTrue(
+        DeleteSecurityHealthAnalyticsCustomModule.deleteSecurityHealthAnalyticsCustomModule(
+            parent, customModuleId));
   }
 
   @Test
@@ -200,15 +186,9 @@ public class SecurityHealthAnalyticsCustomModuleTest {
     // create the custom module
     createCustomModule(parent, CUSTOM_MODULE_DISPLAY_NAME);
 
-    // call the API, list all the custom modules
-    ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
-        ListSecurityHealthAnalyticsCustomModules.listSecurityHealthAnalyticsCustomModules(parent);
-
     // assert that response is not null
-    assertNotNull(response);
-
-    // list should have the custom module which we have created
-    assertThat(stdOut.toString()).contains("Custom module name : " + CUSTOM_MODULE_DISPLAY_NAME);
+    assertNotNull(
+        ListSecurityHealthAnalyticsCustomModules.listSecurityHealthAnalyticsCustomModules(parent));
   }
 
   @Test

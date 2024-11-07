@@ -17,7 +17,6 @@
 package management.api;
 
 // [START securitycenter_management_api_get_security_health_analytics_custom_module]
-
 import com.google.cloud.securitycentermanagement.v1.GetSecurityHealthAnalyticsCustomModuleRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
@@ -26,12 +25,12 @@ import java.io.IOException;
 public class GetSecurityHealthAnalyticsCustomModule {
 
   public static void main(String[] args) throws IOException {
-
+    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/get
     // parent: Use any one of the following options:
     // - organizations/{organization_id}/locations/{location_id}
     // - folders/{folder_id}/locations/{location_id}
     // - projects/{project_id}/locations/{location_id}
-    String parent = String.format("organizations/%s/locations/%s", "organization_id", "global");
+    String parent = String.format("projects/%s/locations/%s", "project_id", "global");
 
     // custom module id, replace it with your custom module ID
     String customModuleId = "custom_module_id";
@@ -58,9 +57,6 @@ public class GetSecurityHealthAnalyticsCustomModule {
       // calls the API
       SecurityHealthAnalyticsCustomModule response =
           client.getSecurityHealthAnalyticsCustomModule(request);
-
-      // printing the complete response
-      System.out.printf("SecurityHealthAnalyticsCustomModule response is : %s", response);
 
       return response;
     }

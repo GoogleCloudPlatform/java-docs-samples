@@ -17,7 +17,6 @@
 package management.api;
 
 // [START securitycenter_management_api_list_security_health_analytics_custom_module]
-
 import com.google.cloud.securitycentermanagement.v1.ListSecurityHealthAnalyticsCustomModulesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
@@ -27,12 +26,12 @@ import java.io.IOException;
 public class ListSecurityHealthAnalyticsCustomModules {
 
   public static void main(String[] args) throws IOException {
-
+    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/list
     // parent: Use any one of the following options:
     // - organizations/{organization_id}/locations/{location_id}
     // - folders/{folder_id}/locations/{location_id}
     // - projects/{project_id}/locations/{location_id}
-    String parent = String.format("organizations/%s/locations/%s", "organization_id", "global");
+    String parent = String.format("projects/%s/locations/%s", "project_id", "global");
 
     listSecurityHealthAnalyticsCustomModules(parent);
   }
