@@ -34,17 +34,16 @@ import org.junit.runners.JUnit4;
 public class QueuedResourceIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "asia-east1-c";
-  private static final String NODE_FOR_NETWORK =
-      "test-tpu-queued-resource-network-" + UUID.randomUUID();
-  private static final String NODE_FOR_SCRIPT =
-      "test-tpu-queued-resource-script-" + UUID.randomUUID();
+  private static final String ZONE = "europe-west4-a";
+  static String uuid = UUID.randomUUID().toString().split("-")[0];
+  private static final String NODE_FOR_NETWORK = "test-tpu-queued-resource-network-" + uuid;
+  private static final String NODE_FOR_SCRIPT = "test-tpu-queued-resource-script-" + uuid;
   private static final String TPU_TYPE = "v2-8";
-  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-base";
+  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
   private static final String QUEUED_RESOURCE_FOR_NETWORK =
-      "queued-resource-network-" + UUID.randomUUID();
+      "queued-resource-network-" + uuid;
   private static final String QUEUED_RESOURCE_FOR_SCRIPT =
-      "queued-resource-script-" + UUID.randomUUID();
+      "queued-resource-script-" + uuid;
   private static final String NETWORK_NAME = "default";
 
   public static void requireEnvVar(String envVarName) {
@@ -73,6 +72,8 @@ public class QueuedResourceIT {
         PROJECT_ID, ZONE, QUEUED_RESOURCE_FOR_NETWORK, NODE_FOR_NETWORK,
         TPU_TYPE, TPU_SOFTWARE_VERSION, NETWORK_NAME);
 
+    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getName())
+        .isEqualTo(NODE_FOR_NETWORK);
     assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getName())
         .isEqualTo(NODE_FOR_NETWORK);
     assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getNetworkConfig().getNetwork()

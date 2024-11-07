@@ -22,7 +22,6 @@ import com.google.cloud.dataplex.v1.AspectTypeName;
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import java.io.IOException;
 
-// Sample to get Aspect Type
 public class GetAspectType {
 
   public static void main(String[] args) throws IOException {
@@ -36,15 +35,13 @@ public class GetAspectType {
     System.out.println("Aspect type retrieved successfully: " + aspectType.getName());
   }
 
+  // Method to retrieve Aspect Type located in projectId, location and with aspectTypeId
   public static AspectType getAspectType(String projectId, String location, String aspectTypeId)
       throws IOException {
-    AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
-
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      AspectTypeName aspectTypeName = AspectTypeName.of(projectId, location, aspectTypeId);
       return client.getAspectType(aspectTypeName);
     }
   }
