@@ -16,7 +16,7 @@
 
 package management.api;
 
-// [START securitycenter_management_api_get_security_health_analytics_custom_module]
+// [START securitycenter_get_security_health_analytics_custom_module]
 import com.google.cloud.securitycentermanagement.v1.GetSecurityHealthAnalyticsCustomModuleRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
@@ -62,4 +62,4 @@ public class GetSecurityHealthAnalyticsCustomModule {
     }
   }
 }
-// [END securitycenter_management_api_get_security_health_analytics_custom_module]
+// [END securitycenter_get_security_health_analytics_custom_module]

@@ -16,7 +16,7 @@
 
 package management.api;
 
-// [START securitycenter_management_api_delete_security_health_analytics_custom_module]
+// [START securitycenter_delete_security_health_analytics_custom_module]
 import com.google.cloud.securitycentermanagement.v1.DeleteSecurityHealthAnalyticsCustomModuleRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
 import java.io.IOException;
@@ -60,4 +60,4 @@ public class DeleteSecurityHealthAnalyticsCustomModule {
     }
   }
 }
-// [END securitycenter_management_api_delete_security_health_analytics_custom_module]
+// [END securitycenter_delete_security_health_analytics_custom_module]
