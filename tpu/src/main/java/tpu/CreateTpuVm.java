@@ -28,6 +28,12 @@ import java.util.concurrent.ExecutionException;
 import org.threeten.bp.Duration;
 
 public class CreateTpuVm {
+  private final TpuClient tpuClient;
+
+  // Constructor to inject the TpuClient
+  public CreateTpuVm(TpuClient tpuClient) {
+    this.tpuClient = tpuClient;
+  }
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
@@ -48,15 +54,35 @@ public class CreateTpuVm {
     // For more information see https://cloud.google.com/tpu/docs/runtimes
     String tpuSoftwareVersion = "tpu-vm-tf-2.14.1";
 
-    createTpuVm(projectId, zone, nodeName, tpuType, tpuSoftwareVersion);
+    TpuClient client = TpuClient.create(getSettings());
+    CreateTpuVm creator = new CreateTpuVm(client);
+
+    creator.createTpuVm(projectId, zone, nodeName, tpuType, tpuSoftwareVersion);
   }
 
   // Creates a TPU VM with the specified name, zone, accelerator type, and version.
-  public static Node createTpuVm(
-      String projectId, String zone, String nodeName, String tpuType, String tpuSoftwareVersion)
-      throws IOException, ExecutionException, InterruptedException {
-    // With these settings the client library handles the Operation's polling mechanism
-    // and prevent CancellationException error
+  public Node createTpuVm(String projectId, String zone, String nodeName, String tpuType,
+      String tpuSoftwareVersion) throws ExecutionException, InterruptedException {
+    String parent = String.format("projects/%s/locations/%s", projectId, zone);
+
+    Node tpuVm = Node.newBuilder()
+            .setName(nodeName)
+            .setAcceleratorType(tpuType)
+            .setRuntimeVersion(tpuSoftwareVersion)
+            .build();
+
+    CreateNodeRequest request = CreateNodeRequest.newBuilder()
+            .setParent(parent)
+            .setNodeId(nodeName)
+            .setNode(tpuVm)
+            .build();
+
+    return this.tpuClient.createNodeAsync(request).get();
+  }
+
+  // With these settings the client library handles the Operation's polling mechanism
+  // and prevent CancellationException error
+  private static TpuSettings getSettings() throws IOException {
     TpuSettings.Builder clientSettings =
         TpuSettings.newBuilder();
     clientSettings
@@ -73,25 +99,7 @@ public class CreateTpuVm {
                     .setTotalTimeout(Duration.ofHours(24L))
                     .build()));
 
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
-      String parent = String.format("projects/%s/locations/%s", projectId, zone);
-
-      Node tpuVm = Node.newBuilder()
-              .setName(nodeName)
-              .setAcceleratorType(tpuType)
-              .setRuntimeVersion(tpuSoftwareVersion)
-              .build();
-
-      CreateNodeRequest request = CreateNodeRequest.newBuilder()
-              .setParent(parent)
-              .setNodeId(nodeName)
-              .setNode(tpuVm)
-              .build();
-
-      return tpuClient.createNodeAsync(request).get();
-    }
+    return clientSettings.build();
   }
 }
 //[END tpu_vm_create]

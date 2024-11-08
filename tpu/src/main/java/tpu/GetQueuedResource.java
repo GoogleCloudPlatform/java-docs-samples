@@ -17,13 +17,19 @@
 package tpu;
 
 //[START tpu_queued_resources_get]
-
 import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import java.io.IOException;
 
 public class GetQueuedResource {
+  private final TpuClient tpuClient;
+
+  // Constructor to inject the TpuClient
+  public GetQueuedResource(TpuClient tpuClient) {
+    this.tpuClient = tpuClient;
+  }
+
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project.
@@ -33,22 +39,19 @@ public class GetQueuedResource {
     // The name for your Queued Resource.
     String queuedResourceId = "QUEUED_RESOURCE_ID";
 
-    getQueuedResource(projectId, zone, queuedResourceId);
+    TpuClient client = TpuClient.create();
+    GetQueuedResource creator = new GetQueuedResource(client);
+
+    creator.getQueuedResource(projectId, zone, queuedResourceId);
   }
 
   // Get a Queued Resource.
-  public static QueuedResource getQueuedResource(
-      String projectId, String zone, String queuedResourceId) throws IOException {
+  public QueuedResource getQueuedResource(String projectId, String zone, String queuedResourceId) {
     String name = String.format("projects/%s/locations/%s/queuedResources/%s",
         projectId, zone, queuedResourceId);
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create()) {
-      GetQueuedResourceRequest request =
-          GetQueuedResourceRequest.newBuilder().setName(name).build();
+    GetQueuedResourceRequest request = GetQueuedResourceRequest.newBuilder().setName(name).build();
 
-      return tpuClient.getQueuedResource(request);
-    }
+    return this.tpuClient.getQueuedResource(request);
   }
 }
 //[END tpu_queued_resources_get]

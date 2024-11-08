@@ -29,6 +29,13 @@ import java.util.concurrent.ExecutionException;
 import org.threeten.bp.Duration;
 
 public class CreateQueuedResourceWithNetwork {
+  private final TpuClient tpuClient;
+
+  // Constructor to inject the TpuClient
+  public CreateQueuedResourceWithNetwork(TpuClient tpuClient) {
+    this.tpuClient = tpuClient;
+  }
+
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
@@ -53,17 +60,75 @@ public class CreateQueuedResourceWithNetwork {
     // The network should be assigned to your project.
     String networkName = "YOUR_COMPUTE_TPU_NETWORK";
 
-    createQueuedResourceWithNetwork(projectId, zone, queuedResourceId, nodeName,
+    TpuClient client = TpuClient.create(getSettings());
+    CreateQueuedResourceWithNetwork creator = new CreateQueuedResourceWithNetwork(client);
+
+    creator.createQueuedResourceWithNetwork(projectId, zone, queuedResourceId, nodeName,
         tpuType, tpuSoftwareVersion, networkName);
   }
 
   // Creates a Queued Resource with network configuration.
-  public static QueuedResource createQueuedResourceWithNetwork(
+  public QueuedResource createQueuedResourceWithNetwork(
       String projectId, String zone, String queuedResourceId, String nodeName,
       String tpuType, String tpuSoftwareVersion, String networkName)
-      throws IOException, ExecutionException, InterruptedException {
-    // With these settings the client library handles the Operation's polling mechanism
-    // and prevent CancellationException error
+      throws ExecutionException, InterruptedException {
+    String parent = String.format("projects/%s/locations/%s", projectId, zone);
+    String region = zone.substring(0, zone.length() - 2);
+
+    // Specify the network and subnetwork that you want to connect your TPU to.
+    NetworkConfig networkConfig =
+        NetworkConfig.newBuilder()
+            .setEnableExternalIps(true)
+            .setNetwork(String.format("projects/%s/global/networks/%s", projectId, networkName))
+            .setSubnetwork(
+                String.format(
+                    "projects/%s/regions/%s/subnetworks/%s", projectId, region, networkName))
+            .build();
+
+    // Create a node
+    Node node =
+        Node.newBuilder()
+            .setName(nodeName)
+            .setAcceleratorType(tpuType)
+            .setRuntimeVersion(tpuSoftwareVersion)
+            .setNetworkConfig(networkConfig)
+            .setQueuedResource(
+                String.format(
+                    "projects/%s/locations/%s/queuedResources/%s",
+                    projectId, zone, queuedResourceId))
+            .build();
+
+    // Create queued resource
+    QueuedResource queuedResource =
+        QueuedResource.newBuilder()
+            .setName(queuedResourceId)
+            .setTpu(
+                QueuedResource.Tpu.newBuilder()
+                    .addNodeSpec(
+                        QueuedResource.Tpu.NodeSpec.newBuilder()
+                            .setParent(parent)
+                            .setNode(node)
+                            .setNodeId(nodeName)
+                            .build())
+                    .build())
+            .build();
+
+    CreateQueuedResourceRequest request =
+        CreateQueuedResourceRequest.newBuilder()
+            .setParent(parent)
+            .setQueuedResource(queuedResource)
+            .setQueuedResourceId(queuedResourceId)
+            .build();
+
+    // You can wait until TPU Node is READY,
+    // and check its status using getTpuVm() from "tpu_vm_get" sample.
+
+    return this.tpuClient.createQueuedResourceAsync(request).get();
+  }
+
+  // With these settings the client library handles the Operation's polling mechanism
+  // and prevent CancellationException error
+  private static TpuSettings getSettings() throws IOException {
     TpuSettings.Builder clientSettings =
         TpuSettings.newBuilder();
     clientSettings
@@ -77,62 +142,8 @@ public class CreateQueuedResourceWithNetwork {
                 .setMaxRetryDelay(Duration.ofMillis(45000L))
                 .setTotalTimeout(Duration.ofHours(24L))
                 .build());
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
-      String parent = String.format("projects/%s/locations/%s", projectId, zone);
-      String region = zone.substring(0, zone.length() - 2);
 
-      // Specify the network and subnetwork that you want to connect your TPU to.
-      NetworkConfig networkConfig =
-          NetworkConfig.newBuilder()
-              .setEnableExternalIps(true)
-              .setNetwork(String.format("projects/%s/global/networks/%s", projectId, networkName))
-              .setSubnetwork(
-                  String.format(
-                      "projects/%s/regions/%s/subnetworks/%s", projectId, region, networkName))
-              .build();
-
-      // Create a node
-      Node node =
-          Node.newBuilder()
-              .setName(nodeName)
-              .setAcceleratorType(tpuType)
-              .setRuntimeVersion(tpuSoftwareVersion)
-              .setNetworkConfig(networkConfig)
-              .setQueuedResource(
-                  String.format(
-                      "projects/%s/locations/%s/queuedResources/%s",
-                      projectId, zone, queuedResourceId))
-              .build();
-
-      // Create queued resource
-      QueuedResource queuedResource =
-          QueuedResource.newBuilder()
-              .setName(queuedResourceId)
-              .setTpu(
-                  QueuedResource.Tpu.newBuilder()
-                      .addNodeSpec(
-                          QueuedResource.Tpu.NodeSpec.newBuilder()
-                              .setParent(parent)
-                              .setNode(node)
-                              .setNodeId(nodeName)
-                              .build())
-                      .build())
-              .build();
-
-      CreateQueuedResourceRequest request =
-          CreateQueuedResourceRequest.newBuilder()
-              .setParent(parent)
-              .setQueuedResource(queuedResource)
-              .setQueuedResourceId(queuedResourceId)
-              .build();
-
-      // You can wait until TPU Node is READY,
-      // and check its status using getTpuVm() from "tpu_vm_get" sample.
-
-      return tpuClient.createQueuedResourceAsync(request).get();
-    }
+    return clientSettings.build();
   }
 }
 //[END tpu_queued_resources_network]

@@ -28,6 +28,12 @@ import java.util.concurrent.ExecutionException;
 import org.threeten.bp.Duration;
 
 public class DeleteTpuVm {
+  private final TpuClient tpuClient;
+
+  // Constructor to inject the TpuClient
+  public DeleteTpuVm(TpuClient tpuClient) {
+    this.tpuClient = tpuClient;
+  }
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
@@ -41,14 +47,26 @@ public class DeleteTpuVm {
     // The name for your TPU.
     String nodeName = "YOUR_TPU_NAME";
 
-    deleteTpuVm(projectId, zone, nodeName);
+    TpuClient client = TpuClient.create(getSettings());
+    DeleteTpuVm creator = new DeleteTpuVm(client);
+
+    creator.deleteTpuVm(projectId, zone, nodeName);
   }
 
   // Deletes a TPU VM with the specified name in the given project and zone.
-  public static void deleteTpuVm(String projectId, String zone, String nodeName)
-      throws IOException, ExecutionException, InterruptedException {
-    // With these settings the client library handles the Operation's polling mechanism
-    // and prevent CancellationException error
+  public void deleteTpuVm(String projectId, String zone, String nodeName)
+      throws ExecutionException, InterruptedException {
+    String name = NodeName.of(projectId, zone, nodeName).toString();
+
+    DeleteNodeRequest request = DeleteNodeRequest.newBuilder().setName(name).build();
+
+    this.tpuClient.deleteNodeAsync(request).get();
+    System.out.println("TPU VM deleted");
+  }
+
+  // With these settings the client library handles the Operation's polling mechanism
+  // and prevent CancellationException error
+  private static TpuSettings getSettings() throws IOException {
     TpuSettings.Builder clientSettings =
         TpuSettings.newBuilder();
     clientSettings
@@ -64,17 +82,7 @@ public class DeleteTpuVm {
                     .setMaxRpcTimeout(Duration.ZERO)
                     .setTotalTimeout(Duration.ofHours(24L))
                     .build()));
-
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
-      String name = NodeName.of(projectId, zone, nodeName).toString();
-
-      DeleteNodeRequest request = DeleteNodeRequest.newBuilder().setName(name).build();
-
-      tpuClient.deleteNodeAsync(request).get();
-      System.out.println("TPU VM deleted");
-    }
+    return clientSettings.build();
   }
 }
 //[END tpu_vm_delete]

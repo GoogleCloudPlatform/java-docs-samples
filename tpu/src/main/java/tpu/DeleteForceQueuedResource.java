@@ -18,7 +18,6 @@ package tpu;
 
 //[START tpu_queued_resources_delete_force]
 import com.google.api.gax.retrying.RetrySettings;
-import com.google.api.gax.rpc.UnknownException;
 import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
@@ -27,7 +26,15 @@ import java.util.concurrent.ExecutionException;
 import org.threeten.bp.Duration;
 
 public class DeleteForceQueuedResource {
-  public static void main(String[] args) {
+  private final TpuClient tpuClient;
+
+  // Constructor to inject the TpuClient
+  public DeleteForceQueuedResource(TpuClient tpuClient) {
+    this.tpuClient = tpuClient;
+  }
+
+  public static void main(String[] args)
+      throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project.
     String projectId = "YOUR_PROJECT_ID";
@@ -36,16 +43,28 @@ public class DeleteForceQueuedResource {
     // The name for your Queued Resource.
     String queuedResourceId = "QUEUED_RESOURCE_ID";
 
-    deleteForceQueuedResource(projectId, zone, queuedResourceId);
+    TpuClient client = TpuClient.create(getSettings());
+    DeleteForceQueuedResource creator = new DeleteForceQueuedResource(client);
+
+    creator.deleteForceQueuedResource(projectId, zone, queuedResourceId);
   }
 
   // Deletes a Queued Resource asynchronously with --force flag.
-  public static void deleteForceQueuedResource(
-      String projectId, String zone, String queuedResourceId) {
+  public void deleteForceQueuedResource(String projectId, String zone, String queuedResourceId)
+      throws ExecutionException, InterruptedException {
     String name = String.format("projects/%s/locations/%s/queuedResources/%s",
         projectId, zone, queuedResourceId);
-    // With these settings the client library handles the Operation's polling mechanism
-    // and prevent CancellationException error
+    DeleteQueuedResourceRequest request =
+        DeleteQueuedResourceRequest.newBuilder().setName(name).setForce(true).build();
+
+    this.tpuClient.deleteQueuedResourceAsync(request).get();
+
+    System.out.printf("Deleted Queued Resource: %s\n", name);
+  }
+
+  // With these settings the client library handles the Operation's polling mechanism
+  // and prevent CancellationException error
+  private static TpuSettings getSettings() throws IOException {
     TpuSettings.Builder clientSettings =
         TpuSettings.newBuilder();
     clientSettings
@@ -60,18 +79,7 @@ public class DeleteForceQueuedResource {
                 .setTotalTimeout(Duration.ofHours(24L))
                 .build());
 
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
-      DeleteQueuedResourceRequest request =
-          DeleteQueuedResourceRequest.newBuilder().setName(name).setForce(true).build();
-
-      tpuClient.deleteQueuedResourceAsync(request).get();
-
-    } catch (UnknownException | InterruptedException | ExecutionException | IOException e) {
-      System.out.println(e.getMessage());
-    }
-    System.out.printf("Deleted Queued Resource: %s\n", name);
+    return clientSettings.build();
   }
 }
 //[END tpu_queued_resources_delete_force]

@@ -24,6 +24,12 @@ import com.google.cloud.tpu.v2.TpuClient;
 import java.io.IOException;
 
 public class GetTpuVm {
+  private final TpuClient tpuClient;
+
+  // Constructor to inject the TpuClient
+  public GetTpuVm(TpuClient tpuClient) {
+    this.tpuClient = tpuClient;
+  }
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -36,21 +42,18 @@ public class GetTpuVm {
     // The name for your TPU.
     String nodeName = "YOUR_TPU_NAME";
 
-    getTpuVm(projectId, zone, nodeName);
+    TpuClient client = TpuClient.create();
+    GetTpuVm creator = new GetTpuVm(client);
+
+    creator.getTpuVm(projectId, zone, nodeName);
   }
 
   // Describes a TPU VM with the specified name in the given project and zone.
-  public static Node getTpuVm(String projectId, String zone, String nodeName)
-      throws IOException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create()) {
-      String name = NodeName.of(projectId, zone, nodeName).toString();
+  public Node getTpuVm(String projectId, String zone, String nodeName) {
+    String name = NodeName.of(projectId, zone, nodeName).toString();
+    GetNodeRequest request = GetNodeRequest.newBuilder().setName(name).build();
 
-      GetNodeRequest request = GetNodeRequest.newBuilder().setName(name).build();
-
-      return tpuClient.getNode(request);
-    }
+    return this.tpuClient.getNode(request);
   }
 }
 //[END tpu_vm_get]
