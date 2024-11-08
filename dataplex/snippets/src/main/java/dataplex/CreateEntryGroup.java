@@ -21,7 +21,6 @@ import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import com.google.cloud.dataplex.v1.EntryGroup;
 import com.google.cloud.dataplex.v1.LocationName;
 
-// Samples to create Entry Group
 public class CreateEntryGroup {
 
   public static void main(String[] args) throws Exception {
@@ -35,17 +34,15 @@ public class CreateEntryGroup {
     System.out.println("Successfully created entry group: " + createdEntryGroup.getName());
   }
 
+  // Method to create Entry Group located in projectId, location and with entryGroupId
   public static EntryGroup createEntryGroup(String projectId, String location, String entryGroupId)
       throws Exception {
-    LocationName locationName = LocationName.of(projectId, location);
-    EntryGroup entryGroup =
-        EntryGroup.newBuilder().setDescription("description of the entry group").build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      LocationName locationName = LocationName.of(projectId, location);
+      EntryGroup entryGroup =
+          EntryGroup.newBuilder().setDescription("description of the entry group").build();
       return client.createEntryGroupAsync(locationName, entryGroup, entryGroupId).get();
     }
   }
