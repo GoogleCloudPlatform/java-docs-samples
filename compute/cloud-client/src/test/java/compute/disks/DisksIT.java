@@ -310,8 +310,9 @@ public class DisksIT {
     String diskType =  String.format(
         "projects/%s/regions/%s/diskTypes/pd-balanced", PROJECT_ID, REGION);
     Disk disk = CreateDiskSecondaryRegional.createDiskSecondaryRegional(
-        PROJECT_ID, REGIONAL_BLANK_DISK, SECONDARY_REGIONAL_DISK, REGION,
-        "us-central1", DISK_SIZE,  diskType);
+        PROJECT_ID, PROJECT_ID, REGIONAL_BLANK_DISK, SECONDARY_REGIONAL_DISK,
+        REGION, "us-central1", DISK_SIZE,  diskType);
+
     // Verify that the secondary disk was created.
     assertNotNull(disk);
     assertThat(disk.getAsyncPrimaryDisk().getDisk().contains(REGIONAL_BLANK_DISK));

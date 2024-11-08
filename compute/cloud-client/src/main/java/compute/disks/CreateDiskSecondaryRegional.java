@@ -33,7 +33,9 @@ public class CreateDiskSecondaryRegional {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // The project that contains the primary disk.
-    String projectId = "YOUR_PROJECT_ID";
+    String primaryProjectId = "PRIMARY_PROJECT_ID";
+    // The project that contains the secondary disk.
+    String secondaryProjectId = "SECONDARY_PROJECT_ID";
     // Name of the primary disk you want to use.
     String primaryDiskName = "PRIMARY_DISK_NAME";
     // Name of the disk you want to create.
@@ -52,26 +54,26 @@ public class CreateDiskSecondaryRegional {
     // "projects/{projectId}/zones/{zone}/diskTypes/
     // (pd-standard|pd-ssd|pd-balanced|pd-extreme)".
     String diskType = String.format(
-        "projects/%s/regions/%s/diskTypes/pd-balanced", projectId, secondaryDiskRegion);
+        "projects/%s/regions/%s/diskTypes/pd-balanced", secondaryProjectId, secondaryDiskRegion);
 
-    createDiskSecondaryRegional(projectId, primaryDiskName, secondaryDiskName,
-        primaryDiskRegion, secondaryDiskRegion, diskSizeGb, diskType);
+    createDiskSecondaryRegional(primaryProjectId, secondaryProjectId, primaryDiskName,
+        secondaryDiskName, primaryDiskRegion, secondaryDiskRegion, diskSizeGb, diskType);
   }
 
   // Creates a secondary disk in a specified region.
-  public static Disk createDiskSecondaryRegional(String projectId, String primaryDiskName,
-      String secondaryDiskName, String primaryDiskRegion,  String secondaryDiskRegion,
-      long diskSizeGb,  String diskType)
+  public static Disk createDiskSecondaryRegional(String projectId, String secondaryProjectId,
+      String primaryDiskName, String secondaryDiskName, String primaryDiskRegion,
+      String secondaryDiskRegion, long diskSizeGb,  String diskType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // An iterable collection of zone names in which you want to keep
     // the new disks' replicas. One of the replica zones of the clone must match
     // the zone of the source disk.
     List<String> replicaZones = Arrays.asList(
-        String.format("projects/%s/zones/%s-c", projectId, secondaryDiskRegion),
-        String.format("projects/%s/zones/%s-b", projectId, secondaryDiskRegion));
+        String.format("projects/%s/zones/%s-c", secondaryProjectId, secondaryDiskRegion),
+        String.format("projects/%s/zones/%s-b", secondaryProjectId, secondaryDiskRegion));
 
     String primaryDiskSource = String.format("projects/%s/regions/%s/disks/%s",
-          projectId, primaryDiskRegion, primaryDiskName);
+        projectId, primaryDiskRegion, primaryDiskName);
 
     DiskAsyncReplication asyncReplication = DiskAsyncReplication.newBuilder()
         .setDisk(primaryDiskSource)
@@ -91,13 +93,13 @@ public class CreateDiskSecondaryRegional {
           .build();
 
       // Wait for the create disk operation to complete.
-      Operation response = disksClient.insertAsync(projectId, secondaryDiskRegion, disk)
+      Operation response = disksClient.insertAsync(secondaryProjectId, secondaryDiskRegion, disk)
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         return null;
       }
-      return disksClient.get(projectId, secondaryDiskRegion, secondaryDiskName);
+      return disksClient.get(secondaryProjectId, secondaryDiskRegion, secondaryDiskName);
     }
   }
 }
