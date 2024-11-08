@@ -31,7 +31,9 @@ public class CreateDiskSecondary {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // The project that contains the primary disk.
-    String projectId = "YOUR_PROJECT_ID";
+    String primaryProjectId = "PRIMARY_PROJECT_ID";
+    // The project that contains the secondary disk.
+    String secondaryProjectId = "SECONDARY_PROJECT_ID";
     // Name of the primary disk you want to use.
     String primaryDiskName = "PRIMARY_DISK_NAME";
     // Name of the zone in which your primary disk is located.
@@ -43,28 +45,28 @@ public class CreateDiskSecondary {
     // Name of the zone in which you want to create the secondary disk.
     String secondaryDiskZone = "us-east1-c";
     // Size of the new disk in gigabytes.
-    long diskSizeGb = 10L;
+    long diskSizeGb = 30L;
     // The type of the disk you want to create. This value uses the following format:
     // "projects/{projectId}/zones/{zone}/diskTypes/
     // (pd-standard|pd-ssd|pd-balanced|pd-extreme)".
     String diskType = String.format(
-        "projects/%s/zones/%s/diskTypes/pd-balanced", projectId, secondaryDiskZone);
+        "projects/%s/zones/%s/diskTypes/pd-balanced", secondaryProjectId, secondaryDiskZone);
 
-    createDiskSecondary(projectId, primaryDiskName, secondaryDiskName,
+    createDiskSecondary(primaryProjectId, secondaryProjectId, primaryDiskName, secondaryDiskName,
         primaryDiskZone, secondaryDiskZone, diskSizeGb,  diskType);
   }
 
   // Creates a secondary disk in a specified zone.
-  public static Disk createDiskSecondary(String projectId, String primaryDiskName,
-      String secondaryDiskName, String primaryDiskZone, String secondaryDiskZone,
-      long diskSizeGb,  String diskType)
+  public static Disk createDiskSecondary(String primaryProjectId, String secondaryProjectId,
+      String primaryDiskName, String secondaryDiskName, String primaryDiskZone,
+      String secondaryDiskZone, long diskSizeGb,  String diskType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String primaryDiskSource = String.format("projects/%s/zones/%s/disks/%s",
-          projectId, primaryDiskZone, primaryDiskName);
+        primaryProjectId, primaryDiskZone, primaryDiskName);
 
     DiskAsyncReplication asyncReplication = DiskAsyncReplication.newBuilder()
-          .setDisk(primaryDiskSource)
-          .build();
+        .setDisk(primaryDiskSource)
+        .build();
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -78,13 +80,13 @@ public class CreateDiskSecondary {
           .build();
 
       // Wait for the create disk operation to complete.
-      Operation response = disksClient.insertAsync(projectId, secondaryDiskZone, disk)
+      Operation response = disksClient.insertAsync(secondaryProjectId, secondaryDiskZone, disk)
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         return null;
       }
-      return disksClient.get(projectId, secondaryDiskZone, secondaryDiskName);
+      return disksClient.get(secondaryProjectId, secondaryDiskZone, secondaryDiskName);
     }
   }
 }
