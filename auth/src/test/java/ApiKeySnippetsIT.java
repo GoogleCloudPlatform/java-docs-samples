@@ -36,7 +36,6 @@ import org.junit.runners.JUnit4;
 public class ApiKeySnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String CREDENTIALS = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
   private static Key API_KEY;
   private static String API_KEY_STRING;
   private ByteArrayOutputStream stdOut;
@@ -79,8 +78,15 @@ public class ApiKeySnippetsIT {
 
     String apiKeyId = getApiKeyId(API_KEY);
     DeleteApiKey.deleteApiKey(PROJECT_ID, apiKeyId);
-    String goal = String.format("Successfully deleted the API key: %s", API_KEY.getName());
-    assertThat(stdOut.toString()).contains(goal);
+
+    UndeleteApiKey.undeleteApiKey(PROJECT_ID, apiKeyId);
+    String undeletedKey = String.format("Successfully undeleted the API key: %s",
+        API_KEY.getName());
+    assertThat(stdOut.toString()).contains(undeletedKey);
+
+    DeleteApiKey.deleteApiKey(PROJECT_ID, apiKeyId);
+    String deletedKey = String.format("Successfully deleted the API key: %s", API_KEY.getName());
+    assertThat(stdOut.toString()).contains(deletedKey);
 
     stdOut.close();
     System.setOut(out);

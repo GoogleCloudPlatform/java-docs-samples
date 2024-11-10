@@ -22,17 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Reservation;
-import compute.Util;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,18 +36,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 25, unit = TimeUnit.MINUTES)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Timeout(value = 6, unit = TimeUnit.MINUTES)
 public class CrudOperationsReservationIT {
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-west1-a";
-  private static String RESERVATION_NAME;
+  private static final String ZONE = "us-central1-a";
+  private static final String RESERVATION_NAME = "test-reservation-" + UUID.randomUUID();
   private static final int NUMBER_OF_VMS = 3;
-  static String javaVersion = System.getProperty("java.version").substring(0, 2);
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -64,42 +56,23 @@ public class CrudOperationsReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    RESERVATION_NAME = "test-reservation-" + javaVersion + "-"
-        + UUID.randomUUID().toString().substring(0, 8);
 
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingReservations("test-reservation-"  + javaVersion, PROJECT_ID, ZONE);
+    CreateReservation.createReservation(PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
   }
 
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Delete all reservations created for testing.
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
 
-    // Test that reservations are deleted
+    // Test that reservation is deleted
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
   }
 
   @Test
-  public void firstCreateReservationTest()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-    CreateReservation.createReservation(
-        PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
-
-    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
-
-    stdOut.close();
-    System.setOut(out);
-  }
-
-  @Test
-  public void secondGetReservationTest()
+  public void testGetReservation()
       throws IOException {
     Reservation reservation = GetReservation.getReservation(
         PROJECT_ID, RESERVATION_NAME, ZONE);
@@ -109,11 +82,22 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
-  public void thirdListReservationTest() throws IOException {
+  public void testListReservation() throws IOException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
 
     assertThat(reservations).isNotNull();
     Assert.assertTrue(reservations.get(0).getName().contains("test-"));
+  }
+
+  @Test
+  public void testUpdateVmsForReservation()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    int newNumberOfVms = 1;
+    Reservation reservation = UpdateVmsForReservation.updateVmsForReservation(
+        PROJECT_ID, ZONE, RESERVATION_NAME, newNumberOfVms);
+
+    Assert.assertNotNull(reservation);
+    Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
   }
 }
