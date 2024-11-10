@@ -309,7 +309,8 @@ public class DisksIT {
     String diskType =  String.format(
         "projects/%s/zones/%s/diskTypes/pd-ssd", PROJECT_ID, ZONE);
     Disk disk = CreateDiskSecondaryCustom.createDiskSecondaryCustom(
-        PROJECT_ID, EMPTY_DISK_NAME, SECONDARY_DISK_CUSTOM, ZONE,
+        PROJECT_ID, PROJECT_ID, EMPTY_DISK_NAME,
+        SECONDARY_DISK_CUSTOM, ZONE,
         "us-central1-c", DISK_SIZE,  diskType);
 
     // Verify that the secondary disk was created.
