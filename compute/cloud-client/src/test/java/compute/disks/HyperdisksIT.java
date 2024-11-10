@@ -64,8 +64,8 @@ public class HyperdisksIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, ZONE);
     Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, "ua-central1-a");
-    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, "ua-central1-a");
+    Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, "us-central1-a");
+    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, "us-central1-a");
   }
 
   @AfterAll
