@@ -44,7 +44,7 @@ import org.junit.runners.JUnit4;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class HyperdisksIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-west1-a";
+  private static final String ZONE = "us-central1-a";
   private static final String  HYPERDISK_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
   private static final String  HYPERDISK_IN_POOL_NAME = "test-hyperdisk-enc-" + UUID.randomUUID();
   private static final String STORAGE_POOL_NAME = "test-storage-pool-enc-" + UUID.randomUUID();
@@ -64,8 +64,8 @@ public class HyperdisksIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, ZONE);
     Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, "us-central1-a");
-    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, "us-central1-a");
+    Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, "us-west1-a");
+    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, "us-west1-a");
   }
 
   @AfterAll
