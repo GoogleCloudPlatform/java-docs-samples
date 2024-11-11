@@ -48,7 +48,10 @@ public class SetMuteUndefinedFinding {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
       SetMuteRequest setMuteRequest =
-          SetMuteRequest.newBuilder().setName(findingPath).setMute(Mute.UNDEFINED).build();
+          SetMuteRequest.newBuilder()
+              .setName(findingPath)
+              .setMute(Mute.UNDEFINED)
+              .build();
 
       Finding finding = client.setMute(setMuteRequest);
       System.out.println(
