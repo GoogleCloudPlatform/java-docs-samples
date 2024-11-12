@@ -17,7 +17,6 @@
 package compute.reservation;
 
 // [START compute_reservation_create_from_vm]
-
 import com.google.cloud.compute.v1.AcceleratorConfig;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk;
 import com.google.cloud.compute.v1.AllocationSpecificSKUAllocationReservedInstanceProperties;
