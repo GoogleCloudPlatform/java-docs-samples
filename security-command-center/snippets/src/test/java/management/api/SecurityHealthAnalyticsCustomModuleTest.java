@@ -27,10 +27,7 @@ import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClie
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.base.Strings;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.AfterClass;
@@ -43,12 +40,11 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class SecurityHealthAnalyticsCustomModuleTest {
 
-  private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
-  private static final String LOCATION = "global";
+  private static final String parent =
+      String.format("organizations/%s/locations/%s", System.getenv("SCC_PROJECT_ORG_ID"), "global");
   private static final String CUSTOM_MODULE_DISPLAY_NAME = "java_sample_custom_module_test";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
-  private static ByteArrayOutputStream stdOut;
 
   @Rule
   public final MultipleAttemptsRule multipleAttemptsRule =
@@ -63,40 +59,24 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
   @BeforeClass
   public static void setUp() throws InterruptedException {
-    final PrintStream out = System.out;
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("SCC_PROJECT_ORG_ID");
-
-    stdOut = null;
-    System.setOut(out);
-    TimeUnit.MINUTES.sleep(3);
   }
 
   @AfterClass
   public static void cleanUp() throws IOException {
-    final PrintStream out = System.out;
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-    stdOut = null;
-    System.setOut(out);
     // Perform cleanup after running tests
     cleanupExistingCustomModules();
   }
 
   // cleanupExistingCustomModules clean up all the existing custom module
   private static void cleanupExistingCustomModules() throws IOException {
-    String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
 
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
-      // create the request
       ListSecurityHealthAnalyticsCustomModulesRequest request =
           ListSecurityHealthAnalyticsCustomModulesRequest.newBuilder().setParent(parent).build();
 
-      // calls the API
       ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
           client.listSecurityHealthAnalyticsCustomModules(request);
 
@@ -145,34 +125,19 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
   @Test
   public void testCreateSecurityHealthAnalyticsCustomModule() throws IOException {
-
-    String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
-
-    // creating the custom module
     SecurityHealthAnalyticsCustomModule response =
         CreateSecurityHealthAnalyticsCustomModule.createSecurityHealthAnalyticsCustomModule(
             parent, CUSTOM_MODULE_DISPLAY_NAME);
 
-    // assert that response is not null
     assertNotNull(response);
-
-    // assert that created module display name is matching with the name passed
     assertThat(response.getDisplayName()).isEqualTo(CUSTOM_MODULE_DISPLAY_NAME);
   }
 
   @Test
   public void testDeleteSecurityHealthAnalyticsCustomModule() throws IOException {
-
-    String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
-
-    // create the custom module
     SecurityHealthAnalyticsCustomModule response =
         createCustomModule(parent, CUSTOM_MODULE_DISPLAY_NAME);
-
-    // extracting the custom module id from the full name
     String customModuleId = extractCustomModuleId(response.getName());
-
-    // delete the custom module with the custom module id
     assertTrue(
         DeleteSecurityHealthAnalyticsCustomModule.deleteSecurityHealthAnalyticsCustomModule(
             parent, customModuleId));
@@ -180,38 +145,21 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
   @Test
   public void testListSecurityHealthAnalyticsCustomModules() throws IOException {
-
-    String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
-
-    // create the custom module
     createCustomModule(parent, CUSTOM_MODULE_DISPLAY_NAME);
-
-    // assert that response is not null
     assertNotNull(
         ListSecurityHealthAnalyticsCustomModules.listSecurityHealthAnalyticsCustomModules(parent));
   }
 
   @Test
   public void testGetSecurityHealthAnalyticsCustomModule() throws IOException {
-
-    String parent = String.format("organizations/%s/locations/%s", ORGANIZATION_ID, LOCATION);
-
-    // create the custom module
     SecurityHealthAnalyticsCustomModule createCustomModuleResponse =
         createCustomModule(parent, CUSTOM_MODULE_DISPLAY_NAME);
-
-    // extracting the custom module id from the full name
     String customModuleId = extractCustomModuleId(createCustomModuleResponse.getName());
-
-    // get the custom module with the custom module id
     SecurityHealthAnalyticsCustomModule getCustomModuleResponse =
         GetSecurityHealthAnalyticsCustomModule.getSecurityHealthAnalyticsCustomModule(
             parent, customModuleId);
 
-    // assert that custom module name is matching with the name passed
     assertThat(getCustomModuleResponse.getDisplayName()).isEqualTo(CUSTOM_MODULE_DISPLAY_NAME);
-
-    // assert that custom module id is matching with the id passed
     assertThat(extractCustomModuleId(getCustomModuleResponse.getName())).isEqualTo(customModuleId);
   }
 }

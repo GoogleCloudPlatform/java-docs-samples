@@ -31,19 +31,14 @@ public class CreateSecurityHealthAnalyticsCustomModule {
 
   public static void main(String[] args) throws IOException {
     // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/create
-    // parent: Use any one of the following options:
-    // - organizations/{organization_id}/locations/{location_id}
-    // - folders/{folder_id}/locations/{location_id}
-    // - projects/{project_id}/locations/{location_id}
+    //  replace "project_id" with a real project ID
     String parent = String.format("projects/%s/locations/%s", "project_id", "global");
 
-    // display name of the module, update with your name
     String customModuleDisplayName = "custom_module_display_name";
 
     createSecurityHealthAnalyticsCustomModule(parent, customModuleDisplayName);
   }
 
-  // Creates a custom module under the security health analytics service.
   public static SecurityHealthAnalyticsCustomModule createSecurityHealthAnalyticsCustomModule(
       String parent, String customModuleDisplayName) throws IOException {
 
@@ -90,14 +85,12 @@ public class CreateSecurityHealthAnalyticsCustomModule {
               .setCustomConfig(customConfig)
               .build();
 
-      // create the request
       CreateSecurityHealthAnalyticsCustomModuleRequest request =
           CreateSecurityHealthAnalyticsCustomModuleRequest.newBuilder()
               .setParent(parent)
               .setSecurityHealthAnalyticsCustomModule(securityHealthAnalyticsCustomModule)
               .build();
 
-      // calls the API
       SecurityHealthAnalyticsCustomModule response =
           client.createSecurityHealthAnalyticsCustomModule(request);
 

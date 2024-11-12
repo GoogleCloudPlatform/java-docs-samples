@@ -25,20 +25,14 @@ public class DeleteSecurityHealthAnalyticsCustomModule {
 
   public static void main(String[] args) throws IOException {
     // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/delete
-    // parent: Use any one of the following options:
-    // - organizations/{organization_id}/locations/{location_id}
-    // - folders/{folder_id}/locations/{location_id}
-    // - projects/{project_id}/locations/{location_id}
+    //  replace "project_id" with a real project ID
     String parent = String.format("projects/%s/locations/%s", "project_id", "global");
 
-    // custom module id, replace it with your custom module ID
     String customModuleId = "custom_module_id";
 
     deleteSecurityHealthAnalyticsCustomModule(parent, customModuleId);
   }
 
-  // Delete a custom module with custom module Id under the security health
-  // analytics service.
   public static boolean deleteSecurityHealthAnalyticsCustomModule(
       String parent, String customModuleId) throws IOException {
 
@@ -49,11 +43,9 @@ public class DeleteSecurityHealthAnalyticsCustomModule {
       String name =
           String.format("%s/securityHealthAnalyticsCustomModules/%s", parent, customModuleId);
 
-      // create the request
       DeleteSecurityHealthAnalyticsCustomModuleRequest request =
           DeleteSecurityHealthAnalyticsCustomModuleRequest.newBuilder().setName(name).build();
 
-      // calls the API
       client.deleteSecurityHealthAnalyticsCustomModule(request);
 
       return true;

@@ -20,17 +20,13 @@ package management.api;
 import com.google.cloud.securitycentermanagement.v1.ListSecurityHealthAnalyticsCustomModulesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
-import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
 import java.io.IOException;
 
 public class ListSecurityHealthAnalyticsCustomModules {
 
   public static void main(String[] args) throws IOException {
     // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/list
-    // parent: Use any one of the following options:
-    // - organizations/{organization_id}/locations/{location_id}
-    // - folders/{folder_id}/locations/{location_id}
-    // - projects/{project_id}/locations/{location_id}
+    //  replace "project_id" with a real project ID
     String parent = String.format("projects/%s/locations/%s", "project_id", "global");
 
     listSecurityHealthAnalyticsCustomModules(parent);
@@ -43,18 +39,12 @@ public class ListSecurityHealthAnalyticsCustomModules {
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
-      // create the request
       ListSecurityHealthAnalyticsCustomModulesRequest request =
           ListSecurityHealthAnalyticsCustomModulesRequest.newBuilder().setParent(parent).build();
 
-      // calls the API
       ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
           client.listSecurityHealthAnalyticsCustomModules(request);
 
-      // List all security health analytics custom modules present in the resource
-      for (SecurityHealthAnalyticsCustomModule module : response.iterateAll()) {
-        System.out.println("Custom module name : " + module.getDisplayName());
-      }
       return response;
     }
   }
