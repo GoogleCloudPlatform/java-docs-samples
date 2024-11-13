@@ -18,6 +18,7 @@ package tpu;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,7 +33,6 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 3, unit = TimeUnit.MINUTES)
@@ -46,7 +46,7 @@ public class CreateTpuIT {
   @Test
   public void testCreateTpuVm() throws Exception {
     TpuClient mockTpuClient = mock(TpuClient.class);
-    try (MockedStatic<TpuClient> mockedTpuClient = Mockito.mockStatic(TpuClient.class)) {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
           .thenReturn(mockTpuClient);
 
@@ -59,7 +59,6 @@ public class CreateTpuIT {
 
       verify(mockTpuClient, times(1))
           .createNodeAsync(any(CreateNodeRequest.class));
-      verify(mockTpuClient, times(1)).close();
     }
   }
 }

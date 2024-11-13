@@ -19,6 +19,7 @@ package tpu;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,7 +38,6 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 3, unit = TimeUnit.MINUTES)
@@ -53,7 +53,7 @@ public class QueuedResourceIT {
   @Test
   public void testCreateQueuedResourceWithSpecifiedNetwork() throws Exception {
     TpuClient mockTpuClient = mock(TpuClient.class);
-    try (MockedStatic<TpuClient> mockedTpuClient = Mockito.mockStatic(TpuClient.class)) {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
           .thenReturn(mockTpuClient);
 
@@ -73,14 +73,13 @@ public class QueuedResourceIT {
   public void testGetQueuedResource() throws IOException {
     GetQueuedResource mockGetQueuedResource = mock(GetQueuedResource.class);
     QueuedResource mockQueuedResource = mock(QueuedResource.class);
-    try (MockedStatic<TpuClient> mockedTpuClient = Mockito.mockStatic(TpuClient.class)) {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       mockedTpuClient.when(TpuClient::create).thenReturn(mock(TpuClient.class));
       when(mock(TpuClient.class)
           .getQueuedResource(any(QueuedResourceName.class))).thenReturn(mockQueuedResource);
 
       GetQueuedResource.getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
 
-      // Assertions
       verify(mockGetQueuedResource, times(1))
           .getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
     }
@@ -89,7 +88,7 @@ public class QueuedResourceIT {
   @Test
   public void testDeleteTpuVm() {
     TpuClient mockTpuClient = mock(TpuClient.class);
-    try (MockedStatic<TpuClient> mockedTpuClient = Mockito.mockStatic(TpuClient.class)) {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
           .thenReturn(mockTpuClient);
 

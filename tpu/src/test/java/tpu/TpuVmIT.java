@@ -18,6 +18,7 @@ package tpu;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,7 +36,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
@@ -49,13 +49,12 @@ public class TpuVmIT {
   public void testGetTpuVm() throws IOException {
     GetTpuVm mockGetTpuVm = mock(GetTpuVm.class);
     Node mockNode = mock(Node.class);
-    try (MockedStatic<TpuClient> mockedTpuClient = Mockito.mockStatic(TpuClient.class)) {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       mockedTpuClient.when(TpuClient::create).thenReturn(mock(TpuClient.class));
       when(mock(TpuClient.class).getNode(any(NodeName.class))).thenReturn(mockNode);
 
       GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
 
-      // Assertions
       verify(mockGetTpuVm, times(1))
           .getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
     }
@@ -64,7 +63,7 @@ public class TpuVmIT {
   @Test
   public void testDeleteTpuVm() throws IOException, ExecutionException, InterruptedException {
     TpuClient mockTpuClient = mock(TpuClient.class);
-    try (MockedStatic<TpuClient> mockedTpuClient = Mockito.mockStatic(TpuClient.class)) {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
           .thenReturn(mockTpuClient);
 
