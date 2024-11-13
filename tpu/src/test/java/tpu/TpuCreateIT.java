@@ -23,57 +23,43 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.tpu.v2.DeleteNodeRequest;
-import com.google.cloud.tpu.v2.Node;
-import com.google.cloud.tpu.v2.NodeName;
+import com.google.cloud.tpu.v2.CreateNodeRequest;
 import com.google.cloud.tpu.v2.TpuClient;
 import com.google.cloud.tpu.v2.TpuSettings;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(JUnit4.class)
 @Timeout(value = 3, unit = TimeUnit.MINUTES)
-public class TpuVmIT {
+public class TpuCreateIT {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "asia-east1-c";
   private static final String NODE_NAME = "test-tpu";
+  private static final String TPU_TYPE = "v2-8";
+  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.12.1";
 
   @Test
-  public void testGetTpuVm() throws IOException {
-    GetTpuVm mockGetTpuVm = mock(GetTpuVm.class);
-    Node mockNode = mock(Node.class);
-    try (MockedStatic<TpuClient> mockedTpuClient = Mockito.mockStatic(TpuClient.class)) {
-      mockedTpuClient.when(TpuClient::create).thenReturn(mock(TpuClient.class));
-      when(mock(TpuClient.class).getNode(any(NodeName.class))).thenReturn(mockNode);
-
-      GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-
-      // Assertions
-      verify(mockGetTpuVm, times(1))
-          .getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-    }
-  }
-
-  @Test
-  public void testDeleteTpuVm() throws IOException, ExecutionException, InterruptedException {
+  public void testCreateTpuVm() throws Exception {
     TpuClient mockTpuClient = mock(TpuClient.class);
     try (MockedStatic<TpuClient> mockedTpuClient = Mockito.mockStatic(TpuClient.class)) {
       mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
           .thenReturn(mockTpuClient);
 
       OperationFuture mockFuture = mock(OperationFuture.class);
-      when(mockTpuClient.deleteNodeAsync(any(DeleteNodeRequest.class)))
+      when(mockTpuClient.createNodeAsync(any(CreateNodeRequest.class)))
           .thenReturn(mockFuture);
-      DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+      CreateTpuVm.createTpuVm(
+          PROJECT_ID, ZONE, NODE_NAME,
+          TPU_TYPE, TPU_SOFTWARE_VERSION);
 
-      verify(mockTpuClient, times(1)).deleteNodeAsync(any(DeleteNodeRequest.class));
+      verify(mockTpuClient, times(1))
+          .createNodeAsync(any(CreateNodeRequest.class));
+      verify(mockTpuClient, times(1)).close();
     }
   }
 }
