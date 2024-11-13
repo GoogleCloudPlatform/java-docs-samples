@@ -17,7 +17,6 @@
 package compute.reservation;
 
 // [START compute_reservation_list]
-
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import java.io.IOException;
