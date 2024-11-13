@@ -36,13 +36,13 @@ public class AddDiskToConsistencyGroup {
       throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // The project that contains the disk.
-    String project = "YOUR_PROJECT_ID";
+    String project = "tyaho-softserve-project";//"YOUR_PROJECT_ID";
     // The zone or region of the disk.
     String location = "us-central1";
     // The name of the disk.
-    String diskName = "DISK_NAME";
+    String diskName = "disk-name-r";//"DISK_NAME";
     // The name of the consistency group.
-    String consistencyGroupName = "CONSISTENCY_GROUP";
+    String consistencyGroupName ="my-group";// "CONSISTENCY_GROUP";
     // The region of the consistency group.
     String consistencyGroupLocation = "us-central1";
     addDiskToConsistencyGroup(
@@ -86,6 +86,7 @@ public class AddDiskToConsistencyGroup {
       if (response.hasError()) {
         return null;
       }
+      System.out.println(disksClient.get(project, location, diskName).getResourcePoliciesList());
       return disksClient.get(project, location, diskName);
     }
   }

@@ -19,6 +19,7 @@ package compute.disks;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.compute.v1.Disk;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
@@ -32,6 +33,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import compute.disks.consistencygroup.ListDisksInConsistencyGroup;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -101,5 +104,16 @@ public class ConsistencyGroupIT {
     // Verify that the disk was added to the consistency group
     assertNotNull(disk);
     assertThat(disk.getResourcePoliciesList().get(0).contains(CONSISTENCY_GROUP_NAME));
+  }
+
+  @Test
+  @Order(3)
+  public void testListDisksInConsistencyGroup() throws IOException {
+    List<Disk> disks = ListDisksInConsistencyGroup.listDisksInConsistencyGroup(
+        PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+
+    // Verify that the disk was added to the consistency group
+    assertThat(disks).isNotEmpty();
+    assertTrue(disks.stream().anyMatch(disk -> disk.getName().equals(DISK_NAME)));
   }
 }
