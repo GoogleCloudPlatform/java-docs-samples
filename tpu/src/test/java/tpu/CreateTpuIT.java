@@ -36,7 +36,7 @@ import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 3, unit = TimeUnit.MINUTES)
-public class TpuCreateIT {
+public class CreateTpuIT {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "asia-east1-c";
   private static final String NODE_NAME = "test-tpu";
