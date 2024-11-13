@@ -16,21 +16,21 @@
 
 package compute.disks.consistencygroup;
 
-// [START compute_consistency_group_add_disk]
-import com.google.cloud.compute.v1.AddResourcePoliciesRegionDiskRequest;
+// [START compute_consistency_group_remove_disk]
 import com.google.cloud.compute.v1.Disk;
-// If your disk has zonal location uncomment these lines
-//import com.google.cloud.compute.v1.AddResourcePoliciesDiskRequest;
-//import com.google.cloud.compute.v1.DisksAddResourcePoliciesRequest;
-//import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.RegionDisksAddResourcePoliciesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.RegionDisksRemoveResourcePoliciesRequest;
+import com.google.cloud.compute.v1.RemoveResourcePoliciesRegionDiskRequest;
+// If your disk has zonal location uncomment these lines
+//import com.google.cloud.compute.v1.DisksClient;
+//import com.google.cloud.compute.v1.DisksRemoveResourcePoliciesRequest;
+//import com.google.cloud.compute.v1.RemoveResourcePoliciesDiskRequest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
-public class AddDiskToConsistencyGroup {
+public class RemoveDiskFromConsistencyGroup {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
@@ -45,12 +45,12 @@ public class AddDiskToConsistencyGroup {
     String consistencyGroupName = "CONSISTENCY_GROUP";
     // The region of the consistency group.
     String consistencyGroupLocation = "us-central1";
-    addDiskToConsistencyGroup(
+    removeDiskFromConsistencyGroup(
         project, location, diskName, consistencyGroupName, consistencyGroupLocation);
   }
 
-  // Adds a disk to a Consistency Group.
-  public static Disk addDiskToConsistencyGroup(
+  // Removes a disk from a Consistency Group.
+  public static Disk removeDiskFromConsistencyGroup(
       String project, String location, String diskName,
       String consistencyGroupName, String consistencyGroupLocation)
       throws IOException, ExecutionException, InterruptedException {
@@ -59,11 +59,11 @@ public class AddDiskToConsistencyGroup {
         project, consistencyGroupLocation, consistencyGroupName);
     // If your disk has zonal location uncomment these lines
     //      try (DisksClient disksClient = DisksClient.create()) {
-    //        AddResourcePoliciesDiskRequest request =
-    //            AddResourcePoliciesDiskRequest.newBuilder()
+    //        RemoveResourcePoliciesDiskRequest request =
+    //            RemoveResourcePoliciesDiskRequest.newBuilder()
     //                .setDisk(diskName)
-    //                .setDisksAddResourcePoliciesRequestResource(
-    //                    DisksAddResourcePoliciesRequest.newBuilder()
+    //                .setDisksRemoveResourcePoliciesRequestResource(
+    //                    DisksRemoveResourcePoliciesRequest.newBuilder()
     //                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
     //                        .build())
     //                .setProject(project)
@@ -71,18 +71,18 @@ public class AddDiskToConsistencyGroup {
     //                .build();
 
     try (RegionDisksClient disksClient = RegionDisksClient.create()) {
-      AddResourcePoliciesRegionDiskRequest disksRequest =
-          AddResourcePoliciesRegionDiskRequest.newBuilder()
+      RemoveResourcePoliciesRegionDiskRequest disksRequest =
+          RemoveResourcePoliciesRegionDiskRequest.newBuilder()
               .setDisk(diskName)
               .setRegion(location)
               .setProject(project)
-              .setRegionDisksAddResourcePoliciesRequestResource(
-                  RegionDisksAddResourcePoliciesRequest.newBuilder()
-                .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
-                .build())
-          .build();
+              .setRegionDisksRemoveResourcePoliciesRequestResource(
+                  RegionDisksRemoveResourcePoliciesRequest.newBuilder()
+                      .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
+                      .build())
+              .build();
 
-      Operation response = disksClient.addResourcePoliciesAsync(disksRequest).get();
+      Operation response = disksClient.removeResourcePoliciesAsync(disksRequest).get();
       if (response.hasError()) {
         return null;
       }
@@ -90,4 +90,4 @@ public class AddDiskToConsistencyGroup {
     }
   }
 }
-// [END compute_consistency_group_add_disk]
+// [END compute_consistency_group_remove_disk]

@@ -24,6 +24,7 @@ import com.google.cloud.compute.v1.Disk;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
+import compute.disks.consistencygroup.RemoveDiskFromConsistencyGroup;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -101,5 +102,17 @@ public class ConsistencyGroupIT {
     // Verify that the disk was added to the consistency group
     assertNotNull(disk);
     assertThat(disk.getResourcePoliciesList().get(0).contains(CONSISTENCY_GROUP_NAME));
+  }
+
+  @Test
+  @Order(3)
+  public void testRemoveDiskFromConsistencyGroup()
+      throws IOException, ExecutionException, InterruptedException {
+    Disk disk = RemoveDiskFromConsistencyGroup.removeDiskFromConsistencyGroup(
+        PROJECT_ID, REGION, DISK_NAME, CONSISTENCY_GROUP_NAME, REGION);
+
+    // Verify that the disk was added to the consistency group
+    assertNotNull(disk);
+    assertThat(disk.getResourcePoliciesList()).isEmpty();
   }
 }
