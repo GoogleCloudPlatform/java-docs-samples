@@ -16,15 +16,13 @@
 
 package vtwo.assets;
 
-import java.io.IOException;
-
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.SecurityMarks;
 import com.google.cloud.securitycenter.v2.UpdateSecurityMarksRequest;
 import com.google.protobuf.FieldMask;
+import java.io.IOException;
 
 //[START securitycenter_add_delete_security_marks_assets_v2]
-
 
 public class AddDeleteSecurityMarks {
   public static void main(String[] args) throws IOException {

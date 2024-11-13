@@ -26,7 +26,13 @@ import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import com.google.api.gax.rpc.InvalidArgumentException;
+import com.google.cloud.securitycenter.v1.Asset;
+import com.google.cloud.securitycenter.v1.ListAssetsRequest;
+import com.google.cloud.securitycenter.v1.SecurityCenterClient;
+import com.google.cloud.securitycenter.v2.OrganizationName;
+import com.google.cloud.securitycenter.v2.SecurityMarks;
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -35,15 +41,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import com.google.api.gax.rpc.InvalidArgumentException;
-import com.google.cloud.securitycenter.v1.Asset;
-import com.google.cloud.securitycenter.v1.ListAssetsRequest;
-import com.google.cloud.securitycenter.v1.SecurityCenterClient;
-import com.google.cloud.securitycenter.v2.OrganizationName;
-import com.google.cloud.securitycenter.v2.SecurityMarks;
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
-
 import vtwo.assets.AddDeleteSecurityMarks;
 import vtwo.assets.AddSecurityMarksToAssets;
 import vtwo.assets.DeleteAssetsSecurityMarks;
@@ -57,7 +54,8 @@ public class AssetSecurityMarksIT {
   private static ByteArrayOutputStream stdOut;
 
   @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3, 120000); // 2 minutes
+  public final MultipleAttemptsRule multipleAttemptsRule =
+      new MultipleAttemptsRule(3, 120000); // 2 minutes
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -74,9 +72,9 @@ public class AssetSecurityMarksIT {
     }
     return assetPath;
   }
-  
-@SuppressWarnings("deprecation")
-@BeforeClass
+
+  @SuppressWarnings("deprecation")
+  @BeforeClass
   public static void setUp() throws IOException, InterruptedException {
     final PrintStream out = System.out;
     stdOut = new ByteArrayOutputStream();
@@ -86,20 +84,18 @@ public class AssetSecurityMarksIT {
 
     // Fetch a valid asset ID dynamically
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
-        OrganizationName orgName = OrganizationName.of(ORGANIZATION_ID);
-        ListAssetsRequest request = ListAssetsRequest.newBuilder()
-            .setParent(orgName.toString())
-            .setPageSize(1)
-            .build();
+      OrganizationName orgName = OrganizationName.of(ORGANIZATION_ID);
+      ListAssetsRequest request =
+          ListAssetsRequest.newBuilder().setParent(orgName.toString()).setPageSize(1).build();
 
-        Asset asset = client.listAssets(request).iterateAll().iterator().next().getAsset();
-        assetName = asset.getName(); // Get the full resource name for the asset
-        assetId = extractAssetId(assetName);
+      Asset asset = client.listAssets(request).iterateAll().iterator().next().getAsset();
+      assetName = asset.getName(); // Get the full resource name for the asset
+      assetId = extractAssetId(assetName);
     } catch (InvalidArgumentException e) {
-        System.err.println("Error retrieving asset ID: " + e.getMessage());
-        throw e;
+      System.err.println("Error retrieving asset ID: " + e.getMessage());
+      throw e;
     }
-    
+
     stdOut = null;
     System.setOut(out);
     TimeUnit.MINUTES.sleep(1);
@@ -124,8 +120,8 @@ public class AssetSecurityMarksIT {
 
   @Test
   public void testAddSecurityMarksToAsset() throws IOException {
-    SecurityMarks response = AddSecurityMarksToAssets.addToAsset(
-    		ORGANIZATION_ID, LOCATION, assetId);
+    SecurityMarks response =
+        AddSecurityMarksToAssets.addToAsset(ORGANIZATION_ID, LOCATION, assetId);
 
     assertTrue(response.getMarksOrThrow("key_a").contains("value_a"));
     assertTrue(response.getMarksOrThrow("key_b").contains("value_b"));
@@ -133,8 +129,8 @@ public class AssetSecurityMarksIT {
 
   @Test
   public void testDeleteSecurityMarksOnAsset() throws IOException {
-    SecurityMarks response = DeleteAssetsSecurityMarks.deleteSecurityMarks(
-        ORGANIZATION_ID, LOCATION, assetId);
+    SecurityMarks response =
+        DeleteAssetsSecurityMarks.deleteSecurityMarks(ORGANIZATION_ID, LOCATION, assetId);
 
     assertFalse(response.containsMarks("key_a"));
     assertFalse(response.containsMarks("key_b"));
@@ -142,8 +138,8 @@ public class AssetSecurityMarksIT {
 
   @Test
   public void testAddAndDeleteSecurityMarks() throws IOException {
-    SecurityMarks response = AddDeleteSecurityMarks.addDeleteSecurityMarks(
-        ORGANIZATION_ID, LOCATION, assetId);
+    SecurityMarks response =
+        AddDeleteSecurityMarks.addDeleteSecurityMarks(ORGANIZATION_ID, LOCATION, assetId);
 
     // Assert update for key_a
     assertTrue(response.getMarksOrThrow("key_a").contains("new_value_for_a"));
@@ -152,4 +148,3 @@ public class AssetSecurityMarksIT {
     assertFalse(response.getMarksMap().containsKey("key_b"));
   }
 }
-

@@ -42,8 +42,8 @@ public class AddSecurityMarksToAssets {
 
   // Demonstrates adding security marks to findings.
   // To add or change security marks, you must have an IAM role that includes permission:
-  public static SecurityMarks addToAsset(String organizationId,
-	      String location, String assetId) throws IOException {
+  public static SecurityMarks addToAsset(String organizationId, String location, String assetId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     SecurityCenterClient client = SecurityCenterClient.create();
@@ -53,37 +53,36 @@ public class AddSecurityMarksToAssets {
     //    String assetName = "projects/{project-id}/assets/{asset-id}";
     //    String assetName = "folders/{folder-id}/assets/{asset-id}";
     String assetName = String.format("organizations/%s/assets/%s", organizationId, assetId);
-    
+
     // Start setting up a request to add security marks for a finding.
     ImmutableMap markMap = ImmutableMap.of("key_a", "value_a", "key_b", "value_b");
 
     // Add security marks and field mask for security marks.
-    SecurityMarks securityMarks = SecurityMarks.newBuilder()
-        .setName(assetName + "/securityMarks")
-        .putAllMarks(markMap)
-        .build();
+    SecurityMarks securityMarks =
+        SecurityMarks.newBuilder()
+            .setName(assetName + "/securityMarks")
+            .putAllMarks(markMap)
+            .build();
 
     // Set the update mask to specify which properties should be updated.
     // If empty, all mutable fields will be updated.
     // For more info on constructing field mask path, see the proto or:
     // https://cloud.google.com/java/docs/reference/protobuf/latest/com.google.protobuf.FieldMask
-    FieldMask updateMask = FieldMask.newBuilder()
-        .addPaths("marks.key_a")
-        .addPaths("marks.key_b")
-        .build();
+    FieldMask updateMask =
+        FieldMask.newBuilder().addPaths("marks.key_a").addPaths("marks.key_b").build();
 
-    UpdateSecurityMarksRequest request = UpdateSecurityMarksRequest.newBuilder()
-        .setSecurityMarks(securityMarks)
-        .setUpdateMask(updateMask)
-        .build();
+    UpdateSecurityMarksRequest request =
+        UpdateSecurityMarksRequest.newBuilder()
+            .setSecurityMarks(securityMarks)
+            .setUpdateMask(updateMask)
+            .build();
 
     // Call the API.
     SecurityMarks response = client.updateSecurityMarks(request);
 
     System.out.println("Security Marks:" + response);
     return response;
-  }	
+  }
 }
-
 
 // [END securitycenter_add_security_marks_assets_v2]
