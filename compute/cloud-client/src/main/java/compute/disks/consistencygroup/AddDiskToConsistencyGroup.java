@@ -49,7 +49,7 @@ public class AddDiskToConsistencyGroup {
         project, location, diskName, consistencyGroupName, consistencyGroupLocation);
   }
 
-  // Adds a disk to a Consistent Group.
+  // Adds a disk to a Consistency Group.
   public static Disk addDiskToConsistencyGroup(
       String project, String location, String diskName,
       String consistencyGroupName, String consistencyGroupLocation)
