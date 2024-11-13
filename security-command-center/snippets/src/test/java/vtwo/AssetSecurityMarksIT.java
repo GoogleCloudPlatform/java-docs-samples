@@ -50,7 +50,8 @@ public class AssetSecurityMarksIT {
 
   private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
   private static final String LOCATION = "global";
-  private static String assetId, assetName;
+  private static String assetId;
+  private static String assetName;
   private static ByteArrayOutputStream stdOut;
 
   @Rule
