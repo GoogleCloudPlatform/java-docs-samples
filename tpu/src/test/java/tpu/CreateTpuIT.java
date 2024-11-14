@@ -27,7 +27,6 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.tpu.v2.CreateNodeRequest;
 import com.google.cloud.tpu.v2.TpuClient;
 import com.google.cloud.tpu.v2.TpuSettings;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -35,7 +34,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 3, unit = TimeUnit.MINUTES)
+@Timeout(value = 3)
 public class CreateTpuIT {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "asia-east1-c";
@@ -45,8 +44,8 @@ public class CreateTpuIT {
 
   @Test
   public void testCreateTpuVm() throws Exception {
-    TpuClient mockTpuClient = mock(TpuClient.class);
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient mockTpuClient = mock(TpuClient.class);
       mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
           .thenReturn(mockTpuClient);
 

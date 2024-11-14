@@ -31,15 +31,14 @@ import com.google.cloud.tpu.v2.TpuClient;
 import com.google.cloud.tpu.v2.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@Timeout(value = 3, unit = TimeUnit.MINUTES)
+@RunWith(JUnit4.class)
+@Timeout(value = 3)
 public class TpuVmIT {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "asia-east1-c";
@@ -47,11 +46,11 @@ public class TpuVmIT {
 
   @Test
   public void testGetTpuVm() throws IOException {
-    GetTpuVm mockGetTpuVm = mock(GetTpuVm.class);
-    Node mockNode = mock(Node.class);
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      Node mockNode = mock(Node.class);
       mockedTpuClient.when(TpuClient::create).thenReturn(mock(TpuClient.class));
       when(mock(TpuClient.class).getNode(any(NodeName.class))).thenReturn(mockNode);
+      GetTpuVm mockGetTpuVm = mock(GetTpuVm.class);
 
       GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
 
@@ -62,8 +61,8 @@ public class TpuVmIT {
 
   @Test
   public void testDeleteTpuVm() throws IOException, ExecutionException, InterruptedException {
-    TpuClient mockTpuClient = mock(TpuClient.class);
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient mockTpuClient = mock(TpuClient.class);
       mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
           .thenReturn(mockTpuClient);
 
