@@ -47,29 +47,27 @@ public class CreateReservation {
   }
 
   // Creates reservation with optional flags
-  public static void createReservation(
+  public static Reservation createReservation(
       String projectId, String reservationName, int numberOfVms, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Create the reservation with optional properties:
+    // Machine type of the instances in the reservation.
+    String machineType = "n1-standard-2";
+    // Number of accelerators to be attached to the instances in the reservation.
+    int numberOfAccelerators = 1;
+    // Accelerator type to be attached to the instances in the reservation.
+    String acceleratorType = "nvidia-tesla-t4";
+    // Minimum CPU platform to be attached to the instances in the reservation.
+    String minCpuPlatform = "Intel Skylake";
+    // Local SSD size in GB to be attached to the instances in the reservation.
+    int localSsdSize = 375;
+    // Local SSD interfaces to be attached to the instances in the reservation.
+    String localSsdInterface1 = "NVME";
+    String localSsdInterface2 = "SCSI";
+    boolean specificReservationRequired = true;
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-
-      // Create the reservation with optional properties:
-      // Machine type of the instances in the reservation.
-      String machineType = "n1-standard-2";
-      // Number of accelerators to be attached to the instances in the reservation.
-      int numberOfAccelerators = 1;
-      // Accelerator type to be attached to the instances in the reservation.
-      String acceleratorType = "nvidia-tesla-t4";
-      // Minimum CPU platform to be attached to the instances in the reservation.
-      String minCpuPlatform = "Intel Skylake";
-      // Local SSD size in GB to be attached to the instances in the reservation.
-      int localSsdSize = 375;
-      // Local SSD interfaces to be attached to the instances in the reservation.
-      String localSsdInterface1 = "NVME";
-      String localSsdInterface2 = "SCSI";
-      boolean specificReservationRequired = true;
-
       Reservation reservation =
           Reservation.newBuilder()
               .setName(reservationName)
@@ -105,15 +103,13 @@ public class CreateReservation {
                       .build())
               .build();
 
-      // Wait for the create reservation operation to complete.
       Operation response =
           reservationsClient.insertAsync(projectId, zone, reservation).get(7, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Reservation creation failed!" + response);
-        return;
+        return null;
       }
-      System.out.println("Reservation created. Operation Status: " + response.getStatus());
+      return reservationsClient.get(projectId, zone, reservationName);
     }
   }
 }
