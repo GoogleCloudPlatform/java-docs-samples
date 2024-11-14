@@ -25,6 +25,8 @@ import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
 
 public class ListDisksInConsistencyGroup {
 
@@ -42,8 +44,12 @@ public class ListDisksInConsistencyGroup {
   // Lists disks in a consistency group.
   public static List<Disk> listDisksInConsistencyGroup(
       String project, String location, String consistencyGroupName) throws IOException {
-    String link = String.format("https://www.googleapis.com/compute/v1/projects/%s/regions/%S/resourcePolicies/%s", project, location, consistencyGroupName);
-    String filter = String.format("resource_policies: %s", link);
+
+    String link = String.format("\"https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s\"", project, location, consistencyGroupName);
+    String filter = String.format("resourcePolicies=%s", consistencyGroupName);
+
+//    String filter = String.format("resourcePolicies=https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",  project, location, consistencyGroupName);
+    System.out.println(filter);
     // If your disk has zonal location uncomment these lines
     //    try (DisksClient disksClient = DisksClient.create()) {
     //      ListDisksRequest request =
@@ -68,11 +74,25 @@ public class ListDisksInConsistencyGroup {
               .build();
       List<Disk> diskList = new ArrayList<>();
       for (Disk disk : disksClient.list(request).iterateAll()) {
-        System.out.println(disk);
+//        System.out.println(disk);
+        disk.getResourcePoliciesList().stream().filter(a -> a.contains(link));
+//        System.out.println(disk);
         diskList.add(disk);
       }
+      System.out.println(diskList);
+
       return diskList;
     }
+  }
+
+  // Filter instances by labels
+  private static String createFilter(Map<String, String> policies) {
+    StringJoiner joiner = new StringJoiner(" ");
+
+    for (Map.Entry<String, String> entry : policies.entrySet()) {
+      joiner.add("resource_policies:" + entry.getValue());
+    }
+    return joiner.toString();
   }
 }
 // [END compute_consistency_group_list_disks]
