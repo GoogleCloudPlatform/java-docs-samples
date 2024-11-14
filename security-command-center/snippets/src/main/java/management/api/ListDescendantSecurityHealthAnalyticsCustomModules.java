@@ -16,43 +16,40 @@
 
 package management.api;
 
-// [START securitycenter_get_security_health_analytics_custom_module]
-import com.google.cloud.securitycentermanagement.v1.GetSecurityHealthAnalyticsCustomModuleRequest;
+// [START securitycenter_list_descendant_security_health_analytics_custom_module]
+import com.google.cloud.securitycentermanagement.v1.ListDescendantSecurityHealthAnalyticsCustomModulesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
-import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse;
 import java.io.IOException;
 
-public class GetSecurityHealthAnalyticsCustomModule {
+public class ListDescendantSecurityHealthAnalyticsCustomModules {
 
   public static void main(String[] args) throws IOException {
-    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/get
+    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/listDescendant
     // TODO: Developer should replace project_id with a real project ID before running this code
     String parent = String.format("projects/%s/locations/%s", "project_id", "global");
 
-    String customModuleId = "custom_module_id";
-
-    getSecurityHealthAnalyticsCustomModule(parent, customModuleId);
+    listDescendantSecurityHealthAnalyticsCustomModules(parent);
   }
 
-  public static SecurityHealthAnalyticsCustomModule getSecurityHealthAnalyticsCustomModule(
-      String parent, String customModuleId) throws IOException {
+  public static ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse
+      listDescendantSecurityHealthAnalyticsCustomModules(String parent) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs
     // to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
-      String name =
-          String.format("%s/securityHealthAnalyticsCustomModules/%s", parent, customModuleId);
+      ListDescendantSecurityHealthAnalyticsCustomModulesRequest request =
+          ListDescendantSecurityHealthAnalyticsCustomModulesRequest.newBuilder()
+              .setParent(parent)
+              .build();
 
-      GetSecurityHealthAnalyticsCustomModuleRequest request =
-          GetSecurityHealthAnalyticsCustomModuleRequest.newBuilder().setName(name).build();
-
-      SecurityHealthAnalyticsCustomModule response =
-          client.getSecurityHealthAnalyticsCustomModule(request);
+      ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse response =
+          client.listDescendantSecurityHealthAnalyticsCustomModules(request);
 
       return response;
     }
   }
 }
-// [END securitycenter_get_security_health_analytics_custom_module]
+// [END securitycenter_list_descendant_security_health_analytics_custom_module]

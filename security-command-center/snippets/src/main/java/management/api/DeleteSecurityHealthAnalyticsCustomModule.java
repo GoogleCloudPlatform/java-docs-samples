@@ -25,7 +25,7 @@ public class DeleteSecurityHealthAnalyticsCustomModule {
 
   public static void main(String[] args) throws IOException {
     // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/delete
-    //  replace "project_id" with a real project ID
+    // TODO: Developer should replace project_id with a real project ID before running this code
     String parent = String.format("projects/%s/locations/%s", "project_id", "global");
 
     String customModuleId = "custom_module_id";

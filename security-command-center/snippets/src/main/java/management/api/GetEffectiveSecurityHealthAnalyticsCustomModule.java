@@ -16,26 +16,27 @@
 
 package management.api;
 
-// [START securitycenter_get_security_health_analytics_custom_module]
-import com.google.cloud.securitycentermanagement.v1.GetSecurityHealthAnalyticsCustomModuleRequest;
+// [START securitycenter_get_effective_security_health_analytics_custom_module]
+import com.google.cloud.securitycentermanagement.v1.EffectiveSecurityHealthAnalyticsCustomModule;
+import com.google.cloud.securitycentermanagement.v1.GetEffectiveSecurityHealthAnalyticsCustomModuleRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
-import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
 import java.io.IOException;
 
-public class GetSecurityHealthAnalyticsCustomModule {
+public class GetEffectiveSecurityHealthAnalyticsCustomModule {
 
   public static void main(String[] args) throws IOException {
-    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/get
+    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.effectiveSecurityHealthAnalyticsCustomModules/get
     // TODO: Developer should replace project_id with a real project ID before running this code
     String parent = String.format("projects/%s/locations/%s", "project_id", "global");
 
     String customModuleId = "custom_module_id";
 
-    getSecurityHealthAnalyticsCustomModule(parent, customModuleId);
+    getEffectiveSecurityHealthAnalyticsCustomModule(parent, customModuleId);
   }
 
-  public static SecurityHealthAnalyticsCustomModule getSecurityHealthAnalyticsCustomModule(
-      String parent, String customModuleId) throws IOException {
+  public static EffectiveSecurityHealthAnalyticsCustomModule
+      getEffectiveSecurityHealthAnalyticsCustomModule(String parent, String customModuleId)
+          throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs
     // to be created
@@ -43,16 +44,17 @@ public class GetSecurityHealthAnalyticsCustomModule {
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
       String name =
-          String.format("%s/securityHealthAnalyticsCustomModules/%s", parent, customModuleId);
+          String.format(
+              "%s/effectiveSecurityHealthAnalyticsCustomModules/%s", parent, customModuleId);
 
-      GetSecurityHealthAnalyticsCustomModuleRequest request =
-          GetSecurityHealthAnalyticsCustomModuleRequest.newBuilder().setName(name).build();
+      GetEffectiveSecurityHealthAnalyticsCustomModuleRequest request =
+          GetEffectiveSecurityHealthAnalyticsCustomModuleRequest.newBuilder().setName(name).build();
 
-      SecurityHealthAnalyticsCustomModule response =
-          client.getSecurityHealthAnalyticsCustomModule(request);
+      EffectiveSecurityHealthAnalyticsCustomModule response =
+          client.getEffectiveSecurityHealthAnalyticsCustomModule(request);
 
       return response;
     }
   }
 }
-// [END securitycenter_get_security_health_analytics_custom_module]
+// [END securitycenter_get_effective_security_health_analytics_custom_module]
