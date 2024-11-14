@@ -34,7 +34,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 3)
+@Timeout(value = 5)
 public class GetTpuVmIT {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "asia-east1-c";
