@@ -84,7 +84,6 @@
             <version>5.13.0</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <dependencyManagement>
