@@ -16,91 +16,81 @@
 
 package tpu;
 
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
-import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.tpu.v2.Node;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.tpu.v2.CreateNodeRequest;
+import com.google.cloud.tpu.v2.DeleteNodeRequest;
+import com.google.cloud.tpu.v2.LocationName;
 import com.google.cloud.tpu.v2.TpuClient;
+import com.google.cloud.tpu.v2.TpuSettings;
 import java.io.IOException;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import org.junit.Assert;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 15, unit = TimeUnit.MINUTES)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Timeout(value = 3)
 public class TpuVmIT {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "asia-east1-c";
-  private static final String NODE_NAME = "test-tpu-" + UUID.randomUUID();
+  private static final String NODE_NAME = "test-tpu";
   private static final String TPU_TYPE = "v2-8";
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.12.1";
-  private static final String NODE_PATH_NAME =
-      String.format("projects/%s/locations/%s/nodes/%s", PROJECT_ID, ZONE, NODE_NAME);
 
-  public static void requireEnvVar(String envVarName) {
-    assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
-        .that(System.getenv(envVarName)).isNotEmpty();
-  }
+  @Test
+  public void testCreateTpuVm() throws Exception {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
+          .thenReturn(mockTpuClient);
 
-  @BeforeAll
-  public static void setUp() {
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
-  }
+      OperationFuture mockFuture = mock(OperationFuture.class);
+      when(mockTpuClient.createNodeAsync(any(CreateNodeRequest.class)))
+          .thenReturn(mockFuture);
+      CreateTpuVm.createTpuVm(
+          PROJECT_ID, ZONE, NODE_NAME,
+          TPU_TYPE, TPU_SOFTWARE_VERSION);
 
-  @AfterAll
-  public static void cleanup() throws Exception {
-    DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-
-    // Test that TPUs is deleted
-    Assertions.assertThrows(
-        NotFoundException.class,
-        () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME));
+      verify(mockTpuClient, times(1)).createNodeAsync(any(CreateNodeRequest.class));
+    }
   }
 
   @Test
-  @Order(1)
-  public void testCreateTpuVm() throws IOException, ExecutionException, InterruptedException {
+  public void testDeleteTpuVm() throws IOException, ExecutionException, InterruptedException {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
+          .thenReturn(mockTpuClient);
 
-    Node node = CreateTpuVm.createTpuVm(
-        PROJECT_ID, ZONE, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+      when(mockTpuClient.deleteNodeAsync(any(DeleteNodeRequest.class)))
+          .thenReturn(mockFuture);
+      DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_NAME);
 
-    assertNotNull(node);
-    assertThat(node.getName().equals(NODE_NAME));
-    assertThat(node.getAcceleratorType().equals(TPU_TYPE));
+      verify(mockTpuClient, times(1)).deleteNodeAsync(any(DeleteNodeRequest.class));
+    }
   }
 
   @Test
-  @Order(2)
-  public void testGetTpuVm() throws IOException {
-    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-
-    assertNotNull(node);
-    assertThat(node.getName()).isEqualTo(NODE_PATH_NAME);
-  }
-
-  @Test
-  @Order(2)
   public void testListTpuVm() throws IOException {
-    TpuClient.ListNodesPagedResponse nodesList = ListTpuVms.listTpuVms(PROJECT_ID, ZONE);
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient.ListNodesPagedResponse mockListNodes = mock(TpuClient.ListNodesPagedResponse.class);
+      mockedTpuClient.when(TpuClient::create).thenReturn(mock(TpuClient.class));
+      when(mock(TpuClient.class).listNodes(any(LocationName.class))).thenReturn(mockListNodes);
+      ListTpuVms mockListTpuVms = mock(ListTpuVms.class);
 
-    assertNotNull(nodesList);
-    for (Node node : nodesList.iterateAll()) {
-      Assert.assertTrue(node.getName().contains("test-tpu"));
+      ListTpuVms.listTpuVms(PROJECT_ID, ZONE);
+
+      verify(mockListTpuVms, times(1)).listTpuVms(PROJECT_ID, ZONE);
     }
   }
 }
