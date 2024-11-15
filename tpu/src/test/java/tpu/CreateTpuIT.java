@@ -16,6 +16,7 @@
 
 package tpu;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.tpu.v2.CreateNodeRequest;
+import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.TpuClient;
 import com.google.cloud.tpu.v2.TpuSettings;
 import org.junit.Test;
@@ -45,19 +47,24 @@ public class CreateTpuIT {
   @Test
   public void testCreateTpuVm() throws Exception {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      Node mockNode = mock(Node.class);
       TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
       mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
           .thenReturn(mockTpuClient);
-
-      OperationFuture mockFuture = mock(OperationFuture.class);
       when(mockTpuClient.createNodeAsync(any(CreateNodeRequest.class)))
           .thenReturn(mockFuture);
-      CreateTpuVm.createTpuVm(
+      when(mockFuture.get()).thenReturn(mockNode);
+
+      Node returnedNode = CreateTpuVm.createTpuVm(
           PROJECT_ID, ZONE, NODE_NAME,
           TPU_TYPE, TPU_SOFTWARE_VERSION);
 
       verify(mockTpuClient, times(1))
           .createNodeAsync(any(CreateNodeRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedNode, mockNode);
     }
   }
 }
