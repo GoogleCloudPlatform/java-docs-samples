@@ -25,6 +25,7 @@ import com.google.cloud.compute.v1.Disk;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
+import compute.disks.consistencygroup.ListDisksInConsistencyGroup;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -33,8 +34,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import compute.disks.consistencygroup.ListDisksInConsistencyGroup;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -110,9 +109,9 @@ public class ConsistencyGroupIT {
   @Order(3)
   public void testListDisksInConsistencyGroup() throws IOException {
     List<Disk> disks = ListDisksInConsistencyGroup.listDisksInConsistencyGroup(
-        PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+        PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME, REGION);
 
-    // Verify that the disk was added to the consistency group
+    // Verify that the disk list is returned
     assertThat(disks).isNotEmpty();
     assertTrue(disks.stream().anyMatch(disk -> disk.getName().equals(DISK_NAME)));
   }

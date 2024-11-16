@@ -25,8 +25,6 @@ import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
 
 public class ListDisksInConsistencyGroup {
 
@@ -37,62 +35,50 @@ public class ListDisksInConsistencyGroup {
     // The zone or region of the disk.
     String location = "us-central1";
     // The name of the consistency group.
-    String consistencyGroupName ="my-group";// "CONSISTENCY_GROUP";
-    listDisksInConsistencyGroup(project, location, consistencyGroupName);
+    String consistencyGroupName = "my-group";//"CONSISTENCY_GROUP";
+    // The region of the consistency group.
+    String consistencyGroupLocation = "us-central1";
+    listDisksInConsistencyGroup(project, location, consistencyGroupName, consistencyGroupLocation);
   }
 
   // Lists disks in a consistency group.
-  public static List<Disk> listDisksInConsistencyGroup(
-      String project, String location, String consistencyGroupName) throws IOException {
-
-    String link = String.format("\"https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s\"", project, location, consistencyGroupName);
-    String filter = String.format("resourcePolicies=%s", consistencyGroupName);
-
-//    String filter = String.format("resourcePolicies=https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",  project, location, consistencyGroupName);
-    System.out.println(filter);
+  public static List<Disk> listDisksInConsistencyGroup(String project, String location,
+                                                       String consistencyGroupName, String consistencyGroupLocation) throws IOException {
+    List<Disk> diskList = new ArrayList<>();
+    String filter = String.format("https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",
+        project, consistencyGroupLocation, consistencyGroupName);
+//    https://www.googleapis/.com/compute/v1/projects/tyaho-softserve-project/regions/us-central1/resourcePolicies/my-group
     // If your disk has zonal location uncomment these lines
-    //    try (DisksClient disksClient = DisksClient.create()) {
-    //      ListDisksRequest request =
-    //          ListDisksRequest.newBuilder()
-    //              .setProject(project)
-    //              .setZone(location)
-    //              .setFilter(filter)
-    //              .build();
-    //      List<Disk> diskList = new ArrayList<>();
-    //      for (Disk disk : disksClient.list(request).iterateAll()) {
-    //        diskList.add(disk);
-    //      }
-    //      System.out.printf("Disks found in consistency group: %s%n", diskList);
-    //    }
+    // try (DisksClient disksClient = DisksClient.create()) {
+    //    ListDisksRequest request =
+    //    ListDisksRequest.newBuilder()
+    //        .setProject(project)
+    //        .setZone(location)
+    //        .build();
+    // List<Disk> diskList = new ArrayList<>();
+    // for (Disk disk : disksClient.list(request).iterateAll()) {
+    //      diskList.add(disk);
+    //   }
+    //  }
 
+    // Filtering must be done manually for now, since list filtering
+    // inside disksClient.list is not supported yet.
     try (RegionDisksClient disksClient = RegionDisksClient.create()) {
       ListRegionDisksRequest request =
           ListRegionDisksRequest.newBuilder()
               .setProject(project)
               .setRegion(location)
-//              .setFilter(filter)
               .build();
-      List<Disk> diskList = new ArrayList<>();
-      for (Disk disk : disksClient.list(request).iterateAll()) {
-//        System.out.println(disk);
-        disk.getResourcePoliciesList().stream().filter(a -> a.contains(link));
-//        System.out.println(disk);
-        diskList.add(disk);
+//      RegionDisksClient.ListPagedResponse response = disksClient.list(request);
+
+      for (Disk disk : disksClient.list(request).iterateAll()) { // Use regional disks client and request for regional disks if needed
+        if (disk.getResourcePoliciesList().contains(filter)) {
+          diskList.add(disk);
+        }
       }
       System.out.println(diskList);
-
       return diskList;
     }
-  }
-
-  // Filter instances by labels
-  private static String createFilter(Map<String, String> policies) {
-    StringJoiner joiner = new StringJoiner(" ");
-
-    for (Map.Entry<String, String> entry : policies.entrySet()) {
-      joiner.add("resource_policies:" + entry.getValue());
-    }
-    return joiner.toString();
   }
 }
 // [END compute_consistency_group_list_disks]
