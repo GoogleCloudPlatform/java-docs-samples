@@ -19,7 +19,6 @@ package tpu;
 //[START tpu_vm_list]
 import com.google.cloud.tpu.v2.ListNodesRequest;
 import com.google.cloud.tpu.v2.TpuClient;
-import com.google.cloud.tpu.v2.TpuClient.ListNodesPagedResponse;
 import java.io.IOException;
 
 public class ListTpuVms {
@@ -37,7 +36,7 @@ public class ListTpuVms {
   }
 
   // Lists TPU VMs in the specified zone.
-  public static ListNodesPagedResponse listTpuVms(String projectId, String zone)
+  public static TpuClient.ListNodesPage listTpuVms(String projectId, String zone)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -45,7 +44,8 @@ public class ListTpuVms {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
 
       ListNodesRequest request = ListNodesRequest.newBuilder().setParent(parent).build();
-      return tpuClient.listNodes(request);
+
+      return tpuClient.listNodes(request).getPage();
     }
   }
 }

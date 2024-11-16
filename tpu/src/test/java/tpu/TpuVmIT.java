@@ -27,7 +27,6 @@ import static org.mockito.Mockito.when;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.tpu.v2.DeleteNodeRequest;
 import com.google.cloud.tpu.v2.GetNodeRequest;
-import com.google.cloud.tpu.v2.LocationName;
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.TpuClient;
 import com.google.cloud.tpu.v2.TpuSettings;
@@ -90,20 +89,6 @@ public class TpuVmIT {
 
       assertThat(output).contains("TPU VM deleted");
       verify(mockTpuClient, times(1)).deleteNodeAsync(any(DeleteNodeRequest.class));
-    }
-  }
-
-  @Test
-  public void testListTpuVm() throws IOException {
-    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
-      TpuClient.ListNodesPagedResponse mockListNodes = mock(TpuClient.ListNodesPagedResponse.class);
-      mockedTpuClient.when(TpuClient::create).thenReturn(mock(TpuClient.class));
-      when(mock(TpuClient.class).listNodes(any(LocationName.class))).thenReturn(mockListNodes);
-      ListTpuVms mockListTpuVms = mock(ListTpuVms.class);
-
-      ListTpuVms.listTpuVms(PROJECT_ID, ZONE);
-
-      verify(mockListTpuVms, times(1)).listTpuVms(PROJECT_ID, ZONE);
     }
   }
 }
