@@ -17,6 +17,7 @@
 package tpu;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -27,8 +28,8 @@ import static org.mockito.Mockito.when;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
+import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
-import com.google.cloud.tpu.v2alpha1.QueuedResourceName;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.ByteArrayOutputStream;
@@ -62,35 +63,45 @@ public class QueuedResourceIT {
   @Test
   public void testCreateQueuedResourceWithSpecifiedNetwork() throws Exception {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      QueuedResource mockQueuedResource = mock(QueuedResource.class);
       TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
       mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
           .thenReturn(mockTpuClient);
-
-      OperationFuture mockFuture = mock(OperationFuture.class);
       when(mockTpuClient.createQueuedResourceAsync(any(CreateQueuedResourceRequest.class)))
           .thenReturn(mockFuture);
-      CreateQueuedResourceWithNetwork.createQueuedResourceWithNetwork(
+      when(mockFuture.get()).thenReturn(mockQueuedResource);
+
+      QueuedResource returnedQueuedResource =
+          CreateQueuedResourceWithNetwork.createQueuedResourceWithNetwork(
           PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME, NODE_NAME,
           TPU_TYPE, TPU_SOFTWARE_VERSION, NETWORK_NAME);
 
       verify(mockTpuClient, times(1))
           .createQueuedResourceAsync(any(CreateQueuedResourceRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedQueuedResource, mockQueuedResource);
     }
   }
 
   @Test
   public void testGetQueuedResource() throws IOException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
-      QueuedResource mockQueuedResource = mock(QueuedResource.class);
-      mockedTpuClient.when(TpuClient::create).thenReturn(mock(TpuClient.class));
-      when(mock(TpuClient.class)
-          .getQueuedResource(any(QueuedResourceName.class))).thenReturn(mockQueuedResource);
+      TpuClient mockClient = mock(TpuClient.class);
       GetQueuedResource mockGetQueuedResource = mock(GetQueuedResource.class);
+      QueuedResource mockQueuedResource = mock(QueuedResource.class);
 
-      GetQueuedResource.getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
+      when(mockClient.getQueuedResource(any(GetQueuedResourceRequest.class)))
+          .thenReturn(mockQueuedResource);
+
+      QueuedResource returnedQueuedResource =
+          GetQueuedResource.getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
 
       verify(mockGetQueuedResource, times(1))
           .getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
+      assertEquals(returnedQueuedResource, mockQueuedResource);
     }
   }
 
@@ -98,12 +109,13 @@ public class QueuedResourceIT {
   public void testDeleteTpuVm() {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
       mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
           .thenReturn(mockTpuClient);
-
-      OperationFuture mockFuture = mock(OperationFuture.class);
       when(mockTpuClient.deleteQueuedResourceAsync(any(DeleteQueuedResourceRequest.class)))
           .thenReturn(mockFuture);
+
       DeleteForceQueuedResource.deleteForceQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
       String output = bout.toString();
 
