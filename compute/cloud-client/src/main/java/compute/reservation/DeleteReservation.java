@@ -17,7 +17,6 @@
 package compute.reservation;
 
 // [START compute_reservation_delete]
-
 import com.google.cloud.compute.v1.DeleteReservationRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ReservationsClient;
