@@ -27,13 +27,13 @@ public class ListQueuedResources {
     // Project ID or project number of the Google Cloud project.
     String projectId = "YOUR_PROJECT_ID";
     // The zone in which the TPU was created.
-    String zone = "europe-west4-a";
+    String zone = "us-central1-a";
 
     listQueuedResources(projectId, zone);
   }
 
   // List Queued Resources.
-  public static TpuClient.ListQueuedResourcesPagedResponse listQueuedResources(
+  public static TpuClient.ListQueuedResourcesPage listQueuedResources(
       String projectId, String zone) throws IOException {
     String parent = String.format("projects/%s/locations/%s", projectId, zone);
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -42,7 +42,7 @@ public class ListQueuedResources {
       ListQueuedResourcesRequest request =
           ListQueuedResourcesRequest.newBuilder().setParent(parent).build();
 
-      return tpuClient.listQueuedResources(request);
+      return tpuClient.listQueuedResources(request).getPage();
     }
   }
 }
