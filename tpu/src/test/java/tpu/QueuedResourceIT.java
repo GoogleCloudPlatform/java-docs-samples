@@ -43,7 +43,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 10)
+@Timeout(value = 3)
 public class QueuedResourceIT {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "europe-west4-a";
@@ -89,7 +89,6 @@ public class QueuedResourceIT {
   public void testGetQueuedResource() throws IOException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockClient = mock(TpuClient.class);
-      GetQueuedResource mockGetQueuedResource = mock(GetQueuedResource.class);
       QueuedResource mockQueuedResource = mock(QueuedResource.class);
 
       mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
@@ -99,8 +98,8 @@ public class QueuedResourceIT {
       QueuedResource returnedQueuedResource =
           GetQueuedResource.getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
 
-      verify(mockGetQueuedResource, times(1))
-          .getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
+      verify(mockClient, times(1))
+          .getQueuedResource(any(GetQueuedResourceRequest.class));
       assertEquals(returnedQueuedResource, mockQueuedResource);
     }
   }
