@@ -42,7 +42,7 @@ public class StopTpuVm {
   }
 
   // Stops a TPU VM with the specified name in the given project and zone.
-  public static void stopTpuVm(String projectId, String zone, String nodeName)
+  public static Node stopTpuVm(String projectId, String zone, String nodeName)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -50,9 +50,8 @@ public class StopTpuVm {
       String name = NodeName.of(projectId, zone, nodeName).toString();
 
       StopNodeRequest request = StopNodeRequest.newBuilder().setName(name).build();
-      Node response = tpuClient.stopNodeAsync(request).get();
 
-      System.out.printf("TPU VM stopped: %s\n", response.getName());
+      return tpuClient.stopNodeAsync(request).get();
     }
   }
 }

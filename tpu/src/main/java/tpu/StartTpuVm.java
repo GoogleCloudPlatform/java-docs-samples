@@ -42,7 +42,7 @@ public class StartTpuVm {
   }
 
   // Starts a TPU VM with the specified name in the given project and zone.
-  public static void startTpuVm(String projectId, String zone, String nodeName)
+  public static Node startTpuVm(String projectId, String zone, String nodeName)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -50,9 +50,8 @@ public class StartTpuVm {
       String name = NodeName.of(projectId, zone, nodeName).toString();
 
       StartNodeRequest request = StartNodeRequest.newBuilder().setName(name).build();
-      Node response = tpuClient.startNodeAsync(request).get();
 
-      System.out.printf("TPU VM started: %s\n", response.getName());
+      return tpuClient.startNodeAsync(request).get();
     }
   }
 }
