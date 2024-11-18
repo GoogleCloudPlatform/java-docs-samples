@@ -103,7 +103,7 @@ public class Quickstart {
           client
               .createAspectTypeAsync(
                   // Aspect Type is created in "global" location to highlight, that resources from
-                  // "global" region can be attached Entry created in specific location
+                  // "global" region can be attached to Entry created in specific location
                   globalLocationName, aspectType, aspectTypeId)
               .get();
       System.out.println("Step 1: Created aspect type -> " + createdAspectType.getName());
@@ -124,7 +124,7 @@ public class Quickstart {
       EntryType createdEntryType =
           client
               // Entry Type is created in "global" location to highlight, that resources from
-              // "global" region can be attached Entry created in specific location
+              // "global" region can be attached to Entry created in specific location
               .createEntryTypeAsync(globalLocationName, entryType, entryTypeId)
               .get();
       System.out.println("Step 2: Created entry type -> " + createdEntryType.getName());
@@ -180,18 +180,18 @@ public class Quickstart {
               .setName(EntryName.of(projectId, location, entryGroupId, entryId).toString())
               .setView(EntryView.FULL)
               .build();
-      Entry retreivedEntry = client.getEntry(getEntryRequest);
-      System.out.println("Step 5: Retrieved entry -> " + retreivedEntry.getName());
-      retreivedEntry
+      Entry retrievedEntry = client.getEntry(getEntryRequest);
+      System.out.println("Step 5: Retrieved entry -> " + retrievedEntry.getName());
+      retrievedEntry
           .getAspectsMap()
           .values()
           .forEach(
-              retreivedAspect -> {
+              retrievedAspect -> {
                 System.out.println("Retrieved aspect for entry:");
-                System.out.println(" * aspect type -> " + retreivedAspect.getAspectType());
+                System.out.println(" * aspect type -> " + retrievedAspect.getAspectType());
                 System.out.println(
                     " * aspect field value -> "
-                        + retreivedAspect
+                        + retrievedAspect
                             .getData()
                             .getFieldsMap()
                             .get("example_field")
@@ -214,7 +214,7 @@ public class Quickstart {
               .map(SearchEntriesResult::getDataplexEntry)
               .collect(Collectors.toList());
       System.out.println("Entries found in Search:");
-      // Please note in log outputs that Entry Group and Entry Type are also represented as Entries
+      // Please note in output that Entry Group and Entry Type are also represented as Entries
       entriesFromSearch.forEach(
           entryFromSearch -> System.out.println(" * " + entryFromSearch.getName()));
 
