@@ -89,7 +89,6 @@ public class QueuedResourceIT {
   public void testGetQueuedResource() throws IOException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockClient = mock(TpuClient.class);
-      GetQueuedResource mockGetQueuedResource = mock(GetQueuedResource.class);
       QueuedResource mockQueuedResource = mock(QueuedResource.class);
 
       mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
@@ -99,8 +98,8 @@ public class QueuedResourceIT {
       QueuedResource returnedQueuedResource =
           GetQueuedResource.getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
 
-      verify(mockGetQueuedResource, times(1))
-          .getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
+      verify(mockClient, times(1))
+          .getQueuedResource(any(GetQueuedResourceRequest.class));
       assertEquals(returnedQueuedResource, mockQueuedResource);
     }
   }

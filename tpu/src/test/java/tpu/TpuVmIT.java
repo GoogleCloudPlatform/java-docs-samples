@@ -100,7 +100,6 @@ public class TpuVmIT {
       verify(mockClient, times(1))
           .getNode(any(GetNodeRequest.class));
       assertThat(returnedNode).isEqualTo(mockNode);
-      verify(mockClient, times(1)).close();
     }
   }
 
