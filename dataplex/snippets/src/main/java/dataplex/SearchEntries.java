@@ -64,15 +64,11 @@ public class SearchEntries {
           SearchEntriesRequest.newBuilder()
               .setPageSize(pageSize)
               .setPageToken(pageToken)
-              // There are 2 ways to limit the scope of the search:
-              // 1) Set the "scope" field, with either "projects/<>" or "organizations/<>",
-              // which will limit the search to resources residing in given project / organization.
-              // 2) Leave "scope" field blank. In that case scope will be limited to organization in
-              // which project from "name" field is located.
-              // Please note that field "name" must always be filled, as the request itself will be
-              // attributed to that.
-              .setName(String.format("projects/%s/locations/global", projectId)) // required
-              .setScope(String.format("projects/%s", projectId)) // optional
+              // Required field, will by default limit search scope to organization under which the
+              // project is located
+              .setName(String.format("projects/%s/locations/global", projectId))
+              // Optional field, will further limit search scope only to specified project
+              .setScope(String.format("projects/%s", projectId))
               .setQuery(query)
               .build();
 
