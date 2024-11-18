@@ -35,7 +35,8 @@ public class SearchEntriesIT {
   private static final String LOCATION = "us-central1";
   private static final String entryGroupId = "test-entry-group-" + ID;
   private static final String entryId = "test-entry-" + ID;
-  private static String expectedEntry;
+  private static final String expectedEntry =
+      String.format("locations/%s/entryGroups/%s/entries/%s", LOCATION, entryGroupId, entryId);
 
   private static final String PROJECT_ID = requireProjectIdEnvVar();
 
@@ -47,20 +48,10 @@ public class SearchEntriesIT {
   }
 
   @BeforeClass
-  public static void checkRequirements() {
-    requireProjectIdEnvVar();
-  }
-
-  @BeforeClass
-  // Set-up code that will be executed before all tests
   public static void setUp() throws Exception {
-    expectedEntry =
-        String.format("locations/%s/entryGroups/%s/entries/%s", LOCATION, entryGroupId, entryId);
-    // Create Entry Group resource that will be used for creating Entry
+    requireProjectIdEnvVar();
     CreateEntryGroup.createEntryGroup(PROJECT_ID, LOCATION, entryGroupId);
-    // Create Entry that will be used in tests
     CreateEntry.createEntry(PROJECT_ID, LOCATION, entryGroupId, entryId);
-    // Wait 30 seconds to allow Entry to propagate to Search
     Thread.sleep(30000);
   }
 
@@ -76,16 +67,12 @@ public class SearchEntriesIT {
     assertThat(
             entries.stream()
                 .map(Entry::getName)
-                // Project needs to be excluded from the name, as it is returned as numeric id,
-                // which is unknown at this place
                 .map(entryName -> entryName.substring(entryName.indexOf("location"))))
         .contains(expectedEntry);
   }
 
   @AfterClass
-  // Clean-up code that will be executed after all tests
   public static void tearDown() throws Exception {
-    // Clean-up Entry Group resource created in setUp()
     // Entry inside this Entry Group will be deleted automatically
     DeleteEntryGroup.deleteEntryGroup(PROJECT_ID, LOCATION, entryGroupId);
   }
