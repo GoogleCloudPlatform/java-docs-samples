@@ -35,8 +35,8 @@ import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -52,10 +52,10 @@ public class QueuedResourceIT {
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
   private static final String QUEUED_RESOURCE_NAME = "queued-resource";
   private static final String NETWORK_NAME = "default";
-  private ByteArrayOutputStream bout;
+  private static ByteArrayOutputStream bout;
 
-  @Before
-  public void setUp() {
+  @BeforeAll
+  public static void setUp() {
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
   }
@@ -106,7 +106,7 @@ public class QueuedResourceIT {
   }
 
   @Test
-  public void testDeleteTpuVm() {
+  public void testDeleteForceQueuedResource() {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
