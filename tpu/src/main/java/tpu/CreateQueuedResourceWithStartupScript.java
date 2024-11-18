@@ -38,7 +38,7 @@ public class CreateQueuedResourceWithStartupScript {
     // The zone in which to create the TPU.
     // For more information about supported TPU types for specific zones,
     // see https://cloud.google.com/tpu/docs/regions-zones
-    String zone = "europe-west4-a";
+    String zone = "us-central1-a";
     // The name for your TPU.
     String nodeName = "YOUR_TPU_NAME";
     // The accelerator type that specifies the version and size of the Cloud TPU you want to create.

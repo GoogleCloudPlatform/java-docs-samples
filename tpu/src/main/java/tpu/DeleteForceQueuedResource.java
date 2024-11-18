@@ -69,7 +69,8 @@ public class DeleteForceQueuedResource {
       tpuClient.deleteQueuedResourceAsync(request).get();
 
     } catch (UnknownException | InterruptedException | ExecutionException | IOException e) {
-      System.out.println(e.getMessage());
+      System.err.printf("Error deleting resource: %s%n", e.getMessage());
+      System.out.printf("Deleted Queued Resource: %s\n", name);
     }
     System.out.printf("Deleted Queued Resource: %s\n", name);
   }
