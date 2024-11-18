@@ -37,7 +37,7 @@ public class CreateSpotQueuedResource {
     // The zone in which to create the TPU.
     // For more information about supported TPU types for specific zones,
     // see https://cloud.google.com/tpu/docs/regions-zones
-    String zone = "europe-west4-a";
+    String zone = "us-central1-a";
     // The name for your TPU.
     String nodeName = "your-node-id1";
     // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
@@ -115,11 +115,9 @@ public class CreateSpotQueuedResource {
               .setQueuedResource(queuedResource)
               .build();
 
-      QueuedResource response = tpuClient.createQueuedResourceAsync(request).get();
       // You can wait until TPU Node is READY,
       // and check its status using getTpuVm() from "tpu_vm_get" sample.
-      System.out.printf("Queued Resource created: %s\n", queuedResourceId);
-      return response;
+      return tpuClient.createQueuedResourceAsync(request).get();
     }
   }
 }
