@@ -17,7 +17,6 @@
 package compute.reservation;
 
 // [START compute_reservation_create_template]
-
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Reservation;
@@ -44,7 +43,6 @@ public class CreateReservationForInstanceTemplate {
     // to be used for creating the reservation.
     String instanceTemplateUri =
         "projects/YOUR_PROJECT_ID/global/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME";
-
     // The URI of the instance template with REGIONAL location
     // to be used for creating the reservation. For us-central1 region in this case.
     // String instanceTemplateUri =
@@ -55,15 +53,13 @@ public class CreateReservationForInstanceTemplate {
   }
 
   // Creates a reservation in a project for the instance template.
-  public static void createReservationForInstanceTemplate(
+  public static Reservation createReservationForInstanceTemplate(
       String projectId, String reservationName, String instanceTemplateUri,
       int numberOfVms, String zone)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
-
-      // Create the reservation.
       Reservation reservation =
           Reservation.newBuilder()
               .setName(reservationName)
@@ -77,15 +73,13 @@ public class CreateReservationForInstanceTemplate {
                       .build())
               .build();
 
-      // Wait for the create reservation operation to complete.
       Operation response =
           reservationsClient.insertAsync(projectId, zone, reservation).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Reservation creation failed!" + response);
-        return;
+        return null;
       }
-      System.out.println("Reservation created. Operation Status: " + response.getStatus());
+      return reservationsClient.get(projectId, zone, reservationName);
     }
   }
 }
