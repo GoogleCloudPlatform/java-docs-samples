@@ -20,7 +20,6 @@ package dataplex;
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import com.google.cloud.dataplex.v1.Entry;
 import com.google.cloud.dataplex.v1.SearchEntriesRequest;
-import com.google.cloud.dataplex.v1.SearchEntriesResponse;
 import com.google.cloud.dataplex.v1.SearchEntriesResult;
 import java.io.IOException;
 import java.util.List;
@@ -33,37 +32,19 @@ public class SearchEntries {
     String projectId = "MY_PROJECT_ID";
     // How to write query for search: https://cloud.google.com/dataplex/docs/search-syntax
     String query = "MY_QUERY";
-    // Maximum number of Entries that will be returned
-    int pageSize = 3;
-    // By default, keep page token empty
-    String pageToken = "";
 
-    SearchEntriesResponse searchEntriesResponse =
-        searchEntries(projectId, query, pageSize, pageToken);
-    List<Entry> entries =
-        searchEntriesResponse.getResultsList().stream()
-            // Extract Entries nested inside search results
-            .map(SearchEntriesResult::getDataplexEntry)
-            .collect(Collectors.toList());
+    List<Entry> entries = searchEntries(projectId, query);
     entries.forEach(entry -> System.out.println("Entry name found in search: " + entry.getName()));
-    if (!searchEntriesResponse.getNextPageToken().isEmpty()) {
-      System.out.println(
-          "Page token of the next page: " + searchEntriesResponse.getNextPageToken());
-    }
   }
 
-  // Method to search Entries located in projectId matching query, up to pageSize results, starting
-  // from pageToken. Returns SearchEntriesResponse that contains list of Entries and the token of
-  // the next page (if applicable)
-  public static SearchEntriesResponse searchEntries(
-      String projectId, String query, int pageSize, String pageToken) throws IOException {
+  // Method to search Entries located in projectId and matching query
+  public static List<Entry> searchEntries(String projectId, String query) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       SearchEntriesRequest searchEntriesRequest =
           SearchEntriesRequest.newBuilder()
-              .setPageSize(pageSize)
-              .setPageToken(pageToken)
+              .setPageSize(100)
               // Required field, will by default limit search scope to organization under which the
               // project is located
               .setName(String.format("projects/%s/locations/global", projectId))
@@ -74,7 +55,10 @@ public class SearchEntries {
 
       CatalogServiceClient.SearchEntriesPagedResponse searchEntriesResponse =
           client.searchEntries(searchEntriesRequest);
-      return searchEntriesResponse.getPage().getResponse();
+      return searchEntriesResponse.getPage().getResponse().getResultsList().stream()
+          // Extract Entries nested inside search results
+          .map(SearchEntriesResult::getDataplexEntry)
+          .collect(Collectors.toList());
     }
   }
 }
