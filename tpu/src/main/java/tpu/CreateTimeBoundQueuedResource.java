@@ -24,12 +24,12 @@ import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import com.google.protobuf.Duration;
-import com.google.protobuf.Timestamp;
 // Uncomment the following line to use Interval or Date
+//import com.google.protobuf.Timestamp;
 //import com.google.type.Interval;
 //import java.util.Date;
+//import java.time.Instant;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 
 public class CreateTimeBoundQueuedResource {
@@ -161,21 +161,20 @@ public class CreateTimeBoundQueuedResource {
               .setQueuedResourceId(queuedResourceName)
               .build();
 
-      QueuedResource response = tpuClient.createQueuedResourceAsync(request).get();
       // You can wait until TPU Node is READY,
       // and check its status using getTpuVm() from "tpu_vm_get" sample.
-      System.out.printf("Queued Resource created: %s\n", response.getName());
-      return response;
+      return tpuClient.createQueuedResourceAsync(request).get();
     }
   }
 
+  // Uncomment this method if you want to use time bound configurations
   // Method to convert a string timestamp to a Protobuf Timestamp object
-  private static Timestamp convertStringToTimestamp(String timestampString) {
-    Instant instant = Instant.parse(timestampString);
-    return Timestamp.newBuilder()
-        .setSeconds(instant.getEpochSecond())
-        .setNanos(instant.getNano())
-        .build();
-  }
+  //  private static Timestamp convertStringToTimestamp(String timestampString) {
+  //    Instant instant = Instant.parse(timestampString);
+  //    return Timestamp.newBuilder()
+  //        .setSeconds(instant.getEpochSecond())
+  //        .setNanos(instant.getNano())
+  //        .build();
+  //  }
 }
 // [END tpu_queued_resources_time_bound]
