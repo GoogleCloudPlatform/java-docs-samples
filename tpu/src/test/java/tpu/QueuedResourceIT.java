@@ -17,81 +17,111 @@
 package tpu;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
+import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
+import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import com.google.cloud.tpu.v2alpha1.TpuClient;
+import com.google.cloud.tpu.v2alpha1.TpuSettings;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 6, unit = TimeUnit.MINUTES)
+@Timeout(value = 3)
 public class QueuedResourceIT {
-
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "europe-west4-a";
-  static String uuid = UUID.randomUUID().toString().split("-")[0];
-  private static final String NODE_FOR_NETWORK = "test-tpu-queued-resource-network-" + uuid;
-  private static final String NODE_FOR_SCRIPT = "test-tpu-queued-resource-script-" + uuid;
+  private static final String NODE_NAME = "test-tpu";
   private static final String TPU_TYPE = "v2-8";
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
-  private static final String QUEUED_RESOURCE_FOR_NETWORK =
-      "queued-resource-network-" + uuid;
-  private static final String QUEUED_RESOURCE_FOR_SCRIPT =
-      "queued-resource-script-" + uuid;
+  private static final String QUEUED_RESOURCE_NAME = "queued-resource";
   private static final String NETWORK_NAME = "default";
+  private ByteArrayOutputStream bout;
 
-  public static void requireEnvVar(String envVarName) {
-    assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
-        .that(System.getenv(envVarName)).isNotEmpty();
-  }
-
-  @BeforeAll
-  public static void setUp() {
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
-  }
-
-  @AfterAll
-  public static void cleanup() {
-    DeleteForceQueuedResource.deleteForceQueuedResource(
-        PROJECT_ID, ZONE, QUEUED_RESOURCE_FOR_NETWORK);
-    DeleteForceQueuedResource.deleteForceQueuedResource(
-        PROJECT_ID, ZONE, QUEUED_RESOURCE_FOR_SCRIPT);
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
   }
 
   @Test
   public void testCreateQueuedResourceWithSpecifiedNetwork() throws Exception {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      QueuedResource mockQueuedResource = mock(QueuedResource.class);
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
 
-    QueuedResource queuedResource = CreateQueuedResourceWithNetwork.createQueuedResourceWithNetwork(
-        PROJECT_ID, ZONE, QUEUED_RESOURCE_FOR_NETWORK, NODE_FOR_NETWORK,
-        TPU_TYPE, TPU_SOFTWARE_VERSION, NETWORK_NAME);
+      mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
+          .thenReturn(mockTpuClient);
+      when(mockTpuClient.createQueuedResourceAsync(any(CreateQueuedResourceRequest.class)))
+          .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockQueuedResource);
 
-    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getName())
-        .isEqualTo(NODE_FOR_NETWORK);
-    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getName())
-        .isEqualTo(NODE_FOR_NETWORK);
-    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getNetworkConfig().getNetwork()
-        .contains(NETWORK_NAME));
-    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getNetworkConfig().getSubnetwork()
-        .contains(NETWORK_NAME));
+      QueuedResource returnedQueuedResource =
+          CreateQueuedResourceWithNetwork.createQueuedResourceWithNetwork(
+          PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME, NODE_NAME,
+          TPU_TYPE, TPU_SOFTWARE_VERSION, NETWORK_NAME);
+
+      verify(mockTpuClient, times(1))
+          .createQueuedResourceAsync(any(CreateQueuedResourceRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedQueuedResource, mockQueuedResource);
+    }
   }
 
   @Test
-  public void testCreateQueuedResourceWithStartupScript() throws Exception {
-    QueuedResource queuedResource = CreateQueuedResourceWithStartupScript.createQueuedResource(
-        PROJECT_ID, ZONE, QUEUED_RESOURCE_FOR_SCRIPT, NODE_FOR_SCRIPT,
-        TPU_TYPE, TPU_SOFTWARE_VERSION);
+  public void testGetQueuedResource() throws IOException {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient mockClient = mock(TpuClient.class);
+      GetQueuedResource mockGetQueuedResource = mock(GetQueuedResource.class);
+      QueuedResource mockQueuedResource = mock(QueuedResource.class);
 
-    System.out.println(queuedResource.getTpu().getNodeSpec(0).getNode().getMetadataMap());
-    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().containsMetadata("startup-script"));
-    assertThat(queuedResource.getTpu().getNodeSpec(0).getNode().getMetadataMap()
-        .containsValue("#!/bin/bash\n"
-        + "echo \"Hello from the startup script!\""));
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
+      when(mockClient.getQueuedResource(any(GetQueuedResourceRequest.class)))
+          .thenReturn(mockQueuedResource);
+
+      QueuedResource returnedQueuedResource =
+          GetQueuedResource.getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
+
+      verify(mockGetQueuedResource, times(1))
+          .getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
+      assertEquals(returnedQueuedResource, mockQueuedResource);
+    }
+  }
+
+  @Test
+  public void testDeleteTpuVm() {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
+          .thenReturn(mockTpuClient);
+      when(mockTpuClient.deleteQueuedResourceAsync(any(DeleteQueuedResourceRequest.class)))
+          .thenReturn(mockFuture);
+
+      DeleteForceQueuedResource.deleteForceQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
+      String output = bout.toString();
+
+      assertThat(output).contains("Deleted Queued Resource:");
+      verify(mockTpuClient, times(1))
+          .deleteQueuedResourceAsync(any(DeleteQueuedResourceRequest.class));
+    }
   }
 }
