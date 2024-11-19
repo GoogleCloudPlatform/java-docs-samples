@@ -20,14 +20,15 @@ package tpu;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.UnknownException;
 import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
-import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
-import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import org.threeten.bp.Duration;
+// Uncomment this imports for getting node name
+//import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
+//import com.google.cloud.tpu.v2alpha1.QueuedResource;
+//import java.util.concurrent.TimeUnit;
 
 public class DeleteQueuedResource {
   public static void main(String[] args) {
@@ -64,15 +65,17 @@ public class DeleteQueuedResource {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
-      // Retrive node name
-      GetQueuedResourceRequest getRequest =
-          GetQueuedResourceRequest.newBuilder().setName(name).build();
-      QueuedResource queuedResource = tpuClient.getQueuedResource(getRequest);
-      String nodeName = queuedResource.getTpu().getNodeSpec(0).getNode().getName();
       // Before deleting the queued resource it is required to delete the TPU VM.
-      DeleteTpuVm.deleteTpuVm(projectId, zone, nodeName);
+      // Uncomment these lines to retrive node name
+      //GetQueuedResourceRequest getRequest =
+      //    GetQueuedResourceRequest.newBuilder().setName(name).build();
+      //QueuedResource queuedResource = tpuClient.getQueuedResource(getRequest);
+      //String nodeName = queuedResource.getTpu().getNodeSpec(0).getNode().getName();
+      // For more information about deleting TPU
+      // see https://cloud.google.com/tpu/docs/managing-tpus-tpu-vm
+      //DeleteTpuVm.deleteTpuVm(projectId, zone, nodeName);
       // Wait until TpuVm is deleted
-      TimeUnit.MINUTES.sleep(3);
+      //TimeUnit.MINUTES.sleep(3);
 
       DeleteQueuedResourceRequest request =
           DeleteQueuedResourceRequest.newBuilder().setName(name).build();

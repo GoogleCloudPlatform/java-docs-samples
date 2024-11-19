@@ -26,11 +26,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.tpu.v2.DeleteNodeRequest;
 import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
-import com.google.cloud.tpu.v2alpha1.Node;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
@@ -38,7 +36,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Timeout;
@@ -134,23 +131,16 @@ public class QueuedResourceIT {
   }
 
   @Test
-  public void testDeleteQueuedResource() throws ExecutionException, InterruptedException, IOException {
+  public void testDeleteQueuedResource() throws ExecutionException, InterruptedException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
-      OperationFuture mockFutureForQueuedResource = mock(OperationFuture.class);
-      QueuedResource mockQueuedResource = mock(QueuedResource.class);
 
       mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
           .thenReturn(mockTpuClient);
-      when(mockTpuClient.getQueuedResource(any(GetQueuedResourceRequest.class)))
-          .thenReturn(mockQueuedResource);
-      when(mockQueuedResource.getTpu().getNodeSpec(0).getNode().getName()).thenReturn(any(String.class));
-
-
       when(mockTpuClient.deleteQueuedResourceAsync(any(DeleteQueuedResourceRequest.class)))
-          .thenReturn(mockFutureForQueuedResource);
-      when(mockFutureForQueuedResource.get()).thenReturn(null);
+          .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(null);
 
       DeleteQueuedResource.deleteQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
       String output = bout.toString();
