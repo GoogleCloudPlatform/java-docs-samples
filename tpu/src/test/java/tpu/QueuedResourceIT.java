@@ -131,7 +131,8 @@ public class QueuedResourceIT {
   }
 
   @Test
-  public void testDeleteQueuedResource() throws ExecutionException, InterruptedException {
+  public void testDeleteQueuedResource()
+      throws ExecutionException, InterruptedException, IOException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
@@ -152,7 +153,8 @@ public class QueuedResourceIT {
   }
 
   @Test
-  public void testDeleteForceQueuedResource() throws ExecutionException, InterruptedException {
+  public void testDeleteForceQueuedResource()
+      throws ExecutionException, InterruptedException, IOException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);

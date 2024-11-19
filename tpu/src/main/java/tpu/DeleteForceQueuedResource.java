@@ -27,7 +27,8 @@ import java.util.concurrent.ExecutionException;
 import org.threeten.bp.Duration;
 
 public class DeleteForceQueuedResource {
-  public static void main(String[] args) {
+  public static void main(String[] args)
+      throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project.
     String projectId = "YOUR_PROJECT_ID";
@@ -41,7 +42,8 @@ public class DeleteForceQueuedResource {
 
   // Deletes a Queued Resource asynchronously with --force flag.
   public static void deleteForceQueuedResource(
-      String projectId, String zone, String queuedResourceId) {
+      String projectId, String zone, String queuedResourceId)
+      throws IOException, ExecutionException, InterruptedException {
     String name = String.format("projects/%s/locations/%s/queuedResources/%s",
         projectId, zone, queuedResourceId);
     // With these settings the client library handles the Operation's polling mechanism
@@ -68,7 +70,7 @@ public class DeleteForceQueuedResource {
 
       tpuClient.deleteQueuedResourceAsync(request).get();
 
-    } catch (UnknownException | InterruptedException | ExecutionException | IOException e) {
+    } catch (UnknownException e) {
       System.out.println(e.getMessage());
     }
     System.out.printf("Deleted Queued Resource: %s\n", name);
