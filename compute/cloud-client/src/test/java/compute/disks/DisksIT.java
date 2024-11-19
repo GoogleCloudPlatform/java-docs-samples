@@ -106,9 +106,12 @@ public class DisksIT {
     replicaZones = Arrays.asList(
         String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
         String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
-    // Cleanup existing stale instances.
+
+    // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-disks", PROJECT_ID, ZONE);
     Util.cleanUpExistingDisks("gcloud-test-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingRegionalDisks("gcloud-test-disk-secondary-regional-", PROJECT_ID, REGION);
+    Util.cleanUpExistingRegionalDisks("gcloud-test-disk-rattach-", PROJECT_ID, REGION);
     Util.cleanUpExistingSnapshots("gcloud-test-snapshot-", PROJECT_ID);
 
     // Create disk from image.
