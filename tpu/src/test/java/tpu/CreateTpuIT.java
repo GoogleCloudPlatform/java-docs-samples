@@ -16,7 +16,7 @@
 
 package tpu;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -25,17 +25,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.tpu.v2.DeleteNodeRequest;
-import com.google.cloud.tpu.v2.GetNodeRequest;
+import com.google.cloud.tpu.v2.CreateNodeRequest;
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.TpuClient;
 import com.google.cloud.tpu.v2.TpuSettings;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -43,52 +37,34 @@ import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 3)
-public class TpuVmIT {
+public class CreateTpuIT {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "asia-east1-c";
   private static final String NODE_NAME = "test-tpu";
-  private static ByteArrayOutputStream bout;
-
-  @BeforeAll
-  public static void setUp() {
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
-  }
+  private static final String TPU_TYPE = "v2-8";
+  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.12.1";
 
   @Test
-  public void testGetTpuVm() throws IOException {
+  public void testCreateTpuVm() throws Exception {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       Node mockNode = mock(Node.class);
-      TpuClient mockClient = mock(TpuClient.class);
-      GetTpuVm mockGetTpuVm = mock(GetTpuVm.class);
-
-      mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
-      when(mockClient.getNode(any(GetNodeRequest.class))).thenReturn(mockNode);
-
-      Node returnedNode = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-
-      verify(mockGetTpuVm, times(1))
-          .getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-      assertThat(returnedNode).isEqualTo(mockNode);
-    }
-  }
-
-  @Test
-  public void testDeleteTpuVm() throws IOException, ExecutionException, InterruptedException {
-    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
 
       mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
           .thenReturn(mockTpuClient);
-      when(mockTpuClient.deleteNodeAsync(any(DeleteNodeRequest.class)))
+      when(mockTpuClient.createNodeAsync(any(CreateNodeRequest.class)))
           .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockNode);
 
-      DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_NAME);
-      String output = bout.toString();
+      Node returnedNode = CreateTpuVm.createTpuVm(
+          PROJECT_ID, ZONE, NODE_NAME,
+          TPU_TYPE, TPU_SOFTWARE_VERSION);
 
-      assertThat(output).contains("TPU VM deleted");
-      verify(mockTpuClient, times(1)).deleteNodeAsync(any(DeleteNodeRequest.class));
+      verify(mockTpuClient, times(1))
+          .createNodeAsync(any(CreateNodeRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedNode, mockNode);
     }
   }
 }
