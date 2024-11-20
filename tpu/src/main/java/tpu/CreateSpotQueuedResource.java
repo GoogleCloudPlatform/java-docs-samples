@@ -17,16 +17,13 @@
 package tpu;
 
 // [START tpu_queued_resources_create_spot]
-import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.Node;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.SchedulingConfig;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
-import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import org.threeten.bp.Duration;
 
 public class CreateSpotQueuedResource {
   public static void main(String[] args)
@@ -37,9 +34,9 @@ public class CreateSpotQueuedResource {
     // The zone in which to create the TPU.
     // For more information about supported TPU types for specific zones,
     // see https://cloud.google.com/tpu/docs/regions-zones
-    String zone = "us-central1-a";
+    String zone = "us-central1-f";
     // The name for your TPU.
-    String nodeName = "your-node-id1";
+    String nodeName = "YOUR_TPU_NAME";
     // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
     // For more information about supported accelerator types for each TPU version,
     // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
@@ -48,7 +45,7 @@ public class CreateSpotQueuedResource {
     // For more information see https://cloud.google.com/tpu/docs/runtimes
     String tpuSoftwareVersion = "tpu-vm-tf-2.14.1";
     // The name for your Queued Resource.
-    String queuedResourceId = "your-queued-resource-id1";
+    String queuedResourceId = "QUEUED_RESOURCE_ID";
 
     createQueuedResource(
         projectId, zone, queuedResourceId, nodeName, tpuType, tpuSoftwareVersion);
@@ -59,24 +56,9 @@ public class CreateSpotQueuedResource {
       String projectId, String zone, String queuedResourceId,
       String nodeName, String tpuType, String tpuSoftwareVersion)
       throws IOException, ExecutionException, InterruptedException {
-    // With these settings the client library handles the Operation's polling mechanism
-    // and prevent CancellationException error
-    TpuSettings.Builder clientSettings =
-        TpuSettings.newBuilder();
-    clientSettings
-        .createQueuedResourceSettings()
-        .setRetrySettings(
-            RetrySettings.newBuilder()
-                .setInitialRetryDelay(Duration.ofMillis(5000L))
-                .setRetryDelayMultiplier(2.0)
-                .setInitialRpcTimeout(Duration.ZERO)
-                .setRpcTimeoutMultiplier(1.0)
-                .setMaxRetryDelay(Duration.ofMillis(45000L))
-                .setTotalTimeout(Duration.ofHours(24L))
-                .build());
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
+    try (TpuClient tpuClient = TpuClient.create()) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
       SchedulingConfig schedulingConfig = SchedulingConfig.newBuilder()
           .setPreemptible(true)
