@@ -36,7 +36,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -44,20 +43,13 @@ import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 50)
+@Timeout(value = 10)
 public class TpuVmIT {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "asia-east1-c";
   private static final String NODE_NAME = "test-tpu";
   private static final String TPU_TYPE = "v2-8";
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.12.1";
-  private static ByteArrayOutputStream bout;
-
-  @BeforeAll
-  public static void setUp() {
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
-  }
 
   @Test
   public void testCreateTpuVm() throws Exception {
@@ -103,6 +95,8 @@ public class TpuVmIT {
 
   @Test
   public void testDeleteTpuVm() throws IOException, ExecutionException, InterruptedException {
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
@@ -117,6 +111,8 @@ public class TpuVmIT {
 
       assertThat(output).contains("TPU VM deleted");
       verify(mockTpuClient, times(1)).deleteNodeAsync(any(DeleteNodeRequest.class));
+
+      bout.close();
     }
   }
 }
