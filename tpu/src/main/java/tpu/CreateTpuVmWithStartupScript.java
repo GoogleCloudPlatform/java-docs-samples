@@ -17,17 +17,13 @@
 package tpu;
 
 //[START tpu_vm_create_startup_script]
-import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
-import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2.CreateNodeRequest;
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.TpuClient;
-import com.google.cloud.tpu.v2.TpuSettings;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import org.threeten.bp.Duration;
 
 public class CreateTpuVmWithStartupScript {
   public static void main(String[] args)
@@ -38,7 +34,7 @@ public class CreateTpuVmWithStartupScript {
     // The zone in which to create the TPU.
     // For more information about supported TPU types for specific zones,
     // see https://cloud.google.com/tpu/docs/regions-zones
-    String zone = "europe-west4-a";
+    String zone = "us-central1-f";
     // The name for your TPU.
     String nodeName = "YOUR_TPU_NAME";
     // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
@@ -56,27 +52,9 @@ public class CreateTpuVmWithStartupScript {
   public static Node createTpuVmWithStartupScript(String projectId, String zone,
       String nodeName, String acceleratorType, String tpuSoftwareVersion)
       throws IOException, ExecutionException, InterruptedException {
-    // With these settings the client library handles the Operation's polling mechanism
-    // and prevent CancellationException error
-    TpuSettings.Builder clientSettings =
-         TpuSettings.newBuilder();
-    clientSettings
-         .createNodeOperationSettings()
-         .setPollingAlgorithm(
-           OperationTimedPollAlgorithm.create(
-               RetrySettings.newBuilder()
-                   .setInitialRetryDelay(Duration.ofMillis(5000L))
-                   .setRetryDelayMultiplier(1.5)
-                   .setMaxRetryDelay(Duration.ofMillis(45000L))
-                   .setInitialRpcTimeout(Duration.ZERO)
-                   .setRpcTimeoutMultiplier(1.0)
-                   .setMaxRpcTimeout(Duration.ZERO)
-                   .setTotalTimeout(Duration.ofHours(24L))
-                   .build()));
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
+    try (TpuClient tpuClient = TpuClient.create()) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
 
       String startupScriptContent = "#!/bin/bash\necho \"Hello from the startup script!\"";
