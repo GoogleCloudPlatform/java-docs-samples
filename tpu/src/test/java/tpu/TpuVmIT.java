@@ -26,6 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.tpu.v2.AcceleratorConfig;
 import com.google.cloud.tpu.v2.CreateNodeRequest;
 import com.google.cloud.tpu.v2.DeleteNodeRequest;
 import com.google.cloud.tpu.v2.GetNodeRequest;
@@ -49,7 +50,9 @@ public class TpuVmIT {
   private static final String ZONE = "asia-east1-c";
   private static final String NODE_NAME = "test-tpu";
   private static final String TPU_TYPE = "v2-8";
-  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.12.1";
+  private static final AcceleratorConfig.Type ACCELERATOR_TYPE = AcceleratorConfig.Type.V2;
+  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
+  private static final String TOPOLOGY = "2x2";
 
   @Test
   public void testCreateTpuVm() throws Exception {
@@ -89,7 +92,6 @@ public class TpuVmIT {
       verify(mockClient, times(1))
           .getNode(any(GetNodeRequest.class));
       assertThat(returnedNode).isEqualTo(mockNode);
-      verify(mockClient, times(1)).close();
     }
   }
 
@@ -113,6 +115,29 @@ public class TpuVmIT {
       verify(mockTpuClient, times(1)).deleteNodeAsync(any(DeleteNodeRequest.class));
 
       bout.close();
+    }
+  }
+
+  @Test
+  public void testCreateTpuVmWithTopologyFlag()
+      throws IOException, ExecutionException, InterruptedException {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      Node mockNode = mock(Node.class);
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
+      when(mockTpuClient.createNodeAsync(any(CreateNodeRequest.class)))
+          .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockNode);
+      Node returnedNode = CreateTpuWithTopologyFlag.createTpuWithTopologyFlag(
+          PROJECT_ID, ZONE, NODE_NAME, ACCELERATOR_TYPE,
+           TPU_SOFTWARE_VERSION, TOPOLOGY);
+
+      verify(mockTpuClient, times(1))
+          .createNodeAsync(any(CreateNodeRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedNode, mockNode);
     }
   }
 }

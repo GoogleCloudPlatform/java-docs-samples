@@ -99,7 +99,7 @@ public class QueuedResourceIT {
 
   @Test
   public void testDeleteForceQueuedResource()
-          throws IOException, ExecutionException, InterruptedException {
+          throws IOException, InterruptedException, ExecutionException {
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
