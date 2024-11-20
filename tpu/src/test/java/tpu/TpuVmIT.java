@@ -150,13 +150,13 @@ public class TpuVmIT {
       Node mockNode1 = mock(Node.class);
       Node mockNode2 = mock(Node.class);
       List<Node> mockListNodes = Arrays.asList(mockNode1, mockNode2);
-
       TpuClient mockTpuClient = mock(TpuClient.class);
-      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
       TpuClient.ListNodesPagedResponse mockListNodesResponse =
           mock(TpuClient.ListNodesPagedResponse.class);
-      when(mockTpuClient.listNodes(any(ListNodesRequest.class))).thenReturn(mockListNodesResponse);
       TpuClient.ListNodesPage mockListNodesPage = mock(TpuClient.ListNodesPage.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
+      when(mockTpuClient.listNodes(any(ListNodesRequest.class))).thenReturn(mockListNodesResponse);
       when(mockListNodesResponse.getPage()).thenReturn(mockListNodesPage);
       when(mockListNodesPage.getValues()).thenReturn(mockListNodes);
 

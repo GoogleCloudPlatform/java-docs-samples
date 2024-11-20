@@ -30,7 +30,7 @@ public class ListTpuVms {
     // The zone in which to create the TPU.
     // For more information about supported TPU types for specific zones,
     // see https://cloud.google.com/tpu/docs/regions-zones
-    String zone = "europe-west4-a";
+    String zone = "us-central1-f";
 
     listTpuVms(projectId, zone);
   }

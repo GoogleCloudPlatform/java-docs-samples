@@ -35,7 +35,7 @@ import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import org.junit.jupiter.api.BeforeAll;
+import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -52,13 +52,6 @@ public class QueuedResourceIT {
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
   private static final String QUEUED_RESOURCE_NAME = "queued-resource";
   private static final String NETWORK_NAME = "default";
-  private static ByteArrayOutputStream bout;
-
-  @BeforeAll
-  public static void setUp() {
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
-  }
 
   @Test
   public void testCreateQueuedResourceWithSpecifiedNetwork() throws Exception {
@@ -105,7 +98,10 @@ public class QueuedResourceIT {
   }
 
   @Test
-  public void testDeleteForceQueuedResource() {
+  public void testDeleteForceQueuedResource()
+          throws IOException, ExecutionException, InterruptedException {
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
@@ -121,6 +117,8 @@ public class QueuedResourceIT {
       assertThat(output).contains("Deleted Queued Resource:");
       verify(mockTpuClient, times(1))
           .deleteQueuedResourceAsync(any(DeleteQueuedResourceRequest.class));
+
+      bout.close();
     }
   }
 }
