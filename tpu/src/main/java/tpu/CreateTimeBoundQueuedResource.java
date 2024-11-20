@@ -17,12 +17,10 @@
 package tpu;
 
 // [START tpu_queued_resources_time_bound]
-import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.Node;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
-import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import com.google.protobuf.Duration;
 // Uncomment the following line to use Interval or Date
 //import com.google.protobuf.Timestamp;
@@ -65,24 +63,9 @@ public class CreateTimeBoundQueuedResource {
       String projectId, String nodeName, String queuedResourceName,
       String zone, String tpuType, String tpuSoftwareVersion)
       throws IOException, ExecutionException, InterruptedException {
-    // With these settings the client library handles the Operation's polling mechanism
-    // and prevent CancellationException error
-    TpuSettings.Builder clientSettings =
-        TpuSettings.newBuilder();
-    clientSettings
-        .createQueuedResourceSettings()
-        .setRetrySettings(
-            RetrySettings.newBuilder()
-                .setInitialRetryDelay(org.threeten.bp.Duration.ofMillis(5000L))
-                .setRetryDelayMultiplier(2.0)
-                .setInitialRpcTimeout(org.threeten.bp.Duration.ZERO)
-                .setRpcTimeoutMultiplier(1.0)
-                .setMaxRetryDelay(org.threeten.bp.Duration.ofMillis(45000L))
-                .setTotalTimeout(org.threeten.bp.Duration.ofHours(24L))
-                .build());
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
+    try (TpuClient tpuClient = TpuClient.create()) {
       // Define parent for requests
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
       // Create a Duration object representing 6 hours.

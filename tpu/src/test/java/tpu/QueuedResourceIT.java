@@ -43,7 +43,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 30)
+@Timeout(value = 10)
 public class QueuedResourceIT {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "europe-west4-a";
@@ -131,8 +131,7 @@ public class QueuedResourceIT {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
 
-      mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
-          .thenReturn(mockTpuClient);
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
       when(mockTpuClient.createQueuedResourceAsync(any(CreateQueuedResourceRequest.class)))
           .thenReturn(mockFuture);
       when(mockFuture.get()).thenReturn(mockQueuedResource);
