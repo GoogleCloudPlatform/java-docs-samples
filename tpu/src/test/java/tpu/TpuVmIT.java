@@ -130,8 +130,7 @@ public class TpuVmIT {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
 
-      mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
-          .thenReturn(mockTpuClient);
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
       when(mockTpuClient.createNodeAsync(any(CreateNodeRequest.class)))
           .thenReturn(mockFuture);
       when(mockFuture.get()).thenReturn(mockNode);

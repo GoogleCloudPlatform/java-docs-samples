@@ -17,17 +17,13 @@
 package tpu;
 
 //[START tpu_vm_create_topology]
-import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
-import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2.AcceleratorConfig;
 import com.google.cloud.tpu.v2.AcceleratorConfig.Type;
 import com.google.cloud.tpu.v2.CreateNodeRequest;
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.TpuClient;
-import com.google.cloud.tpu.v2.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import org.threeten.bp.Duration;
 
 public class CreateTpuWithTopologyFlag {
 
@@ -60,29 +56,10 @@ public class CreateTpuWithTopologyFlag {
   public static Node createTpuWithTopologyFlag(String projectId, String zone, String nodeName,
        Type tpuVersion, String tpuSoftwareVersion, String topology)
       throws IOException, ExecutionException, InterruptedException {
-    // With these settings the client library handles the Operation's polling mechanism
-    // and prevent CancellationException error
-    TpuSettings.Builder clientSettings =
-        TpuSettings.newBuilder();
-    clientSettings
-        .createNodeOperationSettings()
-        .setPollingAlgorithm(
-            OperationTimedPollAlgorithm.create(
-                RetrySettings.newBuilder()
-                    .setInitialRetryDelay(Duration.ofMillis(5000L))
-                    .setRetryDelayMultiplier(1.5)
-                    .setMaxRetryDelay(Duration.ofMillis(45000L))
-                    .setInitialRpcTimeout(Duration.ZERO)
-                    .setRpcTimeoutMultiplier(1.0)
-                    .setMaxRpcTimeout(Duration.ZERO)
-                    .setTotalTimeout(Duration.ofHours(24L))
-                    .build()));
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
+    try (TpuClient tpuClient = TpuClient.create()) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
-
       Node tpuVm =
           Node.newBuilder()
               .setName(nodeName)
