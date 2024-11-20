@@ -18,7 +18,6 @@ package tpu;
 
 //[START tpu_queued_resources_delete_force]
 import com.google.api.gax.retrying.RetrySettings;
-import com.google.api.gax.rpc.UnknownException;
 import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
@@ -66,14 +65,14 @@ public class DeleteForceQueuedResource {
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
       DeleteQueuedResourceRequest request =
-          DeleteQueuedResourceRequest.newBuilder().setName(name).setForce(true).build();
+              DeleteQueuedResourceRequest.newBuilder().setName(name).setForce(true).build();
 
+      // Waiting for updates in the library. Until then, the operation will complete successfully,
+      // but the user will receive an error message with UnknownException and IllegalStateException.
       tpuClient.deleteQueuedResourceAsync(request).get();
 
-    } catch (UnknownException e) {
-      System.out.println(e.getMessage());
+      System.out.printf("Deleted Queued Resource: %s\n", name);
     }
-    System.out.printf("Deleted Queued Resource: %s\n", name);
   }
 }
 //[END tpu_queued_resources_delete_force]

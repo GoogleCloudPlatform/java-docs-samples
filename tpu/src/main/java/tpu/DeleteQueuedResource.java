@@ -18,7 +18,6 @@ package tpu;
 
 //[START tpu_queued_resources_delete]
 import com.google.api.gax.retrying.RetrySettings;
-import com.google.api.gax.rpc.UnknownException;
 import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
@@ -28,7 +27,6 @@ import org.threeten.bp.Duration;
 // Uncomment this imports for getting node name
 //import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
 //import com.google.cloud.tpu.v2alpha1.QueuedResource;
-//import java.util.concurrent.TimeUnit;
 
 public class DeleteQueuedResource {
   public static void main(String[] args)
@@ -75,19 +73,16 @@ public class DeleteQueuedResource {
       //String nodeName = queuedResource.getTpu().getNodeSpec(0).getNode().getName();
       // For more information about deleting TPU
       // see https://cloud.google.com/tpu/docs/managing-tpus-tpu-vm
-      //DeleteTpuVm.deleteTpuVm(projectId, zone, nodeName);
-      // Wait until TpuVm is deleted
-      //TimeUnit.MINUTES.sleep(3);
 
       DeleteQueuedResourceRequest request =
-          DeleteQueuedResourceRequest.newBuilder().setName(name).build();
+              DeleteQueuedResourceRequest.newBuilder().setName(name).build();
 
+      // Waiting for updates in the library. Until then, the operation will complete successfully,
+      // but the user will receive an error message with UnknownException and IllegalStateException.
       tpuClient.deleteQueuedResourceAsync(request).get();
 
-    } catch (UnknownException e) {
-      System.out.println(e.getMessage());
+      System.out.printf("Deleted Queued Resource: %s\n", name);
     }
-    System.out.printf("Deleted Queued Resource: %s\n", name);
   }
 }
 //[END tpu_queued_resources_delete]
