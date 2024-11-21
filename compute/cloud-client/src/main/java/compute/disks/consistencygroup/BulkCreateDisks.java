@@ -1,18 +1,8 @@
 package compute.disks.consistencygroup;
 
-import com.google.cloud.compute.v1.BulkInsertDiskRequest;
-import com.google.cloud.compute.v1.BulkInsertDiskResource;
-import com.google.cloud.compute.v1.BulkInsertRegionDiskRequest;
-import com.google.cloud.compute.v1.Disk;
-import com.google.cloud.compute.v1.DisksClient;
-import com.google.cloud.compute.v1.ListDisksRequest;
-import com.google.cloud.compute.v1.ListRegionDisksRequest;
-import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -22,44 +12,40 @@ public class BulkCreateDisks {
   public static void main(String[] args) throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     String project = "tyaho-softserve-project";
-    String region = "us-central1";  // Or region
-    String consistencyGroupPolicy = "my-group"; // Replace with your consistency group self-link
-
-
-    bulkCreateDisks(project, region, consistencyGroupPolicy);
+    String disksLocation = "northamerica-northeast1-a";
+    String consistencyGroupLocation = "northamerica-northeast1";  // Or region
+    String consistencyGroupName = "consistency-group-2"; // Replace with your consistency group self-link
+    cloneDisksFromConsistencyGroup(project, disksLocation, consistencyGroupName,
+            consistencyGroupLocation);
   }
 
   // Creates multiple disks from a consistency group policy.
-  public static List<Disk> bulkCreateDisks(String project, String region, String consistencyGroupPolicy) throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String sourceConsistencyGroupPolicy = String.format("projects/%s/regions/%s/resourcePolicies/%s", project,region, consistencyGroupPolicy);
-    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
-      BulkInsertDiskResource.Builder bulkInsertDiskResource = BulkInsertDiskResource.newBuilder()
-          .setSourceConsistencyGroupPolicy(sourceConsistencyGroupPolicy);
+  public static void cloneDisksFromConsistencyGroup(String project, String disksLocation, String consistencyGroupLocation, String consistencyGroupName) throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String sourceConsistencyGroupPolicy = String.format("projects/%s/regions/%s/resourcePolicies/%s", project,consistencyGroupLocation, consistencyGroupName);
+    String region = disksLocation.substring(0, disksLocation.lastIndexOf('-'));
 
-      BulkInsertRegionDiskRequest bulkCreateDisksRequest = BulkInsertRegionDiskRequest.newBuilder()
-          .setProject(project)
-          .setRegion(region)
-          .setBulkInsertDiskResourceResource(bulkInsertDiskResource.build())
-          .build();
+    try (RegionDisksClient regionDisksClient = RegionDisksClient.create()) {
 
-      Operation operation = disksClient.bulkInsertAsync(bulkCreateDisksRequest).get(3, TimeUnit.MINUTES);
-      ListRegionDisksRequest listRequest =
+      BulkInsertDiskResource bulkInsertDiskResource = BulkInsertDiskResource.newBuilder()
+              .setSourceConsistencyGroupPolicy(sourceConsistencyGroupPolicy)
+              .build();
 
-          ListRegionDisksRequest.newBuilder()
+      BulkInsertRegionDiskRequest bulkInsertRegionDiskRequest = BulkInsertRegionDiskRequest
+              .newBuilder()
               .setProject(project)
               .setRegion(region)
-//              .setFilter(filter)
+              .setBulkInsertDiskResourceResource(bulkInsertDiskResource)
               .build();
-      List<Disk> createdDisks = new ArrayList<>();
-      for (Disk disk : disksClient.list(listRequest).iterateAll()) {
-        createdDisks.add(disk);
-        System.out.println("Created Disk: " + disk.getName()); // Or other relevant info
+      Operation operation = regionDisksClient.bulkInsertAsync(bulkInsertRegionDiskRequest).get(3,
+              TimeUnit.MINUTES);
+
+
+      if(operation.hasError() ) {
+        System.out.println("Clone disks from consistency group failed! " + operation.getError().toString());
+        return;
       }
-      if (operation.hasError()) {
-       return null;
-      }
-      System.out.println(createdDisks);
-      return createdDisks;
+      System.out.println(String.format("Disks cloned from consistency group: %s.",
+              consistencyGroupName));
 
     }
   }
