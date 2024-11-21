@@ -16,6 +16,8 @@
 
 package com.google.cloud.bigtable.examples.proxy.commands;
 
+import com.google.auth.Credentials;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.bigtable.admin.v2.BigtableInstanceAdminGrpc;
 import com.google.bigtable.admin.v2.BigtableTableAdminGrpc;
 import com.google.bigtable.v2.BigtableGrpc;
@@ -23,11 +25,13 @@ import com.google.cloud.bigtable.examples.proxy.core.ProxyHandler;
 import com.google.cloud.bigtable.examples.proxy.core.Registry;
 import com.google.common.collect.ImmutableMap;
 import com.google.longrunning.OperationsGrpc;
+import io.grpc.CallCredentials;
 import io.grpc.InsecureServerCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerCallHandler;
+import io.grpc.auth.MoreCallCredentials;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -67,6 +71,7 @@ public class Serve implements Callable<Void> {
 
   ManagedChannel adminChannel = null;
   ManagedChannel dataChannel = null;
+  Credentials credentials = null;
   Server server;
 
   @Override
@@ -95,17 +100,21 @@ public class Serve implements Callable<Void> {
               .disableRetry()
               .build();
     }
+    if (credentials == null) {
+      credentials = GoogleCredentials.getApplicationDefault();
+    }
+    CallCredentials callCredentials = MoreCallCredentials.from(credentials);
 
     Map<String, ServerCallHandler<byte[], byte[]>> serviceMap =
         ImmutableMap.of(
             BigtableGrpc.SERVICE_NAME,
-            new ProxyHandler<>(dataChannel),
+            new ProxyHandler<>(dataChannel, callCredentials),
             BigtableInstanceAdminGrpc.SERVICE_NAME,
-            new ProxyHandler<>(adminChannel),
+            new ProxyHandler<>(adminChannel, callCredentials),
             BigtableTableAdminGrpc.SERVICE_NAME,
-            new ProxyHandler<>(adminChannel),
+            new ProxyHandler<>(adminChannel, callCredentials),
             OperationsGrpc.SERVICE_NAME,
-            new ProxyHandler<>(adminChannel));
+            new ProxyHandler<>(adminChannel, callCredentials));
 
     server =
         NettyServerBuilder.forAddress(

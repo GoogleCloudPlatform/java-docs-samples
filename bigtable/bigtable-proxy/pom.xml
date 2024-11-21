@@ -57,6 +57,14 @@
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty-shaded</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-oauth2-http</artifactId>
+    </dependency>
 
 
     <!-- service defs -->
