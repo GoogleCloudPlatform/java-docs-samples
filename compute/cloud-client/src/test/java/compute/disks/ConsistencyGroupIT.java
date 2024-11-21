@@ -19,19 +19,31 @@ package compute.disks;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
 
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.compute.v1.BulkInsertRegionDiskRequest;
+import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.RegionDisksClient;
+import compute.disks.consistencygroup.CloneDisksFromConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 3, unit = TimeUnit.MINUTES)
@@ -40,6 +52,7 @@ public class ConsistencyGroupIT {
   private static final String REGION = "us-central1";
   private static final String CONSISTENCY_GROUP_NAME =
       "test-consistency-group-" + UUID.randomUUID();
+
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -69,5 +82,30 @@ public class ConsistencyGroupIT {
     // Verify that the consistency group was created
     assertNotNull(consistencyGroupLink);
     assertThat(consistencyGroupLink.contains(CONSISTENCY_GROUP_NAME));
+  }
+
+  @Test
+  public void testCloneDisksFromConsistencyGroup()
+          throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
+    try (MockedStatic<RegionDisksClient> mockedRegionDisksClient = mockStatic(RegionDisksClient.class)) {
+      Operation mockOperation = mock(Operation.class);
+      RegionDisksClient mockClient = mock(RegionDisksClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedRegionDisksClient.when(RegionDisksClient::create).thenReturn(mockClient);
+      when(mockClient.bulkInsertAsync(any(BulkInsertRegionDiskRequest.class)))
+              .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockOperation);
+
+      CloneDisksFromConsistencyGroup.cloneDisksFromConsistencyGroup(PROJECT_ID, REGION,
+              CONSISTENCY_GROUP_NAME, REGION);
+
+
+      assertThat(bout).isEqualTo(String.format("Disks cloned from consistency group: %s", CONSISTENCY_GROUP_NAME));
+      verify(mockClient, times(1))
+              .bulkInsertAsync(any(BulkInsertRegionDiskRequest.class));
+    }
   }
 }
