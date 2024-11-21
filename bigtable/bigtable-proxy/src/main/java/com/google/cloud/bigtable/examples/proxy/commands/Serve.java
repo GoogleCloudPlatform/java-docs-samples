@@ -21,6 +21,10 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.bigtable.admin.v2.BigtableInstanceAdminGrpc;
 import com.google.bigtable.admin.v2.BigtableTableAdminGrpc;
 import com.google.bigtable.v2.BigtableGrpc;
+import com.google.cloud.bigtable.examples.proxy.channelpool.ChannelPool;
+import com.google.cloud.bigtable.examples.proxy.channelpool.ChannelPoolSettings;
+import com.google.cloud.bigtable.examples.proxy.channelpool.DataChannel;
+import com.google.cloud.bigtable.examples.proxy.channelpool.ResourceCollector;
 import com.google.cloud.bigtable.examples.proxy.core.ProxyHandler;
 import com.google.cloud.bigtable.examples.proxy.core.Registry;
 import com.google.cloud.bigtable.examples.proxy.metrics.InstrumentedCallCredentials;
@@ -40,7 +44,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine.Command;
@@ -83,6 +88,7 @@ public class Serve implements Callable<Void> {
   Credentials credentials = null;
   Server server;
   Metrics metrics;
+  private ScheduledExecutorService refreshExecutor;
 
   @Override
   public Void call() throws Exception {
@@ -93,23 +99,6 @@ public class Serve implements Callable<Void> {
   }
 
   void start() throws IOException {
-    if (dataChannel == null) {
-      dataChannel =
-          ManagedChannelBuilder.forAddress(dataEndpoint.getName(), dataEndpoint.getPort())
-              .userAgent(userAgent)
-              .maxInboundMessageSize(256 * 1024 * 1024)
-              .disableRetry()
-              .keepAliveTime(30, TimeUnit.SECONDS)
-              .keepAliveTimeout(10, TimeUnit.SECONDS)
-              .build();
-    }
-    if (adminChannel == null) {
-      adminChannel =
-          ManagedChannelBuilder.forAddress(adminEndpoint.getName(), adminEndpoint.getPort())
-              .userAgent(userAgent)
-              .disableRetry()
-              .build();
-    }
     if (credentials == null) {
       credentials = GoogleCredentials.getApplicationDefault();
     }
@@ -118,6 +107,42 @@ public class Serve implements Callable<Void> {
 
     if (metrics == null) {
       metrics = new MetricsImpl(credentials, metricsProjectId);
+    }
+
+    ResourceCollector resourceCollector = new ResourceCollector();
+    refreshExecutor = Executors.newSingleThreadScheduledExecutor();
+
+    // From
+    // https://github.com/googleapis/java-bigtable/blob/e0ce2fe3c1207731d15e56faec66ba099652b87c/google-cloud-bigtable/src/main/java/com/google/cloud/bigtable/data/v2/stub/EnhancedBigtableStubSettings.java#L406-L410
+    ChannelPoolSettings poolSettings =
+        ChannelPoolSettings.builder()
+            .setInitialChannelCount(10)
+            .setMinRpcsPerChannel(1)
+            .setMaxRpcsPerChannel(50)
+            .setPreemptiveRefreshEnabled(true)
+            .build();
+
+    if (dataChannel == null) {
+      dataChannel =
+          ChannelPool.create(
+              poolSettings,
+              () ->
+                  new DataChannel(
+                      resourceCollector,
+                      userAgent,
+                      callCredentials,
+                      dataEndpoint.getName(),
+                      dataEndpoint.getPort(),
+                      refreshExecutor,
+                      metrics));
+    }
+
+    if (adminChannel == null) {
+      adminChannel =
+          ManagedChannelBuilder.forAddress(adminEndpoint.getName(), adminEndpoint.getPort())
+              .userAgent(userAgent)
+              .disableRetry()
+              .build();
     }
 
     Map<String, ServerCallHandler<byte[], byte[]>> serviceMap =
@@ -143,6 +168,7 @@ public class Serve implements Callable<Void> {
   }
 
   void cleanup() throws InterruptedException {
+    refreshExecutor.shutdown();
     dataChannel.shutdown();
     adminChannel.shutdown();
   }
