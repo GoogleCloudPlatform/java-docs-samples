@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.compute.v1.Disk;
+import compute.Util;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
@@ -75,10 +76,13 @@ public class ConsistencyGroupIT {
   @AfterAll
   public static void cleanUp()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Delete created consistency group
+    // Delete created resources
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, DISK_NAME);
     DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
         PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+
+    // Clean up stale disks
+    Util.cleanUpExistingRegionalDisks("test-disk-for-consistency-", PROJECT_ID, REGION);
   }
 
   @Test
@@ -88,7 +92,6 @@ public class ConsistencyGroupIT {
     String consistencyGroupLink = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
             PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
 
-    // Verify that the consistency group was created
     assertNotNull(consistencyGroupLink);
     assertThat(consistencyGroupLink.contains(CONSISTENCY_GROUP_NAME));
   }
@@ -100,7 +103,6 @@ public class ConsistencyGroupIT {
     Disk disk = AddDiskToConsistencyGroup.addDiskToConsistencyGroup(
         PROJECT_ID, REGION, DISK_NAME, CONSISTENCY_GROUP_NAME, REGION);
 
-    // Verify that the disk was added to the consistency group
     assertNotNull(disk);
     assertThat(disk.getResourcePoliciesList().get(0).contains(CONSISTENCY_GROUP_NAME));
   }
@@ -109,9 +111,8 @@ public class ConsistencyGroupIT {
   @Order(3)
   public void testListDisksInConsistencyGroup() throws IOException {
     List<Disk> disks = ListDisksInConsistencyGroup.listDisksInConsistencyGroup(
-        PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME, REGION);
+        PROJECT_ID, CONSISTENCY_GROUP_NAME, REGION, REGION);
 
-    // Verify that the disk list is returned
     assertThat(disks).isNotEmpty();
     assertTrue(disks.stream().anyMatch(disk -> disk.getName().equals(DISK_NAME)));
   }
