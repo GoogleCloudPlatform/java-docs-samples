@@ -66,10 +66,12 @@ public class SetIamPolices {
       Policy policy = oldPolicy.toBuilder().addBindings(bindings).build();
 
       // Update policy.
-      SetIamPolicyRequest request = SetIamPolicyRequest.newBuilder()
-          .setResource(sourceName.toString())
-          .setPolicy(policy).setUpdateMask(FieldMask.newBuilder().build())
-          .build();
+      SetIamPolicyRequest request =
+          SetIamPolicyRequest.newBuilder()
+              .setResource(sourceName.toString())
+              .setPolicy(policy)
+              .setUpdateMask(FieldMask.newBuilder().addPaths("bindings").build())
+              .build();
 
       // Call the API.
       Policy response = client.setIamPolicy(request);
