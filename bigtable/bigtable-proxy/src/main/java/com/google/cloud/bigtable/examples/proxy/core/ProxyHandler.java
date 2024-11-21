@@ -16,6 +16,9 @@
 
 package com.google.cloud.bigtable.examples.proxy.core;
 
+import com.google.cloud.bigtable.examples.proxy.metrics.CallLabels;
+import com.google.cloud.bigtable.examples.proxy.metrics.Metrics;
+import com.google.cloud.bigtable.examples.proxy.metrics.Tracer;
 import io.grpc.CallCredentials;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -29,25 +32,32 @@ public final class ProxyHandler<ReqT, RespT> implements ServerCallHandler<ReqT, 
   private static final Metadata.Key<String> AUTHORIZATION_KEY =
       Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
 
+  private final Metrics metrics;
   private final Channel channel;
   private final CallCredentials callCredentials;
 
-  public ProxyHandler(Channel channel, CallCredentials callCredentials) {
+  public ProxyHandler(Metrics metrics, Channel channel, CallCredentials callCredentials) {
+    this.metrics = metrics;
     this.channel = channel;
     this.callCredentials = callCredentials;
   }
 
   @Override
   public ServerCall.Listener<ReqT> startCall(ServerCall<ReqT, RespT> serverCall, Metadata headers) {
-    // Strip incoming credentials
-    headers.removeAll(AUTHORIZATION_KEY);
+    CallLabels callLabels = CallLabels.create(serverCall.getMethodDescriptor(), headers);
+    Tracer tracer = new Tracer(metrics, callLabels);
+
     // Inject proxy credentials
     CallOptions callOptions = CallOptions.DEFAULT.withCallCredentials(callCredentials);
+    callOptions = tracer.injectIntoCallOptions(callOptions);
+
+    // Strip incoming credentials
+    headers.removeAll(AUTHORIZATION_KEY);
 
     ClientCall<ReqT, RespT> clientCall =
         channel.newCall(serverCall.getMethodDescriptor(), callOptions);
 
-    CallProxy<ReqT, RespT> proxy = new CallProxy<>(serverCall, clientCall);
+    CallProxy<ReqT, RespT> proxy = new CallProxy<>(tracer, serverCall, clientCall);
     clientCall.start(proxy.clientCallListener, headers);
     serverCall.request(1);
     clientCall.request(1);
