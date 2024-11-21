@@ -63,16 +63,13 @@ public class SetIamPolices {
               .setRole(roleId)
               .addMembers("user:" + userEmail)
               .build();
-      Policy policy =
-          oldPolicy.toBuilder().addBindings(bindings).setEtag(oldPolicy.getEtag()).build();
+      Policy policy = oldPolicy.toBuilder().addBindings(bindings).build();
 
       // Update policy.
-      SetIamPolicyRequest request =
-          SetIamPolicyRequest.newBuilder()
-              .setResource(sourceName.toString())
-              .setPolicy(policy)
-              .setUpdateMask(FieldMask.newBuilder().addPaths("bindings").build())
-              .build();
+      SetIamPolicyRequest request = SetIamPolicyRequest.newBuilder()
+          .setResource(sourceName.toString())
+          .setPolicy(policy).setUpdateMask(FieldMask.newBuilder().build())
+          .build();
 
       // Call the API.
       Policy response = client.setIamPolicy(request);
