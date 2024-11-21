@@ -63,7 +63,8 @@ public class SetIamPolices {
               .setRole(roleId)
               .addMembers("user:" + userEmail)
               .build();
-      Policy policy = oldPolicy.toBuilder().addBindings(bindings).build();
+      Policy policy =
+          oldPolicy.toBuilder().addBindings(bindings).setEtag(oldPolicy.getEtag()).build();
 
       // Update policy.
       SetIamPolicyRequest request =
