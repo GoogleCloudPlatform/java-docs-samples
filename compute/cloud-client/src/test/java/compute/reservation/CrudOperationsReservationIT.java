@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Reservation;
-import compute.Util;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +56,7 @@ public class CrudOperationsReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
+
     CreateReservation.createReservation(PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
   }
 
