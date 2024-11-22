@@ -44,6 +44,47 @@
   </dependencyManagement>
 
   <dependencies>
+    <!-- gRPC -->
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty-shaded</artifactId>
+    </dependency>
+
+
+    <!-- service defs -->
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>grpc-google-cloud-bigtable-v2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-cloud-bigtable-v2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>grpc-google-cloud-bigtable-admin-v2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-cloud-bigtable-admin-v2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>grpc-google-common-protos</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-common-protos</artifactId>
+    </dependency>
+
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -80,6 +121,11 @@
     </dependency>
 
     <!-- Test -->
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
