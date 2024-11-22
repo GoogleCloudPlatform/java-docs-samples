@@ -46,14 +46,25 @@ public class Quickstart {
     String projectId = "MY_PROJECT_ID";
     // Available locations: https://cloud.google.com/dataplex/docs/locations
     String location = "MY_LOCATION";
+    // Variables below can be replaced with custom values or defaults can be kept
+    String aspectTypeId = "dataplex-quickstart-aspect-type";
+    String entryTypeId = "dataplex-quickstart-entry-type";
+    String entryGroupId = "dataplex-quickstart-entry-group";
+    String entryId = "dataplex-quickstart-entry";
 
-    quickstart(projectId, location);
+    quickstart(projectId, location, aspectTypeId, entryTypeId, entryGroupId, entryId);
   }
 
   // Method to demonstrate lifecycle of different Dataplex resources and their interactions.
   // Method creates Aspect Type, Entry Type, Entry Group and Entry, retrieves Entry
   // and cleans up created resources.
-  public static void quickstart(String projectId, String location) {
+  public static void quickstart(
+      String projectId,
+      String location,
+      String aspectTypeId,
+      String entryTypeId,
+      String entryGroupId,
+      String entryId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
@@ -62,7 +73,6 @@ public class Quickstart {
       LocationName specificLocationName = LocationName.of(projectId, location);
 
       // 1) Create Aspect Type that will be attached to Entry Type
-      String aspectTypeId = "dataplex-quickstart-aspect-type";
       AspectType.MetadataTemplate aspectField =
           AspectType.MetadataTemplate.newBuilder()
               // The name must follow regex ^(([a-zA-Z]{1})([\\w\\-_]{0,62}))$
@@ -105,7 +115,6 @@ public class Quickstart {
       System.out.println("Step 1: Created aspect type -> " + createdAspectType.getName());
 
       // 2) Create Entry Type, of which type Entry will be created
-      String entryTypeId = "dataplex-quickstart-entry-type";
       EntryType entryType =
           EntryType.newBuilder()
               .setDescription("entry type for dataplex quickstart")
@@ -127,7 +136,6 @@ public class Quickstart {
       System.out.println("Step 2: Created entry type -> " + createdEntryType.getName());
 
       // 3) Create Entry Group in which Entry will be located
-      String entryGroupId = "dataplex-quickstart-entry-group";
       EntryGroup entryGroup =
           EntryGroup.newBuilder().setDescription("entry group for dataplex quickstart").build();
       EntryGroup createdEntryGroup =
@@ -140,7 +148,6 @@ public class Quickstart {
       // 4) Create Entry
       // Wait 10 second to allow previously created resources to propagate
       Thread.sleep(10000);
-      String entryId = "dataplex-quickstart-entry";
       String aspectKey = String.format("%s.global.%s", projectId, aspectTypeId);
       Entry entry =
           Entry.newBuilder()

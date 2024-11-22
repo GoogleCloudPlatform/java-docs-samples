@@ -24,15 +24,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.UUID;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class QuickstartIT {
+  private static final String ID = UUID.randomUUID().toString().substring(0, 8);
   private static final String LOCATION = "us-central1";
   private static final String PROJECT_ID = requireProjectIdEnvVar();
   private static ByteArrayOutputStream bout;
   private static PrintStream originalPrintStream;
+  private static final String ASPECT_TYPE_ID = "quickstart-aspect-type-" + ID;
+  private static final String ENTRY_TYPE_ID = "quickstart-entry-type-" + ID;
+  private static final String ENTRY_GROUP_ID = "quickstart-entry-group-" + ID;
+  private static final String ENTRY_ID = "quickstart-entry-" + ID;
 
   private static String requireProjectIdEnvVar() {
     String value = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -48,7 +54,7 @@ public class QuickstartIT {
             .deleteEntryGroupAsync(
                 String.format(
                     "projects/%s/locations/%s/entryGroups/%s",
-                    PROJECT_ID, LOCATION, "dataplex-quickstart-entry-group"))
+                    PROJECT_ID, LOCATION, ENTRY_GROUP_ID))
             .get();
       } catch (Exception e) {
         // Pass, no resource to delete
@@ -57,8 +63,7 @@ public class QuickstartIT {
         client
             .deleteEntryTypeAsync(
                 String.format(
-                    "projects/%s/locations/global/entryTypes/%s",
-                    PROJECT_ID, "dataplex-quickstart-entry-type"))
+                    "projects/%s/locations/global/entryTypes/%s", PROJECT_ID, ENTRY_TYPE_ID))
             .get();
       } catch (Exception e) {
         // Pass, no resource to delete
@@ -67,8 +72,7 @@ public class QuickstartIT {
         client
             .deleteAspectTypeAsync(
                 String.format(
-                    "projects/%s/locations/global/aspectTypes/%s",
-                    PROJECT_ID, "dataplex-quickstart-aspect-type"))
+                    "projects/%s/locations/global/aspectTypes/%s", PROJECT_ID, ASPECT_TYPE_ID))
             .get();
       } catch (Exception e) {
         // Pass, no resource to delete
@@ -77,9 +81,8 @@ public class QuickstartIT {
   }
 
   @BeforeClass
-  public static void setUp() throws IOException {
+  public static void setUp() {
     requireProjectIdEnvVar();
-    forceCleanResources();
     // Re-direct print stream to capture logging
     bout = new ByteArrayOutputStream();
     originalPrintStream = System.out;
@@ -91,31 +94,28 @@ public class QuickstartIT {
     List<String> expectedLogs =
         List.of(
             String.format(
-                "Step 1: Created aspect type -> projects/%s/locations/global/aspectTypes"
-                    + "/dataplex-quickstart-aspect-type",
-                PROJECT_ID),
+                "Step 1: Created aspect type -> projects/%s/locations/global/aspectTypes/%s",
+                PROJECT_ID, ASPECT_TYPE_ID),
             String.format(
-                "Step 2: Created entry type -> projects/%s/locations/global/entryTypes"
-                    + "/dataplex-quickstart-entry-type",
-                PROJECT_ID),
+                "Step 2: Created entry type -> projects/%s/locations/global/entryTypes/%s",
+                PROJECT_ID, ENTRY_TYPE_ID),
             String.format(
-                "Step 3: Created entry group -> projects/%s/locations/%s/entryGroups"
-                    + "/dataplex-quickstart-entry-group",
-                PROJECT_ID, LOCATION),
+                "Step 3: Created entry group -> projects/%s/locations/%s/entryGroups/%s",
+                PROJECT_ID, LOCATION, ENTRY_GROUP_ID),
             String.format(
-                "Step 4: Created entry -> projects/%s/locations/%s/entryGroups"
-                    + "/dataplex-quickstart-entry-group/entries/dataplex-quickstart-entry",
-                PROJECT_ID, LOCATION),
+                "Step 4: Created entry -> projects/%s/locations/%s/entryGroups/%s/entries/%s",
+                PROJECT_ID, LOCATION, ENTRY_GROUP_ID, ENTRY_ID),
             String.format(
-                "Step 5: Retrieved entry -> projects/%s/locations/%s/entryGroups"
-                    + "/dataplex-quickstart-entry-group/entries/dataplex-quickstart-entry",
-                PROJECT_ID, LOCATION),
+                "Step 5: Retrieved entry -> projects/%s/locations/%s/entryGroups/%s/entries/%s",
+                PROJECT_ID, LOCATION, ENTRY_GROUP_ID, ENTRY_ID),
             // Step 6 - result from Search
-            "locations/us-central1/entryGroups/dataplex-quickstart-entry-group"
-                + "/entries/dataplex-quickstart-entry",
+            String.format(
+                "projects/%s/locations/%s/entryGroups/%s/entries/%s",
+                PROJECT_ID, LOCATION, ENTRY_GROUP_ID, ENTRY_ID),
             "Step 7: Successfully cleaned up resources");
 
-    Quickstart.quickstart(PROJECT_ID, LOCATION);
+    Quickstart.quickstart(
+        PROJECT_ID, LOCATION, ASPECT_TYPE_ID, ENTRY_TYPE_ID, ENTRY_GROUP_ID, ENTRY_ID);
     String output = bout.toString();
 
     expectedLogs.forEach(expectedLog -> assertThat(output).contains(expectedLog));
