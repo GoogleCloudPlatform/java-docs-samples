@@ -48,6 +48,7 @@ in a project your choosing. The metrics will be published under the namespace
 * `bigtableproxy.client.channel.count` Number of open channels
 * `bigtableproxy.client.call.max_outstanding_count` Maximum number of concurrent RPCs in a single
   minute window
+* `bigtableproxy.presence` Counts number of proxy processes (emit 1 per process).
 
 ## Requirements
 
