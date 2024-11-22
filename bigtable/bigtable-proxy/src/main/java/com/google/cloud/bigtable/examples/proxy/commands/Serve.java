@@ -52,7 +52,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Help.Visibility;
 import picocli.CommandLine.Option;
 
-@Command(name = "serve", mixinStandardHelpOptions = true, description = "Start the proxy server")
+@Command(name = "serve", description = "Start the proxy server")
 public class Serve implements Callable<Void> {
   private static final Logger LOGGER = LoggerFactory.getLogger(Serve.class);
 

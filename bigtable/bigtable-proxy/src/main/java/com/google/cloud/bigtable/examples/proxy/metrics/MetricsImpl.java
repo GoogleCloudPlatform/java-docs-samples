@@ -78,7 +78,7 @@ public class MetricsImpl implements Closeable, Metrics {
 
     clientCredLatencies =
         meter
-            .histogramBuilder(METRIC_PREFIX + "client.call.credential.refresh.duration")
+            .histogramBuilder(METRIC_PREFIX + "client.call.credential.duration")
             .setDescription("Latency of getting credentials")
             .setUnit("ms")
             .build();
@@ -144,7 +144,7 @@ public class MetricsImpl implements Closeable, Metrics {
 
     meter
         .gaugeBuilder(METRIC_PREFIX + "client.call.max_outstanding_count")
-        .setDescription("Number of concurrent")
+        .setDescription("Maximum number of concurrent RPCs in a single minute window")
         .setUnit("{call}")
         .ofLongs()
         .buildWithCallback(o -> o.record(maxSeen.getAndSet(0)));
