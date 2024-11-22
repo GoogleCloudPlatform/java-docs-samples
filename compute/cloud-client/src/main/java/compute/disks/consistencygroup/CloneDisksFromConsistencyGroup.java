@@ -55,32 +55,32 @@ public class CloneDisksFromConsistencyGroup {
             "projects/%s/regions/%s/resourcePolicies/%s", project, consistencyGroupLocation,
             consistencyGroupName);
 
+    // If your disk has zonal location uncomment this code
     //try (DisksClient disksClient = DisksClient.create()){
     //  BulkInsertDiskRequest request = BulkInsertDiskRequest.newBuilder()
-    //          .setProject(project)
-    //          .setZone(disksLocation)
-    //          .setBulkInsertDiskResourceResource(
-    //                  BulkInsertDiskResource.newBuilder()
-    //                          .setSourceConsistencyGroupPolicy(sourceConsistencyGroupPolicy)
-    //                          .build())
-    //          .build();
+    //    .setProject(project)
+    //    .setZone(disksLocation)
+    //    .setBulkInsertDiskResourceResource(
+    //        BulkInsertDiskResource.newBuilder()
+    //            .setSourceConsistencyGroupPolicy(sourceConsistencyGroupPolicy)
+    //            .build())
+    //    .build();
     //Operation response = disksClient.bulkInsertAsync(request).get(3, TimeUnit.MINUTES);
-
 
     try (RegionDisksClient regionDisksClient = RegionDisksClient.create()) {
       BulkInsertRegionDiskRequest request = BulkInsertRegionDiskRequest.newBuilder()
-              .setProject(project)
-              .setRegion(disksLocation)
-              .setBulkInsertDiskResourceResource(
-                      BulkInsertDiskResource.newBuilder()
-                              .setSourceConsistencyGroupPolicy(sourceConsistencyGroupPolicy)
-                              .build())
-              .build();
+          .setProject(project)
+          .setRegion(disksLocation)
+          .setBulkInsertDiskResourceResource(
+              BulkInsertDiskResource.newBuilder()
+                  .setSourceConsistencyGroupPolicy(sourceConsistencyGroupPolicy)
+                  .build())
+          .build();
 
       Operation response = regionDisksClient.bulkInsertAsync(request).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println(String.format("Error cloning disks: %s", response.getError()));
+        System.out.printf("Error cloning disks: %s%n", response.getError());
         return;
       }
       System.out.printf("Disks cloned from consistency group: %s\n", consistencyGroupName);

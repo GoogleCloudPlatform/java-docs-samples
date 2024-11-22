@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.compute.v1.Disk;
+import compute.Util;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CloneDisksFromConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
@@ -61,6 +62,9 @@ public class ConsistencyGroupIT {
   private static final String SECONDARY_REGIONAL_DISK =
           "gcloud-test-disk-secondary-regional-" + randomUUID;
   private static final long DISK_SIZE = 10L;
+  private static final List<String> replicaZones = Arrays.asList(
+          String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
+          String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -71,9 +75,6 @@ public class ConsistencyGroupIT {
   @BeforeAll
   public static void setUp() throws Exception {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    List<String> replicaZones = Arrays.asList(
-            String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
-            String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
 
     RegionalCreateFromSource.createRegionalDisk(PROJECT_ID, REGION, replicaZones,
             DISK_NAME, DISK_TYPE, 10, Optional.empty(), Optional.empty());
@@ -88,12 +89,15 @@ public class ConsistencyGroupIT {
 
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, DISK_NAME);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION_SECONDARY, SECONDARY_REGIONAL_DISK);
-    // Delete created consistency group
     DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
         PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
     DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
             PROJECT_ID, REGION_SECONDARY, CONSISTENCY_GROUP_SECONDARY);
 
+    // Clean up existing stale resources.
+    Util.cleanUpExistingRegionalDisks("test-disk-for-consistency-", PROJECT_ID, REGION);
+    Util.cleanUpExistingRegionalDisks(
+            "gcloud-test-disk-secondary-regional-", PROJECT_ID, REGION_SECONDARY);
   }
 
   @Test
@@ -103,7 +107,6 @@ public class ConsistencyGroupIT {
     String consistencyGroupLink = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
             PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
 
-    // Verify that the consistency group was created
     assertNotNull(consistencyGroupLink);
     assertThat(consistencyGroupLink.contains(CONSISTENCY_GROUP_NAME));
   }
@@ -115,7 +118,6 @@ public class ConsistencyGroupIT {
     Disk disk = AddDiskToConsistencyGroup.addDiskToConsistencyGroup(
             PROJECT_ID, REGION, DISK_NAME, CONSISTENCY_GROUP_NAME, REGION);
 
-    // Verify that the disk was added to the consistency group
     assertNotNull(disk);
     assertThat(disk.getResourcePoliciesList().get(0).contains(CONSISTENCY_GROUP_NAME));
   }
