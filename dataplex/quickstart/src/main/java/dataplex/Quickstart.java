@@ -58,15 +58,11 @@ public class Quickstart {
     // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
       // 0) Prepare variables used in following steps
-      String aspectTypeId = "dataplex-quickstart-aspect-type";
-      String aspectKey = String.format("%s.global.%s", projectId, aspectTypeId);
-      String entryTypeId = "dataplex-quickstart-entry-type";
-      String entryGroupId = "dataplex-quickstart-entry-group";
-      String entryId = "dataplex-quickstart-entry";
       LocationName globalLocationName = LocationName.of(projectId, "global");
       LocationName specificLocationName = LocationName.of(projectId, location);
 
       // 1) Create Aspect Type that will be attached to Entry Type
+      String aspectTypeId = "dataplex-quickstart-aspect-type";
       AspectType.MetadataTemplate aspectField =
           AspectType.MetadataTemplate.newBuilder()
               // The name must follow regex ^(([a-zA-Z]{1})([\\w\\-_]{0,62}))$
@@ -109,6 +105,7 @@ public class Quickstart {
       System.out.println("Step 1: Created aspect type -> " + createdAspectType.getName());
 
       // 2) Create Entry Type, of which type Entry will be created
+      String entryTypeId = "dataplex-quickstart-entry-type";
       EntryType entryType =
           EntryType.newBuilder()
               .setDescription("entry type for dataplex quickstart")
@@ -130,6 +127,7 @@ public class Quickstart {
       System.out.println("Step 2: Created entry type -> " + createdEntryType.getName());
 
       // 3) Create Entry Group in which Entry will be located
+      String entryGroupId = "dataplex-quickstart-entry-group";
       EntryGroup entryGroup =
           EntryGroup.newBuilder().setDescription("entry group for dataplex quickstart").build();
       EntryGroup createdEntryGroup =
@@ -142,6 +140,8 @@ public class Quickstart {
       // 4) Create Entry
       // Wait 10 second to allow previously created resources to propagate
       Thread.sleep(10000);
+      String entryId = "dataplex-quickstart-entry";
+      String aspectKey = String.format("%s.global.%s", projectId, aspectTypeId);
       Entry entry =
           Entry.newBuilder()
               .setEntryType(
