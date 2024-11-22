@@ -19,7 +19,9 @@ package dataplex;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import org.junit.AfterClass;
@@ -39,9 +41,45 @@ public class QuickstartIT {
     return value;
   }
 
+  private static void forceCleanResources() throws IOException {
+    try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      try {
+        client
+            .deleteEntryGroupAsync(
+                String.format(
+                    "projects/%s/locations/%s/entryGroups/%s",
+                    PROJECT_ID, LOCATION, "dataplex-quickstart-entry-group"))
+            .get();
+      } catch (Exception e) {
+        // Pass, no resource to delete
+      }
+      try {
+        client
+            .deleteEntryTypeAsync(
+                String.format(
+                    "projects/%s/locations/global/entryTypes/%s",
+                    PROJECT_ID, "dataplex-quickstart-entry-type"))
+            .get();
+      } catch (Exception e) {
+        // Pass, no resource to delete
+      }
+      try {
+        client
+            .deleteAspectTypeAsync(
+                String.format(
+                    "projects/%s/locations/global/aspectTypes/%s",
+                    PROJECT_ID, "dataplex-quickstart-aspect-type"))
+            .get();
+      } catch (Exception e) {
+        // Pass, no resource to delete
+      }
+    }
+  }
+
   @BeforeClass
-  public static void setUp() {
+  public static void setUp() throws IOException {
     requireProjectIdEnvVar();
+    forceCleanResources();
     // Re-direct print stream to capture logging
     bout = new ByteArrayOutputStream();
     originalPrintStream = System.out;
@@ -84,7 +122,8 @@ public class QuickstartIT {
   }
 
   @AfterClass
-  public static void tearDown() {
+  public static void tearDown() throws IOException {
+    forceCleanResources();
     // Restore print statements
     System.setOut(originalPrintStream);
     bout.reset();
