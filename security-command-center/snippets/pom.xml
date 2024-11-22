@@ -47,6 +47,18 @@
 
     <dependency>
       <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-securitycentermanagement</artifactId>
+      <version>0.20.0</version>
+    </dependency>
+
+	<dependency>
+      <groupId>com.google.api.grpc</groupId>
+      <artifactId>proto-google-cloud-securitycentermanagement-v1</artifactId>
+      <version>0.20.0</version>
+	</dependency>
+
+    <dependency>
+      <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
     </dependency>
 
@@ -80,4 +92,13 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+	<build>
+	 <plugins>
+	   <plugin>
+	     <groupId>org.apache.maven.plugins</groupId>
+	     <artifactId>maven-surefire-plugin</artifactId>
+ 	     <version>3.2.5</version>
+	   </plugin>
+	  </plugins>
+	</build>
 </project>

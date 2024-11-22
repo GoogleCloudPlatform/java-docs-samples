@@ -15,7 +15,6 @@
 package compute.disks.storagepool;
 
 // [START compute_hyperdisk_pool_create]
-
 import com.google.cloud.compute.v1.InsertStoragePoolRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.StoragePool;
@@ -32,12 +31,13 @@ public class CreateHyperdiskStoragePool {
     // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
     // Name of the zone in which you want to create the storagePool.
-    String zone = "europe-central2-b";
+    String zone = "us-central1-a";
     // Name of the storagePool you want to create.
     String storagePoolName = "YOUR_STORAGE_POOL_NAME";
-    // The type of disk you want to create. This value uses the following format:
-    // "projects/%s/zones/%s/storagePoolTypes/hyperdisk-throughput|hyperdisk-balanced"
-    String storagePoolType = "hyperdisk-balanced";
+    // The type of disk you want to create.
+    // Storage types can be "hyperdisk-throughput" or "hyperdisk-balanced"
+    String storagePoolType = String.format(
+        "projects/%s/zones/%s/storagePoolTypes/hyperdisk-balanced", projectId, zone);
     // Optional: the capacity provisioning type of the storage pool.
     // The allowed values are advanced and standard. If not specified, the value advanced is used.
     String capacityProvisioningType = "advanced";
@@ -48,16 +48,19 @@ public class CreateHyperdiskStoragePool {
     long provisionedIops = 3000;
     // the throughput in MBps to provision for the storage pool.
     long provisionedThroughput = 140;
+    // The allowed values are low-casing strings "advanced" and "standard".
+    // If not specified, "advanced" is used.
+    String performanceProvisioningType = "advanced";
 
     createHyperdiskStoragePool(projectId, zone, storagePoolName, storagePoolType,
-            capacityProvisioningType, provisionedCapacity, provisionedIops, provisionedThroughput);
+            capacityProvisioningType, provisionedCapacity, provisionedIops,
+        provisionedThroughput, performanceProvisioningType);
   }
 
   // Creates a hyperdisk storagePool in a project
   public static StoragePool createHyperdiskStoragePool(String projectId, String zone,
-                                                String storagePoolName, String storagePoolType,
-                                                String capacityProvisioningType, long capacity,
-                                                long iops, long throughput)
+        String storagePoolName, String storagePoolType, String capacityProvisioningType,
+        long capacity, long iops, long throughput, String performanceProvisioningType)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -71,6 +74,7 @@ public class CreateHyperdiskStoragePool {
               .setPoolProvisionedCapacityGb(capacity)
               .setPoolProvisionedIops(iops)
               .setPoolProvisionedThroughput(throughput)
+              .setPerformanceProvisioningType(performanceProvisioningType)
               .build();
 
       InsertStoragePoolRequest request = InsertStoragePoolRequest.newBuilder()
