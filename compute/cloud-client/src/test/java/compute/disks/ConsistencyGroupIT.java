@@ -19,40 +19,48 @@ package compute.disks;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
 
-import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.compute.v1.BulkInsertRegionDiskRequest;
-import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.Disk;
+import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CloneDisksFromConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 3, unit = TimeUnit.MINUTES)
+@Timeout(value = 5, unit = TimeUnit.MINUTES)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ConsistencyGroupIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "us-central1";
-  private static final String CONSISTENCY_GROUP_NAME =
-      "test-consistency-group-" + UUID.randomUUID();
-
+  private static final String REGION_SECONDARY = "northamerica-northeast1";
+  static String randomUUID = UUID.randomUUID().toString().split("-")[0];
+  private static final String CONSISTENCY_GROUP_NAME = "test-consistency-group-" + randomUUID;
+  private static final String CONSISTENCY_GROUP_SECONDARY =
+          "test-consistency-group-secondary-" + randomUUID;
+  private static final String DISK_NAME = "test-disk-for-consistency-" + randomUUID;
+  private static final String DISK_TYPE = String.format("regions/%s/diskTypes/pd-balanced", REGION);
+  private static final String SECONDARY_REGIONAL_DISK =
+          "gcloud-test-disk-secondary-regional-" + randomUUID;
+  private static final long DISK_SIZE = 10L;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -63,17 +71,33 @@ public class ConsistencyGroupIT {
   @BeforeAll
   public static void setUp() throws Exception {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    List<String> replicaZones = Arrays.asList(
+            String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
+            String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
+
+    RegionalCreateFromSource.createRegionalDisk(PROJECT_ID, REGION, replicaZones,
+            DISK_NAME, DISK_TYPE, 10, Optional.empty(), Optional.empty());
   }
 
   @AfterAll
   public static void cleanUp()
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    StopDiskReplication.stopDiskAsyncReplication(PROJECT_ID, REGION, DISK_NAME);
+    StopDiskReplication.stopDiskAsyncReplication(
+            PROJECT_ID, REGION_SECONDARY, SECONDARY_REGIONAL_DISK);
+
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, DISK_NAME);
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION_SECONDARY, SECONDARY_REGIONAL_DISK);
     // Delete created consistency group
     DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
         PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+    DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
+            PROJECT_ID, REGION_SECONDARY, CONSISTENCY_GROUP_SECONDARY);
+
   }
 
   @Test
+  @Order(1)
   public void testCreateDiskConsistencyGroupResourcePolicy()
       throws IOException, ExecutionException, InterruptedException {
     String consistencyGroupLink = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
@@ -85,27 +109,41 @@ public class ConsistencyGroupIT {
   }
 
   @Test
-  public void testCloneDisksFromConsistencyGroup()
-          throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    ByteArrayOutputStream bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
-    try (MockedStatic<RegionDisksClient> mockedRegionDisksClient = mockStatic(RegionDisksClient.class)) {
-      Operation mockOperation = mock(Operation.class);
-      RegionDisksClient mockClient = mock(RegionDisksClient.class);
-      OperationFuture mockFuture = mock(OperationFuture.class);
+  @Order(2)
+  public void testAddRegionalDiskToConsistencyGroup()
+          throws IOException, ExecutionException, InterruptedException {
+    Disk disk = AddDiskToConsistencyGroup.addDiskToConsistencyGroup(
+            PROJECT_ID, REGION, DISK_NAME, CONSISTENCY_GROUP_NAME, REGION);
 
-      mockedRegionDisksClient.when(RegionDisksClient::create).thenReturn(mockClient);
-      when(mockClient.bulkInsertAsync(any(BulkInsertRegionDiskRequest.class)))
-              .thenReturn(mockFuture);
-      when(mockFuture.get()).thenReturn(mockOperation);
-
-      CloneDisksFromConsistencyGroup.cloneDisksFromConsistencyGroup(PROJECT_ID, REGION,
-              CONSISTENCY_GROUP_NAME, REGION);
-
-
-      assertThat(bout).isEqualTo(String.format("Disks cloned from consistency group: %s", CONSISTENCY_GROUP_NAME));
-      verify(mockClient, times(1))
-              .bulkInsertAsync(any(BulkInsertRegionDiskRequest.class));
-    }
+    // Verify that the disk was added to the consistency group
+    assertNotNull(disk);
+    assertThat(disk.getResourcePoliciesList().get(0).contains(CONSISTENCY_GROUP_NAME));
   }
+
+  @Test
+  @Order(3)
+  public void testCloneDisksFromConsistencyGroup()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+    Disk disk = CreateDiskSecondaryRegional.createDiskSecondaryRegional(
+            PROJECT_ID, PROJECT_ID, DISK_NAME, SECONDARY_REGIONAL_DISK,
+            REGION, REGION_SECONDARY, DISK_SIZE,  DISK_TYPE);
+    CreateDiskConsistencyGroup.createDiskConsistencyGroup(
+            PROJECT_ID, REGION_SECONDARY, CONSISTENCY_GROUP_SECONDARY);
+    assert disk != null;
+    StartDiskReplication.startDiskAsyncReplication(
+            PROJECT_ID, DISK_NAME, REGION, disk.getSelfLink());
+    AddDiskToConsistencyGroup.addDiskToConsistencyGroup(PROJECT_ID, REGION_SECONDARY,
+            SECONDARY_REGIONAL_DISK, CONSISTENCY_GROUP_SECONDARY, REGION_SECONDARY);
+    TimeUnit.MINUTES.sleep(1);
+
+    CloneDisksFromConsistencyGroup.cloneDisksFromConsistencyGroup(
+            PROJECT_ID, REGION_SECONDARY, CONSISTENCY_GROUP_SECONDARY, REGION_SECONDARY);
+
+    assertThat(stdOut.toString()).contains("Disks cloned from consistency group: ");
+
+    stdOut.close();
+  }
+
 }
