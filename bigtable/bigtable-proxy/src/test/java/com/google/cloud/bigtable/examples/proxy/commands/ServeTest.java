@@ -37,6 +37,7 @@ import com.google.bigtable.v2.BigtableGrpc.BigtableFutureStub;
 import com.google.bigtable.v2.BigtableGrpc.BigtableImplBase;
 import com.google.bigtable.v2.CheckAndMutateRowRequest;
 import com.google.bigtable.v2.CheckAndMutateRowResponse;
+import com.google.cloud.bigtable.examples.proxy.metrics.NoopMetrics;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -453,6 +454,7 @@ public class ServeTest {
       s.dataChannel = targetChannel;
       s.adminChannel = targetChannel;
       s.credentials = targetCredentials;
+      s.metrics = new NoopMetrics();
 
       try (ServerSocket serverSocket = new ServerSocket(0)) {
         s.listenPort = serverSocket.getLocalPort();

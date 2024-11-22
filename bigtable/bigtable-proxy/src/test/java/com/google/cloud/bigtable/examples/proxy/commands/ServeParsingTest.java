@@ -28,9 +28,10 @@ public class ServeParsingTest {
   @Test
   public void testMinimalArgs() {
     Serve serve = new Serve();
-    new CommandLine(serve).parseArgs("--listen-port=1234");
+    new CommandLine(serve).parseArgs("--listen-port=1234", "--metrics-project-id=fake-project");
 
     assertThat(serve.listenPort).isEqualTo(1234);
+    assertThat(serve.metricsProjectId).isEqualTo("fake-project");
     assertThat(serve.userAgent).isEqualTo("bigtable-java-proxy");
     assertThat(serve.dataEndpoint).isEqualTo(Endpoint.create("bigtable.googleapis.com", 443));
     assertThat(serve.adminEndpoint).isEqualTo(Endpoint.create("bigtableadmin.googleapis.com", 443));
@@ -40,7 +41,10 @@ public class ServeParsingTest {
   public void testDataEndpointOverride() {
     Serve serve = new Serve();
     new CommandLine(serve)
-        .parseArgs("--listen-port=1234", "--bigtable-data-endpoint=example.com:1234");
+        .parseArgs(
+            "--listen-port=1234",
+            "--metrics-project-id=fake-project",
+            "--bigtable-data-endpoint=example.com:1234");
 
     assertThat(serve.listenPort).isEqualTo(1234);
     assertThat(serve.dataEndpoint).isEqualTo(Endpoint.create("example.com", 1234));
@@ -50,9 +54,20 @@ public class ServeParsingTest {
   public void testAdminDataEndpointOverride() {
     Serve serve = new Serve();
     new CommandLine(serve)
-        .parseArgs("--listen-port=1234", "--bigtable-admin-endpoint=example.com:1234");
+        .parseArgs(
+            "--listen-port=1234",
+            "--metrics-project-id=fake-project",
+            "--bigtable-admin-endpoint=example.com:1234");
 
     assertThat(serve.listenPort).isEqualTo(1234);
     assertThat(serve.adminEndpoint).isEqualTo(Endpoint.create("example.com", 1234));
+  }
+
+  @Test
+  public void testMetricsProjectIdOverride() {
+    Serve serve = new Serve();
+    new CommandLine(serve)
+        .parseArgs("--listen-port=1234", "--metrics-project-id=other-fake-project");
+    assertThat(serve.metricsProjectId).isEqualTo("other-fake-project");
   }
 }

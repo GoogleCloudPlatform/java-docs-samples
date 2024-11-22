@@ -16,6 +16,7 @@
 
 package com.google.cloud.bigtable.examples.proxy.core;
 
+import com.google.cloud.bigtable.examples.proxy.metrics.Tracer;
 import io.grpc.ClientCall;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
@@ -24,15 +25,20 @@ import javax.annotation.concurrent.GuardedBy;
 
 /** A per gppc RPC proxy. */
 class CallProxy<ReqT, RespT> {
+
+  private final Tracer tracer;
   final RequestProxy serverCallListener;
   final ResponseProxy clientCallListener;
 
   /**
+   * @param tracer a lifecycle observer to publish metrics.
    * @param serverCall the incoming server call. This will be triggered a customer client.
    * @param clientCall the outgoing call to Bigtable service. This will be created by {@link
    *     ProxyHandler}
    */
-  public CallProxy(ServerCall<ReqT, RespT> serverCall, ClientCall<ReqT, RespT> clientCall) {
+  public CallProxy(
+      Tracer tracer, ServerCall<ReqT, RespT> serverCall, ClientCall<ReqT, RespT> clientCall) {
+    this.tracer = tracer;
     // Listen for incoming request messages and send them to the upstream ClientCall
     // The RequestProxy will respect back pressure from the ClientCall and only request a new
     // message from the incoming rpc when the upstream client call is ready,
@@ -131,6 +137,8 @@ class CallProxy<ReqT, RespT> {
 
     @Override
     public void onClose(Status status, Metadata trailers) {
+      tracer.onCallFinished(status);
+
       serverCall.close(status, trailers);
     }
 

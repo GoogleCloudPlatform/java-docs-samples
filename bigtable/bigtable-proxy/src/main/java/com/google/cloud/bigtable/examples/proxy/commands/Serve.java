@@ -23,6 +23,9 @@ import com.google.bigtable.admin.v2.BigtableTableAdminGrpc;
 import com.google.bigtable.v2.BigtableGrpc;
 import com.google.cloud.bigtable.examples.proxy.core.ProxyHandler;
 import com.google.cloud.bigtable.examples.proxy.core.Registry;
+import com.google.cloud.bigtable.examples.proxy.metrics.InstrumentedCallCredentials;
+import com.google.cloud.bigtable.examples.proxy.metrics.Metrics;
+import com.google.cloud.bigtable.examples.proxy.metrics.MetricsImpl;
 import com.google.common.collect.ImmutableMap;
 import com.google.longrunning.OperationsGrpc;
 import io.grpc.CallCredentials;
@@ -69,10 +72,17 @@ public class Serve implements Callable<Void> {
       showDefaultValue = Visibility.ALWAYS)
   Endpoint adminEndpoint = Endpoint.create("bigtableadmin.googleapis.com", 443);
 
+  @Option(
+      names = "--metrics-project-id",
+      required = true,
+      description = "The project id where metrics should be exported")
+  String metricsProjectId = null;
+
   ManagedChannel adminChannel = null;
   ManagedChannel dataChannel = null;
   Credentials credentials = null;
   Server server;
+  Metrics metrics;
 
   @Override
   public Void call() throws Exception {
@@ -103,18 +113,23 @@ public class Serve implements Callable<Void> {
     if (credentials == null) {
       credentials = GoogleCredentials.getApplicationDefault();
     }
-    CallCredentials callCredentials = MoreCallCredentials.from(credentials);
+    CallCredentials callCredentials =
+        new InstrumentedCallCredentials(MoreCallCredentials.from(credentials));
+
+    if (metrics == null) {
+      metrics = new MetricsImpl(credentials, metricsProjectId);
+    }
 
     Map<String, ServerCallHandler<byte[], byte[]>> serviceMap =
         ImmutableMap.of(
             BigtableGrpc.SERVICE_NAME,
-            new ProxyHandler<>(dataChannel, callCredentials),
+            new ProxyHandler<>(metrics, dataChannel, callCredentials),
             BigtableInstanceAdminGrpc.SERVICE_NAME,
-            new ProxyHandler<>(adminChannel, callCredentials),
+            new ProxyHandler<>(metrics, adminChannel, callCredentials),
             BigtableTableAdminGrpc.SERVICE_NAME,
-            new ProxyHandler<>(adminChannel, callCredentials),
+            new ProxyHandler<>(metrics, adminChannel, callCredentials),
             OperationsGrpc.SERVICE_NAME,
-            new ProxyHandler<>(adminChannel, callCredentials));
+            new ProxyHandler<>(metrics, adminChannel, callCredentials));
 
     server =
         NettyServerBuilder.forAddress(
