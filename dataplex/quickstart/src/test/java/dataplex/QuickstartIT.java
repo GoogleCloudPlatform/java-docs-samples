@@ -40,13 +40,8 @@ public class QuickstartIT {
   }
 
   @BeforeClass
-  public static void checkRequirements() {
-    requireProjectIdEnvVar();
-  }
-
-  @BeforeClass
-  // Set-up code that will be executed before all tests
   public static void setUp() {
+    requireProjectIdEnvVar();
     // Re-direct print stream to capture logging
     bout = new ByteArrayOutputStream();
     originalPrintStream = System.out;
@@ -89,7 +84,6 @@ public class QuickstartIT {
   }
 
   @AfterClass
-  // Clean-up code that will be executed after all tests
   public static void tearDown() {
     // Restore print statements
     System.setOut(originalPrintStream);
