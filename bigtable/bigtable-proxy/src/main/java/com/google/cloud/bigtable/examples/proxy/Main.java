@@ -27,7 +27,7 @@ import picocli.CommandLine.Command;
  * Main entry point for proxy commands under {@link
  * com.google.cloud.bigtable.examples.proxy.commands}.
  */
-@Command(subcommands = {Serve.class})
+@Command(subcommands = {Serve.class}, name = "bigtable-proxy")
 public final class Main {
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
