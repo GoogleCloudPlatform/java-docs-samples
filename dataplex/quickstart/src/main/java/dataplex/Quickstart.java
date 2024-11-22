@@ -140,6 +140,8 @@ public class Quickstart {
       System.out.println("Step 3: Created entry group -> " + createdEntryGroup.getName());
 
       // 4) Create Entry
+      // Wait 10 second to allow previously created resources to propagate
+      Thread.sleep(10000);
       Entry entry =
           Entry.newBuilder()
               .setEntryType(
