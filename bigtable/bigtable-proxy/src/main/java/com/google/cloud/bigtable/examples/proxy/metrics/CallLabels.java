@@ -36,7 +36,6 @@ import java.util.Optional;
  *   <li>{@code x-goog-api-client} - contains the client info of the downstream client</li>
  * </ul>
  */
-
 @AutoValue
 public abstract class CallLabels {
   private static final Key<String> REQUEST_PARAMS =

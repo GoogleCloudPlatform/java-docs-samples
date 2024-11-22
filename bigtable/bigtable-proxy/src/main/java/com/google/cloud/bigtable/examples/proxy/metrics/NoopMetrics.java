@@ -44,4 +44,7 @@ public class NoopMetrics implements Metrics {
 
   @Override
   public void recordCallLatency(CallLabels labels, Status status, Duration duration) {}
+
+  @Override
+  public void updateChannelCount(int delta) {}
 }
