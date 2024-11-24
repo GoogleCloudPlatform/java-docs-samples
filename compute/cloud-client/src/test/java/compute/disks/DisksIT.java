@@ -50,13 +50,17 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DisksIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -69,10 +73,9 @@ public class DisksIT {
   private static String EMPTY_DISK_NAME;
   private static String SNAPSHOT_NAME;
   private static String DISK_TYPE;
-
   private static String ZONAL_BLANK_DISK;
-
   private static String REGIONAL_BLANK_DISK;
+  private static String REGIONAL_ATTACHED_DISK;
 
   private ByteArrayOutputStream stdOut;
 
@@ -101,11 +104,14 @@ public class DisksIT {
     DISK_TYPE = String.format("zones/%s/diskTypes/pd-ssd", ZONE);
     ZONAL_BLANK_DISK = "gcloud-test-disk-zattach-" + uuid;
     REGIONAL_BLANK_DISK = "gcloud-test-disk-rattach-" + uuid;
+    REGIONAL_ATTACHED_DISK = "gcloud-test-disk-regional-" + uuid;
 
     // Cleanup existing stale instances.
     Util.cleanUpExistingInstances("test-disks", PROJECT_ID, ZONE);
     Util.cleanUpExistingDisks("gcloud-test-", PROJECT_ID, ZONE);
     Util.cleanUpExistingSnapshots("gcloud-test-snapshot-", PROJECT_ID);
+    Util.cleanUpExistingRegionalDisks("gcloud-test-disk-rattach-", PROJECT_ID, REGION);
+    Util.cleanUpExistingRegionalDisks("gcloud-test-disk-regional-", PROJECT_ID, REGION);
 
     // Create disk from image.
     Image debianImage = null;
@@ -140,7 +146,9 @@ public class DisksIT {
 
     // Create zonal and regional blank disks for testing attach and resize.
     createZonalDisk();
-    createRegionalDisk();
+    createRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
+    createRegionalDisk(PROJECT_ID, REGION, REGIONAL_ATTACHED_DISK);
+
     TimeUnit.SECONDS.sleep(30);
 
     stdOut.close();
@@ -170,6 +178,7 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_ATTACHED_DISK);
 
     stdOut.close();
     System.setOut(out);
@@ -242,14 +251,15 @@ public class DisksIT {
     CreateEmptyDisk.createEmptyDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK, diskType, 12);
   }
 
-  public static void createRegionalDisk()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String diskType = String.format("regions/%s/diskTypes/pd-balanced", REGION);
+  public static void createRegionalDisk(
+          String projectId, String region, String diskName)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String diskType = String.format("regions/%s/diskTypes/pd-balanced", region);
     List<String> replicaZones = Arrays.asList(
-        String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
-        String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
-    RegionalCreateFromSource.createRegionalDisk(PROJECT_ID, REGION, replicaZones,
-        REGIONAL_BLANK_DISK, diskType, 11, Optional.empty(), Optional.empty());
+            String.format("projects/%s/zones/%s-a", projectId, region),
+            String.format("projects/%s/zones/%s-b", projectId, region));
+    RegionalCreateFromSource.createRegionalDisk(projectId, region, replicaZones,
+            diskName, diskType, 11, Optional.empty(), Optional.empty());
   }
 
   @BeforeEach
@@ -265,6 +275,7 @@ public class DisksIT {
   }
 
   @Test
+  @Order(1)
   public void testListDisks() throws IOException {
     ListDisks.listDisks(PROJECT_ID, ZONE, "");
     assertThat(stdOut.toString()).contains(DISK_NAME);
@@ -272,6 +283,7 @@ public class DisksIT {
   }
 
   @Test
+  @Order(1)
   public void testDiskAttachResize()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Test disk attach.
@@ -301,4 +313,15 @@ public class DisksIT {
         Util.getRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK).getSizeGb());
   }
 
+  @Test
+  @Order(2)
+  public void testAttachRegionalDiskForceAttach()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String diskLink = String.format("projects/%s/regions/%s/disks/%s",
+            PROJECT_ID, REGION, REGIONAL_ATTACHED_DISK);
+
+    AttachRegionalDiskForce.attachRegionalDiskForce(PROJECT_ID, ZONE, INSTANCE_NAME, diskLink);
+
+    assertThat(stdOut.toString()).contains("Regional disk attached successfully.");
+  }
 }
