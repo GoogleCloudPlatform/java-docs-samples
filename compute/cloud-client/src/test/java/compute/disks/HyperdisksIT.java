@@ -63,6 +63,9 @@ public class HyperdisksIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
+    // Clean up stale resources
+    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, ZONE);
   }
 
   @AfterAll
@@ -74,9 +77,6 @@ public class HyperdisksIT {
 
     Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
 
-    // Clean up stale resources
-    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, ZONE);
   }
 
   @Test
