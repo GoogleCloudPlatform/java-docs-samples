@@ -16,14 +16,9 @@
 
 package com.google.cloud.bigtable.examples.proxy.metrics;
 
-import com.google.api.gax.core.FixedCredentialsProvider;
-import com.google.api.gax.grpc.GrpcTransportChannel;
-import com.google.api.gax.rpc.FixedTransportChannelProvider;
 import com.google.auth.Credentials;
-import com.google.cloud.monitoring.v3.MetricServiceSettings;
 import com.google.cloud.opentelemetry.metric.GoogleCloudMetricExporter;
 import com.google.cloud.opentelemetry.metric.MetricConfiguration;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
@@ -32,16 +27,19 @@ import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.LongHistogram;
 import io.opentelemetry.api.metrics.LongUpDownCounter;
 import io.opentelemetry.api.metrics.Meter;
+import io.opentelemetry.contrib.gcp.resource.GCPResourceProvider;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.metrics.export.MetricExporter;
 import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
+import io.opentelemetry.sdk.resources.Resource;
 import java.io.Closeable;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 public class MetricsImpl implements Closeable, Metrics {
-  private static final String METRIC_PREFIX = "bigtableproxy.";
+  public static final String METRIC_PREFIX = "bigtableproxy.";
 
   static final AttributeKey<String> API_CLIENT_KEY = AttributeKey.stringKey("apiclient");
   static final AttributeKey<String> RESOURCE_KEY = AttributeKey.stringKey("resource");
@@ -63,6 +61,9 @@ public class MetricsImpl implements Closeable, Metrics {
   private final LongUpDownCounter channelCounter;
   private final AtomicInteger numOutstandingRpcs = new AtomicInteger();
   private final AtomicInteger maxSeen = new AtomicInteger();
+
+  static Supplier<Resource> gcpResourceSupplier =
+      () -> Resource.create(new GCPResourceProvider().getAttributes());
 
   public MetricsImpl(Credentials credentials, String projectId) throws IOException {
     meterProvider = createMeterProvider(credentials, projectId);
@@ -162,34 +163,18 @@ public class MetricsImpl implements Closeable, Metrics {
     meterProvider.close();
   }
 
-  private static SdkMeterProvider createMeterProvider(Credentials credentials, String projectId)
-      throws IOException {
-    MetricServiceSettings.Builder metricServiceSettingsBuilder = MetricServiceSettings.newBuilder();
-    metricServiceSettingsBuilder
-        .setCredentialsProvider(FixedCredentialsProvider.create(credentials))
-        .setTransportChannelProvider(
-            FixedTransportChannelProvider.create(
-                GrpcTransportChannel.create(
-                    ManagedChannelBuilder.forTarget(
-                            MetricConfiguration.DEFAULT_METRIC_SERVICE_ENDPOINT)
-                        // default 8 KiB
-                        .maxInboundMetadataSize(16 * 1000)
-                        .build())))
-        .createMetricDescriptorSettings()
-        .setSimpleTimeoutNoRetriesDuration(
-            Duration.ofMillis(MetricConfiguration.DEFAULT_DEADLINE.toMillis()))
-        .build();
-
+  private static SdkMeterProvider createMeterProvider(Credentials credentials, String projectId) {
     MetricConfiguration config =
         MetricConfiguration.builder()
             .setProjectId(projectId)
-            .setMetricServiceSettings(metricServiceSettingsBuilder.build())
+            .setCredentials(credentials)
             .setInstrumentationLibraryLabelsEnabled(false)
             .build();
 
     MetricExporter exporter = GoogleCloudMetricExporter.createWithConfiguration(config);
 
     return SdkMeterProvider.builder()
+        .setResource(gcpResourceSupplier.get())
         .registerMetricReader(
             PeriodicMetricReader.builder(exporter).setInterval(Duration.ofMinutes(1)).build())
         .build();
