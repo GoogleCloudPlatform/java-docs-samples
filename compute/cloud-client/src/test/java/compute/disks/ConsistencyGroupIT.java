@@ -84,6 +84,7 @@ public class ConsistencyGroupIT {
   public static void cleanUp()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     StopDiskReplication.stopDiskAsyncReplication(PROJECT_ID, REGION, DISK_NAME);
+    TimeUnit.SECONDS.sleep(30);
     StopDiskReplication.stopDiskAsyncReplication(
             PROJECT_ID, REGION_SECONDARY, SECONDARY_REGIONAL_DISK);
 
