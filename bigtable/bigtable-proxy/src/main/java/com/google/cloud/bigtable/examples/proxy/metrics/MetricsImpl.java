@@ -148,6 +148,13 @@ public class MetricsImpl implements Closeable, Metrics {
         .setUnit("{call}")
         .ofLongs()
         .buildWithCallback(o -> o.record(maxSeen.getAndSet(0)));
+
+    meter
+        .gaugeBuilder(METRIC_PREFIX + ".presence")
+        .setDescription("Number of proxy processes")
+        .setUnit("{process}")
+        .ofLongs()
+        .buildWithCallback(o -> o.record(1));
   }
 
   @Override
