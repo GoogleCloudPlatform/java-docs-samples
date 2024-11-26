@@ -43,18 +43,18 @@ public class StopDiskReplication {
   public static Operation.Status stopDiskAsyncReplication(
         String project, String diskLocation, String diskName)
         throws IOException, ExecutionException, InterruptedException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
 
     // Uncomment this line if your disk has zonal location.
     //try (DisksClient disksClient = DisksClient.create()) {
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (RegionDisksClient disksClient = RegionDisksClient.create()) {
       Operation response = disksClient.stopAsyncReplicationAsync(
               project, diskLocation, diskName).get();
 
       if (response.hasError()) {
-        System.out.println(response.getError());
+        System.out.printf("Error stopping disk replication: %s%n", response.getError());
         return null;
       }
       return response.getStatus();

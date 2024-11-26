@@ -57,8 +57,6 @@ public class StartDiskReplication {
         throws IOException, ExecutionException, InterruptedException {
     String secondaryDiskPath = String.format("projects/%s/regions/%s/disks/%s",
             secondaryProjectId, secondaryDiskLocation, secondaryDiskName);
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
 
     // Uncomment these lines if your disk has zonal location.
     // try (DisksClient disksClient = DisksClient.create()) {
@@ -67,6 +65,8 @@ public class StartDiskReplication {
     //        .setAsyncSecondaryDisk(secondaryDiskPath)
     //       .build();
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (RegionDisksClient disksClient = RegionDisksClient.create()) {
 
       RegionDisksStartAsyncReplicationRequest replicationRequest =
@@ -78,7 +78,7 @@ public class StartDiskReplication {
               primaryProjectId, primaryDiskLocation, primaryDiskName, replicationRequest).get();
 
       if (response.hasError()) {
-        System.out.println(response.getError());
+        System.out.printf("Error starting disk replication: %s%n", response.getError());
         return null;
       }
       return response.getStatus();

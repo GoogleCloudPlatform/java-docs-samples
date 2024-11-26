@@ -61,14 +61,16 @@ public class RemoveDiskFromConsistencyGroup {
     //        RemoveResourcePoliciesDiskRequest request =
     //            RemoveResourcePoliciesDiskRequest.newBuilder()
     //                .setDisk(diskName)
+    //                .setZone(location)
+    //                .setProject(project)
     //                .setDisksRemoveResourcePoliciesRequestResource(
     //                    DisksRemoveResourcePoliciesRequest.newBuilder()
     //                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
     //                        .build())
-    //                .setProject(project)
-    //                .setZone(location)
     //                .build();
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (RegionDisksClient disksClient = RegionDisksClient.create()) {
       RemoveResourcePoliciesRegionDiskRequest disksRequest =
               RemoveResourcePoliciesRegionDiskRequest.newBuilder()

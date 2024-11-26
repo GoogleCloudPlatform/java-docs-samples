@@ -60,14 +60,16 @@ public class AddDiskToConsistencyGroup {
     //        AddResourcePoliciesDiskRequest request =
     //            AddResourcePoliciesDiskRequest.newBuilder()
     //                .setDisk(diskName)
+    //                .setZone(location)
+    //                .setProject(project)
     //                .setDisksAddResourcePoliciesRequestResource(
     //                    DisksAddResourcePoliciesRequest.newBuilder()
     //                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
     //                        .build())
-    //                .setProject(project)
-    //                .setZone(location)
     //                .build();
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (RegionDisksClient disksClient = RegionDisksClient.create()) {
       AddResourcePoliciesRegionDiskRequest disksRequest =
           AddResourcePoliciesRegionDiskRequest.newBuilder()

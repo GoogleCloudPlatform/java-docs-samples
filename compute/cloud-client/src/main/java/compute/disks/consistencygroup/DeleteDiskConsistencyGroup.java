@@ -43,8 +43,8 @@ public class DeleteDiskConsistencyGroup {
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (ResourcePoliciesClient regionResourcePoliciesClient = ResourcePoliciesClient.create()) {
-      Operation response = regionResourcePoliciesClient
+    try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
+      Operation response = resourcePoliciesClient
           .deleteAsync(project, region, consistencyGroupName).get();
 
       if (response.hasError()) {

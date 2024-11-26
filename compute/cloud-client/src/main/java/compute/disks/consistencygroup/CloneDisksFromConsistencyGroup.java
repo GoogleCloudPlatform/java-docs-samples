@@ -54,30 +54,24 @@ public class CloneDisksFromConsistencyGroup {
     String sourceConsistencyGroupPolicy = String.format(
             "projects/%s/regions/%s/resourcePolicies/%s", project, consistencyGroupLocation,
             consistencyGroupName);
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
 
-    // If your disk has zonal location uncomment this code
+    // Use this client if your disk has zonal location.
     //try (DisksClient disksClient = DisksClient.create()){
-    //  BulkInsertDiskRequest request = BulkInsertDiskRequest.newBuilder()
-    //    .setProject(project)
-    //    .setZone(disksLocation)
-    //    .setBulkInsertDiskResourceResource(
-    //        BulkInsertDiskResource.newBuilder()
-    //            .setSourceConsistencyGroupPolicy(sourceConsistencyGroupPolicy)
-    //            .build())
-    //    .build();
-    //Operation response = disksClient.bulkInsertAsync(request).get(3, TimeUnit.MINUTES);
-
-    try (RegionDisksClient regionDisksClient = RegionDisksClient.create()) {
+    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
       BulkInsertRegionDiskRequest request = BulkInsertRegionDiskRequest.newBuilder()
           .setProject(project)
           .setRegion(disksLocation)
+          // Set the zone if your disk has zonal location instead of region.
+          // .setZone(disksLocation)
           .setBulkInsertDiskResourceResource(
               BulkInsertDiskResource.newBuilder()
                   .setSourceConsistencyGroupPolicy(sourceConsistencyGroupPolicy)
                   .build())
           .build();
 
-      Operation response = regionDisksClient.bulkInsertAsync(request).get(3, TimeUnit.MINUTES);
+      Operation response = disksClient.bulkInsertAsync(request).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         System.out.printf("Error cloning disks: %s%n", response.getError());
