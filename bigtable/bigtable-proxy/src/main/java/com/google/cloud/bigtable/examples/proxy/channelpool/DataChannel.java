@@ -201,6 +201,7 @@ public class DataChannel extends ManagedChannel {
         },
         metadata);
     call.sendMessage(request);
+    call.halfClose();
     call.request(Integer.MAX_VALUE);
 
     return f;
