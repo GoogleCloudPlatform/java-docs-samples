@@ -61,7 +61,7 @@ public class ConsistencyGroupIT {
   private static final String DISK_TYPE = String.format("regions/%s/diskTypes/pd-balanced", REGION);
   private static final String SECONDARY_REGIONAL_DISK =
           "gcloud-test-disk-secondary-regional-" + randomUUID;
-  private static final long DISK_SIZE = 10L;
+  private static final int DISK_SIZE = 10;
   private static final List<String> replicaZones = Arrays.asList(
           String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
           String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
@@ -86,7 +86,6 @@ public class ConsistencyGroupIT {
     StopDiskReplication.stopDiskAsyncReplication(PROJECT_ID, REGION, DISK_NAME);
     StopDiskReplication.stopDiskAsyncReplication(
             PROJECT_ID, REGION_SECONDARY, SECONDARY_REGIONAL_DISK);
-
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, DISK_NAME);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION_SECONDARY, SECONDARY_REGIONAL_DISK);
     DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
@@ -128,14 +127,13 @@ public class ConsistencyGroupIT {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    Disk disk = CreateDiskSecondaryRegional.createDiskSecondaryRegional(
+    CreateDiskSecondaryRegional.createDiskSecondaryRegional(
             PROJECT_ID, PROJECT_ID, DISK_NAME, SECONDARY_REGIONAL_DISK,
-            REGION, REGION_SECONDARY, DISK_SIZE,  DISK_TYPE);
+            REGION, REGION_SECONDARY, DISK_SIZE);
     CreateDiskConsistencyGroup.createDiskConsistencyGroup(
             PROJECT_ID, REGION_SECONDARY, CONSISTENCY_GROUP_SECONDARY);
-    assert disk != null;
     StartDiskReplication.startDiskAsyncReplication(
-            PROJECT_ID, DISK_NAME, REGION, disk.getSelfLink());
+            PROJECT_ID, DISK_NAME, REGION, PROJECT_ID, REGION_SECONDARY, SECONDARY_REGIONAL_DISK);
     AddDiskToConsistencyGroup.addDiskToConsistencyGroup(PROJECT_ID, REGION_SECONDARY,
             SECONDARY_REGIONAL_DISK, CONSISTENCY_GROUP_SECONDARY, REGION_SECONDARY);
     TimeUnit.MINUTES.sleep(1);

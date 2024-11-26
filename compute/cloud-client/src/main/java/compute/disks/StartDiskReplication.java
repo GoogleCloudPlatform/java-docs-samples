@@ -39,20 +39,24 @@ public class StartDiskReplication {
     // Learn more about zones and regions:
     // https://cloud.google.com/compute/docs/disks/async-pd/about#supported_region_pairs
     String primaryDiskLocation = "YOUR_PRIMARY_DISK_LOCATION";
-    // Path to your secondary disk.
-    // This value uses the following format for zonal location:
-    // "projects/%sYOUR_PROJECT_ID/zones/YOUR_PRIMARY_DISK_LOCATION/disks/PRIMARY_DISK_NAME"
-    String secondaryDiskPath =
-            "projects/%s/regions/YOUR_SECONDARY_DISK_LOCATION/disks/SECONDARY_DISK_NAME";
+    // The project that contains the secondary disk.
+    String secondaryProjectId = "SECONDARY_PROJECT_ID";
+    // Name of the region in which your secondary disk is located.
+    String secondaryDiskLocation = "YOUR_SECONDARY_DISK_LOCATION";
+    // Name of the secondary disk.
+    String secondaryDiskName = "SECONDARY_DISK_NAME";
 
-    startDiskAsyncReplication(
-            primaryProjectId, primaryDiskName, primaryDiskLocation, secondaryDiskPath);
+    startDiskAsyncReplication(primaryProjectId, primaryDiskName,
+            primaryDiskLocation, secondaryProjectId, secondaryDiskLocation, secondaryDiskName);
   }
 
   // Starts asynchronous replication for the specified disk.
-  public static void startDiskAsyncReplication(String primaryProjectId, String primaryDiskName,
-                                             String primaryDiskLocation, String secondaryDiskPath)
+  public static Operation.Status startDiskAsyncReplication(String primaryProjectId,
+         String primaryDiskName, String primaryDiskLocation, String secondaryProjectId,
+         String secondaryDiskLocation, String secondaryDiskName)
         throws IOException, ExecutionException, InterruptedException {
+    String secondaryDiskPath = String.format("projects/%s/regions/%s/disks/%s",
+            secondaryProjectId, secondaryDiskLocation, secondaryDiskName);
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
 
@@ -74,9 +78,10 @@ public class StartDiskReplication {
               primaryProjectId, primaryDiskLocation, primaryDiskName, replicationRequest).get();
 
       if (response.hasError()) {
-        return;
+        System.out.println(response.getError());
+        return null;
       }
-      System.out.println("Async replication started successfully.");
+      return response.getStatus();
     }
   }
 }

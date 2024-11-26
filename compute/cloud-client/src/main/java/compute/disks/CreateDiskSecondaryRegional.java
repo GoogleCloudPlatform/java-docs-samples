@@ -49,21 +49,16 @@ public class CreateDiskSecondaryRegional {
     // Size of the new disk in gigabytes.
     // Learn more about disk requirements:
     // https://cloud.google.com/compute/docs/disks/async-pd/configure?authuser=0#disk_requirements
-    long diskSizeGb = 30L;
-    // The type of the disk you want to create. This value uses the following format:
-    // "projects/{projectId}/zones/{zone}/diskTypes/
-    // (pd-standard|pd-ssd|pd-balanced|pd-extreme)".
-    String diskType = String.format(
-         "projects/%s/regions/%s/diskTypes/pd-balanced", secondaryProjectId, secondaryDiskRegion);
+    int diskSizeGb = 10;
 
     createDiskSecondaryRegional(primaryProjectId, secondaryProjectId, primaryDiskName,
-            secondaryDiskName, primaryDiskRegion, secondaryDiskRegion, diskSizeGb, diskType);
+            secondaryDiskName, primaryDiskRegion, secondaryDiskRegion, diskSizeGb);
   }
 
   // Creates a secondary disk in a specified region.
   public static Disk createDiskSecondaryRegional(String projectId, String secondaryProjectId,
        String primaryDiskName, String secondaryDiskName, String primaryDiskRegion,
-       String secondaryDiskRegion, long diskSizeGb,  String diskType)
+       String secondaryDiskRegion, int diskSizeGb)
         throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // An iterable collection of zone names in which you want to keep
     // the new disks' replicas. One of the replica zones of the clone must match
@@ -71,6 +66,9 @@ public class CreateDiskSecondaryRegional {
     List<String> replicaZones = Arrays.asList(
             String.format("projects/%s/zones/%s-c", secondaryProjectId, secondaryDiskRegion),
             String.format("projects/%s/zones/%s-b", secondaryProjectId, secondaryDiskRegion));
+
+    String diskType = String.format("projects/%s/regions/%s/diskTypes/pd-balanced",
+            secondaryProjectId, secondaryDiskRegion);
 
     String primaryDiskSource = String.format("projects/%s/regions/%s/disks/%s",
             projectId, primaryDiskRegion, primaryDiskName);
@@ -97,6 +95,7 @@ public class CreateDiskSecondaryRegional {
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
+        System.out.println(response.getError());
         return null;
       }
       return disksClient.get(secondaryProjectId, secondaryDiskRegion, secondaryDiskName);

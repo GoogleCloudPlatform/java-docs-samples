@@ -40,7 +40,7 @@ public class StopDiskReplication {
   }
 
   // Stops asynchronous replication for the specified disk.
-  public static void stopDiskAsyncReplication(
+  public static Operation.Status stopDiskAsyncReplication(
         String project, String diskLocation, String diskName)
         throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -54,9 +54,10 @@ public class StopDiskReplication {
               project, diskLocation, diskName).get();
 
       if (response.hasError()) {
-        return;
+        System.out.println(response.getError());
+        return null;
       }
-      System.out.println("Async replication stopped successfully.");
+      return response.getStatus();
     }
   }
 }
