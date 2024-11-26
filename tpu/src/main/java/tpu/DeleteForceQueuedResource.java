@@ -27,12 +27,12 @@ import org.threeten.bp.Duration;
 
 public class DeleteForceQueuedResource {
   public static void main(String[] args)
-          throws IOException, ExecutionException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project.
     String projectId = "YOUR_PROJECT_ID";
     // The zone in which the TPU was created.
-    String zone = "europe-west4-a";
+    String zone = "us-central1-f";
     // The name for your Queued Resource.
     String queuedResourceId = "QUEUED_RESOURCE_ID";
 
@@ -42,7 +42,7 @@ public class DeleteForceQueuedResource {
   // Deletes a Queued Resource asynchronously with --force flag.
   public static void deleteForceQueuedResource(
       String projectId, String zone, String queuedResourceId)
-          throws IOException, ExecutionException, InterruptedException {
+          throws ExecutionException, InterruptedException, IOException {
     String name = String.format("projects/%s/locations/%s/queuedResources/%s",
         projectId, zone, queuedResourceId);
     // With these settings the client library handles the Operation's polling mechanism
@@ -65,11 +65,11 @@ public class DeleteForceQueuedResource {
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
       DeleteQueuedResourceRequest request =
-              DeleteQueuedResourceRequest.newBuilder().setName(name).setForce(true).build();
-
-      tpuClient.deleteQueuedResourceAsync(request).get();
+          DeleteQueuedResourceRequest.newBuilder().setName(name).setForce(true).build();
       // Waiting for updates in the library. Until then, the operation will complete successfully,
       // but the user will receive an error message with UnknownException and IllegalStateException.
+      tpuClient.deleteQueuedResourceAsync(request).get();
+
       System.out.printf("Deleted Queued Resource: %s\n", name);
     }
   }
