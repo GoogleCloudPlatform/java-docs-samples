@@ -28,6 +28,7 @@ import io.opentelemetry.api.metrics.LongHistogram;
 import io.opentelemetry.api.metrics.LongUpDownCounter;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.contrib.gcp.resource.GCPResourceProvider;
+import io.opentelemetry.sdk.common.InstrumentationScopeInfo;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.metrics.export.MetricExporter;
 import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
@@ -39,13 +40,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 public class MetricsImpl implements Closeable, Metrics {
+  public static final InstrumentationScopeInfo INSTRUMENTATION_SCOPE_INFO =
+      InstrumentationScopeInfo.create("bigtable-proxy");
+
   public static final String METRIC_PREFIX = "bigtableproxy.";
 
-  static final AttributeKey<String> API_CLIENT_KEY = AttributeKey.stringKey("apiclient");
+  static final AttributeKey<String> API_CLIENT_KEY = AttributeKey.stringKey("api_client");
   static final AttributeKey<String> RESOURCE_KEY = AttributeKey.stringKey("resource");
   static final AttributeKey<String> APP_PROFILE_KEY = AttributeKey.stringKey("app_profile");
   static final AttributeKey<String> METHOD_KEY = AttributeKey.stringKey("method");
   static final AttributeKey<String> STATUS_KEY = AttributeKey.stringKey("status");
+
+  public static final String METRIC_PRESENCE_NAME = METRIC_PREFIX + ".presence";
+  public static final String METRIC_PRESENCE_DESC = "Number of proxy processes";
+  public static final String METRIC_PRESENCE_UNIT = "{process}";
 
   private final SdkMeterProvider meterProvider;
 
@@ -67,7 +75,11 @@ public class MetricsImpl implements Closeable, Metrics {
 
   public MetricsImpl(Credentials credentials, String projectId) throws IOException {
     meterProvider = createMeterProvider(credentials, projectId);
-    Meter meter = meterProvider.meterBuilder("bigtableproxy").build();
+    Meter meter =
+        meterProvider
+            .meterBuilder(INSTRUMENTATION_SCOPE_INFO.getName())
+            .setInstrumentationVersion(INSTRUMENTATION_SCOPE_INFO.getVersion())
+            .build();
 
     serverCallsStarted =
         meter
@@ -151,9 +163,9 @@ public class MetricsImpl implements Closeable, Metrics {
         .buildWithCallback(o -> o.record(maxSeen.getAndSet(0)));
 
     meter
-        .gaugeBuilder(METRIC_PREFIX + ".presence")
-        .setDescription("Number of proxy processes")
-        .setUnit("{process}")
+        .gaugeBuilder(METRIC_PRESENCE_NAME)
+        .setDescription(METRIC_PRESENCE_DESC)
+        .setUnit(METRIC_PRESENCE_UNIT)
         .ofLongs()
         .buildWithCallback(o -> o.record(1));
   }

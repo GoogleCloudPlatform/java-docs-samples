@@ -106,6 +106,7 @@ public class Serve implements Callable<Void> {
         new InstrumentedCallCredentials(MoreCallCredentials.from(credentials));
 
     if (metrics == null) {
+      // Don't pass InstrumentedCallCredentials to anything thats not wrapped by
       metrics = new MetricsImpl(credentials, metricsProjectId);
     }
 

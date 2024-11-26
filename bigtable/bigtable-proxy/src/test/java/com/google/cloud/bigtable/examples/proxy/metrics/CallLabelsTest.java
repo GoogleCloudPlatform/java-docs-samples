@@ -54,7 +54,7 @@ public class CallLabelsTest {
     CallLabelsSubject.assertThat(callLabels)
         .hasOtelAttributesThat()
         .containsAtLeast(
-            AttributeKey.stringKey("apiclient"), "some-client",
+            AttributeKey.stringKey("api_client"), "some-client",
             AttributeKey.stringKey("resource"), "projects/p/instances/i/tables/t",
             AttributeKey.stringKey("app_profile"), "a",
             AttributeKey.stringKey("method"), "google.bigtable.v2.Bigtable/MutateRow");
@@ -82,7 +82,7 @@ public class CallLabelsTest {
     CallLabelsSubject.assertThat(callLabels)
         .hasOtelAttributesThat()
         .containsAtLeast(
-            AttributeKey.stringKey("apiclient"), "<missing>",
+            AttributeKey.stringKey("api_client"), "<missing>",
             AttributeKey.stringKey("resource"), "<missing>",
             AttributeKey.stringKey("app_profile"), "<missing>",
             AttributeKey.stringKey("method"), "google.bigtable.v2.Bigtable/MutateRow");

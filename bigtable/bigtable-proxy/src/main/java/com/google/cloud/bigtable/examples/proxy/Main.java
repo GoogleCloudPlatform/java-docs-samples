@@ -18,8 +18,6 @@ package com.google.cloud.bigtable.examples.proxy;
 
 import com.google.cloud.bigtable.examples.proxy.commands.Serve;
 import com.google.cloud.bigtable.examples.proxy.commands.Verify;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;

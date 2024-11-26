@@ -29,10 +29,9 @@ import com.google.bigtable.v2.ReadRowsResponse;
 import com.google.bigtable.v2.RowFilter;
 import com.google.bigtable.v2.RowFilter.Chain;
 import com.google.bigtable.v2.RowSet;
+import com.google.cloud.bigtable.examples.proxy.metrics.MetricsImpl;
 import com.google.cloud.opentelemetry.metric.GoogleCloudMetricExporter;
 import com.google.cloud.opentelemetry.metric.MetricConfiguration;
-import com.google.cloud.opentelemetry.resource.GcpResource;
-import com.google.cloud.opentelemetry.resource.ResourceTranslator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.net.PercentEscaper;
 import com.google.protobuf.ByteString;
@@ -53,7 +52,6 @@ import io.grpc.auth.MoreCallCredentials;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.contrib.gcp.resource.GCPResourceProvider;
 import io.opentelemetry.sdk.common.CompletableResultCode;
-import io.opentelemetry.sdk.common.InstrumentationScopeInfo;
 import io.opentelemetry.sdk.metrics.data.MetricData;
 import io.opentelemetry.sdk.metrics.export.MetricExporter;
 import io.opentelemetry.sdk.metrics.internal.data.ImmutableGaugeData;
@@ -102,7 +100,6 @@ public class Verify implements Callable<Void> {
       showDefaultValue = Visibility.ALWAYS)
   Endpoint dataEndpoint = Endpoint.create("bigtable.googleapis.com", 443);
 
-
   Credentials credentials = null;
 
   @Override
@@ -141,7 +138,7 @@ public class Verify implements Callable<Void> {
               .setTableName(
                   String.format(
                       "projects/%s/instances/%s/tables/%s",
-                      bigtableProjectId, bigtableTableId, bigtableTableId))
+                      bigtableProjectId, bigtableInstanceId, bigtableTableId))
               .setRowsLimit(1)
               .setRows(
                   RowSet.newBuilder().addRowKeys(ByteString.copyFromUtf8("some-nonexistent-row")))
@@ -194,7 +191,6 @@ public class Verify implements Callable<Void> {
 
     GCPResourceProvider resourceProvider = new GCPResourceProvider();
     Resource resource = Resource.create(resourceProvider.getAttributes());
-    GcpResource gcpResource = ResourceTranslator.mapResource(resource);
 
     MetricExporter exporter =
         GoogleCloudMetricExporter.createWithConfiguration(
@@ -208,10 +204,10 @@ public class Verify implements Callable<Void> {
         ImmutableList.of(
             ImmutableMetricData.createLongGauge(
                 resource,
-                InstrumentationScopeInfo.create("bigtable-proxy"),
-                "bigtableproxy.presence",
-                "Number of proxy processes",
-                "{process}",
+                MetricsImpl.INSTRUMENTATION_SCOPE_INFO,
+                MetricsImpl.METRIC_PRESENCE_NAME,
+                MetricsImpl.METRIC_PRESENCE_DESC,
+                MetricsImpl.METRIC_PRESENCE_UNIT,
                 ImmutableGaugeData.create(
                     ImmutableList.of(
                         ImmutableLongPointData.create(
@@ -222,6 +218,7 @@ public class Verify implements Callable<Void> {
     CompletableResultCode result = exporter.export(metricData);
     result.join(1, TimeUnit.MINUTES);
 
+    System.out.println("Metrics resource: " + resource);
     if (result.isSuccess()) {
       System.out.println("Metrics write: OK");
     } else {
