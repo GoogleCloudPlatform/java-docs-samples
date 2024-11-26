@@ -29,16 +29,16 @@ import java.util.Optional;
  * A value class to encapsulate call identity.
  *
  * <p>This call extracts relevant information from request headers and makes it accessible to
- * metrics & the upstream client. The primary headers consulted are:</p>
+ * metrics & the upstream client. The primary headers consulted are:
  *
  * <ul>
- *   <li>{@code x-goog-request-params} - contains the resource and app profile id</li>
- *   <li>{@code x-goog-api-client} - contains the client info of the downstream client</li>
+ *   <li>{@code x-goog-request-params} - contains the resource and app profile id
+ *   <li>{@code x-goog-api-client} - contains the client info of the downstream client
  * </ul>
  */
 @AutoValue
 public abstract class CallLabels {
-  private static final Key<String> REQUEST_PARAMS =
+  public static final Key<String> REQUEST_PARAMS =
       Key.of("x-goog-request-params", Metadata.ASCII_STRING_MARSHALLER);
   private static final Key<String> API_CLIENT =
       Key.of("x-goog-api-client", Metadata.ASCII_STRING_MARSHALLER);
