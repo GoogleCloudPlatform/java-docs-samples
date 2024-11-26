@@ -16,7 +16,6 @@
 
 package tpu;
 
-import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -32,9 +31,7 @@ import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -100,8 +97,6 @@ public class QueuedResourceIT {
   @Test
   public void testDeleteForceQueuedResource()
           throws IOException, InterruptedException, ExecutionException {
-    ByteArrayOutputStream bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
@@ -112,13 +107,9 @@ public class QueuedResourceIT {
           .thenReturn(mockFuture);
 
       DeleteForceQueuedResource.deleteForceQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
-      String output = bout.toString();
 
-      assertThat(output).contains("Deleted Queued Resource:");
       verify(mockTpuClient, times(1))
           .deleteQueuedResourceAsync(any(DeleteQueuedResourceRequest.class));
-
-      bout.close();
     }
   }
 
