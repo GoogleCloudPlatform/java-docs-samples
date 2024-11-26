@@ -38,13 +38,13 @@ public class SimulateSecurityHealthAnalyticsCustomModule {
   public static void main(String[] args) throws IOException {
     // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/simulate
     // TODO: Developer should replace project_id with a real project ID before running this code
-    String parent = String.format("projects/%s/locations/%s", "project_id", "global");
+    String projectId = "project_id";
 
-    simulateSecurityHealthAnalyticsCustomModule(parent);
+    simulateSecurityHealthAnalyticsCustomModule(projectId);
   }
 
   public static SimulateSecurityHealthAnalyticsCustomModuleResponse
-      simulateSecurityHealthAnalyticsCustomModule(String parent) throws IOException {
+      simulateSecurityHealthAnalyticsCustomModule(String projectId) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs
     // to be created
@@ -102,7 +102,7 @@ public class SimulateSecurityHealthAnalyticsCustomModule {
 
       SimulateSecurityHealthAnalyticsCustomModuleRequest request =
           SimulateSecurityHealthAnalyticsCustomModuleRequest.newBuilder()
-              .setParent(parent)
+              .setParent(String.format("projects/%s/locations/global", projectId))
               .setCustomConfig(customConfig)
               .setResource(simulatedResource)
               .build();

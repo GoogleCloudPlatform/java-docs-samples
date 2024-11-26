@@ -27,13 +27,13 @@ public class ListDescendantSecurityHealthAnalyticsCustomModules {
   public static void main(String[] args) throws IOException {
     // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/listDescendant
     // TODO: Developer should replace project_id with a real project ID before running this code
-    String parent = String.format("projects/%s/locations/%s", "project_id", "global");
+    String projectId = "project_id";
 
-    listDescendantSecurityHealthAnalyticsCustomModules(parent);
+    listDescendantSecurityHealthAnalyticsCustomModules(projectId);
   }
 
   public static ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse
-      listDescendantSecurityHealthAnalyticsCustomModules(String parent) throws IOException {
+      listDescendantSecurityHealthAnalyticsCustomModules(String projectId) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs
     // to be created
@@ -42,7 +42,7 @@ public class ListDescendantSecurityHealthAnalyticsCustomModules {
 
       ListDescendantSecurityHealthAnalyticsCustomModulesRequest request =
           ListDescendantSecurityHealthAnalyticsCustomModulesRequest.newBuilder()
-              .setParent(parent)
+              .setParent(String.format("projects/%s/locations/global", projectId))
               .build();
 
       ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse response =

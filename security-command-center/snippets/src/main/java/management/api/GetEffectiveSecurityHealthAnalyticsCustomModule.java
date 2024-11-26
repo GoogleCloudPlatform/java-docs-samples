@@ -27,15 +27,15 @@ public class GetEffectiveSecurityHealthAnalyticsCustomModule {
   public static void main(String[] args) throws IOException {
     // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.effectiveSecurityHealthAnalyticsCustomModules/get
     // TODO: Developer should replace project_id with a real project ID before running this code
-    String parent = String.format("projects/%s/locations/%s", "project_id", "global");
+    String projectId = "project_id";
 
     String customModuleId = "custom_module_id";
 
-    getEffectiveSecurityHealthAnalyticsCustomModule(parent, customModuleId);
+    getEffectiveSecurityHealthAnalyticsCustomModule(projectId, customModuleId);
   }
 
   public static EffectiveSecurityHealthAnalyticsCustomModule
-      getEffectiveSecurityHealthAnalyticsCustomModule(String parent, String customModuleId)
+      getEffectiveSecurityHealthAnalyticsCustomModule(String projectId, String customModuleId)
           throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs
@@ -45,7 +45,8 @@ public class GetEffectiveSecurityHealthAnalyticsCustomModule {
 
       String name =
           String.format(
-              "%s/effectiveSecurityHealthAnalyticsCustomModules/%s", parent, customModuleId);
+              "projects/%s/locations/global/effectiveSecurityHealthAnalyticsCustomModules/%s",
+              projectId, customModuleId);
 
       GetEffectiveSecurityHealthAnalyticsCustomModuleRequest request =
           GetEffectiveSecurityHealthAnalyticsCustomModuleRequest.newBuilder().setName(name).build();

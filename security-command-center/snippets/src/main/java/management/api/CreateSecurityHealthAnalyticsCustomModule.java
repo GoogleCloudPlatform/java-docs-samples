@@ -32,15 +32,15 @@ public class CreateSecurityHealthAnalyticsCustomModule {
   public static void main(String[] args) throws IOException {
     // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/create
     // TODO: Developer should replace project_id with a real project ID before running this code
-    String parent = String.format("projects/%s/locations/%s", "project_id", "global");
+    String projectId = "project_id";
 
     String customModuleDisplayName = "custom_module_display_name";
 
-    createSecurityHealthAnalyticsCustomModule(parent, customModuleDisplayName);
+    createSecurityHealthAnalyticsCustomModule(projectId, customModuleDisplayName);
   }
 
   public static SecurityHealthAnalyticsCustomModule createSecurityHealthAnalyticsCustomModule(
-      String parent, String customModuleDisplayName) throws IOException {
+      String projectId, String customModuleDisplayName) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs
     // to be created
@@ -48,7 +48,9 @@ public class CreateSecurityHealthAnalyticsCustomModule {
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
       String name =
-          String.format("%s/securityHealthAnalyticsCustomModules/%s", parent, "custom_module");
+          String.format(
+              "projects/%s/locations/global/securityHealthAnalyticsCustomModules/%s",
+              projectId, "custom_module");
 
       // define the CEL expression here, change it according to the your requirements
       Expr expr =
@@ -87,7 +89,7 @@ public class CreateSecurityHealthAnalyticsCustomModule {
 
       CreateSecurityHealthAnalyticsCustomModuleRequest request =
           CreateSecurityHealthAnalyticsCustomModuleRequest.newBuilder()
-              .setParent(parent)
+              .setParent(String.format("projects/%s/locations/global", projectId))
               .setSecurityHealthAnalyticsCustomModule(securityHealthAnalyticsCustomModule)
               .build();
 
