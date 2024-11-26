@@ -16,10 +16,10 @@
 
 package compute.disks;
 
-import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
+import com.google.cloud.compute.v1.Operation;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
 import java.io.IOException;
@@ -49,6 +49,7 @@ public class ConsistencyGroupIT {
 
   @BeforeAll
   public static void setUp() throws Exception {
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
@@ -56,18 +57,18 @@ public class ConsistencyGroupIT {
   public static void cleanUp()
       throws IOException, ExecutionException, InterruptedException {
     // Delete created consistency group
-    DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
+    Operation.Status status = DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
         PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+
+    assertEquals(Operation.Status.DONE, status);
   }
 
   @Test
   public void testCreateDiskConsistencyGroupResourcePolicy()
       throws IOException, ExecutionException, InterruptedException {
-    String consistencyGroupLink = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
+    Operation.Status status = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
             PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
 
-    // Verify that the consistency group was created
-    assertNotNull(consistencyGroupLink);
-    assertThat(consistencyGroupLink.contains(CONSISTENCY_GROUP_NAME));
+    assertEquals(Operation.Status.DONE, status);
   }
 }
