@@ -42,7 +42,7 @@ public class DeleteForceQueuedResource {
   // Deletes a Queued Resource asynchronously with --force flag.
   public static void deleteForceQueuedResource(
       String projectId, String zone, String queuedResourceId)
-      throws IOException, ExecutionException, InterruptedException {
+          throws ExecutionException, InterruptedException, IOException {
     String name = String.format("projects/%s/locations/%s/queuedResources/%s",
         projectId, zone, queuedResourceId);
     // With these settings the client library handles the Operation's polling mechanism
@@ -65,8 +65,7 @@ public class DeleteForceQueuedResource {
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
       DeleteQueuedResourceRequest request =
-              DeleteQueuedResourceRequest.newBuilder().setName(name).setForce(true).build();
-
+          DeleteQueuedResourceRequest.newBuilder().setName(name).setForce(true).build();
       // Waiting for updates in the library. Until then, the operation will complete successfully,
       // but the user will receive an error message with UnknownException and IllegalStateException.
       tpuClient.deleteQueuedResourceAsync(request).get();
