@@ -106,7 +106,9 @@ public class Serve implements Callable<Void> {
         new InstrumentedCallCredentials(MoreCallCredentials.from(credentials));
 
     if (metrics == null) {
-      // Don't pass InstrumentedCallCredentials to anything thats not wrapped by
+      // InstrumentedCallCredentials expect to only be called when a Tracer is available in the
+      // CallOptions. This is only true for DataChannel pingAndWarm and things invoked by
+      // ProxyHandler. MetricsImpl does not do this, so it must get undecorated credentials.
       metrics = new MetricsImpl(credentials, metricsProjectId);
     }
 
