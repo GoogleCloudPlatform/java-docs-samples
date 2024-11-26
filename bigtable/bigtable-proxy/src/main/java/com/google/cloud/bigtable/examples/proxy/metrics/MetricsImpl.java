@@ -51,7 +51,7 @@ public class MetricsImpl implements Closeable, Metrics {
   static final AttributeKey<String> METHOD_KEY = AttributeKey.stringKey("method");
   static final AttributeKey<String> STATUS_KEY = AttributeKey.stringKey("status");
 
-  public static final String METRIC_PRESENCE_NAME = METRIC_PREFIX + ".presence";
+  public static final String METRIC_PRESENCE_NAME = METRIC_PREFIX + "presence";
   public static final String METRIC_PRESENCE_DESC = "Number of proxy processes";
   public static final String METRIC_PRESENCE_UNIT = "{process}";
 
