@@ -130,6 +130,11 @@
       <artifactId>exporter-metrics</artifactId>
       <version>${exporter-metrics.version}</version>
     </dependency>
+    <!-- Workaround shared-configuration incorrectly marking google-cloud-core as a test dep -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-core</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.opentelemetry.contrib</groupId>
       <artifactId>opentelemetry-gcp-resources</artifactId>
