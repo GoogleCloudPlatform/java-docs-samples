@@ -179,7 +179,7 @@ public class DataChannel extends ManagedChannel {
 
     SettableFuture<PingAndWarmResponse> f = SettableFuture.create();
     call.start(
-        new Listener<PingAndWarmResponse>() {
+        new Listener<>() {
           @Override
           public void onMessage(PingAndWarmResponse response) {
             f.set(response);
@@ -197,6 +197,8 @@ public class DataChannel extends ManagedChannel {
           }
         },
         metadata);
+    call.sendMessage(request);
+    call.request(Integer.MAX_VALUE);
 
     return f;
   }
