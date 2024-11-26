@@ -182,7 +182,9 @@ public class DataChannel extends ManagedChannel {
         new Listener<>() {
           @Override
           public void onMessage(PingAndWarmResponse response) {
-            f.set(response);
+            if (!f.set(response)) {
+              LOGGER.warn("PingAndWarm returned multiple responses");
+            }
           }
 
           @Override
