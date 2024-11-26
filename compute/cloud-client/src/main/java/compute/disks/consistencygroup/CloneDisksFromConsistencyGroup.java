@@ -48,8 +48,8 @@ public class CloneDisksFromConsistencyGroup {
   }
 
   // Clones disks from a consistency group.
-  public static void cloneDisksFromConsistencyGroup(String project, String disksLocation,
-      String consistencyGroupName, String consistencyGroupLocation)
+  public static Operation.Status cloneDisksFromConsistencyGroup(String project,
+      String disksLocation, String consistencyGroupName, String consistencyGroupLocation)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String sourceConsistencyGroupPolicy = String.format(
             "projects/%s/regions/%s/resourcePolicies/%s", project, consistencyGroupLocation,
@@ -81,9 +81,9 @@ public class CloneDisksFromConsistencyGroup {
 
       if (response.hasError()) {
         System.out.printf("Error cloning disks: %s%n", response.getError());
-        return;
+        return null;
       }
-      System.out.printf("Disks cloned from consistency group: %s\n", consistencyGroupName);
+      return response.getStatus();
     }
   }
 }

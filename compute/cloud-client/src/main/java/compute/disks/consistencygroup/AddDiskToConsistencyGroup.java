@@ -18,7 +18,6 @@ package compute.disks.consistencygroup;
 
 // [START compute_consistency_group_add_disk]
 import com.google.cloud.compute.v1.AddResourcePoliciesRegionDiskRequest;
-import com.google.cloud.compute.v1.Disk;
 // If your disk has zonal location uncomment these lines
 //import com.google.cloud.compute.v1.AddResourcePoliciesDiskRequest;
 //import com.google.cloud.compute.v1.DisksAddResourcePoliciesRequest;
@@ -49,7 +48,7 @@ public class AddDiskToConsistencyGroup {
   }
 
   // Adds a disk to a Consistency Group.
-  public static Disk addDiskToConsistencyGroup(
+  public static Operation.Status addDiskToConsistencyGroup(
         String project, String location, String diskName,
         String consistencyGroupName, String consistencyGroupLocation)
         throws IOException, ExecutionException, InterruptedException {
@@ -83,9 +82,10 @@ public class AddDiskToConsistencyGroup {
 
       Operation response = disksClient.addResourcePoliciesAsync(disksRequest).get();
       if (response.hasError()) {
+        System.out.printf("Error adding disk to consistency group: %s%n", response.getError());
         return null;
       }
-      return disksClient.get(project, location, diskName);
+      return response.getStatus();
     }
   }
 }

@@ -38,7 +38,7 @@ public class DeleteDiskConsistencyGroup {
   }
 
   // Deletes a disk consistency group resource policy in the specified project and region.
-  public static void deleteDiskConsistencyGroup(
+  public static Operation.Status deleteDiskConsistencyGroup(
       String project, String region, String consistencyGroupName)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -48,11 +48,10 @@ public class DeleteDiskConsistencyGroup {
           .deleteAsync(project, region, consistencyGroupName).get();
 
       if (response.hasError()) {
-        return;
+        System.out.printf("Error deleting disk: %s%n", response.getError());
+        return null;
       }
-      System.out.println(
-          "Disk consistency group resource policy deleted successfully: "
-              + consistencyGroupName);
+      return response.getStatus();
     }
   }
 }

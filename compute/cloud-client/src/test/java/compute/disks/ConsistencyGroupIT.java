@@ -18,17 +18,14 @@ package compute.disks;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static org.junit.Assert.assertNotNull;
 
-import com.google.cloud.compute.v1.Disk;
+import com.google.cloud.compute.v1.Operation;
 import compute.Util;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CloneDisksFromConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -103,30 +100,26 @@ public class ConsistencyGroupIT {
   @Order(1)
   public void testCreateDiskConsistencyGroupResourcePolicy()
       throws IOException, ExecutionException, InterruptedException {
-    String consistencyGroupLink = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
+    Operation.Status status = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
             PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
 
-    assertNotNull(consistencyGroupLink);
-    assertThat(consistencyGroupLink.contains(CONSISTENCY_GROUP_NAME));
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 
   @Test
   @Order(2)
   public void testAddRegionalDiskToConsistencyGroup()
           throws IOException, ExecutionException, InterruptedException {
-    Disk disk = AddDiskToConsistencyGroup.addDiskToConsistencyGroup(
+    Operation.Status status = AddDiskToConsistencyGroup.addDiskToConsistencyGroup(
             PROJECT_ID, REGION, DISK_NAME, CONSISTENCY_GROUP_NAME, REGION);
 
-    assertNotNull(disk);
-    assertThat(disk.getResourcePoliciesList().get(0).contains(CONSISTENCY_GROUP_NAME));
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 
   @Test
   @Order(3)
   public void testCloneDisksFromConsistencyGroup()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
     CreateDiskSecondaryRegional.createDiskSecondaryRegional(
             PROJECT_ID, PROJECT_ID, DISK_NAME, SECONDARY_REGIONAL_DISK,
             REGION, REGION_SECONDARY, DISK_SIZE);
@@ -138,12 +131,9 @@ public class ConsistencyGroupIT {
             SECONDARY_REGIONAL_DISK, CONSISTENCY_GROUP_SECONDARY, REGION_SECONDARY);
     TimeUnit.MINUTES.sleep(1);
 
-    CloneDisksFromConsistencyGroup.cloneDisksFromConsistencyGroup(
+    Operation.Status status = CloneDisksFromConsistencyGroup.cloneDisksFromConsistencyGroup(
             PROJECT_ID, REGION_SECONDARY, CONSISTENCY_GROUP_SECONDARY, REGION_SECONDARY);
 
-    assertThat(stdOut.toString()).contains("Disks cloned from consistency group: ");
-
-    stdOut.close();
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
-
 }

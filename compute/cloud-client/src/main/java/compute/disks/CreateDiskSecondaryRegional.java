@@ -95,7 +95,7 @@ public class CreateDiskSecondaryRegional {
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println(response.getError());
+        System.out.printf("Error creating disk: %s%n", response.getError());
         return null;
       }
       return disksClient.get(secondaryProjectId, secondaryDiskRegion, secondaryDiskName);
