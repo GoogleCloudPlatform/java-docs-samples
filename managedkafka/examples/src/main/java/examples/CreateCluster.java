@@ -76,13 +76,7 @@ public class CreateCluster {
     ManagedKafkaSettings.Builder settingsBuilder = ManagedKafkaSettings.newBuilder();
     TimedRetryAlgorithm timedRetryAlgorithm = OperationTimedPollAlgorithm.create(
         RetrySettings.newBuilder()
-            .setInitialRetryDelayDuration(Duration.ofSeconds(5L))
-            .setRetryDelayMultiplier(1.5)
-            .setMaxRetryDelayDuration(Duration.ofSeconds(30L))
-            .setInitialRpcTimeoutDuration(Duration.ZERO) // ignored for LROs
-            .setRpcTimeoutMultiplier(1.0) // ignored for LROs
-            .setMaxRpcTimeoutDuration(Duration.ZERO) // ignored for LROs
-            .setTotalTimeoutDuration(Duration.ofHours(1L)) // set polling timeout to 1 hour
+            .setTotalTimeoutDuration(Duration.ofHours(1L))
             .build());
     settingsBuilder.createClusterOperationSettings()
         .setPollingAlgorithm(timedRetryAlgorithm);
