@@ -173,7 +173,7 @@ public class DataChannel extends ManagedChannel {
     metadata.put(
         CallLabels.REQUEST_PARAMS,
         String.format(
-            "name=projects/%s/instances/%s",
+            "name=%s&app_profile_id=%s",
             URLEncoder.encode(request.getName(), StandardCharsets.UTF_8),
             URLEncoder.encode(request.getAppProfileId(), StandardCharsets.UTF_8)));
 
