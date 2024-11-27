@@ -84,7 +84,7 @@ public class AddDiskToConsistencyGroup {
 
       Operation response = disksClient.addResourcePoliciesAsync(disksRequest).get();
       if (response.hasError()) {
-        return null;
+        throw new Error("Error attaching disk to consistency group! " + response.getError());
       }
       System.out.println(disksClient.get(project, location, diskName).getResourcePoliciesList());
       return disksClient.get(project, location, diskName);

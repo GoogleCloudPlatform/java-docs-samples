@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.compute.v1.Disk;
+import com.google.cloud.compute.v1.Operation;
 import compute.Util;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
@@ -89,11 +90,10 @@ public class ConsistencyGroupIT {
   @Order(1)
   public void testCreateDiskConsistencyGroupResourcePolicy()
       throws IOException, ExecutionException, InterruptedException {
-    String consistencyGroupLink = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
+    Operation.Status status = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
             PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
 
-    assertNotNull(consistencyGroupLink);
-    assertThat(consistencyGroupLink.contains(CONSISTENCY_GROUP_NAME));
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 
   @Test
