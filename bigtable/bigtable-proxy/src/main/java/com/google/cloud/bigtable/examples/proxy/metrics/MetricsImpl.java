@@ -16,14 +16,9 @@
 
 package com.google.cloud.bigtable.examples.proxy.metrics;
 
-import com.google.api.gax.core.FixedCredentialsProvider;
-import com.google.api.gax.grpc.GrpcTransportChannel;
-import com.google.api.gax.rpc.FixedTransportChannelProvider;
 import com.google.auth.Credentials;
-import com.google.cloud.monitoring.v3.MetricServiceSettings;
 import com.google.cloud.opentelemetry.metric.GoogleCloudMetricExporter;
 import com.google.cloud.opentelemetry.metric.MetricConfiguration;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
@@ -32,22 +27,33 @@ import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.LongHistogram;
 import io.opentelemetry.api.metrics.LongUpDownCounter;
 import io.opentelemetry.api.metrics.Meter;
+import io.opentelemetry.contrib.gcp.resource.GCPResourceProvider;
+import io.opentelemetry.sdk.common.InstrumentationScopeInfo;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.metrics.export.MetricExporter;
 import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
+import io.opentelemetry.sdk.resources.Resource;
 import java.io.Closeable;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 public class MetricsImpl implements Closeable, Metrics {
-  private static final String METRIC_PREFIX = "bigtableproxy.";
+  public static final InstrumentationScopeInfo INSTRUMENTATION_SCOPE_INFO =
+      InstrumentationScopeInfo.create("bigtable-proxy");
 
-  static final AttributeKey<String> API_CLIENT_KEY = AttributeKey.stringKey("apiclient");
+  public static final String METRIC_PREFIX = "bigtableproxy.";
+
+  static final AttributeKey<String> API_CLIENT_KEY = AttributeKey.stringKey("api_client");
   static final AttributeKey<String> RESOURCE_KEY = AttributeKey.stringKey("resource");
   static final AttributeKey<String> APP_PROFILE_KEY = AttributeKey.stringKey("app_profile");
   static final AttributeKey<String> METHOD_KEY = AttributeKey.stringKey("method");
   static final AttributeKey<String> STATUS_KEY = AttributeKey.stringKey("status");
+
+  public static final String METRIC_PRESENCE_NAME = METRIC_PREFIX + "presence";
+  public static final String METRIC_PRESENCE_DESC = "Number of proxy processes";
+  public static final String METRIC_PRESENCE_UNIT = "{process}";
 
   private final SdkMeterProvider meterProvider;
 
@@ -64,9 +70,16 @@ public class MetricsImpl implements Closeable, Metrics {
   private final AtomicInteger numOutstandingRpcs = new AtomicInteger();
   private final AtomicInteger maxSeen = new AtomicInteger();
 
+  static Supplier<Resource> gcpResourceSupplier =
+      () -> Resource.create(new GCPResourceProvider().getAttributes());
+
   public MetricsImpl(Credentials credentials, String projectId) throws IOException {
     meterProvider = createMeterProvider(credentials, projectId);
-    Meter meter = meterProvider.meterBuilder("bigtableproxy").build();
+    Meter meter =
+        meterProvider
+            .meterBuilder(INSTRUMENTATION_SCOPE_INFO.getName())
+            .setInstrumentationVersion(INSTRUMENTATION_SCOPE_INFO.getVersion())
+            .build();
 
     serverCallsStarted =
         meter
@@ -148,6 +161,13 @@ public class MetricsImpl implements Closeable, Metrics {
         .setUnit("{call}")
         .ofLongs()
         .buildWithCallback(o -> o.record(maxSeen.getAndSet(0)));
+
+    meter
+        .gaugeBuilder(METRIC_PRESENCE_NAME)
+        .setDescription(METRIC_PRESENCE_DESC)
+        .setUnit(METRIC_PRESENCE_UNIT)
+        .ofLongs()
+        .buildWithCallback(o -> o.record(1));
   }
 
   @Override
@@ -155,34 +175,18 @@ public class MetricsImpl implements Closeable, Metrics {
     meterProvider.close();
   }
 
-  private static SdkMeterProvider createMeterProvider(Credentials credentials, String projectId)
-      throws IOException {
-    MetricServiceSettings.Builder metricServiceSettingsBuilder = MetricServiceSettings.newBuilder();
-    metricServiceSettingsBuilder
-        .setCredentialsProvider(FixedCredentialsProvider.create(credentials))
-        .setTransportChannelProvider(
-            FixedTransportChannelProvider.create(
-                GrpcTransportChannel.create(
-                    ManagedChannelBuilder.forTarget(
-                            MetricConfiguration.DEFAULT_METRIC_SERVICE_ENDPOINT)
-                        // default 8 KiB
-                        .maxInboundMetadataSize(16 * 1000)
-                        .build())))
-        .createMetricDescriptorSettings()
-        .setSimpleTimeoutNoRetriesDuration(
-            Duration.ofMillis(MetricConfiguration.DEFAULT_DEADLINE.toMillis()))
-        .build();
-
+  private static SdkMeterProvider createMeterProvider(Credentials credentials, String projectId) {
     MetricConfiguration config =
         MetricConfiguration.builder()
             .setProjectId(projectId)
-            .setMetricServiceSettings(metricServiceSettingsBuilder.build())
+            .setCredentials(credentials)
             .setInstrumentationLibraryLabelsEnabled(false)
             .build();
 
     MetricExporter exporter = GoogleCloudMetricExporter.createWithConfiguration(config);
 
     return SdkMeterProvider.builder()
+        .setResource(gcpResourceSupplier.get())
         .registerMetricReader(
             PeriodicMetricReader.builder(exporter).setInterval(Duration.ofMinutes(1)).build())
         .build();
