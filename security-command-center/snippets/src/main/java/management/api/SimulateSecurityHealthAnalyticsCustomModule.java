@@ -51,7 +51,8 @@ public class SimulateSecurityHealthAnalyticsCustomModule {
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
-      // define the CEL expression here, change it according to the your requirements
+      // define the CEL expression here and this will scans for keys that have not been rotated in
+      // the last 90 days, change it according to the your requirements
       Expr expr =
           Expr.newBuilder()
               .setExpression(

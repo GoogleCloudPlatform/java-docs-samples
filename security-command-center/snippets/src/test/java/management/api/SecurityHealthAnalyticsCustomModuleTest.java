@@ -24,6 +24,8 @@ import static org.junit.Assert.assertTrue;
 import com.google.cloud.securitycentermanagement.v1.EffectiveSecurityHealthAnalyticsCustomModule;
 import com.google.cloud.securitycentermanagement.v1.ListSecurityHealthAnalyticsCustomModulesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse;
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListEffectiveSecurityHealthAnalyticsCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule.EnablementState;
@@ -33,6 +35,7 @@ import com.google.common.base.Strings;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.StreamSupport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -147,9 +150,12 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   @Test
   public void testListSecurityHealthAnalyticsCustomModules() throws IOException {
     createCustomModule(PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
-    assertNotNull(
+    ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
         ListSecurityHealthAnalyticsCustomModules.listSecurityHealthAnalyticsCustomModules(
-            PROJECT_ID));
+            PROJECT_ID);
+    assertTrue(
+        StreamSupport.stream(response.iterateAll().spliterator(), false)
+            .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
   }
 
   @Test
@@ -195,17 +201,23 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   @Test
   public void testListEffectiveSecurityHealthAnalyticsCustomModules() throws IOException {
     createCustomModule(PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
-    assertNotNull(
+    ListEffectiveSecurityHealthAnalyticsCustomModulesPagedResponse response =
         ListEffectiveSecurityHealthAnalyticsCustomModules
-            .listEffectiveSecurityHealthAnalyticsCustomModules(PROJECT_ID));
+            .listEffectiveSecurityHealthAnalyticsCustomModules(PROJECT_ID);
+    assertTrue(
+        StreamSupport.stream(response.iterateAll().spliterator(), false)
+            .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
   }
 
   @Test
   public void testListDescendantSecurityHealthAnalyticsCustomModules() throws IOException {
     createCustomModule(PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
-    assertNotNull(
+    ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse response =
         ListDescendantSecurityHealthAnalyticsCustomModules
-            .listDescendantSecurityHealthAnalyticsCustomModules(PROJECT_ID));
+            .listDescendantSecurityHealthAnalyticsCustomModules(PROJECT_ID);
+    assertTrue(
+        StreamSupport.stream(response.iterateAll().spliterator(), false)
+            .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
   }
 
   @Test
