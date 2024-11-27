@@ -62,9 +62,14 @@ public class HyperdisksIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
     // Clean up stale resources
     Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, ZONE);
     Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, "us-central1-a");
+    Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, "us-central1-a");
+    Util.cleanUpExistingDisks("test-hyperdisk-enc-", PROJECT_ID, "asia-south1-a");
+    Util.cleanUpExistingStoragePool("test-storage-pool-enc-", PROJECT_ID, "asia-south1-a");
   }
 
   @AfterAll
