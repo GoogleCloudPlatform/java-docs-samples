@@ -29,12 +29,12 @@ public class StartTpuVm {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Google Cloud project you want to create a node.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
-    // The zone in which to create the TPU.
+    // The zone where the TPU is located.
     // For more information about supported TPU types for specific zones,
     // see https://cloud.google.com/tpu/docs/regions-zones
-    String zone = "europe-west4-a";
+    String zone = "us-central1-f";
     // The name for your TPU.
     String nodeName = "YOUR_TPU_NAME";
 
