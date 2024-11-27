@@ -74,8 +74,7 @@ public class CloneDisksFromConsistencyGroup {
       Operation response = disksClient.bulkInsertAsync(request).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.printf("Error cloning disks: %s%n", response.getError());
-        return null;
+        throw new Error("Error cloning disks! " + response.getError());
       }
       return response.getStatus();
     }

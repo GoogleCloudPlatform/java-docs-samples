@@ -48,8 +48,7 @@ public class DeleteDiskConsistencyGroup {
           .deleteAsync(project, region, consistencyGroupName).get();
 
       if (response.hasError()) {
-        System.out.printf("Error deleting disk: %s%n", response.getError());
-        return null;
+        throw new Error("Error deleting disk! " + response.getError());
       }
       return response.getStatus();
     }

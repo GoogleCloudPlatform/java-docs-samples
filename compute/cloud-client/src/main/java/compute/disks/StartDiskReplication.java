@@ -78,8 +78,7 @@ public class StartDiskReplication {
               primaryProjectId, primaryDiskLocation, primaryDiskName, replicationRequest).get();
 
       if (response.hasError()) {
-        System.out.printf("Error starting disk replication: %s%n", response.getError());
-        return null;
+        throw new Error("Error starting disk replication! " + response.getError());
       }
       return response.getStatus();
     }

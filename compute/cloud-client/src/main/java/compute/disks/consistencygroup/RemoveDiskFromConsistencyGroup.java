@@ -85,8 +85,7 @@ public class RemoveDiskFromConsistencyGroup {
 
       Operation response = disksClient.removeResourcePoliciesAsync(disksRequest).get();
       if (response.hasError()) {
-        System.out.printf("Error removing disk from consistency group: %s%n", response.getError());
-        return null;
+        throw new Error("Error removing disk from consistency group! " + response.getError());
       }
       return response.getStatus();
     }

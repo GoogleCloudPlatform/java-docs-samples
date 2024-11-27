@@ -54,8 +54,7 @@ public class StopDiskReplication {
               project, diskLocation, diskName).get();
 
       if (response.hasError()) {
-        System.out.printf("Error stopping disk replication: %s%n", response.getError());
-        return null;
+        throw new Error("Error stopping disk replication! " + response.getError());
       }
       return response.getStatus();
     }

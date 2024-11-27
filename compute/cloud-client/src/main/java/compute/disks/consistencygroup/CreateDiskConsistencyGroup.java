@@ -58,8 +58,7 @@ public class CreateDiskConsistencyGroup {
           regionResourcePoliciesClient.insertAsync(project, region, resourcePolicy).get();
 
       if (response.hasError()) {
-        System.out.printf("Error creating consistency group: %s%n", response.getError());
-        return null;
+        throw new Error("Error creating consistency group! " + response.getError());
       }
       return response.getStatus();
     }
