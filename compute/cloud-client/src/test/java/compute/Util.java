@@ -16,6 +16,8 @@
 
 package compute;
 
+import static compute.snapshot.DeleteSnapshotSchedule.deleteSnapshotSchedule;
+
 import com.google.cloud.compute.v1.DeleteStoragePoolRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
@@ -30,6 +32,8 @@ import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
+import com.google.cloud.compute.v1.ResourcePoliciesClient;
+import com.google.cloud.compute.v1.ResourcePolicy;
 import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
 import com.google.cloud.compute.v1.StoragePool;
@@ -39,6 +43,7 @@ import compute.disks.DeleteDisk;
 import compute.disks.DeleteSnapshot;
 import compute.reservation.DeleteReservation;
 import java.io.IOException;
+import java.lang.Error;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -266,6 +271,21 @@ public abstract class Util {
     }
   }
 
+  // Delete storagePools which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingSnapshotSchedule(
+          String prefixToDelete, String projectId, String region)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
+      for (ResourcePolicy resource : resourcePoliciesClient.list(projectId, region).iterateAll()) {
+        if (containPrefixToDeleteAndZone(resource, prefixToDelete, region)
+                && isCreatedBeforeThresholdTime(resource.getCreationTimestamp())) {
+          deleteSnapshotSchedule(projectId, region, resource.getName());
+        }
+      }
+    }
+  }
+
   public static boolean containPrefixToDeleteAndZone(
       Object resource, String prefixToDelete, String zone) {
     boolean containPrefixAndZone = false;
@@ -290,6 +310,11 @@ public abstract class Util {
       if (resource instanceof StoragePool) {
         containPrefixAndZone = ((StoragePool) resource).getName().contains(prefixToDelete)
             && ((StoragePool) resource).getZone().contains(zone);
+      }
+      if (resource instanceof ResourcePolicy) {
+        containPrefixAndZone = ((ResourcePolicy) resource).getName().contains(prefixToDelete)
+                && ((ResourcePolicy) resource).getRegion()
+                .contains(zone.substring(0, zone.lastIndexOf('-')));
       }
     } catch (NullPointerException e) {
       System.out.println("Resource not found, skipping deletion:");
