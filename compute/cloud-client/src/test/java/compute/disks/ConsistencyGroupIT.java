@@ -38,8 +38,10 @@ import org.junit.runners.JUnit4;
 public class ConsistencyGroupIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "us-central1";
-  private static final String CONSISTENCY_GROUP_NAME =
-      "test-consistency-group-" + UUID.randomUUID();
+  static String uuid = UUID.randomUUID().toString().split("-")[0];
+  private static final String CONSISTENCY_GROUP_NAME = "test-consistency-group-" + uuid;
+  private static final String CONSISTENCY_GROUP_FOR_DELETE =
+          "test-consistency-group-delete-" + uuid;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -51,16 +53,16 @@ public class ConsistencyGroupIT {
   public static void setUp() throws Exception {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    CreateDiskConsistencyGroup.createDiskConsistencyGroup(
+            PROJECT_ID, REGION, CONSISTENCY_GROUP_FOR_DELETE);
   }
 
   @AfterAll
   public static void cleanUp()
       throws IOException, ExecutionException, InterruptedException {
     // Delete created consistency group
-    Operation.Status status = DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
+    DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
         PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
-
-    assertEquals(Operation.Status.DONE, status);
   }
 
   @Test
@@ -68,6 +70,15 @@ public class ConsistencyGroupIT {
       throws IOException, ExecutionException, InterruptedException {
     Operation.Status status = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
             PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+
+    assertEquals(Operation.Status.DONE, status);
+  }
+
+  @Test
+  public void testDeleteDiskConsistencyGroupResourcePolicy()
+      throws IOException, ExecutionException, InterruptedException {
+    Operation.Status status = DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
+            PROJECT_ID, REGION, CONSISTENCY_GROUP_FOR_DELETE);
 
     assertEquals(Operation.Status.DONE, status);
   }
