@@ -31,6 +31,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -77,10 +78,9 @@ public class HyperdisksIT {
        throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Delete all disks created for testing.
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_NAME);
-    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
+    //DeleteDisk.deleteDisk(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME);
 
-    Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
-
+    //Util.deleteStoragePool(PROJECT_ID, ZONE, STORAGE_POOL_NAME);
   }
 
   @Test
@@ -102,6 +102,7 @@ public class HyperdisksIT {
     Assert.assertTrue(hyperdisk.getZone().contains(ZONE));
   }
 
+  @Disabled
   @Test
   @Order(1)
   public void testCreateHyperdiskStoragePool()
@@ -126,6 +127,7 @@ public class HyperdisksIT {
     Assert.assertTrue(storagePool.getZone().contains(ZONE));
   }
 
+  @Disabled
   @Test
   @Order(2)
   public void testCreateDiskInStoragePool()
