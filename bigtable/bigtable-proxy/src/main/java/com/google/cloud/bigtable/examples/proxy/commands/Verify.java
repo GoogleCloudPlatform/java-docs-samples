@@ -59,6 +59,7 @@ import io.opentelemetry.sdk.metrics.internal.data.ImmutableLongPointData;
 import io.opentelemetry.sdk.metrics.internal.data.ImmutableMetricData;
 import io.opentelemetry.sdk.resources.Resource;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
@@ -185,9 +186,10 @@ public class Verify implements Callable<Void> {
     }
   }
 
-  void checkMetrics(Credentials creds) throws IOException {
-    Instant now = Instant.now().truncatedTo(ChronoUnit.MINUTES);
+  void checkMetrics(Credentials creds) {
     Instant end = Instant.now().truncatedTo(ChronoUnit.MINUTES);
+    Instant start = end.minus(Duration.ofMinutes(1));
+
 
     GCPResourceProvider resourceProvider = new GCPResourceProvider();
     Resource resource = Resource.create(resourceProvider.getAttributes());
@@ -211,7 +213,7 @@ public class Verify implements Callable<Void> {
                 ImmutableGaugeData.create(
                     ImmutableList.of(
                         ImmutableLongPointData.create(
-                            TimeUnit.MILLISECONDS.toNanos(now.toEpochMilli()),
+                            TimeUnit.MILLISECONDS.toNanos(start.toEpochMilli()),
                             TimeUnit.MILLISECONDS.toNanos(end.toEpochMilli()),
                             Attributes.empty(),
                             1L)))));
