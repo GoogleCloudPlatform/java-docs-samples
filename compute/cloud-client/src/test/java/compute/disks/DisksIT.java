@@ -317,11 +317,9 @@ public class DisksIT {
   @Order(2)
   public void testAttachRegionalDiskForceAttach()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String diskLink = String.format("projects/%s/regions/%s/disks/%s",
-            PROJECT_ID, REGION, REGIONAL_ATTACHED_DISK);
+    Operation.Status status = AttachRegionalDiskForce
+          .attachRegionalDiskForce(PROJECT_ID, ZONE, INSTANCE_NAME, REGION, REGIONAL_ATTACHED_DISK);
 
-    AttachRegionalDiskForce.attachRegionalDiskForce(PROJECT_ID, ZONE, INSTANCE_NAME, diskLink);
-
-    assertThat(stdOut.toString()).contains("Regional disk attached successfully.");
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 }
