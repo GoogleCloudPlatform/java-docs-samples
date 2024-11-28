@@ -64,14 +64,27 @@ in a project your choosing. The metrics will be published under the namespace
 # Build the binary
 mvn package
 
-# use the binary
+# unpack the binary on the proxy host
 unzip target/bigtable-proxy-0.0.1-SNAPSHOT-bin.zip
 cd bigtable-proxy-0.0.1-SNAPSHOT
+
+# Verify that the proxy has require permissions using an existing table. Please note that the table
+# data will not be modified, however a test metric will be written.
+./bigtable-verify.sh  \
+  --bigtable-project-id=$BIGTABLE_PROJECT_ID \
+  --bigtable-instance-id=$BIGTABLE_INSTANCE_ID \
+  --bigtable-table-id=$BIGTABLE_TABLE_ID \
+  --metrics-project-id=$METRICS_PROJECT_ID
+
+# Then start the proxy on the specified port. The proxy can forward requests for multiple
+# Bigtable projects/instances/tables. However it will export health metrics to a single project
+# specified by `metrics-project-id`. 
 ./bigtable-proxy.sh \
   --listen-port=1234 \
   --metrics-project-id=SOME_GCP_PROJECT
  
-export BIGTABLE_EMULATOR_HOST=1234
+# Start your application, and redirect the bigtable client to connect to the local proxy. 
+export BIGTABLE_EMULATOR_HOST="localhost:1234"
 path/to/application/with/bigtable/client
 ```
 

@@ -24,6 +24,7 @@ import io.grpc.Status;
 import java.time.Duration;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nullable;
 
 public class InstrumentedCallCredentials extends CallCredentials
     implements InternalMayRequireSpecificExecutor {
@@ -40,7 +41,13 @@ public class InstrumentedCallCredentials extends CallCredentials
   @Override
   public void applyRequestMetadata(
       RequestInfo requestInfo, Executor appExecutor, MetadataApplier applier) {
-    Tracer tracer = Tracer.extractTracerFromCallOptions(requestInfo.getCallOptions());
+    @Nullable Tracer tracer = Tracer.extractTracerFromCallOptions(requestInfo.getCallOptions());
+    if (tracer == null) {
+      applier.fail(
+          Status.INTERNAL.withDescription(
+              "InstrumentedCallCredentials failed to extract tracer from CallOptions"));
+      return;
+    }
     final Stopwatch stopwatch = Stopwatch.createStarted();
 
     inner.applyRequestMetadata(

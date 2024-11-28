@@ -98,19 +98,13 @@ public class ServeMetricsTest {
 
     fakeServiceChannel =
         grpcCleanup.register(
-            ManagedChannelBuilder.forAddress("localhost", server.getPort())
-                .usePlaintext()
-                .build()
-        );
+            ManagedChannelBuilder.forAddress("localhost", server.getPort()).usePlaintext().build());
 
     serve = createAndStartCommand(fakeServiceChannel, fakeCredentials, mockMetrics);
 
     proxyChannel =
         grpcCleanup.register(
-            ManagedChannelBuilder.forAddress("localhost", serve.listenPort)
-                .usePlaintext()
-                .build()
-        );
+            ManagedChannelBuilder.forAddress("localhost", serve.listenPort).usePlaintext().build());
   }
 
   @After

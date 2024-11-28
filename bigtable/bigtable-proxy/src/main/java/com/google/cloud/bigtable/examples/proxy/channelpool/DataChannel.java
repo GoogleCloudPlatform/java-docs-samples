@@ -17,22 +17,28 @@
 package com.google.cloud.bigtable.examples.proxy.channelpool;
 
 import com.google.bigtable.v2.BigtableGrpc;
-import com.google.bigtable.v2.BigtableGrpc.BigtableFutureStub;
 import com.google.bigtable.v2.PingAndWarmRequest;
 import com.google.bigtable.v2.PingAndWarmResponse;
+import com.google.cloud.bigtable.examples.proxy.metrics.CallLabels;
 import com.google.cloud.bigtable.examples.proxy.metrics.Metrics;
 import com.google.cloud.bigtable.examples.proxy.metrics.Tracer;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import io.grpc.CallCredentials;
 import io.grpc.CallOptions;
 import io.grpc.ClientCall;
+import io.grpc.ClientCall.Listener;
 import io.grpc.ConnectivityState;
 import io.grpc.Deadline;
 import io.grpc.ExperimentalApi;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
+import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -50,7 +56,7 @@ public class DataChannel extends ManagedChannel {
   private final ManagedChannel inner;
   private final Metrics metrics;
   private final ResourceCollector resourceCollector;
-  private final BigtableFutureStub warmingStub;
+  private final CallCredentials callCredentials;
   private final ScheduledFuture<?> antiIdleTask;
 
   private final AtomicBoolean closed = new AtomicBoolean();
@@ -65,6 +71,7 @@ public class DataChannel extends ManagedChannel {
       Metrics metrics) {
     this.resourceCollector = resourceCollector;
 
+    this.callCredentials = callCredentials;
     inner =
         ManagedChannelBuilder.forAddress(endpoint, port)
             .userAgent(userAgent)
@@ -76,8 +83,6 @@ public class DataChannel extends ManagedChannel {
     this.metrics = metrics;
 
     try {
-      warmingStub = BigtableGrpc.newFutureStub(inner).withCallCredentials(callCredentials);
-
       warm();
     } catch (RuntimeException e) {
       try {
@@ -107,10 +112,8 @@ public class DataChannel extends ManagedChannel {
       return;
     }
 
-    BigtableFutureStub timedStub = warmingStub.withDeadline(Deadline.after(1, TimeUnit.MINUTES));
-
     List<ListenableFuture<PingAndWarmResponse>> futures =
-        requests.stream().map(timedStub::pingAndWarm).collect(Collectors.toList());
+        requests.stream().map(this::sendPingAndWarm).collect(Collectors.toList());
 
     int successCount = 0;
     int failures = 0;
@@ -146,6 +149,62 @@ public class DataChannel extends ManagedChannel {
     if (successCount < failures) {
       throw new RuntimeException("Most of the priming requests failed");
     }
+  }
+
+  private ListenableFuture<PingAndWarmResponse> sendPingAndWarm(PingAndWarmRequest request) {
+    CallLabels callLabels =
+        CallLabels.create(
+            BigtableGrpc.getPingAndWarmMethod(),
+            Optional.of("bigtableproxy"),
+            Optional.of(request.getName()),
+            Optional.of(request.getAppProfileId()));
+    Tracer tracer = new Tracer(metrics, callLabels);
+
+    CallOptions callOptions =
+        CallOptions.DEFAULT
+            .withCallCredentials(callCredentials)
+            .withDeadline(Deadline.after(1, TimeUnit.MINUTES));
+    callOptions = tracer.injectIntoCallOptions(callOptions);
+
+    ClientCall<PingAndWarmRequest, PingAndWarmResponse> call =
+        inner.newCall(BigtableGrpc.getPingAndWarmMethod(), callOptions);
+
+    Metadata metadata = new Metadata();
+    metadata.put(
+        CallLabels.REQUEST_PARAMS,
+        String.format(
+            "name=%s&app_profile_id=%s",
+            URLEncoder.encode(request.getName(), StandardCharsets.UTF_8),
+            URLEncoder.encode(request.getAppProfileId(), StandardCharsets.UTF_8)));
+
+    SettableFuture<PingAndWarmResponse> f = SettableFuture.create();
+    call.start(
+        new Listener<>() {
+          @Override
+          public void onMessage(PingAndWarmResponse response) {
+            if (!f.set(response)) {
+              // TODO: set a metric
+              LOGGER.warn("PingAndWarm returned multiple responses");
+            }
+          }
+
+          @Override
+          public void onClose(Status status, Metadata trailers) {
+            tracer.onCallFinished(status);
+
+            if (status.isOk()) {
+              f.setException(new IllegalStateException("PingAndWarm was missing a response"));
+            } else {
+              f.setException(status.asRuntimeException());
+            }
+          }
+        },
+        metadata);
+    call.sendMessage(request);
+    call.halfClose();
+    call.request(Integer.MAX_VALUE);
+
+    return f;
   }
 
   @Override
@@ -208,9 +267,13 @@ public class DataChannel extends ManagedChannel {
   @Override
   public <RequestT, ResponseT> ClientCall<RequestT, ResponseT> newCall(
       MethodDescriptor<RequestT, ResponseT> methodDescriptor, CallOptions callOptions) {
-    Optional.ofNullable(Tracer.extractTracerFromCallOptions(callOptions))
-        .map(Tracer::getCallLabels)
-        .ifPresent(resourceCollector::collect);
+    Tracer tracer =
+        Optional.ofNullable(Tracer.extractTracerFromCallOptions(callOptions))
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        "DataChannel failed to extract Tracer from CallOptions"));
+    resourceCollector.collect(tracer.getCallLabels());
 
     return inner.newCall(methodDescriptor, callOptions);
   }
