@@ -53,7 +53,7 @@ public class CreateSecurityHealthAnalyticsCustomModule {
               projectId, "custom_module");
 
       // define the CEL expression here and this will scans for keys that have not been rotated in
-      // the last 90 days, change it according to the your requirements
+      // the last 30 days, change it according to the your requirements
       Expr expr =
           Expr.newBuilder()
               .setExpression(
