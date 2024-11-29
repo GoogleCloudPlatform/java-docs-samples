@@ -35,9 +35,9 @@ import io.grpc.ExperimentalApi;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Metadata;
+import io.grpc.Metadata.Key;
 import io.grpc.MethodDescriptor;
 import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -57,6 +57,11 @@ import org.slf4j.LoggerFactory;
  */
 public class DataChannel extends ManagedChannel {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataChannel.class);
+
+  private static final Metadata.Key<String> GFE_DEBUG_REQ_HEADER =
+      Key.of("X-Return-Encrypted-Headers", Metadata.ASCII_STRING_MARSHALLER);
+  private static final Metadata.Key<String> GFE_DEBUG_RESP_HEADER =
+      Key.of("X-Encrypted-Debug-Headers", Metadata.ASCII_STRING_MARSHALLER);
 
   private static final Duration WARM_PERIOD = Duration.ofMinutes(3);
   private static final Duration MAX_JITTER = Duration.ofSeconds(10);
@@ -152,10 +157,11 @@ public class DataChannel extends ManagedChannel {
         future.get();
         successCount++;
       } catch (ExecutionException e) {
-        // All permenant errors are ignored and treated as a success
+        // All permanent errors are ignored and treated as a success
         // The priming request for that generated the error will be dropped
-        if (e.getCause() instanceof StatusRuntimeException) {
-          StatusRuntimeException se = (StatusRuntimeException) e.getCause();
+        if (e.getCause() instanceof PingAndWarmException) {
+          PingAndWarmException se = (PingAndWarmException) e.getCause();
+
           switch (se.getStatus().getCode()) {
             case INTERNAL:
             case PERMISSION_DENIED:
@@ -168,8 +174,15 @@ public class DataChannel extends ManagedChannel {
             default:
               // noop
           }
+          LOGGER.warn(
+              "Failed to prime channel with request: {}, status: {}, debug response headers: {}",
+              request,
+              se.getStatus(),
+              Optional.ofNullable(se.getDebugHeaders()).orElse("<missing>"));
+        } else {
+          LOGGER.warn("Unexpected failure priming channel with request: {}", request, e.getCause());
         }
-        LOGGER.warn("Failed to prime channel with request: {}", request, e.getCause());
+
         failures++;
       } catch (InterruptedException e) {
         throw new RuntimeException("Interrupted while priming channel with request: " + request, e);
@@ -182,7 +195,9 @@ public class DataChannel extends ManagedChannel {
 
   private ListenableFuture<PingAndWarmResponse> sendPingAndWarm(PrimingKey primingKey) {
     Metadata metadata = primingKey.composeMetadata();
+    metadata.put(GFE_DEBUG_REQ_HEADER, "gfe_response_only");
     PingAndWarmRequest request = primingKey.composeProto();
+    request = request.toBuilder().setName(request.getName()).build();
 
     CallLabels callLabels = CallLabels.create(BigtableGrpc.getPingAndWarmMethod(), metadata);
     Tracer tracer = new Tracer(metrics, callLabels);
@@ -199,6 +214,8 @@ public class DataChannel extends ManagedChannel {
     SettableFuture<PingAndWarmResponse> f = SettableFuture.create();
     call.start(
         new Listener<>() {
+          String debugHeaders = null;
+
           @Override
           public void onMessage(PingAndWarmResponse response) {
             if (!f.set(response)) {
@@ -208,13 +225,21 @@ public class DataChannel extends ManagedChannel {
           }
 
           @Override
+          public void onHeaders(Metadata headers) {
+            debugHeaders = headers.get(GFE_DEBUG_RESP_HEADER);
+          }
+
+          @Override
           public void onClose(Status status, Metadata trailers) {
             tracer.onCallFinished(status);
 
             if (status.isOk()) {
-              f.setException(new IllegalStateException("PingAndWarm was missing a response"));
+              f.setException(
+                  new PingAndWarmException(
+                      "PingAndWarm was missing a response", debugHeaders, trailers, status));
             } else {
-              f.setException(status.asRuntimeException());
+              f.setException(
+                  new PingAndWarmException("PingAndWarm failed", debugHeaders, trailers, status));
             }
           }
         },
@@ -224,6 +249,33 @@ public class DataChannel extends ManagedChannel {
     call.request(Integer.MAX_VALUE);
 
     return f;
+  }
+
+  static class PingAndWarmException extends RuntimeException {
+
+    private final String debugHeaders;
+    private final Metadata trailers;
+    private final Status status;
+
+    public PingAndWarmException(
+        String message, String debugHeaders, Metadata trailers, Status status) {
+      super(String.format("PingAndWarm failed, status: " + status));
+      this.debugHeaders = debugHeaders;
+      this.trailers = trailers;
+      this.status = status;
+    }
+
+    public String getDebugHeaders() {
+      return debugHeaders;
+    }
+
+    public Metadata getTrailers() {
+      return trailers;
+    }
+
+    public Status getStatus() {
+      return status;
+    }
   }
 
   @Override
