@@ -21,15 +21,21 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.cloud.securitycentermanagement.v1.EffectiveSecurityHealthAnalyticsCustomModule;
 import com.google.cloud.securitycentermanagement.v1.ListSecurityHealthAnalyticsCustomModulesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse;
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListEffectiveSecurityHealthAnalyticsCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
+import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule.EnablementState;
+import com.google.cloud.securitycentermanagement.v1.SimulateSecurityHealthAnalyticsCustomModuleResponse;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.base.Strings;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.StreamSupport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -39,9 +45,8 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class SecurityHealthAnalyticsCustomModuleTest {
-
-  private static final String parent =
-      String.format("organizations/%s/locations/%s", System.getenv("SCC_PROJECT_ORG_ID"), "global");
+  // TODO(Developer): Replace the below variable
+  private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
   private static final String CUSTOM_MODULE_DISPLAY_NAME = "java_sample_custom_module_test";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
@@ -60,7 +65,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   @BeforeClass
   public static void setUp() throws InterruptedException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("SCC_PROJECT_ORG_ID");
+    requireEnvVar("SCC_PROJECT_ID");
   }
 
   @AfterClass
@@ -71,21 +76,19 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
   // cleanupExistingCustomModules clean up all the existing custom module
   private static void cleanupExistingCustomModules() throws IOException {
-
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
-
       ListSecurityHealthAnalyticsCustomModulesRequest request =
-          ListSecurityHealthAnalyticsCustomModulesRequest.newBuilder().setParent(parent).build();
-
+          ListSecurityHealthAnalyticsCustomModulesRequest.newBuilder()
+              .setParent(String.format("projects/%s/locations/global", PROJECT_ID))
+              .build();
       ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
           client.listSecurityHealthAnalyticsCustomModules(request);
-
       // Iterate over the response and delete custom module one by one which start with
       // java_sample_custom_module
       for (SecurityHealthAnalyticsCustomModule module : response.iterateAll()) {
         if (module.getDisplayName().startsWith("java_sample_custom_module")) {
           String customModuleId = extractCustomModuleId(module.getName());
-          deleteCustomModule(parent, customModuleId);
+          deleteCustomModule(PROJECT_ID, customModuleId);
         }
       }
     }
@@ -105,21 +108,22 @@ public class SecurityHealthAnalyticsCustomModuleTest {
 
   // createCustomModule method is for creating the custom module
   private static SecurityHealthAnalyticsCustomModule createCustomModule(
-      String parent, String customModuleDisplayName) throws IOException {
-    if (!Strings.isNullOrEmpty(parent) && !Strings.isNullOrEmpty(customModuleDisplayName)) {
+      String projectId, String customModuleDisplayName) throws IOException {
+    if (!Strings.isNullOrEmpty(projectId) && !Strings.isNullOrEmpty(customModuleDisplayName)) {
       SecurityHealthAnalyticsCustomModule response =
           CreateSecurityHealthAnalyticsCustomModule.createSecurityHealthAnalyticsCustomModule(
-              parent, customModuleDisplayName);
+              projectId, customModuleDisplayName);
       return response;
     }
     return null;
   }
 
   // deleteCustomModule method is for deleting the custom module
-  private static void deleteCustomModule(String parent, String customModuleId) throws IOException {
-    if (!Strings.isNullOrEmpty(parent) && !Strings.isNullOrEmpty(customModuleId)) {
+  private static void deleteCustomModule(String projectId, String customModuleId)
+      throws IOException {
+    if (!Strings.isNullOrEmpty(projectId) && !Strings.isNullOrEmpty(customModuleId)) {
       DeleteSecurityHealthAnalyticsCustomModule.deleteSecurityHealthAnalyticsCustomModule(
-          parent, customModuleId);
+          projectId, customModuleId);
     }
   }
 
@@ -127,7 +131,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   public void testCreateSecurityHealthAnalyticsCustomModule() throws IOException {
     SecurityHealthAnalyticsCustomModule response =
         CreateSecurityHealthAnalyticsCustomModule.createSecurityHealthAnalyticsCustomModule(
-            parent, CUSTOM_MODULE_DISPLAY_NAME);
+            PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
 
     assertNotNull(response);
     assertThat(response.getDisplayName()).isEqualTo(CUSTOM_MODULE_DISPLAY_NAME);
@@ -136,30 +140,92 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   @Test
   public void testDeleteSecurityHealthAnalyticsCustomModule() throws IOException {
     SecurityHealthAnalyticsCustomModule response =
-        createCustomModule(parent, CUSTOM_MODULE_DISPLAY_NAME);
+        createCustomModule(PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     String customModuleId = extractCustomModuleId(response.getName());
     assertTrue(
         DeleteSecurityHealthAnalyticsCustomModule.deleteSecurityHealthAnalyticsCustomModule(
-            parent, customModuleId));
+            PROJECT_ID, customModuleId));
   }
 
   @Test
   public void testListSecurityHealthAnalyticsCustomModules() throws IOException {
-    createCustomModule(parent, CUSTOM_MODULE_DISPLAY_NAME);
-    assertNotNull(
-        ListSecurityHealthAnalyticsCustomModules.listSecurityHealthAnalyticsCustomModules(parent));
+    createCustomModule(PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
+        ListSecurityHealthAnalyticsCustomModules.listSecurityHealthAnalyticsCustomModules(
+            PROJECT_ID);
+    assertTrue(
+        StreamSupport.stream(response.iterateAll().spliterator(), false)
+            .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
   }
 
   @Test
   public void testGetSecurityHealthAnalyticsCustomModule() throws IOException {
     SecurityHealthAnalyticsCustomModule createCustomModuleResponse =
-        createCustomModule(parent, CUSTOM_MODULE_DISPLAY_NAME);
+        createCustomModule(PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     String customModuleId = extractCustomModuleId(createCustomModuleResponse.getName());
     SecurityHealthAnalyticsCustomModule getCustomModuleResponse =
         GetSecurityHealthAnalyticsCustomModule.getSecurityHealthAnalyticsCustomModule(
-            parent, customModuleId);
+            PROJECT_ID, customModuleId);
 
     assertThat(getCustomModuleResponse.getDisplayName()).isEqualTo(CUSTOM_MODULE_DISPLAY_NAME);
     assertThat(extractCustomModuleId(getCustomModuleResponse.getName())).isEqualTo(customModuleId);
+  }
+
+  @Test
+  public void testUpdateSecurityHealthAnalyticsCustomModule() throws IOException {
+    SecurityHealthAnalyticsCustomModule createCustomModuleResponse =
+        createCustomModule(PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    String customModuleId = extractCustomModuleId(createCustomModuleResponse.getName());
+    SecurityHealthAnalyticsCustomModule response =
+        UpdateSecurityHealthAnalyticsCustomModule.updateSecurityHealthAnalyticsCustomModule(
+            PROJECT_ID, customModuleId);
+    assertNotNull(response);
+    assertThat(response.getEnablementState().equals(EnablementState.DISABLED));
+  }
+
+  @Test
+  public void testGetEffectiveSecurityHealthAnalyticsCustomModule() throws IOException {
+    SecurityHealthAnalyticsCustomModule createCustomModuleResponse =
+        createCustomModule(PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    String customModuleId = extractCustomModuleId(createCustomModuleResponse.getName());
+    EffectiveSecurityHealthAnalyticsCustomModule getEffectiveCustomModuleResponse =
+        GetEffectiveSecurityHealthAnalyticsCustomModule
+            .getEffectiveSecurityHealthAnalyticsCustomModule(PROJECT_ID, customModuleId);
+
+    assertThat(getEffectiveCustomModuleResponse.getDisplayName())
+        .isEqualTo(CUSTOM_MODULE_DISPLAY_NAME);
+    assertThat(extractCustomModuleId(getEffectiveCustomModuleResponse.getName()))
+        .isEqualTo(customModuleId);
+  }
+
+  @Test
+  public void testListEffectiveSecurityHealthAnalyticsCustomModules() throws IOException {
+    createCustomModule(PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    ListEffectiveSecurityHealthAnalyticsCustomModulesPagedResponse response =
+        ListEffectiveSecurityHealthAnalyticsCustomModules
+            .listEffectiveSecurityHealthAnalyticsCustomModules(PROJECT_ID);
+    assertTrue(
+        StreamSupport.stream(response.iterateAll().spliterator(), false)
+            .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
+  }
+
+  @Test
+  public void testListDescendantSecurityHealthAnalyticsCustomModules() throws IOException {
+    createCustomModule(PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse response =
+        ListDescendantSecurityHealthAnalyticsCustomModules
+            .listDescendantSecurityHealthAnalyticsCustomModules(PROJECT_ID);
+    assertTrue(
+        StreamSupport.stream(response.iterateAll().spliterator(), false)
+            .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
+  }
+
+  @Test
+  public void testSimulateSecurityHealthAnalyticsCustomModule() throws IOException {
+    SimulateSecurityHealthAnalyticsCustomModuleResponse response =
+        SimulateSecurityHealthAnalyticsCustomModule.simulateSecurityHealthAnalyticsCustomModule(
+            PROJECT_ID);
+    assertNotNull(response);
+    assertThat(response.getResult().equals("no_violation"));
   }
 }
