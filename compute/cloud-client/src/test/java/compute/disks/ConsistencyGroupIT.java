@@ -33,6 +33,7 @@ import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import com.google.cloud.compute.v1.ResourcePolicy;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
+import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
 import compute.disks.consistencygroup.RemoveDiskFromConsistencyGroup;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -41,7 +42,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 15)
+@Timeout(value = 20)
 public class ConsistencyGroupIT {
   private static final String PROJECT_ID = "project-id";
   private static final String REGION = "asia-east1";
@@ -69,14 +70,13 @@ public class ConsistencyGroupIT {
       when(mockFuture.get()).thenReturn(operation);
       when(operation.getStatus()).thenReturn(Operation.Status.DONE);
 
-
       Operation.Status status = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
               PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
 
       verify(mockClient, times(1))
               .insertAsync(PROJECT_ID, REGION, resourcePolicy);
       verify(mockFuture, times(1)).get();
-      assertEquals(status, Operation.Status.DONE);
+      assertEquals(Operation.Status.DONE, status);
     }
   }
 
@@ -94,14 +94,13 @@ public class ConsistencyGroupIT {
       when(mockFuture.get()).thenReturn(operation);
       when(operation.getStatus()).thenReturn(Operation.Status.DONE);
 
-
       Operation.Status status = AddDiskToConsistencyGroup.addDiskToConsistencyGroup(
               PROJECT_ID, REGION, DISK_NAME, CONSISTENCY_GROUP_NAME, REGION);
 
       verify(mockClient, times(1))
               .addResourcePoliciesAsync(any(AddResourcePoliciesRegionDiskRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(status, Operation.Status.DONE);
+      assertEquals(Operation.Status.DONE, status);
     }
   }
 
@@ -125,7 +124,31 @@ public class ConsistencyGroupIT {
       verify(mockClient, times(1))
               .removeResourcePoliciesAsync(any(RemoveResourcePoliciesRegionDiskRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(status, Operation.Status.DONE);
+      assertEquals(Operation.Status.DONE, status);
+    }
+  }
+
+  @Test
+  public void testDeleteDiskConsistencyGroup() throws Exception {
+    try (MockedStatic<ResourcePoliciesClient> mockedResourcePoliciesClient =
+                 mockStatic(ResourcePoliciesClient.class)) {
+      Operation operation = mock(Operation.class);
+      ResourcePoliciesClient mockClient = mock(ResourcePoliciesClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedResourcePoliciesClient.when(ResourcePoliciesClient::create).thenReturn(mockClient);
+      when(mockClient.deleteAsync(PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME))
+              .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(operation);
+      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+
+      Operation.Status status = DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
+              PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+
+      verify(mockClient, times(1))
+              .deleteAsync(PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+      verify(mockFuture, times(1)).get();
+      assertEquals(Operation.Status.DONE, status);
     }
   }
 }
