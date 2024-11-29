@@ -17,11 +17,17 @@
 package com.google.cloud.bigtable.examples.proxy.core;
 
 import com.google.auto.value.AutoValue;
+import com.google.bigtable.v2.PingAndWarmRequest;
+import com.google.bigtable.v2.PingAndWarmRequest.Builder;
+import com.google.common.collect.ImmutableMap;
 import io.grpc.Metadata;
 import io.grpc.Metadata.Key;
 import io.grpc.MethodDescriptor;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 /**
@@ -154,5 +160,69 @@ public abstract class CallLabels {
 
   private static String percentDecode(String s) {
     return URLDecoder.decode(s, StandardCharsets.UTF_8);
+  }
+
+  @AutoValue
+  public abstract static class PrimingKey {
+    abstract Map<String, String> getMetadata();
+
+    abstract String getName();
+
+    abstract Optional<String> getAppProfileId();
+
+    public static Optional<PrimingKey> from(CallLabels labels) throws ParsingException {
+      Optional<String> resourceName = labels.getResourceName();
+      if (resourceName.isEmpty()) {
+        return Optional.empty();
+      }
+      String[] resourceNameParts = resourceName.get().split("/", 5);
+      if (resourceNameParts.length < 4
+          || !resourceNameParts[0].equals("projects")
+          || !resourceNameParts[2].equals("instances")) {
+        return Optional.empty();
+      }
+      String instanceName =
+          "projects/" + resourceNameParts[1] + "/instances/" + resourceNameParts[3];
+      StringBuilder reqParams =
+          new StringBuilder()
+              .append("name=")
+              .append(URLEncoder.encode(instanceName, StandardCharsets.UTF_8));
+
+      Optional<String> appProfileId = labels.getAppProfileId();
+      appProfileId.ifPresent(val -> reqParams.append("&app_profile_id=").append(val));
+
+      ImmutableMap.Builder<String, String> md = ImmutableMap.builder();
+      md.put(REQUEST_PARAMS.name(), reqParams.toString());
+
+      labels.getApiClient().ifPresent(c -> md.put(API_CLIENT.name(), c));
+
+      return Optional.of(
+          new AutoValue_CallLabels_PrimingKey(md.build(), instanceName, appProfileId));
+    }
+
+    public Metadata composeMetadata() {
+      Metadata md = new Metadata();
+      for (Entry<String, String> e : getMetadata().entrySet()) {
+        md.put(Key.of(e.getKey(), Metadata.ASCII_STRING_MARSHALLER), e.getValue());
+      }
+      return md;
+    }
+
+    public PingAndWarmRequest composeProto() {
+      Builder builder = PingAndWarmRequest.newBuilder().setName(getName());
+      getAppProfileId().ifPresent(builder::setAppProfileId);
+      return builder.build();
+    }
+  }
+
+  public static class ParsingException extends Exception {
+
+    public ParsingException(String message) {
+      super(message);
+    }
+
+    public ParsingException(String message, Throwable cause) {
+      super(message, cause);
+    }
   }
 }
