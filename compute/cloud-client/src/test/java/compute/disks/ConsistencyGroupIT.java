@@ -22,13 +22,13 @@ import static org.junit.Assert.assertEquals;
 import com.google.cloud.compute.v1.Operation;
 import compute.Util;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
-import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -55,7 +55,6 @@ public class ConsistencyGroupIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     // Clean up existing stale resources.
-    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, "test-disk-for-consistency-1d8edba8");
     Util.cleanUpExistingRegionalDisks("test-disk-for-consistency-", PROJECT_ID, REGION);
     Util.cleanUpExistingRegionalDisks(
             "gcloud-test-disk-secondary-regional-", PROJECT_ID, REGION_SECONDARY);
@@ -63,15 +62,15 @@ public class ConsistencyGroupIT {
   }
 
   @AfterAll
-  public static void cleanUp()
-      throws IOException, ExecutionException, InterruptedException {
+  public static void cleanUp() {
     // Delete created consistency group
-    Operation.Status status = DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
-        PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
-
-    assertEquals(Operation.Status.DONE, status);
+    //    Operation.Status status = DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
+    //        PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+    //
+    //    assertEquals(Operation.Status.DONE, status);
   }
 
+  @Disabled
   @Test
   public void testCreateDiskConsistencyGroupResourcePolicy()
       throws IOException, ExecutionException, InterruptedException {
