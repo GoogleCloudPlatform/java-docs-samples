@@ -59,6 +59,9 @@ public class CrudOperationsReservationIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, "us-central1-a");
+    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, "asia-south1-a");
+
     CreateReservation.createReservation(PROJECT_ID, RESERVATION_NAME, NUMBER_OF_VMS, ZONE);
   }
 

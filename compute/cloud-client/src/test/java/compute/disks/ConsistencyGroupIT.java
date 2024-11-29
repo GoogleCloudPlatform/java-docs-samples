@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertEquals;
 
 import com.google.cloud.compute.v1.Operation;
+import compute.Util;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
 import java.io.IOException;
@@ -51,6 +52,7 @@ public class ConsistencyGroupIT {
   public static void setUp() throws Exception {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    Util.cleanUpExistingConsistencyGroup("test-consistency-group-", PROJECT_ID, REGION);
   }
 
   @AfterAll
