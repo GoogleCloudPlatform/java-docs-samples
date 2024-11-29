@@ -39,6 +39,7 @@ import org.junit.runners.JUnit4;
 public class ConsistencyGroupIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGION = "us-central1";
+  private static final String REGION_SECONDARY = "northamerica-northeast1";
   private static final String CONSISTENCY_GROUP_NAME =
       "test-consistency-group-" + UUID.randomUUID();
 
@@ -53,6 +54,10 @@ public class ConsistencyGroupIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
+    // Clean up existing stale resources.
+    Util.cleanUpExistingRegionalDisks("test-disk-for-consistency-", PROJECT_ID, REGION);
+    Util.cleanUpExistingRegionalDisks(
+            "gcloud-test-disk-secondary-regional-", PROJECT_ID, REGION_SECONDARY);
     Util.cleanUpExistingConsistencyGroup("test-consistency-group-", PROJECT_ID, REGION);
   }
 

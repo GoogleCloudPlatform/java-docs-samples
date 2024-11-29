@@ -16,6 +16,7 @@
 
 package compute;
 
+import static compute.disks.RegionalDelete.deleteRegionalDisk;
 import static compute.disks.consistencygroup.DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup;
 
 import com.google.cloud.compute.v1.DeleteStoragePoolRequest;
@@ -281,6 +282,22 @@ public abstract class Util {
                 && isCreatedBeforeThresholdTime(resourcePolicy.getCreationTimestamp())) {
           System.out.println(resourcePolicy.getName());
           deleteDiskConsistencyGroup(projectId, region, resourcePolicy.getName());
+        }
+      }
+    }
+  }
+
+  // Delete disks which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingRegionalDisks(
+          String prefixToDelete, String projectId, String region)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
+      for (Disk disk : disksClient.list(projectId, region).iterateAll()) {
+        if (disk.getName().contains(prefixToDelete)
+                && disk.getRegion().equals(region)
+                && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
+          deleteRegionalDisk(projectId, region, disk.getName());
         }
       }
     }
