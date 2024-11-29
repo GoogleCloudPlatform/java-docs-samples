@@ -55,6 +55,7 @@ public class ConsistencyGroupIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     // Clean up existing stale resources.
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, "test-disk-for-consistency-1d8edba8");
     Util.cleanUpExistingRegionalDisks("test-disk-for-consistency-", PROJECT_ID, REGION);
     Util.cleanUpExistingRegionalDisks(
             "gcloud-test-disk-secondary-regional-", PROJECT_ID, REGION_SECONDARY);
