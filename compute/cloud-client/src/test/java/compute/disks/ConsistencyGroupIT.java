@@ -94,6 +94,7 @@ public class ConsistencyGroupIT {
     Util.cleanUpExistingRegionalDisks("test-disk-for-consistency-", PROJECT_ID, REGION);
     Util.cleanUpExistingRegionalDisks(
             "gcloud-test-disk-secondary-regional-", PROJECT_ID, REGION_SECONDARY);
+    Util.cleanUpExistingConsistencyGroup("test-consistency-group-", PROJECT_ID, REGION);
   }
 
   @Test

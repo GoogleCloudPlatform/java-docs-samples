@@ -16,6 +16,8 @@
 
 package compute;
 
+import static compute.disks.consistencygroup.DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup;
+
 import com.google.cloud.compute.v1.DeleteStoragePoolRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
@@ -30,6 +32,8 @@ import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
+import com.google.cloud.compute.v1.ResourcePoliciesClient;
+import com.google.cloud.compute.v1.ResourcePolicy;
 import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
 import com.google.cloud.compute.v1.StoragePool;
@@ -51,6 +55,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
+
 
 public abstract class Util {
   // Cleans existing test resources if any.
@@ -278,6 +283,22 @@ public abstract class Util {
                 && disk.getRegion().equals(region)
                 && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
           RegionalDelete.deleteRegionalDisk(projectId, region, disk.getName());
+        }
+      }
+    }
+  }
+
+  // Delete ConsistencyGroup which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingConsistencyGroup(
+          String prefixToDelete, String projectId, String region)
+          throws IOException, ExecutionException, InterruptedException {
+    try (ResourcePoliciesClient client = ResourcePoliciesClient.create()) {
+      for (ResourcePolicy resourcePolicy : client.list(projectId, region).iterateAll()) {
+        if (resourcePolicy.getName().contains(prefixToDelete)
+                && resourcePolicy.getRegion().equals(region)
+                && isCreatedBeforeThresholdTime(resourcePolicy.getCreationTimestamp())) {
+          deleteDiskConsistencyGroup(projectId, region, resourcePolicy.getName());
         }
       }
     }
