@@ -19,11 +19,13 @@ package com.google.cloud.bigtable.examples.proxy.metrics;
 import com.google.auth.Credentials;
 import com.google.auto.value.AutoValue;
 import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels.ParsingException;
 import com.google.cloud.opentelemetry.metric.GoogleCloudMetricExporter;
 import com.google.cloud.opentelemetry.metric.MetricConfiguration;
 import io.grpc.Status;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.metrics.DoubleHistogram;
 import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.LongHistogram;
@@ -41,8 +43,12 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MetricsImpl implements Closeable, Metrics {
+  private static final Logger LOG = LoggerFactory.getLogger(MetricsImpl.class);
+
   public static final InstrumentationScopeInfo INSTRUMENTATION_SCOPE_INFO =
       InstrumentationScopeInfo.create("bigtable-proxy");
 
@@ -186,13 +192,30 @@ public class MetricsImpl implements Closeable, Metrics {
 
   @Override
   public MetricsAttributesImpl createAttributes(CallLabels callLabels) {
-    return new AutoValue_MetricsImpl_MetricsAttributesImpl(
+    AttributesBuilder attrs =
         Attributes.builder()
-            .put(MetricsImpl.API_CLIENT_KEY, callLabels.getApiClient().orElse("<missing>"))
-            .put(MetricsImpl.RESOURCE_KEY, callLabels.getResourceName().orElse("<missing>"))
-            .put(MetricsImpl.APP_PROFILE_KEY, callLabels.getAppProfileId().orElse("<missing>"))
-            .put(MetricsImpl.METHOD_KEY, callLabels.getMethodName())
-            .build());
+            .put(METHOD_KEY, callLabels.getMethodName())
+            .put(API_CLIENT_KEY, callLabels.getApiClient().orElse("<missing>"));
+
+    String resourceValue;
+    try {
+      resourceValue = callLabels.extractResourceName().orElse("<missing>");
+    } catch (ParsingException e) {
+      LOG.atWarn().log("Failed to extract resource from callLabels: {}", callLabels, e);
+      resourceValue = "<error>";
+    }
+    attrs.put(MetricsImpl.RESOURCE_KEY, resourceValue);
+
+    String appProfile;
+    try {
+      appProfile = callLabels.extractAppProfileId().orElse("<missing>");
+    } catch (ParsingException e) {
+      LOG.atWarn().log("Failed to extract app profile from callLabels: {}", callLabels, e);
+      appProfile = "<error>";
+    }
+    attrs.put(MetricsImpl.APP_PROFILE_KEY, appProfile);
+
+    return new AutoValue_MetricsImpl_MetricsAttributesImpl(attrs.build());
   }
 
   private static SdkMeterProvider createMeterProvider(Credentials credentials, String projectId) {

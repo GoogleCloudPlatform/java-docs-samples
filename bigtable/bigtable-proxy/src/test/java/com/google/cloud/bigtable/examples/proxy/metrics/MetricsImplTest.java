@@ -53,9 +53,14 @@ public class MetricsImplTest {
     CallLabels callLabels =
         CallLabels.create(
             BigtableGrpc.getMutateRowMethod(),
-            Optional.of("some-client"),
+            Optional.of(
+                "table_name=projects/p/instances/i/tables/t&app_profile_id=a"
+                    .replaceAll("/", "%2F")),
             Optional.of("projects/p/instances/i/tables/t"),
-            Optional.of("a"));
+            Optional.of("opaque-cookie"),
+            Optional.of("encoded-features"),
+            Optional.of("some-client"));
+
     Attributes attrs = metrics.createAttributes(callLabels).getAttributes();
     assertThat(attrs.asMap())
         .containsAtLeast(
@@ -70,6 +75,8 @@ public class MetricsImplTest {
     CallLabels callLabels =
         CallLabels.create(
             BigtableGrpc.getMutateRowMethod(),
+            Optional.empty(),
+            Optional.empty(),
             Optional.empty(),
             Optional.empty(),
             Optional.empty());
