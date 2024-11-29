@@ -17,6 +17,7 @@
 package com.google.cloud.bigtable.examples.proxy.metrics;
 
 import com.google.auth.Credentials;
+import com.google.auto.value.AutoValue;
 import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
 import com.google.cloud.opentelemetry.metric.GoogleCloudMetricExporter;
 import com.google.cloud.opentelemetry.metric.MetricConfiguration;
@@ -28,6 +29,7 @@ import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.LongHistogram;
 import io.opentelemetry.api.metrics.LongUpDownCounter;
 import io.opentelemetry.api.metrics.Meter;
+import io.opentelemetry.api.metrics.MeterProvider;
 import io.opentelemetry.contrib.gcp.resource.GCPResourceProvider;
 import io.opentelemetry.sdk.common.InstrumentationScopeInfo;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
@@ -56,7 +58,7 @@ public class MetricsImpl implements Closeable, Metrics {
   public static final String METRIC_PRESENCE_DESC = "Number of proxy processes";
   public static final String METRIC_PRESENCE_UNIT = "{process}";
 
-  private final SdkMeterProvider meterProvider;
+  private final MeterProvider meterProvider;
 
   private final DoubleHistogram gfeLatency;
   private final LongCounter gfeResponseHeadersMissing;
@@ -75,7 +77,11 @@ public class MetricsImpl implements Closeable, Metrics {
       () -> Resource.create(new GCPResourceProvider().getAttributes());
 
   public MetricsImpl(Credentials credentials, String projectId) throws IOException {
-    meterProvider = createMeterProvider(credentials, projectId);
+    this(createMeterProvider(credentials, projectId));
+  }
+
+  MetricsImpl(MeterProvider meterProvider) {
+    this.meterProvider = meterProvider;
     Meter meter =
         meterProvider
             .meterBuilder(INSTRUMENTATION_SCOPE_INFO.getName())
@@ -172,8 +178,21 @@ public class MetricsImpl implements Closeable, Metrics {
   }
 
   @Override
-  public void close() {
-    meterProvider.close();
+  public void close() throws IOException {
+    if (meterProvider instanceof Closeable) {
+      ((Closeable) meterProvider).close();
+    }
+  }
+
+  @Override
+  public MetricsAttributesImpl createAttributes(CallLabels callLabels) {
+    return new AutoValue_MetricsImpl_MetricsAttributesImpl(
+        Attributes.builder()
+            .put(MetricsImpl.API_CLIENT_KEY, callLabels.getApiClient().orElse("<missing>"))
+            .put(MetricsImpl.RESOURCE_KEY, callLabels.getResourceName().orElse("<missing>"))
+            .put(MetricsImpl.APP_PROFILE_KEY, callLabels.getAppProfileId().orElse("<missing>"))
+            .put(MetricsImpl.METHOD_KEY, callLabels.getMethodName())
+            .build());
   }
 
   private static SdkMeterProvider createMeterProvider(Credentials credentials, String projectId) {
@@ -194,49 +213,49 @@ public class MetricsImpl implements Closeable, Metrics {
   }
 
   @Override
-  public void recordCallStarted(CallLabels labels) {
-    serverCallsStarted.add(1, labels.getOtelAttributes());
+  public void recordCallStarted(MetricsAttributes attrs) {
+    serverCallsStarted.add(1, unwrap(attrs));
 
     int outstanding = numOutstandingRpcs.incrementAndGet();
     maxSeen.updateAndGet(n -> Math.max(outstanding, n));
   }
 
   @Override
-  public void recordCredLatency(CallLabels labels, Status status, Duration duration) {
+  public void recordCredLatency(MetricsAttributes attrs, Status status, Duration duration) {
     Attributes attributes =
-        labels.getOtelAttributes().toBuilder().put(STATUS_KEY, status.getCode().name()).build();
+        unwrap(attrs).toBuilder().put(STATUS_KEY, status.getCode().name()).build();
     clientCredLatencies.record(duration.toMillis(), attributes);
   }
 
   @Override
-  public void recordQueueLatency(CallLabels labels, Duration duration) {
-    clientQueueLatencies.record(duration.toMillis(), labels.getOtelAttributes());
+  public void recordQueueLatency(MetricsAttributes attrs, Duration duration) {
+    clientQueueLatencies.record(duration.toMillis(), unwrap(attrs));
   }
 
   @Override
-  public void recordRequestSize(CallLabels labels, long size) {
-    requestSizes.record(size, labels.getOtelAttributes());
+  public void recordRequestSize(MetricsAttributes attrs, long size) {
+    requestSizes.record(size, unwrap(attrs));
   }
 
   @Override
-  public void recordResponseSize(CallLabels labels, long size) {
-    responseSizes.record(size, labels.getOtelAttributes());
+  public void recordResponseSize(MetricsAttributes attrs, long size) {
+    responseSizes.record(size, unwrap(attrs));
   }
 
   @Override
-  public void recordGfeLatency(CallLabels labels, Duration duration) {
-    gfeLatency.record(duration.toMillis(), labels.getOtelAttributes());
+  public void recordGfeLatency(MetricsAttributes attrs, Duration duration) {
+    gfeLatency.record(duration.toMillis(), unwrap(attrs));
   }
 
   @Override
-  public void recordGfeHeaderMissing(CallLabels labels) {
-    gfeResponseHeadersMissing.add(1, labels.getOtelAttributes());
+  public void recordGfeHeaderMissing(MetricsAttributes attrs) {
+    gfeResponseHeadersMissing.add(1, unwrap(attrs));
   }
 
   @Override
-  public void recordCallLatency(CallLabels labels, Status status, Duration duration) {
+  public void recordCallLatency(MetricsAttributes attrs, Status status, Duration duration) {
     Attributes attributes =
-        labels.getOtelAttributes().toBuilder().put(STATUS_KEY, status.getCode().name()).build();
+        unwrap(attrs).toBuilder().put(STATUS_KEY, status.getCode().name()).build();
 
     clientCallLatencies.record(duration.toMillis(), attributes);
     numOutstandingRpcs.decrementAndGet();
@@ -245,5 +264,14 @@ public class MetricsImpl implements Closeable, Metrics {
   @Override
   public void updateChannelCount(int delta) {
     channelCounter.add(delta);
+  }
+
+  static Attributes unwrap(MetricsAttributes wrapped) {
+    return ((MetricsAttributesImpl) wrapped).getAttributes();
+  }
+
+  @AutoValue
+  abstract static class MetricsAttributesImpl implements MetricsAttributes {
+    abstract Attributes getAttributes();
   }
 }

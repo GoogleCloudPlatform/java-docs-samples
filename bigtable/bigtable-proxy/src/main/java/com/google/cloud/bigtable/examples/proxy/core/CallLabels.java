@@ -17,11 +17,9 @@
 package com.google.cloud.bigtable.examples.proxy.core;
 
 import com.google.auto.value.AutoValue;
-import com.google.cloud.bigtable.examples.proxy.metrics.MetricsImpl;
 import io.grpc.Metadata;
 import io.grpc.Metadata.Key;
 import io.grpc.MethodDescriptor;
-import io.opentelemetry.api.common.Attributes;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
@@ -70,15 +68,13 @@ public abstract class CallLabels {
     }
   }
 
-  abstract Optional<String> getApiClient();
+  public abstract Optional<String> getApiClient();
 
   public abstract Optional<String> getResourceName();
 
   public abstract Optional<String> getAppProfileId();
 
-  abstract String getMethodName();
-
-  public abstract Attributes getOtelAttributes();
+  public abstract String getMethodName();
 
   public static CallLabels create(MethodDescriptor<?, ?> method, Metadata headers) {
     Optional<String> apiClient = Optional.ofNullable(headers.get(API_CLIENT));
@@ -96,15 +92,9 @@ public abstract class CallLabels {
       Optional<String> apiClient,
       Optional<String> resourceName,
       Optional<String> appProfile) {
-    Attributes otelAttrs =
-        Attributes.builder()
-            .put(MetricsImpl.API_CLIENT_KEY, apiClient.orElse("<missing>"))
-            .put(MetricsImpl.RESOURCE_KEY, resourceName.orElse("<missing>"))
-            .put(MetricsImpl.APP_PROFILE_KEY, appProfile.orElse("<missing>"))
-            .put(MetricsImpl.METHOD_KEY, method.getFullMethodName())
-            .build();
+
     return new AutoValue_CallLabels(
-        apiClient, resourceName, appProfile, method.getFullMethodName(), otelAttrs);
+        apiClient, resourceName, appProfile, method.getFullMethodName());
   }
 
   private static Optional<ResourceName> extractResourceName(String[] encodedKvPairs) {

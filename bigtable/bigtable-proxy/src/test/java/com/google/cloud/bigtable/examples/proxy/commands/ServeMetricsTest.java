@@ -21,6 +21,7 @@ import static org.mockito.AdditionalMatchers.geq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 import com.google.auth.Credentials;
@@ -31,6 +32,7 @@ import com.google.bigtable.v2.CheckAndMutateRowRequest;
 import com.google.bigtable.v2.CheckAndMutateRowResponse;
 import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
 import com.google.cloud.bigtable.examples.proxy.metrics.Metrics;
+import com.google.cloud.bigtable.examples.proxy.metrics.Metrics.MetricsAttributes;
 import com.google.common.collect.Lists;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -71,7 +73,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -203,6 +204,9 @@ public class ServeMetricsTest {
                   }
                 });
 
+    MetricsAttributes fakeAttrs = new MetricsAttributes() {};
+
+    doReturn(fakeAttrs).when(mockMetrics).createAttributes(any());
     doAnswer(
             invocation -> {
               Thread.sleep(10);
@@ -217,7 +221,7 @@ public class ServeMetricsTest {
               return invocation.callRealMethod();
             })
         .when(fakeCredentials)
-        .getRequestMetadata(Mockito.any());
+        .getRequestMetadata(any());
 
     CheckAndMutateRowRequest request =
         CheckAndMutateRowRequest.newBuilder()
@@ -225,24 +229,22 @@ public class ServeMetricsTest {
             .build();
     CheckAndMutateRowResponse response = stub.checkAndMutateRow(request);
 
-    CallLabels expectedLabels =
-        CallLabels.create(
-            BigtableGrpc.getCheckAndMutateRowMethod(),
-            Optional.of("fake-client"),
-            Optional.of("projects/fake-project/instances/fake-instance/tables/fake-table"),
-            Optional.of("fake-app-profile"));
+    verify(mockMetrics)
+        .createAttributes(
+            eq(
+                CallLabels.create(
+                    BigtableGrpc.getCheckAndMutateRowMethod(),
+                    Optional.of("fake-client"),
+                    Optional.of("projects/fake-project/instances/fake-instance/tables/fake-table"),
+                    Optional.of("fake-app-profile"))));
 
-    verify(mockMetrics).recordCallStarted(eq(expectedLabels));
-    verify(mockMetrics)
-        .recordCredLatency(eq(expectedLabels), eq(Status.OK), geq(Duration.ofMillis(10)));
-    verify(mockMetrics).recordGfeLatency(eq(expectedLabels), eq(Duration.ofMillis(1234)));
-    verify(mockMetrics).recordQueueLatency(eq(expectedLabels), geq(Duration.ZERO));
-    verify(mockMetrics)
-        .recordRequestSize(eq(expectedLabels), eq((long) request.getSerializedSize()));
-    verify(mockMetrics)
-        .recordResponseSize(eq(expectedLabels), eq((long) response.getSerializedSize()));
-    verify(mockMetrics)
-        .recordCallLatency(eq(expectedLabels), eq(Status.OK), geq(Duration.ofMillis(20)));
+    verify(mockMetrics).recordCallStarted(eq(fakeAttrs));
+    verify(mockMetrics).recordCredLatency(eq(fakeAttrs), eq(Status.OK), geq(Duration.ofMillis(10)));
+    verify(mockMetrics).recordGfeLatency(eq(fakeAttrs), eq(Duration.ofMillis(1234)));
+    verify(mockMetrics).recordQueueLatency(eq(fakeAttrs), geq(Duration.ZERO));
+    verify(mockMetrics).recordRequestSize(eq(fakeAttrs), eq((long) request.getSerializedSize()));
+    verify(mockMetrics).recordResponseSize(eq(fakeAttrs), eq((long) response.getSerializedSize()));
+    verify(mockMetrics).recordCallLatency(eq(fakeAttrs), eq(Status.OK), geq(Duration.ofMillis(20)));
   }
 
   @Test
@@ -276,25 +278,30 @@ public class ServeMetricsTest {
                   }
                 });
 
+    MetricsAttributes fakeAttrs = new MetricsAttributes() {};
+    doReturn(fakeAttrs).when(mockMetrics).createAttributes(any());
+
     CheckAndMutateRowRequest request =
         CheckAndMutateRowRequest.newBuilder()
             .setTableName("project/fake-project/instances/fake-instance/tables/fake-table")
             .build();
     CheckAndMutateRowResponse response = stub.checkAndMutateRow(request);
 
-    CallLabels expectedLabels =
-        CallLabels.create(
-            BigtableGrpc.getCheckAndMutateRowMethod(),
-            Optional.of("fake-client"),
-            Optional.of("projects/fake-project/instances/fake-instance/tables/fake-table"),
-            Optional.of("fake-app-profile"));
+    verify(mockMetrics)
+        .createAttributes(
+            eq(
+                CallLabels.create(
+                    BigtableGrpc.getCheckAndMutateRowMethod(),
+                    Optional.of("fake-client"),
+                    Optional.of("projects/fake-project/instances/fake-instance/tables/fake-table"),
+                    Optional.of("fake-app-profile"))));
 
-    verify(mockMetrics).recordGfeHeaderMissing(eq(expectedLabels));
+    verify(mockMetrics).recordGfeHeaderMissing(eq(fakeAttrs));
   }
 
   @Test
   public void testError() throws IOException {
-    BigtableBlockingStub stub =
+    final BigtableBlockingStub stub =
         BigtableGrpc.newBlockingStub(proxyChannel)
             .withInterceptors(
                 new ClientInterceptor() {
@@ -329,7 +336,7 @@ public class ServeMetricsTest {
               return invocation.callRealMethod();
             })
         .when(fakeCredentials)
-        .getRequestMetadata(Mockito.any());
+        .getRequestMetadata(any());
 
     doAnswer(
             invocation -> {
@@ -342,28 +349,31 @@ public class ServeMetricsTest {
         .when(dataService)
         .checkAndMutateRow(any(), any());
 
+    MetricsAttributes fakeAttrs = new MetricsAttributes() {};
+    doReturn(fakeAttrs).when(mockMetrics).createAttributes(any());
+
     CheckAndMutateRowRequest request =
         CheckAndMutateRowRequest.newBuilder()
             .setTableName("project/fake-project/instances/fake-instance/tables/fake-table")
             .build();
     assertThrows(StatusRuntimeException.class, () -> stub.checkAndMutateRow(request));
 
-    CallLabels expectedLabels =
-        CallLabels.create(
-            BigtableGrpc.getCheckAndMutateRowMethod(),
-            Optional.of("fake-client"),
-            Optional.of("projects/fake-project/instances/fake-instance/tables/fake-table"),
-            Optional.of("fake-app-profile"));
+    verify(mockMetrics)
+        .createAttributes(
+            eq(
+                CallLabels.create(
+                    BigtableGrpc.getCheckAndMutateRowMethod(),
+                    Optional.of("fake-client"),
+                    Optional.of("projects/fake-project/instances/fake-instance/tables/fake-table"),
+                    Optional.of("fake-app-profile"))));
 
-    verify(mockMetrics).recordCallStarted(eq(expectedLabels));
+    verify(mockMetrics).recordCallStarted(eq(fakeAttrs));
+    verify(mockMetrics).recordCredLatency(eq(fakeAttrs), eq(Status.OK), geq(Duration.ofMillis(10)));
+    verify(mockMetrics).recordQueueLatency(eq(fakeAttrs), geq(Duration.ZERO));
+    verify(mockMetrics).recordRequestSize(eq(fakeAttrs), eq((long) request.getSerializedSize()));
+    verify(mockMetrics).recordResponseSize(eq(fakeAttrs), eq(0L));
     verify(mockMetrics)
-        .recordCredLatency(eq(expectedLabels), eq(Status.OK), geq(Duration.ofMillis(10)));
-    verify(mockMetrics).recordQueueLatency(eq(expectedLabels), geq(Duration.ZERO));
-    verify(mockMetrics)
-        .recordRequestSize(eq(expectedLabels), eq((long) request.getSerializedSize()));
-    verify(mockMetrics).recordResponseSize(eq(expectedLabels), eq(0L));
-    verify(mockMetrics)
-        .recordCallLatency(eq(expectedLabels), eq(Status.INTERNAL), geq(Duration.ofMillis(20)));
+        .recordCallLatency(eq(fakeAttrs), eq(Status.INTERNAL), geq(Duration.ofMillis(20)));
   }
 
   static class MetadataInterceptor implements ServerInterceptor {
