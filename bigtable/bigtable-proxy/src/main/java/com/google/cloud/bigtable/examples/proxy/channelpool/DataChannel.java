@@ -20,6 +20,7 @@ import com.google.bigtable.v2.BigtableGrpc;
 import com.google.bigtable.v2.PingAndWarmRequest;
 import com.google.bigtable.v2.PingAndWarmResponse;
 import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels.PrimingKey;
 import com.google.cloud.bigtable.examples.proxy.metrics.Metrics;
 import com.google.cloud.bigtable.examples.proxy.metrics.Tracer;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -37,8 +38,6 @@ import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -107,18 +106,18 @@ public class DataChannel extends ManagedChannel {
   }
 
   private void warm() {
-    List<PingAndWarmRequest> requests = resourceCollector.getRequests();
-    if (requests.isEmpty()) {
+    List<PrimingKey> primingKeys = resourceCollector.getPrimingKeys();
+    if (primingKeys.isEmpty()) {
       return;
     }
 
     List<ListenableFuture<PingAndWarmResponse>> futures =
-        requests.stream().map(this::sendPingAndWarm).collect(Collectors.toList());
+        primingKeys.stream().map(this::sendPingAndWarm).collect(Collectors.toList());
 
     int successCount = 0;
     int failures = 0;
     for (ListenableFuture<PingAndWarmResponse> future : futures) {
-      PingAndWarmRequest request = requests.get(successCount + failures);
+      PrimingKey request = primingKeys.get(successCount + failures);
       try {
         future.get();
         successCount++;
@@ -151,13 +150,11 @@ public class DataChannel extends ManagedChannel {
     }
   }
 
-  private ListenableFuture<PingAndWarmResponse> sendPingAndWarm(PingAndWarmRequest request) {
-    CallLabels callLabels =
-        CallLabels.create(
-            BigtableGrpc.getPingAndWarmMethod(),
-            Optional.of("bigtableproxy"),
-            Optional.of(request.getName()),
-            Optional.of(request.getAppProfileId()));
+  private ListenableFuture<PingAndWarmResponse> sendPingAndWarm(PrimingKey primingKey) {
+    Metadata metadata = primingKey.composeMetadata();
+    PingAndWarmRequest request = primingKey.composeProto();
+
+    CallLabels callLabels = CallLabels.create(BigtableGrpc.getPingAndWarmMethod(), metadata);
     Tracer tracer = new Tracer(metrics, callLabels);
 
     CallOptions callOptions =
@@ -168,14 +165,6 @@ public class DataChannel extends ManagedChannel {
 
     ClientCall<PingAndWarmRequest, PingAndWarmResponse> call =
         inner.newCall(BigtableGrpc.getPingAndWarmMethod(), callOptions);
-
-    Metadata metadata = new Metadata();
-    metadata.put(
-        CallLabels.REQUEST_PARAMS,
-        String.format(
-            "name=%s&app_profile_id=%s",
-            URLEncoder.encode(request.getName(), StandardCharsets.UTF_8),
-            URLEncoder.encode(request.getAppProfileId(), StandardCharsets.UTF_8)));
 
     SettableFuture<PingAndWarmResponse> f = SettableFuture.create();
     call.start(
