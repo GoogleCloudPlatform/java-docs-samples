@@ -16,41 +16,40 @@
 
 package management.api;
 
-// [START securitycenter_create_security_health_analytics_custom_module]
-import com.google.cloud.securitycentermanagement.v1.CreateSecurityHealthAnalyticsCustomModuleRequest;
+// [START securitycenter_simulate_security_health_analytics_custom_module]
 import com.google.cloud.securitycentermanagement.v1.CustomConfig;
 import com.google.cloud.securitycentermanagement.v1.CustomConfig.ResourceSelector;
 import com.google.cloud.securitycentermanagement.v1.CustomConfig.Severity;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
-import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
-import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule.EnablementState;
+import com.google.cloud.securitycentermanagement.v1.SimulateSecurityHealthAnalyticsCustomModuleRequest;
+import com.google.cloud.securitycentermanagement.v1.SimulateSecurityHealthAnalyticsCustomModuleRequest.SimulatedResource;
+import com.google.cloud.securitycentermanagement.v1.SimulateSecurityHealthAnalyticsCustomModuleResponse;
+import com.google.iam.v1.Binding;
+import com.google.iam.v1.Policy;
+import com.google.protobuf.Struct;
+import com.google.protobuf.Value;
 import com.google.type.Expr;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CreateSecurityHealthAnalyticsCustomModule {
+public class SimulateSecurityHealthAnalyticsCustomModule {
 
   public static void main(String[] args) throws IOException {
-    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/create
+    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/simulate
     // TODO: Developer should replace project_id with a real project ID before running this code
     String projectId = "project_id";
 
-    String customModuleDisplayName = "custom_module_display_name";
-
-    createSecurityHealthAnalyticsCustomModule(projectId, customModuleDisplayName);
+    simulateSecurityHealthAnalyticsCustomModule(projectId);
   }
 
-  public static SecurityHealthAnalyticsCustomModule createSecurityHealthAnalyticsCustomModule(
-      String projectId, String customModuleDisplayName) throws IOException {
+  public static SimulateSecurityHealthAnalyticsCustomModuleResponse
+      simulateSecurityHealthAnalyticsCustomModule(String projectId) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs
     // to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
-
-      String name =
-          String.format(
-              "projects/%s/locations/global/securityHealthAnalyticsCustomModules/%s",
-              projectId, "custom_module");
 
       // define the CEL expression here and this will scans for keys that have not been rotated in
       // the last 30 days, change it according to the your requirements
@@ -78,27 +77,42 @@ public class CreateSecurityHealthAnalyticsCustomModule {
               .setRecommendation("add your recommendation here")
               .build();
 
-      // define the security health analytics custom module configuration, update the
-      // EnablementState below
-      SecurityHealthAnalyticsCustomModule securityHealthAnalyticsCustomModule =
-          SecurityHealthAnalyticsCustomModule.newBuilder()
-              .setName(name)
-              .setDisplayName(customModuleDisplayName)
-              .setEnablementState(EnablementState.ENABLED)
-              .setCustomConfig(customConfig)
+      // define the simulated resource data
+      Map<String, Value> resourceData = new HashMap<>();
+      resourceData.put("resourceId", Value.newBuilder().setStringValue("test-resource-id").build());
+      resourceData.put("name", Value.newBuilder().setStringValue("test-resource-name").build());
+      Struct resourceDataStruct = Struct.newBuilder().putAllFields(resourceData).build();
+
+      // define the policy
+      Policy policy =
+          Policy.newBuilder()
+              .addBindings(
+                  Binding.newBuilder()
+                      .setRole("roles/owner")
+                      .addMembers("user:test-user@gmail.com")
+                      .build())
               .build();
 
-      CreateSecurityHealthAnalyticsCustomModuleRequest request =
-          CreateSecurityHealthAnalyticsCustomModuleRequest.newBuilder()
+      // replace with the correct resource type
+      SimulatedResource simulatedResource =
+          SimulatedResource.newBuilder()
+              .setResourceType("cloudkms.googleapis.com/CryptoKey")
+              .setResourceData(resourceDataStruct)
+              .setIamPolicyData(policy)
+              .build();
+
+      SimulateSecurityHealthAnalyticsCustomModuleRequest request =
+          SimulateSecurityHealthAnalyticsCustomModuleRequest.newBuilder()
               .setParent(String.format("projects/%s/locations/global", projectId))
-              .setSecurityHealthAnalyticsCustomModule(securityHealthAnalyticsCustomModule)
+              .setCustomConfig(customConfig)
+              .setResource(simulatedResource)
               .build();
 
-      SecurityHealthAnalyticsCustomModule response =
-          client.createSecurityHealthAnalyticsCustomModule(request);
+      SimulateSecurityHealthAnalyticsCustomModuleResponse response =
+          client.simulateSecurityHealthAnalyticsCustomModule(request);
 
       return response;
     }
   }
 }
-// [END securitycenter_create_security_health_analytics_custom_module]
+// [END securitycenter_simulate_security_health_analytics_custom_module]
