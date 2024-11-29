@@ -38,8 +38,10 @@ import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -51,18 +53,24 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Decorator for a Bigtable data plane connection to add channel warming via PingAndWarm. Channel
- * warming will happen on creation and then every 3 minutes.
+ * warming will happen on creation and then every 3 minutes (with jitter).
  */
 public class DataChannel extends ManagedChannel {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataChannel.class);
 
+  private static final Duration WARM_PERIOD = Duration.ofMinutes(3);
+  private static final Duration MAX_JITTER = Duration.ofSeconds(10);
+
+  private final Random random = new Random();
   private final ManagedChannel inner;
   private final Metrics metrics;
   private final ResourceCollector resourceCollector;
   private final CallCredentials callCredentials;
-  private final ScheduledFuture<?> antiIdleTask;
+  private final ScheduledExecutorService warmingExecutor;
+  private volatile ScheduledFuture<?> antiIdleTask;
 
   private final AtomicBoolean closed = new AtomicBoolean();
+  private final Object scheduleLock = new Object();
 
   public DataChannel(
       ResourceCollector resourceCollector,
@@ -83,6 +91,8 @@ public class DataChannel extends ManagedChannel {
             .keepAliveTime(30, TimeUnit.SECONDS)
             .keepAliveTimeout(10, TimeUnit.SECONDS)
             .build();
+
+    this.warmingExecutor = warmingExecutor;
     this.metrics = metrics;
 
     try {
@@ -96,16 +106,30 @@ public class DataChannel extends ManagedChannel {
       throw e;
     }
 
-    antiIdleTask = warmingExecutor.scheduleAtFixedRate(this::warmQuietly, 3, 3, TimeUnit.MINUTES);
+    antiIdleTask =
+        warmingExecutor.schedule(this::warmTask, nextWarmup().toMillis(), TimeUnit.MILLISECONDS);
     metrics.updateChannelCount(1);
   }
 
-  private void warmQuietly() {
+  private Duration nextWarmup() {
+    return WARM_PERIOD.minus(
+        Duration.ofMillis((long) (MAX_JITTER.toMillis() * random.nextDouble())));
+  }
+
+  private void warmTask() {
     try {
       warm();
     } catch (RuntimeException e) {
       LOGGER.warn("anti idle ping failed, forcing reconnect", e);
       inner.enterIdle();
+    } finally {
+      synchronized (scheduleLock) {
+        if (!closed.get()) {
+          antiIdleTask =
+              warmingExecutor.schedule(
+                  this::warmTask, nextWarmup().toMillis(), TimeUnit.MILLISECONDS);
+        }
+      }
     }
   }
 
@@ -204,10 +228,16 @@ public class DataChannel extends ManagedChannel {
 
   @Override
   public ManagedChannel shutdown() {
-    if (closed.compareAndSet(false, true)) {
+    final boolean closing;
+
+    synchronized (scheduleLock) {
+      closing = closed.compareAndSet(false, true);
+      antiIdleTask.cancel(true);
+    }
+    if (closing) {
       metrics.updateChannelCount(-1);
     }
-    antiIdleTask.cancel(true);
+
     return inner.shutdown();
   }
 
@@ -223,10 +253,17 @@ public class DataChannel extends ManagedChannel {
 
   @Override
   public ManagedChannel shutdownNow() {
-    if (closed.compareAndSet(false, true)) {
+    final boolean closing;
+
+    synchronized (scheduleLock) {
+      closing = closed.compareAndSet(false, true);
+      antiIdleTask.cancel(true);
+    }
+
+    if (closing) {
       metrics.updateChannelCount(-1);
     }
-    antiIdleTask.cancel(true);
+
     return inner.shutdownNow();
   }
 
