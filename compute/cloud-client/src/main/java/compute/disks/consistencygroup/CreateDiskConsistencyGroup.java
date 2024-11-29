@@ -39,7 +39,6 @@ public class CreateDiskConsistencyGroup {
   }
 
   // Creates a new disk consistency group resource policy in the specified project and region.
-  // Return a link to the consistency group.
   public static Operation.Status createDiskConsistencyGroup(
       String project, String region, String consistencyGroupName)
       throws IOException, ExecutionException, InterruptedException {
