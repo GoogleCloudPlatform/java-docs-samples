@@ -17,11 +17,10 @@
 package compute.disks.consistencygroup;
 
 // [START compute_consistency_group_clone]
-// If your disk has zonal location uncomment these lines
-//import com.google.cloud.compute.v1.DisksClient;
-//import com.google.cloud.compute.v1.BulkInsertDiskRequest;
+import com.google.cloud.compute.v1.BulkInsertDiskRequest;
 import com.google.cloud.compute.v1.BulkInsertDiskResource;
 import com.google.cloud.compute.v1.BulkInsertRegionDiskRequest;
+import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
@@ -54,30 +53,40 @@ public class CloneDisksFromConsistencyGroup {
     String sourceConsistencyGroupPolicy = String.format(
             "projects/%s/regions/%s/resourcePolicies/%s", project, consistencyGroupLocation,
             consistencyGroupName);
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
+    Operation response;
+    if (Character.isDigit(disksLocation.charAt(disksLocation.length() - 1))) {
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
+      try (RegionDisksClient disksClient = RegionDisksClient.create()) {
+        BulkInsertRegionDiskRequest request = BulkInsertRegionDiskRequest.newBuilder()
+                .setProject(project)
+                .setRegion(disksLocation)
+                .setBulkInsertDiskResourceResource(
+                        BulkInsertDiskResource.newBuilder()
+                                .setSourceConsistencyGroupPolicy(sourceConsistencyGroupPolicy)
+                                .build())
+                .build();
 
-    // Use this client if your disk has zonal location.
-    //try (DisksClient disksClient = DisksClient.create()){
-    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
-      BulkInsertRegionDiskRequest request = BulkInsertRegionDiskRequest.newBuilder()
-          .setProject(project)
-          .setRegion(disksLocation)
-          // Set the zone if your disk has zonal location instead of region.
-          // .setZone(disksLocation)
-          .setBulkInsertDiskResourceResource(
-              BulkInsertDiskResource.newBuilder()
-                  .setSourceConsistencyGroupPolicy(sourceConsistencyGroupPolicy)
-                  .build())
-          .build();
-
-      Operation response = disksClient.bulkInsertAsync(request).get(3, TimeUnit.MINUTES);
-
-      if (response.hasError()) {
-        throw new Error("Error cloning disks! " + response.getError());
+        response = disksClient.bulkInsertAsync(request).get(3, TimeUnit.MINUTES);
       }
-      return response.getStatus();
+    } else {
+      try (DisksClient disksClient = DisksClient.create()) {
+        BulkInsertDiskRequest request = BulkInsertDiskRequest.newBuilder()
+                .setProject(project)
+                .setZone(disksLocation)
+                .setBulkInsertDiskResourceResource(
+                        BulkInsertDiskResource.newBuilder()
+                                .setSourceConsistencyGroupPolicy(sourceConsistencyGroupPolicy)
+                                .build())
+                .build();
+
+        response = disksClient.bulkInsertAsync(request).get(3, TimeUnit.MINUTES);
+      }
     }
+    if (response.hasError()) {
+      throw new Error("Error cloning disks! " + response.getError());
+    }
+    return response.getStatus();
   }
 }
 // [END compute_consistency_group_clone]

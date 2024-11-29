@@ -17,11 +17,10 @@
 package compute.disks.consistencygroup;
 
 // [START compute_consistency_group_add_disk]
+import com.google.cloud.compute.v1.AddResourcePoliciesDiskRequest;
 import com.google.cloud.compute.v1.AddResourcePoliciesRegionDiskRequest;
-// If your disk has zonal location uncomment these lines
-//import com.google.cloud.compute.v1.AddResourcePoliciesDiskRequest;
-//import com.google.cloud.compute.v1.DisksAddResourcePoliciesRequest;
-//import com.google.cloud.compute.v1.DisksClient;
+import com.google.cloud.compute.v1.DisksAddResourcePoliciesRequest;
+import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksAddResourcePoliciesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
@@ -55,39 +54,42 @@ public class AddDiskToConsistencyGroup {
     String consistencyGroupUrl = String.format(
             "https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",
             project, consistencyGroupLocation, consistencyGroupName);
-    // If your disk has zonal location uncomment these lines
-    //      try (DisksClient disksClient = DisksClient.create()) {
-    //        AddResourcePoliciesDiskRequest request =
-    //            AddResourcePoliciesDiskRequest.newBuilder()
-    //                .setDisk(diskName)
-    //                .setZone(location)
-    //                .setProject(project)
-    //                .setDisksAddResourcePoliciesRequestResource(
-    //                    DisksAddResourcePoliciesRequest.newBuilder()
-    //                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
-    //                        .build())
-    //                .build();
-
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
-      AddResourcePoliciesRegionDiskRequest disksRequest =
-          AddResourcePoliciesRegionDiskRequest.newBuilder()
-            .setDisk(diskName)
-            .setRegion(location)
-            .setProject(project)
-            .setRegionDisksAddResourcePoliciesRequestResource(
-                    RegionDisksAddResourcePoliciesRequest.newBuilder()
-                            .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
-                            .build())
-            .build();
-
-      Operation response = disksClient.addResourcePoliciesAsync(disksRequest).get();
-      if (response.hasError()) {
-        throw new Error("Error adding disk to consistency group! " + response.getError());
+    Operation response;
+    if (Character.isDigit(location.charAt(location.length() - 1))) {
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
+      try (RegionDisksClient disksClient = RegionDisksClient.create()) {
+        AddResourcePoliciesRegionDiskRequest request =
+                AddResourcePoliciesRegionDiskRequest.newBuilder()
+                        .setDisk(diskName)
+                        .setRegion(location)
+                        .setProject(project)
+                        .setRegionDisksAddResourcePoliciesRequestResource(
+                                RegionDisksAddResourcePoliciesRequest.newBuilder()
+                                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
+                                        .build())
+                        .build();
+        response = disksClient.addResourcePoliciesAsync(request).get();
       }
-      return response.getStatus();
+    } else {
+      try (DisksClient disksClient = DisksClient.create()) {
+        AddResourcePoliciesDiskRequest request =
+                AddResourcePoliciesDiskRequest.newBuilder()
+                        .setDisk(diskName)
+                        .setZone(location)
+                        .setProject(project)
+                        .setDisksAddResourcePoliciesRequestResource(
+                                DisksAddResourcePoliciesRequest.newBuilder()
+                                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
+                                        .build())
+                        .build();
+        response = disksClient.addResourcePoliciesAsync(request).get();
+      }
     }
+    if (response.hasError()) {
+      throw new Error("Error adding disk to consistency group! " + response.getError());
+    }
+    return response.getStatus();
   }
 }
 // [END compute_consistency_group_add_disk]

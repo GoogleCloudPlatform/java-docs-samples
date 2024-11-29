@@ -17,9 +17,8 @@
 package compute.disks;
 
 // [START compute_disk_start_replication]
-// Uncomment this line if your disk has zonal location.
-// import com.google.cloud.compute.v1.DisksClient;
-// import com.google.cloud.compute.v1.DisksStartAsyncReplicationRequest;
+import com.google.cloud.compute.v1.DisksClient;
+import com.google.cloud.compute.v1.DisksStartAsyncReplicationRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.RegionDisksStartAsyncReplicationRequest;
@@ -57,31 +56,33 @@ public class StartDiskReplication {
         throws IOException, ExecutionException, InterruptedException {
     String secondaryDiskPath = String.format("projects/%s/regions/%s/disks/%s",
             secondaryProjectId, secondaryDiskLocation, secondaryDiskName);
+    Operation response;
+    if (Character.isDigit(primaryDiskLocation.charAt(primaryDiskLocation.length() - 1))) {
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
+      try (RegionDisksClient regionDisksClient = RegionDisksClient.create()) {
+        RegionDisksStartAsyncReplicationRequest replicationRequest =
+                RegionDisksStartAsyncReplicationRequest.newBuilder()
+                        .setAsyncSecondaryDisk(secondaryDiskPath)
+                        .build();
 
-    // Uncomment these lines if your disk has zonal location.
-    // try (DisksClient disksClient = DisksClient.create()) {
-    // DisksStartAsyncReplicationRequest  startAsyncReplicationRequest =
-    //    DisksStartAsyncReplicationRequest.newBuilder()
-    //        .setAsyncSecondaryDisk(secondaryDiskPath)
-    //       .build();
-
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
-
-      RegionDisksStartAsyncReplicationRequest replicationRequest =
-              RegionDisksStartAsyncReplicationRequest.newBuilder()
-                      .setAsyncSecondaryDisk(secondaryDiskPath)
-                      .build();
-
-      Operation response = disksClient.startAsyncReplicationAsync(
-              primaryProjectId, primaryDiskLocation, primaryDiskName, replicationRequest).get();
-
-      if (response.hasError()) {
-        throw new Error("Error starting disk replication! " + response.getError());
+        response = regionDisksClient.startAsyncReplicationAsync(
+                primaryProjectId, primaryDiskLocation, primaryDiskName, replicationRequest).get();
       }
-      return response.getStatus();
+    } else {
+      try (DisksClient disksClient = DisksClient.create()) {
+        DisksStartAsyncReplicationRequest replicationRequest =
+                DisksStartAsyncReplicationRequest.newBuilder()
+                        .setAsyncSecondaryDisk(secondaryDiskPath)
+                        .build();
+        response = disksClient.startAsyncReplicationAsync(
+                primaryProjectId, primaryDiskLocation, primaryDiskName, replicationRequest).get();
+      }
     }
+    if (response.hasError()) {
+      throw new Error("Error starting disk replication! " + response.getError());
+    }
+    return response.getStatus();
   }
 }
 // [END compute_disk_start_replication]
