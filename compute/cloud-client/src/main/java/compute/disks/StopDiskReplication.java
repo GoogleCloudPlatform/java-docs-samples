@@ -17,8 +17,7 @@
 package compute.disks;
 
 // [START compute_disk_stop_replication]
-// Uncomment this line if your disk has zonal location.
-// import com.google.cloud.compute.v1.DisksClient;
+import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
@@ -43,21 +42,24 @@ public class StopDiskReplication {
   public static Operation.Status stopDiskAsyncReplication(
         String project, String diskLocation, String diskName)
         throws IOException, ExecutionException, InterruptedException {
-
-    // Uncomment this line if your disk has zonal location.
-    //try (DisksClient disksClient = DisksClient.create()) {
-
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
-      Operation response = disksClient.stopAsyncReplicationAsync(
-              project, diskLocation, diskName).get();
-
-      if (response.hasError()) {
-        throw new Error("Error stopping disk replication! " + response.getError());
+    Operation response;
+    if (Character.isDigit(diskLocation.charAt(diskLocation.length() - 1))) {
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
+      try (RegionDisksClient disksClient = RegionDisksClient.create()) {
+        response = disksClient.stopAsyncReplicationAsync(
+                project, diskLocation, diskName).get();
       }
-      return response.getStatus();
+    } else {
+      try (DisksClient disksClient = DisksClient.create()) {
+        response = disksClient.stopAsyncReplicationAsync(
+                project, diskLocation, diskName).get();
+      }
     }
+    if (response.hasError()) {
+      throw new Error("Error stopping disk replication! " + response.getError());
+    }
+    return response.getStatus();
   }
 }
 // [END compute_disk_stop_replication]
