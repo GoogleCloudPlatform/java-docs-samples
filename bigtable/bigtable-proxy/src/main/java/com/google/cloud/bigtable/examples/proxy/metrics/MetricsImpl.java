@@ -17,6 +17,7 @@
 package com.google.cloud.bigtable.examples.proxy.metrics;
 
 import com.google.auth.Credentials;
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
 import com.google.cloud.opentelemetry.metric.GoogleCloudMetricExporter;
 import com.google.cloud.opentelemetry.metric.MetricConfiguration;
 import io.grpc.Status;
@@ -45,11 +46,11 @@ public class MetricsImpl implements Closeable, Metrics {
 
   public static final String METRIC_PREFIX = "bigtableproxy.";
 
-  static final AttributeKey<String> API_CLIENT_KEY = AttributeKey.stringKey("api_client");
-  static final AttributeKey<String> RESOURCE_KEY = AttributeKey.stringKey("resource");
-  static final AttributeKey<String> APP_PROFILE_KEY = AttributeKey.stringKey("app_profile");
-  static final AttributeKey<String> METHOD_KEY = AttributeKey.stringKey("method");
-  static final AttributeKey<String> STATUS_KEY = AttributeKey.stringKey("status");
+  public static final AttributeKey<String> API_CLIENT_KEY = AttributeKey.stringKey("api_client");
+  public static final AttributeKey<String> RESOURCE_KEY = AttributeKey.stringKey("resource");
+  public static final AttributeKey<String> APP_PROFILE_KEY = AttributeKey.stringKey("app_profile");
+  public static final AttributeKey<String> METHOD_KEY = AttributeKey.stringKey("method");
+  public static final AttributeKey<String> STATUS_KEY = AttributeKey.stringKey("status");
 
   public static final String METRIC_PRESENCE_NAME = METRIC_PREFIX + "presence";
   public static final String METRIC_PRESENCE_DESC = "Number of proxy processes";

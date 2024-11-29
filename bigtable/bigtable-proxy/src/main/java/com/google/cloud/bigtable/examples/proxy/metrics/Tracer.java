@@ -16,6 +16,7 @@
 
 package com.google.cloud.bigtable.examples.proxy.metrics;
 
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
 import com.google.common.base.Stopwatch;
 import io.grpc.CallOptions;
 import io.grpc.CallOptions.Key;

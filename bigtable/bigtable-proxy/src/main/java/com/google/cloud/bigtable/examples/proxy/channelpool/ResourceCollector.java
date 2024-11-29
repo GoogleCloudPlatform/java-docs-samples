@@ -17,7 +17,7 @@
 package com.google.cloud.bigtable.examples.proxy.channelpool;
 
 import com.google.bigtable.v2.PingAndWarmRequest;
-import com.google.cloud.bigtable.examples.proxy.metrics.CallLabels;
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
