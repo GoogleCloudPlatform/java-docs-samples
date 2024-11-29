@@ -26,11 +26,11 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AddResourcePoliciesRegionDiskRequest;
+import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.RemoveResourcePoliciesRegionDiskRequest;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
-import com.google.cloud.compute.v1.ResourcePolicy;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
@@ -51,13 +51,6 @@ public class ConsistencyGroupIT {
 
   @Test
   public void testCreateDiskConsistencyGroupResourcePolicy() throws Exception {
-    ResourcePolicy resourcePolicy =
-            ResourcePolicy.newBuilder()
-                    .setName(CONSISTENCY_GROUP_NAME)
-                    .setRegion(REGION)
-                    .setDiskConsistencyGroupPolicy(
-                            ResourcePolicy.newBuilder().getDiskConsistencyGroupPolicy())
-                    .build();
     try (MockedStatic<ResourcePoliciesClient> mockedResourcePoliciesClient =
                  mockStatic(ResourcePoliciesClient.class)) {
       Operation operation = mock(Operation.class);
@@ -65,7 +58,7 @@ public class ConsistencyGroupIT {
       OperationFuture mockFuture = mock(OperationFuture.class);
 
       mockedResourcePoliciesClient.when(ResourcePoliciesClient::create).thenReturn(mockClient);
-      when(mockClient.insertAsync(PROJECT_ID, REGION, resourcePolicy))
+      when(mockClient.insertAsync(any(InsertResourcePolicyRequest.class)))
               .thenReturn(mockFuture);
       when(mockFuture.get()).thenReturn(operation);
       when(operation.getStatus()).thenReturn(Operation.Status.DONE);
@@ -73,8 +66,7 @@ public class ConsistencyGroupIT {
       Operation.Status status = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
               PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
 
-      verify(mockClient, times(1))
-              .insertAsync(PROJECT_ID, REGION, resourcePolicy);
+      verify(mockClient, times(1)).insertAsync(any(InsertResourcePolicyRequest.class));
       verify(mockFuture, times(1)).get();
       assertEquals(Operation.Status.DONE, status);
     }

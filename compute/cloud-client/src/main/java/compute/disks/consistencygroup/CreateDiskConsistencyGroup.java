@@ -17,6 +17,7 @@
 package compute.disks.consistencygroup;
 
 // [START compute_consistency_group_create]
+import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import com.google.cloud.compute.v1.ResourcePolicy;
@@ -53,8 +54,14 @@ public class CreateDiskConsistencyGroup {
                   ResourcePolicy.newBuilder().getDiskConsistencyGroupPolicy())
               .build();
 
+      InsertResourcePolicyRequest request = InsertResourcePolicyRequest.newBuilder()
+              .setProject(project)
+              .setRegion(region)
+              .setResourcePolicyResource(resourcePolicy)
+              .build();
+
       Operation response =
-          regionResourcePoliciesClient.insertAsync(project, region, resourcePolicy).get();
+          regionResourcePoliciesClient.insertAsync(request).get();
 
       if (response.hasError()) {
         throw new Error("Error creating consistency group! " + response.getError());
