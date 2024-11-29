@@ -39,8 +39,7 @@ public class CreateDiskConsistencyGroup {
   }
 
   // Creates a new disk consistency group resource policy in the specified project and region.
-  // Return a link to the consistency group.
-  public static String createDiskConsistencyGroup(
+  public static Operation.Status createDiskConsistencyGroup(
       String project, String region, String consistencyGroupName)
       throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -58,9 +57,9 @@ public class CreateDiskConsistencyGroup {
           regionResourcePoliciesClient.insertAsync(project, region, resourcePolicy).get();
 
       if (response.hasError()) {
-        return null;
+        throw new Error("Error creating consistency group! " + response.getError());
       }
-      return regionResourcePoliciesClient.get(project, region, consistencyGroupName).getSelfLink();
+      return response.getStatus();
     }
   }
 }
