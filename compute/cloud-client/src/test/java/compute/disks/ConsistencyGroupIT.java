@@ -18,7 +18,6 @@ package compute.disks;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.compute.v1.Disk;
@@ -100,11 +99,10 @@ public class ConsistencyGroupIT {
   @Order(2)
   public void testAddRegionalDiskToConsistencyGroup()
       throws IOException, ExecutionException, InterruptedException {
-    Disk disk = AddDiskToConsistencyGroup.addDiskToConsistencyGroup(
-        PROJECT_ID, REGION, DISK_NAME, CONSISTENCY_GROUP_NAME, REGION);
+    Operation.Status status = AddDiskToConsistencyGroup.addDiskToConsistencyGroup(
+            PROJECT_ID, REGION, DISK_NAME, CONSISTENCY_GROUP_NAME, REGION);
 
-    assertNotNull(disk);
-    assertThat(disk.getResourcePoliciesList().get(0).contains(CONSISTENCY_GROUP_NAME));
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 
   @Test

@@ -17,10 +17,9 @@
 package compute.disks.consistencygroup;
 
 // [START compute_consistency_group_list_disks]
-// If your disk has zonal location uncomment these lines
-//import com.google.cloud.compute.v1.ListDisksRequest;
-//import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Disk;
+import com.google.cloud.compute.v1.DisksClient;
+import com.google.cloud.compute.v1.ListDisksRequest;
 import com.google.cloud.compute.v1.ListRegionDisksRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
@@ -52,33 +51,44 @@ public class ListDisksInConsistencyGroup {
             .format("https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",
                     project, consistencyGroupLocation, consistencyGroupName);
     List<Disk> disksList = new ArrayList<>();
-    //If your disk has zonal location uncomment these lines
-    //try (DisksClient disksClient = DisksClient.create()) {
-    //   ListDisksRequest request =
-    //   ListDisksRequest.newBuilder()
-    //       .setProject(project)
-    //       .setZone(disksLocation)
-    //       .build();
-    //  DisksClient.ListPagedResponse response = disksClient.list(request);
 
     // Filtering must be done manually for now, since list filtering
     // inside disksClient.list is not supported yet.
-    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
-      ListRegionDisksRequest request =
-              ListRegionDisksRequest.newBuilder()
-                      .setProject(project)
-                      .setRegion(disksLocation)
-                      .build();
 
-      RegionDisksClient.ListPagedResponse response = disksClient.list(request);
+    if (Character.isDigit(disksLocation.charAt(disksLocation.length() - 1))) {
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests.
+      try (RegionDisksClient disksClient = RegionDisksClient.create()) {
+        ListRegionDisksRequest request =
+                ListRegionDisksRequest.newBuilder()
+                        .setProject(project)
+                        .setRegion(disksLocation)
+                        .build();
 
-      for (Disk disk : response.iterateAll()) {
-        if (disk.getResourcePoliciesList().contains(filter)) {
-          disksList.add(disk);
+        RegionDisksClient.ListPagedResponse response = disksClient.list(request);
+        for (Disk disk : response.iterateAll()) {
+          if (disk.getResourcePoliciesList().contains(filter)) {
+            disksList.add(disk);
+          }
         }
       }
-      return disksList;
+    } else {
+      try (DisksClient disksClient = DisksClient.create()) {
+        ListDisksRequest request =
+                ListDisksRequest.newBuilder()
+                        .setProject(project)
+                        .setZone(disksLocation)
+                        .build();
+        DisksClient.ListPagedResponse response = disksClient.list(request);
+
+        for (Disk disk : response.iterateAll()) {
+          if (disk.getResourcePoliciesList().contains(filter)) {
+            disksList.add(disk);
+          }
+        }
+      }
     }
+    return disksList;
   }
 }
 // [END compute_consistency_group_list_disks]
