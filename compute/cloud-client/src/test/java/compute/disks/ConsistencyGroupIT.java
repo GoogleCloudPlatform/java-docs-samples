@@ -47,6 +47,7 @@ public class ConsistencyGroupIT {
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
         .that(System.getenv(envVarName)).isNotEmpty();
+
   }
 
   @BeforeAll
