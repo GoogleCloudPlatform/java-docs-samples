@@ -17,7 +17,6 @@
 package tpu;
 
 //[START tpu_queued_resources_get]
-
 import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;

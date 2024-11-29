@@ -26,21 +26,23 @@ public class ListSecurityHealthAnalyticsCustomModules {
 
   public static void main(String[] args) throws IOException {
     // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/list
-    //  replace "project_id" with a real project ID
-    String parent = String.format("projects/%s/locations/%s", "project_id", "global");
+    // TODO: Developer should replace project_id with a real project ID before running this code
+    String projectId = "project_id";
 
-    listSecurityHealthAnalyticsCustomModules(parent);
+    listSecurityHealthAnalyticsCustomModules(projectId);
   }
 
   public static ListSecurityHealthAnalyticsCustomModulesPagedResponse
-      listSecurityHealthAnalyticsCustomModules(String parent) throws IOException {
+      listSecurityHealthAnalyticsCustomModules(String projectId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs
     // to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
       ListSecurityHealthAnalyticsCustomModulesRequest request =
-          ListSecurityHealthAnalyticsCustomModulesRequest.newBuilder().setParent(parent).build();
+          ListSecurityHealthAnalyticsCustomModulesRequest.newBuilder()
+              .setParent(String.format("projects/%s/locations/global", projectId))
+              .build();
 
       ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
           client.listSecurityHealthAnalyticsCustomModules(request);
