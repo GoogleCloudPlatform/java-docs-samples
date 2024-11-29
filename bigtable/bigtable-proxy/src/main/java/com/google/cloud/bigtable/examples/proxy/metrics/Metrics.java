@@ -41,6 +41,8 @@ public interface Metrics {
 
   void recordCallLatency(MetricsAttributes attrs, Status status, Duration duration);
 
+  void recordFirstByteLatency(MetricsAttributes attrs, Duration duration);
+
   void updateChannelCount(int delta);
 
   interface MetricsAttributes {}

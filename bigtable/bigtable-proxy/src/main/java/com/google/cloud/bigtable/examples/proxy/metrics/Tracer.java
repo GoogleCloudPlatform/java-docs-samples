@@ -106,6 +106,14 @@ public class Tracer extends ClientStreamTracer {
             d -> metrics.recordGfeLatency(attrs, d), () -> metrics.recordGfeHeaderMissing(attrs));
   }
 
+  @Override
+  public void inboundMessage(int seqNo) {
+    if (seqNo == 0) {
+      metrics.recordFirstByteLatency(
+          attrs, Duration.ofMillis(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+    }
+  }
+
   public void onCallFinished(Status status) {
     grpcQueueDuration.ifPresent(d -> metrics.recordQueueLatency(attrs, d));
     metrics.recordResponseSize(attrs, responseSize.get());
