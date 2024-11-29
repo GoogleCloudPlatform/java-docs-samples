@@ -24,6 +24,7 @@ import com.google.cloud.opentelemetry.metric.GoogleCloudMetricExporter;
 import com.google.cloud.opentelemetry.metric.MetricConfiguration;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import io.grpc.ConnectivityState;
 import io.grpc.Status;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
@@ -51,6 +52,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
@@ -76,6 +78,11 @@ public class MetricsImpl implements Closeable, Metrics {
   private static final AttributeKey<String> METHOD_KEY = AttributeKey.stringKey("method");
   private static final AttributeKey<String> STATUS_KEY = AttributeKey.stringKey("status");
 
+  private static final AttributeKey<String> PREV_CHANNEL_STATE =
+      AttributeKey.stringKey("prev_state");
+  private static final AttributeKey<String> CURRENT_CHANNEL_STATE =
+      AttributeKey.stringKey("current_state");
+
   private static final String METRIC_PRESENCE_NAME = METRIC_PREFIX + "presence";
   private static final String METRIC_PRESENCE_DESC = "Number of proxy processes";
   private static final String METRIC_PRESENCE_UNIT = "{process}";
@@ -91,6 +98,7 @@ public class MetricsImpl implements Closeable, Metrics {
   private final LongCounter serverCallsStarted;
   private final LongHistogram requestSizes;
   private final LongHistogram responseSizes;
+  private final LongCounter channelStateChangeCounter;
 
   private final ObservableLongGauge outstandingRpcCountGauge;
   private final ObservableLongGauge presenceGauge;
@@ -225,6 +233,13 @@ public class MetricsImpl implements Closeable, Metrics {
             .setUnit(METRIC_PRESENCE_UNIT)
             .ofLongs()
             .buildWithCallback(o -> o.record(1));
+
+    channelStateChangeCounter =
+        meter
+            .counterBuilder(METRIC_PREFIX + "client.channel_change_count")
+            .setDescription("Counter of channel state transitions")
+            .setUnit("{change}")
+            .build();
   }
 
   @Override
@@ -322,6 +337,19 @@ public class MetricsImpl implements Closeable, Metrics {
   @Override
   public void updateChannelCount(int delta) {
     channelCounter.add(delta);
+  }
+
+  @Override
+  public void recordChannelStateChange(ConnectivityState prevState, ConnectivityState newState) {
+    Attributes attributes =
+        Attributes.builder()
+            .put(
+                PREV_CHANNEL_STATE, Optional.ofNullable(prevState).map(Enum::name).orElse("<null>"))
+            .put(
+                CURRENT_CHANNEL_STATE,
+                Optional.ofNullable(newState).map(Enum::name).orElse("<null>"))
+            .build();
+    channelStateChangeCounter.add(1, attributes);
   }
 
   private static Attributes unwrap(MetricsAttributes wrapped) {

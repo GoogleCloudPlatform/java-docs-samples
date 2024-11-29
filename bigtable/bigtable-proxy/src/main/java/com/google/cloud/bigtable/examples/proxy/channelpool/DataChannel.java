@@ -100,6 +100,8 @@ public class DataChannel extends ManagedChannel {
     this.warmingExecutor = warmingExecutor;
     this.metrics = metrics;
 
+    new StateTransitionWatcher().run();
+
     try {
       warm();
     } catch (RuntimeException e) {
@@ -365,5 +367,21 @@ public class DataChannel extends ManagedChannel {
   @Override
   public String authority() {
     return inner.authority();
+  }
+
+  class StateTransitionWatcher implements Runnable {
+    private ConnectivityState prevState = null;
+
+    @Override
+    public void run() {
+      if (closed.get()) {
+        return;
+      }
+
+      ConnectivityState newState = inner.getState(false);
+      metrics.recordChannelStateChange(prevState, newState);
+      prevState = newState;
+      inner.notifyWhenStateChanged(prevState, this);
+    }
   }
 }

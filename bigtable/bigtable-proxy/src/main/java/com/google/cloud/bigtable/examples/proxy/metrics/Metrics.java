@@ -18,6 +18,7 @@ package com.google.cloud.bigtable.examples.proxy.metrics;
 
 import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
 import com.google.cloud.bigtable.examples.proxy.metrics.Metrics.MetricsAttributes;
+import io.grpc.ConnectivityState;
 import io.grpc.Status;
 import java.time.Duration;
 
@@ -44,6 +45,8 @@ public interface Metrics {
   void recordFirstByteLatency(MetricsAttributes attrs, Duration duration);
 
   void updateChannelCount(int delta);
+
+  void recordChannelStateChange(ConnectivityState prevState, ConnectivityState newState);
 
   interface MetricsAttributes {}
 }
