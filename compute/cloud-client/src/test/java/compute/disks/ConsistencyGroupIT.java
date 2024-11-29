@@ -52,6 +52,7 @@ public class ConsistencyGroupIT {
   public static void setUp() throws Exception {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+
     Util.cleanUpExistingConsistencyGroup("test-consistency-group-", PROJECT_ID, REGION);
   }
 

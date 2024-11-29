@@ -279,6 +279,7 @@ public abstract class Util {
       for (ResourcePolicy resourcePolicy : client.list(projectId, region).iterateAll()) {
         if (containPrefixToDeleteAndZone(resourcePolicy, prefixToDelete, region)
                 && isCreatedBeforeThresholdTime(resourcePolicy.getCreationTimestamp())) {
+          System.out.println(resourcePolicy.getName());
           deleteDiskConsistencyGroup(projectId, region, resourcePolicy.getName());
         }
       }
