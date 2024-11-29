@@ -21,6 +21,7 @@ import com.google.cloud.bigtable.examples.proxy.metrics.Metrics.MetricsAttribute
 import io.grpc.Status;
 import java.time.Duration;
 
+/** Interface for tracking measurements across the application. */
 public interface Metrics {
   MetricsAttributes createAttributes(CallLabels callLabels);
 
