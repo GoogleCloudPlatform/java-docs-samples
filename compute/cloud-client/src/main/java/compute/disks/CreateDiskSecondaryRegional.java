@@ -61,9 +61,9 @@ public class CreateDiskSecondaryRegional {
   }
 
   // Creates a secondary disk in a specified region.
-  public static Operation.Status createDiskSecondaryRegional(String projectId, String secondaryProjectId,
-                                                             String primaryDiskName, String secondaryDiskName, String primaryDiskRegion,
-                                                             String secondaryDiskRegion, long diskSizeGb, String diskType)
+  public static Operation.Status createDiskSecondaryRegional(String projectId,
+       String secondaryProjectId, String primaryDiskName, String secondaryDiskName,
+       String primaryDiskRegion, String secondaryDiskRegion, long diskSizeGb, String diskType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // An iterable collection of zone names in which you want to keep
     // the new disks' replicas. One of the replica zones of the clone must match
