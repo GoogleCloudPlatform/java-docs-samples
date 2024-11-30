@@ -16,52 +16,44 @@
 
 package compute.disks.consistencygroup;
 
-// [START compute_consistency_group_create]
+// [START compute_consistency_group_delete]
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
-import com.google.cloud.compute.v1.ResourcePolicy;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class CreateDiskConsistencyGroup {
+public class DeleteConsistencyGroup {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String project = "YOUR_PROJECT_ID";
-    // Name of the region in which you want to create the consistency group.
+    // Region in which your consistency group is located.
     String region = "us-central1";
-    // Name of the consistency group you want to create.
+    // Name of the consistency group you want to delete.
     String consistencyGroupName = "YOUR_CONSISTENCY_GROUP_NAME";
 
-    createDiskConsistencyGroup(project, region, consistencyGroupName);
+    deleteConsistencyGroup(project, region, consistencyGroupName);
   }
 
-  // Creates a new disk consistency group resource policy in the specified project and region.
-  // Return a link to the consistency group.
-  public static String createDiskConsistencyGroup(
+  // Deletes a consistency group resource policy in the specified project and region.
+  public static Operation.Status deleteConsistencyGroup(
       String project, String region, String consistencyGroupName)
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (ResourcePoliciesClient  regionResourcePoliciesClient = ResourcePoliciesClient.create()) {
-      ResourcePolicy resourcePolicy =
-          ResourcePolicy.newBuilder()
-              .setName(consistencyGroupName)
-              .setRegion(region)
-              .setDiskConsistencyGroupPolicy(
-                  ResourcePolicy.newBuilder().getDiskConsistencyGroupPolicy())
-              .build();
-
-      Operation response =
-          regionResourcePoliciesClient.insertAsync(project, region, resourcePolicy).get();
+    try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
+      Operation response = resourcePoliciesClient
+          .deleteAsync(project, region, consistencyGroupName).get(1, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        return null;
+        throw new Error("Error deleting disk! " + response.getError());
       }
-      return regionResourcePoliciesClient.get(project, region, consistencyGroupName).getSelfLink();
+      return response.getStatus();
     }
   }
 }
-// [END compute_consistency_group_create]
+// [END compute_consistency_group_delete]

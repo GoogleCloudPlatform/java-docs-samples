@@ -16,39 +16,40 @@
 
 package management.api;
 
-// [START securitycenter_list_security_health_analytics_custom_module]
-import com.google.cloud.securitycentermanagement.v1.ListSecurityHealthAnalyticsCustomModulesRequest;
+// [START securitycenter_list_descendant_security_health_analytics_custom_module]
+import com.google.cloud.securitycentermanagement.v1.ListDescendantSecurityHealthAnalyticsCustomModulesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse;
 import java.io.IOException;
 
-public class ListSecurityHealthAnalyticsCustomModules {
+public class ListDescendantSecurityHealthAnalyticsCustomModules {
 
   public static void main(String[] args) throws IOException {
-    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/list
+    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/listDescendant
     // TODO: Developer should replace project_id with a real project ID before running this code
     String projectId = "project_id";
 
-    listSecurityHealthAnalyticsCustomModules(projectId);
+    listDescendantSecurityHealthAnalyticsCustomModules(projectId);
   }
 
-  public static ListSecurityHealthAnalyticsCustomModulesPagedResponse
-      listSecurityHealthAnalyticsCustomModules(String projectId) throws IOException {
+  public static ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse
+      listDescendantSecurityHealthAnalyticsCustomModules(String projectId) throws IOException {
+
     // Initialize client that will be used to send requests. This client only needs
     // to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
-      ListSecurityHealthAnalyticsCustomModulesRequest request =
-          ListSecurityHealthAnalyticsCustomModulesRequest.newBuilder()
+      ListDescendantSecurityHealthAnalyticsCustomModulesRequest request =
+          ListDescendantSecurityHealthAnalyticsCustomModulesRequest.newBuilder()
               .setParent(String.format("projects/%s/locations/global", projectId))
               .build();
 
-      ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
-          client.listSecurityHealthAnalyticsCustomModules(request);
+      ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse response =
+          client.listDescendantSecurityHealthAnalyticsCustomModules(request);
 
       return response;
     }
   }
 }
-// [END securitycenter_list_security_health_analytics_custom_module]
+// [END securitycenter_list_descendant_security_health_analytics_custom_module]
