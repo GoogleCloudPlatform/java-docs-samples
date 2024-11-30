@@ -33,11 +33,11 @@ public class ListDisksInConsistencyGroup {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String project = "YOUR_PROJECT_ID";
-    // The name of the consistency group.
+    // Name of the consistency group.
     String consistencyGroupName = "CONSISTENCY_GROUP_ID";
-    // The zone or region of the disk.
+    // Zone or region of the disk.
     String disksLocation = "us-central1";
-    // The region of the consistency group.
+    // Region of the consistency group.
     String consistencyGroupLocation = "us-central1";
 
     listDisksInConsistencyGroup(

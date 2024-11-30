@@ -16,21 +16,22 @@
 
 package compute.disks.consistencygroup;
 
-// [START compute_consistency_group_add_disk]
-import com.google.cloud.compute.v1.AddResourcePoliciesDiskRequest;
-import com.google.cloud.compute.v1.AddResourcePoliciesRegionDiskRequest;
-import com.google.cloud.compute.v1.DisksAddResourcePoliciesRequest;
+// [START compute_consistency_group_remove_disk]
 import com.google.cloud.compute.v1.DisksClient;
+import com.google.cloud.compute.v1.DisksRemoveResourcePoliciesRequest;
 import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.RegionDisksAddResourcePoliciesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.RegionDisksRemoveResourcePoliciesRequest;
+import com.google.cloud.compute.v1.RemoveResourcePoliciesDiskRequest;
+import com.google.cloud.compute.v1.RemoveResourcePoliciesRegionDiskRequest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class AddDiskToConsistencyGroup {
+public class RemoveDiskFromConsistencyGroup {
+
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
@@ -45,12 +46,12 @@ public class AddDiskToConsistencyGroup {
     // Region of the consistency group.
     String consistencyGroupLocation = "us-central1";
 
-    addDiskToConsistencyGroup(
+    removeDiskFromConsistencyGroup(
         project, location, diskName, consistencyGroupName, consistencyGroupLocation);
   }
 
-  // Adds a disk to a consistency group.
-  public static Operation.Status addDiskToConsistencyGroup(
+  // Removes a disk from a consistency group.
+  public static Operation.Status removeDiskFromConsistencyGroup(
       String project, String location, String diskName,
       String consistencyGroupName, String consistencyGroupLocation)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -62,37 +63,38 @@ public class AddDiskToConsistencyGroup {
       // Initialize client that will be used to send requests. This client only needs to be created
       // once, and can be reused for multiple requests.
       try (RegionDisksClient disksClient = RegionDisksClient.create()) {
-        AddResourcePoliciesRegionDiskRequest request =
-                AddResourcePoliciesRegionDiskRequest.newBuilder()
-                    .setDisk(diskName)
-                    .setRegion(location)
-                    .setProject(project)
-                    .setRegionDisksAddResourcePoliciesRequestResource(
-                            RegionDisksAddResourcePoliciesRequest.newBuilder()
-                                .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
-                                .build())
-                    .build();
-        response = disksClient.addResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
+        RemoveResourcePoliciesRegionDiskRequest request =
+            RemoveResourcePoliciesRegionDiskRequest.newBuilder()
+                .setDisk(diskName)
+                .setRegion(location)
+                .setProject(project)
+                .setRegionDisksRemoveResourcePoliciesRequestResource(
+                    RegionDisksRemoveResourcePoliciesRequest.newBuilder()
+                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
+                        .build())
+                .build();
+
+        response = disksClient.removeResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
       }
     } else {
       try (DisksClient disksClient = DisksClient.create()) {
-        AddResourcePoliciesDiskRequest request =
-                AddResourcePoliciesDiskRequest.newBuilder()
-                    .setDisk(diskName)
-                    .setZone(location)
-                    .setProject(project)
-                    .setDisksAddResourcePoliciesRequestResource(
-                            DisksAddResourcePoliciesRequest.newBuilder()
-                                .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
-                                .build())
-                    .build();
-        response = disksClient.addResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
+        RemoveResourcePoliciesDiskRequest request =
+            RemoveResourcePoliciesDiskRequest.newBuilder()
+                .setDisk(diskName)
+                .setZone(location)
+                .setProject(project)
+                .setDisksRemoveResourcePoliciesRequestResource(
+                    DisksRemoveResourcePoliciesRequest.newBuilder()
+                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
+                        .build())
+                .build();
+        response = disksClient.removeResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
       }
     }
     if (response.hasError()) {
-      throw new Error("Error adding disk to consistency group! " + response.getError());
+      throw new Error("Error removing disk from consistency group! " + response.getError());
     }
     return response.getStatus();
   }
 }
-// [END compute_consistency_group_add_disk]
+// [END compute_consistency_group_remove_disk]
