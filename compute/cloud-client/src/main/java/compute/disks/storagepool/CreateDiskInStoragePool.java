@@ -58,7 +58,7 @@ public class CreateDiskInStoragePool {
   public static Disk createDiskInStoragePool(String projectId, String zone, String diskName,
                                              String storagePoolName, String diskType,
                                              long diskSizeGb, long iops, long throughput)
-          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+          throws IOException, ExecutionException, InterruptedException{
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (DisksClient client = DisksClient.create()) {
@@ -80,7 +80,7 @@ public class CreateDiskInStoragePool {
               .build();
 
       // Wait for the insert disk operation to complete.
-      Operation operation = client.insertAsync(request).get(1, TimeUnit.MINUTES);
+      Operation operation = client.insertAsync(request).get();
 
       if (operation.hasError()) {
         System.out.println("Disk creation failed!");

@@ -35,7 +35,6 @@ import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
 import compute.disks.consistencygroup.RemoveDiskFromConsistencyGroup;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -50,7 +49,6 @@ public class ConsistencyGroupIT {
   private static final String CONSISTENCY_GROUP_NAME = "consistency-group";
   private static final String DISK_NAME = "disk-for-consistency";
 
-  @Disabled
   @Test
   public void testCreateDiskConsistencyGroupResourcePolicy() throws Exception {
     try (MockedStatic<ResourcePoliciesClient> mockedResourcePoliciesClient =
