@@ -16,44 +16,60 @@
 
 package compute.disks.consistencygroup;
 
-// [START compute_consistency_group_delete]
+// [START compute_consistency_group_create]
+import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
+import com.google.cloud.compute.v1.ResourcePolicy;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class DeleteDiskConsistencyGroup {
+public class CreateConsistencyGroup {
 
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String project = "YOUR_PROJECT_ID";
-    // Region in which your consistency group is located.
+    // Name of the region in which you want to create the consistency group.
     String region = "us-central1";
-    // Name of the consistency group you want to delete.
+    // Name of the consistency group you want to create.
     String consistencyGroupName = "YOUR_CONSISTENCY_GROUP_NAME";
 
-    deleteDiskConsistencyGroup(project, region, consistencyGroupName);
+    createConsistencyGroup(project, region, consistencyGroupName);
   }
 
-  // Deletes a disk consistency group resource policy in the specified project and region.
-  public static Operation.Status deleteDiskConsistencyGroup(
+  // Creates a new consistency group resource policy in the specified project and region.
+  public static Operation.Status createConsistencyGroup(
       String project, String region, String consistencyGroupName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
-      Operation response = resourcePoliciesClient
-          .deleteAsync(project, region, consistencyGroupName).get(1, TimeUnit.MINUTES);
+    try (ResourcePoliciesClient  regionResourcePoliciesClient = ResourcePoliciesClient.create()) {
+      ResourcePolicy resourcePolicy =
+          ResourcePolicy.newBuilder()
+              .setName(consistencyGroupName)
+              .setRegion(region)
+              .setDiskConsistencyGroupPolicy(
+                  ResourcePolicy.newBuilder().getDiskConsistencyGroupPolicy())
+              .build();
+
+      InsertResourcePolicyRequest request = InsertResourcePolicyRequest.newBuilder()
+              .setProject(project)
+              .setRegion(region)
+              .setResourcePolicyResource(resourcePolicy)
+              .build();
+
+      Operation response =
+          regionResourcePoliciesClient.insertAsync(request).get(1, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        throw new Error("Error deleting disk! " + response.getError());
+        throw new Error("Error creating consistency group! " + response.getError());
       }
       return response.getStatus();
     }
   }
 }
-// [END compute_consistency_group_delete]
+// [END compute_consistency_group_create]
