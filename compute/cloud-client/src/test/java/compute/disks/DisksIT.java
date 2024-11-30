@@ -18,7 +18,6 @@ package compute.disks;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
@@ -312,14 +311,11 @@ public class DisksIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType =  String.format(
         "projects/%s/regions/%s/diskTypes/pd-balanced", PROJECT_ID, REGION);
-    Disk disk = CreateDiskSecondaryRegional.createDiskSecondaryRegional(
+    Operation.Status status = CreateDiskSecondaryRegional.createDiskSecondaryRegional(
         PROJECT_ID, PROJECT_ID, REGIONAL_BLANK_DISK, SECONDARY_REGIONAL_DISK,
         REGION, "us-central1", DISK_SIZE,  diskType);
 
-    // Verify that the secondary disk was created.
-    assertNotNull(disk);
-    assertThat(disk.getAsyncPrimaryDisk().getDisk().contains(REGIONAL_BLANK_DISK));
+    assertThat(status).isEqualTo(Operation.Status.DONE);
 
-    RegionalDelete.deleteRegionalDisk(PROJECT_ID, "us-central1", SECONDARY_REGIONAL_DISK);
   }
 }

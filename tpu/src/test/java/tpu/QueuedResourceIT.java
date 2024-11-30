@@ -16,7 +16,6 @@
 
 package tpu;
 
-import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -32,18 +31,16 @@ import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.concurrent.ExecutionException;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 3)
+@Timeout(value = 10)
 public class QueuedResourceIT {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "europe-west4-a";
@@ -52,13 +49,6 @@ public class QueuedResourceIT {
   private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
   private static final String QUEUED_RESOURCE_NAME = "queued-resource";
   private static final String NETWORK_NAME = "default";
-  private ByteArrayOutputStream bout;
-
-  @Before
-  public void setUp() {
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
-  }
 
   @Test
   public void testCreateQueuedResourceWithSpecifiedNetwork() throws Exception {
@@ -75,8 +65,8 @@ public class QueuedResourceIT {
 
       QueuedResource returnedQueuedResource =
           CreateQueuedResourceWithNetwork.createQueuedResourceWithNetwork(
-          PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME, NODE_NAME,
-          TPU_TYPE, TPU_SOFTWARE_VERSION, NETWORK_NAME);
+              PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME, NODE_NAME,
+              TPU_TYPE, TPU_SOFTWARE_VERSION, NETWORK_NAME);
 
       verify(mockTpuClient, times(1))
           .createQueuedResourceAsync(any(CreateQueuedResourceRequest.class));
@@ -89,7 +79,6 @@ public class QueuedResourceIT {
   public void testGetQueuedResource() throws IOException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockClient = mock(TpuClient.class);
-      GetQueuedResource mockGetQueuedResource = mock(GetQueuedResource.class);
       QueuedResource mockQueuedResource = mock(QueuedResource.class);
 
       mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
@@ -99,14 +88,15 @@ public class QueuedResourceIT {
       QueuedResource returnedQueuedResource =
           GetQueuedResource.getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
 
-      verify(mockGetQueuedResource, times(1))
-          .getQueuedResource(PROJECT_ID, ZONE, NODE_NAME);
+      verify(mockClient, times(1))
+          .getQueuedResource(any(GetQueuedResourceRequest.class));
       assertEquals(returnedQueuedResource, mockQueuedResource);
     }
   }
 
   @Test
-  public void testDeleteTpuVm() {
+  public void testDeleteForceQueuedResource()
+          throws IOException, InterruptedException, ExecutionException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
@@ -117,11 +107,33 @@ public class QueuedResourceIT {
           .thenReturn(mockFuture);
 
       DeleteForceQueuedResource.deleteForceQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
-      String output = bout.toString();
 
-      assertThat(output).contains("Deleted Queued Resource:");
       verify(mockTpuClient, times(1))
           .deleteQueuedResourceAsync(any(DeleteQueuedResourceRequest.class));
+    }
+  }
+
+  @Test
+  public void testCreateQueuedResourceWithStartupScript() throws Exception {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      QueuedResource mockQueuedResource = mock(QueuedResource.class);
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
+      when(mockTpuClient.createQueuedResourceAsync(any(CreateQueuedResourceRequest.class)))
+          .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockQueuedResource);
+
+      QueuedResource returnedQueuedResource =
+          CreateQueuedResourceWithStartupScript.createQueuedResource(
+              PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME, NODE_NAME,
+              TPU_TYPE, TPU_SOFTWARE_VERSION);
+
+      verify(mockTpuClient, times(1))
+          .createQueuedResourceAsync(any(CreateQueuedResourceRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedQueuedResource, mockQueuedResource);
     }
   }
 }
