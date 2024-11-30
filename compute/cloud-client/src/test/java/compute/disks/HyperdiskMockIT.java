@@ -34,14 +34,13 @@ import com.google.cloud.compute.v1.StoragePool;
 import com.google.cloud.compute.v1.StoragePoolsClient;
 import compute.disks.storagepool.CreateDiskInStoragePool;
 import compute.disks.storagepool.CreateHyperdiskStoragePool;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-
-import java.util.concurrent.TimeUnit;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 5, unit = TimeUnit.MINUTES)

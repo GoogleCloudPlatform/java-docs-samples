@@ -35,13 +35,12 @@ import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
 import compute.disks.consistencygroup.RemoveDiskFromConsistencyGroup;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
-
-import java.util.concurrent.TimeUnit;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 5, unit = TimeUnit.MINUTES)
