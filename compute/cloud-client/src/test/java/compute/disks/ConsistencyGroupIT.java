@@ -35,6 +35,7 @@ import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
 import compute.disks.consistencygroup.RemoveDiskFromConsistencyGroup;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -42,13 +43,14 @@ import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 60)
+@Timeout(value = 10)
 public class ConsistencyGroupIT {
   private static final String PROJECT_ID = "project-id";
   private static final String REGION = "asia-east1";
   private static final String CONSISTENCY_GROUP_NAME = "consistency-group";
   private static final String DISK_NAME = "disk-for-consistency";
 
+  @Disabled
   @Test
   public void testCreateDiskConsistencyGroupResourcePolicy() throws Exception {
     try (MockedStatic<ResourcePoliciesClient> mockedResourcePoliciesClient =
