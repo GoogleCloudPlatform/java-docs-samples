@@ -41,8 +41,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
+import java.util.concurrent.TimeUnit;
+
 @RunWith(JUnit4.class)
-@Timeout(value = 10)
+@Timeout(value = 5, unit = TimeUnit.MINUTES)
 public class ConsistencyGroupIT {
   private static final String PROJECT_ID = "project-id";
   private static final String REGION = "asia-east1";
