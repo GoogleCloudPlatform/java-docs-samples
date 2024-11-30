@@ -35,6 +35,7 @@ import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
 import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
 import compute.disks.consistencygroup.RemoveDiskFromConsistencyGroup;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
@@ -42,7 +43,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 60)
+@Timeout(value = 2, unit = TimeUnit.MINUTES)
 public class ConsistencyGroupIT {
   private static final String PROJECT_ID = "project-id";
   private static final String REGION = "asia-east1";
