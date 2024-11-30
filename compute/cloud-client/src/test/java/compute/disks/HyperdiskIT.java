@@ -18,6 +18,7 @@ package compute.disks;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -76,7 +77,7 @@ public class HyperdiskIT {
       mockedStoragePoolsClient.when(StoragePoolsClient::create).thenReturn(mockClient);
       when(mockClient.insertAsync(any(InsertStoragePoolRequest.class)))
               .thenReturn(mockFuture);
-      when(mockFuture.get()).thenReturn(operation);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
       when(operation.getStatus()).thenReturn(Operation.Status.DONE);
       when(mockClient.get(PROJECT_ID, ZONE, STORAGE_POOL_NAME)).thenReturn(storagePool);
 
@@ -87,7 +88,7 @@ public class HyperdiskIT {
                       PERFORMANCE_PROVISIONING_TYPE);
 
       verify(mockClient, times(1)).insertAsync(any(InsertStoragePoolRequest.class));
-      verify(mockFuture, times(1)).get();
+      verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
       assertEquals(storagePool, expectedStoragePool);
     }
   }
@@ -114,7 +115,7 @@ public class HyperdiskIT {
 
       mockedDisksClient.when(DisksClient::create).thenReturn(mockClient);
       when(mockClient.insertAsync(any(InsertDiskRequest.class))).thenReturn(mockFuture);
-      when(mockFuture.get()).thenReturn(operation);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
       when(operation.getStatus()).thenReturn(Operation.Status.DONE);
       when(mockClient.get(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME)).thenReturn(expectedHyperdisk);
 
@@ -124,7 +125,7 @@ public class HyperdiskIT {
                       diskType, 10, 3000, 140);
 
       verify(mockClient, times(1)).insertAsync(any(InsertDiskRequest.class));
-      verify(mockFuture, times(1)).get();
+      verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
       assertEquals(expectedHyperdisk, returnedDisk);
     }
   }

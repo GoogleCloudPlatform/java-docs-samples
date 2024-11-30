@@ -61,7 +61,7 @@ public class CreateHyperdiskStoragePool {
   public static StoragePool createHyperdiskStoragePool(String projectId, String zone,
         String storagePoolName, String storagePoolType, String capacityProvisioningType,
         long capacity, long iops, long throughput, String performanceProvisioningType)
-          throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (StoragePoolsClient client = StoragePoolsClient.create()) {
@@ -84,7 +84,7 @@ public class CreateHyperdiskStoragePool {
               .build();
 
       // Wait for the insert disk operation to complete.
-      Operation operation = client.insertAsync(request).get();
+      Operation operation = client.insertAsync(request).get(1, TimeUnit.MINUTES);
 
       if (operation.hasError()) {
         System.out.println("StoragePool creation failed!");

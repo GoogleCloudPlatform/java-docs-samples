@@ -27,11 +27,13 @@ import com.google.cloud.compute.v1.RemoveResourcePoliciesRegionDiskRequest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class RemoveDiskFromConsistencyGroup {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // The project that contains the disk.
     String project = "YOUR_PROJECT_ID";
@@ -52,7 +54,7 @@ public class RemoveDiskFromConsistencyGroup {
   public static Operation.Status removeDiskFromConsistencyGroup(
       String project, String location, String diskName,
       String consistencyGroupName, String consistencyGroupLocation)
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String consistencyGroupUrl = String.format(
         "https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",
         project, consistencyGroupLocation, consistencyGroupName);
@@ -72,7 +74,7 @@ public class RemoveDiskFromConsistencyGroup {
                         .build())
                 .build();
 
-        response = disksClient.removeResourcePoliciesAsync(request).get();
+        response = disksClient.removeResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
       }
     } else {
       try (DisksClient disksClient = DisksClient.create()) {
@@ -86,7 +88,7 @@ public class RemoveDiskFromConsistencyGroup {
                         .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
                         .build())
                 .build();
-        response = disksClient.removeResourcePoliciesAsync(request).get();
+        response = disksClient.removeResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
       }
     }
     if (response.hasError()) {

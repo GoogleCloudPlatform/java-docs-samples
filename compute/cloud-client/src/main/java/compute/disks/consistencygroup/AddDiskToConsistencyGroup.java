@@ -27,10 +27,12 @@ import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class AddDiskToConsistencyGroup {
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // The project that contains the disk.
     String project = "YOUR_PROJECT_ID";
@@ -51,7 +53,7 @@ public class AddDiskToConsistencyGroup {
   public static Operation.Status addDiskToConsistencyGroup(
       String project, String location, String diskName,
       String consistencyGroupName, String consistencyGroupLocation)
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String consistencyGroupUrl = String.format(
         "https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",
         project, consistencyGroupLocation, consistencyGroupName);
@@ -70,7 +72,7 @@ public class AddDiskToConsistencyGroup {
                                 .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
                                 .build())
                     .build();
-        response = disksClient.addResourcePoliciesAsync(request).get();
+        response = disksClient.addResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
       }
     } else {
       try (DisksClient disksClient = DisksClient.create()) {
@@ -84,7 +86,7 @@ public class AddDiskToConsistencyGroup {
                                 .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
                                 .build())
                     .build();
-        response = disksClient.addResourcePoliciesAsync(request).get();
+        response = disksClient.addResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
       }
     }
     if (response.hasError()) {
