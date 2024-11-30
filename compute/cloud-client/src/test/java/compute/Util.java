@@ -37,7 +37,6 @@ import com.google.cloud.compute.v1.StoragePoolsClient;
 import compute.deleteprotection.SetDeleteProtection;
 import compute.disks.DeleteDisk;
 import compute.disks.DeleteSnapshot;
-import compute.disks.RegionalDelete;
 import compute.reservation.DeleteReservation;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -58,7 +57,7 @@ public abstract class Util {
   // resources
   // and delete the listed resources based on the timestamp.
 
-  private static final int DELETION_THRESHOLD_TIME_HOURS = 24;
+  private static final int DELETION_THRESHOLD_TIME_MINUTES = 30;
   // comma separate list of zone names
   private static final String TEST_ZONES_NAME = "JAVA_DOCS_COMPUTE_TEST_ZONES";
   private static final String DEFAULT_ZONES = "us-central1-a,us-west1-a,asia-south1-a";
@@ -127,7 +126,7 @@ public abstract class Util {
 
   public static boolean isCreatedBeforeThresholdTime(String timestamp) {
     return OffsetDateTime.parse(timestamp).toInstant()
-        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_HOURS, ChronoUnit.HOURS));
+        .isBefore(Instant.now().minus(DELETION_THRESHOLD_TIME_MINUTES, ChronoUnit.MINUTES));
   }
 
   public static String getBase64EncodedKey() {
@@ -213,22 +212,6 @@ public abstract class Util {
         if (containPrefixToDeleteAndZone(disk, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
           DeleteDisk.deleteDisk(projectId, zone, disk.getName());
-        }
-      }
-    }
-  }
-
-  // Delete disks which starts with the given prefixToDelete and
-  // has creation timestamp >24 hours.
-  public static void cleanUpExistingRegionalDisks(
-      String prefixToDelete, String projectId, String region)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
-      for (Disk disk : disksClient.list(projectId, region).iterateAll()) {
-        if (disk.getName().contains(prefixToDelete)
-            && disk.getRegion().equals(region)
-            && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
-          RegionalDelete.deleteRegionalDisk(projectId, region, disk.getName());
         }
       }
     }
