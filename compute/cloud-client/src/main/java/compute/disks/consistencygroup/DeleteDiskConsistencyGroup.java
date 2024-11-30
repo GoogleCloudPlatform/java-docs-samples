@@ -31,7 +31,7 @@ public class DeleteDiskConsistencyGroup {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String project = "YOUR_PROJECT_ID";
-    // Name of the region in which your consistency group is located.
+    // Region in which your consistency group is located.
     String region = "us-central1";
     // Name of the consistency group you want to delete.
     String consistencyGroupName = "YOUR_CONSISTENCY_GROUP_NAME";

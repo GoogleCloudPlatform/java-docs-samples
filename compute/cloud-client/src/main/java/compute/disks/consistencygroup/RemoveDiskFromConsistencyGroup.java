@@ -35,22 +35,22 @@ public class RemoveDiskFromConsistencyGroup {
   public static void main(String[] args)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // The project that contains the disk.
+    // Project ID or project number of the Cloud project that contains the disk.
     String project = "YOUR_PROJECT_ID";
-    // The zone or region of the disk.
+    // Zone or region of the disk.
     String location = "us-central1";
-    // The name of the disk.
+    // Name of the disk.
     String diskName = "DISK_NAME";
-    // The name of the consistency group.
+    // Name of the consistency group.
     String consistencyGroupName = "CONSISTENCY_GROUP";
-    // The region of the consistency group.
+    // Region of the consistency group.
     String consistencyGroupLocation = "us-central1";
 
     removeDiskFromConsistencyGroup(
         project, location, diskName, consistencyGroupName, consistencyGroupLocation);
   }
 
-  // Removes a disk from a Consistency Group.
+  // Removes a disk from a consistency group.
   public static Operation.Status removeDiskFromConsistencyGroup(
       String project, String location, String diskName,
       String consistencyGroupName, String consistencyGroupLocation)
