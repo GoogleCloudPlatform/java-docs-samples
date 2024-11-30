@@ -17,16 +17,19 @@
 package compute.disks.consistencygroup;
 
 // [START compute_consistency_group_create]
+import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import com.google.cloud.compute.v1.ResourcePolicy;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class CreateDiskConsistencyGroup {
+public class CreateConsistencyGroup {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String project = "YOUR_PROJECT_ID";
@@ -35,13 +38,13 @@ public class CreateDiskConsistencyGroup {
     // Name of the consistency group you want to create.
     String consistencyGroupName = "YOUR_CONSISTENCY_GROUP_NAME";
 
-    createDiskConsistencyGroup(project, region, consistencyGroupName);
+    createConsistencyGroup(project, region, consistencyGroupName);
   }
 
-  // Creates a new disk consistency group resource policy in the specified project and region.
-  public static Operation.Status createDiskConsistencyGroup(
+  // Creates a new consistency group resource policy in the specified project and region.
+  public static Operation.Status createConsistencyGroup(
       String project, String region, String consistencyGroupName)
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ResourcePoliciesClient  regionResourcePoliciesClient = ResourcePoliciesClient.create()) {
@@ -53,8 +56,14 @@ public class CreateDiskConsistencyGroup {
                   ResourcePolicy.newBuilder().getDiskConsistencyGroupPolicy())
               .build();
 
+      InsertResourcePolicyRequest request = InsertResourcePolicyRequest.newBuilder()
+              .setProject(project)
+              .setRegion(region)
+              .setResourcePolicyResource(resourcePolicy)
+              .build();
+
       Operation response =
-          regionResourcePoliciesClient.insertAsync(project, region, resourcePolicy).get();
+          regionResourcePoliciesClient.insertAsync(request).get(1, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         throw new Error("Error creating consistency group! " + response.getError());
