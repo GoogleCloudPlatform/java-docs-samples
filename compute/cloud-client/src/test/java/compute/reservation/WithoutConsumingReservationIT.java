@@ -23,7 +23,6 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstanceTemplate;
 import compute.DeleteInstance;
 import compute.DeleteInstanceTemplate;
-import compute.Util;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -72,11 +71,6 @@ public class WithoutConsumingReservationIT {
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NOT_CONSUME_RESERVATION_NAME);
     DeleteInstanceTemplate.deleteInstanceTemplate(
         PROJECT_ID, TEMPLATE_NOT_CONSUME_RESERVATION_NAME);
-
-    // Clean up stale resources
-    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-instance-not-consume-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstanceTemplates("test-template-not-consume-", PROJECT_ID);
   }
 
   @Test

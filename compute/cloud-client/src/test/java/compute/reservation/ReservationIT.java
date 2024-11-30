@@ -36,7 +36,6 @@ import compute.CreateInstanceTemplate;
 import compute.CreateRegionalInstanceTemplate;
 import compute.DeleteInstanceTemplate;
 import compute.DeleteRegionalInstanceTemplate;
-import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -145,13 +144,6 @@ public class ReservationIT {
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
-
-    // Clean up stale resources
-    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp-", PROJECT_ID);
-    Util.cleanUpExistingInstanceTemplates("test-shared-inst-temp-", PROJECT_ID);
-    Util.cleanUpExistingRegionalInstanceTemplates(
-        "test-regional-inst-temp-", PROJECT_ID, ZONE);
 
     stdOut.close();
     System.setOut(out);

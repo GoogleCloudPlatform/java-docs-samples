@@ -26,7 +26,6 @@ import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.CreateInstance;
 import compute.DeleteInstance;
-import compute.Util;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -79,10 +78,6 @@ public class CreateReservationFromVmIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Delete resources created for testing.
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, instanceForReservation);
-
-    // Clean up stale resources
-    Util.cleanUpExistingReservations("test-reservation-from-vm-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("test-instance-for-reserv-", PROJECT_ID, ZONE);
 
     reservationsClient.close();
     instancesClient.close();

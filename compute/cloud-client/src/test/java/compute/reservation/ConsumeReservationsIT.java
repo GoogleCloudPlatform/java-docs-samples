@@ -29,7 +29,6 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.DeleteInstance;
-import compute.Util;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -91,10 +90,6 @@ public class ConsumeReservationsIT {
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
-
-    // Clean up stale resources
-    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
   }
 
   @Test

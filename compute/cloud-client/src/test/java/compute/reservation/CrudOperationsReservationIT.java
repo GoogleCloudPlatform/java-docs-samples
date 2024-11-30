@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Reservation;
-import compute.Util;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -70,9 +69,6 @@ public class CrudOperationsReservationIT {
     Assertions.assertThrows(
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME, ZONE));
-
-    // Clean up stale resources
-    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
   }
 
   @Test
