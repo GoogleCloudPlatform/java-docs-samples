@@ -71,6 +71,10 @@ public class CreateReservationFromVmIT {
     instanceForReservation = "test-instance-for-reserv-" + javaVersion + "-"
         + UUID.randomUUID().toString().substring(0, 8);
 
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("test-instance-for-reserv-"  + javaVersion, PROJECT_ID, ZONE);
+    Util.cleanUpExistingReservations("test-reservation-from-vm-"  + javaVersion, PROJECT_ID, ZONE);
+
     CreateInstance.createInstance(PROJECT_ID, ZONE, instanceForReservation);
   }
 
@@ -79,10 +83,6 @@ public class CreateReservationFromVmIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Delete resources created for testing.
     DeleteInstance.deleteInstance(PROJECT_ID, ZONE, instanceForReservation);
-
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("test-instance-for-reserv-"  + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reservation-from-vm-"  + javaVersion, PROJECT_ID, ZONE);
 
     reservationsClient.close();
     instancesClient.close();
