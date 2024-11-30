@@ -27,66 +27,68 @@ import com.google.cloud.compute.v1.RemoveResourcePoliciesRegionDiskRequest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class RemoveDiskFromConsistencyGroup {
 
   public static void main(String[] args)
-        throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // The project that contains the disk.
+    // Project ID or project number of the Cloud project that contains the disk.
     String project = "YOUR_PROJECT_ID";
-    // The zone or region of the disk.
+    // Zone or region of the disk.
     String location = "us-central1";
-    // The name of the disk.
+    // Name of the disk.
     String diskName = "DISK_NAME";
-    // The name of the consistency group.
+    // Name of the consistency group.
     String consistencyGroupName = "CONSISTENCY_GROUP";
-    // The region of the consistency group.
+    // Region of the consistency group.
     String consistencyGroupLocation = "us-central1";
 
     removeDiskFromConsistencyGroup(
-            project, location, diskName, consistencyGroupName, consistencyGroupLocation);
+        project, location, diskName, consistencyGroupName, consistencyGroupLocation);
   }
 
-  // Removes a disk from a Consistency Group.
+  // Removes a disk from a consistency group.
   public static Operation.Status removeDiskFromConsistencyGroup(
-        String project, String location, String diskName,
-        String consistencyGroupName, String consistencyGroupLocation)
-        throws IOException, ExecutionException, InterruptedException {
+      String project, String location, String diskName,
+      String consistencyGroupName, String consistencyGroupLocation)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String consistencyGroupUrl = String.format(
-            "https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",
-            project, consistencyGroupLocation, consistencyGroupName);
+        "https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",
+        project, consistencyGroupLocation, consistencyGroupName);
     Operation response;
     if (Character.isDigit(location.charAt(location.length() - 1))) {
       // Initialize client that will be used to send requests. This client only needs to be created
       // once, and can be reused for multiple requests.
       try (RegionDisksClient disksClient = RegionDisksClient.create()) {
         RemoveResourcePoliciesRegionDiskRequest request =
-                RemoveResourcePoliciesRegionDiskRequest.newBuilder()
-                        .setDisk(diskName)
-                        .setRegion(location)
-                        .setProject(project)
-                        .setRegionDisksRemoveResourcePoliciesRequestResource(
-                                RegionDisksRemoveResourcePoliciesRequest.newBuilder()
-                                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
-                                        .build())
-                        .build();
+            RemoveResourcePoliciesRegionDiskRequest.newBuilder()
+                .setDisk(diskName)
+                .setRegion(location)
+                .setProject(project)
+                .setRegionDisksRemoveResourcePoliciesRequestResource(
+                    RegionDisksRemoveResourcePoliciesRequest.newBuilder()
+                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
+                        .build())
+                .build();
 
-        response = disksClient.removeResourcePoliciesAsync(request).get();
+        response = disksClient.removeResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
       }
     } else {
       try (DisksClient disksClient = DisksClient.create()) {
         RemoveResourcePoliciesDiskRequest request =
-                RemoveResourcePoliciesDiskRequest.newBuilder()
-                        .setDisk(diskName)
-                        .setZone(location)
-                        .setProject(project)
-                        .setDisksRemoveResourcePoliciesRequestResource(
-                                DisksRemoveResourcePoliciesRequest.newBuilder()
-                                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
-                                        .build())
-                        .build();
-        response = disksClient.removeResourcePoliciesAsync(request).get();
+            RemoveResourcePoliciesDiskRequest.newBuilder()
+                .setDisk(diskName)
+                .setZone(location)
+                .setProject(project)
+                .setDisksRemoveResourcePoliciesRequestResource(
+                    DisksRemoveResourcePoliciesRequest.newBuilder()
+                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
+                        .build())
+                .build();
+        response = disksClient.removeResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
       }
     }
     if (response.hasError()) {

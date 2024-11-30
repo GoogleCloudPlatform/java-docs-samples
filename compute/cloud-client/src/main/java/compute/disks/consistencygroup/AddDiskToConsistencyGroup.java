@@ -27,33 +27,36 @@ import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class AddDiskToConsistencyGroup {
   public static void main(String[] args)
-        throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
-    // The project that contains the disk.
+    // Project ID or project number of the Cloud project that contains the disk.
     String project = "YOUR_PROJECT_ID";
-    // The zone or region of the disk.
+    // Zone or region of the disk.
     String location = "us-central1";
-    // The name of the disk.
+    // Name of the disk.
     String diskName = "DISK_NAME";
-    // The name of the consistency group.
+    // Name of the consistency group.
     String consistencyGroupName = "CONSISTENCY_GROUP";
-    // The region of the consistency group.
+    // Region of the consistency group.
     String consistencyGroupLocation = "us-central1";
+
     addDiskToConsistencyGroup(
-            project, location, diskName, consistencyGroupName, consistencyGroupLocation);
+        project, location, diskName, consistencyGroupName, consistencyGroupLocation);
   }
 
-  // Adds a disk to a Consistency Group.
+  // Adds a disk to a consistency group.
   public static Operation.Status addDiskToConsistencyGroup(
-        String project, String location, String diskName,
-        String consistencyGroupName, String consistencyGroupLocation)
-        throws IOException, ExecutionException, InterruptedException {
+      String project, String location, String diskName,
+      String consistencyGroupName, String consistencyGroupLocation)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String consistencyGroupUrl = String.format(
-            "https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",
-            project, consistencyGroupLocation, consistencyGroupName);
+        "https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",
+        project, consistencyGroupLocation, consistencyGroupName);
     Operation response;
     if (Character.isDigit(location.charAt(location.length() - 1))) {
       // Initialize client that will be used to send requests. This client only needs to be created
@@ -61,29 +64,29 @@ public class AddDiskToConsistencyGroup {
       try (RegionDisksClient disksClient = RegionDisksClient.create()) {
         AddResourcePoliciesRegionDiskRequest request =
                 AddResourcePoliciesRegionDiskRequest.newBuilder()
-                        .setDisk(diskName)
-                        .setRegion(location)
-                        .setProject(project)
-                        .setRegionDisksAddResourcePoliciesRequestResource(
-                                RegionDisksAddResourcePoliciesRequest.newBuilder()
-                                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
-                                        .build())
-                        .build();
-        response = disksClient.addResourcePoliciesAsync(request).get();
+                    .setDisk(diskName)
+                    .setRegion(location)
+                    .setProject(project)
+                    .setRegionDisksAddResourcePoliciesRequestResource(
+                            RegionDisksAddResourcePoliciesRequest.newBuilder()
+                                .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
+                                .build())
+                    .build();
+        response = disksClient.addResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
       }
     } else {
       try (DisksClient disksClient = DisksClient.create()) {
         AddResourcePoliciesDiskRequest request =
                 AddResourcePoliciesDiskRequest.newBuilder()
-                        .setDisk(diskName)
-                        .setZone(location)
-                        .setProject(project)
-                        .setDisksAddResourcePoliciesRequestResource(
-                                DisksAddResourcePoliciesRequest.newBuilder()
-                                        .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
-                                        .build())
-                        .build();
-        response = disksClient.addResourcePoliciesAsync(request).get();
+                    .setDisk(diskName)
+                    .setZone(location)
+                    .setProject(project)
+                    .setDisksAddResourcePoliciesRequestResource(
+                            DisksAddResourcePoliciesRequest.newBuilder()
+                                .addAllResourcePolicies(Arrays.asList(consistencyGroupUrl))
+                                .build())
+                    .build();
+        response = disksClient.addResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
       }
     }
     if (response.hasError()) {

@@ -16,125 +16,159 @@
 
 package compute.disks;
 
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.compute.v1.AddResourcePoliciesRegionDiskRequest;
+import com.google.cloud.compute.v1.BulkInsertRegionDiskRequest;
+import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
-import compute.Util;
+import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.RemoveResourcePoliciesRegionDiskRequest;
+import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CloneDisksFromConsistencyGroup;
-import compute.disks.consistencygroup.CreateDiskConsistencyGroup;
-import compute.disks.consistencygroup.DeleteDiskConsistencyGroup;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
+import compute.disks.consistencygroup.CreateConsistencyGroup;
+import compute.disks.consistencygroup.DeleteConsistencyGroup;
+import compute.disks.consistencygroup.RemoveDiskFromConsistencyGroup;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 5, unit = TimeUnit.MINUTES)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Timeout(value = 2, unit = TimeUnit.MINUTES)
 public class ConsistencyGroupIT {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String REGION = "us-central1";
-  private static final String REGION_SECONDARY = "northamerica-northeast1";
-  static String randomUUID = UUID.randomUUID().toString().split("-")[0];
-  private static final String CONSISTENCY_GROUP_NAME = "test-consistency-group-" + randomUUID;
-  private static final String CONSISTENCY_GROUP_SECONDARY =
-          "test-consistency-group-secondary-" + randomUUID;
-  private static final String DISK_NAME = "test-disk-for-consistency-" + randomUUID;
-  private static final String DISK_TYPE = String.format("regions/%s/diskTypes/pd-balanced", REGION);
-  private static final String SECONDARY_REGIONAL_DISK =
-          "gcloud-test-disk-secondary-regional-" + randomUUID;
-  private static final int DISK_SIZE = 10;
-  private static final List<String> replicaZones = Arrays.asList(
-          String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
-          String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
+  private static final String PROJECT_ID = "project-id";
+  private static final String REGION = "asia-east1";
+  private static final String CONSISTENCY_GROUP_NAME = "consistency-group";
+  private static final String DISK_NAME = "disk-for-consistency";
 
-  // Check if the required environment variables are set.
-  public static void requireEnvVar(String envVarName) {
-    assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
-        .that(System.getenv(envVarName)).isNotEmpty();
-  }
+  @Test
+  public void testCreateConsistencyGroupResourcePolicy() throws Exception {
+    try (MockedStatic<ResourcePoliciesClient> mockedResourcePoliciesClient =
+                 mockStatic(ResourcePoliciesClient.class)) {
+      Operation operation = mock(Operation.class);
+      ResourcePoliciesClient mockClient = mock(ResourcePoliciesClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
 
-  @BeforeAll
-  public static void setUp() throws Exception {
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+      mockedResourcePoliciesClient.when(ResourcePoliciesClient::create).thenReturn(mockClient);
+      when(mockClient.insertAsync(any(InsertResourcePolicyRequest.class)))
+              .thenReturn(mockFuture);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
+      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
 
-    RegionalCreateFromSource.createRegionalDisk(PROJECT_ID, REGION, replicaZones,
-            DISK_NAME, DISK_TYPE, 10, Optional.empty(), Optional.empty());
-  }
+      Operation.Status status = CreateConsistencyGroup.createConsistencyGroup(
+              PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
 
-  @AfterAll
-  public static void cleanUp()
-          throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    StopDiskReplication.stopDiskAsyncReplication(PROJECT_ID, REGION, DISK_NAME);
-    StopDiskReplication.stopDiskAsyncReplication(
-            PROJECT_ID, REGION_SECONDARY, SECONDARY_REGIONAL_DISK);
-    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, DISK_NAME);
-    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION_SECONDARY, SECONDARY_REGIONAL_DISK);
-    DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
-        PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
-    DeleteDiskConsistencyGroup.deleteDiskConsistencyGroup(
-            PROJECT_ID, REGION_SECONDARY, CONSISTENCY_GROUP_SECONDARY);
-
-    // Clean up existing stale resources.
-    Util.cleanUpExistingRegionalDisks("test-disk-for-consistency-", PROJECT_ID, REGION);
-    Util.cleanUpExistingRegionalDisks(
-            "gcloud-test-disk-secondary-regional-", PROJECT_ID, REGION_SECONDARY);
-    Util.cleanUpExistingConsistencyGroup("test-consistency-group-", PROJECT_ID, REGION);
+      verify(mockClient, times(1)).insertAsync(any(InsertResourcePolicyRequest.class));
+      verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
+      assertEquals(Operation.Status.DONE, status);
+    }
   }
 
   @Test
-  @Order(1)
-  public void testCreateDiskConsistencyGroupResourcePolicy()
-      throws IOException, ExecutionException, InterruptedException {
-    Operation.Status status = CreateDiskConsistencyGroup.createDiskConsistencyGroup(
-            PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+  public void testAddRegionalDiskToConsistencyGroup() throws Exception {
+    try (MockedStatic<RegionDisksClient> mockedRegionDisksClient =
+                 mockStatic(RegionDisksClient.class)) {
+      Operation operation = mock(Operation.class);
+      RegionDisksClient mockClient = mock(RegionDisksClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
 
-    assertThat(status).isEqualTo(Operation.Status.DONE);
+      mockedRegionDisksClient.when(RegionDisksClient::create).thenReturn(mockClient);
+      when(mockClient.addResourcePoliciesAsync(any(AddResourcePoliciesRegionDiskRequest.class)))
+              .thenReturn(mockFuture);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
+      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+
+      Operation.Status status = AddDiskToConsistencyGroup.addDiskToConsistencyGroup(
+              PROJECT_ID, REGION, DISK_NAME, CONSISTENCY_GROUP_NAME, REGION);
+
+      verify(mockClient, times(1))
+              .addResourcePoliciesAsync(any(AddResourcePoliciesRegionDiskRequest.class));
+      verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
+      assertEquals(Operation.Status.DONE, status);
+    }
   }
 
   @Test
-  @Order(2)
-  public void testAddRegionalDiskToConsistencyGroup()
-          throws IOException, ExecutionException, InterruptedException {
-    Operation.Status status = AddDiskToConsistencyGroup.addDiskToConsistencyGroup(
-            PROJECT_ID, REGION, DISK_NAME, CONSISTENCY_GROUP_NAME, REGION);
+  public void testRemoveDiskFromConsistencyGroup() throws Exception {
+    try (MockedStatic<RegionDisksClient> mockedRegionDisksClient =
+                 mockStatic(RegionDisksClient.class)) {
+      Operation operation = mock(Operation.class);
+      RegionDisksClient mockClient = mock(RegionDisksClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
 
-    assertThat(status).isEqualTo(Operation.Status.DONE);
+      mockedRegionDisksClient.when(RegionDisksClient::create).thenReturn(mockClient);
+      when(mockClient.removeResourcePoliciesAsync(
+              any(RemoveResourcePoliciesRegionDiskRequest.class))).thenReturn(mockFuture);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
+      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+
+      Operation.Status status = RemoveDiskFromConsistencyGroup.removeDiskFromConsistencyGroup(
+              PROJECT_ID, REGION, DISK_NAME, CONSISTENCY_GROUP_NAME, REGION);
+
+      verify(mockClient, times(1))
+              .removeResourcePoliciesAsync(any(RemoveResourcePoliciesRegionDiskRequest.class));
+      verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
+      assertEquals(Operation.Status.DONE, status);
+    }
   }
 
   @Test
-  @Order(3)
-  public void testCloneDisksFromConsistencyGroup()
-          throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateDiskSecondaryRegional.createDiskSecondaryRegional(
-            PROJECT_ID, PROJECT_ID, DISK_NAME, SECONDARY_REGIONAL_DISK,
-            REGION, REGION_SECONDARY, DISK_SIZE);
-    CreateDiskConsistencyGroup.createDiskConsistencyGroup(
-            PROJECT_ID, REGION_SECONDARY, CONSISTENCY_GROUP_SECONDARY);
-    StartDiskReplication.startDiskAsyncReplication(
-            PROJECT_ID, DISK_NAME, REGION, PROJECT_ID, REGION_SECONDARY, SECONDARY_REGIONAL_DISK);
-    AddDiskToConsistencyGroup.addDiskToConsistencyGroup(PROJECT_ID, REGION_SECONDARY,
-            SECONDARY_REGIONAL_DISK, CONSISTENCY_GROUP_SECONDARY, REGION_SECONDARY);
-    TimeUnit.MINUTES.sleep(1);
+  public void testDeleteConsistencyGroup() throws Exception {
+    try (MockedStatic<ResourcePoliciesClient> mockedResourcePoliciesClient =
+                 mockStatic(ResourcePoliciesClient.class)) {
+      Operation operation = mock(Operation.class);
+      ResourcePoliciesClient mockClient = mock(ResourcePoliciesClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
 
-    Operation.Status status = CloneDisksFromConsistencyGroup.cloneDisksFromConsistencyGroup(
-            PROJECT_ID, REGION_SECONDARY, CONSISTENCY_GROUP_SECONDARY, REGION_SECONDARY);
+      mockedResourcePoliciesClient.when(ResourcePoliciesClient::create).thenReturn(mockClient);
+      when(mockClient.deleteAsync(PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME))
+              .thenReturn(mockFuture);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
+      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
 
-    assertThat(status).isEqualTo(Operation.Status.DONE);
+      Operation.Status status = DeleteConsistencyGroup.deleteConsistencyGroup(
+              PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+
+      verify(mockClient, times(1))
+              .deleteAsync(PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+      verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
+      assertEquals(Operation.Status.DONE, status);
+    }
+  }
+
+  @Test
+  public void testCloneDisksFromConsistencyGroup() throws Exception {
+    try (MockedStatic<RegionDisksClient> mockedRegionDisksClient =
+                 mockStatic(RegionDisksClient.class)) {
+      Operation operation = mock(Operation.class);
+      RegionDisksClient mockClient = mock(RegionDisksClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedRegionDisksClient.when(RegionDisksClient::create).thenReturn(mockClient);
+      when(mockClient.bulkInsertAsync(any(BulkInsertRegionDiskRequest.class)))
+              .thenReturn(mockFuture);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
+      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+
+      Operation.Status status = CloneDisksFromConsistencyGroup.cloneDisksFromConsistencyGroup(
+              PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME, REGION);
+
+      verify(mockClient, times(1))
+              .bulkInsertAsync(any(BulkInsertRegionDiskRequest.class));
+      verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
+      assertEquals(Operation.Status.DONE, status);
+    }
   }
 }
