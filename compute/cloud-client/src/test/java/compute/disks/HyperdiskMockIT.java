@@ -55,7 +55,6 @@ public class HyperdiskMockIT {
   public void testCreateHyperdiskStoragePool() throws Exception {
     String poolType = String.format(
             "projects/%s/zones/%s/storagePoolTypes/%s", PROJECT_ID, ZONE, "hyperdisk-balanced");
-
     StoragePool storagePool = StoragePool.newBuilder()
             .setZone(ZONE)
             .setName(STORAGE_POOL_NAME)
